@@ -250,10 +250,42 @@
   </component>
   <component name="TL_PLUGIN">
     <option name="myModel">
-      <IssueLinkModel />
+      <IssueLinkModel>
+        <option name="autoStartingAllowed" value="true" />
+        <option name="integrateWith" value="2" />
+        <option name="myCurrentTypeList">
+          <list>
+            <CodeLinkType>
+              <option name="patternString" value="\b(\p{Upper}{2,}\-\d+)\b" />
+              <option name="replacePattern" value="http://ifountain.org/jira/browse/$1" />
+            </CodeLinkType>
+          </list>
+        </option>
+        <option name="myStartAutomatically" value="true" />
+        <option name="myIntegrateWith" value="2" />
+      </IssueLinkModel>
     </option>
     <option name="myCheckinOptions">
       <CheckinOptions />
+    </option>
+  </component>
+  <component name="TL_VCS_CACHE">
+    <option name="myUrlRevisionMapName" value="map-281634310.dat" />
+    <option name="myRevisionsCacheName" value="rec" />
+    <option name="myUrlCacheName" value="rec" />
+  </component>
+  <component name="TrackLink.DashboardWindow">
+    <option name="myModelBeanOrderedList">
+      <list>
+        <option value="favorites" />
+        <option value="7f1d-26" />
+      </list>
+    </option>
+    <option name="myModelBean">
+      <map>
+        <entry key="7f1d-26" value="true" />
+        <entry key="favorites" value="false" />
+      </map>
     </option>
   </component>
   <component name="VcsDirectoryMappings">

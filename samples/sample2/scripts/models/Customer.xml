@@ -1,0 +1,30 @@
+<Model ClassName="Customer">
+	<Properties>
+		<Property  name="name" type="string" datasource="RCMDB" blank="false" lazy="false" />
+		<Property  name="accountmanager" type="string" datasource="AccountDBDS" nameInDs="manager" lazy="false" />
+	</Properties>
+	<Datasources>
+		<Datasource name="RCMDB" master="true">
+			<Key propertyName="name" />
+		</Datasource>
+		<Datasource name="AccountDBDS" >
+			<Key propertyName="name" nameinDS="code" />
+		</Datasource>
+	</Datasources>	
+	<Relations>
+		<Relation name="services" relatedTo="Service" />
+	</Relations>
+</Model>
+
+<!--
+- Datasource for every property has to be defined
+- blank (mandatory) property:
+	- can only be defined for those properties in master DS 
+	- mandatory props are required to have values for "add" operation
+	- will be ignored for federated properties
+	- if not provided, parameter may not have any value for "add" operation 
+- lazyload property:
+	- can only be defined for those properties in federated DS. 
+	- if not provided, property is lazy loaded 
+- defaultValue property is available	
+-->

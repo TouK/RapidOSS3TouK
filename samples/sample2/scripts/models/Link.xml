@@ -1,0 +1,5 @@
+<Model ClassName="Link" extends="Resource" >
+	<Properties>
+		<Property name="LINKSPECIFICPROPERTYHERE" type="string" datasource=${dsname} />
+	</Properties>
+</Model>

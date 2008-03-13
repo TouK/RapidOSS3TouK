@@ -1,0 +1,19 @@
+<Model ClassName="Event">
+	<Properties>
+		<Property  name="name" type="string" datasource="RI" nameinDS="EventName" blank="false" lazy="false" />
+		<Property  name="severity" type="string" datasource="RI" nameinDS="Severity" lazy="false" />
+		<Property  name="ack" type="string" datasource="RI" nameinDS="Acknowledged" />
+		<Property  name="owner" type="string" datasource="RI" nameinDS="Owner" lazy="false" />
+		<Property  name="descr" type="string" datasource="RI" nameinDS="Description" lazy="false" />
+		<Property  name="lastoccurred" type="string" datasource="RI" nameinDS="LastOccurredOn" />
+		<Property  name="lastchanged" type="string" datasource="RI" nameinDS="LastChangedAt" />
+	</Properties>
+	<Datasources>
+		<Datasource name="RI" master="true">
+			<Key propertyName="name" nameinDS="EventName"/>
+		</Datasource>
+	</Datasources>	
+	<Relations>
+		<Relation name="resource" relatedTo="Resource" />
+	</Relations>
+</Model>

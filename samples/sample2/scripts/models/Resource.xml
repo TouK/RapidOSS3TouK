@@ -1,0 +1,22 @@
+<Model ClassName="Resource">
+	<Properties>
+		<Property  name="name" type="string" datasource="RCMDB" blank="false" lazy="false" />
+		<Property  name="displayname" type="string" datasource="RCMDB" />
+		<Property  name="operationalstate" type="string" datasource=${dsname} />
+		<Property  name="dsname" type="string" lazy="false" />
+	</Properties>
+	<Datasources>
+		<Datasource name="RCMDB" master="true" >
+			<Key propertyName="name"  />
+		</Datasource>
+		<Datasource name="SmartsDS" >
+			<Key propertyName="name" nameinDS="CreationClassName" />
+		</Datasource>
+		<Datasource name="HypericDS" >
+			<Key propertyName="name" nameinDS="ID" />
+		</Datasource>
+	</Datasources>	
+	<Relations>
+		<Relation name="events" relatedTo="Event" />
+	</Relations>	
+</Model>

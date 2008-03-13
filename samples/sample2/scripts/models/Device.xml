@@ -1,0 +1,13 @@
+<Model ClassName="Device" extends="Resource" >
+	<Properties>
+		<Property name="vendor" type="string" datasource=${dsname} />
+		<Property name="model" type="string" datasource=${dsname} />
+		<Property name="location" type="string" lazyload="false" datasource=${dsname} />
+		<Property name="ipaddress" type="string" datasource="IPDS" />
+	</Properties>
+	<DatasourceKeys>
+		<Datasource name="IPDS" >
+			<Key propertyName="name" nameinDS="id" />
+		</Datasource>
+	</DatasourceKeys>	
+</Model>

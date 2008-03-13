@@ -1,3 +1,4 @@
+ 
 dataSource {
 	pooled = false
 	driverClassName = "org.hsqldb.jdbcDriver"
@@ -11,9 +12,16 @@ hibernate {
 }
 // environment specific settings
 environments {
-	development {
+	production {
 		dataSource {
-			dbCreate = "create-drop" // one of 'create', 'create-drop','update'
+			dbCreate = "update"
+			url = "jdbc:hsqldb:file:prodDb;shutdown=true"
+		}
+	}
+    development {
+		dataSource {
+            configClass = GrailsAnnotationConfiguration.class
+            dbCreate = "create-drop" // one of 'create', 'create-drop','update'
 			url = "jdbc:hsqldb:mem:devDB"
 		}
 	}
@@ -23,10 +31,5 @@ environments {
 			url = "jdbc:hsqldb:mem:testDb"
 		}
 	}
-	production {
-		dataSource {
-			dbCreate = "update"
-			url = "jdbc:hsqldb:file:prodDb;shutdown=true"
-		}
-	}
+
 }

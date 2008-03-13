@@ -5,6 +5,8 @@
  * Time: 3:51:09 PM
  * To change this template use File | Settings | File Templates.
  */
-class x {
-
+class Deneme {
+       def x()
+       {
+       }
 }

@@ -1,0 +1,9 @@
+<Model ClassName="DatabaseConnection" extends="Connection" >
+	<Properties>
+		<Property  name="Class" type="string" mandatory="true" defaultValue="connection.DatabaseConnectionImpl" />
+	    <Property  name="Driver" type="string" mandatory="true" />
+		<Property  name="Url" type="string" mandatory="true" />
+	    <Property  name="Username" type="string" mandatory="true" />
+	    <Property  name="Password" type="string" mandatory="true" />
+	</Properties>
+</Model>

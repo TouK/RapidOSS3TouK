@@ -1,0 +1,64 @@
+/* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be 
+ * noted in a separate copyright notice. All rights reserved.
+ * This file is part of RapidCMDB.
+ * 
+ * RapidCMDB is free software; you can redistribute it and/or modify
+ * it under the terms version 2 of the GNU General Public License as
+ * published by the Free Software Foundation. This program is distributed
+ * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA.
+ */
+package com.ifountain.smarts.util.params;
+
+
+
+import com.ifountain.smarts.util.SmartsConstants;
+import com.smarts.repos.MR_AnyVal;
+import com.smarts.repos.MR_AnyValString;
+
+/**
+ * User: kinikogl
+ * Date: Sep 13, 2004
+ * Time: 2:04:35 PM
+ */
+public class NotificationAggregateParams extends NotificationIdentifierParams{
+
+    private MR_AnyVal componentNotificationName;
+
+    public NotificationAggregateParams(String className,
+                                            String instanceName,
+                                            String eventName) {
+        super(className, instanceName, eventName);
+    }
+
+    public NotificationAggregateParams(MR_AnyValString className,
+                                            MR_AnyValString instanceName,
+                                            MR_AnyValString eventName) {
+        super(className, instanceName, eventName);
+    }
+
+    public MR_AnyVal[] getMethodArgs(){
+        MR_AnyVal className = getClassNameAsMR();
+        MR_AnyVal instName = getInstanceNameAsMR();
+        MR_AnyVal eventType = getEventNameAsMR();
+        MR_AnyVal componentNotificationName = getComponentNotificationNameAsMR();
+        MR_AnyVal notificationClass = new MR_AnyValString(SmartsConstants.NOTIFICATION_CLASS);
+        MR_AnyVal[] args = {className, instName, eventType, componentNotificationName, notificationClass};
+        return args;
+    }
+
+    public MR_AnyVal getComponentNotificationNameAsMR() {
+        return componentNotificationName;
+    }
+
+    public void setComponentNotificationName(MR_AnyVal componentNotificationName) {
+        this.componentNotificationName = componentNotificationName;
+    }
+}

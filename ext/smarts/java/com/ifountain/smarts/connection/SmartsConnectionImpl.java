@@ -1,0 +1,102 @@
+/* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be 
+ * noted in a separate copyright notice. All rights reserved.
+ * This file is part of RapidCMDB.
+ * 
+ * RapidCMDB is free software; you can redistribute it and/or modify
+ * it under the terms version 2 of the GNU General Public License as
+ * published by the Free Software Foundation. This program is distributed
+ * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA.
+ */
+package com.ifountain.smarts.connection;
+
+import com.ifountain.core.connection.ConnectionParam;
+import com.ifountain.core.connection.IConnection;
+import com.ifountain.core.connection.exception.UndefinedConnectionParameterException;
+import com.smarts.remote.SmRemoteBroker;
+import com.smarts.remote.SmRemoteDomainManager;
+
+public class SmartsConnectionImpl implements IConnection{
+
+	public static final String BROKER = "Broker";
+	public static final String DOMAIN = "Domain";
+	public static final String USERNAME = "Username";
+	public static final String PASSWORD = "Password";
+
+	private ConnectionParam param;
+	private String broker;
+	private String domain;
+	private String username;
+	private String password;
+	private SmRemoteDomainManager domainManager;
+	
+
+	public void connect() throws Exception {
+	    SmRemoteBroker smBroker = new SmRemoteBroker(broker);
+	    smBroker.attach("BrokerNonsecure", "Nonsecure"); 
+        domainManager.attach(smBroker, domain, username, password);
+        smBroker.detach();
+	}
+
+	public void disconnect() {
+	    if(domainManager != null)
+        {
+            domainManager.detach();
+        }
+	}
+
+	public ConnectionParam getParameters() {
+		return param;
+	}
+
+	public void init(ConnectionParam param) throws Exception {
+		this.param = param;
+		this.broker = checkParam(BROKER);
+        this.domain = checkParam(DOMAIN);
+        this.username = checkParam(USERNAME);
+        this.password = checkParam(PASSWORD);
+        this.domainManager = new SmRemoteDomainManager();
+	}
+
+	public boolean isConnected() {
+	    if(domainManager != null)
+        {
+            try
+            {
+                domainManager.noop();
+            }
+            catch (Exception e)
+            {
+                try {
+                    domainManager.detach();
+                }
+                catch (RuntimeException exceptionWillBeIgnored) {
+                }
+                return false;
+            }
+            return domainManager.attached();
+        }
+        else
+        {
+            return false;
+        }
+	}
+	
+	private String checkParam(String parameterName) throws UndefinedConnectionParameterException {
+        if(!param.getOtherParams().containsKey(parameterName)){
+            throw new UndefinedConnectionParameterException(parameterName);
+        }
+        return (String) param.getOtherParams().get(parameterName);
+    }
+
+	public SmRemoteDomainManager getDomainManager() {
+		return domainManager;
+	}
+}

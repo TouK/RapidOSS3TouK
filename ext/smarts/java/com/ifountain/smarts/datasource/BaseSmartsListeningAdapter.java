@@ -1,0 +1,171 @@
+/* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be 
+ * noted in a separate copyright notice. All rights reserved.
+ * This file is part of RapidCMDB.
+ * 
+ * RapidCMDB is free software; you can redistribute it and/or modify
+ * it under the terms version 2 of the GNU General Public License as
+ * published by the Free Software Foundation. This program is distributed
+ * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA.
+ */
+/**
+ * Created on Mar 12, 2008
+ *
+ * Author Sezgin Kucukkaraaslan
+ */
+package com.ifountain.smarts.datasource;
+
+import java.io.IOException;
+import java.util.Observable;
+
+import org.apache.log4j.Logger;
+
+import com.ifountain.core.datasource.BaseListeningAdapter;
+import com.ifountain.smarts.connection.SmartsConnectionImpl;
+import com.ifountain.smarts.util.DataFromObservable;
+import com.ifountain.smarts.util.SmartsConstants;
+import com.ifountain.smarts.util.params.SmartsSubscribeParameters;
+import com.smarts.remote.SmObserverEvent;
+import com.smarts.remote.SmRemoteException;
+import com.smarts.repos.MR_AnyValString;
+import com.smarts.repos.MR_PropertyNameValue;
+
+public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
+
+    protected SmartsSubscribeParameters[] subscribeParams;
+    protected String logPrefix = "[BaseSmartsObserver]: ";
+    protected boolean isObserverCreated;
+    protected boolean exitingObjectsRetrieved = false;
+    public BaseSmartsListeningAdapter() {
+        super();
+    }
+
+    public BaseSmartsListeningAdapter(String connectionName, long reconnectInterval, Logger logger, SmartsSubscribeParameters[] subscribeParams) {
+        super(connectionName, reconnectInterval, logger);
+        this.subscribeParams = subscribeParams;
+    }
+
+    protected abstract void subscribeTo() throws Exception;    
+    protected abstract void unsubscribeFrom() throws Exception;
+    public abstract Object processIncomingData(DataFromObservable data);
+    
+    @Override
+    protected void _subscribe() throws Exception {
+        if(subscribeParams != null)
+        {
+            for (int i = 0; i < subscribeParams.length; i++)
+            {
+                logger.info(logPrefix + "Observer is subscribing to parameter which has " + subscribeParams[i]);
+            }
+        }
+        else
+        {
+            logger.info(logPrefix + "No parameters specified for observer to subscribe.");
+        }
+        createSmartsObserver();
+        try {
+            subscribeTo();
+            logger.info(logPrefix + "Observer is subscribed");
+        } catch (Exception e) {
+            if(e.getMessage()!= null && e.getMessage().indexOf("Observer not currently attached") >= 0)
+            {
+                logger.warn(logPrefix + "Could not subscribe to specified parameters. Reason : " + e);
+            }
+            else
+            {
+                deleteSmartsObserver();
+                throw e;
+            }
+        }
+    }
+    
+    protected void createSmartsObserver() throws IOException, SmRemoteException
+    {
+        ((SmartsConnectionImpl)getConnection()).getDomainManager().createObserver(this);
+        isObserverCreated = true;
+    }
+    private void deleteSmartsObserver()
+    {
+        if(isObserverCreated)
+        {
+            try {
+                ((SmartsConnectionImpl)getConnection()).getDomainManager().deleteObserver(this);
+            } catch (Exception e) {
+                logger.debug(logPrefix + "Cannot delete observer.");
+            }
+            isObserverCreated = false;
+        }
+    }
+    
+    @Override
+    public Object _update(Observable o, Object event) {
+        SmObserverEvent newEvent = (SmObserverEvent) event;
+        logger.debug(logPrefix + "Update is called with event type " + newEvent.getType());
+        switch (newEvent.getType())
+        {
+            case SmObserverEvent.PROPERTY_SUBSCRIPTION_ACCEPT:
+                return null;
+            case SmObserverEvent.DOMAIN_DISCONNECT:
+            case SmObserverEvent.DOMAIN_DETACH:
+                try {
+                    disconnectDetected();
+                } catch (Exception e) {
+                }
+                return null;
+        }
+        String className = newEvent.getClassName();
+        String instanceName = newEvent.getInstanceName();
+        String propertyName = newEvent.getPropertyName();
+        logger.debug(logPrefix + "Data is constructed with ClassName: " + className + ", InstanceName: " +instanceName + ", PropertyName: " + propertyName );
+        DataFromObservable incomingData = new DataFromObservable(className, instanceName, propertyName,
+                newEvent.getParam(), newEvent.getType());
+        return processIncomingData(incomingData);
+    }
+    @Override
+    protected void _unsubscribe() {
+        logger.debug(logPrefix + "Observer is unsubscribing.");
+        try {
+            unsubscribeFrom();
+            logger.debug(logPrefix + "Observer is unsubscribed.");
+        } catch (Exception e) {
+            logger.warn(logPrefix + "Could not unsubscribed.");
+        }   
+        finally
+        {
+            deleteSmartsObserver();
+        }
+    }
+
+    public SmartsSubscribeParameters[] getSubscribeParams() {
+        return subscribeParams;
+    }
+
+    public void setSubscribeParams(SmartsSubscribeParameters[] subscribeParams) {
+        this.subscribeParams = subscribeParams;
+    }
+    
+    protected MR_PropertyNameValue[] convertIncomingDataToMR_PropertyNameValue(DataFromObservable data)
+    {
+        MR_PropertyNameValue[] nameValuePairs;
+        if(data.getPropertyName()!= null && data.getPropertyName().length() != 0)
+        {
+            nameValuePairs = new MR_PropertyNameValue[3];
+            nameValuePairs[2] = new MR_PropertyNameValue(data.getPropertyName(), data.getValue());
+        }
+        else
+        {
+            nameValuePairs = new MR_PropertyNameValue[2];
+        }
+        nameValuePairs[0] = new MR_PropertyNameValue(SmartsConstants.CLASSNAME, new MR_AnyValString(data.getClassName()));
+        nameValuePairs[1] = new MR_PropertyNameValue(SmartsConstants.INSTANCENAME, new MR_AnyValString(data.getInstanceName()));
+        return nameValuePairs;
+    }
+
+}

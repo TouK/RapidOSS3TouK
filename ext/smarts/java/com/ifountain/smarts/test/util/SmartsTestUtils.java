@@ -29,7 +29,6 @@ import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.smarts.connection.SmartsConnectionImpl;
-import models.SmartsConnection;
 import com.ifountain.smarts.datasource.BaseNotificationAdapter;
 import com.ifountain.smarts.datasource.BaseSmartsAdapter;
 import com.ifountain.smarts.datasource.BaseTopologyAdapter;
@@ -78,7 +77,7 @@ public class SmartsTestUtils {
         otherParams.put(SmartsConnectionImpl.DOMAIN, connectionParams.getDomain());
         otherParams.put(SmartsConnectionImpl.USERNAME, connectionParams.getUsername());
         otherParams.put(SmartsConnectionImpl.PASSWORD, connectionParams.getPassword());
-        return new ConnectionParam(SmartsConnection.TYPE, SMARTS_TEST_DATASOURCE_NAME, SmartsConnectionImpl.class.getName(), otherParams, 10);
+        return new ConnectionParam("SmartsConnection", SMARTS_TEST_DATASOURCE_NAME, SmartsConnectionImpl.class.getName(), otherParams, 10);
     }
 	 
 	public static BaseNotificationAdapter getNotificationAdapter(){

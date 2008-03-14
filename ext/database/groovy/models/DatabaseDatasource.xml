@@ -1,5 +1,0 @@
-<Model ClassName="DatabaseDatasource" extends="Datasource" >
-	<Properties>
-		<Property  name="Adapter" type="string" mandatory="true" defaultValue="datasource.DatabaseAdapter" />
-	</Properties>
-</Model>

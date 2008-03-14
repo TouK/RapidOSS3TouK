@@ -1,9 +1,0 @@
-<Model ClassName="SmartsConnection" extends="Connection" >
-	<Properties>
-		<Property  name="Class" type="string" mandatory="true" defaultValue="com.ifountain.smarts.connection.SmartsConnectionImpl" />
-	    <Property  name="Broker" type="string" mandatory="true" />
-		<Property  name="Domain" type="string" mandatory="true" />
-	    <Property  name="Username" type="string" mandatory="true" />
-	    <Property  name="Password" type="string" mandatory="true" />
-	</Properties>
-</Model>

@@ -32,7 +32,6 @@ import java.util.Map;
 import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.core.connection.ConnectionParam;
 import connections.DatabaseConnectionImpl;
-import models.DatabaseConnection;
 
 public class DatabaseConnectionImplTestUtils {
 
@@ -57,7 +56,7 @@ public class DatabaseConnectionImplTestUtils {
         otherParams.put(DatabaseConnectionImpl.URL, connectionParams.getUrl());
         otherParams.put(DatabaseConnectionImpl.USERNAME, connectionParams.getUsername());
         otherParams.put(DatabaseConnectionImpl.PASSWORD, connectionParams.getPassword());
-        return new ConnectionParam(DatabaseConnection.TYPE, "conn", DatabaseConnectionImpl.class.getName(), otherParams );
+        return new ConnectionParam("Database", "conn", DatabaseConnectionImpl.class.getName(), otherParams );
     }
     public static ConnectionParam getDatasourceParam(){
         return getConnectionParam(DatabaseTestConstants.MYSQL);

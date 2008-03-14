@@ -36,11 +36,6 @@ public abstract class BaseAdapter implements Adapter
     protected String connectionName;
     protected long reconnectInterval = 0;
     protected Logger logger;
-    /**
-     * @param connConfigName
-     * @param reconnectInterval 
-     * @param logger TODO
-     */
 
     public BaseAdapter() {
     }

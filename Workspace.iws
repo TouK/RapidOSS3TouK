@@ -18,7 +18,6 @@
     <list default="true" name="Default" comment="">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/controllers/ConnectionController.groovy" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/views/connection" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Workspace.iws" afterPath="$PROJECT_DIR$/Workspace.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RapidCMDB/grails-app/domain/Connection.groovy" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/domain/Connection.groovy" />
     </list>
     <ignored path="Workspace.iws" />
@@ -243,7 +242,7 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
   </component>
   <component name="RestoreUpdateTree">
-    <UpdateInfo date="3/14/08 9:56 AM" ActionInfo="_Update">
+    <UpdateInfo date="3/14/08 9:59 AM" ActionInfo="_Update">
       <UpdatedFiles>
         <FILE-GROUP>
           <option name="myUpdateName" value="Updated from server" />
@@ -257,7 +256,6 @@
             <option name="mySupportsDeletion" value="false" />
             <option name="myCanBeAbsent" value="false" />
             <option name="myId" value="UPDATED" />
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\conf\DataSource.groovy</PATH>
           </FILE-GROUP>
           <FILE-GROUP>
             <option name="myUpdateName" value="Created" />
@@ -265,18 +263,18 @@
             <option name="mySupportsDeletion" value="false" />
             <option name="myCanBeAbsent" value="false" />
             <option name="myId" value="CREATED" />
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\controllers\ServiceLevelAgreeController.groovy</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\controllers\ServiceController.groovy</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\controllers\CustomerController.groovy</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\domain</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\domain\ServiceLevelAgree.groovy</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\domain\Connection.groovy</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\domain\Service.groovy</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\domain\Customer.groovy</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\views\SLA</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\views\service</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\views\customer</PATH>
-            <PATH vcs="svn" revision="352">E:\IdeaWorkspace\RapidCMDB\grails-app\views\serviceLevelAgree</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\unit</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\integration</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\integration\ServiceLevelAgreeTests.groovy</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\integration\ConnectionTests.groovy</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\integration\SLATests.groovy</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\integration\ServiceLevelAgreeControllerTests.groovy</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\integration\ServiceTests.groovy</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\integration\CustomerTests.groovy</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\integration\SLAControllerTests.groovy</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\integration\ServiceControllerTests.groovy</PATH>
+            <PATH>E:\IdeaWorkspace\RapidCMDB\test\integration\CustomerControllerTests.groovy</PATH>
           </FILE-GROUP>
           <FILE-GROUP>
             <option name="myUpdateName" value="Deleted" />
@@ -541,7 +539,7 @@
     <editor active="false" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32855567" order="8" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32855567" order="8" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295325" order="1" />
@@ -549,7 +547,7 @@
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="14" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3296582" order="9" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32855567" order="11" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32855567" order="11" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="0" />

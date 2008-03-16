@@ -3,7 +3,8 @@ package datasources;
 import java.sql.ResultSet;
 import org.apache.log4j.Logger;
 import com.ifountain.core.datasource.BaseAdapter;
-import api.RS;
+import api.RS
+import com.ifountain.comp.utils.CaseInsensitiveMap;
 
 public class DatabaseAdapter extends BaseAdapter {
     
@@ -41,13 +42,13 @@ public class DatabaseAdapter extends BaseAdapter {
 	    // TO BE MODIFIED TO SUPPORT FETCH SIZE
         ExecuteQueryAction action = new ExecuteQueryAction(logger, sql, (Object[])queryParams, fetchSize);
         executeAction(action);
-        def results = [];
+        List results = [];
         def rset = action.getResultSet();
         def metaData = rset.getMetaData();
         def colCount = metaData.getColumnCount();
         while(rset.next())
         {
-	        def record = [:];
+	        def record = new CaseInsensitiveMap();
 	        for(int i=1; i <= colCount; i++)
 	        {
 		        record.put(metaData.getColumnName(i).toUpperCase(), String.valueOf(rset.getObject(i)));

@@ -21,8 +21,8 @@ environments {
     development {
 		dataSource {
             configClass = GrailsAnnotationConfiguration.class
-            dbCreate = "create-drop" // one of 'create', 'create-drop','update'
-			url = "jdbc:hsqldb:mem:devDB"
+            dbCreate = "update" // one of 'create', 'create-drop','update'
+			url = "jdbc:hsqldb:file:devDB;shutdown=true"
 		}
 	}
 	test {

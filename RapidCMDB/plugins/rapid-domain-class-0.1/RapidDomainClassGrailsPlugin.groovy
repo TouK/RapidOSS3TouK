@@ -2,53 +2,81 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.grails.compiler.injection.GrailsDomainClassInjector
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import org.codehaus.groovy.grails.commons.metaclass.PropertyAccessInterceptor
+import org.codehaus.groovy.grails.commons.metaclass.AbstractDynamicProperty
+import org.codehaus.groovy.runtime.metaclass.ClosureMetaMethod
 
 class RapidDomainClassGrailsPlugin {
     def version = 0.1
     def dependsOn = [:]
-
+    def loadAfter = ['hibernate']
     def doWithSpring = {
+//        println application.domainClasses;
     }
 
     def doWithApplicationContext = { applicationContext ->
+
     }
 
     def doWithWebDescriptor = { xml ->
 
+
     }
 
     def doWithDynamicMethods = { ctx ->
-        println ctx.getBeansOfType(GrailsDomainClassInjector.class);
         for (dc in application.domainClasses) {
-            //    registerDynamicMethods(dc, application, ctx)
             MetaClass mc = dc.metaClass
-            if(dc.metaClass.hasProperty(dc, "sources"))
-            {
-                println dc.getName();
 
-                def sources = GrailsClassUtils.getStaticPropertyValue (dc.clazz, "sources");
-                if(sources)
-                {
-                    sources.each{key,value->
-                        println key;
-                        println value;
+            if(dc.metaClass.hasProperty(dc, "propertyConfiguration") && dc.metaClass.hasProperty(dc, "dataSources"))
+            {
+                def dataSources = GCU.getStaticPropertyValue (dc.clazz, "dataSources");
+                def propertyConfiguration = GCU.getStaticPropertyValue (dc.clazz, "propertyConfiguration");
+                mc.setProperty = {String name, Object value->
+                    def propertyConfig = propertyConfiguration[name];
+                    if(!propertyConfig)
+                    {
+                        mc.getMetaProperty(name).setProperty(delegate, value);
                     }
-//                    for(source in sources)
-//                    {
-//                        def propName = source.name;
-//                        println propName;
-//                        def getter = GCU.getGetterName(propName)
-//                        def setter = GCU.getSetterName(propName)
-//
-//                        mc.'$getter' = { String name->
-//                            println "1";
-//                            return "a";
-//                        }
-//                        mc.'$setter' = {String name, Object value ->
-//                            println "2";
-//                        }
-//                    }
-                }
+                };
+
+                mc.getProperty = {String name->
+                    def propertyConfig = propertyConfiguration[name];
+                    if(!propertyConfig)
+                    {
+                        return mc.getMetaProperty(name).getProperty(delegate);
+                    }
+                    else
+                    {
+                        def datasourceName =  propertyConfig.datasource;
+                        if(datasourceName)
+                        {
+                            def propertyDatasource = BaseDatasource.findByName(datasourceName);
+                            if(propertyDatasource)
+                            {
+                                def datasourceConfig = dataSources[propertyConfig.datasource];
+                                def keyConfiguration = datasourceConfig.keys;
+                                def keys = [:];
+                                keyConfiguration.each{key,value->
+                                    def nameInDs = key;
+                                    if(value && value.nameInDs)
+                                    {
+                                        nameInDs = value.nameInDs;    
+                                    }
+                                    keys[nameInDs] =   delegate.getProperty(key);
+                                }
+                                if(keys.size() > 0)
+                                {
+                                    def propName = name;
+                                    if(propertyConfig.nameInDs)
+                                    {
+                                        propName = propertyConfig.nameInDs;
+                                    }
+                                    return propertyDatasource.getProperty (keys, propName);
+                                }
+                            }
+                        }
+                    }
+                };
             }
         }
     }

@@ -91,7 +91,7 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 				params.add(value);
 		}
 		def queryStr = query.substring(0,query.length()-4);
-		executeUpdate(queryStr, params);
+		return executeUpdate(queryStr, params) > 0;
 	}
 	
     public getRecord(keyValue){
@@ -115,6 +115,7 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 	    query = formSql(columnList);
 	    def params = [];
 	    query.append(formWhereClause(keyMap, params));
+	    println query
 	    return executeQuery(query.toString(), params)[0];
     }
     

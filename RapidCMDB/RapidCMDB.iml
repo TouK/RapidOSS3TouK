@@ -35,6 +35,8 @@
     <orderEntry type="library" name="GROOVY" level="application" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="comp" />
+    <orderEntry type="module" module-name="core" />
     <orderEntryProperties />
   </component>
 </module>

@@ -1,10 +1,10 @@
-import org.springframework.beans.factory.InitializingBean
-import org.springframework.beans.factory.DisposableBean
-import com.ifountain.core.connection.ConnectionParameterSupplier
-import com.ifountain.core.connection.ConnectionParam
-import com.ifountain.core.connection.ConnectionManager
-import org.apache.log4j.Logger
 import com.ifountain.comp.utils.CaseInsensitiveMap
+import com.ifountain.core.connection.ConnectionManager
+import com.ifountain.core.connection.ConnectionParam
+import com.ifountain.core.connection.ConnectionParameterSupplier
+import org.apache.log4j.Logger
+import org.springframework.beans.factory.DisposableBean
+import org.springframework.beans.factory.InitializingBean
 
 class ConnectionService implements InitializingBean, DisposableBean, ConnectionParameterSupplier{
     boolean transactional = true

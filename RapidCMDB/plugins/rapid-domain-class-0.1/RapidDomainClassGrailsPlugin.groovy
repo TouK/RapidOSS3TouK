@@ -1,10 +1,4 @@
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
-import org.codehaus.groovy.runtime.InvokerHelper
-import org.codehaus.groovy.grails.compiler.injection.GrailsDomainClassInjector
-import org.codehaus.groovy.grails.commons.GrailsClassUtils
-import org.codehaus.groovy.grails.commons.metaclass.PropertyAccessInterceptor
-import org.codehaus.groovy.grails.commons.metaclass.AbstractDynamicProperty
-import org.codehaus.groovy.runtime.metaclass.ClosureMetaMethod
 
 class RapidDomainClassGrailsPlugin {
     def version = 0.1

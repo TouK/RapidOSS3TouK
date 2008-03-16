@@ -1,5 +1,6 @@
 import datasources.SingleTableDatabaseAdapter
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+
 class DatabaseDatasource extends BaseDatasource{
     DatabaseConnection connection;
     String tableName;

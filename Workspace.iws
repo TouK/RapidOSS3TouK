@@ -19,37 +19,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RapidCMDB/grails-app/domain/BaseDatasource.groovy" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/domain/BaseDatasource.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/services/ConnectionService.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/views/customerDetails" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/devDB.lck" />
+      <change type="DELETED" beforePath="D:\mustafa\work\IdeaWorkspace\RapidCMDB\src\groovy\connections\DatabaseConnectionImplTest.groovy" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Workspace.iws" afterPath="$PROJECT_DIR$/Workspace.iws" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/test/integration/CustomerDetailsControllerTests.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RapidCMDB/plugins/rapid-domain-class-0.1/RapidDomainClassGrailsPlugin.groovy" afterPath="$PROJECT_DIR$/RapidCMDB/plugins/rapid-domain-class-0.1/RapidDomainClassGrailsPlugin.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RapidCMDB/grails-app/domain/DatabaseDatasource.groovy" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/domain/DatabaseDatasource.groovy" />
-      <change type="DELETED" beforePath="D:\mustafa\work\IdeaWorkspace\RapidCMDB\grails-app\domain\ServiceLevelAgree.groovy" afterPath="" />
-      <change type="DELETED" beforePath="D:\mustafa\work\IdeaWorkspace\RapidCMDB\grails-app\controllers\ServiceController.groovy" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/test/integration/ConnectionServiceTests.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/devDB.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/devDB.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RapidCMDB/src/groovy/datasources/SingleTableDatabaseAdapter.groovy" afterPath="$PROJECT_DIR$/RapidCMDB/src/groovy/datasources/SingleTableDatabaseAdapter.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/controllers/CustomerDetailsController.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/core.iml" afterPath="$PROJECT_DIR$/core/core.iml" />
-      <change type="DELETED" beforePath="D:\mustafa\work\IdeaWorkspace\RapidCMDB\grails-app\controllers\DenemeController.groovy" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RapidCMDB/grails-app/domain/Customer.groovy" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/domain/Customer.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RapidCMDB/src/groovy/datasources/DatabaseAdapter.groovy" afterPath="$PROJECT_DIR$/RapidCMDB/src/groovy/datasources/DatabaseAdapter.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" afterPath="$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/domain/CustomerDetails.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RapidCMDB/grails-app/conf/BootStrap.groovy" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/conf/BootStrap.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/devDB.script" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/test/integration/ConnectionServiceServiceTests.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RapidCMDB/grails-app/conf/DataSource.groovy" afterPath="$PROJECT_DIR$/RapidCMDB/grails-app/conf/DataSource.groovy" />
-      <change type="DELETED" beforePath="D:\mustafa\work\IdeaWorkspace\RapidCMDB\grails-app\domain\Service.groovy" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comp/comp.iml" afterPath="$PROJECT_DIR$/comp/comp.iml" />
-      <change type="DELETED" beforePath="D:\mustafa\work\IdeaWorkspace\RapidCMDB\grails-app\domain\Deneme.groovy" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Workspace.ipr" afterPath="$PROJECT_DIR$/Workspace.ipr" />
-      <change type="DELETED" beforePath="D:\mustafa\work\IdeaWorkspace\RapidCMDB\grails-app\controllers\ServiceLevelAgreeController.groovy" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/RapidCMDB/test/integration/CustomerDetailsTests.groovy" />
     </list>
     <ignored path="Workspace.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -116,13 +87,49 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Customer.groovy" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Customer.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/RapidCMDB/grails-app/domain/Customer.groovy">
           <provider editor-type-id="org.jetbrains.plugins.grails.perspectives.DomainClassesRelationsEditorProvider">
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="43" selection-start="219" selection-end="219" vertical-scroll-proportion="0.38931298">
+            <state line="17" column="12" selection-start="422" selection-end="422" vertical-scroll-proportion="0.73536897">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DatabaseAdapter.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/RapidCMDB/src/groovy/datasources/DatabaseAdapter.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="6" column="51" selection-start="196" selection-end="196" vertical-scroll-proportion="0.18558952">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FileMergerTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/comp/java/com/ifountain/comp/utils/FileMergerTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="23" column="22" selection-start="963" selection-end="963" vertical-scroll-proportion="0.26862302">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SingleTableDatabaseAdapter.groovy" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/RapidCMDB/src/groovy/datasources/SingleTableDatabaseAdapter.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="20" column="21" selection-start="579" selection-end="579" vertical-scroll-proportion="0.7674944">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ConnectionService.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/RapidCMDB/grails-app/services/ConnectionService.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="21" column="64" selection-start="1021" selection-end="1021" vertical-scroll-proportion="0.779476">
               <folding />
             </state>
           </provider>
@@ -222,7 +229,7 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\mustafa\work\IdeaWorkspace\RapidCMDB\grails-app" />
+          <option name="myItemId" value="PsiDirectory:D:\mustafa\work\IdeaWorkspace\RapidCMDB\src" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -240,11 +247,37 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\mustafa\work\IdeaWorkspace\RapidCMDB\grails-app" />
+          <option name="myItemId" value="PsiDirectory:D:\mustafa\work\IdeaWorkspace\RapidCMDB\src" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\mustafa\work\IdeaWorkspace\RapidCMDB\grails-app\domain" />
+          <option name="myItemId" value="PsiDirectory:D:\mustafa\work\IdeaWorkspace\RapidCMDB\src\groovy" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:D:\mustafa\work\IdeaWorkspace\RapidCMDB\src\groovy\datasources" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Workspace" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="RapidCMDB" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:D:\mustafa\work\IdeaWorkspace\RapidCMDB" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:D:\mustafa\work\IdeaWorkspace\RapidCMDB\src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:D:\mustafa\work\IdeaWorkspace\RapidCMDB\src\groovy" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -281,6 +314,97 @@
       <recent name="com" />
     </key>
   </component>
+  <component name="RestoreUpdateTree">
+    <UpdateInfo date="3/17/08 12:45 AM" ActionInfo="_Update">
+      <UpdatedFiles>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated from server" />
+          <option name="myStatusName" value="Changed on server" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CHANGED_ON_SERVER" />
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Updated" />
+            <option name="myStatusName" value="Changed" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="UPDATED" />
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Created" />
+            <option name="myStatusName" value="Created" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="CREATED" />
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Deleted" />
+            <option name="myStatusName" value="Deleted" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="true" />
+            <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Restored" />
+            <option name="myStatusName" value="Will be restored" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="RESTORED" />
+          </FILE-GROUP>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Modified" />
+          <option name="myStatusName" value="Modified" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MODIFIED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Skipped" />
+          <option name="myStatusName" value="Skipped" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="SKIPPED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged with conflicts" />
+          <option name="myStatusName" value="Will be merged with conflicts" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED_WITH_CONFLICTS" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged" />
+          <option name="myStatusName" value="Will be merged" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED" />
+          <PATH vcs="svn" revision="368">D:\mustafa\work\IdeaWorkspace\RapidCMDB\src\groovy\datasources\SingleTableDatabaseAdapter.groovy</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Not in repository" />
+          <option name="myStatusName" value="Not in repository" />
+          <option name="mySupportsDeletion" value="true" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UNKNOWN" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Locally added" />
+          <option name="myStatusName" value="Locally added" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="LOCALLY_ADDED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Locally removed" />
+          <option name="myStatusName" value="Locally removed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="LOCALLY_REMOVED" />
+        </FILE-GROUP>
+      </UpdatedFiles>
+    </UpdateInfo>
+  </component>
   <component name="RunManager" selected="Grails Application.RapidCMDB">
     <tempConfiguration default="false" name="" type="GroovyScriptRunConfigurationType" factoryName="Groovy Script">
       <module name="samples" />
@@ -294,6 +418,28 @@
         <option name="Make" value="true" />
       </method>
     </tempConfiguration>
+    <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <method>
+        <option name="Make" value="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG" enabled="false" merge="false">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -323,12 +469,17 @@
         <option name="Make" value="true" />
       </method>
     </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
       <option name="MAIN_CLASS_NAME" />
@@ -343,27 +494,17 @@
       <module name="" />
       <envs />
     </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+    </configuration>
+    <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails Application">
       <module name="" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <method>
-        <option name="Make" value="true" />
-      </method>
+      <setting name="vmparams" value="" />
+      <setting name="operation" value="run-app" />
     </configuration>
     <configuration default="true" type="GroovyScriptRunConfigurationType" factoryName="Groovy Script">
       <module name="" />
@@ -371,23 +512,6 @@
       <setting name="vmparams" value="" />
       <setting name="params" value="" />
       <setting name="workDir" value="D:\Workspace\." />
-    </configuration>
-    <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails Application">
-      <module name="" />
-      <setting name="vmparams" value="" />
-      <setting name="operation" value="run-app" />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
     </configuration>
     <configuration default="false" name="RapidCMDB" type="GrailsRunConfigurationType" factoryName="Grails Application">
       <module name="RapidCMDB" />
@@ -400,8 +524,8 @@
       </method>
     </configuration>
     <list size="2">
-      <item index="0" class="java.lang.String" itemvalue="Grails Application.RapidCMDB" />
-      <item index="1" class="java.lang.String" itemvalue="Groovy Script." />
+      <item index="0" class="java.lang.String" itemvalue="Groovy Script." />
+      <item index="1" class="java.lang.String" itemvalue="Grails Application.RapidCMDB" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -430,7 +554,7 @@
     <option name="LAST_MERGED_REVISION" />
     <option name="UPDATE_RUN_STATUS" value="false" />
     <option name="UPDATE_RECURSIVELY" value="true" />
-    <option name="MERGE_DRY_RUN" value="false" />
+    <option name="MERGE_DRY_RUN" value="true" />
     <configuration useDefault="false">C:\Documents and Settings\Administrator\Application Data\Subversion</configuration>
   </component>
   <component name="Talios.JiraConfigurationComponent" enableIssueTracking="false" autoRefresh="false" useExternalBrowser="false" refreshTimeout="0" annotateissues="false">
@@ -491,7 +615,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="0" />
       <window_info id="Maven projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="5" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="6" />
-      <window_info id="Grails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32793522" order="10" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29411766" order="0" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="12" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
@@ -499,6 +622,7 @@
       <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="13" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2928475" order="2" />
       <window_info id="TrackLink" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3211679" order="4" />
+      <window_info id="Grails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32793522" order="10" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="5" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="0" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
@@ -564,16 +688,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/RapidCMDB/grails-app/domain/Connection.groovy">
-      <provider editor-type-id="org.jetbrains.plugins.grails.perspectives.DomainClassesRelationsEditorProvider">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="29" selection-start="53" selection-end="68" vertical-scroll-proportion="0.085213035">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/RapidCMDB/plugins/rapid-domain-class-0.1/plugin.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="3" column="0" selection-start="0" selection-end="87" vertical-scroll-proportion="0.11512415">
@@ -629,30 +743,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/RapidCMDB/grails-app/services/ConnectionService.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="38" selection-start="924" selection-end="924" vertical-scroll-proportion="0.43220338">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/RapidCMDB/plugins/rapid-domain-class-0.1/RapidDomainClassGrailsPlugin.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="0" selection-start="331" selection-end="331" vertical-scroll-proportion="0.19406393">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/RapidCMDB/src/groovy/datasources/DatabaseAdapter.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="12" selection-start="1533" selection-end="1533" vertical-scroll-proportion="0.48401827">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/RapidCMDB/src/groovy/datasources/SingleTableDatabaseAdapter.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="93" column="48" selection-start="2872" selection-end="2872" vertical-scroll-proportion="0.3356974">
           <folding />
         </state>
       </provider>
@@ -689,7 +782,35 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="43" selection-start="219" selection-end="219" vertical-scroll-proportion="0.38931298">
+        <state line="17" column="12" selection-start="422" selection-end="422" vertical-scroll-proportion="0.73536897">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RapidCMDB/grails-app/services/ConnectionService.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="64" selection-start="1021" selection-end="1021" vertical-scroll-proportion="0.779476">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RapidCMDB/src/groovy/datasources/DatabaseAdapter.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="51" selection-start="196" selection-end="196" vertical-scroll-proportion="0.18558952">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/comp/java/com/ifountain/comp/utils/FileMergerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="22" selection-start="963" selection-end="963" vertical-scroll-proportion="0.26862302">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RapidCMDB/src/groovy/datasources/SingleTableDatabaseAdapter.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="21" selection-start="579" selection-end="579" vertical-scroll-proportion="0.7674944">
           <folding />
         </state>
       </provider>

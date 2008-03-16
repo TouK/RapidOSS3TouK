@@ -1,8 +1,6 @@
 package datasources;
 
-import java.sql.ResultSet;
 import org.apache.log4j.Logger;
-import com.ifountain.core.datasource.BaseAdapter;
 import java.util.Arrays;
 
 public class SingleTableDatabaseAdapter extends DatabaseAdapter {

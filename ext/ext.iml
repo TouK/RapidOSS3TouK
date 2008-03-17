@@ -23,17 +23,8 @@
     <orderEntry type="module" module-name="comp" />
     <orderEntry type="module" module-name="core" />
     <orderEntry type="library" name="ThirdParty" level="project" />
-    <orderEntry type="module-library">
-      <library name="Smarts">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../RapidRepository/RapidRepository/lib/skclient.jar!/" />
-          <root url="jar://$MODULE_DIR$/../RapidRepository/RapidRepository/lib/net.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="RapidCMDB" />
+    <orderEntry type="library" name="LicencedJars" level="project" />
     <orderEntryProperties />
   </component>
 </module>

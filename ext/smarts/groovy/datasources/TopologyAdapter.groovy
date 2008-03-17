@@ -2,7 +2,6 @@ package datasources;
 
 import com.ifountain.smarts.datasource.BaseTopologyAdapter;
 import org.apache.log4j.Logger;
-import api.RS;
 
 public class TopologyAdapter extends BaseTopologyAdapter {
     
@@ -15,11 +14,11 @@ public class TopologyAdapter extends BaseTopologyAdapter {
     }    
     
     def static getInstance(String datasourceName, long reconnectInterval){
-    	return new TopologyAdapter(datasourceName, reconnectInterval, RS.getSession().logger);
+    	return new TopologyAdapter(datasourceName, reconnectInterval,  Logger.getRootLogger());
     }
 
     def static getInstance(datasourceName){
-    	return new TopologyAdapter(datasourceName, 0, RS.getSession().logger);
+    	return new TopologyAdapter(datasourceName, 0,  Logger.getRootLogger());
     }   
     
     def addObject(className, instanceName, params){

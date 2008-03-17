@@ -3,7 +3,6 @@ package datasources;
 import java.sql.ResultSet;
 import org.apache.log4j.Logger;
 import com.ifountain.core.datasource.BaseAdapter;
-import api.RS
 import com.ifountain.comp.utils.CaseInsensitiveMap;
 
 public class DatabaseAdapter extends BaseAdapter {
@@ -17,11 +16,11 @@ public class DatabaseAdapter extends BaseAdapter {
     }
     
     public static getInstance(datasourceName, tableName, keys){
-    	return new SingleTableDatabaseAdapter(datasourceName, tableName, keys, 0, RS.getSession().logger);
+    	return new SingleTableDatabaseAdapter(datasourceName, tableName, keys, 0, Logger.getRootLogger());
     }
 
     public static getInstance(datasourceName){
-    	return new DatabaseAdapter(datasourceName, 0, RS.getSession().logger);
+    	return new DatabaseAdapter(datasourceName, 0, Logger.getRootLogger());
     }    
     
     public int executeUpdate(sql) throws Exception{

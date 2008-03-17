@@ -3,7 +3,6 @@ package datasources;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import com.ifountain.core.datasource.BaseAdapter;
-import api.RS;
 
 public class RapidInsightAdapter extends HttpAdapter {
 	
@@ -17,10 +16,10 @@ public class RapidInsightAdapter extends HttpAdapter {
     }
     
 	public static getInstance(){
-	    return new RapidInsightAdapter(RS.getSession().logger);
+	    return new RapidInsightAdapter(Logger.getRootLogger());
 	}
 	public static getInstance(connectionName){
-	    return new RapidInsightAdapter(connectionName, 0, RS.getSession().logger);
+	    return new RapidInsightAdapter(connectionName, 0, Logger.getRootLogger());
 	}    
 
 }

@@ -1,11 +1,7 @@
 class BaseDatasource {
      String name;
-     Connection connection;
-
-     static belongsTo = Connection;
      static constraints = {
          name(blank:false, nullable:false);
-         connection(nullable:false);
      };
 
      String toString(){

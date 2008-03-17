@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import com.ifountain.core.datasource.BaseAdapter;
 import java.util.List;
 import java.util.Map;
-import api.RS;
 
 public class HttpAdapter extends BaseAdapter{
     
@@ -21,11 +20,12 @@ public class HttpAdapter extends BaseAdapter{
     }    
     
 	public static getInstance(){
-	    return new HttpAdapter();
-	    setLogger(RS.getSession().logger);
+        def adapter = new HttpAdapter();
+        adapter.setLogger(Logger.getRootLogger());
+        return adapter;
 	}
 	public static getInstance(connectionName){
-	    return new HttpAdapter(connectionName, RS.getSession().logger);
+	    return new HttpAdapter(connectionName, Logger.getRootLogger());
 	}   
 
     public String doRequest(String url, Map params, int type) throws Exception{

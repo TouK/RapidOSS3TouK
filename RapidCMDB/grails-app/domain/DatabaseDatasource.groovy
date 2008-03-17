@@ -7,6 +7,7 @@ class DatabaseDatasource extends BaseDatasource{
     String keys;
     def adapter;
     static transients =  ['adapter']
+
     
 
     def onLoad = {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project relativePaths="false" version="4">
+<project relativePaths="true" version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
   </component>
@@ -271,7 +271,7 @@
     </option>
   </component>
   <component name="TL_VCS_CACHE">
-    <option name="myUrlRevisionMapName" value="map-281634310.datdatdatdatdatdat" />
+    <option name="myUrlRevisionMapName" value="map-281634310.datdatdatdatdatdatdat" />
     <option name="myRevisionsCacheName" value="rec" />
     <option name="myUrlCacheName" value="rec" />
   </component>
@@ -296,26 +296,26 @@
   <component name="libraryTable">
     <library name="ThirdParty">
       <CLASSES>
-        <root url="file://D:/Workspace/ThirdParty/lib/testing" />
-        <root url="file://D:/Workspace/ThirdParty/lib/commons" />
-        <root url="file://D:/Workspace/ThirdParty/lib/jdbc" />
-        <root url="jar://D:/Workspace/ThirdParty/lib/log4j-1.2.13.jar!/" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/testing" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/commons" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/jdbc" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/log4j-1.2.13.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://D:/Workspace/ThirdParty/lib/commons" recursive="false" />
-      <jarDirectory url="file://D:/Workspace/ThirdParty/lib/jdbc" recursive="false" />
-      <jarDirectory url="file://D:/Workspace/ThirdParty/lib/testing" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/commons" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/jdbc" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/testing" recursive="false" />
     </library>
     <library name="LicencedJars">
       <CLASSES>
-        <root url="file://D:/Workspace/LicencedJars/lib/smarts" />
-        <root url="file://D:/Workspace/LicencedJars/lib/jdbc" />
+        <root url="file://$PROJECT_DIR$/../LicencedJars/lib/smarts" />
+        <root url="file://$PROJECT_DIR$/../LicencedJars/lib/jdbc" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://D:/Workspace/LicencedJars/lib/jdbc" recursive="false" />
-      <jarDirectory url="file://D:/Workspace/LicencedJars/lib/smarts" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../LicencedJars/lib/jdbc" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../LicencedJars/lib/smarts" recursive="false" />
     </library>
   </component>
 </project>

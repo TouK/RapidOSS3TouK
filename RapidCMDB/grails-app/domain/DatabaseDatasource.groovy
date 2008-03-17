@@ -25,7 +25,7 @@ class DatabaseDatasource extends BaseDatasource{
 
      def getProperties(Map keys, List properties)
      {
-        def props = getAdapter().getRecordMultiKey(keys, [propName]);
+        def props = adapter.getRecordMultiKey(keys, [propName]);
         return props;
      }
 

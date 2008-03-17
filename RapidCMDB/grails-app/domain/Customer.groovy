@@ -1,4 +1,5 @@
 class Customer {
+    
     static dataSources =
     [
         "otherDbms":
@@ -18,7 +19,7 @@ class Customer {
     ];
 
     static transients = ["name","surname"]
-    
+
     Integer ssn;
     String name;
     String surname;

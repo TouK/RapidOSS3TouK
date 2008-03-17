@@ -37,6 +37,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="comp" />
     <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="ext" />
     <orderEntryProperties />
   </component>
 </module>

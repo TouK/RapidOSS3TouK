@@ -337,7 +337,7 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
         topologyAdapter.addRelationshipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "ozgurscableinstance",
                 "ConnectedVia");
         
-        topologyAdapter.removeTopologyRelationShip("Switch", "ozgursswitchinstance", "Cable", "ozgurscableinstance",
+        topologyAdapter.removeTopologyRelationship("Switch", "ozgursswitchinstance", "Cable", "ozgurscableinstance",
                 "ConnectedVia");
 
         
@@ -480,7 +480,7 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
             assertEquals("erralink1",ipRef.getInstanceName());
                         
             //remove the created relationship
-            topologyAdapter.removeTopologyRelationShip( "IP", "IP_139.179.44.44",
+            topologyAdapter.removeTopologyRelationship( "IP", "IP_139.179.44.44",
                     "Router", "erralink1",                     
                     "HostedBy");            
             
@@ -592,7 +592,7 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
             assertEquals("erralink1",ipRef.getInstanceName());
                         
             //remove the created relationship
-            topologyAdapter.removeTopologyRelationShip( "Router", "erralink1","IP", "IP_139.179.44.44",                     
+            topologyAdapter.removeTopologyRelationship( "Router", "erralink1","IP", "IP_139.179.44.44",
                     "HostsAccessPoints");            
             
             //get the properties

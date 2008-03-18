@@ -139,7 +139,7 @@ public class BaseTopologyAdapter extends BaseSmartsAdapter {
             String secondClassName, String secondInstanceName,
             String relationName) throws Exception
     {
-        boolean oneToOne = isRelationShipOneToOne(firstClassName, relationName);
+        boolean oneToOne = isRelationshipOneToOne(firstClassName, relationName);
         if(oneToOne)
         {
             put(firstClassName, firstInstanceName, relationName, new MR_AnyValObjRef(new MR_Ref(secondClassName, secondInstanceName)));
@@ -150,10 +150,10 @@ public class BaseTopologyAdapter extends BaseSmartsAdapter {
         }
     }
     
-    public void removeTopologyRelationShip(String firstClassName, String firstInstanceName, String secondClassName, String secondInstanceName, String relationName)
+    public void removeTopologyRelationship(String firstClassName, String firstInstanceName, String secondClassName, String secondInstanceName, String relationName)
         throws Exception
     {
-       boolean isOneToOne = isRelationShipOneToOne(firstClassName, relationName);
+       boolean isOneToOne = isRelationshipOneToOne(firstClassName, relationName);
        if(!isOneToOne)
        {
           remove(firstClassName, firstInstanceName,relationName, new MR_AnyValObjRef(new MR_Ref(secondClassName, secondInstanceName)));
@@ -183,13 +183,13 @@ public class BaseTopologyAdapter extends BaseSmartsAdapter {
         return res;
     }
     
-    private boolean isRelationShipOneToOne(String className, String relationName) throws Exception
+    private boolean isRelationshipOneToOne(String className, String relationName) throws Exception
     {
-        int relationType = relationShipExists(className, relationName);
+        int relationType = relationshipExists(className, relationName);
         return (relationType == MR_ValType.MR_OBJREF);
     }
     
-    private int relationShipExists(String className, String relationName) throws Exception
+    private int relationshipExists(String className, String relationName) throws Exception
     {
         String[] relationNamesAvailable = getRelationNames(className);
         int[] relationTypesAvailable = getRelationTypes(className);

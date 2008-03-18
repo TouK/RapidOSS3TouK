@@ -362,7 +362,7 @@ public class SmartsTestUtils {
     
     public static void addRelationship(BaseTopologyAdapter topologyAdapter, String classname1, String instancename1, String classname2, String instancename2, String relationship) throws Exception
     {
-        topologyAdapter.addRelationShipBetweenTopologyObjects(classname1, instancename1, classname2, instancename2, relationship);
+        topologyAdapter.addRelationshipBetweenTopologyObjects(classname1, instancename1, classname2, instancename2, relationship);
     }
     
     private static MR_AnyVal[] getLatestAuditTrailTextArray(String notificationName) throws Exception {

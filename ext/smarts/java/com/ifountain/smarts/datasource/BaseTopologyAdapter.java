@@ -135,7 +135,7 @@ public class BaseTopologyAdapter extends BaseSmartsAdapter {
             updateProperty(className, instanceName, propertyName, propertyValue);
         }
     }
-    public void addRelationShipBetweenTopologyObjects(String firstClassName, String firstInstanceName,
+    public void addRelationshipBetweenTopologyObjects(String firstClassName, String firstInstanceName,
             String secondClassName, String secondInstanceName,
             String relationName) throws Exception
     {

@@ -260,7 +260,7 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
         
         //create the relationship between two
                 
-        topologyAdapter.addRelationShipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "ozgurscableinstance",
+        topologyAdapter.addRelationshipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "ozgurscableinstance",
                 "ConnectedVia");
 
         MR_AnyVal[] switchProperties = topologyAdapter.getProperties("Switch", "ozgursswitchinstance", new String[]{"ConnectedVia"});
@@ -298,11 +298,11 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
         topologyAdapter.createInstance("Router", "ozgurrouter");
         
         //create the relationship between two switch and cable
-        topologyAdapter.addRelationShipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "ozgurscableinstance",
+        topologyAdapter.addRelationshipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "ozgurscableinstance",
                 "ConnectedVia");
         
         //create the relationship between two Router and cable
-        topologyAdapter.addRelationShipBetweenTopologyObjects("Router", "ozgurrouter", 
+        topologyAdapter.addRelationshipBetweenTopologyObjects("Router", "ozgurrouter",
                 "Cable", "ozgurscableinstance",
                 "ConnectedVia");
 
@@ -334,7 +334,7 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
         
         //create the relationship between two
                 
-        topologyAdapter.addRelationShipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "ozgurscableinstance",
+        topologyAdapter.addRelationshipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "ozgurscableinstance",
                 "ConnectedVia");
         
         topologyAdapter.removeTopologyRelationShip("Switch", "ozgursswitchinstance", "Cable", "ozgurscableinstance",
@@ -378,12 +378,12 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
                 
         //create the relationship between Switch and cable1
                 
-        topologyAdapter.addRelationShipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "cable1",
+        topologyAdapter.addRelationshipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "cable1",
                 "ConnectedVia");
         
         //create the relationship between Switch and cable2
         
-        topologyAdapter.addRelationShipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "cable2",
+        topologyAdapter.addRelationshipBetweenTopologyObjects("Switch", "ozgursswitchinstance", "Cable", "cable2",
                 "ConnectedVia");
         
         //delete the Switch instance
@@ -457,7 +457,7 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
             
             //try to create a relationship between them
             //note that one of the relationships are automatically created
-            topologyAdapter.addRelationShipBetweenTopologyObjects(
+            topologyAdapter.addRelationshipBetweenTopologyObjects(
                     "IP", "IP_139.179.44.44","Router", "erralink1",                     
                     "HostedBy");
 
@@ -569,7 +569,7 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
             
             //try to create a relationship between them
             //note that one of the relationships are automatically created
-            topologyAdapter.addRelationShipBetweenTopologyObjects("Router", "erralink1",
+            topologyAdapter.addRelationshipBetweenTopologyObjects("Router", "erralink1",
                     "IP", "IP_139.179.44.44",                     
                     "HostsAccessPoints");
 
@@ -679,7 +679,7 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
             
             //try to create a relationship between them
             //note that one of the relationships are automatically created
-            topologyAdapter.addRelationShipBetweenTopologyObjects(
+            topologyAdapter.addRelationshipBetweenTopologyObjects(
                     "Port", "myport","Card", "mycard",                     
                     "RealizedBy");            
 

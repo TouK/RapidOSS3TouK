@@ -46,8 +46,6 @@ public class BaseTopologyAdapter extends BaseSmartsAdapter {
 		super();
 	}
 
-//	protected Logger logger;
-
     public BaseTopologyAdapter(String datasourceName, long reconnectInterval, Logger logger) {
         super(datasourceName, reconnectInterval, logger);
     }
@@ -94,7 +92,15 @@ public class BaseTopologyAdapter extends BaseSmartsAdapter {
     public Map<String, Object> getObject(String className, String instanceName, List<String> atts) throws Exception
     {
         List<Map<String, Object>> objects = getObjects(className, instanceName, atts, false);
-        return objects.get(0);
+        if(objects.size() > 0)
+        {
+            return objects.get(0);
+        }
+        else
+        {
+            return null;
+        }
+
     }    
     
     public List<Map<String, Object>> getObjects(String className, String instanceName) throws Exception

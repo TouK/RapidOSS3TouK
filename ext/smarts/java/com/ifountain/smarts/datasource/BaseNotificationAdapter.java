@@ -54,9 +54,6 @@ import com.smarts.repos.MR_Choice;
 import com.smarts.repos.MR_Ref;
 
 public class BaseNotificationAdapter extends BaseSmartsAdapter {
-
-    protected Logger logger;
-
     public BaseNotificationAdapter()
 	{
 		super();
@@ -267,7 +264,15 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
     public Map<String, Object> getNotification(String className, String instanceName, String eventName, List<String> attributes) throws Exception
     {
         List<Map<String, Object>> notifications = getNotifications(className, instanceName, eventName, attributes, false);
-        return notifications.get(0);
+        if(notifications.size() > 0)
+        {
+            return notifications.get(0);
+        }
+        else
+        {
+            return null;
+        }
+
     }    
     
     public List<Map<String, Object>> getNotifications(String className, String instanceName, String eventName) throws Exception

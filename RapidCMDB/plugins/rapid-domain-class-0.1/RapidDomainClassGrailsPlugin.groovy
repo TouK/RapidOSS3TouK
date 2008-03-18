@@ -50,15 +50,25 @@ class RapidDomainClassGrailsPlugin {
                                 def datasourceConfig = dataSources[propertyConfig.datasource];
                                 def keyConfiguration = datasourceConfig.keys;
                                 def keys = [:];
+                                def isNull = false;
                                 keyConfiguration.each{key,value->
                                     def nameInDs = key;
                                     if(value && value.nameInDs)
                                     {
                                         nameInDs = value.nameInDs;    
                                     }
-                                    keys[nameInDs] =   delegate.getProperty(key);
+                                    def keyValue =   delegate.getProperty(key);
+                                    if(keyValue)
+                                    {
+                                        keys[nameInDs] = keyValue;
+                                    }
+                                    else
+                                    {
+                                        isNull = true;
+                                        return;
+                                    }
                                 }
-                                if(keys.size() > 0)
+                                if(isNull&& keys.size() > 0)
                                 {
                                     def propName = name;
                                     if(propertyConfig.nameInDs)
@@ -69,6 +79,8 @@ class RapidDomainClassGrailsPlugin {
                                 }
                             }
                         }
+
+                        return "";
                     }
                 };
             }

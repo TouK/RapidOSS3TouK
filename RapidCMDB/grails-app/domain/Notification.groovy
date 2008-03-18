@@ -16,10 +16,11 @@ class Notification {
 
     static propertyConfiguration =
     [
-            eventText:['datasource':"smartsDs", 'nameInDs':'EventText']
+            eventText:['datasource':"smartsDs", 'nameInDs':'EventText'],
+            name:['datasource':"smartsDs", 'nameInDs':'Name']
     ];
 
-    static transients = ["className","instanceName","eventName"]
+    static transients = ["eventText", "name"]
 
     String className;
     String instanceName;
@@ -27,4 +28,8 @@ class Notification {
     String name;
     String eventText;
     Integer severity;
+
+    String toString(){
+        return "$className::$instanceName::$eventName";
+    }
 }

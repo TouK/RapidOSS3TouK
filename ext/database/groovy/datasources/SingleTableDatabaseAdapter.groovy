@@ -113,8 +113,15 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 	    query = formSql(columnList);
 	    def params = [];
 	    query.append(formWhereClause(keyMap, params));
-	    println query
-	    return executeQuery(query.toString(), params)[0];
+	    def result = executeQuery(query.toString(), params);
+	    if(result.size() > 0)
+        {
+	        return result[0];
+        }
+        else
+        {
+            return [:];
+        }
     }
     
     public getRecords(){

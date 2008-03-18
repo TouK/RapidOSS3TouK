@@ -13,6 +13,7 @@ class SmartsTopologyDatasource extends BaseDatasource{
 
     def getProperty(Map keys, String propName)
      {
+         println keys;
          def prop = this.adapter.getObject(keys.CreationClassName, keys.Name, [propName]);
          if(prop)
          {

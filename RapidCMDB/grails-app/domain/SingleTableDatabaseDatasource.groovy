@@ -9,7 +9,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
     static transients =  ['adapter']
 
      static constraints = {
-        table(blank:false);
+        tableName(blank:false);
         keys(blank:false)
     };
 

@@ -3,6 +3,7 @@ class Router extends Device{
     [
         "smartsTopoDs":
         [
+            referenceProperty:"dsName",
             master:false,
             keys:
             [
@@ -21,5 +22,6 @@ class Router extends Device{
     static transients = ["location","model"]
     String location;
     String model;
+    String dsName;
     
 }

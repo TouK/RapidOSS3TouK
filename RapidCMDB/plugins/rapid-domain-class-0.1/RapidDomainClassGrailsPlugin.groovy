@@ -13,18 +13,31 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def doWithWebDescriptor = { xml ->
-
-
     }
-
+    def getDatasourcesAndPropertyConfigurations(allDatasources, allPropertyConfiguration, domainClass)
+    {
+        def realClass = domainClass.metaClass.getTheClass();
+        def superClass = realClass.getSuperclass();
+        if(superClass && superClass != Object.class)
+        {
+            getDatasourcesAndPropertyConfigurations(allDatasources, allPropertyConfiguration, superClass);        
+        }
+        if(domainClass.metaClass.hasProperty(domainClass, "propertyConfiguration") && domainClass.metaClass.hasProperty(domainClass, "dataSources"))
+        {
+            def dataSources = GCU.getStaticPropertyValue (realClass, "dataSources");
+            def propertyConfiguration = GCU.getStaticPropertyValue (realClass, "propertyConfiguration");
+            allPropertyConfiguration.putAll(propertyConfiguration);
+            allDatasources.putAll(dataSources);
+        }
+    }
     def doWithDynamicMethods = { ctx ->
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
-
-            if(dc.metaClass.hasProperty(dc, "propertyConfiguration") && dc.metaClass.hasProperty(dc, "dataSources"))
+            def dataSources = [:];
+            def propertyConfiguration = [:];
+            getDatasourcesAndPropertyConfigurations (dataSources, propertyConfiguration, dc);
+            if(dataSources.size() > 0 && propertyConfiguration.size() > 0)
             {
-                def dataSources = GCU.getStaticPropertyValue (dc.clazz, "dataSources");
-                def propertyConfiguration = GCU.getStaticPropertyValue (dc.clazz, "propertyConfiguration");
                 mc.setProperty = {String name, Object value->
                     def propertyConfig = propertyConfiguration[name];
                     if(!propertyConfig)
@@ -44,10 +57,29 @@ class RapidDomainClassGrailsPlugin {
                         def datasourceName =  propertyConfig.datasource;
                         if(datasourceName)
                         {
-                            def propertyDatasource = BaseDatasource.findByName(datasourceName);
+                            def datasourceConfig = dataSources[datasourceName];
+                            def referenceProperty = datasourceConfig.referenceProperty;
+                            def propertyDatasource;
+                            if(referenceProperty)
+                            {
+                                def metaProp = mc.getMetaProperty(referenceProperty);
+                                if(metaProp)
+                                {
+                                    def referencedDatasourceName = metaProp.getProperty(delegate);
+                                    if(referencedDatasourceName)
+                                    {
+                                        propertyDatasource = BaseDatasource.findByName(referencedDatasourceName);
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                 propertyDatasource = BaseDatasource.findByName(datasourceName)
+                            }
+
                             if(propertyDatasource)
                             {
-                                def datasourceConfig = dataSources[propertyConfig.datasource];
                                 def keyConfiguration = datasourceConfig.keys;
                                 def keys = [:];
                                 def isNull = false;
@@ -75,7 +107,13 @@ class RapidDomainClassGrailsPlugin {
                                     {
                                         propName = propertyConfig.nameInDs;
                                     }
-                                    return propertyDatasource.getProperty (keys, propName);
+                                    try
+                                    {
+                                        return propertyDatasource.getProperty (keys, propName);
+                                    }
+                                    catch(Throwable e)
+                                    {
+                                    }
                                 }
                             }
                         }

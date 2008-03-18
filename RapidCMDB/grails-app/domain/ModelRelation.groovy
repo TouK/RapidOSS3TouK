@@ -5,6 +5,6 @@ class ModelRelation {
      String cardinality;
 
      static constraints = {
-         cardinality(inList(["OneToOne, OneToMany, ManyToMany"]));
+         cardinality(inList: ["OneToOne, OneToMany, ManyToMany"]);
      }
 }

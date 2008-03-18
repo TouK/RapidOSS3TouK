@@ -1,4 +1,4 @@
-<Model ClassName="Device" extends="Resource" >
+<<Model ClassName="Device" extends="Resource" >
 	<Properties>
 		<Property name="vendor" type="string" datasource=${dsname} />
 		<Property name="model" type="string" datasource=${dsname} />
@@ -6,8 +6,12 @@
 		<Property name="ipaddress" type="string" datasource="IPDS" />
 	</Properties>
 	<DatasourceKeys>
+		<Datasource name="DeviceDBDS" >
+			<Key propertyName="name" nameinDS="ID" />
+		</Datasource>
 		<Datasource name="IPDS" >
 			<Key propertyName="name" nameinDS="id" />
 		</Datasource>
-	</DatasourceKeys>	
+	</DatasourceKeys>
 </Model>
+        

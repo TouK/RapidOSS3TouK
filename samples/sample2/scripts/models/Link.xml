@@ -2,4 +2,9 @@
 	<Properties>
 		<Property name="LINKSPECIFICPROPERTYHERE" type="string" datasource=${dsname} />
 	</Properties>
+	<DatasourceKeys>
+		<Datasource name="LinkDBDS" >
+			<Key propertyName="name" nameinDS="ID" />
+		</Datasource>
+	</DatasourceKeys>
 </Model>

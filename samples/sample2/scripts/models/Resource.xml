@@ -9,12 +9,6 @@
 		<Datasource name="RCMDB" master="true" >
 			<Key propertyName="name"  />
 		</Datasource>
-		<Datasource name="SmartsDS" >
-			<Key propertyName="name" nameinDS="CreationClassName" />
-		</Datasource>
-		<Datasource name="HypericDS" >
-			<Key propertyName="name" nameinDS="ID" />
-		</Datasource>
 	</Datasources>	
 	<Relations>
 		<Relation name="events" relatedTo="Event" />

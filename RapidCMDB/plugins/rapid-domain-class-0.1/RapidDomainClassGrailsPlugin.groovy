@@ -68,7 +68,7 @@ class RapidDomainClassGrailsPlugin {
                                         return;
                                     }
                                 }
-                                if(isNull&& keys.size() > 0)
+                                if(!isNull&& keys.size() > 0)
                                 {
                                     def propName = name;
                                     if(propertyConfig.nameInDs)

@@ -7,7 +7,7 @@ class Router extends Device{
             keys:
             [
                 "creationClassName":["nameInDs":"CreationClassName"],
-                "name":["nameInDs":"Name"]
+                "instanceName":["nameInDs":"Name"]
             ]
         ]
     ];

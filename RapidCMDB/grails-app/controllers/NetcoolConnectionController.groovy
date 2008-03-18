@@ -1,4 +1,4 @@
 class NetcoolConnectionController {
 
-    def index = { }
+ def scaffold = NetcoolConnection
 }

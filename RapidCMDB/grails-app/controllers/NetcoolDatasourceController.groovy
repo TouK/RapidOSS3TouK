@@ -1,4 +1,4 @@
 class NetcoolDatasourceController {
 
-    def index = { }
+    def scaffold = NetcoolDatasource
 }

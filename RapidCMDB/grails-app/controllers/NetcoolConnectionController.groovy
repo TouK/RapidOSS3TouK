@@ -1,0 +1,4 @@
+class NetcoolConnectionController {
+
+    def index = { }
+}

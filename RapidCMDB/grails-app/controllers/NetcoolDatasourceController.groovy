@@ -1,0 +1,4 @@
+class NetcoolDatasourceController {
+
+    def index = { }
+}

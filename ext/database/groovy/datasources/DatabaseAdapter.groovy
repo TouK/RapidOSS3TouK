@@ -33,16 +33,9 @@ public class DatabaseAdapter extends BaseAdapter {
         return action.getAffectedRowCount();
     }
  
-    public List executeQuery(sql, queryParams) throws Exception{
-        return executeQuery(sql, queryParams, 0);
-    }
-       
-    public List executeQuery(sql,  queryParams, fetchSize) throws Exception{
-	    // TO BE MODIFIED TO SUPPORT FETCH SIZE
-        ExecuteQueryAction action = new ExecuteQueryAction(logger, sql, (Object[])queryParams, fetchSize);
-        executeAction(action);
+    public List executeQuery(sql,  queryParams) throws Exception{
         List results = [];
-        def rset = action.getResultSet();
+        def rset = executeQuery(sql,  queryParams, 0);
         def metaData = rset.getMetaData();
         def colCount = metaData.getColumnCount();
         while(rset.next())
@@ -57,7 +50,13 @@ public class DatabaseAdapter extends BaseAdapter {
 	    
 	    return results;
     }
-    
+
+    public ResultSet executeQuery(sql,  queryParams, fetchSize) throws Exception{
+        ExecuteQueryAction action = new ExecuteQueryAction(logger, sql, (Object[])queryParams, fetchSize);
+        executeAction(action);
+        return action.getResultSet();
+    }
+
     public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception
 	{
     	throw new UnsupportedOperationException();

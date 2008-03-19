@@ -6,11 +6,10 @@ class ScriptController {
         def script = CmdbScript.findByName(params.id);
         if(script)
         {
-            def scriptClass = null;
+            Class scriptClass = null;
             try
             {
                 scriptClass = grailsApplication.classLoader.loadClass(script.name);
-                println getClass().getClassLoader().getParent();
             }
             catch(java.lang.ClassNotFoundException exception)
             {

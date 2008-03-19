@@ -25,4 +25,4 @@
 
 
 
-return "5"+         CmdbScript.get(1) + "a";
+return "6"+         CmdbScript.get(1) + "a";

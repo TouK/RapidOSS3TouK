@@ -24,8 +24,11 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def onChange = { event ->
-        RuntimeSpringConfiguration springConfig = event.ctx != null ? new DefaultRuntimeSpringConfiguration(event.ctx) : new DefaultRuntimeSpringConfiguration();
-        GrailsRuntimeConfigurator.loadSpringGroovyResourcesIntoContext(springConfig, application.classLoader, event.ctx)
+        if(event.source.getSuperclass() == Script)
+        {
+            RuntimeSpringConfiguration springConfig = event.ctx != null ? new DefaultRuntimeSpringConfiguration(event.ctx) : new DefaultRuntimeSpringConfiguration();
+            GrailsRuntimeConfigurator.loadSpringGroovyResourcesIntoContext(springConfig, application.classLoader, event.ctx)
+        }
     }
 
     def onApplicationChange = { event ->

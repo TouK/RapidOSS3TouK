@@ -54,7 +54,7 @@ class RapidDomainClassGrailsPlugin {
             {
                 mc.setProperty = {String name, Object value->
                     def propertyConfig = propertyConfiguration[name];
-                    if(!propertyConfig)
+                    if(!propertyConfig || propertyConfig.datasource == RapidCMDBConstants.RCMDB)
                     {
                         mc.getMetaProperty(name).setProperty(delegate, value);
                     }
@@ -62,7 +62,7 @@ class RapidDomainClassGrailsPlugin {
 
                 mc.getProperty = {String name->
                     def propertyConfig = propertyConfiguration[name];
-                    if(!propertyConfig)
+                    if(!propertyConfig || propertyConfig.datasource == RapidCMDBConstants.RCMDB)
                     {
                         return mc.getMetaProperty(name).getProperty(delegate);
                     }
@@ -97,13 +97,14 @@ class RapidDomainClassGrailsPlugin {
                                 def keyConfiguration = datasourceConfig.keys;
                                 def keys = [:];
                                 def isNull = false;
+                                def currentDomainObject = delegate;
                                 keyConfiguration.each{key,value->
                                     def nameInDs = key;
                                     if(value && value.nameInDs)
                                     {
                                         nameInDs = value.nameInDs;
                                     }
-                                    def keyValue =   delegate.getProperty(key);
+                                    def keyValue =   mc.getMetaProperty(key).getProperty(currentDomainObject);
                                     if(keyValue)
                                     {
                                         keys[nameInDs] = keyValue;
@@ -134,6 +135,10 @@ class RapidDomainClassGrailsPlugin {
 
                         return "";
                     }
+                };
+
+                mc.'static'.getObject = {Map keyMap ->
+                    
                 };
             }
         }

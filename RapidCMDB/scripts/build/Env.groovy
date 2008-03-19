@@ -16,6 +16,7 @@ class Env {
 
 
     static def rapid_modules = basedir+"/RapidModules"
+    static def rapid_cmdb_cvs = "$rapid_modules/RapidCMDB"
     static def rapid_comp_build = basedir+"/build/comp"
     static def rapid_comp_src = "$rapid_modules/comp/java"
     static def rapid_comp_resources = "$rapid_modules/comp/resources"
@@ -24,9 +25,8 @@ class Env {
     static def rapid_core_src = "$rapid_modules/core/java"
     static def rapid_core_resources = "$rapid_modules/core/resources"
 
+    static def rapid_ext = "$rapid_modules/ext"
     static def rapid_ext_build = basedir+"/build/ext"
-    static def rapid_ext_src = "$rapid_modules/ext/java"
-    static def rapid_ext_resources = "$rapid_modules/ext/resources"
 
     static def third_party = basedir+"/ThirdParty";
     static def licenced_jars = basedir+"/LicencedJars";

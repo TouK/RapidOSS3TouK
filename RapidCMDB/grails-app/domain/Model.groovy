@@ -6,8 +6,8 @@ class Model {
     static constraints = {
         name(blank:false, unique:true);
         parentModel(nullable:true);
-    }
-
+    }             
+        
     String toString(){
         return "$name";
     }

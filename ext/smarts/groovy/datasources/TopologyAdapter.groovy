@@ -13,14 +13,6 @@ public class TopologyAdapter extends BaseTopologyAdapter {
         super(datasourceName, reconnectInterval, logger);
     }    
     
-    def static getInstance(String datasourceName, long reconnectInterval){
-    	return new TopologyAdapter(datasourceName, reconnectInterval,  Logger.getRootLogger());
-    }
-
-    def static getInstance(datasourceName){
-    	return new TopologyAdapter(datasourceName, 0,  Logger.getRootLogger());
-    }   
-    
     def addObject(className, instanceName, params){
     	createTopologyInstanceWithProperties(className, instanceName, params);
     }

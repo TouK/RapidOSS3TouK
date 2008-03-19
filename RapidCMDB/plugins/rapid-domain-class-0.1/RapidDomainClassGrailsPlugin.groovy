@@ -14,13 +14,24 @@ class RapidDomainClassGrailsPlugin {
 
     def doWithWebDescriptor = { xml ->
     }
+    
+    def doWithDynamicMethods = { ctx ->
+        configureFederation(log, application);
+    }
+
+    def onChange = { event ->
+    }
+
+    def onApplicationChange = { event ->
+    }
+
     def getDatasourcesAndPropertyConfigurations(allDatasources, allPropertyConfiguration, domainClass)
     {
         def realClass = domainClass.metaClass.getTheClass();
         def superClass = realClass.getSuperclass();
         if(superClass && superClass != Object.class)
         {
-            getDatasourcesAndPropertyConfigurations(allDatasources, allPropertyConfiguration, superClass);        
+            getDatasourcesAndPropertyConfigurations(allDatasources, allPropertyConfiguration, superClass);
         }
         if(domainClass.metaClass.hasProperty(domainClass, "propertyConfiguration") && domainClass.metaClass.hasProperty(domainClass, "dataSources"))
         {
@@ -30,7 +41,10 @@ class RapidDomainClassGrailsPlugin {
             allDatasources.putAll(dataSources);
         }
     }
-    def doWithDynamicMethods = { ctx ->
+
+    def configureFederation(log, application)
+    {
+        log.info("Configuring federation");
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
             def dataSources = [:];
@@ -87,7 +101,7 @@ class RapidDomainClassGrailsPlugin {
                                     def nameInDs = key;
                                     if(value && value.nameInDs)
                                     {
-                                        nameInDs = value.nameInDs;    
+                                        nameInDs = value.nameInDs;
                                     }
                                     def keyValue =   delegate.getProperty(key);
                                     if(keyValue)
@@ -123,11 +137,5 @@ class RapidDomainClassGrailsPlugin {
                 };
             }
         }
-    }
-
-    def onChange = { event ->
-    }
-
-    def onApplicationChange = { event ->
     }
 }

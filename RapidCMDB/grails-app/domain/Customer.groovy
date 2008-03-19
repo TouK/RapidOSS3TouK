@@ -1,28 +1,32 @@
 class Customer {
-    
+    String name;
+    String accountmanager;
     static dataSources =
     [
-        "otherDbms":
+        "RCMDB":
+        [
+            master: true,
+            keys:
+            [
+                name:["nameInDs":"name"]
+            ]
+        ],
+        "AccountDBDS":
         [
             master:false,
             keys:
             [
-                ssn:["nameInDs":"ssn"]
+                name:["nameInDs":"code"]
             ]                              
         ]
     ];
     
     static propertyConfiguration =
     [
-            name:['datasource':"otherDbms", 'nameInDs':'name'],
-            surname:['datasource':"otherDbms", 'nameInDs':'surname']
+            name:['datasource':"RCMDB"],
+            accountmanager:['datasource':"AccountDBDS", 'nameInDs':'manager']  //lazy false icin ne yapilacak??
     ];
 
-    static transients = ["name","surname"]
-
-    Integer ssn;
-    String name;
-    String surname;
-
+    static transients = ["accountmanager"]
 }
   

@@ -1,6 +1,10 @@
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
+import org.codehaus.groovy.grails.commons.spring.RuntimeSpringConfiguration
+import org.codehaus.groovy.grails.commons.spring.DefaultRuntimeSpringConfiguration
+import org.codehaus.groovy.grails.commons.spring.GrailsRuntimeConfigurator
 
 class RapidDomainClassGrailsPlugin {
+    def watchedResources = ["file:./grails-app/scripts/*.groovy"]
     def version = 0.1
     def dependsOn = [:]
     def loadAfter = ['hibernate']
@@ -20,6 +24,8 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def onChange = { event ->
+        RuntimeSpringConfiguration springConfig = event.ctx != null ? new DefaultRuntimeSpringConfiguration(event.ctx) : new DefaultRuntimeSpringConfiguration();
+        GrailsRuntimeConfigurator.loadSpringGroovyResourcesIntoContext(springConfig, application.classLoader, event.ctx)
     }
 
     def onApplicationChange = { event ->

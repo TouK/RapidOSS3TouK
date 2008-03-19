@@ -1,0 +1,3 @@
+class CmdbScript {
+    String name;
+}

@@ -47,6 +47,14 @@
             </ul>
         </div>
 
+        <h2 style="margin-left:20px;">Scripting</h2>
+        <p style="margin-left:20px;width:80%">Define and Run Scripts.</p>
+        <div class="dialog" style="margin-left:20px;width:60%;">
+            <ul>
+                <li class="controller"><g:link controller="script">OnDemand Scripts</g:link></li>
+            </ul>
+        </div>
+
 <!--
         <h2 style="margin-left:20px;">Modeled Managed Objects</h2>
         <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define your connections and datasources, model your managed objects, and maintain them.</p>

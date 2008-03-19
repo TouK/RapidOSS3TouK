@@ -1,7 +1,7 @@
 class ScriptController {
     def scaffold = CmdbScript;
 
-    def runScript =
+    def run =
     {
         def script = CmdbScript.findByName(params.id);
         if(script)

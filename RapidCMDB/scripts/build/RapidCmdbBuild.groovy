@@ -70,12 +70,6 @@ class RapidCmdbBuild extends Build{
                 ant.exclude(name:"**/*Test*")
             }
         }
-		ant.copy(todir : "$env.distribution/scripts"){
-			ant.fileset(dir : "$env.rapid_cmdb_cvs/scripts"){
-                ant.exclude(name:"**/test/**")
-                ant.exclude(name:"**/*Test*")
-            }
-        }
 		buildDependent();
 		copyDependentJars();
 		ant.zip(destfile : "$env.distribution/RapidCMDB.zip"){

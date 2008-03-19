@@ -64,7 +64,8 @@
                                     def modelPropertyList;
                                     if(params["modelDatasource.id"] != null){
                                         def modelDatasource = ModelDatasource.get(params["modelDatasource.id"]);
-                                        modelPropertyList = modelDatasource?.model?.modelProperties;
+                                        def model = modelDatasource?.model;
+                                        modelPropertyList = model?.modelProperties;
                                     }
                                     else{
                                         modelPropertyList = ModelProperty.list();

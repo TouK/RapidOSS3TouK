@@ -1,14 +1,54 @@
 <html>
     <head>
-        <title>Welcome to Grails</title>
+        <title>RapidCMDB Admin UI</title>
 		<meta name="layout" content="main" />
     </head>
     <body>
-        <h1 style="margin-left:20px;">Welcome to Grails</h1>
-        <p style="margin-left:20px;width:80%">Congratulations, you have successfully started your first Grails application! At the moment
-        this is the default page, feel free to modify it to either redirect to a controller or display whatever
-        content you may choose. Below is a list of controllers that are currently deployed in this application,
-        click on each to execute its default action:</p>
+
+
+        <h1 style="margin-left:20px;">RapidCMDB Admin UI</h1>
+        <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define your connections and datasources, model your managed objects, and maintain them.</p>
+<p/>
+<p/>
+        <h2 style="margin-left:20px;">Connections</h2>
+        <p style="margin-left:20px;width:80%">Define your connections (connection parameters):</p>
+        <div class="dialog" style="margin-left:20px;width:60%;">
+            <ul>
+                <li class="controller"><g:link controller="netcoolConnection">NetcoolConnection</g:link></li>
+                <li class="controller"><g:link controller="smartsConnection">SmartsConnection</g:link></li>
+                <li class="controller"><g:link controller="httpConnection">HttpConnection</g:link></li>
+                <li class="controller"><g:link controller="databaseConnection">DatabaseConnection</g:link></li>
+                <li class="controller"><g:link controller="rapidInsightConnection">RapidInsightConnection</g:link></li>
+            </ul>
+        </div>
+<p/>
+<p/>
+        <h2 style="margin-left:20px;">Datasources</h2>
+        <p style="margin-left:20px;width:80%">Define your datasources that use these connections:</p>
+        <div class="dialog" style="margin-left:20px;width:60%;">
+            <ul>
+                <li class="controller"><g:link controller="netcoolDatasource">NetcoolDatasource</g:link></li>
+                <li class="controller"><g:link controller="smartsTopologyDatasource">SmartsTopologyDatasource</g:link></li>
+                <li class="controller"><g:link controller="smartsNotificationDatasource">SmartsNotificationDatasource</g:link></li>
+                <li class="controller"><g:link controller="httpDatasource">HttpDatasource</g:link></li>
+                <li class="controller"><g:link controller="databaseDatasource">DatabaseDatasource</g:link></li>
+                <li class="controller"><g:link controller="singleTableDatabaseDatasource">SingleTableDatabaseDatasource</g:link></li>
+                <li class="controller"><g:link controller="rapidInsightDatasource">RapidInsightDatasource</g:link></li>
+            </ul>
+        </div>
+<p/>
+<p/>
+        <h2 style="margin-left:20px;">Modeling</h2>
+        <p style="margin-left:20px;width:80%">Model your Managed Objects.</p>
+        <div class="dialog" style="margin-left:20px;width:60%;">
+            <ul>
+                <li class="controller"><g:link controller="model">Model</g:link></li>
+            </ul>
+        </div>
+
+<!--
+        <h2 style="margin-left:20px;">Modeled Managed Objects</h2>
+        <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define your connections and datasources, model your managed objects, and maintain them.</p>
         <div class="dialog" style="margin-left:20px;width:60%;">
             <ul>
               <g:each var="c" in="${grailsApplication.controllerClasses}">
@@ -16,5 +56,8 @@
               </g:each>
             </ul>
         </div>
+-->
+
+
     </body>
 </html>

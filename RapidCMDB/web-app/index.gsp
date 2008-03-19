@@ -42,7 +42,8 @@
         <p style="margin-left:20px;width:80%">Model your Managed Objects.</p>
         <div class="dialog" style="margin-left:20px;width:60%;">
             <ul>
-                <li class="controller"><g:link controller="model">Model</g:link></li>
+                <li class="controller"><g:link controller="model">Model Managed Objects</g:link></li>
+                <li class="controller"><g:link controller="modelRelation">Define Relations</g:link></li>
             </ul>
         </div>
 

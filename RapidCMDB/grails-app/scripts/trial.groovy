@@ -25,5 +25,5 @@
 
 
 
-def device =  Device.get([name:"device4"]);
-return device.ipaddress;
+def event =  Event.get([name:"event2"]);
+return event.lastOccured;

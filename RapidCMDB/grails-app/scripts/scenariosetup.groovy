@@ -98,9 +98,6 @@ dbAdapter.executeUpdate("insert into linkds values ('link6', 'memberof6')");
 dbAdapter.executeUpdate("insert into services values ('service1', 'manager1', 'status1')");
 dbAdapter.executeUpdate("insert into services values ('service2', 'manager2', 'status2')");
 dbAdapter.executeUpdate("insert into services values ('service3', 'manager3', 'status3')");
-dbAdapter.executeUpdate("insert into services values ('service4', 'manager4', 'status4')");
-dbAdapter.executeUpdate("insert into services values ('service5', 'manager5', 'status5')");
-dbAdapter.executeUpdate("insert into services values ('service6', 'manager6', 'status6')");
 
 dbAdapter.executeUpdate("insert into events values ('event1', 'device1', 1, 'true', 'owner1', 'descr1','1999-01-01', '1999-01-01')");
 dbAdapter.executeUpdate("insert into events values ('event2', 'device1', 1, 'true', 'owner2', 'descr2','1999-02-01', '1999-02-01')");

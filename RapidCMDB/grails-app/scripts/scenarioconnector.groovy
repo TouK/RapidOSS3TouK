@@ -37,23 +37,16 @@ for(record in records){
     def status = record.STATUS;
     Service.add(name:name, manager:manager, status:status);
 }
-
-
 records = ds1.getRecords(["name", "classname", "displayname"]);
-println "records from DS1 size: " + records.size();
 for(record in records){
     def className = record.CLASSNAME;
     def name = record.NAME;
     def displayname = record.DISPLAYNAME;
     if(className == "Device"){
-          println "creating new device with " + name + " " + displayname;
-          println new Device(name:name, displayname:displayname, dsname:"DS1").save();
-          println "successfully created.";
+          Device.add(name:name, displayname:displayname, dsname:"DS1");
     }
     else{
-        println "creating new link with " + name + " " + displayname;
-          new Link(name:name, displayname:displayname, dsname:"DS1").save();
-           println "successfully created.";
+           Link.add(name:name, displayname:displayname, dsname:"DS1");
     }
 }
 records = ds2.getRecords(["id", "classname", "displayname"]);
@@ -62,9 +55,41 @@ for(record in records){
     def name = record.ID;
     def displayname = record.DISPLAYNAME;
     if(className == "Device"){
-          new Device(name:name, displayname:displayname, dsname:"DS2").save();
+          Device.add(name:name, displayname:displayname, dsname:"DS2");
     }
     else{
-        new Link(name:name, displayname:displayname, dsname:"DS2").save();
+        Link.add(name:name, displayname:displayname, dsname:"DS2");
     }
+}
+
+def service1 = Service.get(["name":"service1"]);
+service1.addToResources(Device.get(["name":"device1"]));
+service1.addToResources(Device.get(["name":"device2"]));
+service1.addToResources(Device.get(["name":"device3"]));
+service1.addToResources(Link.get(["name":"link1"]));
+service1.addToResources(Link.get(["name":"link2"]));
+service1.addToResources(Link.get(["name":"link3"]));
+
+def service2 = Service.get(["name":"service2"]);
+service2.addToResources(Device.get(["name":"device3"]));
+service2.addToResources(Device.get(["name":"device4"]));
+service2.addToResources(Link.get(["name":"link3"]));
+service2.addToResources(Link.get(["name":"link4"]));
+
+def service3 = Service.get(["name":"service3"]);
+service3.addToResources(Device.get(["name":"device4"]));
+service3.addToResources(Device.get(["name":"device5"]));
+service3.addToResources(Device.get(["name":"device6"]));
+service3.addToResources(Link.get(["name":"link4"]));
+service3.addToResources(Link.get(["name":"link5"]));
+service3.addToResources(Link.get(["name":"link6"]));
+
+
+records = eventDs.getRecords();
+
+for(record in records){
+
+    def eventName = record.EVENTNAME;
+    def resource = record.RESOURCE;
+    Resource.get(["name":resource]).addToEvents(new Event(name:eventName));
 }

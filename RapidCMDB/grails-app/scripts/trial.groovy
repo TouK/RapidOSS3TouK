@@ -25,4 +25,5 @@
 
 
 
-return CmdbScript.get(["name":"script2"]);
+def device =  Device.get([name:"device4"]);
+return device.ipaddress;

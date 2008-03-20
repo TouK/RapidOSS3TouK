@@ -34,4 +34,20 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
      }
 
 
+    public getRecords(){
+		return adapter.getRecords();
+    }
+
+    public getRecords(List columnList){
+          return adapter.getRecords(columnList);
+    }
+
+    public getRecords(String whereclause){
+        return adapter.getRecords(whereclause);
+    }
+
+    public getRecords(whereClause, List columnList){
+        return adapter.getRecords(whereClause, columnList);     
+    }
+
 }

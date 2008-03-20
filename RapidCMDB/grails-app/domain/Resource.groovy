@@ -21,6 +21,22 @@ class Resource {
             [
                 name:["nameInDs":"name"]
             ]
+        ],
+        "DS1":
+        [
+            master: false,
+            keys:
+            [
+                name:["nameInDs":"name"]
+            ]
+        ],
+        "DS2":
+        [
+            master: false,
+            keys:
+            [
+                name:["nameInDs":"ID"]
+            ]
         ]
     ];
 
@@ -31,4 +47,8 @@ class Resource {
             dsname:['datasource':"RCMDB"],
             operationalstate:['datasourceProperty':"dsname"]
     ];
+
+    String toString(){
+        return "$name";
+    }
 }

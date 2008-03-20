@@ -1,21 +1,20 @@
 class Link extends Resource{
     String memberof;
-    static transients = ["memberof"];
-    
-    static dataSources =
+    static transients = ["memberof", "operationalstate"];
+
+     static dataSources =
     [
-        "LinkDBDS":
+        "LINKDS":
         [
-            master: false,
+            master: true,
             keys:
             [
                 name:["nameInDs":"ID"]
             ]
         ]
     ];
-
     static propertyConfiguration =
     [
-            memberof:['datasourceProperty':"dsname"]
+            memberof:['datasource':"LINKDS"]
     ];
 }

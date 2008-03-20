@@ -4,24 +4,16 @@ class Device extends Resource{
     String location;
     String ipaddress;
 
-    static transients = ["vendor", "model", "location", "ipaddress"];
+    static transients = ["vendor", "model", "location", "ipaddress","operationalstate"];
 
     static dataSources =
     [
-        "DeviceDBDS":
+        "DeviceDS":
         [
             master: false,
             keys:
             [
                 name:["nameInDs":"ID"]
-            ]
-        ],
-        "IPDS":
-        [
-            master: false,
-            keys:
-            [
-                name:["nameInDs":"id"]
             ]
         ]
     ];
@@ -31,7 +23,7 @@ class Device extends Resource{
             vendor:['datasourceProperty':"dsname"],
             model:['datasourceProperty':"dsname"],
             location:['datasourceProperty':"dsname"],
-            ipaddress:['datasource':"IPDS"]
+            ipaddress:['datasource':"DeviceDS"]
     ];
 
 }

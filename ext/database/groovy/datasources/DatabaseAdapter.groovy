@@ -40,10 +40,10 @@ public class DatabaseAdapter extends BaseAdapter {
         def colCount = metaData.getColumnCount();
         while(rset.next())
         {
-	        def record = new CaseInsensitiveMap();
+            def record = new CaseInsensitiveMap();
 	        for(int i=1; i <= colCount; i++)
 	        {
-		        record.put(metaData.getColumnName(i).toUpperCase(), String.valueOf(rset.getObject(i)));
+		        record.put(metaData.getColumnName(i).toUpperCase(), String.valueOf(rset.getObject(i)).trim());
 	        }
 	        results += record;
 	    }

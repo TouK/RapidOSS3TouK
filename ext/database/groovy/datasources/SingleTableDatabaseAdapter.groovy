@@ -26,15 +26,16 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
     }
     
     public addRecord(Map fields){
-		def primaryValues = [:]; 
+		def primaryValues = [:];
 		for (key in keys){
 			def keyValue = fields[key]; // .get(key);
 			if(keyValue == null) throw new Exception("No value supplied for one of the primary key fields: " + key);	
 			primaryValues.put(key, keyValue);
 		}
+
 		def row = getRecordMultiKey(primaryValues);
-		if (row == null) {
-			StringBuffer query1 = new StringBuffer("insert into ").append(table).append(" (");
+		if (row.size() == 0) {
+            StringBuffer query1 = new StringBuffer("insert into ").append(table).append(" (");
 			StringBuffer query2 = new StringBuffer(" VALUES(");
 			def params = [];
 			fields.each(){key,value -> 
@@ -49,8 +50,8 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 			def res = executeUpdate(query1.append(query2).toString(), params);
 			return getRecordMultiKey(primaryValues);
 		}
-		else{ 
-			return updateRecord(fields);
+		else{
+            return updateRecord(fields);
 		}
 	}
 		
@@ -66,7 +67,7 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 		}
 		if(updatedProps.size() == 0) return false;
 		def row = getRecordMultiKey(primaryValues);
-		if (row != null) {
+		if (row.size() > 0) {
 			def params = getUpdateParams(fields);
 			def updateQuery = getUpdateQuery(updatedProps);
 			def res = executeUpdate(updateQuery, params);
@@ -116,7 +117,7 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 	    def result = executeQuery(query.toString(), params);
 	    if(result.size() > 0)
         {
-	        return result[0];
+            return result[0];
         }
         else
         {

@@ -1,19 +1,9 @@
-import datasources.SingleTableDatabaseAdapter;
-import org.apache.log4j.Logger;
+import datasources.SingleTableDatabaseAdapter
+import org.apache.log4j.Logger
 
-class NetcoolDatasource {
+class NetcoolDatasource extends BaseDatasource{
     NetcoolConnection connection;
-    final String statusTable = "alerts.status";
-    final String detailsTable = "alerts.details";
-    final String journalTable = "alerts.journal";
-    final String conversionsTable = "alerts.conversions";
-    final String masterTable = "master.names";
 
-    final String statusTableKey = "Identifier";
-    final String detailsTableKey = "Identifier";
-    final String journalTableKey = "Serial";
-    final String conversionsTableKey = "Colname";
-    final String masterTableKey = "UID";
     static def STRING_COL_NAMES =[];
 
     def statusTableAdapter;
@@ -22,17 +12,30 @@ class NetcoolDatasource {
     def conversionsTableAdapter;
     def masterTableAdapter;
 
-    static transients = ["statusTableAdapter","detailsTableAdapter","journalTableAdapter","conversionsTableAdapter","masterTableAdapter",
-                         "statusTable","detailsTable","journalTable","conversionsTable","masterTable",
-                         "statusTableKey","detailsTableKey","journalTableKey","conversionsTableKey","masterTableKey"]
+    static transients = ['statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter']
+//    ,
+//                         'statusTable','detailsTable','journalTable','conversionsTable','masterTable',
+//                         'statusTableKey','detailsTableKey','journalTableKey','conversionsTableKey','masterTableKey']
 
     def onLoad = {
+        def statusTable = "alerts.status";
+        def detailsTable = "alerts.details";
+        def journalTable = "alerts.journal";
+        def conversionsTable = "alerts.conversions";
+        def masterTable = "master.names";
+
+        def statusTableKey = "Identifier";
+        def detailsTableKey = "Identifier";
+        def journalTableKey = "Serial";
+        def conversionsTableKey = "Colname";
+        def masterTableKey = "UID";
+       
         this.statusTableAdapter = new SingleTableDatabaseAdapter(connection.name, statusTable, statusTableKey, 0, Logger.getRootLogger());
         this.detailsTableAdapter = new SingleTableDatabaseAdapter(connection.name, detailsTable, detailsTableKey, 0, Logger.getRootLogger());
         this.journalTableAdapter = new SingleTableDatabaseAdapter(connection.name, journalTable, journalTableKey, 0, Logger.getRootLogger());
         this.conversionsTableAdapter = new SingleTableDatabaseAdapter(connection.name, conversionsTable, conversionsTableKey, 0, Logger.getRootLogger());
         this.masterTableAdapter = new SingleTableDatabaseAdapter(connection.name, masterTable, masterTableKey, 0, Logger.getRootLogger());
-        if (STRING_COL_NAMES.size()==0){
+        if (STRING_COL_NAMES == null){
             populateStringColumnNames();
         }
     }
@@ -53,8 +56,8 @@ class NetcoolDatasource {
         return props;
     }
 
-    def addEvent(Map props){
-        String identifier = props.Identifier;
+    def addEvent(Map params){
+        String identifier = params.Identifier;
         if (identifier == null){
             throw new Exception("Missing identifier for add operation")
         }
@@ -75,15 +78,15 @@ class NetcoolDatasource {
             columns.append(" , ");
             values.append(" , ");
         }
-        columns.deleteCharAt(columns.length-2);
+        columns.deleteCharAt(columns.length()-2);
         columns.append(")");
-        values.deleteCharAt(values.length-2);
+        values.deleteCharAt(values.length()-2);
         values.append(")");
 
         sb.append(columns.toString());
         sb.append(" values ");
         sb.append(values.toString());
-		statusTableAdapter.executeQuery(sb.toString(), []);
+		statusTableAdapter.executeUpdate(sb.toString(), []);
     }
 
     def updateEvent(Map params){
@@ -93,19 +96,15 @@ class NetcoolDatasource {
 			throw new Exception("Event <" + identifier + "> does not exist");
 		}
 
-        def additionalParams = [:];
-        additionalParams.putAll(params);
-        additionalParams.remove("Identifier");
+        def additional = [:];
+        additional.putAll(params);
+        additional.remove("Identifier");
 		StringBuffer sb = new StringBuffer("update alerts.status set ");
 		StringBuffer updatedColumns= new StringBuffer();
-		boolean flag = false;
-		for (Iterator iter = additionalParams.keySet().iterator(); iter.hasNext();)
+		for (Iterator iter = additional.keySet().iterator(); iter.hasNext();)
 		{
 			String columnName = (String) iter.next();
-			if(flag)
-				updatedColumns.append(", ");
 			updatedColumns.append(columnName);
-
 			if(STRING_COL_NAMES.contains(columnName)){
 				updatedColumns.append("='");
 				updatedColumns.append(additional.get(columnName));
@@ -113,13 +112,14 @@ class NetcoolDatasource {
 			}
 			else{
 				updatedColumns.append("=");
-				updatedColumns.append(additionalParams.get(columnName));
+				updatedColumns.append(additional.get(columnName));
 			}
-			flag = true;
+			updatedColumns.append(", ");
 		}
+        updatedColumns.deleteCharAt(updatedColumns.length()-2);
 		sb.append(updatedColumns.toString());
 		sb.append(" where Identifier='").append(identifier).append("'");
-		statusTableAdapter.executeQuery(sb.toString(), []);
+		statusTableAdapter.executeUpdate(sb.toString(), []);
     }
 
     def getEvent(identifier){
@@ -133,14 +133,14 @@ class NetcoolDatasource {
     }
 
     def removeEvent(identifier){
-    	def event = getEvent(identifier);
+        def event = getEvent(identifier);
 		if(event.size() == 0)
 		{
 			throw new Exception("Event <" + identifier + "> does not exist");
 		}
 		statusTableAdapter.removeRecord(identifier);
 		detailsTableAdapter.removeRecord(identifier);
-		journalTableAdapter.removeRecord(event.SERIAL);
+		journalTableAdapter.removeRecord(Integer.parseInt(event.serial));
     }
 
     def list(){
@@ -151,10 +151,10 @@ class NetcoolDatasource {
         def updateProps =[:];
 		updateProps.put("Identifier",identifier);
         if(addToTaskList){
-            updateProps.put("TaskList","1");
+            updateProps.put("TaskList",1);
         }
 		else{
-			updateProps.put("TaskList","0");
+			updateProps.put("TaskList",0);
         }
         statusTableAdapter.updateRecord(updateProps);
     }
@@ -175,12 +175,19 @@ class NetcoolDatasource {
 			throw new Exception("Event <" + identifier + "> does not exist");
 		}
 
-        def oldSeverity = event.SEVERITY;
+        def oldSeverity = event.severity;
 
 		def updateProps = [:];
 		updateProps.put("Identifier", identifier);
-        updateProps.put("Severity", severity);
-        updateProps.put("Acknowledged", "0");
+		def intSeverity;
+		if (severity instanceof String){
+            intSeverity = Integer.parseInt(severity);
+        }
+        else{
+            intSeverity = severity;
+        }
+        updateProps.put("Severity",intSeverity);
+        updateProps.put("Acknowledged", 0);
 		statusTableAdapter.updateRecord(updateProps);
 
 		def whereClause= "Colname = 'Severity'";
@@ -191,7 +198,7 @@ class NetcoolDatasource {
         def newVal = conversions.get("Severity"+severity);
 
         String text = "Alert prioritized from " + oldVal + " to " + newVal + " by " + userName;
-		writeToJournal(event.SERIAL, text);
+		writeToJournal(event.serial, text);
 	}
 
     def suppressAction(identifier, suppress, userName){
@@ -200,11 +207,18 @@ class NetcoolDatasource {
             throw new Exception("Event <" + identifier + "> does not exist");
         }
 
-        def oldSuppress = event.SUPPRESSESCL;
+        def oldSuppress = event.suppressescl;
 
 		def updateProps = [:];
 		updateProps.put("Identifier", identifier);
-        updateProps.put("SuppressEscl", suppress);
+				def intSeverity;
+		if (suppress instanceof String){
+            intSuppress = Integer.parseInt(suppress);
+        }
+        else{
+            intSuppress = suppress;
+        }
+        updateProps.put("SuppressEscl", intSuppress);
 		statusTableAdapter.updateRecord(updateProps);
 
         def whereClause= "Colname = 'SuppressEscl'";
@@ -216,7 +230,7 @@ class NetcoolDatasource {
 
 		String text = "Alert prioritized from " + oldVal + " to " + newVal + " by " + userName + ".";
 
-		writeToJournal(event.SERIAL, text);
+		writeToJournal(event.serial, text);
 	}
 
     def acknowledgeAction(String identifier, String userName, boolean isAcknowledge) {
@@ -230,28 +244,40 @@ class NetcoolDatasource {
 		def updateProps =[:];
 		updateProps.put("Identifier",identifier);
 		if(isAcknowledge){
-			updateProps.put("Acknowledged","1");
+			updateProps.put("Acknowledged",1);
             text = "Alert acknowledged by " + userName;
 		}
 		else{
-            updateProps.put("Acknowledged","0");
+            updateProps.put("Acknowledged",0);
 			text = "Alert unAcknowledged by " + userName;
 		}
         statusTableAdapter.updateRecord(updateProps);
-        writeToJournal(event.SERIAL, text);
+        writeToJournal(event.serial, text);
 	}
 
 	def writeToJournal(serial, text){
         def newProps =[:];
-        newProps.put("Serial",serial);
+        def intSerial;
+        if (serial instanceof String){
+            intSerial = Integer.parseInt(serial);
+        }
+        else{
+            intSerial = serial;
+        }
+
+        newProps.put("Serial",intSerial);
 		int date;
         date = (int)(System.currentTimeMillis()/1000);
 		def keyfield = (serial + ":0:" + date);
-        newProps.put("Keyfield",keyfield);
+        newProps.put("KeyField",keyfield);
         newProps.put("Chrono",date);
 		newProps.put("Text1",text);
-		journalTableAdapter.addRecord(newProps);
-	}
+		StringBuffer sb = new StringBuffer();
+        sb.append("insert into alerts.journal (Serial,KeyField,Chrono,Text1) values (");
+        sb.append("${intSerial},'${keyfield}',${date},'${text}')");
+        println sb.toString();
+		journalTableAdapter.executeUpdate(sb.toString(), []);
+    }
 
     private def getFromConversions(whereClause){
         def conversions = [:];
@@ -265,8 +291,15 @@ class NetcoolDatasource {
     }
 
     private def assign(identifier, ownerUID, partOfAlertText){
-        def nameRecord = masterTableAdapter.getRecord(ownerUID);
+        def intOwnerUID;
+        if (ownerUID instanceof String){
+            intOwnerUID = Integer.parseInt(ownerUID);
+        }
+        else{
+            intOwnerUID = ownerUID;
+        }
 
+        def nameRecord = masterTableAdapter.getRecord(intOwnerUID);
         if(nameRecord.size() == 0)
         {
             throw new Exception("User <" + ownerUID + "> does not exist");
@@ -279,12 +312,12 @@ class NetcoolDatasource {
 
         def updateProps =[:];
         updateProps.put("Identifier",identifier);
-        updateProps.put("OwnerUID",ownerUID);
-        updateProps.put("Acknowledged","0");
+        updateProps.put("OwnerUID",intOwnerUID);
+        updateProps.put("Acknowledged",0);
         statusTableAdapter.updateRecord(updateProps);
 
-		String text = partOfAlertText + userName.trim() + ".";
-		writeToJournal(event.SERIAL, text);
+		String text = partOfAlertText + nameRecord.name.trim() + ".";
+		writeToJournal(event.serial, text);
     }
 
     private def populateStringColumnNames(){

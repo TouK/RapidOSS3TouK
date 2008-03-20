@@ -25,4 +25,4 @@
 
 
 
-return "6"+         CmdbScript.get(1) + "a";
+return CmdbScript.get(["name":"script2"]);

@@ -24,9 +24,9 @@ class ScriptController {
                 {
                     def res = String.valueOf(scriptObject.run())
                     render(text:res, contentType:"text/html",encoding:"UTF-8");
-                }catch(Throwable t)
+                }catch(Throwable exception)
                 {
-                    render(text:"Exception occurred while executing script. Reason :$t.getMessage()",contentType:"text/html",encoding:"UTF-8");
+                    render(text:"Exception occurred while executing script. Reason :$exception",contentType:"text/html",encoding:"UTF-8");
                 }
             }
             else

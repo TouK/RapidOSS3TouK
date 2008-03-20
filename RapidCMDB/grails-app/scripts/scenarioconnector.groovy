@@ -25,8 +25,21 @@
 
 def ds1 = SingleTableDatabaseDatasource.findByName("DS1");
 def ds2 = SingleTableDatabaseDatasource.findByName("DS2");
+def serviceDs = SingleTableDatabaseDatasource.findByName("serviceDS");
+def eventDs = SingleTableDatabaseDatasource.findByName("EVENTDS");
 
-def records = ds1.getRecords(["name", "classname", "displayname"]);
+
+
+def records = serviceDs.getRecords();
+for(record in records){
+    def name = record.NAME;
+    def manager = record.MANAGER;
+    def status = record.STATUS;
+    Service.add(name:name, manager:manager, status:status);
+}
+
+
+records = ds1.getRecords(["name", "classname", "displayname"]);
 println "records from DS1 size: " + records.size();
 for(record in records){
     def className = record.CLASSNAME;

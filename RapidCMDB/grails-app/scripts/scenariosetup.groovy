@@ -50,10 +50,22 @@ try{
 }
 catch(e){}
 
+try{
+    dbAdapter.executeUpdate("drop table services");
+}
+catch(e){}
+try{
+    dbAdapter.executeUpdate("drop table events");
+}
+catch(e){}
+
+
 dbAdapter.executeUpdate("create table resources1 (name varchar(50), displayname varchar(50), classname varchar(50), operationalstate varchar(50), model varchar(50), location varchar(50), vendor varchar(50), primary key (name));");
 dbAdapter.executeUpdate("create table resources2 (ID varchar(50), displayname varchar(50), classname varchar(50), operationalstate varchar(50), model varchar(50), location varchar(50), vendor varchar(50), primary key (ID));");
 dbAdapter.executeUpdate("create table deviceds (ID varchar(50), ipaddress varchar(50), primary key (ID));");
 dbAdapter.executeUpdate("create table linkds (ID varchar(50), memberof varchar(50), primary key (ID));");
+dbAdapter.executeUpdate("create table services (name varchar(50), manager varchar(50), status varchar(50), primary key (name));");
+dbAdapter.executeUpdate("create table events (EventName varchar(50), Resource varchar(50), Severity integer, Acknowledged varchar(10), Owner varchar(50), Description varchar(50), LastChangedAt datetime, LastOccuredAt datetime,  primary key (EventName));");
 
 dbAdapter.executeUpdate("insert into resources1 values ('device1', 'device1', 'Device', 'state1', 'model1', 'location1', 'vendor1')");
 dbAdapter.executeUpdate("insert into resources1 values ('device2', 'device2', 'Device', 'state2', 'model2', 'location2', 'vendor2')");
@@ -83,6 +95,22 @@ dbAdapter.executeUpdate("insert into linkds values ('link4', 'memberof4')");
 dbAdapter.executeUpdate("insert into linkds values ('link5', 'memberof5')");
 dbAdapter.executeUpdate("insert into linkds values ('link6', 'memberof6')");
 
+dbAdapter.executeUpdate("insert into services values ('service1', 'manager1', 'status1')");
+dbAdapter.executeUpdate("insert into services values ('service2', 'manager2', 'status2')");
+dbAdapter.executeUpdate("insert into services values ('service3', 'manager3', 'status3')");
+dbAdapter.executeUpdate("insert into services values ('service4', 'manager4', 'status4')");
+dbAdapter.executeUpdate("insert into services values ('service5', 'manager5', 'status5')");
+dbAdapter.executeUpdate("insert into services values ('service6', 'manager6', 'status6')");
+
+dbAdapter.executeUpdate("insert into events values ('event1', 'device1', 1, 'true', 'owner1', 'descr1','1999-01-01', '1999-01-01')");
+dbAdapter.executeUpdate("insert into events values ('event2', 'device1', 1, 'true', 'owner2', 'descr2','1999-02-01', '1999-02-01')");
+dbAdapter.executeUpdate("insert into events values ('event3', 'device2', 1, 'true', 'owner3', 'descr3','1999-03-01', '1999-03-01')");
+dbAdapter.executeUpdate("insert into events values ('event4', 'device2', 1, 'false', 'owner4', 'descr4','1999-04-01', '1999-04-01')");
+dbAdapter.executeUpdate("insert into events values ('event5', 'device3', 1, 'false', 'owner5', 'descr5','1999-05-01', '1999-05-01')");
+dbAdapter.executeUpdate("insert into events values ('event6', 'device3', 1, 'false', 'owner6', 'descr6','1999-06-01', '1999-06-01')");
+
+
+
 def ds1 = SingleTableDatabaseDatasource.findByName("DS1");
 if(ds1 == null){
     ds1 = new SingleTableDatabaseDatasource(name:"DS1", connection: dsConn, tableName:"resources1", keys:"name").save();
@@ -100,6 +128,16 @@ if(deviceDS == null){
 def linkDS = SingleTableDatabaseDatasource.findByName("LINKDS");
 if(linkDS == null){
     linkDS = new SingleTableDatabaseDatasource(name:"LINKDS", connection: dsConn, tableName:"linkds", keys:"ID").save();
+}
+
+def serviceDS = SingleTableDatabaseDatasource.findByName("serviceDS");
+if(serviceDS == null){
+    serviceDS = new SingleTableDatabaseDatasource(name:"serviceDS", connection: dsConn, tableName:"services", keys:"name").save();
+}
+
+def eventDS = SingleTableDatabaseDatasource.findByName("EVENTDS");
+if(eventDS == null){
+    eventDS = new SingleTableDatabaseDatasource(name:"EVENTDS", connection: dsConn, tableName:"events", keys:"EventName").save();
 }
 
 

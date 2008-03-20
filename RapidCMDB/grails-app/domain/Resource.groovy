@@ -9,7 +9,8 @@ class Resource {
         name(blank: false);
     };
 
-    static hasMany = [services:Service];
+    static hasMany = [services:Service, events:Event];
+
     static belongsTo = Service;
     
     static dataSources =

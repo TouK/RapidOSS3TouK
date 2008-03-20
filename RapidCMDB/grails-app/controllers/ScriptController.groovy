@@ -34,6 +34,7 @@ class ScriptController {
                         if(element.getClassName() == scriptClass.getName())
                         {
                             lineNumber = element.getLineNumber();
+                            break;
                         }
                     }
                     render(text:"Exception occurred while executing script $script.name at line $lineNumber . Reason :$exception",contentType:"text/html",encoding:"UTF-8");

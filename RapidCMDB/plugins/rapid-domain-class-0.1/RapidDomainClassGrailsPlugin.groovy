@@ -111,31 +111,25 @@ class RapidDomainClassGrailsPlugin {
                 else
                 {
                     def datasourceName =  propertyConfig.datasource;
-                    if(datasourceName)
+                    if(!datasourceName)
                     {
-                        def datasourceConfig = dataSources[datasourceName];
-                        def referenceProperty = datasourceConfig.referenceProperty;
-                        def propertyDatasource;
-                        if(referenceProperty)
+                        def referencedDatasourceName =  propertyConfig.datasourceProperty;
+                        if(referencedDatasourceName)
                         {
-                            def metaProp = mc.getMetaProperty(referenceProperty);
+                            def metaProp = mc.getMetaProperty(referencedDatasourceName);
                             if(metaProp)
                             {
-                                def referencedDatasourceName = metaProp.getProperty(delegate);
-                                if(referencedDatasourceName)
-                                {
-                                    propertyDatasource = BaseDatasource.findByName(referencedDatasourceName);
-                                }
+                                datasourceName = metaProp.getProperty(delegate);
                             }
-
-                        }
-                        else
-                        {
-                             propertyDatasource = BaseDatasource.findByName(datasourceName)
                         }
 
+                    }
+                    if(datasourceName)
+                    {
+                        def propertyDatasource = BaseDatasource.findByName(datasourceName)
                         if(propertyDatasource)
                         {
+                            def datasourceConfig = dataSources[datasourceName];
                             def keyConfiguration = datasourceConfig.keys;
                             def keys = [:];
                             def isNull = false;

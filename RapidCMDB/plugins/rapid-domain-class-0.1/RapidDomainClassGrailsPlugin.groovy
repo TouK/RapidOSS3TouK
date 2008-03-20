@@ -19,7 +19,6 @@ class RapidDomainClassGrailsPlugin {
     def doWithDynamicMethods = { ctx ->
         SessionFactory sessionFactory = ctx.sessionFactory
         for (dc in application.domainClasses) {
-            //    registerDynamicMethods(dc, application, ctx)
             MetaClass mc = dc.metaClass
             registerDynamicMethods(dc, application, ctx)
             for (subClass in dc.subClasses) {
@@ -56,7 +55,6 @@ class RapidDomainClassGrailsPlugin {
             sampleBean.save();
             return sampleBean;
         }
-
         mc.'static'.create = {Map props->
             def sampleBean = delegate.newInstance();
             props.each{key,value->
@@ -68,111 +66,351 @@ class RapidDomainClassGrailsPlugin {
     }
 
 
-    def getDatasourcesAndPropertyConfigurations(allDatasources, allPropertyConfiguration, domainClass)
+    def configureFederation(log, dc)
+    {
+        log.info("Configuring federation");
+        MetaClass mc = dc.metaClass
+        def propConfigCache = new PropertyConfigurationCache(dc);
+        def dsConfigCache = new DatasourceConfigurationCache(dc);
+        if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
+        {
+            mc.addMetaBeanProperty(new DatasourceProperty("isPropertiesLoaded", Object.class));
+//            mc.setProperty = {String name, Object value->
+//                def propertyConfig = propConfigCache.getPropertyConfigByName(name);
+//                mc.getMetaProperty(name).setProperty(delegate, value);
+//            };
+
+            mc.getProperty = {String name->
+                def propertyConfig = propConfigCache.getPropertyConfigByName(name);
+                def domainObject = delegate;
+                def isPropertiesLoaded = mc.getMetaProperty("isPropertiesLoaded").getProperty(domainObject);
+                if(!propertyConfig || propertyConfig.datasource == RapidCMDBConstants.RCMDB)
+                {
+                    def metaProp = mc.getMetaProperty(name);
+                    if(metaProp)
+                    {
+                        return mc.getMetaProperty(name).getProperty(domainObject);
+                    }
+                    return null;
+                }
+                else
+                {
+                    if(propertyConfig.lazy != "true")
+                    {
+
+                        def isPropLoadedMap = mc.getMetaProperty("isPropertiesLoaded").getProperty(domainObject);
+                        if(isPropLoadedMap[propConfigCache.getDatasourceName(domainObject, name)] == true)
+                        {
+                            return mc.getMetaProperty(name).getProperty(domainObject);
+                        }
+                    }
+                    return getFederatedProperty(mc, domainObject, name, propConfigCache, dsConfigCache);
+                }
+            };
+
+        }
+    }
+
+    def constructDatasourceProperties(propertyConfiguration)
+    {
+        def datasourcesProperties = [:]
+        propertyConfiguration.each {key,value->
+           def dsName = value.datasource;
+           if(!dsName)
+           {
+                dsName = value.datasourceProperty;
+           }
+           def props = datasourceProperties[dsName];
+           if(!props)
+           {
+               props = [];
+               datasourceProperties[dsName] = props;
+           }
+           value.name = key;
+           props += value;
+        }
+        return datasourcesProperties;
+    }
+
+
+
+
+    def getFederatedProperty(domainObjectMetaClass, currentDomainObject, propertyName, propCache, dsCache)
+    {
+        def propertyDatasource = propCache.getDatasource(currentDomainObject, propertyName);
+        println "Getting Property $propertyName from datasource $propertyDatasource";
+        if(propertyDatasource)
+        {
+            def keys = dsCache.getKeys(currentDomainObject, propertyDatasource.name);
+            println "Keys for property $propertyName : $keys"
+            if(keys != null && keys.size() > 0)
+            {
+                def isPropsLoaded = currentDomainObject.isPropertiesLoaded[propertyDatasource.name];
+                def requestedProperties = propCache.getDatasouceProperties(currentDomainObject, propertyName, isPropsLoaded);
+                println "Requested properties for property $propertyName : $requestedProperties"
+                try
+                {
+                    def returnedProps = propertyDatasource.getProperties (keys, requestedProperties);
+                    println "Returned properties for property $propertyName : $returnedProps"
+                    if(isPropsLoaded != true)
+                    {
+                        returnedProps.each {key, value->
+                            currentDomainObject.setProperty(propCache.getPropertyConfigByNameInDs(key).name, value);
+                        }
+                        currentDomainObject.isPropertiesLoaded[propertyDatasource.name] = true;
+                    }
+                    return returnedProps[propCache.getNameInDs(propCache.getPropertyConfigByName(propertyName))];
+                    
+                }
+                catch(Throwable e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return "";
+    }
+}
+
+class DatasourceProperty extends MetaBeanProperty
+{
+
+    public DatasourceProperty(String s, Class aClass) {
+        super(s, aClass, null, null); //To change body of overridden methods use File | Settings | File Templates.
+    }
+    
+   WeakHashMap map = new WeakHashMap()
+    public Object getProperty(Object o) {
+        def object = map[o];
+        if(!object)
+        {
+            object = [:];
+            map[o] = object;
+        }
+        return object;
+    }
+
+    public void setProperty(Object o, Object o1) {
+
+
+    }
+
+}
+
+
+class PropertyConfigurationCache
+{
+    def propertiesByName;
+    def propertiesByNameInDs;
+    def datasourceProperties;
+    def domainMetaClass;
+    public PropertyConfigurationCache(domainClass)
+    {
+        domainMetaClass = domainClass.metaClass;
+        propertiesByName = [:];
+        propertiesByNameInDs = [:];
+        datasourceProperties = [:];
+        constructPropertyConfiguration(domainClass);
+        propertiesByName.each{key, value->
+            value.name = key;
+            def nameInDs = getNameInDs(value);
+            propertiesByNameInDs[nameInDs] = value;
+            def propertyDs = value.datasource;
+            if(!propertyDs)
+            {
+                propertyDs =  value.datasourceProperty;
+            }
+            if(value.lazy != "true")
+            {
+                def dsProps = datasourceProperties[propertyDs];
+                if(!dsProps)
+                {
+                    dsProps = [:];
+                    datasourceProperties[propertyDs] = dsProps;
+                }
+                dsProps[key] = nameInDs;
+            }
+
+        }
+    }
+
+    def hasPropertyConfiguration()
+    {
+        return propertiesByName.size() > 0;
+    }
+
+    def getDatasourceName(domainObject, propertyName)
+    {
+        def propertyConfig = propertiesByName[propertyName];
+        if(propertyConfig)
+        {
+            def datasourceName =  propertyConfig.datasource;
+            if(!datasourceName)
+            {
+                def referencedDatasourceName =  propertyConfig.datasourceProperty;
+                if(referencedDatasourceName)
+                {
+                    def metaProp = domainMetaClass.getMetaProperty(referencedDatasourceName);
+                    if(metaProp)
+                    {
+                        datasourceName = metaProp.getProperty(domainObject);
+                    }
+                }
+            }
+            return datasourceName;
+        }
+        return null;
+
+    }
+
+
+    def constructPropertyConfiguration(domainClass)
     {
         def realClass = domainClass.metaClass.getTheClass();
         def superClass = realClass.getSuperclass();
         if(superClass && superClass != Object.class)
         {
-            getDatasourcesAndPropertyConfigurations(allDatasources, allPropertyConfiguration, superClass);
+            constructPropertyConfiguration(superClass);
         }
-        if(domainClass.metaClass.hasProperty(domainClass, "propertyConfiguration") && domainClass.metaClass.hasProperty(domainClass, "dataSources"))
+        if(domainClass.metaClass.hasProperty(domainClass, "propertyConfiguration"))
         {
-            def dataSources = GCU.getStaticPropertyValue (realClass, "dataSources");
-            def propertyConfiguration = GCU.getStaticPropertyValue (realClass, "propertyConfiguration");
-            allPropertyConfiguration.putAll(propertyConfiguration);
-            allDatasources.putAll(dataSources);
+            def propertyConfig = GCU.getStaticPropertyValue (realClass, "propertyConfiguration");
+            propertiesByName.putAll(propertyConfig);
         }
     }
 
-    def configureFederation(log, dc)
+    def getPropertyConfigByName(propName)
     {
-        log.info("Configuring federation");
-        MetaClass mc = dc.metaClass
-        def dataSources = [:];
-        def propertyConfiguration = [:];
-        getDatasourcesAndPropertyConfigurations (dataSources, propertyConfiguration, dc);
-        if(dataSources.size() > 0 && propertyConfiguration.size() > 0)
-        {
-            mc.setProperty = {String name, Object value->
-                def propertyConfig = propertyConfiguration[name];
-                if(!propertyConfig || propertyConfig.datasource == RapidCMDBConstants.RCMDB)
-                {
-                    mc.getMetaProperty(name).setProperty(delegate, value);
-                }
-            };
+        return propertiesByName[propName];
+    }
 
-            mc.getProperty = {String name->
-                def propertyConfig = propertyConfiguration[name];
-                if(!propertyConfig || propertyConfig.datasource == RapidCMDBConstants.RCMDB)
+    def getPropertyConfigByNameInDs(propName)
+    {
+        return propertiesByNameInDs[propName];
+    }
+
+    def getDatasouceProperties(domainObject, propertyName, isPropsLoaded)
+    {
+        def propConfig = propertiesByName[propertyName];
+        if(isPropsLoaded != true)
+        {
+            def dsName = propConfig.datasource;
+            if(!dsName)
+            {
+                dsName = propConfig.datasourceProperty;
+            }
+            def requestedProps = new HashMap(datasourceProperties[dsName]);
+            requestedProps[propertyName] = getNameInDs(propConfig);
+            return new ArrayList(requestedProps.values());
+        }
+        else
+        {
+            return [getNameInDs(propConfig)];    
+        }
+    }
+
+    def getNameInDs(propertyConfig)
+    {
+        def nameInDs = propertyConfig.nameInDs;
+        if(!nameInDs)
+        {
+            nameInDs = propertyConfig.name;
+        }
+        return nameInDs;
+    }
+
+
+    def getDatasource(domainObject, propertyName)
+    {
+        def datasourceName = getDatasourceName(domainObject, propertyName);
+        if(datasourceName)
+        {
+           return BaseDatasource.findByName(datasourceName)
+        }
+        return null;
+    }
+}
+
+class DatasourceConfigurationCache
+{
+    def datasources;
+    def domainMetaClass;
+    public DatasourceConfigurationCache(domainClass)
+    {
+        datasources = [:];
+        constructDatasources(domainClass);
+        domainMetaClass = domainClass.metaClass;
+    }
+
+    def hasDatasources()
+    {
+        return datasources.size() > 0;
+    }
+
+    def constructDatasources(domainClass)
+    {
+        def realClass = domainClass.metaClass.getTheClass();
+        def superClass = realClass.getSuperclass();
+        if(superClass && superClass != Object.class)
+        {
+            constructDatasources(superClass);
+        }
+        if(domainClass.metaClass.hasProperty(domainClass, "dataSources"))
+        {
+            def dataSources = GCU.getStaticPropertyValue (realClass, "dataSources");
+            datasources.putAll(dataSources);
+        }
+    }
+
+    def getKeys(domainObject, datasourceName)
+    {
+        def datasourceConfig = datasources[datasourceName];
+        if(datasourceConfig)
+        {
+            def keyConfiguration = datasourceConfig.keys;
+            def keys = [:];
+            def isNull = false;
+            keyConfiguration.each{key,value->
+                def nameInDs = key;
+                if(value && value.nameInDs)
                 {
-                    return mc.getMetaProperty(name).getProperty(delegate);
+                    nameInDs = value.nameInDs;
+                }
+                def keyValue =   domainMetaClass.getMetaProperty(key).getProperty(domainObject);
+                if(keyValue)
+                {
+                    keys[nameInDs] = keyValue;
                 }
                 else
                 {
-                    def datasourceName =  propertyConfig.datasource;
-                    if(!datasourceName)
-                    {
-                        def referencedDatasourceName =  propertyConfig.datasourceProperty;
-                        if(referencedDatasourceName)
-                        {
-                            def metaProp = mc.getMetaProperty(referencedDatasourceName);
-                            if(metaProp)
-                            {
-                                datasourceName = metaProp.getProperty(delegate);
-                            }
-                        }
-
-                    }
-                    if(datasourceName)
-                    {
-                        def propertyDatasource = BaseDatasource.findByName(datasourceName)
-                        if(propertyDatasource)
-                        {
-                            def datasourceConfig = dataSources[datasourceName];
-                            def keyConfiguration = datasourceConfig.keys;
-                            def keys = [:];
-                            def isNull = false;
-                            def currentDomainObject = delegate;
-                            keyConfiguration.each{key,value->
-                                def nameInDs = key;
-                                if(value && value.nameInDs)
-                                {
-                                    nameInDs = value.nameInDs;
-                                }
-                                def keyValue =   mc.getMetaProperty(key).getProperty(currentDomainObject);
-                                if(keyValue)
-                                {
-                                    keys[nameInDs] = keyValue;
-                                }
-                                else
-                                {
-                                    isNull = true;
-                                    return;
-                                }
-                            }
-                            if(!isNull&& keys.size() > 0)
-                            {
-                                def propName = name;
-                                if(propertyConfig.nameInDs)
-                                {
-                                    propName = propertyConfig.nameInDs;
-                                }
-                                try
-                                {
-                                    return propertyDatasource.getProperty (keys, propName);
-                                }
-                                catch(Throwable e)
-                                {
-                                }
-                            }
-                        }
-                    }
-
-                    return "";
+                    isNull = true;
+                    return;
                 }
-            };
+            }
+            return !isNull?keys:null;
+        }
+        return null;
+    }
 
+    def createPropertyDatasource(propertyConfig, domainObject)
+    {
+        def datasourceName =  propertyConfig.datasource;
+        if(!datasourceName)
+        {
+            def referencedDatasourceName =  propertyConfig.datasourceProperty;
+            if(referencedDatasourceName)
+            {
+                def metaProp = domainMetaClass.getMetaProperty(referencedDatasourceName);
+                if(metaProp)
+                {
+                    datasourceName = metaProp.getProperty(domainObject);
+                }
+            }
+        }
+        if(datasourceName)
+        {
+           return BaseDatasource.findByName(datasourceName)
         }
     }
 }

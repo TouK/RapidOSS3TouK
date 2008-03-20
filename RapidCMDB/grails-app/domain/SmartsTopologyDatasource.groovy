@@ -24,6 +24,6 @@ class SmartsTopologyDatasource extends BaseDatasource{
 
      def getProperties(Map keys, List properties)
      {
-         return this.adapter.getObject(keys.CreationClassName, keys.Name);
+         return this.adapter.getObject(keys.CreationClassName, keys.Name, properties);
      }
 }

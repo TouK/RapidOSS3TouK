@@ -13,9 +13,6 @@ class NetcoolDatasource extends BaseDatasource{
     def masterTableAdapter;
 
     static transients = ['statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter']
-//    ,
-//                         'statusTable','detailsTable','journalTable','conversionsTable','masterTable',
-//                         'statusTableKey','detailsTableKey','journalTableKey','conversionsTableKey','masterTableKey']
 
     def onLoad = {
         def statusTable = "alerts.status";
@@ -189,15 +186,14 @@ class NetcoolDatasource extends BaseDatasource{
         updateProps.put("Severity",intSeverity);
         updateProps.put("Acknowledged", 0);
 		statusTableAdapter.updateRecord(updateProps);
-
 		def whereClause= "Colname = 'Severity'";
-        def severityValues = [:];
-        severityValues = getFromConversions(whereClause);
-
-        def oldVal= conversions.get("Severity"+oldSeverity);
-        def newVal = conversions.get("Severity"+severity);
-
-        String text = "Alert prioritized from " + oldVal + " to " + newVal + " by " + userName;
+        def conversions = [:];
+        conversions = getFromConversions(whereClause);
+        def oldVal = "Severity"+oldSeverity;
+        oldVal= conversions[oldVal];
+        def newVal = "Severity"+severity;
+        newVal = conversions[newVal];
+        String text = "Alert prioritized from ${oldVal} to ${newVal} by ${userName}";
 		writeToJournal(event.serial, text);
 	}
 
@@ -208,10 +204,9 @@ class NetcoolDatasource extends BaseDatasource{
         }
 
         def oldSuppress = event.suppressescl;
-
 		def updateProps = [:];
 		updateProps.put("Identifier", identifier);
-				def intSeverity;
+		def intSuppress;
 		if (suppress instanceof String){
             intSuppress = Integer.parseInt(suppress);
         }
@@ -224,16 +219,14 @@ class NetcoolDatasource extends BaseDatasource{
         def whereClause= "Colname = 'SuppressEscl'";
         def conversions = [:];
         conversions = getFromConversions(whereClause);
-
         def oldVal= conversions.get("SuppressEscl"+oldSuppress);
         def newVal = conversions.get("SuppressEscl"+suppress);
-
-		String text = "Alert prioritized from " + oldVal + " to " + newVal + " by " + userName + ".";
+		String text = "Alert prioritized from ${oldVal} to ${newVal} by ${userName}";
 
 		writeToJournal(event.serial, text);
 	}
 
-    def acknowledgeAction(String identifier, String userName, boolean isAcknowledge) {
+    def acknowledgeAction(String identifier, boolean isAcknowledge, String userName) {
 		String sql;
 		String text;
 		def event = getEvent(identifier);
@@ -249,7 +242,7 @@ class NetcoolDatasource extends BaseDatasource{
 		}
 		else{
             updateProps.put("Acknowledged",0);
-			text = "Alert unAcknowledged by " + userName;
+			text = "Alert unacknowledged by " + userName;
 		}
         statusTableAdapter.updateRecord(updateProps);
         writeToJournal(event.serial, text);
@@ -275,17 +268,17 @@ class NetcoolDatasource extends BaseDatasource{
 		StringBuffer sb = new StringBuffer();
         sb.append("insert into alerts.journal (Serial,KeyField,Chrono,Text1) values (");
         sb.append("${intSerial},'${keyfield}',${date},'${text}')");
-        println sb.toString();
 		journalTableAdapter.executeUpdate(sb.toString(), []);
     }
 
     private def getFromConversions(whereClause){
         def conversions = [:];
         def columns = ["KeyField", "Conversion"];
-        def result = conversionsTableAdapter.getRecords(whereClause, columns);
-        def last = result.size()-1;
-        for (i in 0..last){
-            conversions.put(result.get("KeyField").toString().trim(), record.get("Conversion").toString().trim());
+        def records = conversionsTableAdapter.getRecords(whereClause, columns);
+        for (record in records){
+            def key = record.KeyField.toString().trim();
+            def value = record.Conversion.toString().trim();
+            conversions.put(key, value);
         }
         return conversions;
     }

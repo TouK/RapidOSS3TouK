@@ -40,7 +40,7 @@ def slaLevel = params.Slalevel;
 def serviceDown = false;
 
 for (resource in resources){
-    if ((resource instanceof Device) && (resource.operationalState == "down")){
+    if ((resource instanceof Device) && (resource.operationalstate == params.OperationalState)){
         def deviceInfo = [:];
         deviceInfo = collectDeviceInfo(resource);
         downDeviceInfo.put(resource.name, deviceInfo);
@@ -59,13 +59,13 @@ def collectDeviceInfo(device){
     deviceInfo.put("Vendor",device.vendor);
     deviceInfo.put("Model",device.model);
     deviceInfo.put("Location",device.location);
-    deviceInfo.put("IP",device.ip);
+    deviceInfo.put("IP",device.ipaddress);
     return deviceInfo;
 }
 
 def  findAllCustomersUsingThisServiceWithDownDevice(service, slaLevel){
     def custAccountMgrs = [];
-    def slas = Sla.findByServiceAndSlalevel(service, slaLevel);
+    def slas = Sla.findAllByServiceAndLevel(service, slaLevel);
     for (sla in slas){
         custAccountMgrs.add(sla.customer.accountmanager);
     }
@@ -73,8 +73,8 @@ def  findAllCustomersUsingThisServiceWithDownDevice(service, slaLevel){
 }
 
 def renderDownDeviceInfo(deviceInfo){
-
+    println "Device Info: " + deviceInfo;
 }
 def renderCustomerInfo(custInfo){
-
+    println "Cust Info: " + custInfo;
 }

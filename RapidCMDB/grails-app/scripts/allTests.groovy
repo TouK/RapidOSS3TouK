@@ -24,12 +24,16 @@
  */
 // Test lazy load
 import datasources.SingleTableDatabaseAdapter;
+
 def name = "device1";
-Device device = Device.findByName(name);
+
+Device device = Device.get(["name":name]);
 def oldip = device.ipaddress;
+def deviceId = device.id;
+
 SingleTableDatabaseDatasource ds = SingleTableDatabaseDatasource.findByName("DeviceDS");
 SingleTableDatabaseAdapter adapter = ds.adapter;
-adapter.updateRecord(['id':name, 'ipaddress':'bogus ip']);
+adapter.updateRecord(['ID':name, 'ipaddress':'bogus ip']);
 def record = adapter.getRecord(name);
 if (record.ipaddress == oldip){
     println "Could not properly update record!"
@@ -41,7 +45,7 @@ if (oldip == newip){
 else{
     println "Success in lazy load! (oldip: $oldip vs. newip: $newip)"
 }
-adapter.updateRecord(['id':name, 'ipaddress':oldip]);
+adapter.updateRecord(['ID':name, 'ipaddress':oldip]);
 
 // Test federated data can not be modified
 device.ipaddress = '192.168.1.1';
@@ -54,9 +58,13 @@ if (newip != oldip){
  //  Test master data can be updated in RCMDB database
 device.name = 'device1_1';
 def newname = device.name;
-if (newip == oldip){
+if (name == newname){
      println("Error: Master data could not be updated!")
 }
 
+if(name == Device.get(deviceId).name){
+     println("Error: Master data could not be updated!")
+}
 
+device.name = 'device1';
 

@@ -27,16 +27,28 @@ def ds1 = SingleTableDatabaseDatasource.findByName("DS1");
 def ds2 = SingleTableDatabaseDatasource.findByName("DS2");
 def serviceDs = SingleTableDatabaseDatasource.findByName("serviceDS");
 def eventDs = SingleTableDatabaseDatasource.findByName("EVENTDS");
+def cds = SingleTableDatabaseDatasource.findByName("CustomerDS");
 
 
 
-def records = serviceDs.getRecords();
+
+def records = cds.getRecords();
+for(record in records){
+    Customer.add(name:record.NAME);
+}
+records = serviceDs.getRecords();
 for(record in records){
     def name = record.NAME;
     def manager = record.MANAGER;
     def status = record.STATUS;
     Service.add(name:name, manager:manager, status:status);
 }
+
+Sla.add(level:"Gold", customer: Customer.get(["name":"c1"]), service:Service.get(["name":"service1"]));
+Sla.add(level:"Standard", customer: Customer.get(["name":"c1"]), service:Service.get(["name":"service2"]));
+Sla.add(level:"Standard", customer: Customer.get(["name":"c2"]), service:Service.get(["name":"service1"]));
+Sla.add(level:"Platinum", customer: Customer.get(["name":"c2"]), service:Service.get(["name":"service3"]));
+
 records = ds1.getRecords(["name", "classname", "displayname"]);
 for(record in records){
     def className = record.CLASSNAME;

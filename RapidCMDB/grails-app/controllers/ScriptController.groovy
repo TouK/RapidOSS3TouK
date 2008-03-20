@@ -27,6 +27,7 @@ class ScriptController {
                 }
                 catch(Throwable exception)
                 {
+                    exception.printStackTrace();
                     StackTraceElement[] elements = exception.getStackTrace();
                     def lineNumber = -1;
                     for(element in elements)

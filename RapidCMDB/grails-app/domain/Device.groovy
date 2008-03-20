@@ -23,7 +23,7 @@ class Device extends Resource{
             vendor:['datasourceProperty':"dsname"],
             model:['datasourceProperty':"dsname"],
             location:['datasourceProperty':"dsname"],
-            ipaddress:['datasource':"DeviceDS"]
+            ipaddress:['datasource':"DeviceDS", "lazy":"true"]
     ];
 
 }

@@ -26,7 +26,7 @@
     Service Level is provided as parameter
 */
 def slaLevel = params.Servicelevel;
-def slas = Sla.findBySlalevel(slaLevel);
+def slas = Sla.findAllByLevel(slaLevel);
 def custInfo = [:];
 slas.each {
    custInfo.put(it.service.name, it.customer.accountmanager)
@@ -35,5 +35,6 @@ slas.each {
 renderOutput(custInfo);
 
 def renderOutput(info){
-
+    println "Customer info"
+    println info;
 }

@@ -30,11 +30,11 @@
 def slaLevel = params.Slalevel;
 def custInfo = [];
 
-def downLinks = Links.findByOperationalstate(slaLevel);
+def downLinks = Link.findAllByOperationalstate(slaLevel);
 downLinks.each{
     def services = it.getServices();
     for (service in services){
-        def slas = Sla.findByServiceAndSlalevel(service, slaLevel);
+        def slas = Sla.findAllByServiceAndLevel(service, slaLevel);
         for (sla in slas){
             custInfo.add(sla.customer.accountmanager);
         }
@@ -44,6 +44,7 @@ downLinks.each{
 renderOutput(custInfo);
 
 def renderOutput(info){
-
+    println "Customer info"
+    println info;
 }
 

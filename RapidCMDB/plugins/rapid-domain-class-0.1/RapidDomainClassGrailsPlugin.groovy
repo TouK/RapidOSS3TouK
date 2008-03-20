@@ -1,5 +1,6 @@
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 import org.hibernate.SessionFactory
+import com.ifountain.comp.utils.CaseInsensitiveMap
 
 class RapidDomainClassGrailsPlugin {
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
@@ -138,24 +139,25 @@ class RapidDomainClassGrailsPlugin {
     def getFederatedProperty(domainObjectMetaClass, currentDomainObject, propertyName, propCache, dsCache)
     {
         def propertyDatasource = propCache.getDatasource(currentDomainObject, propertyName);
-        println "Getting Property $propertyName from datasource $propertyDatasource";
         if(propertyDatasource)
         {
             def keys = dsCache.getKeys(currentDomainObject, propertyDatasource.name);
-            println "Keys for property $propertyName : $keys"
             if(keys != null && keys.size() > 0)
             {
                 def isPropsLoaded = currentDomainObject.isPropertiesLoaded[propertyDatasource.name];
                 def requestedProperties = propCache.getDatasouceProperties(currentDomainObject, propertyName, isPropsLoaded);
-                println "Requested properties for property $propertyName : $requestedProperties"
                 try
                 {
                     def returnedProps = propertyDatasource.getProperties (keys, requestedProperties);
-                    println "Returned properties for property $propertyName : $returnedProps"
                     if(isPropsLoaded != true)
                     {
+                        
                         returnedProps.each {key, value->
-                            currentDomainObject.setProperty(propCache.getPropertyConfigByNameInDs(key).name, value);
+                            def requestedPropConfig = propCache.getPropertyConfigByNameInDs(key);
+                            if(requestedPropConfig)
+                            {
+                                currentDomainObject.setProperty(requestedPropConfig.name, value);
+                            }
                         }
                         currentDomainObject.isPropertiesLoaded[propertyDatasource.name] = true;
                     }
@@ -164,7 +166,6 @@ class RapidDomainClassGrailsPlugin {
                 }
                 catch(Throwable e)
                 {
-                    e.printStackTrace();
                 }
             }
         }
@@ -209,7 +210,7 @@ class PropertyConfigurationCache
     {
         domainMetaClass = domainClass.metaClass;
         propertiesByName = [:];
-        propertiesByNameInDs = [:];
+        propertiesByNameInDs = new CaseInsensitiveMap();
         datasourceProperties = [:];
         constructPropertyConfiguration(domainClass);
         propertiesByName.each{key, value->
@@ -300,9 +301,16 @@ class PropertyConfigurationCache
             {
                 dsName = propConfig.datasourceProperty;
             }
-            def requestedProps = new HashMap(datasourceProperties[dsName]);
-            requestedProps[propertyName] = getNameInDs(propConfig);
-            return new ArrayList(requestedProps.values());
+            if(datasourceProperties[dsName])
+            {
+                def requestedProps = new HashMap(datasourceProperties[dsName]);
+                requestedProps[propertyName] = getNameInDs(propConfig);
+                return new ArrayList(requestedProps.values());
+            }
+            else
+            {
+                return [getNameInDs(propConfig)];   
+            }
         }
         else
         {

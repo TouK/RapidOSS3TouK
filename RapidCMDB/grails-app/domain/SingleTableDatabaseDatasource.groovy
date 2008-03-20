@@ -29,7 +29,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
 
      def getProperties(Map keys, List properties)
      {
-        def props = adapter.getRecordMultiKey(keys, [propName]);
+        def props = adapter.getRecordMultiKey(keys, properties);
         return props;
      }
 

@@ -7,7 +7,7 @@ class Service {
         name(blank:false);
     }
 
-    static hasMany = [resources:Resource];
+    static hasMany = [resources:Resource, slas:Sla];
     
     static dataSources =
     [

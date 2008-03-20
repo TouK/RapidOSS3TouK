@@ -58,6 +58,10 @@ try{
     dbAdapter.executeUpdate("drop table events");
 }
 catch(e){}
+try{
+    dbAdapter.executeUpdate("drop table customers");
+}
+catch(e){}
 
 
 dbAdapter.executeUpdate("create table resources1 (name varchar(50), displayname varchar(50), classname varchar(50), operationalstate varchar(50), model varchar(50), location varchar(50), vendor varchar(50), primary key (name));");
@@ -66,6 +70,10 @@ dbAdapter.executeUpdate("create table deviceds (ID varchar(50), ipaddress varcha
 dbAdapter.executeUpdate("create table linkds (ID varchar(50), memberof varchar(50), primary key (ID));");
 dbAdapter.executeUpdate("create table services (name varchar(50), manager varchar(50), status varchar(50), primary key (name));");
 dbAdapter.executeUpdate("create table events (EventName varchar(50), Resource varchar(50), Severity integer, Acknowledged varchar(10), Owner varchar(50), Description varchar(50), LastChangedAt datetime, LastOccuredAt datetime,  primary key (EventName));");
+dbAdapter.executeUpdate("create table customers (name varchar(50), manager varchar(50), primary key (name));");
+
+dbAdapter.executeUpdate("insert into customers values ('c1', 'manager1')");
+dbAdapter.executeUpdate("insert into customers values ('c2', 'manager2')");
 
 dbAdapter.executeUpdate("insert into resources1 values ('device1', 'device1', 'Device', 'state1', 'model1', 'location1', 'vendor1')");
 dbAdapter.executeUpdate("insert into resources1 values ('device2', 'device2', 'Device', 'state2', 'model2', 'location2', 'vendor2')");
@@ -137,4 +145,8 @@ if(eventDS == null){
     eventDS = new SingleTableDatabaseDatasource(name:"EVENTDS", connection: dsConn, tableName:"events", keys:"EventName").save();
 }
 
+def cds = SingleTableDatabaseDatasource.findByName("CustomerDS");
+if(cds == null){
+    cds = new SingleTableDatabaseDatasource(name:"CustomerDS", connection: dsConn, tableName:"customers", keys:"name").save();
+}
 

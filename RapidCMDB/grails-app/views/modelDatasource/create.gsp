@@ -21,6 +21,14 @@
                 <g:renderErrors bean="${modelDatasource}" as="list" />
             </div>
             </g:hasErrors>
+
+            <p>Every property of the modeled class is retrieved from a datasource. There is always one master datasource for CRUD operations. Therefore id properties are defined for the master datasource. A modeled class may use multiple datasources and for each datasource, keys are listed, mapping properties to datasource fields. This defines how the datasource will be queried using the attributes of the modeled class.</p>
+            <ul>
+                <li><b>Datasource:</b>&nbsp; Name of the datasource instance as defined in the admin UI Datasources tab.</li>
+                <li><b>Master:</b> true/false. Default value is <b>false</b>. Declares which datasource will be used for CRUD operations.</li>
+                <li><b>Model:</b> Preselected. No need to change.</li>
+            </ul>
+
             <g:form action="save" method="post" >
                 <div class="dialog">
                     <table>

@@ -21,6 +21,13 @@
                 <g:renderErrors bean="${modelDatasourceKeyMapping}" as="list" />
             </div>
             </g:hasErrors>
+
+            <ul>
+                <li><b>Datasource:</b>Preselected value for the datasource for which the mapping is done. No need to change.</li>
+                <li><b>Property:</b> Name of the property whose value will be used while querying the datasource. This can be a transient attribute whose value is calculated.</li>
+                <li><b>Name In Datasource:</b> name of the field in datasource corresponding to the property in the modeled class.</li>
+            </ul>
+
             <g:form action="save" method="post" >
                 <div class="dialog">
                     <table>

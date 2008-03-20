@@ -11,6 +11,7 @@ class Router extends Device{
                 "instanceName":["nameInDs":"Name"]
             ]
         ]
+
     ];
 
     static propertyConfiguration =

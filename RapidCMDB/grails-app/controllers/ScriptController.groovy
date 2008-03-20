@@ -24,9 +24,19 @@ class ScriptController {
                 {
                     def res = String.valueOf(scriptObject.run())
                     render(text:res, contentType:"text/html",encoding:"UTF-8");
-                }catch(Throwable exception)
+                }
+                catch(Throwable exception)
                 {
-                    render(text:"Exception occurred while executing script. Reason :$exception",contentType:"text/html",encoding:"UTF-8");
+                    StackTraceElement[] elements = exception.getStackTrace();
+                    def lineNumber = -1;
+                    for(element in elements)
+                    {
+                        if(element.getClassName() == scriptClass.getName())
+                        {
+                            lineNumber = element.getLineNumber();
+                        }
+                    }
+                    render(text:"Exception occurred while executing script $script.name at line $lineNumber . Reason :$exception",contentType:"text/html",encoding:"UTF-8");
                 }
             }
             else

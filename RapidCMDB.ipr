@@ -235,26 +235,6 @@
   <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/../out" />
   </component>
-  <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="RapidCMDBJava" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.tools.GroovyStarter" />
-      <option name="VM_PARAMETERS" value="-Dserver.port=12222  -Xmx256M  -Dgrails.home=C:\grails-1.0.1  -Dbase.dir=. &quot;-Dtools.jar=C:\Program Files\Java\jdk1.6.0_04\lib\tools.jar&quot;  -Dgroovy.starter.conf=groovy-starter.conf  -Dfile.encoding=windows-1252  -classpath &quot;C:\grails-1.0.1\lib\groovy-all-1.5.4.jar&quot;" />
-      <option name="PROGRAM_PARAMETERS" value="--main org.codehaus.groovy.grails.cli.GrailsScriptRunner  --conf groovy-starter.conf  --classpath C:\grails-1.0.1\lib\groovy-all-1.5.4.jar;.;..\out\production\comp;..\out\production\ext;..\out\production\core run-app" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/RapidCMDB" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="RapidCMDB" />
-      <envs />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-  </component>
   <component name="ResourceManagerContainer">
     <option name="myResourceBundles">
       <value>

@@ -22,6 +22,15 @@
                 <g:renderErrors bean="${model}" as="list" />
             </div>
             </g:hasErrors>
+
+            <h3>Steps for Defining a Modeled Object</h3>
+            <ol>
+                <li>Create Modeled Object</li>
+                <li>Edit the Modeled Object just created to link to Datasource(s) that are used as sources for properties. Repeat for all datasources referenced.</li>
+                <li>Edit the Modeled Object to add properties. Repeat until all properties are added</li>
+                <li>Edit each referenced datasource and add key mappings</li>
+            </ol>
+
             <g:form method="post" >
                 <input type="hidden" name="id" value="${model?.id}" />
                 <div class="dialog">

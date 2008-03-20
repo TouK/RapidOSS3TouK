@@ -21,6 +21,14 @@
                 <g:renderErrors bean="${modelProperty}" as="list" />
             </div>
             </g:hasErrors>
+
+            <h3>Adding property to a Modeled Object</h3>
+            <ul>
+                <li>Set a series of constraints on the property</li>
+                <li>select the datasource or the property that has the name of the datasource that will be used to retrieve the value for the property</li>
+            </ul>
+
+
             <g:form action="save" method="post" >
                 <div class="dialog">
                     <table>
@@ -134,6 +142,25 @@
                     <span class="button"><input class="save" type="submit" value="Create" /></span>
                 </div>
             </g:form>
+
+            <h3>Property Constraints and Rules</h3>
+            <p>Model definition starts with property definition along with constraints placed on the properties. Each property supports the following attributes:</p>
+            <ul>
+                <li><b>name:</b>&nbsp; Name of the property.</li>
+
+                <li><b>type:</b> Supported types are string, number, date</li>
+                <li><b>nameInDatasource:</b> Required if the modeled name and the name of the property in the datasource that is used to retrieve the property are not the same.</li>
+                <li><b>blank:</b> true/false. Default value is <b>true</b>. When false, a value must be supplied while adding an instance of this modeled class unless a default value is supplied for the property. CRUD operations are performed on the master datasource therefore this property applies to properties defined for the master datasource.</li>
+                <li><b>default:</b> Default value for a property. When defined for a property with blank=false, this property will no longer be mandatory during an add operation but can be supplied optionally.</li>
+                <li><b>lazy:</b> true/false. Default value is true. When true, the property's value will NOT be retrieved from the corresponding datasource during a getObject invocation. It will be retrieved only when the attribute is accessed. When false, the value will be retrieved during a getObject invocation.</li>
+            </ul>
+
+            <p><b>NOTE1:</b> <b>blank</b> attribute applies to properties in the master datasource only. Ids cannot be blank.</p>
+
+            <p><b>NOTE2:</b> <b>default</b> attribute applies to properties in the master datasource only. If supplied for a property with blank=false, it will no longer be required in an add operation</p>
+            
+            <p><b>NOTE3:</b> <b>lazy</b> attribute does not apply to properties listed as ids in the master datasource.</p>
+
         </div>
     </body>
 </html>

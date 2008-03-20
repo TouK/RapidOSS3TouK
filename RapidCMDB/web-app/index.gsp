@@ -41,10 +41,10 @@
         <h2 style="margin-left:20px;">Modeling</h2>
         <p style="margin-left:20px;width:80%">Model your Managed Objects.</p>
         <div class="dialog" style="margin-left:20px;width:60%;">
-            <ul>
+            <ol>
                 <li class="controller"><g:link controller="model">Model Managed Objects</g:link></li>
                 <li class="controller"><g:link controller="modelRelation">Define Relations</g:link></li>
-            </ul>
+            </ol>
         </div>
 
         <h2 style="margin-left:20px;">Scripting</h2>

@@ -12,7 +12,7 @@ class ModelProperty {
     static belongsTo = Model;
 
     static constraints = {
-        name(blank:false);
+        name(blank:false, unique:'model');
         modelDatasourceId(blank:true,nullable:true);
         propertySpecifyingDatasource(nullable:true);
         type(inList:["string", "number", "date"]);

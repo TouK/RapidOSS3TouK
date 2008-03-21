@@ -27,7 +27,7 @@
                 <div class="dialog">
                     <table>
                         <tbody>
-                        
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="name">Name:</label>
@@ -35,17 +35,17 @@
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'name','errors')}">
                                     <input type="text" id="name" name="name" value="${fieldValue(bean:modelProperty,field:'name')}"/>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="datasourceName">Datasource Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'datasourceName','errors')}">
-                                    <g:select optionKey="id" from="${ModelDatasource.list()}" name="datasourceName.id" value="${modelProperty?.datasourceName?.id}" noSelection="['null':'']"></g:select>
+                                    <g:select optionKey="id" from="${modelProperty.model?.datasources}" name="datasourceName.id" value="${ModelDatasource.findByName(modelProperty?.datasourceName)?.id}" noSelection="['null':'']"></g:select>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="propertySpecifyingDatasource">Property Specifying Datasource:</label>
@@ -53,8 +53,8 @@
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'propertySpecifyingDatasource','errors')}">
                                     <g:select optionKey="id" from="${ModelProperty.list()}" name="propertySpecifyingDatasource.id" value="${modelProperty?.propertySpecifyingDatasource?.id}" noSelection="['null':'']"></g:select>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="type">Type:</label>
@@ -62,8 +62,8 @@
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'type','errors')}">
                                     <g:select id="type" name="type" from="${modelProperty.constraints.type.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:modelProperty,field:'type')}" ></g:select>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="blank">Blank:</label>
@@ -71,8 +71,8 @@
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'blank','errors')}">
                                     <g:checkBox name="blank" value="${modelProperty?.blank}" ></g:checkBox>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="defaultValue">Default Value:</label>
@@ -80,8 +80,8 @@
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'defaultValue','errors')}">
                                     <input type="text" id="defaultValue" name="defaultValue" value="${fieldValue(bean:modelProperty,field:'defaultValue')}"/>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="lazy">Lazy:</label>
@@ -89,8 +89,8 @@
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'lazy','errors')}">
                                     <g:checkBox name="lazy" value="${modelProperty?.lazy}" ></g:checkBox>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="model">Model:</label>
@@ -98,8 +98,8 @@
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'model','errors')}">
                                     <g:select optionKey="id" from="${Model.list()}" name="model.id" value="${modelProperty?.model?.id}" ></g:select>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="nameInDatasource">Name In Datasource:</label>
@@ -107,8 +107,8 @@
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'nameInDatasource','errors')}">
                                     <input type="text" id="nameInDatasource" name="nameInDatasource" value="${fieldValue(bean:modelProperty,field:'nameInDatasource')}"/>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                         </tbody>
                     </table>
                 </div>

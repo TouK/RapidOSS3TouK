@@ -8,9 +8,7 @@
     </head>
     <body>
         <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-            <span class="menuButton"><g:link class="list" action="list">ModelProperty List</g:link></span>
-            <span class="menuButton"><g:link class="create" action="create">New ModelProperty</g:link></span>
+            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelProperty?.model?.id)}">${modelProperty?.model}</a></span>
         </div>
         <div class="body">
             <h1>Show ModelProperty</h1>
@@ -75,13 +73,6 @@
                             <td valign="top" class="name">Lazy:</td>
                             
                             <td valign="top" class="value">${modelProperty.lazy}</td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name">Model:</td>
-                            
-                            <td valign="top" class="value"><g:link controller="model" action="show" id="${modelProperty?.model?.id}">${modelProperty?.model}</g:link></td>
                             
                         </tr>
                     

@@ -3,7 +3,7 @@ class ModelProperty {
     String type;
     boolean blank = true;
     String defaultValue;
-    ModelDatasource datasourceName;
+    String datasourceName;
     ModelProperty propertySpecifyingDatasource;
     String nameInDatasource;
     Model model;
@@ -13,7 +13,7 @@ class ModelProperty {
 
     static constraints = {
         name(blank:false);
-        datasourceName(nullable:true);
+        datasourceName(blank:true,nullable:true);
         propertySpecifyingDatasource(nullable:true);
         type(inList:["string", "number", "date"]);
     }

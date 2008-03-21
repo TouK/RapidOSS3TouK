@@ -8,9 +8,7 @@
     </head>
     <body>
         <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-            <span class="menuButton"><g:link class="list" action="list">ModelDatasourceKeyMapping List</g:link></span>
-            <span class="menuButton"><g:link class="create" action="create">New ModelDatasourceKeyMapping</g:link></span>
+            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'modelDatasource/show/' + modelDatasourceKeyMapping?.datasource?.id)}">${modelDatasourceKeyMapping?.datasource?.datasource?.name}</a></span>
         </div>
         <div class="body">
             <h1>Show ModelDatasourceKeyMapping</h1>
@@ -20,29 +18,16 @@
             <div class="dialog">
                 <table>
                     <tbody>
-
-                    
                         <tr class="prop">
                             <td valign="top" class="name">Id:</td>
                             
                             <td valign="top" class="value">${modelDatasourceKeyMapping.id}</td>
-                            
                         </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name">Datasource:</td>
-                            
-                            <td valign="top" class="value"><g:link controller="modelDatasource" action="show" id="${modelDatasourceKeyMapping?.datasource?.id}">${modelDatasourceKeyMapping?.datasource}</g:link></td>
-                            
-                        </tr>
-                    
                         <tr class="prop">
                             <td valign="top" class="name">Name In Datasource:</td>
                             
                             <td valign="top" class="value">${modelDatasourceKeyMapping.nameInDatasource}</td>
-                            
                         </tr>
-                    
                         <tr class="prop">
                             <td valign="top" class="name">Property:</td>
                             

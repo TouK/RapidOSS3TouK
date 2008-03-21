@@ -25,9 +25,9 @@
 /*
   Find the customers with a specific service agreement for those services with down links
 
-  Slalevel is provided as parameter
+  Service level is provided as parameter (Servicelevel)
 */
-def slaLevel = params.Slalevel;
+def slaLevel = params.Servicelevel;
 def custInfo = [];
 
 def downLinks = Link.findAllByOperationalstate(slaLevel);
@@ -42,6 +42,7 @@ downLinks.each{
 }
 
 renderOutput(custInfo);
+return "Successfully executed";
 
 def renderOutput(info){
     println "Customer info"

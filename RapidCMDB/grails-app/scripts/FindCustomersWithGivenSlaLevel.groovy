@@ -23,7 +23,7 @@
  * To change this template use File | Settings | File Templates.
  */
 /*
-    Service Level is provided as parameter
+    Service Level is provided as parameter (Servicelevel)
 */
 def slaLevel = params.Servicelevel;
 def slas = Sla.findAllByLevel(slaLevel);
@@ -33,6 +33,7 @@ slas.each {
 }
 
 renderOutput(custInfo);
+return "Successfully executed";
 
 def renderOutput(info){
     println "Customer info"

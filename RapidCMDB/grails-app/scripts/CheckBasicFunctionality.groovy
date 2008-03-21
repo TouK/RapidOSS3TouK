@@ -36,14 +36,11 @@ SingleTableDatabaseAdapter adapter = ds.adapter;
 adapter.updateRecord(['ID':name, 'ipaddress':'bogus ip']);
 def record = adapter.getRecord(name);
 if (record.ipaddress == oldip){
-    println "Could not properly update record!"
+    println "Could not properly update record in the database!"
 }
 def newip = device.ipaddress;
 if (oldip == newip){
     println "Error: Lazy load doesn't work! (oldip: $oldip vs. newip: $newip)"
-}
-else{
-    println "Success in lazy load! (oldip: $oldip vs. newip: $newip)"
 }
 adapter.updateRecord(['ID':name, 'ipaddress':oldip]);
 
@@ -65,6 +62,5 @@ if (name == newname){
 if(name == Device.get(deviceId).name){
      println("Error: Master data could not be updated!")
 }
-
 device.name = 'device1';
-
+return "Successfully executed";

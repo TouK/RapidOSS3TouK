@@ -30,8 +30,6 @@ def eventDs = SingleTableDatabaseDatasource.findByName("EVENTDS");
 def cds = SingleTableDatabaseDatasource.findByName("CustomerDS");
 
 
-
-
 def records = cds.getRecords();
 for(record in records){
     Customer.add(name:record.NAME);
@@ -105,3 +103,4 @@ for(record in records){
     def resource = record.RESOURCE;
     Resource.get(["name":resource]).addToEvents(new Event(name:eventName));
 }
+return "Successfully executed";

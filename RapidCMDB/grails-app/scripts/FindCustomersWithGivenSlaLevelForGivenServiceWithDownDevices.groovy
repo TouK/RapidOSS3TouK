@@ -28,19 +28,21 @@
  Also find the customers with a specific service agreement for those services with down devices and
  get the account manager's name
 
- Service name and sla level are provided as parameters
+ Service name (Service), service level (Servicelevel), and operational state (OperationalState) are provided as parameters
  */
 
-def service = Service.findByName(params.service);
-def resources = service.getResources();
+def service = Service.findByName(params.Service);
+def slaLevel = params.Servicelevel;
+def operationalState = params.OperationalState;
+
 def downDeviceInfo = [:];
 def customerContactInfo = [];
-
-def slaLevel = params.Slalevel;
 def serviceDown = false;
 
+def resources = service.getResources();
+
 for (resource in resources){
-    if ((resource instanceof Device) && (resource.operationalstate == params.OperationalState)){
+    if ((resource instanceof Device) && (resource.operationalstate == operationalState)){
         def deviceInfo = [:];
         deviceInfo = collectDeviceInfo(resource);
         downDeviceInfo.put(resource.name, deviceInfo);
@@ -52,7 +54,7 @@ if (serviceDown){
     renderDownDeviceInfo(downDeviceInfo);
     renderCustomerInfo(customerContactInfo);
 }
-
+return "Successfully executed";
 
 def collectDeviceInfo(device){
     def deviceInfo = [:];

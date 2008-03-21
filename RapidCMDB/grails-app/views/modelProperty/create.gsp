@@ -48,9 +48,9 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="datasourceName">Datasource Name:</label>
+                            <label for="modelDatasourceId">Datasource Name:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'datasourceName', 'errors')}">
+                        <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'modelDatasourceId', 'errors')}">
                             <%
                                 def modelDatasourceList;
                                 if (params["model.id"] != null) {
@@ -61,7 +61,7 @@
                                     modelDatasourceList = ModelDatasource.list();
                                 }
                             %>
-                            <g:select optionKey="datasource" from="${modelDatasourceList}" name="datasourceName" value="${fieldValue(bean: modelProperty, field: 'datasourceName')}" noSelection="['null':'']"></g:select>
+                            <g:select optionKey="id" from="${modelDatasourceList}" name="modelDatasourceId" value="${fieldValue(bean: modelProperty, field: 'modelDatasourceId')}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
 

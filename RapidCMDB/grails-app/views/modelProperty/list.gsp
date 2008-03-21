@@ -43,7 +43,7 @@
                         
                             <td>${modelProperty.name?.encodeAsHTML()}</td>
                         
-                            <td>${modelProperty.datasourceName?.encodeAsHTML()}</td>
+                            <td>${modelProperty.modelDatasourceId?.encodeAsHTML()}</td>
                         
                             <td>${modelProperty.propertySpecifyingDatasource?.encodeAsHTML()}</td>
                         

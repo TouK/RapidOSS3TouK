@@ -90,16 +90,8 @@
                             <td>${modelProperty.type?.encodeAsHTML()}</td>
 
                             <td>${modelProperty.blank?.encodeAsHTML()}</td>
-
-                            <td>
-                                <%
-                                    if (!"null".equals(modelProperty.datasourceName)) {
-                                %>
-                                        ${modelProperty.datasourceName?.encodeAsHTML()}
-                                <%
-                                    }
-                                %>
-                            </td>
+ 
+                            <td>${ModelDatasource.get(modelProperty.modelDatasourceId).datasource.name.encodeAsHTML()}</td>
 
                             <td>${modelProperty.propertySpecifyingDatasource?.encodeAsHTML()}</td>
 

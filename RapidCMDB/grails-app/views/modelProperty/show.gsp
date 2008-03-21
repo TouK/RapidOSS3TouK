@@ -37,7 +37,7 @@
                         <tr class="prop">
                             <td valign="top" class="name">Datasource Name:</td>
                             
-                            <td valign="top" class="value"><g:link controller="modelDatasource" action="show" id="${modelProperty?.datasourceName}">${modelProperty?.datasourceName}</g:link></td>
+                            <td valign="top" class="value"><g:link controller="modelDatasource" action="show" id="${modelProperty?.modelDatasourceId}">${ModelDatasource.get(modelProperty.modelDatasourceId).datasource.name}</g:link></td>
                             
                         </tr>
                     

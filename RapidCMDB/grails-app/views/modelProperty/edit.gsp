@@ -42,7 +42,7 @@
                                     <label for="datasourceName">Datasource Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'datasourceName','errors')}">
-                                    <g:select optionKey="id" from="${modelProperty.model?.datasources}" name="datasourceName.id" value="${ModelDatasource.findByName(modelProperty?.datasourceName)?.id}" noSelection="['null':'']"></g:select>
+                                    <g:select optionKey="datasource" from="${modelProperty.model?.datasources}" name="datasourceName" value="${fieldValue(bean:modelProperty,field:'datasourceName')}" noSelection="['null':'']"></g:select>
                                 </td>
                             </tr>
 

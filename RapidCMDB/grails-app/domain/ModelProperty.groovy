@@ -18,6 +18,8 @@ class ModelProperty {
         type(inList:["string", "number", "date"]);
     }
 
+    static optionals = ["datasourceName", "propertySpecifyingDatasource"]
+
     String toString(){
         return "$name";
     }

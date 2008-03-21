@@ -61,7 +61,7 @@
                                     modelDatasourceList = ModelDatasource.list();
                                 }
                             %>
-                            <g:select optionKey="id" from="${modelDatasourceList}" name="datasourceName.id" value="${modelProperty?.datasourceName?.id}" noSelection="['null':'']"></g:select>
+                            <g:select optionKey="id" from="${modelDatasourceList}" name="datasourceName.id" value="${ModelDatasource.findByName(modelProperty?.datasourceName)?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
 

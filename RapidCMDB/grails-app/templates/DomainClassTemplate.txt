@@ -1,4 +1,4 @@
-${IMPORTS}
 class ${model.name} ${model.parentModel == null?"":"extends "+model.parentModel.name}
 {
+    ${AUTO_GENERATED_CODE}
 }

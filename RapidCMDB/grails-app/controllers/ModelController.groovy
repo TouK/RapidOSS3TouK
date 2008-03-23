@@ -1,23 +1,30 @@
 import groovy.text.SimpleTemplateEngine
+import com.ifountain.domain.DomainGenerator
 
 class ModelController {
 
     def scaffold = Model;
 
     def generate = {
-        def model = Model.findByName(params.id);
-//        model.propertyMap.each
-//        {
-//            println it;
-//
-//        }
-        def engine = new SimpleTemplateEngine();
-        def t = engine.createTemplate(new File("./groovy-app/templates/DomainClassTemplate.txt"))
-        def bindings = ["model":model,
-                        "imports":"bunlar importlar"];
-        new File("${model.name}.groovy").withWriter { w ->
-            t.make(bindings).writeTo(w);
+        if(params.id)
+        {
+            def model = Model.get(params.id);
+            if(model)
+            {
+                DomainGenerator.getInstance().generateModel (model);
+                flash.message = "Model $model.name genareted succcessfully"
+                redirect(action:show,controller:'model', id:model?.id)
+            }
+            else
+            {
+                flash.message = "Model does not exist"
+                redirect(action:list)
+            }
         }
-
+        else
+        {
+            flash.message = "Model id not specified"
+            redirect(action:list)
+        }
     }
 }

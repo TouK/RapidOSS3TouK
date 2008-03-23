@@ -91,7 +91,7 @@
 
                             <td>${modelProperty.blank?.encodeAsHTML()}</td>
  
-                            <td>${ModelDatasource.get(modelProperty.modelDatasourceId).datasource.name.encodeAsHTML()}</td>
+                            <td>${modelProperty?.propertyDatasource?.datasource?.toString()?.encodeAsHTML()}</td>
 
                             <td>${modelProperty.propertySpecifyingDatasource?.encodeAsHTML()}</td>
 
@@ -103,11 +103,55 @@
             </table>
         </div>
     </div>
+
+    <div style="margin-top:20px;">
+       <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Relation List</span>
+       <span class="menuButton"><g:link class="create" controller="modelRelation" params="['model.id':model?.id]" action="create">New Relation</g:link></span>
+        <div class="list">
+            <table>
+                <thead>
+                    <tr>
+
+                        <g:sortableColumn property="name" title="Name"/>
+                        <g:sortableColumn property="type" title="Type"/>
+
+                        <g:sortableColumn property="toModel" title="To Model"/>
+                    </tr>
+                </thead>
+                <tbody>
+                    <g:each in="${model.relations}" status="i" var="modelRelation">
+                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+
+                            <td><g:link action="show" id="${modelRelation.id}" controller="modelRelation">${modelRelation.name?.encodeAsHTML()}</g:link></td>
+                            <td>${modelRelation.cardinality?.encodeAsHTML()}</td>
+
+                            <td>${modelRelation.toModel.name.encodeAsHTML()}</td>
+                        </tr>
+                    </g:each>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <div class="buttons" style="margin-top:30px;">
         <g:form>
             <input type="hidden" name="id" value="${model?.id}"/>
             <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+            <span class="button">
+            <%
+                if(!model.isGenerated()){
+            %>
+            <g:actionSubmit class="generate" onclick="return confirm('Are you sure?');" value="Generate"/>
+            <%
+                }
+                else
+                {
+            %>
+            <g:actionSubmit class="generate" onclick="return confirm('Model already exists. All of the changes will be lost. Are you sure?');" value="Generate"/>
+            <%
+                }
+            %>
+            </span>
         </g:form>
     </div>
 </div>

@@ -23,7 +23,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-
-
-def event =  Event.get([name:"event2"]);
-return event.lastOccured;
+return "class x extends ".matches("\\s*(public|private|protected|)\\s*class\\s+\\S+\\s*(extends\\s+\\S+)*.*")
+//
+//def event =  Event.get([name:"event2"]);
+//return event.lastOccured;

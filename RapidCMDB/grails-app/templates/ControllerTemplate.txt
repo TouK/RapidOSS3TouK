@@ -1,0 +1,4 @@
+class ${model.name}Controller
+{
+    def scaffold = ${model.name}
+}

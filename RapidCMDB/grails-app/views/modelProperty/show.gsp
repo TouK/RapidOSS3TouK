@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelProperty?.model?.id)}">${modelProperty?.model}</a></span>
+           <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelProperty?.model?.id)}">${modelProperty?.model}</a></span>
         </div>
         <div class="body">
             <h1>Show ModelProperty</h1>
@@ -37,7 +37,7 @@
                         <tr class="prop">
                             <td valign="top" class="name">Datasource Name:</td>
                             
-                            <td valign="top" class="value"><g:link controller="modelDatasource" action="show" id="${modelProperty?.modelDatasourceId}">${ModelDatasource.get(modelProperty.modelDatasourceId).datasource.name}</g:link></td>
+                            <td valign="top" class="value"><g:link controller="modelDatasource" action="show" id="${modelProperty?.propertyDatasource.id}">${modelProperty?.propertyDatasource?.datasource?.name}</g:link></td>
                             
                         </tr>
                     

@@ -17,11 +17,11 @@ class ModelPropertyController {
         if(modelProperty) {
             def modelId = modelProperty.model?.id;
             modelProperty.delete()
-            flash.message = "ModelProperty ${params.id} deleted"
+            flash.message = "Property ${modelProperty.name} deleted"
             redirect(action:show, controller:'model', id:modelId)
         }
         else {
-            flash.message = "ModelProperty not found with id ${params.id}"
+            flash.message = "Property not found"
             redirect(action:list)
         }
     }

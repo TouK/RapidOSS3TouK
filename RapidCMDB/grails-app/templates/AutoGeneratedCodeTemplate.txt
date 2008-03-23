@@ -1,0 +1,69 @@
+
+    //AUTO_GENERATED_CODE
+
+
+    static datasources =
+    [
+        <%
+        model.datasources.each{
+            print "\"$it.datasource.name\" : [master:$it.master, keys:["
+            it.keyMappings.each{keyMapping->
+                print "$keyMapping.property.name:[nameInDs:\"$keyMapping.nameInDatasource\"],"
+            }
+            println "]],"
+        }
+        %>
+    ]
+
+    <%
+    def propertyConfigurations = [:]
+    def transientProps = [];
+    def hasMany = [:];
+    model.modelProperties.each{
+        println "${it.convertToRealType()} $it.name;"
+        if(it.propertyDatasource != null || it.propertySpecifyingDatasource != null)
+        {
+            transientProps += it.name;
+            def propConfiguration = [:];
+            propConfiguration["nameInDs"] =  it.nameInDatasource?it.nameInDatasource:it.name;
+            if(it.propertyDatasource)
+            {
+                propConfiguration["datasource"] =  it.propertyDatasource.datasource.name;
+            }
+            else
+            {
+                propConfiguration["datasourceProperty"] =  it.propertySpecifyingDatasource.name;
+            }
+            propConfiguration["lazy"] = "\"$it.lazy\""
+            propertyConfigurations[it.name] = propConfiguration;
+        }
+    }
+    def relations = model.relations;
+    relations.each{
+        if(it.cardinality == "OneToOne")
+        {
+            println "${it.toModel.name} $it.name;"
+        }
+        else
+        {
+            hasMany[it.name] = it.toModel.name;
+        }
+    }
+    if(hasMany.size() != 0)
+    {
+        print "static hasMany= [";
+        hasMany.each{key, value->
+            print "$key:$value,";
+        }
+        println "]";
+    }
+    println "static propertyConfiguration= $propertyConfigurations"
+    print "static transients = ['propertyConfiguration', 'datasources'"
+    transientProps.each
+    {
+        print ",\"$it\""
+    }
+    println ']'
+    %>
+
+    //AUTO_GENERATED_CODE

@@ -8,9 +8,7 @@
     </head>
     <body>
         <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-            <span class="menuButton"><g:link class="list" action="list">ModelProperty List</g:link></span>
-            <span class="menuButton"><g:link class="create" action="create">New ModelProperty</g:link></span>
+            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelProperty.model?.id)}">${modelProperty.model?.name}</a></span>
         </div>
         <div class="body">
             <h1>Edit ModelProperty</h1>
@@ -41,8 +39,8 @@
                                 <td valign="top" class="name">
                                     <label for="datasourceName">Datasource Name:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'datasourceName','errors')}">
-                                    <g:select optionKey="id" from="${modelProperty.model?.datasources}" name="modelDatasourceId" value="${fieldValue(bean:modelProperty,field:'modelDatasourceId')}" noSelection="['null':'']"></g:select>
+                                <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'propertyDatasource','errors')}">
+                                    <g:select optionKey="id" from="${modelProperty.model?.datasources}" name="propertyDatasource.id" value="${modelProperty?.propertyDatasource?.id}" noSelection="['null':'']"></g:select>
                                 </td>
                             </tr>
 

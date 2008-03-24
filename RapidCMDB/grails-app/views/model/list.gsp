@@ -1,4 +1,4 @@
-
+<%@ page import="model.*" %>
 
 <html>
     <head>

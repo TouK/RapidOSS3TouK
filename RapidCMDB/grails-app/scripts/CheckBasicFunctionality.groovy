@@ -23,7 +23,8 @@
  * To change this template use File | Settings | File Templates.
  */
 // Test lazy load
-import datasources.SingleTableDatabaseAdapter;
+import datasources.SingleTableDatabaseAdapter
+import datasource.SingleTableDatabaseDatasource;
 
 def name = "device1";
 

@@ -1,3 +1,7 @@
+<%@ page import="model.*" %>
+<%@ page import="connection.*" %>
+<%@ page import="datasource.*" %>
+<%@ page import="script.*" %>
 <html>
     <head>
         <title>RapidCMDB Admin UI</title>

@@ -23,7 +23,9 @@
  * To change this template use File | Settings | File Templates.
  */
 import datasources.DatabaseAdapter;
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import datasource.SingleTableDatabaseDatasource
+import connection.DatabaseConnection;
 
 def dsConn = DatabaseConnection.findByName("mysql");
 if(dsConn == null){

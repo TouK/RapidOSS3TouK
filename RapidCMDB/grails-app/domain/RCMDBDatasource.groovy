@@ -1,3 +1,0 @@
-class RCMDBDatasource extends BaseDatasource{
-
-}

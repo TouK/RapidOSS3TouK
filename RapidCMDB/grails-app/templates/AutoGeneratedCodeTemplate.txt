@@ -5,65 +5,193 @@
     static datasources =
     [
         <%
-        model.datasources.each{
-            print "\"$it.datasource.name\" : [master:$it.master, keys:["
-            it.keyMappings.each{keyMapping->
-                print "$keyMapping.property.name:[nameInDs:\"$keyMapping.nameInDatasource\"],"
-            }
-            println "]],"
-        }
+            model.datasources.each{
+        %>
+        "${it.datasource.name}" : [master:${it.master}, keys:[
+        <%      it.keyMappings.each{keyMapping->
+        %>
+        ${"\t\""+keyMapping.property.name}":[nameInDs:"${keyMapping.nameInDatasource?keyMapping.nameInDatasource:keyMapping.property.name}"],
+        <%      }
+        %>
+        ]],
+        <%  }
         %>
     ]
 
     <%
-    def propertyConfigurations = [:]
-    def transientProps = [];
-    def hasMany = [:];
-    model.modelProperties.each{
-        println "${it.convertToRealType()} $it.name;"
-        if(it.propertyDatasource != null || it.propertySpecifyingDatasource != null)
-        {
-            transientProps += it.name;
-            def propConfiguration = [:];
-            propConfiguration["nameInDs"] =  it.nameInDatasource?it.nameInDatasource:it.name;
-            if(it.propertyDatasource)
+
+        def constraints = [:];
+        def propertyConfigurations = [:]
+        def transientProps = [];
+        model.modelProperties.each{
+            if(it.defaultValue)
             {
-                propConfiguration["datasource"] =  it.propertyDatasource.datasource.name;
+    %>
+    ${it.convertToRealType()} $it.name = ${getDefaultValue(it.type, it.defaultValue)};
+    <%
             }
             else
             {
-                propConfiguration["datasourceProperty"] =  it.propertySpecifyingDatasource.name;
+    %>
+    ${it.convertToRealType()} $it.name;
+    <%
             }
-            propConfiguration["lazy"] = "\"$it.lazy\""
-            propertyConfigurations[it.name] = propConfiguration;
+
+            if(it.propertyDatasource != null || it.propertySpecifyingDatasource != null)
+            {
+                transientProps += it.name;
+
+                
+                def propConfiguration = [:];
+                propConfiguration["nameInDs"] =  it.nameInDatasource?it.nameInDatasource:it.name;
+                if(it.propertyDatasource)
+                {
+                    propConfiguration["datasource"] =  it.propertyDatasource.datasource.name;
+                }
+                else
+                {
+                    propConfiguration["datasourceProperty"] =  it.propertySpecifyingDatasource.name;
+                }
+                propConfiguration["lazy"] = it.lazy;
+                propertyConfigurations[it.name] = propConfiguration;
+            }
+            else
+            {
+                constraints[it.name] = [:];
+                constraints[it.name]["blank"] = it.blank;
+            }
         }
-    }
-    def relations = model.relations;
-    relations.each{
-        if(it.cardinality == "OneToOne")
+    %>
+    <%
+        def hasMany = [:];
+        def mappedBy = [:];
+        model.fromRelations.each{
+            if(it.cardinality == "OneToOne")
+            {
+                constraints[it.fromName] = [nullable:true];
+    %>
+    ${it.toModel.name} ${it.fromName};
+    <%
+                mappedBy[it.fromName] = it.toName;
+            }
+            else
+            {
+                hasMany[it.fromName] = it.toModel.name;
+                mappedBy[it.fromName] = it.toName;
+            }
+        }
+    %>
+    <%
+        def belongsTo = [:]
+        model.toRelations.each{
+            if(it.cardinality == "OneToOne")
+            {
+                constraints[it.toName] = [nullable:true];
+    %>
+    ${it.fromModel.name} ${it.toName};
+    <%
+                mappedBy[it.toName] = it.fromName;
+            }
+            else
+            {
+                hasMany[it.toName] = it.fromModel.name;
+                mappedBy[it.toName] = it.fromName;
+                belongsTo[it.fromModel.name] = it.fromModel.name;
+            }
+        }
+    %>
+
+    <%
+
+        if(!hasMany.isEmpty())
         {
-            println "${it.toModel.name} $it.name;"
+            print "static hasMany= ["
+            hasMany.each{key, value->
+                print "$key:$value,";
+            }
+            println "]";
         }
         else
         {
-            hasMany[it.name] = it.toModel.name;
+            println "static hasMany= [:]";
         }
-    }
-    if(hasMany.size() != 0)
-    {
-        print "static hasMany= [";
-        hasMany.each{key, value->
-            print "$key:$value,";
+
+    %>
+    static constraints={
+    <%
+        if(!constraints.isEmpty())
+        {
+            constraints.each{key, value->
+                if(!value.isEmpty())
+                {
+     %>
+        ${key}(${value.toString().substring(1, value.toString().length()-1).replaceAll("=", ":")});
+     <%
+                }
+            }
         }
-        println "]";
+
+    %>
     }
-    println "static propertyConfiguration= $propertyConfigurations"
-    print "static transients = ['propertyConfiguration', 'datasources'"
+    <%
+        if(!mappedBy.isEmpty())
+        {
+            print "static mappedBy= ["
+            mappedBy.each{key, value->
+                print "$key:\"$value\",";
+            }
+            println "]";
+        }
+        else
+        {
+            println "static mappedBy= [:]";
+        }
+    %>
+    <%
+        if(!belongsTo.isEmpty())
+        {
+            print "static belongsTo= ["
+            belongsTo.values().each{
+                print "$it,";
+            }
+            println "]";
+        }
+        else
+        {
+            println "static belongsTo= []";
+        }
+    %>
+    static propertyConfiguration= ${propertyConfigurations}
+    <%
+    print "static transients = [";
     transientProps.each
     {
-        print ",\"$it\""
+        print "\"$it\","
     }
     println ']'
     %>
+
+    <%
+        def getDefaultValue(type, defaultValue)
+        {
+            if(type == model.ModelProperty.stringType)
+            {
+                return "\"$defaultValue\"";
+            }
+            else if(type == model.ModelProperty.numberType)
+            {
+                return "$defaultValue";
+            }
+            else if(type == model.ModelProperty.dateType)
+            {
+                return "new Date(${defaultValue})";
+            }
+            else
+            {
+                return "\"$defaultValue\"";
+            }
+        }
+    %>
+
 
     //AUTO_GENERATED_CODE

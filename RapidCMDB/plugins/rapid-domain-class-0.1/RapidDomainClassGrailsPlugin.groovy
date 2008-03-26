@@ -1,6 +1,7 @@
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 import org.hibernate.SessionFactory
 import com.ifountain.comp.utils.CaseInsensitiveMap
+import datasource.BaseDatasource
 
 class RapidDomainClassGrailsPlugin {
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
@@ -96,7 +97,7 @@ class RapidDomainClassGrailsPlugin {
                 }
                 else
                 {
-                    if(propertyConfig.lazy != "true")
+                    if(!propertyConfig.lazy)
                     {
 
                         def isPropLoadedMap = mc.getMetaProperty("isPropertiesLoaded").getProperty(domainObject);
@@ -166,6 +167,7 @@ class RapidDomainClassGrailsPlugin {
                 }
                 catch(Throwable e)
                 {
+                    e.printStackTrace();
                 }
             }
         }
@@ -222,7 +224,7 @@ class PropertyConfigurationCache
             {
                 propertyDs =  value.datasourceProperty;
             }
-            if(value.lazy != "true")
+            if(!value.lazy)
             {
                 def dsProps = datasourceProperties[propertyDs];
                 if(!dsProps)
@@ -277,7 +279,10 @@ class PropertyConfigurationCache
         if(domainClass.metaClass.hasProperty(domainClass, "propertyConfiguration"))
         {
             def propertyConfig = GCU.getStaticPropertyValue (realClass, "propertyConfiguration");
-            propertiesByName.putAll(propertyConfig);
+            if(propertyConfig)
+            {
+                propertiesByName.putAll(propertyConfig);
+            }
         }
     }
 
@@ -364,10 +369,13 @@ class DatasourceConfigurationCache
         {
             constructDatasources(superClass);
         }
-        if(domainClass.metaClass.hasProperty(domainClass, "dataSources"))
+        if(domainClass.metaClass.hasProperty(domainClass, "datasources"))
         {
-            def dataSources = GCU.getStaticPropertyValue (realClass, "dataSources");
-            datasources.putAll(dataSources);
+            def dataSources = GCU.getStaticPropertyValue (realClass, "datasources");
+            if(dataSources)
+            {
+                datasources.putAll(dataSources);
+            }
         }
     }
 

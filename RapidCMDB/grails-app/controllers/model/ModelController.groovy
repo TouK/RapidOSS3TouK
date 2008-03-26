@@ -1,5 +1,5 @@
 package model;
-import com.ifountain.domain.DomainGenerator
+import com.ifountain.domain.ModelGenerator
 
 class ModelController {
 
@@ -11,7 +11,7 @@ class ModelController {
             def model = Model.get(params.id);
             if(model)
             {
-                DomainGenerator.getInstance().generateModel (model);
+                ModelGenerator.getInstance().generateModel (model);
                 flash.message = "Model $model.name genareted succcessfully"
                 redirect(action:show,controller:'model', id:model?.id)
             }

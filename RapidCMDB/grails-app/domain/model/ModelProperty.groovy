@@ -11,7 +11,6 @@ class ModelProperty {
     ModelProperty propertySpecifyingDatasource;
     String nameInDatasource;
     Model model;
-    Model relatedClass;
     boolean lazy = true;
 
     static belongsTo = Model;
@@ -20,15 +19,7 @@ class ModelProperty {
         name(blank:false, unique:'model');
         propertyDatasource(nullable:true);
         propertySpecifyingDatasource(nullable:true);
-        relatedClass(nullable:true);
         type(inList:[stringType, numberType, dateType]);
-    }
-
-    def setName(String nameP)
-    {
-        def firstChar = nameP.substring (0,1)
-        def remaining = nameP.substring (1);
-        name = firstChar.toLowerCase()+remaining; 
     }
 
 
@@ -51,6 +42,8 @@ class ModelProperty {
             return "Object";
         }
     }
+
+    
     String toString(){
         return "$name";
     }

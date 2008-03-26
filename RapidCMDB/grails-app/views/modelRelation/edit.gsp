@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation.fromModel.id)}">${modelRelation.fromModel?.name}</a></span>
+            <span class="menuButton">From <a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation.fromModel.id)}">${modelRelation.fromModel?.name}</a> To <a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation.toModel.id)}">${modelRelation.toModel?.name}</a></span>
         </div>
         <div class="body">
             <h1>Edit ModelRelation</h1>
@@ -34,13 +34,13 @@
                                     <g:select id="cardinality" name="cardinality" from="${modelRelation.constraints.cardinality.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:modelRelation,field:'cardinality')}" ></g:select>
                                 </td>
                             </tr> 
-                        
+
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="name">Name:</label>
+                                    <label for="fromName">Relation Name:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:modelRelation,field:'name')}"/>
+                                <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'fromName','errors')}">
+                                    <input type="text" id="fromName" name="fromName" value="${fieldValue(bean:modelRelation,field:'fromName')}"/>
                                 </td>
                             </tr>
                             <tr class="prop">
@@ -50,7 +50,15 @@
                                 <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'toModel','errors')}">
                                     <g:select optionKey="id" from="${Model.list()}" name="toModel.id" value="${modelRelation?.toModel?.id}" ></g:select>
                                 </td>
-                            </tr> 
+                            </tr>
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="toName">Reverse Relation Name:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'toName','errors')}">
+                                    <input type="text" id="toName" name="toName" value="${fieldValue(bean:modelRelation,field:'toName')}"/>
+                                </td>
+                            </tr>
                         
                         </tbody>
                     </table>

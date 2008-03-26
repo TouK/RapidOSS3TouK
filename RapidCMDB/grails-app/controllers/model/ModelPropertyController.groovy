@@ -4,6 +4,12 @@ class ModelPropertyController {
 
     def scaffold = ModelProperty;
      def save = {
+        if(params.name)
+        {
+            def firstChar = params.name.substring (0,1)
+            def remaining = params.name.substring (1);
+            params.name = firstChar.toLowerCase()+remaining;
+        }
         def modelProperty = new ModelProperty(params)
         if(!modelProperty.hasErrors() && modelProperty.save()) {
             flash.message = "ModelProperty ${modelProperty.id} created"

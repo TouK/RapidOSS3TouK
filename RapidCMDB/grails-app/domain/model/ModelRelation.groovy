@@ -3,23 +3,19 @@ class ModelRelation {
      public static String ONE_TO_ONE = "OneToOne";
      public static String ONE_TO_MANY = "OneToMany";
      public static String MANY_TO_MANY = "ManyToMany";
-     static belongsTo = [fromModel:Model]
+     Model fromModel;
      Model toModel;
-     String name;
+     String fromName;
+     String toName;
      String cardinality;
+     static belongsTo=[toModel:Model, fromModel:Model];
      static constraints = {
          cardinality(inList:[ONE_TO_ONE, ONE_TO_MANY, MANY_TO_MANY]);
-         name(blank:false);
-     }
-
-     def setName(String nameP)
-     {
-        def firstChar = nameP.substring (0,1)
-        def remaining = nameP.substring (1);
-        name = firstChar.toLowerCase()+remaining;
+         fromName(blank:false);
+         toName(blank:false);
      }
 
      String toString(){
-         return "$name";
+         return "$fromName";
      }
 }

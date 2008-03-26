@@ -8,20 +8,7 @@
     </head>
     <body>
         <div class="nav">
-            <%
-                if (params["model.id"] != null) {
-            %>
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + params["model.id"])}">${Model.get(params["model.id"])?.name}</a></span>
-            <%
-                }
-                else
-                {
-            %>
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-            <span class="menuButton"><g:link class="list" action="list">ModelRelation List</g:link></span>
-            <%
-                }
-            %>
+            <span class="menuButton">From <a class="home" href="${createLinkTo(dir: 'model/show/' + params["model.id"])}">${Model.get(params["model.id"])?.name} To ?</a></span>
         </div>
         <div class="body">
             <h1>Create ModelRelation</h1>
@@ -46,15 +33,6 @@
                                     <g:select id="cardinality" name="cardinality" from="${modelRelation.constraints.cardinality.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:modelRelation,field:'cardinality')}" ></g:select>
                                 </td>
                             </tr> 
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="name">Name:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:modelRelation,field:'name')}"/>
-                                </td>
-                            </tr> 
                             <%
                                 if (params["model.id"] != null) {
                             %>
@@ -76,12 +54,28 @@
                             %>
                             <tr class="prop">
                                 <td valign="top" class="name">
+                                    <label for="fromName">Relation Name:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'fromName','errors')}">
+                                    <input type="text" id="fromName" name="fromName" value="${fieldValue(bean:modelRelation,field:'fromName')}"/>
+                                </td>
+                            </tr>
+                            <tr class="prop">
+                                <td valign="top" class="name">
                                     <label for="toModel">To Model:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'toModel','errors')}">
                                     <g:select optionKey="id" from="${Model.list()}" name="toModel.id" value="${modelRelation?.toModel?.id}" ></g:select>
                                 </td>
-                            </tr> 
+                            </tr>
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="toName">Reverse Relation Name:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'toName','errors')}">
+                                    <input type="text" id="toName" name="toName" value="${fieldValue(bean:modelRelation,field:'toName')}"/>
+                                </td>
+                            </tr>
                         
                         </tbody>
                     </table>

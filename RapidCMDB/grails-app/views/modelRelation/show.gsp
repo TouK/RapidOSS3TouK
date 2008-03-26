@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation?.fromModel?.id)}">${modelRelation?.fromModel}</a></span>
+            <span class="menuButton">From <a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation?.fromModel?.id)}">${modelRelation?.fromModel}</a> To <a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation?.toModel?.id)}">${modelRelation?.toModel}</a></span>
         </div>
         <div class="body">
             <h1>Show ModelRelation</h1>
@@ -35,17 +35,17 @@
                         </tr>
                     
                         <tr class="prop">
-                            <td valign="top" class="name">Name:</td>
+                            <td valign="top" class="name">Relation Name:</td>
                             
-                            <td valign="top" class="value">${modelRelation.name}</td>
+                            <td valign="top" class="value">${modelRelation.fromName}</td>
                             
                         </tr>
-                    
+
                         <tr class="prop">
-                            <td valign="top" class="name">To Model:</td>
-                            
-                            <td valign="top" class="value"><g:link controller="model" action="show" id="${modelRelation?.toModel?.id}">${modelRelation?.toModel}</g:link></td>
-                            
+                            <td valign="top" class="name">Reverse Relation Name:</td>
+
+                            <td valign="top" class="value">${modelRelation.toName}</td>
+
                         </tr>
                     
                     </tbody>

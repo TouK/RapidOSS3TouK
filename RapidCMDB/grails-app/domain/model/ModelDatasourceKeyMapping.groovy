@@ -2,7 +2,7 @@ package model;
 class ModelDatasourceKeyMapping {
     ModelProperty property;
     ModelDatasource datasource;
-    static belongsTo = ModelDatasource;
+    static belongsTo = [datasource:ModelDatasource, property:ModelProperty];
     String nameInDatasource;
 
     static optionals = ["nameInDatasource"];

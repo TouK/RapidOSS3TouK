@@ -5,6 +5,7 @@ import com.ifountain.core.connection.ConnectionParameterSupplier
 import org.apache.log4j.Logger
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
+import connection.Connection
 
 class ConnectionService implements InitializingBean, DisposableBean, ConnectionParameterSupplier{
     boolean transactional = true

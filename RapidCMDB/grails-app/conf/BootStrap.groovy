@@ -1,4 +1,3 @@
-import org.apache.log4j.Logger
 import datasource.RCMDBDatasource
 
 class BootStrap {

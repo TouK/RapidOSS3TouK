@@ -31,5 +31,14 @@ environments {
 			url = "jdbc:hsqldb:mem:testDb"
 		}
 	}
+	performance{
+        dataSource{
+            dbCreate = "update"
+            driverClassName = "com.mysql.jdbc.Driver"
+            url = "jdbc:mysql://localhost/students"
+	        username = "root"
+	        password = "root"
+        }
+    }
 
 }

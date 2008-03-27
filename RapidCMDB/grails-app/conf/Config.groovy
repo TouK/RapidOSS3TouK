@@ -62,7 +62,7 @@ log4j {
             codehaus.groovy.grails.plugins="error" // plugins
             codehaus.groovy.grails.orm.hibernate="error" // hibernate integration
             springframework="off"
-            hibernate="off"
+            hibernate="warn, stdout"
         }
     }
     additivity.StackTrace=false

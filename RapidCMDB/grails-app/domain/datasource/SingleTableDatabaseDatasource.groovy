@@ -6,17 +6,17 @@ import connection.DatabaseConnection
 class SingleTableDatabaseDatasource extends BaseDatasource{
     DatabaseConnection connection;
     String tableName;
-    String keys;
+    String tableKeys;
     def adapter;
     static transients =  ['adapter']
 
      static constraints = {
         tableName(blank:false);
-        keys(blank:false)
+        tableKeys(blank:false)
     };
 
     def onLoad = {
-       this.adapter = new SingleTableDatabaseAdapter(connection.name, tableName, keys, 0, Logger.getRootLogger());
+       this.adapter = new SingleTableDatabaseAdapter(connection.name, tableName, tableKeys, 0, Logger.getRootLogger());
     }
 
     def getProperty(Map keys, String propName)

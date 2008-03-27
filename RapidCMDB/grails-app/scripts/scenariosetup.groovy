@@ -120,36 +120,36 @@ dbAdapter.executeUpdate("insert into events values ('event6', 'device3', 1, 'fal
 
 def ds1 = SingleTableDatabaseDatasource.findByName("DS1");
 if(ds1 == null){
-    ds1 = new SingleTableDatabaseDatasource(name:"DS1", connection: dsConn, tableName:"resources1", keys:"name").save();
+    ds1 = new SingleTableDatabaseDatasource(name:"DS1", connection: dsConn, tableName:"resources1", tableKeys:"name").save();
 }
 
 def ds2 = SingleTableDatabaseDatasource.findByName("DS2");
 if(ds2 == null){
-    ds2 = new SingleTableDatabaseDatasource(name:"DS2", connection: dsConn, tableName:"resources2", keys:"ID").save();
+    ds2 = new SingleTableDatabaseDatasource(name:"DS2", connection: dsConn, tableName:"resources2", tableKeys:"ID").save();
 }
 
 def deviceDS = SingleTableDatabaseDatasource.findByName("DeviceDS");
 if(deviceDS == null){
-    deviceDS = new SingleTableDatabaseDatasource(name:"DeviceDS", connection: dsConn, tableName:"deviceds", keys:"ID").save();
+    deviceDS = new SingleTableDatabaseDatasource(name:"DeviceDS", connection: dsConn, tableName:"deviceds", tableKeys:"ID").save();
 }
 def linkDS = SingleTableDatabaseDatasource.findByName("LINKDS");
 if(linkDS == null){
-    linkDS = new SingleTableDatabaseDatasource(name:"LINKDS", connection: dsConn, tableName:"linkds", keys:"ID").save();
+    linkDS = new SingleTableDatabaseDatasource(name:"LINKDS", connection: dsConn, tableName:"linkds", tableKeys:"ID").save();
 }
 
 def serviceDS = SingleTableDatabaseDatasource.findByName("serviceDS");
 if(serviceDS == null){
-    serviceDS = new SingleTableDatabaseDatasource(name:"serviceDS", connection: dsConn, tableName:"services", keys:"name").save();
+    serviceDS = new SingleTableDatabaseDatasource(name:"serviceDS", connection: dsConn, tableName:"services", tableKeys:"name").save();
 }
 
 def eventDS = SingleTableDatabaseDatasource.findByName("EVENTDS");
 if(eventDS == null){
-    eventDS = new SingleTableDatabaseDatasource(name:"EVENTDS", connection: dsConn, tableName:"events", keys:"EventName").save();
+    eventDS = new SingleTableDatabaseDatasource(name:"EVENTDS", connection: dsConn, tableName:"events", tableKeys:"EventName").save();
 }
 
 def cds = SingleTableDatabaseDatasource.findByName("CustomerDS");
 if(cds == null){
-    cds = new SingleTableDatabaseDatasource(name:"CustomerDS", connection: dsConn, tableName:"customers", keys:"name").save();
+    cds = new SingleTableDatabaseDatasource(name:"CustomerDS", connection: dsConn, tableName:"customers", tableKeys:"name").save();
 }
 
 return "Successfully executed";

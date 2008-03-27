@@ -3,7 +3,7 @@ import datasources.RapidInsightAdapter
 import org.apache.log4j.Logger
 import connection.RapidInsightConnection
 
-class RapidInsightDatasource {
+class RapidInsightDatasource extends BaseDatasource{
     RapidInsightConnection connection;
     def adapter;
 

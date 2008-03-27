@@ -7,6 +7,10 @@ class ModelDatasourceKeyMapping {
 
     static optionals = ["nameInDatasource"];
 
+    static constraints = {
+        property(unique:'datasource');
+    }
+
     String toString(){
         return property.name;
     }

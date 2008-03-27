@@ -77,28 +77,69 @@ class ModelDatasourceControllerTest extends GroovyTestCase{
 
     }
 
-//     void testSuccessfulSave() {
-//        def model = new Model(name: "Customer");
-//        def datasource = new BaseDatasource(name: "RCMDB");
-//        def mdc = new ModelDatasourceController();
-//
-//        def mockModelDatasource = new StubFor(ModelDatasource);
-//        mockModelDatasource.demand.hasErrors{
-//           return false;
-//        }
-//        mockModelDatasource.demand.save{
-//           return true;
-//        }
-//        def modelId = 1;
-//        params["datasource.id"] = 1;
-//        params["model.id"] = 1;
-//        params["master"] = "true";
-//
-//        mockModelDatasource.use{
-//            mdc.save();
-//
-//        }
-//        assertEquals("/model/show/" + model.id, mdc.response.redirectedUrl);
-//        assertEquals("ModelDatasource ${modelDatasource.id} created", mdc.flash.message);
-//    }
+     void testSuccessfulSave() {
+        def model = new Model(name: "Customer");
+        def modelId = "1";
+        def datasource = new BaseDatasource(name: "RCMDB");
+        def mdc = new ModelDatasourceController();
+        mdc._getModelId = {modelDatasource ->  return modelId;};
+
+        def mockModelDatasource = new StubFor(ModelDatasource);
+        def modelDatasourceId = "1";
+        mockModelDatasource.demand.hasErrors{
+           return false;
+        }
+        mockModelDatasource.demand.save{
+           return true;
+        }
+        mockModelDatasource.demand.getId{
+           return modelDatasourceId;
+        }
+        mockModelDatasource.use{
+            mdc.save();
+            assertEquals("ModelDatasource ${modelDatasourceId} created", flash.message);
+            assertEquals("show", redirectParams.action);
+            assertEquals("model", redirectParams.controller);
+            assertEquals(modelId, redirectParams.id);
+        }
+
+    }
+
+    void testDeleteWhenModelDatasourceNotFound(){
+        def mdc = new ModelDatasourceController();
+        params["id"] = "5";
+
+        def mockModelDatasource = new StubFor(ModelDatasource);
+        mockModelDatasource.demand.get{id ->
+            return null;
+        };
+        mockModelDatasource.use{
+            mdc.delete();
+            assertEquals("ModelDatasource not found with id 5", flash.message);
+            assertEquals("list", redirectParams.action);
+            assertEquals("modelDatasource", redirectParams.controller);
+        }
+    }
+
+    void testSuccessfullDelete(){
+        def mdc = new ModelDatasourceController();
+        def modelId = "1";
+        mdc._getModelId = {modelDatasource ->  return modelId;};
+        params["id"] = "1";
+
+        def mockModelDatasource = new StubFor(ModelDatasource);
+        mockModelDatasource.demand.get{id ->
+            return new ModelDatasource();
+        };
+        mockModelDatasource.demand.delete{ ->
+            return true;
+        };
+        mockModelDatasource.use{
+            mdc.delete();
+            assertEquals("ModelDatasource ${params.id} deleted", flash.message);
+            assertEquals("show", redirectParams.action);
+            assertEquals("model", redirectParams.controller);
+            assertEquals(modelId, redirectParams.id);
+        }
+    }
 }

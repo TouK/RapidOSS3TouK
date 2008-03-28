@@ -9,7 +9,6 @@
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-            <span class="menuButton"><g:link class="create" action="create">New ModelProperty</g:link></span>
         </div>
         <div class="body">
             <h1>ModelProperty List</h1>
@@ -20,8 +19,6 @@
                 <table>
                     <thead>
                         <tr>
-                        
-                   	        <g:sortableColumn property="id" title="Id" />
                         
                    	        <g:sortableColumn property="name" title="Name" />
                         
@@ -39,9 +36,7 @@
                     <g:each in="${modelPropertyList}" status="i" var="modelProperty">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td><g:link action="show" id="${modelProperty.id}">${modelProperty.id?.encodeAsHTML()}</g:link></td>
-                        
-                            <td>${modelProperty.name?.encodeAsHTML()}</td>
+                            <td><g:link action="show" id="${modelProperty.id}">${modelProperty.name?.encodeAsHTML()}</g:link></td>
                         
                             <td>${modelProperty.modelDatasourceId?.encodeAsHTML()}</td>
                         

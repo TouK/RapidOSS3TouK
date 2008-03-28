@@ -9,7 +9,6 @@
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-            <span class="menuButton"><g:link class="create" action="create">New ModelDatasource</g:link></span>
         </div>
         <div class="body">
             <h1>ModelDatasource List</h1>
@@ -21,12 +20,8 @@
                     <thead>
                         <tr>
                         
-                   	        <g:sortableColumn property="id" title="Id" />
-                        
-                   	        <th>Datasource</th>
-                   	    
+                   	        <g:sortableColumn property="datasource" title="Datasource"/>
                    	        <g:sortableColumn property="master" title="Master" />
-                        
                    	        <th>Model</th>
                    	    
                         </tr>
@@ -35,9 +30,7 @@
                     <g:each in="${modelDatasourceList}" status="i" var="modelDatasource">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td><g:link action="show" id="${modelDatasource.id}">${modelDatasource.id?.encodeAsHTML()}</g:link></td>
-                        
-                            <td>${modelDatasource.datasource?.encodeAsHTML()}</td>
+                            <td><g:link action="show" id="${modelDatasource.id}">${modelDatasource.datasource?.encodeAsHTML()}</g:link></td>
                         
                             <td>${modelDatasource.master?.encodeAsHTML()}</td>
                         

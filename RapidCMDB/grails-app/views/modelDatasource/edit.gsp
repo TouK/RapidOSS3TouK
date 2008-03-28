@@ -7,9 +7,7 @@
 </head>
 <body>
 <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}">Home</a></span>
-    <span class="menuButton"><g:link class="list" action="list">ModelDatasource List</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create">New ModelDatasource</g:link></span>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelDatasource.model?.id)}">${modelDatasource.model?.name}</a></span>
 </div>
 <div class="body">
     <h1>Edit ModelDatasource</h1>
@@ -43,22 +41,6 @@
                             <g:select optionKey="id" from="${BaseDatasource.list()}" name="datasource.id" value="${modelDatasource?.datasource?.id}"></g:select>
                         </td>
                     </tr>
-
-                    %{--<tr class="prop">--}%
-                        %{--<td valign="top" class="name">--}%
-                            %{--<label for="keyMappings">Key Mappings:</label>--}%
-                        %{--</td>--}%
-                        %{--<td valign="top" class="value ${hasErrors(bean: modelDatasource, field: 'keyMappings', 'errors')}">--}%
-
-                            %{--<ul>--}%
-                                %{--<g:each var="k" in="${modelDatasource?.keyMappings?}">--}%
-                                    %{--<li><g:link controller="modelDatasourceKeyMapping" action="show" id="${k.id}">${k}</g:link></li>--}%
-                                %{--</g:each>--}%
-                            %{--</ul>--}%
-                            %{--<g:link controller="modelDatasourceKeyMapping" params="['modelDatasource.id':modelDatasource?.id]" action="create">Add ModelDatasourceKeyMapping</g:link>--}%
-
-                        %{--</td>--}%
-                    %{--</tr>--}%
 
                     <tr class="prop">
                         <td valign="top" class="name">

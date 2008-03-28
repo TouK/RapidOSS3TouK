@@ -7,7 +7,7 @@ class ModelDatasourceController {
     def save = {
         def modelDatasource = new ModelDatasource(params);
         if(!modelDatasource.hasErrors() && modelDatasource.save()) {
-            flash.message = "ModelDatasource ${modelDatasource.id} created"
+            flash.message = "ModelDatasource ${modelDatasource} created"
             redirect(action:"show", controller:'model', id:_getModelId(modelDatasource))
         }
         else {
@@ -19,13 +19,32 @@ class ModelDatasourceController {
         def modelDatasource = ModelDatasource.get( params.id )
         if(modelDatasource) {
             def modelId = _getModelId(modelDatasource);
+            def modelDatasourceName = modelDatasource.toString();
             modelDatasource.delete()
-            flash.message = "ModelDatasource ${params.id} deleted"
+            flash.message = "ModelDatasource ${modelDatasourceName} deleted"
             redirect(action:"show", controller:'model', id:modelId)
         }
         else {
             flash.message = "ModelDatasource not found with id ${params.id}"
             redirect(action:"list", controller:'modelDatasource')
+        }
+    }
+
+    def update = {
+        def modelDatasource = ModelDatasource.get( params.id )
+        if(modelDatasource) {
+            modelDatasource.properties = params
+            if(!modelDatasource.hasErrors() && modelDatasource.save()) {
+                flash.message = "ModelDatasource ${modelDatasource} updated"
+                redirect(action:"show",controller:'model', id:_getModelId(modelDatasource))
+            }
+            else {
+                render(view:'edit',model:[modelDatasource:modelDatasource])
+            }
+        }
+        else {
+            flash.message = "ModelDatasource not found with id ${params.id}"
+            redirect(action:edit,id:params.id)
         }
     }
 

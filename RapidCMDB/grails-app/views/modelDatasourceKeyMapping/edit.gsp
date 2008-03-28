@@ -8,9 +8,7 @@
     </head>
     <body>
         <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-            <span class="menuButton"><g:link class="list" action="list">ModelDatasourceKeyMapping List</g:link></span>
-            <span class="menuButton"><g:link class="create" action="create">New ModelDatasourceKeyMapping</g:link></span>
+            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'modelDatasource/show/' + modelDatasourceKeyMapping.datasource?.id)}">${modelDatasourceKeyMapping.datasource?.datasource?.name}</a></span>
         </div>
         <div class="body">
             <h1>Edit ModelDatasourceKeyMapping</h1>

@@ -201,6 +201,15 @@ class DatasourceInfo
     {
         return datasourceConfiguration.toString();
     }
+
+    public boolean equals(Object oth)
+    {
+        if(oth instanceof DatasourceInfo)
+        {
+            return oth.properties.equals(properties);
+        }
+        return false;
+    }
 }
 
 class PropertyInfo
@@ -323,5 +332,14 @@ class PropertyInfo
     public String toString()
     {
         return propertyConfiguration.toString();
+    }
+
+    public boolean equals(Object oth)
+    {
+        if(oth instanceof PropertyInfo)
+        {
+            return oth.properties.equals(properties);
+        }
+        return false;
     }
 }

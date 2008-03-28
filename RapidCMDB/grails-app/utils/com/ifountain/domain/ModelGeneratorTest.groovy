@@ -194,8 +194,6 @@ class ModelGeneratorTest extends GroovyTestCase{
 
         model1.fromRelations += relation3;
         model2.toRelations += relation3;
-
-
         ModelGenerator.getInstance().generateModel(model1);
         Class cls = compileModel(model1);
         def object = cls.newInstance();

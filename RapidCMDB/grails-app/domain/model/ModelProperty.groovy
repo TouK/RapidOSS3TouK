@@ -17,6 +17,7 @@ class ModelProperty {
 
     static constraints = {
         name(blank:false, unique:'model');
+        nameInDatasource(nullable:true);
         propertyDatasource(nullable:true);
         propertySpecifyingDatasource(nullable:true);
         type(inList:[stringType, numberType, dateType]);

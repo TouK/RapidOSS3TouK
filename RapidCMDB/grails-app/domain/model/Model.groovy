@@ -1,4 +1,6 @@
-package model;
+package model
+
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 class Model {
     String name;
     Model parentModel;
@@ -22,11 +24,11 @@ class Model {
 
     def getModelFile()
     {
-        return new File("grails-app/domain/${name}.groovy");
+        return new File(System.getProperty("base.dir", ".")+"/grails-app/domain/${name}.groovy");
     }
     def getControllerFile()
     {
-        return new File("grails-app/controllers/${name}Controller.groovy");
+        return new File(System.getProperty("base.dir", ".")+"/grails-app/controllers/${name}Controller.groovy");
     }
         
     String toString(){

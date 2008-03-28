@@ -27,7 +27,7 @@
             if(it.defaultValue)
             {
     %>
-    ${it.convertToRealType()} $it.name = ${getDefaultValue(it.type, it.defaultValue)};
+    ${it.convertToRealType()} $it.name = ${getDefaultValue(it)};
     <%
             }
             else
@@ -172,23 +172,23 @@
     %>
 
     <%
-        def getDefaultValue(type, defaultValue)
+        def getDefaultValue(it)
         {
-            if(type == model.ModelProperty.stringType)
+            if(it.type == it.stringType)
             {
-                return "\"$defaultValue\"";
+                return "\"$it.defaultValue\"";
             }
-            else if(type == model.ModelProperty.numberType)
+            else if(it.type == it.numberType)
             {
-                return "$defaultValue";
+                return "$it.defaultValue";
             }
-            else if(type == model.ModelProperty.dateType)
+            else if(it.type == it.dateType)
             {
-                return "new Date(${defaultValue})";
+                return "new Date(${it.defaultValue})";
             }
             else
             {
-                return "\"$defaultValue\"";
+                return "\"$it.defaultValue\"";
             }
         }
     %>

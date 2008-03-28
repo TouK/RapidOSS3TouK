@@ -9,3 +9,4 @@ class Book {
         title(blank:false, unique:'author');
     }
 }
+  

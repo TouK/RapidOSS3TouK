@@ -26,15 +26,15 @@ import test.Book
  * To change this template use File | Settings | File Templates.
  */
 
-Author.list()*.delete();
-Book.list()*.delete();
-
-
-
-def author = new Author(name:"author", book:new Book(title:"book", description:"descr")).save(flush:true);
-
-
-Book.list()*.delete();
+//Author.list()*.delete();
+//Book.list()*.delete();
+//
+//
+//
+//def author = new Author(name:"author", book:new Book(title:"book", description:"descr")).save(flush:true);
+//
+//
+//Book.list()*.delete();
 //def book = new Book(title:"book", description:"descr").save();
 //author.book = book;
 //book.author = author;

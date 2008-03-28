@@ -2,197 +2,35 @@
     //AUTO_GENERATED_CODE
 
 
-    static datasources =
-    [
-        <%
-            model.datasources.each{
-        %>
-        "${it.datasource.name}" : [master:${it.master}, keys:[
-        <%      it.keyMappings.each{keyMapping->
-        %>
-        ${"\t\""+keyMapping.property.name}":[nameInDs:"${keyMapping.nameInDatasource?keyMapping.nameInDatasource:keyMapping.property.name}"],
-        <%      }
-        %>
-        ]],
-        <%  }
-        %>
-    ]
+    static datasources = ${datasourceInfo.datasourceConfiguration}
 
     <%
+        propertyInfo.propertyList.each{
 
-        def constraints = [:];
-        def propertyConfigurations = [:]
-        def transientProps = [];
-        model.modelProperties.each{
-            if(it.defaultValue)
-            {
     %>
-    ${it.convertToRealType()} $it.name = ${getDefaultValue(it)};
+    ${it.type} $it.name ${it.defaultValue?"="+it.defaultValue:""};
     <%
-            }
-            else
-            {
-    %>
-    ${it.convertToRealType()} $it.name;
-    <%
-            }
-
-            if(it.propertyDatasource != null || it.propertySpecifyingDatasource != null)
-            {
-                transientProps += it.name;
-
-                
-                def propConfiguration = [:];
-                propConfiguration["nameInDs"] =  it.nameInDatasource?it.nameInDatasource:it.name;
-                if(it.propertyDatasource)
-                {
-                    propConfiguration["datasource"] =  it.propertyDatasource.datasource.name;
-                }
-                else
-                {
-                    propConfiguration["datasourceProperty"] =  it.propertySpecifyingDatasource.name;
-                }
-                propConfiguration["lazy"] = it.lazy;
-                propertyConfigurations[it.name] = propConfiguration;
-            }
-            else
-            {
-                constraints[it.name] = [:];
-                constraints[it.name]["blank"] = it.blank;
-                constraints[it.name]["nullable"] = it.blank;
-            }
-        }
-    %>
-    <%
-        def hasMany = [:];
-        def mappedBy = [:];
-        model.fromRelations.each{
-            if(it.cardinality == "OneToOne")
-            {
-                constraints[it.fromName] = [nullable:true];
-    %>
-    ${it.toModel.name} ${it.fromName};
-    <%
-                mappedBy[it.fromName] = it.toName;
-            }
-            else
-            {
-                hasMany[it.fromName] = it.toModel.name;
-                mappedBy[it.fromName] = it.toName;
-            }
-        }
-    %>
-    <%
-        def belongsTo = [:]
-        model.toRelations.each{
-            if(it.cardinality == "OneToOne")
-            {
-                constraints[it.toName] = [nullable:true];
-    %>
-    ${it.fromModel.name} ${it.toName};
-    <%
-                mappedBy[it.toName] = it.fromName;
-            }
-            else
-            {
-                hasMany[it.toName] = it.fromModel.name;
-                mappedBy[it.toName] = it.fromName;
-                belongsTo[it.fromModel.name] = it.fromModel.name;
-            }
         }
     %>
 
-    <%
+    static hasMany = ${!propertyInfo.hasMany.isEmpty()?propertyInfo.hasMany.toString().replaceAll('\\{', '\\[').replaceAll('\\}', '\\]').replaceAll('=', ':'):'[:]'}
 
-        if(!hasMany.isEmpty())
-        {
-            print "static hasMany= ["
-            hasMany.each{key, value->
-                print "$key:$value,";
-            }
-            println "]";
-        }
-        else
-        {
-            println "static hasMany= [:]";
-        }
-
-    %>
     static constraints={
     <%
-        if(!constraints.isEmpty())
-        {
-            constraints.each{key, value->
-                if(!value.isEmpty())
-                {
+        propertyInfo.constraints.each{key, value->
+            if(!value.isEmpty())
+            {
      %>
         ${key}(${value.toString().substring(1, value.toString().length()-1).replaceAll("=", ":")});
      <%
-                }
             }
         }
 
     %>
     }
-    <%
-        if(!mappedBy.isEmpty())
-        {
-            print "static mappedBy= ["
-            mappedBy.each{key, value->
-                print "$key:\"$value\",";
-            }
-            println "]";
-        }
-        else
-        {
-            println "static mappedBy= [:]";
-        }
-    %>
-    <%
-        if(!belongsTo.isEmpty())
-        {
-            print "static belongsTo= ["
-            belongsTo.values().each{
-                print "$it,";
-            }
-            println "]";
-        }
-        else
-        {
-            println "static belongsTo= []";
-        }
-    %>
-    static propertyConfiguration= ${propertyConfigurations}
-    <%
-    print "static transients = [";
-    transientProps.each
-    {
-        print "\"$it\","
-    }
-    println ']'
-    %>
 
-    <%
-        def getDefaultValue(it)
-        {
-            if(it.type == it.stringType)
-            {
-                return "\"$it.defaultValue\"";
-            }
-            else if(it.type == it.numberType)
-            {
-                return "$it.defaultValue";
-            }
-            else if(it.type == it.dateType)
-            {
-                return "new Date(${it.defaultValue})";
-            }
-            else
-            {
-                return "\"$it.defaultValue\"";
-            }
-        }
-    %>
-
-
+    static mappedBy=${propertyInfo.mappedBy}
+    static belongsTo = ${propertyInfo.belongsTo.toString().replaceAll('"','')}
+    static propertyConfiguration= ${propertyInfo.propertyConfigurations}
+    static transients = ${propertyInfo.transientProps};
     //AUTO_GENERATED_CODE

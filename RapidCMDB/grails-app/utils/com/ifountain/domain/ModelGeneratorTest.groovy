@@ -55,12 +55,7 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertTrue (new File(base_directory + "${model.name}.groovy").exists());
         Class cls = compileModel(model);
         def object = cls.newInstance();
-        assertTrue(object.datasources instanceof List);
-        assertTrue(object.datasources.isEmpty());
-        assertTrue(object.propertyConfiguration instanceof Map);
-        assertTrue(object.propertyConfiguration.isEmpty());
-        assertTrue(object.transients instanceof List);
-        assertTrue(object.transients.isEmpty()); 
+        checkExistanceOfMetaDataProperties(object); 
 
 
         GrailsAwareClassLoader cloader = new GrailsAwareClassLoader();
@@ -285,12 +280,13 @@ class ModelGeneratorTest extends GroovyTestCase{
 
     private void checkExistanceOfMetaDataProperties(object)
     {
-        assertTrue(object.datasources instanceof List);
+        assertTrue(object.datasources instanceof Map);
         assertTrue(object.datasources.isEmpty());
         assertTrue(object.propertyConfiguration instanceof Map);
         assertTrue(object.propertyConfiguration.isEmpty());
         assertTrue(object.transients instanceof List);
         assertTrue(object.transients.isEmpty());
+        println object.hasMany;
         assertTrue(object.hasMany instanceof Map);
         assertTrue(object.hasMany.isEmpty());
         assertTrue(object.belongsTo instanceof List);

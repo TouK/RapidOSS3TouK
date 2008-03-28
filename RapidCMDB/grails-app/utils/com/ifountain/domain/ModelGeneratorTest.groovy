@@ -111,6 +111,11 @@ class ModelGeneratorTest extends GroovyTestCase{
 
     }
 
+    public void testConstraints()
+    {
+        fail("Constraint tests should be implemented");
+    }
+
     public void testWithSomeFederatedAndNormalProperties()
     {
 

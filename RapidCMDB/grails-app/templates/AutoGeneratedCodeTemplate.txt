@@ -59,6 +59,7 @@
             {
                 constraints[it.name] = [:];
                 constraints[it.name]["blank"] = it.blank;
+                constraints[it.name]["nullable"] = it.blank;
             }
         }
     %>

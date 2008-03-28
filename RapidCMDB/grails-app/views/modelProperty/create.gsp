@@ -1,4 +1,4 @@
-<%@ page import="model.*" %>
+<%@ page import="datasource.BaseDatasource; model.*" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -52,17 +52,7 @@
                             <label for="propertyDatasource">Datasource Name:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'propertyDatasource', 'errors')}">
-                            <%
-                                def modelDatasourceList;
-                                if (params["model.id"] != null) {
-                                    def mdl = Model.get(params["model.id"]);
-                                    modelDatasourceList = mdl?.datasources;
-                                }
-                                else {
-                                    modelDatasourceList = ModelDatasource.list();
-                                }
-                            %>
-                            <g:select optionKey="id" from="${modelDatasourceList}" name="propertyDatasource.id" value="${modelProperty?.propertyDatasource?.id}" noSelection="['null':'']"></g:select>
+                            <g:select optionKey="id" from="${BaseDatasource.list()}" name="datasource.id" value="${modelProperty?.propertyDatasource?.datasource?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
 

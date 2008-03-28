@@ -38,7 +38,7 @@
                         
                             <td><g:link action="show" id="${modelProperty.id}">${modelProperty.name?.encodeAsHTML()}</g:link></td>
                         
-                            <td>${modelProperty.modelDatasourceId?.encodeAsHTML()}</td>
+                            <td>${modelProperty.propertyDatasource?.encodeAsHTML()}</td>
                         
                             <td>${modelProperty.propertySpecifyingDatasource?.encodeAsHTML()}</td>
                         

@@ -1,15 +1,26 @@
-package model;
+package model
+
+import datasource.BaseDatasource;
 
 class ModelPropertyController {
 
     def scaffold = ModelProperty;
      def save = {
+        
         if(params.name)
         {
             def firstChar = params.name.substring (0,1)
             def remaining = params.name.substring (1);
             params.name = firstChar.toLowerCase()+remaining;
         }
+        def baseDatasource = BaseDatasource.get(params["datasource.id"]);
+        def model = Model.get(params["model.id"]);
+        def modelDatasource = ModelDatasource.findByModelAndDatasource(model, baseDatasource);
+        if(modelDatasource == null){
+            modelDatasource = new ModelDatasource(model:model, datasource:baseDatasource, master:false).save();
+        }
+        params.remove("datasource.id");
+        params["propertyDatasource.id"] = modelDatasource.id;
         def modelProperty = new ModelProperty(params)
         if(!modelProperty.hasErrors() && modelProperty.save()) {
             flash.message = "ModelProperty ${modelProperty} created"
@@ -38,6 +49,14 @@ class ModelPropertyController {
     def update = {
         def modelProperty = ModelProperty.get( params.id )
         if(modelProperty) {
+            def baseDatasource = BaseDatasource.get(params["datasource.id"]);
+            def model = modelProperty.model;
+            def modelDatasource = ModelDatasource.findByModelAndDatasource(model, baseDatasource);
+            if(modelDatasource == null){
+                modelDatasource = new ModelDatasource(model:model, datasource:baseDatasource, master:false).save();
+            }
+            params.remove("datasource.id");
+            params["propertyDatasource.id"] = modelDatasource.id;
             modelProperty.properties = params
             if(!modelProperty.hasErrors() && modelProperty.save()) {
                 flash.message = "ModelProperty ${modelProperty} updated"

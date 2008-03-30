@@ -223,8 +223,6 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertEquals("relation2", object.mappedBy.reverseRelation2)
         assertEquals("reverseRelation3", object.mappedBy.relation3)
 
-        assertEquals(model2.getName(), object.belongsTo[0].getName())
-
 
         Class cls2 = compileModel(model2);
         def object2 = cls2.newInstance();

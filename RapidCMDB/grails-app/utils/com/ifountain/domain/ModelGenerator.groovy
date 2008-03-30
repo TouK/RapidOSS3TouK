@@ -3,6 +3,7 @@ package com.ifountain.domain
 import model.Model
 import org.apache.commons.io.FileUtils
 import groovy.text.SimpleTemplateEngine
+import model.ModelRelation
 
 class ModelGenerator
 {
@@ -333,12 +334,21 @@ class ModelMetaData
             }
             else
             {
+
+                if(it.cardinality == ModelRelation.ONE_TO_MANY)
+                {
+                    constraints[it.toName] = [nullable:true];
+                }
+                else
+                {
+                    if(!belongsTo.contains(it.fromModel.name))
+                    {
+                        belongsTo += it.fromModel.name;
+                    }
+                }
                 hasMany[it.toName] = it.fromModel.name;
                 mappedBy[it.toName] = it.fromName;
-                if(!belongsTo.contains(it.fromModel.name))
-                {
-                    belongsTo += it.fromModel.name;
-                }
+
             }
         }
     }

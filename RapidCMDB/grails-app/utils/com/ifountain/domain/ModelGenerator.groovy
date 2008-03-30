@@ -223,7 +223,7 @@ class ModelMetaData
             dsConf["master"] = it.master;
             if(it.master)
             {
-                masterDatasource = it.datasource;
+                masterDatasource = dsConf;
             }
 
             def keys = [:];
@@ -236,6 +236,7 @@ class ModelMetaData
 
     def processProperties(Model model)
     {
+        def masterKeyPropName = null;
         model.modelProperties.each{
             def generalPropConfig = [:];
             generalPropConfig["type"] = it.convertToRealType();
@@ -266,9 +267,35 @@ class ModelMetaData
             else
             {
                 constraints[it.name] = [:];
-                constraints[it.name]["blank"] = it.blank;
-                constraints[it.name]["nullable"] = it.blank;
+                if(!masterDatasource || !masterDatasource.keys.containsKey(it.name))
+                {
+                    constraints[it.name]["blank"] = it.blank;
+                    constraints[it.name]["nullable"] = it.blank;
+                }
+                else
+                {
+                    masterKeyPropName = it.name;
+                }
             }
+        }
+        if(masterKeyPropName)
+        {
+            def uniqueKeys = [];
+            masterDatasource.keys.each{key,value->
+                if(key != masterKeyPropName)
+                {
+                    uniqueKeys += key;
+                }
+            }
+            if(!uniqueKeys.isEmpty())
+            {
+                constraints[masterKeyPropName]["unique"] = uniqueKeys;     
+            }
+            else
+            {
+                constraints[masterKeyPropName]["unique"] = true;    
+            }
+
         }
     }
 

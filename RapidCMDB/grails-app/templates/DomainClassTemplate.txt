@@ -1,4 +1,4 @@
-class ${model.name} ${model.parentModel == null?"":"extends "+model.parentModel.name}
+class ${model.model.name} ${model.model.parentModel == null?"":"extends "+model.model.parentModel.name}
 {
     ${AUTO_GENERATED_CODE}
 }

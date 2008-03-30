@@ -2,7 +2,7 @@ package model;
 import com.ifountain.domain.ModelGenerator
 
 class ModelController {
-
+    def static String MODEL_DOESNOT_EXIST = "Model does not exist";
     def scaffold = model.Model;
 
     def generate = {
@@ -11,20 +11,27 @@ class ModelController {
             def model = Model.get(params.id);
             if(model)
             {
-                ModelGenerator.getInstance().generateModel (model);
-                flash.message = "Model $model.name genareted succcessfully"
-                redirect(action:show,controller:'model', id:model?.id)
+                try
+                {
+                    ModelGenerator.getInstance().generateModel (model);
+                    flash.message = "Model $model.name genareted succcessfully"
+                    redirect(action:show,controller:'model', id:model?.id)
+                }
+                catch(Exception e)
+                {
+                    flash.message = e.getMessage();
+                    redirect(action:show,controller:'model', id:model?.id)
+                }
             }
             else
             {
-                flash.message = "Model does not exist"
-                redirect(action:list)
+                flash.message = MODEL_DOESNOT_EXIST
+                redirect(action:list, controller:'model')
             }
         }
         else
         {
-            flash.message = "Model id not specified"
-            redirect(action:list)
+            redirect(action:list, controller:'model')
         }
     }
 }

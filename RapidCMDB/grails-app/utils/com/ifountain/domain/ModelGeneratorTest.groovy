@@ -50,6 +50,9 @@ class ModelGeneratorTest extends GroovyTestCase{
     public void testGenerateModel()
     {
         def model = new MockModel(name:"Class1");
+        def datasource1 = new BaseDatasource(name:"ds1-sample");
+        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
+        model.datasources += modelDatasource1;
 
         ModelGenerator.getInstance().generateModel(model);
         assertTrue (new File(base_directory + "${model.name}.groovy").exists());
@@ -69,6 +72,9 @@ class ModelGeneratorTest extends GroovyTestCase{
     {
         def parentModel = new MockModel(name:"Class2");  
         def childModel = new MockModel(name:"Class1", parentModel:parentModel);
+        def datasource1 = new BaseDatasource(name:"ds1-sample");
+        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:parentModel);
+        parentModel.datasources += modelDatasource1;
 
         ModelGenerator.getInstance().generateModel(childModel);
         assertTrue (new File(base_directory + "${childModel.name}.groovy").exists());
@@ -88,6 +94,10 @@ class ModelGeneratorTest extends GroovyTestCase{
     public void testWithSomeProperties()
     {
         def model = new MockModel(name:"Class1");
+        def datasource1 = new BaseDatasource(name:"ds1-sample");
+        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
+        model.datasources += modelDatasource1;
+
         def date = System.currentTimeMillis();
         model.modelProperties += new ModelProperty(name:"prop1", type:ModelProperty.stringType, model:model,blank:true,defaultValue:"prop2 default value");
         model.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.numberType, model:model,blank:false,defaultValue:"1");
@@ -179,8 +189,15 @@ class ModelGeneratorTest extends GroovyTestCase{
     public void testGenerateModelWithRelation()
     {
         def model1 = new MockModel(name:"Class2");
+        def datasource1 = new BaseDatasource(name:"ds1-sample");
+        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model1);
+        model1.datasources += modelDatasource1;
+
         model1.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model1);
         def model2 = new MockModel(name:"Class1");
+        def modelDatasource2 = new MockModelDatasource(datasource:datasource1, master:true, model:model2);
+        model2.datasources += modelDatasource2;
+
         model2.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model2);
         ModelRelation relation1 = new ModelRelation(fromName:"relation1", toName:"reverseRelation1", cardinality:ModelRelation.ONE_TO_ONE, fromModel:model1, toModel:model2);
         ModelRelation relation2 = new ModelRelation(fromName:"relation2", toName:"reverseRelation2", cardinality:ModelRelation.ONE_TO_MANY, fromModel:model2, toModel:model1);
@@ -229,6 +246,12 @@ class ModelGeneratorTest extends GroovyTestCase{
     {
         def model1 = new MockModel(name:"Class1");
         def model2 = new MockModel(name:"Class2");
+
+        def datasource1 = new BaseDatasource(name:"ds1-sample");
+        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model1);
+        model1.datasources += modelDatasource1;
+        model2.datasources += modelDatasource1;
+
         def modelFileContent = """import java.util.net.*;\n
                         class ${model1.name} extends AnotherClass implements Trial{\n
                             def method1()\n
@@ -274,12 +297,24 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertEquals ("method1",controllerObj.method1());
     }
 
+    public void testThrowsExceptionIfModelMasterDatasourceDoesnotExist()
+    {
+        def model1 = new MockModel(name:"Class2");
+        try
+        {
+            ModelGenerator.getInstance().generateModel(model1);
+            fail("Should throw exception since no master records specified");
+        }
+        catch(ModelGenerationException exception)
+        {
+            assertEquals (ModelGenerationException.masterDatasourceDoesnotExists(model1.name).getMessage(), exception.getMessage());
+        }
+    }
 
 
     private void checkExistanceOfMetaDataProperties(object)
     {
         assertTrue(object.datasources instanceof Map);
-        assertTrue(object.datasources.isEmpty());
         assertTrue(object.propertyConfiguration instanceof Map);
         assertTrue(object.propertyConfiguration.isEmpty());
         assertTrue(object.transients instanceof List);

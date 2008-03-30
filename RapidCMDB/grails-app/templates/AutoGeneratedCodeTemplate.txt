@@ -2,10 +2,10 @@
     //AUTO_GENERATED_CODE
 
 
-    static datasources = ${datasourceInfo.datasourceConfiguration}
+    static datasources = ${model.datasourceConfiguration}
 
     <%
-        propertyInfo.propertyList.each{
+        model.propertyList.each{
 
     %>
     ${it.type} $it.name ${it.defaultValue?"="+it.defaultValue:""};
@@ -13,11 +13,11 @@
         }
     %>
 
-    static hasMany = ${!propertyInfo.hasMany.isEmpty()?propertyInfo.hasMany.toString().replaceAll('\\{', '\\[').replaceAll('\\}', '\\]').replaceAll('=', ':'):'[:]'}
+    static hasMany = ${!model.hasMany.isEmpty()?model.hasMany.toString().replaceAll('\\{', '\\[').replaceAll('\\}', '\\]').replaceAll('=', ':'):'[:]'}
 
     static constraints={
     <%
-        propertyInfo.constraints.each{key, value->
+        model.constraints.each{key, value->
             if(!value.isEmpty())
             {
      %>
@@ -29,8 +29,8 @@
     %>
     }
 
-    static mappedBy=${propertyInfo.mappedBy}
-    static belongsTo = ${propertyInfo.belongsTo.toString().replaceAll('"','')}
-    static propertyConfiguration= ${propertyInfo.propertyConfigurations}
-    static transients = ${propertyInfo.transientProps};
+    static mappedBy=${model.mappedBy}
+    static belongsTo = ${model.belongsTo.toString().replaceAll('"','')}
+    static propertyConfiguration= ${model.propertyConfigurations}
+    static transients = ${model.transientProps};
     //AUTO_GENERATED_CODE

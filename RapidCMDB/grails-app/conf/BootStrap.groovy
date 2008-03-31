@@ -3,6 +3,7 @@ import model.Model
 import org.codehaus.groovy.grails.scaffolding.DefaultGrailsTemplateGenerator
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 
 class BootStrap {
 
@@ -12,14 +13,16 @@ class BootStrap {
             new RCMDBDatasource(name:RapidCMDBConstants.RCMDB).save();
         }
         def generator = new DefaultGrailsTemplateGenerator();
-        println ApplicationHolder.application;
+        generator.overwrite = true;
         ApplicationHolder.application.domainClasses.each
         {
-            Model model = Model.findByName(it.class.getName());
-            if(model && model.generateAll)
+            Model model = Model.findByName(it.getFullName());
+            if(model && model.generateAll && model.generateAll.booleanValue())
             {
                 generator.generateViews(it,".")
                 generator.generateController(it,".")
+                model.generateAll = Boolean.FALSE;
+                model.save();
             }
         }
         

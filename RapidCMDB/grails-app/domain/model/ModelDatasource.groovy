@@ -12,12 +12,19 @@ class ModelDatasource {
     static constraints = {
         datasource(unique:'model');
         master(validator: {val, obj ->
-            if (val && ModelDatasource.findAllByModelAndMaster(obj.model, true).size() > 0){
-                   return ['invalid.master'];
+            if (val){
+                ModelDatasource.findAllByModelAndMaster(obj.model, true).each
+                {
+                    if(it.datasource.name != obj.datasource.name)
+                    {
+                        return ['invalid.master'];
+                    }
+                }
             }
         })
     }
     String toString(){
         return datasource.name;  
     }
+
 }

@@ -3,7 +3,7 @@ package model
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 class Model {
     String name;
-    boolean generateAll = false;
+    Boolean generateAll = Boolean.FALSE;
     Model parentModel;
     static transients = ['generated','modelFile','controllerFile','controllerGenerated']
     static hasMany = [modelProperties:ModelProperty, datasources:ModelDatasource, fromRelations:ModelRelation, toRelations:ModelRelation];

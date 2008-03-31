@@ -194,20 +194,21 @@ class ModelGeneratorTest extends GroovyTestCase{
 
     public void testGenerateModelWithRelation()
     {
-        def model1 = new MockModel(name:"Class2");
+        def model1 = new MockModel(name:"Class1");
         def datasource1 = new BaseDatasource(name:"ds1-sample");
         def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model1);
         model1.datasources += modelDatasource1;
 
         model1.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model1);
-        def model2 = new MockModel(name:"Class1");
+        def model2 = new MockModel(name:"Class2");
         def modelDatasource2 = new MockModelDatasource(datasource:datasource1, master:true, model:model2);
         model2.datasources += modelDatasource2;
 
         model2.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model2);
-        ModelRelation relation1 = new ModelRelation(fromName:"relation1", toName:"reverseRelation1", cardinality:ModelRelation.ONE_TO_ONE, fromModel:model1, toModel:model2);
-        ModelRelation relation2 = new ModelRelation(fromName:"relation2", toName:"reverseRelation2", cardinality:ModelRelation.ONE_TO_MANY, fromModel:model2, toModel:model1);
-        ModelRelation relation3 = new ModelRelation(fromName:"relation3", toName:"reverseRelation3", cardinality:ModelRelation.MANY_TO_MANY, fromModel:model1, toModel:model2);
+        ModelRelation relation1 = new ModelRelation(firstName:"relation1", secondName:"reverseRelation1", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE, firstModel:model1, secondModel:model2);
+        ModelRelation relation2 = new ModelRelation(firstName:"relation2", secondName:"reverseRelation2", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.MANY, firstModel:model2, secondModel:model1);
+        ModelRelation relation3 = new ModelRelation(firstName:"relation3", secondName:"reverseRelation3", firstCardinality:ModelRelation.MANY, secondCardinality:ModelRelation.MANY, firstModel:model1, secondModel:model2);
+        ModelRelation relation4 = new ModelRelation(firstName:"relation4", secondName:"reverseRelation4", firstCardinality:ModelRelation.MANY, secondCardinality:ModelRelation.ONE, firstModel:model1, secondModel:model2);
 
         model1.fromRelations += relation1;
         model2.toRelations += relation1;
@@ -217,6 +218,9 @@ class ModelGeneratorTest extends GroovyTestCase{
 
         model1.fromRelations += relation3;
         model2.toRelations += relation3;
+
+        model1.fromRelations += relation4;
+        model2.toRelations += relation4;
         ModelGenerator.getInstance().generateModel(model1);
         assertTrue (model1.generateAll);
         assertEquals (1, model1.numberOfSaveCalls);
@@ -227,12 +231,14 @@ class ModelGeneratorTest extends GroovyTestCase{
         def object = cls.newInstance();
         
         assertEquals(model2.getName(), object.class.getDeclaredField("relation1").getType().getName());
-        assertEquals(model2.getName(), object.hasMany.reverseRelation2.getName())
+        assertEquals(model2.getName(), object.class.getDeclaredField("reverseRelation2").getType().getName())
         assertEquals(model2.getName(), object.hasMany.relation3.getName())
+        assertEquals(model2.getName(), object.class.getDeclaredField("relation4").getType().getName())
 
         assertEquals("reverseRelation1", object.mappedBy.relation1)
         assertEquals("relation2", object.mappedBy.reverseRelation2)
         assertEquals("reverseRelation3", object.mappedBy.relation3)
+        assertEquals("reverseRelation4", object.mappedBy.relation4)
 
 
         Class cls2 = compileModel(model2);
@@ -241,11 +247,14 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertEquals(model1.getName(), object2.class.getDeclaredField("reverseRelation1").getType().getName());
         assertEquals(model1.getName(), object2.hasMany.relation2.getName())
         assertEquals(model1.getName(), object2.hasMany.reverseRelation3.getName())
+        assertEquals(model1.getName(), object2.hasMany.reverseRelation4.getName())
 
         assertEquals("relation1", object2.mappedBy.reverseRelation1)
         assertEquals("reverseRelation2", object2.mappedBy.relation2)
         assertEquals("relation3", object2.mappedBy.reverseRelation3)
+        assertEquals("relation4", object2.mappedBy.reverseRelation4)
 
+        assertEquals(1, object2.belongsTo.size())
         assertEquals(model1.getName(), object2.belongsTo[0].getName())
 
 

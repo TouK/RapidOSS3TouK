@@ -74,11 +74,11 @@ class ModelGenerator
         }
         model.fromRelations.each
         {
-            getDependentModels(it.toModel, dependentModels);
+            getDependentModels(it.secondModel, dependentModels);
         }
         model.toRelations.each
         {
-            getDependentModels(it.fromModel, dependentModels);
+            getDependentModels(it.firstModel, dependentModels);
         }
     }
 
@@ -301,57 +301,42 @@ class ModelMetaData
 
         }
     }
-
+    private def processRelation(cardinality, oppositeCardinality, name, oppositeName, oppositeType, isSecond)
+    {
+        if(cardinality == ModelRelation.ONE && oppositeCardinality == ModelRelation.MANY)
+        {
+            hasMany[name] = oppositeType;
+        }
+        else if(cardinality == ModelRelation.MANY && oppositeCardinality == ModelRelation.ONE || cardinality == ModelRelation.ONE && oppositeCardinality == ModelRelation.ONE)
+        {
+            constraints[name] = [nullable:true];
+            def generalPropConfig = [:];
+            generalPropConfig["type"] = oppositeType;
+            generalPropConfig["name"] = name;
+            generalPropConfig["defaultValue"] = null;
+            propertyList += generalPropConfig;
+        }
+        else if(cardinality == ModelRelation.MANY && oppositeCardinality == ModelRelation.MANY)
+        {
+            if(isSecond)
+            {
+                if(!belongsTo.contains(oppositeType))
+                {
+                    belongsTo += oppositeType;
+                }
+            }
+            hasMany[name] = oppositeType;
+        }
+        mappedBy[name] = oppositeName;
+    }
+    
     def processRelations(Model model)
     {
-         model.fromRelations.each{
-            if(it.cardinality == "OneToOne")
-            {
-                constraints[it.fromName] = [nullable:true];
-                mappedBy[it.fromName] = it.toName;
-                def generalPropConfig = [:];
-                generalPropConfig["type"] = it.toModel.name;
-                generalPropConfig["name"] = it.fromName;
-                generalPropConfig["defaultValue"] = null;
-                propertyList += generalPropConfig;
-            }
-            else
-            {
-                hasMany[it.fromName] = it.toModel.name;
-                mappedBy[it.fromName] = it.toName;
-            }
+        model.fromRelations.each{
+            processRelation(it.firstCardinality,it.secondCardinality,it.firstName,it.secondName,it.secondModel.name, false);
         }
         model.toRelations.each{
-            if(it.cardinality == "OneToOne")
-            {
-                constraints[it.toName] = [nullable:true];
-                mappedBy[it.toName] = it.fromName;
-
-                def generalPropConfig = [:];
-                generalPropConfig["type"] = it.fromModel.name;
-                generalPropConfig["name"] = it.toName;
-                generalPropConfig["defaultValue"] = null;
-                propertyList += generalPropConfig;
-
-            }
-            else
-            {
-
-                if(it.cardinality == ModelRelation.ONE_TO_MANY)
-                {
-                    constraints[it.toName] = [nullable:true];
-                }
-                else
-                {
-                    if(!belongsTo.contains(it.fromModel.name))
-                    {
-                        belongsTo += it.fromModel.name;
-                    }
-                }
-                hasMany[it.toName] = it.fromModel.name;
-                mappedBy[it.toName] = it.fromName;
-
-            }
+            processRelation(it.secondCardinality,it.firstCardinality,it.secondName,it.firstName,it.firstModel.name, true);
         }
     }
 

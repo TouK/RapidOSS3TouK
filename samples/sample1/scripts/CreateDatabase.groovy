@@ -1,4 +1,4 @@
-import datasources.DatabaseAdapter;
+import datasource.DatabaseAdapter;
 def adapter = DatabaseAdapter.getInstance("ds1", "devices1", "InstanceName");
 try{
 	adapter.executeUpdate("drop TABLE devices1");

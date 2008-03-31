@@ -35,7 +35,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils;
  * To change this template use File | Settings | File Templates.
  */
 class ModelGeneratorTest extends GroovyTestCase{
-    def base_directory = "../testoutput/";
+    def static base_directory = "../testoutput/";
 
     protected void setUp() {
         super.setUp();
@@ -58,7 +58,9 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertTrue (new File(base_directory + "${model.name}.groovy").exists());
         Class cls = compileModel(model);
         def object = cls.newInstance();
-        checkExistanceOfMetaDataProperties(object); 
+        checkExistanceOfMetaDataProperties(object);
+        assertTrue (model.generateAll);
+        assertEquals (1, model.numberOfSaveCalls);
 
 
         GrailsAwareClassLoader cloader = new GrailsAwareClassLoader();
@@ -79,6 +81,10 @@ class ModelGeneratorTest extends GroovyTestCase{
         ModelGenerator.getInstance().generateModel(childModel);
         assertTrue (new File(base_directory + "${childModel.name}.groovy").exists());
         assertTrue (new File(base_directory + "${parentModel.name}.groovy").exists());
+        assertTrue (childModel.generateAll);
+        assertEquals (1, childModel.numberOfSaveCalls);
+        assertTrue (parentModel.generateAll);
+        assertEquals (1, parentModel.numberOfSaveCalls);
 
         Class childModelClass = compileModel(childModel);
         def childModelInstance = childModelClass.newInstance();
@@ -212,6 +218,11 @@ class ModelGeneratorTest extends GroovyTestCase{
         model1.fromRelations += relation3;
         model2.toRelations += relation3;
         ModelGenerator.getInstance().generateModel(model1);
+        assertTrue (model1.generateAll);
+        assertEquals (1, model1.numberOfSaveCalls);
+        assertTrue (model2.generateAll);
+        assertEquals (1, model2.numberOfSaveCalls);
+
         Class cls = compileModel(model1);
         def object = cls.newInstance();
         
@@ -338,6 +349,7 @@ class ModelGeneratorTest extends GroovyTestCase{
 
 class MockModel extends Model
 {
+    def numberOfSaveCalls = 0;
     def datasources = [];
     def modelProperties = []
     def fromRelations = [];
@@ -350,6 +362,11 @@ class MockModel extends Model
     def getControllerFile()
     {
         return new File("../testoutput/${name}Controller.groovy");
+    }
+
+    def save()
+    {
+        numberOfSaveCalls++;
     }
 }
 class MockModelDatasource extends ModelDatasource

@@ -121,6 +121,8 @@ class ModelGenerator
     {
         modelMetaDatas.each {modelName,modelMetaData->
             def model = modelMetaData.model;
+            model.generateAll = true;
+            model.save();
             def parentDir = model.getModelFile().getParentFile();
             parentDir.mkdirs();
 

@@ -54,7 +54,7 @@ class RapidDomainClassGrailsPlugin {
             props.each{key,value->
                 sampleBean.setProperty (key, value);
             }
-            sampleBean.save();
+            sampleBean.save(flush:true);
             return sampleBean;
         }
         mc.'static'.create = {Map props->

@@ -1,5 +1,5 @@
 package datasource;
-import datasources.SingleTableDatabaseAdapter
+import datasource.SingleTableDatabaseAdapter
 import org.apache.log4j.Logger
 import connection.NetcoolConnection
 

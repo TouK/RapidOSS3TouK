@@ -1,5 +1,5 @@
 package datasource;
-import datasources.NotificationAdapter
+import datasource.NotificationAdapter
 import org.apache.log4j.Logger
 import connection.SmartsConnection
 

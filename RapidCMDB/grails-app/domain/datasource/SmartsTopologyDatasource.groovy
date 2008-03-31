@@ -1,5 +1,5 @@
 package datasource;
-import datasources.TopologyAdapter
+import datasource.TopologyAdapter
 import org.apache.log4j.Logger
 import connection.SmartsConnection
 

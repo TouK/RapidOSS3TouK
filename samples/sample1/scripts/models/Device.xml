@@ -1,9 +1,0 @@
-<Model ClassName="Device" extends="Resource">
-	<Properties>
-		<Property  name="InstanceName" type="string" id="1" />
-		<Property  name="ClassName" type="string" />
-	    <Property  name="dsName" type="string" />
-		<Property  name="Location" type="string" lazyload="false" datasource="dsForDevices3"/>
-	    <Property  name="Description" type="string" datasource="${dsName}" nameInDS="DESCR"/>
-	</Properties>
-</Model>

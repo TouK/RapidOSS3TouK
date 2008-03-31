@@ -1,5 +1,5 @@
 package datasource;
-import datasources.DatabaseAdapter
+import datasource.DatabaseAdapter
 import org.apache.log4j.Logger
 import connection.DatabaseConnection
 

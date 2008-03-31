@@ -1,5 +1,5 @@
 package datasource;
-import datasources.HttpAdapter
+import datasource.HttpAdapter
 import org.apache.log4j.Logger
 import connection.HttpConnection
 

@@ -1,4 +1,3 @@
-import models.*;
 def name = "ds1";
 def driver = "com.mysql.jdbc.Driver";
 def url = "jdbc:mysql://localhost/test";

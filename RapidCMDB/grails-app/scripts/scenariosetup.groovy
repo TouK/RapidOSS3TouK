@@ -22,7 +22,7 @@
  * Time: 11:43:45 AM
  * To change this template use File | Settings | File Templates.
  */
-import datasources.DatabaseAdapter;
+import datasource.DatabaseAdapter;
 import org.apache.log4j.Logger
 import datasource.SingleTableDatabaseDatasource
 import connection.DatabaseConnection;

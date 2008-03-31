@@ -5,7 +5,7 @@ class DatabaseConnection extends Connection{
     String url;
     String username;
     String password;
-    String connectionClass = "connections.DatabaseConnectionImpl";
+    String connectionClass = "connection.DatabaseConnectionImpl";
 
     static constraints = {
             driver(blank:false, nullable:false);

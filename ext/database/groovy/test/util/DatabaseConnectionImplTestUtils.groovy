@@ -31,7 +31,7 @@ import java.util.Map;
 
 import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.core.connection.ConnectionParam;
-import connections.DatabaseConnectionImpl;
+import connection.DatabaseConnectionImpl;
 
 public class DatabaseConnectionImplTestUtils {
 

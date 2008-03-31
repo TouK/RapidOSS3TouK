@@ -1,5 +1,5 @@
 package datasource;
-import datasources.RapidInsightAdapter
+import datasource.RapidInsightAdapter
 import org.apache.log4j.Logger
 import connection.RapidInsightConnection
 

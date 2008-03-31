@@ -3,7 +3,7 @@ class RapidInsightConnection extends Connection{
     String baseUrl;
     String username;
     String password;
-    String connectionClass = "connections.RapidInsightConnectionImpl";
+    String connectionClass = "connection.RapidInsightConnectionImpl";
     
     static constraints = {
         baseUrl(blank:false, nullable:false);

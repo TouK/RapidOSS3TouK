@@ -22,7 +22,7 @@ class RapidExtBuild extends Build{
         compile();
 		copyResourcesForJar();
 		ant.jar(destfile : env.rapid_ext_jar, basedir : env.rapid_ext_build);
-        ant.copy(file : env.rapid_ext_jar, toDir : env.distribution_lib);
+        ant.copy(file : env.rapid_ext_jar, toDir : env.dist_rapid_cmdb_lib);
 
 		copyDependentJars();
 	}
@@ -45,7 +45,7 @@ class RapidExtBuild extends Build{
 
 
 	def copyResourcesForJar(){
-        ant.copy(todir : "$env.distribution/src/groovy"){
+        ant.copy(todir : "$env.dist_rapid_cmdb/src/groovy"){
 			ant.fileset(dir : "$env.rapid_ext/database/groovy"){
                 ant.exclude(name:"**/test/**")
                 ant.exclude(name:"**/*Test*")

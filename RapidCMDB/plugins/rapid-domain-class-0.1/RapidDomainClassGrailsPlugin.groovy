@@ -42,7 +42,7 @@ class RapidDomainClassGrailsPlugin {
     {
         def mc = dc.metaClass;
         mc.'static'.get = {Map keys->
-            def sampleBean = delegate.newInstance();
+            def sampleBean = mc.getTheClass().newInstance();
             keys.each{key,value->
                 sampleBean.setProperty (key, value);
             }
@@ -50,12 +50,19 @@ class RapidDomainClassGrailsPlugin {
         }
 
         mc.'static'.add = {Map props->
-            def sampleBean = delegate.newInstance();
+            def sampleBean = mc.getTheClass().newInstance();
             props.each{key,value->
                 sampleBean.setProperty (key, value);
             }
-            sampleBean.save(flush:true);
-            return sampleBean;
+            def returnedBean = sampleBean.save(flush:true);
+            if(!returnedBean)
+            {
+                return sampleBean;
+            }
+            else
+            {
+                return returnedBean;
+            }
         }
         mc.'static'.create = {Map props->
             def sampleBean = delegate.newInstance();

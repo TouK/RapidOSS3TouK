@@ -41,7 +41,7 @@ class RapidCompBuild extends Build{
 		compile();
 		copyResourcesForJar();
 		ant.jar(destfile : env.rapid_comp_jar, basedir : env.rapid_comp_build);
-        ant.copy(file : env.rapid_comp_jar, toDir : env.distribution_lib);
+        ant.copy(file : env.rapid_comp_jar, toDir : env.dist_rapid_cmdb_lib);
 		copyDependentJars();
 	}
 

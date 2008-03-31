@@ -38,33 +38,33 @@ class RapidCmdbBuild extends Build{
 
 	def build(){
 		clean();
-		ant.copy(todir : "$env.distribution"){
+		ant.copy(todir : "$env.dist_rapid_cmdb"){
 			ant.fileset(file : "$env.rapid_cmdb_cvs/application.properties");
 			ant.fileset(file : "$env.rapid_cmdb_cvs/rs.bat");
 		}
 
-		ant.copy(todir : "$env.distribution/grails-app"){
+		ant.copy(todir : "$env.dist_rapid_cmdb/grails-app"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app"){
                 ant.exclude(name:"**/test/**")
                 ant.exclude(name:"**/*Test*")
             }
 		}
-		ant.copy(todir : "$env.distribution/lib"){
+		ant.copy(todir : "$env.dist_rapid_cmdb/lib"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/lib")
         }
-		ant.copy(todir : "$env.distribution/plugins"){
+		ant.copy(todir : "$env.dist_rapid_cmdb/plugins"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/plugins"){
                 ant.exclude(name:"**/test/**")
                 ant.exclude(name:"**/*Test*")
             }
         }
-		ant.copy(todir : "$env.distribution/src"){
+		ant.copy(todir : "$env.dist_rapid_cmdb/src"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/src"){
                 ant.exclude(name:"**/test/**")
                 ant.exclude(name:"**/*Test*")
             }
         }
-		ant.copy(todir : "$env.distribution/web-app"){
+		ant.copy(todir : "$env.dist_rapid_cmdb/web-app"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/web-app"){
                 ant.exclude(name:"**/test/**")
                 ant.exclude(name:"**/*Test*")
@@ -74,7 +74,7 @@ class RapidCmdbBuild extends Build{
 		copyDependentJars();
 		unzipGrails();
 		ant.zip(destfile : "$env.distribution/RapidCMDB.zip"){
-            ant.zipfileset(dir : "$env.distribution", prefix:"RapidCMDB");
+            ant.zipfileset(dir : "$env.distribution");
         }
 	}
 
@@ -85,19 +85,19 @@ class RapidCmdbBuild extends Build{
     }
 
 	def copyDependentJars(){
-		ant.copy(file : (String)classpath.getProperty("commons-betwixt-0_8_jar"), toDir : env.distribution_lib );
-		ant.copy(file : (String)classpath.getProperty("commons-digester-1_7_jar"), toDir : env.distribution_lib );
-		ant.copy(file : (String)classpath.getProperty("commons-configuration-1_2_jar"), toDir : env.distribution_lib );
-        ant.copy(file : (String)classpath.getProperty("commons-collections-3_2_jar"), toDir : env.distribution_lib );
-		ant.copy(file : (String)classpath.getProperty("commons-codec-1_3_jar"), toDir : env.distribution_lib);
-		ant.copy(file : (String)classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir : env.distribution_lib);
-		ant.copy(file : (String)classpath.getProperty("net_jar"), toDir : env.distribution_lib);
-		ant.copy(file : (String)classpath.getProperty("skclient_jar"), toDir : env.distribution_lib);
-		ant.copy(file : (String)classpath.getProperty("DdlUtils-1_0_jar"), toDir : env.distribution_lib);
+		ant.copy(file : (String)classpath.getProperty("commons-betwixt-0_8_jar"), toDir : env.dist_rapid_cmdb_lib );
+		ant.copy(file : (String)classpath.getProperty("commons-digester-1_7_jar"), toDir : env.dist_rapid_cmdb_lib);
+		ant.copy(file : (String)classpath.getProperty("commons-configuration-1_2_jar"), toDir : env.dist_rapid_cmdb_lib );
+        ant.copy(file : (String)classpath.getProperty("commons-collections-3_2_jar"), toDir : env.dist_rapid_cmdb_lib );
+		ant.copy(file : (String)classpath.getProperty("commons-codec-1_3_jar"), toDir : env.dist_rapid_cmdb_lib);
+		ant.copy(file : (String)classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir : env.dist_rapid_cmdb_lib);
+		ant.copy(file : (String)classpath.getProperty("net_jar"), toDir : env.dist_rapid_cmdb_lib);
+		ant.copy(file : (String)classpath.getProperty("skclient_jar"), toDir : env.dist_rapid_cmdb_lib);
+		ant.copy(file : (String)classpath.getProperty("DdlUtils-1_0_jar"), toDir : env.dist_rapid_cmdb_lib);
 	}
 
     def unzipGrails(){
-        ant.unzip(src : (String)classpath.getProperty("grails-1_0_1.zip"), dest : env.distribution);
+        ant.unzip(src : (String)classpath.getProperty("grails-1_0_1_zip"), dest : env.distribution);
     }
 
 	def clean(){

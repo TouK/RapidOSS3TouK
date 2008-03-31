@@ -19,6 +19,7 @@ class ModelProperty {
         name(blank:false, unique:'model');
         nameInDatasource(nullable:true);
         propertyDatasource(nullable:true);
+        defaultValue(nullable:true);
         propertySpecifyingDatasource(nullable:true);
         type(inList:[stringType, numberType, dateType]);
     }

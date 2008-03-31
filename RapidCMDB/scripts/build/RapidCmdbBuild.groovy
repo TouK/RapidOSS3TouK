@@ -72,6 +72,7 @@ class RapidCmdbBuild extends Build{
         }
 		buildDependent();
 		copyDependentJars();
+		unzipGrails();
 		ant.zip(destfile : "$env.distribution/RapidCMDB.zip"){
             ant.zipfileset(dir : "$env.distribution", prefix:"RapidCMDB");
         }
@@ -82,7 +83,6 @@ class RapidCmdbBuild extends Build{
         new RapidCoreBuild().run ([]);
         new RapidExtBuild().run ([]);
     }
-
 
 	def copyDependentJars(){
 		ant.copy(file : (String)classpath.getProperty("commons-betwixt-0_8_jar"), toDir : env.distribution_lib );
@@ -96,6 +96,9 @@ class RapidCmdbBuild extends Build{
 		ant.copy(file : (String)classpath.getProperty("DdlUtils-1_0_jar"), toDir : env.distribution_lib);
 	}
 
+    def unzipGrails(){
+        ant.unzip(src : (String)classpath.getProperty("grails-1_0_1.zip"), dest : env.distribution);
+    }
 
 	def clean(){
 		ant.delete(dir : env.distribution);

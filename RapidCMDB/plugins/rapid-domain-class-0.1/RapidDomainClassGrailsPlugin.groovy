@@ -2,6 +2,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 import org.hibernate.SessionFactory
 import com.ifountain.comp.utils.CaseInsensitiveMap
 import datasource.BaseDatasource
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
 class RapidDomainClassGrailsPlugin {
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
@@ -81,6 +82,50 @@ class RapidDomainClassGrailsPlugin {
         MetaClass mc = dc.metaClass
         def propConfigCache = new PropertyConfigurationCache(dc);
         def dsConfigCache = new DatasourceConfigurationCache(dc);
+        mc.setProperty = {String name, Object value->
+            def prop = null;
+            if(((GrailsDomainClass)dc).hasProperty(name))
+            {
+                prop = ((GrailsDomainClass)dc).getPropertyByName (name);
+            }
+            if(prop && prop.isOneToOne())
+            {
+                def reverseProp = prop.getOtherSide();
+                if(reverseProp)
+                {
+                    def reverseName = reverseProp.name;
+                    def oldValue = delegate.getProperty(name);
+                    if(value)
+                    {
+                        if(oldValue != value)
+                        {
+                            if(oldValue != null)
+                            {
+                                oldValue.setProperty(reverseName, null);
+                            }
+                            mc.getMetaProperty(name).setProperty(delegate, value);
+                            value.setProperty(reverseName, delegate);
+                        }
+                    }
+                    else
+                    {
+                        mc.getMetaProperty(name).setProperty(delegate, value);
+                        if(oldValue)
+                        {
+                            oldValue.setProperty(reverseName, value);
+                        }
+                    }
+                }
+                else
+                {
+                    mc.getMetaProperty(name).setProperty(delegate, value);
+                }
+            }
+            else
+            {
+                mc.getMetaProperty(name).setProperty(delegate, value);
+            }
+        };
         if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
         {
             mc.addMetaBeanProperty(new DatasourceProperty("isPropertiesLoaded", Object.class));

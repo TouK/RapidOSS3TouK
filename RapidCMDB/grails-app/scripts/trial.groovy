@@ -49,3 +49,21 @@ import test.Book
 //
 //def event =  Event.get([name:"event2"]);
 //return event.lastOccured;
+def model1 = Model1.findByProp1("prop1value");
+def model2 = Model2.findByProp2("prop2value");
+def model3 = Model1.findByProp1("prop1value1")
+if(!model1)
+{
+    model1 = Model1.add(prop1:"prop1value")
+    model2 = Model2.add(prop2:"prop2value")
+    model3 = Model1.add(prop1:"prop1value1")
+    model2.rel1 = model1;
+    model2.save();
+}
+//model2.rel1 = model3;
+//    model2.save();
+//model2.rel1 = null;
+//    model2.save();
+
+return ""+model2.rel1 + "==" + model3.revrel1
+

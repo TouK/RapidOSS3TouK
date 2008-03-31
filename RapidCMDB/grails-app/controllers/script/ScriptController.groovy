@@ -2,14 +2,6 @@ package script;
 
 class ScriptController {
     def scaffold = CmdbScript;
-    def show = {
-        def cmdbScript = CmdbScript.get(params.id)
-        if (!cmdbScript) {
-            flash.message = "CmdbScript not found with id ${params.id}"
-            redirect(action: list)
-        }
-        else {return [cmdbScript: cmdbScript]}
-    }
 
 
     def run =

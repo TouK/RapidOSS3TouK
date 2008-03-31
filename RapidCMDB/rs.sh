@@ -16,4 +16,5 @@ if [ "$RS_HOME" == "" ]; then
 fi
 
 export GRAILS_HOME=$RS_HOME
-. "%GRAILS_HOME%\bin\startGrails" "%GRAILS_HOME%" org.codehaus.groovy.grails.cli.GrailsScriptRunner  %* -Dserver.port=12222
+rm -r $RS_HOME/temp
+. "%GRAILS_HOME%\bin\startGrails" "%GRAILS_HOME%" org.codehaus.groovy.grails.cli.GrailsScriptRunner  %* -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp

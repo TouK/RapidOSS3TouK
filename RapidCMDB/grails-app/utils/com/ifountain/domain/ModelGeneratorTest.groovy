@@ -67,13 +67,6 @@ class ModelGeneratorTest extends GroovyTestCase{
         checkExistanceOfMetaDataProperties(object);
         assertTrue (model.generateAll);
         assertEquals (1, model.numberOfSaveCalls);
-
-
-        GrailsAwareClassLoader cloader = new GrailsAwareClassLoader();
-        cloader.addClasspath (base_directory);
-        Class controllerCls = cloader.loadClass(model.name+"Controller");
-        def controllerObj = controllerCls.newInstance();
-        assertEquals (model.getName(),controllerObj.scaffold.getName());
     }
 
     public void testGenerateModelExtendingAnotherModel()

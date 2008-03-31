@@ -17,7 +17,7 @@ class ModelDatasource {
                 {
                     if(it.datasource.name != obj.datasource.name)
                     {
-                        return ['invalid.master'];
+                        return ['model.invalid.master'];
                     }
                 }
             }

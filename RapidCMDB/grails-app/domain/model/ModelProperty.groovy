@@ -22,6 +22,11 @@ class ModelProperty {
         defaultValue(nullable:true);
         propertySpecifyingDatasource(nullable:true);
         type(inList:[stringType, numberType, dateType]);
+        lazy(validator:{val, obj ->
+            if(val && propertyDatasource != null && propertyDatasource.master){
+                return ["model.invalid.lazy"]
+            }
+        })
     }
 
 

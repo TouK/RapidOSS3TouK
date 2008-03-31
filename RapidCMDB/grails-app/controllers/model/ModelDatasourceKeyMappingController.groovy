@@ -3,6 +3,14 @@ package model;
 class ModelDatasourceKeyMappingController {
 
     def scaffold = ModelDatasourceKeyMapping;
+    def show = {
+        def modelDatasourceKeyMapping = ModelDatasourceKeyMapping.get(params.id)
+        if (!modelDatasourceKeyMapping) {
+            flash.message = "ModelDatasourceKeyMapping not found with id ${params.id}"
+            redirect(action: list)
+        }
+        else {return [modelDatasourceKeyMapping: modelDatasourceKeyMapping]}
+    }
 
      def save = {
         def modelDatasourceKeyMapping = new ModelDatasourceKeyMapping(params)

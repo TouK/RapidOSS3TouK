@@ -2,6 +2,16 @@ package model;
 
 class ModelRelationController {
     def scaffold = ModelRelation;
+
+     def show = {
+        def modelRelation = ModelRelation.get(params.id)
+        if (!modelRelation) {
+            flash.message = "ModelRelation not found with id ${params.id}"
+            redirect(action: list)
+        }
+        else {return [modelRelation: modelRelation]}
+    }
+    
     def save = {
         if(params.firstName)
         {

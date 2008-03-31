@@ -4,7 +4,14 @@ import com.ifountain.domain.ModelGenerator
 class ModelController {
     def static String MODEL_DOESNOT_EXIST = "Model does not exist";
     def scaffold = model.Model;
-
+    def show = {
+        def model = Model.get(params.id)
+        if (!model) {
+            flash.message = "Model not found with id ${params.id}"
+            redirect(action: list)
+        }
+        else {return [model: model]}
+    }
     def generate = {
         if(params.id)
         {

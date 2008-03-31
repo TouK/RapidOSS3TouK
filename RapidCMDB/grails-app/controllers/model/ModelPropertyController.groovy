@@ -5,6 +5,15 @@ import datasource.BaseDatasource;
 class ModelPropertyController {
 
     def scaffold = ModelProperty;
+
+    def show = {
+        def modelProperty = ModelProperty.get(params.id)
+        if (!modelProperty) {
+            flash.message = "ModelProperty not found with id ${params.id}"
+            redirect(action: list)
+        }
+        else {return [modelProperty: modelProperty]}
+    }
      def save = {
         
         if(params.name)

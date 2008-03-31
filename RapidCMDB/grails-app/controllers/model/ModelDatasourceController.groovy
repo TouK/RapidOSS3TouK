@@ -3,6 +3,15 @@ package model;
 class ModelDatasourceController {
 
     def scaffold = ModelDatasource;
+    def show = {
+        def modelDatasource = ModelDatasource.get(params.id)
+        if (!modelDatasource) {
+            flash.message = "ModelDatasource not found with id ${params.id}"
+            redirect(action: list)
+        }
+        else {return [modelDatasource: modelDatasource]}
+    }
+
 
     def save = {
         def modelDatasource = new ModelDatasource(params);

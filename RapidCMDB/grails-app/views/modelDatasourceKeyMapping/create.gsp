@@ -27,7 +27,6 @@
     </g:hasErrors>
 
     <ul>
-        <li><b>Datasource:</b>Preselected value for the datasource for which the mapping is done. No need to change.</li>
         <li><b>Property:</b> Name of the property whose value will be used while querying the datasource. This can be a transient attribute whose value is calculated.</li>
         <li><b>Name In Datasource:</b> name of the field in datasource corresponding to the property in the modeled class.</li>
     </ul>
@@ -65,14 +64,6 @@
                     <%
                         }
                     %>
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="nameInDatasource">Name In Datasource:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: modelDatasourceKeyMapping, field: 'nameInDatasource', 'errors')}">
-                            <input type="text" id="nameInDatasource" name="nameInDatasource" value="${fieldValue(bean: modelDatasourceKeyMapping, field: 'nameInDatasource')}"/>
-                        </td>
-                    </tr>
 
                     <tr class="prop">
                         <td valign="top" class="name">
@@ -108,6 +99,15 @@
                             <g:select optionKey="id" from="${modelPropertyList}" name="property.id" value="${modelDatasourceKeyMapping?.property?.id}"></g:select>
                         </td>
                     </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="nameInDatasource">Name In Datasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: modelDatasourceKeyMapping, field: 'nameInDatasource', 'errors')}">
+                            <input type="text" id="nameInDatasource" name="nameInDatasource" value="${fieldValue(bean: modelDatasourceKeyMapping, field: 'nameInDatasource')}"/>
+                        </td>
+                    </tr>                    
 
                 </tbody>
             </table>

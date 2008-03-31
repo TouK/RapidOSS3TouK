@@ -40,28 +40,7 @@
             </tbody>
         </table>
     </div>
-    <div style="margin-top:20px;">
-        <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Datasource List</span>
-        <span class="menuButton" ><g:link class="create" controller="modelDatasource" params="['model.id':model?.id]" action="create">New Datasource</g:link></span>
-        <div class="list">
-            <table>
-                <thead>
-                    <tr>
-                        <g:sortableColumn property="datasource" title="Datasource"/>
-                        <g:sortableColumn property="master" title="Master"/>
-                    </tr>
-                </thead>
-                <tbody>
-                    <g:each in="${model.datasources}" status="i" var="modelDatasource">
-                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                            <td><g:link action="show" controller="modelDatasource" id="${modelDatasource.id}">${modelDatasource.datasource?.encodeAsHTML()}</g:link></td>
-                            <td>${modelDatasource.master?.encodeAsHTML()}</td>
-                        </tr>
-                    </g:each>
-                </tbody>
-            </table>
-        </div>
-    </div>
+
     <div style="margin-top:20px;">
        <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Property List</span>
        <span class="menuButton"><g:link class="create" controller="modelProperty" params="['model.id':model?.id]" action="create">New Property</g:link></span>
@@ -130,6 +109,30 @@
             </table>
         </div>
     </div>
+
+    <div style="margin-top:20px;">
+        <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Datasource List</span>
+        <span class="menuButton" ><g:link class="create" controller="modelDatasource" params="['model.id':model?.id]" action="create">New Datasource</g:link></span>
+        <div class="list">
+            <table>
+                <thead>
+                    <tr>
+                        <g:sortableColumn property="datasource" title="Datasource"/>
+                        <g:sortableColumn property="master" title="Master"/>
+                    </tr>
+                </thead>
+                <tbody>
+                    <g:each in="${model.datasources}" status="i" var="modelDatasource">
+                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                            <td><g:link action="show" controller="modelDatasource" id="${modelDatasource.id}">${modelDatasource.datasource?.encodeAsHTML()}</g:link></td>
+                            <td>${modelDatasource.master?.encodeAsHTML()}</td>
+                        </tr>
+                    </g:each>
+                </tbody>
+            </table>
+        </div>
+    </div>    
+
     <div class="buttons" style="margin-top:30px;">
         <g:form>
             <input type="hidden" name="id" value="${model?.id}"/>

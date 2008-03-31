@@ -11,7 +11,7 @@
 
 
         <h1 style="margin-left:20px;">RapidCMDB Admin UI</h1>
-        <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define your connections and datasources, model your managed objects, and maintain them.</p>
+        <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define your connections and datasources, model your classes, and maintain them.</p>
 <p/>
 <p/>
         <h2 style="margin-left:20px;">Connections</h2>
@@ -43,11 +43,11 @@
 <p/>
 <p/>
         <h2 style="margin-left:20px;">Modeling</h2>
-        <p style="margin-left:20px;width:80%">Model your Managed Objects.</p>
+        <p style="margin-left:20px;width:80%">Model your Managed Classes.</p>
         <div class="dialog" style="margin-left:20px;width:60%;">
-            <ol>
-                <li class="controller"><g:link controller="model">Model Managed Objects</g:link></li>
-            </ol>
+            <ul>
+                <li class="controller"><g:link controller="model">Model Managed Classes</g:link></li>
+            </ul>
         </div>
 
         <h2 style="margin-left:20px;">Scripting</h2>

@@ -32,9 +32,9 @@
                             props.eachWithIndex { p,i ->
                    	            if(i < 6) {
                    	                if(p.isAssociation()) { %>
-                   	        <th>${p.naturalName}</th>
+                   	        <th>${p.name}</th>
                    	    <%          } else { %>
-                   	        <g:sortableColumn property="${p.name}" title="${p.naturalName}" />
+                   	        <g:sortableColumn property="${p.name}" title="${p.name}" />
                         <%  }   }   } %>
                         </tr>
                     </thead>

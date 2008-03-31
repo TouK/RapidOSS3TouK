@@ -31,7 +31,7 @@
                         Collections.sort(props, comparator.constructors[0].newInstance([domainClass] as Object[]))
                         props.each { p -> %>
                         <tr class="prop">
-                            <td valign="top" class="name">${p.naturalName}:</td>
+                            <td valign="top" class="name">${p.name}:</td>
                             <%  if(p.oneToMany) { %>
                             <td  valign="top" style="text-align:left;" class="value">
                                 <ul>

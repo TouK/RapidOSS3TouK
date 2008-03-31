@@ -43,7 +43,7 @@
                                     if(display) { %>
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="${p.name}">${p.naturalName}:</label>
+                                    <label for="${p.name}">${p.name}:</label>
                                 </td>
                                 <td valign="top" class="value \${hasErrors(bean:${domainClass.propertyName},field:'${p.name}','errors')}">
                                     ${renderEditor(p)}

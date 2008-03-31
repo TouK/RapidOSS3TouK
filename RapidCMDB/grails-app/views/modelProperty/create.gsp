@@ -32,7 +32,6 @@
         <li>select the datasource or the property that has the name of the datasource that will be used to retrieve the value for the property</li>
     </ul>
 
-
     <g:form action="save" method="post">
         <div class="dialog">
             <table>
@@ -46,6 +45,33 @@
                             <input type="text" id="name" name="name" value="${fieldValue(bean: modelProperty, field: 'name')}"/>
                         </td>
                     </tr>
+
+                    <%
+                        def modelPropertyList;
+                        if (params["model.id"] != null) {
+                            def mdl = Model.get(params["model.id"]);
+                            def modelPropertyMap = [:];
+                            def modelDatasourceMap = [:];
+                            modelPropertyList = mdl?.modelProperties;
+                            for(modelProp in modelPropertyList){
+                                modelPropertyMap.put(modelProp.name, modelProp);
+                            }
+                            def tempModel = mdl.parentModel;
+                            while(tempModel != null){
+                                for(prop in tempModel.modelProperties){
+                                    if(!modelPropertyMap.containsKey(prop.name)){
+                                        modelPropertyMap.put(prop.name, prop);
+                                        modelPropertyList.add(prop);
+                                    }
+
+                                }
+                                tempModel = tempModel.parentModel;
+                            }
+                        }
+                        else {
+                            modelPropertyList = ModelProperty.list();
+                        }
+                    %>
 
                     <tr class="prop">
                         <td valign="top" class="name">
@@ -61,16 +87,6 @@
                             <label for="propertySpecifyingDatasource">Property Specifying Datasource:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'propertySpecifyingDatasource', 'errors')}">
-                            <%
-                                def modelPropertyList;
-                                if (params["model.id"] != null) {
-                                    def mdl = Model.get(params["model.id"]);
-                                    modelPropertyList = mdl?.modelProperties;
-                                }
-                                else {
-                                    modelPropertyList = ModelProperty.list();
-                                }
-                            %>
                             <g:select optionKey="id" from="${modelPropertyList}" name="propertySpecifyingDatasource.id" value="${modelProperty?.propertySpecifyingDatasource?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>

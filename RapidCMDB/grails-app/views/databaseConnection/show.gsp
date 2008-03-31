@@ -25,42 +25,42 @@
                         <tr class="prop">
                             <td valign="top" class="name">Name:</td>
                             
-                            <td valign="top" class="value">${databaseConnection.name}</td>
+                            <td valign="top" class="value">${databaseConnection?.name}</td>
                             
                         </tr>
                     
                         <tr class="prop">
                             <td valign="top" class="name">Connection Class:</td>
                             
-                            <td valign="top" class="value">${databaseConnection.connectionClass}</td>
+                            <td valign="top" class="value">${databaseConnection?.connectionClass}</td>
                             
                         </tr>
                     
                         <tr class="prop">
                             <td valign="top" class="name">Driver:</td>
                             
-                            <td valign="top" class="value">${databaseConnection.driver}</td>
+                            <td valign="top" class="value">${databaseConnection?.driver}</td>
                             
                         </tr>
                     
                         <tr class="prop">
                             <td valign="top" class="name">Url:</td>
                             
-                            <td valign="top" class="value">${databaseConnection.url}</td>
+                            <td valign="top" class="value">${databaseConnection?.url}</td>
                             
                         </tr>
                     
                         <tr class="prop">
                             <td valign="top" class="name">Username:</td>
                             
-                            <td valign="top" class="value">${databaseConnection.username}</td>
+                            <td valign="top" class="value">${databaseConnection?.username}</td>
                             
                         </tr>
                     
                         <tr class="prop">
                             <td valign="top" class="name">Password:</td>
                             
-                            <td valign="top" class="value">${databaseConnection.password}</td>
+                            <td valign="top" class="value">${databaseConnection?.password}</td>
                             
                         </tr>
                     

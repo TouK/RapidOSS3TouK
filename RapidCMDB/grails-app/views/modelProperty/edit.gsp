@@ -25,7 +25,33 @@
                 <div class="dialog">
                     <table>
                         <tbody>
+                             <%
+                                def modelPropertyList;
+                                def mdl = modelProperty.model;
+                                if(mdl != null){
+                                     def modelPropertyMap = [:];
+                                    def modelDatasourceMap = [:];
+                                    modelPropertyList = mdl?.modelProperties;
+                                    for(modelProp in modelPropertyList){
+                                        modelPropertyMap.put(modelProp.name, modelProp);
+                                    }
+                                    def tempModel = mdl.parentModel;
+                                    while(tempModel != null){
+                                        for(prop in tempModel.modelProperties){
+                                            if(!modelPropertyMap.containsKey(prop.name)){
+                                                modelPropertyMap.put(prop.name, prop);
+                                                modelPropertyList.add(prop);
+                                            }
 
+                                        }
+                                        tempModel = tempModel.parentModel;
+                                    }
+                                }
+                                else{
+                                    modelPropertyList = ModelProperty.list();
+                                }
+
+                            %>
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="name">Name:</label>
@@ -49,7 +75,7 @@
                                     <label for="propertySpecifyingDatasource">Property Specifying Datasource:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'propertySpecifyingDatasource','errors')}">
-                                    <g:select optionKey="id" from="${ModelProperty.list()}" name="propertySpecifyingDatasource.id" value="${modelProperty?.propertySpecifyingDatasource?.id}" noSelection="['null':'']"></g:select>
+                                    <g:select optionKey="id" from="${modelPropertyList}" name="propertySpecifyingDatasource.id" value="${modelProperty?.propertySpecifyingDatasource?.id}" noSelection="['null':'']"></g:select>
                                 </td>
                             </tr>
 

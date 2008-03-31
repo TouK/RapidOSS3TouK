@@ -42,6 +42,10 @@ class ModelGenerationException extends Exception{
     {
         return new ModelGenerationException("Only one master datasource should be specified for $modelName")
     }
+    public static ModelGenerationException noKeySpecifiedForDatasource(String datasourceName)
+    {
+        return new ModelGenerationException("No keys specified for datasource $datasourceName");
+    }
 
 
 

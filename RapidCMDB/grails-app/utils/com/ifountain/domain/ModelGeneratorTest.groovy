@@ -46,13 +46,19 @@ class ModelGeneratorTest extends GroovyTestCase{
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
-    
-    public void testGenerateModel()
+    private def addMasterDatasource(Model model)
     {
-        def model = new MockModel(name:"Class1");
         def datasource1 = new BaseDatasource(name:"ds1-sample");
         def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
         model.datasources += modelDatasource1;
+        def keyProp = new ModelProperty(name:"keyprop", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:false);
+        model.modelProperties += keyProp;
+        modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp, datasource:modelDatasource1, nameInDatasource:"keypropname");
+    }
+    public void testGenerateModel()
+    {
+        def model = new MockModel(name:"Class1");
+        addMasterDatasource(model);
 
         ModelGenerator.getInstance().generateModel(model);
         assertTrue (new File(base_directory + "${model.name}.groovy").exists());
@@ -74,9 +80,7 @@ class ModelGeneratorTest extends GroovyTestCase{
     {
         def parentModel = new MockModel(name:"Class2");  
         def childModel = new MockModel(name:"Class1", parentModel:parentModel);
-        def datasource1 = new BaseDatasource(name:"ds1-sample");
-        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:parentModel);
-        parentModel.datasources += modelDatasource1;
+        addMasterDatasource(parentModel);
 
         ModelGenerator.getInstance().generateModel(childModel);
         assertTrue (new File(base_directory + "${childModel.name}.groovy").exists());
@@ -105,10 +109,13 @@ class ModelGeneratorTest extends GroovyTestCase{
         model.datasources += modelDatasource1;
 
         def date = System.currentTimeMillis();
-        model.modelProperties += new ModelProperty(name:"prop1", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:"prop2 default value");
+        def keyProp = new ModelProperty(name:"prop1", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:"prop2 default value");
+        model.modelProperties += keyProp;
         model.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
         model.modelProperties += new ModelProperty(name:"prop3", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:date);
         model.modelProperties += new ModelProperty(name:"prop4", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model);
+
+        modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
 
         ModelGenerator.getInstance().generateModel(model);
         assertTrue (new File(base_directory + "${model.name}.groovy").exists());
@@ -203,14 +210,11 @@ class ModelGeneratorTest extends GroovyTestCase{
     public void testGenerateModelWithRelation()
     {
         def model1 = new MockModel(name:"Class1");
-        def datasource1 = new BaseDatasource(name:"ds1-sample");
-        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model1);
-        model1.datasources += modelDatasource1;
+        addMasterDatasource(model1);
 
         model1.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model1);
         def model2 = new MockModel(name:"Class2");
-        def modelDatasource2 = new MockModelDatasource(datasource:datasource1, master:true, model:model2);
-        model2.datasources += modelDatasource2;
+        addMasterDatasource(model2);
 
         model2.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model2);
         ModelRelation relation1 = new ModelRelation(firstName:"relation1", secondName:"reverseRelation1", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE, firstModel:model1, secondModel:model2);
@@ -273,10 +277,8 @@ class ModelGeneratorTest extends GroovyTestCase{
         def model1 = new MockModel(name:"Class1");
         def model2 = new MockModel(name:"Class2");
 
-        def datasource1 = new BaseDatasource(name:"ds1-sample");
-        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model1);
-        model1.datasources += modelDatasource1;
-        model2.datasources += modelDatasource1;
+        addMasterDatasource(model1);
+        addMasterDatasource(model2);
 
         def modelFileContent = """import java.util.net.*;\n
                         class ${model1.name} extends AnotherClass implements Trial{\n
@@ -334,6 +336,23 @@ class ModelGeneratorTest extends GroovyTestCase{
         catch(ModelGenerationException exception)
         {
             assertEquals (ModelGenerationException.masterDatasourceDoesnotExists(model1.name).getMessage(), exception.getMessage());
+        }
+    }
+
+    public void testThrowsExceptionIfKeymappingsDoesnotExistsForADatasource()
+    {
+        def model1 = new MockModel(name:"Class1");
+        def datasource1 = new BaseDatasource(name:"ds1-sample");
+        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model1);
+        model1.datasources += modelDatasource1;
+        try
+        {
+            ModelGenerator.getInstance().generateModel(model1);
+            fail("Should throw exception since no key mappings specified for datasource");
+        }
+        catch(ModelGenerationException exception)
+        {
+            assertEquals (ModelGenerationException.noKeySpecifiedForDatasource(modelDatasource1.datasource.name).getMessage(), exception.getMessage());
         }
     }
 

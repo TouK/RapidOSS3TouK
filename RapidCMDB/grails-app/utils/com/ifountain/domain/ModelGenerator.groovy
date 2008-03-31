@@ -112,6 +112,13 @@ class ModelGenerator
             {
                 throw ModelGenerationException.masterDatasourceDoesnotExists(modelBean.name);
             }
+
+            modelMetaData.datasourceConfiguration.each{dsName,dsConf->
+                if(dsConf.keys.size() == 0)
+                {
+                    throw ModelGenerationException.noKeySpecifiedForDatasource(dsName);   
+                }
+            }
         }
     }
 

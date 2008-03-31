@@ -105,16 +105,24 @@ class ModelGeneratorTest extends GroovyTestCase{
         model.datasources += modelDatasource1;
 
         def date = System.currentTimeMillis();
-        model.modelProperties += new ModelProperty(name:"prop1", type:ModelProperty.stringType, model:model,blank:true,defaultValue:"prop2 default value");
-        model.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.numberType, model:model,blank:false,defaultValue:"1");
-        model.modelProperties += new ModelProperty(name:"prop3", type:ModelProperty.dateType, model:model,blank:true,defaultValue:date);
-        model.modelProperties += new ModelProperty(name:"prop4", type:ModelProperty.dateType, model:model);
+        model.modelProperties += new ModelProperty(name:"prop1", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:"prop2 default value");
+        model.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
+        model.modelProperties += new ModelProperty(name:"prop3", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:date);
+        model.modelProperties += new ModelProperty(name:"prop4", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model);
 
         ModelGenerator.getInstance().generateModel(model);
         assertTrue (new File(base_directory + "${model.name}.groovy").exists());
         Class cls = compileModel(model);
         def object = cls.newInstance();
-        checkExistanceOfMetaDataProperties(object);
+        assertTrue(object.hasMany instanceof Map);
+        assertTrue(object.hasMany.isEmpty());
+        assertTrue(object.belongsTo instanceof List);
+        assertTrue(object.belongsTo.isEmpty());
+        assertTrue(object.mappedBy instanceof Map);
+        assertTrue(object.mappedBy.isEmpty());
+        assertTrue(object.transients instanceof List);
+        assertTrue(object.transients.isEmpty());
+
         assertEquals("prop2 default value", object.prop1);
         assertEquals(1, object.prop2);
         assertEquals(new Date(date), object.prop3);
@@ -337,7 +345,6 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertTrue(object.propertyConfiguration.isEmpty());
         assertTrue(object.transients instanceof List);
         assertTrue(object.transients.isEmpty());
-        println object.hasMany;
         assertTrue(object.hasMany instanceof Map);
         assertTrue(object.hasMany.isEmpty());
         assertTrue(object.belongsTo instanceof List);

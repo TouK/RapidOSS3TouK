@@ -251,7 +251,7 @@ class ModelMetaData
             }
             propertyList += generalPropConfig;
 
-            if(it.propertyDatasource != null || it.propertySpecifyingDatasource != null)
+            if(it.propertyDatasource != null && !it.propertyDatasource.master || it.propertySpecifyingDatasource != null)
             {
                 transientProps += it.name;
                 def federatedPropertyConfiguration = [:];

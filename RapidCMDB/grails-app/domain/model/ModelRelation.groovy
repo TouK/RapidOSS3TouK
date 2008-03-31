@@ -1,21 +1,22 @@
 package model;
 class ModelRelation {
-     public static String ONE_TO_ONE = "OneToOne";
-     public static String ONE_TO_MANY = "OneToMany";
-     public static String MANY_TO_MANY = "ManyToMany";
-     Model fromModel;
-     Model toModel;
-     String fromName;
-     String toName;
-     String cardinality;
-     static belongsTo=[toModel:Model, fromModel:Model];
+     public static String ONE = "One";
+     public static String MANY = "Many";
+     Model firstModel;
+     Model secondModel;
+     String firstName;
+     String secondName;
+     String firstCardinality;
+     String secondCardinality;
+     static belongsTo=[firstModel:Model, secondModel:Model];
      static constraints = {
-         cardinality(inList:[ONE_TO_ONE, ONE_TO_MANY, MANY_TO_MANY]);
-         fromName(blank:false);
-         toName(blank:false);
+         firstCardinality(inList:[ONE, MANY]);
+         secondCardinality(inList:[ONE, MANY]);
+         firstName(blank:false);
+         secondName(blank:false);
      }
 
      String toString(){
-         return "$fromName";
+         return "$firstName";
      }
 }

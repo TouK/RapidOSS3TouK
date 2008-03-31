@@ -1,73 +1,122 @@
 <%@ page import="model.*" %>
 
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <meta name="layout" content="main" />
-        <title>Edit ModelRelation</title>
-    </head>
-    <body>
-        <div class="nav">
-            <span class="menuButton">From <a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation.fromModel.id)}">${modelRelation.fromModel?.name}</a> To <a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation.toModel.id)}">${modelRelation.toModel?.name}</a></span>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="layout" content="main"/>
+    <title>Edit ModelRelation</title>
+</head>
+<body>
+<div class="nav">
+    <%
+        if (params["reverse"] != null || isReverse) {
+    %>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation?.secondModel?.id)}">${modelRelation?.secondModel}</a></span>
+    <%
+        }
+        else {
+    %>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation?.firstModel?.id)}">${modelRelation?.firstModel}</a></span>
+    <%
+        }
+    %>
+</div>
+<div class="body">
+    <h1>Edit ModelRelation</h1>
+    <g:if test="${flash.message}">
+        <div class="message">${flash.message}</div>
+    </g:if>
+    <g:hasErrors bean="${modelRelation}">
+        <div class="errors">
+            <g:renderErrors bean="${modelRelation}" as="list"/>
         </div>
-        <div class="body">
-            <h1>Edit ModelRelation</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${modelRelation}">
-            <div class="errors">
-                <g:renderErrors bean="${modelRelation}" as="list" />
-            </div>
-            </g:hasErrors>
-            <g:form method="post" >
-                <input type="hidden" name="id" value="${modelRelation?.id}" />
-                <div class="dialog">
-                    <table>
-                        <tbody>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="cardinality">Cardinality:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'cardinality','errors')}">
-                                    <g:select id="cardinality" name="cardinality" from="${modelRelation.constraints.cardinality.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:modelRelation,field:'cardinality')}" ></g:select>
-                                </td>
-                            </tr> 
+    </g:hasErrors>
+    <g:form method="post">
+        <input type="hidden" name="id" value="${modelRelation?.id}"/>
+        <div class="dialog">
+            <table>
+                <tbody>
 
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="fromName">Relation Name:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'fromName','errors')}">
-                                    <input type="text" id="fromName" name="fromName" value="${fieldValue(bean:modelRelation,field:'fromName')}"/>
-                                </td>
-                            </tr>
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="toModel">To Model:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'toModel','errors')}">
-                                    <g:select optionKey="id" from="${Model.list()}" name="toModel.id" value="${modelRelation?.toModel?.id}" ></g:select>
-                                </td>
-                            </tr>
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="toName">Reverse Relation Name:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:modelRelation,field:'toName','errors')}">
-                                    <input type="text" id="toName" name="toName" value="${fieldValue(bean:modelRelation,field:'toName')}"/>
-                                </td>
-                            </tr>
-                        
-                        </tbody>
-                    </table>
-                </div>
-                <div class="buttons">
-                    <span class="button"><g:actionSubmit class="save" value="Update" /></span>
-                    <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete" /></span>
-                </div>
-            </g:form>
+                    <%
+                        def cardinalityList = ["OneToOne", "OneToMany", "ManyToOne", "ManyToMany"];
+                        def cardinalityValue;
+                        def relationName;
+                        def relationNameField;
+                        def to;
+                        def toField;
+                        def reverseName;
+                        def reverseNameField
+                        if (modelRelation != null) {
+                            if (params["reverse"] == null && !isReverse) {
+                                relationName = modelRelation?.firstName;
+                                relationNameField = "firstName";
+                                to = modelRelation?.secondModel;
+                                toField = "secondModel";
+                                reverseName = modelRelation?.secondName;
+                                reverseNameField = "secondName";
+                                cardinalityValue = modelRelation?.firstCardinality + "To" + modelRelation?.secondCardinality;
+                            }
+                            else {
+                                relationName = modelRelation?.secondName;
+                                relationNameField = "secondName";
+                                to = modelRelation?.firstModel;
+                                toField = "firstModel";
+                                reverseName = modelRelation?.firstName;
+                                reverseNameField = "firstName";
+                                cardinalityValue = modelRelation?.secondCardinality + "To" + modelRelation?.firstCardinality;
+                            }
+                        }
+
+                    %>
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="cardinality">Type:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: modelRelation, field: 'firstCardinality', 'errors') || hasErrors(bean: modelRelation, field: 'secondCardinality', 'errors')}">
+                            <g:select id="cardinality" name="cardinality" from="${cardinalityList.collect{it.encodeAsHTML()}}" value="${cardinalityValue}"></g:select>
+                        </td>
+                    </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="${relationNameField}">Relation Name:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: modelRelation, field: relationNameField, 'errors')}">
+                            <input type="text" id="${relationNameField}" name="${relationNameField}" value="${relationName}"/>
+                        </td>
+                    </tr>
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="${toField}">To:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: modelRelation, field: toField, 'errors')}">
+                            <g:select optionKey="id" from="${Model.list()}" name="${toField}.id" value="${to?.id}"></g:select>
+                        </td>
+                    </tr>
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="${reverseNameField}">Reverse Relation Name:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: modelRelation, field: reverseNameField, 'errors')}">
+                            <input type="text" id="${reverseNameField}" name="${reverseNameField}" value="${reverseName}"/>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
         </div>
-    </body>
+        <div class="buttons">
+            <%
+               if(params["reverse"] != null || isReverse){
+                   %>
+                 <input type="hidden" name="reverse" value="true"/>
+            <%
+               }
+            %>
+            <span class="button"><g:actionSubmit class="save" value="Update"/></span>
+            <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+        </div>
+    </g:form>
+</div>
+</body>
 </html>

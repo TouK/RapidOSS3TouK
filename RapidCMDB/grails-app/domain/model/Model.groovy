@@ -1,13 +1,12 @@
 package model
 
-import org.codehaus.groovy.grails.commons.GrailsApplication;
 class Model {
     String name;
     Boolean generateAll = Boolean.FALSE;
     Model parentModel;
     static transients = ['generated','modelFile','controllerFile','controllerGenerated']
     static hasMany = [modelProperties:ModelProperty, datasources:ModelDatasource, fromRelations:ModelRelation, toRelations:ModelRelation];
-    static mappedBy = [fromRelations:'fromModel', toRelations:'toModel']
+    static mappedBy = [fromRelations:'firstModel', toRelations:'secondModel']     
     static constraints = {
         name(blank:false, unique:true);
         parentModel(nullable:true);

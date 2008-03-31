@@ -86,18 +86,11 @@
                 <tbody>
                     <g:each in="${model.modelProperties}" status="i" var="modelProperty">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-
                             <td><g:link action="show" id="${modelProperty.id}" controller="modelProperty">${modelProperty.name?.encodeAsHTML()}</g:link></td>
                             <td>${modelProperty.type?.encodeAsHTML()}</td>
-
                             <td>${modelProperty.blank?.encodeAsHTML()}</td>
- 
                             <td>${modelProperty?.propertyDatasource?.datasource?.toString()?.encodeAsHTML()}</td>
-
                             <td>${modelProperty.propertySpecifyingDatasource?.encodeAsHTML()}</td>
-
-
-
                         </tr>
                     </g:each>
                 </tbody>
@@ -107,46 +100,30 @@
 
     <div style="margin-top:20px;">
        <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Relation List</span>
-       <span class="menuButton"><g:link class="create" controller="modelRelation" params="['model.id':model?.id]" action="create">New Relation</g:link></span>
+       <span class="menuButton"><g:link class="create" controller="modelRelation" params="['firstModel.id':model?.id]" action="create">New Relation</g:link></span>
         <div class="list">
             <table>
                 <thead>
                     <tr>
-                        <th colspan="3">From Relations</th>
-                    </tr>
-                    <tr>
-
-                        <g:sortableColumn property="name" title="Name"/>
-                        <g:sortableColumn property="type" title="Type"/>
-
-                        <g:sortableColumn property="toModel" title="To Model"/>
+                        <th>Name</th>
+                        <th>To</th>
+                        <th>Type</th>
                     </tr>
                 </thead>
                 <tbody>
                     <g:each in="${model.fromRelations}" status="i" var="modelRelation">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-                            <td><g:link action="show" id="${modelRelation.id}" controller="modelRelation">${modelRelation.fromName?.encodeAsHTML()}</g:link></td>
-                            <td>${modelRelation.cardinality?.encodeAsHTML()}</td>
-                            <td><g:link action="show" id="${modelRelation.toModel.id}" controller="model">${modelRelation.toModel?.encodeAsHTML()}</g:link></td>
+                            <td><g:link action="show" id="${modelRelation.id}" controller="modelRelation">${modelRelation.firstName?.encodeAsHTML()}</g:link></td>
+                            <td><g:link action="show" id="${modelRelation.secondModel.id}" controller="model">${modelRelation.secondModel?.encodeAsHTML()}</g:link></td>
+                            <td>${modelRelation.firstCardinality?.encodeAsHTML() + "To" + modelRelation.secondCardinality?.encodeAsHTML()}</td>
                         </tr>
                     </g:each>
-                    <tr>
-                        <th colspan="3">To Relations</th>
-                    </tr>
-                    <tr>
-
-                        <g:sortableColumn property="name" title="Name"/>
-                        <g:sortableColumn property="type" title="Type"/>
-
-                        <g:sortableColumn property="fromModel" title="From Model"/>
-                    </tr>
                     <g:each in="${model.toRelations}" status="i" var="modelRelation">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-
-                            <td><g:link action="show" id="${modelRelation.id}" controller="modelRelation">${modelRelation.toName?.encodeAsHTML()}</g:link></td>
-                            <td>${modelRelation.cardinality?.encodeAsHTML()}</td>
-                            <td><g:link action="show" id="${modelRelation.fromModel.id}" controller="model">${modelRelation.fromModel?.encodeAsHTML()}</g:link></td>
+                            <td><g:link action="show" id="${modelRelation.id}" controller="modelRelation" params ="['reverse':'true']">${modelRelation.secondName?.encodeAsHTML()}</g:link></td>
+                            <td><g:link action="show" id="${modelRelation.firstModel.id}" controller="model">${modelRelation.firstModel?.encodeAsHTML()}</g:link></td>
+                            <td>${modelRelation.secondCardinality?.encodeAsHTML() + "To" + modelRelation.firstCardinality?.encodeAsHTML()}</td>
                         </tr>
                     </g:each>
                 </tbody>

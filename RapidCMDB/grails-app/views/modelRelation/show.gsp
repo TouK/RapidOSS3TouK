@@ -1,63 +1,92 @@
 <%@ page import="model.*" %>
 
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <meta name="layout" content="main" />
-        <title>Show ModelRelation</title>
-    </head>
-    <body>
-        <div class="nav">
-            <span class="menuButton">From <a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation?.fromModel?.id)}">${modelRelation?.fromModel}</a> To <a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation?.toModel?.id)}">${modelRelation?.toModel}</a></span>
-        </div>
-        <div class="body">
-            <h1>Show ModelRelation</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <div class="dialog">
-                <table>
-                    <tbody>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="layout" content="main"/>
+    <title>Show ModelRelation</title>
+</head>
+<body>
+<div class="nav">
+    <%
+        if (params["reverse"] != null) {
+    %>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation?.secondModel?.id)}">${modelRelation?.secondModel}</a></span>
+    <%
+        }
+        else {
+    %>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation?.firstModel?.id)}">${modelRelation?.firstModel}</a></span>
+    <%
+        }
+    %>
 
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name">Id:</td>
-                            
-                            <td valign="top" class="value">${modelRelation.id}</td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name">Cardinality:</td>
-                            
-                            <td valign="top" class="value">${modelRelation.cardinality}</td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name">Relation Name:</td>
-                            
-                            <td valign="top" class="value">${modelRelation.fromName}</td>
-                            
-                        </tr>
+</div>
+<div class="body">
+    <h1>Show ModelRelation</h1>
+    <g:if test="${flash.message}">
+        <div class="message">${flash.message}</div>
+    </g:if>
+    <%
+       def relationName;
+       def relationType;
+       def to;
+       def reverseName;
+       if(params["reverse"] != null){
+          relationName = modelRelation.secondName;
+          relationType = modelRelation.secondCardinality + "To" + modelRelation.firstCardinality;
+          to = modelRelation.firstModel;
+          reverseName = modelRelation.firstName;
+      }
+      else{
+          relationName = modelRelation.firstName;
+          relationType = modelRelation.firstCardinality + "To" + modelRelation.secondCardinality;
+          to = modelRelation.secondModel;
+          reverseName = modelRelation.secondName;
+      }
+    %>
+    <div class="dialog">
+        <table>
+            <tbody>
+                <tr class="prop">
+                    <td valign="top" class="name">Name:</td>
+                    <td valign="top" class="value">${relationName}</td>
+                </tr>
 
-                        <tr class="prop">
-                            <td valign="top" class="name">Reverse Relation Name:</td>
+                <tr class="prop">
+                    <td valign="top" class="name">Type:</td>
+                    <td valign="top" class="value">${relationType}</td>
+                </tr>
 
-                            <td valign="top" class="value">${modelRelation.toName}</td>
+                <tr class="prop">
+                    <td valign="top" class="name">To:</td>
+                    <td valign="top" class="value">${to}</td>
+                </tr>
 
-                        </tr>
-                    
-                    </tbody>
-                </table>
-            </div>
-            <div class="buttons">
-                <g:form>
-                    <input type="hidden" name="id" value="${modelRelation?.id}" />
-                    <span class="button"><g:actionSubmit class="edit" value="Edit" /></span>
-                    <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete" /></span>
-                </g:form>
-            </div>
-        </div>
-    </body>
+                <tr class="prop">
+                    <td valign="top" class="name">Reverse Relation Name:</td>
+
+                    <td valign="top" class="value">${reverseName}</td>
+
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="buttons">
+        <g:form>
+            <input type="hidden" name="id" value="${modelRelation?.id}"/>
+            <%
+               if(params["reverse"] != null){
+                   %>
+                 <input type="hidden" name="reverse" value="true"/>
+            <%
+               }
+            %>
+            <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
+            <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+        </g:form>
+    </div>
+</div>
+</body>
 </html>

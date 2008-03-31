@@ -29,8 +29,7 @@
                                 def modelPropertyList;
                                 def mdl = modelProperty.model;
                                 if(mdl != null){
-                                     def modelPropertyMap = [:];
-                                    def modelDatasourceMap = [:];
+                                    def modelPropertyMap = [:];
                                     modelPropertyList = mdl?.modelProperties;
                                     for(modelProp in modelPropertyList){
                                         modelPropertyMap.put(modelProp.name, modelProp);

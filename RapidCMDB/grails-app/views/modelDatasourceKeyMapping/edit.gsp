@@ -50,13 +50,39 @@
                                     <input type="text" id="nameInDatasource" name="nameInDatasource" value="${fieldValue(bean:modelDatasourceKeyMapping,field:'nameInDatasource')}"/>
                                 </td>
                             </tr> 
-                        
+
+                            <%
+                                def modelPropertyList;
+                                def mdl = modelDatasourceKeyMapping?.datasource?.model;
+                                if (mdl != null) {
+                                    def modelPropertyMap = [:];
+                                    modelPropertyList = mdl?.modelProperties;
+                                    for(modelProp in modelPropertyList){
+                                        modelPropertyMap.put(modelProp.name, modelProp);
+                                    }
+                                    def tempModel = mdl.parentModel;
+                                    while(tempModel != null){
+                                        for(prop in tempModel.modelProperties){
+                                            if(!modelPropertyMap.containsKey(prop.name)){
+                                                modelPropertyMap.put(prop.name, prop);
+                                                modelPropertyList.add(prop);
+                                            }
+
+                                        }
+                                        tempModel = tempModel.parentModel;
+                                    }
+                                }
+                                else {
+                                    modelPropertyList = ModelProperty.findAllByModel(modelDatasourceKeyMapping?.datasource?.model);
+                                }
+                            %>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="property">Property:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelDatasourceKeyMapping,field:'property','errors')}">
-                                    <g:select optionKey="id" from="${ModelProperty.findAllByModel(modelDatasourceKeyMapping?.datasource?.model)}" name="property.id" value="${modelDatasourceKeyMapping?.property?.id}" ></g:select>
+                                    <g:select optionKey="id" from="${modelPropertyList}" name="property.id" value="${modelDatasourceKeyMapping?.property?.id}" ></g:select>
                                 </td>
                             </tr> 
                         

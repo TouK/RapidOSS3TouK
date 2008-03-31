@@ -82,8 +82,23 @@
                             def modelPropertyList;
                             if (params["modelDatasource.id"] != null) {
                                 def modelDatasource = ModelDatasource.get(params["modelDatasource.id"]);
-                                def model = modelDatasource?.model;
-                                modelPropertyList = model?.modelProperties;
+                                def mdl = modelDatasource?.model;
+                                def modelPropertyMap = [:];
+                                modelPropertyList = mdl?.modelProperties;
+                                for(modelProp in modelPropertyList){
+                                    modelPropertyMap.put(modelProp.name, modelProp);
+                                }
+                                def tempModel = mdl.parentModel;
+                                while(tempModel != null){
+                                    for(prop in tempModel.modelProperties){
+                                        if(!modelPropertyMap.containsKey(prop.name)){
+                                            modelPropertyMap.put(prop.name, prop);
+                                            modelPropertyList.add(prop);
+                                        }
+
+                                    }
+                                    tempModel = tempModel.parentModel;
+                                }
                             }
                             else {
                                 modelPropertyList = ModelProperty.list();

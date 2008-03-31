@@ -12,8 +12,8 @@ class ModelRelation {
      static constraints = {
          firstCardinality(inList:[ONE, MANY]);
          secondCardinality(inList:[ONE, MANY]);
-         firstName(blank:false);
-         secondName(blank:false);
+         firstName(blank:false, unique:'firstModel');
+         secondName(blank:false, unique:'secondModel');
      }
 
      String toString(){

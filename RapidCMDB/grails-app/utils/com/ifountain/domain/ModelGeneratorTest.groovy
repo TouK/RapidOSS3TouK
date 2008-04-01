@@ -64,9 +64,11 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertTrue (new File(base_directory + "${model.name}.groovy").exists());
         Class cls = compileModel(model);
         def object = cls.newInstance();
+        object.keyprop = "keypropvalue";
         checkExistanceOfMetaDataProperties(object);
         assertTrue (model.generateAll);
         assertEquals (1, model.numberOfSaveCalls);
+        assertEquals ("Class1[keyprop:keypropvalue]", object.toString());
     }
 
     public void testGenerateModelExtendingAnotherModel()
@@ -86,6 +88,8 @@ class ModelGeneratorTest extends GroovyTestCase{
         Class childModelClass = compileModel(childModel);
         def childModelInstance = childModelClass.newInstance();
         checkExistanceOfMetaDataProperties(childModelInstance);
+        childModelInstance.keyprop = "keyPropValue"
+        assertEquals ("Class1[keyprop:keyPropValue]", childModelInstance.toString());
 
         Class parentModelClass = compileModel(parentModel);
         def parentModelInstance = parentModelClass.newInstance();
@@ -146,8 +150,8 @@ class ModelGeneratorTest extends GroovyTestCase{
 
         model.datasources += modelDatasource1;
         model.datasources += modelDatasource2;
-        model.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model, blank:true);
-        model.modelProperties += new ModelProperty(name:"Prop2", type:ModelProperty.stringType, model:model);
+        model.modelProperties += new ModelProperty(name:"prop1", type:ModelProperty.stringType, model:model, blank:true);
+        model.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.stringType, model:model);
         model.modelProperties += new ModelProperty(name:"dsname", type:ModelProperty.stringType, model:model);
         model.modelProperties += new ModelProperty(name:"Prop3", type:ModelProperty.numberType, model:model, propertyDatasource:modelDatasource1, nameInDatasource:"Prop3NameInDs", lazy:false, blank:true);
         model.modelProperties += new ModelProperty(name:"Prop4", type:ModelProperty.dateType, model:model, propertySpecifyingDatasource:model.modelProperties[2]);
@@ -163,25 +167,30 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertTrue (new File(base_directory + "${model.name}.groovy").exists());
         Class cls = compileModel(model);
         def object = cls.newInstance();
-        assertNull(object.Prop1);
-        assertEquals(object.class.getDeclaredField("Prop1").getType(), String.class);
-        assertNull(object.Prop2);
-        assertEquals(object.class.getDeclaredField("Prop2").getType(), String.class);
+        assertNull(object.prop1);
+        assertEquals(object.class.getDeclaredField("prop1").getType(), String.class);
+        assertNull(object.prop2);
+        assertEquals(object.class.getDeclaredField("prop2").getType(), String.class);
         assertNull(object.Prop3);
         assertEquals(object.class.getDeclaredField("Prop3").getType(), Long.class);
         assertNull(object.Prop4);
         assertEquals(object.class.getDeclaredField("Prop4").getType(), Date.class);
         assertNull(object.dsname);
         assertNotNull (object.constraints);
+
+        object.prop1 = "prop1Value";
+        object.prop2 = "prop2Value";
+        assertEquals ("Class1[prop1:prop1Value, prop2:prop2Value]", object.toString());
+
         def dsDefinition1 = object.datasources[modelDatasource1.datasource.name];
         assertFalse(dsDefinition1.master);
-        assertEquals("Prop1KeyNameInDs", dsDefinition1.keys["Prop1"].nameInDs);
-        assertEquals("Prop2", dsDefinition1.keys["Prop2"].nameInDs);
+        assertEquals("Prop1KeyNameInDs", dsDefinition1.keys["prop1"].nameInDs);
+        assertEquals("prop2", dsDefinition1.keys["prop2"].nameInDs);
 
         def dsDefinition2 = object.datasources[modelDatasource2.datasource.name];
         assertTrue(dsDefinition2.master);
-        assertEquals("Prop1KeyNameInDs", dsDefinition2.keys["Prop1"].nameInDs);
-        assertEquals("Prop2", dsDefinition2.keys["Prop2"].nameInDs);
+        assertEquals("Prop1KeyNameInDs", dsDefinition2.keys["prop1"].nameInDs);
+        assertEquals("prop2", dsDefinition2.keys["prop2"].nameInDs);
 
         def transients = object.transients;
         assertTrue(transients.contains("Prop3"));

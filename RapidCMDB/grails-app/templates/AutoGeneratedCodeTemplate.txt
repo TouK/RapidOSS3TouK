@@ -53,4 +53,27 @@
     static belongsTo = ${model.belongsTo.toString().replaceAll('"','')}
     static propertyConfiguration= ${model.propertyConfigurations}
     static transients = ${model.transientProps};
+    <%
+    if(model.masterDatasource)
+    {
+    %>
+    public String toString()
+    {
+    <%
+        def strBuffer = new StringBuffer("\t");
+        strBuffer.append('return "\${getClass().getName()}[')
+        model.masterDatasource.keys.each{key,value->
+            strBuffer.append(key).append(":\$${key}, ");  
+        }
+        if(!model.masterDatasource.keys.isEmpty())
+        {
+            strBuffer = strBuffer.substring(0, strBuffer.length()-2);    
+        }
+        strBuffer += ']";';
+        print strBuffer;
+    %>
+    }
+    <%
+    }
+    %>
     //AUTO_GENERATED_CODE

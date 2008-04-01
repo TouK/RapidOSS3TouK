@@ -40,8 +40,7 @@ class ModelGenerator
 
     def generateModel(Model model)
     {
-        def dependentModels = [:]
-        getDependentModels(model, dependentModels);
+        def dependentModels = ModelUtils.getDependentModels(model);
         def modelMetaDatas = [:];
         dependentModels.each{key,value->
             modelMetaDatas[key] = new ModelMetaData(value);
@@ -51,23 +50,7 @@ class ModelGenerator
     }                  
 
 
-    private def getDependentModels(model,dependentModels)
-    {
-        if(dependentModels.containsKey(model.name)) return;
-        dependentModels[model.name] = model;
-        if(model.parentModel)
-        {
-            getDependentModels(model.parentModel, dependentModels);
-        }
-        model.fromRelations.each
-        {
-            getDependentModels(it.secondModel, dependentModels);
-        }
-        model.toRelations.each
-        {
-            getDependentModels(it.firstModel, dependentModels);
-        }
-    }
+
 
     private def createEmptyDependentClasses(model)
     {

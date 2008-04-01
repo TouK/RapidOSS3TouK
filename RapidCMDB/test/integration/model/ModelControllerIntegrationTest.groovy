@@ -1,9 +1,8 @@
 package model
 
-import org.codehaus.groovy.grails.commons.GrailsApplication
 import com.ifountain.domain.ModelGenerationException
-import org.apache.commons.io.FileUtils
 import datasource.BaseDatasource
+import com.ifountain.domain.ModelUtils;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -30,40 +29,104 @@ import datasource.BaseDatasource
  * To change this template use File | Settings | File Templates.
  */
 class ModelControllerIntegrationTest extends GroovyTestCase{
-
+   String modelName;
+   String modelName2;
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        deleteModelFiles("Model1");
+        modelName = "Model1";
+        modelName2 = "Model2";
+        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName);
+        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
     }
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-        deleteModelFiles("Model1");
+        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName);
+        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
     }
 
-    def deleteModelFiles(modelName)
+    def resetController(controller)
     {
-        new File(System.getProperty("base.dir") + "/grails-app/domain/${modelName}.groovy").delete();
-        new File(System.getProperty("base.dir") + "/grails-app/controllers/${modelName}Controller.groovy").delete();
-        FileUtils.deleteDirectory(new File(System.getProperty("base.dir") + "/grails-app/views/${modelName}"));
+        controller.request.removeAllParameters()
+        controller.response.setCommitted(false)
+        controller.response.reset()
+        controller.flash.message = ""
+        controller.flash.errors = [];
+        controller.params.clear()
     }
 
 
-    void testGenerateModel() {
-        def datasource = new BaseDatasource(name:"ds1");
-        datasource.save();
-        def model = new Model(name:"Model1");
-        model.save();
-        model.addToDatasources(new ModelDatasource(datasource:datasource, master:true));
-        model.save();
-        model.addToModelProperties(new ModelProperty(name:"prop1",type:ModelProperty.stringType, defaultValue:"defaultValue"));
-        model.save();
-        println Model.findByName("Model1").datasources;
+    void testDeleteModel() {
+        Model model  = createSimpleModel(modelName);
+        def modelFile = new File(System.getProperty("base.dir") + "/grails-app/domain/${model.name}.groovy");
+        def modelControllerFile = new File(System.getProperty("base.dir") + "/grails-app/controllers/${model.name}Controller.groovy");
+        def modelViewsDir = new File(System.getProperty("base.dir") + "/grails-app/views/${model.name}");
+
         def mdc = new ModelController();
         mdc.params["id"] = model.id;
         mdc.generate();
         assertEquals("/model/show/" + model.id, mdc.response.redirectedUrl);
-        assertNotNull(getClass().getClassLoader().loadClass (model.name));
+        assertTrue(modelFile.exists());
+
+        resetController(mdc);
+        mdc.params["id"] = model.id;
+        mdc.delete();
+        assertNull (Model.get(model.id));
+        assertEquals("/model/list", mdc.response.redirectedUrl);
+        assertFalse(modelFile.exists());
+        assertFalse(modelControllerFile.exists());
+        assertFalse(modelViewsDir.exists());
+
+        resetController(mdc);
+        mdc.params["id"] = model.id;
+        mdc.delete();
+        assertEquals(mdc.flash.message, ModelController.MODEL_DOESNOT_EXIST, mdc.flash.message);
+
+        resetController(mdc);
+        mdc.delete();
+        assertEquals("/model/list", mdc.response.redirectedUrl);
+    }
+    public void testReturnsErrorIfModelHasChildModels() {
+
+        Model parentModel  = createSimpleModel(modelName);
+        Model childModel  = createSimpleModel(modelName2);
+        childModel.parentModel = parentModel;
+        childModel = childModel.save();
+        def mdc = new ModelController();
+        mdc.params["id"] = parentModel.id;
+        mdc.delete();
+
+        assertNotNull(Model.get(parentModel.id));
+        assertEquals("/model/show/"+parentModel.id, mdc.response.redirectedUrl);
+        assertEquals(1, mdc.flash.errors.size());
+        assertEquals("", mdc.flash.message);
+    }
+
+    public void testDeleteModelWithDependentModels() {
+        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName);
+        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
+
+        Model model1  = createSimpleModel(modelName);
+        Model model2  = createSimpleModel(modelName2);
+        ModelRelation rel1 = new ModelRelation(firstModel:model1, secondModel:model2, firstName:"rel1", secondName:"revrel1", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE);
+        rel1 = rel1.save();
+        model1.refresh();
+        def mdc = new ModelController();
+        mdc.params["id"] = model1.id;
+        mdc.delete();
+
+        assertNull (Model.get(model1.id));
+        def modelFile = new File(System.getProperty("base.dir") + "/grails-app/domain/${modelName2}.groovy");
+        assertTrue (modelFile.exists());
+    }
+
+    void testGenerateModel() {
+        Model model  = createSimpleModel();
+        def mdc = new ModelController();
+        mdc.params["id"] = model.id;
+        mdc.generate();
+        assertEquals("/model/show/" + model.id, mdc.response.redirectedUrl);
+        assertTrue(new File(System.getProperty("base.dir") + "/grails-app/domain/${model.name}.groovy").exists());
     }
 
     void testPrintsExceptionIfMasterDatasourceDoesnotExist() {
@@ -75,7 +138,7 @@ class ModelControllerIntegrationTest extends GroovyTestCase{
         mdc.generate();
         assertEquals("/model/show/" + model.id, mdc.response.redirectedUrl);
         assertEquals(ModelGenerationException.masterDatasourceDoesnotExists(model.name).getMessage(), mdc.flash.message);
-    }   
+    }
 
     void testGeneratePrintsExceptionIfModelDoesnotExists() {
         def mdc = new ModelController();
@@ -89,5 +152,21 @@ class ModelControllerIntegrationTest extends GroovyTestCase{
         def mdc = new ModelController();
         mdc.generate();
         assertEquals("/model/list", mdc.response.redirectedUrl);
+    }
+
+    private Model createSimpleModel(String modelName)
+    {
+        def datasource = new BaseDatasource(name:"ds1");
+        datasource.save();
+        def model = new Model(name:modelName);
+        model.save();
+        def modelDs = new ModelDatasource(datasource:datasource, master:true)
+        def modelProp = new ModelProperty(name:"prop1",type:ModelProperty.stringType, defaultValue:"defaultValue", datasource:modelDs)
+        model.addToDatasources(modelDs);
+        model.addToModelProperties(modelProp);
+        model = model.save();
+        modelDs.addToKeyMappings(new ModelDatasourceKeyMapping(property:modelProp, nameInDatasource:"Prop1"));
+        modelDs.save();
+        return  model;
     }
 }

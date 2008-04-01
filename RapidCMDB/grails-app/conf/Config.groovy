@@ -54,7 +54,6 @@ log4j {
     rootLogger="error,rapidServerLog"
     logger {
         grails="warn,rapidServerLog"
-        grailsa.pp="warn,rapidServerLog"
         StackTrace="error,errorLog"
         org {
             springframework="off"

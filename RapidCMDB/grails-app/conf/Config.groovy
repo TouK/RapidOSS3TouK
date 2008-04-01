@@ -54,6 +54,15 @@ log4j {
     rootLogger="error,rapidServerLog"
     logger {
         grails="warn,rapidServerLog"
+
+        // UNCOMMENT AND EDIT THE FOLLOWING AS APPROPRIATE IF FINER LEVEL OF CONFIGURATION IS NEEDED FOR LOGGING
+        //grails.'app.controller.YourController'="debug,rapidServerLog"
+        //grails.'app.controller.YourOtherController'="off,rapidServerLog"
+        //grails.'app.controller'="info,rapidServerLog"
+        //grails.'app.domain.Book'="debug,rapidServerLog"
+        //grails.'app.domain'="info,rapidServerLog"
+        //grails.app="error,rapidServerLog"
+
         StackTrace="error,errorLog"
         org {
             springframework="off"

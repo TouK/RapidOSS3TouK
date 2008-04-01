@@ -43,13 +43,13 @@ environments {
 log4j {
     appender.rapidServerLog = "org.apache.log4j.FileAppender"
     appender.'rapidServerLog.layout'="org.apache.log4j.PatternLayout"
-    appender.'rapidServerLog.layout.ConversionPattern'='[%r] %c{2} %m%n'
+    appender.'rapidServerLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'rapidServerLog.File'="logs/RapidServer.log"
 
 
     appender.errorLog = "org.apache.log4j.FileAppender"
     appender.'errorLog.layout'="org.apache.log4j.PatternLayout"
-    appender.'errorLog.layout.ConversionPattern'='[%r] %c{2} %m%n'
+    appender.'errorLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'errorLog.File'="logs/RapidServerErr.log"
     rootLogger="error,rapidServerLog"
     logger {

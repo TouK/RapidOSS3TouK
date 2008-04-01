@@ -146,10 +146,10 @@ class ModelGeneratorTest extends GroovyTestCase{
 
         model.datasources += modelDatasource1;
         model.datasources += modelDatasource2;
-        model.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model);
+        model.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model, blank:true);
         model.modelProperties += new ModelProperty(name:"Prop2", type:ModelProperty.stringType, model:model);
         model.modelProperties += new ModelProperty(name:"dsname", type:ModelProperty.stringType, model:model);
-        model.modelProperties += new ModelProperty(name:"Prop3", type:ModelProperty.numberType, model:model, propertyDatasource:modelDatasource1, nameInDatasource:"Prop3NameInDs", lazy:false);
+        model.modelProperties += new ModelProperty(name:"Prop3", type:ModelProperty.numberType, model:model, propertyDatasource:modelDatasource1, nameInDatasource:"Prop3NameInDs", lazy:false, blank:true);
         model.modelProperties += new ModelProperty(name:"Prop4", type:ModelProperty.dateType, model:model, propertySpecifyingDatasource:model.modelProperties[2]);
 
         modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:model.modelProperties[0], datasource:modelDatasource1, nameInDatasource:"Prop1KeyNameInDs");
@@ -172,7 +172,7 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertNull(object.Prop4);
         assertEquals(object.class.getDeclaredField("Prop4").getType(), Date.class);
         assertNull(object.dsname);
-
+        assertNotNull (object.constraints);
         def dsDefinition1 = object.datasources[modelDatasource1.datasource.name];
         assertFalse(dsDefinition1.master);
         assertEquals("Prop1KeyNameInDs", dsDefinition1.keys["Prop1"].nameInDs);

@@ -242,6 +242,8 @@ class ModelMetaData
                 }
                 federatedPropertyConfiguration["lazy"] = it.lazy;
                 propertyConfigurations[it.name] = federatedPropertyConfiguration;
+                constraints[it.name]["blank"] = it.blank;
+                constraints[it.name]["nullable"] = it.blank;
             }
             else
             {

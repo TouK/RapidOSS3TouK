@@ -3,6 +3,7 @@ import org.hibernate.SessionFactory
 import com.ifountain.comp.utils.CaseInsensitiveMap
 import datasource.BaseDatasource
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.plugins.orm.hibernate.HibernateGrailsPlugin
 
 class RapidDomainClassGrailsPlugin {
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
@@ -13,10 +14,25 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def doWithApplicationContext = { applicationContext ->
-
+        HibernateGrailsPlugin
     }
 
     def doWithWebDescriptor = { xml ->
+        def contextParam = xml."context-param"
+        contextParam[contextParam.size()-1]+{
+            'filter' {
+                'filter-name'('hibernateFilter')
+                'filter-class'('org.codehaus.groovy.grails.orm.hibernate.support.GrailsOpenSessionInViewFilter')
+            }
+        }
+
+        def filter = xml."filter"
+        filter[filter.size()-1]+{
+            'filter-mapping'{
+                'filter-name'('hibernateFilter')
+                'url-pattern'("/*")
+            }
+        }
     }
 
     def doWithDynamicMethods = { ctx ->

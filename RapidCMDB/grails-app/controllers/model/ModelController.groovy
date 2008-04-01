@@ -40,5 +40,24 @@ class ModelController {
         {
             redirect(action:list, controller:'model')
         }
+    }     
+
+    def delete = {
+        def model = Model.get( params.id )
+        if(model) {
+            try{
+                model.delete(flush:true)
+                flash.message = "Model ${params.id} deleted"
+            }
+            catch(e){
+                def errors =[message(code:"model.couldnot.delete", args:[Model.class.getName(), model, e.getMessage()])]
+                flash.errors = errors;
+            }
+            redirect(action:list)
+        }
+        else {
+            flash.message = "Model not found with id ${params.id}"
+            redirect(action:list)
+        }
     }
 }

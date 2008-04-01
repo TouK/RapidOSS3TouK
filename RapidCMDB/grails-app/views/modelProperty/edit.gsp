@@ -30,7 +30,7 @@
                                 def mdl = modelProperty.model;
                                 if(mdl != null){
                                     def modelPropertyMap = [:];
-                                    modelPropertyList = mdl?.modelProperties;
+                                    modelPropertyList = ModelProperty.findAllByModel(mdl);
                                     for(modelProp in modelPropertyList){
                                         modelPropertyMap.put(modelProp.name, modelProp);
                                     }

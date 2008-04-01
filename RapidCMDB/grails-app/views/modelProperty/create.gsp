@@ -50,9 +50,17 @@
                         def modelPropertyList;
                         if (params["model.id"] != null) {
                             def mdl = Model.get(params["model.id"]);
+                            if(!mdl)
+                            {
+                                modelPropertyList = [];
+                            }
+                            else
+                            {
+                                modelPropertyList = ModelProperty.findAllByModel(mdl);    
+                            }
                             def modelPropertyMap = [:];
                             def modelDatasourceMap = [:];
-                            modelPropertyList = mdl?.modelProperties;
+
                             for(modelProp in modelPropertyList){
                                 modelPropertyMap.put(modelProp.name, modelProp);
                             }

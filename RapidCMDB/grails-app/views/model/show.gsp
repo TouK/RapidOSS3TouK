@@ -135,7 +135,29 @@
                 </tbody>
             </table>
         </div>
-    </div>    
+    </div>
+
+    <div style="margin-top:20px;">
+        <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Operation List</span>
+        <div class="list">
+            <table>
+                <thead>
+                    <tr>
+                        <g:sortableColumn property="name" title="Name"/>
+                        <g:sortableColumn property="name" title="Description"/>
+                    </tr>
+                </thead>
+                <tbody>
+                    <g:each in="${model.getOperations()}" status="i" var="operation">
+                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                            <td>${operation.name?.encodeAsHTML()}</td>
+                            <td>${operation.description?.encodeAsHTML()}</td>
+                        </tr>
+                    </g:each>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <div class="buttons" style="margin-top:30px;">
         <g:form>

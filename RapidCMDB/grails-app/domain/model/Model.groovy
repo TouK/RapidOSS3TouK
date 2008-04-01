@@ -1,7 +1,12 @@
 package model
 
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import java.lang.reflect.Method
+import com.ifountain.domain.annotations.Operation
+
 class Model {
     String name;
+    def grailsApplication
     Boolean generateAll = Boolean.FALSE;
     Model parentModel;
     static transients = ['generated','modelFile','controllerFile','controllerGenerated']
@@ -34,6 +39,28 @@ class Model {
     def getControllerFile()
     {
         return new File(System.getProperty("base.dir", ".")+"/grails-app/controllers/${name}Controller.groovy");
+    }
+
+    def getOperations()
+    {
+        def operations = [];
+        if(name)
+        {
+            Class cls = grailsApplication.getClassForName(name)
+            if(cls)
+            {
+                def methods = cls.getDeclaredMethods();
+                methods.each{domainMethod->
+                    def annotation = domainMethod.getAnnotation(Operation.class)
+                    if(annotation)
+                    {
+                        operations += [name:domainMethod.getName(), description:annotation.description()];
+                        return;
+                    }
+                }
+            }
+        }
+        return operations;
     }
         
     String toString(){

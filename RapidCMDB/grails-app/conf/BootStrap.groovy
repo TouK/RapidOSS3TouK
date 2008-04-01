@@ -1,9 +1,6 @@
 import datasource.RCMDBDatasource
 import model.Model
-import org.codehaus.groovy.grails.scaffolding.DefaultGrailsTemplateGenerator
-import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 
 class BootStrap {
 
@@ -12,7 +9,7 @@ class BootStrap {
         if(rcmdbDatasource == null){
             new RCMDBDatasource(name:RapidCMDBConstants.RCMDB).save();
         }
-        def generator = new DefaultGrailsTemplateGenerator();
+        def generator = new RapidGrailsTemplateGenerator();
         generator.overwrite = true;
         ApplicationHolder.application.domainClasses.each
         {

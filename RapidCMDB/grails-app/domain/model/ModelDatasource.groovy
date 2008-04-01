@@ -13,19 +13,16 @@ class ModelDatasource {
         datasource(unique:'model');
         master(validator: {val, obj ->
             if (val){
+                def isValid = true;
                 ModelDatasource.findAllByModelAndMaster(obj.model, true).each
                 {
                     if(it.datasource.name != obj.datasource.name)
                     {
-                        return ['model.invalid.master'];
+                        isValid = false;
                     }
-                    else{
-                        it.keyMappings?.each{keyMapping ->
-                            if(keyMapping.property.blank){
-                                return ['model.keymapping.masterproperty.notblank'];
-                            }
-                        }
-                    }
+                }
+                if(!isValid){
+                    return ['model.invalid.master'];
                 }
             }
         })

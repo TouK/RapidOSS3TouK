@@ -178,14 +178,14 @@ class RapidDomainClassGrailsPlugin {
                 }
             };
 
-            mc.asMap = {
+            mc.asMap = {->
                 def propertyMap = [:];
                 propConfigCache.propertiesByName.each{key, value ->
                     propertyMap.put(key, delegate.getProperty(key))
                 }
                 return propertyMap;
             };
-            mc.asMap = {List properties
+            mc.asMap = {List properties->
                 def propertyMap = [:];
                 for(prop in properties){
                    propertyMap.put(prop, delegate.getProperty(prop)) 

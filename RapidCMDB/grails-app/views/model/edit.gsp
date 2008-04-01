@@ -22,14 +22,6 @@
         </div>
     </g:hasErrors>
 
-    <h3>Steps for Defining a Modeled Object</h3>
-    <ol>
-        <li>Create Modeled Object</li>
-        <li>Edit the Modeled Object just created to link to Datasource(s) that are used as sources for properties. Repeat for all datasources referenced.</li>
-        <li>Edit the Modeled Object to add properties. Repeat until all properties are added</li>
-        <li>Edit each referenced datasource and add key mappings</li>
-    </ol>
-
     <g:form method="post">
         <input type="hidden" name="id" value="${model?.id}"/>
         <div class="dialog">
@@ -47,7 +39,7 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="parentModel">Parent Model:</label>
+                            <label for="parentModel">Extends Model:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: model, field: 'parentModel', 'errors')}">
                             <g:select optionKey="id" from="${Model.list()}" name="parentModel.id" value="${model?.parentModel?.id}" noSelection="['null':'']"></g:select>

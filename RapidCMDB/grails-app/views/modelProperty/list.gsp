@@ -22,9 +22,9 @@
                         
                    	        <g:sortableColumn property="name" title="Name" />
                         
-                   	        <th>Datasource Name</th>
+                   	        <th>Static Datasource Name</th>
                    	    
-                   	        <th>Property Specifying Datasource</th>
+                   	        <th>Dynamic Datasource (specified in property)</th>
                    	    
                    	        <g:sortableColumn property="type" title="Type" />
                         

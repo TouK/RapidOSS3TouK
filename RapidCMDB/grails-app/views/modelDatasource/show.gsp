@@ -19,13 +19,6 @@
             <tbody>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Id:</td>
-
-                    <td valign="top" class="value">${modelDatasource.id}</td>
-
-                </tr>
-
-                <tr class="prop">
                     <td valign="top" class="name">Datasource:</td>
 
                     <td valign="top" class="value"><g:link controller="baseDatasource" action="show" id="${modelDatasource?.datasource?.id}">${modelDatasource?.datasource}</g:link></td>

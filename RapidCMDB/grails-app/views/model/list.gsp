@@ -23,7 +23,7 @@
                         
                    	        <g:sortableColumn property="name" title="Name" />
                         
-                   	        <th>Parent Model</th>
+                   	        <th>Inherits from Model</th>
                    	    
                         </tr>
                     </thead>

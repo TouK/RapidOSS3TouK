@@ -46,7 +46,7 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="parentModel">Parent Model:</label>
+                                    <label for="parentModel">Extends Model:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:model,field:'parentModel','errors')}">
                                     <g:select optionKey="id" from="${Model.list()}" name="parentModel.id" value="${model?.parentModel?.id}" noSelection="['null':'']"></g:select>

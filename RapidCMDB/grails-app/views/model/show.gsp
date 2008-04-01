@@ -18,11 +18,6 @@
     <div class="dialog">
         <table>
             <tbody>
-                <tr class="prop">
-                    <td valign="top" class="name">Id:</td>
-
-                    <td valign="top" class="value">${model.id}</td>
-                </tr>
 
                 <tr class="prop">
                     <td valign="top" class="name">Name:</td>
@@ -32,7 +27,7 @@
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Parent Model:</td>
+                    <td valign="top" class="name">Extends Model:</td>
 
                     <td valign="top" class="value"><g:link controller="model" action="show" id="${model?.parentModel?.id}">${model?.parentModel}</g:link></td>
 
@@ -54,9 +49,9 @@
 
                         <g:sortableColumn property="blank" title="Blank"/>
 
-                        <th>Datasource Name</th>
+                        <th>Static Datasource Name</th>
 
-                        <th>Property Specifying Datasource</th>
+                        <th>Dynamic Datasource (specified in property)</th>
 
 
 

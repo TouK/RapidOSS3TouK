@@ -19,11 +19,6 @@
                 <table>
                     <tbody>
                         <tr class="prop">
-                            <td valign="top" class="name">Id:</td>
-                            
-                            <td valign="top" class="value">${modelDatasourceKeyMapping.id}</td>
-                        </tr>
-                        <tr class="prop">
                             <td valign="top" class="name">Name In Datasource:</td>
                             
                             <td valign="top" class="value">${modelDatasourceKeyMapping.nameInDatasource}</td>

@@ -26,10 +26,10 @@
         </div>
     </g:hasErrors>
 
-    <h3>Adding property to a Modeled Object</h3>
+    <h3>Adding property to a Modeled Class</h3>
     <ul>
         <li>Set a series of constraints on the property</li>
-        <li>select the datasource or the property that has the name of the datasource that will be used to retrieve the value for the property</li>
+        <li>select the static datasource or the property that has the name of the dynamic datasource that will be used to retrieve the value for the property</li>
     </ul>
 
     <g:form action="save" method="post">
@@ -75,7 +75,7 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="propertyDatasource">Datasource Name:</label>
+                            <label for="propertyDatasource">Static Datasource:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'propertyDatasource', 'errors')}">
                             <g:select optionKey="id" from="${BaseDatasource.list()}" name="datasource.id" value="${modelProperty?.propertyDatasource?.datasource?.id}" noSelection="['null':'']"></g:select>
@@ -84,7 +84,7 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="propertySpecifyingDatasource">Property Specifying Datasource:</label>
+                            <label for="propertySpecifyingDatasource">Dynamic Datasource (specified in property):</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'propertySpecifyingDatasource', 'errors')}">
                             <g:select optionKey="id" from="${modelPropertyList}" name="propertySpecifyingDatasource.id" value="${modelProperty?.propertySpecifyingDatasource?.id}" noSelection="['null':'']"></g:select>

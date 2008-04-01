@@ -19,14 +19,6 @@
                 <table>
                     <tbody>
 
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name">Id:</td>
-                            
-                            <td valign="top" class="value">${modelProperty.id}</td>
-                            
-                        </tr>
-                    
                         <tr class="prop">
                             <td valign="top" class="name">Name:</td>
                             
@@ -35,14 +27,14 @@
                         </tr>
                     
                         <tr class="prop">
-                            <td valign="top" class="name">Datasource Name:</td>
+                            <td valign="top" class="name">Static Datasource Name:</td>
                             
                             <td valign="top" class="value"><g:link controller="modelDatasource" action="show" id="${modelProperty?.propertyDatasource?.id}">${modelProperty?.propertyDatasource?.datasource?.name}</g:link></td>
                             
                         </tr>
                     
                         <tr class="prop">
-                            <td valign="top" class="name">Property Specifying Datasource:</td>
+                            <td valign="top" class="name">Dynamic Datasource (specified in property):</td>
                             
                             <td valign="top" class="value"><g:link controller="modelProperty" action="show" id="${modelProperty?.propertySpecifyingDatasource?.id}">${modelProperty?.propertySpecifyingDatasource}</g:link></td>
                             

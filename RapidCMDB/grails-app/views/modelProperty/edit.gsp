@@ -62,7 +62,7 @@
 
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="datasourceName">Datasource Name:</label>
+                                    <label for="datasourceName">Static Datasource:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'propertyDatasource','errors')}">
                                     <g:select optionKey="id" from="${BaseDatasource.list()}" name="datasource.id" value="${modelProperty?.propertyDatasource?.datasource?.id}" noSelection="['null':'']"></g:select>
@@ -71,7 +71,7 @@
 
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="propertySpecifyingDatasource">Property Specifying Datasource:</label>
+                                    <label for="propertySpecifyingDatasource">Dynamic Datasource (specified in property):</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'propertySpecifyingDatasource','errors')}">
                                     <g:select optionKey="id" from="${modelPropertyList}" name="propertySpecifyingDatasource.id" value="${modelProperty?.propertySpecifyingDatasource?.id}" noSelection="['null':'']"></g:select>

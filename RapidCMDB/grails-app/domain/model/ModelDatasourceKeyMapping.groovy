@@ -8,7 +8,11 @@ class ModelDatasourceKeyMapping {
     static optionals = ["nameInDatasource"];
 
     static constraints = {
-        property(unique:'datasource');
+        property(unique:'datasource', validator:{val, obj ->
+            if(val.blank && obj.datasource.master){
+                return ['model.keymapping.masterproperty.notblank']
+            }
+        });
     }
 
     String toString(){

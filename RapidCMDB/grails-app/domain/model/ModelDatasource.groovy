@@ -19,6 +19,13 @@ class ModelDatasource {
                     {
                         return ['model.invalid.master'];
                     }
+                    else{
+                        it.keyMappings?.each{keyMapping ->
+                            if(keyMapping.property.blank){
+                                return ['model.keymapping.masterproperty.notblank'];
+                            }
+                        }
+                    }
                 }
             }
         })

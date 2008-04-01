@@ -36,7 +36,8 @@
                                     }
                                     def tempModel = mdl.parentModel;
                                     while(tempModel != null){
-                                        for(prop in tempModel.modelProperties){
+                                        def parentModelProperties = ModelProperty.findAllByModel(tempModel);
+                                        for(prop in parentModelProperties){
                                             if(!modelPropertyMap.containsKey(prop.name)){
                                                 modelPropertyMap.put(prop.name, prop);
                                                 modelPropertyList.add(prop);

@@ -68,7 +68,10 @@
         pw.println()
         pw.println "<ul>"
         pw.println "<g:each var=\"${property.name[0]}\" in=\"\${${domainClass.propertyName}?.${property.name}?}\">"
-        pw.println "    <li><g:link controller=\"${property.referencedDomainClass.propertyName}\" action=\"show\" id=\"\${${property.name[0]}.id}\">\${${property.name[0]}}</g:link></li>"
+        pw.println "    <li style=\"margin-bottom:3px;\">"
+        pw.println "        <g:link controller=\"${property.referencedDomainClass.propertyName}\" action=\"show\" id=\"\${${property.name[0]}.id}\">\${${property.name[0]}}</g:link>"
+        pw.println "        <g:link class=\"delete\" action=\"removeRelation\" params=\"['id':${domainClass.propertyName}?.id, 'relationName':'${property.name}', 'relatedObjectId':${property.name[0]}.id]\"></g:link>"
+        pw.println "    </li>"
         pw.println "</g:each>"
         pw.println "</ul>"
         pw.println "<g:link params=\"['id':${domainClass.propertyName}?.id, 'relationName':'${property.name}']\" action=\"addTo\">Add ${property.referencedDomainClass.shortName}</g:link>"

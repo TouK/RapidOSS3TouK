@@ -93,6 +93,12 @@ input:focus, select:focus, textarea:focus {
     padding-left: 25px;
 }
 
+a.delete {
+    background: url(../images/skin/database_delete.png) center left no-repeat;
+    padding-left: 25px;
+    font-size: 16px;
+}
+
 /* MESSAGES AND ERRORS */
 
 .message {

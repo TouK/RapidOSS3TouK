@@ -47,6 +47,8 @@ class RapidCmdbBuild extends Build{
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app"){
                 ant.exclude(name:"**/test/**")
                 ant.exclude(name:"**/*Test*")
+                ant.exclude(name:"**/grails-app/domain/*.groovy")
+                ant.exclude(name:"**/scripts/*.groovy")
             }
 		}
 		ant.copy(todir : "$env.dist_rapid_cmdb/lib"){

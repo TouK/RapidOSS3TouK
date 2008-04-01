@@ -41,31 +41,28 @@ environments {
 
 // log4j configuration
 log4j {
-    appender.stdout = "org.apache.log4j.ConsoleAppender"
-    appender.'stdout.layout'="org.apache.log4j.PatternLayout"
-    appender.'stdout.layout.ConversionPattern'='[%r] %c{2} %m%n'
-    appender.errors = "org.apache.log4j.FileAppender"
-    appender.'errors.layout'="org.apache.log4j.PatternLayout"
-    appender.'errors.layout.ConversionPattern'='[%r] %c{2} %m%n'
-    appender.'errors.File'="stacktrace.log"
-    rootLogger="error,stdout"
+    appender.rapidServerLog = "org.apache.log4j.FileAppender"
+    appender.'rapidServerLog.layout'="org.apache.log4j.PatternLayout"
+    appender.'rapidServerLog.layout.ConversionPattern'='[%r] %c{2} %m%n'
+    appender.'rapidServerLog.File'="logs/RapidServer.log"
+
+
+    appender.errorLog = "org.apache.log4j.FileAppender"
+    appender.'errorLog.layout'="org.apache.log4j.PatternLayout"
+    appender.'errorLog.layout.ConversionPattern'='[%r] %c{2} %m%n'
+    appender.'errorLog.File'="logs/RapidServerErr.log"
+    rootLogger="error,rapidServerLog"
     logger {
-        grails="error"
-        StackTrace="error,errors"
+        grails="warn,rapidServerLog"
+        grailsa.pp="warn,rapidServerLog"
+        StackTrace="error,errorLog"
         org {
-            codehaus.groovy.grails.web.servlet="error"  //  controllers
-            codehaus.groovy.grails.web.pages="error" //  GSP
-            codehaus.groovy.grails.web.sitemesh="error" //  layouts
-            codehaus.groovy.grails."web.mapping.filter"="error" // URL mapping
-            codehaus.groovy.grails."web.mapping"="error" // URL mapping
-            codehaus.groovy.grails.commons="info" // core / classloading
-            codehaus.groovy.grails.plugins="error" // plugins
-            codehaus.groovy.grails.orm.hibernate="error" // hibernate integration
             springframework="off"
-            hibernate="warn, stdout"
+            hibernate="off"
         }
     }
     additivity.StackTrace=false
+    additivity.rapidServerLog=true
 }
 
 

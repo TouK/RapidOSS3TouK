@@ -8,7 +8,12 @@ class Model {
     static hasMany = [modelProperties:ModelProperty, datasources:ModelDatasource, fromRelations:ModelRelation, toRelations:ModelRelation];
     static mappedBy = [fromRelations:'firstModel', toRelations:'secondModel']     
     static constraints = {
-        name(blank:false, unique:true);
+        name(blank:false, unique:true, validator:{val, obj ->
+            def firstChar = val.charAt(0);
+            if(!(firstChar >= 65 && firstChar <= 90)){
+                return ['model.name.lowercased'];
+            }
+        });
         parentModel(nullable:true);
     }
 

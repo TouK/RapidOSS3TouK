@@ -93,7 +93,7 @@ class ModelController {
                 try
                 {
                     ModelGenerator.getInstance().generateModel (model);
-                    flash.message = "Model $model.name genareted succcessfully"
+                    flash.message = "Model $model.name genarated successfully"
                     redirect(action:show,controller:'model', id:model?.id)
                 }
                 catch(Exception e)

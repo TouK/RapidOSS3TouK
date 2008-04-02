@@ -35,7 +35,7 @@ class ModelGenerationException extends Exception{
 
     public static ModelGenerationException masterDatasourceDoesnotExists(String modelName)
     {
-        return new ModelGenerationException("Master datasource doesnot exists for model $modelName")
+        return new ModelGenerationException("Master datasource doesnot exist for model $modelName")
     }
 
     public static ModelGenerationException moreThanOnemasterDatasourceDefined(String modelName)

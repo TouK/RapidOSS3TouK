@@ -5,6 +5,31 @@ import com.ifountain.domain.ModelUtils;
 class ModelController {
     def static String MODEL_DOESNOT_EXIST = "Model does not exist";
     def scaffold = model.Model;
+
+    def save = {
+        if(params.name)
+        {
+            if(params.name.length() > 1)
+            {
+                def firstChar = params.name.substring (0,1)
+                def remaining = params.name.substring (1);
+                params.name = firstChar.toUpperCase()+remaining;
+            }
+            else
+            {
+                params.name = params.name.toUpperCase();                
+            }
+        }
+        def model = new Model(params)
+        if(!model.hasErrors() && model.save()) {
+            flash.message = "Model ${model.id} created"
+            redirect(action:show,id:model.id)
+        }
+        else {
+            render(view:'create',model:[model:model])
+        }
+    }
+
     def show = {
         def model = Model.get(params.id)
         if (!model) {

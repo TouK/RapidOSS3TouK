@@ -2,7 +2,7 @@ package model
 
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import java.lang.reflect.Method
-import com.ifountain.domain.annotations.Operation
+import com.ifountain.core.domain.annotations.CmdbOperation
 
 class Model {
     String name;
@@ -51,7 +51,7 @@ class Model {
             {
                 def methods = cls.getDeclaredMethods();
                 methods.each{domainMethod->
-                    def annotation = domainMethod.getAnnotation(Operation.class)
+                    def annotation = domainMethod.getAnnotation(CmdbOperation.class)
                     if(annotation)
                     {
                         operations += [name:domainMethod.getName(), description:annotation.description()];

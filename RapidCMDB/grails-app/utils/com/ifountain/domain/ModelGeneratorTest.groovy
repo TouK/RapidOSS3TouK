@@ -69,6 +69,10 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertTrue (model.generateAll);
         assertEquals (1, model.numberOfSaveCalls);
         assertEquals ("Class1[keyprop:keypropvalue]", object.toString());
+
+        ModelGenerator.DEFAULT_IMPORTS.each {
+            assertTrue(model.getModelFile().getText ().indexOf("import $it") >= 0);    
+        }
     }
 
     public void testGenerateModelExtendingAnotherModel()
@@ -283,6 +287,8 @@ class ModelGeneratorTest extends GroovyTestCase{
         addMasterDatasource(model2);
 
         def modelFileContent = """import java.util.net.*;\n
+import    ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
+    import  ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
                         class ${model1.name} extends AnotherClass implements Trial{\n
                             def method1()\n
                             {            \n
@@ -318,7 +324,13 @@ class ModelGeneratorTest extends GroovyTestCase{
         checkExistanceOfMetaDataProperties(object);
         assertEquals ("method1", object.method1());
         assertEquals ("Trial", object.class.interfaces[0].getName());
-        assertTrue(model1.getModelFile().getText ().indexOf("import java.util.net.*;\n") == 0);
+        assertTrue(model1.getModelFile().getText ().indexOf("import java.util.net.*;\n") >= 0);
+        ModelGenerator.DEFAULT_IMPORTS.each {
+            assertTrue(model1.getModelFile().getText ().indexOf("import $it") >= 0);    
+        }
+        def indexOfFirstAlreadyIncludedImport = model1.getModelFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
+        assertTrue( indexOfFirstAlreadyIncludedImport >= 0);
+        assertFalse( model1.getModelFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
 
         GrailsAwareClassLoader cloader = new GrailsAwareClassLoader();
         cloader.addClasspath (base_directory);

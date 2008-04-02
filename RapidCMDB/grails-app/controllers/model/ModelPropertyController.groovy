@@ -18,9 +18,16 @@ class ModelPropertyController {
         
         if(params.name)
         {
-            def firstChar = params.name.substring (0,1)
-            def remaining = params.name.substring (1);
-            params.name = firstChar.toLowerCase()+remaining;
+            if(params.name.length() > 1)
+            {
+                def firstChar = params.name.substring (0,1)
+                def remaining = params.name.substring (1);
+                params.name = firstChar.toLowerCase()+remaining;
+            }
+            else
+            {
+                params.name = params.name.toLowerCase();                
+            }
         }
         if(params["datasource.id"] != null && params["datasource.id"] != "null"){
             def baseDatasource = BaseDatasource.get(params["datasource.id"]);

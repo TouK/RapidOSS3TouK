@@ -41,6 +41,7 @@ class RapidCmdbBuild extends Build{
 		ant.copy(todir : "$env.dist_rapid_cmdb"){
 			ant.fileset(file : "$env.rapid_cmdb_cvs/application.properties");
 			ant.fileset(file : "$env.rapid_cmdb_cvs/rs.bat");
+			ant.fileset(file : "$env.rapid_cmdb_cvs/rs.sh");
 		}
 
 		ant.copy(todir : "$env.dist_rapid_cmdb/grails-app"){

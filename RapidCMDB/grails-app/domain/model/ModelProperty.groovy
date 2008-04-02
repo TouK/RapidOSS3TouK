@@ -31,7 +31,8 @@ class ModelProperty {
         blank(validator:{val, obj ->
              if(val){
                  def isValid = true;
-                 ModelDatasourceKeyMapping.findAllByProperty(obj).each{
+                 def keyMapping = new ModelDatasourceKeyMapping(property:obj);
+                 ModelDatasourceKeyMapping.findAll(keyMapping).each{
                      if(it.datasource.master){
                          isValid = false;
                      }

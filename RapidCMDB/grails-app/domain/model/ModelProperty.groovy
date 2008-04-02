@@ -27,6 +27,20 @@ class ModelProperty {
                 return ["model.invalid.lazy"]
             }
         })
+
+        blank(validator:{val, obj ->
+             if(val){
+                 def isValid = true;
+                 ModelDatasourceKeyMapping.findAllByProperty(obj).each{
+                     if(it.datasource.master){
+                         isValid = false;
+                     }
+                 }
+                 if(!isValid){
+                     return ['model.keymapping.masterproperty.notblank']
+                 }
+             }
+        })
     }
 
 

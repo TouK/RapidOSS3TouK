@@ -48,7 +48,7 @@ class RapidCmdbBuild extends Build{
                 ant.exclude(name:"**/test/**")
                 ant.exclude(name:"**/*Test*")
                 ant.exclude(name:"/domain/*.groovy")
-                ant.exclude(name:"/controller/*.groovy")
+                ant.exclude(name:"/controllers/*.groovy")
                 ant.exclude(name:"**/scripts/*.groovy")
             }
 		}

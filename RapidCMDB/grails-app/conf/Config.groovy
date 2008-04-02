@@ -41,28 +41,29 @@ environments {
 
 // log4j configuration
 log4j {
+    // COPY AND MODIFY THE FOLLOWING SECTION TO CREATE A NEW LOG APPENDER
+    appender.modelsLog = "org.apache.log4j.FileAppender"
+    appender.'modelsLog.layout'="org.apache.log4j.PatternLayout"
+    appender.'modelsLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
+    appender.'modelsLog.File'="logs/Models.log"
+
     appender.rapidServerLog = "org.apache.log4j.FileAppender"
     appender.'rapidServerLog.layout'="org.apache.log4j.PatternLayout"
     appender.'rapidServerLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'rapidServerLog.File'="logs/RapidServer.log"
 
-
     appender.errorLog = "org.apache.log4j.FileAppender"
     appender.'errorLog.layout'="org.apache.log4j.PatternLayout"
     appender.'errorLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'errorLog.File'="logs/RapidServerErr.log"
-    rootLogger="error,rapidServerLog"
+
+    rootLogger="error,errorLog"
+
     logger {
+        // COPY THE FOLLOWING LINE TO DEFINE A NEW LOGGER THAT WILL USE THE NEW APPENDER CREATED ABOVE
+        models="info,modelsLog"
+
         grails="warn,rapidServerLog"
-
-        // UNCOMMENT AND EDIT THE FOLLOWING AS APPROPRIATE IF FINER LEVEL OF CONFIGURATION IS NEEDED FOR LOGGING
-        //grails.'app.controller.YourController'="debug,rapidServerLog"
-        //grails.'app.controller.YourOtherController'="off,rapidServerLog"
-        //grails.'app.controller'="info,rapidServerLog"
-        //grails.'app.domain.Book'="debug,rapidServerLog"
-        //grails.'app.domain'="info,rapidServerLog"
-        //grails.app="error,rapidServerLog"
-
         StackTrace="error,errorLog"
         org {
             springframework="off"
@@ -70,7 +71,8 @@ log4j {
         }
     }
     additivity.StackTrace=false
-    additivity.rapidServerLog=true
+    additivity.grails=false
+    additivity.models=false
 }
 
 

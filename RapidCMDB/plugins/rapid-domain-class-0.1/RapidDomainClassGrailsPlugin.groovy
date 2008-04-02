@@ -4,6 +4,7 @@ import com.ifountain.comp.utils.CaseInsensitiveMap
 import datasource.BaseDatasource
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.plugins.orm.hibernate.HibernateGrailsPlugin
+import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
 
 class RapidDomainClassGrailsPlugin {
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
@@ -142,6 +143,35 @@ class RapidDomainClassGrailsPlugin {
                 mc.getMetaProperty(name).setProperty(delegate, value);
             }
         };
+         mc.asMap = {->
+                def excludedProps = ['version',
+                                             'id',
+                                               Events.ONLOAD_EVENT,
+                                               Events.BEFORE_DELETE_EVENT,
+                                               Events.BEFORE_INSERT_EVENT,
+                                               Events.BEFORE_UPDATE_EVENT]
+                def props = dc.properties.findAll { !excludedProps.contains(it.name) }
+                def propertyMap = [:];
+                for(prop in props){
+                    if(!prop.oneToMany && !prop.manyToMany && !prop.oneToOne && !prop.manyToOne){
+                        propertyMap.put(prop.name, delegate.getProperty(prop.name))
+                    }
+                }
+
+                return propertyMap;
+            };
+            mc.asMap = {List properties->
+                def propertyMap = [:];
+                for(prop in properties){
+                   try{
+                        propertyMap.put(prop, delegate.getProperty(prop));
+                   }
+                   catch(e){
+
+                   }
+                }
+                return propertyMap;
+            };
         if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
         {
             mc.addMetaBeanProperty(new DatasourceProperty("isPropertiesLoaded", Object.class));
@@ -177,22 +207,6 @@ class RapidDomainClassGrailsPlugin {
                     return getFederatedProperty(mc, domainObject, name, propConfigCache, dsConfigCache);
                 }
             };
-
-            mc.asMap = {->
-                def propertyMap = [:];
-                propConfigCache.propertiesByName.each{key, value ->
-                    propertyMap.put(key, delegate.getProperty(key))
-                }
-                return propertyMap;
-            };
-            mc.asMap = {List properties->
-                def propertyMap = [:];
-                for(prop in properties){
-                   propertyMap.put(prop, delegate.getProperty(prop)) 
-                }
-                return propertyMap;
-            };
-
         }
     }
 

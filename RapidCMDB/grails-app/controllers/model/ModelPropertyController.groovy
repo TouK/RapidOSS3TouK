@@ -94,7 +94,7 @@ class ModelPropertyController {
             {
                 params.name = params.name.toLowerCase();
             }
-        }
+        }  
         def modelProperty = ModelProperty.get( params.id )
         if(modelProperty) {
             if(params["datasource.id"] != null && params["datasource.id"] != "null"){

@@ -46,7 +46,7 @@
                                 def cardinalityList = ["OneToOne", "OneToMany", "ManyToOne", "ManyToMany"];
                                 def cardinalityValue;
                                 if (modelRelation != null) {
-                                    if (modelRelation?.firstModel?.id == params["firstModel.id"]) {
+                                    if (modelRelation?.firstModel?.id == params["firstModel.id"].toLong()) {
                                         cardinalityValue = modelRelation?.firstName + "To" + modelRelation?.secondName;
                                     }
                                     else {

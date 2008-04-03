@@ -31,7 +31,7 @@ public class ExecuteQueryAction implements Action {
             throw new Exception("QueryParameters cannot be null.");
         }
         logger.debug("Preparing statement.");
-        PreparedStatement stmt = ((DatabaseConnectionImpl)conn).getConnection().prepareStatement(sql);
+        PreparedStatement stmt = conn.getConnection().prepareStatement(sql);
         DatabaseConnectionImpl.setStatementParameters(queryParams, stmt);
         if(fetchSize > 0)
             stmt.setFetchSize(fetchSize);

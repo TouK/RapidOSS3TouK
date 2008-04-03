@@ -30,7 +30,7 @@ public class ExecuteUpdateAction implements Action {
         try 
         {
             logger.debug("Preparing statement.");
-            stmt = ((DatabaseConnectionImpl)conn).getConnection().prepareStatement( sql );
+            stmt = conn.getConnection().prepareStatement( sql );
             DatabaseConnectionImpl.setStatementParameters(queryParams, stmt);
             logger.debug("Executing statement.");
             affectedRowCount = stmt.executeUpdate();

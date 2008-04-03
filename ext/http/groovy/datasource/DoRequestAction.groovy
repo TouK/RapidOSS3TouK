@@ -48,16 +48,15 @@ public class DoRequestAction implements Action {
     }
 
     public void execute(IConnection conn) throws Exception {
-    	HttpConnectionImpl httpConn = (HttpConnectionImpl)conn;
-        String completeUrl = httpConn.getBaseUrl() + url;       
+        String completeUrl = conn.getBaseUrl() + url;
         logger.debug("Making the request:\n" + completeUrl);
         if(type == POST)
         {
-            response =  httpConn.getHttpConnection().doPostRequest(completeUrl, params);
+            response =  conn.getHttpConnection().doPostRequest(completeUrl, params);
         }
         else
         {
-            response =  httpConn.getHttpConnection().doGetRequest(completeUrl, params);
+            response =  conn.getHttpConnection().doGetRequest(completeUrl, params);
         }
         logger.debug("Response received:\n" + response);
     }

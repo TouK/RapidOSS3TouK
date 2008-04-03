@@ -5,6 +5,8 @@ import datasource.BaseDatasource
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.plugins.orm.hibernate.HibernateGrailsPlugin
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
+import org.codehaus.groovy.grails.orm.hibernate.metaclass.DeletePersistentMethod
+import org.springframework.orm.hibernate3.HibernateTemplate
 
 class RapidDomainClassGrailsPlugin {
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
@@ -40,11 +42,7 @@ class RapidDomainClassGrailsPlugin {
         SessionFactory sessionFactory = ctx.sessionFactory
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
-            registerDynamicMethods(dc, application, ctx)
-            for (subClass in dc.subClasses) {
-                registerDynamicMethods(subClass, application, ctx)
-            }
-            configureFederation(log, dc);
+            registerDynamicMethods(dc, application, ctx);
             MetaClass emc = GroovySystem.metaClassRegistry.getMetaClass(dc.clazz)
         }
     }
@@ -55,17 +53,43 @@ class RapidDomainClassGrailsPlugin {
     def onApplicationChange = { event ->
     }
 
-
-    def registerDynamicMethods(dc, application, ctx)
+    def addBasicPersistenceMethods(dc, application, ctx)
     {
         def mc = dc.metaClass;
-        mc.'static'.get = {Map keys->
-            def sampleBean = mc.getTheClass().newInstance();
-            keys.each{key,value->
-                sampleBean.setProperty (key, value);
-            }
-            return mc.invokeStaticMethod(delegate, "find", sampleBean)
-        }
+//        def oneToOneRelationProperties = getOneToOneRelationProperties(dc);
+//        try
+//        {
+//            dc.metaClass.getTheClass().newInstance().delete();
+//        }
+//        catch(t)
+//        {
+//        }
+//        def template = new HibernateTemplate(ctx.sessionFactory);
+//        mc.delete = {->
+//            def domainObject = delegate;
+//            def currentValues = [:];
+//            oneToOneRelationProperties.each{relationName, relationProp->
+//                currentValues[relationName] = domainObject[relationName];
+//                domainObject[relationName] = null;
+//                domainObject.save();
+//            }
+//            try
+//            {
+//                template.delete(domainObject)
+//            }
+//            catch(t)
+//            {
+//                currentValues.each{relationName, relationValue->
+//                    domainObject.setProperty(relationName, relationValue);
+//                }
+//                domainObject.save();
+//                throw t;
+//            }
+//        }
+//        mc.delete = { Map args ->
+//            delegate.delete();
+//            if(args?.flush) template.flush()
+//        }
 
         mc.'static'.add = {Map props->
             def sampleBean = mc.getTheClass().newInstance();
@@ -82,6 +106,42 @@ class RapidDomainClassGrailsPlugin {
                 return returnedBean;
             }
         }
+    }
+
+    def addUtilityMetods(dc, application, ctx)
+    {
+        def mc = dc.metaClass;
+        mc.asMap = {->
+            def domainObject = delegate;
+            def excludedProps = ['version',
+                                         'id',
+                                           Events.ONLOAD_EVENT,
+                                           Events.BEFORE_DELETE_EVENT,
+                                           Events.BEFORE_INSERT_EVENT,
+                                           Events.BEFORE_UPDATE_EVENT]
+            def props = dc.properties.findAll { !excludedProps.contains(it.name) }
+            def propertyMap = [:];
+            for(prop in props){
+                if(!prop.oneToMany && !prop.manyToMany && !prop.oneToOne && !prop.manyToOne){
+                    propertyMap.put(prop.name, domainObject.getProperty(prop.name))
+                }
+            }
+
+            return propertyMap;
+        };
+        mc.asMap = {List properties->
+            def domainObject = delegate;
+            def propertyMap = [:];
+            for(prop in properties){
+               try{
+                    propertyMap.put(prop, domainObject.getProperty(prop));
+               }
+               catch(e){
+
+               }
+            }
+            return propertyMap;
+        };
         mc.'static'.create = {Map props->
             def sampleBean = delegate.newInstance();
             props.each{key,value->
@@ -89,97 +149,104 @@ class RapidDomainClassGrailsPlugin {
             }
             return sampleBean;
         }
+    }
 
+    def addQueryMethods(dc, application, ctx)
+    {
+        def mc = dc.metaClass;
+        mc.'static'.get = {Map keys->
+            def sampleBean = mc.getTheClass().newInstance();
+            keys.each{key,value->
+                sampleBean.setProperty (key, value);
+            }
+            return mc.invokeStaticMethod(delegate, "find", sampleBean)
+        }
+    }
+    def registerDynamicMethods(dc, application, ctx)
+    {
+        addBasicPersistenceMethods(dc, application, ctx)
+        addQueryMethods (dc, application, ctx)
+        addUtilityMetods (dc, application, ctx)
+        addPropertyGetAndSetMethods(dc);
     }
 
 
-    def configureFederation(log, dc)
+    def setOtherSideOfOneToOneRelation(domainObject, currentValue, reverseName, newValue)
     {
-        log.info("Configuring federation");
+        if(currentValue == newValue || !reverseName)
+        {
+            return;            
+        }
+        if(newValue)
+        {
+            if(currentValue != null)
+            {
+                currentValue.setProperty(reverseName, null);
+            }
+            newValue.setPropertyForReverseRelation(reverseName, domainObject);
+        }
+        else
+        {
+            if(currentValue)
+            {
+                currentValue.setPropertyForReverseRelation(reverseName, newValue);
+            }
+        }
+    }
+
+    def getOneToOneRelationProperties(dc)
+    {
+        def oneToOneRelationProperties = [:];
+        dc.getProperties().each
+        {
+            if(it.isOneToOne())
+            {
+                oneToOneRelationProperties[it.name] = it;
+            }
+        }
+        return oneToOneRelationProperties;
+    }
+
+    def addPropertyGetAndSetMethods(dc)
+    {
         MetaClass mc = dc.metaClass
+//        def oneToOneRelationProperties = getOneToOneRelationProperties(dc);
         def propConfigCache = new PropertyConfigurationCache(dc);
         def dsConfigCache = new DatasourceConfigurationCache(dc);
-        mc.setProperty = {String name, Object value->
-            def prop = null;
-            if(((GrailsDomainClass)dc).hasProperty(name))
-            {
-                prop = ((GrailsDomainClass)dc).getPropertyByName (name);
-            }
-            if(prop && prop.isOneToOne())
-            {
-                def reverseProp = prop.getOtherSide();
-                if(reverseProp)
-                {
-                    def reverseName = reverseProp.name;
-                    def oldValue = delegate.getProperty(name);
-                    if(value)
-                    {
-                        if(oldValue != value)
-                        {
-                            if(oldValue != null)
-                            {
-                                oldValue.setProperty(reverseName, null);
-                            }
-                            mc.getMetaProperty(name).setProperty(delegate, value);
-                            value.setProperty(reverseName, delegate);
-                        }
-                    }
-                    else
-                    {
-                        mc.getMetaProperty(name).setProperty(delegate, value);
-                        if(oldValue)
-                        {
-                            oldValue.setProperty(reverseName, value);
-                        }
-                    }
-                }
-                else
-                {
-                    mc.getMetaProperty(name).setProperty(delegate, value);
-                }
-            }
-            else
-            {
-                mc.getMetaProperty(name).setProperty(delegate, value);
-            }
-        };
-         mc.asMap = {->
-                def excludedProps = ['version',
-                                             'id',
-                                               Events.ONLOAD_EVENT,
-                                               Events.BEFORE_DELETE_EVENT,
-                                               Events.BEFORE_INSERT_EVENT,
-                                               Events.BEFORE_UPDATE_EVENT]
-                def props = dc.properties.findAll { !excludedProps.contains(it.name) }
-                def propertyMap = [:];
-                for(prop in props){
-                    if(!prop.oneToMany && !prop.manyToMany && !prop.oneToOne && !prop.manyToOne){
-                        propertyMap.put(prop.name, delegate.getProperty(prop.name))
-                    }
-                }
+//        mc.setPropertyForReverseRelation = {String name, Object newValue->
+//            mc.getMetaProperty(name).setProperty(delegate, newValue);
+//        }
+//        mc.setProperty = {String name, Object newValue->
+//            def domainObject = delegate;
+//            def oldValue = domainObject[name];
+//            if(name == "properties")
+//            {
+//                oldValue = new HashMap(oldValue);
+//            }
+//            mc.getMetaProperty(name).setProperty(domainObject, newValue);
+//            if(name == "properties")
+//            {
+//                oneToOneRelationProperties.each {relationPropertyName, relationPropertyValue->
+//                    def otherSideProp = oneToOneRelationProperties[relationPropertyName].getOtherSide();
+//                    if(otherSideProp)
+//                    {
+//                        setOtherSideOfOneToOneRelation(domainObject, oldValue[relationPropertyName], otherSideProp.name, delegate[relationPropertyName]);
+//                    }
+//                }
+//            }
+//            else if(oneToOneRelationProperties[name] != null)
+//            {
+//                def otherSideProp = oneToOneRelationProperties[name].getOtherSide();
+//                if(otherSideProp)
+//                {
+//                    setOtherSideOfOneToOneRelation(domainObject, oldValue, otherSideProp.name, newValue);
+//                }
+//            }
+//        };
 
-                return propertyMap;
-            };
-            mc.asMap = {List properties->
-                def propertyMap = [:];
-                for(prop in properties){
-                   try{
-                        propertyMap.put(prop, delegate.getProperty(prop));
-                   }
-                   catch(e){
-
-                   }
-                }
-                return propertyMap;
-            };
         if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
         {
             mc.addMetaBeanProperty(new DatasourceProperty("isPropertiesLoaded", Object.class));
-//            mc.setProperty = {String name, Object value->
-//                def propertyConfig = propConfigCache.getPropertyConfigByName(name);
-//                mc.getMetaProperty(name).setProperty(delegate, value);
-//            };
-
             mc.getProperty = {String name->
                 def propertyConfig = propConfigCache.getPropertyConfigByName(name);
                 def domainObject = delegate;

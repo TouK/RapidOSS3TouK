@@ -23,9 +23,9 @@
             </ul>
         </div>
     </g:if>
-    <h1>Show Model</h1>
+       <h1>Show Model</h1>
     <div class="dialog">
-        <table>
+        <table style="width:900;">
             <tbody>
 
                 <tr class="prop">
@@ -46,12 +46,16 @@
     </div>
 
     <div style="margin-top:20px;">
-       <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Property List</span>
+    <table style="width:900;">
+   <tr>
+   <td>
+       <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Property List</span>
        <span class="menuButton"><g:link class="create" controller="modelProperty" params="['model.id':model?.id]" action="create">New Property</g:link></span>
         <div class="list">
             <table>
                 <thead>
-                    <tr>
+                   <tr>
+                   <br>
 
                         <g:sortableColumn property="name" title="Name"/>
                         <g:sortableColumn property="type" title="Type"/>
@@ -61,8 +65,6 @@
                         <th>Static Datasource Name</th>
 
                         <th>Dynamic Datasource (specified in property)</th>
-
-
 
                     </tr>
                 </thead>
@@ -79,13 +81,17 @@
                 </tbody>
             </table>
         </div>
-    </div>
-
+    </td>
+</tr>
+</table> </div>
     <div style="margin-top:20px;">
-       <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Relation List</span>
+    <table style="width:900;">
+   		<tr>
+   			<td>
+       <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Relation List</span>
        <span class="menuButton"><g:link class="create" controller="modelRelation" params="['firstModel.id':model?.id]" action="create">New Relation</g:link></span>
         <div class="list">
-            <table>
+            <table><br>
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -112,13 +118,17 @@
                 </tbody>
             </table>
         </div>
-    </div>
-
+			</td>
+			</tr>
+		</table>
     <div style="margin-top:20px;">
-        <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Datasource List</span>
+    <table style="width:900;">
+   		<tr>
+   			<td>
+        <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Datasource List</span>
         <span class="menuButton" ><g:link class="create" controller="modelDatasource" params="['model.id':model?.id]" action="create">New Datasource</g:link></span>
         <div class="list">
-            <table>
+            <table ><br>
                 <thead>
                     <tr>
                         <g:sortableColumn property="datasource" title="Datasource"/>
@@ -135,12 +145,17 @@
                 </tbody>
             </table>
         </div>
-    </div>
-
+		</td>
+		</tr>
+		</table>
+        </div>
     <div style="margin-top:20px;">
-        <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Operation List</span>
+    <table style="width:900;">
+   		<tr>
+   			<td>
+        <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Operation List</span>
         <div class="list">
-            <table>
+           <table><br>
                 <thead>
                     <tr>
                         <g:sortableColumn property="name" title="Name"/>
@@ -157,7 +172,10 @@
                 </tbody>
             </table>
         </div>
-    </div>
+</td>
+</tr>
+</table>
+        </div>
 
     <div class="buttons" style="margin-top:30px;">
         <g:form>
@@ -181,6 +199,7 @@
             </span>
         </g:form>
     </div>
+</div>
 </div>
 </body>
 </html>

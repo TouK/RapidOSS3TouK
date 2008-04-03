@@ -70,18 +70,22 @@
                             <label for="property">Property:</label>
                         </td>
                         <%
-                            def modelPropertyList;
+                            def modelPropertyList  = [];
                             if (params["modelDatasource.id"] != null) {
                                 def modelDatasource = ModelDatasource.get(params["modelDatasource.id"]);
                                 def mdl = modelDatasource?.model;
                                 def modelPropertyMap = [:];
-                                modelPropertyList = mdl?.modelProperties;
+                                if(mdl)
+                                {
+                                   modelPropertyList = ModelProperty.findAllByModel(mdl);
+                                }
                                 for(modelProp in modelPropertyList){
                                     modelPropertyMap.put(modelProp.name, modelProp);
                                 }
                                 def tempModel = mdl.parentModel;
                                 while(tempModel != null){
-                                    for(prop in tempModel.modelProperties){
+                                    def parentModelProperties = ModelProperty.findAllByModel(tempModel);
+                                    for(prop in parentModelProperties){
                                         if(!modelPropertyMap.containsKey(prop.name)){
                                             modelPropertyMap.put(prop.name, prop);
                                             modelPropertyList.add(prop);

@@ -31,10 +31,27 @@ class ModelPropertyController {
         }
         if(params["datasource.id"] != null && params["datasource.id"] != "null"){
             def baseDatasource = BaseDatasource.get(params["datasource.id"]);
-            def model = Model.get(params["model.id"]);
-            def modelDatasource = ModelDatasource.findByModelAndDatasource(model, baseDatasource);
+            def modelNameList = [];
+            def currentModel = Model.get(params["model.id"]);
+            modelNameList.add(currentModel.name);
+            def tempModel = currentModel.parentModel;
+            while(tempModel != null){
+                modelNameList.add(tempModel.name);
+                tempModel = tempModel.parentModel;
+            }
+            def c = ModelDatasource.createCriteria();
+            def modelDatasource = c.get{
+                model{
+                    'in'('name', modelNameList)
+                }
+                datasource{
+                    eq('name', baseDatasource.name)
+                }
+            }
+//            def modelDatasource = ModelDatasource.findByModelAndDatasource(model, baseDatasource);
             if(modelDatasource == null){
-                modelDatasource = new ModelDatasource(model:model, datasource:baseDatasource, master:false).save();
+                println "couldnt find datasource";
+                modelDatasource = new ModelDatasource(model:currentModel, datasource:baseDatasource, master:false).save();
             }
             params.remove("datasource.id");
             params["propertyDatasource.id"] = modelDatasource.id;
@@ -69,10 +86,25 @@ class ModelPropertyController {
         if(modelProperty) {
             if(params["datasource.id"] != null && params["datasource.id"] != "null"){
                 def baseDatasource = BaseDatasource.get(params["datasource.id"]);
-                def model = modelProperty.model;
-                def modelDatasource = ModelDatasource.findByModelAndDatasource(model, baseDatasource);
+               def modelNameList = [];
+                def currentModel = Model.get(params["model.id"]);
+                modelNameList.add(currentModel.name);
+                def tempModel = currentModel.parentModel;
+                while(tempModel != null){
+                    modelNameList.add(tempModel.name);
+                    tempModel = tempModel.parentModel;
+                }
+                def c = ModelDatasource.createCriteria();
+                def modelDatasource = c.get{
+                    model{
+                        'in'('name', modelNameList)
+                    }
+                    datasource{
+                        eq('name', baseDatasource.name)
+                    }
+                }
                 if(modelDatasource == null){
-                    modelDatasource = new ModelDatasource(model:model, datasource:baseDatasource, master:false).save();
+                    modelDatasource = new ModelDatasource(model:currentModel, datasource:baseDatasource, master:false).save();
                 }
                 params.remove("datasource.id");
                 params["propertyDatasource.id"] = modelDatasource.id;

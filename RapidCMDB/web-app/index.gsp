@@ -20,7 +20,7 @@
       <div class="front">
       <table>
          <tr>
-           <th width="%50" >  Connections</th>
+           <th width="50%" >  Connections</th>
            <th>Datasources</th>
          </tr>
          <tr>
@@ -62,7 +62,7 @@
 
 <p/>
         <div class="front">
-        <table ><tr><th width="%50">Modeling</th>  <th width="%50">Scripting</th></tr>
+        <table ><tr><th width="50%">Modeling</th>  <th >Scripting</th></tr>
         <tr><td><p style="margin-left:20px;">Model your Managed Classes.</p>
         <br>
         <div class="dialog" style="margin-left:20px;">
@@ -79,7 +79,7 @@
             </ul>
         </div>
         </td>
-         </table> </div>
+         </table>  </div>
          <br>
          <br>
          

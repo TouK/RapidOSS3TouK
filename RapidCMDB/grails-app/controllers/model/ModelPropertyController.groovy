@@ -82,6 +82,19 @@ class ModelPropertyController {
     }
 
     def update = {
+        if(params.name)
+        {
+            if(params.name.length() > 1)
+            {
+                def firstChar = params.name.substring (0,1)
+                def remaining = params.name.substring (1);
+                params.name = firstChar.toLowerCase()+remaining;
+            }
+            else
+            {
+                params.name = params.name.toLowerCase();
+            }
+        }
         def modelProperty = ModelProperty.get( params.id )
         if(modelProperty) {
             if(params["datasource.id"] != null && params["datasource.id"] != "null"){

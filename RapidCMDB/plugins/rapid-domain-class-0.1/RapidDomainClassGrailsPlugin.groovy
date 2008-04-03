@@ -63,24 +63,31 @@ class RapidDomainClassGrailsPlugin {
         }
 
         mc.hybernateDelete = mc.getMetaMethod("delete", (Object[])[Map.class]).closure;
-        mc.hybernateSave = mc.getMetaMethod("save", (Object[])[Map.class]).closure;
+        mc.hybernateSave1 = mc.getMetaMethod("save", (Object[])[Map.class]).closure;
+        mc.hybernateSave2 = mc.getMetaMethod("save", (Object[])[Boolean.class]).closure;
+        mc.save = {Boolean validate->
+            println "booleande"
+            delegate.hybernateSave2(validate);
+        }
         mc.save = {->
-            delegate.save(flush:true);
+            delegate.save(flush:false);
+        }
+        mc.save = {Boolean validate ->
+            saveMethod.invoke(delegate, "save", [validate] as Object[])
         }
         mc.save = {Map args->
             def domainObject = delegate;
-            def res = delegate.hybernateSave(args);
-            if(res)
+            def res = delegate.hybernateSave1(args);
+            if(res && delegate.class.name.indexOf(".") < 0)
             {
                 oneToOneRelationProperties.each{relationName, relationProp->
                     def relationValue = domainObject[relationName];
-
                     def sample = relationProp.type.newInstance();
                     sample[relationProp.getOtherSide().name] = domainObject;
                     def foundObjects = sample.findAll(sample);
                     foundObjects.each{relatedCls->
                         relatedCls[relationProp.getOtherSide().name] = null;
-                        relatedCls.hybernateSave(args);
+                        relatedCls.hybernateSave1(args);
                     }
                     if(relationValue)
                     {
@@ -91,12 +98,12 @@ class RapidDomainClassGrailsPlugin {
                             if(relatedCls.id != domainObject.id)
                             {
                                 relatedCls[relationName] = null;
-                                relatedCls.hybernateSave(args);
+                                relatedCls.hybernateSave1(args);
                             }
                         }
 
                         relationValue[relationProp.getOtherSide().name] = domainObject;
-                        relationValue.hybernateSave(args);
+                        relationValue.hybernateSave1(args);
                     }
                 }
             }
@@ -107,23 +114,30 @@ class RapidDomainClassGrailsPlugin {
         }
         mc.delete = { Map args ->
             def domainObject = delegate;
-            def currentValues = [:];
-            oneToOneRelationProperties.each{relationName, relationProp->
-                currentValues[relationName] = domainObject[relationName];
-                domainObject[relationName] = null;
-                domainObject.save();
-            }
-            try
+            if(domainObject.class.name.indexOf(".") < 0)
             {
-                delegate.hybernateDelete(args);
-            }
-            catch(t)
-            {
-                currentValues.each{relationName, relationValue->
-                    domainObject.setProperty(relationName, relationValue);
+                def currentValues = [:];
+                oneToOneRelationProperties.each{relationName, relationProp->
+                    currentValues[relationName] = domainObject[relationName];
+                    domainObject[relationName] = null;
+                    domainObject.save();
                 }
-                domainObject.save();
-                throw t;
+                try
+                {
+                    domainObject.hybernateDelete(args);
+                }
+                catch(t)
+                {
+                    currentValues.each{relationName, relationValue->
+                        domainObject.setProperty(relationName, relationValue);
+                    }
+                    domainObject.save();
+                    throw t;
+                }
+            }
+            else
+            {
+                domainObject.hybernateDelete(args);
             }
         }
 

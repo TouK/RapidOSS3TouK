@@ -24,17 +24,19 @@ class ModelProperty {
         type(inList:[stringType, numberType, dateType]);
         lazy(validator:{val, obj ->
             if(val && obj.propertyDatasource != null && obj.propertyDatasource.master){
-                return ["model.invalid.lazy"]
+                return ["model.invalid.lazy"]       
             }
         })
 
         blank(validator:{val, obj ->
              if(val){
                  def isValid = true;
-                 def keyMapping = new ModelDatasourceKeyMapping(property:obj);
-                 ModelDatasourceKeyMapping.findAll(keyMapping).each{
-                     if(it.datasource.master){
-                         isValid = false;
+                 if(ModelProperty.findByNameAndModel(obj.name, obj.model))
+                 {
+                     ModelDatasourceKeyMapping.findAllByProperty(obj).each{
+                         if(it.datasource.master){
+                             isValid = false;
+                         }
                      }
                  }
                  if(!isValid){

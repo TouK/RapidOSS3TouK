@@ -4,7 +4,8 @@ import com.ifountain.comp.utils.CaseInsensitiveMap
 import datasource.BaseDatasource
 import org.codehaus.groovy.grails.plugins.orm.hibernate.HibernateGrailsPlugin
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
@@ -69,6 +70,8 @@ class RapidDomainClassGrailsPlugin {
     {
         def mc = dc.metaClass;
         def oneToOneRelationProperties = getOneToOneRelationProperties(dc);
+        def oneToManyRelationProperties = getOneToManyRelationProperties(dc);
+        def allRelations = getRelationProperties(dc);
         try
         {
             dc.metaClass.getTheClass().newInstance().delete();
@@ -119,6 +122,111 @@ class RapidDomainClassGrailsPlugin {
             }
             return res;
         }
+        mc.update = {Map props->
+            delegate.update(props, true)
+        }
+        mc.update = {Map props, Boolean flush->
+            def domainObject = delegate;
+            props.each{key,value->
+                domainObject.setProperty(key, value);
+            }
+            def res = domainObject.save(flush:flush);
+            if(!res)
+            {
+                return domainObject;
+            }
+            else
+            {
+                return res;
+            }
+        }
+        mc.addRelation = {Map props->
+            return delegate.addRelation(props, true);
+        }
+        mc.addRelation = {Map props, Boolean flush->
+            def domainObject = delegate;
+            props.each{key,value->
+                def propMetaData = allRelations.get(key);
+                if(propMetaData)
+                {
+                    if(propMetaData.isOneToOne() || propMetaData.isManyToOne())
+                    {
+                        domainObject.setProperty(key, value);
+                    }
+                    else
+                    {
+                        if(value instanceof Collection)
+                        {
+                            for(childDomain in value)
+                            {
+                                domainObject."addTo${getUppercasedRelationName(key)}"(childDomain);    
+                            }
+                        }
+                        else
+                        {
+                            domainObject."addTo${getUppercasedRelationName(key)}"(value);
+                        }
+                    }
+                }
+            }
+            def res = domainObject.save(flush:flush);
+            if(!res)
+            {
+                return domainObject;
+            }
+            else
+            {
+                return res;
+            }
+        }
+
+        mc.removeRelation = {Map props->
+            return delegate.removeRelation(props, true);
+        }
+        mc.removeRelation = {Map props, Boolean flush->
+            def domainObject = delegate;
+            props.each{key,value->
+                GrailsDomainClassProperty propMetaData = allRelations.get(key);
+                if(propMetaData)
+                {
+                    if(propMetaData.isOneToOne() || propMetaData.isManyToOne())
+                    {
+                        domainObject.setProperty(key, null);
+                    }
+                    else
+                    {
+                        if(value instanceof Collection)
+                        {
+                            for(childDomain in value)
+                            {
+                                domainObject."removeFrom${getUppercasedRelationName(key)}"(childDomain);
+                            }
+                        }
+                        else
+                        {
+                            domainObject."removeFrom${getUppercasedRelationName(key)}"(value);
+                        }
+                    }
+                }
+            }
+            def res = domainObject.save(flush:flush);
+            if(!res)
+            {
+                return domainObject;
+            }
+            else
+            {
+                return res;
+            }
+        }
+
+
+        mc.remove = {->
+            delegate.remove(true);
+        }
+        mc.remove = {Boolean flush->
+            delegate.delete(flush:flush);
+        }
         mc.delete = {->
             delegate.delete(flush:false);
         }
@@ -126,37 +234,40 @@ class RapidDomainClassGrailsPlugin {
             def domainObject = delegate;
             if(domainObject.class.name.indexOf(".") < 0)
             {
-                def currentValues = [:];
                 oneToOneRelationProperties.each{relationName, relationProp->
-                    currentValues[relationName] = domainObject[relationName];
-                    domainObject[relationName] = null;
-                    domainObject.save();
-                }
-                try
-                {
-                    domainObject.hybernateDelete(args);
-                }
-                catch(t)
-                {
-                    currentValues.each{relationName, relationValue->
-                        domainObject.setProperty(relationName, relationValue);
+                    def otherObject = domainObject[relationName];
+                    if(otherObject)
+                    {
+                        otherObject[relationProp.getOtherSide().name] = null;
+                        otherObject.save();
                     }
-                    domainObject.save();
-                    throw t;
+
+                }
+                oneToManyRelationProperties.each{relationName, relationProp->
+                    def otherObjects = domainObject[relationName];
+                    if(otherObjects)
+                    {
+                        for(otherObject in otherObjects)
+                        {
+                            otherObject[relationProp.getOtherSide().name] = null;
+                            otherObject.save();
+                        }
+                    }
+
                 }
             }
-            else
-            {
-                domainObject.hybernateDelete(args);
-            }
+            domainObject.hybernateDelete(args);
         }
 
         mc.'static'.add = {Map props->
+            return delegate.add(props, true);
+        }
+        mc.'static'.add = {Map props, Boolean flush->
             def sampleBean = mc.getTheClass().newInstance();
             props.each{key,value->
                 sampleBean.setProperty (key, value);
             }
-            def returnedBean = sampleBean.save(flush:true);
+            def returnedBean = sampleBean.save(flush:flush);
             if(!returnedBean)
             {
                 return sampleBean;
@@ -246,6 +357,19 @@ class RapidDomainClassGrailsPlugin {
         }
     }
 
+    def getRelationProperties(dc)
+    {
+        def relationProperties = [:];
+        dc.getProperties().each
+        {
+            if(it.isAssociation())
+            {
+                relationProperties[it.name] = it;
+            }
+        }
+        return relationProperties;
+    }
+
     def getOneToOneRelationProperties(dc)
     {
         def oneToOneRelationProperties = [:];
@@ -259,11 +383,31 @@ class RapidDomainClassGrailsPlugin {
         return oneToOneRelationProperties;
     }
 
-    def addPropertyGetAndSetMethods(dc)
+    def getOneToManyRelationProperties(dc)
     {
+        def oneToManyRelationProperties = [:];
+        dc.getProperties().each
+        {
+            if(it.isOneToMany())
+            {
+                oneToManyRelationProperties[it.name] = it;
+            }
+        }
+        return oneToManyRelationProperties;
+    }
+
+    def addPropertyGetAndSetMethods(dc)
+    {                         
         MetaClass mc = dc.metaClass
         def propConfigCache = new PropertyConfigurationCache(dc);
         def dsConfigCache = new DatasourceConfigurationCache(dc);
+//        mc.setProperty = {String name, Object value->
+//            mc.getMetaProperty(name).setProperty(delegate, value);
+//            if(delegate.id)
+//            {
+//                delagete.save(flush:true);
+//            }
+//        };
         if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
         {
             mc.addMetaBeanProperty(new DatasourceProperty("isPropertiesLoaded", Object.class));

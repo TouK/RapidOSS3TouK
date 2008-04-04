@@ -28,6 +28,7 @@ class ModelRelationController {
         }
     }
     def update = {
+        println params;
         def cardinalities = params["cardinality"]?.split("To");
         if(cardinalities != null){
             params["firstCardinality"] = cardinalities[0];
@@ -39,6 +40,8 @@ class ModelRelationController {
             def redirectModelId = modelRelation.firstModel?.id;
             if(params["reverse"] != null){
                 isReverse = true;
+                params["firstCardinality"] = cardinalities[1];
+                params["secondCardinality"] = cardinalities[0];
                 redirectModelId = modelRelation.secondModel?.id;
 
             }

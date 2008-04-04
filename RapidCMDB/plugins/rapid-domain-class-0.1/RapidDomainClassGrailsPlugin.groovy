@@ -86,6 +86,8 @@ class RapidDomainClassGrailsPlugin {
         mc.save = {->
             delegate.save(flush:false);
         }
+
+
         mc.save = {Map args->
             def domainObject = delegate;
             def res = delegate.hybernateSave1(args);
@@ -94,17 +96,14 @@ class RapidDomainClassGrailsPlugin {
                 oneToOneRelationProperties.each{relationName, relationProp->
                     def relationValue = domainObject[relationName];
                     def sample = relationProp.type.newInstance();
-                    sample[relationProp.getOtherSide().name] = domainObject;
-                    def foundObjects = sample.findAll(sample);
+                    def foundObjects = relationProp.type.metaClass.invokeStaticMethod(relationProp.type.newInstance(),"findAllBy${getUppercasedRelationName(relationProp.getOtherSide().name)}", domainObject);
                     foundObjects.each{relatedCls->
                         relatedCls[relationProp.getOtherSide().name] = null;
                         relatedCls.hybernateSave1(args);
                     }
                     if(relationValue)
                     {
-                        sample = domainObject.class.newInstance();
-                        sample[relationName] =  relationValue;
-                        foundObjects = sample.findAll(sample);
+                        foundObjects = domainObject.class.metaClass.invokeStaticMethod(domainObject.class.newInstance(),"findAllBy${getUppercasedRelationName(relationName)}", relationValue);
                         foundObjects.each{relatedCls->
                             if(relatedCls.id != domainObject.id)
                             {
@@ -166,6 +165,18 @@ class RapidDomainClassGrailsPlugin {
             {
                 return returnedBean;
             }
+        }
+    }
+
+    def getUppercasedRelationName(String relName)
+    {
+        if(relName.length() == 1)
+        {
+            return relName.toUpperCase();
+        }
+        else
+        {
+            return relName.substring(0,1).toUpperCase()+relName.substring(1);
         }
     }
 

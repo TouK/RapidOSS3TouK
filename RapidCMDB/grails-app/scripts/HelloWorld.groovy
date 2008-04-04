@@ -50,7 +50,7 @@ Author.list().each
 {
     println it.toString()
     println it.asMap()
-    println "GOT"+Author.get(name:it.name);
+    println "GET"+Author.get(name:it.name);
     it.remove()
 }
 return Author.list()

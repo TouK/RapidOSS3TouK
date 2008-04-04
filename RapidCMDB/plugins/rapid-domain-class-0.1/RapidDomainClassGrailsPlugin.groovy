@@ -38,11 +38,25 @@ class RapidDomainClassGrailsPlugin {
 
     def doWithDynamicMethods = { ctx ->
         SessionFactory sessionFactory = ctx.sessionFactory
+        def domainClassMap = [:];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
-            registerDynamicMethods(dc, application, ctx);
-            MetaClass emc = GroovySystem.metaClassRegistry.getMetaClass(dc.clazz)
+            domainClassMap[mc.getTheClass().name] = mc.getTheClass().name
         }
+        def domainClassesToBeCreated = [];
+        for (dc in application.domainClasses) {
+            MetaClass mc = dc.metaClass
+            if(!domainClassMap.containsKey(mc.getTheClass().getSuperclass().getName()))
+            {
+                domainClassesToBeCreated += dc;
+            }
+        }
+
+        for (dc in domainClassesToBeCreated) {
+            MetaClass mc = dc.metaClass
+            registerDynamicMethods(dc, application, ctx);
+        }
+
     }
 
     def onChange = { event ->
@@ -63,7 +77,6 @@ class RapidDomainClassGrailsPlugin {
         {
             logger.debug("Delete method injection didnot performed by hibernate plugin.", t);
         }
-
         mc.hybernateDelete = mc.getMetaMethod("delete", (Object[])[Map.class]).closure;
         mc.hybernateSave1 = mc.getMetaMethod("save", (Object[])[Map.class]).closure;
         mc.hybernateSave2 = mc.getMetaMethod("save", (Object[])[Boolean.class]).closure;
@@ -72,9 +85,6 @@ class RapidDomainClassGrailsPlugin {
         }
         mc.save = {->
             delegate.save(flush:false);
-        }
-        mc.save = {Boolean validate ->
-            saveMethod.invoke(delegate, "save", [validate] as Object[])
         }
         mc.save = {Map args->
             def domainObject = delegate;
@@ -219,6 +229,10 @@ class RapidDomainClassGrailsPlugin {
         addQueryMethods (dc, application, ctx)
         addUtilityMetods (dc, application, ctx)
         addPropertyGetAndSetMethods(dc);
+        for(subClass in dc.subClasses)
+        {
+            registerDynamicMethods(subClass, application, ctx);    
+        }
     }
 
     def getOneToOneRelationProperties(dc)

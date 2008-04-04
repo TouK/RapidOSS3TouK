@@ -4,8 +4,9 @@ import com.ifountain.comp.utils.CaseInsensitiveMap
 import datasource.BaseDatasource
 import org.codehaus.groovy.grails.plugins.orm.hibernate.HibernateGrailsPlugin
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
-
+import org.apache.log4j.Logger;
 class RapidDomainClassGrailsPlugin {
+    def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
     def version = 0.1
     def dependsOn = [:]
@@ -40,6 +41,9 @@ class RapidDomainClassGrailsPlugin {
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
             registerDynamicMethods(dc, application, ctx);
+            for (subClass in dc.subClasses) {
+                registerDynamicMethods(subClass, application, ctx)
+            }
             MetaClass emc = GroovySystem.metaClassRegistry.getMetaClass(dc.clazz)
         }
     }
@@ -60,13 +64,13 @@ class RapidDomainClassGrailsPlugin {
         }
         catch(t)
         {
+            logger.debug("Delete method injection didnot performed by hibernate plugin.", t);
         }
 
         mc.hybernateDelete = mc.getMetaMethod("delete", (Object[])[Map.class]).closure;
         mc.hybernateSave1 = mc.getMetaMethod("save", (Object[])[Map.class]).closure;
         mc.hybernateSave2 = mc.getMetaMethod("save", (Object[])[Boolean.class]).closure;
         mc.save = {Boolean validate->
-            println "booleande"
             delegate.hybernateSave2(validate);
         }
         mc.save = {->
@@ -187,7 +191,7 @@ class RapidDomainClassGrailsPlugin {
                     propertyMap.put(prop, domainObject.getProperty(prop));
                }
                catch(e){
-
+                    logger.debug("An exception occurred while converting object to map while getting value of property ${prop}.", e);
                }
             }
             return propertyMap;
@@ -325,7 +329,7 @@ class RapidDomainClassGrailsPlugin {
                 }
                 catch(Throwable e)
                 {
-                    e.printStackTrace();
+                    logger.warn("An exception occurred while getting federated properties ${requestedProperties} from ${propertyDatasource.name}", e);
                 }
             }
         }

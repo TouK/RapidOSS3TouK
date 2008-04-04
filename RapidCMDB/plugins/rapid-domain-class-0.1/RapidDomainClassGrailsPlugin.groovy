@@ -5,7 +5,8 @@ import datasource.BaseDatasource
 import org.codehaus.groovy.grails.plugins.orm.hibernate.HibernateGrailsPlugin
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
 import org.apache.log4j.Logger
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
@@ -52,7 +53,6 @@ class RapidDomainClassGrailsPlugin {
                 domainClassesToBeCreated += dc;
             }
         }
-
         for (dc in domainClassesToBeCreated) {
             MetaClass mc = dc.metaClass
             registerDynamicMethods(dc, application, ctx);
@@ -353,7 +353,10 @@ class RapidDomainClassGrailsPlugin {
         addPropertyGetAndSetMethods(dc);
         for(subClass in dc.subClasses)
         {
-            registerDynamicMethods(subClass, application, ctx);    
+            if(subClass.metaClass.getTheClass().getSuperclass().name == dc.metaClass.getTheClass().name)
+            {
+                registerDynamicMethods(subClass, application, ctx);
+            }
         }
     }
 

@@ -41,9 +41,6 @@ class RapidDomainClassGrailsPlugin {
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
             registerDynamicMethods(dc, application, ctx);
-            for (subClass in dc.subClasses) {
-                registerDynamicMethods(subClass, application, ctx)
-            }
             MetaClass emc = GroovySystem.metaClassRegistry.getMetaClass(dc.clazz)
         }
     }

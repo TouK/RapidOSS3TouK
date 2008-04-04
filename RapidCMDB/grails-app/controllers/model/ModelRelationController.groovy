@@ -13,18 +13,6 @@ class ModelRelationController {
     }
     
     def save = {
-        if(params.firstName)
-        {
-            def firstChar = params.firstName.substring (0,1)
-            def remaining = params.firstName.substring (1);
-            params.firstName = firstChar.toLowerCase()+remaining;
-        }
-        if(params.secondName)
-        {
-            def firstChar = params.secondName.substring (0,1)
-            def remaining = params.secondName.substring (1);
-            params.secondName = firstChar.toLowerCase()+remaining;
-        }
         def cardinalities = params["cardinality"]?.split("To");
         if(cardinalities != null){
             params["firstCardinality"] = cardinalities[0];
@@ -40,18 +28,6 @@ class ModelRelationController {
         }
     }
     def update = {
-        if(params.firstName)
-        {
-            def firstChar = params.firstName.substring (0,1)
-            def remaining = params.firstName.substring (1);
-            params.firstName = firstChar.toLowerCase()+remaining;
-        }
-        if(params.secondName)
-        {
-            def firstChar = params.secondName.substring (0,1)
-            def remaining = params.secondName.substring (1);
-            params.secondName = firstChar.toLowerCase()+remaining;
-        }
         def cardinalities = params["cardinality"]?.split("To");
         if(cardinalities != null){
             params["firstCardinality"] = cardinalities[0];

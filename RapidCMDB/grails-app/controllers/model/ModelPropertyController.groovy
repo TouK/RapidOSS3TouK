@@ -15,46 +15,33 @@ class ModelPropertyController {
         else {return [modelProperty: modelProperty]}
     }
      def save = {
-        
-        if(params.name)
-        {
-            if(params.name.length() > 1)
-            {
-                def firstChar = params.name.substring (0,1)
-                def remaining = params.name.substring (1);
-                params.name = firstChar.toLowerCase()+remaining;
-            }
-            else
-            {
-                params.name = params.name.toLowerCase();                
-            }
-        }
         if(params["datasource.id"] != null && params["datasource.id"] != "null"){
             def baseDatasource = BaseDatasource.get(params["datasource.id"]);
-            def modelNameList = [];
             def currentModel = Model.get(params["model.id"]);
-            modelNameList.add(currentModel.name);
-            def tempModel = currentModel.parentModel;
-            while(tempModel != null){
-                modelNameList.add(tempModel.name);
+            def tempModel = currentModel;
+            def modelDatasource = null;
+            while(tempModel != null && !modelDatasource){
+                tempModel.datasources.each
+                {
+                    if(it.datasource.name == baseDatasource.name)
+                    {
+                        modelDatasource = it.datasource;
+                        return;
+                    }
+                }
                 tempModel = tempModel.parentModel;
             }
-            def c = ModelDatasource.createCriteria();
-            def modelDatasource = c.get{
-                model{
-                    'in'('name', modelNameList)
-                }
-                datasource{
-                    eq('name', baseDatasource.name)
-                }
-            }
-//            def modelDatasource = ModelDatasource.findByModelAndDatasource(model, baseDatasource);
-            if(modelDatasource == null){
-                println "couldnt find datasource";
+
+
+            if(!modelDatasource){
                 modelDatasource = new ModelDatasource(model:currentModel, datasource:baseDatasource, master:false).save();
             }
             params.remove("datasource.id");
             params["propertyDatasource.id"] = modelDatasource.id;
+        }
+        else
+        {
+            params["propertyDatasource.id"] = "null";    
         }
         def modelProperty = new ModelProperty(params)
         if(!modelProperty.hasErrors() && modelProperty.save()) {
@@ -82,45 +69,35 @@ class ModelPropertyController {
     }
 
     def update = {
-        if(params.name)
-        {
-            if(params.name.length() > 1)
-            {
-                def firstChar = params.name.substring (0,1)
-                def remaining = params.name.substring (1);
-                params.name = firstChar.toLowerCase()+remaining;
-            }
-            else
-            {
-                params.name = params.name.toLowerCase();
-            }
-        }  
         def modelProperty = ModelProperty.get( params.id )
         if(modelProperty) {
             if(params["datasource.id"] != null && params["datasource.id"] != "null"){
                 def baseDatasource = BaseDatasource.get(params["datasource.id"]);
-               def modelNameList = [];
                 def currentModel = Model.get(params["model.id"]);
-                modelNameList.add(currentModel.name);
-                def tempModel = currentModel.parentModel;
-                while(tempModel != null){
-                    modelNameList.add(tempModel.name);
+                def tempModel = currentModel;
+                def modelDatasource = null;
+                while(tempModel != null && !modelDatasource){
+                    tempModel.datasources.each
+                    {
+                        if(it.datasource.name == baseDatasource.name)
+                        {
+                            modelDatasource = it.datasource;
+                            return;
+                        }
+                    }
                     tempModel = tempModel.parentModel;
                 }
-                def c = ModelDatasource.createCriteria();
-                def modelDatasource = c.get{
-                    model{
-                        'in'('name', modelNameList)
-                    }
-                    datasource{
-                        eq('name', baseDatasource.name)
-                    }
-                }
-                if(modelDatasource == null){
+
+
+                if(!modelDatasource){
                     modelDatasource = new ModelDatasource(model:currentModel, datasource:baseDatasource, master:false).save();
                 }
                 params.remove("datasource.id");
                 params["propertyDatasource.id"] = modelDatasource.id;
+            }
+            else
+            {
+                params["propertyDatasource.id"] = "null";
             }
             modelProperty.properties = params
             if(!modelProperty.hasErrors() && modelProperty.save()) {

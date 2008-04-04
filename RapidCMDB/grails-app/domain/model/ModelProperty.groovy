@@ -16,7 +16,12 @@ class ModelProperty {
     static belongsTo = Model;
 
     static constraints = {
-        name(blank:false, unique:'model');
+        name(blank:false, unique:'model', validator:{val, obj ->
+            def firstChar = val.charAt(0);
+            if(!(firstChar >= 'a' && firstChar <= 'z')){
+                return ['modelproperty.name.uppercased', obj.model.name];
+            }
+        });
         nameInDatasource(nullable:true);
         propertyDatasource(nullable:true);
         defaultValue(nullable:true);

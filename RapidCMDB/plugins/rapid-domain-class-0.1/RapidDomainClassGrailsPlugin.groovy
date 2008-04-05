@@ -195,6 +195,51 @@ class RapidDomainClassGrailsPlugin {
             }
             else
             {
+
+                props.each{key,value->
+                    def propMetaData = allRelations.get(key);
+                    if(propMetaData)
+                    {
+                        if(propMetaData.isOneToOne() || propMetaData.isManyToOne())
+                        {
+                            domainObject.setProperty(key, value);
+                            value.setProperty(mappedBy[key], domainObject);
+                        }
+                        else
+                        {
+                            if(value instanceof Collection)
+                            {
+                                for(childDomain in value)
+                                {
+                                    if(!propMetaData.isOneToMany())
+                                    {
+                                        domainObject."addTo${getUppercasedRelationName(key)}"(childDomain);
+                                        childDomain.setProperty(mappedBy[key], domainObject);
+                                    }
+                                    else
+                                    {
+                                        childDomain.setProperty(mappedBy[key], domainObject);
+                                        domainObject."addTo${getUppercasedRelationName(key)}"(childDomain);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if(!propMetaData.isOneToMany())
+                                {
+                                    domainObject."addTo${getUppercasedRelationName(key)}"(value);
+                                    value.setProperty(mappedBy[key], domainObject);
+                                }
+                                else
+                                {
+                                    value.setProperty(mappedBy[key], domainObject);
+                                    domainObject."addTo${getUppercasedRelationName(key)}"(value);
+                                }
+
+                            }
+                        }
+                    }
+                }
                 return res;
             }
         }

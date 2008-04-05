@@ -6,7 +6,9 @@ import org.codehaus.groovy.grails.plugins.orm.hibernate.HibernateGrailsPlugin
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsClassUtils;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
@@ -68,6 +70,7 @@ class RapidDomainClassGrailsPlugin {
 
     def addBasicPersistenceMethods(dc, application, ctx)
     {
+        def mappedBy = getMappedBy(dc);
         def mc = dc.metaClass;
         def oneToOneRelationProperties = getOneToOneRelationProperties(dc);
         def oneToManyRelationProperties = getOneToManyRelationProperties(dc);
@@ -99,9 +102,10 @@ class RapidDomainClassGrailsPlugin {
                 oneToOneRelationProperties.each{relationName, relationProp->
                     def relationValue = domainObject[relationName];
                     def sample = relationProp.type.newInstance();
-                    def foundObjects = relationProp.type.metaClass.invokeStaticMethod(relationProp.type.newInstance(),"findAllBy${getUppercasedRelationName(relationProp.getOtherSide().name)}", domainObject);
+                    def otherSideName = mappedBy[relationName];
+                    def foundObjects = relationProp.type.metaClass.invokeStaticMethod(sample,"findAllBy${getUppercasedRelationName(otherSideName)}", domainObject);
                     foundObjects.each{relatedCls->
-                        relatedCls[relationProp.getOtherSide().name] = null;
+                        relatedCls[otherSideName] = null;
                         relatedCls.hybernateSave1(args);
                     }
                     if(relationValue)
@@ -115,7 +119,7 @@ class RapidDomainClassGrailsPlugin {
                             }
                         }
 
-                        relationValue[relationProp.getOtherSide().name] = domainObject;
+                        relationValue[otherSideName] = domainObject;
                         relationValue.hybernateSave1(args);
                     }
                 }
@@ -159,12 +163,27 @@ class RapidDomainClassGrailsPlugin {
                         {
                             for(childDomain in value)
                             {
-                                domainObject."addTo${getUppercasedRelationName(key)}"(childDomain);    
+                                if(!propMetaData.isOneToMany())
+                                {
+                                    domainObject."addTo${getUppercasedRelationName(key)}"(childDomain);
+                                }
+                                else
+                                {
+                                    childDomain.setProperty(mappedBy[key], domainObject);
+                                }
                             }
                         }
                         else
                         {
-                            domainObject."addTo${getUppercasedRelationName(key)}"(value);
+                            if(!propMetaData.isOneToMany())
+                            {
+                                domainObject."addTo${getUppercasedRelationName(key)}"(value);
+                            }
+                            else
+                            {
+                                value.setProperty(mappedBy[key], domainObject);
+                            }
+
                         }
                     }
                 }
@@ -238,7 +257,7 @@ class RapidDomainClassGrailsPlugin {
                     def otherObject = domainObject[relationName];
                     if(otherObject)
                     {
-                        otherObject[relationProp.getOtherSide().name] = null;
+                        otherObject[mappedBy[relationName]] = null;
                         otherObject.save();
                     }
 
@@ -247,9 +266,10 @@ class RapidDomainClassGrailsPlugin {
                     def otherObjects = domainObject[relationName];
                     if(otherObjects)
                     {
+                        def otherSideName = mappedBy[relationName];
                         for(otherObject in otherObjects)
                         {
-                            otherObject[relationProp.getOtherSide().name] = null;
+                            otherObject[otherSideName] = null;
                             otherObject.save();
                         }
                     }
@@ -277,6 +297,22 @@ class RapidDomainClassGrailsPlugin {
                 return returnedBean;
             }
         }
+    }
+
+    def getMappedBy(dc)
+    {
+        def mappedBy = [:];
+        def tempObj = dc.metaClass.getTheClass();
+        while(tempObj && tempObj != java.lang.Object.class)
+        {
+            def tmpMappedBy = GrailsClassUtils.getStaticPropertyValue (tempObj, "mappedBy");
+            if(tmpMappedBy)
+            {
+                mappedBy.putAll(tmpMappedBy);
+            }
+            tempObj =  tempObj.getSuperclass();
+        }
+        return mappedBy;
     }
 
     def getUppercasedRelationName(String relName)

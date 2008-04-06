@@ -1,6 +1,6 @@
-<%=packageName ? "import ${packageName}.${className}" : ''%>            
+<%=packageName ? "import ${packageName}.${className}" : ''%>
 class ${className}Controller {
-    
+    def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
@@ -46,10 +46,41 @@ class ${className}Controller {
         }
     }
 
+    def getClassProperties(params, domainClass)
+    {
+        def returnedParams = [:]
+        params.each{propName, propValue->
+            if(!PROPS_TO_BE_EXCLUDED.containsKey(propName))
+            {
+                def indexOfDot = propName.indexOf(".");
+                if(indexOfDot < 0)
+                {
+                     if(propValue instanceof Map)
+                    {
+                        if(propValue["id"] != "null")
+                        {
+                            def id = Long.parseLong(propValue["id"]);
+                            def fieldType = domainClass.getDeclaredField(propName).type;
+                            returnedParams[propName] = fieldType.metaClass.invokeStaticMethod(fieldType, "get", [id] as Object[])
+                        }
+                        else
+                        {
+                            returnedParams[propName] = null;
+                        }
+                    }
+                    else
+                    {
+                        returnedParams[propName] = propValue;
+                    }
+                }
+            }
+        }
+        return returnedParams;
+    }
     def update = {
         def ${propertyName} = ${className}.get( params.id )
         if(${propertyName}) {
-            ${propertyName}.properties = params
+            ${propertyName}.update(getClassProperties(params, ${className}));
             if(!${propertyName}.hasErrors() && ${propertyName}.save()) {
                 flash.message = "${className} \${params.id} updated"
                 redirect(action:show,id:${propertyName}.id)
@@ -71,7 +102,7 @@ class ${className}Controller {
     }
 
     def save = {
-        def ${propertyName} = new ${className}(params)
+        def ${propertyName} = ${className}.add(getClassProperties(params, ${className}))
         if(!${propertyName}.hasErrors() && ${propertyName}.save()) {
             flash.message = "${className} \${${propertyName}.id} created"
             redirect(action:show,id:${propertyName}.id)
@@ -116,8 +147,9 @@ class ${className}Controller {
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
-                      relationName = relationName.size() == 1 ? relationName.toUpperCase() : "\${relationName[0].toUpperCase()}\${relationName[1..-1]}"
-                      ${propertyName}."addTo\${relationName}"(res);
+                      def relationMap = [:];
+                      relationMap[relationName] = res;
+                      ${propertyName}.addRelation(relationMap);
                       if(${propertyName}.hasErrors()){
                           def relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
                           render(view:'addTo',model:[${propertyName}:${propertyName}, relationName:relationName, relatedObjectList:relatedObjectList])
@@ -152,8 +184,9 @@ class ${className}Controller {
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
-                      relationName = relationName.size() == 1 ? relationName.toUpperCase() : "\${relationName[0].toUpperCase()}\${relationName[1..-1]}"
-                      ${propertyName}."removeFrom\${relationName}"(res);
+                      def relationMap = [:];
+                      relationMap[relationName] = res;
+                      ${propertyName}.removeRelation(relationMap);
                       if(${propertyName}.hasErrors()){
                           render(view:'edit',model:[${propertyName}:${propertyName}])
                       }

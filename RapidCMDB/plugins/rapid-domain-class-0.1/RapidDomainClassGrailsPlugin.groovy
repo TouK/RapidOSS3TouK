@@ -8,7 +8,8 @@ import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsClassUtils;
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import org.codehaus.groovy.grails.exceptions.InvalidPropertyException;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def watchedResources = ["file:./grails-app/scripts/*.groovy"]
@@ -70,11 +71,8 @@ class RapidDomainClassGrailsPlugin {
 
     def addBasicPersistenceMethods(dc, application, ctx)
     {
-        def mappedBy = getMappedBy(dc);
+        def relations = getRelations(dc);
         def mc = dc.metaClass;
-        def oneToOneRelationProperties = getOneToOneRelationProperties(dc);
-        def oneToManyRelationProperties = getOneToManyRelationProperties(dc);
-        def allRelations = getRelationProperties(dc);
         try
         {
             dc.metaClass.getTheClass().newInstance().delete();
@@ -83,57 +81,31 @@ class RapidDomainClassGrailsPlugin {
         {
             logger.debug("Delete method injection didnot performed by hibernate plugin.", t);
         }
-        mc.hybernateDelete = mc.getMetaMethod("delete", (Object[])[Map.class]).closure;
-        mc.hybernateSave1 = mc.getMetaMethod("save", (Object[])[Map.class]).closure;
-        mc.hybernateSave2 = mc.getMetaMethod("save", (Object[])[Boolean.class]).closure;
-        mc.save = {Boolean validate->
-            delegate.hybernateSave2(validate);
-        }
-        mc.save = {->
-            delegate.save(flush:false);
-        }
 
-
-        mc.save = {Map args->
-            def domainObject = delegate;
-            def res = delegate.hybernateSave1(args);
-            if(res && delegate.class.name.indexOf(".") < 0)
-            {
-                oneToOneRelationProperties.each{relationName, relationProp->
-                    def relationValue = domainObject[relationName];
-                    def sample = relationProp.type.newInstance();
-                    def otherSideName = mappedBy[relationName];
-                    def foundObjects = relationProp.type.metaClass.invokeStaticMethod(sample,"findAllBy${getUppercasedRelationName(otherSideName)}", domainObject);
-                    foundObjects.each{relatedCls->
-                        relatedCls[otherSideName] = null;
-                        relatedCls.hybernateSave1(args);
-                    }
-                    if(relationValue)
-                    {
-                        foundObjects = domainObject.class.metaClass.invokeStaticMethod(domainObject.class.newInstance(),"findAllBy${getUppercasedRelationName(relationName)}", relationValue);
-                        foundObjects.each{relatedCls->
-                            if(relatedCls.id != domainObject.id)
-                            {
-                                relatedCls[relationName] = null;
-                                relatedCls.hybernateSave1(args);
-                            }
-                        }
-
-                        relationValue[otherSideName] = domainObject;
-                        relationValue.hybernateSave1(args);
-                    }
-                }
-            }
-            return res;
-        }
         mc.update = {Map props->
             delegate.update(props, true)
         }
         mc.update = {Map props, Boolean flush->
             def domainObject = delegate;
+            def relationMap = [:]
             props.each{key,value->
-                domainObject.setProperty(key, value);
+                if(!relations.containsKey(key))
+                {
+
+                    domainObject.setProperty (key, value);
+                }
+                else
+                {
+                    def relationsToBeRemoved = [:];
+                    relationsToBeRemoved[key] = domainObject[key]; 
+                    domainObject.removeRelation(relationsToBeRemoved, false);
+                    if(value)
+                    {
+                        relationMap[key] = value;
+                    }
+                }
             }
+            domainObject.addRelation(relationMap, false);
             def res = domainObject.save(flush:flush);
             if(!res)
             {
@@ -150,12 +122,40 @@ class RapidDomainClassGrailsPlugin {
         mc.addRelation = {Map props, Boolean flush->
             def domainObject = delegate;
             props.each{key,value->
-                def propMetaData = allRelations.get(key);
-                if(propMetaData)
+                Relation relation = relations.get(key);
+                if(relation)
                 {
-                    if(propMetaData.isOneToOne() || propMetaData.isManyToOne())
+                    if(relation.isOneToOne())
                     {
-                        domainObject.setProperty(key, value);
+                        checkInstanceOf(relation, value);
+                        setOneToOne(domainObject, relation, value);
+
+                    }
+                    else if(relation.isManyToOne())
+                    {
+                        def relationToBeAdded = [:]
+                        relationToBeAdded[relation.otherSideName] = domainObject;
+                        value.addRelation(relationToBeAdded, flush);
+                    }
+                    else if(relation.isOneToMany())
+                    {
+                        if(value instanceof Collection)
+                        {
+                            for(childDomain in value)
+                            {
+                                checkInstanceOf(relation, childDomain);
+                                childDomain.setProperty(relation.otherSideName, domainObject);
+                                childDomain.save();
+                                domainObject."addTo${relation.upperCasedName}"(childDomain)
+                            }
+                        }
+                        else
+                        {
+                            checkInstanceOf(relation, value);
+                            value.setProperty(relation.otherSideName, domainObject);
+                            value.save();
+                            domainObject."addTo${relation.upperCasedName}"(value)
+                        }
                     }
                     else
                     {
@@ -163,27 +163,14 @@ class RapidDomainClassGrailsPlugin {
                         {
                             for(childDomain in value)
                             {
-                                if(!propMetaData.isOneToMany())
-                                {
-                                    domainObject."addTo${getUppercasedRelationName(key)}"(childDomain);
-                                }
-                                else
-                                {
-                                    childDomain.setProperty(mappedBy[key], domainObject);
-                                }
+                                checkInstanceOf(relation, childDomain);
+                                domainObject."addTo${relation.upperCasedName}"(childDomain);
                             }
                         }
                         else
                         {
-                            if(!propMetaData.isOneToMany())
-                            {
-                                domainObject."addTo${getUppercasedRelationName(key)}"(value);
-                            }
-                            else
-                            {
-                                value.setProperty(mappedBy[key], domainObject);
-                            }
-
+                            checkInstanceOf(relation, value);
+                            domainObject."addTo${relation.upperCasedName}"(value);
                         }
                     }
                 }
@@ -195,51 +182,6 @@ class RapidDomainClassGrailsPlugin {
             }
             else
             {
-
-                props.each{key,value->
-                    def propMetaData = allRelations.get(key);
-                    if(propMetaData)
-                    {
-                        if(propMetaData.isOneToOne() || propMetaData.isManyToOne())
-                        {
-                            domainObject.setProperty(key, value);
-                            value.setProperty(mappedBy[key], domainObject);
-                        }
-                        else
-                        {
-                            if(value instanceof Collection)
-                            {
-                                for(childDomain in value)
-                                {
-                                    if(!propMetaData.isOneToMany())
-                                    {
-                                        domainObject."addTo${getUppercasedRelationName(key)}"(childDomain);
-                                        childDomain.setProperty(mappedBy[key], domainObject);
-                                    }
-                                    else
-                                    {
-                                        childDomain.setProperty(mappedBy[key], domainObject);
-                                        domainObject."addTo${getUppercasedRelationName(key)}"(childDomain);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if(!propMetaData.isOneToMany())
-                                {
-                                    domainObject."addTo${getUppercasedRelationName(key)}"(value);
-                                    value.setProperty(mappedBy[key], domainObject);
-                                }
-                                else
-                                {
-                                    value.setProperty(mappedBy[key], domainObject);
-                                    domainObject."addTo${getUppercasedRelationName(key)}"(value);
-                                }
-
-                            }
-                        }
-                    }
-                }
                 return res;
             }
         }
@@ -250,25 +192,63 @@ class RapidDomainClassGrailsPlugin {
         mc.removeRelation = {Map props, Boolean flush->
             def domainObject = delegate;
             props.each{key,value->
-                GrailsDomainClassProperty propMetaData = allRelations.get(key);
-                if(propMetaData)
+
+                if(value)
                 {
-                    if(propMetaData.isOneToOne() || propMetaData.isManyToOne())
+                    Relation relation = relations.get(key);
+                    
+                    if(relation)
                     {
-                        domainObject.setProperty(key, null);
-                    }
-                    else
-                    {
-                        if(value instanceof Collection)
+                        if(relation.isOneToOne())
                         {
-                            for(childDomain in value)
+                            checkInstanceOf(relation, value);
+                            setOneToOne(domainObject, relation, null);
+                        }
+                        else if(relation.isManyToOne())
+                        {
+
+                            def relationToBeRemoved = [:]
+                            relationToBeRemoved[relation.otherSideName] = domainObject;
+                            value.removeRelation(relationToBeRemoved, flush);
+                        }
+                        else if(relation.isOneToMany())
+                        {
+                            if(value instanceof Collection)
                             {
-                                domainObject."removeFrom${getUppercasedRelationName(key)}"(childDomain);
+                                def childDomains = new ArrayList(value);
+
+                                for(childDomain in childDomains)
+                                {
+                                    checkInstanceOf(relation, childDomain);
+                                    childDomain.setProperty(relation.otherSideName, null);
+                                    childDomain.save();
+                                    domainObject."removeFrom${relation.upperCasedName}"(childDomain);
+                                }
+                            }
+                            else
+                            {
+                                checkInstanceOf(relation, value);
+                                value.setProperty(relation.otherSideName, null);
+                                value.save();
+                                domainObject."removeFrom${relation.upperCasedName}"(value);
                             }
                         }
                         else
                         {
-                            domainObject."removeFrom${getUppercasedRelationName(key)}"(value);
+                            if(value instanceof Collection)
+                            {
+                                def childDomains = new ArrayList(value);
+                                for(childDomain in childDomains)
+                                {
+                                    checkInstanceOf(relation, childDomain);
+                                    domainObject."removeFrom${relation.upperCasedName}"(childDomain);
+                                }
+                            }
+                            else
+                            {
+                                checkInstanceOf(relation, value);
+                                domainObject."removeFrom${relation.upperCasedName}"(value);
+                            }
                         }
                     }
                 }
@@ -289,39 +269,13 @@ class RapidDomainClassGrailsPlugin {
             delegate.remove(true);
         }
         mc.remove = {Boolean flush->
-            delegate.delete(flush:flush);
-        }
-        mc.delete = {->
-            delegate.delete(flush:false);
-        }
-        mc.delete = { Map args ->
             def domainObject = delegate;
-            if(domainObject.class.name.indexOf(".") < 0)
-            {
-                oneToOneRelationProperties.each{relationName, relationProp->
-                    def otherObject = domainObject[relationName];
-                    if(otherObject)
-                    {
-                        otherObject[mappedBy[relationName]] = null;
-                        otherObject.save();
-                    }
-
-                }
-                oneToManyRelationProperties.each{relationName, relationProp->
-                    def otherObjects = domainObject[relationName];
-                    if(otherObjects)
-                    {
-                        def otherSideName = mappedBy[relationName];
-                        for(otherObject in otherObjects)
-                        {
-                            otherObject[otherSideName] = null;
-                            otherObject.save();
-                        }
-                    }
-
-                }
+            def relationsToBeRemoved = [:];
+            relations.each{relationName, Relation relation->
+                relationsToBeRemoved[relationName] = domainObject[relationName];
             }
-            domainObject.hybernateDelete(args);
+            domainObject.removeRelation(relationsToBeRemoved, false);
+            domainObject.delete("flush":flush);
         }
 
         mc.'static'.add = {Map props->
@@ -329,10 +283,23 @@ class RapidDomainClassGrailsPlugin {
         }
         mc.'static'.add = {Map props, Boolean flush->
             def sampleBean = mc.getTheClass().newInstance();
+            def relationMap = [:]
             props.each{key,value->
-                sampleBean.setProperty (key, value);
+                if(!relations.containsKey(key))
+                {
+                    sampleBean.setProperty (key, value);
+                }
+                else
+                {
+                    relationMap[key] = value;
+                }
             }
-            def returnedBean = sampleBean.save(flush:flush);
+            def returnedBean = sampleBean.save();
+            if(returnedBean && !relationMap.isEmpty())
+            {
+                returnedBean.addRelation(relationMap, false);
+            }
+            returnedBean = returnedBean.save(flush:flush);
             if(!returnedBean)
             {
                 return sampleBean;
@@ -344,31 +311,53 @@ class RapidDomainClassGrailsPlugin {
         }
     }
 
-    def getMappedBy(dc)
+    def setOneToOne(domainObject, Relation relation, relationValue)
     {
-        def mappedBy = [:];
+        def previousValue = domainObject[relation.name];
+        if(previousValue && relationValue && relationValue.id == previousValue.id)
+        {
+            return;
+        }
+
+        if(previousValue)
+        {
+            previousValue[relation.otherSideName] = null;
+            previousValue.save();
+        }
+        if(relationValue)
+        {
+            if(relationValue[relation.otherSideName])
+            {
+                relationValue[relation.otherSideName][relation.name] = null;
+                relationValue[relation.otherSideName].save();
+            }
+            relationValue[relation.otherSideName] = domainObject;
+            relationValue.save();
+        }
+        domainObject[relation.name] = relationValue;
+    }
+
+    def getStaticVariable(dc, variableName)
+    {
+        def variableMap = [:];
         def tempObj = dc.metaClass.getTheClass();
         while(tempObj && tempObj != java.lang.Object.class)
         {
-            def tmpMappedBy = GrailsClassUtils.getStaticPropertyValue (tempObj, "mappedBy");
-            if(tmpMappedBy)
+            def tmpVariableMap = GrailsClassUtils.getStaticPropertyValue (tempObj, variableName);
+            if(tmpVariableMap)
             {
-                mappedBy.putAll(tmpMappedBy);
+                variableMap.putAll(tmpVariableMap);
             }
             tempObj =  tempObj.getSuperclass();
         }
-        return mappedBy;
+        return variableMap;
     }
 
-    def getUppercasedRelationName(String relName)
+    def checkInstanceOf(relation, value)
     {
-        if(relName.length() == 1)
+        if(!relation.otherSideClass.isInstance(value))
         {
-            return relName.toUpperCase();
-        }
-        else
-        {
-            return relName.substring(0,1).toUpperCase()+relName.substring(1);
+            throw new InvalidPropertyException ("Invalid relation value for ${relation.name} expected ${relation.otherSideClass.getName()} got ${value.class.name}");
         }
     }
 
@@ -441,43 +430,20 @@ class RapidDomainClassGrailsPlugin {
         }
     }
 
-    def getRelationProperties(dc)
+    def getRelations(GrailsDomainClass dc)
     {
-        def relationProperties = [:];
-        dc.getProperties().each
-        {
-            if(it.isAssociation())
+        def allRelations = [:];
+        def hasMany = getStaticVariable(dc, "hasMany");
+        def mappedBy = getStaticVariable(dc, "mappedBy");
+        mappedBy.each{relationName, otherSideName->
+            def otherSideClass = hasMany[relationName];
+            if(!otherSideClass)
             {
-                relationProperties[it.name] = it;
+                otherSideClass = dc.getPropertyByName (relationName).getType();
             }
+            allRelations[relationName] = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass);
         }
-        return relationProperties;
-    }
-
-    def getOneToOneRelationProperties(dc)
-    {
-        def oneToOneRelationProperties = [:];
-        dc.getProperties().each
-        {
-            if(it.isOneToOne())
-            {
-                oneToOneRelationProperties[it.name] = it;
-            }
-        }
-        return oneToOneRelationProperties;
-    }
-
-    def getOneToManyRelationProperties(dc)
-    {
-        def oneToManyRelationProperties = [:];
-        dc.getProperties().each
-        {
-            if(it.isOneToMany())
-            {
-                oneToManyRelationProperties[it.name] = it;
-            }
-        }
-        return oneToManyRelationProperties;
+        return allRelations;
     }
 
     def addPropertyGetAndSetMethods(dc)
@@ -525,29 +491,6 @@ class RapidDomainClassGrailsPlugin {
         }
     }
 
-    def constructDatasourceProperties(propertyConfiguration)
-    {
-        def datasourcesProperties = [:]
-        propertyConfiguration.each {key,value->
-           def dsName = value.datasource;
-           if(!dsName)
-           {
-                dsName = value.datasourceProperty;
-           }
-           def props = datasourceProperties[dsName];
-           if(!props)
-           {
-               props = [];
-               datasourceProperties[dsName] = props;
-           }
-           value.name = key;
-           props += value;
-        }
-        return datasourcesProperties;
-    }
-
-
-
 
     def getFederatedProperty(domainObjectMetaClass, currentDomainObject, propertyName, propCache, dsCache)
     {
@@ -586,6 +529,82 @@ class RapidDomainClassGrailsPlugin {
 
         return "";
     }
+}
+
+class Relation
+{
+    public static int ONE_TO_ONE = 0;
+    public static int ONE_TO_MANY = 1;
+    public static int MANY_TO_MANY = 2;
+    public static int MANY_TO_ONE = 3;
+    String name;
+    String otherSideName;
+    String upperCasedName;
+    String upperCasedOtherSideName;
+    Class otherSideClass;
+
+    int type;
+    public Relation(String name, String otherSideName, Class cls, Class otherClass)
+    {
+        this.name = name;
+        this.otherSideName = otherSideName;
+        this.otherSideClass = otherClass;
+        this.upperCasedName = getUppercasedRelationName(name);
+        this.upperCasedOtherSideName = getUppercasedRelationName(otherSideName);
+        def relationPropClass = cls.getDeclaredField (name).getType();
+        def otherSidePropClass = otherClass.getDeclaredField (otherSideName).getType();
+        def isSelfCollection = Collection.isAssignableFrom(relationPropClass);
+        def isOtherCollection = Collection.isAssignableFrom(otherSidePropClass);
+        if(isSelfCollection && isOtherCollection)
+        {
+            this.type = MANY_TO_MANY;
+        }
+        else if(isSelfCollection && !isOtherCollection)
+        {
+            this.type = ONE_TO_MANY;
+        }
+        else if(!isSelfCollection && isOtherCollection)
+        {
+            this.type = MANY_TO_ONE;
+        }
+        else
+        {
+            this.type = ONE_TO_ONE;
+        }
+    }
+
+    def getUppercasedRelationName(String relName)
+    {
+        if(relName.length() == 1)
+        {
+            return relName.toUpperCase();
+        }
+        else
+        {
+            return relName.substring(0,1).toUpperCase()+relName.substring(1);
+        }
+    }
+
+    def isOneToOne()
+    {
+        return type == ONE_TO_ONE;
+    }
+
+    def isOneToMany()
+    {
+        return type == ONE_TO_MANY;
+    }
+
+    def isManyToOne()
+    {
+        return type == MANY_TO_ONE;
+    }
+
+    def isManyToMany()
+    {
+        return type == MANY_TO_MANY;
+    }
+
 }
 
 class DatasourceProperty extends MetaBeanProperty

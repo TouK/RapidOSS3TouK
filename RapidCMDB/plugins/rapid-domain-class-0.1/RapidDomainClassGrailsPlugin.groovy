@@ -213,9 +213,7 @@ class RapidDomainClassGrailsPlugin {
                         }
                         else if(relation.isManyToOne())
                         {
-                            def relationToBeRemoved = [:]
-                            relationToBeRemoved[relation.otherSideName] = domainObject;
-                            value.removeRelation(relationToBeRemoved, flush);
+                            domainObject.setProperty(relation.name, null);
                         }
                         else if(relation.isOneToMany())
                         {
@@ -501,7 +499,10 @@ class RapidDomainClassGrailsPlugin {
             Relation relation = relations[name]
             if(relation && relation.isOneToMany() && (!currentValue || currentValue.isEmpty()))
             {
-                def foundRelatedInstances = relation.otherSideClass.metaClass.invokeStaticMethod(relation.otherSideClass, "findAllBy${relation.upperCasedOtherSideName}", [domainObject] as Object[]);
+                def criteria = relation.otherSideClass.metaClass.invokeStaticMethod(relation.otherSideClass, "createCriteria", [] as Object[]);
+                def foundRelatedInstances = criteria.listDistinct{
+                    "${relation.otherSideName}"{eq("id",domainObject.id)}
+                }
                 domainObject[relation.name] = foundRelatedInstances;
                 return foundRelatedInstances;
             }

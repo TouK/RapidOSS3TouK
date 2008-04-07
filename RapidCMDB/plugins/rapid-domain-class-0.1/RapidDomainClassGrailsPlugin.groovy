@@ -88,19 +88,22 @@ class RapidDomainClassGrailsPlugin {
             def domainObject = delegate;
             def relationMap = [:]
             props.each{key,value->
-                if(!relations.containsKey(key))
+                def metaProp = mc.getMetaProperty(key);
+                if(metaProp)
                 {
-                    def propType = mc.getMetaProperty(key).type;
-                    domainObject.setProperty (key, getPropertyRealValue(propType, value));
-                }
-                else
-                {
-                    def relationsToBeRemoved = [:];
-                    relationsToBeRemoved[key] = domainObject[key]; 
-                    domainObject.removeRelation(relationsToBeRemoved, false);
-                    if(value)
+                    if(!relations.containsKey(key))
                     {
-                        relationMap[key] = value;
+                        domainObject.setProperty (key, getPropertyRealValue(metaProp.type, value));
+                    }
+                    else
+                    {
+                        def relationsToBeRemoved = [:];
+                        relationsToBeRemoved[key] = domainObject[key];
+                        domainObject.removeRelation(relationsToBeRemoved, false);
+                        if(value)
+                        {
+                            relationMap[key] = value;
+                        }
                     }
                 }
             }
@@ -290,14 +293,17 @@ class RapidDomainClassGrailsPlugin {
             def sampleBean = mc.getTheClass().newInstance();
             def relationMap = [:]
             props.each{key,value->
-                if(!relations.containsKey(key))
+                def metaProp = mc.getMetaProperty(key);
+                if(metaProp)
                 {
-                    def propType = mc.getMetaProperty(key).type;
-                    sampleBean.setProperty (key, getPropertyRealValue(propType, value));
-                }
-                else
-                {
-                    relationMap[key] = value;
+                    if(!relations.containsKey(key))
+                    {
+                        sampleBean.setProperty (key, getPropertyRealValue(metaProp.type, value));
+                    }
+                    else
+                    {
+                        relationMap[key] = value;
+                    }
                 }
             }
             def returnedBean = sampleBean.save(flush:flush);

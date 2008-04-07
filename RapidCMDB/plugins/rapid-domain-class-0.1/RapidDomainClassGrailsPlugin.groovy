@@ -81,7 +81,6 @@ class RapidDomainClassGrailsPlugin {
         {
             logger.debug("Delete method injection didnot performed by hibernate plugin.", t);
         }
-
         mc.update = {Map props->
             delegate.update(props, true)
         }
@@ -133,9 +132,12 @@ class RapidDomainClassGrailsPlugin {
                     }
                     else if(relation.isManyToOne())
                     {
-                        def relationToBeAdded = [:]
-                        relationToBeAdded[relation.otherSideName] = domainObject;
-                        value.addRelation(relationToBeAdded, flush);
+                        if(value)
+                        {
+                            def relationToBeAdded = [:]
+                            relationToBeAdded[relation.otherSideName] = domainObject;
+                            value.addRelation(relationToBeAdded, flush);
+                        }
                     }
                     else if(relation.isOneToMany())
                     {
@@ -165,12 +167,14 @@ class RapidDomainClassGrailsPlugin {
                             {
                                 checkInstanceOf(relation, childDomain);
                                 domainObject."addTo${relation.upperCasedName}"(childDomain);
+                                childDomain."addTo${relation.upperCasedOtherSideName}"(domainObject);
                             }
                         }
                         else
                         {
                             checkInstanceOf(relation, value);
                             domainObject."addTo${relation.upperCasedName}"(value);
+                            value."addTo${relation.upperCasedOtherSideName}"(domainObject);
                         }
                     }
                 }
@@ -206,7 +210,6 @@ class RapidDomainClassGrailsPlugin {
                         }
                         else if(relation.isManyToOne())
                         {
-
                             def relationToBeRemoved = [:]
                             relationToBeRemoved[relation.otherSideName] = domainObject;
                             value.removeRelation(relationToBeRemoved, flush);
@@ -242,12 +245,14 @@ class RapidDomainClassGrailsPlugin {
                                 {
                                     checkInstanceOf(relation, childDomain);
                                     domainObject."removeFrom${relation.upperCasedName}"(childDomain);
+                                    childDomain."removeFrom${relation.upperCasedOtherSideName}"(domainObject);
                                 }
                             }
                             else
                             {
                                 checkInstanceOf(relation, value);
                                 domainObject."removeFrom${relation.upperCasedName}"(value);
+                                value."removeFrom${relation.upperCasedOtherSideName}"(domainObject);
                             }
                         }
                     }
@@ -294,12 +299,12 @@ class RapidDomainClassGrailsPlugin {
                     relationMap[key] = value;
                 }
             }
-            def returnedBean = sampleBean.save();
+            def returnedBean = sampleBean.save(flush:flush);
             if(returnedBean && !relationMap.isEmpty())
             {
                 returnedBean.addRelation(relationMap, false);
+                returnedBean = returnedBean.save(flush:flush);
             }
-            returnedBean = returnedBean.save(flush:flush);
             if(!returnedBean)
             {
                 return sampleBean;
@@ -355,7 +360,7 @@ class RapidDomainClassGrailsPlugin {
 
     def checkInstanceOf(relation, value)
     {
-        if(!relation.otherSideClass.isInstance(value))
+        if(value && !relation.otherSideClass.isInstance(value))
         {
             throw new InvalidPropertyException ("Invalid relation value for ${relation.name} expected ${relation.otherSideClass.getName()} got ${value.class.name}");
         }
@@ -447,32 +452,42 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def addPropertyGetAndSetMethods(dc)
-    {                         
+    {
+        def relations = getRelations(dc);
         MetaClass mc = dc.metaClass
         def propConfigCache = new PropertyConfigurationCache(dc);
         def dsConfigCache = new DatasourceConfigurationCache(dc);
-//        mc.setProperty = {String name, Object value->
-//            mc.getMetaProperty(name).setProperty(delegate, value);
-//            if(delegate.id)
-//            {
-//                delagete.save(flush:true);
-//            }
-//        };
         if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
         {
             mc.addMetaBeanProperty(new DatasourceProperty("isPropertiesLoaded", Object.class));
-            mc.getProperty = {String name->
+        }
+        mc.getProperty = {String name->
+            def domainObject = delegate;
+            def currentValue;
+            def metaProp = mc.getMetaProperty(name);
+            if(metaProp)
+            {
+                currentValue = mc.getMetaProperty(name).getProperty(domainObject);
+            }
+            else
+            {
+                throw new MissingPropertyException(name, mc.getTheClass());
+            }
+
+            Relation relation = relations[name]
+            if(relation && relation.isOneToMany() && currentValue.isEmpty())
+            {
+                def foundRelatedInstances = relation.otherSideClass.metaClass.invokeStaticMethod(relation.otherSideClass, "findAllBy${relation.upperCasedOtherSideName}", [domainObject] as Object[]);
+                domainObject[relation.name] = foundRelatedInstances;
+                return foundRelatedInstances;
+            }
+            else if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
+            {
                 def propertyConfig = propConfigCache.getPropertyConfigByName(name);
-                def domainObject = delegate;
                 def isPropertiesLoaded = mc.getMetaProperty("isPropertiesLoaded").getProperty(domainObject);
                 if(!propertyConfig || propertyConfig.datasource == RapidCMDBConstants.RCMDB)
                 {
-                    def metaProp = mc.getMetaProperty(name);
-                    if(metaProp)
-                    {
-                        return mc.getMetaProperty(name).getProperty(domainObject);
-                    }
-                    return null;
+                    return currentValue;
                 }
                 else
                 {
@@ -482,13 +497,14 @@ class RapidDomainClassGrailsPlugin {
                         def isPropLoadedMap = mc.getMetaProperty("isPropertiesLoaded").getProperty(domainObject);
                         if(isPropLoadedMap[propConfigCache.getDatasourceName(domainObject, name)] == true)
                         {
-                            return mc.getMetaProperty(name).getProperty(domainObject);
+                            return currentValue
                         }
                     }
                     return getFederatedProperty(mc, domainObject, name, propConfigCache, dsConfigCache);
                 }
-            };
-        }
+            }
+            return currentValue;
+        };
     }
 
 
@@ -551,8 +567,8 @@ class Relation
         this.otherSideClass = otherClass;
         this.upperCasedName = getUppercasedRelationName(name);
         this.upperCasedOtherSideName = getUppercasedRelationName(otherSideName);
-        def relationPropClass = cls.getDeclaredField (name).getType();
-        def otherSidePropClass = otherClass.getDeclaredField (otherSideName).getType();
+        def relationPropClass = cls.metaClass.getMetaProperty(name).getType();
+        def otherSidePropClass = otherClass.metaClass.getMetaProperty(otherSideName).getType();
         def isSelfCollection = Collection.isAssignableFrom(relationPropClass);
         def isOtherCollection = Collection.isAssignableFrom(otherSidePropClass);
         if(isSelfCollection && isOtherCollection)

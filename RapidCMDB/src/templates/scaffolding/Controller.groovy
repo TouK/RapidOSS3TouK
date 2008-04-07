@@ -18,13 +18,31 @@ class ${className}Controller {
             flash.message = "${className} not found with id \${params.id}"
             redirect(action:list)
         }
-        else { return [ ${propertyName} : ${propertyName} ] }
+        else {
+            if(${propertyName}.class != ${className})
+            {
+                def controllerName = ${propertyName}.class.name;
+                if(controllerName.length() == 1)
+                {
+                    controllerName = controllerName.toLowerCase();
+                }
+                else
+                {
+                    controllerName = controllerName.substring(0,1).toLowerCase()+controllerName.substring(1);
+                }
+                redirect(action:show, controller:controllerName, id:params.id)
+            }
+            else
+            {
+                return [ ${propertyName} : ${propertyName} ]
+            }
+        }
     }
 
     def delete = {
         def ${propertyName} = ${className}.get( params.id )
         if(${propertyName}) {
-            ${propertyName}.delete()
+            ${propertyName}.remove()
             flash.message = "${className} \${params.id} deleted"
             redirect(action:list)
         }
@@ -60,7 +78,7 @@ class ${className}Controller {
                         if(propValue["id"] != "null")
                         {
                             def id = Long.parseLong(propValue["id"]);
-                            def fieldType = domainClass.getDeclaredField(propName).type;
+                            def fieldType = domainClass.metaClass.getMetaProperty(propName).type;
                             returnedParams[propName] = fieldType.metaClass.invokeStaticMethod(fieldType, "get", [id] as Object[])
                         }
                         else

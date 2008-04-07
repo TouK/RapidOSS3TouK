@@ -99,6 +99,10 @@ def constructModel(model, listOfProperties, listOfDatasources, listOfKeyMappings
     {
         it.save();
     }
+    listOfDatasources.each
+    {
+        it.refresh();
+    }
     model.refresh();
     return model;
 }

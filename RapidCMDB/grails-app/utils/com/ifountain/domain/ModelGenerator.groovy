@@ -74,7 +74,7 @@ class ModelGenerator
             modelMetaData.datasourceConfiguration.each{dsName,dsConf->
                 if(dsConf.keys.size() == 0)
                 {
-                    throw ModelGenerationException.noKeySpecifiedForDatasource(dsName);   
+                    throw ModelGenerationException.noKeySpecifiedForDatasource(dsName, modelName);   
                 }
             }
         }

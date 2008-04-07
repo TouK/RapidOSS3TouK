@@ -366,7 +366,7 @@ import    ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
         }
         catch(ModelGenerationException exception)
         {
-            assertEquals (ModelGenerationException.noKeySpecifiedForDatasource(modelDatasource1.datasource.name).getMessage(), exception.getMessage());
+            assertEquals (ModelGenerationException.noKeySpecifiedForDatasource(modelDatasource1.datasource.name, model1.name).getMessage(), exception.getMessage());
         }
     }
 

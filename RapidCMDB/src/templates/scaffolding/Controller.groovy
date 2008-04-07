@@ -42,9 +42,17 @@ class ${className}Controller {
     def delete = {
         def ${propertyName} = ${className}.get( params.id )
         if(${propertyName}) {
-            ${propertyName}.remove()
-            flash.message = "${className} \${params.id} deleted"
-            redirect(action:list)
+            try{
+                ${propertyName}.remove(true)
+                flash.message = "${className} \${params.id} deleted"
+                redirect(action:list)
+            }
+            catch(e){
+                def errors =[message(code:"default.couldnot.delete", args:[${className}, ${propertyName}])]
+                flash.errors = errors;
+                redirect(action:show, id:${propertyName}.id)
+            }
+
         }
         else {
             flash.message = "${className} not found with id \${params.id}"

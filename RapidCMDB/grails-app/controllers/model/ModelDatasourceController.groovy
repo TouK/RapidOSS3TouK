@@ -32,12 +32,14 @@ class ModelDatasourceController {
             try{
                 modelDatasource.delete(flush:true)
                 flash.message = "ModelDatasource ${modelDatasourceName} deleted"
+                redirect(action:"show", controller:'model', id:modelId)
             }
             catch(e){
-                def errors =[message(code:"model.couldnot.delete", args:[ModelDatasource.class.getName(), modelDatasource, e.getMessage()])]
+                def errors =[message(code:"default.couldnot.delete", args:[ModelDatasource.class.getName(), modelDatasource])]
                 flash.errors = errors;
+                redirect(action:show, id:modelDatasource.id)
             }
-            redirect(action:"show", controller:'model', id:modelId)
+
         }
         else {
             flash.message = "ModelDatasource not found with id ${params.id}"

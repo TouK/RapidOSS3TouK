@@ -37,7 +37,7 @@ class ModelController {
                 }
                 catch(e)
                 {
-                    def errors =[message(code:"model.couldnot.delete", args:[Model.class.getName(), model, e.getMessage()])]
+                    def errors =[message(code:"default.couldnot.delete", args:[Model.class.getName(), model])]
                     flash.errors = errors;
                     redirect(action:show, controller:'model', id:model?.id)
                     return;

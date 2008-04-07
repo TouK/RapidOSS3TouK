@@ -58,9 +58,16 @@ class ModelPropertyController {
         if(modelProperty) {
             def modelId = modelProperty.model?.id;
             def modelPropertyName = modelProperty.toString();
-            modelProperty.delete()
-            flash.message = "Property ${modelPropertyName} deleted"
-            redirect(action:show, controller:'model', id:modelId)
+            try{
+                modelProperty.delete(flush:true)
+                flash.message = "Property ${modelPropertyName} deleted"
+                redirect(action:show, controller:'model', id:modelId)
+            }
+            catch(e){
+                def errors =[message(code:"default.couldnot.delete", args:[ModelProperty.class.getName(), modelProperty])]
+                flash.errors = errors;
+                redirect(action:show, id:modelProperty.id)
+            }
         }
         else {
             flash.message = "Property not found"

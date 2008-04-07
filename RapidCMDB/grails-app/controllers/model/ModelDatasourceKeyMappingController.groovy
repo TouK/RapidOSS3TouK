@@ -28,9 +28,17 @@ class ModelDatasourceKeyMappingController {
         if(modelDatasourceKeyMapping) {
             def modelDatasourceId = modelDatasourceKeyMapping.datasource?.id;
             def keyMappingName = modelDatasourceKeyMapping.toString();
-            modelDatasourceKeyMapping.delete()
-            flash.message = "ModelDatasourceKeyMapping ${keyMappingName} deleted"
-            redirect(action:show, controller:'modelDatasource', id:modelDatasourceId)
+            try{
+                modelDatasourceKeyMapping.delete(flush:true)
+                flash.message = "ModelDatasourceKeyMapping ${keyMappingName} deleted"
+                redirect(action:show, controller:'modelDatasource', id:modelDatasourceId)
+            }
+            catch(e){
+                def errors =[message(code:"default.couldnot.delete", args:[ModelDatasourceKeyMapping.class.getName(), modelDatasourceKeyMapping])]
+                flash.errors = errors;
+                redirect(action:show, id:modelDatasourceKeyMapping.id)
+            }
+
         }
         else {
             flash.message = "ModelDatasourceKeyMapping not found with id ${params.id}"

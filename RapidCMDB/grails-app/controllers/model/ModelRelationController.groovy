@@ -64,9 +64,16 @@ class ModelRelationController {
         def modelRelation = ModelRelation.get( params.id )
         if(modelRelation) {
             def modelId = modelRelation.firstModel?.id;
-            modelRelation.delete()
-            flash.message = "Relation deleted"
-            redirect(action:show, controller:'model', id:modelId)
+            try{
+                modelRelation.delete(true)
+                flash.message = "Relation deleted"
+                redirect(action:show, controller:'model', id:modelId)
+            }
+            catch(e){
+                def errors =[message(code:"default.couldnot.delete", args:[ModelRelation.class.getName(), modelRelation])]
+                flash.errors = errors;
+                redirect(action:show, id:modelRelation.id)
+            }
         }
         else {
             flash.message = "Relation not found."

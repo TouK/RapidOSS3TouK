@@ -475,7 +475,7 @@ class RapidDomainClassGrailsPlugin {
             }
 
             Relation relation = relations[name]
-            if(relation && relation.isOneToMany() && currentValue.isEmpty())
+            if(relation && relation.isOneToMany() && (!currentValue || currentValue.isEmpty()))
             {
                 def foundRelatedInstances = relation.otherSideClass.metaClass.invokeStaticMethod(relation.otherSideClass, "findAllBy${relation.upperCasedOtherSideName}", [domainObject] as Object[]);
                 domainObject[relation.name] = foundRelatedInstances;

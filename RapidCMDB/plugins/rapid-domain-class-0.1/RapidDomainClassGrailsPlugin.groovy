@@ -90,8 +90,8 @@ class RapidDomainClassGrailsPlugin {
             props.each{key,value->
                 if(!relations.containsKey(key))
                 {
-
-                    domainObject.setProperty (key, value);
+                    def propType = mc.getMetaProperty(key).type;
+                    domainObject.setProperty (key, getPropertyRealValue(propType, value));
                 }
                 else
                 {
@@ -292,7 +292,8 @@ class RapidDomainClassGrailsPlugin {
             props.each{key,value->
                 if(!relations.containsKey(key))
                 {
-                    sampleBean.setProperty (key, value);
+                    def propType = mc.getMetaProperty(key).type;
+                    sampleBean.setProperty (key, getPropertyRealValue(propType, value));
                 }
                 else
                 {
@@ -313,6 +314,23 @@ class RapidDomainClassGrailsPlugin {
             {
                 return returnedBean;
             }
+        }
+    }
+
+    def getPropertyRealValue(propType, value)
+    {
+        if(propType.isInstance(value))
+        {
+            return value;
+        }
+        else
+        {
+            String propTypeName =  propType.name;
+            if(propTypeName.indexOf(".") > 0)
+            {
+                propTypeName = propTypeName.substring(propTypeName.lastIndexOf(".")+1)
+            }
+            return value."to${propTypeName}"();
         }
     }
 

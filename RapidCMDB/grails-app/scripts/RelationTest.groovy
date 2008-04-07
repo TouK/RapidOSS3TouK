@@ -62,7 +62,7 @@ def deviceComponent = Model.create(name:"DeviceComponent", parentModel:smartsObj
 constructModel(deviceComponent, [], [], []);
 def deviceAdapter = Model.create(name:"DeviceAdapter", parentModel:deviceComponent);
 constructModel(deviceAdapter, [], [], []);
-def ip = Model.create(name:"IP", parentModel:deviceComponent);
+def ip = Model.create(name:"Ip", parentModel:deviceComponent);
 constructModel(ip, [], [], []);
 def deviceInterface = Model.create(name:"DeviceInterface", parentModel:deviceAdapter);
 constructModel(deviceInterface, [], [], []);
@@ -80,6 +80,7 @@ createRelation(device, ip, "hostsAccessPoints", "hostedBy", ModelRelation.ONE, M
 createRelation(deviceInterface, ip, "underlying", "layeredOver", ModelRelation.ONE, ModelRelation.ONE);
 
 ModelGenerator.getInstance().generateModel(deviceInterface);
+ModelGenerator.getInstance().generateModel(port);
 
 
 def constructModel(model, listOfProperties, listOfDatasources, listOfKeyMappings)

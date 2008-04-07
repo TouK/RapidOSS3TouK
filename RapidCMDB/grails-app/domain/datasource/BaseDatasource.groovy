@@ -2,7 +2,7 @@ package datasource;
 class BaseDatasource {
      String name;
      static constraints = {
-         name(blank:false, nullable:false);
+         name(blank:false, nullable:false, unique:true);
      };
 
      String toString(){

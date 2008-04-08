@@ -51,9 +51,9 @@ emp1 = Employee.get(name:"ayse");
 assert emp1.name == "ayse"
 assert emp1.bday == "1/1/11";
 def temp = emp1.prevEmp;
-assert temp.name == dev1.name; 
+assert temp.name == dev1.name;
 temp = temp.nextEmp;
-assert temp.name == emp1.name; 
+assert temp.name == emp1.name;
 
 // add relation to dev1: dev1->emp2
 dev1.addRelation(prevEmp:emp2);
@@ -61,26 +61,26 @@ dev1 = Employee.get(name:"gonca");
 assert dev1.name == "gonca";
 assert dev1.bday == "4/4/44";
 temp = dev1.prevEmp;
-assert temp.name == emp2.name; 
+assert temp.name == emp2.name;
 
 // remove reverse relation from emp2
 emp2.removeRelation(nextEmp:dev1);
 dev1 = Employee.get(name:"gonca");
-assert dev1.prevEmp == null; 
+assert dev1.prevEmp == null;
 
 // remove instance with a relation. instance is at the end of the relation chain. emp1->dev1->emp2. remove emp2
 dev1.addRelation(prevEmp:emp2);
 dev1 = Employee.get(name:"gonca");
 assert dev1.bday == "4/4/44";
 temp = dev1.prevEmp;
-assert temp.name == emp2.name; 
+assert temp.name == emp2.name;
 temp.remove();
 dev1 = Employee.get(name:"gonca");
-assert dev1.prevEmp == null; 
+assert dev1.prevEmp == null;
 emp2 = Employee.get(name:"ali");
 assert emp2 == null;
 
-// remove instance with a relation. instance is in the middle of the relation chain. emp1->dev1->emp2. remove dev1 
+// remove instance with a relation. instance is in the middle of the relation chain. emp1->dev1->emp2. remove dev1
 emp2= Employee.add(name:"ali",bday:"2/2/22",dept:"QA");
 dev1.addRelation(prevEmp:emp2);
 dev1.remove();
@@ -93,16 +93,36 @@ dev1= Developer.add(name:"gonca",bday:"4/4/44",dept:"Dev",language:"java");
 // add relation: emp1 manages emp3, dev2. Add relation in both directions (employees and manager)
 emp1.addRelation(employees:emp3);
 dev2.addRelation(manager:emp1);
-println "dev2 errors: " + dev2.errors;
-println "emp1 errors: " + emp1.errors;
 emp1= Employee.get(name:"ayse");
 def cntr = 0;
 emp1.employees.each{
 	assert (it.name == emp3.name || it.name == dev2.name );
-	println it.name
 	cntr++;
 }
 assert cntr == 2;
 
+// add relation: dev1 manages emp2, emp1, dev3. Add relation in both directions (employees and manager)
+dev1.addRelation(employees:emp2);
+dev3.addRelation(manager:dev1);
+emp1.addRelation(manager:dev1);
+dev1= Employee.get(name:"gonca");
+cntr = 0;
+dev1.employees.each{
+	assert (it.name == emp2.name || it.name == dev3.name || it.name == emp1.name);
+	cntr++;
+}
+assert cntr == 3;
+
+// change the manager of dev3 and confirm it is reflected on both dev1, dev3, and new manager emp1
+dev3.addRelation(manager:emp1);
+if (emp1.employees.contains(dev3)) assert true;
+if (!dev1.employees.contains(dev3)) assert true;
+// delete emp1 (ayse)
+emp1.save(flush:true);
+emp1.remove();
+println dev1.employees;
+println emp3.manager;
+println dev2.manager;
+println dev3.manager;
 
 return "success"

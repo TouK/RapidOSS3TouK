@@ -147,6 +147,7 @@ class RapidCmdbBuild extends Build{
 
     def unzipGrails(){
         ant.unzip(src : (String)classpath.getProperty("grails-1_0_1_zip"), dest : env.distribution);
+        ant.copy(file : (String)classpath.getProperty("runner_jar"), toDir : env.distribution + "/RapidServer/lib");
     }
 
 	def clean(){

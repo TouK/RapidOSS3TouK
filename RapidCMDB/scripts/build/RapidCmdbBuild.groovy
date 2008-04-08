@@ -130,8 +130,17 @@ class RapidCmdbBuild extends Build{
         {
             println it;
         }
+
+        process.err.eachLine()
+        {
+            println it;
+        }
 		process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
 		process.in.eachLine()
+        {
+            println it;
+        }
+        process.err.eachLine()
         {
             println it;
         }

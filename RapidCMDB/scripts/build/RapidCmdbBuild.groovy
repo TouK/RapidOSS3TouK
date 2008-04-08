@@ -37,7 +37,7 @@ class RapidCmdbBuild extends Build{
 	}
 
 	def buildSmartsModules(){
-        clean();
+        ant.delete(dir : env.distribution);
         ant.delete(dir : env.rapid_ext_build);
 		ant.mkdir(dir : env.rapid_ext_build);
 

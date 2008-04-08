@@ -47,7 +47,7 @@ person = constructModel(person, [name, bday], [modelDatasource], keyMappings);
 
 def employee = Model.create(name:"Employee", parentModel:person);
 def dept = ModelProperty.create(name:"dept", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-def salary = ModelProperty.create(name:"salary", type:ModelProperty.numberType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def salary = ModelProperty.create(name:"salary", type:ModelProperty.numberType, defaultValue:1000, blank:false, lazy:false, propertyDatasource:modelDatasource);
 employee = constructModel(employee, [dept, salary], [], []);
 
 def developer = Model.create(name:"Developer", parentModel:employee);

@@ -30,7 +30,7 @@ import connection.DatabaseConnection;
 def dsConn = DatabaseConnection.findByName("mysql");
 if(dsConn == null){
     dsConn = new DatabaseConnection(name:"mysql", driver:"com.mysql.jdbc.Driver",
-            url:"jdbc:mysql://localhost/students", username:"root", password:"root").save();
+            url:"jdbc:mysql://192.168.1.100/test", username:"root", password:"root").save();
 }
 
 def dbAdapter = new DatabaseAdapter("mysql", 0, Logger.getRootLogger());

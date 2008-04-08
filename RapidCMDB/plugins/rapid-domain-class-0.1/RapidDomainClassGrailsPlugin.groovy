@@ -81,6 +81,19 @@ class RapidDomainClassGrailsPlugin {
         {
             logger.debug("Delete method injection didnot performed by hibernate plugin.", t);
         }
+        HibernateGrailsPlugin
+        relations.each{relationName, relation->
+            if(relation.isManyToOne())
+            {
+                mc.'static'."findAllBy${relation.upperCasedName}" = {domainObject->
+                    def criteria = relation.otherSideClass.metaClass.invokeStaticMethod(relation.otherSideClass, "createCriteria", [] as Object[]);
+                    def foundRelatedInstances = criteria.listDistinct{
+                        "${relation.otherSideName}"{eq("id",domainObject.id)}
+                    }
+                    return foundRelatedInstances;
+                }
+            }
+        }
         mc.update = {Map props->
             delegate.update(props, true)
         }
@@ -495,16 +508,15 @@ class RapidDomainClassGrailsPlugin {
             {
                 throw new MissingPropertyException(name, mc.getTheClass());
             }
-
-            Relation relation = relations[name]
-            if(relation && relation.isOneToMany() && (!currentValue || currentValue.isEmpty()))
+            Relation relation = relations.get(name);
+            if(relation && relation.isOneToMany() && !(currentValue instanceof RelationSetList))
             {
                 def criteria = relation.otherSideClass.metaClass.invokeStaticMethod(relation.otherSideClass, "createCriteria", [] as Object[]);
-                def foundRelatedInstances = criteria.listDistinct{
+                def foundRelatedInstances = new RelationSetList(criteria.listDistinct{
                     "${relation.otherSideName}"{eq("id",domainObject.id)}
-                }
+                });
                 domainObject[relation.name] = foundRelatedInstances;
-                return foundRelatedInstances;
+                return foundRelatedInstances; 
             }
             else if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
             {
@@ -901,4 +913,21 @@ class DatasourceConfigurationCache
            return BaseDatasource.findByName(datasourceName)
         }
     }
+}
+
+class RelationSetList extends ArrayList
+{
+
+    public RelationSetList(int initialCapacity) {
+        super(initialCapacity);
+    }
+
+    public RelationSetList() {
+        super();
+    }
+
+    public RelationSetList(Collection c) {
+        super(c);
+    }
+
 }

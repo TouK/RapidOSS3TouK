@@ -125,6 +125,8 @@ class RapidCmdbBuild extends Build{
 		buildDependent();
 		copyDependentJars();
 		unzipGrails();
+		"dos2unix ${env.distribution}/RapidServer/bin/*".execute().waitFor()
+		"dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute().waitFor()
 		ant.zip(destfile : "$env.distribution/RapidCMDB.zip"){
             ant.zipfileset(dir : "$env.distribution");
         }

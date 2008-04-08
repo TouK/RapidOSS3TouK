@@ -58,6 +58,11 @@ class RapidCmdbBuild extends Build{
 		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/connection/SmartsConnectionController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/connection" );
 		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/SmartsNotificationDatasourceController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/datasource" );
 		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/SmartsTopologyDatasourceController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/datasource" );
+        ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/views"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app/views"){
+                ant.include(name:"smarts*/*")
+            }
+		}
 
         ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexSmarts.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
 
@@ -81,15 +86,17 @@ class RapidCmdbBuild extends Build{
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app"){
                 ant.exclude(name:"**/test/**")
                 ant.exclude(name:"**/*Test*")
-                ant.exclude(name:"/domain/*.groovy")
-                ant.exclude(name:"/controllers/*.groovy")
+                ant.exclude(name:"domain/*.groovy")
+                ant.exclude(name:"controllers/*.groovy")
                 ant.exclude(name:"**/scripts/*.groovy")
 
                 // exclude Smarts classes
-                ant.exclude(name:"/controllers/datasource/Smarts*.groovy")
-                ant.exclude(name:"/controllers/connection/Smarts*.groovy")
-                ant.exclude(name:"/domain/datasource/Smarts*.groovy")
-                ant.exclude(name:"/domain/connection/Smarts*.groovy")
+                ant.exclude(name:"controllers/datasource/Smarts*.groovy")
+                ant.exclude(name:"controllers/connection/Smarts*.groovy")
+                ant.exclude(name:"domain/datasource/Smarts*.groovy")
+                ant.exclude(name:"domain/connection/Smarts*.groovy")
+                ant.exclude(name:"views/smarts*/*")
+                ant.exclude(name:"views/smarts*")
             }
 		}
 

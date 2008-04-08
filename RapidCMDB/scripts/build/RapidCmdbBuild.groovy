@@ -125,12 +125,14 @@ class RapidCmdbBuild extends Build{
 		buildDependent();
 		copyDependentJars();
 		unzipGrails();
-		def process = "dos2unix ${env.distribution}/RapidServer/bin/*".execute()
+		def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
+		process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
+		process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
+		process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
 		process.in.eachLine()
         {
             println it;
         }
-
         process.err.eachLine()
         {
             println it;

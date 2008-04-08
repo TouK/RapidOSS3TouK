@@ -36,6 +36,39 @@ class RapidCmdbBuild extends Build{
 		return "";
 	}
 
+	def buildSmartsModules(){
+        clean();
+        ant.delete(dir : env.rapid_ext_build);
+		ant.mkdir(dir : env.rapid_ext_build);
+
+        ant.javac(srcdir : "$env.rapid_ext/smarts/java", destdir : env.rapid_ext_build, excludes: getExcludedClasses()){
+			ant.classpath(refid : "classpath");
+		}
+
+		ant.copy(todir : "$env.dist_rapid_cmdb/src/groovy"){
+			ant.fileset(dir : "$env.rapid_ext/smarts/groovy"){
+                ant.exclude(name:"**/test/**")
+                ant.exclude(name:"**/*Test*")
+            };
+        }
+
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/SmartsNotificationDatasource.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/domain/datasource" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/SmartsTopologyDatasource.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/domain/datasource" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/connection/SmartsConnection.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/domain/connection" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/connection/SmartsConnectionController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/connection" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/SmartsNotificationDatasourceController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/datasource" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/SmartsTopologyDatasourceController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/datasource" );
+
+        ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexSmarts.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
+
+        ant.jar(destfile : env.rapid_ext_jar, basedir : env.rapid_ext_build);
+        ant.copy(file : env.rapid_ext_jar, toDir : env.dist_rapid_cmdb_lib);
+
+        ant.zip(destfile : "$env.distribution/SmartsModules.zip"){
+            ant.zipfileset(dir : "$env.distribution");
+        }
+    }
+
 	def build(){
 		clean();
 		ant.copy(todir : "$env.dist_rapid_cmdb"){
@@ -51,6 +84,12 @@ class RapidCmdbBuild extends Build{
                 ant.exclude(name:"/domain/*.groovy")
                 ant.exclude(name:"/controllers/*.groovy")
                 ant.exclude(name:"**/scripts/*.groovy")
+
+                // exclude Smarts classes
+                ant.exclude(name:"/controllers/datasource/Smarts*.groovy")
+                ant.exclude(name:"/controllers/connection/Smarts*.groovy")
+                ant.exclude(name:"/domain/datasource/Smarts*.groovy")
+                ant.exclude(name:"/domain/connection/Smarts*.groovy")
             }
 		}
 
@@ -80,6 +119,7 @@ class RapidCmdbBuild extends Build{
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/web-app"){
                 ant.exclude(name:"**/test/**")
                 ant.exclude(name:"**/*Test*")
+                ant.exclude(name:"indexSmarts.gsp")
             }
         }
 		buildDependent();

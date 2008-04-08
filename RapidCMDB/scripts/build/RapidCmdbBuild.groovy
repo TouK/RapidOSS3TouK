@@ -129,23 +129,7 @@ class RapidCmdbBuild extends Build{
 		process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
 		process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
 		process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
-		process.in.eachLine()
-        {
-            println it;
-        }
-        process.err.eachLine()
-        {
-            println it;
-        }
 		process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
-		process.in.eachLine()
-        {
-            println it;
-        }
-        process.err.eachLine()
-        {
-            println it;
-        }
 		ant.zip(destfile : "$env.distribution/RapidCMDB.zip"){
             ant.zipfileset(dir : "$env.distribution");
         }

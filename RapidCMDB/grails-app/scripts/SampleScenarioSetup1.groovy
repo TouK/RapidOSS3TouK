@@ -51,7 +51,7 @@ def salary = ModelProperty.create(name:"salary", type:ModelProperty.numberType, 
 employee = constructModel(employee, [dept, salary], [], []);
 
 def developer = Model.create(name:"Developer", parentModel:employee);
-def language = ModelProperty.create(name:"dept", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def language = ModelProperty.create(name:"language", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
 developer = constructModel(developer, [language], [], []);
 
 def team = Model.create(name:"Team");

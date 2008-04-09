@@ -38,6 +38,7 @@ class RapidCmdbBuild extends Build{
 
 	def buildSmartsModules(){
         ant.delete(dir : env.distribution+"/RapidServer");
+        ant.delete(file: "$env.distribution/SmartsModules.zip");
         ant.delete(dir : env.rapid_ext_build);
 		ant.mkdir(dir : env.rapid_ext_build);
 
@@ -70,7 +71,7 @@ class RapidCmdbBuild extends Build{
         ant.copy(file : env.rapid_ext_jar, toDir : env.dist_rapid_cmdb_lib);
 
         ant.zip(destfile : "$env.distribution/SmartsModules.zip"){
-            ant.zipfileset(dir : "$env.distribution");
+            ant.zipfileset(dir : "$env.distribution", includes:"RapidServer/**/*")
         }
     }
 
@@ -132,17 +133,18 @@ class RapidCmdbBuild extends Build{
 		buildDependent();
 		copyDependentJars();
 		unzipGrails();
-		if(System.getProperty("os.name").indexOf("Windows") < 0)
-        {
-            def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
-        }
+//		if(System.getProperty("os.name").indexOf("Windows") < 0)
+//        {
+//            def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
+//            process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
+//            process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
+//            process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
+//            process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
+//        }
 		ant.zip(destfile : "$env.distribution/RapidCMDB.zip"){
             ant.zipfileset(dir : "$env.distribution");
         }
+        buildSmartsModules();
 	}
 
     def buildDependent(){

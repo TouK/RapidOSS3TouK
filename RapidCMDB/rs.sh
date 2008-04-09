@@ -22,4 +22,4 @@ then
 	rm -r $RS_HOME/temp
 fi
 . $GRAILS_HOME/bin/startGrails 
-startGrails com.ifountain.RapidGrailsScriptRunner  "$@" -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp
+startGrails com.ifountain.RapidGrailsScriptRunner  "$@" 

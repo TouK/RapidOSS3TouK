@@ -133,14 +133,14 @@ class RapidCmdbBuild extends Build{
 		buildDependent();
 		copyDependentJars();
 		unzipGrails();
-//		if(System.getProperty("os.name").indexOf("Windows") < 0)
-//        {
-//            def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
-//            process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
-//            process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
-//            process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
-//            process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
-//        }
+		if(System.getProperty("os.name").indexOf("Windows") < 0)
+        {
+            def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
+            process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
+            process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
+            process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
+            process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
+        }
 		ant.zip(destfile : "$env.distribution/RapidCMDB.zip"){
             ant.zipfileset(dir : "$env.distribution");
         }

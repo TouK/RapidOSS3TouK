@@ -42,7 +42,7 @@ public class RapidCoreTestCase extends RapidTestCase
         if(!isSetupCompleted)
         {
             isSetupCompleted = true;
-            CommonTestUtils.initializeFromFile("RapidServerTest.properties");
+            CommonTestUtils.initializeFromFile("RCMDBTest.properties");
             Locale.setDefault(Locale.ENGLISH);
         }
     }

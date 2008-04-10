@@ -22,35 +22,4 @@
  * Time: 9:16:40 AM
  * To change this template use File | Settings | File Templates.
  */
-Author.list().each {it.remove()}
-Publisher.list().each {it.remove()}
-Book.list().each {it.remove()}
-
-def auth = Author.add(name:"tayyip");
-Author.add(name:"mustafa");
-Author.add(name:"sezgin");
-def publisher = Publisher.add(name:"akp");
-Publisher.add(name:"akp1");
-Publisher.add(name:"akp2");
-
-def book1 = Book.add(name:"Zengin olmanin kolay yollari 1");
-def book2 = Book.add(name:"Zengin olmanin kolay yollari 2");
-def book3 = Book.add(name:"Kolay gemi alma yollari 1");
-def book4 = Book.add(name:"Arap sermayesi");
-
-auth.addRelation(books:[book1, book2, book3], publisher:publisher);
-auth.removeRelation(books:[book1, book2, book3], publisher:publisher);
-
-auth.addRelation(books:[book1, book2, book3], publisher:publisher);
-
-
-
-def count = 0;
-Author.list().each
-{
-    println it.toString()
-    println it.asMap()
-    println "GET"+Author.get(name:it.name);
-    it.remove()
-}
-return Author.list()
+return "Hello World!"

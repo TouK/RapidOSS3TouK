@@ -26,7 +26,7 @@ import datasource.BaseDatasource;
  * Time: 9:42:41 AM
  * To change this template use File | Settings | File Templates.
  */
-class ModelDatasourceControllerTest extends GroovyTestCase{
+class ModelDatasourceControllerTests extends GroovyTestCase{
     def params
     def redirectParams
     def renderParams

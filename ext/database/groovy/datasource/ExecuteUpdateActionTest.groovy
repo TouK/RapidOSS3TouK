@@ -62,7 +62,7 @@ public class ExecuteUpdateActionTest extends RapidCoreTestCase {
 
     public void testExecute() throws Exception {
     	DatabaseConnectionImplTestUtils.clearConnectionTrialsTable();
-        String sqlQuery = "insert into datasourcetrials (id,classname,instancename) values (?,?,?)";
+        String sqlQuery = "insert into connectiontrials (id,classname,instancename) values (?,?,?)";
         Object [] queryParams = new Object[3];
         queryParams[0] = new Integer(1);
         queryParams[1] = "IPNetwork";
@@ -72,7 +72,7 @@ public class ExecuteUpdateActionTest extends RapidCoreTestCase {
         int affectedRowCount = action.getAffectedRowCount();
         assertEquals(1,affectedRowCount);
         
-        String selectQuery = "select * from datasourcetrials";
+        String selectQuery = "select * from connectiontrials";
         Object [] selectQueryParams = new Object[0];
         PreparedStatement stmt = datasource.getConnection().prepareStatement( selectQuery );
         DatabaseConnectionImpl.setStatementParameters(selectQueryParams, stmt);
@@ -135,7 +135,7 @@ public class ExecuteUpdateActionTest extends RapidCoreTestCase {
         } catch (SQLException e) {
         }
         
-        sqlQuery = "update datasourcetrials set classname=?,instancename=? where id=?";
+        sqlQuery = "update connectiontrials set classname=?,instancename=? where id=?";
         queryParams = new Object[3];
         queryParams[0] = "Router";
         queryParams[1] = "ernertbos";
@@ -154,7 +154,7 @@ public class ExecuteUpdateActionTest extends RapidCoreTestCase {
         assertEquals("ernertbos", resultSet.getString(3));
         assertFalse(resultSet.next());
         
-        sqlQuery = "delete from datasourcetrials where id=?";
+        sqlQuery = "delete from connectiontrials where id=?";
         queryParams = new Object[1];
         queryParams[0] = new Integer(1);
         action = new ExecuteUpdateAction(TestLogUtils.log, sqlQuery, queryParams);

@@ -57,7 +57,7 @@ public class ExecuteQueryActionTest extends RapidCoreTestCase {
     
     public void testExecute() throws Exception {
     	DatabaseConnectionImplTestUtils.clearConnectionTrialsTable();
-        String sqlQuery = "select * from datasourcetrials";
+        String sqlQuery = "select * from connectiontrials";
         Object [] queryParams = new Object[0];
         ExecuteQueryAction action = new ExecuteQueryAction(TestLogUtils.log, sqlQuery, queryParams);
         action.execute(connection);
@@ -76,7 +76,7 @@ public class ExecuteQueryActionTest extends RapidCoreTestCase {
         assertFalse(resultSet.next());
         
         DatabaseConnectionImplTestUtils.addRecordIntoConnectionTrialsTable(2,"Router","ernertbos");
-        sqlQuery = "select classname,instancename from datasourcetrials";
+        sqlQuery = "select classname,instancename from connectiontrials";
         action = new ExecuteQueryAction(TestLogUtils.log, sqlQuery, queryParams);
         action.execute(connection);
         resultSet = action.getResultSet();
@@ -89,7 +89,7 @@ public class ExecuteQueryActionTest extends RapidCoreTestCase {
         assertFalse(resultSet.next());
         
         
-        sqlQuery = "select classname,instancename from datasourcetrials where id=?";
+        sqlQuery = "select classname,instancename from connectiontrials where id=?";
         queryParams = new Object[1];
         queryParams[0] = new Integer(2);
         action = new ExecuteQueryAction(TestLogUtils.log, sqlQuery, queryParams);

@@ -48,20 +48,26 @@ class RapidExtBuild extends Build{
 	def copyResourcesForJar(){
         ant.copy(todir : "$env.dist_rapid_cmdb/src/groovy"){
 			ant.fileset(dir : "$env.rapid_ext/database/groovy"){
-                ant.exclude(name:"**/test/**")
-                ant.exclude(name:"**/*Test*")
+                if(!TEST){
+                    ant.exclude(name:"**/test/**")
+                    ant.exclude(name:"**/*Test*")    
+                }
             };
 //			ant.fileset(dir : "$env.rapid_ext/smarts/groovy"){
 //                ant.exclude(name:"**/test/**")
 //                ant.exclude(name:"**/*Test*")
 //            };
             ant.fileset(dir : "$env.rapid_ext/rapidinsight/groovy"){
-                ant.exclude(name:"**/test/**")
-                ant.exclude(name:"**/*Test*")
+                if(!TEST){
+                    ant.exclude(name:"**/test/**")
+                    ant.exclude(name:"**/*Test*")    
+                }
             };
             ant.fileset(dir : "$env.rapid_ext/http/groovy"){
-                ant.exclude(name:"**/test/**")
-                ant.exclude(name:"**/*Test*")
+                if(!TEST){
+                    ant.exclude(name:"**/test/**")
+                    ant.exclude(name:"**/*Test*")
+                }
             };
 		}
     }

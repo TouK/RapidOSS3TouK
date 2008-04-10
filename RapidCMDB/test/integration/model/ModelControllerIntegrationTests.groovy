@@ -28,7 +28,7 @@ import com.ifountain.domain.ModelUtils;
  * Time: 9:07:45 AM
  * To change this template use File | Settings | File Templates.
  */
-class ModelControllerIntegrationTest extends GroovyTestCase{
+class ModelControllerIntegrationTests extends GroovyTestCase{
    String modelName;
    String modelName2;
     protected void setUp() {

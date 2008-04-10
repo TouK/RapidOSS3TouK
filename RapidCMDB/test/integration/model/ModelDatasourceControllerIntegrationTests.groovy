@@ -26,7 +26,7 @@
 package model
 
 import datasource.BaseDatasource
-class ModelDatasourceControllerIntegrationTest extends GroovyTestCase {
+class ModelDatasourceControllerIntegrationTests extends GroovyTestCase {
 
     void setUp() {
         super.setUp();

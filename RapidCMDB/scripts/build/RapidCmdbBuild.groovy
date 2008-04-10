@@ -48,8 +48,10 @@ class RapidCmdbBuild extends Build{
 
 		ant.copy(todir : "$env.dist_rapid_cmdb/src/groovy"){
 			ant.fileset(dir : "$env.rapid_ext/smarts/groovy"){
-                ant.exclude(name:"**/test/**")
-                ant.exclude(name:"**/*Test*")
+                if(!TEST){
+                    ant.exclude(name:"**/test/**")
+                    ant.exclude(name:"**/*Test*")
+                }
             };
         }
 
@@ -73,6 +75,43 @@ class RapidCmdbBuild extends Build{
         ant.zip(destfile : "$env.distribution/SmartsModules.zip"){
             ant.zipfileset(dir : "$env.distribution", includes:"RapidServer/**/*")
         }
+    }
+    def buildNetcoolModules(){
+        ant.delete(dir : env.distribution+"/RapidServer");
+        ant.delete(file: "$env.distribution/NetcoolModules.zip");
+
+		ant.copy(todir : "$env.dist_rapid_cmdb/src/groovy"){
+			ant.fileset(dir : "$env.rapid_ext/netcool/groovy"){
+                if(!TEST){
+                    ant.exclude(name:"**/test/**")
+                    ant.exclude(name:"**/*Test*")
+                }
+            };
+        }
+
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/NetcoolDatasource.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/domain/datasource" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/connection/NetcoolConnection.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/domain/connection" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/connection/NetcoolConnectionController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/connection" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/NetcoolDatasourceController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/datasource" );
+        ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/views"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app/views"){
+                ant.include(name:"netcool*/*")
+            }
+		}
+
+//        ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexSmarts.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
+        ant.zip(destfile : "$env.distribution/NetcoolModules.zip"){
+            ant.zipfileset(dir : "$env.distribution", includes:"RapidServer/**/*")
+        }
+    }
+
+    def testBuild(){
+        TEST = true;
+        build();
+        ant.delete(dir : env.distribution+"/RapidServer");
+        ant.unzip(src : "$env.distribution/RapidCMDB.zip", dest : env.distribution);
+        ant.unzip(src : "$env.distribution/SmartsModules.zip", dest : env.distribution);
+        ant.unzip(src : "$env.distribution/NetcoolModules.zip", dest : env.distribution);
     }
 
 	def build(){
@@ -113,23 +152,35 @@ class RapidCmdbBuild extends Build{
 
 		ant.copy(todir : "$env.dist_rapid_cmdb/plugins"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/plugins"){
-                ant.exclude(name:"**/test/**")
-                ant.exclude(name:"**/*Test*")
+                if(!TEST){
+                    ant.exclude(name:"**/test/**")
+                    ant.exclude(name:"**/*Test*")
+                }
             }
         }
 		ant.copy(todir : "$env.dist_rapid_cmdb/src"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/src"){
-                ant.exclude(name:"**/test/**")
-                ant.exclude(name:"**/*Test*")
+                if(!TEST){
+                    ant.exclude(name:"**/test/**")
+                    ant.exclude(name:"**/*Test*")
+                }
             }
         }
 		ant.copy(todir : "$env.dist_rapid_cmdb/web-app"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/web-app"){
-                ant.exclude(name:"**/test/**")
-                ant.exclude(name:"**/*Test*")
+                if(!TEST){
+                    ant.exclude(name:"**/test/**")
+                    ant.exclude(name:"**/*Test*")
+                }
                 ant.exclude(name:"indexSmarts.gsp")
             }
         }
+        if(TEST){
+           ant.copy(todir : "$env.dist_rapid_cmdb/test"){
+			    ant.fileset(dir : "$env.rapid_cmdb_cvs/test")
+            }
+        }
+
 		buildDependent();
 		copyDependentJars();
 		unzipGrails();
@@ -145,6 +196,7 @@ class RapidCmdbBuild extends Build{
             ant.zipfileset(dir : "$env.distribution");
         }
         buildSmartsModules();
+        buildNetcoolModules();
 	}
 
     def buildDependent(){

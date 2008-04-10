@@ -10,8 +10,10 @@ class Env {
 	static def basedir = "..";
 // Common environment properties	
 	static def distribution = basedir+"/Distribution";
+	static def testresults = basedir+"/TestResults";
 	static def dist_rapid_cmdb = "$distribution/RapidServer/RapidCMDB";
 	static def dist_rapid_cmdb_lib = dist_rapid_cmdb + "/lib";
+	static def dist_rapid_server_lib = "$distribution/RapidServer/lib";
 
     static def rapid_modules = basedir+"/RapidModules"
     static def rapid_cmdb_cvs = "$rapid_modules/RapidCMDB"
@@ -33,7 +35,11 @@ class Env {
 	static def rapid_core_jar = "$rapid_core_build/core.jar";
 	static def rapid_comp_jar = "$rapid_comp_build/comp.jar";
 	static def rapid_ext_jar = "$rapid_ext_build/ext.jar";
-	
+
+	static def smarts_testreport = "$testresults/Smarts/test-reports";
+	static def smarts_testhtml = "$testresults/Smarts/junit/html";
+
+
 	Env(AntBuilder antBuilder){
 		ant = antBuilder;
 		populateThirdPartyJarsMap();

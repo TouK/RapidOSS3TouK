@@ -101,7 +101,7 @@ class RapidCmdbBuild extends Build{
 
 //        ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexSmarts.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
         ant.zip(destfile : "$env.distribution/NetcoolModules.zip"){
-            ant.zipfileset(dir : "$env.istribution/RapidServer")
+            ant.zipfileset(dir : "$env.distribution/RapidServer")
         }
     }
 

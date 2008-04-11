@@ -73,7 +73,7 @@ class RapidCmdbBuild extends Build{
         ant.copy(file : env.rapid_ext_jar, toDir : env.dist_rapid_cmdb_lib);
 
         ant.zip(destfile : "$env.distribution/SmartsModules.zip"){
-            ant.zipfileset(dir : "$env.distribution", includes:"RapidServer/**/*")
+            ant.zipfileset(dir : "$env.distribution/RapidServer")
         }
     }
     def buildNetcoolModules(){
@@ -101,7 +101,7 @@ class RapidCmdbBuild extends Build{
 
 //        ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexSmarts.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
         ant.zip(destfile : "$env.distribution/NetcoolModules.zip"){
-            ant.zipfileset(dir : "$env.distribution", includes:"RapidServer/**/*")
+            ant.zipfileset(dir : "$env.istribution/RapidServer")
         }
     }
 
@@ -110,8 +110,8 @@ class RapidCmdbBuild extends Build{
         build();
         ant.delete(dir : env.distribution+"/RapidServer");
         ant.unzip(src : "$env.distribution/RapidCMDB.zip", dest : env.distribution);
-        ant.unzip(src : "$env.distribution/SmartsModules.zip", dest : env.distribution);
-        ant.unzip(src : "$env.distribution/NetcoolModules.zip", dest : env.distribution);
+        ant.unzip(src : "$env.distribution/SmartsModules.zip", dest : "$env.distribution/RapidServer");
+        ant.unzip(src : "$env.distribution/NetcoolModules.zip", dest : "$env.distribution/RapidServer");
     }
 
 	def build(){

@@ -2,6 +2,7 @@ import junit.framework.Test
 import junit.framework.TestSuite
 import connection.NetcoolConnectionImplTest
 import test.AllHTTPGroovyTests
+import test.AllDBGroovyTests
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -38,6 +39,7 @@ class AllGroovyTests extends GroovyTestCase{
         TestSuite suite = new TestSuite(AllGroovyTests.class.getName());
         suite.addTestSuite(NetcoolConnectionImplTest.class);
         suite.addTest(AllHTTPGroovyTests.suite());
+        suite.addTest(AllDBGroovyTests.suite())
         return suite;
     }
 }

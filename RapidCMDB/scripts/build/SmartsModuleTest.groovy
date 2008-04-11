@@ -25,7 +25,7 @@ class SmartsModuleTest extends Test{
 			ant.path(refid : "libJars");
 			// test execution only jars, not required for production
 			ant.pathelement(location : (String)classpath.getProperty("junit_jar"));
-			ant.pathelement(location : (String)classpath.getProperty("ant-1_6_5_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("ant-trax_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("skclient_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("net_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("mysql-connector-java-3_1_8-bin_jar"));

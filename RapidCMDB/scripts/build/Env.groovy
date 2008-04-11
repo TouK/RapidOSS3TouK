@@ -17,6 +17,7 @@ class Env {
 
     static def rapid_modules = basedir+"/RapidModules"
     static def rapid_cmdb_cvs = "$rapid_modules/RapidCMDB"
+    static def dev_docs = "$rapid_cmdb_cvs/devDocs"
     static def rapid_comp_build = basedir+"/build/comp"
     static def rapid_comp_src = "$rapid_modules/comp/java"
     static def rapid_comp_resources = "$rapid_modules/comp/resources"

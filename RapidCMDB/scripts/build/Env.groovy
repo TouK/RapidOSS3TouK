@@ -39,6 +39,11 @@ class Env {
 
 	static def smarts_testreport = "$testresults/Smarts/test-reports";
 	static def smarts_testhtml = "$testresults/Smarts/junit/html";
+    static def comp_testreport = "$testresults/Comp/test-reports";
+	static def comp_testhtml = "$testresults/Comp/junit/html";
+    static def core_testreport = "$testresults/Core/test-reports";
+	static def core_testhtml = "$testresults/Core/junit/html";
+
 
 
 	Env(AntBuilder antBuilder){

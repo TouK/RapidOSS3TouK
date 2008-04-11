@@ -27,7 +27,6 @@ class SmartsModuleTest extends Test{
 			ant.pathelement(location : (String)classpath.getProperty("junit_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("skclient_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("net_jar"));
-			ant.pathelement(location : (String)classpath.getProperty("mysql-connector-java-3_1_8-bin_jar"));
 		}
 	}
 	

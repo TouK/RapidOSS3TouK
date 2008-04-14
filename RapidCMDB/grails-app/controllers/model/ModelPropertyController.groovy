@@ -25,7 +25,7 @@ class ModelPropertyController {
                 {
                     if(it.datasource.name == baseDatasource.name)
                     {
-                        modelDatasource = it.datasource;
+                        modelDatasource = it;
                         return;
                     }
                 }
@@ -45,6 +45,7 @@ class ModelPropertyController {
         }
         def modelProperty = new ModelProperty(params)
         if(!modelProperty.hasErrors() && modelProperty.save()) {
+
             flash.message = "ModelProperty ${modelProperty} created"
             redirect(action:show,controller:'model', id:modelProperty.model?.id)
         }
@@ -88,7 +89,7 @@ class ModelPropertyController {
                     {
                         if(it.datasource.name == baseDatasource.name)
                         {
-                            modelDatasource = it.datasource;
+                            modelDatasource = it;
                             return;
                         }
                     }

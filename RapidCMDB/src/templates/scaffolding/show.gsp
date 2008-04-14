@@ -41,7 +41,7 @@
                     props.each {p -> %>
                 <tr class="prop">
                     <td valign="top" class="name">${p.name}:</td>
-                    <% if (p.oneToMany) { %>
+                    <% if (p.oneToMany || p.manyToMany) { %>
                     <td valign="top" style="text-align:left;" class="value">
                         <ul>
                             <g:each var="${p.name[0]}" in="\${${propertyName}.${p.name}}">

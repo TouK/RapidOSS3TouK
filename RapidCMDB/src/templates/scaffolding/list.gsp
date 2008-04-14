@@ -44,9 +44,16 @@
                         <%  props.eachWithIndex { p,i ->
                                 if(i == 0) { %>
                             <td><g:link action="show" id="\${${propertyName}.id}">\${${propertyName}.${p.name}?.encodeAsHTML()}</g:link></td>
-                        <%      } else if(i < 6) { %>
-                            <td>\${${propertyName}.${p.name}?.encodeAsHTML()}</td>
-                        <%  }   } %>
+                        <%      } else if(i < 6) {
+                                    if(p.oneToOne || p.manyToOne){
+                                     %>
+                                      <td><g:link action="show" controller="${p.referencedDomainClass.propertyName}" id="\${${propertyName}.${p.name}?.id}">\${${propertyName}.${p.name}?.encodeAsHTML()}</g:link></td>
+                        <%
+                                    }
+                                    else{
+                                     %>
+                                        <td>\${${propertyName}.${p.name}?.encodeAsHTML()}</td>
+                        <%  }  } }%>
                         </tr>
                     </g:each>
                     </tbody>

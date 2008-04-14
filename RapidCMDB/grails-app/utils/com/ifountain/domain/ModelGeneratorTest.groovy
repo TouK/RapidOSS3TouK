@@ -41,6 +41,7 @@ class ModelGeneratorTest extends GroovyTestCase{
         super.setUp();
         System.setProperty("base.dir", "RapidCMDB");
         FileUtils.deleteDirectory (new File(base_directory));
+        new File(base_directory).mkdirs();        
     }
 
     protected void tearDown() {
@@ -58,6 +59,8 @@ class ModelGeneratorTest extends GroovyTestCase{
     public void testGenerateModel()
     {
         def model = new MockModel(name:"Class1");
+        model.getControllerFile().createNewFile();
+        assertTrue (model.getControllerFile().exists());
         addMasterDatasource(model);
 
         ModelGenerator.getInstance().generateModel(model);
@@ -66,8 +69,7 @@ class ModelGeneratorTest extends GroovyTestCase{
         def object = cls.newInstance();
         object.keyprop = "keypropvalue";
         checkExistanceOfMetaDataProperties(object);
-        assertTrue (model.generateAll);
-        assertEquals (1, model.numberOfSaveCalls);
+        assertFalse (model.getControllerFile().exists());
         assertEquals ("Class1[keyprop:keypropvalue]", object.toString());
 
         ModelGenerator.DEFAULT_IMPORTS.each {
@@ -77,17 +79,19 @@ class ModelGeneratorTest extends GroovyTestCase{
 
     public void testGenerateModelExtendingAnotherModel()
     {
-        def parentModel = new MockModel(name:"Class2");  
+        def parentModel = new MockModel(name:"Class2");
+        parentModel.getControllerFile().createNewFile();
+        assertTrue (parentModel.getControllerFile().exists());
         def childModel = new MockModel(name:"Class1", parentModel:parentModel);
+        childModel.getControllerFile().createNewFile();
+        assertTrue (childModel.getControllerFile().exists());
         addMasterDatasource(parentModel);
 
         ModelGenerator.getInstance().generateModel(childModel);
         assertTrue (new File(base_directory + "${childModel.name}.groovy").exists());
         assertTrue (new File(base_directory + "${parentModel.name}.groovy").exists());
-        assertTrue (childModel.generateAll);
-        assertEquals (1, childModel.numberOfSaveCalls);
-        assertTrue (parentModel.generateAll);
-        assertEquals (1, parentModel.numberOfSaveCalls);
+        assertFalse (childModel.getControllerFile().exists());
+        assertFalse (parentModel.getControllerFile().exists());
 
         Class childModelClass = compileModel(childModel);
         def childModelInstance = childModelClass.newInstance();
@@ -216,10 +220,14 @@ class ModelGeneratorTest extends GroovyTestCase{
     public void testGenerateModelWithRelation()
     {
         def model1 = new MockModel(name:"Class1");
+        model1.getControllerFile().createNewFile();
+        assertTrue (model1.getControllerFile().exists());
         addMasterDatasource(model1);
 
         model1.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model1);
         def model2 = new MockModel(name:"Class2");
+        model2.getControllerFile().createNewFile();
+        assertTrue (model2.getControllerFile().exists());
         addMasterDatasource(model2);
 
         model2.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model2);
@@ -240,10 +248,8 @@ class ModelGeneratorTest extends GroovyTestCase{
         model1.fromRelations += relation4;
         model2.toRelations += relation4;
         ModelGenerator.getInstance().generateModel(model1);
-        assertTrue (model1.generateAll);
-        assertEquals (1, model1.numberOfSaveCalls);
-        assertTrue (model2.generateAll);
-        assertEquals (1, model2.numberOfSaveCalls);
+        assertFalse (model1.getControllerFile().exists());
+        assertFalse (model2.getControllerFile().exists());
 
         Class cls = compileModel(model1);
         def object = cls.newInstance();

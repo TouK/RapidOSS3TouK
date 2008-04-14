@@ -67,30 +67,4 @@ class BootStrapTest extends GroovyTestCase{
         assertNull(saveCalledFor);
     }
 
-    public void testGeneratesAllModelResourcesIfGenerateAllIsTrue()
-    {
-        def model = new Model(name:"Model1");
-        fail("should be implemented");
-//        try
-//        {
-//            def application = [:];
-//            application["getDomainClasses"] = [["class":["name":model.name]]];
-//            ApplicationHolder.setApplication (application as DefaultGrailsApplication);
-//            Model.metaClass.static.findByNamel = {String name->
-//                return model;
-//            }
-//            def bStrap = new BootStrap();
-//            bStrap.init();
-//            assertFalse (model.getModelFile().exists());
-//
-//            model.generateAll = true;
-//            bStrap = new BootStrap();
-//            bStrap.init();
-//            assertTrue (model.getModelFile().exists());
-//        }
-//        finally
-//        {
-//            model.getModelFile().delete();
-//        }
-    }
 }

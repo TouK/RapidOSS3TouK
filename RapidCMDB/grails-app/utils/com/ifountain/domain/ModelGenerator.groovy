@@ -87,8 +87,13 @@ class ModelGenerator
     {
         modelMetaDatas.each {modelName,modelMetaData->
             def model = modelMetaData.model;
-            model.generateAll = Boolean.TRUE;
-            model.save();
+            if(model.getControllerFile().exists() && !model.getControllerFile().delete())
+            {
+                throw ModelGenerationException.noKeySpecifiedForDatasource(model.name);                       
+            }
+        }
+        modelMetaDatas.each {modelName,modelMetaData->
+            def model = modelMetaData.model;
             def parentDir = model.getModelFile().getParentFile();
             parentDir.mkdirs();
 

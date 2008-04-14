@@ -7,7 +7,6 @@ import com.ifountain.core.domain.annotations.CmdbOperation
 class Model {
     String name;
     def grailsApplication
-    Boolean generateAll = Boolean.FALSE;
     Model parentModel;
     static transients = ['generated','modelFile','controllerFile','controllerGenerated']
     static hasMany = [modelProperties:ModelProperty, datasources:ModelDatasource, fromRelations:ModelRelation, toRelations:ModelRelation];

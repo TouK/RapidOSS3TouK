@@ -38,6 +38,11 @@ class ModelGenerationException extends Exception{
         return new ModelGenerationException("Master datasource doesnot exist for model $modelName")
     }
 
+    public static ModelGenerationException couldNotDeleteOldControllerFile(String modelName)
+    {
+        return new ModelGenerationException("Could not delete old controller file of model ${modelName}")
+    }
+
     public static ModelGenerationException moreThanOnemasterDatasourceDefined(String modelName)
     {
         return new ModelGenerationException("Only one master datasource should be specified for $modelName")

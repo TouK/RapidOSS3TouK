@@ -107,9 +107,9 @@ class RapidCmdbBuild extends Build{
 
     def testBuild(){
         TEST = true;
-        build();
+        def zipFileName = build();
         ant.delete(dir : env.distribution+"/RapidServer");
-        ant.unzip(src : "$env.distribution/RapidCMDB.zip", dest : env.distribution);
+        ant.unzip(src : zipFileName, dest : env.distribution);
         ant.unzip(src : "$env.distribution/SmartsModules.zip", dest : "$env.distribution/RapidServer");
         ant.unzip(src : "$env.distribution/NetcoolModules.zip", dest : "$env.distribution/RapidServer");
     }
@@ -194,11 +194,13 @@ class RapidCmdbBuild extends Build{
             process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
         }
         def versionDate = getVersionWithDate();
-		ant.zip(destfile : "$env.distribution/RapidCMDB$versionDate"+".zip"){
+        def zipFileName = "$env.distribution/RapidCMDB$versionDate"+".zip"
+		ant.zip(destfile : zipFileName){
             ant.zipfileset(dir : "$env.distribution");
         }
         buildSmartsModules();
         buildNetcoolModules();
+        return zipFileName;
 	}
 
 	def getVersionWithDate(){

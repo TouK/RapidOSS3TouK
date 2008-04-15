@@ -193,12 +193,21 @@ class RapidCmdbBuild extends Build{
             process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
             process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
         }
-		ant.zip(destfile : "$env.distribution/RapidCMDB.zip"){
+        def versionDate = getVersionWithDate();
+		ant.zip(destfile : "$env.distribution/RapidCMDB$versionDate"+".zip"){
             ant.zipfileset(dir : "$env.distribution");
         }
         buildSmartsModules();
         buildNetcoolModules();
 	}
+
+	def getVersionWithDate(){
+        def dateStr =  new java.text.SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
+
+        def verReader =new File (env.version).newReader();
+        def ver = verReader.readLine().substring(9);
+        return "_$ver" + "_" + "$dateStr";
+    }
 
     def buildDependent(){
         new RapidCompBuild().run ([]);

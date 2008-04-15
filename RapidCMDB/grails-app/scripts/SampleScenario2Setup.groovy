@@ -132,7 +132,7 @@ createRelation(service, resource, "resources", "services", ModelRelation.MANY, M
 ModelGenerator.getInstance().generateModel(device);
 ModelGenerator.getInstance().generateModel(link);
 
-return "Successfully created model classes for Scenario 3! Now, run SampleScenario3Connector.groovy to populate MySql DB and RCMDB tables.";
+return "Successfully created model classes for Scenario 2! Now, run SampleScenario2Connector.groovy to populate MySql DB and RCMDB tables.";
 
 
 def checkDatasources(){
@@ -205,7 +205,7 @@ def constructModel(model, listOfProperties, listOfDatasources, listOfKeyMappings
 }
 
 def createRelation(firstModel, secondModel, firstName, secondName, firstCar, secondCar){
-    new ModelRelation(firstModel:firstModel, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar).save();
+    ModelRelation.add(firstModel:firstModel, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar);
     firstModel.refresh();
     secondModel.refresh();
 }

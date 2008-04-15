@@ -116,10 +116,10 @@ def checkDatasources(){
 def prepareDBTables(){
 	def dsConn = DatabaseConnection.findByName("mysql");
 	if(dsConn == null){
-	    dsConn = new DatabaseConnection(name:"mysql", driver:"com.mysql.jdbc.Driver",
-	            url:"jdbc:mysql://192.168.1.100/test", username:"root", password:"root").save();
+	    dsConn = DatabaseConnection.add(name:"mysql", driver:"com.mysql.jdbc.Driver",
+	            url:"jdbc:mysql://192.168.1.100/test", username:"root", password:"root");
 	}
-	
+// Creating a DatabaseAdapter using "new" will only create a variable, and wont add to RapidCMDB 		
 	def dbAdapter = new DatabaseAdapter("mysql", 0, Logger.getRootLogger());
 	
 	try{
@@ -283,6 +283,6 @@ def populateRCMDB(datasources){
 	
 	    def eventName = record.EVENTNAME;
 	    def resource = record.RESOURCE;
-	    Resource.get(["name":resource]).addRelation(events:new Event(name:eventName));
+	    Resource.get(["name":resource]).addRelation(events:Event(name:eventName).add);
 	}
 }

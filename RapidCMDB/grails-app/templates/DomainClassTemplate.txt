@@ -5,7 +5,7 @@ import ${it};
 <%
 }
 %>
-class ${model.model.name} ${model.model.parentModel == null?"":"extends "+model.model.parentModel.name}
+class ${model.model.name} ${model.model.parentModel == null?"":"extends "+model.model.parentModel.name} implements com.ifountain.domain.GeneratedModel
 {
     ${AUTO_GENERATED_CODE}
 }

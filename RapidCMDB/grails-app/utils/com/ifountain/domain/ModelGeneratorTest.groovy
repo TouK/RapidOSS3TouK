@@ -67,6 +67,7 @@ class ModelGeneratorTest extends GroovyTestCase{
         assertTrue (new File(base_directory + "${model.name}.groovy").exists());
         Class cls = compileModel(model);
         def object = cls.newInstance();
+        assertTrue("Generated models should extend from ${GeneratedModel.class.name}", GeneratedModel.class.isInstance (object));
         object.keyprop = "keypropvalue";
         checkExistanceOfMetaDataProperties(object);
         assertFalse (model.getControllerFile().exists());
@@ -95,12 +96,14 @@ class ModelGeneratorTest extends GroovyTestCase{
 
         Class childModelClass = compileModel(childModel);
         def childModelInstance = childModelClass.newInstance();
+        assertTrue("Generated models should extend from ${GeneratedModel.class.name}", GeneratedModel.class.isInstance (childModelInstance));
         checkExistanceOfMetaDataProperties(childModelInstance);
         childModelInstance.keyprop = "keyPropValue"
         assertEquals ("Class1[keyprop:keyPropValue]", childModelInstance.toString());
 
         Class parentModelClass = compileModel(parentModel);
         def parentModelInstance = parentModelClass.newInstance();
+        assertTrue("Generated models should extend from ${GeneratedModel.class.name}", GeneratedModel.class.isInstance (parentModelInstance));
         checkExistanceOfMetaDataProperties(parentModelInstance);
 
         assertEquals(parentModelClass.getName(), childModelClass.getSuperclass().getName());
@@ -293,21 +296,14 @@ class ModelGeneratorTest extends GroovyTestCase{
         addMasterDatasource(model2);
 
         def modelFileContent = """import java.util.net.*;\n
-import    ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
-    import  ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
-                        class ${model1.name} extends AnotherClass implements Trial{\n
-                            def method1()\n
-                            {            \n
-                                return "method1";
-                            }              \n
-                        }""";
-        def controllerFileContent = """
-                        class ${model1.name}Controller{\n
-                            def method1()\n
-                            {            \n
-                                return "method1";
-                            }              \n
-                        }""";
+            import    ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
+            import  ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
+            class ${model1.name} extends AnotherClass implements Trial{\n
+                def method1()\n
+                {            \n
+                    return "method1";
+                }              \n
+            }""";
         def interfaceContent = "interface Trial {}";
         model1.getModelFile().getParentFile().mkdirs();
         model1.getModelFile().withWriter { w ->
@@ -318,18 +314,16 @@ import    ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
             w.write(interfaceContent);
         }
 
-        model1.getControllerFile().withWriter { w ->
-            w.write(controllerFileContent);
-        }
 
         model1.parentModel = model2;
         ModelGenerator.getInstance().generateModel(model1);
         assertTrue (new File(base_directory + "${model1.name}.groovy").exists());
         Class cls = compileModel(model1);
         def object = cls.newInstance();
+        assertTrue("Generated models should extend from ${GeneratedModel.class.name}", GeneratedModel.class.isInstance (object));
         checkExistanceOfMetaDataProperties(object);
         assertEquals ("method1", object.method1());
-        assertEquals ("Trial", object.class.interfaces[0].getName());
+        assertTrue (object.class.interfaces[0].getName().equals("Trial") || object.class.interfaces[1].getName().equals("Trial"));
         assertTrue(model1.getModelFile().getText ().indexOf("import java.util.net.*;\n") >= 0);
         ModelGenerator.DEFAULT_IMPORTS.each {
             assertTrue(model1.getModelFile().getText ().indexOf("import $it") >= 0);    
@@ -337,12 +331,59 @@ import    ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
         def indexOfFirstAlreadyIncludedImport = model1.getModelFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
         assertTrue( indexOfFirstAlreadyIncludedImport >= 0);
         assertFalse( model1.getModelFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
+    }
 
-        GrailsAwareClassLoader cloader = new GrailsAwareClassLoader();
-        cloader.addClasspath (base_directory);
-        Class controllerCls = cloader.loadClass(model1.name+"Controller");
-        def controllerObj = controllerCls.newInstance();
-        assertEquals ("method1",controllerObj.method1());
+
+    public void testIfModelAlreadyExistsAddGeneratedModelInterface()
+    {
+        def model1 = new MockModel(name:"Class1");
+        addMasterDatasource(model1);
+        def modelFileContent = """import java.util.net.*;\n
+            import    ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
+            import  ${ModelGenerator.DEFAULT_IMPORTS[0]};\n
+            class ${model1.name}{\n
+                def method1()\n
+                {            \n
+                    return "method1";
+                }              \n
+            }""";
+        model1.getModelFile().getParentFile().mkdirs();
+        model1.getModelFile().withWriter { w ->
+            w.write(modelFileContent);
+        }
+        ModelGenerator.getInstance().generateModel(model1);
+        assertTrue (new File(base_directory + "${model1.name}.groovy").exists());
+        Class cls = compileModel(model1);
+        def object = cls.newInstance();
+        assertTrue("Generated models should extend from ${GeneratedModel.class.name}", GeneratedModel.class.isInstance (object));
+    }
+
+    public void testIfModelAlreadyExistsAndHasInterfacesAddGeneratedModelInterface()
+    {
+        def model1 = new MockModel(name:"Class1");
+
+        addMasterDatasource(model1);
+
+        def modelFileContent = """
+                        class ${model1.name} implements Trial{\n
+                        }
+        """;
+        def interfaceContent = "interface Trial {}";
+        model1.getModelFile().getParentFile().mkdirs();
+        model1.getModelFile().withWriter { w ->
+            w.write(modelFileContent);
+        }
+
+        new File(base_directory + "Trial.groovy").withWriter { w ->
+            w.write(interfaceContent);
+        }
+
+        ModelGenerator.getInstance().generateModel(model1);
+        assertTrue (new File(base_directory + "${model1.name}.groovy").exists());
+        Class cls = compileModel(model1);
+        def object = cls.newInstance();
+        assertTrue("Generated models should extend from ${GeneratedModel.class.name}", GeneratedModel.class.isInstance (object));
+        assertTrue (object.class.interfaces[0].getName().equals("Trial") || object.class.interfaces[1].getName().equals("Trial"));
     }
 
     public void testThrowsExceptionIfModelMasterDatasourceDoesnotExist()

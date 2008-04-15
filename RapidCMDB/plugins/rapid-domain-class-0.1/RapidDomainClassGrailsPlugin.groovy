@@ -81,19 +81,6 @@ class RapidDomainClassGrailsPlugin {
         {
             logger.debug("Delete method injection didnot performed by hibernate plugin.", t);
         }
-        HibernateGrailsPlugin
-        relations.each{relationName, relation->
-            if(relation.isManyToOne())
-            {
-                mc.'static'."findAllBy${relation.upperCasedName}" = {domainObject->
-                    def criteria = relation.otherSideClass.metaClass.invokeStaticMethod(relation.otherSideClass, "createCriteria", [] as Object[]);
-                    def foundRelatedInstances = criteria.listDistinct{
-                        "${relation.otherSideName}"{eq("id",domainObject.id)}
-                    }
-                    return foundRelatedInstances;
-                }
-            }
-        }
         mc.update = {Map props->
             delegate.update(props, true)
         }

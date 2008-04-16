@@ -36,7 +36,7 @@ public class RCompTestCase extends RapidTestCase{
         if(!isSetupCompleted)
         {
             isSetupCompleted = true;
-            CommonTestUtils.initializeFromFile("RapidComponentsTest.properties");
+//            CommonTestUtils.initializeFromFile("RapidComponentsTest.properties");
             Locale.setDefault(Locale.ENGLISH);
         }
     }

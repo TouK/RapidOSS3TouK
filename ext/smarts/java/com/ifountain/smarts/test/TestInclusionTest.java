@@ -24,6 +24,8 @@ package com.ifountain.smarts.test;
 
 import com.ifountain.comp.test.util.testcase.AbstractTestInclusionTestCase;
 
+import java.io.File;
+
 public class TestInclusionTest extends AbstractTestInclusionTestCase {
 
     @Override
@@ -33,7 +35,8 @@ public class TestInclusionTest extends AbstractTestInclusionTestCase {
 
     @Override
     public String getRootPath() {
-        return "smarts/java/com/ifountain/smarts";
+        return "ext/smarts/java/com/ifountain/smarts";
     }
+
 
 }

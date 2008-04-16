@@ -33,7 +33,7 @@ public class TestInclusionTest extends AbstractTestInclusionTestCase {
 
     @Override
     public String getRootPath() {
-        return "database/java/com/ifountain/database";
+        return "ext/database/java/com/ifountain/database";
     }
 
 }

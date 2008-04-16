@@ -31,7 +31,7 @@ class RapidCmdbBuild extends Build{
 
 	def String getExcludedClasses(){
 		if (!TEST){
-			return "**/*Test*, **/*Mock*, rcomp/test/**";
+			return "**/*Test*, **/*Mock*, **/test/**";
 		}
 		return "";
 	}
@@ -161,6 +161,7 @@ class RapidCmdbBuild extends Build{
         }
 		ant.copy(todir : "$env.dist_rapid_cmdb/src"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/src"){
+                ant.exclude(name:"**/java/**")
                 if(!TEST){
                     ant.exclude(name:"**/test/**")
                     ant.exclude(name:"**/*Test*")
@@ -183,6 +184,13 @@ class RapidCmdbBuild extends Build{
         }
 
 		buildDependent();
+        ant.delete(dir : env.rapid_cmdb_build);
+		ant.mkdir(dir : env.rapid_cmdb_build);
+		ant.javac(srcdir : env.rapid_cmdb_src, destdir : env.rapid_cmdb_build, excludes: getExcludedClasses()){
+			ant.classpath(refid : "classpath");
+		}
+		ant.jar(destfile : env.rapid_cmdb_jar, basedir : env.rapid_cmdb_build, manifest : env.version);
+        ant.copy(file : env.rapid_cmdb_jar, toDir : env.dist_rapid_cmdb_lib);
 		copyDependentJars();
 		unzipGrails();
 		if(System.getProperty("os.name").indexOf("Windows") < 0)

@@ -1,11 +1,7 @@
-import model.Model
-import model.ModelDatasource
-import model.ModelProperty
-import model.ModelDatasourceKeyMapping
-import com.ifountain.domain.ModelGenerator
-import model.ModelRelation
+import model.*
 import connection.*
 import datasource.*
+import com.ifountain.domain.ModelGenerator
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

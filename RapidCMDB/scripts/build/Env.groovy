@@ -30,6 +30,9 @@ class Env {
     static def rapid_ext = "$rapid_modules/ext"
     static def rapid_ext_build = basedir+"/build/ext"
 
+    static def rapid_cmdb_src = "$rapid_cmdb_cvs/src/java"
+    static def rapid_cmdb_build = basedir+"/build/rcmdb"
+
     static def third_party = basedir+"/ThirdParty";
     static def licenced_jars = basedir+"/LicencedJars";
 
@@ -37,6 +40,7 @@ class Env {
 	static def rapid_core_jar = "$rapid_core_build/core.jar";
 	static def rapid_comp_jar = "$rapid_comp_build/comp.jar";
 	static def rapid_ext_jar = "$rapid_ext_build/ext.jar";
+	static def rapid_cmdb_jar = "$rapid_cmdb_build/rcmdb.jar";
 
 	static def smarts_testreport = "$testresults/Smarts/test-reports";
 	static def smarts_testhtml = "$testresults/Smarts/junit/html";

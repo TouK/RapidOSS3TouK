@@ -40,6 +40,7 @@ import com.ifountain.comp.utils.FileUtilsTest;
 import com.ifountain.comp.utils.HttpUtilsTest;
 import com.ifountain.comp.utils.RapidConfigTest;
 import com.ifountain.comp.utils.StringUtilsTest;
+import com.ifountain.comp.cli.CommandLineUtilityTest;
 
 public class AllUnitTests extends RCompTestCase{
     public static void main(String[] args) {
@@ -62,6 +63,7 @@ public class AllUnitTests extends RCompTestCase{
         suite.addTestSuite(FileMergerTest.class);
         suite.addTestSuite(RapidConfigTest.class);
         suite.addTestSuite(RapidTestCaseTest.class);
+        suite.addTestSuite(CommandLineUtilityTest.class);
         return suite;
     }
 }

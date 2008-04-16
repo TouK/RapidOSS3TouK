@@ -146,7 +146,7 @@ public class RsBatch extends CommandLineUtility {
         logger.debug("Making api call.");
         String response = "";
         try {
-            response = httpUtils.doGetRequest(call, new HashedMap());
+            response = httpUtils.doPostRequest(call, new HashedMap());
         }
         catch (Exception e) {
             logger.warn("Could not access the URL: " + call);

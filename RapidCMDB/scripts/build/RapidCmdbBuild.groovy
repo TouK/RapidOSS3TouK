@@ -120,6 +120,7 @@ class RapidCmdbBuild extends Build{
 			ant.fileset(file : "$env.rapid_cmdb_cvs/application.properties");
 			ant.fileset(file : "$env.rapid_cmdb_cvs/rs.bat");
 			ant.fileset(file : "$env.rapid_cmdb_cvs/rs.sh");
+			ant.fileset(file : "$env.rapid_cmdb_cvs/rsbatch.sh");
 			ant.fileset(file : env.version);
 		}
 
@@ -200,6 +201,7 @@ class RapidCmdbBuild extends Build{
             process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
             process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
             process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
+            process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rsbatch.sh".execute();
         }
         def versionDate = getVersionWithDate();
         def zipFileName = "$env.distribution/RapidCMDB$versionDate"+".zip"

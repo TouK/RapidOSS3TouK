@@ -35,6 +35,6 @@ public class TestInclusionTest extends AbstractTestInclusionTestCase
     @Override
     public String getRootPath()
     {
-        return "src/core/java/com/ifountain/core";
+        return "core/java/com/ifountain/core";
     }
 }

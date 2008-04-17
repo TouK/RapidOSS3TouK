@@ -56,7 +56,8 @@ def keyMappings = [ModelDatasourceKeyMapping.create(property:name, nameInDatasou
 				   ModelDatasourceKeyMapping.create(property:creationClassName, nameInDatasource:"CreationClassName", datasource:eastRegionModelDatasource),
 				   ModelDatasourceKeyMapping.create(property:name, nameInDatasource:"Name", datasource:westRegionModelDatasource),
 				   ModelDatasourceKeyMapping.create(property:creationClassName, nameInDatasource:"CreationClassName", datasource:westRegionModelDatasource),
-                   ModelDatasourceKeyMapping.create(property:name, datasource:rcmdbModelDatasource)];
+                   ModelDatasourceKeyMapping.create(property:name, datasource:rcmdbModelDatasource),
+                   ModelDatasourceKeyMapping.create(property:creationClassName, datasource:rcmdbModelDatasource)];
 def smartDs= ModelProperty.create(name:"smartDs", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
 def displayName= ModelProperty.create(name:"displayName", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"DisplayName", propertySpecifyingDatasource:smartDs);
 smartsObject = constructModel(smartsObject, [creationClassName, name, smartDs, displayName], [rcmdbModelDatasource, eastRegionModelDatasource, westRegionModelDatasource], keyMappings);

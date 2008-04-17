@@ -30,13 +30,13 @@ class ModelTests extends RapidIntegrationTestCase{
         DeviceComponent.add(name:"deviceComp1", creationClassName:"DeviceComponent");
         assertEquals(1, DeviceComponent.list().size());
 
-        Ip.add(name:"ip1", creationClassName:"Ip");
+        Ip.add(name:"ip1", creationClassName:"Ip", ipAddress:"192.168.1.1");
         assertEquals(2, DeviceComponent.list().size());
         assertEquals(1, Ip.list().size());
         def ip = Ip.findByName("ip1");
         assertNotNull(ip);
 
-        DeviceComponent.add(name:ip.name, creationClassName:"DeviceComponent");
+        DeviceComponent.add(name:"deviceComp2", creationClassName:"DeviceComponent");
         assertEquals(3, DeviceComponent.list().size());
     }
 

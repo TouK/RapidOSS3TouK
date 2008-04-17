@@ -20,7 +20,7 @@
  *
  * Author Sezgin
  */
-package datasource;
+package database.datasource;
 
 import java.sql.PreparedStatement;
 import groovy.util.*;
@@ -32,12 +32,13 @@ import test.util.DatabaseConnectionImplTestUtils;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import connection.DatabaseConnectionImpl;
 import test.util.DatabaseConnectionImplTestUtils;
-import com.ifountain.core.test.util.RapidCoreTestCase;
+import com.ifountain.core.test.util.RapidCoreTestCase
+import datasource.ExecuteUpdateAction;
 
-public class ExecuteUpdateActionTest extends RapidCoreTestCase {
+public class ExecuteUpdateActionTests extends RapidCoreTestCase {
 
     DatabaseConnectionImpl datasource;
-    public ExecuteUpdateActionTest() {
+    public ExecuteUpdateActionTests() {
         try {
         	DatabaseConnectionImplTestUtils.createTableConnectionTrials();
         } catch (ClassNotFoundException e) {

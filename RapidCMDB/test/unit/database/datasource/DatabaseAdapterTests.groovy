@@ -20,11 +20,11 @@
  *
  * Author Pinar Kinikoglu
  */
-package datasource;
+package database.datasource;
 
 import groovy.util.*;
 
-public class DatabaseAdapterTest extends GroovyTestCase
+public class DatabaseAdapterTests extends GroovyTestCase
 {
 	public void testMissing() throws Exception
 	{

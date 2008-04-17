@@ -1,4 +1,4 @@
-package datasource;
+package http.datasource;
 
 import com.ifountain.comp.utils.*;
 import org.apache.commons.httpclient.*;

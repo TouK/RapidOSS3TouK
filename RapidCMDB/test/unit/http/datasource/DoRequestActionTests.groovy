@@ -20,7 +20,7 @@
  *
  * Author Sezgin Kucukkaraaslan
  */
-package datasource;
+package http.datasource;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,15 +31,16 @@ import org.apache.commons.httpclient.HttpException;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.comp.utils.HttpUtils;
 import com.ifountain.core.connection.ConnectionParam;
-import connection.HttpConnectionImpl;
+import connection.HttpConnectionImpl
+import datasource.DoRequestAction;
 
-public class DoRequestActionTest extends GroovyTestCase {
+public class DoRequestActionTests extends GroovyTestCase {
 
     public void testExecute() throws Exception {
     	HttpConnectionImpl conn = new HttpConnectionImpl();
         Map otherParams = [:];
         otherParams.put(HttpConnectionImpl.BASE_URL, "http://localhost:9999");
-        ConnectionParam param = new ConnectionParam(HttpConnection.TYPE, "ds", HttpConnectionImpl.class.getName(), otherParams);
+        ConnectionParam param = new ConnectionParam("http", "ds", HttpConnectionImpl.class.getName(), otherParams);
         conn.init(param);
         HttpUtilsMock httpUtilsMock = new HttpUtilsMock(); 
         conn.setHttpConnection(httpUtilsMock);

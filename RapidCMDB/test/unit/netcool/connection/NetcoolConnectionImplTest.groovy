@@ -1,8 +1,7 @@
-import junit.framework.Test
-import junit.framework.TestSuite
-import connection.NetcoolConnectionImplTest
-import test.AllHTTPGroovyTests
-import test.AllDBGroovyTests
+package netcool.connection
+
+import com.ifountain.core.test.util.RapidCoreTestCase
+import connection.NetcoolConnectionImpl
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -23,23 +22,28 @@ import test.AllDBGroovyTests
 */
 /**
  * Created by IntelliJ IDEA.
- * User: Sezgin Kucukkaraaslan
- * Date: Apr 11, 2008
- * Time: 9:58:10 AM
+ * User: Pinar Kinikoglu
+ * Date: Mar 20, 2008
+ * Time: 10:19:47 AM
  * To change this template use File | Settings | File Templates.
  */
-class AllGroovyTests extends GroovyTestCase{
+class NetcoolConnectionImplTest extends RapidCoreTestCase {
+    NetcoolConnectionImpl conn;
 
-     public static void main(String[] args) {
-        junit.textui.TestRunner.run(AllGroovyTests.class);
+    protected void setUp() throws Exception {
+        super.setUp();
+        conn = new NetcoolConnectionImpl();
     }
 
-    public static Test suite()
-    {
-        TestSuite suite = new TestSuite(AllGroovyTests.class.getName());
-        suite.addTestSuite(NetcoolConnectionImplTest.class);
-        suite.addTest(AllHTTPGroovyTests.suite());
-        suite.addTest(AllDBGroovyTests.suite())
-        return suite;
+    protected void tearDown() throws Exception {
+        if(conn.isConnected()){
+            conn.disconnect();
+        }
+        super.tearDown();
     }
+
+    public void testIsConnected() throws Exception {
+        fail("Implement!");
+    }
+
 }

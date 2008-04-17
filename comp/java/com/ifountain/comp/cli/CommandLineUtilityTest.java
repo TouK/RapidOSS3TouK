@@ -39,19 +39,19 @@ public class CommandLineUtilityTest extends RCompTestCase{
     protected void setUp() throws Exception
         {
             super.setUp();
-            FileTestUtils.deleteFile(CommandLineUtility.CMD_OPTIONS_FILE_NAME);
+            FileTestUtils.deleteFile("conf/" + CommandLineUtility.CMD_OPTIONS_FILE_NAME);
         }
 
         protected void tearDown() throws Exception
         {
             super.tearDown();
-            FileTestUtils.deleteFile(CommandLineUtility.CMD_OPTIONS_FILE_NAME);
+            FileTestUtils.deleteFile("conf/" + CommandLineUtility.CMD_OPTIONS_FILE_NAME);
         }
 
         public void testInitializeLogger() throws Exception
         {
             String tooleName = "newtool";
-            String logFilePath = "logs/newtool.log";
+            String logFilePath = "newtool.log";
             CommandLineUtility utility = new CommandLineUtility(tooleName, logFilePath)
             {
                 protected org.apache.commons.cli.Options createOptions() {return null;};
@@ -75,15 +75,15 @@ public class CommandLineUtilityTest extends RCompTestCase{
             assertEquals("Appander should be daily rolling file appender", DailyRollingFileAppender.class.getName(), appender.getClass().getName());
             assertEquals(PatternLayout.class.getName(), appender.getLayout().getClass().getName());
             assertEquals("%d %p : %m%n", ((PatternLayout)appender.getLayout()).getConversionPattern());
-            assertEquals(new TestFile(logFilePath), new File(((DailyRollingFileAppender)appender).getFile()));
+            assertEquals(new TestFile("logs/" + logFilePath), new File(((DailyRollingFileAppender)appender).getFile()));
         }
 
         public void testInitializeLoggerWillStartConsoleAppenderIfExceptionOccursWhileCreatingFileAppender() throws Exception
         {
             String tooleName = "newtool";
             String fileName = "invalidlogfile";
-            FileTestUtils.deleteFile(fileName);
-            new TestFile(fileName).mkdirs();
+            FileTestUtils.deleteFile("logs/" + fileName);
+            new TestFile("logs/" + fileName).mkdirs();
             CommandLineUtility utility = new CommandLineUtility(tooleName, fileName)
             {
                 protected void validateArgs() throws RCliException {
@@ -272,7 +272,7 @@ public class CommandLineUtilityTest extends RCompTestCase{
             final String optionName2 = "username";
             final String optionValue1 = "user1pass";
             final String optionValue2 = "username1";
-            File optionsFile = new TestFile(CommandLineUtility.CMD_OPTIONS_FILE_NAME);
+            File optionsFile = new TestFile("conf/" + CommandLineUtility.CMD_OPTIONS_FILE_NAME);
 
             ArrayList lines = new ArrayList();
             lines.add(optionName1 + "=" + optionValue1);
@@ -350,7 +350,7 @@ public class CommandLineUtilityTest extends RCompTestCase{
             final String optionName2 = "username";
             final String optionValue1 = "user1pass";
             final String optionValue2 = "username1";
-            File optionsFile = new TestFile(CommandLineUtility.CMD_OPTIONS_FILE_NAME);
+            File optionsFile = new TestFile("conf/" + CommandLineUtility.CMD_OPTIONS_FILE_NAME);
 
             ArrayList lines = new ArrayList();
             lines.add(optionName1 + "=" + optionValue1);

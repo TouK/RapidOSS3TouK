@@ -33,7 +33,7 @@ public class XmlTestUtilsTest extends RCompTestCase{
 		catch(Throwable t)
 		{
 			assertEquals(ComparisonFailure.class, t.getClass());
-			assertTrue(t.getMessage(), t.getMessage().indexOf("expected:<3> but was:<4>") > -1);
+			assertTrue(t.getMessage(), t.getMessage().indexOf("Attribute d doesnot equal in one of") > -1);
 		}
 	    XMLTestUtils.compareXml("<a b='b1' c='c2'/>", "<a c='c2' b='b1'/>");
 		
@@ -45,7 +45,7 @@ public class XmlTestUtilsTest extends RCompTestCase{
 		catch(Throwable t)
 		{
             assertEquals(ComparisonFailure.class, t.getClass());
-            assertTrue(t.getMessage(), t.getMessage().indexOf("expected:<B> but was:<b>") > -1);
+            assertTrue(t.getMessage(), t.getMessage().indexOf("Attribute B doesnot equal to b") > -1);
 		}
         
 	}

@@ -28,7 +28,6 @@ class RapidIntegrationTestCase extends GroovyTestCase{
 
     void setUp(){
         SmartsObject.list()*.delete(flush:true);
-        RedundancyGroup.list()*.delete(flush:true);
     }
 
     void tearDown(){

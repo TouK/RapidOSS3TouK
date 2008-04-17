@@ -29,7 +29,7 @@ public class RapidTestCaseTest extends RapidTestCase {
 			assertEqualsXML("<a/>", "<b/>");
 			fail("Should have thrown exception.");
 		} catch (ComparisonFailure e) {
-			assertTrue(e.getMessage(), e.getMessage().indexOf("expected:<a> but was:<b>") > -1);
+			assertTrue(e.getMessage(), e.getMessage().indexOf("Name of nodes are not same \nNode 1 :\na\nNode 2 :\nb") > -1);
 		}		
 		
 		try

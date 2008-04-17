@@ -56,6 +56,30 @@
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
+  <component name="FacetAutodetectingManager">
+    <autodetection-disabled>
+      <facet-type id="web">
+        <modules>
+          <module name="RapidServer">
+            <files>
+              <file url="file://C:/TEMP/RapidServer/temp/projects/RapidCMDB/resources/web.xml" />
+            </files>
+          </module>
+        </modules>
+      </facet-type>
+      <facet-type id="Spring">
+        <modules>
+          <module name="RapidServer">
+            <files>
+              <file url="file://C:/TEMP/RapidServer/RapidCMDB/web-app/WEB-INF/applicationContext.xml" />
+              <file url="file://C:/TEMP/RapidServer/src/war/WEB-INF/applicationContext.xml" />
+              <file url="file://C:/TEMP/RapidServer/src/war/WEB-INF/test-applicationContext.xml" />
+            </files>
+          </module>
+        </modules>
+      </facet-type>
+    </autodetection-disabled>
+  </component>
   <component name="IdProvider" IDEtalkID="EA28FD7B5140EC52C88BBC670B90414F" />
   <component name="InspectionProjectProfileManager">
     <option name="PROJECT_PROFILE" value="Project Default" />
@@ -237,10 +261,10 @@
     <output url="file://$PROJECT_DIR$/../out" />
   </component>
   <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="SmartsModulesBuild" type="Application" factoryName="Application" enabled="false" merge="false">
+    <configuration default="false" name="RapidCmdbTestBuild" type="Application" factoryName="Application" enabled="false" merge="false">
       <option name="MAIN_CLASS_NAME" value="build.RapidCmdbBuild" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="buildSmartsModules" />
+      <option name="PROGRAM_PARAMETERS" value="testBuild" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -255,10 +279,10 @@
         <option name="Make" value="true" />
       </method>
     </configuration>
-    <configuration default="false" name="RapidCmdbTestBuild" type="Application" factoryName="Application" enabled="false" merge="false">
+    <configuration default="false" name="SmartsModulesBuild" type="Application" factoryName="Application" enabled="false" merge="false">
       <option name="MAIN_CLASS_NAME" value="build.RapidCmdbBuild" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="testBuild" />
+      <option name="PROGRAM_PARAMETERS" value="buildSmartsModules" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />

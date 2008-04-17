@@ -96,10 +96,17 @@ padding:7px 12px;
     color: #333;
     padding-left: 25px;
 }
+
 .menuButton a.create {
     background: url(../images/skin/database_add.png) center left no-repeat;
     color: #333;
     padding-left: 25px;
+}
+
+a.refresh {
+    background: url(../images/skin/arrow_refresh.png) center left no-repeat;
+    padding-left: 25px;
+    font-size: 16px;
 }
 
 a.delete {
@@ -270,6 +277,10 @@ padding:0pt;
 }
 .buttons input.delete {
     background: transparent url(../images/skin/database_delete.png) 5px 50% no-repeat;
+    padding-left: 28px;
+}
+.buttons input.refresh {
+    background: transparent url(../images/skin/arrow_refresh.png) 5px 50% no-repeat;
     padding-left: 28px;
 }
 .buttons input.generate {

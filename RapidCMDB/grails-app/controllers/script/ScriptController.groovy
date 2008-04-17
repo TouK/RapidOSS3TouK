@@ -2,51 +2,56 @@ package script;
 
 class ScriptController {
     def scaffold = CmdbScript;
+    def scriptingService;
+    def save = {
+        def script = new CmdbScript(params)
+        if(script.save() && !script.hasErrors()) {
+            scriptingService.addScript(script.name);
+            flash.message = "Script ${script.name} created"
+            redirect(action:show,id:script.id)
+        }
+        else {
+            render(view:'create',model:[cmdbScript:script])
+        }
+    }
 
+    def reload = {
+        def script = CmdbScript.findByName(params.id);
+        if(script)
+        {
+            try
+            {
+                script.reload();
+                flash.message = "Script reloaded successfully.";
+                redirect(action:show,controller:'script', id:script.id);
+            }
+            catch(t)
+            {
+                flash.message = "Exception occurred while reloading. Reason : ${t.getMessage()}";
+                redirect(action:show,controller:'script', id:script.id);
+            }
 
+        }
+        else
+        {
+            flash.message = "Script doesnot exist"
+            redirect(action:list,controller:'script');
+        }
+    }
     def run =
     {
         def script = CmdbScript.findByName(params.id);
         if(script)
         {
-            Class scriptClass = null;
+            def bindings = ["params":params]
             try
             {
-                scriptClass = grailsApplication.classLoader.loadClass(script.name);
+                def result = scriptingService.runScript(script.name,  bindings);
+                render(text:result,contentType:"text/html",encoding:"UTF-8");
             }
-            catch(java.lang.ClassNotFoundException exception)
+            catch(t)
             {
-                render(text:"Script file doesnot exist",contentType:"text/html",encoding:"UTF-8");
-                return;
-            }
-            if(scriptClass != null)
-            {
-                def scriptObject = scriptClass.newInstance();
-                scriptObject.setProperty("params", params)
-                try
-                {
-                    def res = String.valueOf(scriptObject.run())
-                    render(text:res, contentType:"text/html",encoding:"UTF-8");
-                }
-                catch(Throwable exception)
-                {
-                    exception.printStackTrace();
-                    StackTraceElement[] elements = exception.getStackTrace();
-                    def lineNumber = -1;
-                    for(element in elements)
-                    {
-                        if(element.getClassName() == scriptClass.getName())
-                        {
-                            lineNumber = element.getLineNumber();
-                            break;
-                        }
-                    }
-                    render(text:"Exception occurred while executing script $script.name at line $lineNumber . Reason :$exception",contentType:"text/html",encoding:"UTF-8");
-                }
-            }
-            else
-            {
-                render(text:"Script file doesnot exist",contentType:"text/html",encoding:"UTF-8");
+                render(text:t.getMessage(),contentType:"text/html",encoding:"UTF-8");
             }
 
         }

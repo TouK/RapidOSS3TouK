@@ -26,5 +26,5 @@ class DeviceComponent extends SmartsObject implements com.ifountain.domain.Gener
     static propertyConfiguration= [:]
     static transients = [];
     
-    //AUTO_GENERATED_CODE    
+    //AUTO_GENERATED_CODE
 }

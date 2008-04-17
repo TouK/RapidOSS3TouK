@@ -26,5 +26,5 @@ class Card extends DeviceComponent implements com.ifountain.domain.GeneratedMode
     static propertyConfiguration= ["status":["nameInDs":"Status", "datasourceProperty":"smartDs", "lazy":true]]
     static transients = ["status"];
     
-    //AUTO_GENERATED_CODE    
+    //AUTO_GENERATED_CODE
 }

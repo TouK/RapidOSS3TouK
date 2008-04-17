@@ -7,12 +7,12 @@ class SmartsObject  implements com.ifountain.domain.GeneratedModel
     //AUTO_GENERATED_CODE
 
 
-    static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]], "eastRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "westRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]]]
+    static datasources = ["eastRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]], "westRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]]]
 
     
-    String displayName ;
-    
     String name ;
+    
+    String displayName ;
     
     String smartDs ;
     
@@ -24,11 +24,9 @@ class SmartsObject  implements com.ifountain.domain.GeneratedModel
     static constraints={
     displayName(blank:true,nullable:true)
         
-     name(unique:true)
-        
      smartDs(blank:true,nullable:true)
         
-     creationClassName(blank:false,nullable:false)
+     creationClassName(unique:["name"])
         
      
     }
@@ -40,8 +38,8 @@ class SmartsObject  implements com.ifountain.domain.GeneratedModel
     
     public String toString()
     {
-    	return "${getClass().getName()}[name:$name]";
+    	return "${getClass().getName()}[name:$name, creationClassName:$creationClassName]";
     }
     
-    //AUTO_GENERATED_CODE    
+    //AUTO_GENERATED_CODE
 }

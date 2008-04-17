@@ -30,5 +30,5 @@ class DeviceInterface extends DeviceAdapter implements com.ifountain.domain.Gene
     static propertyConfiguration= ["interfaceKey":["nameInDs":"InterfaceKey", "datasourceProperty":"smartDs", "lazy":true]]
     static transients = ["interfaceKey"];
     
-    //AUTO_GENERATED_CODE    
+    //AUTO_GENERATED_CODE
 }

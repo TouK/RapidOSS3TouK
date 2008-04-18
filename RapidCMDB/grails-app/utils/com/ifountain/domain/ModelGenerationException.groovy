@@ -51,6 +51,10 @@ class ModelGenerationException extends Exception{
     {
         return new ModelGenerationException("No keys specified for datasource $datasourceName in model $modelName");
     }
+    public static ModelGenerationException couldNotDeleteOldController(String modelName)
+    {
+        return new ModelGenerationException("Could not deleted controller of model $modelName");
+    }
 
 
 

@@ -56,6 +56,7 @@ class ModelGeneratorTest extends GroovyTestCase{
         model.modelProperties += keyProp;
         modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp, datasource:modelDatasource1, nameInDatasource:"keypropname");
     }
+    
     public void testGenerateModel()
     {
         def model = new MockModel(name:"Class1");
@@ -75,6 +76,28 @@ class ModelGeneratorTest extends GroovyTestCase{
 
         ModelGenerator.DEFAULT_IMPORTS.each {
             assertTrue(model.getModelFile().getText ().indexOf("import $it") >= 0);    
+        }
+    }
+
+    public void testGenerateModelThrowsExceptionIfCannotDeleteController()
+    {
+        def model = new MockModel(name:"Class1");
+        addMasterDatasource(model);
+        model.getControllerFile().createNewFile();
+        assertTrue (model.getControllerFile().exists());
+        def fout = new FileOutputStream(model.getControllerFile());
+        try
+        {
+            ModelGenerator.getInstance().generateModel(model);
+            fail("Should throw exception");
+        }
+        catch(ModelGenerationException exception)
+        {
+            assertEquals (ModelGenerationException.couldNotDeleteOldController(model.name).getMessage(), exception.getMessage());
+        }
+        finally
+        {
+            fout.close();
         }
     }
 

@@ -1,3 +1,4 @@
+package scripting;
 import com.ifountain.exceptions.scripting.ScriptingException;
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.springframework.beans.factory.DisposableBean
@@ -17,17 +18,27 @@ import org.apache.commons.io.FileUtils
 */
 class ScriptingService implements InitializingBean, DisposableBean{
     def scripts;
+    def classLoader;
+    def baseDirectory;
     public static final String SCRIPT_DIRECTORY = "scripts";
     def addScript (String scriptPath)   throws ScriptingException
     {
+        scriptPath = StringUtils.substringBefore (scriptPath, ".groovy")
         scripts[scriptPath] = getScriptClass(scriptPath);
+    }
+
+
+    def getScript(String scriptPath)
+    {
+        scriptPath = StringUtils.substringBefore (scriptPath, ".groovy")
+        return scripts[scriptPath];
     }
 
     private Class getScriptClass(String scriptPath) throws ScriptingException
     {
         scriptPath = StringUtils.substringBefore (scriptPath, ".groovy")
-        def scriptClassLoader = new GroovyClassLoader(ApplicationHolder.application.classLoader);
-        scriptClassLoader.addClasspath (System.getProperty("base.dir") + "/${SCRIPT_DIRECTORY}");
+        def scriptClassLoader = new GroovyClassLoader(classLoader);
+        scriptClassLoader.addClasspath (baseDirectory + "/${SCRIPT_DIRECTORY}");
         try
         {
             return scriptClassLoader.loadClass (scriptPath);
@@ -35,7 +46,7 @@ class ScriptingService implements InitializingBean, DisposableBean{
         catch(Throwable t)
         {
              throw ScriptingException.compileScriptException(scriptPath, t);
-        }    
+        }
     }
 
     def checkScript (String scriptPath)  throws ScriptingException
@@ -45,8 +56,7 @@ class ScriptingService implements InitializingBean, DisposableBean{
 
     def reloadScript (String scriptPath)  throws ScriptingException
     {
-        scriptPath = StringUtils.substringBefore (scriptPath, ".groovy")
-        addScript(scriptPath);            
+        addScript(scriptPath);
     }
 
     def runScript(scriptPath, bindings)  throws ScriptingException
@@ -86,9 +96,9 @@ class ScriptingService implements InitializingBean, DisposableBean{
 
     public void afterPropertiesSet() {
         scripts = [:];
-
-
-        File scriptDirFile = new File(System.getProperty("base.dir") + "/${SCRIPT_DIRECTORY}");
+        classLoader = ApplicationHolder.application.classLoader;
+        baseDirectory = System.getProperty("base.dir");
+        File scriptDirFile = new File(baseDirectory + "/${SCRIPT_DIRECTORY}");
         def scriptFiles = FileUtils.listFiles (scriptDirFile, ["groovy"] as String[], false);
         scriptFiles.each{script->
             try

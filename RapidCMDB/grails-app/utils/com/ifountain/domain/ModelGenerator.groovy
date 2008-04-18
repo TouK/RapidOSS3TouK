@@ -89,7 +89,7 @@ class ModelGenerator
             def model = modelMetaData.model;
             if(model.getControllerFile().exists() && !model.getControllerFile().delete())
             {
-                throw ModelGenerationException.noKeySpecifiedForDatasource(model.name);                       
+                throw ModelGenerationException.couldNotDeleteOldController(model.name);                       
             }
         }
         modelMetaDatas.each {modelName,modelMetaData->

@@ -18,17 +18,17 @@ class ScriptingException extends Exception{
 
     public static  ScriptingException scriptDoesnotExist(scriptName)
     {
-        throw new ScriptingException("Script ${scriptName} does not exist.")        
+        return new ScriptingException("Script ${scriptName} does not exist.")
     }
 
     public static  ScriptingException runScriptException(scriptName, lineNumber, exception)
     {
-        throw new ScriptingException("Exception occurred while executing script $scriptName at line $lineNumber . Reason :$exception")
+        return new ScriptingException("Exception occurred while executing script $scriptName at line $lineNumber . Reason :$exception")
     }
 
     public static  ScriptingException compileScriptException(scriptName, exception)
     {
-        throw new ScriptingException("Exception occurred while executing script $scriptName . Reason :$exception")
+        return new ScriptingException("Exception occurred while executing script $scriptName . Reason :$exception")
     }
     
 }

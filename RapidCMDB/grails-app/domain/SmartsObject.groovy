@@ -7,14 +7,14 @@ class SmartsObject  implements com.ifountain.rcmdb.domain.GeneratedModel
     //AUTO_GENERATED_CODE
 
 
-    static datasources = ["eastRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]], "westRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]]]
+    static datasources = ["westRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]], "eastRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]]]
 
-    
-    String name ;
     
     String displayName ;
     
     String smartDs ;
+    
+    String name ;
     
     String creationClassName ;
     

@@ -87,7 +87,7 @@ class ModelGenerator
     {
         modelMetaDatas.each {modelName,modelMetaData->
             def model = modelMetaData.model;
-            if(model.getControllerFile().exists() && !model.getControllerFile().delete())
+            if(!model.getControllerFile().delete() && model.getControllerFile().exists())
             {
                 throw ModelGenerationException.couldNotDeleteOldController(model.name);                       
             }

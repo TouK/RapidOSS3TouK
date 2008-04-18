@@ -10,7 +10,4 @@ class RapidInsightConnection extends Connection{
         username(blank:false, nullable:false);
         password(blank:false,nullable:false);
     };
-    static mapping = {
-        tablePerHierarchy false
-    }
 }

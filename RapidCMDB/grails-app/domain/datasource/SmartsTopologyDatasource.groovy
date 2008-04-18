@@ -7,9 +7,6 @@ class SmartsTopologyDatasource extends BaseDatasource{
     SmartsConnection connection;
     def adapter;
     static transients =  ['adapter']
-    static mapping = {
-        tablePerHierarchy false
-    }
 
     def onLoad = {
         this.adapter = new TopologyAdapter(connection.name, 0, Logger.getRootLogger());

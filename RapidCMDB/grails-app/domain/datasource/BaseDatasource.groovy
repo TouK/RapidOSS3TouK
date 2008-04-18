@@ -4,9 +4,6 @@ class BaseDatasource {
      static constraints = {
          name(blank:false, nullable:false, unique:true);
      };
-     static mapping = {
-        tablePerHierarchy false
-     }
 
      String toString(){
          return "$name";

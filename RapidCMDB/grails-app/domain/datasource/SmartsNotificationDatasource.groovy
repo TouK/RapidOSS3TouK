@@ -7,9 +7,6 @@ class SmartsNotificationDatasource extends BaseDatasource{
     SmartsConnection connection;
     def adapter;
     static transients =  ['adapter']
-    static mapping = {
-        tablePerHierarchy false
-    }
 
     def onLoad = {
         this.adapter = new NotificationAdapter(connection.name, 0, Logger.getRootLogger());

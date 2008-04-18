@@ -9,9 +9,6 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
     String tableKeys;
     def adapter;
     static transients =  ['adapter']
-    static mapping = {
-        tablePerHierarchy false
-     }
      static constraints = {
         tableName(blank:false);
         tableKeys(blank:false)

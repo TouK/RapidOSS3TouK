@@ -12,7 +12,4 @@ class SmartsConnection extends Connection{
             username(blank:false, nullable:false);
             password(nullable:false);
      };
-     static mapping = {
-        tablePerHierarchy false
-    }
 }

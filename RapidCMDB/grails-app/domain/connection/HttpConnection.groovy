@@ -7,4 +7,7 @@ class HttpConnection extends Connection{
         baseUrl(blank:false, nullable:false);
      };
 
+    static mapping = {
+        tablePerHierarchy false
+    }
 }

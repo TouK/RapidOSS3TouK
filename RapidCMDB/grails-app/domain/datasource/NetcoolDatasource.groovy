@@ -14,7 +14,9 @@ class NetcoolDatasource extends BaseDatasource{
     def journalTableAdapter;
     def conversionsTableAdapter;
     def masterTableAdapter;
-
+    static mapping = {
+        tablePerHierarchy false
+     }
     static transients = ['statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter']
 
     def onLoad = {

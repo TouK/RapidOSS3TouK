@@ -9,6 +9,7 @@ class Connection {
        };
        static mapping = {
 	      table 'base_connection'
+	      tablePerHierarchy false
 	  } 
 
        String toString(){

@@ -1,4 +1,4 @@
-package datasource;
+package datasource
 import datasource.SingleTableDatabaseAdapter
 import org.apache.log4j.Logger
 import connection.NetcoolConnection
@@ -7,6 +7,7 @@ class NetcoolDatasource extends BaseDatasource{
     NetcoolConnection connection;
 
     static def STRING_COL_NAMES =[];
+    static def FIELDMAP =[:];
 
     def statusTableAdapter;
     def detailsTableAdapter;
@@ -28,15 +29,22 @@ class NetcoolDatasource extends BaseDatasource{
         def journalTableKey = "Serial";
         def conversionsTableKey = "Colname";
         def masterTableKey = "UID";
-       
+
         this.statusTableAdapter = new SingleTableDatabaseAdapter(connection.name, statusTable, statusTableKey, 0, Logger.getRootLogger());
         this.detailsTableAdapter = new SingleTableDatabaseAdapter(connection.name, detailsTable, detailsTableKey, 0, Logger.getRootLogger());
         this.journalTableAdapter = new SingleTableDatabaseAdapter(connection.name, journalTable, journalTableKey, 0, Logger.getRootLogger());
         this.conversionsTableAdapter = new SingleTableDatabaseAdapter(connection.name, conversionsTable, conversionsTableKey, 0, Logger.getRootLogger());
         this.masterTableAdapter = new SingleTableDatabaseAdapter(connection.name, masterTable, masterTableKey, 0, Logger.getRootLogger());
         if (STRING_COL_NAMES == null){
-            populateStringColumnNames();
+            STRING_COL_NAMES = populateStringColumnNames();
         }
+      	if (FIELDMAP== null){
+            FIELDMAP = populateFieldMap();
+        }
+    }
+
+    def getFields(){
+	    return FIELDMAP;
     }
 
     def getProperty(Map keys, String propName)
@@ -51,7 +59,7 @@ class NetcoolDatasource extends BaseDatasource{
 
     def getProperties(Map keys, List properties)
     {
-        def props = statusTableAdapter.getRecordMultiKey(keys, [propName]);
+        def props = statusTableAdapter.getRecordMultiKey(keys, properties);
         return props;
     }
 
@@ -118,6 +126,7 @@ class NetcoolDatasource extends BaseDatasource{
         updatedColumns.deleteCharAt(updatedColumns.length()-2);
 		sb.append(updatedColumns.toString());
 		sb.append(" where Identifier='").append(identifier).append("'");
+
 		statusTableAdapter.executeUpdate(sb.toString(), []);
     }
 
@@ -144,28 +153,6 @@ class NetcoolDatasource extends BaseDatasource{
 
     def list(){
         // ??????????????
-    }
-
-    def taskListAction(String identifier, boolean addToTaskList){
-        def updateProps =[:];
-		updateProps.put("Identifier",identifier);
-        if(addToTaskList){
-            updateProps.put("TaskList",1);
-        }
-		else{
-			updateProps.put("TaskList",0);
-        }
-        statusTableAdapter.updateRecord(updateProps);
-    }
-
-    def assignAction(identifier, ownerUID){
-        String partOfAlertText= "Alert assigned to user ";
-        assign(identifier, ownerUID, partOfAlertText);
-    }
-
-    def takeOwnershipAction(identifier, ownerUID) throws Exception	{
-          String partOfAlertText= "Ownership of alert taken by ";
-          assign(identifier, ownerUID, partOfAlertText);
     }
 
     def setSeverityAction(identifier, severity, userName) {
@@ -228,7 +215,29 @@ class NetcoolDatasource extends BaseDatasource{
 		writeToJournal(event.serial, text);
 	}
 
-    def acknowledgeAction(String identifier, boolean isAcknowledge, String userName) {
+    def taskListAction(identifier, boolean addToTaskList){
+        def updateProps =[:];
+		updateProps.put("Identifier",identifier);
+        if(addToTaskList){
+            updateProps.put("TaskList",1);
+        }
+		else{
+			updateProps.put("TaskList",0);
+        }
+        statusTableAdapter.updateRecord(updateProps);
+    }
+
+    def assignAction(identifier, ownerUID){
+        String partOfAlertText= "Alert assigned to user ";
+        assign(identifier, ownerUID, partOfAlertText);
+    }
+
+    def takeOwnershipAction(identifier, ownerUID) throws Exception	{
+          String partOfAlertText= "Ownership of alert taken by ";
+          assign(identifier, ownerUID, partOfAlertText);
+    }
+
+    def acknowledgeAction(identifier, boolean isAcknowledge, userName) {
 		String sql;
 		String text;
 		def event = getEvent(identifier);
@@ -318,13 +327,31 @@ class NetcoolDatasource extends BaseDatasource{
     private def populateStringColumnNames(){
         def query = "select * from alerts.status where StateChange >=" + Integer.MAX_VALUE ;
         def result = statusTableAdapter.executeQuery(query,[],0);
-        def data = result.getMetaData();
+        def meta = result.metaData;
         int i =1;
-        while( i <= data.getColumnCount()){
-            if(data.getColumnType(i) == 12 || data.getColumnType(i) == 1 || data.getColumnType(i) == -1 || data.getColumnType(i) == 2004){
-                STRING_COL_NAMES.add(data.getColumnName(i));
+        while( i <= meta.columnCount){
+            if(meta.getColumnType(i) == 12 || meta.getColumnType(i) == 1 || meta.getColumnType(i) == -1 || meta.getColumnType(i) == 2004){
+                STRING_COL_NAMES.add(meta.getColumnName(i));
             }
             i++;
         }
+        return STRING_COL_NAMES;
+    }
+
+    private def populateFieldMap(){
+	    def query = "select * from alerts.status";
+        def rs = statusTableAdapter.executeQuery(query,[],0);
+	 	def meta = rs.metaData;
+	 	def last = meta.columnCount+1;
+		for (i in 1..< last) {
+			if(meta.getColumnType(i) == 12 || meta.getColumnType(i) == 1 || meta.getColumnType(i) == -1 || meta.getColumnType(i) == 2004){
+				FIELDMAP.put(meta.getColumnLabel(i),"string"); //meta.getColumnType(i));
+			}
+			else{
+				FIELDMAP.put(meta.getColumnLabel(i),"number");
+			}
+		}
+		FIELDMAP.remove("Identifier");
+		return FIELDMAP;
     }
 }

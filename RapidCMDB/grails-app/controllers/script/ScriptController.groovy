@@ -1,17 +1,21 @@
-package script;
+package script
+
+import scripting.ScriptingService;
 
 class ScriptController {
+    public static final String SUCCESSFULLY_CREATED =  "Script created";
+    public static final String SCRIPT_DOESNOT_EXIST =  "Script does not exist";
     def scaffold = CmdbScript;
     def scriptingService;
     def save = {
         def script = new CmdbScript(params)
         if(script.save() && !script.hasErrors()) {
             scriptingService.addScript(script.name);
-            flash.message = "Script ${script.name} created"
-            redirect(action:show,id:script.id)
+            flash.message = SUCCESSFULLY_CREATED
+            redirect(action:show, controller:'script', id:script.id)
         }
         else {
-            render(view:'create',model:[cmdbScript:script])
+            render(view:'create', controller:'script', model:[cmdbScript:script])
         }
     }
 
@@ -34,7 +38,7 @@ class ScriptController {
         }
         else
         {
-            flash.message = "Script doesnot exist"
+            flash.message = SCRIPT_DOESNOT_EXIST
             redirect(action:list,controller:'script');
         }
     }
@@ -51,13 +55,14 @@ class ScriptController {
             }
             catch(t)
             {
-                render(text:t.getMessage(),contentType:"text/html",encoding:"UTF-8");
+                render(text:t.toString(),contentType:"text/html",encoding:"UTF-8");
             }
 
         }
         else
         {
-            return render(text:"Script doesnot exist",contentType:"text/html",encoding:"UTF-8");
+            flash.message = SCRIPT_DOESNOT_EXIST
+            redirect(action:list,controller:'script');
         }
     }
 }

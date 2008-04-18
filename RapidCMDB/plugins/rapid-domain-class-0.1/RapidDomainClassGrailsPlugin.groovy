@@ -5,10 +5,9 @@ import datasource.BaseDatasource
 import org.codehaus.groovy.grails.plugins.orm.hibernate.HibernateGrailsPlugin
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
 import org.apache.log4j.Logger
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.codehaus.groovy.grails.exceptions.InvalidPropertyException;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")

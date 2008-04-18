@@ -2,6 +2,7 @@ package model
 
 import datasource.BaseDatasource
 import org.springframework.orm.hibernate3.SessionFactoryUtils
+import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -27,7 +28,7 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils
  * Time: 9:58:10 AM
  * To change this template use File | Settings | File Templates.
  */
-class ModelPropertyControllerIntegrationTests extends GroovyTestCase{
+class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
      void setUp() {
         super.setUp();
         ModelProperty.list()*.delete();

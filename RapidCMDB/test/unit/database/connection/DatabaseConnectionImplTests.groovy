@@ -24,8 +24,8 @@ package database.connection;
 
 import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException;
-import test.util.DatabaseConnectionParams;
-import test.util.DatabaseConnectionImplTestUtils;
+import com.ifountain.rcmdb.test.util.DatabaseConnectionParams;
+import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils;
 import com.ifountain.core.test.util.RapidCoreTestCase
 import connection.DatabaseConnectionImpl;
 

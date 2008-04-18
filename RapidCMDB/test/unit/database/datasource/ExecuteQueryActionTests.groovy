@@ -28,7 +28,7 @@ import java.sql.SQLException;
 
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import connection.DatabaseConnectionImpl;
-import test.util.DatabaseConnectionImplTestUtils;
+import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils;
 import com.ifountain.core.test.util.RapidCoreTestCase
 import datasource.ExecuteQueryAction;
 

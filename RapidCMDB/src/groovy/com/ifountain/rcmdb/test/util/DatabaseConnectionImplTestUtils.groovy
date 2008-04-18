@@ -20,7 +20,7 @@
  *
  * Author Sezgin
  */
-package test.util;
+package com.ifountain.rcmdb.test.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

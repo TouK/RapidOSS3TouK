@@ -1,5 +1,5 @@
 package scripting;
-import com.ifountain.exceptions.scripting.ScriptingException;
+import com.ifountain.rcmdb.exception.scripting.ScriptingException;
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean

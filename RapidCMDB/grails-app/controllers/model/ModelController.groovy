@@ -1,6 +1,6 @@
 package model;
-import com.ifountain.domain.ModelGenerator
-import com.ifountain.domain.ModelUtils;
+import com.ifountain.rcmdb.domain.ModelGenerator
+import com.ifountain.rcmdb.domain.ModelUtils;
 
 class ModelController {
     def static String MODEL_DOESNOT_EXIST = "Model does not exist";

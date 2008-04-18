@@ -1,9 +1,10 @@
 package scripting
 import org.apache.commons.io.*
-import com.ifountain.exceptions.scripting.ScriptingException
+import com.ifountain.rcmdb.exception.scripting.ScriptingException
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.commons.DefaultGrailsApplication;
+import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 /**
  * Created by IntelliJ IDEA.
  * User: Administrator
@@ -11,7 +12,7 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsApplication;
  * Time: 9:26:20 AM
  * To change this template use File | Settings | File Templates.
  */
-class ScriptingServiceTests extends GroovyTestCase{
+class ScriptingServiceTests extends RapidCmdbTestCase{
     def expectedScriptMessage = "script executed successfully";
     def static base_directory = "../testoutput/";
     ScriptingService service;

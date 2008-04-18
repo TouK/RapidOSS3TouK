@@ -1,7 +1,8 @@
 package model
 
 import groovy.mock.interceptor.StubFor
-import datasource.BaseDatasource;
+import datasource.BaseDatasource
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
  * noted in a separate copyright notice. All rights reserved.
  * This file is part of RapidCMDB.
@@ -26,7 +27,7 @@ import datasource.BaseDatasource;
  * Time: 9:42:41 AM
  * To change this template use File | Settings | File Templates.
  */
-class ModelDatasourceControllerTests extends GroovyTestCase{
+class ModelDatasourceControllerTests extends RapidCmdbTestCase{
     def params
     def redirectParams
     def renderParams

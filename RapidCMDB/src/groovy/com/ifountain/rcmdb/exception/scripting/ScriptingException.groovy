@@ -1,4 +1,4 @@
-package com.ifountain.exceptions.scripting
+package com.ifountain.rcmdb.exception.scripting
 /**
  * Created by IntelliJ IDEA.
  * User: Administrator

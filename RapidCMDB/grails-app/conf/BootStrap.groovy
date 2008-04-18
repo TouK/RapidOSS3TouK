@@ -1,7 +1,5 @@
 import datasource.RCMDBDatasource
-import model.Model
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 class BootStrap {
 
      def init = { servletContext ->

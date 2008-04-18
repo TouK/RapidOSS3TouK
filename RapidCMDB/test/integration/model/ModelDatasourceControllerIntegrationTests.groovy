@@ -26,7 +26,9 @@
 package model
 
 import datasource.BaseDatasource
-class ModelDatasourceControllerIntegrationTests extends GroovyTestCase {
+import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
+
+class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
     void setUp() {
         super.setUp();

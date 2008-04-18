@@ -1,8 +1,10 @@
 package model
 
-import com.ifountain.domain.ModelGenerationException
+import com.ifountain.rcmdb.domain.ModelGenerationException
 import datasource.BaseDatasource
-import com.ifountain.domain.ModelUtils;
+import com.ifountain.rcmdb.domain.ModelUtils;
+import com.ifountain.rcmdb.test.util.IntegrationTestUtils
+import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -28,10 +30,10 @@ import com.ifountain.domain.ModelUtils;
  * Time: 9:07:45 AM
  * To change this template use File | Settings | File Templates.
  */
-class ModelControllerIntegrationTests extends GroovyTestCase{
+class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
    String modelName;
    String modelName2;
-    protected void setUp() {
+    public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         modelName = "Model1";
         modelName2 = "Model2";
@@ -39,21 +41,12 @@ class ModelControllerIntegrationTests extends GroovyTestCase{
         ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
     }
 
-    protected void tearDown() {
+    public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName);
         ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
     }
 
-    def resetController(controller)
-    {
-        controller.request.removeAllParameters()
-        controller.response.setCommitted(false)
-        controller.response.reset()
-        controller.flash.message = ""
-        controller.flash.errors = [];
-        controller.params.clear()
-    }
 
 
     void testDeleteModel() {
@@ -68,7 +61,7 @@ class ModelControllerIntegrationTests extends GroovyTestCase{
         assertEquals("/model/show/" + model.id, mdc.response.redirectedUrl);
         assertTrue(modelFile.exists());
 
-        resetController(mdc);
+        IntegrationTestUtils.resetController(mdc);
         mdc.params["id"] = model.id;
         mdc.delete();
         assertNull (Model.get(model.id));
@@ -77,12 +70,12 @@ class ModelControllerIntegrationTests extends GroovyTestCase{
         assertFalse(modelControllerFile.exists());
         assertFalse(modelViewsDir.exists());
 
-        resetController(mdc);
+        IntegrationTestUtils.resetController(mdc);
         mdc.params["id"] = model.id;
         mdc.delete();
         assertEquals(mdc.flash.message, ModelController.MODEL_DOESNOT_EXIST, mdc.flash.message);
 
-        resetController(mdc);
+        IntegrationTestUtils.resetController(mdc);
         mdc.delete();
         assertEquals("/model/list", mdc.response.redirectedUrl);
     }

@@ -1,4 +1,5 @@
-/* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be 
+package com.ifountain.rcmdb.util;
+/* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
  * noted in a separate copyright notice. All rights reserved.
  * This file is part of RapidCMDB.
  * 

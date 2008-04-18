@@ -1,4 +1,4 @@
-import test.util.RapidIntegrationTestCase
+import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -24,7 +24,7 @@ import test.util.RapidIntegrationTestCase
  * Time: 9:58:10 AM
  * To change this template use File | Settings | File Templates.
  */
-class ModelTests extends RapidIntegrationTestCase{
+class ModelTests extends RapidCmdbIntegrationTestCase{
 
     void testAddWithInheritance(){
         DeviceComponent.add(name:"deviceComp1", creationClassName:"DeviceComponent");

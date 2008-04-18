@@ -1,4 +1,4 @@
-package com.ifountain.domain
+package com.ifountain.rcmdb.domain
 /**
  * Created by IntelliJ IDEA.
  * User: Administrator

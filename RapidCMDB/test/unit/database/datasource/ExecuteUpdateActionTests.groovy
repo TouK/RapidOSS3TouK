@@ -27,11 +27,10 @@ import groovy.util.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import test.util.DatabaseConnectionImplTestUtils;
+import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils;
 
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import connection.DatabaseConnectionImpl;
-import test.util.DatabaseConnectionImplTestUtils;
 import com.ifountain.core.test.util.RapidCoreTestCase
 import datasource.ExecuteUpdateAction;
 

@@ -1,4 +1,4 @@
-package com.ifountain.domain
+package com.ifountain.rcmdb.domain
 
 import model.Model
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
@@ -8,7 +8,7 @@ import model.ModelDatasourceKeyMapping
 import datasource.BaseDatasource
 import model.ModelRelation
 import org.apache.commons.io.FileUtils
-import org.codehaus.groovy.grails.commons.GrailsClassUtils;
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -34,10 +34,10 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils;
  * Time: 4:28:29 PM
  * To change this template use File | Settings | File Templates.
  */
-class ModelGeneratorTest extends GroovyTestCase{
+class ModelGeneratorTest extends RapidCmdbTestCase{
     def static base_directory = "../testoutput/";
 
-    protected void setUp() {
+    protected void setUp() {                        
         super.setUp();
         System.setProperty("base.dir", "RapidCMDB");
         FileUtils.deleteDirectory (new File(base_directory));

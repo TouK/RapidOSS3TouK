@@ -1,4 +1,4 @@
-package com.ifountain.domain
+package com.ifountain.rcmdb.domain
 
 import model.Model
 import org.apache.commons.io.FileUtils

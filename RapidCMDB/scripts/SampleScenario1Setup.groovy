@@ -101,7 +101,7 @@ def constructModel(model, listOfProperties, listOfDatasources, listOfKeyMappings
 }
 
 def createRelation(firstModel, secondModel, firstName, secondName, firstCar, secondCar){
-    ModelRelation.add(firstModel:firstModel, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar)();
+    ModelRelation.add(firstModel:firstModel, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar);
     firstModel.refresh();
     secondModel.refresh();
 }

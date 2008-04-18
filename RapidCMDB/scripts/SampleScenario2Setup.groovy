@@ -171,7 +171,7 @@ def checkDatasources(){
 
 	dsResource2 = SingleTableDatabaseDatasource.findByName("dsResource2");
 	if (dsResource2 == null){
-	    dsResource1 = SingleTableDatabaseDatasource.add(connection:conn1, name:"dsResource2", tableName:"resources2", tableKeys:"ID");
+	    dsResource2 = SingleTableDatabaseDatasource.add(connection:conn1, name:"dsResource2", tableName:"resources2", tableKeys:"ID");
 	}
 	datasources.put("resource2",dsResource2);
 	return datasources;

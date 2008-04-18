@@ -22,5 +22,5 @@ then
 	rm -r $RS_HOME/temp
 fi
 . $GRAILS_HOME/bin/startGrails
-JAVA_OPTS="-Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp $JAVA_OPTS"
+JAVA_OPTS=" -Ddisable.auto.recompile=true -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp $JAVA_OPTS"
 startGrails com.ifountain.RapidGrailsScriptRunner  "$@"

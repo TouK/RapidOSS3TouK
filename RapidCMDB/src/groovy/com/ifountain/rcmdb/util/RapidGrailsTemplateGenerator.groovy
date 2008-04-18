@@ -1,3 +1,4 @@
+package com.ifountain.rcmdb.util
 import org.codehaus.groovy.grails.scaffolding.DefaultGrailsTemplateGenerator
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.ApplicationHolder

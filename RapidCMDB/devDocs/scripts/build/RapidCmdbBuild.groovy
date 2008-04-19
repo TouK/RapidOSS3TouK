@@ -46,7 +46,7 @@ class RapidCmdbBuild extends Build{
 			ant.classpath(refid : "classpath");
 		}
 
-		ant.copy(todir : "$env.dist_rapid_cmdb/src/groovy"){
+		ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/ext"){
 			ant.fileset(dir : "$env.rapid_ext/smarts/groovy"){
                 if(!TEST){
                     ant.exclude(name:"**/test/**")
@@ -80,7 +80,7 @@ class RapidCmdbBuild extends Build{
         ant.delete(dir : env.distribution+"/RapidServer");
         ant.delete(file: "$env.distribution/NetcoolModules.zip");
 
-		ant.copy(todir : "$env.dist_rapid_cmdb/src/groovy"){
+		ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/ext"){
 			ant.fileset(dir : "$env.rapid_ext/netcool/groovy"){
                 if(!TEST){
                     ant.exclude(name:"**/test/**")

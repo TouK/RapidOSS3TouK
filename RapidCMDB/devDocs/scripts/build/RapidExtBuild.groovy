@@ -46,7 +46,7 @@ class RapidExtBuild extends Build{
 
 
 	def copyResourcesForJar(){
-        ant.copy(todir : "$env.dist_rapid_cmdb/src/groovy"){
+        ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/ext"){
 			ant.fileset(dir : "$env.rapid_ext/database/groovy"){
                 if(!TEST){
                     ant.exclude(name:"**/test/**")

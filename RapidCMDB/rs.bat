@@ -16,6 +16,6 @@ if "%RS_HOME%"=="" (
 :begin
 set GRAILS_HOME=%RS_HOME%
 rmdir /s /q %RS_HOME%\temp
-CALL "%GRAILS_HOME%\bin\startGrails.bat" "%GRAILS_HOME%" com.ifountain.RapidGrailsScriptRunner  %* -Dserver.port=12222 -Dgrails.work.dir=%RS_HOME%\temp -Ddisable.auto.recompile=true
+CALL "%GRAILS_HOME%\bin\startGrails.bat" "%GRAILS_HOME%" com.ifountain.grails.RapidGrailsScriptRunner  %* -Dserver.port=12222 -Dgrails.work.dir=%RS_HOME%\temp -Ddisable.auto.recompile=true
 
 :end

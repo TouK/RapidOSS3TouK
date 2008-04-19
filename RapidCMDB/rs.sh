@@ -19,7 +19,7 @@ export GRAILS_HOME=$RS_HOME
 
 if [ -f "$RS_HOME/temp" ]
 then 
-	rm -r $RS_HOME/temp
+	rm -r $RS_HOME/temp/projects
 fi
 . $GRAILS_HOME/bin/startGrails
 JAVA_OPTS=" -Ddisable.auto.recompile=true -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp $JAVA_OPTS"

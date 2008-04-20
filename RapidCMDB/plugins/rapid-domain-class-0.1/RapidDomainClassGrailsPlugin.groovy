@@ -213,6 +213,7 @@ class RapidDomainClassGrailsPlugin {
                         else if(relation.isManyToOne())
                         {
                             domainObject.setProperty(relation.name, null);
+                            value."removeFrom${relation.upperCasedOtherSideName}"(domainObject);
                         }
                         else if(relation.isOneToMany())
                         {

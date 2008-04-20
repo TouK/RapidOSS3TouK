@@ -287,35 +287,43 @@ class RapidDomainClassGrailsPlugin {
             return delegate.add(props, true);
         }
         mc.'static'.add = {Map props, Boolean flush->
-            def sampleBean = mc.getTheClass().newInstance();
-            def relationMap = [:]
-            props.each{key,value->
-                def metaProp = mc.getMetaProperty(key);
-                if(metaProp)
-                {
-                    if(!relations.containsKey(key))
+            def existingInstance = mc.invokeStaticMethod(mc.theClass, "get", [props] as Object[]);
+            if(!existingInstance)
+            {
+                def sampleBean = mc.getTheClass().newInstance();
+                def relationMap = [:]
+                props.each{key,value->
+                    def metaProp = mc.getMetaProperty(key);
+                    if(metaProp)
                     {
-                        sampleBean.setProperty (key, getPropertyRealValue(metaProp.type, value));
-                    }
-                    else
-                    {
-                        relationMap[key] = value;
+                        if(!relations.containsKey(key))
+                        {
+                            sampleBean.setProperty (key, getPropertyRealValue(metaProp.type, value));
+                        }
+                        else
+                        {
+                            relationMap[key] = value;
+                        }
                     }
                 }
-            }
-            def returnedBean = sampleBean.save(flush:flush);
-            if(returnedBean && !relationMap.isEmpty())
-            {
-                returnedBean.addRelation(relationMap, false);
-                returnedBean = returnedBean.save(flush:flush);
-            }
-            if(!returnedBean)
-            {
-                return sampleBean;
+                def returnedBean = sampleBean.save(flush:flush);
+                if(returnedBean && !relationMap.isEmpty())
+                {
+                    returnedBean.addRelation(relationMap, false);
+                    returnedBean = returnedBean.save(flush:flush);
+                }
+                if(!returnedBean)
+                {
+                    return sampleBean;
+                }
+                else
+                {
+                    return returnedBean;
+                }
             }
             else
             {
-                return returnedBean;
+                return existingInstance.update(props);
             }
         }
     }
@@ -433,12 +441,43 @@ class RapidDomainClassGrailsPlugin {
     def addQueryMethods(dc, application, ctx)
     {
         def mc = dc.metaClass;
-        mc.'static'.get = {Map keys->
-            def sampleBean = mc.getTheClass().newInstance();
-            keys.each{key,value->
-                sampleBean.setProperty (key, value);
+        def datasourceMetaData = new DatasourceConfigurationCache(dc);
+        if(datasourceMetaData.masterName)
+        {
+            def getMethodName = "findBy"
+            def masterDsKeyMetaData = datasourceMetaData.datasources[datasourceMetaData.masterName].keys;
+            def getMethodParams = [];
+            int keyCount = 0;
+            masterDsKeyMetaData.each{keyName, keyProps->
+                if(keyCount == masterDsKeyMetaData.size() -1)
+                {
+                    getMethodName += DomainClassUtils.getUppercasedPropertyName(keyName);
+                }
+                else
+                {
+                    getMethodName += DomainClassUtils.getUppercasedPropertyName(keyName) + "And";
+                }
+                keyCount++;
+                getMethodParams += keyName;
             }
-            return mc.invokeStaticMethod(delegate, "find", sampleBean)
+
+            mc.'static'.get = {Map searchParams->
+                def params = [];
+                getMethodParams.each{key->
+                    params += searchParams[key];
+                }
+                return mc.invokeStaticMethod(delegate, getMethodName, params as Object[])
+            }
+        }
+        else
+        {
+            mc.'static'.get = {Map searchParams->
+                def sampleBean = mc.getTheClass().newInstance();
+                searchParams.each{key,value->
+                    sampleBean.setProperty (key, value);
+                }
+                return mc.invokeStaticMethod(delegate, "find", sampleBean)
+            }
         }
     }
     def registerDynamicMethods(dc, application, ctx)
@@ -588,8 +627,8 @@ class Relation
         this.name = name;
         this.otherSideName = otherSideName;
         this.otherSideClass = otherClass;
-        this.upperCasedName = getUppercasedRelationName(name);
-        this.upperCasedOtherSideName = getUppercasedRelationName(otherSideName);
+        this.upperCasedName = DomainClassUtils.getUppercasedPropertyName(name);
+        this.upperCasedOtherSideName = DomainClassUtils.getUppercasedPropertyName(otherSideName);
         def relationPropClass = cls.metaClass.getMetaProperty(name).getType();
         def otherSidePropClass = otherClass.metaClass.getMetaProperty(otherSideName).getType();
         def isSelfCollection = Collection.isAssignableFrom(relationPropClass);
@@ -612,17 +651,7 @@ class Relation
         }
     }
 
-    def getUppercasedRelationName(String relName)
-    {
-        if(relName.length() == 1)
-        {
-            return relName.toUpperCase();
-        }
-        else
-        {
-            return relName.substring(0,1).toUpperCase()+relName.substring(1);
-        }
-    }
+
 
     def isOneToOne()
     {
@@ -819,11 +848,18 @@ class DatasourceConfigurationCache
 {
     def datasources;
     def domainMetaClass;
+    def masterName;
     public DatasourceConfigurationCache(domainClass)
     {
         datasources = [:];
         constructDatasources(domainClass);
         domainMetaClass = domainClass.metaClass;
+        datasources.each{dsName, ds->
+            if(ds.master)
+            {
+                masterName = dsName;
+            }
+        }
     }
 
     def hasDatasources()
@@ -916,4 +952,19 @@ class RelationSetList extends ArrayList
         super(c);
     }
 
+}
+
+class DomainClassUtils
+{
+    def static getUppercasedPropertyName(String propName)
+    {
+        if(propName.length() == 1)
+        {
+            return propName.toUpperCase();
+        }
+        else
+        {
+            return propName.substring(0,1).toUpperCase()+propName.substring(1);
+        }
+    }
 }

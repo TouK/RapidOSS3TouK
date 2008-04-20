@@ -96,7 +96,10 @@ class ${className}Controller {
                     }
                     else
                     {
-                        returnedParams[propName] = propValue;
+                        if(propValue.length() != 0)
+                        {
+                            returnedParams[propName] = propValue;
+                        }
                     }
                 }
             }

@@ -319,7 +319,10 @@ class RapidDomainClassGrailsPlugin {
                 }
                 else
                 {
-                    returnedBean.onLoad();
+                    if(mc.onLoad)
+                    {
+                        returnedBean.onLoad();
+                    }
                     return returnedBean;
                 }
             }

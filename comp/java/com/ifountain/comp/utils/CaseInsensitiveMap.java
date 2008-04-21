@@ -134,4 +134,26 @@ public class CaseInsensitiveMap implements Map
     public String toString() {
     	return map.toString();
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if(o instanceof Map)
+        {
+            Map other = (Map) o;
+            Set entrySet = other.entrySet();
+            if(entrySet.size() != this.entrySet().size()){
+                return false;
+            }
+            for (Iterator iterator = entrySet.iterator(); iterator.hasNext();)
+            {
+                Entry e = (Entry) iterator.next();
+                String key = (String)e.getKey();
+                Object value = e.getValue();
+                if(!this.containsKey(key) || (this.get(key) == null && value != null) || (this.get(key) != null && !this.get(key).equals(value))){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

@@ -55,6 +55,7 @@ class ScriptController {
             }
             catch(t)
             {
+                log.warn("", t);
                 render(text:t.toString(),contentType:"text/html",encoding:"UTF-8");
             }
 

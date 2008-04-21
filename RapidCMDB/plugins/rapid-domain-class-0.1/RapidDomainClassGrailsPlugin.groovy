@@ -319,6 +319,7 @@ class RapidDomainClassGrailsPlugin {
                 }
                 else
                 {
+                    returnedBean.onLoad();
                     return returnedBean;
                 }
             }

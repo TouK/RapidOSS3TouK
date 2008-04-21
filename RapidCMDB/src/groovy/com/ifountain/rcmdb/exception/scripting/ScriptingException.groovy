@@ -23,12 +23,12 @@ class ScriptingException extends Exception{
 
     public static  ScriptingException runScriptException(scriptName, lineNumber, exception)
     {
-        return new ScriptingException("Exception occurred while executing script $scriptName at line $lineNumber . Reason :$exception")
+        return new ScriptingException("Exception occurred while executing script $scriptName at line $lineNumber . Reason :$exception", exception)
     }
 
     public static  ScriptingException compileScriptException(scriptName, exception)
     {
-        return new ScriptingException("Exception occurred while executing script $scriptName . Reason :$exception")
+        return new ScriptingException("Exception occurred while executing script $scriptName . Reason :$exception", exception)
     }
     
 }

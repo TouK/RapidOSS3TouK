@@ -192,6 +192,26 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         }
     }
 
+    public void testRunWithReturningNothing()
+    {
+        String scriptName = "script1"
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptingService.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        scriptFile.write ("return null");
+        try
+        {
+            def script = new CmdbScript(name:scriptName);
+            def scriptController = new ScriptController();
+            scriptController.scriptingService = scriptingService;
+            scriptController.params["id"] = script.name;
+            scriptController.run();
+            assertEquals("", scriptController.response.contentAsString);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
+
     public void testRunReturnsErrorIfScriptContainsErrors()
     {
         def exceptionMessage = "Error occurred";

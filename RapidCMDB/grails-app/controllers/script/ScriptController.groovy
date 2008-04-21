@@ -51,7 +51,7 @@ class ScriptController {
             try
             {
                 def result = scriptingService.runScript(script.name,  bindings);
-                render(text:result,contentType:"text/html",encoding:"UTF-8");
+                render(text:String.valueOf(result),contentType:"text/html",encoding:"UTF-8");
             }
             catch(t)
             {

@@ -116,7 +116,18 @@ public class CaseInsensitiveMapTest extends RCompTestCase
         assertEquals("value3", caseMap.get("key1"));
         
     }
-    
+
+    public void testEquals()
+    {
+        Map map = new LinkedHashMap();
+        map.put("keY1", "value1");
+        map.put("keY2", "value2");
+        map.put("KeY1", "value3");
+
+        Map caseMap = new CaseInsensitiveMap(map);
+        assertEquals(map, caseMap);
+    }
+
 //    public void testPerformance() throws Exception
 //    {
 //        Map normalMap = new HashMap();

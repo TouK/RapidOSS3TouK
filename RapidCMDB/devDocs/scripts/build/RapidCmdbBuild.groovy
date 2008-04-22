@@ -132,11 +132,12 @@ class RapidCmdbBuild extends Build{
 
     def testBuild(){
         TEST = true;
-        def zipFileName = build();
+        build();
+        def versionDate = getVersionWithDate();
         ant.delete(dir : env.distribution+"/RapidServer");
-        ant.unzip(src : zipFileName, dest : env.distribution);
-        ant.unzip(src : "$env.distribution/SmartsModules.zip", dest : "$env.distribution/RapidServer");
-        ant.unzip(src : "$env.distribution/NetcoolModules.zip", dest : "$env.distribution/RapidServer");
+        ant.unzip(src : "$env.distribution/RapidCMDB$versionDate"+".zip", dest : env.distribution);
+        ant.unzip(src : "$env.distribution/SmartsModule$versionDate"+".zip", dest : "$env.distribution/RapidServer");
+        ant.unzip(src : "$env.distribution/NetcoolModule$versionDate"+".zip", dest : "$env.distribution/RapidServer");
     }
 
 	def build(){

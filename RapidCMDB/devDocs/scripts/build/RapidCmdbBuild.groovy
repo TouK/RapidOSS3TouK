@@ -42,7 +42,7 @@ class RapidCmdbBuild extends Build{
 
 	def buildSmartsModules(){
         ant.delete(dir : env.distribution+"/RapidServer");
-        ant.delete(file: "$env.distribution/SmartsModules.zip");
+        ant.delete(file: "$env.distribution/SmartsModule*.zip");
         ant.delete(dir : env.rapid_ext_build);
 		ant.mkdir(dir : env.rapid_ext_build);
 
@@ -76,13 +76,15 @@ class RapidCmdbBuild extends Build{
         ant.jar(destfile : env.rapid_ext_jar, basedir : env.rapid_ext_build);
         ant.copy(file : env.rapid_ext_jar, toDir : env.dist_rapid_cmdb_lib);
 
-        ant.zip(destfile : "$env.distribution/SmartsModules.zip"){
+        def versionDate = getVersionWithDate();
+        def zipFileName = "$env.distribution/SmartsModule$versionDate"+".zip"
+        ant.zip(destfile : zipFileName){
             ant.zipfileset(dir : "$env.distribution/RapidServer")
         }
     }
     def buildNetcoolModules(){
         ant.delete(dir : env.distribution+"/RapidServer");
-        ant.delete(file: "$env.distribution/NetcoolModules.zip");
+        ant.delete(file: "$env.distribution/NetcoolModule*.zip");
 
 		ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/ext"){
 			ant.fileset(dir : "$env.rapid_ext/netcool/groovy"){
@@ -104,9 +106,28 @@ class RapidCmdbBuild extends Build{
 		}
 
 //        ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexSmarts.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
-        ant.zip(destfile : "$env.distribution/NetcoolModules.zip"){
+        def versionDate = getVersionWithDate();
+        def zipFileName = "$env.distribution/NetcoolModule$versionDate"+".zip"
+        ant.zip(destfile : zipFileName){
             ant.zipfileset(dir : "$env.distribution/RapidServer")
         }
+    }
+    
+    def buildSample(sampleName){
+        ant.delete(dir : env.distribution+"/RapidServer");
+        ant.delete(file: "${env.distribution}/${sampleName}*.zip");
+
+		ant.copy(todir : "$env.dist_rapid_cmdb/scripts"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/scripts"){
+                ant.include(name:"${sampleName}*.groovy")
+            };
+        }
+
+        def versionDate = getVersionWithDate();
+        def zipFileName = "${env.distribution}/${sampleName}${versionDate}"+".zip"
+        ant.zip(destfile : zipFileName){
+            ant.zipfileset(dir : "$env.distribution/RapidServer")
+        }    	
     }
 
     def testBuild(){
@@ -223,6 +244,8 @@ class RapidCmdbBuild extends Build{
         }
         buildSmartsModules();
         buildNetcoolModules();
+        buildSample("Sample1");
+        buildSample("Sample2");
         return zipFileName;
 	}
 

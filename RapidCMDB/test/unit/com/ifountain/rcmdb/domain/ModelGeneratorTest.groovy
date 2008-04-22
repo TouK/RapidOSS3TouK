@@ -39,7 +39,10 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
     protected void setUp() {                        
         super.setUp();
-        System.setProperty("base.dir", "RapidCMDB");
+        if(System.getProperty("base.dir") == null)
+        {
+            System.setProperty("base.dir", "RapidCMDB");
+        }
         FileUtils.deleteDirectory (new File(base_directory));
         new File(base_directory).mkdirs();        
     }

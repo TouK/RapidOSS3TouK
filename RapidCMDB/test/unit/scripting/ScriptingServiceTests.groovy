@@ -190,7 +190,6 @@ class ScriptingServiceTests extends RapidCmdbTestCase{
 
     public void testAfterPropertiesSet()
     {
-        String defaultBaseDir = System.getProperty("base.dir")
         def defaultApplication = ApplicationHolder.application;
 
         System.setProperty ("base.dir", base_directory);
@@ -217,8 +216,6 @@ class ScriptingServiceTests extends RapidCmdbTestCase{
         }
         finally
         {
-            if(defaultBaseDir)
-            System.setProperty ("base.dir", defaultBaseDir);
             ApplicationHolder.application = defaultApplication;
         }
 

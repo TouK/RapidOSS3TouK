@@ -12,8 +12,8 @@ import com.ifountain.comp.test.util.testcase.RapidTestCase
 class RapidCmdbTestCase extends RapidTestCase{
     def defaultBaseDir;
     protected void setUp() {
-        super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         defaultBaseDir = System.getProperty("base.dir", ".");
+        super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
     }
 
     protected void tearDown() {

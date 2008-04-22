@@ -1,1 +1,0 @@
-The explanation for sample1

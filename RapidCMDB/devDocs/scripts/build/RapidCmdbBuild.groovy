@@ -236,7 +236,7 @@ class RapidCmdbBuild extends Build{
 		versionNo = verReader.readLine().substring(9);
 		
 		buildNo =  new java.text.SimpleDateFormat("yyMMddHH").format(new Date(System.currentTimeMillis()));
-		verFile.append("\nbuild: " + buildNo);
+		verFile.append("\nBuild: " + buildNo);
 	}
 
     def buildDependent(){

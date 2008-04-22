@@ -24,6 +24,10 @@ package build;
  * To change this template use File | Settings | File Templates.
  */
 class RapidCmdbBuild extends Build{
+	 
+	def versionNo; 
+	def buildNo; 
+	 
     static void main(String []args){
 		RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();
 		rapidCmdbBuilder.run(args);
@@ -123,6 +127,8 @@ class RapidCmdbBuild extends Build{
 			ant.fileset(file : "$env.rapid_cmdb_cvs/rsbatch.sh");
 			ant.fileset(file : env.version);
 		}
+		
+		setVersionAndBuildNumber();
 
 		ant.copy(todir : "$env.dist_rapid_cmdb/grails-app"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app"){
@@ -197,7 +203,7 @@ class RapidCmdbBuild extends Build{
 //		ant.javac(srcdir : env.rapid_cmdb_src, destdir : env.rapid_cmdb_build, excludes: getExcludedClasses()){
 //			ant.classpath(refid : "classpath");
 //		}
-//		ant.jar(destfile : env.rapid_cmdb_jar, basedir : env.rapid_cmdb_build, manifest : env.version);
+//		ant.jar(destfile : env.rapid_cmdb_jar, basedir : env.rapid_cmdb_build, manifest : env.versionInBuild);
 //        ant.copy(file : env.rapid_cmdb_jar, toDir : env.dist_rapid_cmdb_lib);
 		copyDependentJars();
 		unzipGrails();
@@ -221,12 +227,17 @@ class RapidCmdbBuild extends Build{
 	}
 
 	def getVersionWithDate(){
-        def dateStr =  new java.text.SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
-
-        def verReader =new File (env.version).newReader();
-        def ver = verReader.readLine().substring(9);
-        return "_$ver" + "_" + "$dateStr";
+        return "_$versionNo" + "_" + "$buildNo";
     }
+	
+	def setVersionAndBuildNumber(){
+		def verFile = new File (env.versionInBuild);
+		def verReader =verFile.newReader();
+		versionNo = verReader.readLine().substring(9);
+		
+		buildNo =  new java.text.SimpleDateFormat("yyMMddHH").format(new Date(System.currentTimeMillis()));
+		verFile.append("\nbuild: " + buildNo);
+	}
 
     def buildDependent(){
         new RapidCompBuild().run ([]);

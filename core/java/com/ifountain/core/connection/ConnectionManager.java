@@ -156,6 +156,7 @@ public class ConnectionManager
                 logger.warn("An exception occurred while destroying ConnectionPool " + connectionName);
             }
         }
+        pools.clear();
         isInitialized = false;
     }
 

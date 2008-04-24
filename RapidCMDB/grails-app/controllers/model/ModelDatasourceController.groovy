@@ -4,12 +4,14 @@ class ModelDatasourceController {
 
     def scaffold = ModelDatasource;
     def show = {
+        def keyMappingSortProp = params.keyMappingSortProp != null ? params.keyMappingSortProp : "property"
+        def keyMappingSortOrder = params.keyMappingSortOrder != null ? params.keyMappingSortOrder : "asc"
         def modelDatasource = ModelDatasource.get(params.id)
         if (!modelDatasource) {
             flash.message = "ModelDatasource not found with id ${params.id}"
             redirect(action: list)
         }
-        else {return [modelDatasource: modelDatasource]}
+        else {return [modelDatasource: modelDatasource, keyMappingSortOrder:keyMappingSortOrder, keyMappingSortProp:keyMappingSortProp]}
     }
 
 

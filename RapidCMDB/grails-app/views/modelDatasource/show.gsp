@@ -49,15 +49,32 @@
         <span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">KeyMapping List</span>
         <span class="menuButton"><g:link controller="modelDatasourceKeyMapping" params="['modelDatasource.id':modelDatasource?.id]" class="create" action="create">New KeyMapping</g:link></span>
         <div class="list">
+            <%
+                def keyMappingList = modelDatasource.keyMappings.sort {p1, p2 ->
+                    def val1 = p1."${keyMappingSortProp}".toString();
+                    def val2 = p2."${keyMappingSortProp}".toString();
+                    return keyMappingSortOrder == "asc" ? (val2 < val1 ? 1 : -1) : (val2 > val1 ? 1 : -1);
+                }
+
+                def propertySortLinkParams = ['keyMappingSortProp': 'property',
+                        'keyMappingSortOrder': keyMappingSortProp == 'property' && keyMappingSortOrder == 'asc' ? 'desc' : 'asc'];
+                def nameInDsSortLinkParams = ['keyMappingSortProp': 'nameInDatasource',
+                        'keyMappingSortOrder': keyMappingSortProp == 'nameInDatasource' && keyMappingSortOrder == 'asc' ? 'desc' : 'asc'];
+
+            %>
             <table>
                 <thead>
                     <tr>
-                        <g:sortableColumn property="property" title="Property"/>
-                        <g:sortableColumn property="nameInDatasource" title="Name In Datasource"/>
+                        <th class="${keyMappingSortProp == 'property' ? 'sorted ' + keyMappingSortOrder : ''}">
+                            <g:link action="show" id="${modelDatasource.id}" params="${propertySortLinkParams}">Property</g:link>
+                        </th>
+                        <th class="${keyMappingSortProp == 'nameInDatasource' ? 'sorted ' + keyMappingSortOrder : ''}">
+                            <g:link action="show" id="${modelDatasource.id}" params="${nameInDsSortLinkParams}">Name In Datasource</g:link>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <g:each in="${modelDatasource.keyMappings}" status="i" var="modelDatasourceKeyMapping">
+                    <g:each in="${keyMappingList}" status="i" var="modelDatasourceKeyMapping">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
                             <td><g:link action="show" controller="modelDatasourceKeyMapping" id="${modelDatasourceKeyMapping.id}">${modelDatasourceKeyMapping.property?.encodeAsHTML()}</g:link></td>

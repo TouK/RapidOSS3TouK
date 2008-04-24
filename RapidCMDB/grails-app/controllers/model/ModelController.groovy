@@ -18,12 +18,26 @@ class ModelController {
     }
 
     def show = {
+        def modelPropertySortProp = params.modelPropertySortProp != null ? params.modelPropertySortProp : "name"
+        def modelPropertySortOrder = params.modelPropertySortOrder != null ? params.modelPropertySortOrder : "asc"
+        def modelDatasourceSortProp = params.modelDatasourceSortProp != null ? params.modelDatasourceSortProp : "datasource"
+        def modelDatasourceSortOrder = params.modelDatasourceSortOrder != null ? params.modelDatasourceSortOrder : "asc"
+        def modelRelationSortProp = params.modelRelationSortProp != null ? params.modelRelationSortProp : "name"
+        def modelRelationSortOrder = params.modelRelationSortOrder != null ? params.modelRelationSortOrder : "asc"
+        def modelOpertionSortProp = params.modelOpertionSortProp != null ? params.modelOpertionSortProp : "name"
+        def modelOpertionSortOrder = params.modelOpertionSortOrder != null ? params.modelOpertionSortOrder : "asc"
+        
         def model = Model.get(params.id)
         if (!model) {
             flash.message = MODEL_DOESNOT_EXIST
             redirect(action: list)
         }
-        else {return [model: model]}
+        else {return [model: model,
+                modelPropertySortProp:modelPropertySortProp, modelPropertySortOrder:modelPropertySortOrder,
+                modelDatasourceSortProp:modelDatasourceSortProp, modelDatasourceSortOrder:modelDatasourceSortOrder,
+                modelRelationSortProp:modelRelationSortProp, modelRelationSortOrder:modelRelationSortOrder,
+                modelOpertionSortProp:modelOpertionSortProp, modelOpertionSortOrder:modelOpertionSortOrder
+        ]}
     }
 
     def delete = {

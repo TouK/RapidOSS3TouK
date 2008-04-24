@@ -22,19 +22,16 @@
                         <tr>
                         
                    	        <g:sortableColumn property="id" title="Id" />
-                        
                    	        <g:sortableColumn property="name" title="Name" />
-                        
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                     <g:each in="${cmdbScriptList}" status="i" var="cmdbScript">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                        
                             <td><g:link action="show" id="${cmdbScript.id}">${cmdbScript.id?.encodeAsHTML()}</g:link></td>
-                        
                             <td>${cmdbScript.name?.encodeAsHTML()}</td>
-                        
+                            <td><g:link action="run" id="${cmdbScript.name}">run</g:link></td> 
                         </tr>
                     </g:each>
                     </tbody>

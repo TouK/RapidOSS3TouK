@@ -45,7 +45,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
             {
                 if(!relations.containsKey(key))
                 {
-                    domainObject.setProperty (key, getPropertyRealValue(metaProp.type, value));
+                    domainObject.setProperty (key, DomainClassUtils.getPropertyRealValue(metaProp.type, value));
                 }
                 else
                 {

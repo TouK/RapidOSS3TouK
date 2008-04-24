@@ -55,7 +55,7 @@ class ScriptController {
             }
             catch(t)
             {
-                log.warn("", t);
+                log.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
                 render(text:t.toString(),contentType:"text/html",encoding:"UTF-8");
             }
 

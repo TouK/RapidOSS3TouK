@@ -23,6 +23,7 @@ package com.ifountain.rcmdb.util;
  * Time: 4:07:15 PM
  * To change this template use File | Settings | File Templates.
  */
-interface RapidCMDBConstants {
+class RapidCMDBConstants {
+    private RapidCMDBConstants(){}
     public static final String RCMDB = "RCMDB";
 }

@@ -15,10 +15,14 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import com.ifountain.rcmdb.domain.util.Relation
 import com.ifountain.rcmdb.domain.method.GetMethod
 import com.ifountain.rcmdb.domain.util.PropertyConfigurationCache
-import com.ifountain.rcmdb.domain.util.DatasourceConfigurationCache;
+import com.ifountain.rcmdb.domain.util.DatasourceConfigurationCache
+import com.ifountain.rcmdb.domain.OperationsArtefactHandler
+import org.codehaus.groovy.grails.plugins.web.ControllersGrailsPlugin
+import org.codehaus.groovy.grails.commons.ControllerArtefactHandler;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
-    def watchedResources = ["file:./grails-app/scripts/*.groovy"]
+    def artefacts = [ OperationsArtefactHandler ]
+    def watchedResources = ["file:./grails-app/operations/*Operations.groovy"]
     def version = 0.1
     def dependsOn = [:]
     def loadAfter = ['hibernate']
@@ -26,11 +30,10 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def doWithApplicationContext = { applicationContext ->
-        HibernateGrailsPlugin
     }
 
     def doWithWebDescriptor = { xml ->
-        def contextParam = xml."context-param"
+        /*def contextParam = xml."context-param"
         contextParam[contextParam.size()-1]+{
             'filter' {
                 'filter-name'('hibernateFilter')
@@ -44,7 +47,7 @@ class RapidDomainClassGrailsPlugin {
                 'filter-name'('hibernateFilter')
                 'url-pattern'("/*")
             }
-        }
+        }        */
     }
 
     def doWithDynamicMethods = { ctx ->
@@ -70,6 +73,11 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def onChange = { event ->
+        println "burda for1"
+        if(event.source && application.isArtefactOfType(OperationsArtefactHandler.TYPE, event.source)) {
+            println "burda for ${event.source}"
+            application.addArtefact(OperationsArtefactHandler.TYPE, event.source)
+        }
     }
 
     def onApplicationChange = { event ->

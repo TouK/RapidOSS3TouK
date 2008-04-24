@@ -38,6 +38,7 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
         datasourceMetaData = new DatasourceConfigurationCache(domainClass)
         if(datasourceMetaData.masterName)
         {
+            getMethodParams = [];
             getMethodName = "findBy"
             def masterDsKeyMetaData = datasourceMetaData.datasources[datasourceMetaData.masterName].keys;
             int keyCount = 0;

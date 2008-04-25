@@ -314,6 +314,18 @@
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchUrls">
+                <list>
+                  <option value="http://dev.ifountain.org/repos/os/tags/RapidCMDB-0.2.1_20080421" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/RapidModules" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../ThirdParty">
           <value>
             <SvnBranchConfiguration>

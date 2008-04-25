@@ -17,8 +17,10 @@ import com.ifountain.rcmdb.domain.method.GetMethod
 import com.ifountain.rcmdb.domain.util.PropertyConfigurationCache
 import com.ifountain.rcmdb.domain.util.DatasourceConfigurationCache
 import com.ifountain.rcmdb.domain.OperationsArtefactHandler
-import org.codehaus.groovy.grails.plugins.web.ControllersGrailsPlugin
-import org.codehaus.groovy.grails.commons.ControllerArtefactHandler;
+import com.ifountain.rcmdb.domain.DefaultOperationClass
+import org.codehaus.groovy.grails.commons.spring.RuntimeSpringConfiguration
+import org.codehaus.groovy.grails.commons.spring.DefaultRuntimeSpringConfiguration
+import org.codehaus.groovy.grails.commons.spring.GrailsRuntimeConfigurator;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def artefacts = [ OperationsArtefactHandler ]
@@ -58,14 +60,39 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def onChange = { event ->
-        println "burda for1"
         if(event.source && application.isArtefactOfType(OperationsArtefactHandler.TYPE, event.source)) {
-            println "burda for ${event.source}"
-            application.addArtefact(OperationsArtefactHandler.TYPE, event.source)
+           def context = event.ctx
+            if (!context) {
+                if (log.isDebugEnabled())
+                    log.debug("Application context not found. Can't reload")
+                return
+            }
+            def operationClass = application.addArtefact(OperationsArtefactHandler.TYPE, event.source)
+            RuntimeSpringConfiguration springConfig = new DefaultRuntimeSpringConfiguration(context);
+            GrailsRuntimeConfigurator.loadSpringGroovyResourcesIntoContext(springConfig, application.classLoader, context)
         }
     }
 
     def onApplicationChange = { event ->
+    }
+
+    def addOperationsSupport(dc, application, ctx)
+    {
+        def operationClassName = dc.name + DefaultOperationClass.OPERATIONS;
+        dc.metaClass.methodMissing =  {String name, args ->
+            Class operationClass = application.getClassForName (operationClassName);
+            println "OPE CLASS:${operationClass}"
+            if(operationClass)
+            {
+                def oprInstance = operationClass.newInstance();
+                operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
+                try {
+                    return oprInstance.invokeMethod(name, args)
+                } catch (MissingMethodException e) {
+                };
+            }
+            throw new MissingMethodException (name,  delegate.class, args);
+        }
     }
 
     def addBasicPersistenceMethods(dc, application, ctx)
@@ -76,14 +103,6 @@ class RapidDomainClassGrailsPlugin {
         def updateMethod = new UpdateMethod(mc, dc);
         def addRelationMethod = new AddRelationMethod(mc, dc);
         def removeRelationMethod = new RemoveRelationMethod(mc, dc);
-        try
-        {
-            dc.metaClass.getTheClass().newInstance().delete();
-        }
-        catch(t)
-        {
-            logger.debug("Delete method injection didnot performed by hibernate plugin.", t);
-        }
         mc.update = {Map props->
             delegate.update(props, true)
         }
@@ -144,6 +163,15 @@ class RapidDomainClassGrailsPlugin {
     }
     def registerDynamicMethods(dc, application, ctx)
     {
+        try
+        {
+            dc.metaClass.getTheClass().newInstance().delete();
+        }
+        catch(t)
+        {
+            logger.debug("Delete method injection didnot performed by hibernate plugin.", t);
+        }
+        addOperationsSupport(dc, application, ctx)
         addBasicPersistenceMethods(dc, application, ctx)
         addQueryMethods (dc, application, ctx)
         addUtilityMetods (dc, application, ctx)

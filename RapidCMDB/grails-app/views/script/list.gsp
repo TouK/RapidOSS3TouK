@@ -31,7 +31,7 @@
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                             <td><g:link action="show" id="${cmdbScript.id}">${cmdbScript.id?.encodeAsHTML()}</g:link></td>
                             <td>${cmdbScript.name?.encodeAsHTML()}</td>
-                            <td><g:link action="run" id="${cmdbScript.name}">run</g:link></td> 
+                            <td><g:link action="run" id="${cmdbScript.name}">Run</g:link></td> 
                         </tr>
                     </g:each>
                     </tbody>

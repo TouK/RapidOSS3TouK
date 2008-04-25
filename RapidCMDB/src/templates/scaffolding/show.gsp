@@ -1,4 +1,7 @@
-<% import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events %>
+<%
+   import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events;
+   import org.codehaus.groovy.grails.commons.GrailsClassUtils
+%>
 <%=packageName%>
 <html>
 <head>
@@ -31,13 +34,61 @@
             <tbody>
 
                 <%
+                    def classHierarchy = [];
+                    def datasourceMap = [:];
+                    def masterDsName;
+                    def tempClass = domainClass;
+                    while(tempClass && tempClass != Object.class){
+                        classHierarchy.add(tempClass);
+                        def realClass = tempClass.metaClass.getTheClass();
+                        tempClass = realClass.getSuperclass();
+                    }
+                    for(i=classHierarchy.size() -1; i >= 0 ; i--){
+                        def dClass = classHierarchy[i];
+                        def realClass = dClass.metaClass.getTheClass();
+                        if(dClass.metaClass.hasProperty(dClass, "datasources"))
+                        {
+                            def allDs = GrailsClassUtils.getStaticPropertyValue (realClass, "datasources");
+                            if(allDs)
+                            {
+                                datasourceMap.putAll(allDs);
+                            }
+                        }
+                    }
+                    datasourceMap.each{dsName, ds->
+                        if(ds.master)
+                        {
+                            masterDsName = dsName;
+                        }
+                    }
                     excludedProps = ['version',
                             Events.ONLOAD_EVENT,
                             Events.BEFORE_DELETE_EVENT,
                             Events.BEFORE_INSERT_EVENT,
                             Events.BEFORE_UPDATE_EVENT]
-                    props = domainClass.properties.findAll {!excludedProps.contains(it.name)}
-                    Collections.sort(props, comparator.constructors[0].newInstance([domainClass] as Object[]))
+
+                    def masterDatasourceKeyPropertyNames = [];
+                    def masterKeyProperties = [];
+                    def otherProperties = [];
+                    def props = [];
+                    datasourceMap[masterDsName].keys.each{key, value ->
+                        masterDatasourceKeyPropertyNames.add(key);
+                    }
+                    domainClass.properties.each {
+                        if(it.name == "id"){
+                            props.add(it);
+                        }
+                        else if(masterDatasourceKeyPropertyNames.contains(it.name)){
+                            masterKeyProperties.add(it);
+                        }
+                        else if(!excludedProps.contains(it.name)){
+                            otherProperties.add(it);
+                        }
+                    }
+                    masterKeyProperties.sort{it.name};
+                    otherProperties.sort{it.name};
+                    props.addAll(masterKeyProperties);
+                    props.addAll(otherProperties);
                     props.each {p -> %>
                 <tr class="prop">
                     <td valign="top" class="name">${p.name}:</td>

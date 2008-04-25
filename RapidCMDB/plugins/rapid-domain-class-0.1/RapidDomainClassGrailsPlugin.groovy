@@ -33,21 +33,6 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def doWithWebDescriptor = { xml ->
-        /*def contextParam = xml."context-param"
-        contextParam[contextParam.size()-1]+{
-            'filter' {
-                'filter-name'('hibernateFilter')
-                'filter-class'('org.codehaus.groovy.grails.orm.hibernate.support.GrailsOpenSessionInViewFilter')
-            }
-        }
-
-        def filter = xml."filter"
-        filter[filter.size()-1]+{
-            'filter-mapping'{
-                'filter-name'('hibernateFilter')
-                'url-pattern'("/*")
-            }
-        }        */
     }
 
     def doWithDynamicMethods = { ctx ->

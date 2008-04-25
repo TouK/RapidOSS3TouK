@@ -18,8 +18,7 @@
     static constraints={
     <%
         model.constraints.each{key, value->
-            if(!value.isEmpty())
-            {
+
                 def buf = new StringBuffer("$key(");
                 value.each{constKey, constValue->
                     buf.append("$constKey:");
@@ -41,9 +40,9 @@
                     print buf.toString() + ")";
                 }
      %>
-        
+
      <%
-            }
+           
         }
 
     %>

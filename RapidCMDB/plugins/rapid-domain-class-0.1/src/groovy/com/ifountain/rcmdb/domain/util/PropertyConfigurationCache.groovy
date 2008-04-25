@@ -2,6 +2,7 @@ package com.ifountain.rcmdb.domain.util
 
 import com.ifountain.comp.utils.CaseInsensitiveMap
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import datasource.BaseDatasource;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

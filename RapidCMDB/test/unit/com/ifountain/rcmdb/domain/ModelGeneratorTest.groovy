@@ -176,6 +176,12 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         fail("Constraint tests should be implemented");
     }
 
+    public void testConstraintsAreSorted()
+    {
+        //Keys are first, other properties are sorted in alphabetical order
+        fail("Constraint tests should be implemented");
+    }
+
     public void testWithSomeFederatedAndNormalProperties()
     {
 

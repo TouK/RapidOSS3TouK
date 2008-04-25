@@ -228,7 +228,7 @@ class ModelMetaData
         createDatasourceConfiguration (model);
         processProperties(model);
         processRelations(model);
-
+        sortConstraints();
     }
 
     def createDatasourceConfiguration(Model model)
@@ -313,9 +313,35 @@ class ModelMetaData
             {
                 constraints[masterKeyPropName]["unique"] = true;    
             }
-
         }
     }
+
+    private def sortConstraints(){
+        def masterDatasourceKeyPropertyNames = [];
+        def otherPropertyNames = [];
+        def propertyNames = [];
+        if(masterDatasource != null){
+            masterDatasource.keys.each{key,value->
+                masterDatasourceKeyPropertyNames.add(key);
+            }
+        }
+        propertyList.each{
+            if(!masterDatasourceKeyPropertyNames.contains(it.name)){
+                otherPropertyNames.add(it.name);
+            }
+        }
+        masterDatasourceKeyPropertyNames.sort{it};
+        otherPropertyNames.sort{it};
+        propertyNames.addAll(masterDatasourceKeyPropertyNames);
+        propertyNames.addAll(otherPropertyNames);
+
+        def tempConstraints = [:];
+        propertyNames.each{
+            tempConstraints.put(it, constraints.get(it));
+        }
+        constraints = tempConstraints;
+    }
+
     private def processRelation(cardinality, oppositeCardinality, name, oppositeName, oppositeType, isSecond)
     {
         if(cardinality == ModelRelation.ONE && oppositeCardinality == ModelRelation.MANY)

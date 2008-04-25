@@ -12,7 +12,7 @@ import org.codehaus.groovy.grails.commons.GrailsClass
 * To change this template use File | Settings | File Templates.
 */
 class OperationsArtefactHandler extends ArtefactHandlerAdapter{
-    public static final String TYPE = "DomainOperations"
+    public static final String TYPE = "Operations"
     private GrailsClass[] operationClasses;
     public OperationsArtefactHandler() {
         super(TYPE, DefaultOperationClass.class, DefaultOperationClass.class, DefaultOperationClass.OPERATIONS); //To change body of overridden methods use File | Settings | File Templates.

@@ -34,6 +34,11 @@
             <tbody>
 
                 <%
+                    excludedProps = ['version',
+                            Events.ONLOAD_EVENT,
+                            Events.BEFORE_DELETE_EVENT,
+                            Events.BEFORE_INSERT_EVENT,
+                            Events.BEFORE_UPDATE_EVENT]
                     def classHierarchy = [];
                     def datasourceMap = [:];
                     def masterDsName;
@@ -61,12 +66,6 @@
                             masterDsName = dsName;
                         }
                     }
-                    excludedProps = ['version',
-                            Events.ONLOAD_EVENT,
-                            Events.BEFORE_DELETE_EVENT,
-                            Events.BEFORE_INSERT_EVENT,
-                            Events.BEFORE_UPDATE_EVENT]
-
                     def masterDatasourceKeyPropertyNames = [];
                     def masterKeyProperties = [];
                     def otherProperties = [];

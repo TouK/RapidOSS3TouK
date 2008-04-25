@@ -48,6 +48,7 @@
                 <g:form style="display:inline">
                     <input type="hidden" name="id" value="${cmdbScript?.name}" />
                     <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="Reload" /></span>
+                    <span class="button"><g:actionSubmit class="run" value="Run" /></span>
                 </g:form>
             </div>
         </div>

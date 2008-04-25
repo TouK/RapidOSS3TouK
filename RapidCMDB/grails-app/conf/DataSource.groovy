@@ -8,6 +8,7 @@ dataSource {
 hibernate {
     cache.use_second_level_cache=true
     cache.use_query_cache=true
+    jdbc.batch_size=1
     cache.provider_class='org.hibernate.cache.EhCacheProvider'
 }
 // environment specific settings
@@ -22,6 +23,13 @@ environments {
 		dataSource {
             configClass = GrailsAnnotationConfiguration.class
             dbCreate = "update" // one of 'create', 'create-drop','update'
+			url = "jdbc:hsqldb:file:devDB;shutdown=true"
+		}
+	}
+	reset {
+		dataSource {
+            configClass = GrailsAnnotationConfiguration.class
+            dbCreate = "create-drop" // one of 'create', 'create-drop','update'
 			url = "jdbc:hsqldb:file:devDB;shutdown=true"
 		}
 	}

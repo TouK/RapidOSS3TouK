@@ -36,19 +36,42 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase;
  */
 class ModelGeneratorTest extends RapidCmdbTestCase{
     def static base_directory = "../testoutput/";
-
-    protected void setUp() {                        
+    def  modelRelations;
+    def  reverseModelRelations;
+    def  childModels;
+    def findAllByModelMethod;
+    def findAllByFirstModelMethod;
+    def findAllBySecondModelMethod;
+    protected void setUp() {
         super.setUp();
         if(System.getProperty("base.dir") == null)
         {
             System.setProperty("base.dir", "RapidCMDB");
         }
         FileUtils.deleteDirectory (new File(base_directory));
-        new File(base_directory).mkdirs();        
+        new File(base_directory).mkdirs();
+        modelRelations = [:];
+        reverseModelRelations = [:];
+        childModels = [:];
+        findAllByModelMethod = Model.metaClass.'static'.&findAllByParentModel;
+        findAllByFirstModelMethod = ModelRelation.metaClass.'static'.&findAllByFirstModel;
+        findAllBySecondModelMethod = ModelRelation.metaClass.'static'.&findAllBySecondModel;
+        Model.metaClass.'static'.findAllByParentModel = {Model model->
+            return childModels[model.name];
+        }
+        ModelRelation.metaClass.'static'.findAllBySecondModel = {Model model->
+            return reverseModelRelations[model.name];
+        }
+        ModelRelation.metaClass.'static'.findAllByFirstModel = {Model model->
+            return modelRelations[model.name];
+        }
     }
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        Model.metaClass.'static'.findByModelMethod = findAllByModelMethod;
+        Model.metaClass.'static'.findByFirstModelMethod = findAllByFirstModelMethod;
+        Model.metaClass.'static'.findBySecondModelMethod = findAllBySecondModelMethod;
     }
     private def addMasterDatasource(Model model)
     {
@@ -64,17 +87,18 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     {
         def model = new MockModel(name:"Class1");
         model.getControllerFile().createNewFile();
-        assertTrue (model.getControllerFile().exists());
         addMasterDatasource(model);
+        assertFalse (model.resourcesWillBeGenerated);
 
         ModelGenerator.getInstance().generateModel(model);
+        assertTrue (model.resourcesWillBeGenerated);
+        assertEquals (1, model.numberOfSaveCalls);
         assertTrue (new File(base_directory + "${model.name}.groovy").exists());
         Class cls = compileModel(model);
         def object = cls.newInstance();
         assertTrue("Generated models should extend from ${GeneratedModel.class.name}", GeneratedModel.class.isInstance (object));
         object.keyprop = "keypropvalue";
         checkExistanceOfMetaDataProperties(object);
-        assertFalse (model.getControllerFile().exists());
         assertEquals ("Class1[keyprop:keypropvalue]", object.toString());
 
         ModelGenerator.DEFAULT_IMPORTS.each {
@@ -82,43 +106,17 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         }
     }
 
-    public void testGenerateModelThrowsExceptionIfCannotDeleteController()
-    {
-        def model = new MockModel(name:"Class1");
-        addMasterDatasource(model);
-        model.getControllerFile().createNewFile();
-        assertTrue (model.getControllerFile().exists());
-        def fout = new FileOutputStream(model.getControllerFile());
-        try
-        {
-            ModelGenerator.getInstance().generateModel(model);
-            fail("Should throw exception");
-        }
-        catch(ModelGenerationException exception)
-        {
-            assertEquals (ModelGenerationException.couldNotDeleteOldController(model.name).getMessage(), exception.getMessage());
-        }
-        finally
-        {
-            fout.close();
-        }
-    }
-
     public void testGenerateModelExtendingAnotherModel()
     {
         def parentModel = new MockModel(name:"Class2");
         parentModel.getControllerFile().createNewFile();
-        assertTrue (parentModel.getControllerFile().exists());
         def childModel = new MockModel(name:"Class1", parentModel:parentModel);
         childModel.getControllerFile().createNewFile();
-        assertTrue (childModel.getControllerFile().exists());
         addMasterDatasource(parentModel);
 
         ModelGenerator.getInstance().generateModel(childModel);
         assertTrue (new File(base_directory + "${childModel.name}.groovy").exists());
         assertTrue (new File(base_directory + "${parentModel.name}.groovy").exists());
-        assertFalse (childModel.getControllerFile().exists());
-        assertFalse (parentModel.getControllerFile().exists());
 
         Class childModelClass = compileModel(childModel);
         def childModelInstance = childModelClass.newInstance();
@@ -133,6 +131,47 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         checkExistanceOfMetaDataProperties(parentModelInstance);
 
         assertEquals(parentModelClass.getName(), childModelClass.getSuperclass().getName());
+    }
+
+    public void testGenerateModelGeneratesAllDependentModels()
+    {
+        def rootModel = new MockModel(name:"ClassRoot");
+        def parentModel = new MockModel(name:"Class2", parentModel:rootModel);
+        def childModel = new MockModel(name:"Class1", parentModel:parentModel);
+        addMasterDatasource(rootModel);
+
+        def relatedModel = new MockModel(name:"Class3");
+        def childRelatedModel = new MockModel(name:"Class4", parentModel:relatedModel);
+        addMasterDatasource(relatedModel);
+
+        relatedModel.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:relatedModel);
+        ModelRelation relation1 = new ModelRelation(firstName:"relation1", secondName:"reverseRelation1", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE, firstModel:parentModel, secondModel:relatedModel);
+
+        parentModel.fromRelations += relation1;
+        relatedModel.toRelations += relation1;
+
+        childModels[parentModel.name] = [childModel];
+        childModels[relatedModel.name] = [childRelatedModel];
+        modelRelations[parentModel.name] = [relation1];
+        reverseModelRelations[relatedModel.name] = [relation1];
+
+        ModelGenerator.getInstance().generateModel(parentModel);
+        assertTrue (new File(base_directory + "${rootModel.name}.groovy").exists());
+        assertTrue (new File(base_directory + "${childModel.name}.groovy").exists());
+        assertTrue (new File(base_directory + "${parentModel.name}.groovy").exists());
+        assertTrue (new File(base_directory + "${relatedModel.name}.groovy").exists());
+        assertTrue (new File(base_directory + "${childRelatedModel.name}.groovy").exists());
+
+        assertTrue (rootModel.resourcesWillBeGenerated);
+        assertEquals (1, rootModel.numberOfSaveCalls);
+        assertTrue (childModel.resourcesWillBeGenerated);
+        assertEquals (1, childModel.numberOfSaveCalls);
+        assertTrue (parentModel.resourcesWillBeGenerated);
+        assertEquals (1, parentModel.numberOfSaveCalls);
+        assertTrue (relatedModel.resourcesWillBeGenerated);
+        assertEquals (1, relatedModel.numberOfSaveCalls);
+        assertTrue (childRelatedModel.resourcesWillBeGenerated);
+        assertEquals (1, childRelatedModel.numberOfSaveCalls);
     }
 
     public void testWithSomeProperties()
@@ -250,13 +289,11 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     {
         def model1 = new MockModel(name:"Class1");
         model1.getControllerFile().createNewFile();
-        assertTrue (model1.getControllerFile().exists());
         addMasterDatasource(model1);
 
         model1.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model1);
         def model2 = new MockModel(name:"Class2");
         model2.getControllerFile().createNewFile();
-        assertTrue (model2.getControllerFile().exists());
         addMasterDatasource(model2);
 
         model2.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model2);
@@ -264,6 +301,12 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         ModelRelation relation2 = new ModelRelation(firstName:"relation2", secondName:"reverseRelation2", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.MANY, firstModel:model2, secondModel:model1);
         ModelRelation relation3 = new ModelRelation(firstName:"relation3", secondName:"reverseRelation3", firstCardinality:ModelRelation.MANY, secondCardinality:ModelRelation.MANY, firstModel:model1, secondModel:model2);
         ModelRelation relation4 = new ModelRelation(firstName:"relation4", secondName:"reverseRelation4", firstCardinality:ModelRelation.MANY, secondCardinality:ModelRelation.ONE, firstModel:model1, secondModel:model2);
+
+
+        modelRelations[model1.name] = [relation1,relation3,relation4];
+        modelRelations[model2.name] = [relation2];
+        reverseModelRelations[model1.name] = [relation2];
+        reverseModelRelations[model2.name] = [relation1,relation3,relation4];
 
         model1.fromRelations += relation1;
         model2.toRelations += relation1;
@@ -276,9 +319,10 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         model1.fromRelations += relation4;
         model2.toRelations += relation4;
+
+
+
         ModelGenerator.getInstance().generateModel(model1);
-        assertFalse (model1.getControllerFile().exists());
-        assertFalse (model2.getControllerFile().exists());
 
         Class cls = compileModel(model1);
         def object = cls.newInstance();
@@ -471,6 +515,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
 class MockModel extends Model
 {
+    def static childModels;
+
     def numberOfSaveCalls = 0;
     def datasources = [];
     def modelProperties = []
@@ -490,6 +536,8 @@ class MockModel extends Model
     {
         numberOfSaveCalls++;
     }
+
+
 }
 class MockModelDatasource extends ModelDatasource
 {

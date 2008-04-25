@@ -20,7 +20,6 @@ class OperationsArtefactHandler extends ArtefactHandlerAdapter{
 
     public void initialize(ArtefactInfo artefacts) {
         operationClasses = artefacts.getGrailsClasses();
-        println "inited ${operationClasses}"
     }
 
 }

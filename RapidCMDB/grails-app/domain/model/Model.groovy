@@ -6,6 +6,7 @@ import com.ifountain.core.domain.annotations.CmdbOperation
 
 class Model {
     String name;
+    Boolean resourcesWillBeGenerated = false;
     def grailsApplication
     Model parentModel;
     static transients = ['generated','modelFile','controllerFile','controllerGenerated']
@@ -19,6 +20,7 @@ class Model {
             }
         });
         parentModel(nullable:true);
+        resourcesWillBeGenerated(nullable:true);
     }
 
 

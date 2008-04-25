@@ -39,7 +39,7 @@ class ModelGenerator
 
     def generateModel(Model model)
     {
-        def dependentModels = ModelUtils.getDependentModels(model);
+        def dependentModels = ModelUtils.getAllDependentModels(model);
         def modelMetaDatas = [:];
         dependentModels.each{key,value->
             modelMetaDatas[key] = new ModelMetaData(value);
@@ -87,13 +87,8 @@ class ModelGenerator
     {
         modelMetaDatas.each {modelName,modelMetaData->
             def model = modelMetaData.model;
-            if(!model.getControllerFile().delete() && model.getControllerFile().exists())
-            {
-                throw ModelGenerationException.couldNotDeleteOldController(model.name);                       
-            }
-        }
-        modelMetaDatas.each {modelName,modelMetaData->
-            def model = modelMetaData.model;
+            model.resourcesWillBeGenerated = true;
+            model.save();
             def parentDir = model.getModelFile().getParentFile();
             parentDir.mkdirs();
 

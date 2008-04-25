@@ -1,5 +1,9 @@
 package com.ifountain.rcmdb.domain
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FileUtils
+import model.Model
+import model.ModelRelation
+import org.codehaus.groovy.grails.scaffolding.DefaultGrailsTemplateGenerator
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 /**
  * Created by IntelliJ IDEA.
  * User: Administrator
@@ -18,6 +22,21 @@ class ModelUtils {
         FileUtils.deleteDirectory (modelViewsDir);
 
     }
+
+    public static def generateModelArtefacts(GrailsDomainClass domainClass)
+    {
+			def generator = new DefaultGrailsTemplateGenerator();
+			generator.overwrite = true;
+            generator.generateViews(domainClass,".");
+            def viewsDir = new File("${System.getProperty ("base.dir")}/grails-app/views/${domainClass.propertyName}")
+            DefaultGrailsTemplateGenerator.LOG.info("Generating create view for domain class [${domainClass.fullName}]")
+            def addToFile = new File("${viewsDir}/addTo.gsp")
+            addToFile.withWriter { w ->
+                generator.generateView(domainClass, "addTo", w)
+            }
+            DefaultGrailsTemplateGenerator.LOG.info("AddTo view generated at ${addToFile.absolutePath}")
+            generator.generateController(domainClass,".")
+    }
     public static def getDependeeModels(model)
     {
         def dependeeModels = [:]
@@ -31,27 +50,35 @@ class ModelUtils {
         }
         return dependeeModels
     }
-    public static def getDependentModels(model)
+    
+    public static def getAllDependentModels(model)
     {
         def dependentModels = [:]
-        getDependentModels(model, dependentModels);
+        getAllDependentModels(model, dependentModels);
         return dependentModels;
     }
-    public static def getDependentModels(model,dependentModels)
+    public static def getAllDependentModels(model,dependentModels)
     {
         if(dependentModels.containsKey(model.name)) return;
         dependentModels[model.name] = model;
+        def childModels = Model.findAllByParentModel(model);
+        def modelRelations = ModelRelation.findAllByFirstModel(model);
+        def reverseModelRelations = ModelRelation.findAllBySecondModel(model);
         if(model.parentModel)
         {
-            getDependentModels(model.parentModel, dependentModels);
+            getAllDependentModels(model.parentModel, dependentModels);
         }
-        model.fromRelations.each
+        childModels.each
         {
-            getDependentModels(it.secondModel, dependentModels);
+            getAllDependentModels(it, dependentModels);
         }
-        model.toRelations.each
+        modelRelations.each
         {
-            getDependentModels(it.firstModel, dependentModels);
+            getAllDependentModels(it.secondModel, dependentModels);
+        }
+        reverseModelRelations.each
+        {
+            getAllDependentModels(it.firstModel, dependentModels);
         }
     }
 }

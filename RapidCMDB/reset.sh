@@ -18,9 +18,9 @@ fi
 export GRAILS_HOME=$RS_HOME
 
 if [ -f "$RS_HOME/temp/projects" ]
-then 
+then
 	rm -r $RS_HOME/temp/projects
 fi
 . $GRAILS_HOME/bin/startGrails
-JAVA_OPTS=" -Xmx512m -Ddisable.auto.recompile=true -Dgrails.env=reset -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., -Dgroovy.full.stacktrace=false $JAVA_OPTS"
+JAVA_OPTS=" -Xmx512m -Dgrails.env=reset -Ddisable.auto.recompile=true -Dgrails.env=reset -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., -Dgroovy.full.stacktrace=false $JAVA_OPTS"
 startGrails com.ifountain.grails.RapidGrailsScriptRunner  "$@"

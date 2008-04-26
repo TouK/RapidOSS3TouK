@@ -24,8 +24,8 @@ class ApplicationController {
                 try
                 {
                     def cls = classLoader.loadClass(model.name);
-                    cls.metaClass.addMetaBeanProperty(new MetaBeanProperty("id", Long.class, null, null));
-                    cls.metaClass.addMetaBeanProperty(new MetaBeanProperty("version", Long.class, null, null));
+                    cls.metaClass.id = 1
+                    cls.metaClass.version = 1
                     def domainClass = new DefaultGrailsDomainClass(cls);
                     ModelUtils.generateModelArtefacts (domainClass);
                     model.resourcesWillBeGenerated = false;

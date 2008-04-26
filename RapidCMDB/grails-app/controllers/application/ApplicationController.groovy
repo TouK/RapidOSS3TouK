@@ -20,11 +20,12 @@ class ApplicationController {
         models.each{Model model->
             if(model.isGenerated())
             {
+                println "creating for ${model.name}"
                 try
                 {
                     def cls = classLoader.loadClass(model.name);
-                    cls.metaClass.id = 1
-                    cls.metaClass.version = 1
+                    cls.metaClass.addMetaBeanProperty(new MetaBeanProperty("id", Long.class, null, null));
+                    cls.metaClass.addMetaBeanProperty(new MetaBeanProperty("version", Long.class, null, null));
                     def domainClass = new DefaultGrailsDomainClass(cls);
                     ModelUtils.generateModelArtefacts (domainClass);
                     model.resourcesWillBeGenerated = false;

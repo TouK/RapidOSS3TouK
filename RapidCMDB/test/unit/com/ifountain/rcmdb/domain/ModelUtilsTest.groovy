@@ -7,6 +7,9 @@ import datasource.BaseDatasource
 import model.ModelProperty
 import model.ModelDatasourceKeyMapping
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
+import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
+import org.codehaus.groovy.grails.compiler.injection.ClassInjector
 
 /**
 * Created by IntelliJ IDEA.
@@ -130,35 +133,55 @@ class ModelUtilsTest extends GroovyTestCase{
 
     public void testGenerateModelArtefacts()
     {
-        def model = new MockModel(name:"Class1");
+        def model = new MockModel(name:"ModelUtilsModel1");
         addMasterDatasource(model);
 
         ModelGenerator.getInstance().generateModel (model);
 
-        def classLoader = new GroovyClassLoader();
+        GrailsAwareClassLoader classLoader = new GrailsAwareClassLoader();
         classLoader.addClasspath (base_directory);
+        classLoader.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
 
         def modelClass = classLoader.loadClass (model.name);
-        modelClass.metaClass.id = 1
-        modelClass.metaClass.version = 1
         def grailsDomainClass = new DefaultGrailsDomainClass(modelClass);
-        ModelUtils.generateModelArtefacts (grailsDomainClass);
+        ModelUtils.generateModelArtefacts (grailsDomainClass, base_directory);
 
-        assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/controllers/${model.name}Controller.groovy").exists());
-        assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model.name}/add.groovy").exists());
-        assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model.name}/edit.groovy").exists());
-        assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model.name}/list.groovy").exists());
-        assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model.name}/show.groovy").exists());
-        assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model.name}/addTo.groovy").exists());
-        assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/operations/${model.name}${DefaultOperationClass.OPERATIONS}.groovy").exists());
-
-        ModelUtils.deleteModelArtefacts(grailsDomainClass);
-        assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/controllers/${model.name}Controller.groovy").exists());
-        assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model.name}/add.groovy").exists());
-        assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model.name}/edit.groovy").exists());
-        assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model.name}/list.groovy").exists());
-        assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model.name}/show.groovy").exists());
-        assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model.name}/addTo.groovy").exists());
-        assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/operations/${model.name}${DefaultOperationClass.OPERATIONS}.groovy").exists());
+        assertTrue (new File("${base_directory}/grails-app/controllers/${model.name}Controller.groovy").exists());
+        assertTrue (new File("${base_directory}/grails-app/views/${model.name}/add.groovy").exists());
+        assertTrue (new File("${base_directory}/grails-app/views/${model.name}/edit.groovy").exists());
+        assertTrue (new File("${base_directory}/grails-app/views/${model.name}/list.groovy").exists());
+        assertTrue (new File("${base_directory}/grails-app/views/${model.name}/show.groovy").exists());
+        assertTrue (new File("${base_directory}/grails-app/views/${model.name}/addTo.groovy").exists());
+        assertTrue (new File("${base_directory}/grails-app/operations/${model.name}${DefaultOperationClass.OPERATIONS}.groovy").exists());
     }
+    
+    public void testDeleteModelArtefacts()
+    {
+        def model = new MockModel(name:"ModelUtilsModel1");
+        new File("${base_directory}/grails-app/views/${model.name}").mkdirs();
+        new File("${base_directory}/grails-app/controllers").mkdirs();
+        new File("${base_directory}/grails-app/domain").mkdirs();
+        new File("${base_directory}/grails-app/operations").mkdirs();
+        
+        new File("${base_directory}/grails-app/domain/${model.name}.groovy").createNewFile();
+        new File("${base_directory}/grails-app/controllers/${model.name}Controller.groovy").createNewFile();
+        new File("${base_directory}/grails-app/views/${model.name}/add.groovy").createNewFile()
+        new File("${base_directory}/grails-app/views/${model.name}/edit.groovy").createNewFile()
+        new File("${base_directory}/grails-app/views/${model.name}/list.groovy").createNewFile()
+        new File("${base_directory}/grails-app/views/${model.name}/show.groovy").createNewFile()
+        new File("${base_directory}/grails-app/views/${model.name}/addTo.groovy").createNewFile()
+        new File("${base_directory}/grails-app/operations/${model.name}${DefaultOperationClass.OPERATIONS}.groovy").createNewFile();
+
+        ModelUtils.deleteModelArtefacts(base_directory, model.name);
+        assertFalse (new File("${base_directory}/grails-app/domain/${model.name}.groovy").exists());
+        assertFalse (new File("${base_directory}/grails-app/controllers/${model.name}Controller.groovy").exists());
+        assertFalse (new File("${base_directory}/grails-app/views/${model.name}/add.groovy").exists());
+        assertFalse (new File("${base_directory}/grails-app/views/${model.name}/edit.groovy").exists());
+        assertFalse (new File("${base_directory}/grails-app/views/${model.name}/list.groovy").exists());
+        assertFalse (new File("${base_directory}/grails-app/views/${model.name}/show.groovy").exists());
+        assertFalse (new File("${base_directory}/grails-app/views/${model.name}/addTo.groovy").exists());
+        assertFalse (new File("${base_directory}/grails-app/operations/${model.name}${DefaultOperationClass.OPERATIONS}.groovy").exists());
+    }
+
+
 }

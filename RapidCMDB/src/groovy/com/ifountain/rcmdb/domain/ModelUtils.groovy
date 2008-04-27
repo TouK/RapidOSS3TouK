@@ -24,19 +24,19 @@ class ModelUtils {
         FileUtils.deleteDirectory (modelViewsDir);
     }
 
-    public static def generateModelArtefacts(GrailsDomainClass domainClass)
+    public static def generateModelArtefacts(GrailsDomainClass domainClass, String baseDir)
     {
 			def generator = new DefaultGrailsTemplateGenerator();
 			generator.overwrite = true;
-            generator.generateViews(domainClass,".");
-            def viewsDir = new File("${System.getProperty ("base.dir")}/grails-app/views/${domainClass.propertyName}")
+            generator.generateViews(domainClass,baseDir);
+            def viewsDir = new File("${baseDir}/grails-app/views/${domainClass.propertyName}")
             DefaultGrailsTemplateGenerator.LOG.info("Generating create view for domain class [${domainClass.fullName}]")
             def addToFile = new File("${viewsDir}/addTo.gsp")
             addToFile.withWriter { w ->
                 generator.generateView(domainClass, "addTo", w)
             }
             DefaultGrailsTemplateGenerator.LOG.info("AddTo view generated at ${addToFile.absolutePath}")
-            generator.generateController(domainClass,".")
+            generator.generateController(domainClass,baseDir)
     }
     public static def getDependeeModels(model)
     {

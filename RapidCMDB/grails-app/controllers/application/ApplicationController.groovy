@@ -26,7 +26,8 @@ class ApplicationController {
     def reload = {
         def models = Model.findAllByResourcesWillBeGenerated(true);
         GrailsAwareClassLoader gcl = new GrailsAwareClassLoader();
-        gcl.addClasspath (System.getProperty("base.dir")+"/grails-app/domain");
+        String baseDirectory = System.getProperty("base.dir")
+        gcl.addClasspath (baseDirectory+"/grails-app/domain");
         gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
         models.each{Model model->
             if(model.isGenerated())
@@ -35,7 +36,7 @@ class ApplicationController {
                 {
                     def cls = gcl.loadClass(model.name);
                     def domainClass = new DefaultGrailsDomainClass (cls);
-                    ModelUtils.generateModelArtefacts (domainClass);
+                    ModelUtils.generateModelArtefacts (domainClass, baseDirectory);
                     model.resourcesWillBeGenerated = false;
                     model.save(flush:true);
                 }

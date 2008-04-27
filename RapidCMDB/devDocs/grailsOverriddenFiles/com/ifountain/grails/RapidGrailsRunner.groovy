@@ -32,7 +32,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils
  */
 
 class RapidGrailsScriptRunner {
-    static final ANT = new AntBuilder()
+	static final ANT = new AntBuilder()
 	static final RESOLVER  = new PathMatchingResourcePatternResolver()
 
 	static grailsHome
@@ -53,7 +53,6 @@ class RapidGrailsScriptRunner {
 
 		if(!grailsHome) {
 			println "Environment variable GRAILS_HOME not set. Please set it to the location of your Grails installation and try again."
-			if(!Boolean.getBoolean("disable.system.exit"))
 			System.exit(0)
 		}
 
@@ -84,7 +83,6 @@ class RapidGrailsScriptRunner {
 
             if( currentParamIndex >= allArgs.size() ) {
                 println "You should specify a script to run. Run 'grails help' for a complete list of available scripts."
-                if(!Boolean.getBoolean("disable.system.exit"))
                 System.exit(0)
             }
 
@@ -109,11 +107,8 @@ class RapidGrailsScriptRunner {
                     println "\t${GrailsClassUtils.getScriptName(it)}"
                 }
             	println "Run 'grails help' for a complete list of available scripts."
-            	if(!Boolean.getBoolean("disable.system.exit"))
-                {
-                    println 'Exiting.'
-                    System.exit(-1)
-                }
+            	println 'Exiting.'
+            	System.exit(-1)
             }
 
 			println "Environment set to ${System.getProperty('grails.env')}"
@@ -131,7 +126,6 @@ class RapidGrailsScriptRunner {
 		}
 		else {
 			println "No script name specified. Use 'grails help' for more info"
-			if(!Boolean.getBoolean("disable.system.exit"))
 			System.exit(0)
 		}
 	}
@@ -202,11 +196,7 @@ class RapidGrailsScriptRunner {
 				println "Running script ${potentialScripts[0].absolutePath}"
 
 				def gant = new Gant(binding, new URLClassLoader([classesDir.toURL()] as URL[], rootLoader))
-				def res = gant.processArgs(["-f", potentialScripts[0].absolutePath,"-c","-d","${baseDir.absolutePath}/../temp/scriptCache"] as String[]);
-				if(!Boolean.getBoolean("disable.system.exit"))
-                {
-				    System.exit(res)
-                }
+				System.exit(gant.processArgs(["-f", potentialScripts[0].absolutePath,"-c","-d","${baseDir.absolutePath}/../temp/scriptCache"] as String[]))
 			}
 			else {
 				println "Multiple options please select:"
@@ -220,11 +210,7 @@ class RapidGrailsScriptRunner {
 
 				println "Running script ${potentialScripts[number-1].absolutePath}"
 				def gant = new Gant(binding, new URLClassLoader([classesDir.toURL()] as URL[], rootLoader))
-				def res = gant.processArgs(["-f", potentialScripts[number-1].absolutePath] as String[]);
-				if(!Boolean.getBoolean("disable.system.exit"))
-                {
-				    System.exit(res)
-                }
+				System.exit(gant.processArgs(["-f", potentialScripts[number-1].absolutePath] as String[]))
 			}
 		}
 		else {

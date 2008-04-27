@@ -11,6 +11,9 @@ import org.codehaus.groovy.grails.commons.ArtefactHandler
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.codehaus.groovy.grails.compiler.GrailsCompiler
 import com.ifountain.grails.RapidGrailsScriptRunner
+import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
+import org.codehaus.groovy.grails.compiler.injection.ClassInjector
+import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
 
 /**
 * Created by IntelliJ IDEA.
@@ -22,30 +25,15 @@ import com.ifountain.grails.RapidGrailsScriptRunner
 class ApplicationController {
     def reload = {
         def models = Model.findAllByResourcesWillBeGenerated(true);
-        try
-        {
-            System.setProperty("disable.system.exit", "true")
-            def runner = new RapidGrailsScriptRunner();
-            runner.main (["compile"] as String[]);
-        }
-        catch(t)
-        {
-            System.setProperty("disable.system.exit", "false")
-            log.error("Could not compiled groovy classes", t);
-        }
-        ArtefactHandler domainArtHandler = null;
-        grailsApplication.getArtefactHandlers().each {ArtefactHandler handler->
-            if(handler.type == DomainClassArtefactHandler.TYPE)
-            {
-                domainArtHandler = handler;
-            }
-        }
+        GrailsAwareClassLoader gcl = new GrailsAwareClassLoader();
+        gcl.addClasspath (System.getProperty("base.dir")+"/grails-app/domain");
+        gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
         models.each{Model model->
             if(model.isGenerated())
             {
                 try
                 {
-                    def cls = grailsApplication.classLoader.loadClass(model.name);
+                    def cls = gcl.loadClass(model.name);
                     def domainClass = new DefaultGrailsDomainClass (cls);
                     ModelUtils.generateModelArtefacts (domainClass);
                     model.resourcesWillBeGenerated = false;

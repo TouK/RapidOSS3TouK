@@ -16,11 +16,12 @@ class ModelUtils {
     {
         def modelFile = new File("$baseDir/grails-app/domain/${modelName}.groovy");
         def modelControllerFile = new File("$baseDir/grails-app/controllers/${modelName}Controller.groovy");
+        def modelOperationsFile = new File("$baseDir/grails-app/operations/${modelName}Operations.groovy");
         def modelViewsDir = new File("$baseDir/grails-app/views/${modelName}");
         modelFile.delete();
         modelControllerFile.delete();
+        modelOperationsFile.delete();
         FileUtils.deleteDirectory (modelViewsDir);
-
     }
 
     public static def generateModelArtefacts(GrailsDomainClass domainClass)

@@ -29,8 +29,8 @@ class ApplicationControllerIntegrationTests extends RapidCmdbIntegrationTestCase
 
     public void testIfModelMarkedApplicationControllerWillCreateModelResources()
     {
-        String model1Name = "Model1";
-        String model2Name = "Model2";
+        String model1Name = "ApplicationModel1";
+        String model2Name = "ApplicationModel2";
         ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), model1Name);
         ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), model2Name);
         try
@@ -50,13 +50,47 @@ class ApplicationControllerIntegrationTests extends RapidCmdbIntegrationTestCase
 
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/controllers/${model1.name}Controller.groovy").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/operations/${model1.name}Operations.groovy").exists());
-            assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/add.gsp").exists());
+            assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/show.gsp").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/addTo.gsp").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/create.gsp").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/edit.gsp").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/list.gsp").exists());
             assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/controllers/${model2.name}Controller.groovy").exists());
-            assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/operations/${model2.name}Operations.groovy").exists());
+            assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/operations/${model2.name}Operations.groovy").exists());
+            assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model2.name}").exists());
+        }
+        finally
+        {
+            ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), model1Name);
+            ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), model2Name);
+        }
+    }
+    public void testApplicationControllerWillNotThrowExceptionIfModelFileContainsErrors()
+    {
+        String model1Name = "ApplicationModel3";
+        String model2Name = "ApplicationModel4";
+        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), model1Name);
+        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), model2Name);
+        try
+        {
+            def model1 = new Model(name:model1Name).save(flush:true);
+            Model model2 = new Model(name:model2Name).save(flush:true);
+            addMasterDatasource(model1);
+            addMasterDatasource(model2);
+            ModelGenerator.getInstance().generateModel (model1);
+            model1.getModelFile().setText("\"");
+            ModelGenerator.getInstance().generateModel (model2);
+            model2.resourcesWillBeGenerated = false;
+            model2.save(flush:true);
+
+            def controller = new ApplicationController();
+            controller.reload();
+
+            assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/controllers/${model1.name}Controller.groovy").exists());
+            assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}").exists());
+
+            assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/controllers/${model2.name}Controller.groovy").exists());
+            assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/operations/${model2.name}Operations.groovy").exists());
             assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model2.name}").exists());
         }
         finally

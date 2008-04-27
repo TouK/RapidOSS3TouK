@@ -4,6 +4,13 @@ import model.Model
 import com.ifountain.rcmdb.domain.ModelUtils
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.runtime.StackTraceUtils
+import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
+import org.codehaus.groovy.grails.plugins.GrailsPluginManager
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.commons.ArtefactHandler
+import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
+import org.codehaus.groovy.grails.compiler.GrailsCompiler
+import com.ifountain.grails.RapidGrailsScriptRunner
 
 /**
 * Created by IntelliJ IDEA.
@@ -15,17 +22,31 @@ import org.codehaus.groovy.runtime.StackTraceUtils
 class ApplicationController {
     def reload = {
         def models = Model.findAllByResourcesWillBeGenerated(true);
-        def classLoader = new GroovyClassLoader();
-        classLoader.addClasspath ("${System.getProperty("base.dir")}/grails-app/domain");
+        try
+        {
+            System.setProperty("disable.system.exit", "true")
+            def runner = new RapidGrailsScriptRunner();
+            runner.main (["compile"] as String[]);
+        }
+        catch(t)
+        {
+            System.setProperty("disable.system.exit", "false")
+            log.error("Could not compiled groovy classes", t);
+        }
+        ArtefactHandler domainArtHandler = null;
+        grailsApplication.getArtefactHandlers().each {ArtefactHandler handler->
+            if(handler.type == DomainClassArtefactHandler.TYPE)
+            {
+                domainArtHandler = handler;
+            }
+        }
         models.each{Model model->
             if(model.isGenerated())
             {
                 try
                 {
-                    def cls = classLoader.loadClass(model.name);
-                    cls.metaClass.id = 1
-                    cls.metaClass.version = 1
-                    def domainClass = new DefaultGrailsDomainClass(cls);
+                    def cls = grailsApplication.classLoader.loadClass(model.name);
+                    def domainClass = new DefaultGrailsDomainClass (cls);
                     ModelUtils.generateModelArtefacts (domainClass);
                     model.resourcesWillBeGenerated = false;
                     model.save(flush:true);

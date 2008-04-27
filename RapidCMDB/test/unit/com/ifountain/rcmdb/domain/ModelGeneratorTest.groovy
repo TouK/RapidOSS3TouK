@@ -435,6 +435,9 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         indexOfFirstAlreadyIncludedImport = model1.getOperationsFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
         assertTrue( indexOfFirstAlreadyIncludedImport >= 0);
         assertFalse( model1.getOperationsFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
+
+        ModelGenerator.getInstance().generateModel(model1);
+        assertNotNull(compileClass(model1.name));
     }
 
 

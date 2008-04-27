@@ -70,12 +70,12 @@ class ClassParser {
 
 class ClassContentLine
 {
-    static LINE = -1;
-    static PACKAGE_DECLERATION_LINE = 0;
-    static IMPORT_LINE = 1;
-    static CLASS_DECLERATION_LINE = 2;
-    static REMAINING_LINE = 3;
-    static AUTO_GENERATED_LINE = 4;
+    static int LINE = -1;
+    static int PACKAGE_DECLERATION_LINE = 0;
+    static int IMPORT_LINE = 1;
+    static int CLASS_DECLERATION_LINE = 2;
+    static int REMAINING_LINE = 3;
+    static int AUTO_GENERATED_LINE = 4;
     String line;
     int type;
 

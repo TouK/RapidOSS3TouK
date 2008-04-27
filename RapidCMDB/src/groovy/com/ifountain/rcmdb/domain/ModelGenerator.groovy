@@ -138,9 +138,11 @@ class ModelGenerator
         def imports = classContent.getLines(ClassContentLine.IMPORT_LINE);
         def parentClass = classContent.getParentClass()
         def implementedClasses = classContent.getImplementedClasses()
+        boolean isClassDeclerationProcessed = false;
         classContent.lines.each{ClassContentLine line->
-            if(line.type == ClassContentLine.CLASS_DECLERATION_LINE)
+            if(!isClassDeclerationProcessed && line.type == ClassContentLine.CLASS_DECLERATION_LINE)
             {
+                isClassDeclerationProcessed = true;
                 DEFAULT_IMPORTS.each {defaultImport->
                     def found = false;
                     def firstImport

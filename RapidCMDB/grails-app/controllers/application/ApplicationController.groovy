@@ -25,29 +25,23 @@ import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInj
 class ApplicationController {
     def reload = {
         def models = Model.findAllByResourcesWillBeGenerated(true);
-        GrailsAwareClassLoader gcl = new GrailsAwareClassLoader();
+        GrailsAwareClassLoader gcl = new GrailsAwareClassLoader(Thread.currentThread().getContextClassLoader().parent);
+        gcl.setShouldRecompile (true);
         String baseDirectory = System.getProperty("base.dir")
         gcl.addClasspath (baseDirectory+"/grails-app/domain");
         gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
         models.each{Model model->
-            if(model.isGenerated())
+            try
             {
-                try
-                {
-                    def cls = gcl.loadClass(model.name);
-                    def domainClass = new DefaultGrailsDomainClass (cls);
-                    ModelUtils.generateModelArtefacts (domainClass, baseDirectory);
-                    model.resourcesWillBeGenerated = false;
-                    model.save(flush:true);
-                }
-                catch(t)
-                {
-                    log.error("Exception occurred while creating controller, view and operations files of model ${model.name}", StackTraceUtils.deepSanitize(t));
-                }
+                def cls = gcl.loadClass(model.name);
+                def domainClass = new DefaultGrailsDomainClass (cls);
+                ModelUtils.generateModelArtefacts (domainClass, baseDirectory);
+                model.resourcesWillBeGenerated = false;
+                model.save(flush:true);
             }
-            else
+            catch(t)
             {
-                log.error("Could not create controller, view and operations files of model ${model.name}. Model file does not exist");
+                log.error("Exception occurred while creating controller, view and operations files of model ${model.name}", StackTraceUtils.deepSanitize(t));
             }
         }
         System.setProperty("disable.auto.recompile", "false");

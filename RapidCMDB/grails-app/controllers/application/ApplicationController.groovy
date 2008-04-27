@@ -7,6 +7,7 @@ import org.codehaus.groovy.runtime.StackTraceUtils
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import org.codehaus.groovy.grails.compiler.injection.ClassInjector
 import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
+import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,6 +17,7 @@ import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInj
 * To change this template use File | Settings | File Templates.
 */
 class ApplicationController {
+    public static final String RESTART_APPLICATION = "restart.application"
     def reload = {
         def models = Model.findAllByResourcesWillBeGenerated(true);
         GrailsAwareClassLoader gcl = new GrailsAwareClassLoader(Thread.currentThread().getContextClassLoader().parent);
@@ -37,7 +39,8 @@ class ApplicationController {
                 log.error("Exception occurred while creating controller, view and operations files of model ${model.name}", StackTraceUtils.deepSanitize(t));
             }
         }
-        System.setProperty("disable.auto.recompile", "false");
         render(view:"reloading", controller:"application");
+        GroovyPagesTemplateEngine.pageCache.clear();
+        System.setProperty(RESTART_APPLICATION, "true");
     }
 }

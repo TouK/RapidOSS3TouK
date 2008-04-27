@@ -21,6 +21,7 @@ class ApplicationControllerIntegrationTests extends RapidCmdbIntegrationTestCase
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         Model.list()*.delete(flush:true);
         BaseDatasource.list()*.delete(flush:true);
+        System.setProperty (ApplicationController.RESTART_APPLICATION, "false");
     }
 
     public void tearDown() {
@@ -58,6 +59,8 @@ class ApplicationControllerIntegrationTests extends RapidCmdbIntegrationTestCase
             assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/controllers/${model2.name}Controller.groovy").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/operations/${model2.name}Operations.groovy").exists());
             assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model2.name}").exists());
+            assertEquals("/application/reloading", controller.modelAndView.viewName);
+            assertEquals("true", System.getProperty(ApplicationController.RESTART_APPLICATION));
         }
         finally
         {
@@ -92,6 +95,8 @@ class ApplicationControllerIntegrationTests extends RapidCmdbIntegrationTestCase
             assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/controllers/${model2.name}Controller.groovy").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/operations/${model2.name}Operations.groovy").exists());
             assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model2.name}").exists());
+            assertEquals("/application/reloading", controller.modelAndView.viewName);
+            assertEquals("true", System.getProperty(ApplicationController.RESTART_APPLICATION));
         }
         finally
         {

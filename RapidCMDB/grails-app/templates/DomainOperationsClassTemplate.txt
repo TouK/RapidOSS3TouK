@@ -1,0 +1,10 @@
+<%
+DEFAULT_IMPORTS.each{
+%>
+import ${it};
+<%
+}
+%>
+class ${model.model.name}Operations extends ${parentClassName}
+{
+}

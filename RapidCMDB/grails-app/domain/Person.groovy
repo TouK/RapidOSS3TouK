@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class Person  implements com.ifountain.rcmdb.domain.GeneratedModel
+class Person
 {
     
     //AUTO_GENERATED_CODE

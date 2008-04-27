@@ -1,7 +1,7 @@
 import com.ifountain.core.domain.annotations.*;
 
 
-class Ip extends DeviceComponent implements com.ifountain.rcmdb.domain.GeneratedModel
+class Ip extends DeviceComponent
 {
 
     //AUTO_GENERATED_CODE

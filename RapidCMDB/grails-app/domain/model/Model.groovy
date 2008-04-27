@@ -41,6 +41,10 @@ class Model {
     {
         return new File(System.getProperty("base.dir", ".")+"/grails-app/controllers/${name}Controller.groovy");
     }
+    def getOperationsFile()
+    {
+        return new File(System.getProperty("base.dir", ".")+"/grails-app/operations/${name}Operations.groovy");
+    }
 
     def getOperations()
     {

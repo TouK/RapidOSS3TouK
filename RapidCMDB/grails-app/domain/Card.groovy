@@ -1,7 +1,7 @@
 import com.ifountain.core.domain.annotations.*;
 
 
-class Card extends DeviceComponent implements com.ifountain.rcmdb.domain.GeneratedModel
+class Card extends DeviceComponent
 {
 
     //AUTO_GENERATED_CODE

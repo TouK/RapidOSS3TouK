@@ -1,7 +1,7 @@
 import com.ifountain.core.domain.annotations.*;
 
 
-class SmartsObject  implements com.ifountain.rcmdb.domain.GeneratedModel
+class SmartsObject
 {
 
     //AUTO_GENERATED_CODE

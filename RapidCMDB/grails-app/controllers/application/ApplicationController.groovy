@@ -20,7 +20,6 @@ class ApplicationController {
         models.each{Model model->
             if(model.isGenerated())
             {
-                println "creating for ${model.name}"
                 try
                 {
                     def cls = classLoader.loadClass(model.name);

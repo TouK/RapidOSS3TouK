@@ -40,13 +40,20 @@ class ModelUtils {
     public static def getDependeeModels(model)
     {
         def dependeeModels = [:]
-        model.fromRelations.each
+        def childModels = Model.findAllByParentModel(model);
+        def modelRelations = ModelRelation.findAllByFirstModel(model);
+        def reverseModelRelations = ModelRelation.findAllBySecondModel(model);
+        childModels.each
         {
-            dependeeModels[it.secondModel.name] = it.secondModel ;
+            dependeeModels[it.name] = it;
         }
-        model.toRelations.each
+        modelRelations.each
         {
-            dependeeModels[it.firstModel.name] = it.firstModel ;
+            dependeeModels[it.secondModel.name] = it.secondModel;
+        }
+        reverseModelRelations.each
+        {
+            dependeeModels[it.firstModel.name] = it.firstModel;
         }
         return dependeeModels
     }
@@ -61,24 +68,13 @@ class ModelUtils {
     {
         if(dependentModels.containsKey(model.name)) return;
         dependentModels[model.name] = model;
-        def childModels = Model.findAllByParentModel(model);
-        def modelRelations = ModelRelation.findAllByFirstModel(model);
-        def reverseModelRelations = ModelRelation.findAllBySecondModel(model);
+        def dependeeeModels = getDependeeModels(model);
         if(model.parentModel)
         {
             getAllDependentModels(model.parentModel, dependentModels);
         }
-        childModels.each
-        {
-            getAllDependentModels(it, dependentModels);
-        }
-        modelRelations.each
-        {
-            getAllDependentModels(it.secondModel, dependentModels);
-        }
-        reverseModelRelations.each
-        {
-            getAllDependentModels(it.firstModel, dependentModels);
+        dependeeeModels.each{key, value->
+            getAllDependentModels(value, dependentModels);
         }
     }
 }

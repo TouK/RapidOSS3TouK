@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class Developer extends Employee implements com.ifountain.rcmdb.domain.GeneratedModel
+class Developer extends Employee
 {
     
     //AUTO_GENERATED_CODE

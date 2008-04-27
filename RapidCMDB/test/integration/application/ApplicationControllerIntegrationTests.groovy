@@ -48,14 +48,16 @@ class ApplicationControllerIntegrationTests extends RapidCmdbIntegrationTestCase
             def controller = new ApplicationController();
             controller.reload();
 
-            assertTrue (model1.getControllerFile().exists());
+            assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/controllers/${model1.name}Controller.groovy").exists());
+            assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/operations/${model1.name}Operations.groovy").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/add.gsp").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/addTo.gsp").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/create.gsp").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/edit.gsp").exists());
             assertTrue (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}/list.gsp").exists());
-            assertFalse (model2.getControllerFile().exists());
-            assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model1.name}").exists());
+            assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/controllers/${model2.name}Controller.groovy").exists());
+            assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/operations/${model2.name}Operations.groovy").exists());
+            assertFalse (new File("${System.getProperty ("base.dir")}/grails-app/views/${model2.name}").exists());
         }
         finally
         {

@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class Port extends DeviceAdapter implements com.ifountain.rcmdb.domain.GeneratedModel
+class Port extends DeviceAdapter
 {
     
     //AUTO_GENERATED_CODE

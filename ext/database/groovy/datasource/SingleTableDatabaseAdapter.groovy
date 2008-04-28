@@ -4,8 +4,8 @@ import org.apache.log4j.Logger;
 import java.util.Arrays;
 
 public class SingleTableDatabaseAdapter extends DatabaseAdapter {
-    private String table; 
-    private List keys; 
+    private String table;
+    private List keys;
 
     public SingleTableDatabaseAdapter(){
     	super();
@@ -16,29 +16,29 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
         this.table = tableName;
         setKeys(keys);
     }
-    
+
     public void setTable(String tableName){
     	this.table = tableName;
     }
-    
+
     public void setKeys(String keys){
     	this.keys = Arrays.asList(keys.split(","));
     }
-    
+
     public addRecord(Map fields){
 		def primaryValues = [:];
 		for (key in keys){
 			def keyValue = fields[key]; // .get(key);
-			if(keyValue == null) throw new Exception("No value supplied for one of the primary key fields: " + key);	
+			if(keyValue == null) throw new Exception("No value supplied for one of the primary key fields: " + key);
 			primaryValues.put(key, keyValue);
 		}
 
-		def row = getRecordMultiKey(primaryValues);
+		def row = getMultiKeyRecord(primaryValues);
 		if (row.size() == 0) {
             StringBuffer query1 = new StringBuffer("insert into ").append(table).append(" (");
 			StringBuffer query2 = new StringBuffer(" VALUES(");
 			def params = [];
-			fields.each(){key,value -> 
+			fields.each(){key,value ->
 				query1.append(key).append(", ");
 				query2.append("?, ");
 				params.add(value);
@@ -48,41 +48,41 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 			query1.append(")");
 			query2.append(")");
 			def res = executeUpdate(query1.append(query2).toString(), params);
-			return getRecordMultiKey(primaryValues);
+			return getMultiKeyRecord(primaryValues);
 		}
 		else{
             return updateRecord(fields);
 		}
 	}
-		
-	public updateRecord(Map fields){ 
-		def primaryValues = [:]; 
+
+	public updateRecord(Map fields){
+		def primaryValues = [:];
 		def updatedProps = [:];
 		updatedProps.putAll(fields);
 		for (key in keys){
 			def keyValue = fields[key]; // .get(key);
-			if(keyValue == null) throw new Exception("No value supplied for one of the primary key fields: " + key);	 
-			primaryValues.put(key, keyValue);			
+			if(keyValue == null) throw new Exception("No value supplied for one of the primary key fields: " + key);
+			primaryValues.put(key, keyValue);
 			updatedProps.remove(key);
 		}
 		if(updatedProps.size() == 0) return false;
-		def row = getRecordMultiKey(primaryValues);
+		def row = getMultiKeyRecord(primaryValues);
 		if (row.size() > 0) {
 			def params = getUpdateParams(fields);
 			def updateQuery = getUpdateQuery(updatedProps);
 			def res = executeUpdate(updateQuery, params);
-			return getRecordMultiKey(primaryValues);
+			return getMultiKeyRecord(primaryValues);
 		}
 		return null;
 	}
-	
+
 	boolean removeRecord(keyValue){
 		def keyMap = [:];
 		keyMap.put(keys[0], keyValue);   // only one key
-		removeRecordMultiKey(keyMap);
+		removeMultiKeyRecord(keyMap);
 	}
-	
-	boolean removeRecordMultiKey(Map keyMap){
+
+	boolean removeMultiKeyRecord(Map keyMap){
 		def query = new StringBuffer("delete from ").append(table).append(" where ");
 		def params = [];
 		keyMap.each(){key,value->
@@ -92,24 +92,24 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 		def queryStr = query.substring(0,query.length()-4);
 		return executeUpdate(queryStr, params) > 0;
 	}
-	
+
     public getRecord(keyValue){
 	    def keyMap = [:];
 	  	keyMap.put(keys[0], keyValue);   // only one key
-	    return getRecordMultiKey(keyMap,[]);
+	    return getMultiKeyRecord(keyMap,[]);
     }
-     
+
     public getRecord(keyValue, columnList){
 	    def keyMap = [:];
 	  	keyMap.put(keys[0], keyValue);   // only one key
-	    return getRecordMultiKey(keyMap, columnList);
+	    return getMultiKeyRecord(keyMap, columnList);
     }
-       
-    public getRecordMultiKey(keyMap){
-	    return getRecordMultiKey(keyMap,[]);
+
+    public getMultiKeyRecord(keyMap){
+	    return getMultiKeyRecord(keyMap,[]);
     }
-    
-    public getRecordMultiKey(Map keyMap, columnList){
+
+    public getMultiKeyRecord(Map keyMap, columnList){
 	    StringBuffer query = new StringBuffer();
 	    query = formSql(columnList);
 	    def params = [];
@@ -124,19 +124,19 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
             return [:];
         }
     }
-    
+
     public getRecords(){
 		return getRecords("", []);
     }
-    
+
     public getRecords(List columnList){
 	    return getRecords("", columnList);
     }
-    
+
     public getRecords(String whereclause){
 		return getRecords(whereclause, []);
     }
-    
+
     public getRecords(whereClause, List columnList){
 		StringBuffer query = new StringBuffer();
 	    query = formSql(columnList);
@@ -145,19 +145,19 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 		}
 		return executeQuery(query.toString(), []);
     }
-    
+
     public void testGetNotificationUsingMapListParams() throws Exception {
     	assertTrue("To be implemented", false);
     }
-    
+
     public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception
 	{
-		return getRecordMultiKey(ids, fieldsToBeRetrieved); 
+		return getMultiKeyRecord(ids, fieldsToBeRetrieved);
 	}
 
     private String getUpdateQuery(fields){
 		StringBuffer updateQuery = new StringBuffer();
-		updateQuery.append("update ").append(table); 
+		updateQuery.append("update ").append(table);
 		updateQuery.append(" set ");
 		fields.each(){key,value->
 			updateQuery.append(key).append(" = ?, ");
@@ -167,13 +167,13 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 		for (key in keys){
 			updateQuery.append(key).append(" = ? AND ");
 		}
-		def queryStr = updateQuery.substring(0,updateQuery.length()-4);		
+		def queryStr = updateQuery.substring(0,updateQuery.length()-4);
 		return queryStr;
 	}
-	
+
 	private List getUpdateParams(fields){
 		def params = [];
-		fields.each(){key,value -> 
+		fields.each(){key,value ->
 			if (!keys.contains(key)){
 				params.add(value);
 			}
@@ -183,7 +183,7 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 		}
 		return params;
 	}
-	
+
     private formSql(columnList){
 	 StringBuffer query = new StringBuffer("select ");
 		if (columnList.size() == 0){
@@ -203,7 +203,7 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 		query.append(" from ").append(table);
 		return query;
     }
-    
+
     private formWhereClause(Map keyMap, params){
 	    StringBuffer query = new StringBuffer(" where ");
 		keyMap.each(){key,value->

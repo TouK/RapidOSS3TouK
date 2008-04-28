@@ -19,7 +19,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
     }
 
     def getProperty(Map keys, String propName){
-        def props = adapter.getRecordMultiKey(keys, [propName]);
+        def props = adapter.getMultiKeyRecord(keys, [propName]);
         if(props)
         {
             return props[propName];
@@ -28,7 +28,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
     }
 
     def getProperties(Map keys, List properties){
-       def props = adapter.getRecordMultiKey(keys, properties);
+       def props = adapter.getMultiKeyRecord(keys, properties);
        return props;
     }
 
@@ -41,11 +41,11 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
     }
 
     def getMultiKeyRecord(keyMap){
-        return adapter.getRecordMultiKey(keymap);
+        return adapter.getMultiKeyRecord(keymap);
     }
 
     def getMultiKeyRecord(Map keyMap, columnList){
-        return adapter.getRecordMultiKey(keymap, columnList);
+        return adapter.getMultiKeyRecord(keymap, columnList);
     }
 
     def getRecords(){
@@ -77,7 +77,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
 	}
 
 	boolean removeMultiKeyRecord(Map keyMap){
-		return adapter.removeRecordMultiKey(keyMap);
+		return adapter.removeMultiKeyRecord(keyMap);
 	}
 
 	def runUpdate(sql){

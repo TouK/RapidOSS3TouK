@@ -156,6 +156,7 @@ class NetcoolDatasource extends BaseDatasource{
     }
 
     def removeEvent(serverserial){
+	    println "serverserial:$serverserial"
         def event = getEvent(serverserial);
 		if(event.size() == 0)
 		{
@@ -187,6 +188,15 @@ class NetcoolDatasource extends BaseDatasource{
 			throw new Exception("Event <" + identifier+ "> does not exist");
 		}
 		return Integer.parseInt(event.serverserial);
+    }
+
+    def getSerialFromNetcool(identifier){
+	    def query = "Identifier='$identifier'";
+	    def event = statusTableAdapter.getRecords(query);
+		if(event.size() == 0){
+			throw new Exception("Event <" + identifier+ "> does not exist");
+		}
+		return Integer.parseInt(event[0].serverserial);
     }
 
     def setSeverityAction(serverserial, severity, userName) {

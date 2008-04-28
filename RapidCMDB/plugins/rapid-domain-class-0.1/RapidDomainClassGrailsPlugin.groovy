@@ -16,7 +16,8 @@ import com.ifountain.rcmdb.domain.DefaultOperationClass
 import org.codehaus.groovy.grails.commons.spring.RuntimeSpringConfiguration
 import org.codehaus.groovy.grails.commons.spring.DefaultRuntimeSpringConfiguration
 import org.codehaus.groovy.grails.commons.spring.GrailsRuntimeConfigurator
-import com.ifountain.rcmdb.domain.AbstractDomainOperation;
+import com.ifountain.rcmdb.domain.AbstractDomainOperation
+import org.codehaus.groovy.grails.commons.GrailsClassUtils;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def artefacts = [ OperationsArtefactHandler ]
@@ -99,7 +100,7 @@ class RapidDomainClassGrailsPlugin {
             delegate.update(props, true)
         }
         mc.update = {Map props, Boolean flush->
-            return updateMethod.invoke(delegate,  [props, flush] as Object[])    
+            return updateMethod.invoke(delegate,  [props, flush] as Object[])
         }
         mc.addRelation = {Map props->
             return delegate.addRelation(props, true);
@@ -111,7 +112,7 @@ class RapidDomainClassGrailsPlugin {
             return delegate.removeRelation(props, true);
         }
         mc.removeRelation = {Map props, Boolean flush->
-            return removeRelationMethod.invoke(delegate,  [props, flush] as Object[])  
+            return removeRelationMethod.invoke(delegate,  [props, flush] as Object[])
         }
         mc.remove = {->
             delegate.remove(true);
@@ -196,7 +197,14 @@ class RapidDomainClassGrailsPlugin {
             }
             else
             {
-                return operation.setProperty (name, value);
+                try
+                {
+                    return operation.invokeMethod (GrailsClassUtils.getSetterName(name), [value] as Object[]);
+                }
+                catch(groovy.lang.MissingMethodException m)
+                {
+                    return operation.setProperty (name, value);
+                }
             }
         }
         mc.getProperty = {String name->
@@ -207,7 +215,14 @@ class RapidDomainClassGrailsPlugin {
             }
             else
             {
-                return operation.getProperty (name);
+                try
+                {
+                    return operation.invokeMethod (GrailsClassUtils.getGetterName(name), [] as Object[]);
+                }
+                catch(groovy.lang.MissingMethodException m)
+                {
+                    return operation.getProperty (name);
+                }
             }
         }
         mc.__InternalSetProperty__ = {String name, Object value->
@@ -233,7 +248,7 @@ class RapidDomainClassGrailsPlugin {
                     "${relation.otherSideName}"{eq("id",domainObject.id)}
                 });
                 domainObject[relation.name] = foundRelatedInstances;
-                return foundRelatedInstances; 
+                return foundRelatedInstances;
             }
             else if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
             {
@@ -277,7 +292,7 @@ class RapidDomainClassGrailsPlugin {
                     def returnedProps = propertyDatasource.getProperties (keys, requestedProperties);
                     if(isPropsLoaded != true)
                     {
-                        
+
                         returnedProps.each {key, value->
                             def requestedPropConfig = propCache.getPropertyConfigByNameInDs(key);
                             if(requestedPropConfig)
@@ -288,7 +303,7 @@ class RapidDomainClassGrailsPlugin {
                         currentDomainObject.isPropertiesLoaded[propertyDatasource.name] = true;
                     }
                     return returnedProps[propCache.getNameInDs(propCache.getPropertyConfigByName(propertyName))];
-                    
+
                 }
                 catch(Throwable e)
                 {
@@ -309,7 +324,7 @@ class DatasourceProperty extends MetaBeanProperty
     public DatasourceProperty(String s, Class aClass) {
         super(s, aClass, null, null); //To change body of overridden methods use File | Settings | File Templates.
     }
-    
+
    WeakHashMap map = new WeakHashMap()
     public Object getProperty(Object o) {
         def object = map[o];

@@ -31,29 +31,12 @@ abstract class AbstractDomainOperation {
     def domainObject;
     public Object getProperty(String propName)
     {
-        try
-        {
-            return this.invokeMethod (GrailsClassUtils.getGetterName(propName), [] as Object[]);
-        }
-        catch(groovy.lang.MissingMethodException m)
-        {
-            return domainObject.__InternalGetProperty__(propName);
-        }
-
+        return domainObject.__InternalGetProperty__(propName);
     }
 
     public void setProperty(String propName, Object value)
     {
-        try
-        {
-            this.invokeMethod (GrailsClassUtils.getSetterName(propName), [value] as Object[]);
-
-        }
-        catch(groovy.lang.MissingMethodException m)
-        {
             domainObject.__InternalSetProperty__(propName, value);
-        }
-
     }
 
 }

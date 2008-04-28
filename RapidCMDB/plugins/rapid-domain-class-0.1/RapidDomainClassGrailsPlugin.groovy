@@ -20,7 +20,10 @@ import com.ifountain.rcmdb.domain.OperationsArtefactHandler
 import com.ifountain.rcmdb.domain.DefaultOperationClass
 import org.codehaus.groovy.grails.commons.spring.RuntimeSpringConfiguration
 import org.codehaus.groovy.grails.commons.spring.DefaultRuntimeSpringConfiguration
-import org.codehaus.groovy.grails.commons.spring.GrailsRuntimeConfigurator;
+import org.codehaus.groovy.grails.commons.spring.GrailsRuntimeConfigurator
+import org.springframework.beans.BeanUtils
+import com.ifountain.rcmdb.domain.DynamicDomainProperty
+import com.ifountain.rcmdb.domain.AbstractDomainOperation;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def artefacts = [ OperationsArtefactHandler ]
@@ -78,18 +81,15 @@ class RapidDomainClassGrailsPlugin {
 
     def addOperationsSupport(dc, application, ctx)
     {
+        def mc = dc.metaClass;
+        def operationProperty = new DomainOperationProperty(application)
+        mc.addMetaBeanProperty (operationProperty)
         def operationClassName = dc.name + DefaultOperationClass.OPERATIONS;
-        dc.metaClass.methodMissing =  {String name, args ->
-            Class operationClass = application.getClassForName (operationClassName);
-            println "OPE CLASS:${operationClass}"
-            if(operationClass)
-            {
-                def oprInstance = operationClass.newInstance();
-                operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
-                try {
-                    return oprInstance.invokeMethod(name, args)
-                } catch (MissingMethodException e) {
-                };
+        mc.methodMissing =  {String name, args ->
+            def oprInstance = operationProperty.getProperty(delegate);
+            try {
+                return oprInstance.invokeMethod(name, args)
+            } catch (MissingMethodException e) {
             }
             throw new MissingMethodException (name,  delegate.class, args);
         }
@@ -306,6 +306,34 @@ class DatasourceProperty extends MetaBeanProperty
     public void setProperty(Object o, Object o1) {
 
 
+    }
+}
+
+class DomainOperationProperty extends MetaBeanProperty
+{
+    WeakHashMap map = new WeakHashMap()
+    def application;
+    public static final String PROP_NAME = "__operation_class__";
+    public DomainOperationProperty(application) {
+        super(PROP_NAME, AbstractDomainOperation,null,null); //To change body of overridden methods use File | Settings | File Templates.
+        this.application = application;
+    }
+
+
+    public Object getProperty(Object o) {
+        def operation = map[o];
+        if(!operation)
+        {
+            Class operationClass = application.getClassForName (o.class.name + DefaultOperationClass.OPERATIONS);
+            operation = operationClass.newInstance() ;
+            operationClass.metaClass.getMetaProperty("domainObject").setProperty(operation, o);
+            map[o] = operation;
+        }
+        return operation;
+    }
+
+    public void setProperty(Object o, Object o1)
+    {
     }
 
 }

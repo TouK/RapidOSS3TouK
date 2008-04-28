@@ -1,8 +1,3 @@
-import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
-import org.hibernate.SessionFactory
-import com.ifountain.comp.utils.CaseInsensitiveMap
-import datasource.BaseDatasource
-import org.codehaus.groovy.grails.plugins.orm.hibernate.HibernateGrailsPlugin
 import org.apache.log4j.Logger
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.method.AddMethod
@@ -21,8 +16,6 @@ import com.ifountain.rcmdb.domain.DefaultOperationClass
 import org.codehaus.groovy.grails.commons.spring.RuntimeSpringConfiguration
 import org.codehaus.groovy.grails.commons.spring.DefaultRuntimeSpringConfiguration
 import org.codehaus.groovy.grails.commons.spring.GrailsRuntimeConfigurator
-import org.springframework.beans.BeanUtils
-import com.ifountain.rcmdb.domain.DynamicDomainProperty
 import com.ifountain.rcmdb.domain.AbstractDomainOperation;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
@@ -41,7 +34,6 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def doWithDynamicMethods = { ctx ->
-        SessionFactory sessionFactory = ctx.sessionFactory
         def domainClassMap = [:];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
@@ -82,7 +74,7 @@ class RapidDomainClassGrailsPlugin {
     def addOperationsSupport(dc, application, ctx)
     {
         def mc = dc.metaClass;
-        def operationProperty = new DomainOperationProperty(application)
+        def operationProperty = new DomainOperationProperty(application, dc.clazz)
         mc.addMetaBeanProperty (operationProperty)
         def operationClassName = dc.name + DefaultOperationClass.OPERATIONS;
         mc.methodMissing =  {String name, args ->
@@ -195,7 +187,33 @@ class RapidDomainClassGrailsPlugin {
         {
             mc.addMetaBeanProperty(new DatasourceProperty("isPropertiesLoaded", Object.class));
         }
+
+        mc.setProperty = {String name, Object value->
+            def operation = delegate.__InternalGetProperty__(DomainOperationProperty.PROP_NAME);
+            if(!operation)
+            {
+                return delegate.__InternalSetProperty__(name, value);
+            }
+            else
+            {
+                return operation.setProperty (name, value);
+            }
+        }
         mc.getProperty = {String name->
+            def operation = delegate.__InternalGetProperty__(DomainOperationProperty.PROP_NAME);
+            if(!operation)
+            {
+                return delegate.__InternalGetProperty__(name);
+            }
+            else
+            {
+                return operation.getProperty (name);
+            }
+        }
+        mc.__InternalSetProperty__ = {String name, Object value->
+            mc.getMetaProperty(name).setProperty(delegate, value);
+        }
+        mc.__InternalGetProperty__ = {String name->
             def domainObject = delegate;
             def currentValue;
             def metaProp = mc.getMetaProperty(name);
@@ -312,23 +330,32 @@ class DatasourceProperty extends MetaBeanProperty
 class DomainOperationProperty extends MetaBeanProperty
 {
     WeakHashMap map = new WeakHashMap()
+    def operationClassName;
     def application;
     public static final String PROP_NAME = "__operation_class__";
-    public DomainOperationProperty(application) {
+    public DomainOperationProperty(application, Class domainClass) {
         super(PROP_NAME, AbstractDomainOperation,null,null); //To change body of overridden methods use File | Settings | File Templates.
         this.application = application;
+        operationClassName = domainClass.name + DefaultOperationClass.OPERATIONS
     }
 
 
     public Object getProperty(Object o) {
         def operation = map[o];
-        if(!operation)
+        Class operationClass;
+        try
         {
-            Class operationClass = application.getClassForName (o.class.name + DefaultOperationClass.OPERATIONS);
+            operationClass = application.classLoader.loadClass(operationClassName);
+        }catch(java.lang.ClassNotFoundException t)
+        {
+        }
+        if(!operation && operationClass)
+        {
             operation = operationClass.newInstance() ;
             operationClass.metaClass.getMetaProperty("domainObject").setProperty(operation, o);
             map[o] = operation;
         }
+
         return operation;
     }
 

@@ -1,21 +1,25 @@
 package com.ifountain.rcmdb.domain
-/* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be 
- * noted in a separate copyright notice. All rights reserved.
- * This file is part of RapidCMDB.
- * 
- * RapidCMDB is free software; you can redistribute it and/or modify
- * it under the terms version 2 of the GNU General Public License as
- * published by the Free Software Foundation. This program is distributed
- * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- * USA.
- */
+
+import org.codehaus.groovy.runtime.InvokerHelper
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
+
+/* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
+* noted in a separate copyright notice. All rights reserved.
+* This file is part of RapidCMDB.
+*
+* RapidCMDB is free software; you can redistribute it and/or modify
+* it under the terms version 2 of the GNU General Public License as
+* published by the Free Software Foundation. This program is distributed
+* in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+* even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+* PARTICULAR PURPOSE. See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+* USA.
+*/
 /**
  * Created by IntelliJ IDEA.
  * User: Administrator
@@ -27,16 +31,29 @@ abstract class AbstractDomainOperation {
     def domainObject;
     public Object getProperty(String propName)
     {
-        if(propName == "metaClass" || propName == "class")
+        try
         {
-            return AbstractDomainOperation.metaClass.getMetaProperty(propName).getProperty(this);
+            return this.invokeMethod (GrailsClassUtils.getGetterName(propName), [] as Object[]);
         }
-        return domainObject.getProperty(propName);        
+        catch(groovy.lang.MissingMethodException m)
+        {
+            return domainObject.__InternalGetProperty__(propName);
+        }
+
     }
 
     public void setProperty(String propName, Object value)
     {
-        domainObject.setProperty(propName, value);        
+        try
+        {
+            this.invokeMethod (GrailsClassUtils.getSetterName(propName), [value] as Object[]);
+
+        }
+        catch(groovy.lang.MissingMethodException m)
+        {
+            domainObject.__InternalSetProperty__(propName, value);
+        }
+
     }
 
 }

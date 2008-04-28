@@ -12,11 +12,12 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass;
  * To change this template use File | Settings | File Templates.
  */
 class ModelUtils {
+    public static String OPERATIONS_CLASS_EXTENSION = "Operations"
     public static def deleteModelArtefacts(String baseDir, String modelName)
     {
         def modelFile = new File("$baseDir/grails-app/domain/${modelName}.groovy");
         def modelControllerFile = new File("$baseDir/grails-app/controllers/${modelName}Controller.groovy");
-        def modelOperationsFile = new File("$baseDir/grails-app/operations/${modelName}Operations.groovy");
+        def modelOperationsFile = new File("$baseDir/operations/${modelName}${OPERATIONS_CLASS_EXTENSION}.groovy");
         def modelViewsDir = new File("$baseDir/grails-app/views/${modelName}");
         modelFile.delete();
         modelControllerFile.delete();

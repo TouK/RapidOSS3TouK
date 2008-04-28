@@ -307,6 +307,7 @@
                         }
                     %>
                 </span>
+                <span class="button"><g:actionSubmit class="refresh" value="ReloadOperations"/></span>
             </g:form>
         </div>
     </div>

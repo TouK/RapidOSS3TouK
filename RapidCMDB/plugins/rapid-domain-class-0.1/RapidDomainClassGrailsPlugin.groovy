@@ -11,17 +11,11 @@ import com.ifountain.rcmdb.domain.util.Relation
 import com.ifountain.rcmdb.domain.method.GetMethod
 import com.ifountain.rcmdb.domain.util.PropertyConfigurationCache
 import com.ifountain.rcmdb.domain.util.DatasourceConfigurationCache
-import com.ifountain.rcmdb.domain.OperationsArtefactHandler
-import com.ifountain.rcmdb.domain.DefaultOperationClass
-import org.codehaus.groovy.grails.commons.spring.RuntimeSpringConfiguration
-import org.codehaus.groovy.grails.commons.spring.DefaultRuntimeSpringConfiguration
-import org.codehaus.groovy.grails.commons.spring.GrailsRuntimeConfigurator
 import com.ifountain.rcmdb.domain.AbstractDomainOperation
-import org.codehaus.groovy.grails.commons.GrailsClassUtils;
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import com.ifountain.rcmdb.domain.ModelUtils;
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
-    def artefacts = [ OperationsArtefactHandler ]
-    def watchedResources = ["file:./grails-app/operations/*Operations.groovy"]
     def version = 0.1
     def dependsOn = [:]
     def loadAfter = ['hibernate']
@@ -56,17 +50,6 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def onChange = { event ->
-        if(event.source && application.isArtefactOfType(OperationsArtefactHandler.TYPE, event.source)) {
-           def context = event.ctx
-            if (!context) {
-                if (log.isDebugEnabled())
-                    log.debug("Application context not found. Can't reload")
-                return
-            }
-            def operationClass = application.addArtefact(OperationsArtefactHandler.TYPE, event.source)
-            RuntimeSpringConfiguration springConfig = new DefaultRuntimeSpringConfiguration(context);
-            GrailsRuntimeConfigurator.loadSpringGroovyResourcesIntoContext(springConfig, application.classLoader, context)
-        }
     }
 
     def onApplicationChange = { event ->
@@ -75,16 +58,40 @@ class RapidDomainClassGrailsPlugin {
     def addOperationsSupport(dc, application, ctx)
     {
         def mc = dc.metaClass;
-        def operationProperty = new DomainOperationProperty(application, dc.clazz)
+        DomainOperationProperty operationProperty = new DomainOperationProperty()
         mc.addMetaBeanProperty (operationProperty)
-        def operationClassName = dc.name + DefaultOperationClass.OPERATIONS;
+        def operationClassName = dc.name + ModelUtils.OPERATIONS_CLASS_EXTENSION;
         mc.methodMissing =  {String name, args ->
             def oprInstance = operationProperty.getProperty(delegate);
-            try {
-                return oprInstance.invokeMethod(name, args)
-            } catch (MissingMethodException e) {
+            if(oprInstance)
+            {
+                try {
+                    return oprInstance.invokeMethod(name, args)
+                } catch (MissingMethodException e) {
+                }
             }
             throw new MissingMethodException (name,  delegate.class, args);
+        }
+        mc.'static'.reloadOperations = {
+            def opClassLoader = new GroovyClassLoader(dc.clazz.classLoader);
+            opClassLoader.addClasspath ("${System.getProperty("base.dir")}/operations");
+            try
+            {
+                operationProperty.operationClass = opClassLoader.loadClass (operationClassName)
+            }
+            catch(t)
+            {
+                log.warn("Error occurred while reloading operation ${operationClassName}", t);
+                throw t;
+            }
+        }
+
+        try
+        {
+            mc.'static'.reloadOperations();
+        }
+        catch(t)
+        {
         }
     }
 
@@ -345,25 +352,15 @@ class DatasourceProperty extends MetaBeanProperty
 class DomainOperationProperty extends MetaBeanProperty
 {
     WeakHashMap map = new WeakHashMap()
-    def operationClassName;
-    def application;
+    Class operationClass;
     public static final String PROP_NAME = "__operation_class__";
-    public DomainOperationProperty(application, Class domainClass) {
+    public DomainOperationProperty() {
         super(PROP_NAME, AbstractDomainOperation,null,null); //To change body of overridden methods use File | Settings | File Templates.
-        this.application = application;
-        operationClassName = domainClass.name + DefaultOperationClass.OPERATIONS
     }
 
 
     public Object getProperty(Object o) {
         def operation = map[o];
-        Class operationClass;
-        try
-        {
-            operationClass = application.classLoader.loadClass(operationClassName);
-        }catch(java.lang.ClassNotFoundException t)
-        {
-        }
         if(!operation && operationClass)
         {
             operation = operationClass.newInstance() ;

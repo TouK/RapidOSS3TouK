@@ -3,6 +3,7 @@ package model
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import java.lang.reflect.Method
 import com.ifountain.core.domain.annotations.CmdbOperation
+import com.ifountain.rcmdb.domain.ModelUtils
 
 class Model {
     String name;
@@ -43,7 +44,7 @@ class Model {
     }
     def getOperationsFile()
     {
-        return new File(System.getProperty("base.dir", ".")+"/grails-app/operations/${name}Operations.groovy");
+        return new File(System.getProperty("base.dir", ".")+"/operations/${name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy");
     }
 
     def getOperations()

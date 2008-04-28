@@ -113,7 +113,7 @@ class ModelGenerator
             }
             if(!model.getOperationsFile().exists())
             {
-                def operationsBindings = [model:modelMetaData, parentClassName:model.parentModel?"${model.parentModel.name}Operations":AbstractDomainOperation.class.name];
+                def operationsBindings = [model:modelMetaData, parentClassName:model.parentModel?"${model.parentModel.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}":AbstractDomainOperation.class.name];
                 operationsBindings["DEFAULT_IMPORTS"] = DEFAULT_IMPORTS;
                 model.getOperationsFile().withWriter { w ->
                     def x = operationsTemplate.make(operationsBindings);
@@ -124,8 +124,8 @@ class ModelGenerator
             else
             {
                 def operationsFile = model.getOperationsFile();
-                def newParentName = model.parentModel?model.parentModel.name+"Operations":AbstractDomainOperation.class.name;
-                def operationsText = generateClassText(operationsFile, model.name+"Operations", newParentName, "");
+                def newParentName = model.parentModel?model.parentModel.name+ModelUtils.OPERATIONS_CLASS_EXTENSION:AbstractDomainOperation.class.name;
+                def operationsText = generateClassText(operationsFile, model.name+ModelUtils.OPERATIONS_CLASS_EXTENSION, newParentName, "");
                 operationsFile.setText(operationsText);
             }
         }

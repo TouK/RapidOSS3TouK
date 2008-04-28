@@ -31,6 +31,10 @@ abstract class AbstractDomainOperation {
     def domainObject;
     public Object getProperty(String propName)
     {
+        if(propName == "metaClass" || propName == "class")
+        {
+            return AbstractDomainOperation.metaClass.getMetaProperty(propName).getProperty(this);
+        }
         return domainObject.__InternalGetProperty__(propName);
     }
 

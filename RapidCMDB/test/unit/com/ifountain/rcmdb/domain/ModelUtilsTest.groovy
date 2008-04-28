@@ -152,7 +152,7 @@ class ModelUtilsTest extends GroovyTestCase{
         assertTrue (new File("${base_directory}/grails-app/views/${model.name}/list.groovy").exists());
         assertTrue (new File("${base_directory}/grails-app/views/${model.name}/show.groovy").exists());
         assertTrue (new File("${base_directory}/grails-app/views/${model.name}/addTo.groovy").exists());
-        assertTrue (new File("${base_directory}/grails-app/operations/${model.name}${DefaultOperationClass.OPERATIONS}.groovy").exists());
+        assertTrue (new File("${base_directory}/operations/${model.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
     }
     
     public void testDeleteModelArtefacts()
@@ -170,7 +170,7 @@ class ModelUtilsTest extends GroovyTestCase{
         new File("${base_directory}/grails-app/views/${model.name}/list.groovy").createNewFile()
         new File("${base_directory}/grails-app/views/${model.name}/show.groovy").createNewFile()
         new File("${base_directory}/grails-app/views/${model.name}/addTo.groovy").createNewFile()
-        new File("${base_directory}/grails-app/operations/${model.name}${DefaultOperationClass.OPERATIONS}.groovy").createNewFile();
+        new File("${base_directory}/operations/${model.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").createNewFile();
 
         ModelUtils.deleteModelArtefacts(base_directory, model.name);
         assertFalse (new File("${base_directory}/grails-app/domain/${model.name}.groovy").exists());
@@ -180,7 +180,7 @@ class ModelUtilsTest extends GroovyTestCase{
         assertFalse (new File("${base_directory}/grails-app/views/${model.name}/list.groovy").exists());
         assertFalse (new File("${base_directory}/grails-app/views/${model.name}/show.groovy").exists());
         assertFalse (new File("${base_directory}/grails-app/views/${model.name}/addTo.groovy").exists());
-        assertFalse (new File("${base_directory}/grails-app/operations/${model.name}${DefaultOperationClass.OPERATIONS}.groovy").exists());
+        assertFalse (new File("${base_directory}/operations/${model.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
     }
 
 

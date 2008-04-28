@@ -128,7 +128,7 @@ createRelation(service, resource, "resources", "services", ModelRelation.MANY, M
 ModelGenerator.getInstance().generateModel(device);
 ModelGenerator.getInstance().generateModel(link);
 
-return "Successfully created model classes for Scenario 2! Now, run SampleScenario2Connector.groovy to populate MySql DB and RCMDB tables.";
+return "Successfully created model classes for Scenario 2! Now, RESTART APPLICATION, and run SampleScenario2Connector.groovy to populate MySql DB and RCMDB tables.";
 
 
 def checkDatasources(){

@@ -34,6 +34,21 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
         return props;
      }
 
+    public retrieveRecord(keyValue){
+        return adapter.getRecord(keyValue);
+    }
+
+    public retrieveRecord(keyValue, columnList){
+	    return adapter.getRecord(keyValue, columnList);
+    }
+
+    public retrieveMultiKeyRecord(keyMap){
+        return adapter.getRecordMultiKey(keymap);
+    }
+
+    public retrieveMultiKeyRecord(Map keyMap, columnList){
+        return adapter.getRecordMultiKey(keymap, columnList);
+    }
 
     public retrieveRecords(){
 		return adapter.getRecords();
@@ -51,4 +66,19 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
         return adapter.getRecords(whereClause, columnList);     
     }
 
+    public addRecord(Map fields){
+        return adapter.addRecord(fields);
+    }
+
+	public updateRecord(Map fields){
+        return adapter.updateRecord(fields);
+    }
+
+	boolean removeRecord(keyValue){
+		return adapter.removeRecord(keyValue);
+	}
+
+	boolean removeMultiKeyRecord(Map keyMap){
+		return adapter.removeRecordMultiKey(keyMap);
+	}
 }

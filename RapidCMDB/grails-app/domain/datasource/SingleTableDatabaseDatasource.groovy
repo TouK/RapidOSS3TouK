@@ -18,8 +18,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
        this.adapter = new SingleTableDatabaseAdapter(connection.name, tableName, tableKeys, 0, Logger.getRootLogger());
     }
 
-    def getProperty(Map keys, String propName)
-    {
+    def getProperty(Map keys, String propName){
         def props = adapter.getRecordMultiKey(keys, [propName]);
         if(props)
         {
@@ -28,49 +27,48 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
         return "";
     }
 
-     def getProperties(Map keys, List properties)
-     {
-        def props = adapter.getRecordMultiKey(keys, properties);
-        return props;
-     }
+    def getProperties(Map keys, List properties){
+       def props = adapter.getRecordMultiKey(keys, properties);
+       return props;
+    }
 
-    public retrieveRecord(keyValue){
+    def getRecord(keyValue){
         return adapter.getRecord(keyValue);
     }
 
-    public retrieveRecord(keyValue, columnList){
+    def getRecord(keyValue, columnList){
 	    return adapter.getRecord(keyValue, columnList);
     }
 
-    public retrieveMultiKeyRecord(keyMap){
+    def getMultiKeyRecord(keyMap){
         return adapter.getRecordMultiKey(keymap);
     }
 
-    public retrieveMultiKeyRecord(Map keyMap, columnList){
+    def getMultiKeyRecord(Map keyMap, columnList){
         return adapter.getRecordMultiKey(keymap, columnList);
     }
 
-    public retrieveRecords(){
+    def getRecords(){
 		return adapter.getRecords();
     }
 
-    public retrieveRecords(List columnList){
+    def getRecords(List columnList){
           return adapter.getRecords(columnList);
     }
 
-    public retrieveRecords(String whereclause){
+    def getRecords(String whereclause){
         return adapter.getRecords(whereclause);
     }
 
-    public retrieveRecords(whereClause, List columnList){
-        return adapter.getRecords(whereClause, columnList);     
+    def getRecords(whereClause, List columnList){
+        return adapter.getRecords(whereClause, columnList);
     }
 
-    public addRecord(Map fields){
+    def addRecord(Map fields){
         return adapter.addRecord(fields);
     }
 
-	public updateRecord(Map fields){
+	def updateRecord(Map fields){
         return adapter.updateRecord(fields);
     }
 
@@ -81,4 +79,24 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
 	boolean removeMultiKeyRecord(Map keyMap){
 		return adapter.removeRecordMultiKey(keyMap);
 	}
+
+	def runUpdate(sql){
+        return this.adapter.executeUpdate(sql, []);
+    }
+
+    def runUpdate(sql, queryParams){
+        return this.adapter.executeUpdate(sql, queryParams);
+    }
+
+    def runQuery(sql){
+        return this.adapter.executeQuery(sql, []);
+    }
+
+    def runQuery(sql,  queryParams){
+        return this.adapter.executeQuery(sql, queryParams);
+    }
+
+    def runQuery(sql,  queryParams, fetchSize){
+        return this.adapter.executeQuery(sql, queryParams, fetchSize);
+    }
 }

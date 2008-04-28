@@ -283,6 +283,6 @@ def populateRCMDB(datasources){
 
 	    def eventName = record.EVENTNAME;
 	    def resource = record.RESOURCE;
-	    Resource.get(["name":resource]).addRelation(events:Event(name:eventName).add);
+	    Resource.get(["name":resource]).addRelation(events:Event.add(name:eventName));
 	}
 }

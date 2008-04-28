@@ -88,7 +88,7 @@ class RapidDomainClassGrailsPlugin {
 
         try
         {
-            mc.'static'.reloadOperations();
+            mc.invokeStaticMethod (dc.clazz, "reloadOperations", [] as Object[]);
         }
         catch(t)
         {

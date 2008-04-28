@@ -179,7 +179,11 @@ class RapidCmdbBuild extends Build{
 
 		ant.copy(file : "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir : "$env.dist_rapid_cmdb/scripts" );
 
-		ant.copy(todir : "$env.dist_rapid_cmdb/lib"){
+		ant.copy(todir : "$env.dist_rapid_cmdb/operations"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/operations")
+        }
+
+        ant.copy(todir : "$env.dist_rapid_cmdb/lib"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/lib")
         }
 

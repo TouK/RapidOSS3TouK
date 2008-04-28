@@ -120,88 +120,88 @@ def prepareDBTables(){
 	            url:"jdbc:mysql://192.168.1.100/test", username:"root", password:"root");
 	}
 // Creating a DatabaseAdapter using "new" will only create a variable, and wont add to RapidCMDB
-	def dbAdapter = new DatabaseAdapter("mysql", 0, Logger.getRootLogger());
+	def dbDs = DatabaseDatasource.add(connection:dsConn,name:"dbDs");
 
 	try{
-	    dbAdapter.executeUpdate("drop table resources1");
+	    dbDs.runUpdate("drop table resources1");
 	}
 	catch(e){}
 	try{
-	    dbAdapter.executeUpdate("drop table resources2");
+	    dbDs.runUpdate("drop table resources2");
 	}
 	catch(e){}
 	try{
-	    dbAdapter.executeUpdate("drop table deviceds");
+	    dbDs.runUpdate("drop table deviceds");
 	}
 	catch(e){}
 	try{
-	    dbAdapter.executeUpdate("drop table linkds");
+	    dbDs.runUpdate("drop table linkds");
 	}
 	catch(e){}
 
 	try{
-	    dbAdapter.executeUpdate("drop table services");
+	    dbDs.runUpdate("drop table services");
 	}
 	catch(e){}
 	try{
-	    dbAdapter.executeUpdate("drop table events");
+	    dbDs.runUpdate("drop table events");
 	}
 	catch(e){}
 	try{
-	    dbAdapter.executeUpdate("drop table customers");
+	    dbDs.runUpdate("drop table customers");
 	}
 	catch(e){}
 
 
-	dbAdapter.executeUpdate("create table resources1 (name varchar(50), displayname varchar(50), classname varchar(50), operationalstate varchar(50), model varchar(50), location varchar(50), vendor varchar(50), primary key (name));");
-	dbAdapter.executeUpdate("create table resources2 (ID varchar(50), displayname varchar(50), classname varchar(50), operationalstate varchar(50), model varchar(50), location varchar(50), vendor varchar(50), primary key (ID));");
-	dbAdapter.executeUpdate("create table deviceds (ID varchar(50), ip varchar(50), primary key (ID));");
-	dbAdapter.executeUpdate("create table linkds (ID varchar(50), memberof varchar(50), primary key (ID));");
-	dbAdapter.executeUpdate("create table services (name varchar(50), manager varchar(50), status varchar(50), primary key (name));");
-	dbAdapter.executeUpdate("create table events (EventName varchar(50), Resource varchar(50), Severity integer, Acknowledged varchar(10), Owner varchar(50), Description varchar(50), LastChangedAt datetime, LastOccuredAt datetime,  primary key (EventName));");
-	dbAdapter.executeUpdate("create table customers (name varchar(50), manager varchar(50), primary key (name));");
+	dbDs.runUpdate("create table resources1 (name varchar(50), displayname varchar(50), classname varchar(50), operationalstate varchar(50), model varchar(50), location varchar(50), vendor varchar(50), primary key (name));");
+	dbDs.runUpdate("create table resources2 (ID varchar(50), displayname varchar(50), classname varchar(50), operationalstate varchar(50), model varchar(50), location varchar(50), vendor varchar(50), primary key (ID));");
+	dbDs.runUpdate("create table deviceds (ID varchar(50), ip varchar(50), primary key (ID));");
+	dbDs.runUpdate("create table linkds (ID varchar(50), memberof varchar(50), primary key (ID));");
+	dbDs.runUpdate("create table services (name varchar(50), manager varchar(50), status varchar(50), primary key (name));");
+	dbDs.runUpdate("create table events (EventName varchar(50), Resource varchar(50), Severity integer, Acknowledged varchar(10), Owner varchar(50), Description varchar(50), LastChangedAt datetime, LastOccuredAt datetime,  primary key (EventName));");
+	dbDs.runUpdate("create table customers (name varchar(50), manager varchar(50), primary key (name));");
 
-	dbAdapter.executeUpdate("insert into customers values ('c1', 'manager1')");
-	dbAdapter.executeUpdate("insert into customers values ('c2', 'manager2')");
+	dbDs.runUpdate("insert into customers values ('c1', 'manager1')");
+	dbDs.runUpdate("insert into customers values ('c2', 'manager2')");
 
-	dbAdapter.executeUpdate("insert into resources1 values ('device1', 'device1', 'Device', 'state1', 'model1', 'location1', 'vendor1')");
-	dbAdapter.executeUpdate("insert into resources1 values ('device2', 'device2', 'Device', 'state2', 'model2', 'location2', 'vendor2')");
-	dbAdapter.executeUpdate("insert into resources1 values ('device3', 'device3', 'Device', 'state3', 'model3', 'location3', 'vendor3')");
-	dbAdapter.executeUpdate("insert into resources2 values ('device4', 'device4', 'Device', 'state4', 'model4', 'location4', 'vendor4')");
-	dbAdapter.executeUpdate("insert into resources2 values ('device5', 'device5', 'Device', 'state5', 'model5', 'location5', 'vendor5')");
-	dbAdapter.executeUpdate("insert into resources2 values ('device6', 'device6', 'Device', 'state6', 'model6', 'location6', 'vendor6')");
+	dbDs.runUpdate("insert into resources1 values ('device1', 'device1', 'Device', 'state1', 'model1', 'location1', 'vendor1')");
+	dbDs.runUpdate("insert into resources1 values ('device2', 'device2', 'Device', 'state2', 'model2', 'location2', 'vendor2')");
+	dbDs.runUpdate("insert into resources1 values ('device3', 'device3', 'Device', 'state3', 'model3', 'location3', 'vendor3')");
+	dbDs.runUpdate("insert into resources2 values ('device4', 'device4', 'Device', 'state4', 'model4', 'location4', 'vendor4')");
+	dbDs.runUpdate("insert into resources2 values ('device5', 'device5', 'Device', 'state5', 'model5', 'location5', 'vendor5')");
+	dbDs.runUpdate("insert into resources2 values ('device6', 'device6', 'Device', 'state6', 'model6', 'location6', 'vendor6')");
 
-	dbAdapter.executeUpdate("insert into deviceds values ('device1', 'ip1')");
-	dbAdapter.executeUpdate("insert into deviceds values ('device2', 'ip2')");
-	dbAdapter.executeUpdate("insert into deviceds values ('device3', 'ip3')");
-	dbAdapter.executeUpdate("insert into deviceds values ('device4', 'ip4')");
-	dbAdapter.executeUpdate("insert into deviceds values ('device5', 'ip5')");
-	dbAdapter.executeUpdate("insert into deviceds values ('device6', 'ip6')");
+	dbDs.runUpdate("insert into deviceds values ('device1', 'ip1')");
+	dbDs.runUpdate("insert into deviceds values ('device2', 'ip2')");
+	dbDs.runUpdate("insert into deviceds values ('device3', 'ip3')");
+	dbDs.runUpdate("insert into deviceds values ('device4', 'ip4')");
+	dbDs.runUpdate("insert into deviceds values ('device5', 'ip5')");
+	dbDs.runUpdate("insert into deviceds values ('device6', 'ip6')");
 
-	dbAdapter.executeUpdate("insert into resources1 values ('link1', 'link1', 'Link', 'state1', 'model1', 'location1', 'vendor1')");
-	dbAdapter.executeUpdate("insert into resources1 values ('link2', 'link2', 'Link', 'state2', 'model2', 'location2', 'vendor2')");
-	dbAdapter.executeUpdate("insert into resources1 values ('link3', 'link3', 'Link', 'state3', 'model3', 'location3', 'vendor3')");
-	dbAdapter.executeUpdate("insert into resources2 values ('link4', 'link4', 'Link', 'state4', 'model4', 'location4', 'vendor4')");
-	dbAdapter.executeUpdate("insert into resources2 values ('link5', 'link5', 'Link', 'state5', 'model5', 'location5', 'vendor5')");
-	dbAdapter.executeUpdate("insert into resources2 values ('link6', 'link6', 'Link', 'state6', 'model6', 'location6', 'vendor6')");
+	dbDs.runUpdate("insert into resources1 values ('link1', 'link1', 'Link', 'state1', 'model1', 'location1', 'vendor1')");
+	dbDs.runUpdate("insert into resources1 values ('link2', 'link2', 'Link', 'state2', 'model2', 'location2', 'vendor2')");
+	dbDs.runUpdate("insert into resources1 values ('link3', 'link3', 'Link', 'state3', 'model3', 'location3', 'vendor3')");
+	dbDs.runUpdate("insert into resources2 values ('link4', 'link4', 'Link', 'state4', 'model4', 'location4', 'vendor4')");
+	dbDs.runUpdate("insert into resources2 values ('link5', 'link5', 'Link', 'state5', 'model5', 'location5', 'vendor5')");
+	dbDs.runUpdate("insert into resources2 values ('link6', 'link6', 'Link', 'state6', 'model6', 'location6', 'vendor6')");
 
-	dbAdapter.executeUpdate("insert into linkds values ('link1', 'memberof1')");
-	dbAdapter.executeUpdate("insert into linkds values ('link2', 'memberof2')");
-	dbAdapter.executeUpdate("insert into linkds values ('link3', 'memberof3')");
-	dbAdapter.executeUpdate("insert into linkds values ('link4', 'memberof4')");
-	dbAdapter.executeUpdate("insert into linkds values ('link5', 'memberof5')");
-	dbAdapter.executeUpdate("insert into linkds values ('link6', 'memberof6')");
+	dbDs.runUpdate("insert into linkds values ('link1', 'memberof1')");
+	dbDs.runUpdate("insert into linkds values ('link2', 'memberof2')");
+	dbDs.runUpdate("insert into linkds values ('link3', 'memberof3')");
+	dbDs.runUpdate("insert into linkds values ('link4', 'memberof4')");
+	dbDs.runUpdate("insert into linkds values ('link5', 'memberof5')");
+	dbDs.runUpdate("insert into linkds values ('link6', 'memberof6')");
 
-	dbAdapter.executeUpdate("insert into services values ('service1', 'manager1', 'status1')");
-	dbAdapter.executeUpdate("insert into services values ('service2', 'manager2', 'status2')");
-	dbAdapter.executeUpdate("insert into services values ('service3', 'manager3', 'status3')");
+	dbDs.runUpdate("insert into services values ('service1', 'manager1', 'status1')");
+	dbDs.runUpdate("insert into services values ('service2', 'manager2', 'status2')");
+	dbDs.runUpdate("insert into services values ('service3', 'manager3', 'status3')");
 
-	dbAdapter.executeUpdate("insert into events values ('event1', 'device1', 1, 'true', 'owner1', 'descr1','1999-01-01', '1999-01-01')");
-	dbAdapter.executeUpdate("insert into events values ('event2', 'device1', 1, 'true', 'owner2', 'descr2','1999-02-01', '1999-02-01')");
-	dbAdapter.executeUpdate("insert into events values ('event3', 'device2', 1, 'true', 'owner3', 'descr3','1999-03-01', '1999-03-01')");
-	dbAdapter.executeUpdate("insert into events values ('event4', 'device2', 1, 'false', 'owner4', 'descr4','1999-04-01', '1999-04-01')");
-	dbAdapter.executeUpdate("insert into events values ('event5', 'device3', 1, 'false', 'owner5', 'descr5','1999-05-01', '1999-05-01')");
-	dbAdapter.executeUpdate("insert into events values ('event6', 'device3', 1, 'false', 'owner6', 'descr6','1999-06-01', '1999-06-01')");
+	dbDs.runUpdate("insert into events values ('event1', 'device1', 1, 'true', 'owner1', 'descr1','1999-01-01', '1999-01-01')");
+	dbDs.runUpdate("insert into events values ('event2', 'device1', 1, 'true', 'owner2', 'descr2','1999-02-01', '1999-02-01')");
+	dbDs.runUpdate("insert into events values ('event3', 'device2', 1, 'true', 'owner3', 'descr3','1999-03-01', '1999-03-01')");
+	dbDs.runUpdate("insert into events values ('event4', 'device2', 1, 'false', 'owner4', 'descr4','1999-04-01', '1999-04-01')");
+	dbDs.runUpdate("insert into events values ('event5', 'device3', 1, 'false', 'owner5', 'descr5','1999-05-01', '1999-05-01')");
+	dbDs.runUpdate("insert into events values ('event6', 'device3', 1, 'false', 'owner6', 'descr6','1999-06-01', '1999-06-01')");
 
 }
 
@@ -283,6 +283,7 @@ def populateRCMDB(datasources){
 
 	    def eventName = record.EVENTNAME;
 	    def resource = record.RESOURCE;
+
 	    Resource.get(["name":resource]).addRelation(events:Event.add(name:eventName));
 	}
 }

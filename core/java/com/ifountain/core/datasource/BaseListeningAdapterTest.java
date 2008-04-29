@@ -196,6 +196,7 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         source.sourceChanged();
         assertEquals(0, argList.size());
     }
+
     
     private ConnectionParam createConnectionParam(String connectionName)
     {

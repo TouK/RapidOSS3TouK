@@ -113,7 +113,7 @@ public class BaseAdapterConnectionTest extends RapidCoreTestCase
             @Override
             public void execute(IConnection conn) throws Exception
             {
-                
+
                 executedMethods.add("execute");
                 if(executedMethods.size() == 1)
                 {

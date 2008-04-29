@@ -1,19 +1,11 @@
-package connection;
+package connection
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ParameterMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import com.ifountain.core.connection.BaseConnection
+import com.ifountain.core.connection.ConnectionParam
+import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
+import java.sql.*;
 
-import com.ifountain.core.connection.IConnection;
-import com.ifountain.core.connection.ConnectionParam;
-import com.ifountain.core.connection.exception.UndefinedConnectionParameterException;
-
-public class DatabaseConnectionImpl implements IConnection{
+public class DatabaseConnectionImpl extends BaseConnection{
 
     public static final String DRIVER = "Driver";
     public static final String URL = "Url";
@@ -26,13 +18,11 @@ public class DatabaseConnectionImpl implements IConnection{
     private ConnectionParam param;
     private Connection connection;
 
-    public void connect() throws Exception {
-        if(!isConnected()){
-            connection = DriverManager.getConnection(url,username,password);
-        }
+    public void _connect() throws Exception {
+        connection = DriverManager.getConnection(url,username,password);
     }
 
-    public void disconnect() {
+    public void _disconnect() {
         if(connection == null) return;
         try {
             connection.close();

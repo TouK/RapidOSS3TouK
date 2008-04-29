@@ -28,6 +28,7 @@ import junit.framework.TestSuite;
 import com.ifountain.comp.test.util.testcase.RapidTestCaseTest;
 import com.ifountain.core.connection.ConnectionManagerTest;
 import com.ifountain.core.connection.PoolableConnectionFactoryTest;
+import com.ifountain.core.connection.BaseConnectionTest;
 import com.ifountain.core.datasource.BaseAdapterConnectionTest;
 import com.ifountain.core.datasource.BaseAdapterTest;
 import com.ifountain.core.datasource.BaseListeningAdapterConnectionTest;
@@ -49,6 +50,7 @@ public class AllUnitTests extends RapidCoreTestCase{
         suite.addTestSuite(PoolableConnectionFactoryTest.class);
         suite.addTestSuite(BaseListeningAdapterConnectionTest.class);
         suite.addTestSuite(BaseListeningAdapterTest.class);
+        suite.addTestSuite(BaseConnectionTest.class);
         return suite;
     }
 }

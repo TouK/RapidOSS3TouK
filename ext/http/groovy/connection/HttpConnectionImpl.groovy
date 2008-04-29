@@ -1,21 +1,22 @@
-package connection;
+package connection
 
-import com.ifountain.core.connection.ConnectionParam;
-import com.ifountain.core.connection.IConnection;
+import com.ifountain.comp.utils.HttpUtils
+import com.ifountain.core.connection.BaseConnection
+import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException;
-import com.ifountain.comp.utils.HttpUtils;
 
-public class HttpConnectionImpl implements IConnection {
+
+public class HttpConnectionImpl extends BaseConnection{
 
     public static final String BASE_URL = "BaseUrl";
     private String baseUrl;
     private ConnectionParam params;
     private HttpUtils httpUtils;
 
-    public void connect() throws Exception {
+    public void _connect() throws Exception {
     }
 
-    public void disconnect() {
+    public void _disconnect() {
     }
 
     public ConnectionParam getParameters() {

@@ -32,7 +32,7 @@ public class RapidInsightConnectionImpl extends HttpConnectionImpl {
     	}
     }
 
-    public void init(ConnectionParam param) throws Exception {
+    public void _init(ConnectionParam param) throws Exception {
         super.init(param);
         this.username = checkParam(USERNAME);
         this.password = checkParam(PASSWORD);

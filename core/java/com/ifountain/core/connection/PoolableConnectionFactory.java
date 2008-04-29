@@ -44,7 +44,7 @@ public class PoolableConnectionFactory implements PoolableObjectFactory
     public void activateObject(Object arg0) throws Exception
     {
         IConnection ds = (IConnection) arg0;
-        if(!ds.isConnected())
+        if(!ds.isConnectedOnce())
         {
             try
             {

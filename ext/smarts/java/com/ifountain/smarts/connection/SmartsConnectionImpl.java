@@ -19,18 +19,21 @@ package com.ifountain.smarts.connection;
 
 import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.core.connection.IConnection;
+import com.ifountain.core.connection.BaseConnection;
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException;
 import com.smarts.remote.SmRemoteBroker;
 import com.smarts.remote.SmRemoteDomainManager;
 
-public class SmartsConnectionImpl implements IConnection{
+public class SmartsConnectionImpl extends BaseConnection{
 
 	public static final String BROKER = "Broker";
 	public static final String DOMAIN = "Domain";
 	public static final String USERNAME = "Username";
 	public static final String PASSWORD = "Password";
 
-	private ConnectionParam param;
+    public static long isConnectedCount = 0;
+
+    private ConnectionParam param;
 	private String broker;
 	private String domain;
 	private String username;
@@ -38,14 +41,14 @@ public class SmartsConnectionImpl implements IConnection{
 	private SmRemoteDomainManager domainManager;
 	
 
-	public void connect() throws Exception {
+	public void _connect() throws Exception {
 	    SmRemoteBroker smBroker = new SmRemoteBroker(broker);
 	    smBroker.attach("BrokerNonsecure", "Nonsecure"); 
         domainManager.attach(smBroker, domain, username, password);
         smBroker.detach();
 	}
 
-	public void disconnect() {
+	public void _disconnect() {
 	    if(domainManager != null)
         {
             domainManager.detach();
@@ -66,7 +69,8 @@ public class SmartsConnectionImpl implements IConnection{
 	}
 
 	public boolean isConnected() {
-	    if(domainManager != null)
+        isConnectedCount ++;
+        if(domainManager != null)
         {
             try
             {

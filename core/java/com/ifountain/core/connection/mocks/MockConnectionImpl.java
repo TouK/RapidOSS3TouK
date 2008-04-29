@@ -6,7 +6,9 @@ package com.ifountain.core.connection.mocks;
 
 import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.core.connection.IConnection;
-public class MockConnectionImpl implements IConnection
+import com.ifountain.core.connection.BaseConnection;
+
+public class MockConnectionImpl extends BaseConnection
 {
     
     private boolean isConnected = false;
@@ -21,7 +23,7 @@ public class MockConnectionImpl implements IConnection
     {
         return param;
     }
-    public void connect() throws Exception
+    public void _connect() throws Exception
     {
         if(connectionException != null)
         {
@@ -29,7 +31,7 @@ public class MockConnectionImpl implements IConnection
         }
         isConnected = true;
     }
-    public void disconnect()
+    public void _disconnect()
     {
         isConnected = false;
     }

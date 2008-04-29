@@ -78,13 +78,13 @@ public abstract class BaseAdapter implements Adapter
                     
                 }
                 catch (Exception e) {
-                    
                     if(conn.isConnected())
                     {
                         throw e;
                     }
                     else
                     {
+                        conn.setConnectedOnce(false);
                         if(reconnectInterval > 0)
                         {
                             Thread.sleep(reconnectInterval);

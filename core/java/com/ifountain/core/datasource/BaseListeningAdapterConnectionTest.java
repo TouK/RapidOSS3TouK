@@ -101,6 +101,7 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
     
     public void testReconnectionWithConnectionExceptionThrownWhileSubscription() throws Exception
     {
+        fail("Reimplement this test");
         createConnectionParam(connectionName, MockConnectionImpl.class);
         final List<String> executedMethods = new ArrayList<String>();
         listeningAdapter = new MockBaseListeningAdapter(connectionName, 100){

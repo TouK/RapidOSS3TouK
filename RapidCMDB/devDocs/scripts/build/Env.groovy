@@ -11,7 +11,8 @@ class Env {
 // Common environment properties	
 	static def distribution = basedir+"/Distribution";
 	static def testresults = basedir+"/TestResults";
-	static def dist_rapid_cmdb = "$distribution/RapidServer/RapidCMDB";
+	static def dist_rapid_server = "$distribution/RapidServer";
+	static def dist_rapid_cmdb = "$dist_rapid_server/RapidCMDB";
 	static def dist_rapid_cmdb_lib = dist_rapid_cmdb + "/lib";
 	static def dist_rapid_server_lib = "$distribution/RapidServer/lib";
 

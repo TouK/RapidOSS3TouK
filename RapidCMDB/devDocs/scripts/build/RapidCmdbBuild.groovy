@@ -285,6 +285,9 @@ class RapidCmdbBuild extends Build{
     def unzipGrails(){
         ant.unzip(src : (String)classpath.getProperty("grails-1_0_1_zip"), dest : env.distribution);
         ant.copy(file : (String)classpath.getProperty("runner_jar"), toDir : env.distribution + "/RapidServer/lib");
+        ant.move(file : env.dist_rapid_server + "/INSTALL", tofile : env.dist_rapid_server + "/GRAILS_INSTALL");
+        ant.move(file : env.dist_rapid_server + "/README", tofile : env.dist_rapid_server + "/GRAILS_README");
+        ant.move(file : env.dist_rapid_server + "/LICENSE", tofile : env.dist_rapid_server + "/GRAILS_LICENSE");
     }
 
 	def clean(){

@@ -16,7 +16,7 @@ public class DatabaseConnectionImpl extends BaseConnection{
     private String username;
     private String password;
     private ConnectionParam param;
-    private Connection connection;
+    private java.sql.Connection connection;
 
     protected void connect() throws Exception {
         connection = DriverManager.getConnection(url,username,password);
@@ -74,7 +74,7 @@ public class DatabaseConnectionImpl extends BaseConnection{
         }
     }
 
-    public Connection getConnection() {
+    public java.sql.Connection getConnection() {
         return connection;
     }
 

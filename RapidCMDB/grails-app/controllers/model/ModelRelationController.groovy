@@ -65,7 +65,7 @@ class ModelRelationController {
         if(modelRelation) {
             def modelId = modelRelation.firstModel?.id;
             try{
-                modelRelation.delete(true)
+                modelRelation.delete(flush:true)
                 flash.message = "Relation deleted"
                 redirect(action:show, controller:'model', id:modelId)
             }

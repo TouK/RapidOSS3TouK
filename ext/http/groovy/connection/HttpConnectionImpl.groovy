@@ -13,10 +13,10 @@ public class HttpConnectionImpl extends BaseConnection{
     private ConnectionParam params;
     private HttpUtils httpUtils;
 
-    public void _connect() throws Exception {
+    protected void connect() throws Exception {
     }
 
-    public void _disconnect() {
+    protected void disconnect() {
     }
 
     public ConnectionParam getParameters() {

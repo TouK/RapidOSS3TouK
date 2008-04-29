@@ -44,17 +44,17 @@ public class BaseConnectionTest extends RapidCoreTestCase{
                  return false;
              }
 
-             public void _connect() throws Exception {
+             public void connect() throws Exception {
              }
-             public void _disconnect() {
+             public void disconnect() {
              }
          };
          assertFalse(conn.isConnectedOnce());
          conn.init(new ConnectionParam("type", "name", "class", new HashMap()));
-         conn.connect();
+         conn._connect();
          assertTrue(conn.isConnectedOnce());
 
-         conn.disconnect();
+         conn._disconnect();
          assertFalse(conn.isConnectedOnce());
      }
 }

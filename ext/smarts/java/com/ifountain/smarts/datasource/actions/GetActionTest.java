@@ -40,7 +40,7 @@ public class GetActionTest extends SmartsTestCase {
     @Override
     protected void tearDown() throws Exception {
         if(datasource.isConnected()){
-            datasource.disconnect();
+            datasource._disconnect();
         }
         super.tearDown();
     }
@@ -58,7 +58,7 @@ public class GetActionTest extends SmartsTestCase {
         } catch (Exception e) {
         }
         
-        datasource.connect();
+        datasource._connect();
         SmRemoteDomainManager domainManager = datasource.getDomainManager();
         try {
             domainManager.deleteInstance(className, instanceName);

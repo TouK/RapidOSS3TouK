@@ -40,7 +40,7 @@ public class GetPropNamesActionTest extends SmartsTestCase {
     @Override
     protected void tearDown() throws Exception {
         if(datasource.isConnected()){
-            datasource.disconnect();
+            datasource._disconnect();
         }
         super.tearDown();
     }
@@ -56,7 +56,7 @@ public class GetPropNamesActionTest extends SmartsTestCase {
         } catch (Exception e) {
         }
         
-        datasource.connect();
+        datasource._connect();
         action.execute(datasource);
         String[] expected = datasource.getDomainManager().getPropNames(className);
         assertTrue(Arrays.equals(expected, action.getPropNames()));

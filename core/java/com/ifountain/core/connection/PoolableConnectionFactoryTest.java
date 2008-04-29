@@ -41,14 +41,14 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
         MockConnectionImpl conn = (MockConnectionImpl) factory.makeObject();
         assertTrue(conn.isConnected());
         assertEquals(param, conn.getParam());
-        conn.disconnect();
+        conn._disconnect();
         factory.activateObject(conn);
         assertTrue(conn.isConnected());
         assertTrue(factory.validateObject(conn));
         
         Exception expectedConnectionException = new Exception("Exception Occurred While Connecting");
         conn.setConnectionException(expectedConnectionException);
-        conn.disconnect();
+        conn._disconnect();
         
         try
         {

@@ -27,13 +27,13 @@ package com.ifountain.core.connection;
 public abstract class BaseConnection implements IConnection {
     protected boolean isConnectedOnce = false;
 
-    public void connect() throws Exception {
-        _connect();
+    public void _connect() throws Exception {
+        connect();
         isConnectedOnce = true;
     }
 
-    public void disconnect(){
-        _disconnect();
+    public void _disconnect(){
+        disconnect();
         isConnectedOnce = false;
     }
 
@@ -45,7 +45,7 @@ public abstract class BaseConnection implements IConnection {
         this.isConnectedOnce = isConnectedOnce;
     }
 
-    public abstract void _connect() throws Exception;
-    public abstract void _disconnect();
+    protected abstract void connect() throws Exception;
+    protected abstract void disconnect();
 
 }

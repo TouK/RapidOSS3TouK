@@ -190,7 +190,7 @@ public class BaseAdapterConnectionTest extends RapidCoreTestCase
             @Override
             public void execute(IConnection conn) throws Exception
             {
-                ((MockConnectionImpl)conn).disconnect();
+                ((MockConnectionImpl)conn)._disconnect();
                 throw connectionException;
             }
         };

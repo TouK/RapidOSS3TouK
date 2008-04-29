@@ -109,7 +109,7 @@ public class ConnectionManager
             }
         }
         else{
-            connection.disconnect();
+            connection._disconnect();
         }
     }
 

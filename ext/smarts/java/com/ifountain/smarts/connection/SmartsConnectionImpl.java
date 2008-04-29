@@ -41,14 +41,14 @@ public class SmartsConnectionImpl extends BaseConnection{
 	private SmRemoteDomainManager domainManager;
 	
 
-	public void _connect() throws Exception {
+	protected void connect() throws Exception {
 	    SmRemoteBroker smBroker = new SmRemoteBroker(broker);
 	    smBroker.attach("BrokerNonsecure", "Nonsecure"); 
         domainManager.attach(smBroker, domain, username, password);
         smBroker.detach();
 	}
 
-	public void _disconnect() {
+	protected void disconnect() {
 	    if(domainManager != null)
         {
             domainManager.detach();

@@ -41,7 +41,7 @@ public class FindInstancesActionTest extends SmartsTestCase {
     @Override
     protected void tearDown() throws Exception {
         if(datasource.isConnected()){
-            datasource.disconnect();
+            datasource._disconnect();
         }
         super.tearDown();
     }
@@ -63,7 +63,7 @@ public class FindInstancesActionTest extends SmartsTestCase {
         } catch (Exception e) {
         }
         
-        datasource.connect();
+        datasource._connect();
         try{
             datasource.getDomainManager().createInstance(className1, instanceName1);
         }catch (Exception e){}

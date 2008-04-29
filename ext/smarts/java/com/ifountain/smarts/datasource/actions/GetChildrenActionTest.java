@@ -40,7 +40,7 @@ public class GetChildrenActionTest extends SmartsTestCase {
     @Override
     protected void tearDown() throws Exception {
         if(datasource.isConnected()){
-            datasource.disconnect();
+            datasource._disconnect();
         }
         super.tearDown();
     }
@@ -56,7 +56,7 @@ public class GetChildrenActionTest extends SmartsTestCase {
         } catch (Exception e) {
         }
         
-        datasource.connect();
+        datasource._connect();
         action.execute(datasource);
         assertTrue(Arrays.equals(datasource.getDomainManager().getChildren(className), action.getChildren()));
         

@@ -38,7 +38,7 @@ public class DeleteInstanceActionTest extends SmartsTestCase {
     @Override
     protected void tearDown() throws Exception {
         if(datasource.isConnected()){
-            datasource.disconnect();
+            datasource._disconnect();
         }
         super.tearDown();
     }
@@ -55,7 +55,7 @@ public class DeleteInstanceActionTest extends SmartsTestCase {
         } catch (Exception e) {
         }
         
-        datasource.connect();
+        datasource._connect();
         try {
             datasource.getDomainManager().createInstance(className, instanceName);
         } catch (Exception e) {

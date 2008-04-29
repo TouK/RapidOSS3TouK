@@ -43,7 +43,7 @@ public class GetInstancesActionTest extends SmartsTestCase {
     @Override
     protected void tearDown() throws Exception {
         if(datasource.isConnected()){
-            datasource.disconnect();
+            datasource._disconnect();
         }
         super.tearDown();
     }
@@ -58,7 +58,7 @@ public class GetInstancesActionTest extends SmartsTestCase {
         } catch (Exception e) {
         }
         
-        datasource.connect();
+        datasource._connect();
         SmRemoteDomainManager domainManager = datasource.getDomainManager();
         try {
             domainManager.createInstance(className, instanceName1);
@@ -75,7 +75,7 @@ public class GetInstancesActionTest extends SmartsTestCase {
     
     public void testGetAllInstances() throws Exception {
         GetInstancesAction action = new GetInstancesAction();
-        datasource.connect();
+        datasource._connect();
         SmRemoteDomainManager domainManager = datasource.getDomainManager();
         action.execute(datasource);
         String[] expected = domainManager.getInstances();

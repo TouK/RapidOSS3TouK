@@ -18,11 +18,11 @@ public class DatabaseConnectionImpl extends BaseConnection{
     private ConnectionParam param;
     private Connection connection;
 
-    public void _connect() throws Exception {
+    protected void connect() throws Exception {
         connection = DriverManager.getConnection(url,username,password);
     }
 
-    public void _disconnect() {
+    protected void disconnect() {
         if(connection == null) return;
         try {
             connection.close();

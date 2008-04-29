@@ -26,9 +26,9 @@ public interface IConnection
 {
     public void init(ConnectionParam param) throws Exception;
     public ConnectionParam getParameters();
-	public void disconnect();
+	public void _disconnect();
 	public boolean isConnected();
     public boolean isConnectedOnce();
     public void setConnectedOnce(boolean isConnectedOnce);
-	public void connect() throws Exception;
+	public void _connect() throws Exception;
 }

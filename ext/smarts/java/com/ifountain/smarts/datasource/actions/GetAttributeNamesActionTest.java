@@ -41,7 +41,7 @@ public class GetAttributeNamesActionTest extends SmartsTestCase {
     @Override
     protected void tearDown() throws Exception {
         if(datasource.isConnected()){
-            datasource.disconnect();
+            datasource._disconnect();
         }
         super.tearDown();
     }
@@ -57,7 +57,7 @@ public class GetAttributeNamesActionTest extends SmartsTestCase {
         } catch (Exception e) {
         }
         
-        datasource.connect();
+        datasource._connect();
         
         action.execute(datasource);
         String[] attNames = action.getAttributeNames();

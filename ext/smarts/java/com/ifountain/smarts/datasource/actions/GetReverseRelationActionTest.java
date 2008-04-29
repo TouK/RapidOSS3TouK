@@ -38,7 +38,7 @@ public class GetReverseRelationActionTest extends SmartsTestCase {
     @Override
     protected void tearDown() throws Exception {
         if(datasource.isConnected()){
-            datasource.disconnect();
+            datasource._disconnect();
         }
         super.tearDown();
     }
@@ -56,7 +56,7 @@ public class GetReverseRelationActionTest extends SmartsTestCase {
         } catch (Exception e) {
         }
         
-        datasource.connect();
+        datasource._connect();
         action.execute(datasource);
         assertEquals(datasource.getDomainManager().getReverseRelation(className, relationName), action.getReverseRelation());
         

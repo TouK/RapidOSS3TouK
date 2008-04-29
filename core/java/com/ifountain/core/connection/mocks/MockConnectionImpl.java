@@ -23,7 +23,7 @@ public class MockConnectionImpl extends BaseConnection
     {
         return param;
     }
-    public void _connect() throws Exception
+    protected void connect() throws Exception
     {
         if(connectionException != null)
         {
@@ -31,7 +31,7 @@ public class MockConnectionImpl extends BaseConnection
         }
         isConnected = true;
     }
-    public void _disconnect()
+    protected void disconnect()
     {
         isConnected = false;
     }

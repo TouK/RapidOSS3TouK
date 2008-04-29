@@ -48,7 +48,7 @@ public class PoolableConnectionFactory implements PoolableObjectFactory
         {
             try
             {
-                ds.connect();
+                ds._connect();
             }
             catch (Throwable e)
             {
@@ -60,7 +60,7 @@ public class PoolableConnectionFactory implements PoolableObjectFactory
     public void destroyObject(Object arg0) throws Exception
     {
         IConnection conn = (IConnection) arg0;
-        conn.disconnect();
+        conn._disconnect();
     }
 
     public Object makeObject() throws Exception

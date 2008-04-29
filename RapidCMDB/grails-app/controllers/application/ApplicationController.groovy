@@ -8,6 +8,8 @@ import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import org.codehaus.groovy.grails.compiler.injection.ClassInjector
 import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
 import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
+import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
+import org.codehaus.groovy.grails.commons.GrailsClass
 
 /**
 * Created by IntelliJ IDEA.
@@ -25,18 +27,29 @@ class ApplicationController {
         String baseDirectory = System.getProperty("base.dir")
         gcl.addClasspath (baseDirectory+"/grails-app/domain");
         gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
+        def domainClassesWillBeGenerated = [];
+        def domainClassesMap = [:];
         models.each{Model model->
             try
             {
                 def cls = gcl.loadClass(model.name);
                 def domainClass = new DefaultGrailsDomainClass (cls);
-                ModelUtils.generateModelArtefacts (domainClass, baseDirectory);
-                model.resourcesWillBeGenerated = false;
-                model.save(flush:true);
+                domainClassesWillBeGenerated += domainClass;
+                domainClassesMap[model.name] = domainClass;
             }
             catch(t)
             {
                 log.error("Exception occurred while creating controller, view and operations files of model ${model.name}", StackTraceUtils.deepSanitize(t));
+            }
+        }
+        GrailsDomainConfigurationUtil.configureDomainClassRelationships (domainClassesWillBeGenerated as GrailsClass[], domainClassesMap);
+        models.each{Model model->
+            def domainClass = domainClassesMap[model.name];
+            if(domainClass)
+            {
+                ModelUtils.generateModelArtefacts (domainClass, baseDirectory);
+                model.resourcesWillBeGenerated = false;
+                model.save(flush:true);
             }
         }
         render(view:"reloading", controller:"application");

@@ -81,7 +81,7 @@ class RapidDomainClassGrailsPlugin {
             }
             catch(t)
             {
-                log.warn("Error occurred while reloading operation ${operationClassName}", t);
+                logger.warn("Error occurred while reloading operation ${operationClassName}", t);
                 throw t;
             }
         }

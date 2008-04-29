@@ -304,7 +304,7 @@ class RapidDomainClassGrailsPlugin {
                             def requestedPropConfig = propCache.getPropertyConfigByNameInDs(key);
                             if(requestedPropConfig)
                             {
-                                currentDomainObject.setProperty(requestedPropConfig.name, value);
+                                currentDomainObject.__InternalSetProperty__(requestedPropConfig.name, value);
                             }
                         }
                         currentDomainObject.isPropertiesLoaded[propertyDatasource.name] = true;

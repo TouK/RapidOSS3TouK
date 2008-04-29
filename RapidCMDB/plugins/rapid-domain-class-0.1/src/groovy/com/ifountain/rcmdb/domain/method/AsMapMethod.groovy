@@ -48,7 +48,7 @@ class AsMapMethod extends AbstractRapidDomainMethod{
     public Object invoke(Object domainObject, Object[] arguments) {
         def propertyMap = [:];
         def colList;
-        if(arguments.length == 0)
+        if(arguments == null || arguments.length == 0)
         {
             colList = allProperties;
         }

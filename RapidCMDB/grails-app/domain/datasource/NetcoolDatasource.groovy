@@ -9,6 +9,7 @@ class NetcoolDatasource extends BaseDatasource{
     static STRING_COL_NAMES =[];
     static FIELDMAP =[:];
     static NAMEMAP =[:];
+	static CONVERSIONMAP = [:];
 
     def statusTableAdapter;
     def detailsTableAdapter;
@@ -38,6 +39,9 @@ class NetcoolDatasource extends BaseDatasource{
         this.masterTableAdapter = new SingleTableDatabaseAdapter(connection.name, masterTable, masterTableKey, 0, Logger.getRootLogger());
       	if (!FIELDMAP || FIELDMAP.size()==0){
             populateFieldMap();
+        }
+        if (!CONVERSIONMAP || CONVERSIONMAP.size()==0){
+            populateConversionMap();
         }
     }
 
@@ -156,7 +160,6 @@ class NetcoolDatasource extends BaseDatasource{
     }
 
     def removeEvent(serverserial){
-	    println "serverserial:$serverserial"
         def event = getEvent(serverserial);
 		if(event.size() == 0)
 		{
@@ -219,14 +222,14 @@ class NetcoolDatasource extends BaseDatasource{
         updateProps.put("Severity",intSeverity);
         updateProps.put("Acknowledged", 0);
 		statusTableAdapter.updateRecord(updateProps);
-		def whereClause= "Colname = 'Severity'";
+		/*def whereClause= "Colname = 'Severity'";
         def conversions = [:];
-        conversions = getFromConversions(whereClause);
+        conversions = getFromConversions(whereClause);*/
         def oldVal = "Severity"+oldSeverity;
-        oldVal= conversions[oldVal];
+        oldVal= CONVERSIONMAP[oldVal];
         def newVal = "Severity"+severity;
-        newVal = conversions[newVal];
-        String text = "Alert prioritized from ${oldVal} to ${newVal} by ${userName}";
+        newVal = CONVERSIONMAP[newVal];
+        String text = "Alert is prioritized from ${oldVal} to ${newVal} by ${userName}";
 		writeToJournal(event.serial, text);
 	}
 
@@ -249,12 +252,12 @@ class NetcoolDatasource extends BaseDatasource{
         updateProps.put("SuppressEscl", intSuppress);
 		statusTableAdapter.updateRecord(updateProps);
 
-        def whereClause= "Colname = 'SuppressEscl'";
+        /*def whereClause= "Colname = 'SuppressEscl'";
         def conversions = [:];
-        conversions = getFromConversions(whereClause);
-        def oldVal= conversions.get("SuppressEscl"+oldSuppress);
-        def newVal = conversions.get("SuppressEscl"+suppress);
-		String text = "Alert prioritized from ${oldVal} to ${newVal} by ${userName}";
+        conversions = getFromConversions(whereClause);*/
+        def oldVal= CONVERSIONMAP.get("SuppressEscl"+oldSuppress);
+        def newVal = CONVERSIONMAP.get("SuppressEscl"+suppress);
+		String text = "Alert is prioritized from ${oldVal} to ${newVal} by ${userName}";
 
 		writeToJournal(event.serial, text);
 	}
@@ -272,7 +275,7 @@ class NetcoolDatasource extends BaseDatasource{
     }
 
     def assignAction(serverserial, ownerUID){
-        String partOfAlertText= "Alert assigned to user ";
+        String partOfAlertText= "Alert is assigned to user ";
         assign(serverserial, ownerUID, partOfAlertText);
     }
 
@@ -293,11 +296,11 @@ class NetcoolDatasource extends BaseDatasource{
 		updateProps.put("ServerSerial",serverserial);
 		if(isAcknowledge){
 			updateProps.put("Acknowledged",1);
-            text = "Alert acknowledged by " + userName;
+            text = "Alert is acknowledged by " + userName;
 		}
 		else{
             updateProps.put("Acknowledged",0);
-			text = "Alert unacknowledged by " + userName;
+			text = "Alert is unacknowledged by " + userName;
 		}
         statusTableAdapter.updateRecord(updateProps);
         writeToJournal(event.serial, text);
@@ -326,7 +329,7 @@ class NetcoolDatasource extends BaseDatasource{
 		journalTableAdapter.executeUpdate(sb.toString(), []);
     }
 
-    private def getFromConversions(whereClause){
+    /*public def getFromConversions(whereClause){
         def conversions = [:];
         def columns = ["KeyField", "Conversion"];
         def records = conversionsTableAdapter.getRecords(whereClause, columns);
@@ -337,7 +340,7 @@ class NetcoolDatasource extends BaseDatasource{
         }
         return conversions;
     }
-
+*/
     private def assign(serverserial, ownerUID, partOfAlertText){
         def intOwnerUID;
         if (ownerUID instanceof String){
@@ -388,5 +391,15 @@ class NetcoolDatasource extends BaseDatasource{
 		NAMEMAP.remove("class");
 		NAMEMAP.put("netcoolclass","Class");
 		//return FIELDMAP;
+    }
+
+    def populateConversionMap(){
+        def columns = ["KeyField", "Conversion"];
+        def records = conversionsTableAdapter.getRecords(columns);
+        for (record in records){
+            def key = record.KeyField.toString().trim();
+            def value = record.Conversion.toString().trim();
+            CONVERSIONMAP.put(key, value);
+        }
     }
 }

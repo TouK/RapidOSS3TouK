@@ -27,13 +27,13 @@ class Test extends Parent{
 			}
 		}
 		
-		ant.mkdir(dir :  htmlDir);
-		ant.junitreport(todir : htmlDir ){
-			ant.fileset(dir : outputXmlDir){
-				ant.include(name : "*.xml");
-			}
-			ant.report(format : "frames", todir : htmlDir);
-		}
+//		ant.mkdir(dir :  htmlDir);
+//		ant.junitreport(todir : htmlDir ){
+//			ant.fileset(dir : outputXmlDir){
+//				ant.include(name : "*.xml");
+//			}
+//			ant.report(format : "frames", todir : htmlDir);
+//		}
 	}
 	
 	def Properties getLibJars(){

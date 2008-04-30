@@ -4,6 +4,10 @@ import model.Model
 import org.apache.commons.io.FileUtils
 import groovy.text.SimpleTemplateEngine
 import model.ModelRelation
+import model.GeneratedModel
+import model.GeneratedModelProperty
+import model.GeneratedModelRelation
+import model.GeneratedModel
 
 class ModelGenerator
 {
@@ -40,6 +44,14 @@ class ModelGenerator
     def generateModel(Model model)
     {
         def dependentModels = ModelUtils.getAllDependentModels(model);
+        def oldDependentModels = getOldDependentModelsName(model);
+        oldDependentModels.each{String modelName, Model oldDepModel->
+            if(!dependentModels.containsKey(oldDepModel.name))
+            {
+                def tmpDependentModels = ModelUtils.getAllDependentModels(oldDepModel);
+                dependentModels.putAll (tmpDependentModels);
+            }
+        }
         def modelMetaDatas = [:];
         dependentModels.each{key,value->
             modelMetaDatas[key] = new ModelMetaData(value);
@@ -81,14 +93,66 @@ class ModelGenerator
     }
 
 
+    def getOldDependentModelsName(Model model)
+    {
+        Map dependentModels = [:]
+        GeneratedModel modelChangeLog = GeneratedModel.findByModelName(model.name);
+        if(modelChangeLog)
+        {
+            def childModels = GeneratedModel.findAllByParentModelName(model.name);
+            childModels.each{GeneratedModel oldChildModel->
+                addOldDependentModel(oldChildModel.name, dependentModels);
+            }
 
+            def relatedModels = GeneratedModelRelation.findAllByToModelName(model.name);
+            relatedModels.each{GeneratedModelRelation relation->
+                addOldDependentModel(relation.model.modelName, dependentModels);
+            }
+        }
+        return dependentModels;
+    }
 
+    def addOldDependentModel(String name, Map dependentModels)
+    {
+        if(!dependentModels.containsKey(name))
+        {
+            def depModel = Model.findByName(name);
+            if(depModel)
+            {
+                dependentModels[name] = depModel;
+            }
+        }
+    }
+    def createGeneratedModelInfo(Model model)
+    {
+        GeneratedModel.findByModelName(model.name)?.delete(flush:true);
+        def generatedModel = new GeneratedModel(modelName:model.name);
+        if(model.parentModel)
+        {
+            generatedModel.parentModelName = model.parentModel.name;
+        }
+        generatedModel = generatedModel.save();
+        model.modelProperties.each {
+            def generatedModelProperty = new GeneratedModelProperty(model:generatedModel, propName:it.name);
+            generatedModelProperty.save();
+        }
+        model.fromRelations.each {ModelRelation relation->
+            def generatedModelRelation = new GeneratedModelRelation(model:generatedModel, toModelName:relation.secondModel.name,name:relation.firstName,reverseName:relation.secondName, cardinality:relation.firstCardinality, reverseCardinality:relation.secondCardinality );
+            generatedModelRelation.save();
+        }
+        model.toRelations.each {ModelRelation relation->
+            def generatedModelRelation = new GeneratedModelRelation(model:generatedModel, toModelName:relation.firstModel.name,name:relation.secondName,reverseName:relation.firstName, cardinality:relation.secondCardinality, reverseCardinality:relation.firstCardinality );
+            generatedModelRelation.save();
+        }
+    }
     def createModelFiles(modelMetaDatas)
     {
         modelMetaDatas.each {modelName,modelMetaData->
             def model = modelMetaData.model;
             model.resourcesWillBeGenerated = true;
             model.save();
+            createGeneratedModelInfo(model);
+
             def parentDir = model.getModelFile().getParentFile();
             parentDir.mkdirs();
 

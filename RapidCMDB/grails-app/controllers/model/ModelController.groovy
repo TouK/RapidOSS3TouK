@@ -190,6 +190,7 @@ class ModelController {
                 }
                 catch (Exception e)
                 {
+                    log.error("Exception occurred while generating model ${model.name}", e);
                     flash.message = e.getMessage();
                     redirect(action: show, controller: 'model', id: model?.id)
                 }

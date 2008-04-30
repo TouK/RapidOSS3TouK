@@ -36,7 +36,7 @@ import connection.DatabaseConnectionImpl;
 public class DatabaseConnectionImplTestUtils {
 
     public static DatabaseConnectionParams getConnectionParams(String type){
-        if(type.equals(DatabaseTestConstants.MYSQL) || type.equals(DatabaseTestConstants.ORACLE)){
+        if(type.equals(DatabaseTestConstants.MYSQL) || type.equals(DatabaseTestConstants.ORACLE) || type.equals(DatabaseTestConstants.SYBASE)){
             return new DatabaseConnectionParams(CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_DRIVER),
                     CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_URL),
                     CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_USER),
@@ -58,7 +58,7 @@ public class DatabaseConnectionImplTestUtils {
         otherParams.put(DatabaseConnectionImpl.PASSWORD, connectionParams.getPassword());
         return new ConnectionParam("Database", "conn", DatabaseConnectionImpl.class.getName(), otherParams );
     }
-    public static ConnectionParam getDatasourceParam(){
+    public static ConnectionParam getConnectionParam(){
         return getConnectionParam(DatabaseTestConstants.MYSQL);
     }
     

@@ -48,7 +48,7 @@ public class ExecuteUpdateActionTests extends RapidCoreTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         datasource = new DatabaseConnectionImpl();
-        datasource.init(DatabaseConnectionImplTestUtils.getDatasourceParam());
+        datasource.init(DatabaseConnectionImplTestUtils.getConnectionParam());
         datasource.connect();
     }
     

@@ -25,5 +25,6 @@ public interface DatabaseTestConstants {
 	public static final String DATABASE_PASSWORD = "DatabasePassword";
 	public static final String MYSQL = "MYSQL";
 	public static final String ORACLE = "ORACLE";
+	public static final String SYBASE = "SYBASE";
 
 }

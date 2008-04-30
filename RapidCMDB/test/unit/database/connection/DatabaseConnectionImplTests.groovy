@@ -49,7 +49,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
     }
     
     public void testInit() throws Exception {
-        ConnectionParam param = DatabaseConnectionImplTestUtils.getDatasourceParam();
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
         try {
             conn.init(param);
         } catch (Throwable e) {
@@ -96,7 +96,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
     }
     
     public void testConnect() throws Exception {
-        ConnectionParam param = DatabaseConnectionImplTestUtils.getDatasourceParam();
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
         conn.init(param);
         conn.connect();
         assertTrue(conn.isConnected());
@@ -104,7 +104,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
     }
     
     public void testDisconnect() throws Exception {
-        ConnectionParam param = DatabaseConnectionImplTestUtils.getDatasourceParam();
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
         conn.init(param);
         conn.connect();
         assertTrue(conn.isConnected());

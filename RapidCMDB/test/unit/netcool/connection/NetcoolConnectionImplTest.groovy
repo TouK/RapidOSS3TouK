@@ -2,6 +2,8 @@ package netcool.connection
 
 import com.ifountain.core.test.util.RapidCoreTestCase
 import connection.NetcoolConnectionImpl
+import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils
+import com.ifountain.rcmdb.test.util.DatabaseTestConstants
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -33,6 +35,7 @@ class NetcoolConnectionImplTest extends RapidCoreTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         conn = new NetcoolConnectionImpl();
+        conn.init(DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.SYBASE));
     }
 
     protected void tearDown() throws Exception {
@@ -43,7 +46,10 @@ class NetcoolConnectionImplTest extends RapidCoreTestCase {
     }
 
     public void testIsConnected() throws Exception {
-        fail("Implement!");
+        conn._connect();
+        assertTrue(conn.isConnected());
+        conn._disconnect();
+        assertFalse(conn.isConnected()); 
     }
 
 }

@@ -45,7 +45,7 @@ public class ExecuteQueryActionTests extends RapidCoreTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         connection = new DatabaseConnectionImpl();
-        connection.init(DatabaseConnectionImplTestUtils.getDatasourceParam());
+        connection.init(DatabaseConnectionImplTestUtils.getConnectionParam());
         connection.connect();
     }
     

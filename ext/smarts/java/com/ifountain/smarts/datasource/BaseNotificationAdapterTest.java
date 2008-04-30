@@ -563,7 +563,44 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
     }
     
     public void testGetNotificationUsingMapListParams() throws Exception {
-    	fail("To be implemented");
+    	String className = "Switch";
+        String instanceName = "eraaswiad";
+        String eventName = "Down";
+
+        Map atts = new HashMap();
+        atts.put("Severity", "3");
+        atts.put("EventText", "eventText");
+
+
+        notificationAdapter.createNotification(className, instanceName, eventName, atts);
+
+        List requestedAtts = new ArrayList();
+        requestedAtts.add("Severity");
+        requestedAtts.add("EventText");
+
+        Map idsMap = new HashMap();
+        idsMap.put("ClassName", className);
+        idsMap.put("InstanceName", instanceName);
+        idsMap.put("EventName", eventName);
+
+        Map<String, Object> rec = notificationAdapter.getObject(idsMap, requestedAtts);
+        assertEquals("3", rec.get("Severity"));
+        assertEquals("eventText", rec.get("EventText"));
+
+        idsMap.remove("ClassName");
+        rec = notificationAdapter.getObject(idsMap, requestedAtts);
+        assertNull(rec);
+
+        idsMap.put("ClassName", className);
+        idsMap.remove("InstanceName");
+        rec = notificationAdapter.getObject(idsMap, requestedAtts);
+        assertNull(rec);
+
+        idsMap.put("InstanceName", instanceName);
+        idsMap.remove("EventName");
+        rec = notificationAdapter.getObject(idsMap, requestedAtts);
+        assertNull(rec);
+
     }
 
     private void assertCreateNotification(NotificationCreateParams createParameters,

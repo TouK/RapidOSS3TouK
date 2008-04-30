@@ -463,6 +463,9 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
 	@Override
 	public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception
 	{
-		return getNotification(ids.get("ClassName"), ids.get("InstanceName"), ids.get("EventName"), fieldsToBeRetrieved);
+        if(!ids.containsKey("ClassName") || !ids.containsKey("InstanceName") || !ids.containsKey("EventName")){
+            return null;
+        }
+        return getNotification(ids.get("ClassName"), ids.get("InstanceName"), ids.get("EventName"), fieldsToBeRetrieved);
 	}
 }

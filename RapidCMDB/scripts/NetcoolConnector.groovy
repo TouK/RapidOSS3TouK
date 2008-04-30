@@ -1,5 +1,5 @@
 import datasource.*
-def lastStateChange = 0;//1209048810;
+def lastStateChange = 0;
 
 /*NC_URL = 'jdbc:sybase:Tds:ossmuse:4100/?LITERAL_PARAMS=true';
 USERNAME = 'root';
@@ -37,7 +37,6 @@ println "rec count for $whereClause: $size"
 		if (longStateChange>lastStateChange){
 			lastStateChange = longStateChange;
 		}
-		//println "new read serial: $newEvent.serverserial";
 	}
 println "lastStateChange: $lastStateChange for run $cntr"
 	cntr++

@@ -65,7 +65,6 @@ class ModelController {
             model.properties = params
             if (!model.hasErrors() && model.save()) {
                 flash.message = "Model ${params.id} updated"
-                println "redirectin show view";
                 redirect(action: show, id: model.id)
             }
             else {

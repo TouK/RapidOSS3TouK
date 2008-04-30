@@ -27,6 +27,7 @@ package model
 
 import datasource.BaseDatasource
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
+import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 
 class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
@@ -64,7 +65,7 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
         assertEquals(model.id, modelDatasource.model.id);
         assertTrue(modelDatasource.master);
         assertEquals("/model/show/" + model.id, mdc.response.redirectedUrl);
-        assertEquals("ModelDatasource ${modelDatasource.id} created", mdc.flash.message);
+        assertEquals("ModelDatasource ${modelDatasource} created", mdc.flash.message);
     }
 
     void testDeleteWhenModelDatasourceNotFound(){
@@ -85,16 +86,15 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
         mdc.save();
         def modelDatasources = ModelDatasource.list();
         assertEquals(1, modelDatasources.size());
-        def model1 = Model.get(model.id);
-        assertEquals(1, Model.get(model.id)?.datasources.size());
-        mdc.params.clear();
-        def modelDatasourceId = modelDatasources[0].id;
+        def modelDatasource = modelDatasources.get(0);
+        assertEquals(model.id, modelDatasource.model.id);
+        IntegrationTestUtils.resetController(mdc);
+        def modelDatasourceId = modelDatasource.id;
         mdc.params["id"] = modelDatasourceId;
         mdc.delete();
         assertEquals(0, ModelDatasource.list().size());
-        assertEquals("ModelDatasource ${modelDatasourceId} deleted", mdc.flash.message);
+        assertEquals("ModelDatasource ${modelDatasource} deleted", mdc.flash.message);
         assertEquals("/model/show/" + model.id, mdc.response.redirectedUrl);
-        assertEquals(0,Model.get(model.id).datasources.size());
     }
 
 }

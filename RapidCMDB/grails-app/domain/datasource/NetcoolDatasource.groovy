@@ -10,7 +10,7 @@ class NetcoolDatasource extends BaseDatasource{
     static FIELDMAP =[:];
     static NAMEMAP =[:];
 	static CONVERSIONMAP = [:];
-
+	
     def statusTableAdapter;
     def detailsTableAdapter;
     def journalTableAdapter;
@@ -392,7 +392,7 @@ class NetcoolDatasource extends BaseDatasource{
 		NAMEMAP.put("netcoolclass","Class");
 		//return FIELDMAP;
     }
-
+    
     def populateConversionMap(){
         def columns = ["KeyField", "Conversion"];
         def records = conversionsTableAdapter.getRecords(columns);

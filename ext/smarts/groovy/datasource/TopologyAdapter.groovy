@@ -13,7 +13,4 @@ public class TopologyAdapter extends BaseTopologyAdapter {
         super(datasourceName, reconnectInterval, logger);
     }    
     
-    def setTest(String newTest){
-    	this.testString = newTest;
-    }
 }

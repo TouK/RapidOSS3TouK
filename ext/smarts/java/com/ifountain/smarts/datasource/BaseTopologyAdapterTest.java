@@ -764,7 +764,31 @@ public class BaseTopologyAdapterTest extends SmartsTestCase {
     }
     
     public void testGetObjectUsingMapListParams() throws Exception {
-    	fail("To be implemented");
+    	SmartsTestUtils.deleteAllTopologyInstances(className, ".*");
+        Map atts = new HashMap();
+        atts.put("Model", "model");
+        atts.put("Vendor", "vendor");
+        topologyAdapter.createTopologyInstanceWithProperties(className, instanceName, atts);
+
+        Map idsMap = new HashMap();
+        idsMap.put("CreationClassName", className);
+        idsMap.put("Name", instanceName);
+
+        List attsRequested = new ArrayList();
+        attsRequested.add("Model");
+        attsRequested.add("Vendor");
+        Map<String, Object> rec = topologyAdapter.getObject(idsMap, attsRequested);
+        assertEquals("model", rec.get("Model"));
+        assertEquals("vendor", rec.get("Vendor"));
+
+        idsMap.remove("CreationClassName");
+        rec = topologyAdapter.getObject(idsMap, attsRequested);
+        assertNull(rec);
+
+        idsMap.put("CreationClassName", className);
+        idsMap.remove("Name");
+        rec = topologyAdapter.getObject(idsMap, attsRequested);
+        assertNull(rec);
     }
     
     private void deleteInstances(String[] classNames, String[] instanceNames) throws Exception {

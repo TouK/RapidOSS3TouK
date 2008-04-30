@@ -228,6 +228,9 @@ public class BaseTopologyAdapter extends BaseSmartsAdapter {
 	@Override
 	public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception
 	{
-		return getObject(ids.get("CreationClassName"), ids.get("Name"), fieldsToBeRetrieved);
+        if(!ids.containsKey("CreationClassName") || !ids.containsKey("Name")){
+            return null;
+        }
+        return getObject(ids.get("CreationClassName"), ids.get("Name"), fieldsToBeRetrieved);
 	}
 }

@@ -10,6 +10,9 @@ class ModelDatasourceKeyMapping {
             if(val.blank && obj.datasource.master){
                 return ['model.keymapping.masterproperty.notblank']
             }
+            if(val.propertyDatasource && !val.propertyDatasource.master){
+                return ['model.keymapping.cannot.be.federated']
+            }
         });
         nameInDatasource(nullable:true);
     }

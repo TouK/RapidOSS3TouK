@@ -8,7 +8,7 @@ dataSource {
 hibernate {
     cache.use_second_level_cache=true
     cache.use_query_cache=true
-    jdbc.batch_size=1
+    jdbc.batch_size=0
     cache.provider_class='org.hibernate.cache.EhCacheProvider'
 }
 // environment specific settings

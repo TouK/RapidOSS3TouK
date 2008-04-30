@@ -21,6 +21,15 @@
             <g:renderErrors bean="${model}" as="list"/>
         </div>
     </g:hasErrors>
+    <g:if test="${flash.errors}">
+        <div class="errors">
+            <ul>
+                <g:each var="error" in="${flash?.errors}">
+                    <li>${error}</li>
+                </g:each>
+            </ul>
+        </div>
+    </g:if>
 
     <g:form method="post">
         <input type="hidden" name="id" value="${model?.id}"/>

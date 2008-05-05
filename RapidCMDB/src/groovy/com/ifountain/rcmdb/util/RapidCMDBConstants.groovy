@@ -21,9 +21,17 @@ package com.ifountain.rcmdb.util;
  * User: Sezgin Kucukkaraaslan
  * Date: Mar 19, 2008
  * Time: 4:07:15 PM
- * To change this template use File | Settings | File Templates.
  */
 class RapidCMDBConstants {
     private RapidCMDBConstants(){}
     public static final String RCMDB = "RCMDB";
+
+
+
+    //web parameters
+    public static final String DATA_PARAMETER = "Data";
+    public static final String MODEL = "Model";
+    public static final String ACTION_TYPE = "ActionType";
+    public static final String RELATED_MODEL = "RelatedModel";
+    public static final String RELATION_NAME = "RelationName";
 }

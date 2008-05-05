@@ -79,6 +79,11 @@ class RapidDomainClassGrailsPlugin {
             {
                 operationProperty.operationClass = opClassLoader.loadClass (operationClassName)
             }
+            catch(java.lang.ClassNotFoundException classNotFound)
+            {
+                logger.info("${operationClassName} file does not exist.");
+                throw new FileNotFoundException("${System.getProperty("base.dir")}/operations/${operationClassName}.groovy", null);
+            }
             catch(t)
             {
                 logger.warn("Error occurred while reloading operation ${operationClassName}", t);

@@ -27,10 +27,6 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
  */
 class ExecuteBatchController {
 
-    public static final String DEFAULT_ROW_SEPERATOR = "!rs_rs!";
-    public static final String DEFAULT_COLUMN_SEPERATOR = ";rs_cs;";
-    public static final String DEFAULT_PROPERTY_SEPERATOR = ":rs_ps:";
-
     private static final String SUCCESS_MESSAGE_TEMPLATE = "{0} of {1} actions executed successfully.";
 
     public static final String ADD_OBJECT = "AddObject";
@@ -45,7 +41,6 @@ class ExecuteBatchController {
             def numberOfAllActions = 0;
             def errors = [];
             def data = getMandatoryParam(RapidCMDBConstants.DATA_PARAMETER, params[RapidCMDBConstants.DATA_PARAMETER]);
-            println "data: " + data;
             def rows = new XmlSlurper().parseText(data).Action;
             numberOfAllActions = rows.size();
             def count = 0;
@@ -177,7 +172,6 @@ class ExecuteBatchController {
         catch (e) {
             renderErrors([e.getMessage()]);
         }
-
     }
 
     def getObjectErrors(object) {

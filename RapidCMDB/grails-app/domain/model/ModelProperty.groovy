@@ -76,4 +76,25 @@ class ModelProperty {
     String toString(){
         return "$name";
     }
+    
+    def xml(){
+       	def property = {
+        		property{
+    			name(name)
+    			type(type)
+    			blank(blank)
+    			defaultValue(defaultValue)
+    			def datasourceName = null;
+    			if(propertyDatasource != null) datasourceName = propertyDatasource.datasource.name;
+    			datasource(datasourceName)			
+    			def propertyNameSpecifyingDatasource = null;
+    			if(propertySpecifyingDatasource != null) propertyNameSpecifyingDatasource = propertySpecifyingDatasource.name;
+    			propertySpecifyingDatasource(propertyNameSpecifyingDatasource)
+    			nameInDatasource(nameInDatasource)
+    			lazy(lazy)
+    		}
+    	}
+    	
+    	return property;
+    }    
 }

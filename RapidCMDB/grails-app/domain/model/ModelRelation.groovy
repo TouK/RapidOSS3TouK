@@ -29,4 +29,19 @@ class ModelRelation {
      String toString(){
          return "$firstName";
      }
+     
+     def xml(){
+		def relation = {
+			relation{
+				firstModel(firstModel.name)
+				secondModel(secondModel.name)
+				firstName(firstName)
+				secondName(secondName)
+				firstCardinality(firstCardinality)
+				secondCardinality(secondCardinality)
+			}
+		}
+		
+		return relation;
+     }     
 }

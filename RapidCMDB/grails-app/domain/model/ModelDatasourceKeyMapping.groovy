@@ -20,4 +20,15 @@ class ModelDatasourceKeyMapping {
     String toString(){
         return property.name;
     }
+    
+    def xml(){
+    	def keyMapping = {
+    		keyMapping(){
+			property(property.name)
+			nameInDatasource(nameInDatasource )
+    		}    	
+    	}
+    	
+    	return keyMapping;
+    }    
 }

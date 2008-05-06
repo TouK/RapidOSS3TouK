@@ -50,4 +50,19 @@ class ModelDatasource {
         return datasource.name;  
     }
 
+    def xml(){
+       	def datasource = {
+        	datasource{
+    			datasourceName(datasource.name)
+    			master(master )
+    			mappings(){
+    				for(keyMapping in keyMappings){
+    					out << keyMapping.xml();
+    				}
+    			}		
+    		}
+    	}
+    	
+    	return datasource;
+        }    
 }

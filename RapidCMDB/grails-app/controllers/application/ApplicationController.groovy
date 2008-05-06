@@ -56,4 +56,36 @@ class ApplicationController {
         GroovyPagesTemplateEngine.pageCache.clear();
         System.setProperty(RESTART_APPLICATION, "true");
     }
+    
+    def export = {
+    	def writer = new FileWriter("RCMDB_export.xml" );
+    	def builder = new groovy.xml.StreamingMarkupBuilder();
+
+    	def mymodels = model.Model.list();
+    	def models = {
+    		models(){
+    			for (mymodel in mymodels){
+    				out << mymodel.xml()
+    			}		
+    		}
+    	}
+
+    	def datasources = {
+    		datasources(){
+    			datasource("DS1")		
+    			datasource("DS2")
+    			datasource("DS3")
+    		}
+    	}
+
+    	def export = {
+    		export(){
+    			out << models
+    			out << datasources		
+    		}
+    	}
+
+
+    	writer << builder.bind(export);    	
+    }
 }

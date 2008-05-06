@@ -72,5 +72,34 @@ class Model {
     String toString(){
         return "$name";
     }
+    
+    def xml(){
+    	
+    	def model = {
+    		model{
+			name(name)
+			def parentModelName = null;
+			if(parentModel != null) parentModelName = parentModel.name;
+			parent(parentModelName)
+			properties(){
+				for(modelProperty in modelProperties){
+					out << modelProperty.xml();
+				}
+			}
+			datasources(){
+				for(datasource in datasources){
+					out << datasource.xml();
+				}
+			}
+			fromRelations(){
+				for(fromRelation in fromRelations){
+					out << fromRelation.xml();
+				}
+			}			
+		}
+	}
+	
+	return model;
+    }     
 
 }

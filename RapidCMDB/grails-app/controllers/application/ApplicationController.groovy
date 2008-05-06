@@ -57,7 +57,7 @@ class ApplicationController {
         System.setProperty(RESTART_APPLICATION, "true");
     }
     
-    def export = {
+    def exportModel = {
     	def writer = new FileWriter("RCMDB_export.xml" );
     	def builder = new groovy.xml.StreamingMarkupBuilder();
 

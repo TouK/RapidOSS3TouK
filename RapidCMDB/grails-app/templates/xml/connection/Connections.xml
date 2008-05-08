@@ -1,0 +1,9 @@
+<Connections>
+    <%
+    connectionXmls.each{
+    %>
+${it}
+    <%
+    }
+    %>
+</Connections>

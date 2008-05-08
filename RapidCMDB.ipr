@@ -368,6 +368,29 @@
     <option name="myRevisionsCacheName" value="rec" />
     <option name="myUrlCacheName" value="rec" />
   </component>
+  <component name="ThePluginSettings">
+    <option name="bambooConfiguration">
+      <BambooProjectConfiguration>
+        <option name="tableConfiguration">
+          <ProjectToolWindowTableConfiguration />
+        </option>
+      </BambooProjectConfiguration>
+    </option>
+    <option name="crucibleConfiguration">
+      <CrucibleProjectConfiguration>
+        <option name="tableConfiguration">
+          <ProjectToolWindowTableConfiguration />
+        </option>
+      </CrucibleProjectConfiguration>
+    </option>
+    <option name="jiraConfiguration">
+      <JiraProjectConfiguration>
+        <option name="tableConfiguration">
+          <ProjectToolWindowTableConfiguration />
+        </option>
+      </JiraProjectConfiguration>
+    </option>
+  </component>
   <component name="TrackLink.DashboardWindow">
     <option name="myModelBeanOrderedList">
       <list>

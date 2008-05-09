@@ -160,7 +160,7 @@ class ClassContent
         def buffer = new StringBuffer();
         lines.each
         {
-            buffer.append(it.line).append("\r\n");
+            buffer.append(it.line).append("\n");
         }
         return buffer.toString(); //To change body of overridden methods use File | Settings | File Templates.
     }

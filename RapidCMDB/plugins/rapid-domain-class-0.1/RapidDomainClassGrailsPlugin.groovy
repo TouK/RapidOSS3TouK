@@ -14,6 +14,7 @@ import com.ifountain.rcmdb.domain.util.DatasourceConfigurationCache
 import com.ifountain.rcmdb.domain.AbstractDomainOperation
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import com.ifountain.rcmdb.domain.ModelUtils
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
@@ -56,7 +57,7 @@ class RapidDomainClassGrailsPlugin {
     def onApplicationChange = { event ->
     }
 
-    def addOperationsSupport(dc, application, ctx)
+    def addOperationsSupport(GrailsDomainClass dc, application, ctx)
     {
         def mc = dc.metaClass;
         DomainOperationProperty operationProperty = new DomainOperationProperty()
@@ -74,11 +75,31 @@ class RapidDomainClassGrailsPlugin {
             throw new MissingMethodException (name,  delegate.class, args);
         }
         mc.'static'.reloadOperations = {
+            mc.invokeStaticMethod (dc.clazz, "reloadOperations", true);
+        }
+        mc.'static'.reloadOperations = {reloadSubclasses->
             def opClassLoader = new GroovyClassLoader(dc.clazz.classLoader);
             opClassLoader.addClasspath ("${System.getProperty("base.dir")}/operations");
             try
             {
-                operationProperty.operationClass = opClassLoader.loadClass (operationClassName)
+                def oprClass = opClassLoader.loadClass (operationClassName);
+                if(reloadSubclasses != false )
+                {
+                    def lastObjectNeedsToBeReloaded = null;
+                    try
+                    {
+                        dc.getSubClasses().each{subDomainObject->
+                            lastObjectNeedsToBeReloaded = subDomainObject.name;
+                            subDomainObject.metaClass.invokeStaticMethod (subDomainObject.clazz, "reloadOperations", false);
+                        }
+                    }
+                    catch(t)
+                    {
+                        logger.info("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading.", t);
+                        throw new RuntimeException("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading. Reason:${t.toString()}", t)
+                    }
+                }
+                operationProperty.operationClass = oprClass;
             }
             catch(java.lang.ClassNotFoundException classNotFound)
             {
@@ -87,14 +108,14 @@ class RapidDomainClassGrailsPlugin {
             }
             catch(t)
             {
-                logger.warn("Error occurred while reloading operation ${operationClassName}", t);
+                logger.info("Error occurred while reloading operation ${operationClassName}", t);
                 throw t;
             }
         }
 
         try
         {
-            mc.invokeStaticMethod (dc.clazz, "reloadOperations", [] as Object[]);
+            mc.invokeStaticMethod (dc.clazz, "reloadOperations", false);
         }
         catch(t)
         {

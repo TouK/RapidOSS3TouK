@@ -218,8 +218,6 @@ class ModelController {
                     }
                     modelsToBeGenerated.putAll(oldDependentModels);
                     def tableConstraints = createTableConstraintsMap();
-                    println tableConstraints.get("device_interface")?.get("foreignKeys")
-                    println tableConstraints.get("ip")?.get("foreignKeys")
                     ImprovedNamingStrategy st = new ImprovedNamingStrategy();
                     handleGenerationOfModels(modelsToBeGenerated, tableConstraints, st);
                     flash.message = "Model $model.name genarated successfully"
@@ -339,8 +337,9 @@ class ModelController {
                                         sqlWillBeExecuted += "ALTER TABLE ${tablename} ADD COLUMN ${columnname} ${databaseType} NULL"
                                     }
                                     else {
+                                        sqlWillBeExecuted += "ALTER TABLE ${tablename} ADD COLUMN ${columnname} ${databaseType} NULL"
                                         sqlWillBeExecuted += "UPDATE ${tablename} SET ${columnname}=${defaultValue} WHERE ${columnname} IS NULL";
-                                        sqlWillBeExecuted += "ALTER TABLE ${tablename} ADD COLUMN ${columnname} ${databaseType} NOT NULL"
+                                        sqlWillBeExecuted += "ALTER TABLE ${tablename} ALTER COLUMN ${columnname} SET NOT NULL"
                                     }
                                 }
                                 else if (isBlank && !generatedPropertyValue.isBlank)
@@ -670,11 +669,6 @@ class ModelController {
         def secondTableName = st.tableName(oldRelation.secondModel.modelName);
         def firstColumnName = st.columnName(oldRelation.firstName) + "_id";
         def secondColumnName = st.columnName(oldRelation.secondName) + "_id";
-        
-        println "dropping one to one relation";
-        println "firstColumn Name: " + firstColumnName;
-        println "secondColumn Name: " + secondColumnName;
-        
         def firstConstraint = tableConstraints.get(firstTableName)?.get("foreignKeys").get(firstColumnName);
         def secondConstraint = tableConstraints.get(secondTableName)?.get("foreignKeys").get(secondColumnName);
         sqlList.add("ALTER TABLE ${firstTableName} DROP CONSTRAINT ${firstConstraint.getName()}")

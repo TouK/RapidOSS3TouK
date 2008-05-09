@@ -28,7 +28,6 @@
        <br>
         <div class="dialog" style="margin-left:20px;width:60%;">
             <ul style="margin-left:25px;">
-                <li class="controller"><g:link controller="netcoolConnection">NetcoolConnection</g:link></li>
                 <li class="controller"><g:link controller="smartsConnection">SmartsConnection</g:link></li>
                 <li class="controller"><g:link controller="httpConnection">HttpConnection</g:link></li>
                 <li class="controller"><g:link controller="databaseConnection">DatabaseConnection</g:link></li>
@@ -41,7 +40,6 @@
        <br>
         <div class="dialog" style="margin-left:20px;width:60%;">
             <ul style="margin-left:25px;">
-                <li class="controller"><g:link controller="netcoolDatasource">NetcoolDatasource</g:link></li>
                 <li class="controller"><g:link controller="smartsTopologyDatasource">SmartsTopologyDatasource</g:link></li>
                 <li class="controller"><g:link controller="smartsNotificationDatasource">SmartsNotificationDatasource</g:link></li>
                 <li class="controller"><g:link controller="httpDatasource">HttpDatasource</g:link></li>

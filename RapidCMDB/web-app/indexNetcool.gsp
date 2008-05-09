@@ -28,6 +28,7 @@
        <br>
         <div class="dialog" style="margin-left:20px;width:60%;">
             <ul style="margin-left:25px;">
+                <li class="controller"><g:link controller="netcoolConnection">NetcoolConnection</g:link></li>
                 <li class="controller"><g:link controller="httpConnection">HttpConnection</g:link></li>
                 <li class="controller"><g:link controller="databaseConnection">DatabaseConnection</g:link></li>
                 <li class="controller"><g:link controller="rapidInsightConnection">RapidInsightConnection</g:link></li>
@@ -39,6 +40,7 @@
        <br>
         <div class="dialog" style="margin-left:20px;width:60%;">
             <ul style="margin-left:25px;">
+                <li class="controller"><g:link controller="netcoolDatasource">NetcoolDatasource</g:link></li>
                 <li class="controller"><g:link controller="httpDatasource">HttpDatasource</g:link></li>
                 <li class="controller"><g:link controller="databaseDatasource">DatabaseDatasource</g:link></li>
                 <li class="controller"><g:link controller="singleTableDatabaseDatasource">SingleTableDatabaseDatasource</g:link></li>
@@ -53,7 +55,7 @@
 <br>
 <br>
 <p/>
-       
+
 
 <p/>
         <div class="front">
@@ -77,7 +79,7 @@
          </table>  </div>
          <br>
          <br>
-         
+
 
 <!--
         <h2 style="margin-left:20px;">Modeled Managed Objects</h2>

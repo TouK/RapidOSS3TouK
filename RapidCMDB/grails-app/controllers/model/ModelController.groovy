@@ -280,7 +280,7 @@ class ModelController {
                     }
                     tablesToBeDropped.putAll(tablesInHierarchy);
                 }
-                if (!tablesToBeDropped.constainsKey(modelName)) {
+                if (!tablesToBeDropped.containsKey(modelName)) {
                     newDependentModel.modelProperties.each {ModelProperty prop ->
                         GeneratedModelProperty generatedPropertyValue = generatedProperties.remove(prop.id);
                         def isFederated = isFederated(prop);
@@ -379,7 +379,7 @@ class ModelController {
                         }
                     }
                 }
-                if (!tablesToBeDropped.constainsKey(modelName)) {
+                if (!tablesToBeDropped.containsKey(modelName)) {
                     generatedProperties.each {propId, GeneratedModelProperty gProp ->
                         def columnname = st.columnName(gProp.propName)
                         sqlWillBeExecuted += "ALTER TABLE ${tablename} DROP COLUMN ${columnname}"

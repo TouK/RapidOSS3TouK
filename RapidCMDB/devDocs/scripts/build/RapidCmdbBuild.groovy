@@ -177,6 +177,7 @@ class RapidCmdbBuild extends Build{
             }
 		}
 
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/ExecuteBatchController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers" );
 		ant.copy(file : "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir : "$env.dist_rapid_cmdb/scripts" );
 
 		ant.copy(todir : "$env.dist_rapid_cmdb/operations"){

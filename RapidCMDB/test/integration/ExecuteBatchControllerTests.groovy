@@ -53,7 +53,11 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createAddObjectAction(SmartsObject.class.getName(), ["name": "router1", "creationClassName": "Router"])
         ebc.index();
         XMLTestUtils.compareXml(getSuccesXml(1, 1), ebc.response.contentAsString);
-        def smartsObject = SmartsObject.get(name: "router1");
+        def smartsObjects = SmartsObject.list();
+        smartsObjects.each{
+            println it.properties;
+        }
+        def smartsObject = SmartsObject.get(name: "router1", creationClassName:"Router");
         assertNotNull(smartsObject);
         assertEquals("Router", smartsObject.creationClassName);
     }
@@ -99,24 +103,21 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = writer.toString();
         ebc.index();
         XMLTestUtils.compareXml(getSuccesXml(2, 2), ebc.response.contentAsString);
-        def smartsObject1 = SmartsObject.get(name: "router1");
+        def smartsObject1 = SmartsObject.get(name: "router1", creationClassName:"Router");
         assertNotNull(smartsObject1);
-        assertEquals("Router", smartsObject1.creationClassName);
-        def smartsObject2 = SmartsObject.get(name: "router2");
+        def smartsObject2 = SmartsObject.get(name: "router2", creationClassName:"Router");
         assertNotNull(smartsObject2);
-        assertEquals("Router", smartsObject2.creationClassName);
     }
 
     void testRemove() {
         def ebc = new ExecuteBatchController();
-        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRemoveObjectAction(SmartsObject.class.getName(), ["name": "router1"])
+        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRemoveObjectAction(SmartsObject.class.getName(), ["name": "router1", "creationClassName":"Router"])
 
         def smartsObject = SmartsObject.add(name: "router1", creationClassName: "Router");
         assertFalse(smartsObject.hasErrors());
         ebc.index();
-        println "response: " + ebc.response.contentAsString;
         XMLTestUtils.compareXml(getSuccesXml(1, 1), ebc.response.contentAsString);
-        assertNull(SmartsObject.get(name: "router1"));
+        assertNull(SmartsObject.get(name: "router1", creationClassName:"Router"));
     }
 
     void testRemoveActionFailsIfObjectDoesNotExist() {
@@ -132,19 +133,18 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
     void testAddRelation() {
         def ebc = new ExecuteBatchController();
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRelationAction(ExecuteBatchController.ADD_RELATION,
-                DeviceComponent.class.getName(), ["name": "devComp"], Device.class.getName(), ["name": "device"], "partOf");
+                DeviceComponent.class.getName(), ["name": "devComp", "creationClassName": "DeviceComponent"], Device.class.getName(),
+                ["name": "device", "creationClassName":"Device"], "partOf");
 
 
         def devComp = DeviceComponent.add(name: "devComp", creationClassName: "DeviceComponent");
         assertFalse(devComp.hasErrors());
-        def device = Device.add(name: "device", creationClassName: "DeviceComponent", description: "descr", discoveredLastAt: 0);
+        def device = Device.add(name: "device", creationClassName: "Device", description: "descr", discoveredLastAt: 0);
         assertFalse(device.hasErrors());
 
         ebc.index();
-        println "response: " + ebc.response.contentAsString;
         XMLTestUtils.compareXml(getSuccesXml(1, 1), ebc.response.contentAsString);
-        devComp = DeviceComponent.get(name: "devComp");
-        println devComp.properties
+        devComp = DeviceComponent.get(name: "devComp", creationClassName:"DeviceComponent");
         def partOf = devComp.partOf;
         assertNotNull(partOf);
         assertEquals("device", partOf.name)
@@ -152,9 +152,9 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
 
     void testAddRelationThrowsExceptionIfObjectDoesNotExist() {
         def ebc = new ExecuteBatchController();
-        def keys = ["name": "devComp"]
+        def keys = ["name": "devComp", "creationClassName":"DeviceComponent"]
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRelationAction(ExecuteBatchController.ADD_RELATION,
-                DeviceComponent.class.getName(), keys, Device.class.getName(), ["name": "device"], "partOf");
+                DeviceComponent.class.getName(), keys, Device.class.getName(), ["name": "device", "creationClassName":"Device"], "partOf");
 
 
         def device = Device.add(name: "device", creationClassName: "DeviceComponent", description: "descr", discoveredLastAt: 0);
@@ -162,21 +162,19 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
 
 
         ebc.index();
-        println "response: " + ebc.response.contentAsString;
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "model.object.doesnot.exist", args: [DeviceComponent.class.getName(), keys.toString()])]);
         XMLTestUtils.compareXml(errorXml, ebc.response.contentAsString);
     }
     void testAddRelationThrowsExceptionIfRelatedObjectDoesNotExist() {
         def ebc = new ExecuteBatchController();
-        def keys = ["name": "device"]
+        def keys = ["name": "device", "creationClassName":"Device"]
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRelationAction(ExecuteBatchController.ADD_RELATION,
-                DeviceComponent.class.getName(), ["name": "devComp"], Device.class.getName(), keys, "partOf");
+                DeviceComponent.class.getName(), ["name": "devComp", "creationClassName":"DeviceComponent"], Device.class.getName(), keys, "partOf");
 
         def devComp = DeviceComponent.add(name: "devComp", creationClassName: "DeviceComponent");
         assertFalse(devComp.hasErrors());
 
         ebc.index();
-        println "response: " + ebc.response.contentAsString;
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "model.object.doesnot.exist", args: [Device.class.getName(), keys.toString()])]);
         XMLTestUtils.compareXml(errorXml, ebc.response.contentAsString);
     }
@@ -185,7 +183,8 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
         def invalidModelName = "invalidModel";
         def ebc = new ExecuteBatchController();
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRelationAction(ExecuteBatchController.ADD_RELATION,
-                DeviceComponent.class.getName(), ["name": "devComp"], invalidModelName, ["name": "device"], "partOf");
+                DeviceComponent.class.getName(), ["name": "devComp", "creationClassName":"DeviceComponent"],
+                invalidModelName, ["name": "device", "creationClassName":"Device"], "partOf");
 
         ebc.index();
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "model.doesnot.exist", args: [invalidModelName])]);
@@ -195,7 +194,8 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
     void testAddRelationThrowsExceptionIfRelationNameIsNotGiven() {
         def ebc = new ExecuteBatchController();
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRelationAction(ExecuteBatchController.ADD_RELATION,
-                DeviceComponent.class.getName(), ["name": "devComp"], Device.class.getName(), ["name": "device"], "");
+                DeviceComponent.class.getName(), ["name": "devComp", "creationClassName":"DeviceComponent"],
+                Device.class.getName(), ["name": "device", "creationClassName":"Device"], "");
 
         ebc.index();
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "default.missing.mandatory.parameter", args: [RapidCMDBConstants.RELATION_NAME])]);
@@ -206,7 +206,8 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
         def invalidModelName = "invalidModel";
         def ebc = new ExecuteBatchController();
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRelationAction(ExecuteBatchController.REMOVE_RELATION,
-                DeviceComponent.class.getName(), ["name": "devComp"], invalidModelName, ["name": "device"], "partOf");
+                DeviceComponent.class.getName(), ["name": "devComp", "creationClassName":"DeviceComponent"],
+                invalidModelName, ["name": "device", "creationClassName":"Device"], "partOf");
 
         ebc.index();
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "model.doesnot.exist", args: [invalidModelName])]);
@@ -216,7 +217,8 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
     void testRemoveRelationThrowsExceptionIfRelationNameIsNotGiven() {
         def ebc = new ExecuteBatchController();
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRelationAction(ExecuteBatchController.REMOVE_RELATION,
-                DeviceComponent.class.getName(), ["name": "devComp"], Device.class.getName(), ["name": "device"], "");
+                DeviceComponent.class.getName(), ["name": "devComp", "creationClassName":"DeviceComponent"],
+                Device.class.getName(), ["name": "device", "creationClassName":"Device"], "");
 
         ebc.index();
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "default.missing.mandatory.parameter", args: [RapidCMDBConstants.RELATION_NAME])]);
@@ -225,9 +227,9 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
 
     void testRemoveRelationThrowsExceptionIfObjectDoesNotExist() {
         def ebc = new ExecuteBatchController();
-        def keys = ["name": "devComp"]
+        def keys = ["name": "devComp", "creationClassName":"DeviceComponent"]
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRelationAction(ExecuteBatchController.REMOVE_RELATION,
-                DeviceComponent.class.getName(), keys, Device.class.getName(), ["name": "device"], "partOf");
+                DeviceComponent.class.getName(), keys, Device.class.getName(), ["name": "device", "creationClassName":"Device"], "partOf");
 
 
         def device = Device.add(name: "device", creationClassName: "DeviceComponent", description: "descr", discoveredLastAt: 0);
@@ -235,21 +237,19 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
 
 
         ebc.index();
-        println "response: " + ebc.response.contentAsString;
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "model.object.doesnot.exist", args: [DeviceComponent.class.getName(), keys.toString()])]);
         XMLTestUtils.compareXml(errorXml, ebc.response.contentAsString);
     }
     void testRemoveRelationThrowsExceptionIfRelatedObjectDoesNotExist() {
         def ebc = new ExecuteBatchController();
-        def keys = ["name": "device"]
+        def keys = ["name": "device", "creationClassName":"Device"]
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRelationAction(ExecuteBatchController.REMOVE_RELATION,
-                DeviceComponent.class.getName(), ["name": "devComp"], Device.class.getName(), keys, "partOf");
+                DeviceComponent.class.getName(), ["name": "devComp", "creationClassName":"DeviceComponent"], Device.class.getName(), keys, "partOf");
 
         def devComp = DeviceComponent.add(name: "devComp", creationClassName: "DeviceComponent");
         assertFalse(devComp.hasErrors());
 
         ebc.index();
-        println "response: " + ebc.response.contentAsString;
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "model.object.doesnot.exist", args: [Device.class.getName(), keys.toString()])]);
         XMLTestUtils.compareXml(errorXml, ebc.response.contentAsString);
     }
@@ -257,42 +257,43 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
     void testRemoveRelation() {
         def ebc = new ExecuteBatchController();
         ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createRelationAction(ExecuteBatchController.REMOVE_RELATION,
-                DeviceComponent.class.getName(), ["name": "devComp"], Device.class.getName(), ["name": "device"], "partOf");
+                DeviceComponent.class.getName(), ["name": "devComp", "creationClassName":"DeviceComponent"],
+                Device.class.getName(), ["name": "device", "creationClassName":"Device"], "partOf");
 
 
         def devComp = DeviceComponent.add(name: "devComp", creationClassName: "DeviceComponent");
         assertFalse(devComp.hasErrors());
-        def device = Device.add(name: "device", creationClassName: "DeviceComponent", description: "descr", discoveredLastAt: 0);
+        def device = Device.add(name: "device", creationClassName: "Device", description: "descr", discoveredLastAt: 0);
         assertFalse(device.hasErrors());
         devComp.addRelation(partOf: device);
         assertNotNull(devComp.partOf);
 
         ebc.index();
-        println "response: " + ebc.response.contentAsString;
         XMLTestUtils.compareXml(getSuccesXml(1, 1), ebc.response.contentAsString);
-        devComp = DeviceComponent.get(name: "devComp");
+        devComp = DeviceComponent.get(name: "devComp", creationClassName:"DeviceComponent");
         println devComp.properties
         assertNull(devComp.partOf);
     }
     void testUpdateObject() throws Exception {
         def ebc = new ExecuteBatchController();
-        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createUpdateObjectAction(SmartsObject.class.getName(), ["name": "router1"], ["creationClassName": "newRouter"])
+        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createUpdateObjectAction(SmartsObject.class.getName(),
+                ["name": "router1", "creationClassName":"Router"], ["creationClassName": "newRouter"])
         def object = SmartsObject.add(name: "router1", creationClassName: "Router");
         assertFalse(object.hasErrors());
 
         ebc.index();
         XMLTestUtils.compareXml(getSuccesXml(1, 1), ebc.response.contentAsString);
-        def smartsObject = SmartsObject.get(name: "router1");
-        assertEquals("newRouter", smartsObject.creationClassName);
+        def smartsObject = SmartsObject.get(name: "router1", creationClassName:"newRouter");
+        assertNotNull(smartsObject);
     }
 
     void testActionFailsIfUpdateObjectFails() {
         def ebc = new ExecuteBatchController();
-        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createUpdateObjectAction(SmartsObject.class.getName(), ["name": "router1"], ["creationClassName": "null"])
+        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createUpdateObjectAction(SmartsObject.class.getName(),
+                ["name": "router1", "creationClassName":"Router"], ["creationClassName": "null"])
         def object = SmartsObject.add(name: "router1", creationClassName: "Router");
         assertFalse(object.hasErrors());
         ebc.index();
-        println "response: " + ebc.response.contentAsString;
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "default.null.message", args: ["creationClassName", "class SmartsObject"])]);
         XMLTestUtils.compareXml(errorXml, ebc.response.contentAsString);
         object = SmartsObject.get(name: "router1");
@@ -300,10 +301,9 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
     }
     void testUpdateActionFailsIfObjectDoesNotExist() {
         def ebc = new ExecuteBatchController();
-        def keys = ["name": "router1"];
-        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createUpdateObjectAction(SmartsObject.class.getName(), keys, ["creationClassName": "Router"])
+        def keys = ["name": "router1", "creationClassName":"Router"];
+        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createUpdateObjectAction(SmartsObject.class.getName(), keys, ["creationClassName": "newRouter"])
         ebc.index();
-        println "response: " + ebc.response.contentAsString;
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "model.object.doesnot.exist", args: [SmartsObject.class.getName(), keys.toString()])]);
         XMLTestUtils.compareXml(errorXml, ebc.response.contentAsString);
     }

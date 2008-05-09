@@ -275,16 +275,4 @@ class ConfigurationImportExportUtilsTest extends RapidCmdbTestCase{
         
         assertEqualsXML(expectedModelXml, returnedExportFile.getText());
     }
-
-    public void test1()
-    {
-        def fileList = FileUtils.listFiles(new File("C:/Temp2/RapidServer/RapidCMDB/backup/models"), ["xml"] as String[], true)
-        fileList.each{file->
-            def exp = file.text;
-            def ret = new File("C:/Temp2/RapidServer/RapidCMDB/Copy of backup/models/"+file.name).text;
-            assertEqualsXML (exp, ret);
-        }
-    }
-
-
 }

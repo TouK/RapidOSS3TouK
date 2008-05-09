@@ -215,6 +215,7 @@ class RapidCmdbBuild extends Build{
                     ant.exclude(name:"**/*Test*")
                 }
                 ant.exclude(name:"indexSmarts.gsp")
+                ant.exclude(name:"indexNetcool.gsp")
             }
         }
         if(TEST){

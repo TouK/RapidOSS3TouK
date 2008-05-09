@@ -104,8 +104,7 @@ class RapidCmdbBuild extends Build{
                 ant.include(name:"netcool*/*")
             }
 		}
-
-//        ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexSmarts.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
+        ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexNetcool.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
         def versionDate = getVersionWithDate();
         def zipFileName = "$env.distribution/NetcoolModule$versionDate"+".zip"
         ant.zip(destfile : zipFileName){

@@ -399,7 +399,8 @@ class ModelController {
                         if (oldRelation) {
                             if (oldRelation.firstCardinality != relation.firstCardinality ||
                                     oldRelation.secondCardinality != relation.secondCardinality ||
-                                    oldRelation.secondModel.modelName != relation.secondModel.name) {
+                                    oldRelation.secondModel.modelName != relation.secondModel.name ||
+                                    oldRelation.firstName != relation.firstName || oldRelation.secondName != relation.secondName) {
                                 //drop relation
                                 if (oldRelation.firstCardinality == ModelRelation.MANY && oldRelation.secondCardinality == ModelRelation.MANY) {
                                     addDropManyToManyRelationSql(oldRelation, st, sqlWillBeExecuted);

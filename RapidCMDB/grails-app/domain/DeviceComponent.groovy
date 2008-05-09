@@ -1,8 +1,7 @@
 import com.ifountain.core.domain.annotations.*;
 
 
-class DeviceComponent extends SmartsObject
-{
+class DeviceComponent  extends SmartsObject {
 
     //AUTO_GENERATED_CODE
 
@@ -15,9 +14,11 @@ class DeviceComponent extends SmartsObject
 
     static hasMany = [:]
 
+    
+
     static constraints={
     partOf(nullable:true)
-
+        
      
     }
 
@@ -26,5 +27,11 @@ class DeviceComponent extends SmartsObject
     static propertyConfiguration= [:]
     static transients = [];
     
-    //AUTO_GENERATED_CODE    
+    //AUTO_GENERATED_CODE
+
+
+
+
+
+
 }

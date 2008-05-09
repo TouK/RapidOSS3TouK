@@ -9,7 +9,9 @@ package model
 class GeneratedModel {
     String modelName;
     String parentModelName;
-    static hasMany = ['modelProperties':GeneratedModelProperty, 'relations':GeneratedModelRelation];
+    Long idSize;
+    static hasMany = ['modelProperties':GeneratedModelProperty, 'fromRelations':GeneratedModelRelation];
+    static mappedBy=["fromRelations":"firstModel"]
     static constraints = {
         parentModelName(nullable:true);
     }

@@ -1,8 +1,7 @@
 import com.ifountain.core.domain.annotations.*;
 
 
-class Ip extends DeviceComponent
-{
+class Ip  extends DeviceComponent {
 
     //AUTO_GENERATED_CODE
 
@@ -10,17 +9,17 @@ class Ip extends DeviceComponent
     static datasources = [:]
 
     
-    String interfaceOperStatus ;
+    String interfaceAdminStatus ;
     
     String ipStatus ;
     
     String interfaceName ;
     
-    String interfaceAdminStatus ;
-    
     String netMask ;
     
     String ipAddress ;
+    
+    String interfaceOperStatus ;
     
     Device hostedBy ;
     
@@ -29,30 +28,38 @@ class Ip extends DeviceComponent
 
     static hasMany = [:]
 
+    
+
     static constraints={
-    hostedBy(nullable:true)
-
-     interfaceAdminStatus(blank:true,nullable:true)
-
-     interfaceName(blank:true,nullable:true)
-
-     interfaceOperStatus(blank:true,nullable:true)
-
-     ipAddress(blank:false,nullable:false)
-
+    interfaceAdminStatus(blank:true,nullable:true)
+        
      ipStatus(blank:true,nullable:true)
-
-     layeredOver(nullable:true)
-
+        
+     interfaceName(blank:true,nullable:true)
+        
      netMask(blank:true,nullable:true)
-
+        
+     ipAddress(blank:false,nullable:false)
+        
+     interfaceOperStatus(blank:true,nullable:true)
+        
+     hostedBy(nullable:true)
+        
+     layeredOver(nullable:true)
+        
      
     }
 
     static mappedBy=["hostedBy":"hostsAccessPoints", "layeredOver":"underlying"]
     static belongsTo = []
-    static propertyConfiguration= ["interfaceOperStatus":["nameInDs":"InterfaceOperStatus", "datasourceProperty":"smartDs", "lazy":true], "ipStatus":["nameInDs":"IPStatus", "datasourceProperty":"smartDs", "lazy":true], "interfaceName":["nameInDs":"InterfaceName", "datasourceProperty":"smartDs", "lazy":true], "interfaceAdminStatus":["nameInDs":"InterfaceAdminStatus", "datasourceProperty":"smartDs", "lazy":true], "netMask":["nameInDs":"NetMask", "datasourceProperty":"smartDs", "lazy":true]]
-    static transients = ["interfaceOperStatus", "ipStatus", "interfaceName", "interfaceAdminStatus", "netMask"];
+    static propertyConfiguration= ["interfaceAdminStatus":["nameInDs":"InterfaceAdminStatus", "datasourceProperty":"smartDs", "lazy":true], "ipStatus":["nameInDs":"IPStatus", "datasourceProperty":"smartDs", "lazy":true], "interfaceName":["nameInDs":"InterfaceName", "datasourceProperty":"smartDs", "lazy":true], "netMask":["nameInDs":"NetMask", "datasourceProperty":"smartDs", "lazy":true], "interfaceOperStatus":["nameInDs":"InterfaceOperStatus", "datasourceProperty":"smartDs", "lazy":true]]
+    static transients = ["interfaceAdminStatus", "ipStatus", "interfaceName", "netMask", "interfaceOperStatus"];
     
-    //AUTO_GENERATED_CODE    
+    //AUTO_GENERATED_CODE
+
+
+
+
+
+
 }

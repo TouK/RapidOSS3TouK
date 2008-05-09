@@ -8,11 +8,12 @@ package model
  */
 class GeneratedModelProperty {
     GeneratedModel model;
-    int propId;
+    Long propId;
     String propName;
     boolean isBlank;
     boolean isUnique;
     boolean isFederated;
+    String type;
     static belongsTo = GeneratedModel;
 
 }

@@ -7,11 +7,19 @@ package model
  * To change this template use File | Settings | File Templates.
  */
 class GeneratedModelRelation {
-    GeneratedModel model;
-    String toModelName;
-    String name;
-    String reverseName;
-    String cardinality;
-    String reverseCardinality;
+    GeneratedModel firstModel;
+    GeneratedModel secondModel;
+    String firstName;
+    String secondName;
+    String firstCardinality;
+    String secondCardinality;
+    boolean isReverse = false;
+    Long relationId;
     static belongsTo = GeneratedModel;
+    static mappedBy=["firstModel":"fromRelations"]
+
+    public String toString()
+    {
+    	return firstModel.modelName + "_" + secondModel.modelName + "_" + firstName;
+    }
 }

@@ -1,35 +1,38 @@
 import com.ifountain.core.domain.annotations.*;
 
 
-class SmartsObject
-{
+class SmartsObject {
 
     //AUTO_GENERATED_CODE
 
 
-    static datasources = ["westRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "eastRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
+    static datasources = ["eastRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "westRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]]]
 
     
-    String creationClassName ;
+    String smartDs ;
     
     String name ;
     
-    String smartDs ;
+    String creationClassName ;
     
     String displayName ;
     
 
     static hasMany = [:]
 
+    
+        static mapping = {
+            tablePerHierarchy false
+        }
+    
+
     static constraints={
-    name(unique:true)
-
-     creationClassName(blank:false,nullable:false)
-
+    smartDs(blank:true,nullable:true)
+        
+     creationClassName(unique:["name"])
+        
      displayName(blank:true,nullable:true)
-
-     smartDs(blank:true,nullable:true)
-
+        
      
     }
 
@@ -40,8 +43,14 @@ class SmartsObject
     
     public String toString()
     {
-    	return "${getClass().getName()}[name:$name]";
+    	return "${getClass().getName()}[name:$name, creationClassName:$creationClassName]";
     }
     
-    //AUTO_GENERATED_CODE    
+    //AUTO_GENERATED_CODE
+
+
+
+
+
+
 }

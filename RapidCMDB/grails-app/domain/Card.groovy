@@ -1,8 +1,7 @@
 import com.ifountain.core.domain.annotations.*;
 
 
-class Card extends DeviceComponent
-{
+class Card  extends DeviceComponent {
 
     //AUTO_GENERATED_CODE
 
@@ -15,9 +14,11 @@ class Card extends DeviceComponent
 
     static hasMany = [realises:DeviceAdapter]
 
+    
+
     static constraints={
     status(blank:true,nullable:true)
-
+        
      
     }
 
@@ -26,5 +27,11 @@ class Card extends DeviceComponent
     static propertyConfiguration= ["status":["nameInDs":"Status", "datasourceProperty":"smartDs", "lazy":true]]
     static transients = ["status"];
     
-    //AUTO_GENERATED_CODE    
+    //AUTO_GENERATED_CODE
+
+
+
+
+
+
 }

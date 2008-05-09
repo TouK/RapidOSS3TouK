@@ -1,8 +1,7 @@
 import com.ifountain.core.domain.annotations.*;
 
 
-class DeviceInterface extends DeviceAdapter
-{
+class DeviceInterface  extends DeviceAdapter {
 
     //AUTO_GENERATED_CODE
 
@@ -17,11 +16,13 @@ class DeviceInterface extends DeviceAdapter
 
     static hasMany = [:]
 
+    
+
     static constraints={
     interfaceKey(blank:true,nullable:true)
-
+        
      underlying(nullable:true)
-
+        
      
     }
 
@@ -30,5 +31,11 @@ class DeviceInterface extends DeviceAdapter
     static propertyConfiguration= ["interfaceKey":["nameInDs":"InterfaceKey", "datasourceProperty":"smartDs", "lazy":true]]
     static transients = ["interfaceKey"];
     
-    //AUTO_GENERATED_CODE    
+    //AUTO_GENERATED_CODE
+
+
+
+
+
+
 }

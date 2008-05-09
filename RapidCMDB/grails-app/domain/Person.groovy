@@ -13,7 +13,9 @@ class Person
     String bday ;
     
     String name ;
-    
+     static mapping = {
+        tablePerHierarchy false
+    }
 
     static hasMany = [:]
 

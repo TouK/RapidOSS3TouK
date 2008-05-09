@@ -14,7 +14,13 @@
     %>
 
     static hasMany = ${!model.hasMany.isEmpty()?model.hasMany.toString().replaceAll('\\{', '\\[').replaceAll('\\}', '\\]').replaceAll('=', ':'):'[:]'}
-
+    <%
+        if(model.model.parentModel == null){
+    %>
+        static mapping = {
+            tablePerHierarchy false
+        }
+    <%}%>
     static constraints={
     <%
         model.constraints.each{key, value->

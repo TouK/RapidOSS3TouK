@@ -526,7 +526,12 @@ class ModelController {
 
     def createGeneratedModelInfo(Model model)
     {
-        GeneratedModel.findByModelName(model.name)?.delete();
+        def oldModel  = GeneratedModel.findByModelName(model.name);
+        if(oldModel){
+            GeneratedModelRelation.findAllByFirstModel(oldModel)*.delete();
+            GeneratedModelRelation.findAllBySecondModel(oldModel)*.delete();
+            oldModel.delete();
+        }
         def generatedModel = new GeneratedModel(modelName: model.name);
         def masterDatasource = ModelDatasource.findByModelAndMaster(model, true);
         if (masterDatasource) {
@@ -552,9 +557,6 @@ class ModelController {
 
     def createGeneratedModelRelationInfo(GeneratedModel gModel, Map newGeneratedModels) {
         def model = Model.findByName(gModel.modelName);
-        GeneratedModelRelation.findAllByFirstModel(gModel).each {
-            it.delete();
-        }
         model.fromRelations.each {ModelRelation relation ->
             def generatedModelRelation = new GeneratedModelRelation(firstModel: gModel, secondModel: newGeneratedModels.get(relation.secondModel.name),
                     firstName: relation.firstName, secondName: relation.secondName,

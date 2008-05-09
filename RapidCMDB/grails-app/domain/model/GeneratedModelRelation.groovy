@@ -15,8 +15,11 @@ class GeneratedModelRelation {
     String secondCardinality;
     boolean isReverse = false;
     Long relationId;
-    static belongsTo = GeneratedModel;
     static mappedBy=["firstModel":"fromRelations"]
+    static constraints = {
+        firstModel(nullable:true)
+        secondModel(nullable:true)
+    }
 
     public String toString()
     {

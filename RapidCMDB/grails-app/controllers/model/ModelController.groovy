@@ -218,6 +218,8 @@ class ModelController {
                     }
                     modelsToBeGenerated.putAll(oldDependentModels);
                     def tableConstraints = createTableConstraintsMap();
+                    println tableConstraints.get("device_interface")?.get("foreignKeys")
+                    println tableConstraints.get("ip")?.get("foreignKeys")
                     ImprovedNamingStrategy st = new ImprovedNamingStrategy();
                     handleGenerationOfModels(modelsToBeGenerated, tableConstraints, st);
                     flash.message = "Model $model.name genarated successfully"
@@ -319,20 +321,25 @@ class ModelController {
                                 if (generatedPropertyValue.type != prop.type) {
                                     sqlWillBeExecuted += "ALTER TABLE ${tablename} DROP COLUMN ${columnname}"
                                     def databaseType;
+                                    def defaultValue;
                                     if (prop.type == ModelProperty.stringType) {
                                         databaseType = "VARCHAR (255)"
+                                        defaultValue = "'RCMDB_Default'";
                                     }
                                     else if (prop.type == ModelProperty.numberType) {
                                         databaseType = "BIGINT"
+                                        defaultValue = "-1111";
                                     }
                                     else {
                                         databaseType = "TIMESTAMP"
+                                        defaultValue = "1970-01-01 00:00:00.000000000";
                                     }
 
                                     if (isBlank) {
                                         sqlWillBeExecuted += "ALTER TABLE ${tablename} ADD COLUMN ${columnname} ${databaseType} NULL"
                                     }
                                     else {
+                                        sqlWillBeExecuted += "UPDATE ${tablename} SET ${columnname}=${defaultValue} WHERE ${columnname} IS NULL";
                                         sqlWillBeExecuted += "ALTER TABLE ${tablename} ADD COLUMN ${columnname} ${databaseType} NOT NULL"
                                     }
                                 }
@@ -663,6 +670,11 @@ class ModelController {
         def secondTableName = st.tableName(oldRelation.secondModel.modelName);
         def firstColumnName = st.columnName(oldRelation.firstName) + "_id";
         def secondColumnName = st.columnName(oldRelation.secondName) + "_id";
+        
+        println "dropping one to one relation";
+        println "firstColumn Name: " + firstColumnName;
+        println "secondColumn Name: " + secondColumnName;
+        
         def firstConstraint = tableConstraints.get(firstTableName)?.get("foreignKeys").get(firstColumnName);
         def secondConstraint = tableConstraints.get(secondTableName)?.get("foreignKeys").get(secondColumnName);
         sqlList.add("ALTER TABLE ${firstTableName} DROP CONSTRAINT ${firstConstraint.getName()}")

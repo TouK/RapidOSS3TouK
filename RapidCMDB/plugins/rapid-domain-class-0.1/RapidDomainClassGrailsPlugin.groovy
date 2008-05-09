@@ -13,7 +13,8 @@ import com.ifountain.rcmdb.domain.util.PropertyConfigurationCache
 import com.ifountain.rcmdb.domain.util.DatasourceConfigurationCache
 import com.ifountain.rcmdb.domain.AbstractDomainOperation
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
-import com.ifountain.rcmdb.domain.ModelUtils;
+import com.ifountain.rcmdb.domain.ModelUtils
+
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def version = 0.1
@@ -238,7 +239,12 @@ class RapidDomainClassGrailsPlugin {
             }
         }
         mc.__InternalSetProperty__ = {String name, Object value->
-            mc.getMetaProperty(name).setProperty(delegate, value);
+            def metaProp = mc.getMetaProperty(name);
+            if(!metaProp)
+            {
+                throw new MissingPropertyException(name, mc.theClass.name);
+            }
+            metaProp.setProperty(delegate, value);
         }
         mc.__InternalGetProperty__ = {String name->
             def domainObject = delegate;

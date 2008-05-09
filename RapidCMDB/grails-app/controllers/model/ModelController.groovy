@@ -415,51 +415,52 @@ class ModelController {
                                 }
                             }
                             else {
-                                if (oldRelation.firstName != relation.firstName || oldRelation.secondName != relation.secondName) {
-                                    if (oldRelation.firstCardinality == ModelRelation.MANY && oldRelation.secondCardinality == ModelRelation.MANY) {
-                                        def relationTableName = st.collectionTableName(null, st.tableName(oldRelation.firstModel.modelName), null, null, st.tableName(oldRelation.secondModel.modelName))
-                                        if (oldRelation.firstName != relation.firstName) {
-                                            def firstColumnName = st.columnName(oldRelation.firstName) + "_id";
-                                            def newFirstColumnName = st.columnName(relation.firstName) + "_id";
-                                            sqlWillBeExecuted += "ALTER TABLE ${relationTableName} ALTER COLUMN ${firstColumnName} RENAME TO ${newFirstColumnName}"
-                                        }
-                                        if (oldRelation.secondName != relation.secondName) {
-                                            def secondColumnName = st.columnName(oldRelation.secondName) + "_id";
-                                            def newSecondColumnName = st.columnName(relation.secondName) + "_id";
-                                            sqlWillBeExecuted += "ALTER TABLE ${relationTableName} ALTER COLUMN ${secondColumnName} RENAME TO ${newSecondColumnName}"
-                                        }
-                                    }
-                                    else if (oldRelation.firstCardinality == ModelRelation.ONE && oldRelation.secondCardinality == ModelRelation.ONE) {
-                                        if (oldRelation.firstName != relation.firstName) {
-                                            def firstTableName = st.tableName(oldRelation.firstModel.modelName);
-                                            def firstColumnName = st.columnName(oldRelation.firstName) + "_id";
-                                            def newFirstColumnName = st.columnName(relation.firstName) + "_id";
-                                            sqlWillBeExecuted += "ALTER TABLE ${firstTableName} ALTER COLUMN ${firstColumnName} RENAME TO ${newFirstColumnName}"
-                                        }
-                                        if (oldRelation.secondName != relation.secondName) {
-                                            def secondTableName = st.tableName(oldRelation.secondModel.modelName);
-                                            def secondColumnName = st.columnName(oldRelation.secondName) + "_id";
-                                            def newSecondColumnName = st.columnName(relation.secondName) + "_id";
-                                            sqlWillBeExecuted += "ALTER TABLE ${secondTableName} ALTER COLUMN ${secondColumnName} RENAME TO ${newSecondColumnName}"
-                                        }
-                                    }
-                                    else if (oldRelation.firstCardinality == ModelRelation.ONE && oldRelation.secondCardinality == ModelRelation.MANY) {
-                                        if (oldRelation.secondName != relation.secondName) {
-                                            def tableName = st.tableName(oldRelation.secondModel.modelName);
-                                            def columnName = st.columnName(oldRelation.secondName) + "_id";
-                                            def newColumnName = st.columnName(relation.secondName) + "_id";
-                                            sqlWillBeExecuted += "ALTER TABLE ${tableName} ALTER COLUMN ${columnName} RENAME TO ${newColumnName}"
-                                        }
-                                    }
-                                    else {
-                                        if (oldRelation.firstName != relation.firstName) {
-                                            def tableName = st.tableName(oldRelation.firstModel.modelName);
-                                            def columnName = st.columnName(oldRelation.firstName) + "_id";
-                                            def newColumnName = st.columnName(relation.firstName) + "_id";
-                                            sqlWillBeExecuted += "ALTER TABLE ${tableName} ALTER COLUMN ${columnName} RENAME TO ${newColumnName}"
-                                        }
-                                    }
-                                }
+                                 //relation rename 
+//                                if (oldRelation.firstName != relation.firstName || oldRelation.secondName != relation.secondName) {
+//                                    if (oldRelation.firstCardinality == ModelRelation.MANY && oldRelation.secondCardinality == ModelRelation.MANY) {
+//                                        def relationTableName = st.collectionTableName(null, st.tableName(oldRelation.firstModel.modelName), null, null, st.tableName(oldRelation.secondModel.modelName))
+//                                        if (oldRelation.firstName != relation.firstName) {
+//                                            def firstColumnName = st.columnName(oldRelation.firstName) + "_id";
+//                                            def newFirstColumnName = st.columnName(relation.firstName) + "_id";
+//                                            sqlWillBeExecuted += "ALTER TABLE ${relationTableName} ALTER COLUMN ${firstColumnName} RENAME TO ${newFirstColumnName}"
+//                                        }
+//                                        if (oldRelation.secondName != relation.secondName) {
+//                                            def secondColumnName = st.columnName(oldRelation.secondName) + "_id";
+//                                            def newSecondColumnName = st.columnName(relation.secondName) + "_id";
+//                                            sqlWillBeExecuted += "ALTER TABLE ${relationTableName} ALTER COLUMN ${secondColumnName} RENAME TO ${newSecondColumnName}"
+//                                        }
+//                                    }
+//                                    else if (oldRelation.firstCardinality == ModelRelation.ONE && oldRelation.secondCardinality == ModelRelation.ONE) {
+//                                        if (oldRelation.firstName != relation.firstName) {
+//                                            def firstTableName = st.tableName(oldRelation.firstModel.modelName);
+//                                            def firstColumnName = st.columnName(oldRelation.firstName) + "_id";
+//                                            def newFirstColumnName = st.columnName(relation.firstName) + "_id";
+//                                            sqlWillBeExecuted += "ALTER TABLE ${firstTableName} ALTER COLUMN ${firstColumnName} RENAME TO ${newFirstColumnName}"
+//                                        }
+//                                        if (oldRelation.secondName != relation.secondName) {
+//                                            def secondTableName = st.tableName(oldRelation.secondModel.modelName);
+//                                            def secondColumnName = st.columnName(oldRelation.secondName) + "_id";
+//                                            def newSecondColumnName = st.columnName(relation.secondName) + "_id";
+//                                            sqlWillBeExecuted += "ALTER TABLE ${secondTableName} ALTER COLUMN ${secondColumnName} RENAME TO ${newSecondColumnName}"
+//                                        }
+//                                    }
+//                                    else if (oldRelation.firstCardinality == ModelRelation.ONE && oldRelation.secondCardinality == ModelRelation.MANY) {
+//                                        if (oldRelation.secondName != relation.secondName) {
+//                                            def tableName = st.tableName(oldRelation.secondModel.modelName);
+//                                            def columnName = st.columnName(oldRelation.secondName) + "_id";
+//                                            def newColumnName = st.columnName(relation.secondName) + "_id";
+//                                            sqlWillBeExecuted += "ALTER TABLE ${tableName} ALTER COLUMN ${columnName} RENAME TO ${newColumnName}"
+//                                        }
+//                                    }
+//                                    else {
+//                                        if (oldRelation.firstName != relation.firstName) {
+//                                            def tableName = st.tableName(oldRelation.firstModel.modelName);
+//                                            def columnName = st.columnName(oldRelation.firstName) + "_id";
+//                                            def newColumnName = st.columnName(relation.firstName) + "_id";
+//                                            sqlWillBeExecuted += "ALTER TABLE ${tableName} ALTER COLUMN ${columnName} RENAME TO ${newColumnName}"
+//                                        }
+//                                    }
+//                                }
                             }
                         }
                     }

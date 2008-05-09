@@ -263,7 +263,7 @@ class RapidDomainClassGrailsPlugin {
             def metaProp = mc.getMetaProperty(name);
             if(!metaProp)
             {
-                throw new MissingPropertyException(name, mc.theClass.name);
+                throw new MissingPropertyException(name, mc.theClass);
             }
             metaProp.setProperty(delegate, value);
         }

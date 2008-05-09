@@ -23,7 +23,7 @@
        <%
        model.modelProperties.each{property->
        %>
-       <Property name="${property.name}" type="${property.type}" defaultValue='${property.defaultValue?property.defaultValue:""}' blank="${property.blank}" lazy="${property.lazy}" propertyDatasource='${property.propertyDatasource && property.propertyDatasource.datasource?property.propertyDatasource.datasource.name:""}' propertySpecifyingDatasource='${property.propertySpecifyingDatasource?property.propertySpecifyingDatasource.name:""}'/>
+       <Property name="${property.name}" nameInDatasource='${property.nameInDatasource?property.nameInDatasource:""}' type="${property.type}" defaultValue='${property.defaultValue?property.defaultValue:""}' blank="${property.blank}" lazy="${property.lazy}" propertyDatasource='${property.propertyDatasource && property.propertyDatasource.datasource?property.propertyDatasource.datasource.name:""}' propertySpecifyingDatasource='${property.propertySpecifyingDatasource?property.propertySpecifyingDatasource.name:""}'/>
        <%
        }
        %>

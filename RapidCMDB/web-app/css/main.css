@@ -109,6 +109,19 @@ a.refresh {
     font-size: 16px;
 }
 
+a.export {
+    background: url(../images/skin/export.png) center left no-repeat;
+    padding-left: 25px;
+    font-size: 16px;
+}
+
+a.import {
+    background: url(../images/skin/import.png) center left no-repeat;
+    padding-left: 25px;
+    font-size: 16px;
+}
+
+
 a.delete {
     background: url(../images/skin/database_delete.png) center left no-repeat;
     padding-left: 25px;
@@ -281,6 +294,14 @@ padding:0pt;
 }
 .buttons input.refresh {
     background: transparent url(../images/skin/arrow_refresh.png) 5px 50% no-repeat;
+    padding-left: 28px;
+}
+.buttons input.export {
+    background: transparent url(../images/skin/export.png) 5px 50% no-repeat;
+    padding-left: 28px;
+}
+.buttons input.import {
+    background: transparent url(../images/skin/import.png) 5px 50% no-repeat;
     padding-left: 28px;
 }
 .buttons input.run {

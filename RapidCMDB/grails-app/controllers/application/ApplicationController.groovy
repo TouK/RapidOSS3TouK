@@ -12,6 +12,10 @@ import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
 import org.codehaus.groovy.grails.commons.GrailsClass
 import model.ModelModificationSqls
 import org.hibernate.cfg.ImprovedNamingStrategy
+import com.ifountain.rcmdb.utils.ConfigurationImportExportUtils
+import datasource.BaseDatasource
+import connection.Connection
+import script.CmdbScript
 
 /**
 * Created by IntelliJ IDEA.
@@ -23,7 +27,7 @@ import org.hibernate.cfg.ImprovedNamingStrategy
 class ApplicationController {
     public static final String RESTART_APPLICATION = "restart.application"
     def sessionFactory;
-
+    def index = { render(view:"application") }
     def reload = {
         def models = Model.findAllByResourcesWillBeGenerated(true);
         GrailsAwareClassLoader gcl = new GrailsAwareClassLoader(Thread.currentThread().getContextClassLoader().parent);
@@ -93,7 +97,8 @@ class ApplicationController {
             }
         }
         ModelModificationSqls.list()*.delete(flush: true);
-        render(view: "reloading", controller: "application");
+        flash.message = "Reloading application."
+        render(view: "application", controller: "application");
         GroovyPagesTemplateEngine.pageCache.clear();
         System.setProperty(RESTART_APPLICATION, "true");
     }
@@ -103,35 +108,31 @@ class ApplicationController {
         println "Collection tABLE: " + st.collectionTableName(null, st.tableName("NewAuthor"), null, null, st.tableName("NewBook"))
     }
 
-    def exportModel = {
-        def writer = new FileWriter("RCMDB_export.xml");
-        def builder = new groovy.xml.StreamingMarkupBuilder();
-
-        def mymodels = model.Model.list();
-        def models = {
-            models() {
-                for (mymodel in mymodels) {
-                    out << mymodel.xml()
-                }
-            }
+    def exportConfiguration = {
+        def exportDir = params.dir;
+        if(!exportDir)
+        {
+            exportDir = "backup"
         }
+        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
+        def configurationItems = [];
+        configurationItems.addAll (BaseDatasource.list());
+        configurationItems.addAll (Connection.list());
+        configurationItems.addAll (Model.list());
+        configurationItems.addAll (CmdbScript.list());
+        impExpUtils.export (exportDir, configurationItems);
+        flash.message = "Configuration data successfully exported to dir ${exportDir}."
+        render(view: "application", controller: "application");
+    }
 
-        def datasources = {
-            datasources() {
-                datasource("DS1")
-                datasource("DS2")
-                datasource("DS3")
-            }
+    def importConfiguration = {
+        def importDir = params.dir;
+        if(!importDir)
+        {
+            importDir = "backup"
         }
-
-        def export = {
-            export() {
-                out << models
-                out << datasources
-            }
-        }
-
-
-        writer << builder.bind(export);
+        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
+        impExpUtils.importConfiguration(importDir);
+        redirect(action:reload,controller:'application');
     }
 }

@@ -72,7 +72,7 @@ class DomainClassUtils
         {
             return value;
         }
-        else
+        else  if(value instanceof String)
         {
             String propTypeName =  propType.name;
             if(propTypeName.indexOf(".") > 0)
@@ -80,6 +80,10 @@ class DomainClassUtils
                 propTypeName = propTypeName.substring(propTypeName.lastIndexOf(".")+1)
             }
             return value."to${propTypeName}"();
+        }
+        else
+        {
+            return value;
         }
     }
 }

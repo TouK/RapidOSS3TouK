@@ -72,8 +72,8 @@ class ConfigurationImportExportUtilsTest extends RapidCmdbTestCase{
         configurationItems += new RapidInsightConnection(name:"ri2", baseUrl:"localhost:9192", username:"root2", password:"password2");
         def exportDir = "${baseDir}/export"
 
-        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir, exportDir);
-        impExpUtils.export(configurationItems);
+        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir);
+        impExpUtils.export(exportDir, configurationItems);
 
         File returnedExportFile = new File(exportDir + "/connections.xml")
 
@@ -116,8 +116,8 @@ class ConfigurationImportExportUtilsTest extends RapidCmdbTestCase{
 
         def exportDir = "${baseDir}/export"
 
-        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir, exportDir);
-        impExpUtils.export(configurationItems);
+        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir);
+        impExpUtils.export(exportDir, configurationItems);
 
         File returnedExportFile = new File(exportDir + "/datasources.xml")
 
@@ -144,8 +144,8 @@ class ConfigurationImportExportUtilsTest extends RapidCmdbTestCase{
         scripts += new CmdbScript(name:"script2.groovy");
         def exportDir = "${baseDir}/export"
 
-        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir, exportDir);
-        impExpUtils.export(scripts);
+        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir);
+        impExpUtils.export(exportDir, scripts);
 
         File returnedExportFile = new File(exportDir + "/scripts.xml")
 
@@ -186,8 +186,8 @@ class ConfigurationImportExportUtilsTest extends RapidCmdbTestCase{
         model.modelProperties.add(prop3);
         def exportDir = "${baseDir}/export"
 
-        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir, exportDir);
-        impExpUtils.export([model]);
+        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir);
+        impExpUtils.export(exportDir, [model]);
 
         File returnedExportFile = new File(exportDir + "/models/${model.name}.xml")
         assertTrue (returnedExportFile.exists());
@@ -209,7 +209,7 @@ class ConfigurationImportExportUtilsTest extends RapidCmdbTestCase{
                 xmlBuilder.Properties{
                     model.modelProperties.each{ModelProperty property->
                         xmlBuilder.Property(name:property.name, type:property.type, defaultValue:property.defaultValue?property.defaultValue:"",
-                                blank:property.blank, lazy:property.lazy, propertyDatasource:property.propertyDatasource?property.propertyDatasource.datasource.name:"",
+                                blank:property.blank, lazy:property.lazy, nameInDatasource:property.nameInDatasource, propertyDatasource:property.propertyDatasource?property.propertyDatasource.datasource.name:"",
                                 propertySpecifyingDatasource:property.propertySpecifyingDatasource?property.propertySpecifyingDatasource.name:"");
                     }
                 }
@@ -227,7 +227,7 @@ class ConfigurationImportExportUtilsTest extends RapidCmdbTestCase{
         Model parentModel = new Model(name:"ParentModel")
         model.parentModel = parentModel;
 
-        impExpUtils.export([model]);
+        impExpUtils.export(exportDir, [model]);
 
         builderClosure();
         expectedModelXml = writer.toString();
@@ -266,14 +266,24 @@ class ConfigurationImportExportUtilsTest extends RapidCmdbTestCase{
 
         def exportDir = "${baseDir}/export"
 
-        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir, exportDir);
-        impExpUtils.export([model1]);
+        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir);
+        impExpUtils.export(exportDir, [model1]);
 
         File returnedExportFile = new File(exportDir + "/models/${model1.name}.xml")
         assertTrue (returnedExportFile.exists());
         
         
         assertEqualsXML(expectedModelXml, returnedExportFile.getText());
+    }
+
+    public void test1()
+    {
+        def fileList = FileUtils.listFiles(new File("C:/Temp2/RapidServer/RapidCMDB/backup/models"), ["xml"] as String[], true)
+        fileList.each{file->
+            def exp = file.text;
+            def ret = new File("C:/Temp2/RapidServer/RapidCMDB/Copy of backup/models/"+file.name).text;
+            assertEqualsXML (exp, ret);
+        }
     }
 
 

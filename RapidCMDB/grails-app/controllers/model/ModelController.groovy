@@ -171,9 +171,11 @@ class ModelController {
                         }
                     }
                     handleGenerationOfModels(oldDependentModels, tableConstraints, st);
-                    //                    if(oldModel){
-                    //                        oldModel.delete(flush:true);
-                    //                    }
+//                    if (oldModel) {
+//                        GeneratedModelRelation.findAllByFirstModel(oldModel)*.delete();
+//                        GeneratedModelRelation.findAllBySecondModel(oldModel)*.delete();
+//                        oldModel.delete();
+//                    }
                     flash.message = "Model ${params.id} deleted"
                     redirect(action: list, controller: 'model');
                 }

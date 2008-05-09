@@ -162,18 +162,18 @@ class ModelController {
                     def tableConstraints = createTableConstraintsMap();
                     ImprovedNamingStrategy st = new ImprovedNamingStrategy();
                     def oldModel = GeneratedModel.findByModelName(model.name);
-                    if(oldModel){
+                    if (oldModel) {
                         def dropTableSqls = [];
                         addDropTableSqls(oldModel, st, tableConstraints, dropTableSqls);
-                        dropTableSqls.each{
+                        dropTableSqls.each {
                             def sqlStm = new ModelModificationSqls(sqlStatement: it);
                             sqlStm.save();
                         }
                     }
                     handleGenerationOfModels(oldDependentModels, tableConstraints, st);
-//                    if(oldModel){
-//                        oldModel.delete(flush:true);
-//                    }
+                    //                    if(oldModel){
+                    //                        oldModel.delete(flush:true);
+                    //                    }
                     flash.message = "Model ${params.id} deleted"
                     redirect(action: list, controller: 'model');
                 }
@@ -269,11 +269,18 @@ class ModelController {
                 if (masterDatasource) {
                     currentIdSize = masterDatasource.keyMappings.size();
                 }
-                if (generatedModel.idSize < currentIdSize) {
-                    addDropTableSqls(generatedModel, st, tableConstraints, sqlWillBeExecuted);
-                    isDropped = true;
+                if (generatedModel.idSize != currentIdSize) {
+                    def tablesInHierarchy = [:]
+                    getModelHierarchyForDrop(modelName, tablesInHierarchy);
+                    tablesInHierarchy.each {key, value ->
+                        def oldModel = GeneratedModel.findByModelName(key);
+                        if (oldModel) {
+                            addDropTableSqls(oldModel, st, tableConstraints, sqlWillBeExecuted);
+                        }
+                    }
+                    tablesToBeDropped.putAll(tablesInHierarchy);
                 }
-                if (!isDropped) {
+                if (!tablesToBeDropped.constainsKey(modelName)) {
                     newDependentModel.modelProperties.each {ModelProperty prop ->
                         GeneratedModelProperty generatedPropertyValue = generatedProperties.remove(prop.id);
                         def isFederated = isFederated(prop);
@@ -284,8 +291,15 @@ class ModelController {
                             def columnname = st.columnName(generatedPropertyValue.propName)
                             if (!isUnique && generatedPropertyValue.isUnique || isUnique && !generatedPropertyValue.isUnique)
                             {
-                                addDropTableSqls(generatedModel, st, tableConstraints, sqlWillBeExecuted);
-                                isDropped = true;
+                                def tablesInHierarchy = [:]
+                                getModelHierarchyForDrop(modelName, tablesInHierarchy);
+                                tablesInHierarchy.each {key, value ->
+                                    def oldModel = GeneratedModel.findByModelName(key);
+                                    if (oldModel) {
+                                        addDropTableSqls(oldModel, st, tableConstraints, sqlWillBeExecuted);
+                                    }
+                                }
+                                tablesToBeDropped.putAll(tablesInHierarchy);
                                 return;
                             }
                             else if (isFederated && !generatedPropertyValue.isFederated)
@@ -347,9 +361,15 @@ class ModelController {
                             def columnname = st.columnName(prop.name)
                             if (isUnique)
                             {
-                                sqlWillBeExecuted.clear();
-                                addDropTableSqls(generatedModel, st, tableConstraints, sqlWillBeExecuted);
-                                isDropped = true;
+                                def tablesInHierarchy = [:]
+                                getModelHierarchyForDrop(modelName, tablesInHierarchy);
+                                tablesInHierarchy.each {key, value ->
+                                    def oldModel = GeneratedModel.findByModelName(key);
+                                    if (oldModel) {
+                                        addDropTableSqls(oldModel, st, tableConstraints, sqlWillBeExecuted);
+                                    }
+                                }
+                                tablesToBeDropped.putAll(tablesInHierarchy);
                                 return;
                             }
                             else if (!isBlank)
@@ -359,7 +379,7 @@ class ModelController {
                         }
                     }
                 }
-                if (!isDropped) {
+                if (!tablesToBeDropped.constainsKey(modelName)) {
                     generatedProperties.each {propId, GeneratedModelProperty gProp ->
                         def columnname = st.columnName(gProp.propName)
                         sqlWillBeExecuted += "ALTER TABLE ${tablename} DROP COLUMN ${columnname}"
@@ -526,8 +546,8 @@ class ModelController {
 
     def createGeneratedModelInfo(Model model)
     {
-        def oldModel  = GeneratedModel.findByModelName(model.name);
-        if(oldModel){
+        def oldModel = GeneratedModel.findByModelName(model.name);
+        if (oldModel) {
             GeneratedModelRelation.findAllByFirstModel(oldModel)*.delete();
             GeneratedModelRelation.findAllBySecondModel(oldModel)*.delete();
             oldModel.delete();
@@ -670,17 +690,17 @@ class ModelController {
         newModels.each {String modelName, Model model ->
             GeneratedModel gModel = GeneratedModel.findByModelName(model.name);
             if (gModel && gModel.parentModelName != model.parentModel?.name) {
-                getModelHierarchyForDrop(model, tables);
+                getModelHierarchyForDrop(model.name, tables);
             }
         }
         return tables;
     }
 
-    def getModelHierarchyForDrop(Model model, Map tablesToBeDropped) {
-        tablesToBeDropped.put(model.name, model.name);
-        def children = Model.findAllByParentModel(model);
+    def getModelHierarchyForDrop(modelName, tablesToBeDropped) {
+        tablesToBeDropped.put(modelName, modelName);
+        def children = GeneratedModel.findAllByParentModelName(modelName);
         children.each {
-            getModelHierarchyForDrop(it, tablesToBeDropped);
+            getModelHierarchyForDrop(it.modelName, tablesToBeDropped);
         }
     }
 

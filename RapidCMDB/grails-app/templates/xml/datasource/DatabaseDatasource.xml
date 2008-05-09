@@ -1,0 +1,1 @@
+    <DatabaseDatasource name="${object.name}" connection="${object.connection.name}"/>

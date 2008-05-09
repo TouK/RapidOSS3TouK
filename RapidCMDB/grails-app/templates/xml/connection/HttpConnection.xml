@@ -1,0 +1,1 @@
+    <HttpConnection name="${object.name}" connectionClass="${object.connectionClass}" baseUrl="${object.baseUrl}"/>

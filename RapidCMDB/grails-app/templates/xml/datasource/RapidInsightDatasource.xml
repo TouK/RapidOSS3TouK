@@ -1,0 +1,1 @@
+    <RapidInsightDatasource name="${object.name}" connection="${object.connection.name}"/>

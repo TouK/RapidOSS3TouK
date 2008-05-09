@@ -1,0 +1,1 @@
+    <SmartsConnection name="${object.name}" connectionClass="${object.connectionClass}" broker="${object.broker}" domain="${object.domain}" username="${object.username}" password="${object.password}"/>

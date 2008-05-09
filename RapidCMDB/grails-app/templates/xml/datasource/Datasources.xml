@@ -1,0 +1,9 @@
+<Datasources>
+    <%
+    datasourceXmls.each{
+    %>
+${it}
+    <%
+    }
+    %>
+</Datasources>

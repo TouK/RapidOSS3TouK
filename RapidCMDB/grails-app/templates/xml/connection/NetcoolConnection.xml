@@ -1,0 +1,1 @@
+    <NetcoolConnection name="${object.name}" connectionClass="${object.connectionClass}" driver="${object.driver}" url="${object.url}" username="${object.username}" password="${object.password}"/>

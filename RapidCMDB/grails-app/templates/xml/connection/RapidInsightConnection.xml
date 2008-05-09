@@ -1,0 +1,1 @@
+        <RapidInsightConnection name="${object.name}" connectionClass="${object.connectionClass}" baseUrl="${object.baseUrl}" username="${object.username}" password="${object.password}"/>

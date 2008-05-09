@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry excluding="spring/" kind="src" path="grails-app/conf"/>
+	<classpathentry kind="src" path="plugins/rapid-domain-class-0.1/src/groovy"/>
 	<classpathentry kind="src" path="devDocs/scripts"/>
 	<classpathentry kind="src" path="grails-app/conf/spring"/>
 	<classpathentry kind="src" path="grails-app/controllers"/>

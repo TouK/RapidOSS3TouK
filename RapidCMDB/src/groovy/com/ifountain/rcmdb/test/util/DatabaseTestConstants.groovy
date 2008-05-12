@@ -17,8 +17,8 @@
  */
 package com.ifountain.rcmdb.test.util;
 
-public interface DatabaseTestConstants {
-
+public class DatabaseTestConstants {
+    private DatabaseTestConstants(){}
 	public static final String DATABASE_URL = "DatabaseUrl";
 	public static final String DATABASE_DRIVER = "DatabaseDriver";
 	public static final String DATABASE_USER = "DatabaseUsername";

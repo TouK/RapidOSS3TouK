@@ -11,6 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="ThirdParty" level="project" />
+    <orderEntry type="library" name="compass" level="project" />
     <orderEntryProperties />
   </component>
 </module>

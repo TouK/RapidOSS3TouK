@@ -434,6 +434,28 @@
       <jarDirectory url="file://$PROJECT_DIR$/../LicencedJars/lib/jdbc" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../LicencedJars/lib/smarts" recursive="false" />
     </library>
+    <library name="compass">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/RapidCMDB/plugins/searchable-0.5-SNAPSHOT/lib/lucene-snowball.jar!/" />
+        <root url="jar://$PROJECT_DIR$/RapidCMDB/plugins/searchable-0.5-SNAPSHOT/lib/lucene-analyzers.jar!/" />
+        <root url="jar://$PROJECT_DIR$/RapidCMDB/plugins/searchable-0.5-SNAPSHOT/lib/lucene-spellchecker.jar!/" />
+        <root url="jar://$PROJECT_DIR$/RapidCMDB/plugins/searchable-0.5-SNAPSHOT/lib/jmock-1.1.0.jar!/" />
+        <root url="jar://$PROJECT_DIR$/RapidCMDB/plugins/searchable-0.5-SNAPSHOT/lib/easymock.jar!/" />
+        <root url="jar://$PROJECT_DIR$/RapidCMDB/plugins/searchable-0.5-SNAPSHOT/lib/compass-2.0.0.jar!/" />
+        <root url="jar://$PROJECT_DIR$/RapidCMDB/plugins/searchable-0.5-SNAPSHOT/lib/lucene-core.jar!/" />
+        <root url="jar://$PROJECT_DIR$/RapidCMDB/plugins/searchable-0.5-SNAPSHOT/lib/lucene-highlighter.jar!/" />
+        <root url="jar://$PROJECT_DIR$/RapidCMDB/plugins/searchable-0.5-SNAPSHOT/lib/lucene-queries.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="quartz">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/RapidCMDB/plugins/quartz-0.2/lib/quartz-1.5.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
   </component>
 </project>
 

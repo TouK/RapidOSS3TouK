@@ -91,7 +91,8 @@ class Build extends Parent{
 			ant.pathelement(location : (String)classpath.getProperty("stax-1_2_0_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("DdlUtils-1_0_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("commons-betwixt-0_8_jar"));
-			
+			ant.pathelement(location : (String)classpath.getProperty("SNMP4J_jar"));
+
 			//Required for compiling test classes
 			ant.pathelement(location : (String)classpath.getProperty("junit_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("httpunit_jar"));

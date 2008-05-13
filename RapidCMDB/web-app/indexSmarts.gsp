@@ -32,6 +32,7 @@
                 <li class="controller"><g:link controller="httpConnection">HttpConnection</g:link></li>
                 <li class="controller"><g:link controller="databaseConnection">DatabaseConnection</g:link></li>
                 <li class="controller"><g:link controller="rapidInsightConnection">RapidInsightConnection</g:link></li>
+                <li class="controller"><g:link controller="snmpConnection">SnmpConnection</g:link></li>
             </ul>
         </div>
            </td>
@@ -46,6 +47,7 @@
                 <li class="controller"><g:link controller="databaseDatasource">DatabaseDatasource</g:link></li>
                 <li class="controller"><g:link controller="singleTableDatabaseDatasource">SingleTableDatabaseDatasource</g:link></li>
                 <li class="controller"><g:link controller="rapidInsightDatasource">RapidInsightDatasource</g:link></li>
+                <li class="controller"><g:link controller="snmpDatasource">SnmpDatasource</g:link></li>
             </ul>
         </div>
           </td>

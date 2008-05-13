@@ -1,6 +1,5 @@
 package script;
 import com.ifountain.rcmdb.exception.scripting.ScriptingException
-import scripting.ScriptingService;
 class CmdbScript {
     String name;
     def scriptingService;

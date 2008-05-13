@@ -281,6 +281,7 @@ class RapidCmdbBuild extends Build{
         ant.copy(file : (String)classpath.getProperty("commons-collections-3_2_jar"), toDir : env.dist_rapid_cmdb_lib );
 		ant.copy(file : (String)classpath.getProperty("commons-codec-1_3_jar"), toDir : env.dist_rapid_cmdb_lib);
 		ant.copy(file : (String)classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir : env.dist_rapid_cmdb_lib);
+		ant.copy(file : (String)classpath.getProperty("SNMP4J_jar"), toDir : env.dist_rapid_cmdb_lib);
 	}
 
     def unzipGrails(){

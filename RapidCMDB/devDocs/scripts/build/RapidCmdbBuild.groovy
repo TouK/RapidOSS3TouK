@@ -147,6 +147,7 @@ class RapidCmdbBuild extends Build{
 			ant.fileset(file : "$env.rapid_cmdb_cvs/rs.sh");
 			ant.fileset(file : "$env.rapid_cmdb_cvs/rsbatch.sh");
 			ant.fileset(file : env.version);
+			ant.fileset(file : env.invalidNames);
 		}
 		
 		setVersionAndBuildNumber();

@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="database/groovy"/>
+	<classpathentry kind="src" path="snmp/java"/>
 	<classpathentry kind="src" path="database/java"/>
 	<classpathentry kind="src" path="http/groovy"/>
 	<classpathentry kind="src" path="netcool/groovy"/>
@@ -31,5 +32,6 @@
 	<classpathentry kind="lib" path="/LicencedJars/lib/jdbc/mysql-connector-java-3.1.8-bin.jar"/>
 	<classpathentry kind="lib" path="/LicencedJars/lib/smarts/net.jar"/>
 	<classpathentry kind="lib" path="/LicencedJars/lib/smarts/skclient.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/snmp/SNMP4J.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

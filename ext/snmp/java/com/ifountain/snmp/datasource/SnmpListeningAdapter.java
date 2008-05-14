@@ -4,10 +4,14 @@ import org.snmp4j.*;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 import org.snmp4j.smi.Address;
 import org.snmp4j.smi.GenericAddress;
+import org.snmp4j.smi.IpAddress;
+import org.snmp4j.smi.VariableBinding;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.*;
+
+import com.ifountain.snmp.util.RSnmpConstants;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -42,7 +46,7 @@ public class SnmpListeningAdapter implements CommandResponder {
     private List trapBuffer = Collections.synchronizedList(new ArrayList());
     private Logger logger;
     private Object trapWaitingLock = new Object();
-    private TrapProcessThread trapProcessorThread;
+    protected TrapProcessThread trapProcessorThread;
 
 
     public SnmpListeningAdapter(String host, int port, Logger logger) {
@@ -75,31 +79,44 @@ public class SnmpListeningAdapter implements CommandResponder {
             } catch (IOException e) {
             }
         }
-        if(trapProcessorThread != null)
-        {
-        	if(trapProcessorThread.isAlive())
-            {
-        		trapProcessorThread.interrupt();
-        		logger.debug(getLogPrefix() + "Interrupted trap processor thread. Waiting for trap processor thread to die.");
-        		try {
-        			trapProcessorThread.join();
-        		} catch (InterruptedException e) {
-        		}
-        		logger.debug(getLogPrefix() + "Trap processor thread died.");
+        if (trapProcessorThread != null) {
+            if (trapProcessorThread.isAlive()) {
+                trapProcessorThread.interrupt();
+                logger.debug(getLogPrefix() + "Interrupted trap processor thread. Waiting for trap processor thread to die.");
+                try {
+                    trapProcessorThread.join();
+                } catch (InterruptedException e) {
+                }
+                logger.debug(getLogPrefix() + "Trap processor thread died.");
+            } else {
+                logger.debug(getLogPrefix() + "Trap processor is not alive. No need to interrupt.");
             }
-        	else
-        	{
-        		logger.debug(getLogPrefix() + "Trap processor is not alive. No need to interrupt.");
-        	}
         }
         isOpen = false;
     }
 
     public void processPdu(CommandResponderEvent event) {
-        Map trap = new HashMap();
         PDU pdu = event.getPDU();
-        trap.put("pdu", pdu);
-        addTrapToBuffer(trap);
+        if (pdu.getType() == PDU.TRAP || pdu.getType() == PDU.V1TRAP) {
+            Trap trap = null;
+            if (pdu instanceof PDUv1) {
+                PDUv1 version1Pdu = (PDUv1) pdu;
+                trap = new Trap(version1Pdu);
+            } else {
+                try {
+                    trap = new Trap(pdu, ((IpAddress)event.getPeerAddress()).getInetAddress());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.warn(getLogPrefix() + "Could not process trap " + pdu + ". Reason: " + e.getMessage());
+                }
+            }
+            if(trap != null){
+                addTrapToBuffer(trap.toMap());    
+            }
+        }
+        else{
+            logger.info(getLogPrefix() + "Ignored non trap pdu: " + pdu);
+        }
     }
 
     public boolean isOpen() {
@@ -122,15 +139,15 @@ public class SnmpListeningAdapter implements CommandResponder {
         return "[SnmpListeningAdapter " + host + ":" + port + "]: ";
     }
 
-    private void addTrapToBuffer(Map trap) {
+    protected void addTrapToBuffer(Map trap) {
         synchronized (trapWaitingLock) {
             trapBuffer.add(trap);
             trapWaitingLock.notifyAll();
         }
     }
 
-    public void clearBuffer(){
-         synchronized (trapWaitingLock) {
+    public void clearBuffer() {
+        synchronized (trapWaitingLock) {
             trapBuffer.clear();
         }
     }

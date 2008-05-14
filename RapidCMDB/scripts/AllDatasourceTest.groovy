@@ -140,14 +140,14 @@ def testGetEventWithColumnList(id){
 }
 def testRemoveEvent(id){
     def ds = NetcoolDatasource.findByName(NCDSNAME);
-    def props = ["Identifier":id,"Node":"myNode"];
+    def props = ["Identifier":id,"Node":"myNode", "Severity":3];
     def serial = createEvent(id, props);
     ds.removeEvent(serial);
     def event = ds.getEvent(serial);
     assert event.size()==0;
 }
 def testAddEvent(id){
-    def props = ["Identifier":id,"Node":"myNode"];
+    def props = ["Identifier":id,"Node":"myNode", "Severity":3];
     def ds = NetcoolDatasource.findByName(NCDSNAME);
     try{
 	    def serial = ds.getSerialFromNetcool(id);
@@ -162,7 +162,7 @@ def testAddEvent(id){
 }
 def testUpdateEvent(id){
     def ds = NetcoolDatasource.findByName(NCDSNAME);
-    def props = ["Identifier":id,"Node":"myNode"];
+    def props = ["Identifier":id,"Node":"myNode", "Severity":3];
     def serial = createEvent(id, props);
     ds.updateEvent(["ServerSerial":serial,"Node":"yourNode"]);
     def event = ds.getEvent(serial);
@@ -170,7 +170,7 @@ def testUpdateEvent(id){
 }
 def testTaskListAction(id){
     def ds = NetcoolDatasource.findByName(NCDSNAME);
-    def props = ["Identifier":id,"Node":"myNode"];
+    def props = ["Identifier":id,"Node":"myNode", "Severity":3];
     def serial = createEvent(id, props);
     ds.taskListAction(serial,true);
     def event = ds.getEvent(serial);
@@ -178,7 +178,7 @@ def testTaskListAction(id){
 }
 def testAssignAction(id){
     def ds = NetcoolDatasource.findByName(NCDSNAME);
-    def props = ["Identifier":id,"Node":"myNode"];
+    def props = ["Identifier":id,"Node":"myNode", "Severity":3];
     def serial = createEvent(id, props);
     def ownerUID= "65534";
     ds.assignAction(serial,ownerUID);
@@ -187,7 +187,7 @@ def testAssignAction(id){
 }
 def testTakeOwnershipAction(id){
     def ds = NetcoolDatasource.findByName(NCDSNAME);
-    def props = ["Identifier":id,"Node":"myNode"];
+    def props = ["Identifier":id,"Node":"myNode", "Severity":3];
     def serial = createEvent(id, props);
     def ownerUID= 65534;  // PROBLEM IF INTEGER IS PASSED AS PARAMETER
     ds.assignAction(serial,ownerUID);
@@ -210,7 +210,7 @@ def testSetSeverityAction(id){
 }
 def testSuppressAction(id){
     def ds = NetcoolDatasource.findByName(NCDSNAME);
-    def props = ["Identifier":id,"Node":"myNode","SuppressEscl":0];
+    def props = ["Identifier":id,"Node":"myNode", "Severity":3, "SuppressEscl":0];
     def serial = createEvent(id, props);
     def suppress = 3;
     ds.suppressAction(serial,suppress,"Tugrul");
@@ -223,7 +223,7 @@ def testSuppressAction(id){
 }
 def testAcknowledgeAction(id){
     def ds = NetcoolDatasource.findByName(NCDSNAME);
-    def props = ["Identifier":id,"Node":"myNode","Acknowledged":0];
+    def props = ["Identifier":id,"Node":"myNode", "Severity":3, "Acknowledged":0];
     def serial = createEvent(id, props);
     ds.acknowledgeAction(serial,true,"Tugrul");
     def event = ds.getEvent(serial);

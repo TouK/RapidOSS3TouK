@@ -40,7 +40,6 @@ class ModelGenerator
         return generator;
     }
 
-
     def generateModel(Model model)
     {
         def dependentModels = ModelUtils.getAllDependentModels(model);
@@ -51,9 +50,6 @@ class ModelGenerator
         validateModels(modelMetaDatas);
         createModelFiles(modelMetaDatas);
     }                  
-
-
-
 
     private def createEmptyDependentClasses(model)
     {
@@ -68,8 +64,22 @@ class ModelGenerator
 
     def validateModels(modelMetaDatas)
     {
-        modelMetaDatas.each{modelName,modelMetaData->
+    	List invalidNames = new File("invalidNames.txt" ).readLines();
+    	modelMetaDatas.each{modelName,modelMetaData->
             def modelBean = modelMetaData.model; 
+            
+            if(invalidNames.contains(modelName.toLowerCase()) )
+            {
+                throw ModelGenerationException.invalidModelName(modelName);
+            }
+            
+            modelMetaData.model.modelProperties.each{
+            	 if(invalidNames.contains(it.name.toLowerCase()) )
+                 {
+                     throw ModelGenerationException.invalidPropertyName(it.name);
+                 }
+            }
+            
             if(!modelMetaData.masterDatasource && !modelBean.parentModel)
             {
                 throw ModelGenerationException.masterDatasourceDoesnotExists(modelBean.name);

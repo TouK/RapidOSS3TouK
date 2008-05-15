@@ -49,7 +49,7 @@
                                     <label for="driver">Driver:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:databaseConnection,field:'driver','errors')}">
-                                    <input type="text" class="inputtextfieldl" id="driver" name="driver" value="${fieldValue(bean:databaseConnection,field:'driver')}"/>
+                                    <input type="text" class="inputtextfieldl id="driver" name="driver" value="${fieldValue(bean:databaseConnection,field:'driver')}"/>
                                 </td>
                             </tr> 
                         

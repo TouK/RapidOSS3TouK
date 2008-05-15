@@ -73,8 +73,8 @@ class RapidCmdbBuild extends Build{
 
         ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexSmarts.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
 
-        ant.jar(destfile : env.rapid_ext_jar, basedir : env.rapid_ext_build);
-        ant.copy(file : env.rapid_ext_jar, toDir : env.dist_rapid_cmdb_lib);
+        ant.jar(destfile : env.rapid_smarts_jar, basedir : env.rapid_ext_build);
+        ant.copy(file : env.rapid_smarts_jar, toDir : env.dist_rapid_cmdb_lib);
 
         def versionDate = getVersionWithDate();
         def zipFileName = "$env.distribution/SmartsModule$versionDate"+".zip"

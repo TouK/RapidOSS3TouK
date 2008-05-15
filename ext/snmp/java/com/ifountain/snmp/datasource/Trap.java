@@ -77,7 +77,6 @@ public class Trap {
         }
 
         getTimeStamp(pdu);
-        
         OID snmpTrapOid = (OID) pdu.get(TRAP_OID_INDEX).getVariable();
         VariableBinding lastVarBind = pdu.get(pdu.size() - 1);
         String snmpTrapOidStr = snmpTrapOid.toString();

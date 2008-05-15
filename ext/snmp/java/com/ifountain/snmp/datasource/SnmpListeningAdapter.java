@@ -57,26 +57,37 @@ public class SnmpListeningAdapter implements CommandResponder {
 
     public void open() throws Exception {
         if (!isOpen) {
+            logger.debug(getLogPrefix() + "Starting..");
+            logger.debug(getLogPrefix() + "parsing address udp:" + host + "/" + port);
             targetAddress = GenericAddress.parse("udp:" + host + "/" + port);
             if (targetAddress == null || !targetAddress.isValid()) {
                 throw new Exception("Invalid address " + host + "/" + port);
             }
             TransportMapping transport = new DefaultUdpTransportMapping();
+            logger.debug(getLogPrefix() + "Starting snmp session");
             snmp = new Snmp(transport);
+            logger.info(getLogPrefix() + "Successfully started snmp session");
             snmp.listen();
+            logger.info(getLogPrefix() + "Snmp session is listening");
+            logger.debug(getLogPrefix() + "Starting trap processor thread");
             trapProcessorThread = new TrapProcessThread();
             trapProcessorThread.start();
             snmp.addNotificationListener(targetAddress, this);
             isOpen = true;
+            logger.info(getLogPrefix() + "Started.");
         }
     }
 
     public void close() {
+        logger.debug(getLogPrefix() + "Closing snmp session");
         if (snmp != null) {
             try {
                 snmp.removeNotificationListener(targetAddress);
+                logger.debug(getLogPrefix() + "Closing snmp session.");
                 snmp.close();
+                logger.info(getLogPrefix() + "Snmp session successfully closed.");
             } catch (IOException e) {
+                logger.warn(getLogPrefix() + "Error occured during snmp session close. Exception: " + e.getMessage());
             }
         }
         if (trapProcessorThread != null) {
@@ -93,24 +104,31 @@ public class SnmpListeningAdapter implements CommandResponder {
             }
         }
         isOpen = false;
+        logger.info(getLogPrefix() + "Closed.");
     }
 
     public void processPdu(CommandResponderEvent event) {
         PDU pdu = event.getPDU();
+        logger.debug(getLogPrefix() + "Pdu " + pdu + " received..");
         if (pdu.getType() == PDU.TRAP || pdu.getType() == PDU.V1TRAP) {
+
             Trap trap = null;
             if (pdu instanceof PDUv1) {
+                logger.debug(getLogPrefix() + "Pdu is version1 trap");
                 PDUv1 version1Pdu = (PDUv1) pdu;
                 trap = new Trap(version1Pdu);
             } else {
+                logger.debug(getLogPrefix() + "Pdu is version2 trap");
                 try {
+                    logger.debug(getLogPrefix() + "Validating version2 trap");
                     trap = new Trap(pdu, ((IpAddress)event.getPeerAddress()).getInetAddress());
+                    logger.info(getLogPrefix() + "Version2 trap successfully constructed.");
                 } catch (Exception e) {
-                    e.printStackTrace();
                     logger.warn(getLogPrefix() + "Could not process trap " + pdu + ". Reason: " + e.getMessage());
                 }
             }
             if(trap != null){
+                logger.debug(getLogPrefix() + "Adding trap to buffer.");
                 addTrapToBuffer(trap.toMap());    
             }
         }
@@ -163,6 +181,7 @@ public class SnmpListeningAdapter implements CommandResponder {
                             trapWaitingLock.wait();
                         }
                         trap = (Map) trapBuffer.remove(0);
+                        logger.debug(getLogPrefix() + "Processing trap from " + trap.get(RSnmpConstants.AGENT));
                     }
                     for (Iterator iterator = trapProcessors.iterator(); iterator.hasNext();) {
                         SnmpTrapProcessor snmpTrapProcessor = (SnmpTrapProcessor) iterator.next();

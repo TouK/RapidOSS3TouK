@@ -33,7 +33,7 @@
                                     <label for="name">Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:httpDatasource,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:httpDatasource,field:'name')}"/>
+                                    <input type="text" class="inputtextfield" id="name" name="name" value="${fieldValue(bean:httpDatasource,field:'name')}"/>
                                 </td>
                             </tr> 
                         
@@ -42,7 +42,7 @@
                                     <label for="connection">Connection:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:httpDatasource,field:'connection','errors')}">
-                                    <g:select optionKey="id" from="${connection.HttpConnection.list()}" name="connection.id" value="${httpDatasource?.connection?.id}" ></g:select>
+                                    <g:select class="inputtextfield" optionKey="id" from="${connection.HttpConnection.list()}" name="connection.id" value="${httpDatasource?.connection?.id}" ></g:select>
                                 </td>
                             </tr> 
                         

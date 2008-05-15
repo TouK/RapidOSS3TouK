@@ -31,7 +31,7 @@
                                     <label for="name">Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:httpConnection,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:httpConnection,field:'name')}"/>
+                                    <input type="text" class="inputtextfield" id="name" name="name" value="${fieldValue(bean:httpConnection,field:'name')}"/>
                                 </td>
                             </tr> 
                         
@@ -40,7 +40,7 @@
                                     <label for="connectionClass">Connection Class:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:httpConnection,field:'connectionClass','errors')}">
-                                    <input type="text" id="connectionClass" name="connectionClass" value="${fieldValue(bean:httpConnection,field:'connectionClass')}"/>
+                                    <input type="text" class="inputtextfieldl" id="connectionClass" name="connectionClass" value="${fieldValue(bean:httpConnection,field:'connectionClass')}"/>
                                 </td>
                             </tr> 
                         
@@ -49,7 +49,7 @@
                                     <label for="baseUrl">Base Url:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:httpConnection,field:'baseUrl','errors')}">
-                                    <input type="text" id="baseUrl" name="baseUrl" value="${fieldValue(bean:httpConnection,field:'baseUrl')}"/>
+                                    <input type="text" class="inputtextfieldl" id="baseUrl" name="baseUrl" value="${fieldValue(bean:httpConnection,field:'baseUrl')}"/>
                                 </td>
                             </tr> 
                         

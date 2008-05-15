@@ -55,7 +55,7 @@
                                 }
 
                             %>
-                            <g:select id="cardinality" name="cardinality" from="${cardinalityList.collect{it.encodeAsHTML()}}" value="${cardinalityValue}"></g:select>
+                            <g:select  class="inputtextfield" id="cardinality" name="cardinality" from="${cardinalityList.collect{it.encodeAsHTML()}}" value="${cardinalityValue}"></g:select>
                         </td>
                     </tr>
                     <%
@@ -73,7 +73,7 @@
                             <label for="firstName">Name:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelRelation, field: 'firstName', 'errors')}">
-                            <input type="text" id="firstName" name="firstName" value="${fieldValue(bean: modelRelation, field: 'firstName')}"/>
+                            <input type="text"  class="inputtextfield" id="firstName" name="firstName" value="${fieldValue(bean: modelRelation, field: 'firstName')}"/>
                         </td>
                     </tr>
                     <tr class="prop">
@@ -81,7 +81,7 @@
                             <label for="secondModel">To:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelRelation, field: 'secondModel', 'errors')}">
-                            <g:select optionKey="id" from="${Model.list()}" name="secondModel.id" value="${modelRelation?.secondModel?.id}"></g:select>
+                            <g:select  class="inputtextfield" optionKey="id" from="${Model.list()}" name="secondModel.id" value="${modelRelation?.secondModel?.id}"></g:select>
                         </td>
                     </tr>
                     <tr class="prop">
@@ -89,7 +89,7 @@
                             <label for="secondName">Reverse Relation Name:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelRelation, field: 'secondName', 'errors')}">
-                            <input type="text" id="secondName" name="secondName" value="${fieldValue(bean: modelRelation, field: 'secondName')}"/>
+                            <input type="text"  class="inputtextfield" id="secondName" name="secondName" value="${fieldValue(bean: modelRelation, field: 'secondName')}"/>
                         </td>
                     </tr>
 

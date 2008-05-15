@@ -57,14 +57,7 @@
 
                 </tr>
 
-                <tr class="prop">
-                    <td valign="top" class="name">Password:</td>
-
-                    <td valign="top" class="value">${rapidInsightConnection.password}</td>
-
-                </tr>
-
-            </tbody>
+              </tbody>
         </table>
     </div>
     <div class="buttons">

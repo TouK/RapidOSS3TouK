@@ -73,7 +73,7 @@
                             <label for="cardinality">Type:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelRelation, field: 'firstCardinality', 'errors') || hasErrors(bean: modelRelation, field: 'secondCardinality', 'errors')}">
-                            <g:select id="cardinality" name="cardinality" from="${cardinalityList.collect{it.encodeAsHTML()}}" value="${cardinalityValue}"></g:select>
+                            <g:select class="inputtextfield" id="cardinality" name="cardinality" from="${cardinalityList.collect{it.encodeAsHTML()}}" value="${cardinalityValue}"></g:select>
                         </td>
                     </tr>
 
@@ -82,7 +82,7 @@
                             <label for="${relationNameField}">Relation Name:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelRelation, field: relationNameField, 'errors')}">
-                            <input type="text" id="${relationNameField}" name="${relationNameField}" value="${relationName}"/>
+                            <input type="text" class="inputtextfield" id="${relationNameField}" name="${relationNameField}" value="${relationName}"/>
                         </td>
                     </tr>
                     <tr class="prop">
@@ -90,7 +90,7 @@
                             <label for="${toField}">To:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelRelation, field: toField, 'errors')}">
-                            <g:select optionKey="id" from="${Model.list()}" name="${toField}.id" value="${to?.id}"></g:select>
+                            <g:select class="inputtextfield" optionKey="id" from="${Model.list()}" name="${toField}.id" value="${to?.id}"></g:select>
                         </td>
                     </tr>
                     <tr class="prop">
@@ -98,7 +98,7 @@
                             <label for="${reverseNameField}">Reverse Relation Name:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelRelation, field: reverseNameField, 'errors')}">
-                            <input type="text" id="${reverseNameField}" name="${reverseNameField}" value="${reverseName}"/>
+                            <input type="text" class="inputtextfield" id="${reverseNameField}" name="${reverseNameField}" value="${reverseName}"/>
                         </td>
                     </tr>
 

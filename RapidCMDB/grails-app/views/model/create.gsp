@@ -40,7 +40,7 @@
                                     <label for="name">Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:model,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:model,field:'name')}"/>
+                                    <input type="text" class="inputtextfield" id="name" name="name" value="${fieldValue(bean:model,field:'name')}"/>
                                 </td>
                             </tr> 
                         
@@ -49,7 +49,7 @@
                                     <label for="parentModel">Extends Model:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:model,field:'parentModel','errors')}">
-                                    <g:select optionKey="id" from="${Model.list()}" name="parentModel.id" value="${model?.parentModel?.id}" noSelection="['null':'']"></g:select>
+                                    <g:select class="inputtextfield" optionKey="id" from="${Model.list()}" name="parentModel.id" value="${model?.parentModel?.id}" noSelection="['null':'']"></g:select>
                                 </td>
                             </tr> 
                         

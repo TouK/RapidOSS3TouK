@@ -33,7 +33,7 @@
                                     <label for="name">Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:snmpConnection,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:snmpConnection,field:'name')}"/>
+                                    <input type="text" class="inputtextfield" id="name" name="name" value="${fieldValue(bean:snmpConnection,field:'name')}"/>
                                 </td>
                             </tr> 
                         
@@ -42,7 +42,7 @@
                                     <label for="host">Host:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:snmpConnection,field:'host','errors')}">
-                                    <input type="text" id="host" name="host" value="${fieldValue(bean:snmpConnection,field:'host')}"/>
+                                    <input type="text" class="inputtextfieldl" id="host" name="host" value="${fieldValue(bean:snmpConnection,field:'host')}"/>
                                 </td>
                             </tr> 
                         
@@ -51,7 +51,7 @@
                                     <label for="port">Port:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:snmpConnection,field:'port','errors')}">
-                                    <input type="text" id="port" name="port" value="${fieldValue(bean:snmpConnection,field:'port')}" />
+                                    <input type="text" class="inputtextfield" id="port" name="port" value="${fieldValue(bean:snmpConnection,field:'port')}" />
                                 </td>
                             </tr> 
                         

@@ -33,7 +33,7 @@
                                     <label for="name">Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:smartsConnection,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:smartsConnection,field:'name')}"/>
+                                    <input type="text" class="inputtextfield" id="name" name="name" value="${fieldValue(bean:smartsConnection,field:'name')}"/>
                                 </td>
                             </tr> 
                         
@@ -42,7 +42,7 @@
                                     <label for="connectionClass">Connection Class:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:smartsConnection,field:'connectionClass','errors')}">
-                                    <input type="text" id="connectionClass" name="connectionClass" value="${fieldValue(bean:smartsConnection,field:'connectionClass')}"/>
+                                    <input type="text" class="inputtextfieldl" id="connectionClass" name="connectionClass" value="${fieldValue(bean:smartsConnection,field:'connectionClass')}"/>
                                 </td>
                             </tr> 
                         
@@ -51,7 +51,7 @@
                                     <label for="broker">Broker:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:smartsConnection,field:'broker','errors')}">
-                                    <input type="text" id="broker" name="broker" value="${fieldValue(bean:smartsConnection,field:'broker')}"/>
+                                    <input type="text" class="inputtextfield" id="broker" name="broker" value="${fieldValue(bean:smartsConnection,field:'broker')}"/>
                                 </td>
                             </tr> 
                         
@@ -60,7 +60,7 @@
                                     <label for="domain">Domain:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:smartsConnection,field:'domain','errors')}">
-                                    <input type="text" id="domain" name="domain" value="${fieldValue(bean:smartsConnection,field:'domain')}"/>
+                                    <input type="text" class="inputtextfieldl" id="domain" name="domain" value="${fieldValue(bean:smartsConnection,field:'domain')}"/>
                                 </td>
                             </tr> 
                         
@@ -69,7 +69,7 @@
                                     <label for="username">Username:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:smartsConnection,field:'username','errors')}">
-                                    <input type="text" id="username" name="username" value="${fieldValue(bean:smartsConnection,field:'username')}"/>
+                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:smartsConnection,field:'username')}"/>
                                 </td>
                             </tr> 
                         
@@ -78,7 +78,7 @@
                                     <label for="password">Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:smartsConnection,field:'password','errors')}">
-                                    <input type="text" id="password" name="password" value="${fieldValue(bean:smartsConnection,field:'password')}"/>
+                                    <input type="password" class="inputtextfield" id="password" name="password" value="${fieldValue(bean:smartsConnection,field:'password')}"/>
                                 </td>
                             </tr> 
                         

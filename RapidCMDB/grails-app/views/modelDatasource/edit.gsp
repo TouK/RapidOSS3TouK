@@ -38,7 +38,7 @@
                             <label for="datasource">Datasource:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelDatasource, field: 'datasource', 'errors')}">
-                            <g:select optionKey="id" from="${BaseDatasource.list()}" name="datasource.id" value="${modelDatasource?.datasource?.id}"></g:select>
+                            <g:select class="inputtextfield" optionKey="id" from="${BaseDatasource.list()}" name="datasource.id" value="${modelDatasource?.datasource?.id}"></g:select>
                         </td>
                     </tr>
 
@@ -56,7 +56,7 @@
                             <label for="model">Model:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelDatasource, field: 'model', 'errors')}">
-                            <g:select optionKey="id" from="${Model.list()}" name="model.id" value="${modelDatasource?.model?.id}"></g:select>
+                            <g:select class="inputtextfield" optionKey="id" from="${Model.list()}" name="model.id" value="${modelDatasource?.model?.id}"></g:select>
                         </td>
                     </tr>
 

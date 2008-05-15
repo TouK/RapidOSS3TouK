@@ -33,7 +33,7 @@
                                     <label for="name">Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:snmpDatasource,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:snmpDatasource,field:'name')}"/>
+                                    <input type="text" class="inputtextfield" id="name" name="name" value="${fieldValue(bean:snmpDatasource,field:'name')}"/>
                                 </td>
                             </tr> 
                         
@@ -42,7 +42,7 @@
                                     <label for="script">Script:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:snmpDatasource,field:'script','errors')}">
-                                    <g:select optionKey="id" from="${script.CmdbScript.list()}" name="script.id" value="${snmpDatasource?.script?.id}" ></g:select>
+                                    <g:select class="inputtextfield" optionKey="id" from="${script.CmdbScript.list()}" name="script.id" value="${snmpDatasource?.script?.id}" ></g:select>
                                 </td>
                             </tr> 
                         
@@ -51,7 +51,7 @@
                                     <label for="connection">Connection:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:snmpDatasource,field:'connection','errors')}">
-                                    <g:select optionKey="id" from="${connection.SnmpConnection.list()}" name="connection.id" value="${snmpDatasource?.connection?.id}" ></g:select>
+                                    <g:select class="inputtextfield" optionKey="id" from="${connection.SnmpConnection.list()}" name="connection.id" value="${snmpDatasource?.connection?.id}" ></g:select>
                                 </td>
                             </tr> 
                         

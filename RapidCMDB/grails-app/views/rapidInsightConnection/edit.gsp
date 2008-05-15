@@ -42,7 +42,7 @@
                                     <label for="connectionClass">Connection Class:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:rapidInsightConnection,field:'connectionClass','errors')}">
-                                    <input type="text" id="connectionClass" name="connectionClass" value="${fieldValue(bean:rapidInsightConnection,field:'connectionClass')}"/>
+                                    <input type="text" class="inputtextfield" id="connectionClass" name="connectionClass" value="${fieldValue(bean:rapidInsightConnection,field:'connectionClass')}"/>
                                 </td>
                             </tr> 
                         
@@ -51,7 +51,7 @@
                                     <label for="baseUrl">Base Url:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:rapidInsightConnection,field:'baseUrl','errors')}">
-                                    <input type="text" id="baseUrl" name="baseUrl" value="${fieldValue(bean:rapidInsightConnection,field:'baseUrl')}"/>
+                                    <input type="text" class="inputtextfieldl" id="baseUrl" name="baseUrl" value="${fieldValue(bean:rapidInsightConnection,field:'baseUrl')}"/>
                                 </td>
                             </tr> 
                         
@@ -60,7 +60,7 @@
                                     <label for="username">Username:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:rapidInsightConnection,field:'username','errors')}">
-                                    <input type="text" id="username" name="username" value="${fieldValue(bean:rapidInsightConnection,field:'username')}"/>
+                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:rapidInsightConnection,field:'username')}"/>
                                 </td>
                             </tr> 
                         
@@ -69,7 +69,7 @@
                                     <label for="password">Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:rapidInsightConnection,field:'password','errors')}">
-                                    <input type="text" id="password" name="password" value="${fieldValue(bean:rapidInsightConnection,field:'password')}"/>
+                                    <input type="password" class="inputtextfield" id="password" name="password" value="${fieldValue(bean:rapidInsightConnection,field:'password')}"/>
                                 </td>
                             </tr> 
                         

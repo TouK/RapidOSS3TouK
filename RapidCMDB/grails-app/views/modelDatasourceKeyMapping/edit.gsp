@@ -38,7 +38,7 @@
                                     <label for="datasource">Datasource:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelDatasourceKeyMapping,field:'datasource','errors')}">
-                                    <g:select optionKey="id" from="${ModelDatasource.list()}" name="datasource.id" value="${modelDatasourceKeyMapping?.datasource?.id}" ></g:select>
+                                    <g:select class="inputtextfield" optionKey="id" from="${ModelDatasource.list()}" name="datasource.id" value="${modelDatasourceKeyMapping?.datasource?.id}" ></g:select>
                                 </td>
                             </tr> 
                         
@@ -47,7 +47,7 @@
                                     <label for="nameInDatasource">Name In Datasource:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelDatasourceKeyMapping,field:'nameInDatasource','errors')}">
-                                    <input type="text" id="nameInDatasource" name="nameInDatasource" value="${fieldValue(bean:modelDatasourceKeyMapping,field:'nameInDatasource')}"/>
+                                    <input type="text" class="inputtextfield" id="nameInDatasource" name="nameInDatasource" value="${fieldValue(bean:modelDatasourceKeyMapping,field:'nameInDatasource')}"/>
                                 </td>
                             </tr> 
 
@@ -86,7 +86,7 @@
                                     <label for="property">Property:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelDatasourceKeyMapping,field:'property','errors')}">
-                                    <g:select optionKey="id" from="${modelPropertyList}" name="property.id" value="${modelDatasourceKeyMapping?.property?.id}" ></g:select>
+                                    <g:select class="inputtextfield" optionKey="id" from="${modelPropertyList}" name="property.id" value="${modelDatasourceKeyMapping?.property?.id}" ></g:select>
                                 </td>
                             </tr> 
                         

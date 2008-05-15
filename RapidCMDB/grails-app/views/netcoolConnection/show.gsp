@@ -64,13 +64,7 @@
 
                 </tr>
 
-                <tr class="prop">
-                    <td valign="top" class="name">Password:</td>
-
-                    <td valign="top" class="value">${netcoolConnection.password}</td>
-
-                </tr>
-
+                
             </tbody>
         </table>
     </div>

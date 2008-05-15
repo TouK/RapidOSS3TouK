@@ -33,7 +33,7 @@
                                     <label for="name">Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:singleTableDatabaseDatasource,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:singleTableDatabaseDatasource,field:'name')}"/>
+                                    <input type="text" class="inputtextfield" id="name" name="name" value="${fieldValue(bean:singleTableDatabaseDatasource,field:'name')}"/>
                                 </td>
                             </tr> 
                         
@@ -42,7 +42,7 @@
                                     <label for="tableName">Table Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:singleTableDatabaseDatasource,field:'tableName','errors')}">
-                                    <input type="text" id="tableName" name="tableName" value="${fieldValue(bean:singleTableDatabaseDatasource,field:'tableName')}"/>
+                                    <input type="text" class="inputtextfield" id="tableName" name="tableName" value="${fieldValue(bean:singleTableDatabaseDatasource,field:'tableName')}"/>
                                 </td>
                             </tr> 
                         
@@ -51,7 +51,7 @@
                                     <label for="tableKeys">Table Keys:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:singleTableDatabaseDatasource,field:'tableKeys','errors')}">
-                                    <input type="text" id="tableKeys" name="tableKeys" value="${fieldValue(bean:singleTableDatabaseDatasource,field:'tableKeys')}"/>
+                                    <input type="text" class="inputtextfield" id="tableKeys" name="tableKeys" value="${fieldValue(bean:singleTableDatabaseDatasource,field:'tableKeys')}"/>
                                 </td>
                             </tr> 
                         
@@ -60,7 +60,7 @@
                                     <label for="connection">Connection:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:singleTableDatabaseDatasource,field:'connection','errors')}">
-                                    <g:select optionKey="id" from="${connection.DatabaseConnection.list()}" name="connection.id" value="${singleTableDatabaseDatasource?.connection?.id}" ></g:select>
+                                    <g:select class="inputtextfield" optionKey="id" from="${connection.DatabaseConnection.list()}" name="connection.id" value="${singleTableDatabaseDatasource?.connection?.id}" ></g:select>
                                 </td>
                             </tr> 
                         

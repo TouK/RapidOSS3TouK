@@ -31,7 +31,7 @@
                                     <label for="name">Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:cmdbScript,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:cmdbScript,field:'name')}"/>
+                                    <input type="text" class="inputtextfield" id="name" name="name" value="${fieldValue(bean:cmdbScript,field:'name')}"/>
                                 </td>
                             </tr> 
                         

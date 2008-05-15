@@ -57,7 +57,7 @@
                                     <label for="name">Name:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'name','errors')}">
-                                    <input type="text" id="name" name="name" value="${fieldValue(bean:modelProperty,field:'name')}"/>
+                                    <input type="text"  class="inputtextfield" id="name" name="name" value="${fieldValue(bean:modelProperty,field:'name')}"/>
                                 </td>
                             </tr>
 
@@ -66,7 +66,7 @@
                                     <label for="datasourceName">Static Datasource:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'propertyDatasource','errors')}">
-                                    <g:select optionKey="id" from="${BaseDatasource.list()}" name="datasource.id" value="${modelProperty?.propertyDatasource?.datasource?.id}" noSelection="['null':'']"></g:select>
+                                    <g:select  class="inputtextfield" optionKey="id" from="${BaseDatasource.list()}" name="datasource.id" value="${modelProperty?.propertyDatasource?.datasource?.id}" noSelection="['null':'']"></g:select>
                                 </td>
                             </tr>
 
@@ -75,7 +75,7 @@
                                     <label for="propertySpecifyingDatasource">Dynamic Datasource (specified in property):</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'propertySpecifyingDatasource','errors')}">
-                                    <g:select optionKey="id" from="${modelPropertyList}" name="propertySpecifyingDatasource.id" value="${modelProperty?.propertySpecifyingDatasource?.id}" noSelection="['null':'']"></g:select>
+                                    <g:select  class="inputtextfield" optionKey="id" from="${modelPropertyList}" name="propertySpecifyingDatasource.id" value="${modelProperty?.propertySpecifyingDatasource?.id}" noSelection="['null':'']"></g:select>
                                 </td>
                             </tr>
 
@@ -84,7 +84,7 @@
                                     <label for="type">Type:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'type','errors')}">
-                                    <g:select id="type" name="type" from="${modelProperty.constraints.type.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:modelProperty,field:'type')}" ></g:select>
+                                    <g:select  class="inputtextfield" id="type" name="type" from="${modelProperty.constraints.type.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:modelProperty,field:'type')}" ></g:select>
                                 </td>
                             </tr>
 
@@ -102,7 +102,7 @@
                                     <label for="defaultValue">Default Value:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'defaultValue','errors')}">
-                                    <input type="text" id="defaultValue" name="defaultValue" value="${fieldValue(bean:modelProperty,field:'defaultValue')}"/>
+                                    <input type="text"  class="inputtextfield" id="defaultValue" name="defaultValue" value="${fieldValue(bean:modelProperty,field:'defaultValue')}"/>
                                 </td>
                             </tr>
 
@@ -120,7 +120,7 @@
                                     <label for="model">Model:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'model','errors')}">
-                                    <g:select optionKey="id" from="${Model.list()}" name="model.id" value="${modelProperty?.model?.id}" ></g:select>
+                                    <g:select  class="inputtextfield" optionKey="id" from="${Model.list()}" name="model.id" value="${modelProperty?.model?.id}" ></g:select>
                                 </td>
                             </tr>
 
@@ -129,7 +129,7 @@
                                     <label for="nameInDatasource">Name In Datasource:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'nameInDatasource','errors')}">
-                                    <input type="text" id="nameInDatasource" name="nameInDatasource" value="${fieldValue(bean:modelProperty,field:'nameInDatasource')}"/>
+                                    <input type="text"  class="inputtextfield" id="nameInDatasource" name="nameInDatasource" value="${fieldValue(bean:modelProperty,field:'nameInDatasource')}"/>
                                 </td>
                             </tr>
 

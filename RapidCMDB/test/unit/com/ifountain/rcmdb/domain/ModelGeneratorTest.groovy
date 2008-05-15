@@ -238,16 +238,19 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         model.datasources += modelDatasource1;
         model.datasources += modelDatasource2;
-        model.modelProperties += new ModelProperty(name:"prop1", type:ModelProperty.stringType, model:model, blank:true);
-        model.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.stringType, model:model);
-        model.modelProperties += new ModelProperty(name:"dsname", type:ModelProperty.stringType, model:model);
+        def prop0 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, model:model, blank:true);
+        def prop1 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, model:model);
+        def prop2 = new ModelProperty(name:"dsname", type:ModelProperty.stringType, model:model);
+        model.modelProperties += prop0;
+        model.modelProperties += prop1;
+        model.modelProperties += prop2;
         model.modelProperties += new ModelProperty(name:"Prop3", type:ModelProperty.numberType, model:model, propertyDatasource:modelDatasource1, nameInDatasource:"Prop3NameInDs", lazy:false, blank:true);
-        model.modelProperties += new ModelProperty(name:"Prop4", type:ModelProperty.dateType, model:model, propertySpecifyingDatasource:model.modelProperties[2]);
+        model.modelProperties += new ModelProperty(name:"Prop4", type:ModelProperty.dateType, model:model, propertySpecifyingDatasource:prop2);
 
-        modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:model.modelProperties[0], datasource:modelDatasource1, nameInDatasource:"Prop1KeyNameInDs");
-        modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:model.modelProperties[1], datasource:modelDatasource1);
-        modelDatasource2.keyMappings += new ModelDatasourceKeyMapping(property:model.modelProperties[0], datasource:modelDatasource1, nameInDatasource:"Prop1KeyNameInDs");
-        modelDatasource2.keyMappings += new ModelDatasourceKeyMapping(property:model.modelProperties[1], datasource:modelDatasource1);
+        modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:prop0, datasource:modelDatasource1, nameInDatasource:"Prop1KeyNameInDs");
+        modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:prop1, datasource:modelDatasource1);
+        modelDatasource2.keyMappings += new ModelDatasourceKeyMapping(property:prop0, datasource:modelDatasource1, nameInDatasource:"Prop1KeyNameInDs");
+        modelDatasource2.keyMappings += new ModelDatasourceKeyMapping(property:prop1, datasource:modelDatasource1);
 
 
 
@@ -570,10 +573,10 @@ class MockModel extends Model
     def static childModels;
 
     def numberOfSaveCalls = 0;
-    def datasources = [];
-    def modelProperties = []
-    def fromRelations = [];
-    def toRelations = [];
+    def datasources = Collections.emptySet();
+    def modelProperties = Collections.emptySet()
+    def fromRelations = Collections.emptySet();
+    def toRelations = Collections.emptySet();
     def getModelFile()
     {
         return new File("../testoutput/${name}.groovy");
@@ -598,7 +601,7 @@ class MockModel extends Model
 }
 class MockModelDatasource extends ModelDatasource
 {
-    def keyMappings = [];
+    def keyMappings = Collections.emptySet();
     def getModelFile()
     {
         return new File("../testoutput/${name}.groovy");

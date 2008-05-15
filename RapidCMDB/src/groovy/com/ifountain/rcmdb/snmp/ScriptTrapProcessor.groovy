@@ -37,7 +37,7 @@ class ScriptTrapProcessor implements SnmpTrapProcessor{
     }
     public void processTrap(Map trap) {
          try{
-            def bindings = ["trap":trap];
+            def bindings = ["rsTrap":trap];
             def result = scriptingService.runScript(scriptName,  bindings);
          }
          catch(t){

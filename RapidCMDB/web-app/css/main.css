@@ -227,8 +227,11 @@ th.desc a {
 .list th, .list td {
     border-left: 1px solid #e7ccb4;
 }
-.list th:hover, .list tr:hover {
+.list tr:hover {
     background: #f7e3b1;
+}
+.list th:hover {
+	background: #f7e3b1 url(../images/skin/shadowhover.jpg);
 }
 
 /* PAGINATION */

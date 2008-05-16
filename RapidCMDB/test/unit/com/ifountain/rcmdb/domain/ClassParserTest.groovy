@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.domain
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import org.apache.commons.io.FileUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -10,9 +11,25 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 * To change this template use File | Settings | File Templates.
 */
 class ClassParserTest extends RapidCmdbTestCase{
+    def baseDir = "../../testOutput"
+
+    protected void setUp() {
+        super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        def baseDirFile = new File(baseDir);
+        FileUtils.deleteDirectory (baseDirFile);
+        baseDirFile.mkdirs();
+
+    }
+
+    protected void tearDown() {
+        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        FileUtils.deleteDirectory (new File(baseDir));
+    }
+
     public void testClassParser()
     {
-        def classFile = new File("../testOutput/MyClass.groovy");
+        def classFile = new File("${baseDir}/MyClass.groovy");
+
         classFile.setText("""beforepackage1
 beforepackage2
 
@@ -77,7 +94,7 @@ import com.ifountain.Class3;
 
     public void testClassParserWithMultipleClassDeclerationLines()
     {
-        def classFile = new File("../testOutput/MyClass.groovy");
+        def classFile = new File("${baseDir}/MyClass.groovy");
         classFile.setText("""beforepackage1
 beforepackage2
 

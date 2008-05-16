@@ -1,5 +1,6 @@
 package test
 class Book {
+    static searchable = true;
     String title;
     String description;
     Date dateCreated = new Date();

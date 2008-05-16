@@ -5,7 +5,7 @@ class DeviceInterface  extends DeviceAdapter {
 
     //AUTO_GENERATED_CODE
 
-
+    static searchable = true;
     static datasources = [:]
 
     

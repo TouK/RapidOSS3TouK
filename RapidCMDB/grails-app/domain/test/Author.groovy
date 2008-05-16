@@ -1,5 +1,6 @@
 package test;
-class Author {       
+class Author {
+    static searchable = true;
     String name;
     static hasMany = [books: Book];
     static constraints = {             

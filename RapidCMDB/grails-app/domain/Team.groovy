@@ -6,7 +6,7 @@ class Team
     
     //AUTO_GENERATED_CODE
 
-
+    static searchable = true;
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 
     

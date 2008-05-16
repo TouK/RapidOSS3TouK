@@ -5,7 +5,7 @@ class Device  extends SmartsObject {
 
     //AUTO_GENERATED_CODE
 
-
+    static searchable = true;
     static datasources = [:]
 
     

@@ -60,10 +60,10 @@ class ApplicationController {
                 model.save(flush: true);
             }
         }
-        def droppedTables = [:];
-        def sqlToBeExecuted = [];
+//        def droppedTables = [:];
+//        def sqlToBeExecuted = [];
 
-        ModelModificationSqls.list().each {
+       /* ModelModificationSqls.list().each {
             def sql = it.sqlStatement;
             if (sql.startsWith("DROP TABLE")) {
                 def tableName = sql.substring(10).trim();
@@ -84,7 +84,6 @@ class ApplicationController {
                 }
             }
         }
-        println "sqls: " + sqlToBeExecuted;
         sqlToBeExecuted.each {String sql->
             try
             {
@@ -95,7 +94,7 @@ class ApplicationController {
             {
                 t.printStackTrace();
             }
-        }
+        }   */
         ModelModificationSqls.list()*.delete(flush: true);
         flash.message = "Reloading application."
         render(view: "application", controller: "application");

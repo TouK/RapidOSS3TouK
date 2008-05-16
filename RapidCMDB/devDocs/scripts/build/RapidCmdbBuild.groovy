@@ -24,7 +24,8 @@ package build;
  * To change this template use File | Settings | File Templates.
  */
 class RapidCmdbBuild extends Build{
-	 
+	def smartsBuild = new SmartsModuleBuild();
+	def netcoolBuild = new NetcoolModuleBuild(); 
     static void main(String []args){
 		RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();
 		rapidCmdbBuilder.run(args);
@@ -104,8 +105,8 @@ class RapidCmdbBuild extends Build{
         def versionDate = getVersionWithDate();
         ant.delete(dir : env.distribution+"/RapidServer");
         ant.unzip(src : "$env.distribution/RapidCMDB$versionDate"+".zip", dest : env.distribution);
-        ant.unzip(src : "$env.distribution/SmartsModule$versionDate"+".zip", dest : "$env.distribution/RapidServer");
-        ant.unzip(src : "$env.distribution/NetcoolModule$versionDate"+".zip", dest : "$env.distribution/RapidServer");
+        ant.unzip(src : "$env.distribution/SmartsModule${smartsBuild.getVersionWithDate()}"+".zip", dest : "$env.distribution/RapidServer");
+        ant.unzip(src : "$env.distribution/NetcoolModule${netcoolBuild.getVersionWithDate()}"+".zip", dest : "$env.distribution/RapidServer");
         ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/domain"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app/domain"){
                 ant.include(name:"*.groovy")
@@ -224,8 +225,8 @@ class RapidCmdbBuild extends Build{
 		ant.zip(destfile : zipFileName){
             ant.zipfileset(dir : "$env.distribution");
         }
-        new SmartsModuleBuild().run([]);
-        new NetcoolModuleBuild().run([]);
+        smartsBuild.run([]);
+        netcoolBuild.run([]);
         buildSample("Sample1");
         buildSample("Sample2");
         return zipFileName;

@@ -14,10 +14,10 @@ class MockModel extends Model
     def static childModels;
 
     def numberOfSaveCalls = 0;
-    def datasources = Collections.emptySet();
-    def modelProperties = Collections.emptySet()
-    def fromRelations = Collections.emptySet();
-    def toRelations = Collections.emptySet();
+    Set datasources = Collections.emptySet();
+    Set modelProperties = Collections.emptySet()
+    Set fromRelations = Collections.emptySet();
+    Set toRelations = Collections.emptySet();
     def getModelFile()
     {
         return new File("../testoutput/${name}.groovy");

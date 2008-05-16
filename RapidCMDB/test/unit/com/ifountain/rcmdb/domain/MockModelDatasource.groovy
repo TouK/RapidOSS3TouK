@@ -11,9 +11,9 @@ import model.ModelDatasource
 */
 class MockModelDatasource extends ModelDatasource
 {
-    def keyMappings = Collections.emptySet();
+    Set keyMappings = Collections.emptySet();
     def getModelFile()
     {
         return new File("../testoutput/${name}.groovy");
     }
-}  
+}

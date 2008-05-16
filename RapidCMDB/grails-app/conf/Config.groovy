@@ -28,7 +28,12 @@ grails.views.default.codec="none" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
 grails.converters.encoding="UTF-8"
 grails.test.default.rollback = true
-
+rapidcmdb.invalid.names=[];
+def invalidNameFile = new File("invalidNames.txt" );
+if(invalidNameFile.exists())
+{
+    rapidcmdb.invalid.names= invalidNameFile.readLines();
+}
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
 

@@ -1,7 +1,7 @@
 
     //AUTO_GENERATED_CODE
 
-
+    static searchable = true;
     static datasources = ${model.datasourceConfiguration}
 
     <%
@@ -68,12 +68,14 @@
     <%
         def strBuffer = new StringBuffer("\t");
         strBuffer.append('return "\${getClass().getName()}[')
-        model.masterDatasource.keys.each{key,value->
-            strBuffer.append(key).append(":\$${key}, ");  
-        }
-        if(!model.masterDatasource.keys.isEmpty())
+        def datsourceKeys = new ArrayList(model.masterDatasource.keys.keySet());
+        if(!datsourceKeys.isEmpty())
         {
-            strBuffer = strBuffer.substring(0, strBuffer.length()-2);    
+            Collections.sort (datsourceKeys);
+            datsourceKeys.each{key->
+                strBuffer.append(key).append(":\$${key}, ");
+            }
+            strBuffer = strBuffer.substring(0, strBuffer.length()-2);
         }
         strBuffer += ']";';
         print strBuffer;

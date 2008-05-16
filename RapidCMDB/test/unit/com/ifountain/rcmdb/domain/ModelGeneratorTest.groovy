@@ -35,7 +35,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase;
  * To change this template use File | Settings | File Templates.
  */
 class ModelGeneratorTest extends RapidCmdbTestCase{
-    /*def static base_directory = "../testoutput/";
+    def static base_directory = "../testoutput/";
     def  modelRelations;
     def  reverseModelRelations;
     def  childModels;
@@ -100,6 +100,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         object.keyprop = "keypropvalue";
         checkExistanceOfMetaDataProperties(object);
         assertEquals ("Class1[keyprop:keypropvalue]", object.toString());
+        assertTrue (object.searchable);
 
         Class modelOperations = compileClass(model.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
         assertTrue (AbstractDomainOperation.isAssignableFrom(modelOperations));
@@ -563,12 +564,12 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         GrailsAwareClassLoader cloader = new GrailsAwareClassLoader();
         cloader.addClasspath (base_directory);
         return cloader.loadClass(name);
-    }        */
+    }
 }
 
 
 
-/*class MockModel extends Model
+class MockModel extends Model
 {
     def static childModels;
 
@@ -606,4 +607,4 @@ class MockModelDatasource extends ModelDatasource
     {
         return new File("../testoutput/${name}.groovy");
     }
-}     */
+}     

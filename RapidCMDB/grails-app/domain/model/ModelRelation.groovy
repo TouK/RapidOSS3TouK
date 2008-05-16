@@ -17,11 +17,21 @@ class ModelRelation {
             if(!(firstChar >= 'a' && firstChar <= 'z')){
                 return ['modelrelation.name.uppercased'];
             }
+            def invalidNames = ConfigurationHolder.config.getProperty ("rapidcmdb.invalid.names");
+            if(invalidNames.contains(firstName.toLowerCase()))
+            {
+                return ['modelrelation.name.invalid'];
+            }
         });
         secondName(blank:false, unique:'secondModel', validator:{val, obj ->
             def firstChar = val.charAt(0);
             if(!(firstChar >= 'a' && firstChar <= 'z')){
                 return ['modelrelation.name.uppercased'];
+            }
+            def invalidNames = ConfigurationHolder.config.getProperty ("rapidcmdb.invalid.names");
+            if(invalidNames.contains(secondName.toLowerCase()))
+            {
+                return ['modelrelation.name.invalid'];
             }
         });
      }

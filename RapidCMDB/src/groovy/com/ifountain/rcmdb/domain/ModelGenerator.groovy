@@ -64,22 +64,8 @@ class ModelGenerator
 
     def validateModels(modelMetaDatas)
     {
-    	List invalidNames = new File("invalidNames.txt" ).readLines();
-    	modelMetaDatas.each{modelName,modelMetaData->
+        modelMetaDatas.each{modelName,modelMetaData->
             def modelBean = modelMetaData.model; 
-            
-            if(invalidNames.contains(modelName.toLowerCase()) )
-            {
-                throw ModelGenerationException.invalidModelName(modelName);
-            }
-            
-            modelMetaData.model.modelProperties.each{
-            	 if(invalidNames.contains(it.name.toLowerCase()) )
-                 {
-                     throw ModelGenerationException.invalidPropertyName(it.name);
-                 }
-            }
-            
             if(!modelMetaData.masterDatasource && !modelBean.parentModel)
             {
                 throw ModelGenerationException.masterDatasourceDoesnotExists(modelBean.name);

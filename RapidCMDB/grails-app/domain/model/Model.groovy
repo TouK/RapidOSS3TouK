@@ -4,6 +4,7 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
 import java.lang.reflect.Method
 import com.ifountain.core.domain.annotations.CmdbOperation
 import com.ifountain.rcmdb.domain.ModelUtils
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class Model {
     String name;
@@ -18,6 +19,11 @@ class Model {
             def firstChar = val.charAt(0);
             if(!(firstChar >= 65 && firstChar <= 90)){
                 return ['model.name.lowercased'];
+            }
+            def invalidNames = ConfigurationHolder.config.getProperty ("rapidcmdb.invalid.names");
+            if(invalidNames.contains(name.toLowerCase()))
+            {
+                return ['model.name.invalid'];                
             }
         });
         parentModel(nullable:true);

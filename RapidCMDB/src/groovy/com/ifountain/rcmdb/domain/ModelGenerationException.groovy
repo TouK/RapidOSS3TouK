@@ -55,15 +55,4 @@ class ModelGenerationException extends Exception{
     {
         return new ModelGenerationException("Could not deleted controller of model $modelName");
     }
-    public static ModelGenerationException invalidModelName(String name)
-    {
-        return new ModelGenerationException("Invalid model name used: $name");
-    }
-    public static ModelGenerationException invalidPropertyName(String name)
-    {
-        return new ModelGenerationException("Invalid property name used: $name");
-    }
-
-
-
 }

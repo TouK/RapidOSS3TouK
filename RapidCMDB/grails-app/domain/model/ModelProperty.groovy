@@ -21,6 +21,11 @@ class ModelProperty {
             if(!(firstChar >= 'a' && firstChar <= 'z')){
                 return ['modelproperty.name.uppercased', obj.model.name];
             }
+            def invalidNames = ConfigurationHolder.config.getProperty ("rapidcmdb.invalid.names");
+            if(invalidNames.contains(name.toLowerCase()))
+            {
+                return ['modelproperty.name.invalid'];
+            }
         });
         nameInDatasource(nullable:true);
         propertyDatasource(nullable:true);

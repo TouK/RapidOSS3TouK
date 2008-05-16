@@ -25,9 +25,6 @@ package build;
  */
 class RapidCmdbBuild extends Build{
 	 
-	def versionNo; 
-	def buildNo; 
-	 
     static void main(String []args){
 		RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();
 		rapidCmdbBuilder.run(args);
@@ -41,6 +38,7 @@ class RapidCmdbBuild extends Build{
 	}
 
 	def buildSmartsModules(){
+		
         ant.delete(dir : env.distribution+"/RapidServer");
         ant.delete(file: "$env.distribution/SmartsModule*.zip");
         ant.delete(dir : env.rapid_ext_build);
@@ -73,7 +71,7 @@ class RapidCmdbBuild extends Build{
 
         ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexSmarts.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
 
-        ant.jar(destfile : env.rapid_smarts_jar, basedir : env.rapid_ext_build);
+        ant.jar(destfile : env.rapid_smarts_jar, basedir : env.rapid_ext_build, manifest : env.versionInBuild);
         ant.copy(file : env.rapid_smarts_jar, toDir : env.dist_rapid_cmdb_lib);
 
         def versionDate = getVersionWithDate();
@@ -82,37 +80,8 @@ class RapidCmdbBuild extends Build{
             ant.zipfileset(dir : "$env.distribution/RapidServer")
         }
     }
-    def buildNetcoolModules(){
-        ant.delete(dir : env.distribution+"/RapidServer");
-        ant.delete(file: "$env.distribution/NetcoolModule*.zip");
 
-		ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/ext"){
-			ant.fileset(dir : "$env.rapid_ext/netcool/groovy"){
-                if(!TEST){
-                    ant.exclude(name:"**/test/**")
-                    ant.exclude(name:"**/*Test*")
-                }
-            };
-        }
-
-		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/NetcoolDatasource.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/domain/datasource" );
-		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/connection/NetcoolConnection.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/domain/connection" );
-		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/connection/NetcoolConnectionController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/connection" );
-		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/NetcoolDatasourceController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/datasource" );
-        ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/views"){
-			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app/views"){
-                ant.include(name:"netcool*/*")
-            }
-		}
-        ant.copy(file : "$env.rapid_cmdb_cvs/web-app/indexNetcool.gsp", tofile : "$env.dist_rapid_cmdb/web-app/index.gsp");
-        def versionDate = getVersionWithDate();
-        def zipFileName = "$env.distribution/NetcoolModule$versionDate"+".zip"
-        ant.zip(destfile : zipFileName){
-            ant.zipfileset(dir : "$env.distribution/RapidServer")
-        }
-    }
-    
-    def buildSample(sampleName){
+	def buildSample(sampleName){
         ant.delete(dir : env.distribution+"/RapidServer");
         ant.delete(file: "${env.distribution}/${sampleName}*.zip");
 
@@ -150,7 +119,7 @@ class RapidCmdbBuild extends Build{
 			ant.fileset(file : env.invalidNames);
 		}
 		
-		setVersionAndBuildNumber();
+		setVersionAndBuildNumber(env.versionInBuild);
 
 		ant.copy(todir : "$env.dist_rapid_cmdb/grails-app"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app"){
@@ -249,8 +218,8 @@ class RapidCmdbBuild extends Build{
 		ant.zip(destfile : zipFileName){
             ant.zipfileset(dir : "$env.distribution");
         }
-        buildSmartsModules();
-        buildNetcoolModules();
+        new SmartsModuleBuild().run([]);
+        new NetcoolModuleBuild().run([]);
         buildSample("Sample1");
         buildSample("Sample2");
         return zipFileName;

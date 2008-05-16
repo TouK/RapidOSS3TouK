@@ -42,9 +42,6 @@ class RapidExtBuild extends Build{
         ant.javac(srcdir : "$env.rapid_ext/snmp/java", destdir : env.rapid_ext_build, excludes: getExcludedClasses()){
 			ant.classpath(refid : "classpath");
 		}
-//		ant.javac(srcdir : "$env.rapid_ext/smarts/java", destdir : env.rapid_ext_build, excludes: getExcludedClasses()){
-//			ant.classpath(refid : "classpath");
-//		}
 	}
 
 
@@ -56,10 +53,6 @@ class RapidExtBuild extends Build{
                     ant.exclude(name:"**/*Test*")    
                 }
             };
-//			ant.fileset(dir : "$env.rapid_ext/smarts/groovy"){
-//                ant.exclude(name:"**/test/**")
-//                ant.exclude(name:"**/*Test*")
-//            };
             ant.fileset(dir : "$env.rapid_ext/rapidinsight/groovy"){
                 if(!TEST){
                     ant.exclude(name:"**/test/**")

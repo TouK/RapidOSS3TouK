@@ -1,6 +1,10 @@
 package build;
 
 class Build extends Parent{
+	
+	def versionNo; 
+	def buildNo;
+	
 	Build(){
 //		if(System.getProperty("os.name").toLowerCase().indexOf("windows") > -1){
 //			ant.taskdef(name : "exe4j", classname : "com.exe4j.Exe4JTask", classpath : (String)classpath.getProperty("exe4jlib_jar"));
@@ -29,6 +33,19 @@ class Build extends Parent{
 			ant.fileset(dir : env.distribution, excludes : "*.project*, *.classpath");
 		}
 	}
+	
+	def getVersionWithDate(){
+        return "_$versionNo" + "_" + "$buildNo";
+    }
+	
+	def setVersionAndBuildNumber(versionInBuild){
+		def verFile = new File (versionInBuild);
+		def verReader =verFile.newReader();
+		versionNo = verReader.readLine().substring(9);
+		
+		buildNo =  new java.text.SimpleDateFormat("yyMMddHH").format(new Date(System.currentTimeMillis()));
+		verFile.append("\rBuild: " + buildNo);
+	}	
 	
 	def setClasspathForBuild(){
 		ant.path(id : "classpath"){

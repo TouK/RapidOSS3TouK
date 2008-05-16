@@ -37,7 +37,7 @@ class DomainClassUtils
         }
     }
 
-    def static getRelations(GrailsDomainClass dc)
+    def static getRelations(GrailsDomainClass dc, Map domainClasses)
     {
         def allRelations = [:];
         def hasMany = getStaticVariable(dc, "hasMany");
@@ -51,7 +51,7 @@ class DomainClassUtils
                 cardinalityIsMany = true;
             }
 
-            def otherSideHasMany = getStaticVariable(dc, "hasMany");
+            def otherSideHasMany = getStaticVariable(domainClasses[otherSideClass.name], "hasMany");
             def otherSideCardinalityIsMany = otherSideHasMany[otherSideName]?true:false;
             def relType;
             if(otherSideCardinalityIsMany && cardinalityIsMany)

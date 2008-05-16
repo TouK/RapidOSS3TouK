@@ -23,6 +23,7 @@ class RapidDomainClassGrailsPlugin {
     def version = 0.1
     def dependsOn = [searchable:"0.5-SNAPSHOT"]
     def loadAfter = ['searchable']
+    def domainClassMap;
     def doWithSpring = {
     }
 
@@ -34,7 +35,7 @@ class RapidDomainClassGrailsPlugin {
 
     def doWithDynamicMethods = { ctx ->
         IdGenerator.initialize (new IdGeneratorStrategyImpl());
-        def domainClassMap = [:];
+        domainClassMap = [:];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
             if(isSearchable(mc))
@@ -140,7 +141,7 @@ class RapidDomainClassGrailsPlugin {
     def addBasicPersistenceMethods(dc, application, ctx)
     {
         def mc = dc.metaClass;
-        def relations = DomainClassUtils.getRelations(dc);
+        def relations = DomainClassUtils.getRelations(dc, domainClassMap);
         def keys = DomainClassUtils.getKeys(dc);
         def addMethod = new AddMethod(mc, relations, keys);
         def removeMethod = new RemoveMethod(mc);
@@ -217,7 +218,7 @@ class RapidDomainClassGrailsPlugin {
 
     def addPropertyGetAndSetMethods(dc)
     {
-        def relations = DomainClassUtils.getRelations(dc);
+        def relations = DomainClassUtils.getRelations(dc, domainClassMap);
         MetaClass mc = dc.metaClass
         def propConfigCache = new PropertyConfigurationCache(dc);
         def dsConfigCache = new DatasourceConfigurationCache(dc);

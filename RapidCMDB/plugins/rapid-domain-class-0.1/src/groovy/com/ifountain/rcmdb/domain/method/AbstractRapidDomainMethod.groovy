@@ -29,10 +29,8 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
  */
 abstract class AbstractRapidDomainMethod extends AbstractDynamicMethodInvocation{
     MetaClass mc;
-    GrailsDomainClass domainClass;
-    public AbstractRapidDomainMethod(MetaClass mc, GrailsDomainClass domainClass) {
+    public AbstractRapidDomainMethod(MetaClass mc) {
         super(null)
-        this.domainClass = domainClass;
         this.mc = mc;
     }
     public Object invoke(Object target, String methodName, Object[] arguments) {

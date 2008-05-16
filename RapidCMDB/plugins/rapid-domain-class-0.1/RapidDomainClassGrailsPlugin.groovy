@@ -15,12 +15,14 @@ import com.ifountain.rcmdb.domain.AbstractDomainOperation
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import com.ifountain.rcmdb.domain.ModelUtils
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import com.ifountain.rcmdb.domain.IdGenerator
+import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
 
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def version = 0.1
-    def dependsOn = [:]
-    def loadAfter = ['hibernate']
+    def dependsOn = [searchable:"0.5-SNAPSHOT"]
+    def loadAfter = ['searchable']
     def doWithSpring = {
     }
 
@@ -31,24 +33,30 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def doWithDynamicMethods = { ctx ->
+        IdGenerator.initialize (new IdGeneratorStrategyImpl());
         def domainClassMap = [:];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
-            domainClassMap[mc.getTheClass().name] = mc.getTheClass().name
+            if(isSearchable(mc))
+            {
+                domainClassMap[mc.getTheClass().name] = mc.getTheClass().name
+            }
         }
         def domainClassesToBeCreated = [];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
-            if(!domainClassMap.containsKey(mc.getTheClass().getSuperclass().getName()))
+            if(isSearchable(mc))
             {
-                domainClassesToBeCreated += dc;
+                if(!domainClassMap.containsKey(mc.getTheClass().getSuperclass().getName()))
+                {
+                    domainClassesToBeCreated += dc;
+                }
             }
         }
         for (dc in domainClassesToBeCreated) {
             MetaClass mc = dc.metaClass
             registerDynamicMethods(dc, application, ctx);
         }
-
     }
 
     def onChange = { event ->
@@ -56,6 +64,7 @@ class RapidDomainClassGrailsPlugin {
 
     def onApplicationChange = { event ->
     }
+
 
     def addOperationsSupport(GrailsDomainClass dc, application, ctx)
     {
@@ -122,43 +131,36 @@ class RapidDomainClassGrailsPlugin {
         }
     }
 
+    private boolean isSearchable(mc)
+    {
+        def metaProp = mc.getMetaProperty("searchable");
+        return metaProp != null;
+    }
+
     def addBasicPersistenceMethods(dc, application, ctx)
     {
         def mc = dc.metaClass;
-        def addMethod = new AddMethod(mc, dc);
-        def removeMethod = new RemoveMethod(mc, dc);
-        def updateMethod = new UpdateMethod(mc, dc);
-        def addRelationMethod = new AddRelationMethod(mc, dc);
-        def removeRelationMethod = new RemoveRelationMethod(mc, dc);
+        def relations = DomainClassUtils.getRelations(dc);
+        def keys = DomainClassUtils.getKeys(dc);
+        def addMethod = new AddMethod(mc, relations, keys);
+        def removeMethod = new RemoveMethod(mc);
+        def updateMethod = new UpdateMethod(mc, relations, keys);
+        def addRelationMethod = new AddRelationMethod(mc, relations);
+        def removeRelationMethod = new RemoveRelationMethod(mc, relations);
         mc.update = {Map props->
-            delegate.update(props, true)
-        }
-        mc.update = {Map props, Boolean flush->
-            return updateMethod.invoke(delegate,  [props, flush] as Object[])
+            return updateMethod.invoke(delegate,  [props] as Object[])
         }
         mc.addRelation = {Map props->
-            return delegate.addRelation(props, true);
-        }
-        mc.addRelation = {Map props, Boolean flush->
-          return addRelationMethod.invoke(delegate,  [props, flush] as Object[])
+          return addRelationMethod.invoke(delegate,  [props] as Object[])
         }
         mc.removeRelation = {Map props->
-            return delegate.removeRelation(props, true);
-        }
-        mc.removeRelation = {Map props, Boolean flush->
-            return removeRelationMethod.invoke(delegate,  [props, flush] as Object[])
+            return removeRelationMethod.invoke(delegate,  [props] as Object[])
         }
         mc.remove = {->
-            delegate.remove(true);
-        }
-        mc.remove = {Boolean flush->
-            return removeMethod.invoke(delegate, [flush] as Object[]);
+            return removeMethod.invoke(delegate, null);
         }
         mc.'static'.add = {Map props->
-            return delegate.add(props, true);
-        }
-        mc.'static'.add = {Map props, Boolean flush->
-            return addMethod.invoke(mc.theClass, [props, flush] as Object[]);
+            return addMethod.invoke(mc.theClass, [props] as Object[]);
         }
     }
 
@@ -183,7 +185,8 @@ class RapidDomainClassGrailsPlugin {
     def addQueryMethods(dc, application, ctx)
     {
         def mc = dc.metaClass;
-        def getMethod = new GetMethod(mc, dc);
+        def keys = DomainClassUtils.getKeys(dc);
+        def getMethod = new GetMethod(mc, keys);
         mc.'static'.get = {Map searchParams->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])
         }
@@ -280,14 +283,10 @@ class RapidDomainClassGrailsPlugin {
                 throw new MissingPropertyException(name, mc.getTheClass());
             }
             Relation relation = relations.get(name);
-            if(relation && relation.isOneToMany() && !(currentValue instanceof RelationSetList))
+            if(relation && (relation.isOneToMany() || relation.isManyToMany()) && !currentValue )
             {
-                def criteria = relation.otherSideClass.metaClass.invokeStaticMethod(relation.otherSideClass, "createCriteria", [] as Object[]);
-                def foundRelatedInstances = new RelationSetList(criteria.listDistinct{
-                    "${relation.otherSideName}"{eq("id",domainObject.id)}
-                });
-                domainObject[relation.name] = foundRelatedInstances;
-                return foundRelatedInstances;
+                currentValue = [];
+                domainObject.__InternalSetProperty__(name, currentValue);
             }
             else if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
             {

@@ -3,6 +3,7 @@ package com.ifountain.rcmdb.domain.method
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import com.ifountain.rcmdb.domain.util.Relation
+import org.springframework.validation.FieldError
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -30,82 +31,104 @@ import com.ifountain.rcmdb.domain.util.Relation
  */
 class AddRelationMethod extends AbstractRapidDomainMethod{
     def relations;
-    public AddRelationMethod(MetaClass mc, GrailsDomainClass domainClass) {
-        super(mc, domainClass); //To change body of overridden methods use File | Settings | File Templates.
-        relations = DomainClassUtils.getRelations(domainClass);
+    public AddRelationMethod(MetaClass mc, Map relations) {
+        super(mc); //To change body of overridden methods use File | Settings | File Templates.
+        this.relations = relations;
     }
 
+    private List getItemsWillBeAdded(oldValue, currentValue)
+    {
+        boolean contains = false;
+        def alreadyExistingItems = [:]
+        oldValue.each
+        {
+            alreadyExistingItems[it.id] = it;
+        }
+        def objectsWillBeAdded = [];
+        currentValue.each
+        {
+            if(!alreadyExistingItems.containsKey(it.id))
+            {
+                objectsWillBeAdded += it;
+            }
+        }
+        return objectsWillBeAdded;
+    }
+    
     public Object invoke(Object domainObject, Object[] arguments) {
-            def props = arguments[0];
-            def flush = arguments[1];
-            props.each{key,value->
+
+        def props = arguments[0];
+        def relatedInstances = [:]
+        props.each{key,value->
             Relation relation = relations.get(key);
             if(relation)
             {
-                if(relation.isOneToOne())
-                {
-                    RelationMethodUtils.checkInstanceOf(relation, value);
-                    RelationMethodUtils.setOneToOne(domainObject, relation, value);
-
-                }
-                else if(relation.isManyToOne())
-                {
-                    if(value)
+                value = getItemsWillBeAdded(domainObject[relation.name], value);
+                if(value.size() >0){
+                     def relatedClass = relation.otherSideCls;
+                     def storage = relatedInstances[relatedClass];
+                     if(!storage)
+                     {
+                        storage = [];
+                        relatedInstances[relatedClass] = storage;
+                     }
+                    if(relation.type == Relation.ONE_TO_ONE)
                     {
-                        def relationToBeAdded = [:]
-                        relationToBeAdded[relation.otherSideName] = domainObject;
-                        value.addRelation(relationToBeAdded, flush);
-                    }
-                }
-                else if(relation.isOneToMany())
-                {
-                    if(value instanceof Collection)
-                    {
-                        for(childDomain in value)
+                        def oldValue = domainObject[relation.name];
+                        if(oldValue)
                         {
-                            RelationMethodUtils.checkInstanceOf(relation, childDomain);
-                            childDomain.setProperty(relation.otherSideName, domainObject);
-                            childDomain.save();
-                            domainObject."addTo${relation.upperCasedName}"(childDomain)
+                            oldValue[relation.otherSideName] = null;
+                            storage.add(oldValue);
                         }
+                        domainObject[relation.name] = value[0];
+                        value[0][relation.otherSideName] = domainObject;
+                    }
+                    else if(relation.type == Relation.ONE_TO_MANY)
+                    {
+                        domainObject[relation.name] += value;
+                        value.each
+                        {
+                            if(it[relation.otherSideName])
+                            {
+                                def relationToBeRemoved =[:]
+                                relationToBeRemoved[relation.otherSideName] = it[relation.otherSideName];
+                                it.removeRelation(relationToBeRemoved);
+                            }
+                            it[relation.otherSideName] = domainObject;
+                        }
+                    }
+                    else if(relation.type == Relation.MANY_TO_ONE)
+                    {
+                        if(domainObject[relation.name])
+                        {
+                            def relationToBeRemoved =[:]
+                            relationToBeRemoved[relation.name] = domainObject[relation.name];
+                            domainObject.removeRelation(relationToBeRemoved);
+                        }
+                        domainObject[relation.name] = value[0];
+                        value[0][relation.otherSideName] += domainObject;
                     }
                     else
                     {
-                        RelationMethodUtils.checkInstanceOf(relation, value);
-                        value.setProperty(relation.otherSideName, domainObject);
-                        value.save();
-                        domainObject."addTo${relation.upperCasedName}"(value)
-                    }
-                }
-                else
-                {
-                    if(value instanceof Collection)
-                    {
-                        for(childDomain in value)
+                        domainObject[relation.name] += value;
+                        value.each
                         {
-                            RelationMethodUtils.checkInstanceOf(relation, childDomain);
-                            domainObject."addTo${relation.upperCasedName}"(childDomain);
-                            childDomain."addTo${relation.upperCasedOtherSideName}"(domainObject);
+                            it[relation.otherSideName] += domainObject;
                         }
                     }
-                    else
-                    {
-                        RelationMethodUtils.checkInstanceOf(relation, value);
-                        domainObject."addTo${relation.upperCasedName}"(value);
-                        value."addTo${relation.upperCasedOtherSideName}"(domainObject);
-                    }
+                    storage.addAll(value);
                 }
             }
         }
-        def res = domainObject.save(flush:flush);
-        if(!res)
+        if(relatedInstances.size() > 0)
         {
-            return domainObject;
+            CompassMethodInvoker.index (mc, domainObject);
         }
-        else
-        {
-            return res;
+        relatedInstances.each{instanceClass, instances->
+            CompassMethodInvoker.index (instanceClass.metaClass, instances);
         }
+
+        return domainObject;
     }
 
 }

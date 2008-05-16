@@ -87,7 +87,7 @@ class SearchableConfiguration {
      *
      * If false, you must manage the index manually using index/indexAll/unindex/unindexAll/reindex/renindexAll
      */
-    boolean mirrorChanges = true
+    boolean mirrorChanges = false
 
     /**
      * Should the database be indexed at startup (using Compass:GPS)?
@@ -100,5 +100,5 @@ class SearchableConfiguration {
      * If you use BootStrap.groovy to insert your data then you should use "true",
      * which means do a non-forking, otherwise "fork" is recommended
      */
-    def bulkIndexOnStartup = true
+    def bulkIndexOnStartup = false
 }

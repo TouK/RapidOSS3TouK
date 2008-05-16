@@ -2,6 +2,7 @@ package com.ifountain.rcmdb.domain.method
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import com.ifountain.rcmdb.domain.IdGenerator
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -30,45 +31,29 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 class UpdateMethod extends AbstractRapidDomainMethod{
 
     def relations;
-    public UpdateMethod(MetaClass mc, GrailsDomainClass domainClass) {
-        super(mc, domainClass); //To change body of overridden methods use File | Settings | File Templates.
-        relations = DomainClassUtils.getRelations(domainClass);
+    def keys;
+    public UpdateMethod(MetaClass mc, Map relations, List keys) {
+        super(mc); //To change body of overridden methods use File | Settings | File Templates.
+        this.relations = relations;
+        this.keys = keys;
     }
 
     public Object invoke(Object domainObject, Object[] arguments) {
         def props = arguments[0];
-        def flush = arguments[1];
         def relationMap = [:]
         props.each{key,value->
-            def metaProp = mc.getMetaProperty(key);
-            if(metaProp)
+            if(!relations.containsKey(key))
             {
-                if(!relations.containsKey(key))
-                {
-                    domainObject.setProperty (key, DomainClassUtils.getPropertyRealValue(metaProp.type, value));
-                }
-                else
-                {
-                    def relationsToBeRemoved = [:];
-                    relationsToBeRemoved[key] = domainObject[key];
-                    domainObject.removeRelation(relationsToBeRemoved, false);
-                    if(value)
-                    {
-                        relationMap[key] = value;
-                    }
-                }
+                domainObject.setProperty (key, value);
+            }
+            else
+            {
+                relationMap[key] = value;
             }
         }
-        domainObject.addRelation(relationMap, false);
-        def res = domainObject.save(flush:flush);
-        if(!res)
-        {
-            return domainObject;
-        }
-        else
-        {
-            return res;
-        }
+        domainObject.index(domainObject);
+        domainObject.removeRelation(relationMap);
+        return domainObject;
     }
 
 

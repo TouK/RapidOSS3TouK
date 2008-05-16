@@ -2,6 +2,9 @@ package com.ifountain.rcmdb.domain.util
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import org.springframework.validation.Errors
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.ObjectError
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -40,14 +43,50 @@ class DomainClassUtils
         def hasMany = getStaticVariable(dc, "hasMany");
         def mappedBy = getStaticVariable(dc, "mappedBy");
         mappedBy.each{relationName, otherSideName->
+            def cardinalityIsMany = true;
             def otherSideClass = hasMany[relationName];
             if(!otherSideClass)
             {
                 otherSideClass = dc.getPropertyByName (relationName).getType();
+                cardinalityIsMany = true;
             }
-            allRelations[relationName] = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass);
+
+            def otherSideHasMany = getStaticVariable(dc, "hasMany");
+            def otherSideCardinalityIsMany = otherSideHasMany[otherSideName]?true:false;
+            def relType;
+            if(otherSideCardinalityIsMany && cardinalityIsMany)
+            {
+                relType = Relation.MANY_TO_MANY
+            }
+            else if(!otherSideCardinalityIsMany && cardinalityIsMany)
+            {
+                relType = Relation.ONE_TO_MANY
+            }
+            else if(otherSideCardinalityIsMany && !cardinalityIsMany)
+            {
+                relType = Relation.MANY_TO_ONE
+            }
+            else
+            {
+                relType = Relation.ONE_TO_ONE;                
+            }
+            allRelations[relationName] = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
         }
         return allRelations;
+    }
+
+    def static getKeys(GrailsDomainClass dc)
+    {
+        def keys = [];
+        DatasourceConfigurationCache datasourceMetaData = new DatasourceConfigurationCache(dc)
+        if(datasourceMetaData.masterName)
+        {
+            def masterDsKeyMetaData = datasourceMetaData.datasources[datasourceMetaData.masterName].keys;
+            masterDsKeyMetaData.each{keyName, keyProps->
+                keys += keyName;
+            }
+        }
+        return keys;
     }
 
     def static getStaticVariable(GrailsDomainClass dc, String variableName)
@@ -85,5 +124,15 @@ class DomainClassUtils
         {
             return value;
         }
+    }
+
+
+    public static void addErrorsOnInstance(Object target, ObjectError objectError) {
+        BeanPropertyBindingResult errors = target.errors; 
+        if(!errors){
+            errors = new BeanPropertyBindingResult(target, target.getClass().getName());
+            target.metaClass.setProperty(target, "errors", errors);    
+        }
+        errors.addError(objectError);
     }
 }

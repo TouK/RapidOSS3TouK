@@ -30,7 +30,7 @@ import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringIn
 class AsMapMethod extends AbstractRapidDomainMethod{
     def allProperties = [];
     public AsMapMethod(MetaClass mc, GrailsDomainClass domainClass) {
-        super(mc, domainClass); //To change body of overridden methods use File | Settings | File Templates.
+        super(mc); //To change body of overridden methods use File | Settings | File Templates.
          def excludedProps = ['version',
                                      'id',
                                        Events.ONLOAD_EVENT,

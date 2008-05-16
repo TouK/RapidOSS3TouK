@@ -33,36 +33,18 @@ class Relation
     String otherSideName;
     String upperCasedName;
     String upperCasedOtherSideName;
-    Class otherSideClass;
-
+    Class otherSideCls;
+    Class cls;
     int type;
-    public Relation(String name, String otherSideName, Class cls, Class otherClass)
+    public Relation(String name, String otherSideName, Class cls, Class otherClass, int relType)
     {
         this.name = name;
         this.otherSideName = otherSideName;
-        this.otherSideClass = otherClass;
+        this.otherSideCls = otherClass;
+        this.cls = cls;
         this.upperCasedName = DomainClassUtils.getUppercasedPropertyName(name);
         this.upperCasedOtherSideName = DomainClassUtils.getUppercasedPropertyName(otherSideName);
-        def relationPropClass = cls.metaClass.getMetaProperty(name).getType();
-        def otherSidePropClass = otherClass.metaClass.getMetaProperty(otherSideName).getType();
-        def isSelfCollection = Collection.isAssignableFrom(relationPropClass);
-        def isOtherCollection = Collection.isAssignableFrom(otherSidePropClass);
-        if(isSelfCollection && isOtherCollection)
-        {
-            this.type = MANY_TO_MANY;
-        }
-        else if(isSelfCollection && !isOtherCollection)
-        {
-            this.type = ONE_TO_MANY;
-        }
-        else if(!isSelfCollection && isOtherCollection)
-        {
-            this.type = MANY_TO_ONE;
-        }
-        else
-        {
-            this.type = ONE_TO_ONE;
-        }
+        this.type = relType;
     }
 
 

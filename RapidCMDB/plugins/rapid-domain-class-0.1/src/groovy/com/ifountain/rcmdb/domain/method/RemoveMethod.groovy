@@ -1,9 +1,5 @@
 package com.ifountain.rcmdb.domain.method
 
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import com.ifountain.rcmdb.domain.util.Relation
-import com.ifountain.rcmdb.domain.util.DomainClassUtils
-
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -30,21 +26,12 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
  */
 class RemoveMethod extends AbstractRapidDomainMethod{
 
-    def relations;
-    public RemoveMethod(MetaClass mc, GrailsDomainClass domainClass) {
-        super(mc, domainClass);
-        relations = DomainClassUtils.getRelations(domainClass);
-
+    public RemoveMethod(MetaClass mc) {
+        super(mc);
     }
 
     public Object invoke(Object domainObject, Object[] arguments) {
-        def flush = arguments[0];
-        def relationsToBeRemoved = [:];
-        relations.each{relationName, Relation relation->
-            relationsToBeRemoved[relationName] = domainObject[relationName];
-        }
-        domainObject.removeRelation(relationsToBeRemoved, false);
-        return domainObject.delete("flush":flush);
+        CompassMethodInvoker.unindex(mc, domainObject);
     }
 
 }

@@ -79,7 +79,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
             /**
              * searchTop: Returns the top (most relevant) instance of this class matching the given query
              */
-            grailsDomainClass.metaClass.'static'.searchTop << { Object[] args ->
+            grailsDomainClass.metaClass.'static'.searchEvery << { Object[] args ->
                 searchableMethodFactory.getMethod(delegate, "searchTop").invoke(*args)
             }
 

@@ -1,9 +1,5 @@
 package com.ifountain.rcmdb.domain.method
 
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import com.ifountain.rcmdb.domain.util.DatasourceConfigurationCache
-import com.ifountain.rcmdb.domain.util.DomainClassUtils
-
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -29,55 +25,28 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
  * To change this template use File | Settings | File Templates.
  */
 class GetMethod extends AbstractRapidDomainStaticMethod{
-
-    def datasourceMetaData;
-    def getMethodName;
-    def getMethodParams;
-    public GetMethod(MetaClass mc, GrailsDomainClass domainClass) {
-        super(mc, domainClass); //To change body of overridden methods use File | Settings | File Templates.
-        datasourceMetaData = new DatasourceConfigurationCache(domainClass)
-        if(datasourceMetaData.masterName)
-        {
-            getMethodParams = [];
-            getMethodName = "findBy"
-            def masterDsKeyMetaData = datasourceMetaData.datasources[datasourceMetaData.masterName].keys;
-            int keyCount = 0;
-            masterDsKeyMetaData.each{keyName, keyProps->
-                if(keyCount == masterDsKeyMetaData.size() -1)
-                {
-                    getMethodName += DomainClassUtils.getUppercasedPropertyName(keyName);
-                }
-                else
-                {
-                    getMethodName += DomainClassUtils.getUppercasedPropertyName(keyName) + "And";
-                }
-                keyCount++;
-                getMethodParams += keyName;
-            }
-        }
-        else
-        {
-            getMethodName = "find";
-        }
+    List keys;
+    public GetMethod(MetaClass mc, List keys) {
+        super(mc); //To change body of overridden methods use File | Settings | File Templates.
+        this.keys = keys;
     }
 
     public Object invoke(Class clazz, Object[] arguments) {
         def searchParams = arguments[0];
-        if(datasourceMetaData.masterName)
+        if(searchParams instanceof Map)
         {
-            def params = [];
-            getMethodParams.each{key->
-                params += searchParams[key];
+            Map keyMap = [:];
+            keys.each{
+                keyMap[it] = searchParams[it];
             }
-            return mc.invokeStaticMethod(clazz, getMethodName, params as Object[])
+            def result = CompassMethodInvoker.search (mc, keyMap)
+            return result.results[0];
         }
-        else
+        else if(searchParams instanceof String || searchParams  instanceof GString)
         {
-            def sampleBean = mc.getTheClass().newInstance();
-            searchParams.each{key,value->
-                sampleBean.setProperty (key, value);
-            }
-            return mc.invokeStaticMethod(clazz, getMethodName, sampleBean)
+            searchParams = searchParams.toString();
+            def result = CompassMethodInvoker.search (mc, searchParams)
+            return result;
         }
     }
 

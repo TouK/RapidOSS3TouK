@@ -12,9 +12,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 */
 abstract class AbstractRapidDomainStaticMethod extends AbstractStaticMethodInvocation{
     MetaClass mc;
-    GrailsDomainClass domainClass;
-    public AbstractRapidDomainStaticMethod(MetaClass mc, GrailsDomainClass domainClass) {
-        this.domainClass = domainClass;
+    public AbstractRapidDomainStaticMethod(MetaClass mc) {
         this.mc = mc;
     }
 
@@ -22,4 +20,5 @@ abstract class AbstractRapidDomainStaticMethod extends AbstractStaticMethodInvoc
         return invoke(clazz, arguments); //To change body of implemented methods use File | Settings | File Templates.
     }
     abstract Object invoke(Class clazz, Object[] arguments);
+    
 }

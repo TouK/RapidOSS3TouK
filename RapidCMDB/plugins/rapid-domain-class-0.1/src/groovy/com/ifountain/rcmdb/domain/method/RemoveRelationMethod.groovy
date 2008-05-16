@@ -32,83 +32,109 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 class RemoveRelationMethod extends AbstractRapidDomainMethod{
 
     def relations;
-    public RemoveRelationMethod(MetaClass mc, GrailsDomainClass domainClass) {
-        super(mc, domainClass);
-        relations = DomainClassUtils.getRelations(domainClass);
-
+    public RemoveRelationMethod(MetaClass mc, Map relations) {
+        super(mc);
+        this.relations = relations;
     }
 
     public Object invoke(Object domainObject, Object[] arguments) {
         def props = arguments[0];
-        def flush = arguments[1];
+        def changedInstances = [:]
         props.each{key,value->
-            if(value)
+            Relation relation = relations.get(key);
+            def storage = [];
+            if(relation)
             {
-                Relation relation = relations.get(key);
-                if(relation)
+                if(relation.isOneToOne())
                 {
-                    if(relation.isOneToOne())
+                    if(value instanceof Collection)
                     {
-                        RelationMethodUtils.checkInstanceOf(relation, value);
-                        RelationMethodUtils.setOneToOne(domainObject, relation, null);
+                        value = value[0];
                     }
-                    else if(relation.isManyToOne())
+                    if(domainObject[relation.name].id == value.id)
                     {
+                        storage+= value;
+                        domainObject[relation.name] = null;
+                        value[relation.otherSideName] = null;
+                    }
+                }
+                else if(relation.isManyToOne())
+                {
+                    if(value instanceof Collection)
+                    {
+                        value = value[0];
+                    }
+                    if(domainObject[relation.name].id == value.id)
+                    {
+                        storage+= value;
                         domainObject.setProperty(relation.name, null);
-                        value."removeFrom${relation.upperCasedOtherSideName}"(domainObject);
-                    }
-                    else if(relation.isOneToMany())
-                    {
-                        if(value instanceof Collection)
+                        def otherSideRelatedClasses = value[relation.otherSideName];
+                        for(int i=0; i < otherSideRelatedClasses.size(); i++)
                         {
-                            def childDomains = new ArrayList(value);
-
-                            for(childDomain in childDomains)
+                            if(otherSideRelatedClasses[i].id == domainObject.id)
                             {
-                                RelationMethodUtils.checkInstanceOf(relation, childDomain);
-                                childDomain.setProperty(relation.otherSideName, null);
-                                childDomain.save();
-                                domainObject."removeFrom${relation.upperCasedName}"(childDomain);
+                                otherSideRelatedClasses.remove(i);
+                                break;
                             }
                         }
-                        else
+                    }
+                }
+                else if(relation.isOneToMany())
+                {
+                    def relatedObjects = [:];
+                    domainObject[relation.name].each{
+                        relatedObjects[it.id] = it;
+                    }
+                    value.each
+                    {
+                        storage += it;
+                        relatedObjects.remove(it.id);
+                        it[relation.otherSideName] = null;
+                    }
+                    domainObject[relation.name] = new ArrayList(relatedObjects.values());
+                }
+                else
+                {
+                    def relatedObjects = [:];
+                    domainObject[relation.name].each{
+                        relatedObjects[it.id] = it;
+                    }
+                    value.each{relatedClassToBeRemoved->
+                        relatedObjects.remove(relatedClassToBeRemoved.id);
+                        storage += relatedClassToBeRemoved;
+                        def otherClassRelations = relatedClassToBeRemoved[relation.otherSideName];
+                        for(int i=0; i < otherClassRelations.size(); i++)
                         {
-                            RelationMethodUtils.checkInstanceOf(relation, value);
-                            value.setProperty(relation.otherSideName, null);
-                            value.save();
-                            domainObject."removeFrom${relation.upperCasedName}"(value);
+                            if(otherClassRelations[i].id == domainObject.id)
+                            {
+                                otherClassRelations.remove(i);
+                                break;
+                            }
                         }
+                    }
+                    domainObject[relation.name] = new ArrayList(relatedObjects.values());
+                }
+                if(storage.size() > 0)
+                {
+                    def oldStorage = changedInstances[relation.otherSideCls]
+                    if(!oldStorage)
+                    {
+                        changedInstances[relation.otherSideCls] = storage;
                     }
                     else
                     {
-                        if(value instanceof Collection)
-                        {
-                            def childDomains = new ArrayList(value);
-                            for(childDomain in childDomains)
-                            {
-                                RelationMethodUtils.checkInstanceOf(relation, childDomain);
-                                domainObject."removeFrom${relation.upperCasedName}"(childDomain);
-                                childDomain."removeFrom${relation.upperCasedOtherSideName}"(domainObject);
-                            }
-                        }
-                        else
-                        {
-                            RelationMethodUtils.checkInstanceOf(relation, value);
-                            domainObject."removeFrom${relation.upperCasedName}"(value);
-                            value."removeFrom${relation.upperCasedOtherSideName}"(domainObject);
-                        }
+                        oldStorage.addAll(storage);
                     }
                 }
             }
         }
-        def res = domainObject.save(flush:flush);
-        if(!res)
+
+        if(changedInstances.size() > 0)
         {
-            return domainObject;
+            CompassMethodInvoker.index (mc, domainObject);
         }
-        else
-        {
-            return res;
+        changedInstances.each{instanceClass, instances->
+            CompassMethodInvoker.index (instanceClass.metaClass, instances);
         }
     }
 }

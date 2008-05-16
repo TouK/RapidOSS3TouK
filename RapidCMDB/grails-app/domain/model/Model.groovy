@@ -20,8 +20,8 @@ class Model {
             if(!(firstChar >= 65 && firstChar <= 90)){
                 return ['model.name.lowercased'];
             }
-            def invalidNames = ConfigurationHolder.config.getProperty ("rapidcmdb.invalid.names");
-            if(invalidNames.contains(name.toLowerCase()))
+            def invalidNames = ConfigurationHolder.config.flatten().get("rapidcmdb.invalid.names")
+            if(invalidNames.contains(val.toLowerCase()))
             {
                 return ['model.name.invalid'];                
             }

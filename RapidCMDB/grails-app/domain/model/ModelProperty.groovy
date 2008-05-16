@@ -1,4 +1,6 @@
-package model;
+package model
+
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 class ModelProperty {
     def static final String stringType = "string";
     def static final String numberType = "number";
@@ -21,8 +23,8 @@ class ModelProperty {
             if(!(firstChar >= 'a' && firstChar <= 'z')){
                 return ['modelproperty.name.uppercased', obj.model.name];
             }
-            def invalidNames = ConfigurationHolder.config.getProperty ("rapidcmdb.invalid.names");
-            if(invalidNames.contains(name.toLowerCase()))
+            def invalidNames = ConfigurationHolder.config.flatten().get("rapidcmdb.invalid.names")
+            if(invalidNames.contains(val.toLowerCase()))
             {
                 return ['modelproperty.name.invalid'];
             }

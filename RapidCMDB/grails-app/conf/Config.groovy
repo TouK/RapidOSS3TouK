@@ -32,7 +32,12 @@ rapidcmdb.invalid.names=[];
 def invalidNameFile = new File("invalidNames.txt" );
 if(invalidNameFile.exists())
 {
-    rapidcmdb.invalid.names= invalidNameFile.readLines();
+    def invalidNames = invalidNameFile.readLines();
+    def trimmedInvalidNames = [];
+    invalidNames.each{
+        trimmedInvalidNames += it.trim();
+    }
+    rapidcmdb.invalid.names = trimmedInvalidNames;
 }
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true

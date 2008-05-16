@@ -1,4 +1,6 @@
-package model;
+package model
+
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 class ModelRelation {
      public static String ONE = "One";
      public static String MANY = "Many";
@@ -17,8 +19,8 @@ class ModelRelation {
             if(!(firstChar >= 'a' && firstChar <= 'z')){
                 return ['modelrelation.name.uppercased'];
             }
-            def invalidNames = ConfigurationHolder.config.getProperty ("rapidcmdb.invalid.names");
-            if(invalidNames.contains(firstName.toLowerCase()))
+            def invalidNames = ConfigurationHolder.config.flatten().get("rapidcmdb.invalid.names")
+            if(invalidNames.contains(val.toLowerCase()))
             {
                 return ['modelrelation.name.invalid'];
             }
@@ -28,8 +30,8 @@ class ModelRelation {
             if(!(firstChar >= 'a' && firstChar <= 'z')){
                 return ['modelrelation.name.uppercased'];
             }
-            def invalidNames = ConfigurationHolder.config.getProperty ("rapidcmdb.invalid.names");
-            if(invalidNames.contains(secondName.toLowerCase()))
+            def invalidNames = ConfigurationHolder.config.flatten().get("rapidcmdb.invalid.names")
+            if(invalidNames.contains(val.toLowerCase()))
             {
                 return ['modelrelation.name.invalid'];
             }

@@ -19,7 +19,7 @@ import org.codehaus.groovy.grails.compiler.injection.ClassInjector
 * To change this template use File | Settings | File Templates.
 */
 class ModelUtilsTest extends GroovyTestCase{
-    def static base_directory = "../testoutput/";
+   /* def static base_directory = "../testoutput/";
     def  modelRelations;
     def  reverseModelRelations;
     def  childModels;
@@ -181,7 +181,7 @@ class ModelUtilsTest extends GroovyTestCase{
         assertFalse (new File("${base_directory}/grails-app/views/${model.name}/show.groovy").exists());
         assertFalse (new File("${base_directory}/grails-app/views/${model.name}/addTo.groovy").exists());
         assertFalse (new File("${base_directory}/operations/${model.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
-    }
+    }   */
 
 
 }

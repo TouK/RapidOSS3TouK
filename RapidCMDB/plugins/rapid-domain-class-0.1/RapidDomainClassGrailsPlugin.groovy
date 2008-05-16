@@ -38,10 +38,7 @@ class RapidDomainClassGrailsPlugin {
         domainClassMap = [:];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
-            if(isSearchable(mc))
-            {
-                domainClassMap[mc.getTheClass().name] = mc.getTheClass().name
-            }
+            domainClassMap[mc.getTheClass().name] = mc.getTheClass().name
         }
         def domainClassesToBeCreated = [];
         for (dc in application.domainClasses) {

@@ -48,7 +48,7 @@ class DomainClassUtils
             if(!otherSideClass)
             {
                 otherSideClass = dc.getPropertyByName (relationName).getType();
-                cardinalityIsMany = true;
+                cardinalityIsMany = false;
             }
 
             def otherSideHasMany = getStaticVariable(domainClasses[otherSideClass.name], "hasMany");

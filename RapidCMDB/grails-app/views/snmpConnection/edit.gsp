@@ -42,7 +42,7 @@
                                     <label for="host">Host:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:snmpConnection,field:'host','errors')}">
-                                    <input type="text" class="inputtextfieldl" id="host" name="host" value="${fieldValue(bean:snmpConnection,field:'host')}"/>
+                                    <input type="text" class="inputtextfield" id="host" name="host" value="${fieldValue(bean:snmpConnection,field:'host')}"/>
                                 </td>
                             </tr> 
                         

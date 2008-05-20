@@ -3,6 +3,7 @@ package scripting
 import script.ScriptController
 import script.CmdbScript
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
+import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 
 /**
@@ -14,32 +15,33 @@ import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 */
 class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     String expectedScriptMessage;
-    def scriptingService;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         expectedScriptMessage = "script successfully executed";
+        ScriptManager.getInstance().initialize();
     }
 
     public void tearDown() {
+        ScriptManager.getInstance().destroy();
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
 
 
     def createSimpleScript(scriptName)
     {
-        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptingService.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
         scriptFile.write ("""return "$expectedScriptMessage" """);
     }
 
     def createErrornousScript(scriptName)
     {
-        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptingService.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
         scriptFile.write ("return \"$expectedScriptMessage");
     }
 
     def deleteSimpleScript(scriptName)
     {
-        new File("${System.getProperty("base.dir")}/$ScriptingService.SCRIPT_DIRECTORY/${scriptName}.groovy").delete();
+        new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy").delete();
 
     }
 
@@ -51,7 +53,6 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         {
             def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.scriptingService = scriptingService;
             scriptController.params["name"] = script.name;
             scriptController.save();
 
@@ -72,7 +73,6 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         {
             def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.scriptingService = scriptingService;
             scriptController.params["name"] = script.name;
             scriptController.save();
 
@@ -94,7 +94,6 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         {
             def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.scriptingService = scriptingService;
             scriptController.params["name"] = script.name;
             scriptController.save();
 
@@ -130,7 +129,6 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         {
             def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.scriptingService = scriptingService;
             scriptController.params["id"] = script.name;
             scriptController.reload();
             assertEquals(ScriptController.SCRIPT_DOESNOT_EXIST, scriptController.flash.message);
@@ -149,7 +147,6 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         {
             def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.scriptingService = scriptingService;
             scriptController.params["name"] = script.name;
             scriptController.save();
 
@@ -180,7 +177,6 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         {
             def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.scriptingService = scriptingService;
             scriptController.params["id"] = script.name;
             scriptController.run();
             assertEquals(ScriptController.SCRIPT_DOESNOT_EXIST, scriptController.flash.message);
@@ -195,13 +191,12 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     public void testRunWithReturningNothing()
     {
         String scriptName = "script1"
-        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptingService.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
         scriptFile.write ("return null");
         try
         {
             def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.scriptingService = scriptingService;
             scriptController.params["id"] = script.name;
             scriptController.run();
             assertEquals("", scriptController.response.contentAsString);
@@ -216,13 +211,12 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     {
         def exceptionMessage = "Error occurred";
         String scriptName = "script1"
-        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptingService.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
         scriptFile.write ("throw new Exception(\"$exceptionMessage\")");
         try
         {
             def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.scriptingService = scriptingService;
             scriptController.params["name"] = script.name;
             scriptController.save();
 

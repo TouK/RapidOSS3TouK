@@ -2,6 +2,7 @@ package scripting
 
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import script.CmdbScript
+import com.ifountain.rcmdb.scripting.ScriptManager
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,10 +17,12 @@ class ScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         expectedScriptMessage = "script successfully executed";
+        ScriptManager.getInstance().initialize();
     }
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        ScriptManager.getInstance().destroy();
         deleteSimpleScript(scriptName);
     }
     public void testValidatesScriptBeforeAdd()
@@ -46,19 +49,19 @@ class ScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
 
     def createSimpleScript(scriptName)
     {
-        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptingService.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
         scriptFile.write ("""return "$expectedScriptMessage" """);
     }
 
     def createErrornousScript(scriptName)
     {
-        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptingService.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
         scriptFile.write ("return \"$expectedScriptMessage");
     }
 
     def deleteSimpleScript(scriptName)
     {
-        new File("${System.getProperty("base.dir")}/$ScriptingService.SCRIPT_DIRECTORY/${scriptName}.groovy").delete();
+        new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy").delete();
 
     }
 

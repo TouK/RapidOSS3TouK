@@ -1,14 +1,14 @@
 package script;
 import com.ifountain.rcmdb.exception.scripting.ScriptingException
+import com.ifountain.rcmdb.scripting.ScriptManager
+
 class CmdbScript {
     String name;
-    def scriptingService;
-    static transients = ["scriptingService"];
     static constraints = {
         name(blank:false, unique:true, validator:{val, obj ->
             try
             {
-                obj.scriptingService.checkScript(obj.name);
+                ScriptManager.getInstance().checkScript(obj.name);
             }
             catch(Throwable t)
             {
@@ -19,7 +19,7 @@ class CmdbScript {
 
     def reload() throws ScriptingException
     {
-        scriptingService.reloadScript(name);
+        ScriptManager.getInstance().reloadScript(name);
     }
 
     String toString()

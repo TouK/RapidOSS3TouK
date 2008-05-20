@@ -2,6 +2,7 @@ package com.ifountain.rcmdb.snmp
 
 import com.ifountain.snmp.datasource.SnmpTrapProcessor
 import org.apache.log4j.Logger
+import com.ifountain.rcmdb.scripting.ScriptManager
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -28,21 +29,18 @@ import org.apache.log4j.Logger
  */
 class ScriptTrapProcessor implements SnmpTrapProcessor{
     def scriptName;
-    def scriptingService;
     Logger logger;
-    public ScriptTrapProcessor(scriptName, scriptingService, logger){
+    public ScriptTrapProcessor(scriptName, logger){
         this.scriptName = scriptName;
-        this.scriptingService = scriptingService;
         this.logger = logger;
     }
     public void processTrap(Map trap) {
          try{
             def bindings = ["rsTrap":trap];
-            def result = scriptingService.runScript(scriptName,  bindings);
+            def result = ScriptManager.getInstance().runScript(scriptName,  bindings);
          }
          catch(t){
-            logger.warn("Exception during executing script " + scriptName + " with Snmp Trap " + trap + ". Reason: " + t.toString()) 
+            logger.warn("Exception during executing script " + scriptName + " with Snmp Trap " + trap + ". Reason: " + t.toString())
          }
-
     }
 }

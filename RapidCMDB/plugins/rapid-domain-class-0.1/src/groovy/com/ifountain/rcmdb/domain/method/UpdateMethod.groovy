@@ -52,7 +52,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
             }
         }
         domainObject.index(domainObject);
-        domainObject.removeRelation(relationMap);
+        domainObject.addRelation(relationMap);
         return domainObject;
     }
 

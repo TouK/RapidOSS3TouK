@@ -29,12 +29,16 @@ class CompassMethodInvoker {
 
     public static Object search(MetaClass mc, Map keys)
     {
-        def queryClosure = {
-            for(key in keys){
-                must(term(key.key, key.value))
-            }
+        def queryBuffer = new StringBuffer("");
+        for(key in keys){
+            queryBuffer.append(key.key).append(":").append(key.value).append(" AND ");
         }
-        return mc.invokeStaticMethod(mc.theClass, "search", [queryClosure] as Object[]);
+        String query = queryBuffer.toString();
+        if(keys.size() > 0)
+        {
+            query = query.substring(0, query.length() - 5);
+        }
+        return search(mc, query);
     }
 
     public static Object search(MetaClass mc, String query)

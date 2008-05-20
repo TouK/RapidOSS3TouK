@@ -34,6 +34,7 @@ class RemoveRelationMethodTest extends RapidCmdbTestCase{
         RelationMethodDomainObject2 expectedDomainObject5 = new RelationMethodDomainObject2(id:5);
         RelationMethodDomainObject2 expectedDomainObject6 = new RelationMethodDomainObject2(id:6);
         RelationMethodDomainObject2 expectedDomainObject7 = new RelationMethodDomainObject2(id:7);
+        RelationMethodDomainObject2 notRelatedObject = new RelationMethodDomainObject2(id:19);
         RelationMethodDomainObject1 anotherDomainObjectForManyToOneRelation = new RelationMethodDomainObject1(id:8);
         expectedDomainObject5.revRel3 += anotherDomainObjectForManyToOneRelation;
 
@@ -80,6 +81,38 @@ class RemoveRelationMethodTest extends RapidCmdbTestCase{
         assertFalse(RelationMethodDomainObject2.indexList[0].contains(expectedDomainObject1));
         assertFalse (RelationMethodDomainObject2.indexList[0].contains(expectedDomainObject4));
         assertFalse (RelationMethodDomainObject2.indexList[0].contains(expectedDomainObject6));
+
+
+        RelationMethodDomainObject1.indexList = [];
+        RelationMethodDomainObject2.indexList = [];
+        
+        props = [rel1:[notRelatedObject], rel2:[notRelatedObject], rel3:[notRelatedObject], rel4:[notRelatedObject]];
+        remove.invoke (expectedDomainObject1, [props] as Object[]);
+
+
+        assertNull (expectedDomainObject1.rel1);
+        assertNull (expectedDomainObject2.revRel1);
+
+        assertEquals (1, expectedDomainObject1.rel2.size());
+        assertTrue (expectedDomainObject1.rel2.contains(expectedDomainObject4));
+        assertNull (expectedDomainObject3.revRel2);
+
+        assertNull (expectedDomainObject1.rel3);
+        assertEquals (1, expectedDomainObject5.revRel3.size());
+        assertFalse (expectedDomainObject5.revRel3.contains(expectedDomainObject1));
+        assertTrue (expectedDomainObject5.revRel3.contains(anotherDomainObjectForManyToOneRelation));
+
+        assertEquals (1, expectedDomainObject1.rel4.size());
+        assertTrue (expectedDomainObject1.rel4.contains(expectedDomainObject6));
+        assertFalse (expectedDomainObject1.rel4.contains(expectedDomainObject7));
+        assertEquals (0, expectedDomainObject7.revRel4.size());
+
+        assertEquals (1, RelationMethodDomainObject1.indexList.size());
+        assertTrue (RelationMethodDomainObject1.indexList[0].contains(expectedDomainObject1));
+        assertEquals (1, RelationMethodDomainObject2.indexList.size());
+        assertTrue (RelationMethodDomainObject2.indexList[0].contains(notRelatedObject));
+
+
 
     }
 

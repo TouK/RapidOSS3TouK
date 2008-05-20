@@ -12,7 +12,7 @@ class ${className}Controller {
     }
 
     def show = {
-        def ${propertyName} = ${className}.get( params.id )
+        def ${propertyName} = ${className}.get([id:params.id])
 
         if(!${propertyName}) {
             flash.message = "${className} not found with id \${params.id}"
@@ -40,10 +40,10 @@ class ${className}Controller {
     }
 
     def delete = {
-        def ${propertyName} = ${className}.get( params.id )
+        def ${propertyName} = ${className}.get( [id:params.id])
         if(${propertyName}) {
             try{
-                ${propertyName}.remove(true)
+                ${propertyName}.remove()
                 flash.message = "${className} \${params.id} deleted"
                 redirect(action:list)
             }
@@ -61,7 +61,7 @@ class ${className}Controller {
     }
 
     def edit = {
-        def ${propertyName} = ${className}.get( params.id )
+        def ${propertyName} = ${className}.get( [id:params.id] )
 
         if(!${propertyName}) {
             flash.message = "${className} not found with id \${params.id}"
@@ -107,10 +107,10 @@ class ${className}Controller {
         return returnedParams;
     }
     def update = {
-        def ${propertyName} = ${className}.get( params.id )
+        def ${propertyName} = ${className}.get( [id:params.id] )
         if(${propertyName}) {
             ${propertyName}.update(getClassProperties(params, ${className}));
-            if(!${propertyName}.hasErrors() && ${propertyName}.save()) {
+            if(!${propertyName}.hasErrors()) {
                 flash.message = "${className} \${params.id} updated"
                 redirect(action:show,id:${propertyName}.id)
             }
@@ -132,7 +132,7 @@ class ${className}Controller {
 
     def save = {
         def ${propertyName} = ${className}.add(getClassProperties(params, ${className}))
-        if(!${propertyName}.hasErrors() && ${propertyName}.save()) {
+        if(!${propertyName}.hasErrors()) {
             flash.message = "${className} \${${propertyName}.id} created"
             redirect(action:show,id:${propertyName}.id)
         }
@@ -142,7 +142,7 @@ class ${className}Controller {
     }
 
     def addTo = {
-        def ${propertyName} = ${className}.get( params.id )
+        def ${propertyName} = ${className}.get( [id:params.id] )
         if(!${propertyName}){
             flash.message = "${className} not found with id \${params.id}"
             redirect(action:list)
@@ -165,7 +165,7 @@ class ${className}Controller {
     }
 
     def addRelation = {
-        def ${propertyName} = ${className}.get( params.id )
+        def ${propertyName} = ${className}.get( [id:params.id] )
         if(!${propertyName}) {
             flash.message = "${className} not found with id \${params.id}"
             redirect(action:list)
@@ -202,7 +202,7 @@ class ${className}Controller {
     }
 
     def removeRelation = {
-        def ${propertyName} = ${className}.get( params.id )
+        def ${propertyName} = ${className}.get( [id:params.id] )
         if(!${propertyName}) {
             flash.message = "${className} not found with id \${params.id}"
             redirect(action:list)

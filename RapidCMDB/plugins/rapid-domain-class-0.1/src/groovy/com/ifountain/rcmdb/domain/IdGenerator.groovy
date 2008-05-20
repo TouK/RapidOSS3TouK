@@ -67,13 +67,9 @@ class IdGeneratorStrategyImpl implements IdGeneratorStrategy
             }
             nextId = objectId.nextId;
             numberOfRemainingIds = INCREMENT_AMOUNT;
-            return nextId;
         }
-        else
-        {
-            numberOfRemainingIds--;
-            return nextId++;
-        }
+        numberOfRemainingIds--;
+        return nextId++;
     }
 }
 

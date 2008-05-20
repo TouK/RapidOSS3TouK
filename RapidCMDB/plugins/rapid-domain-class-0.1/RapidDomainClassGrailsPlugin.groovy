@@ -17,6 +17,8 @@ import com.ifountain.rcmdb.domain.ModelUtils
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
+import com.ifountain.rcmdb.domain.method.CompassMethodInvoker
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
@@ -187,6 +189,18 @@ class RapidDomainClassGrailsPlugin {
         def getMethod = new GetMethod(mc, keys);
         mc.'static'.get = {Map searchParams->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])
+        }
+        mc.'static'.get = {Long searchParams->
+            return getMethod.invoke(mc.theClass, [searchParams] as Object[])
+        }
+
+
+        mc.'static'.list = {->
+            return CompassMethodInvoker.search(mc, "*").results;
+        }
+
+        mc.'static'.list = {Map options->
+            return CompassMethodInvoker.search(mc, "*", options).results;
         }
     }
     def registerDynamicMethods(dc, application, ctx)

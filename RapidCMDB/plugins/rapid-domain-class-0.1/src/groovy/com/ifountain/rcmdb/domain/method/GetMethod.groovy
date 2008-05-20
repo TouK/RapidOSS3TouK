@@ -36,8 +36,15 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
         if(searchParams instanceof Map)
         {
             Map keyMap = [:];
-            keys.each{
-                keyMap[it] = searchParams[it];
+            if(searchParams.containsKey("id"))
+            {
+                keyMap["id"] = searchParams["id"];    
+            }
+            else
+            {
+                keys.each{
+                    keyMap[it] = searchParams[it];
+                }
             }
             def result = CompassMethodInvoker.search (mc, keyMap)
             return result.results[0];
@@ -47,6 +54,12 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
             searchParams = searchParams.toString();
             def result = CompassMethodInvoker.search (mc, searchParams)
             return result;
+        }
+        else if(searchParams instanceof Number)
+        {
+            searchParams = "id:${searchParams}".toString();
+            def result = CompassMethodInvoker.search (mc, searchParams)
+            return result.results[0];
         }
     }
 

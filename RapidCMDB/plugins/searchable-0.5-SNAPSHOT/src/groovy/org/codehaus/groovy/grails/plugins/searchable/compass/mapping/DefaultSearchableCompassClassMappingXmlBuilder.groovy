@@ -72,8 +72,10 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                         }
                     }
                 }
-
-                id(name: "id") // TODO support other "id" properties?
+                // TODO support other "id" properties?
+                id(name: "id"){
+                    'meta-data'("id");
+                }
 
                 for (constantMetaData in description.constantMetaData) {
                     def metaData = new HashMap(constantMetaData) // clone to avoid corruption

@@ -27,33 +27,24 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
     public void testUpdateMethod()
     {
-        UpdateMethodDomainObjecty objectBeforeAdd = new UpdateMethodDomainObjecty(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
-        UpdateMethodDomainObjecty relatedObject = new UpdateMethodDomainObjecty(id:100);
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        AddMethodDomainObject1 relatedObject = new AddMethodDomainObject1(id:100);
 
-        def relations = ["rel1":new Relation("rel1", "revRel1", UpdateMethodDomainObjecty.class, UpdateMethodDomainObjecty.class, Relation.ONE_TO_ONE)];
-        AddMethod add = new AddMethod(UpdateMethodDomainObjecty.metaClass, relations, ["prop1"]);
+        def relations = ["rel1":new Relation("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE)];
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, relations, ["prop1"]);
         
         def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
 
-        def addedObject = add.invoke (UpdateMethodDomainObjecty.class, [props] as Object[]);
+        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals (objectBeforeAdd, addedObject);
 
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject];
-        UpdateMethod update = new UpdateMethod(UpdateMethodDomainObjecty.metaClass, relations, ["prop1"]);
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, relations, ["prop1"]);
         def updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
 
-        assertEquals(relatedObject, updatedObject.relationsToBeRemoved.get("rel1"));
-    }
-}
-
-class UpdateMethodDomainObjecty extends AddMethodDomainObject1
-{
-    def relationsToBeRemoved;
-    def removeRelation(Map relationsToBeRemoved)
-    {
-        this.relationsToBeRemoved = relationsToBeRemoved;
+        assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
     }
 }

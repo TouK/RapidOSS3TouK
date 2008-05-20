@@ -51,7 +51,7 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                     {
                         value = value[0];
                     }
-                    if(domainObject[relation.name].id == value.id)
+                    if(domainObject[relation.name] && domainObject[relation.name].id == value.id)
                     {
                         storage+= value;
                         domainObject[relation.name] = null;
@@ -64,7 +64,7 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                     {
                         value = value[0];
                     }
-                    if(domainObject[relation.name].id == value.id)
+                    if(domainObject[relation.name] && domainObject[relation.name].id == value.id)
                     {
                         storage+= value;
                         domainObject.setProperty(relation.name, null);

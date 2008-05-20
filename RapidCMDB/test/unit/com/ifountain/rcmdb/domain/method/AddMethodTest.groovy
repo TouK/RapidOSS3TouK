@@ -36,6 +36,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals (expectedDomainObject1, addedObject);
         assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
+        assertEquals("", AddMethodDomainObject1.query);
         def prevId = addedObject.id;
 
         AddMethodDomainObject1.indexList.clear();
@@ -89,7 +90,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         def objectId = addedObject.id;
         assertEquals (objectBeforeAdd, addedObject);
-        assertNotNull(AddMethodDomainObject1.query);
+        assertEquals("prop1:object1Prop1Value".toString(), AddMethodDomainObject1.query);
 
         AddMethodDomainObject1.searchResult = [total:1, results:[addedObject]];
 

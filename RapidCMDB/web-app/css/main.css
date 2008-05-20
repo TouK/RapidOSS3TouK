@@ -319,6 +319,10 @@ padding:0pt;
     background: transparent url(../images/skin/control_forward_blue.gif) 5px 50% no-repeat;
     padding-left: 28px;
 }
+.buttons input.close {
+    background: transparent url(../images/skin/stop.png) 5px 50% no-repeat;
+    padding-left: 28px;
+}
 .buttons input.generate {
     background: transparent url(../images/skin/generate.png) 5px 50% no-repeat;
     padding-left: 28px;

@@ -32,12 +32,12 @@ class SnmpDatasourceController {
         }
     }
 
-    def open = {
+    def start = {
         def snmpDatasource = SnmpDatasource.get( params.id )
         if(snmpDatasource) {
             try{
                 snmpDatasource.open()
-                flash.message = "SnmpDatasource ${params.id} opened"
+                flash.message = "SnmpDatasource ${params.id} started"
                 redirect(action:show, id:snmpDatasource.id)
             }
             catch(e){
@@ -53,11 +53,11 @@ class SnmpDatasourceController {
         }
     }
 
-    def close = {
+    def stop = {
          def snmpDatasource = SnmpDatasource.get( params.id )
         if(snmpDatasource) {
             snmpDatasource.close()
-            flash.message = "SnmpDatasource ${params.id} closed"
+            flash.message = "SnmpDatasource ${params.id} stopped"
             redirect(action:show, id:snmpDatasource.id)
         }
         else {

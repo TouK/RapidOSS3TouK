@@ -66,10 +66,10 @@
             <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
             <g:if test="${snmpDatasource?.isOpen()}">
-                <span class="button"><g:actionSubmit class="delete" value="Close" /></span>
+                <span class="button"><g:actionSubmit class="close" value="Stop" /></span>
             </g:if>
             <g:else>
-                <span class="button"><g:actionSubmit class="run" value="Open" /></span>
+                <span class="button"><g:actionSubmit class="run" value="Start" /></span>
             </g:else>
         </g:form>
     </div>

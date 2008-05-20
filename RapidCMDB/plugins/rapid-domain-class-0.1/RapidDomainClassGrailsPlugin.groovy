@@ -196,7 +196,7 @@ class RapidDomainClassGrailsPlugin {
 
 
         mc.'static'.list = {->
-            return CompassMethodInvoker.search(mc, "id:*").results;
+            return CompassMethodInvoker.searchEvery(mc, "id:*");
         }
 
         mc.'static'.list = {Map options->

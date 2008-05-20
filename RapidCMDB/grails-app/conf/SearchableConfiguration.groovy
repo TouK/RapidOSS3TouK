@@ -1,4 +1,5 @@
 import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
+import grails.util.GrailsUtil
 
 /**
  * Grails Searchable Plugin configuration
@@ -12,7 +13,13 @@ class SearchableConfiguration {
      *
      * Examples: "/home/app/compassindex", "ram://app-index" or null to use the default
      */
-    String compassConnection = SearchableCompassUtils.getDefaultConnection()
+    String compassConnection = new StringBuffer(System.getProperty("base.dir")).
+            append(File.separator).
+            append("searchable-index").
+            append(File.separator).
+            append(GrailsUtil.getEnvironment()).
+            toString();
+
 
     /**
      * Any settings you wish to pass to Compass

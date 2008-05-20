@@ -69,11 +69,12 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                         storage+= value;
                         domainObject.setProperty(relation.name, null);
                         def otherSideRelatedClasses = value[relation.otherSideName];
-                        for(int i=0; i < otherSideRelatedClasses.size(); i++)
+                        for(Iterator i = otherSideRelatedClasses.iterator(); i.hasNext(); )
                         {
-                            if(otherSideRelatedClasses[i].id == domainObject.id)
+                            def otherSideClass = i.next();
+                            if(otherSideClass.id == domainObject.id)
                             {
-                                otherSideRelatedClasses.remove(i);
+                                i.remove();
                                 break;
                             }
                         }
@@ -103,11 +104,12 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                         relatedObjects.remove(relatedClassToBeRemoved.id);
                         storage += relatedClassToBeRemoved;
                         def otherClassRelations = relatedClassToBeRemoved[relation.otherSideName];
-                        for(int i=0; i < otherClassRelations.size(); i++)
+                        for(Iterator i = otherClassRelations.iterator(); i.hasNext(); )
                         {
-                            if(otherClassRelations[i].id == domainObject.id)
+                            def otherClassRelation = i.next();
+                            if(otherClassRelation.id == domainObject.id)
                             {
-                                otherClassRelations.remove(i);
+                                i.remove();
                                 break;
                             }
                         }

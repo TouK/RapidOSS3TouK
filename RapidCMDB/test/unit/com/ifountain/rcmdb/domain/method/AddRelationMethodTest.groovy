@@ -250,9 +250,9 @@ class RelationMethodDomainObject1
     def static indexList = [];
     def relationsToBeRemoved;
     RelationMethodDomainObject2 rel1;
-    List rel2 = [];
+    HashSet rel2 = [];
     RelationMethodDomainObject2 rel3;
-    List rel4 = [];
+    HashSet rel4 = [];
     long id;
     boolean hasErrors()
     {
@@ -284,8 +284,8 @@ class RelationMethodDomainObject2
     def relationsToBeRemoved;
     RelationMethodDomainObject1 revRel1;
     RelationMethodDomainObject1 revRel2;
-    List revRel4 = [];
-    List revRel3 = [];
+    HashSet revRel4 = [];
+    HashSet revRel3 = [];
     String prop1;
     long id;
 

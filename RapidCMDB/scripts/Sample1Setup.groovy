@@ -38,33 +38,33 @@ Model.findByName("Team")?.delete(flush:true);
 Model.findByName("Task")?.delete(flush:true);
 def rcmdbDatasource = BaseDatasource.findByName("RCMDB");
 
-def person = Model.create(name:"Person");
-def modelDatasource = ModelDatasource.create(datasource:rcmdbDatasource, master:true);
-def name = ModelProperty.create(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-def bday = ModelProperty.create(name:"bday", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-def keyMappings = [ModelDatasourceKeyMapping.create(property:name, datasource:modelDatasource)]
+def person = new Model(name:"Person");
+def modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);
+def name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def bday = new ModelProperty(name:"bday", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:modelDatasource)]
 person = constructModel(person, [name, bday], [modelDatasource], keyMappings);
 
-def employee = Model.create(name:"Employee", parentModel:person);
-def dept = ModelProperty.create(name:"dept", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-def salary = ModelProperty.create(name:"salary", type:ModelProperty.numberType, defaultValue:1000, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def employee = new Model(name:"Employee", parentModel:person);
+def dept = new ModelProperty(name:"dept", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def salary = new ModelProperty(name:"salary", type:ModelProperty.numberType, defaultValue:1000, blank:false, lazy:false, propertyDatasource:modelDatasource);
 employee = constructModel(employee, [dept, salary], [], []);
 
-def developer = Model.create(name:"Developer", parentModel:employee);
-def language = ModelProperty.create(name:"language", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def developer = new Model(name:"Developer", parentModel:employee);
+def language = new ModelProperty(name:"language", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
 developer = constructModel(developer, [language], [], []);
 
-def team = Model.create(name:"Team");
-modelDatasource = ModelDatasource.create(datasource:rcmdbDatasource, master:true);
-name = ModelProperty.create(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-def maskot = ModelProperty.create(name:"maskot", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-keyMappings = [ModelDatasourceKeyMapping.create(property:name, datasource:modelDatasource)]
+def team = new Model(name:"Team");
+modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);
+name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def maskot = new ModelProperty(name:"maskot", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:modelDatasource)]
 team = constructModel(team, [name, maskot], [modelDatasource], keyMappings);
 
-def task = Model.create(name:"Task");
-modelDatasource = ModelDatasource.create(datasource:rcmdbDatasource, master:true);
-name = ModelProperty.create(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-keyMappings = [ModelDatasourceKeyMapping.create(property:name, datasource:modelDatasource)]
+def task = new Model(name:"Task");
+modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);
+name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:modelDatasource)]
 task = constructModel(task, [name], [modelDatasource], keyMappings);
 
 createRelation(employee, employee, "prevEmp", "nextEmp", ModelRelation.ONE, ModelRelation.ONE);
@@ -101,7 +101,7 @@ def constructModel(model, listOfProperties, listOfDatasources, listOfKeyMappings
 }
 
 def createRelation(firstModel, secondModel, firstName, secondName, firstCar, secondCar){
-    ModelRelation.add(firstModel:firstModel, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar);
+    new ModelRelation(firstModel:firstModel, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar).save();
     firstModel.refresh();
     secondModel.refresh();
 }

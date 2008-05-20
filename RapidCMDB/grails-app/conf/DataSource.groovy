@@ -16,21 +16,21 @@ environments {
 	production {
 		dataSource {
 			dbCreate = "update"
-			url = "jdbc:hsqldb:file:prodDb;shutdown=true"
+			url = "jdbc:hsqldb:file:data/prodDb;shutdown=true"
 		}
 	}
     development {
 		dataSource {
             configClass = GrailsAnnotationConfiguration.class
             dbCreate = "update" // one of 'create', 'create-drop','update'
-			url = "jdbc:hsqldb:file:devDB;shutdown=true"
+			url = "jdbc:hsqldb:file:data/devDB;shutdown=true"
 		}
 	}
 	reset {
 		dataSource {
             configClass = GrailsAnnotationConfiguration.class
             dbCreate = "create-drop" // one of 'create', 'create-drop','update'
-			url = "jdbc:hsqldb:file:devDB;shutdown=true"
+			url = "jdbc:hsqldb:file:data/devDB;shutdown=true"
 		}
 	}
 	test {

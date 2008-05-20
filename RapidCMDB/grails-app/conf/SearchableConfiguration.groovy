@@ -15,7 +15,9 @@ class SearchableConfiguration {
      */
     String compassConnection = new StringBuffer(System.getProperty("base.dir")).
             append(File.separator).
-            append("searchable-index").
+            append("data").
+            append(File.separator).
+            append("index").
             append(File.separator).
             append(GrailsUtil.getEnvironment()).
             toString();

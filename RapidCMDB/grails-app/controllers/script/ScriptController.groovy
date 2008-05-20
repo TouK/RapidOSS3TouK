@@ -1,20 +1,28 @@
 package script
 
-import scripting.ScriptingService;
+import com.ifountain.rcmdb.scripting.ScriptManager;
 
 class ScriptController {
     public static final String SUCCESSFULLY_CREATED =  "Script created";
     public static final String SCRIPT_DOESNOT_EXIST =  "Script does not exist";
     def scaffold = CmdbScript;
-    def scriptingService;
     def save = {
+        println "1"
         def script = new CmdbScript(params)
+        println "2"
         if(script.save() && !script.hasErrors()) {
-            scriptingService.addScript(script.name);
+
+            ScriptManager.getInstance().addScript(script.name);
+            println "4"
             flash.message = SUCCESSFULLY_CREATED
+            println "5"
             redirect(action:show, controller:'script', id:script.id)
+            println "6"
         }
         else {
+            println script.errors;
+            println script.properties;
+            println "7"
             render(view:'create', controller:'script', model:[cmdbScript:script])
         }
     }
@@ -50,7 +58,9 @@ class ScriptController {
             def bindings = ["params":params]
             try
             {
-                def result = scriptingService.runScript(script.name,  bindings);
+                def current = System.currentTimeMillis();
+                def result = ScriptManager.getInstance().runScript(script.name,  bindings);
+                println "Elapsed: " + (System.currentTimeMillis() - current);
                 render(text:String.valueOf(result),contentType:"text/html",encoding:"UTF-8");
             }
             catch(t)

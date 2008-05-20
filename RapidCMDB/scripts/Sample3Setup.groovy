@@ -151,18 +151,18 @@ def checkDatasources(){
 	def datasources =[:];
 	def conn1 = SmartsConnection.findByName("smartsconn");
 	if(conn1 == null){
-	    conn1 = SmartsConnection.add(name:"smartsconn", broker:"192.168.1.102:426", domain:"INCHARGE-SA", username:"admin", password:"rcpass");
+	    conn1 = new SmartsConnection(name:"smartsconn", broker:"192.168.1.102:426", domain:"INCHARGE-SA", username:"admin", password:"rcpass").save();
 	}
 
 	def eastRegionDs= SmartsTopologyDatasource.findByName("eastRegionDs");
 	if (eastRegionDs == null){
-	    eastRegionDs = SmartsTopologyDatasource.add(connection:conn1, name:"eastRegionDs");
+	    eastRegionDs = new SmartsTopologyDatasource(connection:conn1, name:"eastRegionDs").save();
 	}
 	datasources.put("eastRegionDs",eastRegionDs);
 
 	def westRegionDs= SmartsTopologyDatasource.findByName("westRegionDs");
 	if (westRegionDs == null){
-	    westRegionDs = SmartsTopologyDatasource.add(connection:conn1, name:"westRegionDs");
+	    westRegionDs = new SmartsTopologyDatasource(connection:conn1, name:"westRegionDs").save();
 	}
 	datasources.put("westRegionDs",westRegionDs);
 	

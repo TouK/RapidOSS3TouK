@@ -130,7 +130,6 @@ ModelGenerator.getInstance().generateModel(link);
 
 return "Successfully created model classes for Scenario 2! Now, RESTART APPLICATION, and run SampleScenario2Connector.groovy to populate MySql DB and RCMDB tables.";
 
-
 def checkDatasources(){
 	def datasources =[:];
 	def conn1 = DatabaseConnection.findByName("mysql");
@@ -141,37 +140,37 @@ def checkDatasources(){
 
 	dsCustomer = SingleTableDatabaseDatasource.findByName("dsCustomer");
 	if (dsCustomer == null){
-	    dsCustomer = SingleTableDatabaseDatasource.add(connection:conn1, name:"dsCustomer", tableName:"customers", tableKeys:"name");
+	    dsCustomer = new SingleTableDatabaseDatasource(connection:conn1, name:"dsCustomer", tableName:"customers", tableKeys:"name").save();
 	}
 	datasources.put("customer",dsCustomer);
 
 	dsEvent = SingleTableDatabaseDatasource.findByName("dsEvent");
 	if (dsEvent == null){
-	    dsEvent= SingleTableDatabaseDatasource.add(connection:conn1, name:"dsEvent", tableName:"events", tableKeys:"EventName");
+	    dsEvent= new SingleTableDatabaseDatasource(connection:conn1, name:"dsEvent", tableName:"events", tableKeys:"EventName").save();
 	}
 	datasources.put("event",dsEvent);
 
 	dsDevice = SingleTableDatabaseDatasource.findByName("dsDevice");
 	if (dsDevice == null){
-	    dsDevice = SingleTableDatabaseDatasource.add(connection:conn1, name:"dsDevice", tableName:"deviceds", tableKeys:"ID");
+	    dsDevice = new SingleTableDatabaseDatasource(connection:conn1, name:"dsDevice", tableName:"deviceds", tableKeys:"ID").save();
 	}
 	datasources.put("device",dsDevice);
 
 	dsLink = SingleTableDatabaseDatasource.findByName("dsLink");
 	if (dsLink == null){
-	    dsLink = SingleTableDatabaseDatasource.add(connection:conn1, name:"dsLink", tableName:"linkds", tableKeys:"ID");
+	    dsLink = new SingleTableDatabaseDatasource(connection:conn1, name:"dsLink", tableName:"linkds", tableKeys:"ID").save();
 	}
 	datasources.put("link",dsLink);
 
 	dsResource1 = SingleTableDatabaseDatasource.findByName("dsResource1");
 	if (dsResource1 == null){
-	    dsResource1 = SingleTableDatabaseDatasource.add(connection:conn1, name:"dsResource1", tableName:"resources1", tableKeys:"name");
+	    dsResource1 = new SingleTableDatabaseDatasource(connection:conn1, name:"dsResource1", tableName:"resources1", tableKeys:"name").save();
 	}
 	datasources.put("resource1",dsResource1);
 
 	dsResource2 = SingleTableDatabaseDatasource.findByName("dsResource2");
 	if (dsResource2 == null){
-	    dsResource2 = SingleTableDatabaseDatasource.add(connection:conn1, name:"dsResource2", tableName:"resources2", tableKeys:"ID");
+	    dsResource2 = new SingleTableDatabaseDatasource(connection:conn1, name:"dsResource2", tableName:"resources2", tableKeys:"ID").save();
 	}
 	datasources.put("resource2",dsResource2);
 	return datasources;

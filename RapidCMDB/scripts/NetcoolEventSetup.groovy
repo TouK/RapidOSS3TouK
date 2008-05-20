@@ -68,12 +68,12 @@ return "Successfully created NetcoolEvent model class.";
 def generateNetcoolConnAndDS(ncConName, ncDsName){
 	def conn1 = NetcoolConnection.findByName(ncConName);
 	if(conn1 == null){
-	    conn1 = NetcoolConnection.add(name: ncConName, url: NC_URL,username: USERNAME, password:PSW);
+	    conn1 = new NetcoolConnection(name: ncConName, url: NC_URL,username: USERNAME, password:PSW).save();
 	}
 
 	def ncDatasource= NetcoolDatasource.findByName(ncDsName);
 	if (ncDatasource == null){
-	    ncDatasource = NetcoolDatasource.add(connection:conn1, name:ncDsName);
+	    ncDatasource = new NetcoolDatasource(connection:conn1, name:ncDsName).save();
 	}
 }
 

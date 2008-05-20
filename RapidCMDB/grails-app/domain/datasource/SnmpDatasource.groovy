@@ -9,7 +9,6 @@ class SnmpDatasource extends BaseDatasource {
     public static def snmpListeningAdapters = [:];
     SnmpConnection connection;
     CmdbScript script;
-    def scriptingService;
     static constraints = {
         script(blank: false);
     };
@@ -31,13 +30,13 @@ class SnmpDatasource extends BaseDatasource {
         def listeningAdapter = snmpListeningAdapters[this.name];
         if (listeningAdapter == null) {
             listeningAdapter = new SnmpListeningAdapter(this.connection.host, this.connection.port, Logger.getRootLogger());
-            listeningAdapter.addTrapProcessor(new ScriptTrapProcessor(this.script.name, this.scriptingService, Logger.getRootLogger()));
+            listeningAdapter.addTrapProcessor(new ScriptTrapProcessor(this.script.name, Logger.getRootLogger()));
             listeningAdapter.open();
             snmpListeningAdapters.put(this.name, listeningAdapter);
         }
         else if(!listeningAdapter.isOpen()){
             listeningAdapter.removeAllTrapProcessors();
-            listeningAdapter.addTrapProcessor(new ScriptTrapProcessor(this.script.name, this.scriptingService, Logger.getRootLogger()));
+            listeningAdapter.addTrapProcessor(new ScriptTrapProcessor(this.script.name, Logger.getRootLogger()));
             listeningAdapter.open();
         }
     }

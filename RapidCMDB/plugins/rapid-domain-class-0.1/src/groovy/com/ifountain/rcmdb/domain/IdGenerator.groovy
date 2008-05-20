@@ -59,13 +59,15 @@ class IdGeneratorStrategyImpl implements IdGeneratorStrategy
                 objectId = new ObjectId(name:"generalObjectId", nextId:INCREMENT_AMOUNT);
                 objectId.id = 0;
                 ObjectId.index(objectId);
+                nextId = 0;
             }
             else
             {
                 objectId.nextId = objectId.nextId+INCREMENT_AMOUNT;
                 ObjectId.index(objectId);
+                nextId = objectId.nextId;
             }
-            nextId = objectId.nextId;
+
             numberOfRemainingIds = INCREMENT_AMOUNT;
         }
         numberOfRemainingIds--;

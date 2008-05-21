@@ -47,6 +47,7 @@ public class SnmpUtils {
     public static final int DEFAULT_MAX_REPETITIONS = 10;
     public static final int DEFAULT_NON_REPEATERS = 0;
     public static final int DEFAULT_MAX_SIZE_RESPONSE_PDU = 65535;
+    public static final OID DEFULT_SNMP_TRAP_OID = SnmpConstants.coldStart;
     public static final int VERSION_1 = SnmpConstants.version1;
     public static final int VERSION_2c = SnmpConstants.version2c;
 
@@ -55,12 +56,12 @@ public class SnmpUtils {
         return get(transportAddress, oid, community, version, DEFAULT_TIMEOUT, DEFAULT_RETRIES, DEFAULT_MAX_SIZE_RESPONSE_PDU);
     }
 
-    public static String get(String transportAddress, String oid, int version) throws IOException {
-        return get(transportAddress, oid, DEFAULT_COMMUNITY, version);
+    public static String get(String transportAddress, String oid, String community) throws IOException {
+        return get(transportAddress, oid, community, VERSION_1);
     }
 
     public static String get(String transportAddress, String oid) throws IOException {
-        return get(transportAddress, oid, VERSION_1);
+        return get(transportAddress, oid, DEFAULT_COMMUNITY);
     }
 
     public static String get(String transportAddress, String oid, String community, int version, int timeout, int retries, int maxSizeResponsePDU) throws IOException {
@@ -74,32 +75,42 @@ public class SnmpUtils {
         return getNext(transportAddress, oid, community, version, DEFAULT_TIMEOUT, DEFAULT_RETRIES, DEFAULT_MAX_SIZE_RESPONSE_PDU);
     }
 
-    public static String getNext(String transportAddress, String oid, int version) throws IOException {
-        return getNext(transportAddress, oid, DEFAULT_COMMUNITY, version);
+    public static String getNext(String transportAddress, String oid, String community) throws IOException {
+        return getNext(transportAddress, oid, community, VERSION_1);
     }
 
     public static String getNext(String transportAddress, String oid) throws IOException {
-        return getNext(transportAddress, oid, VERSION_1);
+        return getNext(transportAddress, oid, DEFAULT_COMMUNITY);
     }
 
-    public static PDU sendTrap(String transportAddress, String community, int version, String enterprise, long timestamp,
-                                  int genericTrap, int specificTrap, List varbinds) throws IOException {
-        return sendTrap(transportAddress, community, version, enterprise, timestamp, genericTrap, specificTrap, varbinds, DEFAULT_TIMEOUT, DEFAULT_RETRIES, DEFAULT_MAX_SIZE_RESPONSE_PDU);
+    public static PDU sendV1Trap(String transportAddress, String community, String enterprise, long timestamp,
+                                 int genericTrap, int specificTrap, List varbinds) throws IOException {
+        return sendV1Trap(transportAddress, community, enterprise, timestamp, genericTrap, specificTrap, varbinds, DEFAULT_TIMEOUT, DEFAULT_RETRIES, DEFAULT_MAX_SIZE_RESPONSE_PDU);
     }
 
-    public static PDU sendTrap(String transportAddress, int version, String enterprise, long timestamp, int genericTrap, int specificTrap, List varbinds) throws IOException {
-        return sendTrap(transportAddress, DEFAULT_COMMUNITY, version, enterprise, timestamp, genericTrap, specificTrap, varbinds);
+    public static PDU sendV1Trap(String transportAddress, String enterprise, long timestamp, int genericTrap, int specificTrap, List varbinds) throws IOException {
+        return sendV1Trap(transportAddress, DEFAULT_COMMUNITY, enterprise, timestamp, genericTrap, specificTrap, varbinds);
     }
 
-    public static PDU sendTrap(String transportAddress, String enterprise, long timestamp, int genericTrap, int specificTrap, List varbinds) throws IOException {
-        return sendTrap(transportAddress, VERSION_1, enterprise, timestamp, genericTrap, specificTrap, varbinds);
+    public static PDU sendV2cTrap(String transportAddress, String community, long timestamp, String snmpTrapOid, List varbinds) throws IOException {
+        sendV2cTrap(transportAddress, community, timestamp, snmpTrapOid, varbinds, DEFAULT_TIMEOUT, DEFAULT_RETRIES, DEFAULT_MAX_SIZE_RESPONSE_PDU);
+    }
+
+    public static PDU sendV2cTrap(String transportAddress, long timestamp, String snmpTrapOid, List varbinds) throws IOException {
+        sendV2cTrap(transportAddress, DEFAULT_COMMUNITY, timestamp, snmpTrapOid, varbinds);
+    }
+    public static PDU sendV2cTrap(String transportAddress, List varbinds) throws IOException {
+        sendV2cTrap(transportAddress, 0, null, varbinds);
     }
 
     public static PDU set(String transportAddress, String oid, String value, String type, String community, int version) throws IOException {
-         return set(transportAddress, oid, value, type, community, version, DEFAULT_TIMEOUT, DEFAULT_RETRIES, DEFAULT_MAX_SIZE_RESPONSE_PDU);
+        return set(transportAddress, oid, value, type, community, version, DEFAULT_TIMEOUT, DEFAULT_RETRIES, DEFAULT_MAX_SIZE_RESPONSE_PDU);
+    }
+    public static PDU set(String transportAddress, String oid, String value, String type, String community) throws IOException {
+        return set(transportAddress, oid, value, type, community, VERSION_1);
     }
     public static PDU set(String transportAddress, String oid, String value, String type) throws IOException {
-         return set(transportAddress, oid, value, type, DEFAULT_COMMUNITY, VERSION_1);
+        return set(transportAddress, oid, value, type, DEFAULT_COMMUNITY);
     }
 
     public static List getSubtree(String transportAddress, String oid, String community, int version, String lowerBoundOid, String upperBoundOid) throws Exception {
@@ -110,8 +121,12 @@ public class SnmpUtils {
         return getSubtree(transportAddress, oid, community, version, null, null);
     }
 
+    public static List getSubtree(String transportAddress, String oid, String community) throws Exception {
+        return getSubtree(transportAddress, oid, community, VERSION_1);
+    }
+
     public static List getSubtree(String transportAddress, String oid) throws Exception {
-        return getSubtree(transportAddress, oid, DEFAULT_COMMUNITY, VERSION_1);
+        return getSubtree(transportAddress, oid, DEFAULT_COMMUNITY);
     }
 
     public static List getSubtree(String transportAddress, String oid, String community, int version, String lowerBoundOid,
@@ -167,20 +182,17 @@ public class SnmpUtils {
             snmp.close();
         } catch (Exception e) {
         }
-        if (responseEvent != null ){
+        if (responseEvent != null) {
             return responseEvent.getResponse();
         }
         return null;
     }
 
-    public static PDU sendTrap(String transportAddress, String community, int version, String enterprise, long timestamp,
-                                  int genericTrap, int specificTrap, List varbinds, int timeout, int retries, int maxSizeResponsePDU) throws IOException {
-        if(version == VERSION_2c){
-            throw new IllegalArgumentException("Version2 traps are not supported.");
-        }
+    public static PDU sendV1Trap(String transportAddress, String community, String enterprise, long timestamp,
+                                 int genericTrap, int specificTrap, List varbinds, int timeout, int retries, int maxSizeResponsePDU) throws IOException {
         Address address = getAddress(transportAddress);
         Snmp snmp = createSnmpSession(address);
-        Target target = createTarget(version, community, address, retries, timeout, maxSizeResponsePDU);
+        Target target = createTarget(VERSION_1, community, address, retries, timeout, maxSizeResponsePDU);
         snmp.listen();
         PDU trap = createVersion1TrapPdu(enterprise, timestamp, genericTrap, specificTrap);
         addVariableBindings(trap, varbinds);
@@ -189,7 +201,43 @@ public class SnmpUtils {
             snmp.close();
         } catch (Exception e) {
         }
-        if(responseEvent != null){
+        if (responseEvent != null) {
+            return responseEvent.getResponse();
+        }
+        return null;
+    }
+
+    public static PDU sendV2cTrap(String transportAddress, String community, long timestamp, String snmpTrapOid, List varbinds, int timeout, int retries, int maxSizeResponsePDU) throws IOException {
+        Address address = getAddress(transportAddress);
+        Snmp snmp = createSnmpSession(address);
+        Target target = createTarget(VERSION_2c, community, address, retries, timeout, maxSizeResponsePDU);
+        snmp.listen();
+        PDU trap = new PDU();
+        trap.setType(PDU.TRAP);
+        if(snmpTrapOid == null){
+            snmpTrapOid = DEFULT_SNMP_TRAP_OID.toString();
+        }
+        if ((varbinds.size() == 0) || ((varbinds.size() > 0) && (!new OID(varbinds[0].get(RSnmpConstants.OID)).equals(SnmpConstants.sysUpTime)))) {
+            Map varbind = new HashMap();
+            varbind.put(RSnmpConstants.OID, SnmpConstants.sysUpTime.toString());
+            varbind.put(RSnmpConstants.VARBIND_VALUE, String.valueOf(timestamp));
+            varbind.put(RSnmpConstants.VARBIND_TYPE, "t");
+            varbinds.add(0, varbind);
+        }
+        if ((varbinds.size() == 1) || ((varbinds.size() > 1) && (!new OID(varbinds[1].get(RSnmpConstants.OID)).equals(SnmpConstants.sysUpTime)))) {
+            Map varbind = new HashMap();
+            varbind.put(RSnmpConstants.OID, SnmpConstants.snmpTrapOID.toString());
+            varbind.put(RSnmpConstants.VARBIND_VALUE, snmpTrapOid);
+            varbind.put(RSnmpConstants.VARBIND_TYPE, "o");
+            varbinds.add(1, varbind);
+        }
+        addVariableBindings(trap, varbinds);
+        ResponseEvent responseEvent = snmp.send(trap, target);
+        try {
+            snmp.close();
+        } catch (Exception e) {
+        }
+        if (responseEvent != null) {
             return responseEvent.getResponse();
         }
         return null;
@@ -273,9 +321,9 @@ public class SnmpUtils {
 
     private static void addVariableBindings(PDU pdu, List variableBindings) {
         for (Iterator iterator = variableBindings.iterator(); iterator.hasNext();) {
-            Map varbind =  (Map)iterator.next();
+            Map varbind = (Map) iterator.next();
             addVariableBinding(pdu, varbind);
-         }
+        }
     }
 
     private static void addVariableBinding(PDU pdu, Map variableBinding) {

@@ -197,11 +197,11 @@ class RapidDomainClassGrailsPlugin {
 
 
         mc.'static'.list = {->
-            return CompassMethodInvoker.searchEvery(mc, "id:*");
+            return CompassMethodInvoker.searchEvery(mc, "id:[0 TO *]");
         }
 
         mc.'static'.list = {Map options->
-            return CompassMethodInvoker.search(mc, "id:*", options).results;
+            return CompassMethodInvoker.search(mc, "id:[0 TO *]", options).results;
         }
     }
     def registerDynamicMethods(dc, application, ctx)

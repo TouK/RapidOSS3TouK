@@ -25,15 +25,29 @@ class SecurityFilters {
     def filters = {
         // Ensure that all controllers and actions require an authenticated user,
         // except for the "public" controller
-        auth(controller: "*", action: "*") {
+        authentication(controller: "*", action: "*") {
             before = {
                 // Exclude the "public" controller.
                 if (controllerName == "public") return true
 
                 // This just means that the user must be authenticated. He does
                 // not need any particular role or permission.
-                accessControl { true }
+                accessControl { 
+	                role("Administrator") || role("User")
+	            }
             }
         }
+        def adminControllers = ["user", "userRoleRel", 
+        						"application",
+        						 "model", "modelDatasource", "modelDatasourceKeyMapping", "modelRelation", "modelProperty"];
+        authorization(controller:"(" + adminControllers.join("|")+ ")", action:"*"){
+	        before = {
+		      accessControl { 
+	                role("Administrator")
+	            }  
+		        
+		    }
+	    	    
+	    }
     }
 }

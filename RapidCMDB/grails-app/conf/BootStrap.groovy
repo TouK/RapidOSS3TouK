@@ -9,12 +9,13 @@ import org.apache.commons.beanutils.ConvertUtils
 import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.LongConverter
 import datasource.SnmpDatasource
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 
 class BootStrap {
 
     def init = {servletContext ->
-        ConvertUtils.register (new DateConverter("yyyy-dd-MM HH:mm:ss"), Date.class)
-        ConvertUtils.register (new LongConverter(), Long.class)
+        RapidConvertUtils.getInstance().register (new DateConverter("yyyy-dd-MM HH:mm:ss"), Date.class)
+        RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
     	def adminRole = Role.findByName("Administrator");
     	if(!adminRole){
 	    	adminRole = new Role(name: "Administrator");

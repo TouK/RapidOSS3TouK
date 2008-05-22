@@ -112,7 +112,7 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <g:paginate total="\${${className}.countHits('id:*')}"/>
+        <g:paginate total="\${${className}.countHits('id:[0 TO *]')}"/>
     </div>
 </div>
 </body>

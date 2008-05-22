@@ -106,16 +106,19 @@ class ${className}Controller {
                         if(propValue.length() != 0)
                         {
                             def metaProp = domainClass.metaClass.getMetaProperty(propName);
-                            if(metaProp && metaProp.type == Date.class)
+                            if(metaProp)
                             {
-                                def year = params[propName+"_year"];
-                                def day = params[propName+"_day"];
-                                def month = params[propName+"_month"];
-                                def hour = params[propName+"_hour"];
-                                def min = params[propName+"_minute"];
-                                def date = dateFormat.parse("\$year-\$month-\$day \$hour:\$min");
-                                DateConverter converter = RapidConvertUtils.getInstance().lookup (Date.class);
-                                propValue = converter.formater.format (date);
+                                if(metaProp.type == Date.class)
+                                {
+                                    def year = params[propName+"_year"];
+                                    def day = params[propName+"_day"];
+                                    def month = params[propName+"_month"];
+                                    def hour = params[propName+"_hour"];
+                                    def min = params[propName+"_minute"];
+                                    def date = dateFormat.parse("\$year-\$month-\$day \$hour:\$min");
+                                    DateConverter converter = RapidConvertUtils.getInstance().lookup (Date.class);
+                                    propValue = converter.formater.format (date);
+                                }
                                 returnedParams[propName] = propValue;
                             }
                         }

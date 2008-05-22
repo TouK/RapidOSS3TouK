@@ -1,3 +1,4 @@
+package auth;
 import org.jsecurity.authc.AuthenticationException
 import org.jsecurity.authc.UsernamePasswordToken
 import org.jsecurity.SecurityUtils

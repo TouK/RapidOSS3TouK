@@ -6,6 +6,10 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import com.ifountain.rcmdb.domain.util.Relation
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.MockIdGeneratorStrategy
+import com.ifountain.rcmdb.domain.converter.DateConverter
+import com.ifountain.rcmdb.domain.converter.LongConverter
+import org.apache.commons.beanutils.ConvertUtils
+import java.text.SimpleDateFormat
 
 /**
 * Created by IntelliJ IDEA.
@@ -48,9 +52,32 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals (prevId+1, addedObject.id);
     }
 
+    public void testAddMethodWithStringProperties()
+    {
+        def prevDateConf = ConvertUtils.lookup (Date);
+        def prevLongConf = ConvertUtils.lookup (Long);
+        try
+        {
+            String dateFormatString = "yyyy-dd-MM";
+            ConvertUtils.register (new DateConverter(dateFormatString), Date.class)
+            ConvertUtils.register (new LongConverter(), Long.class)
+            AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
+            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, [:], []);
+            def props = [prop1:expectedDomainObject1.prop1,  prop4:"100", prop5:"2000-01-01"];
+            def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+            assertEquals (100, addedObject.prop4);
+            SimpleDateFormat formater = new SimpleDateFormat(dateFormatString)  ;
+            assertEquals (formater.parse("2000-01-01"), addedObject.prop5);
+        }
+        finally
+        {
+            ConvertUtils.register (prevDateConf, Date.class)
+            ConvertUtils.register (prevLongConf, Long.class)
+        }
+    }
+
     public void testAddMethodWithUndefinedProperties()
     {
-        fail("Implement later");
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, [:], []);
         def props = [prop1:expectedDomainObject1.prop1, undefinedProperty:"undefinedProp"];
@@ -111,6 +138,8 @@ class AddMethodDomainObject1
     String prop1;
     String prop2;
     String prop3;
+    Long prop4;
+    Date prop5;
     long id;
     def static search(queryClosure)
     {

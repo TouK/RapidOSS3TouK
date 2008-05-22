@@ -2,13 +2,20 @@ package com.ifountain.rcmdb.domain.method
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import com.ifountain.rcmdb.domain.IdGenerator
-import com.ifountain.rcmdb.domain.util.Relation;
+import com.ifountain.rcmdb.domain.util.Relation
+import org.apache.commons.beanutils.ConvertUtils
+import java.lang.reflect.Field;
 class AddMethod extends AbstractRapidDomainStaticMethod
 {
     def relations;
     def keys;
+    def fieldTypes = [:]
     public AddMethod(MetaClass mc, Map relations, List keys) {
         super(mc);
+        def fields = mc.theClass.declaredFields;
+        fields.each{field->
+            fieldTypes[field.name] = field.type;            
+        }
         this.relations = relations
         this.keys = keys;
     }
@@ -30,14 +37,17 @@ class AddMethod extends AbstractRapidDomainStaticMethod
         {
             sampleBean["id"] = IdGenerator.getInstance().getNextId();
         }
-        def propsWillBeSet = [:]
         def relatedInstances = [:];
         props.each{key,value->
             Relation relation = relations.get(key);
             if(!relation)
             {
-                propsWillBeSet[key] = value;
-                sampleBean[key] = value;
+                def fieldType = fieldTypes[key];
+                if(fieldType)
+                {
+                    def converter = ConvertUtils.lookup (fieldType);
+                    sampleBean[key] = converter.convert (fieldType, value);
+                }
             }
             else
             {

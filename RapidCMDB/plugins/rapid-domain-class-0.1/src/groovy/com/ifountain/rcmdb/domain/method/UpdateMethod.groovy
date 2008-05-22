@@ -3,6 +3,7 @@ package com.ifountain.rcmdb.domain.method
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import com.ifountain.rcmdb.domain.IdGenerator
+import org.apache.commons.beanutils.ConvertUtils
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -32,8 +33,13 @@ class UpdateMethod extends AbstractRapidDomainMethod{
 
     def relations;
     def keys;
+    def fieldTypes = [:]
     public UpdateMethod(MetaClass mc, Map relations, List keys) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
+        def fields = mc.theClass.declaredFields;
+        fields.each{field->
+            fieldTypes[field.name] = field.type;
+        }
         this.relations = relations;
         this.keys = keys;
     }
@@ -44,7 +50,12 @@ class UpdateMethod extends AbstractRapidDomainMethod{
         props.each{key,value->
             if(!relations.containsKey(key))
             {
-                domainObject.setProperty (key, value);
+                def fieldType = fieldTypes[key];
+                if(fieldType)
+                {
+                    def converter = ConvertUtils.lookup (fieldType);
+                    domainObject.setProperty (key, converter.convert(fieldType, value));
+                }
             }
             else
             {

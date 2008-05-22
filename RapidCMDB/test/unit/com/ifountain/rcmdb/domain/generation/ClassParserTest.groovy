@@ -1,4 +1,4 @@
-package com.ifountain.rcmdb.domain
+package com.ifountain.rcmdb.domain.generation
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.apache.commons.io.FileUtils

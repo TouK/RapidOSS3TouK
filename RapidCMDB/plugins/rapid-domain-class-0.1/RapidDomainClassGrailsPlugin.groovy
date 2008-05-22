@@ -13,12 +13,10 @@ import com.ifountain.rcmdb.domain.util.PropertyConfigurationCache
 import com.ifountain.rcmdb.domain.util.DatasourceConfigurationCache
 import com.ifountain.rcmdb.domain.AbstractDomainOperation
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
-import com.ifountain.rcmdb.domain.ModelUtils
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
 import com.ifountain.rcmdb.domain.method.CompassMethodInvoker
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")

@@ -5,8 +5,8 @@ import model.Model
 import datasource.BaseDatasource
 import model.ModelProperty
 import model.ModelDatasource
-import com.ifountain.rcmdb.domain.ModelGenerator
-import com.ifountain.rcmdb.domain.ModelUtils
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.domain.generation.ModelUtils
 import model.ModelDatasourceKeyMapping
 
 /**

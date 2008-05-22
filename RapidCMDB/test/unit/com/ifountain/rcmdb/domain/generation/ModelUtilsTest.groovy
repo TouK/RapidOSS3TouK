@@ -1,4 +1,4 @@
-package com.ifountain.rcmdb.domain
+package com.ifountain.rcmdb.domain.generation
 
 import model.Model
 import model.ModelRelation

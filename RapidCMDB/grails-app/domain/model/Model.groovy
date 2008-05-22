@@ -1,10 +1,8 @@
 package model
 
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import java.lang.reflect.Method
 import com.ifountain.core.domain.annotations.CmdbOperation
-import com.ifountain.rcmdb.domain.ModelUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import com.ifountain.rcmdb.domain.generation.ModelUtils
 
 class Model {
     String name;

@@ -1,8 +1,8 @@
 package model
 
-import com.ifountain.rcmdb.domain.ModelGenerationException
+import com.ifountain.rcmdb.domain.generation.ModelGenerationException
 import datasource.BaseDatasource
-import com.ifountain.rcmdb.domain.ModelUtils;
+import com.ifountain.rcmdb.domain.generation.ModelUtils;
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 

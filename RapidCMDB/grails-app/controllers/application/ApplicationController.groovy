@@ -1,7 +1,7 @@
 package application
 
 import model.Model
-import com.ifountain.rcmdb.domain.ModelUtils
+import com.ifountain.rcmdb.domain.generation.ModelUtils
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.runtime.StackTraceUtils
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader

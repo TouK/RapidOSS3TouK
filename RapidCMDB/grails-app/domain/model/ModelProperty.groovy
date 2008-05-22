@@ -1,6 +1,8 @@
 package model
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.apache.commons.beanutils.ConvertUtils
+import com.ifountain.rcmdb.domain.converter.DateConverter;
 class ModelProperty {
     def static final String stringType = "string";
     def static final String numberType = "number";
@@ -8,7 +10,7 @@ class ModelProperty {
     String name;
     String type;
     boolean blank = true;
-    String defaultValue;
+    String defaultValue = "";
     ModelDatasource propertyDatasource;
     ModelProperty propertySpecifyingDatasource;
     String nameInDatasource;
@@ -31,7 +33,36 @@ class ModelProperty {
         });
         nameInDatasource(nullable:true);
         propertyDatasource(nullable:true);
-        defaultValue(nullable:true);
+        defaultValue(validator:{val, obj ->
+            if(val)
+            {
+                if(obj.type == numberType)
+                {
+                    def converter = ConvertUtils.lookup (Long.class);
+                    try
+                    {
+                        converter.convert(Long.class, val);
+                    }
+                    catch(org.apache.commons.beanutils.ConversionException e)
+                    {
+                        return ['modelproperty.defaultvalue.invalidnumber']
+                    }
+                }
+                else if(obj.type == dateType)
+                {
+                    def converter = ConvertUtils.lookup (Date.class);
+                    try
+                    {
+                        converter.convert(Date.class, val);
+                    }
+                    catch(org.apache.commons.beanutils.ConversionException e)
+                    {
+                        return ['modelproperty.defaultvalue.invaliddate', ((DateConverter)ConvertUtils.lookup(Date.class)).format]
+                    }
+                } 
+            }
+
+        });
         propertySpecifyingDatasource(nullable:true);
         type(inList:[stringType, numberType, dateType]);
         lazy(validator:{val, obj ->

@@ -4,6 +4,10 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.domain.util.Relation
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.MockIdGeneratorStrategy
+import com.ifountain.rcmdb.domain.converter.DateConverter
+import com.ifountain.rcmdb.domain.converter.LongConverter
+import org.apache.commons.beanutils.ConvertUtils
+import java.text.SimpleDateFormat
 
 /**
 * Created by IntelliJ IDEA.
@@ -46,5 +50,35 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
 
         assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
+    }
+
+    public void testUpdateMethodWithStringProperties()
+    {
+        def prevDateConf = ConvertUtils.lookup (Date);
+        def prevLongConf = ConvertUtils.lookup (Long);
+        try
+        {
+            String dateFormatString = "yyyy-dd-MM";
+            ConvertUtils.register (new DateConverter(dateFormatString), Date.class)
+            ConvertUtils.register (new LongConverter(), Long.class)
+
+            AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+
+            def props = [prop1:object.prop1, prop2:"newProp2Value",  prop4:"100", prop5:"2000-01-01"];
+            UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, [:], ["prop1"]);
+            def updatedObject = update.invoke (object, [props] as Object[]);
+            assertEquals (100, updatedObject.id);
+            assertEquals ("newProp2Value", updatedObject.prop2);
+            assertEquals ("object1Prop3Value", updatedObject.prop3);
+            assertEquals (100, updatedObject.prop4);
+            SimpleDateFormat formater = new SimpleDateFormat(dateFormatString)  ;
+            assertEquals (formater.parse("2000-01-01"), updatedObject.prop5);
+
+        }
+        finally
+        {
+            ConvertUtils.register (prevDateConf, Date.class)
+            ConvertUtils.register (prevLongConf, Long.class)
+        }
     }
 }

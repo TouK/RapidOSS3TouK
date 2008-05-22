@@ -1,6 +1,6 @@
 package model;
-import com.ifountain.rcmdb.domain.ModelGenerator
-import com.ifountain.rcmdb.domain.ModelUtils
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.domain.generation.ModelUtils
 import org.hibernate.cfg.ImprovedNamingStrategy
 import org.codehaus.groovy.grails.commons.ApplicationAttributes
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean

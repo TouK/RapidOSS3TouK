@@ -1,4 +1,4 @@
-package com.ifountain.rcmdb.domain
+package com.ifountain.rcmdb.domain.generation
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa

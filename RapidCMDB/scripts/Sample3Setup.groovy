@@ -1,7 +1,7 @@
 import connection.*
 import datasource.*
 import model.*
-import com.ifountain.rcmdb.domain.ModelGenerator
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

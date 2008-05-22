@@ -4,7 +4,8 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.util.Relation
 import org.apache.commons.beanutils.ConvertUtils
-import java.lang.reflect.Field;
+import java.lang.reflect.Field
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils;
 class AddMethod extends AbstractRapidDomainStaticMethod
 {
     def relations;
@@ -45,7 +46,8 @@ class AddMethod extends AbstractRapidDomainStaticMethod
                 def fieldType = fieldTypes[key];
                 if(fieldType)
                 {
-                    def converter = ConvertUtils.lookup (fieldType);
+                    
+                    def converter = RapidConvertUtils.getInstance().lookup (fieldType);
                     sampleBean[key] = converter.convert (fieldType, value);
                 }
             }

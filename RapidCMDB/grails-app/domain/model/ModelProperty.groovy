@@ -2,7 +2,8 @@ package model
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.apache.commons.beanutils.ConvertUtils
-import com.ifountain.rcmdb.domain.converter.DateConverter;
+import com.ifountain.rcmdb.domain.converter.DateConverter
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils;
 class ModelProperty {
     def static final String stringType = "string";
     def static final String numberType = "number";
@@ -38,7 +39,7 @@ class ModelProperty {
             {
                 if(obj.type == numberType)
                 {
-                    def converter = ConvertUtils.lookup (Long.class);
+                    def converter = RapidConvertUtils.getInstance().lookup (Long.class);
                     try
                     {
                         converter.convert(Long.class, val);
@@ -50,7 +51,7 @@ class ModelProperty {
                 }
                 else if(obj.type == dateType)
                 {
-                    def converter = ConvertUtils.lookup (Date.class);
+                    def converter = RapidConvertUtils.getInstance().lookup (Date.class);
                     try
                     {
                         converter.convert(Date.class, val);

@@ -30,6 +30,9 @@ grails.views.default.codec="none" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
 grails.converters.encoding="UTF-8"
 grails.test.default.rollback = true
+
+
+
 rapidcmdb.invalid.names=[];
 def invalidNameFile = new File("invalidNames.txt" );
 if(invalidNameFile.exists())

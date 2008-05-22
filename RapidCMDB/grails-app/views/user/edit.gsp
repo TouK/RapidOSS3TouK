@@ -39,12 +39,21 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="passwordHash">Password Hash:</label>
+                                    <label for="passwordHash">Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:user,field:'passwordHash','errors')}">
                                     <input type="text" id="passwordHash" name="passwordHash" value="${fieldValue(bean:user,field:'passwordHash')}"/>
                                 </td>
                             </tr> 
+                            
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="passwordHash">Confirm Password:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:user,field:'passwordHash','errors')}">
+                                    <input type="text" id="passwordHash" name="passwordHash" value="${fieldValue(bean:user,field:'passwordHash')}"/>
+                                </td>
+                            </tr>                             
                         
                         </tbody>
                     </table>

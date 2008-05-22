@@ -10,7 +10,6 @@
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
             <span class="menuButton"><g:link class="list" action="list">User List</g:link></span>
-            <span class="menuButton"><g:link class="create" action="create">New User</g:link></span>
         </div>
         <div class="body">
             <h1>Show User</h1>
@@ -20,33 +19,43 @@
             <div class="dialog">
                 <table>
                     <tbody>
-
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name">Id:</td>
-                            
-                            <td valign="top" class="value">${user.id}</td>
-                            
-                        </tr>
-                    
                         <tr class="prop">
                             <td valign="top" class="name">Username:</td>
-                            
                             <td valign="top" class="value">${user.username}</td>
-                            
                         </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name">Password Hash:</td>
-                            
-                            <td valign="top" class="value">${user.passwordHash}</td>
-                            
-                        </tr>
-                    
                     </tbody>
                 </table>
             </div>
-            <div class="buttons">
+            
+            
+            <div style="margin-top:20px;">
+        	<span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Role List</span>
+        	<span class="menuButton"><g:link controller="userRoleRel" params="['user.id':user?.id]" class="create" action="create">Assign Role</g:link></span>
+            
+	    <div class="list">
+		<table>
+		    <thead>
+			<tr>
+				<g:sortableColumn property="name" title="Role" />
+			</tr>
+		    </thead>
+
+		    <tbody>
+		    <g:each in="${userRoleRelList}" status="i" var="userRoleRel">
+			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+
+			    <td><g:link action="show" controller="userRoleRel" id="${userRoleRel.id}">${userRoleRel.name?.encodeAsHTML()}</g:link></td>
+
+			</tr>
+		    </g:each>
+		    </tbody>
+		</table>
+	    </div>
+	    </div>
+
+            
+            
+                <div class="buttons" style="margin-top:30px;">
                 <g:form>
                     <input type="hidden" name="id" value="${user?.id}" />
                     <span class="button"><g:actionSubmit class="edit" value="Edit" /></span>

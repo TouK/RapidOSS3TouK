@@ -19,26 +19,15 @@
             <div class="list">
                 <table>
                     <thead>
-                        <tr>
-                        
-                   	        <g:sortableColumn property="id" title="Id" />
-                        
+                        <tr>                        
                    	        <g:sortableColumn property="username" title="Username" />
-                        
-                   	        <g:sortableColumn property="passwordHash" title="Password Hash" />
-                        
                         </tr>
                     </thead>
                     <tbody>
                     <g:each in="${userList}" status="i" var="user">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td><g:link action="show" id="${user.id}">${user.id?.encodeAsHTML()}</g:link></td>
-                        
-                            <td>${user.username?.encodeAsHTML()}</td>
-                        
-                            <td>${user.passwordHash?.encodeAsHTML()}</td>
-                        
+                            <td><g:link action="show" id="${user.id}">${user.username?.encodeAsHTML()}</g:link></td>
                         </tr>
                     </g:each>
                     </tbody>

@@ -1,5 +1,12 @@
+import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsControllerHelper
+import java.text.SimpleDateFormat
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.converter.DateConverter
+
 <%=packageName ? "import ${packageName}.${className}" : ''%>
 class ${className}Controller {
+    def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
 
@@ -98,7 +105,19 @@ class ${className}Controller {
                     {
                         if(propValue.length() != 0)
                         {
-                            returnedParams[propName] = propValue;
+                            def metaProp = domainClass.metaClass.getMetaProperty(propName);
+                            if(metaProp && metaProp.type == Date.class)
+                            {
+                                def year = params[propName+"_year"];
+                                def day = params[propName+"_day"];
+                                def month = params[propName+"_month"];
+                                def hour = params[propName+"_hour"];
+                                def min = params[propName+"_minute"];
+                                def date = dateFormat.parse("\$year-\$month-\$day \$hour:\$min");
+                                DateConverter converter = RapidConvertUtils.getInstance().lookup (Date.class);
+                                propValue = converter.formater.format (date);
+                                returnedParams[propName] = propValue;
+                            }
                         }
                     }
                 }

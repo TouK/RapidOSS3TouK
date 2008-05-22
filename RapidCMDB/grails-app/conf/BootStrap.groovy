@@ -8,6 +8,7 @@ import auth.UserRoleRel
 import org.apache.commons.beanutils.ConvertUtils
 import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.LongConverter
+import datasource.SnmpDatasource
 
 class BootStrap {
 
@@ -37,6 +38,9 @@ class BootStrap {
         ScriptManager.getInstance().initialize();
     }
     def destroy = {
+        SnmpDatasource.list().each{
+            it.close();
+        }
         ScriptManager.getInstance().destroy();
     }
 } 

@@ -30,4 +30,4 @@ import org.hibernate.cfg.ImprovedNamingStrategy
     it.remove();
  */
 
-ImprovedNamingStrategy st = new ImprovedNamingStrategy();
+return "Hello World!"

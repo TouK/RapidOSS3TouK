@@ -25,11 +25,11 @@ class UserRoleRelController {
         def userRoleRel = UserRoleRel.get( params.id )
         if(userRoleRel) {
             userRoleRel.delete()
-            flash.message = "UserRoleRel ${params.id} deleted"
-            redirect(action:list)
+            flash.message = "Role Assignment ${params.id} deleted"
+            redirect(action:"show", controller:'user', id:userRoleRel.user?.id)
         }
         else {
-            flash.message = "UserRoleRel not found with id ${params.id}"
+            flash.message = "Role Assignment not found with id ${params.id}"
             redirect(action:list)
         }
     }

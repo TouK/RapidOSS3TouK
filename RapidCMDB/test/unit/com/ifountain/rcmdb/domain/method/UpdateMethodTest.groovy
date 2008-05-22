@@ -8,6 +8,7 @@ import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.LongConverter
 import org.apache.commons.beanutils.ConvertUtils
 import java.text.SimpleDateFormat
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -54,13 +55,13 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
     public void testUpdateMethodWithStringProperties()
     {
-        def prevDateConf = ConvertUtils.lookup (Date);
-        def prevLongConf = ConvertUtils.lookup (Long);
+        def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);
+        def prevLongConf = RapidConvertUtils.getInstance().lookup (Long);
         try
         {
             String dateFormatString = "yyyy-dd-MM";
-            ConvertUtils.register (new DateConverter(dateFormatString), Date.class)
-            ConvertUtils.register (new LongConverter(), Long.class)
+            RapidConvertUtils.getInstance().register (new DateConverter(dateFormatString), Date.class)
+            RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
 
             AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
 
@@ -77,8 +78,8 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         }
         finally
         {
-            ConvertUtils.register (prevDateConf, Date.class)
-            ConvertUtils.register (prevLongConf, Long.class)
+            RapidConvertUtils.getInstance().register (prevDateConf, Date.class)
+            RapidConvertUtils.getInstance().register (prevLongConf, Long.class)
         }
     }
 }

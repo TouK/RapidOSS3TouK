@@ -4,6 +4,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import com.ifountain.rcmdb.domain.IdGenerator
 import org.apache.commons.beanutils.ConvertUtils
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -53,7 +54,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
                 def fieldType = fieldTypes[key];
                 if(fieldType)
                 {
-                    def converter = ConvertUtils.lookup (fieldType);
+                    def converter = RapidConvertUtils.getInstance().lookup (fieldType);
                     domainObject.setProperty (key, converter.convert(fieldType, value));
                 }
             }

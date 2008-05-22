@@ -79,8 +79,8 @@
                         props.addAll(masterKeyProperties);
                         def propertiesWhichCanBeListed = otherProperties.findAll{!it.oneToMany && !it.manyToMany};
                         if (masterKeyProperties.size() + propertiesWhichCanBeListed.size() < 5) {
-                            otherProperties.sort {it.name};
-                            props.addAll(otherProperties);
+                            propertiesWhichCanBeListed.sort {it.name};
+                            props.addAll(propertiesWhichCanBeListed);
                         }
                         props.eachWithIndex {p, i ->
                                 if (p.isAssociation()) { %>

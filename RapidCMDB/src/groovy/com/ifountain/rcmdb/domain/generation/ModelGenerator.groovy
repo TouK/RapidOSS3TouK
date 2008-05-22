@@ -8,6 +8,7 @@ import model.GeneratedModel
 import model.GeneratedModelProperty
 import model.GeneratedModelRelation
 import model.GeneratedModel
+import com.ifountain.rcmdb.domain.AbstractDomainOperation
 
 class ModelGenerator
 {

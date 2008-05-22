@@ -8,7 +8,8 @@ import model.ModelDatasourceKeyMapping
 import datasource.BaseDatasource
 import model.ModelRelation
 import org.apache.commons.io.FileUtils
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase;
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.rcmdb.domain.AbstractDomainOperation;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

@@ -18,6 +18,7 @@ import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
 import com.ifountain.rcmdb.domain.method.CompassMethodInvoker
 import com.ifountain.rcmdb.domain.generation.ModelUtils
+import org.codehaus.groovy.grails.orm.hibernate.metaclass.SavePersistentMethod
 
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
@@ -26,6 +27,7 @@ class RapidDomainClassGrailsPlugin {
     def loadAfter = ['searchable']
     def domainClassMap;
     def doWithSpring = {
+        SavePersistentMethod
     }
 
     def doWithApplicationContext = { applicationContext ->

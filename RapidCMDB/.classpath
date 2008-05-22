@@ -99,5 +99,11 @@
 	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/lucene-queries.jar"/>
 	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/lucene-snowball.jar"/>
 	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/lucene-spellchecker.jar"/>
+	<classpathentry kind="lib" path="plugins/jsecurity-0.2/lib/commons-codec.jar"/>
+	<classpathentry kind="lib" path="plugins/jsecurity-0.2/lib/grails-jsecurity-annotations.jar"/>
+	<classpathentry kind="lib" path="plugins/jsecurity-0.2/lib/jsecurity-jdk14.jar"/>
+	<classpathentry kind="lib" path="plugins/jsecurity-0.2/lib/jug.jar"/>
+	<classpathentry kind="lib" path="plugins/jsecurity-0.2/lib/quartz.jar"/>
+	<classpathentry kind="lib" path="plugins/jsecurity-0.2/lib/retroweaver-rt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

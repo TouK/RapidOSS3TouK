@@ -24,7 +24,14 @@
                 <div class="dialog">
                     <table>
                         <tbody>
-                        
+                        	<%
+		                        if (userId != null) {
+		                    %>
+		                    <input type="hidden" name="user.id" value="${userId}"/>
+		                    <%
+		                        }
+		                        
+		                    %>
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="role">Role:</label>

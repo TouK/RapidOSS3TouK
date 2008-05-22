@@ -1,5 +1,5 @@
 
-<%@ page import="auth.User" %>
+<%@ page import="auth.*" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -16,6 +16,15 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
+             <g:if test="${flash.errors}">
+		        <div class="errors">
+		            <ul>
+		                <g:each var="error" in="${flash?.errors}">
+		                    <li>${error}</li>
+		                </g:each>
+		            </ul>
+		        </div>
+		    </g:if>
             <div class="dialog">
                 <table>
                     <tbody>
@@ -36,15 +45,15 @@
 		<table>
 		    <thead>
 			<tr>
-				<g:sortableColumn property="name" title="Role" />
+				<th>Role</th>
 			</tr>
 		    </thead>
 
 		    <tbody>
-		    <g:each in="${userRoleRelList}" status="i" var="userRoleRel">
+		    <g:each in="${UserRoleRel.findAllByUser(user)}" status="i" var="userRoleRel">
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-			    <td><g:link action="show" controller="userRoleRel" id="${userRoleRel.id}">${userRoleRel.name?.encodeAsHTML()}</g:link></td>
+			    <td><g:link action="show" controller="userRoleRel" id="${userRoleRel.id}">${userRoleRel.role?.name.encodeAsHTML()}</g:link></td>
 
 			</tr>
 		    </g:each>

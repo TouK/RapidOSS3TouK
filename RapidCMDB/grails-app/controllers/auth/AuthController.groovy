@@ -56,7 +56,7 @@ class AuthController {
         }
     }
 
-    def signOut = {
+    def logout = {
         // Log the user out of the application.
         SecurityUtils.subject?.logout()
 

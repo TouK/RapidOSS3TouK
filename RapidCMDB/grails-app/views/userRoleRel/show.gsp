@@ -29,9 +29,9 @@
                 </table>
             </div>
             <div class="buttons">
-                <g:form>
+                <g:form action="delete" method="post">
                     <input type="hidden" name="id" value="${userRoleRel?.id}" />
-                    <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete" /></span>
+                    <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Unassign" /></span>
                 </g:form>
             </div>
         </div>

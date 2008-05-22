@@ -21,6 +21,15 @@
                 <g:renderErrors bean="${user}" as="list" />
             </div>
             </g:hasErrors>
+            <g:if test="${flash.errors}">
+		        <div class="errors">
+		            <ul>
+		                <g:each var="error" in="${flash?.errors}">
+		                    <li>${error}</li>
+		                </g:each>
+		            </ul>
+		        </div>
+		    </g:if>
             <g:form action="save" method="post" >
                 <div class="dialog">
                     <table>
@@ -37,19 +46,19 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="passwordHash">Password:</label>
+                                    <label for="password1">Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:user,field:'passwordHash','errors')}">
-                                    <input type="text" id="passwordHash" name="passwordHash" value="${fieldValue(bean:user,field:'passwordHash')}"/>
+                                    <input type="password" id="password1" name="password1" value=""/>
                                 </td>
                             </tr> 
                             
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="passwordHash">Confirm Password:</label>
+                                    <label for="password2">Confirm Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:user,field:'passwordHash','errors')}">
-                                    <input type="text" id="passwordHash" name="passwordHash" value="${fieldValue(bean:user,field:'passwordHash')}"/>
+                                    <input type="password" id="password2" name="password2" value=""/>
                                 </td>
                             </tr>                             
                         

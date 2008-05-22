@@ -73,6 +73,7 @@
         <div class="dialog" style="margin-left:20px;width:60%;">
             <ul style="margin-left:25px;">
                 <li class="controller"><g:link controller="script">OnDemand Scripts</g:link></li>
+                <li class="controller"><g:link controller="periodicScript">Periodic Scripts</g:link></li>
             </ul>
         </div>
         </td>
@@ -80,7 +81,31 @@
          <br>
          <br>
          
+<p/>
+       
 
+<p/>
+        <div class="front">
+        <table ><tr><th width="50%">User Management</th>  <th >Application Management</th></tr>
+        <tr><td><p style="margin-left:20px;">Manage Users and their Roles.</p>
+        <br>
+        <div class="dialog" style="margin-left:20px;">
+            <ul  style="margin-left:25px;">
+                <li class="controller"><g:link controller="user">Users</g:link></li>
+            </ul>
+        </div>
+         </td>
+         <td><p style="margin-left:20px;width:80%">Reload Application, Export/Import configuration.</p>
+         <br>
+        <div class="dialog" style="margin-left:20px;width:60%;">
+            <ul style="margin-left:25px;">
+                <li class="controller"><g:link controller="application">Application Management</g:link></li>
+            </ul>
+        </div>
+        </td>
+         </table>  </div>
+         <br>
+         <br>
 <!--
         <h2 style="margin-left:20px;">Modeled Managed Objects</h2>
         <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define your connections and datasources, model your managed objects, and maintain them.</p>

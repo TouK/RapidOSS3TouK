@@ -42,7 +42,7 @@ start() {
       fi
    	##starts the RS service
    	. $GRAILS_HOME/bin/startGrails run-app
-    JAVA_OPTS=" -Xmx"$MAX_MEMORY_SIZE"m -Ddisable.auto.recompile=true -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., -Dgroovy.full.stacktrace=false $JAVA_OPTS"
+    JAVA_OPTS=" -Xmx"$MAX_MEMORY_SIZE"m -Ddisable.auto.recompile=true -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp -Dgrails.env=production -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., -Dgroovy.full.stacktrace=false $JAVA_OPTS"
 	startGrails com.ifountain.grails.RapidGrailsScriptRunner run-app &
    echo $! >> $PIDFILE
 

@@ -48,7 +48,7 @@ class JsecDbRealm {
             role {
                 eq('name', roleName)
             }
-            user {
+            rsUser {
                 eq('username', principal)
             }
         }
@@ -62,7 +62,7 @@ class JsecDbRealm {
             role {
                 'in'('name', roles)
             }
-            user {
+            rsUser {
                 eq('username', principal)
             }
         }
@@ -78,7 +78,7 @@ class JsecDbRealm {
         // the required permission's type and project code.
         def criteria = UserPermissionRel.createCriteria()
         def permissions = criteria.list {
-            user {
+            rsUser {
                 eq('username', principal)
             }
             permission {
@@ -123,7 +123,7 @@ class JsecDbRealm {
         // If not, does he gain it through a role?
         //
         // First, find the roles that the user has.
-        def user = User.findByUsername(principal)
+        def user = RsUser.findByUsername(principal)
         def roles = UserRoleRel.findAllByUser(user)
 
         // If the user has no roles, then he obviously has no permissions

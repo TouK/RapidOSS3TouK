@@ -370,3 +370,23 @@ padding:0pt;
 	color:#323230;
 
 }
+.loginbox {
+	width:300px;
+	background-color:#ECC898;
+	position:absolute;
+	left:40%;
+	top:20%;
+	padding:8px;
+	border: #CFB39B 1px solid;
+}
+
+.login {
+	background-color:#F7E3B1;
+}
+
+.login td {
+	font-weight:bold;
+	vertical-align:middle;
+	color:#AF670A;
+	font-size:13px;
+}

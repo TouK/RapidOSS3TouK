@@ -111,7 +111,7 @@ padding:7px 12px;
     padding-left: 25px;
 }
 .menuButton a.logout {
-    background: url(../images/skin/house.png) center left no-repeat;
+    background: url(../images/skin/logout.png) center left no-repeat;
     color: #333;
     padding-left:25px;
     position:absolute;

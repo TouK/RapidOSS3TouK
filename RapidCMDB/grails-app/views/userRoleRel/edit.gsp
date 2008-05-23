@@ -11,6 +11,7 @@
             <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
             <span class="menuButton"><g:link class="list" action="list">UserRoleRel List</g:link></span>
             <span class="menuButton"><g:link class="create" action="create">New UserRoleRel</g:link></span>
+            <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
         </div>
         <div class="body">
             <h1>Edit UserRoleRel</h1>

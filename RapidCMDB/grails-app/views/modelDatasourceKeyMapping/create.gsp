@@ -11,6 +11,7 @@
         if (params["modelDatasource.id"] != null) {
     %>
         <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'modelDatasource/show/' + params["modelDatasource.id"])}">${ModelDatasource.get(params["modelDatasource.id"])?.datasource?.name}</a></span>
+        <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
     <%
         }
     %>

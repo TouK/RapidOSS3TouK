@@ -5,12 +5,13 @@
   <title>Login</title>
 </head>
 <body>
+<div class="front"><h1 >Login</h1></div>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
   </g:if>
   <g:form action="signIn">
     <input type="hidden" name="targetUri" value="${targetUri}" />
-   <div class="front"><h1 >Login</h1></div>
+
    <div class="loginbox">
        <center>
        <table class="login">

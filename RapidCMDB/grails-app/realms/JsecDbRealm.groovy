@@ -124,7 +124,7 @@ class JsecDbRealm {
         //
         // First, find the roles that the user has.
         def user = RsUser.findByUsername(principal)
-        def roles = UserRoleRel.findAllByUser(user)
+        def roles = UserRoleRel.findAllByRsUser(user)
 
         // If the user has no roles, then he obviously has no permissions
         // via roles.

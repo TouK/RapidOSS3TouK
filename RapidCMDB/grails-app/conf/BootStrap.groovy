@@ -31,7 +31,7 @@ class BootStrap {
 			adminUser = new RsUser(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
 			adminUser.save();    
 		}
-        new UserRoleRel(user: adminUser, role: adminRole).save()
+        new UserRoleRel(rsUser: adminUser, role: adminRole).save()
         def rcmdbDatasource = RCMDBDatasource.findByName(RapidCMDBConstants.RCMDB);
         if (rcmdbDatasource == null) {
             new RCMDBDatasource(name: RapidCMDBConstants.RCMDB).save();

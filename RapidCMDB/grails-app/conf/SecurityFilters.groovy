@@ -37,7 +37,7 @@ class SecurityFilters {
 	            }
             }
         }
-        def adminControllers = ["user", "userRoleRel", 
+        def adminControllers = ["rsUser", "userRoleRel", 
         						"application",
         						 "model", "modelDatasource", "modelDatasourceKeyMapping", "modelRelation", "modelProperty"];
         authorization(controller:"(" + adminControllers.join("|")+ ")", action:"*"){

@@ -50,7 +50,7 @@
 		    </thead>
 
 		    <tbody>
-		    <g:each in="${UserRoleRel.findAllByUser(rsUser)}" status="i" var="userRoleRel">
+		    <g:each in="${UserRoleRel.findAllByRsUser(rsUser)}" status="i" var="userRoleRel">
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
 			    <td><g:link action="show" controller="userRoleRel" id="${userRoleRel.id}">${userRoleRel.role?.name.encodeAsHTML()}</g:link></td>

@@ -10,7 +10,6 @@ import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInj
 import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
 import org.codehaus.groovy.grails.commons.GrailsClass
-import model.ModelModificationSqls
 import org.hibernate.cfg.ImprovedNamingStrategy
 import com.ifountain.rcmdb.utils.ConfigurationImportExportUtils
 import datasource.BaseDatasource
@@ -60,42 +59,6 @@ class ApplicationController {
                 model.save(flush: true);
             }
         }
-//        def droppedTables = [:];
-//        def sqlToBeExecuted = [];
-
-       /* ModelModificationSqls.list().each {
-            def sql = it.sqlStatement;
-            if (sql.startsWith("DROP TABLE")) {
-                def tableName = sql.substring(10).trim();
-                droppedTables.put(tableName, tableName);
-                sqlToBeExecuted.add(sql);
-            }
-            else {
-                def wordsInSql = sql.split("\\s+");
-                def tableName;
-                if (sql.startsWith("UPDATE")) {
-                    tableName = wordsInSql[1];
-                }
-                else if (sql.startsWith("ALTER TABLE")) {
-                    tableName = wordsInSql[2];
-                }
-                if (!droppedTables.containsKey(tableName)) {
-                    sqlToBeExecuted.add(sql);
-                }
-            }
-        }
-        sqlToBeExecuted.each {String sql->
-            try
-            {
-                println "executing sql: " + sql;
-                sessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();
-            }
-            catch (t)
-            {
-                t.printStackTrace();
-            }
-        }   */
-        ModelModificationSqls.list()*.delete(flush: true);
         flash.message = "Reloading application."
         render(view: "application", controller: "application");
         GroovyPagesTemplateEngine.pageCache.clear();

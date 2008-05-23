@@ -110,6 +110,13 @@ padding:7px 12px;
     color: #333;
     padding-left: 25px;
 }
+.menuButton a.logout {
+    background: url(../images/skin/house.png) center left no-repeat;
+    color: #333;
+    padding-left:25px;
+    position:fixed;
+    right:10;
+}
 
 a.refresh {
     background: url(../images/skin/arrow_refresh.png) center left no-repeat;

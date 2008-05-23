@@ -1,6 +1,6 @@
 package auth;
 class UserPermissionRel {
-    RsUser user
+    RsUser rsUser
     Permission permission
     String target
     String actions

@@ -11,7 +11,8 @@
   <g:form action="signIn">
     <input type="hidden" name="targetUri" value="${targetUri}" />
    <div class="loginbox">
-    <table class="login">
+       <center>
+       <table class="login">
       <tbody>
         <tr>
           <td>Username:</td>
@@ -31,6 +32,7 @@
         </tr>
       </tbody>
     </table>
+    </center>
    </div>
   </g:form>
 </body>

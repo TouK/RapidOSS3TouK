@@ -373,9 +373,6 @@ padding:0pt;
 .loginbox {
 	width:300px;
 	background-color:#ECC898;
-	position:absolute;
-	left:40%;
-	top:20%;
 	padding:8px;
 	border: #CFB39B 1px solid;
 }

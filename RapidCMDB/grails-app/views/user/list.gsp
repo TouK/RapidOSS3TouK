@@ -1,5 +1,5 @@
 
-<%@ page import="auth.User" %>
+<%@ page import="auth.RsUser" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -24,17 +24,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <g:each in="${userList}" status="i" var="user">
+                    <g:each in="${userList}" status="i" var="rsUser">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td><g:link action="show" id="${user.id}">${user.username?.encodeAsHTML()}</g:link></td>
+                            <td><g:link action="show" id="${rsUser.id}">${rsUser.username?.encodeAsHTML()}</g:link></td>
                         </tr>
                     </g:each>
                     </tbody>
                 </table>
             </div>
             <div class="paginateButtons">
-                <g:paginate total="${User.count()}" />
+                <g:paginate total="${RsUser.count()}" />
             </div>
         </div>
     </body>

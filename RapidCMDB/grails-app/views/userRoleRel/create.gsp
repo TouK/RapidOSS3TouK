@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'user/show/' + userRoleRel?.user?.id)}">${userRoleRel?.user?.username}</a></span>
+            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'rsUser/show/' + userRoleRel?.rsUser?.id)}">${userRoleRel?.rsUser?.username}</a></span>
         </div>
         <div class="body">
             <h1>Assign Role</h1>
@@ -27,7 +27,7 @@
                         	<%
 		                        if (userId != null) {
 		                    %>
-		                    <input type="hidden" name="user.id" value="${userId}"/>
+		                    <input type="hidden" name="rsUser.id" value="${userId}"/>
 		                    <%
 		                        }
 		                        

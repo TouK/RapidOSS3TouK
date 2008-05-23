@@ -1,5 +1,5 @@
 
-<%@ page import="auth.User" %>
+<%@ page import="auth.RsUser" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -16,9 +16,9 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <g:hasErrors bean="${user}">
+            <g:hasErrors bean="${rsUser}">
             <div class="errors">
-                <g:renderErrors bean="${user}" as="list" />
+                <g:renderErrors bean="${rsUser}" as="list" />
             </div>
             </g:hasErrors>
             <g:if test="${flash.errors}">
@@ -39,8 +39,8 @@
                                 <td valign="top" class="name">
                                     <label for="username">Username:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:user,field:'username','errors')}">
-                                    <input type="text" id="username" name="username" value="${fieldValue(bean:user,field:'username')}"/>
+                                <td valign="top" class="value ${hasErrors(bean:rsUser,field:'username','errors')}">
+                                    <input type="text" id="username" name="username" value="${fieldValue(bean:rsUser,field:'username')}"/>
                                 </td>
                             </tr> 
                         
@@ -48,7 +48,7 @@
                                 <td valign="top" class="name">
                                     <label for="password1">Password:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:user,field:'passwordHash','errors')}">
+                                <td valign="top" class="value ${hasErrors(bean:rsUser,field:'passwordHash','errors')}">
                                     <input type="password" id="password1" name="password1" value=""/>
                                 </td>
                             </tr> 
@@ -57,7 +57,7 @@
                                 <td valign="top" class="name">
                                     <label for="password2">Confirm Password:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:user,field:'passwordHash','errors')}">
+                                <td valign="top" class="value ${hasErrors(bean:rsUser,field:'passwordHash','errors')}">
                                     <input type="password" id="password2" name="password2" value=""/>
                                 </td>
                             </tr>                             

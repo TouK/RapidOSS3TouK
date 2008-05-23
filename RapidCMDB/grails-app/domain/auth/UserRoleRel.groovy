@@ -1,10 +1,10 @@
 package auth;
 class UserRoleRel {
-    RsUser user
+    RsUser rsUser
     Role role
     
     static belongsTo = [RsUser, Role]
     static constraints={       
-     	user(unique:["role"])
+     	rsUser(unique:["role"])
     }
 }

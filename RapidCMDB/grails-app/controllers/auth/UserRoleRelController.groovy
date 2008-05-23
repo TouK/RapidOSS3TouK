@@ -25,10 +25,10 @@ class UserRoleRelController {
         def userRoleRel = UserRoleRel.get( params.id )
         if(userRoleRel) {
 	        try{
-		        def userId = userRoleRel.user?.id;
+		        def userId = userRoleRel.rsUser?.id;
                 userRoleRel.delete(flush:true)
                 flash.message = "Role ${userRoleRel.role} unassigned"
-                redirect(action: show, controller: 'user', id: userId)
+                redirect(action: show, controller: 'rsUser', id: userId)
             }
             catch(e){
                 def errors =[message(code:"default.couldnot.delete", args:[UserRoleRel.class.getName(), userRoleRel])]
@@ -75,17 +75,17 @@ class UserRoleRelController {
     def create = {
         def userRoleRel = new UserRoleRel()
         userRoleRel.properties = params
-        return ['userRoleRel':userRoleRel, 'userId':params["user.id"]]
+        return ['userRoleRel':userRoleRel, 'userId':params["rsUser.id"]]
     }
 
     def save = {
         def userRoleRel = new UserRoleRel(params)
         if(!userRoleRel.hasErrors() && userRoleRel.save()) {
             flash.message = "UserRoleRel ${userRoleRel.id} created"
-            redirect(action: show, controller: 'user', id: userRoleRel.user?.id)
+            redirect(action: show, controller: 'rsUser', id: userRoleRel.rsUser?.id)
         }
         else {
-            render(view:'create',model:[userRoleRel:userRoleRel, userId:params["user.id"]])
+            render(view:'create',model:[userRoleRel:userRoleRel, userId:params["rsUser.id"]])
         }
     }
 }

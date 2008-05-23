@@ -14,27 +14,27 @@ class RsUserController {
     }
 
     def show = {
-        def user = RsUser.get( params.id )
+        def rsUser = RsUser.get( params.id )
 
-        if(!user) {
+        if(!rsUser) {
             flash.message = "User not found with id ${params.id}"
             redirect(action:list)
         }
-        else { return [ user : user ] }
+        else { return [ rsUser : rsUser ] }
     }
 
     def delete = {
-        def user = RsUser.get( params.id )
-        if(user) {
+        def rsUser = RsUser.get( params.id )
+        if(rsUser) {
             try{
-                user.delete(flush:true)
+                rsUser.delete(flush:true)
                 flash.message = "User ${params.id} deleted"
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[RsUser.class.getName(), user])]
+                def errors =[message(code:"default.couldnot.delete", args:[RsUser.class.getName(), rsUser])]
                 flash.errors = errors;
-                redirect(action:show, id:user.id) 
+                redirect(action:show, id:rsUser.id) 
             }
         }
         else {
@@ -44,39 +44,39 @@ class RsUserController {
     }
 
     def edit = {
-        def user = RsUser.get( params.id )
+        def rsUser = RsUser.get( params.id )
 
-        if(!user) {
+        if(!rsUser) {
             flash.message = "User not found with id ${params.id}"
             redirect(action:list)
         }
         else {
-            return [ user : user ]
+            return [ rsUser : rsUser ]
         }
     }
 
     def update = {
-        def user = User.get( params.id )
+        def rsUser = RsUser.get( params.id )
         
-        if(user) {
+        if(rsUser) {
 	        def password1 = params["password1"];
 		    def password2 = params["password2"];
 		    if(password1 != password2){
 			    def errors =[message(code:"default.passwords.dont.match", args:[])]
 	            flash.errors = errors;
-	            redirect(action:show,id:user.id)
+	            redirect(action:show,id:rsUser.id)
 	            return;
 			}
 			if(password1 != ""){
-				user.passwordHash = new Sha1Hash(password1).toHex();	
+				rsUser.passwordHash = new Sha1Hash(password1).toHex();	
 			}
-            user.username = params["username"];
-            if(!user.hasErrors() && user.save()) {
+            rsUser.username = params["username"];
+            if(!rsUser.hasErrors() && rsUser.save()) {
                 flash.message = "User ${params.id} updated"
-                redirect(action:show,id:user.id)
+                redirect(action:show,id:rsUser.id)
             }
             else {
-                render(view:'edit',model:[user:user])
+                render(view:'edit',model:[rsUser:rsUser])
             }
         }
         else {
@@ -86,9 +86,9 @@ class RsUserController {
     }
 
     def create = {
-        def user = new RsUser()
-        user.properties = params
-        return ['user':user]
+        def rsUser = new RsUser()
+        rsUser.properties = params
+        return ['rsUser':rsUser]
     }
 
     def save = {
@@ -97,17 +97,17 @@ class RsUserController {
 	    if(password1 != password2){
 		    def errors =[message(code:"default.passwords.dont.match", args:[])]
             flash.errors = errors;
-            render(view:'create',model:[user:new RsUser(username:params["username"])])
+            render(view:'create',model:[rsUser:new RsUser(username:params["username"])])
             return;
 		}
 		
-        def user = new RsUser(username: params["username"], passwordHash: new Sha1Hash(password1).toHex());
-        if(!user.hasErrors() && user.save()) {
-            flash.message = "User ${user.id} created"
-            redirect(action:show,id:user.id)
+        def rsUser = new RsUser(username: params["username"], passwordHash: new Sha1Hash(password1).toHex());
+        if(!rsUser.hasErrors() && rsUser.save()) {
+            flash.message = "User ${rsUser.id} created"
+            redirect(action:show,id:rsUser.id)
         }
         else {
-            render(view:'create',model:[user:user])
+            render(view:'create',model:[rsUser:rsUser])
         }
     }
 }

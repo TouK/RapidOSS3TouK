@@ -39,10 +39,10 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="user">User:</label>
+                                    <label for="rsUser">User:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:userRoleRel,field:'user','errors')}">
-                                    <g:select optionKey="id" from="${auth.User.list()}" name="user.id" value="${userRoleRel?.user?.id}" ></g:select>
+                                <td valign="top" class="value ${hasErrors(bean:userRoleRel,field:'rsUser','errors')}">
+                                    <g:select optionKey="id" from="${auth.RsUser.list()}" name="rsUser.id" value="${userRoleRel?.rsUser?.id}" ></g:select>
                                 </td>
                             </tr> 
                         

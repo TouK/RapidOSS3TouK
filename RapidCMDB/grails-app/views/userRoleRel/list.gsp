@@ -37,7 +37,7 @@
                         
                             <td>${userRoleRel.role?.encodeAsHTML()}</td>
                         
-                            <td>${userRoleRel.user?.encodeAsHTML()}</td>
+                            <td>${userRoleRel.rsUser?.encodeAsHTML()}</td>
                         
                         </tr>
                     </g:each>

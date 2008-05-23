@@ -30,7 +30,7 @@
                     <tbody>
                         <tr class="prop">
                             <td valign="top" class="name">Username:</td>
-                            <td valign="top" class="value">${user.username}</td>
+                            <td valign="top" class="value">${rsUser.username}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -39,7 +39,7 @@
             
             <div style="margin-top:20px;">
         	<span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Role List</span>
-        	<span class="menuButton"><g:link controller="userRoleRel" params="['user.id':user?.id]" class="create" action="create">Assign Role</g:link></span>
+        	<span class="menuButton"><g:link controller="userRoleRel" params="['rsUser.id':rsUser?.id]" class="create" action="create">Assign Role</g:link></span>
             
 	    <div class="list">
 		<table>
@@ -50,7 +50,7 @@
 		    </thead>
 
 		    <tbody>
-		    <g:each in="${UserRoleRel.findAllByUser(user)}" status="i" var="userRoleRel">
+		    <g:each in="${UserRoleRel.findAllByUser(rsUser)}" status="i" var="userRoleRel">
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
 			    <td><g:link action="show" controller="userRoleRel" id="${userRoleRel.id}">${userRoleRel.role?.name.encodeAsHTML()}</g:link></td>
@@ -66,7 +66,7 @@
             
                 <div class="buttons" style="margin-top:30px;">
                 <g:form>
-                    <input type="hidden" name="id" value="${user?.id}" />
+                    <input type="hidden" name="id" value="${rsUser?.id}" />
                     <span class="button"><g:actionSubmit class="edit" value="Edit" /></span>
                     <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete" /></span>
                 </g:form>

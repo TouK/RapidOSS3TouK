@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'user/show/' + userRoleRel?.user?.id)}">${userRoleRel?.user?.username}</a></span>
+            <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'rsUser/show/' + userRoleRel?.rsUser?.id)}">${userRoleRel?.rsUser?.username}</a></span>
         </div>
         <div class="body">
             <h1>Role</h1>

@@ -1,7 +1,7 @@
 package auth;  
 
 import org.jsecurity.crypto.hash.Sha1Hash         
-class UserController {
+class RsUserController {
     
     def index = { redirect(action:list,params:params) }
 
@@ -10,11 +10,11 @@ class UserController {
 
     def list = {
         if(!params.max) params.max = 10
-        [ userList: User.list( params ) ]
+        [ userList: RsUser.list( params ) ]
     }
 
     def show = {
-        def user = User.get( params.id )
+        def user = RsUser.get( params.id )
 
         if(!user) {
             flash.message = "User not found with id ${params.id}"
@@ -24,7 +24,7 @@ class UserController {
     }
 
     def delete = {
-        def user = User.get( params.id )
+        def user = RsUser.get( params.id )
         if(user) {
             try{
                 user.delete(flush:true)
@@ -32,7 +32,7 @@ class UserController {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[User.class.getName(), user])]
+                def errors =[message(code:"default.couldnot.delete", args:[RsUser.class.getName(), user])]
                 flash.errors = errors;
                 redirect(action:show, id:user.id) 
             }
@@ -44,7 +44,7 @@ class UserController {
     }
 
     def edit = {
-        def user = User.get( params.id )
+        def user = RsUser.get( params.id )
 
         if(!user) {
             flash.message = "User not found with id ${params.id}"
@@ -86,7 +86,7 @@ class UserController {
     }
 
     def create = {
-        def user = new User()
+        def user = new RsUser()
         user.properties = params
         return ['user':user]
     }
@@ -97,11 +97,11 @@ class UserController {
 	    if(password1 != password2){
 		    def errors =[message(code:"default.passwords.dont.match", args:[])]
             flash.errors = errors;
-            render(view:'create',model:[user:new User(username:params["username"])])
+            render(view:'create',model:[user:new RsUser(username:params["username"])])
             return;
 		}
 		
-        def user = new User(username: params["username"], passwordHash: new Sha1Hash(password1).toHex());
+        def user = new RsUser(username: params["username"], passwordHash: new Sha1Hash(password1).toHex());
         if(!user.hasErrors() && user.save()) {
             flash.message = "User ${user.id} created"
             redirect(action:show,id:user.id)

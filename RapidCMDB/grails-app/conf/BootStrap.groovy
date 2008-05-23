@@ -3,7 +3,7 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.scripting.ScriptManager
 import org.jsecurity.crypto.hash.Sha1Hash
 import auth.Role
-import auth.User
+import auth.RsUser
 import auth.UserRoleRel
 import org.apache.commons.beanutils.ConvertUtils
 import com.ifountain.rcmdb.domain.converter.DateConverter
@@ -26,9 +26,9 @@ class BootStrap {
 	    	userRole = new Role(name: "User");
 	    	userRole.save();	
 	    }
-	    def adminUser = User.findByUsername("rsadmin");
+	    def adminUser = RsUser.findByUsername("rsadmin");
 	    if(!adminUser){
-			adminUser = new User(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
+			adminUser = new RsUser(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
 			adminUser.save();    
 		}
         new UserRoleRel(user: adminUser, role: adminRole).save()

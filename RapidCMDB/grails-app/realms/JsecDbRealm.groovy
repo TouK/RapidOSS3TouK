@@ -2,7 +2,7 @@ import org.jsecurity.authc.AccountException
 import org.jsecurity.authc.IncorrectCredentialsException
 import org.jsecurity.authc.UnknownAccountException
 import org.jsecurity.authc.SimpleAccount
-import auth.User;
+import auth.RsUser;
 import auth.UserRoleRel;
 import auth.UserPermissionRel;
 import auth.RolePermissionRel;
@@ -24,7 +24,7 @@ class JsecDbRealm {
         // Get the user with the given username. If the user is not
         // found, then they don't have an account and we throw an
         // exception.
-        def user = User.findByUsername(username)
+        def user = RsUser.findByUsername(username)
         if (!user) {
             throw new UnknownAccountException("No account found for user [${username}]")
         }

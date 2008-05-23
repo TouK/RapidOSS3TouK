@@ -1,5 +1,5 @@
 package auth;
-class User {
+class RsUser {
     String username
     String passwordHash
 	static hasMany = [roles: UserRoleRel];

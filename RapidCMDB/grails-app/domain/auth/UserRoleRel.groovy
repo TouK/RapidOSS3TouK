@@ -1,9 +1,9 @@
 package auth;
 class UserRoleRel {
-    User user
+    RsUser user
     Role role
     
-    static belongsTo = [User, Role]
+    static belongsTo = [RsUser, Role]
     static constraints={       
      	user(unique:["role"])
     }

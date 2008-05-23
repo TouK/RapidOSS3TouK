@@ -27,7 +27,6 @@ import org.hibernate.cfg.ImprovedNamingStrategy
  * Date: Apr 2, 2008
  * Time: 9:16:40 AM
  * To change this template use File | Settings | File Templates.
-    it.remove();
  */
 
 return "Hello World!"

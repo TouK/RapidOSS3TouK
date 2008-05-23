@@ -91,7 +91,7 @@
         <br>
         <div class="dialog" style="margin-left:20px;">
             <ul  style="margin-left:25px;">
-                <li class="controller"><g:link controller="user">Users</g:link></li>
+                <li class="controller"><g:link controller="rsUser">Users</g:link></li>
             </ul>
         </div>
          </td>

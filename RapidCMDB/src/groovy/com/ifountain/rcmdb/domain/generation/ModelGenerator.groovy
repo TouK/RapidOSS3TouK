@@ -9,6 +9,10 @@ import model.GeneratedModelProperty
 import model.GeneratedModelRelation
 import model.GeneratedModel
 import com.ifountain.rcmdb.domain.AbstractDomainOperation
+import com.ifountain.rcmdb.domain.constraints.KeyConstraint
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.converter.DateConverter
 
 class ModelGenerator
 {
@@ -254,15 +258,15 @@ class ModelMetaData
                 }
                 federatedPropertyConfiguration["lazy"] = it.lazy;
                 propertyConfigurations[it.name] = federatedPropertyConfiguration;
-                constraints[it.name]["blank"] = it.blank;
-                constraints[it.name]["nullable"] = it.blank;
+                constraints[it.name][ConstrainedProperty.BLANK_CONSTRAINT] = it.blank;
+                constraints[it.name][ConstrainedProperty.NULLABLE_CONSTRAINT] = it.blank;
             }
             else
             {
                 if(!masterDatasource || !masterDatasource.keys.containsKey(it.name))
                 {
-                    constraints[it.name]["blank"] = it.blank;
-                    constraints[it.name]["nullable"] = it.blank;
+                    constraints[it.name][ConstrainedProperty.BLANK_CONSTRAINT] = it.blank;
+                    constraints[it.name][ConstrainedProperty.NULLABLE_CONSTRAINT] = it.blank;
                 }
                 else
                 {
@@ -279,14 +283,7 @@ class ModelMetaData
                     uniqueKeys += key;
                 }
             }
-            if(!uniqueKeys.isEmpty())
-            {
-                constraints[masterKeyPropName]["unique"] = uniqueKeys;     
-            }
-            else
-            {
-                constraints[masterKeyPropName]["unique"] = true;    
-            }
+            constraints[masterKeyPropName][KeyConstraint.KEY_CONSTRAINT] = uniqueKeys;
         }
     }
 
@@ -341,7 +338,9 @@ class ModelMetaData
         }
         else if(modelProperty.type == model.ModelProperty.dateType)
         {
-            return "new Date(${modelProperty.defaultValue})";
+            DateConverter converter = RapidConvertUtils.getInstance().lookup (Date.class);
+            Date date = converter.formater.parse (modelProperty.defaultValue);
+            return "new Date(${date.getTime()})";
         }
         else
         {

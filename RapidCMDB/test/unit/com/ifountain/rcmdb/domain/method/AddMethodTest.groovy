@@ -11,6 +11,10 @@ import com.ifountain.rcmdb.domain.converter.LongConverter
 import org.apache.commons.beanutils.ConvertUtils
 import java.text.SimpleDateFormat
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import org.springframework.validation.Errors
+import org.springframework.validation.Validator
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import org.codehaus.groovy.grails.validation.GrailsDomainClassValidator
 
 /**
 * Created by IntelliJ IDEA.
@@ -35,7 +39,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethod()
     {
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, [:], []);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, [:], []);
         def props = [prop1:expectedDomainObject1.prop1];
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals (expectedDomainObject1, addedObject);
@@ -53,6 +57,20 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals (prevId+1, addedObject.id);
     }
 
+
+    public void testIfKeyIsNullReturnsError()
+    {
+        fail("Implement later");
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, [:], ["prop1"]);
+        def props = [:];
+        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        assertTrue (addedObject.hasErrors());
+
+        props = [prop1:"   "];
+        addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        assertTrue (addedObject.hasErrors());
+    }
+
     public void testAddMethodWithStringProperties()
     {
         def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);
@@ -63,7 +81,7 @@ class AddMethodTest extends RapidCmdbTestCase{
             RapidConvertUtils.getInstance().register (new DateConverter(dateFormatString), Date.class)
             RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
             AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, [:], []);
+            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, [:], []);
             def props = [prop1:expectedDomainObject1.prop1,  prop4:"100", prop5:"2000-01-01"];
             def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
             assertEquals (100, addedObject.prop4);
@@ -77,10 +95,20 @@ class AddMethodTest extends RapidCmdbTestCase{
         }
     }
 
+
+    public void testAddMethodWithInvalidData()
+    {
+        fail("Implement later");
+        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, [:], []);
+        def props = [prop1:expectedDomainObject1.prop1];
+        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+    }
+
     public void testAddMethodWithUndefinedProperties()
     {
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, [:], []);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, [:], []);
         def props = [prop1:expectedDomainObject1.prop1, undefinedProperty:"undefinedProp"];
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals (expectedDomainObject1, addedObject);
@@ -97,7 +125,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         def relations = ["rel1":new Relation("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE),
         "rel2":new Relation("rel2", "revRel2", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE)];
 
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, relations, []);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, relations, []);
         def props = [prop1:expectedDomainObject1.prop1, rel1:[expectedDomainObject2, expectedDomainObject3], rel2:expectedDomainObject4];
         def addedObject1 = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
 
@@ -113,7 +141,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testIfObjectAlreadyExistsUpdatesObjects()
     {
         AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, [:], ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, [:], ["prop1"]);
         def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         def objectId = addedObject.id;
@@ -136,6 +164,7 @@ class AddMethodDomainObject1
     def static query;
     def static indexList = [];
     def relationsShouldBeAdded;
+    Errors errors;
     String prop1;
     String prop2;
     String prop3;
@@ -151,6 +180,11 @@ class AddMethodDomainObject1
     def static index(objectList)
     {
         indexList.add(objectList);
+    }
+
+    public boolean hasErrors()
+    {
+        return errors && errors.hasErrors();
     }
 
     def addRelation(Map relations)

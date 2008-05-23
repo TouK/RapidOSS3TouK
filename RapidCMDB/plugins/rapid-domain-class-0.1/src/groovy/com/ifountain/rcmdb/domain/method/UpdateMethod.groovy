@@ -5,6 +5,9 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import com.ifountain.rcmdb.domain.IdGenerator
 import org.apache.commons.beanutils.ConvertUtils
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import org.springframework.validation.Errors
+import com.ifountain.rcmdb.domain.util.ValidationUtils
+import org.springframework.validation.Validator
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -35,8 +38,10 @@ class UpdateMethod extends AbstractRapidDomainMethod{
     def relations;
     def keys;
     def fieldTypes = [:]
-    public UpdateMethod(MetaClass mc, Map relations, List keys) {
+    Validator validator;
+    public UpdateMethod(MetaClass mc, Validator validator, Map relations, List keys) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
+        this.validator = validator;
         def fields = mc.theClass.declaredFields;
         fields.each{field->
             fieldTypes[field.name] = field.type;
@@ -63,8 +68,16 @@ class UpdateMethod extends AbstractRapidDomainMethod{
                 relationMap[key] = value;
             }
         }
-        domainObject.index(domainObject);
-        domainObject.addRelation(relationMap);
+        Errors errors = ValidationUtils.validate (validator, domainObject);
+        if(!errors.hasErrors())
+        {
+            domainObject.index(domainObject);
+            domainObject.addRelation(relationMap);
+        }
+        else
+        {
+            domainObject.setProperty("errors", errors);
+        }
         return domainObject;
     }
 

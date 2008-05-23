@@ -143,9 +143,9 @@ class RapidDomainClassGrailsPlugin {
         def mc = dc.metaClass;
         def relations = DomainClassUtils.getRelations(dc, domainClassMap);
         def keys = DomainClassUtils.getKeys(dc);
-        def addMethod = new AddMethod(mc, relations, keys);
+        def addMethod = new AddMethod(mc, dc.validator, relations, keys);
         def removeMethod = new RemoveMethod(mc);
-        def updateMethod = new UpdateMethod(mc, relations, keys);
+        def updateMethod = new UpdateMethod(mc, dc.validator, relations, keys);
         def addRelationMethod = new AddRelationMethod(mc, relations);
         def removeRelationMethod = new RemoveRelationMethod(mc, relations);
         mc.update = {Map props->

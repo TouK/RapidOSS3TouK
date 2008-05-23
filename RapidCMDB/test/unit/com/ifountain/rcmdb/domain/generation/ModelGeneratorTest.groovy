@@ -9,7 +9,9 @@ import datasource.BaseDatasource
 import model.ModelRelation
 import org.apache.commons.io.FileUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import com.ifountain.rcmdb.domain.AbstractDomainOperation;
+import com.ifountain.rcmdb.domain.AbstractDomainOperation
+import com.ifountain.rcmdb.domain.converter.DateConverter
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -190,37 +192,47 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
     public void testWithSomeProperties()
     {
-        def model = new MockModel(name:"Class1");
-        def datasource1 = new BaseDatasource(name:"ds1-sample");
-        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
-        model.datasources += modelDatasource1;
+        def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);
+        try
+        {
+            String dateFormatString = "yyyy-dd-MM HH:mm:ss.SSS";
+            def converter = new DateConverter(dateFormatString);
+            RapidConvertUtils.getInstance().register (converter, Date.class)
+            def model = new MockModel(name:"Class1");
+            def datasource1 = new BaseDatasource(name:"ds1-sample");
+            def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
+            model.datasources += modelDatasource1;
 
-        def date = System.currentTimeMillis();
-        def keyProp = new ModelProperty(name:"prop1", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:"prop2 default value");
-        model.modelProperties += keyProp;
-        model.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
-        model.modelProperties += new ModelProperty(name:"prop3", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:date);
-        model.modelProperties += new ModelProperty(name:"prop4", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model);
+            def date = System.currentTimeMillis();
+            def keyProp = new ModelProperty(name:"prop1", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:"prop2 default value");
+            model.modelProperties += keyProp;
+            model.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
+            model.modelProperties += new ModelProperty(name:"prop3", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:converter.formater.format(new Date(date)));
+            model.modelProperties += new ModelProperty(name:"prop4", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model);
 
-        modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
+            modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
 
-        ModelGenerator.getInstance().generateModel(model);
-        assertTrue (new File(base_directory + "${model.name}.groovy").exists());
-        Class cls = compileClass(model.name);
-        def object = cls.newInstance();
-        assertTrue(object.hasMany instanceof Map);
-        assertTrue(object.hasMany.isEmpty());
-        assertTrue(object.belongsTo instanceof List);
-        assertTrue(object.belongsTo.isEmpty());
-        assertTrue(object.mappedBy instanceof Map);
-        assertTrue(object.mappedBy.isEmpty());
-        assertTrue(object.transients instanceof List);
-        assertTrue(object.transients.isEmpty());
+            ModelGenerator.getInstance().generateModel(model);
+            assertTrue (new File(base_directory + "${model.name}.groovy").exists());
+            Class cls = compileClass(model.name);
+            def object = cls.newInstance();
+            assertTrue(object.hasMany instanceof Map);
+            assertTrue(object.hasMany.isEmpty());
+            assertTrue(object.belongsTo instanceof List);
+            assertTrue(object.belongsTo.isEmpty());
+            assertTrue(object.mappedBy instanceof Map);
+            assertTrue(object.mappedBy.isEmpty());
+            assertTrue(object.transients instanceof List);
+            assertTrue(object.transients.isEmpty());
 
-        assertEquals("prop2 default value", object.prop1);
-        assertEquals(1, object.prop2);
-        assertEquals(new Date(date), object.prop3);
-        assertNotNull (object.constraints);
+            assertEquals("prop2 default value", object.prop1);
+            assertEquals(1, object.prop2);
+            assertEquals(new Date(date), object.prop3);
+            assertNotNull (object.constraints);
+        }finally
+        {
+            RapidConvertUtils.getInstance().register (prevDateConf, Date.class)
+        }
 
     }
 

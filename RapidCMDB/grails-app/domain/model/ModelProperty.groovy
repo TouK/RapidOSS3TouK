@@ -58,7 +58,7 @@ class ModelProperty {
                     }
                     catch(org.apache.commons.beanutils.ConversionException e)
                     {
-                        return ['modelproperty.defaultvalue.invaliddate', ((DateConverter)ConvertUtils.lookup(Date.class)).format]
+                        return ['modelproperty.defaultvalue.invaliddate', converter.format]
                     }
                 } 
             }
@@ -115,7 +115,7 @@ class ModelProperty {
     String toString(){
         return "$name";
     }
-    
+
     def xml(){
        	def property = {
         		property{
@@ -125,7 +125,7 @@ class ModelProperty {
     			defaultValue(defaultValue)
     			def datasourceName = null;
     			if(propertyDatasource != null) datasourceName = propertyDatasource.datasource.name;
-    			datasource(datasourceName)			
+    			datasource(datasourceName)
     			def propertyNameSpecifyingDatasource = null;
     			if(propertySpecifyingDatasource != null) propertyNameSpecifyingDatasource = propertySpecifyingDatasource.name;
     			propertySpecifyingDatasource(propertyNameSpecifyingDatasource)
@@ -133,7 +133,7 @@ class ModelProperty {
     			lazy(lazy)
     		}
     	}
-    	
+
     	return property;
-    }    
+    }
 }

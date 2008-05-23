@@ -36,7 +36,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         AddMethodDomainObject1 relatedObject = new AddMethodDomainObject1(id:100);
 
         def relations = ["rel1":new Relation("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE)];
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, relations, ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, relations, ["prop1"]);
         
         def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
 
@@ -44,7 +44,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd, addedObject);
 
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject];
-        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, relations, ["prop1"]);
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, null, relations, ["prop1"]);
         def updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
@@ -66,7 +66,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
 
             def props = [prop1:object.prop1, prop2:"newProp2Value",  prop4:"100", prop5:"2000-01-01"];
-            UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, [:], ["prop1"]);
+            UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, null, [:], ["prop1"]);
             def updatedObject = update.invoke (object, [props] as Object[]);
             assertEquals (100, updatedObject.id);
             assertEquals ("newProp2Value", updatedObject.prop2);

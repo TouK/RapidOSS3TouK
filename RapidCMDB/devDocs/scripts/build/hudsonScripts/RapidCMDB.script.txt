@@ -1,0 +1,88 @@
+############## compiling build scripts ###################
+################################################
+
+rm -rf $GROOVY_HOME/build
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Env.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Parent.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Build.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Test.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleBuild.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/NetcoolModuleBuild.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCompBuild.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCoreBuild.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidExtBuild.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCmdbBuild.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleTest.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CoreModuleTest.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CompModuleTest.groovy
+
+
+#################### running test build and java tests #############
+######################################################
+
+cd RapidModules/
+groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild testBuild
+#groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest 
+#groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest 
+#groovy RapidCMDB/devDocs/scripts/build/CompModuleTest 
+
+
+################### generating test domain classes ##############
+######################################################
+
+cp ../LicencedJars/lib/jdbc/*.jar ../Distribution/RapidServer/lib
+cp ../LicencedJars/lib/smarts/*.jar ../Distribution/RapidServer/lib
+
+scriptFileName1="Sample3Setup"
+scriptFileName2="Sample1Setup"
+cp ../RapidModules/RapidCMDB/scripts/$scriptFileName1.groovy ../Distribution/RapidServer/RapidCMDB/scripts
+cp ../RapidModules/RapidCMDB/scripts/$scriptFileName2.groovy ../Distribution/RapidServer/RapidCMDB/scripts
+
+cd ../Distribution/RapidServer/RapidCMDB/
+export RS_HOME=/root/.hudson/jobs/RapidCMDB/workspace/Distribution/RapidServer
+chmod +x *
+
+#./rs.sh -start
+#dbfile=data/prodDb.script
+#loopcount=0
+#until [ -f $dbfile ]
+#do
+#   if [ $loopcount -gt 300 ]
+#     then
+#        exit 1
+#   fi
+#   sleep 1
+#   loopcount=$(expr $loopcount + 1)
+#done
+
+#sleep 20
+
+#rsbatchInput=input.txt
+#echo "RapidCMDB/script/save?name=$scriptFileName1" >> $rsbatchInput
+#echo "RapidCMDB/script/save?name=$scriptFileName2" >> $rsbatchInput
+#echo "RapidCMDB/script/run/$scriptFileName1" >> $rsbatchInput
+#echo "RapidCMDB/script/run/$scriptFileName2" >> $rsbatchInput
+
+#./rsbatch.sh -commandfile RapidCMDB/$rsbatchInput -host localhost -port 12222
+
+#sleep 2
+#./rs.sh -stop
+
+#rm -rf data
+
+
+#################### running grails tests #####################
+######################################################
+
+cp ../../../RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
+./rs.sh -test
+rm -rf ../../../TestResults/reports
+rm -r test/reports/TESTS-TestSuites.xml
+mv test/reports ../../../TestResults
+
+
+########################### building ####################
+#####################################################
+
+cd ../../../RapidModules
+groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild

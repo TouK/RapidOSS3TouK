@@ -228,14 +228,16 @@ class PropertySummary
     boolean isNullable;
     boolean wasUnique;
     boolean wasNullable;
-    Class propType;
+    Class newPropType;
+    Class oldPropType;
     Object defaultValue;
     public PropertySummary(GrailsDomainClass currentDomainObject, DefaultGrailsDomainClass newDomainObject, String modelName, String propName, boolean isRelation)
     {
         this.modelName = modelName;
         this.isRelation = isRelation;
         this.propName = propName;
-        this.propType = newDomainObject.getPropertyByName(propName).type;
+        this.newPropType = newDomainObject.getPropertyByName(propName).type;
+        this.oldPropType = currentDomainObject.getPropertyByName(propName).type;
         this.defaultValue = newDomainObject.newInstance()[propName];
         ConstrainedProperty oldProp = currentDomainObject.getConstrainedProperties()[propName];
         ConstrainedProperty newProp = newDomainObject.getConstrainedProperties()[propName]
@@ -267,7 +269,7 @@ class PropertySummary
         }
         else
         {
-            if(wasNullable && !isNullable)
+            if(wasNullable && !isNullable || !newPropType.name.equals(oldPropType.name))
             {
                 modelInstance[propName] = getDefaultValue();    
             }
@@ -277,15 +279,15 @@ class PropertySummary
     def getDefaultValue()
     {
         if(defaultValue) return defaultValue;
-        if(propType instanceof String)
+        if(String.isAssignableFrom(newPropType))
         {
             return "RCMDB_Default"
         }
-        else if(propType instanceof Number)
+        else if(Number.isAssignableFrom(newPropType))
         {
             return "-1111";
         }
-        else if(propType instanceof Date)
+        else if(Date.isAssignableFrom(newPropType))
         {
             return new Date(0);
         }

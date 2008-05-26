@@ -32,7 +32,7 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
 
     void setUp() {
         super.setUp();
-        SmartsObject.list()*.delete();
+        SmartsObject.list()*.remove();
 
     }
     void testControllerReturnsExceptionWhenDataParameterIsNullOrEmpty() throws Exception {

@@ -113,9 +113,11 @@
             <div class="dialog" style="margin-left:20px;">
                 <ul style="margin-left:25px;">
                     <%
+                        def otherSearchableClasses = [ObjectId.class.getName()];   
+
                         grailsApplication.domainClasses.each {
                             def mc = it.metaClass;
-                            if (mc.getMetaProperty("searchable") != null && mc.getTheClass().name != ObjectId.class.getName()) {
+                            if (mc.getMetaProperty("searchable") != null && !otherSearchableClasses.contains(mc.getTheClass().name)) {
                     %>
                     <li class="controller"><g:link controller="${it.logicalPropertyName}">${mc.getTheClass().name}</g:link></li>
                     <%

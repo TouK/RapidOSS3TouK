@@ -34,7 +34,7 @@ public class HttpUtilsTest extends RCompTestCase {
     	parameters.put("q", "ifountain");
     	parameters.put("hl", "tr");
         String response = new HttpUtils().doGetRequest("http://www.google.com.tr/search", parameters);
-        assertTrue(response.indexOf("RapidThoughts") > -1);
+        assertTrue(response.indexOf("www.ifountain.com") > -1);
     }
     
     /**

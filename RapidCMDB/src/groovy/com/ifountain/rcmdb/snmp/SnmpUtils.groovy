@@ -136,6 +136,7 @@ public class SnmpUtils {
         Target target = createTarget(version, community, address, retries, timeout, maxSizeResponsePDU);
         snmp.listen();
         OID o = new OID(oid);
+        String tableString = o.toString();
         OID lowerBoundIndex = null;
         OID upperBoundIndex = null;
         if (lowerBoundOid != null) {
@@ -159,8 +160,10 @@ public class SnmpUtils {
                 for (int i = 0; i < event.getColumns().length; i++) {
                     VariableBinding vb = event.getColumns()[i];
                     Map vbMap = new HashMap();
-                    vbMap.put(RSnmpConstants.OID, vb.getOid().toString());
+                    String vbOid = vb.getOid().toString();
+                    vbMap.put(RSnmpConstants.OID, vbOid);
                     vbMap.put(RSnmpConstants.VARBIND_VALUE, vb.getVariable().toString());
+                    vbMap.put("Remainder", new OID(vbOid.substring(tableString.length() -1)).toString());
                     results.add(vbMap);
                 }
             } else {

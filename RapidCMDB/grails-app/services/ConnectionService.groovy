@@ -12,8 +12,13 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
 
     public ConnectionParam getConnectionParam(String connConfigName) {
         def connection = Connection.findByName(connConfigName);
-        def optProps = new CaseInsensitiveMap(connection.properties);        
-        return new ConnectionParam(connection.getClass().getName(), connection.name, connection.connectionClass,optProps)
+        if(connection){
+            def optProps = new CaseInsensitiveMap(connection.properties);
+            optProps.remove("errors");
+            return new ConnectionParam(connection.getClass().getName(), connection.name, connection.connectionClass,optProps)
+        }
+        return null;
+
     }
     public void afterPropertiesSet()
     {

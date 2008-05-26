@@ -99,49 +99,49 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
         }
     }
     
-    public void testReconnectionWithConnectionExceptionThrownWhileSubscription() throws Exception
-    {
-        fail("Reimplement this test");
-        createConnectionParam(connectionName, MockConnectionImpl.class);
-        final List<String> executedMethods = new ArrayList<String>();
-        listeningAdapter = new MockBaseListeningAdapter(connectionName, 100){
-            @Override
-            protected void _subscribe() throws Exception {
-                executedMethods.add("subscribe");
-                if(executedMethods.size() == 1)
-                {
-                    Exception connectionException = new Exception("Exception due to connection");
-                    ((MockConnectionImpl)connection).setConnectionException(connectionException);
-                    param.setConnectionClass(NotConnectedConnection.class.getName());
-                    throw connectionException;
-                }
-            }
-        };
-        
-        TestAction subscribeWaitAction = new SubscribeWaitAction(listeningAdapter);
-        
-        TestActionExecutorThread t1 = new TestActionExecutorThread(subscribeWaitAction);
-        t1.start();
-        
-        Thread.sleep(300);
-        
-        try
-        {
-            assertTrue(t1.isStarted());
-            assertFalse(t1.isExecutedSuccessfully());
-            assertNull(t1.getThrowedException());
-            param.setConnectionClass(MockConnectionImpl.class.getName());
-            
-            Thread.sleep(1500);
-            assertTrue(t1.isStarted());
-            assertTrue(t1.isExecutedSuccessfully());
-            assertNull(t1.getThrowedException());
-        }
-        finally
-        {
-            t1.interrupt();
-        }
-    }
+//    public void testReconnectionWithConnectionExceptionThrownWhileSubscription() throws Exception
+//    {
+//        fail("Reimplement this test");
+//        createConnectionParam(connectionName, MockConnectionImpl.class);
+//        final List<String> executedMethods = new ArrayList<String>();
+//        listeningAdapter = new MockBaseListeningAdapter(connectionName, 100){
+//            @Override
+//            protected void _subscribe() throws Exception {
+//                executedMethods.add("subscribe");
+//                if(executedMethods.size() == 1)
+//                {
+//                    Exception connectionException = new Exception("Exception due to connection");
+//                    ((MockConnectionImpl)connection).setConnectionException(connectionException);
+//                    param.setConnectionClass(NotConnectedConnection.class.getName());
+//                    throw connectionException;
+//                }
+//            }
+//        };
+//
+//        TestAction subscribeWaitAction = new SubscribeWaitAction(listeningAdapter);
+//
+//        TestActionExecutorThread t1 = new TestActionExecutorThread(subscribeWaitAction);
+//        t1.start();
+//
+//        Thread.sleep(300);
+//
+//        try
+//        {
+//            assertTrue(t1.isStarted());
+//            assertFalse(t1.isExecutedSuccessfully());
+//            assertNull(t1.getThrowedException());
+//            param.setConnectionClass(MockConnectionImpl.class.getName());
+//
+//            Thread.sleep(1500);
+//            assertTrue(t1.isStarted());
+//            assertTrue(t1.isExecutedSuccessfully());
+//            assertNull(t1.getThrowedException());
+//        }
+//        finally
+//        {
+//            t1.interrupt();
+//        }
+//    }
     
     public void testThrowsExceptionIfThrownDuringSubscriptionAndConnectionIsConnected() throws Exception
     {

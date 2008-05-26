@@ -22,11 +22,7 @@
  */
 package com.ifountain.smarts.datasource;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.comp.test.util.WaitAction;
@@ -55,33 +51,40 @@ import com.smarts.repos.MR_Ref;
 public class BaseNotificationAdapterTest extends SmartsTestCase {
 
     BaseNotificationAdapter notificationAdapter;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         notificationAdapter = SmartsTestUtils.getNotificationAdapter();
         SmartsTestUtils.archiveAllNotifications();
     }
-    public void testFetchNotificationInstances() throws Exception
-    {
+
+    public void testFetchNotificationInstances() throws Exception {
         String className = "Switch";
         String instanceName = "eraaswiad";
         String eventName = "Down";
         notificationAdapter.createNotification(className, instanceName, eventName, new HashMap<String, Object>());
         Iterator<Map<String, Object>> rset = notificationAdapter.fetchNotifications(className, instanceName, ".*", 10);
         int count = 0;
-        while(rset.hasNext())
-        {
+        while (rset.hasNext()) {
+            int numberOfVoidAtts = 0;
             Map<String, Object> rec = rset.next();
             count++;
             assertEquals(className, rec.get("ClassName"));
-            String[] expectedAttributeNames = notificationAdapter.getAttributeNames(SmartsConstants.NOTIFICATION_CLASS_NAME);
-            String[] expectedRelationNames = notificationAdapter.getRelationNames(SmartsConstants.NOTIFICATION_CLASS_NAME);
-            assertEquals(expectedAttributeNames.length + expectedRelationNames.length, rec.size());
+            List expectedAttributeNames = Arrays.asList(notificationAdapter.getAttributeNames(SmartsConstants.NOTIFICATION_CLASS_NAME));
+            if (expectedAttributeNames.contains("internalElementClassName")) {
+                numberOfVoidAtts++;
+            }
+            if (expectedAttributeNames.contains("internalElementName")) {
+                numberOfVoidAtts++;
+            }
+            List expectedRelationNames = Arrays.asList(notificationAdapter.getRelationNames(SmartsConstants.NOTIFICATION_CLASS_NAME));
+            assertEquals(expectedAttributeNames.size() + expectedRelationNames.size() - numberOfVoidAtts, rec.size());
         }
         assertEquals(1, count);
     }
-    public void testGetNotificationInstances() throws Exception
-    {
+
+    public void testGetNotificationInstances() throws Exception {
         String className = "Switch";
         String instanceName = "eraaswiad";
         String eventName = "Down";
@@ -90,97 +93,121 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
         assertEquals(1, rset.size());
         Map<String, Object> rec = rset.get(0);
         assertEquals(className, rec.get("ClassName"));
-        String[] expectedAttributeNames = notificationAdapter.getAttributeNames(SmartsConstants.NOTIFICATION_CLASS_NAME);
-        String[] expectedRelationNames = notificationAdapter.getRelationNames(SmartsConstants.NOTIFICATION_CLASS_NAME);
-        assertEquals(expectedAttributeNames.length + expectedRelationNames.length, rec.size());
+        int numberOfVoidAtts = 0;
+        List expectedAttributeNames = Arrays.asList(notificationAdapter.getAttributeNames(SmartsConstants.NOTIFICATION_CLASS_NAME));
+        if (expectedAttributeNames.contains("internalElementClassName")) {
+            numberOfVoidAtts++;
+        }
+        if (expectedAttributeNames.contains("internalElementName")) {
+            numberOfVoidAtts++;
+        }
+        List expectedRelationNames = Arrays.asList(notificationAdapter.getRelationNames(SmartsConstants.NOTIFICATION_CLASS_NAME));
+        assertEquals(expectedAttributeNames.size() + expectedRelationNames.size() - numberOfVoidAtts, rec.size());
     }
-    public void testGetNotification() throws Exception
-    {
+
+    public void testGetNotification() throws Exception {
         String className = "Switch";
         String instanceName = "eraaswiad";
         String eventName = "Down";
-        
+
         notificationAdapter.createNotification(className, instanceName, eventName, new HashMap<String, Object>());
-        
+
         Map<String, Object> rec = notificationAdapter.getNotification(className, instanceName, eventName);
         assertEquals(className, rec.get("ClassName"));
-        String[] expectedAttributeNames = notificationAdapter.getAttributeNames(SmartsConstants.NOTIFICATION_CLASS_NAME);
-        String[] expectedRelationNames = notificationAdapter.getRelationNames(SmartsConstants.NOTIFICATION_CLASS_NAME);
-        assertEquals(expectedAttributeNames.length + expectedRelationNames.length, rec.size());
+        int numberOfVoidAtts = 0;
+        List expectedAttributeNames = Arrays.asList(notificationAdapter.getAttributeNames(SmartsConstants.NOTIFICATION_CLASS_NAME));
+        if (expectedAttributeNames.contains("internalElementClassName")) {
+            numberOfVoidAtts++;
+        }
+        if (expectedAttributeNames.contains("internalElementName")) {
+            numberOfVoidAtts++;
+        }
+        List expectedRelationNames = Arrays.asList(notificationAdapter.getRelationNames(SmartsConstants.NOTIFICATION_CLASS_NAME));
+        assertEquals(expectedAttributeNames.size() + expectedRelationNames.size() - numberOfVoidAtts, rec.size());
     }
-    public void testFetchNotificationInstancesWIthExpressionDisabled() throws Exception
-    {
+
+    public void testFetchNotificationInstancesWIthExpressionDisabled() throws Exception {
         String className = "Switch";
         String instanceName = "eraaswiad";
         String eventName = "Down";
-        
+
         notificationAdapter.createNotification(className, instanceName, eventName, new HashMap<String, Object>());
-        
+
         Iterator<Map<String, Object>> rset = notificationAdapter.fetchNotifications(className, instanceName, ".*", false, 10);
         assertFalse(rset.hasNext());
     }
-    public void testFetchNotificationInstancesWithNullProperties() throws Exception
-    {
+
+    public void testFetchNotificationInstancesWithNullProperties() throws Exception {
         String className = "Switch";
         String instanceName = "eraaswiad";
         String eventName = "Down";
-        
+
         notificationAdapter.createNotification(className, instanceName, eventName, new HashMap<String, Object>());
-        
+
         Iterator<Map<String, Object>> rset = notificationAdapter.fetchNotifications(className, instanceName, ".*", null, true, 10);
         int count = 0;
-        while(rset.hasNext())
-        {
+        while (rset.hasNext()) {
             Map<String, Object> rec = rset.next();
             count++;
             assertEquals(className, rec.get("ClassName"));
-            String[] expectedAttributeNames = notificationAdapter.getAttributeNames(SmartsConstants.NOTIFICATION_CLASS_NAME);
-            String[] expectedRelationNames = notificationAdapter.getRelationNames(SmartsConstants.NOTIFICATION_CLASS_NAME);
-            assertEquals(expectedAttributeNames.length + expectedRelationNames.length, rec.size());
+            int numberOfVoidAtts = 0;
+            List expectedAttributeNames = Arrays.asList(notificationAdapter.getAttributeNames(SmartsConstants.NOTIFICATION_CLASS_NAME));
+            if (expectedAttributeNames.contains("internalElementClassName")) {
+                numberOfVoidAtts++;
+            }
+            if (expectedAttributeNames.contains("internalElementName")) {
+                numberOfVoidAtts++;
+            }
+            List expectedRelationNames = Arrays.asList(notificationAdapter.getRelationNames(SmartsConstants.NOTIFICATION_CLASS_NAME));
+            assertEquals(expectedAttributeNames.size() + expectedRelationNames.size() - numberOfVoidAtts, rec.size());
         }
         assertEquals(1, count);
     }
-    public void testFetchNotificationInstancesWithEmptyProperties() throws Exception
-    {
+
+    public void testFetchNotificationInstancesWithEmptyProperties() throws Exception {
         String className = "Switch";
         String instanceName = "eraaswiad";
         String eventName = "Down";
-        
+
         notificationAdapter.createNotification(className, instanceName, eventName, new HashMap<String, Object>());
-        
-        Iterator<Map<String, Object>> rset = notificationAdapter.fetchNotifications(className, instanceName, ".*",  new ArrayList<String>(), true, 10);
+
+        Iterator<Map<String, Object>> rset = notificationAdapter.fetchNotifications(className, instanceName, ".*", new ArrayList<String>(), true, 10);
         int count = 0;
-        while(rset.hasNext())
-        {
+        while (rset.hasNext()) {
             Map<String, Object> rec = rset.next();
             count++;
             assertEquals(className, rec.get("ClassName"));
-            String[] expectedAttributeNames = notificationAdapter.getAttributeNames(SmartsConstants.NOTIFICATION_CLASS_NAME);
-            String[] expectedRelationNames = notificationAdapter.getRelationNames(SmartsConstants.NOTIFICATION_CLASS_NAME);
-            assertEquals(expectedAttributeNames.length + expectedRelationNames.length, rec.size());
+            int numberOfVoidAtts = 0;
+            List expectedAttributeNames = Arrays.asList(notificationAdapter.getAttributeNames(SmartsConstants.NOTIFICATION_CLASS_NAME));
+            if (expectedAttributeNames.contains("internalElementClassName")) {
+                numberOfVoidAtts++;
+            }
+            if (expectedAttributeNames.contains("internalElementName")) {
+                numberOfVoidAtts++;
+            }
+            List expectedRelationNames = Arrays.asList(notificationAdapter.getRelationNames(SmartsConstants.NOTIFICATION_CLASS_NAME));
+            assertEquals(expectedAttributeNames.size() + expectedRelationNames.size() - numberOfVoidAtts, rec.size());
         }
         assertEquals(1, count);
     }
-    
-    public void testFetchNotificationInstancesWithSpecifiedProperties() throws Exception
-    {
+
+    public void testFetchNotificationInstancesWithSpecifiedProperties() throws Exception {
         String className = "Switch";
         String instanceName = "eraaswiad";
         String eventName = "Down";
-        
+
         List<String> attrbutes = new ArrayList<String>();
         attrbutes.add("Severity");
         String unknownNotificationProperty = "UNKNOWN";
         attrbutes.add(unknownNotificationProperty);
-        
+
         Map<String, Object> propertyValues = new HashMap<String, Object>();
         propertyValues.put("Severity", "3");
         notificationAdapter.createNotification(className, instanceName, eventName, propertyValues);
-        
+
         Iterator<Map<String, Object>> rset = notificationAdapter.fetchNotifications(className, instanceName, ".*", attrbutes, true, 10);
         int count = 0;
-        while(rset.hasNext())
-        {
+        while (rset.hasNext()) {
             Map<String, Object> rec = rset.next();
             count++;
             assertEquals("3", rec.get("Severity"));
@@ -189,9 +216,9 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
         }
         assertEquals(1, count);
     }
-    
-    public void testArchiveNotificationRemovesFromNotificationList() throws Exception{
-        
+
+    public void testArchiveNotificationRemovesFromNotificationList() throws Exception {
+
         String notificationName = "NOTIFICATION-Switch_ercaswnyc2_Down";
         SmartsTestUtils.archiveNotification(notificationName);
 
@@ -204,8 +231,8 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
         notificationAdapter.createNotification(createParameters);
 
         listMemberNotifications = SmartsHelper.getExistingNotificationsOfAList(notificationAdapter, "ICS_NL-nlDeveloper");
-        assertEquals(instanceCount+1, notificationAdapter.getInstances("ICS_Notification").length);
-        assertExpectedListCount(listMemberNotifications, listCount+1);
+        assertEquals(instanceCount + 1, notificationAdapter.getInstances("ICS_Notification").length);
+        assertExpectedListCount(listMemberNotifications, listCount + 1);
 
         NotificationIdentifierParams identifierParameters = SmartsTestUtils.getTestParametersForIdentifier();
         NotificationAcknowledgeParams archiveParameters = SmartsTestUtils.getTestParametersForAcknowledge();
@@ -219,8 +246,8 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
         notificationAdapter.createNotification(createParameters);
 
         listMemberNotifications = SmartsHelper.getExistingNotificationsOfAList(notificationAdapter, "ICS_NL-nlDeveloper");
-        assertEquals(instanceCount+1, notificationAdapter.getInstances("ICS_Notification").length);
-        assertExpectedListCount(listMemberNotifications, listCount+1);
+        assertEquals(instanceCount + 1, notificationAdapter.getInstances("ICS_Notification").length);
+        assertExpectedListCount(listMemberNotifications, listCount + 1);
 
         NotificationClearParams clearParameters = SmartsTestUtils.getTestParametersForClear();
         notificationAdapter.clearNotification(identifierParameters, clearParameters);
@@ -231,11 +258,10 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
         assertEquals(instanceCount, notificationAdapter.getInstances("ICS_Notification").length);
         assertExpectedListCount(listMemberNotifications, listCount);
 
-       
         //Delete operation is successful since notification does not exist.
         assertTrue(notificationAdapter.archiveNotification(identifierParameters, archiveParameters));
     }
-    
+
     public void testCreateAndClearNotification() throws Exception {
         String newNotificationName = "NOTIFICATION-Switch_ercaswnyc2_Down";
         SmartsTestUtils.archiveNotification(newNotificationName);
@@ -447,7 +473,7 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
 
     }
 
-    public void testAggregateNotification() throws Exception{
+    public void testAggregateNotification() throws Exception {
         try {
             SmartsTestUtils.archiveAllNotifications();
         } catch (Exception e) {
@@ -474,9 +500,9 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
             MR_AnyVal[] inactivePropValue = {new MR_AnyValBoolean(false)};
 
             // SCENARIO 1: CREATE NOTIFICATION WITH MOCK makeAggregate THAT THROWS AN EXCEPTION
-            notificationAdapter = new BaseNotificationAdapter(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME, 0, TestLogUtils.log){
+            notificationAdapter = new BaseNotificationAdapter(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME, 0, TestLogUtils.log) {
                 protected String makeAggregateNotification(NotificationAggregateParams aggregateParameters, MR_AnyVal notification) {
-                   // System.out.println("MOCK AggregateNotification is returning null");
+                    // System.out.println("MOCK AggregateNotification is returning null");
                     return null;
                 }
             };
@@ -544,26 +570,26 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
         String newNotificationName = "NOTIFICATION-Switch_ercaswnyc2_Down";
         SmartsTestUtils.archiveNotification(newNotificationName);
 
-        MR_PropertyNameValue[] attributes = SmartsPropertyHelper.getNotificationAttributes(notificationAdapter,"Switch", "ercaswnyc2", "Down");
+        MR_PropertyNameValue[] attributes = SmartsPropertyHelper.getNotificationAttributes(notificationAdapter, "Switch", "ercaswnyc2", "Down");
         assertNull("When notification is not found, return value should be null", attributes);
     }
 
     public void testGetNotificationAttributesWhenNotificationIsFound() throws Exception {
-     
+
         NotificationCreateParams createParameters = SmartsTestUtils.getTestParametersForCreate();
         String notificationName = notificationAdapter.createNotification(createParameters);
         assertNotNull("Notification was not created", notificationName);
-        
-        MR_PropertyNameValue[] attributes =  SmartsPropertyHelper.getNotificationAttributes(notificationAdapter, "Switch", "ercaswnyc2", "Down");
+
+        MR_PropertyNameValue[] attributes = SmartsPropertyHelper.getNotificationAttributes(notificationAdapter, "Switch", "ercaswnyc2", "Down");
 
         // Total number of attributes is 71 but we are filtering
 //        assertEquals(46, attributes.length);
         assertEquals("NOTIFICATION-Switch_ercaswnyc2_Down", SmartsTestUtils.getValueForName(attributes, "Name").toString());
-        assertEquals("TUGRUL", ((MR_AnyValString)SmartsTestUtils.getValueForName(attributes, "Description")).getStringValue());
+        assertEquals("TUGRUL", ((MR_AnyValString) SmartsTestUtils.getValueForName(attributes, "Description")).getStringValue());
     }
-    
+
     public void testGetNotificationUsingMapListParams() throws Exception {
-    	String className = "Switch";
+        String className = "Switch";
         String instanceName = "eraaswiad";
         String eventName = "Down";
 
@@ -609,40 +635,36 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
 
         String[] notificationInstances = notificationAdapter.getInstances(SmartsConstants.NOTIFICATION_CLASS);
         int nonSessionNotificationCountBefore = 0;
-        for (int i = 0 ; i < notificationInstances.length ; i++)
-        {
-            if(notificationInstances[i].indexOf("Session_SESSION-APP-InChargeService") < 0)
-            {
+        for (int i = 0; i < notificationInstances.length; i++) {
+            if (notificationInstances[i].indexOf("Session_SESSION-APP-InChargeService") < 0) {
                 nonSessionNotificationCountBefore++;
             }
         }
-       // System.out.println("Notification instanceCount: " + instanceCount);
+        // System.out.println("Notification instanceCount: " + instanceCount);
 
         String notificationName = notificationAdapter.createNotification(createParameters);
         assertNotNull("Notification was not created", notificationName);
 
         notificationInstances = notificationAdapter.getInstances(SmartsConstants.NOTIFICATION_CLASS);
         int nonSessionNotificationCountAfter = 0;
-        for (int i = 0 ; i < notificationInstances.length ; i++)
-        {
-            if(notificationInstances[i].indexOf("Session_SESSION-APP-InChargeService") < 0)
-            {
+        for (int i = 0; i < notificationInstances.length; i++) {
+            if (notificationInstances[i].indexOf("Session_SESSION-APP-InChargeService") < 0) {
                 nonSessionNotificationCountAfter++;
             }
         }
         assertEquals(nonSessionNotificationCountBefore + countIncrement, nonSessionNotificationCountAfter);
         assertEquals(newNotificationName, notificationName);
     }
-    
+
     private void assertExpectedListCount(List<String> list, int expectedCount) throws InterruptedException {
         final int count = expectedCount;
         final List<String> finalList = list;
-        CommonTestUtils.waitFor(new WaitAction(){
+        CommonTestUtils.waitFor(new WaitAction() {
             @Override
             public void check() throws Exception {
                 assertEquals(finalList.size(), count);
             }
-            
+
         }, 900);
     }
 }

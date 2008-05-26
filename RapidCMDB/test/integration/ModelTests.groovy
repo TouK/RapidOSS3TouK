@@ -25,6 +25,13 @@ import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
  * To change this template use File | Settings | File Templates.
  */
 class ModelTests extends RapidCmdbIntegrationTestCase{
+    
+    void setUp() {
+        super.setUp();
+        SmartsObject.list()*.remove();
+        Person.list()*.remove();
+
+    }
 
     void testAddWithInheritance(){
         DeviceComponent.add(name:"deviceComp1", creationClassName:"DeviceComponent");
@@ -33,7 +40,7 @@ class ModelTests extends RapidCmdbIntegrationTestCase{
         Ip.add(name:"ip1", creationClassName:"Ip", ipAddress:"192.168.1.1");
         assertEquals(2, DeviceComponent.list().size());
         assertEquals(1, Ip.list().size());
-        def ip = Ip.findByName("ip1");
+        def ip = Ip.get(name:"ip1", creationClassName:"Ip");
         assertNotNull(ip);
 
         DeviceComponent.add(name:"deviceComp2", creationClassName:"DeviceComponent");
@@ -52,7 +59,7 @@ class ModelTests extends RapidCmdbIntegrationTestCase{
 
         emp1.addRelation(employees:emp2);
         assertEquals(1, emp1.employees.size());
-        assertEquals(emp2.name, emp1.employees[0].name)
+        assertEquals(emp2.name, emp1.employees.toArray()[0].name)
         assertNotNull(emp2.manager);
         assertEquals(emp1.name, emp2.manager.name)
 
@@ -60,7 +67,7 @@ class ModelTests extends RapidCmdbIntegrationTestCase{
         assertNotNull(emp1.manager);
         assertEquals(dev1.name, emp1.manager.name)
         assertEquals(1, dev1.employees.size());
-        assertEquals(emp1.name, dev1.employees[0].name)
+        assertEquals(emp1.name, dev1.employees.toArray()[0].name)
 
         emp1.remove();
         assertEquals(0, dev1.employees.size())

@@ -77,6 +77,10 @@ class ApplicationController {
 
     def correctModelData(Map domainClassMap)
     {
+        PropertyAction.list().each
+        {
+            if(it.willBeDeleted) it.delete(flush:true);
+        }
         def modelsWillBeChanged = ChangedModel.list();
         def distinctList = [:];
         modelsWillBeChanged.each
@@ -106,7 +110,6 @@ class ApplicationController {
             }
         }
 
-        println "MODELS:${distinctList}"
         int batch = 1000;
         distinctList.each{modelName, ChangedModel changedModel->
             DefaultGrailsDomainClass currentDomainObject = grailsApplication.getDomainClass(modelName);
@@ -120,13 +123,10 @@ class ApplicationController {
             }
             changedModel.delete();
         }
+
     }
 
 
-    def deneme = {
-        ImprovedNamingStrategy st = new ImprovedNamingStrategy();
-        println "Collection tABLE: " + st.collectionTableName(null, st.tableName("NewAuthor"), null, null, st.tableName("NewBook"))
-    }
 
     def exportConfiguration = {
         def exportDir = params.dir;

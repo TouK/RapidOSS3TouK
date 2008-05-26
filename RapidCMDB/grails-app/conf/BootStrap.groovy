@@ -44,18 +44,21 @@ class BootStrap {
         ScriptManager.getInstance().initialize();
         def changedModelProperties = [:]
 
-        
+
         PropertyAction.list().each{PropertyAction propAction->
-            DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(propAction.modelName);
-            def modelProps = changedModelProperties[propAction.modelName];
-            if(modelProps == null)
+            if(!propAction.willBeDeleted)
             {
-                modelProps = [:]
-                changedModelProperties[propAction.modelName] = modelProps;
+                DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(propAction.modelName);
+                def modelProps = changedModelProperties[propAction.modelName];
+                if(modelProps == null)
+                {
+                    modelProps = [:]
+                    changedModelProperties[propAction.modelName] = modelProps;
+                }
+                propAction.defaultValue = currentDomainObject.clazz.newInstance()[propAction.propName];
+                propAction.propType = currentDomainObject.getPropertyByName(propAction.propName).type;
+                modelProps[propAction.propName] = propAction;
             }
-            propAction.defaultValue = currentDomainObject.clazz.newInstance()[propAction.propName];
-            propAction.propType = currentDomainObject.getPropertyByName(propAction.propName).type;
-            modelProps[propAction.propName] = propAction;
         }
         println "MODEL PROPS:${changedModelProperties}"
         int batch = 1000;
@@ -121,7 +124,10 @@ class BootStrap {
                 }
                 println "REINDEXING ${modelName} FINISHED"
             }
-            //PropertyAction.findByModelName(modelName)*.delete();
+            PropertyAction.findByModelName(modelName).each{propActionWillBeDeleted->
+                 propActionWillBeDeleted.willBeDeleted = true;
+                 propActionWillBeDeleted.save();
+            }
         }          
     }
 

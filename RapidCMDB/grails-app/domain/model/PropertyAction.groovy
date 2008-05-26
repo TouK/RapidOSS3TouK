@@ -16,6 +16,7 @@ class PropertyAction {
     String action;
     Class propType;
     Object defaultValue;
+    boolean willBeDeleted = false;
 
     static transients = ["propType", "defaultValue"]
 }

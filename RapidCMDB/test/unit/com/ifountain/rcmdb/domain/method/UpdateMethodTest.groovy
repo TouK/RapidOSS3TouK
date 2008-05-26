@@ -37,7 +37,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
         def relations = ["rel1":new Relation("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE)];
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, relations, ["prop1"]);
-        
+
         def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
 
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
@@ -51,6 +51,26 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
 
         assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
+    }
+
+    public void testUpdateWithChildClass()
+    {
+        ChildAddMethodDomainObject objectBeforeAdd = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop6:"object1Prop6Value");
+
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, [:], ["prop1"]);
+
+        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop6:objectBeforeAdd.prop6];
+
+        def addedObject = add.invoke (ChildAddMethodDomainObject.class, [props] as Object[]);
+        assertEquals (objectBeforeAdd, addedObject);
+
+        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", prop6:"newProp6Value"];
+        UpdateMethod update = new UpdateMethod(ChildAddMethodDomainObject.metaClass, null, [:], ["prop1"]);
+        def updatedObject = update.invoke (addedObject, [props] as Object[]);
+        assertEquals (addedObject.id, updatedObject.id);
+        assertEquals ("newProp2Value", updatedObject.prop2);
+        assertEquals ("newProp6Value", updatedObject.prop6);
+        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
     }
 
     public void testUpdateMethodWithStringProperties()

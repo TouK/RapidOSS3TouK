@@ -42,7 +42,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
     public UpdateMethod(MetaClass mc, Validator validator, Map relations, List keys) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
         this.validator = validator;
-        def fields = mc.theClass.declaredFields;
+        def fields = mc.getProperties();
         fields.each{field->
             fieldTypes[field.name] = field.type;
         }

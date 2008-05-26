@@ -1,20 +1,14 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import org.compass.core.Compass
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import com.ifountain.rcmdb.domain.util.Relation
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.MockIdGeneratorStrategy
 import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.LongConverter
-import org.apache.commons.beanutils.ConvertUtils
 import java.text.SimpleDateFormat
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import org.springframework.validation.Errors
-import org.springframework.validation.Validator
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
-import org.codehaus.groovy.grails.validation.GrailsDomainClassValidator
 
 /**
 * Created by IntelliJ IDEA.
@@ -55,6 +49,20 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals (expectedDomainObject2, addedObject);
         assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject));
         assertEquals (prevId+1, addedObject.id);
+    }
+
+    public void testAddMethodForAChildClass()
+    {
+        ChildAddMethodDomainObject expectedDomainObject1 = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop6:"object1Prop6Value");
+        AddMethod add = new AddMethod(ChildAddMethodDomainObject.metaClass, null, [:], []);
+        def props = [prop1:expectedDomainObject1.prop1, prop6:expectedDomainObject1.prop6];
+        def addedObject = add.invoke (ChildAddMethodDomainObject.class, [props] as Object[]);
+        assertEquals (expectedDomainObject1, addedObject);
+        assertEquals (expectedDomainObject1.prop6, addedObject.prop6);
+        assertTrue (ChildAddMethodDomainObject.indexList[0].contains(addedObject));
+        assertNull(addedObject.relationsShouldBeAdded)
+        assertEquals("", ChildAddMethodDomainObject.query);
+
     }
 
 
@@ -201,3 +209,8 @@ class AddMethodDomainObject1
     }
 }
 
+
+class ChildAddMethodDomainObject extends AddMethodDomainObject1
+{
+    String prop6;
+}

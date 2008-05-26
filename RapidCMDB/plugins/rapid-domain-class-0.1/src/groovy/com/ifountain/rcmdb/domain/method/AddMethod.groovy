@@ -15,7 +15,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
     public AddMethod(MetaClass mc, Validator validator, Map relations, List keys) {
         super(mc);
         this.validator = validator;
-        def fields = mc.theClass.declaredFields;
+        def fields = mc.getProperties();
         fields.each{field->
             fieldTypes[field.name] = field.type;            
         }

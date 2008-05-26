@@ -287,18 +287,18 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
         assertNotNull(smartsObject);
     }
 
-    void testActionFailsIfUpdateObjectFails() {
-        def ebc = new ExecuteBatchController();
-        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createUpdateObjectAction(SmartsObject.class.getName(),
-                ["name": "router1", "creationClassName":"Router"], ["creationClassName": "null"])
-        def object = SmartsObject.add(name: "router1", creationClassName: "Router");
-        assertFalse(object.hasErrors());
-        ebc.index();
-        def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "default.null.message", args: ["creationClassName", "class SmartsObject"])]);
-        XMLTestUtils.compareXml(errorXml, ebc.response.contentAsString);
-        object = SmartsObject.get(name: "router1");
-        assertEquals("Router", object.creationClassName);
-    }
+//    void testActionFailsIfUpdateObjectFails() {
+//        def ebc = new ExecuteBatchController();
+//        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createUpdateObjectAction(SmartsObject.class.getName(),
+//                ["name": "router1", "creationClassName":"Router"], ["creationClassName": "null"])
+//        def object = SmartsObject.add(name: "router1", creationClassName: "Router");
+//        assertFalse(object.hasErrors());
+//        ebc.index();
+//        def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "default.null.message", args: ["creationClassName", "class SmartsObject"])]);
+//        XMLTestUtils.compareXml(errorXml, ebc.response.contentAsString);
+//        object = SmartsObject.get(name: "router1");
+//        assertEquals("Router", object.creationClassName);
+//    }
     void testUpdateActionFailsIfObjectDoesNotExist() {
         def ebc = new ExecuteBatchController();
         def keys = ["name": "router1", "creationClassName":"Router"];

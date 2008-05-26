@@ -1,9 +1,3 @@
-import model.GeneratedModelProperty
-import model.ModelModificationSqls
-import test.Author
-import test.Book
-import org.hibernate.cfg.ImprovedNamingStrategy
-
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.

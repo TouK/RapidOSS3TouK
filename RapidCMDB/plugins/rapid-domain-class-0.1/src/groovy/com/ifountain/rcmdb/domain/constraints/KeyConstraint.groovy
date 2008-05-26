@@ -28,6 +28,11 @@ class KeyConstraint extends AbstractConstraint{
         }
     }
 
+    public boolean isKey()
+    {
+        return !keys.isEmpty();
+    }
+
     public boolean supports(Class type) {
         return type.metaClass.getMetaProperty ("searchable") != null;
     }

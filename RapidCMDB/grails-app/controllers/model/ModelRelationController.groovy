@@ -47,6 +47,10 @@ class ModelRelationController {
             }
             modelRelation.properties = params
             if(!modelRelation.hasErrors() && modelRelation.save()) {
+                PropertyShouldBeCleared prop1 = new PropertyShouldBeCleared(modelName:modelRelation.firstModel.name, propertyName:modelRelation.firstName, isRelation:true);
+                prop1.save(flush:true);
+                prop1 = new PropertyShouldBeCleared(modelName:modelRelation.secondModel.name, propertyName:modelRelation.secondName, isRelation:true);
+                prop1.save(flush:true);
                 flash.message = "ModelRelation ${params.id} updated"
                 redirect(action:show,controller:'model', id:redirectModelId)
             }

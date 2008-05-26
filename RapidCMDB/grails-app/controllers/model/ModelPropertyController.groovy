@@ -118,6 +118,8 @@ class ModelPropertyController {
             }
             modelProperty.properties = params
             if (!modelProperty.hasErrors() && modelProperty.save()) {
+                PropertyShouldBeCleared prop1 = new PropertyShouldBeCleared(modelName:modelProperty.model.name, propertyName:modelProperty.name, isRelation:false);
+                prop1.save(flush:true);
                 flash.message = "ModelProperty ${modelProperty} updated"
                 redirect(action: "show", controller: 'model', id: _getModelId(modelProperty))
             }

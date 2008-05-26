@@ -1,12 +1,6 @@
 package model;
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.domain.generation.ModelUtils
-import org.hibernate.cfg.ImprovedNamingStrategy
-import org.codehaus.groovy.grails.commons.ApplicationAttributes
-import org.springframework.orm.hibernate3.LocalSessionFactoryBean
-import org.hibernate.cfg.Configuration
-import org.hibernate.mapping.Table
-import org.hibernate.mapping.ForeignKey
 
 class ModelController {
     def static String MODEL_DOESNOT_EXIST = "Model does not exist";
@@ -15,6 +9,8 @@ class ModelController {
     def save = {
         def model = new Model(params)
         if (!model.hasErrors() && model.save()) {
+            ChangedModel.findByModelName(model.name)*.delete(flush:true);
+            PropertyShouldBeCleared.findByModelName(model.name)*.delete(flush:true);
             flash.message = "Model ${model.id} created"
             redirect(action: show, id: model.id)
         }
@@ -153,6 +149,7 @@ class ModelController {
 
                 }
                 ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), model.name);
+                new ChangedModel(modelName:model.name, isDeleted:true).save(flush:true);
                 try
                 {
                     oldDependentModels.each {key, value ->
@@ -306,6 +303,7 @@ class ModelController {
 
     def createGeneratedModelInfo(Model model)
     {
+        new ChangedModel(modelName:model.name).save(flush:true);
         def oldModel = GeneratedModel.findByModelName(model.name);
         if (oldModel) {
             GeneratedModelRelation.findAllByFirstModel(oldModel)*.delete();

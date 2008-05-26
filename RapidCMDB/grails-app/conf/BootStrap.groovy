@@ -10,6 +10,9 @@ import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.LongConverter
 import datasource.SnmpDatasource
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import model.PropertyShouldBeCleared
+import model.ChangedModel
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class BootStrap {
 
@@ -37,6 +40,35 @@ class BootStrap {
             new RCMDBDatasource(name: RapidCMDBConstants.RCMDB).save();
         }
         ScriptManager.getInstance().initialize();
+       /*
+        ChangedModel.list().each{ChangedModel chanagedModel->
+            if(chanagedModel.isPurged && !chanagedModel.isDeleted)
+            {
+                def domainObject = ApplicationHolder.getApplication().getDomainClass(chanagedModel.modelName);
+                if(domainObject)
+                {
+                    def domainClass = domainObject.clazz
+                    int index = 0;
+                    int batch = 1000;
+                    while(true)
+                    {
+                        def res = domainClass.metaClass.invokeStaticMethod (domainClass, "search", ["id:[0 TO *]",[max:batch, offset:index]] as Object[]);
+                        res.results.each{modelInstance->
+                                modelInstance.reindex();
+                        }
+                        index += batch;
+                        if(res.total < index)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }          */
+        
+
+
+
     }
     def destroy = {
         SnmpDatasource.list().each{
@@ -44,4 +76,6 @@ class BootStrap {
         }
         ScriptManager.getInstance().destroy();
     }
-} 
+
+    
+}

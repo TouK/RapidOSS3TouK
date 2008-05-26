@@ -22,6 +22,7 @@ import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 import org.codehaus.groovy.grails.orm.hibernate.validation.UniqueConstraint
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import model.ModelProperty
+import model.PropertyAction
 
 /**
 * Created by IntelliJ IDEA.
@@ -85,9 +86,7 @@ class ApplicationController {
                 distinctList[it.modelName] = it;
             }
         }
-        def changedModelProperties = [:]
         def changedProps = PropertyShouldBeCleared.list();
-        println changedProps
         changedProps.each{PropertyShouldBeCleared propShouldBeCleared->
             def modelName = propShouldBeCleared.modelName;
             if(distinctList.containsKey(modelName))
@@ -98,92 +97,31 @@ class ApplicationController {
                 GrailsDomainClass currentDomainObject = grailsApplication.getDomainClass(modelName);
                 if(modelDomainObject && currentDomainObject)
                 {
-                    def modelProps = changedModelProperties[modelName];
-                    if(modelProps == null)
+                    if(modelDomainObject.getPropertyByName(propName) != null)
                     {
-                        modelProps = [:];
-                        changedModelProperties[modelName] = modelProps;
-                    }
-                    println "MODEL PROP ${propName}"
-                    if(!modelProps.containsKey(propName))
-                    {
-                        println "DISTINCT PROP ${propName}"
-                        if(modelDomainObject.getPropertyByName(propName) != null)
-                        {
-                            println "ADDED  ${propName}"
-
-                            modelProps.put(propName, new PropertySummary(currentDomainObject, modelDomainObject, modelName, propName,isRelation));
-                        }
-                        else
-                        {
-                            println "COULD NOT ADDED  ${propName}"
-                        }
+                        PropertyActionFactory.createPropertyAction (currentDomainObject, modelDomainObject, modelName, propName,isRelation);
                     }
                 }
                 propShouldBeCleared.delete();
             }
         }
 
-        println "PROPS:${changedModelProperties}"
         println "MODELS:${distinctList}"
         int batch = 1000;
         distinctList.each{modelName, ChangedModel changedModel->
-
-            def modelProps = changedModelProperties[modelName];
-
-            boolean modelShouldBeRemoved = modelShouldBeRemoved(changedModel, modelProps);
-
             DefaultGrailsDomainClass currentDomainObject = grailsApplication.getDomainClass(modelName);
             if(currentDomainObject)
             {
                 Class currentModelClass = currentDomainObject.clazz;
-                int index = 0;
-                while(true)
+                if(changedModel.isDeleted)
                 {
-                    def res = currentModelClass.metaClass.invokeStaticMethod (currentModelClass, "search", ["id:[0 TO *]",[max:batch, offset:index]] as Object[]);
-                    res.results.each{modelInstance->
-                        if(!modelShouldBeRemoved)
-                        {
-                            println "REINDEXING"
-                            modelProps.each{changedProp, PropertySummary changedPropSummary->
-                                changedPropSummary.applyChange (modelInstance);
-                            }
-                            modelInstance.reindex();
-                            println "REINDEXED"
-                        }
-                        else
-                        {
-                            println "UNINDEXING"
-                            modelInstance.unindex();
-                            println "UNINDEXED"
-                        }
-
-                    }
-                    index += batch;
-                    if(res.total < index)
-                    {
-                        break;
-                    }
+                    currentModelClass.metaClass.invokeStaticMethod (currentModelClass, "unindexAll", [] as Object[]);
                 }
-
             }
             changedModel.delete();
         }
     }
 
-    def modelShouldBeRemoved(changedModel, modelProps)
-    {
-        if(changedModel.isDeleted) return true;
-        boolean shouldBeRemoved = false;
-        modelProps.each{changedProp, PropertySummary changedPropSummary->
-            shouldBeRemoved = changedPropSummary.willBeRemoved();
-            if(shouldBeRemoved)
-            {
-                return;
-            }
-        }
-        return shouldBeRemoved;
-    }
 
     def deneme = {
         ImprovedNamingStrategy st = new ImprovedNamingStrategy();
@@ -219,80 +157,69 @@ class ApplicationController {
     }
 }
 
-class PropertySummary
+class PropertyActionFactory
 {
-    String modelName;
-    String propName;
-    boolean isRelation;
-    boolean isUnique;
-    boolean isNullable;
-    boolean wasUnique;
-    boolean wasNullable;
-    Class newPropType;
-    Class oldPropType;
-    Object defaultValue;
-    public PropertySummary(GrailsDomainClass currentDomainObject, DefaultGrailsDomainClass newDomainObject, String modelName, String propName, boolean isRelation)
+    def static createPropertyAction(GrailsDomainClass currentDomainObject, DefaultGrailsDomainClass newDomainObject, String modelName, String propName, boolean isRelation)
     {
-        this.modelName = modelName;
-        this.isRelation = isRelation;
-        this.propName = propName;
-        this.newPropType = newDomainObject.getPropertyByName(propName).type;
-        this.oldPropType = currentDomainObject.getPropertyByName(propName).type;
-        this.defaultValue = newDomainObject.newInstance()[propName];
+
+        boolean isUnique = false;
+        boolean isNullable = false;
+        boolean wasUnique = false;
+        boolean wasNullable = false;
+        def newPropType = newDomainObject.getPropertyByName(propName).type;
+        def oldPropType = currentDomainObject.hasProperty(propName)?currentDomainObject.getPropertyByName(propName).type:null;
+        def defaultValue = newDomainObject.newInstance()[propName];
         ConstrainedProperty oldProp = currentDomainObject.getConstrainedProperties()[propName];
         ConstrainedProperty newProp = newDomainObject.getConstrainedProperties()[propName]
-        KeyConstraint oldConst = oldProp.getAppliedConstraint(KeyConstraint.KEY_CONSTRAINT);
+        if(oldProp)
+        {
+            KeyConstraint oldConst = oldProp.getAppliedConstraint(KeyConstraint.KEY_CONSTRAINT);
+            wasUnique = oldConst?oldConst.isKey():false;
+            wasNullable = oldProp.isNullable();
+        }
         KeyConstraint newConst = newProp.getAppliedConstraint(KeyConstraint.KEY_CONSTRAINT);
-        wasUnique = oldConst?oldConst.isKey():false;
-        wasNullable = oldProp.isNullable();
         isUnique = newConst?newConst.isKey():false;
         isNullable = newProp.isNullable();
-    }
-
-    def willBeRemoved()
-    {
-        return wasUnique && !isUnique;    
-    }
-
-    def applyChange(modelInstance)
-    {
         if(isRelation)
         {
-            if(modelInstance[propName] instanceof Collection)
-            {
-                modelInstance[propName].clear();
-            }
-            else
-            {
-                modelInstance[propName] = null;
-            }
+            PropertyAction action = new PropertyAction(modelName:modelName, propName: propName, action:PropertyAction.CLEAR_RELATION);
+            action.save();
         }
         else
         {
-            if(wasNullable && !isNullable || !newPropType.name.equals(oldPropType.name))
+            if(wasUnique && !isUnique)
             {
-                modelInstance[propName] = getDefaultValue();    
+                PropertyAction action = new PropertyAction(modelName:modelName, propName: propName, action:PropertyAction.DELETE_ALL_INSTANCES);
+                action.save();
             }
+            else if(oldPropType != null && wasNullable && !isNullable || oldPropType != null && newPropType != oldPropType || oldPropType == null && !isNullable)
+            {
+                PropertyAction action = new PropertyAction(modelName:modelName, propName: propName, action:PropertyAction.SET_DEFAULT_VALUE);
+                action.save();
+            }
+
         }
+
     }
 
-    def getDefaultValue()
-    {
-        if(defaultValue) return defaultValue;
-        if(String.isAssignableFrom(newPropType))
-        {
-            return "RCMDB_Default"
-        }
-        else if(Number.isAssignableFrom(newPropType))
-        {
-            return "-1111";
-        }
-        else if(Date.isAssignableFrom(newPropType))
-        {
-            return new Date(0);
-        }
-        return null;
-    }
+
+//    def getDefaultValue()
+//    {
+//        if(defaultValue) return defaultValue;
+//        if(String.isAssignableFrom(newPropType))
+//        {
+//            return "RCMDB_Default"
+//        }
+//        else if(Number.isAssignableFrom(newPropType))
+//        {
+//            return "-1111";
+//        }
+//        else if(Date.isAssignableFrom(newPropType))
+//        {
+//            return new Date(0);
+//        }
+//        return null;
+//    }
 
 }
       /*

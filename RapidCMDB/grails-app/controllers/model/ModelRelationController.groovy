@@ -47,6 +47,8 @@ class ModelRelationController {
             }
             modelRelation.properties = params
             if(!modelRelation.hasErrors() && modelRelation.save()) {
+                PropertyShouldBeCleared.findAllByModelNameAndPropertyName(modelRelation.firstModel.name, modelRelation.firstName)*.delete(flush:true);
+                PropertyShouldBeCleared.findAllByModelNameAndPropertyName(modelRelation.secondModel.name, modelRelation.secondName)*.delete(flush:true);
                 PropertyShouldBeCleared prop1 = new PropertyShouldBeCleared(modelName:modelRelation.firstModel.name, propertyName:modelRelation.firstName, isRelation:true);
                 prop1.save(flush:true);
                 prop1 = new PropertyShouldBeCleared(modelName:modelRelation.secondModel.name, propertyName:modelRelation.secondName, isRelation:true);

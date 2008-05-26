@@ -13,6 +13,8 @@ import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import model.PropertyShouldBeCleared
 import model.ChangedModel
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import model.PropertyAction
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 
 class BootStrap {
 
@@ -40,36 +42,107 @@ class BootStrap {
             new RCMDBDatasource(name: RapidCMDBConstants.RCMDB).save();
         }
         ScriptManager.getInstance().initialize();
-       /*
-        ChangedModel.list().each{ChangedModel chanagedModel->
-            if(chanagedModel.isPurged && !chanagedModel.isDeleted)
+        def changedModelProperties = [:]
+
+        
+        PropertyAction.list().each{PropertyAction propAction->
+            DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(propAction.modelName);
+            def modelProps = changedModelProperties[propAction.modelName];
+            if(modelProps == null)
             {
-                def domainObject = ApplicationHolder.getApplication().getDomainClass(chanagedModel.modelName);
-                if(domainObject)
+                modelProps = [:]
+                changedModelProperties[propAction.modelName] = modelProps;
+            }
+            propAction.defaultValue = currentDomainObject.clazz.newInstance()[propAction.propName];
+            propAction.propType = currentDomainObject.getPropertyByName(propAction.propName).type;
+            modelProps[propAction.propName] = propAction;
+        }
+        println "MODEL PROPS:${changedModelProperties}"
+        int batch = 1000;
+
+        changedModelProperties.each{String modelName, Map modelProps->
+            DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(modelName);
+            if(currentDomainObject)
+            {
+                println "REINDEXING ${modelName}"
+                Class currentModelClass = currentDomainObject.clazz;
+                int index = 0;
+                while(true)
                 {
-                    def domainClass = domainObject.clazz
-                    int index = 0;
-                    int batch = 1000;
-                    while(true)
-                    {
-                        def res = domainClass.metaClass.invokeStaticMethod (domainClass, "search", ["id:[0 TO *]",[max:batch, offset:index]] as Object[]);
-                        res.results.each{modelInstance->
-                                modelInstance.reindex();
-                        }
-                        index += batch;
-                        if(res.total < index)
+                    def res = currentModelClass.metaClass.invokeStaticMethod (currentModelClass, "search", ["id:[0 TO *]",[max:batch, offset:index]] as Object[]);
+                    println "RES ${res}"
+                    boolean isDelete = false;
+                    res.results.each{modelInstance->
+                        if(!isDelete)
                         {
-                            break;
+                            modelProps.each{propName, PropertyAction action->
+                                def propVal = modelInstance[propName];
+
+                                if(action.action ==  PropertyAction.CLEAR_RELATION)
+                                {
+                                    println "CLEARING REL ${modelName}"
+                                    if(propVal instanceof Collection)
+                                    {
+                                        propVal.clear();
+                                    }
+                                    else
+                                    {
+                                        modelInstance[propName] = null;
+                                    }
+                                }
+                                else if(action.action ==  PropertyAction.SET_DEFAULT_VALUE)
+                                {
+                                    println "SETTING DEFAULT VALUE ${action.defaultValue} ${action.propType}"
+                                    modelInstance[propName] = getDefaultValue(action.defaultValue,action.propType)
+                                }
+                                else if(action.action ==  PropertyAction.DELETE_ALL_INSTANCES)
+                                {
+                                    isDelete = true;
+                                    return;
+                                }
+                            }
+                        }
+                        if(isDelete)
+                        {
+                            println "UNINDEXED"
+                            modelInstance.unindex();
+                        }
+                        else
+                        {
+                            println "REUNINDEXED"
+                            modelInstance.reindex();
                         }
                     }
+                    index += batch;
+                    if(res.total < index)
+                    {
+                        break;
+                    }
                 }
+                println "REINDEXING ${modelName} FINISHED"
             }
-        }          */
-        
-
-
-
+            //PropertyAction.findByModelName(modelName)*.delete();
+        }          
     }
+
+    def getDefaultValue(defaultValue, newPropType)
+    {
+        if(defaultValue) return defaultValue;
+        if(String.isAssignableFrom(newPropType))
+        {
+            return "RCMDB_Default"
+        }
+        else if(Number.isAssignableFrom(newPropType))
+        {
+            return -1111;
+        }
+        else if(Date.isAssignableFrom(newPropType))
+        {
+            return new Date(0);
+        }
+        return null;
+    }
+
     def destroy = {
         SnmpDatasource.list().each{
             it.close();

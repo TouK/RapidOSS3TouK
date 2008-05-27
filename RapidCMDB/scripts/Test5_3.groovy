@@ -1,10 +1,51 @@
 /*
 Relation rename
 	
-	Verify: Relation is renamed back to original. Values for existing instances are not lost. 
+	Verify: Relation is renamed back to original. Values for existing instances are lost. 
 */	
 
 println "TEST RESULTS FOR TEST5_3"
+def result = DeviceInterface.get(name:'devinterface1',creationClassName:'DevInterface');
+assert result.underlying == null;
+result = Ip.get(name:'ip1', creationClassName:'Ip');
+assert result.layeredOver == null;
+
+result = DeviceInterface.get(name:'devinterface2',creationClassName:'DevInterface');
+assert result.underlying == null;
+result = Ip.get(name:'ip2', creationClassName:'Ip');
+assert result.layeredOver == null;
+
+
+result = Device.get(name:'device1',creationClassName:'Device');
+assert result.connectedVia.size() == 0;
+assert result.composedOf.size() == 0;
+
+result = Device.get(name:'device2',creationClassName:'Device');
+assert result.connectedVia.size() == 0;
+assert result.composedOf.size() == 0;
+
+result = Device.get(name:'device3',creationClassName:'Device');
+assert result.connectedVia.size() == 0;
+assert result.composedOf.size() == 0;
+
+result = Link.get(name:'link1', creationClassName:'Link');
+assert result.connectedSystems.size() == 0;
+
+result = Link.get(name:'link2', creationClassName:'Link');
+assert result.connectedSystems.size() == 0;
+
+result = Link.get(name:'link3', creationClassName:'Link');
+assert result.connectedSystems.size() == 0;
+
+result = DeviceComponent.get(name:'comp1',creationClassName:'Component');
+assert result.partOf == null;
+
+result = DeviceComponent.get(name:'comp2',creationClassName:'Component');
+assert result.partOf == null;
+
+
+/* 	Verify: Relation is renamed back to original. Values for existing instances are lost. 
+
 def result = DeviceInterface.get(name:'devinterface1',creationClassName:'DevInterface');
 assert result.underlying.name == "ip1";
 result = Ip.get(name:'ip1', creationClassName:'Ip');
@@ -63,5 +104,5 @@ result.partOfDevice.name == "device1";
 
 result = DeviceComponent.get(name:'comp2',creationClassName:'Component');
 assert result.partOf.name == "device1";
-
+*/
 return "Success";

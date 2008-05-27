@@ -1,11 +1,12 @@
 /*
 Relation rename
 	
-	Verify: Property is renamed. Values for existing instances are not lost. 
+	Verify: Relation is renamed. Values for existing instances are lost. 
 */	
 
 import datasource.*
 import model.*
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 SmartsObject.list()*.remove();
 

@@ -1,6 +1,7 @@
 import connection.*
 import datasource.*
 import model.*
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -32,16 +33,16 @@ class ModelHelper{
 	private Model model;
 	private Model parent;
 	private datasources = [:];
-	private properties = [:];
+	private props = [:];
 			
 	ModelHelper(modelName){
 		model = new Model(name:modelName);
 	}
 	
 	ModelHelper(modelName, parentModelName){
+
 		def parent = Model.findByName(parentModelName);
-		model = new Model(name:modelName, parentModel:parent);
-		
+		model = new Model(name:modelName, parentModel:parent).save();
 		def tempParent = parent;
 		while (tempParent!=null){
 			// find parent's datasources
@@ -58,7 +59,7 @@ class ModelHelper{
 			// find parent's properties
 			def allprops = ModelProperty.findAllByModel(tempParent);
 			for (prop in allprops){
-				properties.put(prop.name, prop);	
+				props.put(prop.name, prop);	
 			}
 			tempParent = tempParent.parentModel;
 		}
@@ -72,8 +73,8 @@ class ModelHelper{
 	    }
 	}
 	
-	def setProperties(List propList){
-		model = model.save();		
+	def setProps(List propList){
+		model = model.save();	
 		propList.each{
 			def propProperties = [:];
 			propProperties.putAll(it);
@@ -86,15 +87,15 @@ class ModelHelper{
 			else{
 				def dynamicModelDsName = propProperties.propertySpecifyingDatasource;
 				if (dynamicModelDsName != null){
-				def dynamicProp	= ModelProperty.findByModelAndName(model,dynamicModelDsName);
-				if (dynamicProp==null){
-					dynamicProp	= properties[dynamicModelDsName];
-				}
-				else{
-					throw exception("Dynamic datasource property can not be found!");
-				}
-				propProperties.remove('propertySpecifyingDatasource');
-				propProperties.put('propertySpecifyingDatasource', dynamicProp);
+					def dynamicProp	= ModelProperty.findByModelAndName(model,dynamicModelDsName);
+					if (dynamicProp==null){
+						dynamicProp	= props[dynamicModelDsName];
+						if (dynamicProp == null){
+							throw exception("Dynamic datasource property can not be found!");	
+						}
+					}
+					propProperties.remove('propertySpecifyingDatasource');
+					propProperties.put('propertySpecifyingDatasource', dynamicProp);
 				}
 			}
 			propProperties.put('model', model);
@@ -106,7 +107,7 @@ class ModelHelper{
 		model = model.save();
 		for (ds in datasources){
 			ds.value.keys.each{
-				def keyProp = ModelProperty.findByName(it.name);
+				def keyProp = ModelProperty.findByModelAndName(model, it.name);
 				def nameInDs = it.nameInDs;
 				if (nameInDs == null){
 					nameInDs = it.name;
@@ -116,20 +117,10 @@ class ModelHelper{
 		}
 	}
 	
-	def setRelations(List relList){
-		
-	}	
-	
-	def constructModel()
-	{
-	    model = model.save();
+	def createRelation(secondModelName, firstName, secondName, firstCar, secondCar){
+		def secondModel = Model.findByName(secondModelName);
+	    new ModelRelation(firstModel:model, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar).save();
 	    model.refresh();
-	    return model;
-	}
-	
-	def createRelation(firstModel, secondModel, firstName, secondName, firstCar, secondCar){
-	    new ModelRelation(firstModel:firstModel, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar).save();
-	    firstModel.refresh();
 	    secondModel.refresh();
 	}
 

@@ -6,6 +6,7 @@ Relation add
 
 import datasource.*
 import model.*
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 def model1 = Model.findByName("DeviceInterface");
 def model2 = Model.findByName("Ip");

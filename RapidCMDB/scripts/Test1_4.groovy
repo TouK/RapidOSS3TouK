@@ -5,6 +5,7 @@ Key property removed
 */	
 import datasource.*
 import model.*
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 // TEST AFTER MANUAL MODEL GENERATION AND APPLICATION RELOAD
 println "TEST RESULTS FOR TEST1_4"

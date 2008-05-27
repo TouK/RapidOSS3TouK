@@ -6,6 +6,7 @@ Relation remove and instance deletion from a many side of 1-m and m-m relation.
 
 import datasource.*
 import model.*
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 SmartsObject.list()*.remove();
 

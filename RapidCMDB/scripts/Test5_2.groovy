@@ -1,13 +1,55 @@
 /*
 Relation rename
 	
-	Verify: Relation is renamed. Values for existing instances are not lost. 
+	Verify: Relation is renamed. Values for existing instances are lost. 
 */	
 
 import datasource.*
 import model.*
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 println "TEST RESULTS FOR TEST5_2"
+
+def result = DeviceInterface.get(name:'devinterface1',creationClassName:'DevInterface');
+assert result.underlyingIP == null;
+result = Ip.get(name:'ip1', creationClassName:'Ip');
+assert result.layeredOverDI == null;
+
+result = DeviceInterface.get(name:'devinterface2',creationClassName:'DevInterface');
+assert result.underlyingIP == null;
+result = Ip.get(name:'ip2', creationClassName:'Ip');
+assert result.layeredOverDI == null;
+
+
+result = Device.get(name:'device1',creationClassName:'Device');
+assert result.connectedViaLink.size() == 0;
+assert result.composedOfParts.size() == 0;
+
+result = Device.get(name:'device2',creationClassName:'Device');
+assert result.connectedViaLink.size() == 0;
+assert result.composedOfParts.size() == 0;
+
+result = Device.get(name:'device3',creationClassName:'Device');
+assert result.connectedViaLink.size() == 0;
+assert result.composedOfParts.size() == 0;
+
+result = Link.get(name:'link1', creationClassName:'Link');
+assert result.connectedDevices.size() == 0;
+
+result = Link.get(name:'link2', creationClassName:'Link');
+assert result.connectedDevices.size() == 0;
+result = Link.get(name:'link3', creationClassName:'Link');
+assert result.connectedDevices.size() == 0;
+
+result = DeviceComponent.get(name:'comp1',creationClassName:'Component');
+assert result.partOfDevice == null;
+
+result = DeviceComponent.get(name:'comp2',creationClassName:'Component');
+assert result.partOfDevice == null;
+
+
+/*
+Existing instance relations are NOT lost
 def result = DeviceInterface.get(name:'devinterface1',creationClassName:'DevInterface');
 assert result.underlyingIP.name == "ip1";
 result = Ip.get(name:'ip1', creationClassName:'Ip');
@@ -67,7 +109,7 @@ assert result.partOfDevice.name == "device1";
 
 result = DeviceComponent.get(name:'comp2',creationClassName:'Component');
 assert result.partOfDevice.name == "device1";
-
+*/
 
 def model1 = Model.findByName("DeviceInterface");
 def model2 = Model.findByName("Ip");

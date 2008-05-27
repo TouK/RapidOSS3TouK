@@ -26,7 +26,7 @@ if (westRegionDs == null){
 }
 
 new CmdbScript(name:'ModelHelper').save();
-new CmdbScript(name:'TestModelHelper').save();
+new CmdbScript(name:'SampleModelCreationUsingModelHelper').save();
 /*
 new CmdbScript(name:'Sample3Setup').save();
 new CmdbScript(name:'Test1_1').save();
@@ -51,5 +51,6 @@ new CmdbScript(name:'Test6_3').save();
 new CmdbScript(name:'Test7_1').save();
 new CmdbScript(name:'Test7_2').save();
 new CmdbScript(name:'Test8_1').save();
+new CmdbScript(name:'Test8_2').save();
 */
 return "Successfully created connection, datasources, and scripts!"

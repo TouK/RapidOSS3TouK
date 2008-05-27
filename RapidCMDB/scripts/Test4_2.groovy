@@ -1,7 +1,7 @@
 /*
 Non-key property updated
 	
-	Verify: The property is updated. The instances ????????????????????????????
+	Verify: The property is updated. String to Number type results in data loss in the objects. For blank false proeprties
 */	
 
 import model.*
@@ -14,6 +14,8 @@ def results = SmartsObject.search("*").results;
 for (i in 0..results.size()-1){
 	assert results[i].displayName == "RCMDB_Default";
 	assert results[i].smartDs == -1111;
+	//assert results[i].prop5 == -1111;
+	//assert results[i].prop7 == null;
 }
 
 SmartsObject.add(name:'route6',creationClassName:'Router', smartDs: 6, displayName:"ROUTER DISPLAY NAME");
@@ -23,6 +25,10 @@ println result.errors;  // assert for error message here since displayName and s
 result = SmartsObject.get(name:'route2',creationClassName:'Router');
 println "result.smartDs: $result.smartDs"
 assert result.smartDs == 6;
+assert result.prop5 == -1111;
+assert result.prop6 == 9999;
+//assert result.prop7 == null;
+//assert result.prop8 == 6666;
 
 def myModel = Model.findByName("SmartsObject");
 def eastRegionDs = SmartsTopologyDatasource.findByName("eastRegionDs");
@@ -34,15 +40,20 @@ prop.propertySpecifyingDatasource = ModelProperty.findByModelAndName(myModel,"sm
 prop.type = ModelProperty.stringType;
 prop.lazy = true;
 prop.blank = true;
-
 prop.save();
 
 prop= ModelProperty.findByNameAndModel("smartDs",myModel);
 prop.type = ModelProperty.stringType;
 prop.lazy = false;
 prop.blank = true;
-
 prop.save();
 
+prop= ModelProperty.findByNameAndModel("prop5",myModel);
+prop.type = ModelProperty.stringType;
+prop.save();
+
+prop= ModelProperty.findByNameAndModel("prop7",myModel);
+prop.type = ModelProperty.stringType;
+prop.save();
 
 return "Model is modified. Generate SmartsObject and reload application!";

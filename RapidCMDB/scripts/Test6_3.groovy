@@ -3,9 +3,10 @@ Relation type change
 	
 	Verify: Relation type is changed to its original. Values for existing instances are lost. 
 */	
-
+// ?????????????????????/ MAY NEED TO CHANGE THE TEST FOR 1-M TO M-M
 import datasource.*
 import model.*
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 println "TEST RESULTS FOR TEST6_3"
 def result = DeviceInterface.get(name:'devinterface1',creationClassName:'DevInterface');
@@ -15,15 +16,15 @@ assert result.layeredOver == null;
 
 result = Device.get(name:'device1',creationClassName:'Device');
 assert result.connectedVia.size() == 0;
-assert result.composedOfParts.size() == 0;
+assert result.composedOf.size() == 0;
 
 result = Device.get(name:'device2',creationClassName:'Device');
 assert result.connectedVia.size() == 0;
-assert result.composedOfParts.size() == 0;
+assert result.composedOf.size() == 0;
 
 result = Device.get(name:'device3',creationClassName:'Device');
 assert result.connectedVia.size() == 0;
-assert result.composedOfParts.size() == 0;
+assert result.composedOf.size() == 0;
 
 result = Link.get(name:'link1', creationClassName:'Link');
 assert result.connectedSystems.size() == 0;

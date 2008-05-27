@@ -1,24 +1,51 @@
 /*
 Non-key property rename
 	
-	Verify: Property is renamed. Values for existing instances are not lost. 
+	Verify: Property is renamed. Values for existing instances are lost. 
 */	
 
 import datasource.*
 import model.*
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 SmartsObject.list()*.remove();
-SmartsObject.add([name:'route2',creationClassName:'Router',smartDs:'eastRegionDs', prop1:'prop1 value route2', prop4:11]);
-SmartsObject.add([name:'host1', creationClassName:'Host', smartDs:'eastRegionDs', prop1:'prop1 value host1', prop4:22]);
-SmartsObject.add([name:'host2', creationClassName:'Host', smartDs:'eastRegionDs', prop1:'prop1 value host2', prop4:33]);
-SmartsObject.add([name:'route3', creationClassName:'Router', smartDs:'eastRegionDs', prop1:'prop1 value route3', prop4:44]);;
+SmartsObject.add([name:'route1',creationClassName:'Router',smartDs:'eastRegionDs', prop3:'prop3 value route1', prop4:44]);
+SmartsObject.add([name:'route2',creationClassName:'Router',smartDs:'eastRegionDs', prop1:'prop1 value route2', prop2:11, prop3:'prop3 value route2', prop4:44, prop5:'prop5 value route2', prop6: 66, prop7:'prop7 for route2', prop8:88]);
 
 def count = SmartsObject.search("*").results.size();
-assert count == 4
+assert count == 2
 
 def myModel = Model.findByName("SmartsObject");
 def prop= ModelProperty.findByNameAndModel("prop1",myModel);
 prop.name = 'prop1_1';
+prop.save();
+
+prop= ModelProperty.findByNameAndModel("prop2",myModel);
+prop.name = 'prop1_2';
+prop.save();
+
+prop= ModelProperty.findByNameAndModel("prop3",myModel);
+prop.name = 'prop1_3';
+prop.save();
+
+prop= ModelProperty.findByNameAndModel("prop4",myModel);
+prop.name = 'prop1_4';
+prop.save();
+
+prop= ModelProperty.findByNameAndModel("prop5",myModel);
+prop.name = 'prop1_5';
+prop.save();
+
+prop= ModelProperty.findByNameAndModel("prop6",myModel);
+prop.name = 'prop1_6';
+prop.save();
+
+prop= ModelProperty.findByNameAndModel("prop7",myModel);
+prop.name = 'prop1_7';
+prop.save();
+
+prop= ModelProperty.findByNameAndModel("prop8",myModel);
+prop.name = 'prop1_8';
 prop.save();
 
 return "Model is modified. Generate SmartsObject and reload application!";

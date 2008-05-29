@@ -82,13 +82,32 @@ public class InvokeOperationActionTest extends SmartsTestCase {
         }
        
         action.execute(datasource);
-        MR_AnyVal[] opNativeParams = {new MR_AnyValString(routerInstanceName)};
-        //MR_AnyVal expected = datasource.getDomainManager().invokeOperation(className, instanceName, opName, opNativeParams);
-        
+
         assertEquals("Router", ((HashMap)(action.getInvokeResult())).get("CreationClassName"));
         assertEquals("router1", ((HashMap)(action.getInvokeResult())).get("Name"));
         
-        //assertEquals(expected, action.getInvokeResult());
-        //assertEquals(expected.getValue(), action.getInvokeResult());
+        // TEST ANOTHER OPERATION (makeServiceOffering)
+        ArrayList values = new ArrayList();
+        values.add("NewOffering");
+//        values.add("1");
+        ArrayList parameters = new ArrayList();
+        parameters.add(values);
+        
+        opName = "makeServiceOffering";
+        //action = new InvokeOperationAction(Logger.getRootLogger(), className, instanceName, opName, parameters);
+        //action.execute(datasource);
+        //assertEquals("true", ((HashMap)(action.getInvokeResult())).get("CreationClassName"));
+        //assertEquals("true", ((HashMap)(action.getInvokeResult())));
+        
+        // TEST YET ANOTHER OPERATION (isInstanceOf)
+        values = new ArrayList();
+        values.add("Router");
+        parameters = new ArrayList();
+        parameters.add(values);
+        
+        opName = "isInstanceOf";
+        action = new InvokeOperationAction(Logger.getRootLogger(), "Router", "router1", opName, parameters);
+        action.execute(datasource);
+        assertEquals("true", ((HashMap)(action.getInvokeResult())).get("element0"));
     }
 }

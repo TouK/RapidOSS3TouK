@@ -25,6 +25,7 @@ package com.ifountain.smarts.datasource.actions;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -54,15 +55,23 @@ public class InvokeOperationAction implements Action {
         this.opParams = opParams;
     }
     @Override
-    public void execute(IConnection ds) throws Exception {
-    	MR_AnyVal[] args = getArgsAsMRAnyValArray(ds, className, opName, opParams);
-    	MR_AnyVal result = ((SmartsConnectionImpl)ds).getDomainManager().invokeOperation(className, instanceName, opName, args);
-    	
+    public void execute(IConnection conn) throws Exception {
+    	MR_AnyVal[] args = getArgsAsMRAnyValArray(conn, className, opName, opParams);
+    	MR_AnyVal result = ((SmartsConnectionImpl)conn).getDomainManager().invokeOperation(className, instanceName, opName, args);
+
     	MRToEntry entry = MRToEntryFactory.getMRToEntry("returnVal", result); 
-    	HashMap[] mapArray = (HashMap[])entry.getValue();
-    	
-    	invokeResult = mapArray[0];
+    	Object val = entry.getValue();
+    	if(val instanceof HashMap[]){
+    		HashMap[] mapArray = (HashMap[])val;
+    		invokeResult = mapArray[0];
+    	}
+    	else{
+    		Map<String, Object> record = new HashMap<String, Object>();
+            record.put("element0", val);
+            invokeResult = record;
+    	}
     }
+    
     public Object getInvokeResult() {
         return invokeResult;
     }

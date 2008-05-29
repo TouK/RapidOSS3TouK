@@ -52,6 +52,7 @@ public class MRArrayToEntryTest extends SmartsTestCase {
         assertEquals(1, records.length);
         Map<String, Object> record = records[0];
         assertEquals(2, record.size());
+        
         assertEquals("Description", record.get("element0"));
         Map<String, Object>[] nestedRecords = (Map[]) record.get("element1");
         assertEquals(1, nestedRecords.length);

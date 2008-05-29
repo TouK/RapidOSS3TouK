@@ -119,7 +119,8 @@ class RapidCmdbBuild extends Build{
 		clean();
 		ant.copy(todir : "$env.dist_rapid_cmdb"){
 			ant.fileset(file : "$env.rapid_cmdb_cvs/application.properties");
-			ant.fileset(file : "$env.rapid_cmdb_cvs/rs.bat");
+			ant.fileset(file : "$env.rapid_cmdb_cvs/rs.exe");
+			ant.fileset(file : "$env.rapid_cmdb_cvs/rs.vmoptions");
 			ant.fileset(file : "$env.rapid_cmdb_cvs/rs.sh");
 			ant.fileset(file : "$env.rapid_cmdb_cvs/rsbatch.sh");
 			ant.fileset(file : env.version);

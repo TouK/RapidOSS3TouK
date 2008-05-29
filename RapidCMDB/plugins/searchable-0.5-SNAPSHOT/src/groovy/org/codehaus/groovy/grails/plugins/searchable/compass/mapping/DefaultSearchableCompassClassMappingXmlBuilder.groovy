@@ -73,7 +73,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                     }
                 }
                 // TODO support other "id" properties?
-                id(name: "id"){
+                id(name: "id", "managed-id":"true"){
                     'meta-data'("id");
                 }
 

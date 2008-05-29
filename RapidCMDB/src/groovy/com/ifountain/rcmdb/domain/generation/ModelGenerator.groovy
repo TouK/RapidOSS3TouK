@@ -272,6 +272,8 @@ class ModelMetaData
                 }
                 else
                 {
+                    constraints[it.name][ConstrainedProperty.BLANK_CONSTRAINT] = false;
+                    constraints[it.name][ConstrainedProperty.NULLABLE_CONSTRAINT] = false;
                     masterKeyPropName = it.name;
                 }
             }

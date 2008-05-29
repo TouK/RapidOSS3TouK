@@ -34,8 +34,7 @@ class KeyConstraintTest extends RapidCmdbTestCase{
     public void testSupport()
     {
         KeyConstraint constraint = new KeyConstraint();
-        assertTrue(constraint.supports (KeyConstraintDomainObjectForTest));
-        assertFalse(constraint.supports (DomainObjectForTest));
+        assertTrue(constraint.supports (String));
     }
 
     public void testSetParameter()

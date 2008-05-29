@@ -1,7 +1,9 @@
 
     //AUTO_GENERATED_CODE
 
-    static searchable = true;
+    static searchable = {
+        except = ${model.transientProps};
+    };
     static datasources = ${model.datasourceConfiguration}
 
     <%

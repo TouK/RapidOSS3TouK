@@ -16,6 +16,7 @@ class KeyConstraint extends AbstractConstraint{
     List keys = new ArrayList();
     protected void processValidate(Object target, Object propertyValue, Errors errors)
     {
+        
         Map keyMap = [:];
         keys.each{key->
             keyMap[key] = target.getProperty(key);
@@ -34,7 +35,7 @@ class KeyConstraint extends AbstractConstraint{
     }
 
     public boolean supports(Class type) {
-        return type.metaClass.getMetaProperty ("searchable") != null;
+        return true;
     }
 
     public String getName() {

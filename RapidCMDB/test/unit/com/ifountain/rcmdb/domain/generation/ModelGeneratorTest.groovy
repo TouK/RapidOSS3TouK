@@ -11,7 +11,10 @@ import org.apache.commons.io.FileUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.domain.AbstractDomainOperation
 import com.ifountain.rcmdb.domain.converter.DateConverter
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils;
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import org.codehaus.groovy.grails.validation.ConstrainedPropertyBuilder
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import com.ifountain.rcmdb.domain.constraints.KeyConstraint;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -103,7 +106,11 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         object.keyprop = "keypropvalue";
         checkExistanceOfMetaDataProperties(object);
         assertEquals ("Class1[keyprop:keypropvalue]", object.toString());
-        assertTrue (object.searchable);
+        Closure searchable = object.searchable;
+        ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
+        searchable.setDelegate (closureGetter);
+        searchable.call();
+        assertTrue(closureGetter.propertiesSetByClosure["except"].isEmpty());
 
         Class modelOperations = compileClass(model.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
         assertTrue (AbstractDomainOperation.isAssignableFrom(modelOperations));
@@ -192,6 +199,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
     public void testWithSomeProperties()
     {
+        ConstrainedProperty.registerNewConstraint (KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
         def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);
         try
         {
@@ -204,13 +212,16 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             model.datasources += modelDatasource1;
 
             def date = System.currentTimeMillis();
-            def keyProp = new ModelProperty(name:"prop1", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:"prop2 default value");
-            model.modelProperties += keyProp;
+            def keyProp1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"prop1 default value");
+            def keyProp2 = new ModelProperty(name:"prop5", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:"prop5 default value");
+            model.modelProperties += keyProp1;
+            model.modelProperties += keyProp2;
             model.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
             model.modelProperties += new ModelProperty(name:"prop3", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:converter.formater.format(new Date(date)));
             model.modelProperties += new ModelProperty(name:"prop4", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model);
 
-            modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
+            modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp1, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
+            modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp2, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
 
             ModelGenerator.getInstance().generateModel(model);
             assertTrue (new File(base_directory + "${model.name}.groovy").exists());
@@ -223,22 +234,59 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             assertTrue(object.mappedBy instanceof Map);
             assertTrue(object.mappedBy.isEmpty());
             assertTrue(object.transients instanceof List);
+            Closure searchable = object.searchable;
+            ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
+            searchable.setDelegate (closureGetter);
+            searchable.call();
+            assertTrue(closureGetter.propertiesSetByClosure["except"].isEmpty());
             assertTrue(object.transients.isEmpty());
 
-            assertEquals("prop2 default value", object.prop1);
+            assertEquals("prop1 default value", object.prop1);
             assertEquals(1, object.prop2);
             assertEquals(new Date(date), object.prop3);
-            assertNotNull (object.constraints);
+
+            Closure contraintsClosure = object.constraints;
+            ConstrainedPropertyBuilder contraintsClosurePropertyBuilder = new ConstrainedPropertyBuilder(object);
+            contraintsClosure.setDelegate (contraintsClosurePropertyBuilder);
+            contraintsClosure.call();
+            ConstrainedProperty prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop1"];
+            assertFalse (prop.isNullable());
+            assertFalse (prop.isBlank());
+            KeyConstraint  keyConstraint = prop.getAppliedConstraint("key");
+            if(keyConstraint)
+            {
+                assertTrue (keyConstraint.getKeys().contains("prop5"));
+            }
+            
+            prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop2"];
+            assertFalse (prop.isNullable());
+            assertNull ( prop.getAppliedConstraint("key"));
+            
+            prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop3"];
+            assertTrue (prop.isNullable());
+            assertTrue (prop.isBlank());
+            assertNull ( prop.getAppliedConstraint("key"));
+
+            prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop4"];
+            assertTrue(prop.isNullable());
+            assertTrue (prop.isBlank());
+            assertNull ( prop.getAppliedConstraint("key"));
+
+            prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop5"];
+            assertFalse (prop.isNullable());
+            assertFalse (prop.isBlank());
+            assertNull ( prop.getAppliedConstraint("key"));
+            if(!keyConstraint)
+            {
+                keyConstraint = prop.getAppliedConstraint("key");
+                assertTrue (keyConstraint.getKeys().contains("prop1"));
+            }
+
         }finally
         {
             RapidConvertUtils.getInstance().register (prevDateConf, Date.class)
         }
 
-    }
-
-    public void testConstraints()
-    {
-        fail("Constraint tests should be implemented");
     }
 
     public void testWithSomeFederatedAndNormalProperties()
@@ -298,8 +346,17 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals("prop2", dsDefinition2.keys["prop2"].nameInDs);
 
         def transients = object.transients;
+        assertEquals (2, transients.size());
         assertTrue(transients.contains("Prop3"));
         assertTrue(transients.contains("Prop4"));
+
+        Closure searchable = object.searchable;
+        ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
+        searchable.setDelegate (closureGetter);
+        searchable.call();
+        assertEquals(2, closureGetter.propertiesSetByClosure["except"].size());
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("Prop3"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("Prop4"));
 
         def propertyConfiguration = object.propertyConfiguration;
 
@@ -578,4 +635,14 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         cloader.addClasspath (base_directory);
         return cloader.loadClass(name);
     }
+}
+
+class ClosurePropertyGetter
+{
+    def propertiesSetByClosure = [:]
+    public void setProperty(String propName, Object propValue)
+    {
+        propertiesSetByClosure[propName] = propValue;
+    }
+
 }

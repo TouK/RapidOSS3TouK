@@ -94,10 +94,10 @@ public class InvokeOperationActionTest extends SmartsTestCase {
         parameters.add(values);
         
         opName = "makeServiceOffering";
-        //action = new InvokeOperationAction(Logger.getRootLogger(), className, instanceName, opName, parameters);
-        //action.execute(datasource);
-        //assertEquals("true", ((HashMap)(action.getInvokeResult())).get("CreationClassName"));
-        //assertEquals("true", ((HashMap)(action.getInvokeResult())));
+//        action = new InvokeOperationAction(Logger.getRootLogger(), className, instanceName, opName, parameters);
+//        action.execute(datasource);
+//        assertEquals("true", ((HashMap)(action.getInvokeResult())).get("CreationClassName"));
+//        assertEquals("true", ((HashMap)(action.getInvokeResult())));
         
         // TEST YET ANOTHER OPERATION (isInstanceOf)
         values = new ArrayList();

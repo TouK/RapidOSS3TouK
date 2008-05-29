@@ -46,7 +46,7 @@ import com.ifountain.smarts.datasource.actions.GetRelationTypesActionTest;
 import com.ifountain.smarts.datasource.actions.GetReverseRelationActionTest;
 import com.ifountain.smarts.datasource.actions.InsertActionTest;
 import com.ifountain.smarts.datasource.actions.InstanceExistsActionTest;
-import com.ifountain.smarts.datasource.actions.InvokeOperationActionTest;
+import com.ifountain.smarts.datasource.actions.InvokeOperationWithNativeParamsActionTest;
 import com.ifountain.smarts.datasource.actions.PutActionTest;
 import com.ifountain.smarts.datasource.actions.RemoveActionTest;
 import com.ifountain.smarts.datasource.queries.FindTopologyInstancesQueryTest;
@@ -83,7 +83,7 @@ public class AllUnitTests extends SmartsTestCase {
         suite.addTestSuite(GetInstancesActionTest.class);
         suite.addTestSuite(GetPropertiesActionTest.class);
         suite.addTestSuite(GetReverseRelationActionTest.class);
-        suite.addTestSuite(InvokeOperationActionTest.class);
+        suite.addTestSuite(InvokeOperationWithNativeParamsActionTest.class);
         suite.addTestSuite(PutActionTest.class);
         suite.addTestSuite(GetPropNamesActionTest.class);
         suite.addTestSuite(GetRelationTypesActionTest.class);

@@ -22,12 +22,6 @@
  */
 package com.ifountain.smarts.datasource.actions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.smarts.connection.SmartsConnectionImpl;
 import com.ifountain.smarts.test.util.SmartsTestCase;
@@ -35,7 +29,7 @@ import com.ifountain.smarts.test.util.SmartsTestUtils;
 import com.smarts.repos.MR_AnyVal;
 import com.smarts.repos.MR_AnyValString;
 
-public class InvokeOperationActionTest extends SmartsTestCase {
+public class InvokeOperationWithNativeParamsActionTest extends SmartsTestCase {
 
     SmartsConnectionImpl datasource;
     @Override
@@ -60,12 +54,9 @@ public class InvokeOperationActionTest extends SmartsTestCase {
         
         String routerClassName = "Router";
         String routerInstanceName = "router1";
-        List innerParams = new ArrayList();
-        innerParams.add(routerInstanceName);
-        List opParams = new ArrayList();
-        opParams.add(innerParams);
+        MR_AnyVal[] opParams = {new MR_AnyValString(routerInstanceName)};
         
-        InvokeOperationAction action = new InvokeOperationAction(Logger.getRootLogger(), className, instanceName, opName, opParams);
+        InvokeOperationWithNativeParamsAction action = new InvokeOperationWithNativeParamsAction(className, instanceName, opName, opParams);
         try {
             action.execute(datasource);
             fail("should throw exception");
@@ -82,13 +73,7 @@ public class InvokeOperationActionTest extends SmartsTestCase {
         }
        
         action.execute(datasource);
-        MR_AnyVal[] opNativeParams = {new MR_AnyValString(routerInstanceName)};
-        //MR_AnyVal expected = datasource.getDomainManager().invokeOperation(className, instanceName, opName, opNativeParams);
-        
-        assertEquals("Router", ((HashMap)(action.getInvokeResult())).get("CreationClassName"));
-        assertEquals("router1", ((HashMap)(action.getInvokeResult())).get("Name"));
-        
-        //assertEquals(expected, action.getInvokeResult());
-        //assertEquals(expected.getValue(), action.getInvokeResult());
+        MR_AnyVal expected = datasource.getDomainManager().invokeOperation(className, instanceName, opName, opParams);
+        assertEquals(expected, action.getInvokeResult());
     }
 }

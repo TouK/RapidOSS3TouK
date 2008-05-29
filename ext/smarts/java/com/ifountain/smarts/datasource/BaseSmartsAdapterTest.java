@@ -43,6 +43,7 @@ import com.ifountain.smarts.datasource.actions.GetReverseRelationAction;
 import com.ifountain.smarts.datasource.actions.InsertAction;
 import com.ifountain.smarts.datasource.actions.InstanceExistsAction;
 import com.ifountain.smarts.datasource.actions.InvokeOperationAction;
+import com.ifountain.smarts.datasource.actions.InvokeOperationWithNativeParamsAction;
 import com.ifountain.smarts.datasource.actions.PutAction;
 import com.ifountain.smarts.datasource.actions.RemoveAction;
 import com.ifountain.smarts.test.mocks.BaseSmartsAdapterMock;
@@ -154,9 +155,9 @@ public class BaseSmartsAdapterTest extends SmartsTestCase {
         assertTrue(mockAdapter.executedActions.get(0) instanceof InstanceExistsAction);
     }
     public void testInvoke() throws Exception {
-        mockAdapter.invokeOperation("ICIM_ObjectFactory", "ICIM-ObjectFactory", "findComputerSystem", new MR_AnyVal[]{new MR_AnyValString("router1")});
+        mockAdapter.invokeOperationWithNativeParams("ICIM_ObjectFactory", "ICIM-ObjectFactory", "findComputerSystem", new MR_AnyVal[]{new MR_AnyValString("router1")});
         assertEquals(1, mockAdapter.executedActions.size());
-        assertTrue(mockAdapter.executedActions.get(0) instanceof InvokeOperationAction);
+        assertTrue(mockAdapter.executedActions.get(0) instanceof InvokeOperationWithNativeParamsAction);
     }
     public void testPut() throws Exception {
         mockAdapter.put("Router", "router1", "Location", new MR_AnyValString("Ankara"));

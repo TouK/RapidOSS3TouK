@@ -91,7 +91,7 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
                 + createParams.getIdentifierParameters().getEventName()
         );
         MR_AnyVal[] args = createParams.getIdentifierParameters().getMethodArgs();
-        MR_AnyVal notification = invokeOperation(SmartsConstants.NOTIFICATION_FACTORY_CLASS, SmartsConstants.NOTIFICATION_FACTORY_INSTANCE, SmartsConstants.MAKE_NOTIFICATION, args);
+        MR_AnyVal notification = invokeOperationWithNativeParams(SmartsConstants.NOTIFICATION_FACTORY_CLASS, SmartsConstants.NOTIFICATION_FACTORY_INSTANCE, SmartsConstants.MAKE_NOTIFICATION, args);
         String notificationInstanceName = SmartsHelper.parseNotificationName(notification);
         String invokeChangedOn = notificationInstanceName;
 
@@ -138,7 +138,7 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
             return true;
         }
         MR_AnyVal[] args = {notification, archiveParams.getUserAsMR(), archiveParams.getAuditTrailTextAsMR()};
-        invokeOperation(SmartsConstants.NOTIFICATION_FACTORY_CLASS, SmartsConstants.NOTIFICATION_FACTORY_INSTANCE, SmartsConstants.ARCHIVE_NOTIFICATION, args);
+        invokeOperationWithNativeParams(SmartsConstants.NOTIFICATION_FACTORY_CLASS, SmartsConstants.NOTIFICATION_FACTORY_INSTANCE, SmartsConstants.ARCHIVE_NOTIFICATION, args);
         return true;
     }
     
@@ -290,7 +290,7 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
         MR_AnyVal[] aggregateArgs = aggregateParameters.getMethodArgs();
         MR_AnyVal aggregateNotification = null;
         try {
-            aggregateNotification = invokeOperation(SmartsConstants.NOTIFICATION_FACTORY_CLASS, SmartsConstants.NOTIFICATION_FACTORY_INSTANCE, SmartsConstants.MAKE_AGGREGATE, aggregateArgs);
+            aggregateNotification = invokeOperationWithNativeParams(SmartsConstants.NOTIFICATION_FACTORY_CLASS, SmartsConstants.NOTIFICATION_FACTORY_INSTANCE, SmartsConstants.MAKE_AGGREGATE, aggregateArgs);
         } catch (Exception e) {
             logger.warn("EXCEPTION while creating aggregate Notification");
             //We do not care if this fails, we will still create the original notification
@@ -310,7 +310,7 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
     }
 
     private void invokeNotify(String notification, NotificationNotifyParams notifyParameters) throws Exception{
-        invokeOperation(SmartsConstants.NOTIFICATION_CLASS, notification, SmartsConstants.NOTIFY, notifyParameters.getMethodArgs());
+    	invokeOperationWithNativeParams(SmartsConstants.NOTIFICATION_CLASS, notification, SmartsConstants.NOTIFY, notifyParameters.getMethodArgs());
     }
     
     private MR_AnyVal findOccurredOn(NotificationIdentifierParams identifierParams, String unknownAgent) {
@@ -355,11 +355,11 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
     private void invokeChanged(String notification) throws Exception {
         MR_AnyVal waitForNotify = new MR_AnyValUnsignedInt(0);
         MR_AnyVal[] args = {waitForNotify};
-        invokeOperation(SmartsConstants.NOTIFICATION_CLASS, notification, SmartsConstants.CHANGED, args);
+        invokeOperationWithNativeParams(SmartsConstants.NOTIFICATION_CLASS, notification, SmartsConstants.CHANGED, args);
     }
 
     private void invokeICSNotificationMethod(String notificationInstanceName, String methodName, NotificationParams parameters) throws Exception{
-       invokeOperation(SmartsConstants.NOTIFICATION_CLASS, notificationInstanceName, methodName, parameters.getMethodArgs());
+    	invokeOperationWithNativeParams(SmartsConstants.NOTIFICATION_CLASS, notificationInstanceName, methodName, parameters.getMethodArgs());
     }
     
     private NotificationIdentifierParams getIdentifierParameters(String className, String instanceName, String eventName)
@@ -440,7 +440,7 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
     public MR_AnyVal findNotification(NotificationIdentifierParams identifierParams) throws Exception
     {
         MR_AnyVal[] findArgs = { identifierParams.getClassNameAsMR(), identifierParams.getInstanceNameAsMR(), identifierParams.getEventNameAsMR() };
-        MR_AnyVal notification = invokeOperation(SmartsConstants.NOTIFICATION_FACTORY_CLASS, SmartsConstants.NOTIFICATION_FACTORY_INSTANCE, SmartsConstants.FIND_NOTIFICATION, findArgs);
+        MR_AnyVal notification = invokeOperationWithNativeParams(SmartsConstants.NOTIFICATION_FACTORY_CLASS, SmartsConstants.NOTIFICATION_FACTORY_INSTANCE, SmartsConstants.FIND_NOTIFICATION, findArgs);
         if ((notification == null) || (notification.toString().equals("::"))) {
             return null;
         }

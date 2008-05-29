@@ -46,6 +46,7 @@ import com.ifountain.smarts.datasource.actions.GetReverseRelationAction;
 import com.ifountain.smarts.datasource.actions.InsertAction;
 import com.ifountain.smarts.datasource.actions.InstanceExistsAction;
 import com.ifountain.smarts.datasource.actions.InvokeOperationAction;
+import com.ifountain.smarts.datasource.actions.InvokeOperationWithNativeParamsAction;
 import com.ifountain.smarts.datasource.actions.PutAction;
 import com.ifountain.smarts.datasource.actions.RemoveAction;
 import com.smarts.repos.MR_AnyVal;
@@ -146,8 +147,13 @@ public abstract class BaseSmartsAdapter extends BaseAdapter{
         executeAction(action);
         return action.instanceExists();
     }
-    public MR_AnyVal invokeOperation(String className, String instanceName, String opName, MR_AnyVal[] opParams) throws Exception{
-        InvokeOperationAction action = new InvokeOperationAction(className, instanceName, opName, opParams);
+    public MR_AnyVal invokeOperationWithNativeParams(String className, String instanceName, String opName, MR_AnyVal[] opParams) throws Exception{
+    	InvokeOperationWithNativeParamsAction action = new InvokeOperationWithNativeParamsAction(className, instanceName, opName, opParams);
+        executeAction(action);
+        return action.getInvokeResult();
+    }
+    public Object invokeOperation(String className, String instanceName, String opName, List<String>  opParams) throws Exception{
+        InvokeOperationAction action = new InvokeOperationAction(logger, className, instanceName, opName, opParams);
         executeAction(action);
         return action.getInvokeResult();
     }

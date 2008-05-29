@@ -115,7 +115,7 @@ public class BaseTopologyAdapter extends BaseSmartsAdapter {
     
     public void deleteTopologyInstance(String className, String instanceName) throws Exception
     {
-        invokeOperation(className,instanceName,"remove",new MR_AnyVal[]{});
+    	invokeOperationWithNativeParams(className,instanceName,"remove",new MR_AnyVal[]{});
     }
     
     public void createTopologyInstanceWithProperties(String className, String instanceName, Map<String, String> properties) throws Exception

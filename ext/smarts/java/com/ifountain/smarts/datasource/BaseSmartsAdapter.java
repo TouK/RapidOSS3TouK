@@ -22,6 +22,7 @@
  */
 package com.ifountain.smarts.datasource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -153,7 +154,9 @@ public abstract class BaseSmartsAdapter extends BaseAdapter{
         return action.getInvokeResult();
     }
     public Object invokeOperation(String className, String instanceName, String opName, List<String>  opParams) throws Exception{
-        InvokeOperationAction action = new InvokeOperationAction(logger, className, instanceName, opName, opParams);
+    	List outerParams = new ArrayList();
+    	outerParams.add(opParams);
+        InvokeOperationAction action = new InvokeOperationAction(logger, className, instanceName, opName, outerParams);
         executeAction(action);
         return action.getInvokeResult();
     }

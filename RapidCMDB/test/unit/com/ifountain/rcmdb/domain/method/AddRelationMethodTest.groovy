@@ -273,7 +273,7 @@ class RelationMethodDomainObject1
         {
             return obj.id == id;
         }
-        return false;
+        return super.equals(obj);
     }
 
 }
@@ -304,6 +304,6 @@ class RelationMethodDomainObject2
         {
             return obj.id == id;
         }
-        return false;
+        return super.equals(obj);
     }
 }

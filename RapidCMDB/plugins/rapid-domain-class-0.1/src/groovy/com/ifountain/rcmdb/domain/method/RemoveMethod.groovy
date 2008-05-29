@@ -25,12 +25,30 @@ package com.ifountain.rcmdb.domain.method
  * To change this template use File | Settings | File Templates.
  */
 class RemoveMethod extends AbstractRapidDomainMethod{
-
-    public RemoveMethod(MetaClass mc) {
+    def relations;
+    public RemoveMethod(MetaClass mc, Map relations) {
         super(mc);
+        this.relations = relations;
     }
 
     public Object invoke(Object domainObject, Object[] arguments) {
+        def relsToBeRemoved = [:]
+        relations.each{relationName,relation->
+            def relatedObject = domainObject[relationName];
+            if(relatedObject instanceof Collection)
+            {
+                relsToBeRemoved[relationName] = relatedObject;       
+            }
+            else if(relatedObject != null)
+            {
+                relsToBeRemoved[relationName] = [relatedObject];            
+            }
+
+        }
+        if(!relsToBeRemoved.isEmpty())
+        {
+            domainObject.removeRelation(relsToBeRemoved);
+        }
         CompassMethodInvoker.unindex(mc, domainObject);
     }
 

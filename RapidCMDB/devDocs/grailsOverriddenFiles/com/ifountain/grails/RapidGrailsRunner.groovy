@@ -49,13 +49,20 @@ class RapidGrailsScriptRunner {
 			registry.setMetaClassCreationHandle(new ExpandoMetaClassCreationHandle());
 
 		ANT.property(environment:"env")
-		grailsHome = ANT.antProject.properties.'env.GRAILS_HOME'
+		grailsHome = new File(System.properties.'grails.home').canonicalPath;
 
 		if(!grailsHome) {
 			println "Environment variable GRAILS_HOME not set. Please set it to the location of your Grails installation and try again."
 			System.exit(0)
 		}
-
+		try{
+            def workingDir = new File(System.properties.'grails.work.dir');
+            if(workingDir.exists()){
+                deleteDir(workingDir);
+            }    
+        }
+        catch(e){
+        }
 		ANT.property(file:"${grailsHome}/build.properties")
 		def grailsVersion =  ANT.antProject.properties.'grails.version'
 
@@ -66,6 +73,7 @@ class RapidGrailsScriptRunner {
             println "Base Directory: ${baseDir.absolutePath}"
 
 		    rootLoader = getClass().classLoader ? getClass().classLoader.rootLoader : Thread.currentThread().getContextClassLoader().rootLoader
+		    
 			def baseName = new File(baseDir.absolutePath).name
 		    classesDir = new File("${userHome}/.grails/${grailsVersion}/projects/${baseName}/classes")
 
@@ -196,7 +204,7 @@ class RapidGrailsScriptRunner {
 				println "Running script ${potentialScripts[0].absolutePath}"
 
 				def gant = new Gant(binding, new URLClassLoader([classesDir.toURL()] as URL[], rootLoader))
-				System.exit(gant.processArgs(["-f", potentialScripts[0].absolutePath,"-c","-d","${baseDir.absolutePath}/../temp/scriptCache"] as String[]))
+				System.exit(gant.processArgs(["-f", potentialScripts[0].absolutePath,"-c","-d","${new File(System.properties.'grails.work.dir').canonicalPath}/scriptCache"] as String[]))
 			}
 			else {
 				println "Multiple options please select:"
@@ -233,12 +241,22 @@ class RapidGrailsScriptRunner {
 		return allArgs
 	}
 
+    private static deleteDir(File dir){
+        if (dir.isDirectory()) {
+            def children = dir.list();
+            for (child in children) {
+                deleteDir(new File(dir, child));
+            }
+        }
+        dir.delete();
+    }
+
 	private static establishBaseDir() {
 		def sysProp = System.getProperty("base.dir")
 		def baseDir
 		if(sysProp) {
 			baseDir = sysProp == '.' ? new File("") : new File(sysProp)
-		}
+		}  
 		else {
 	        baseDir = new File("")
 	        if(!new File(baseDir.absolutePath, "grails-app").exists()) {

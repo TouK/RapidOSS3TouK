@@ -82,4 +82,7 @@ class SmartsTopologyDatasource extends BaseDatasource{
         this.adapter.removeTopologyRelationship(firstClassName, firstInstanceName, secondClassName, secondInstanceName, relationName);
     }
 
+    def invokeOperation(className, instanceName, opName, opParams){
+        this.adapter.invokeOperation(className, instanceName, opName, opParams);
+    }
 }

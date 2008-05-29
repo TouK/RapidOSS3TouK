@@ -157,5 +157,9 @@ class SmartsNotificationDatasource extends BaseDatasource{
         def action = tempParams.Action;
         return this.adapter.addAuditEntry(className, instanceName, eventName, user, auditTrailText, action);
     }
+    
+    def invokeOperation(className, instanceName, opName, opParams){
+        this.adapter.invokeOperation(className, instanceName, opName, opParams);
+    }
 
 }

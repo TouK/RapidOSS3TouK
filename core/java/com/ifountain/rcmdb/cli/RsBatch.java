@@ -89,31 +89,31 @@ public class RsBatch extends CommandLineUtility {
         OptionBuilder.withArgName(COMMANDFILE_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("File that contains batch REST API commands. Command file must be specified relative to RapidSuite insallation directory. Entries in command file must be in '|' delimeted format.");
+        OptionBuilder.withDescription("File that contains batch REST API commands. Command file must be specified relative to RapidServer insallation directory. Entries in command file must be in '|' delimeted format.");
         Option commandfile = OptionBuilder.create(COMMANDFILE_OPTION);
 
         OptionBuilder.withArgName(USERNAME_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("User name required to authenticate to Rapid Suite");
+        OptionBuilder.withDescription("User name required to authenticate to Rapid Server");
         Option username = OptionBuilder.create(USERNAME_OPTION);
 
         OptionBuilder.withArgName(PASSWORD_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("Password required to authenticate to Rapid Suite");
+        OptionBuilder.withDescription("Password required to authenticate to Rapid Server");
         Option password = OptionBuilder.create(PASSWORD_OPTION);
 
         OptionBuilder.withArgName(HOST_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("Host address of Rapid Suite");
+        OptionBuilder.withDescription("Host address of Rapid Server");
         Option host = OptionBuilder.create(HOST_OPTION);
 
         OptionBuilder.withArgName(PORT_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("Port required to connect to Rapid Suite");
+        OptionBuilder.withDescription("Port required to connect to Rapid Server");
         Option port = OptionBuilder.create(PORT_OPTION);
 
         OptionBuilder.withArgName(LOGLEVEL_OPTION);

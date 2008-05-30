@@ -18,26 +18,15 @@ import java.util.Date;
  * Time: 5:59:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CompassLongConverter implements Converter, CompassConfigurable
+public class CompassLongConverter extends AbstractCompassConverterWrapper
 {
     org.compass.core.converter.basic.LongConverter longConverter = new org.compass.core.converter.basic.LongConverter();
-    public boolean marshall(Resource resource, Object o, Mapping mapping, MarshallingContext marshallingContext) throws ConversionException {
-        return longConverter.marshall(resource, o, mapping, marshallingContext);
+    protected Converter getConverter() {
+        return longConverter; //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Object unmarshall(Resource resource, Mapping mapping, MarshallingContext marshallingContext) throws ConversionException {
-        try
-        {
-            return  longConverter.unmarshall(resource, mapping, marshallingContext);
-        }
-        catch(Exception e)
-        {
-            return new Long(-1111);
-        }
-    }
-
-    public void configure(CompassSettings compassSettings) throws CompassException {
-        longConverter.configure(compassSettings);
+    protected Object getDefaultValue() {
+        return -1111;
     }
 
 }

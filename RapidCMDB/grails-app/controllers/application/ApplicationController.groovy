@@ -201,28 +201,4 @@ class PropertyActionFactory
         }
 
     }
-
-
-//    def getDefaultValue()
-//    {
-//        if(defaultValue) return defaultValue;
-//        if(String.isAssignableFrom(newPropType))
-//        {
-//            return "RCMDB_Default"
-//        }
-//        else if(Number.isAssignableFrom(newPropType))
-//        {
-//            return "-1111";
-//        }
-//        else if(Date.isAssignableFrom(newPropType))
-//        {
-//            return new Date(0);
-//        }
-//        return null;
-//    }
-
 }
-      /*
-currentDomainObject.getConstrainedProperties().each{name, prop->
-    println prop.getProperty(KeyConstraint.KEY_CONSTRAINT);
-}    */

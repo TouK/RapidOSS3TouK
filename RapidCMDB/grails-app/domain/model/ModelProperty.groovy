@@ -8,6 +8,7 @@ class ModelProperty {
     def static final String stringType = "string";
     def static final String numberType = "number";
     def static final String dateType = "date";
+    def static final String floatType = "float";
     String name;
     String type;
     boolean blank = true;
@@ -49,6 +50,18 @@ class ModelProperty {
                         return ['modelproperty.defaultvalue.invalidnumber']
                     }
                 }
+                if(obj.type == floatType)
+                {
+                    def converter = RapidConvertUtils.getInstance().lookup (Double.class);
+                    try
+                    {
+                        converter.convert(Double.class, val);
+                    }
+                    catch(org.apache.commons.beanutils.ConversionException e)
+                    {
+                        return ['modelproperty.defaultvalue.invalidfloat']
+                    }
+                }
                 else if(obj.type == dateType)
                 {
                     def converter = RapidConvertUtils.getInstance().lookup (Date.class);
@@ -65,7 +78,7 @@ class ModelProperty {
 
         });
         propertySpecifyingDatasource(nullable:true);
-        type(inList:[stringType, numberType, dateType]);
+        type(inList:[stringType, numberType, dateType, floatType]);
         lazy(validator:{val, obj ->
             if(val && obj.propertyDatasource != null && obj.propertyDatasource.master){
                 return ["model.invalid.lazy"]       
@@ -104,6 +117,10 @@ class ModelProperty {
         else if(type == dateType)
         {
             return "Date";
+        }
+        else if(type == floatType)
+        {
+            return "Double";
         }
         else
         {

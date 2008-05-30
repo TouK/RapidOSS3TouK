@@ -219,6 +219,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             model.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
             model.modelProperties += new ModelProperty(name:"prop3", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model,blank:true,defaultValue:converter.formater.format(new Date(date)));
             model.modelProperties += new ModelProperty(name:"prop4", type:ModelProperty.dateType, propertyDatasource:modelDatasource1, model:model);
+            model.modelProperties += new ModelProperty(name:"prop6", type:ModelProperty.floatType, propertyDatasource:modelDatasource1, model:model, blank:false,defaultValue:"1.0");
 
             modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp1, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
             modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp2, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
@@ -234,6 +235,14 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             assertTrue(object.mappedBy instanceof Map);
             assertTrue(object.mappedBy.isEmpty());
             assertTrue(object.transients instanceof List);
+
+            assertEquals(String, object.class.getDeclaredField("prop1").type);
+            assertEquals(Long, object.class.getDeclaredField("prop2").type);
+            assertEquals(Date, object.class.getDeclaredField("prop3").type);
+            assertEquals(Date, object.class.getDeclaredField("prop4").type);
+            assertEquals(String, object.class.getDeclaredField("prop5").type);
+            assertEquals(Double, object.class.getDeclaredField("prop6").type);
+
             Closure searchable = object.searchable;
             ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
             searchable.setDelegate (closureGetter);
@@ -242,6 +251,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             assertTrue(object.transients.isEmpty());
 
             assertEquals("prop1 default value", object.prop1);
+            assertEquals(1, object.prop2);
+            assertEquals((int)1.0, (int)object.prop6);
             assertEquals(1, object.prop2);
             assertEquals(new Date(date), object.prop3);
 
@@ -275,12 +286,16 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop5"];
             assertFalse (prop.isNullable());
             assertFalse (prop.isBlank());
-            assertNull ( prop.getAppliedConstraint("key"));
             if(!keyConstraint)
             {
                 keyConstraint = prop.getAppliedConstraint("key");
                 assertTrue (keyConstraint.getKeys().contains("prop1"));
             }
+
+
+            prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop6"];
+            assertFalse (prop.isNullable());
+            assertNull ( prop.getAppliedConstraint("key"));
 
         }finally
         {

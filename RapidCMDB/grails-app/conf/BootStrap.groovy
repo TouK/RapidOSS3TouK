@@ -13,13 +13,12 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import model.PropertyAction
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import com.ifountain.rcmdb.domain.converter.DoubleConverter
 
 class BootStrap {
 
     def init = {servletContext ->
-        def dateFormat = ConfigurationHolder.getConfig().toProperties()["rapidcmdb.date.format"];
-        RapidConvertUtils.getInstance().register (new DateConverter(dateFormat), Date.class)
-        RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
+        registerDefaultConverters();
     	def adminRole = Role.findByName("Administrator");
     	if(!adminRole){
 	    	adminRole = new Role(name: "Administrator");
@@ -59,20 +58,17 @@ class BootStrap {
                 modelProps[propAction.propName] = propAction;
             }
         }
-        println "MODEL PROPS:${changedModelProperties}"
         int batch = 1000;
 
         changedModelProperties.each{String modelName, Map modelProps->
             DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(modelName);
             if(currentDomainObject)
             {
-                println "REINDEXING ${modelName}"
                 Class currentModelClass = currentDomainObject.clazz;
                 int index = 0;
                 while(true)
                 {
                     def res = currentModelClass.metaClass.invokeStaticMethod (currentModelClass, "search", ["id:[0 TO *]",[max:batch, offset:index]] as Object[]);
-                    println "RES ${res}"
                     boolean isDelete = false;
                     res.results.each{modelInstance->
                         if(!isDelete)
@@ -82,7 +78,6 @@ class BootStrap {
 
                                 if(action.action ==  PropertyAction.CLEAR_RELATION)
                                 {
-                                    println "CLEARING REL ${modelName}"
                                     if(propVal instanceof Collection)
                                     {
                                         propVal.clear();
@@ -94,7 +89,6 @@ class BootStrap {
                                 }
                                 else if(action.action ==  PropertyAction.SET_DEFAULT_VALUE)
                                 {
-                                    println "SETTING DEFAULT VALUE ${action.defaultValue} ${action.propType}"
                                     modelInstance[propName] = getDefaultValue(action.defaultValue,action.propType)
                                 }
                                 else if(action.action ==  PropertyAction.DELETE_ALL_INSTANCES)
@@ -106,12 +100,10 @@ class BootStrap {
                         }
                         if(isDelete)
                         {
-                            println "UNINDEXED"
                             modelInstance.unindex();
                         }
                         else
                         {
-                            println "REUNINDEXED"
                             modelInstance.reindex();
                         }
                     }
@@ -121,7 +113,6 @@ class BootStrap {
                         break;
                     }
                 }
-                println "REINDEXING ${modelName} FINISHED"
             }
             PropertyAction.findByModelName(modelName).each{propActionWillBeDeleted->
                  propActionWillBeDeleted.willBeDeleted = true;
@@ -130,11 +121,20 @@ class BootStrap {
         }          
     }
 
+    def registerDefaultConverters()
+    {
+        def dateFormat = ConfigurationHolder.getConfig().toProperties()["rapidcmdb.date.format"];
+        RapidConvertUtils.getInstance().register (new DateConverter(dateFormat), Date.class)
+        RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
+        RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
+    }
+
     def getDefaultValue(defaultValue, newPropType)
     {
         if(defaultValue) return defaultValue;
         if(String.isAssignableFrom(newPropType))
         {
+            Double
             return "RCMDB_Default"
         }
         else if(Number.isAssignableFrom(newPropType))

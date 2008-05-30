@@ -49,7 +49,7 @@ class SearchableConfiguration {
     Map compassSettings = ["compass.converter.date.type":CompassDateConverter.class.name,
     "compass.converter.date.format":dateFormat,
     "compass.converter.long.type":CompassLongConverter.class.name,
-    "compass.converter.long.format":"#00000000"];
+    "compass.converter.long.format":"#"];
 
     /**
      * Default mapping property exclusions

@@ -9,6 +9,7 @@ import com.ifountain.rcmdb.domain.converter.LongConverter
 import org.apache.commons.beanutils.ConvertUtils
 import java.text.SimpleDateFormat
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.converter.DoubleConverter
 
 /**
 * Created by IntelliJ IDEA.
@@ -77,21 +78,24 @@ class UpdateMethodTest extends RapidCmdbTestCase{
     {
         def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);
         def prevLongConf = RapidConvertUtils.getInstance().lookup (Long);
+        def prevDoubleConf = RapidConvertUtils.getInstance().lookup (Double);
         try
         {
             String dateFormatString = "yyyy-dd-MM";
             RapidConvertUtils.getInstance().register (new DateConverter(dateFormatString), Date.class)
             RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
+            RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
 
             AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
 
-            def props = [prop1:object.prop1, prop2:"newProp2Value",  prop4:"100", prop5:"2000-01-01"];
+            def props = [prop1:object.prop1, prop2:"newProp2Value",  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0"];
             UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, null, [:], ["prop1"]);
             def updatedObject = update.invoke (object, [props] as Object[]);
             assertEquals (100, updatedObject.id);
             assertEquals ("newProp2Value", updatedObject.prop2);
             assertEquals ("object1Prop3Value", updatedObject.prop3);
             assertEquals (100, updatedObject.prop4);
+            assertEquals (new Double(5.0), updatedObject.doubleProp);
             SimpleDateFormat formater = new SimpleDateFormat(dateFormatString)  ;
             assertEquals (formater.parse("2000-01-01"), updatedObject.prop5);
 
@@ -100,6 +104,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         {
             RapidConvertUtils.getInstance().register (prevDateConf, Date.class)
             RapidConvertUtils.getInstance().register (prevLongConf, Long.class)
+            RapidConvertUtils.getInstance().register (prevDoubleConf, Double.class)
         }
     }
 }

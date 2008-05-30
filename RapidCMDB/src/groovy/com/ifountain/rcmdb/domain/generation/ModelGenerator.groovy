@@ -336,7 +336,7 @@ class ModelMetaData
         {
             return "\"$modelProperty.defaultValue\"";
         }
-        else if(modelProperty.type == model.ModelProperty.numberType)
+        else if(modelProperty.type == model.ModelProperty.numberType || modelProperty.type == model.ModelProperty.floatType)
         {
             return "$modelProperty.defaultValue";
         }

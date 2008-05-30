@@ -16,6 +16,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -43,17 +45,17 @@ import java.io.IOException;
  */
 public class RsBatch extends CommandLineUtility {
     public static final String TOOL_NAME = "rsbatch";
-//	public static final String PASSWORD_OPTION = "password";
-    //    public static final String USERNAME_OPTION = "username";
+	public static final String PASSWORD_OPTION = "password";
+    public static final String USERNAME_OPTION = "username";
     public static final String LOGLEVEL_OPTION = "loglevel";
     public static final String COMMANDFILE_OPTION = "commandfile";
     public static final String HOST_OPTION = "host";
     public static final String PORT_OPTION = "port";
 
 
-//    private String username;
+    private String username;
     private String commandFile;
-//    private String password;
+    private String password;
     private String loglevel = Level.INFO.toString();
     private int port;
     private String host;
@@ -90,17 +92,17 @@ public class RsBatch extends CommandLineUtility {
         OptionBuilder.withDescription("File that contains batch REST API commands. Command file must be specified relative to RapidSuite insallation directory. Entries in command file must be in '|' delimeted format.");
         Option commandfile = OptionBuilder.create(COMMANDFILE_OPTION);
 
-//        OptionBuilder.withArgName(USERNAME_OPTION);
-//        OptionBuilder.hasArg();
-//        OptionBuilder.isRequired();
-//        OptionBuilder.withDescription("User name required to authenticate to Rapid Suite");
-//        Option username = OptionBuilder.create(USERNAME_OPTION);
-//
-//        OptionBuilder.withArgName(PASSWORD_OPTION);
-//        OptionBuilder.hasArg();
-//        OptionBuilder.isRequired();
-//        OptionBuilder.withDescription("Password required to authenticate to Rapid Suite");
-//        Option password = OptionBuilder.create(PASSWORD_OPTION);
+        OptionBuilder.withArgName(USERNAME_OPTION);
+        OptionBuilder.hasArg();
+        OptionBuilder.isRequired();
+        OptionBuilder.withDescription("User name required to authenticate to Rapid Suite");
+        Option username = OptionBuilder.create(USERNAME_OPTION);
+
+        OptionBuilder.withArgName(PASSWORD_OPTION);
+        OptionBuilder.hasArg();
+        OptionBuilder.isRequired();
+        OptionBuilder.withDescription("Password required to authenticate to Rapid Suite");
+        Option password = OptionBuilder.create(PASSWORD_OPTION);
 
         OptionBuilder.withArgName(HOST_OPTION);
         OptionBuilder.hasArg();
@@ -135,8 +137,8 @@ public class RsBatch extends CommandLineUtility {
         options.addOption(host);
         options.addOption(port);
         options.addOption(commandfile);
-//        options.addOption(username);
-//        options.addOption(password);
+        options.addOption(username);
+        options.addOption(password);
         options.addOption(loglevel);
 
         return options;
@@ -178,13 +180,13 @@ public class RsBatch extends CommandLineUtility {
                 throw new RCliException(RCliException.INVALID_COMMAND_LINE_OPTION_VALUE, new Object[]{portString, PORT_OPTION});
             }
         }
-//        else if (option.getOpt().equals(USERNAME_OPTION)) {
-//            this.username = getRequiredOptionValue(option);
-//        }
-//
-//        else if (option.getOpt().equals(PASSWORD_OPTION)) {
-//            this.password = getRequiredOptionValue(option);
-//        }
+        else if (option.getOpt().equals(USERNAME_OPTION)) {
+            this.username = getRequiredOptionValue(option);
+        }
+
+        else if (option.getOpt().equals(PASSWORD_OPTION)) {
+            this.password = getRequiredOptionValue(option);
+        }
 
         else if (option.getOpt().equals(LOGLEVEL_OPTION)) {
             String level = getRequiredOptionValue(option);
@@ -200,35 +202,38 @@ public class RsBatch extends CommandLineUtility {
         }
     }
 
-//    public String getUsername() {
-//        return username;
-//    }
-//
-//    public String getPassword() {
-//        return password;
-//    }
+    public String getUsername() {
+        return username;
+    }
 
-//    protected void authenticate(String login, String pass)throws RapidManagerException {
-//        logger.debug("Authenticating to Rapid Application Server with username <" + login + ">");
-//        String response = "";
-//         try {
-//             response = HttpUtils.authenticateAs(login, pass, host, port);
-//         } catch (IOException e) {
-//             logger.fatal("Could not connect to Rapid Application Server");
-//             throw new RapidManagerException(RapidManagerException.ERROR_CONNECT_SERVER, new Object[0]);
-//         }
-//        if (!(response.indexOf(RifeTemplateUtils.TemplateTagNames.SUCCESSFUL_TEMPLATE_TAG) > -1)) {
-//            logger.fatal("Could not authenticate to Rapid Application Server with username <" + login + ">");
-//            throw new RapidManagerException(RapidManagerException.CANNOT_AUTHENTICATE, new Object[]{login, pass});
-//        }
-//        logger.info("Successfully authenticated.");
-//
-//    }
+    public String getPassword() {
+        return password;
+    }
+
+    protected void authenticate(String login, String pass)throws RCMDBException {
+        logger.debug("Authenticating to RapidCMDB with username <" + login + ">");
+        String response = "";
+         try {
+             Map params = new HashMap();
+             params.put("username", login);
+             params.put("password", pass);
+             params.put("format", "xml");
+             response = httpUtils.doPostRequest("/RapidCMDB/auth/signIn", params);
+         } catch (Exception e) {
+             logger.fatal("Could not connect to RapidCMDB");
+             throw new RCMDBException(RCMDBException.ERROR_CONNECT_SERVER, new Object[0]);
+         }
+        if (!(response.indexOf("Successful") > -1)) {
+            logger.fatal("Could not authenticate to RapidCMDB with username <" + login + ">");
+            throw new RCMDBException(RCMDBException.CANNOT_AUTHENTICATE, new Object[]{login});
+        }
+        logger.info("Successfully authenticated.");
+
+    }
 
     public void execute() throws RapidException {
-//        authenticate(getUsername(), getPassword());
-
         logger.debug("rsbatch is starting");
+        authenticate(getUsername(), getPassword());
         File configFile = new File(StartConfig.getRsHome() + File.separator + commandFile);
         if (!configFile.exists()) {
             logger.fatal("Cannot find " + configFile.getAbsolutePath());
@@ -333,16 +338,16 @@ public class RsBatch extends CommandLineUtility {
     }
 
 
-//    public void setPassword(String password) {
-//
-//        this.password = password;
-//    }
-//
-//
-//    public void setUsername(String username) {
-//
-//        this.username = username;
-//    }
+    public void setPassword(String password) {
+
+        this.password = password;
+    }
+
+
+    public void setUsername(String username) {
+
+        this.username = username;
+    }
 
 
     public String getHost() {

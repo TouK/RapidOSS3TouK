@@ -31,12 +31,14 @@ public class RCMDBException extends RapidException{
        public static final String FILE_NOT_FOUND = RCMDB_MESSAGE_PREFIX + "-0001";
        public static final String ERROR_CONNECT_SERVER = RCMDB_MESSAGE_PREFIX + "-0003";
        public static final String FILE_IO_EXCEPTION = RCMDB_MESSAGE_PREFIX + "-0004";
+       public static final String CANNOT_AUTHENTICATE = RCMDB_MESSAGE_PREFIX + "-0005";
 
        static
        {
            messagesMap.addExceptionMessage(FILE_NOT_FOUND, "The file {0} cannot be found");
            messagesMap.addExceptionMessage(ERROR_CONNECT_SERVER, "Could not connect to Rapid Server.");
            messagesMap.addExceptionMessage(FILE_IO_EXCEPTION, "An error occurred while reading file {0}. Reason : {1}");
+           messagesMap.addExceptionMessage(CANNOT_AUTHENTICATE, "Could not authanticate with user name {0}");
        }
     
 

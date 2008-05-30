@@ -2,7 +2,7 @@ package auth;
 import org.jsecurity.authc.AuthenticationException
 import org.jsecurity.authc.UsernamePasswordToken
 import org.jsecurity.SecurityUtils
-                                                          
+
 class AuthController {
     def jsecSecurityManager
 
@@ -31,7 +31,15 @@ class AuthController {
             def targetUri = params.targetUri ?: "/"
 
             log.info "Redirecting to '${targetUri}'."
-            redirect(uri: targetUri)
+            if(params.format == "xml"){
+                render(contentType:'text/xml') {
+                    Successful("Successfully logged in.")
+                }
+            }
+            else{
+                redirect(uri: targetUri)
+            }
+
         }
         catch (AuthenticationException ex){
             // Authentication failed, so display the appropriate message
@@ -52,7 +60,15 @@ class AuthController {
             }
 
             // Now redirect back to the login page.
-            redirect(action: 'login', params: m)
+            if(params.format == "xml"){
+                render(contentType:'text/xml') {
+                    Error("Invalid username or password.")
+                }
+            }
+            else{
+                redirect(action: 'login', params: m)
+            }
+
         }
     }
 

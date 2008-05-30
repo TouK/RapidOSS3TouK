@@ -16,7 +16,7 @@ class KeyConstraint extends AbstractConstraint{
     List keys = new ArrayList();
     protected void processValidate(Object target, Object propertyValue, Errors errors)
     {
-        if(target.properties["id"] != null) return;   
+        if(target["id"] != null) return;   
         Map keyMap = [:];
         keys.each{key->
             keyMap[key] = target.getProperty(key);

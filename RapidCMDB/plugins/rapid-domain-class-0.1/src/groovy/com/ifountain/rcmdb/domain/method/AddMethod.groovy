@@ -25,7 +25,21 @@ class AddMethod extends AbstractRapidDomainStaticMethod
 
     public Object invoke(Class clazz, Object[] arguments) {
         def props = arguments[0];
-        def sampleBean = clazz.newInstance();
+        def sampleBean;
+        def keysMap = [:]
+        keys.each{keyPropName->
+            keysMap[keyPropName] = props[keyPropName];
+        }
+        def existingInstances = CompassMethodInvoker.search(mc, keysMap);
+        if(existingInstances.total != 0)
+        {
+            sampleBean = existingInstances.results[0];
+        }
+        else
+        {
+             sampleBean = clazz.newInstance()
+        }
+
         def relatedInstances = [:];
         def modelProperties = [:]
         props.each{key,value->
@@ -55,19 +69,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
         }
         else
         {
-            def keysMap = [:]
-            keys.each{keyPropName->
-                keysMap[keyPropName] = props[keyPropName];
-            }
-            def existingInstances = CompassMethodInvoker.search(mc, keysMap);
-            if(existingInstances.total != 0)
-            {
-                sampleBean = existingInstances.results[0] ;
-                modelProperties.each{propName, propVal->
-                    sampleBean[propName] = propVal;
-                }
-            }
-            else
+            if(existingInstances.total == 0)
             {
                 sampleBean["id"] = IdGenerator.getInstance().getNextId();
             }

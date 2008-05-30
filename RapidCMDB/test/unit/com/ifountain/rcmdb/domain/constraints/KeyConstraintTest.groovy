@@ -87,6 +87,23 @@ class KeyConstraintTest extends RapidCmdbTestCase{
         assertEquals ("key2val", KeyConstraintDomainObjectForTest.searchParams["key2"]);
         assertEquals ("key3val", KeyConstraintDomainObjectForTest.searchParams["key3"]);
     }
+
+    public void testProcessValidateDoesnotReturnsErrorIfObjectExistsAndItHasAnIdField()
+    {
+        KeyConstraint constraint = new KeyConstraint();
+        constraint.setPropertyName ("key1");
+        def compositeKeys = ["key2","key3"]
+        constraint.setParameter (compositeKeys);
+        constraint.setOwningClass (KeyConstraintDomainObjectForTest.class);
+
+        KeyConstraintDomainObjectForTest obj1 = new KeyConstraintDomainObjectForTest(id:1, key1:"key1val", key2:"key2val", key3:"key3val");
+        Errors errors = new BeanPropertyBindingResult(obj1, obj1.getClass().getName());
+         
+        KeyConstraintDomainObjectForTest.existingInstance = new KeyConstraintDomainObjectForTest();
+        constraint.validate (obj1, obj1.key1, errors);
+        assertFalse (errors.hasErrors());
+
+    }
 }
 
 class KeyConstraintDomainObjectForTest
@@ -94,7 +111,7 @@ class KeyConstraintDomainObjectForTest
     static Object existingInstance;
     static Map searchParams;
     public static searchable = {};
-
+    Long id;
     String key1;
     String key2;
     String key3;

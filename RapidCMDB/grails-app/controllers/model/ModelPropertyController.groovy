@@ -68,6 +68,7 @@ class ModelPropertyController {
             def modelPropertyName = modelProperty.toString();
             try {
                 modelProperty.delete(flush: true)
+                PropertyShouldBeCleared.findAllByModelNameAndPropertyName(modelProperty.model.name, modelProperty.name)*.delete(flush:true);
                 flash.message = "Property ${modelPropertyName} deleted"
                 redirect(action: show, controller: 'model', id: modelId)
             }

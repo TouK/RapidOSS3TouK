@@ -2,6 +2,7 @@ import grails.util.GrailsUtil
 import com.ifountain.rcmdb.domain.converter.CompassDateConverter
 import com.ifountain.rcmdb.domain.converter.CompassLongConverter
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import com.ifountain.rcmdb.domain.converter.CompassDoubleConverter
 
 /**
 * Grails Searchable Plugin configuration
@@ -49,7 +50,9 @@ class SearchableConfiguration {
     Map compassSettings = ["compass.converter.date.type":CompassDateConverter.class.name,
     "compass.converter.date.format":dateFormat,
     "compass.converter.long.type":CompassLongConverter.class.name,
-    "compass.converter.long.format":"#"];
+    "compass.converter.long.format":"#",
+    "compass.converter.double.type":CompassDoubleConverter.class.name,
+    "compass.converter.double.format":"#"];
 
     /**
      * Default mapping property exclusions

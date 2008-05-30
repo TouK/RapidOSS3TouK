@@ -26,7 +26,7 @@ public class CompassLongConverter extends AbstractCompassConverterWrapper
     }
 
     protected Object getDefaultValue() {
-        return -1111;
+        return new Long(-1111);
     }
 
 }

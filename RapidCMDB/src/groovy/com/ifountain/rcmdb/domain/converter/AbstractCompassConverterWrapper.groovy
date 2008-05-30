@@ -23,7 +23,7 @@ abstract class AbstractCompassConverterWrapper  implements Converter, CompassCon
         {
             return getConverter().unmarshall(resource, mapping, marshallingContext);
         }
-        catch(Exception e)
+        catch(Throwable e)
         {
             return getDefaultValue();
         }

@@ -32,7 +32,7 @@ grails.converters.encoding="UTF-8"
 grails.test.default.rollback = true
 
 
-
+rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss";
 rapidcmdb.invalid.names=[];
 def invalidNameFile = new File("invalidNames.txt" );
 if(invalidNameFile.exists())

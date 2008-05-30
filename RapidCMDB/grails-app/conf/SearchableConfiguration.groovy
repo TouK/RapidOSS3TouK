@@ -1,11 +1,13 @@
-import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 import grails.util.GrailsUtil
+import com.ifountain.rcmdb.domain.converter.CompassDateConverter
+import com.ifountain.rcmdb.domain.converter.CompassLongConverter
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
- * Grails Searchable Plugin configuration
- *
- * This file is created by "grails install-searchable-config"
- */
+* Grails Searchable Plugin configuration
+*
+* This file is created by "grails install-searchable-config"
+*/
 class SearchableConfiguration {
 
     /**
@@ -43,7 +45,11 @@ class SearchableConfiguration {
      *
      * Documentation for Compass settings is here: http://www.compass-project.org/docs/1.2.1/reference/html/core-settings.html
      */
-    Map compassSettings = [:]
+    def dateFormat = ConfigurationHolder.getConfig().toProperties()["rapidcmdb.date.format"];
+    Map compassSettings = ["compass.converter.date.type":CompassDateConverter.class.name,
+    "compass.converter.date.format":dateFormat,
+    "compass.converter.long.type":CompassLongConverter.class.name,
+    "compass.converter.long.format":"#00000000"];
 
     /**
      * Default mapping property exclusions

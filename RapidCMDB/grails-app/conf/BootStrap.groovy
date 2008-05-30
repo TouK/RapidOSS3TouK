@@ -5,21 +5,20 @@ import org.jsecurity.crypto.hash.Sha1Hash
 import auth.Role
 import auth.RsUser
 import auth.UserRoleRel
-import org.apache.commons.beanutils.ConvertUtils
 import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.LongConverter
 import datasource.SnmpDatasource
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
-import model.PropertyShouldBeCleared
-import model.ChangedModel
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import model.PropertyAction
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class BootStrap {
 
     def init = {servletContext ->
-        RapidConvertUtils.getInstance().register (new DateConverter("yyyy-dd-MM HH:mm:ss"), Date.class)
+        def dateFormat = ConfigurationHolder.getConfig().toProperties()["rapidcmdb.date.format"];
+        RapidConvertUtils.getInstance().register (new DateConverter(dateFormat), Date.class)
         RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
     	def adminRole = Role.findByName("Administrator");
     	if(!adminRole){

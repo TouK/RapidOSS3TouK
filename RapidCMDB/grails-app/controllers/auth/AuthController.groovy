@@ -31,6 +31,7 @@ class AuthController {
             def targetUri = params.targetUri ?: "/"
 
             log.info "Redirecting to '${targetUri}'."
+            session.username = params.username;
             if(params.format == "xml"){
                 render(contentType:'text/xml') {
                     Successful("Successfully logged in.")

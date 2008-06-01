@@ -28,6 +28,8 @@
       <sourceFolder url="file://$MODULE_DIR$/plugins/quartz-0.2/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/rapid-domain-class-0.1/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/src/test" isTestSource="false" />

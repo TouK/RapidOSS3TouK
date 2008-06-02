@@ -18,16 +18,28 @@
   </head>
   <body onload="focusQueryInput();">
   <div id="header">
-    <table border="0" cellpadding="0" cellspacing="5">
+    <table border="0" cellpadding="0" cellspacing="5" width="100%">
         <tr>
             <td style="white-space:nowrap">
                 <h1>Rapid <span>Browser</span></h1>
             </td>
-            <td>
-                <g:form url='[controller: "search", action: "index"]' id="searchableForm" name="searchableForm" method="get">
-                    <g:textField name="q" value="${params.q}" size="50" style="width:300px"/>
-                    <input type="submit" name="submitBtn" value="Search" />
-                    <input type="submit" name="submitBtn" value="Save" />
+            <td width="100%">
+                <g:form url='[controller: "search", action: "index"]' id="searchableForm" name="searchableForm" method="get" style="width:100%">
+                    <table width="100%">
+                        <tbody>
+                            <tr>
+                                <td width="100%">
+                                    <g:textField name="q" value="${params.q}" size="50" style="width:100%"/>
+                                </td>
+                                <td>
+                                    <input type="submit" name="submitBtn" value="Search" />
+                                </td>
+                                <td>
+                                    <input type="submit" name="submitBtn" value="Save" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </g:form>
             </td>
         </tr>

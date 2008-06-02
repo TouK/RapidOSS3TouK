@@ -31,7 +31,7 @@ class CompassMethodInvoker {
     {
         def queryBuffer = new StringBuffer("");
         for(key in keys){
-            queryBuffer.append(key.key).append(":").append(key.value).append(" AND ");
+            queryBuffer.append(key.key).append(":\"").append(key.value).append("\" AND ");
         }
         String query = queryBuffer.toString();
         if(keys.size() > 0)

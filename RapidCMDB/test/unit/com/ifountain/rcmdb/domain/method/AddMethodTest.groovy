@@ -159,7 +159,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         def objectId = addedObject.id;
         assertEquals (objectBeforeAdd, addedObject);
-        assertEquals("prop1:object1Prop1Value".toString(), AddMethodDomainObject1.query);
+        assertEquals("prop1:\"object1Prop1Value\"".toString(), AddMethodDomainObject1.query);
 
         AddMethodDomainObject1.searchResult = [total:1, results:[addedObject]];
 

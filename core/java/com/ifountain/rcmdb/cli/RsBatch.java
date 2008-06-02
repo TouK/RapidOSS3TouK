@@ -218,8 +218,9 @@ public class RsBatch extends CommandLineUtility {
              params.put("username", login);
              params.put("password", pass);
              params.put("format", "xml");
-             response = httpUtils.doPostRequest("/RapidCMDB/auth/signIn", params);
+             response = httpUtils.doPostRequest("http://" + host + ":" + port + "/RapidCMDB/auth/signIn", params);
          } catch (Exception e) {
+             e.printStackTrace();
              logger.fatal("Could not connect to RapidCMDB");
              throw new RCMDBException(RCMDBException.ERROR_CONNECT_SERVER, new Object[0]);
          }
@@ -284,7 +285,7 @@ public class RsBatch extends CommandLineUtility {
     }
 
     protected void processAction(String actionParameters) throws Exception {
-        String callPrefix = "http://" + host + ":" + port + "/";
+        String callPrefix = "http://" + host + ":" + port;
         String call = callPrefix + actionParameters;
 
         String response = makeCall(call);

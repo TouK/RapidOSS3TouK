@@ -1,4 +1,4 @@
-<%@ page import="org.springframework.util.ClassUtils" %>
+<%@ page import="com.ifountain.rcmdb.domain.converter.RapidConvertUtils; org.apache.commons.beanutils.ConvertUtils; org.springframework.util.ClassUtils" %>
 <%@ page import="org.codehaus.groovy.grails.plugins.searchable.SearchableUtils" %>
 <%@ page import="org.codehaus.groovy.grails.plugins.searchable.lucene.LuceneUtils" %>
 <html>
@@ -95,12 +95,18 @@
                             <div class="resultProperties">
                                 <g:each var="resultProperty" in="${search.SearchController.getPropertyConfiguration(result.class.name)}" status="propIndex">
                                     <%
-                                        def linkAddress = "${params.q} ${resultProperty.encodeAsHTML()}:${"\""+String.valueOf(result[resultProperty]).encodeAsHTML()+"\""}".toString();
+                                        def propValue = result[resultProperty];
+                                        def propValueInString = String.valueOf (propValue);
+                                        if(propValue instanceof Date)
+                                        {
+                                            propValueInString = RapidConvertUtils.getInstance().lookup(Date).formater.format(propValue);
+                                        }
+                                        def linkAddress = "${params.q} ${resultProperty.encodeAsHTML()}:${"\""+propValueInString.encodeAsHTML()+"\""}".toString();
                                         def completeLink = createLink(controller: "search", action: 'index', params:[q:linkAddress]);
                                     %>
                                     <div class="resultProperty">
                                         <span class="desc">${resultProperty}=</span>
-                                        <label><a href="${completeLink}" onclick='appendQuery( "${linkAddress}")'>${result[resultProperty]}</a></label>
+                                        <label><a href="${completeLink}" onclick='appendQuery( "${linkAddress}")'>${propValueInString.encodeAsHTML()}</a></label>
                                         |
                                     </div>
                                 </g:each>

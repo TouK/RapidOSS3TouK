@@ -13,7 +13,7 @@ class ScriptController {
     def scaffold = CmdbScript;
     def save = {
         def script = new CmdbScript(params)
-        if (script.validate() && !script.hasErrors()) {
+        if (script.save() && !script.hasErrors()) {
 
             ScriptManager.getInstance().addScript(script.name);
             flash.message = SUCCESSFULLY_CREATED

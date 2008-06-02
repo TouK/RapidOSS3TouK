@@ -1,1 +1,1 @@
-[Person:[linkPropertyFormat:["name"], propertyList:["name", "surname"]]]
+[Notification:[linkPropertyFormat:["className", "instanceName", "eventName"], propertyList:["className", "instanceName","eventName", "eventText", "severity","lastNotifiedAt","lastChangedAt","elementName","elementClassName"]]]

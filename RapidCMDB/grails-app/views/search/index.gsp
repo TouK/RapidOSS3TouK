@@ -88,11 +88,11 @@
           <div class="result">
             <g:set var="className" value="${ClassUtils.getShortName(result.getClass())}" />
             <g:set var="link" value="${createLink(controller: className[0].toLowerCase() + className[1..-1], action: 'show', id: result.id)}" />
-            <div class="name"><a href="${link}">${result.toString().encodeAsHTML()}</a></div>
+            <div class="name"><a href="${link}">${search.SearchController.getLinkProperty(result).encodeAsHTML()}</a></div>
             <div class="resultProperties">
                 <g:each var="resultProperty" in="${search.SearchController.getPropertyConfiguration(result.class.name)}" status="propIndex">
                     <%
-                        def linkAddress = "${params.q} ${resultProperty.encodeAsHTML()}:${String.valueOf(result[resultProperty]).encodeAsHTML()}".toString();
+                        def linkAddress = "${params.q} ${resultProperty.encodeAsHTML()}:${"\""+String.valueOf(result[resultProperty]).encodeAsHTML()+"\""}".toString();
                         def completeLink = createLink(controller: "search", action: 'index', params:[q:linkAddress]);
                     %>
                     <div class="resultProperty">

@@ -38,6 +38,11 @@ abstract class AbstractDomainOperation {
         return domainObject.__InternalGetProperty__(propName);
     }
 
+    public Map getProperties()
+    {
+        domainObject.__InternalGetProperty__("properties");
+    }
+
     public void setProperty(String propName, Object value)
     {
             domainObject.__InternalSetProperty__(propName, value);

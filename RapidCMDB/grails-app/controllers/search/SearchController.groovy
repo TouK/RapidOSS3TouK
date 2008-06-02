@@ -3,6 +3,9 @@ package search
 import org.compass.core.engine.SearchEngineQueryParseException
 import org.jsecurity.SecurityUtils
 import auth.RsUser
+import groovy.text.SimpleTemplateEngine
+import groovy.text.SimpleTemplateEngine.SimpleTemplate
+import groovy.text.Template
 
 /**
 * Created by IntelliJ IDEA.
@@ -45,14 +48,42 @@ class SearchController {
         {
             _reloadPropertyConfiguration();
         }
-        def res = propertyConfiguration[className];
+        def res = propertyConfiguration[className]?propertyConfiguration[className].propertyList:null;
         return res?res:[];
+    }
+
+    public static String getLinkProperty(Object target)
+    {
+        if(propertyConfiguration == null)
+        {
+            _reloadPropertyConfiguration();
+        }
+        target = target.domainObject;
+        def classPropConfiguration = propertyConfiguration[target.class.name];
+        if(classPropConfiguration)
+        {
+            String link = "";
+            classPropConfiguration.linkPropertyFormat.each
+            {
+                link += target[it] + " ";
+            }
+            if(link.length() == 0)
+            {
+                link = target.toString();
+            }
+            else
+            {
+                link = link.substring(0, link.length()-1);
+            }
+            return link;
+        }
+        return target.toString();
     }
 
     def static _reloadPropertyConfiguration()
     {
         def content = new File("SmartsSearchPropertyConfiguration.txt").getText();
-        propertyConfiguration = Eval.me(content);    
+        propertyConfiguration = Eval.me(content);
     }
 
     def reloadPropertyConfiguration = {

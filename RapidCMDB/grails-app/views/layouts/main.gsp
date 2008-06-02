@@ -6,7 +6,7 @@
         <g:layoutHead />
         <g:javascript library="application" />				
     </head>
-    <body>
+    <body onload="${pageProperty(name:'body.onload')}">
         <div id="spinner" class="spinner" style="display:none;">
             <img src="${createLinkTo(dir:'images',file:'spinner.gif')}" alt="Spinner" />
         </div>	

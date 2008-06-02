@@ -1,6 +1,7 @@
 import datasource.RCMDBDatasource
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.scripting.ScriptManager
+import com.ifountain.rcmdb.scripting.ScriptScheduler
 import org.jsecurity.crypto.hash.Sha1Hash
 import auth.Role
 import auth.RsUser
@@ -14,26 +15,28 @@ import model.PropertyAction
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.converter.DoubleConverter
+import script.CmdbScript
+import org.codehaus.groovy.runtime.StackTraceUtils
 
 class BootStrap {
-
+    def quartzScheduler;
     def init = {servletContext ->
         registerDefaultConverters();
-    	def adminRole = Role.findByName("Administrator");
-    	if(!adminRole){
-	    	adminRole = new Role(name: "Administrator");
-	    	adminRole.save();	
-	    }
-	    def userRole = Role.findByName("User");
-    	if(!userRole){
-	    	userRole = new Role(name: "User");
-	    	userRole.save();	
-	    }
-	    def adminUser = RsUser.findByUsername("rsadmin");
-	    if(!adminUser){
-			adminUser = new RsUser(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
-			adminUser.save();    
-		}
+        def adminRole = Role.findByName("Administrator");
+        if (!adminRole) {
+            adminRole = new Role(name: "Administrator");
+            adminRole.save();
+        }
+        def userRole = Role.findByName("User");
+        if (!userRole) {
+            userRole = new Role(name: "User");
+            userRole.save();
+        }
+        def adminUser = RsUser.findByUsername("rsadmin");
+        if (!adminUser) {
+            adminUser = new RsUser(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
+            adminUser.save();
+        }
         new UserRoleRel(rsUser: adminUser, role: adminRole).save()
         def rcmdbDatasource = RCMDBDatasource.findByName(RapidCMDBConstants.RCMDB);
         if (rcmdbDatasource == null) {
@@ -43,12 +46,12 @@ class BootStrap {
         def changedModelProperties = [:]
 
 
-        PropertyAction.list().each{PropertyAction propAction->
-            if(!propAction.willBeDeleted)
+        PropertyAction.list().each {PropertyAction propAction ->
+            if (!propAction.willBeDeleted)
             {
                 DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(propAction.modelName);
                 def modelProps = changedModelProperties[propAction.modelName];
-                if(modelProps == null)
+                if (modelProps == null)
                 {
                     modelProps = [:]
                     changedModelProperties[propAction.modelName] = modelProps;
@@ -60,25 +63,25 @@ class BootStrap {
         }
         int batch = 1000;
 
-        changedModelProperties.each{String modelName, Map modelProps->
+        changedModelProperties.each {String modelName, Map modelProps ->
             DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(modelName);
-            if(currentDomainObject)
+            if (currentDomainObject)
             {
                 Class currentModelClass = currentDomainObject.clazz;
                 int index = 0;
-                while(true)
+                while (true)
                 {
-                    def res = currentModelClass.metaClass.invokeStaticMethod (currentModelClass, "search", ["id:[0 TO *]",[max:batch, offset:index]] as Object[]);
+                    def res = currentModelClass.metaClass.invokeStaticMethod(currentModelClass, "search", ["id:[0 TO *]", [max: batch, offset: index]] as Object[]);
                     boolean isDelete = false;
-                    res.results.each{modelInstance->
-                        if(!isDelete)
+                    res.results.each {modelInstance ->
+                        if (!isDelete)
                         {
-                            modelProps.each{propName, PropertyAction action->
+                            modelProps.each {propName, PropertyAction action ->
                                 def propVal = modelInstance[propName];
 
-                                if(action.action ==  PropertyAction.CLEAR_RELATION)
+                                if (action.action == PropertyAction.CLEAR_RELATION)
                                 {
-                                    if(propVal instanceof Collection)
+                                    if (propVal instanceof Collection)
                                     {
                                         propVal.clear();
                                     }
@@ -87,18 +90,18 @@ class BootStrap {
                                         modelInstance[propName] = null;
                                     }
                                 }
-                                else if(action.action ==  PropertyAction.SET_DEFAULT_VALUE)
+                                else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
                                 {
-                                    modelInstance[propName] = getDefaultValue(action.defaultValue,action.propType)
+                                    modelInstance[propName] = getDefaultValue(action.defaultValue, action.propType)
                                 }
-                                else if(action.action ==  PropertyAction.DELETE_ALL_INSTANCES)
+                                else if (action.action == PropertyAction.DELETE_ALL_INSTANCES)
                                 {
                                     isDelete = true;
                                     return;
                                 }
                             }
                         }
-                        if(isDelete)
+                        if (isDelete)
                         {
                             modelInstance.unindex();
                         }
@@ -108,40 +111,55 @@ class BootStrap {
                         }
                     }
                     index += batch;
-                    if(res.total < index)
+                    if (res.total < index)
                     {
                         break;
                     }
                 }
             }
-            PropertyAction.findByModelName(modelName).each{propActionWillBeDeleted->
-                 propActionWillBeDeleted.willBeDeleted = true;
-                 propActionWillBeDeleted.save();
+            PropertyAction.findByModelName(modelName).each {propActionWillBeDeleted ->
+                propActionWillBeDeleted.willBeDeleted = true;
+                propActionWillBeDeleted.save();
             }
-        }          
+        }
+        ScriptScheduler.getInstance().initialize(quartzScheduler);
+        CmdbScript.findAllByScheduledAndEnabled(true, true).each {
+            try {
+                if (it.scheduleType == CmdbScript.PERIODIC) {
+                    ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.period)
+                }
+                else {
+                    ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.cronExpression)
+                }
+            }
+            catch (e) {
+                log.warn("Error scheduling script ${it.name}: ${e.getMessage()}");
+            }
+
+        }
     }
 
     def registerDefaultConverters()
     {
         def dateFormat = ConfigurationHolder.getConfig().toProperties()["rapidcmdb.date.format"];
-        RapidConvertUtils.getInstance().register (new DateConverter(dateFormat), Date.class)
-        RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
-        RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
+        RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
+        RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
+        RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
     }
 
     def getDefaultValue(defaultValue, newPropType)
     {
-        if(defaultValue) return defaultValue;
-        if(String.isAssignableFrom(newPropType))
+        if (defaultValue) return defaultValue;
+        if (String.isAssignableFrom(newPropType))
         {
             Double
             return "RCMDB_Default"
         }
-        else if(Number.isAssignableFrom(newPropType))
+        else if (Number.isAssignableFrom(newPropType))
         {
             return -1111;
         }
-        else if(Date.isAssignableFrom(newPropType))
+        else if (Date.isAssignableFrom(newPropType))
         {
             return new Date(0);
         }
@@ -149,11 +167,10 @@ class BootStrap {
     }
 
     def destroy = {
-        SnmpDatasource.list().each{
+        SnmpDatasource.list().each {
             it.close();
         }
         ScriptManager.getInstance().destroy();
     }
 
-    
 }

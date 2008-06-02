@@ -4,7 +4,8 @@ import com.ifountain.rcmdb.scripting.ScriptManager
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
 import junit.framework.TestResult
-import junit.framework.Test;
+import junit.framework.Test
+import com.ifountain.rcmdb.scripting.ScriptScheduler;
 
 class ScriptController {
     public static final String SUCCESSFULLY_CREATED = "Script created";
@@ -12,14 +13,84 @@ class ScriptController {
     def scaffold = CmdbScript;
     def save = {
         def script = new CmdbScript(params)
-        if (script.save() && !script.hasErrors()) {
+        if (script.validate() && !script.hasErrors()) {
 
             ScriptManager.getInstance().addScript(script.name);
             flash.message = SUCCESSFULLY_CREATED
+            if (script.scheduled && script.enabled) {
+                try {
+                    if (script.scheduleType == CmdbScript.CRON) {
+                        ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
+                    }
+                    else {
+                        ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
+                    }
+                    flash.message = "Script ${params.id} updated"
+                    script.save();
+                }
+                catch (e) {
+                    def errors = [message(code: "script.cannot.schedule", args: [script.name, e.getMessage()])]
+                    flash.errors = errors;
+                    redirect(action: edit, id: params.id)
+                    return;
+                }
+            }
             redirect(action: show, controller: 'script', id: script.id)
         }
         else {
             render(view: 'create', controller: 'script', model: [cmdbScript: script])
+        }
+    }
+
+    def delete = {
+        def script = CmdbScript.get(params.id)
+        if (script) {
+            def scriptName = script.name;
+            script.delete()
+            ScriptScheduler.getInstance().unscheduleScript(scriptName)
+            flash.message = "Script ${params.id} deleted"
+            redirect(action: list)
+        }
+        else {
+            flash.message = "Script not found with id ${params.id}"
+            redirect(action: list)
+        }
+    }
+
+    def update = {
+        def script = CmdbScript.get(params.id)
+        if (script) {
+            script.properties = params
+            if (!script.hasErrors() && script.validate()) {
+                ScriptScheduler.getInstance().unscheduleScript(script.name)
+                if (script.scheduled && script.enabled) {
+                    try {
+                        if (script.scheduleType == CmdbScript.CRON) {
+                            ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
+                        }
+                        else {
+                            ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
+                        }
+                        script.save();
+                        flash.message = "Script ${params.id} updated"
+                    }
+                    catch (e) {
+                        def errors = [message(code: "script.cannot.schedule", args: [script.name, e.getMessage()])]
+                        flash.errors = errors;
+                        redirect(action: edit, id: params.id)
+                        return;
+                    }
+                }
+
+                redirect(action: show, id: script.id)
+            }
+            else {
+                render(view: 'edit', model: [cmdbScript: script])
+            }
+        }
+        else {
+            flash.message = "Script not found with id ${params.id}"
+            redirect(action: edit, id: params.id)
         }
     }
 
@@ -113,8 +184,8 @@ class ScriptController {
                     xmlOutput.setSystemError(errString)
                     xmlOutput.endTestSuite(junitTest)
                 }
-                catch(Throwable t2){
-                   renderText = t2.toString(); 
+                catch (Throwable t2) {
+                    renderText = t2.toString();
                 }
                 finally {
                     System.out = savedOut
@@ -132,21 +203,21 @@ class ScriptController {
     }
 }
 
-class MockScriptTest implements Test{
+class MockScriptTest implements Test {
     def name;
-    public MockScriptTest(String name){
+    public MockScriptTest(String name) {
         this.name = name;
     }
-	public int countTestCases() {
-		return 0;
-	}
-	public void run(TestResult arg0) {
-	}
+    public int countTestCases() {
+        return 0;
+    }
+    public void run(TestResult arg0) {
+    }
 
-	public String getName() {
-		return name;
-	}
-	public String name() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
+    public String name() {
+        return name;
+    }
 }

@@ -122,8 +122,7 @@ body, select, p, td, th, ul, ol, li, input, textarea, select, blockquote, pre, .
 }
 
 .box {
-    margin:20px auto;
-    width:90%;
+    margin:20px 20px 20px 20px;
     height:100%;
 }
 
@@ -131,5 +130,4 @@ body, select, p, td, th, ul, ol, li, input, textarea, select, blockquote, pre, .
     background-color:white;
     border:1px solid #AF670A;
     padding:8px;
-    height:90%;
 }

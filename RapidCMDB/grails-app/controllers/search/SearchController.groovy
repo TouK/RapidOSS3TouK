@@ -26,7 +26,7 @@ class SearchController {
         {
             return search(params);
         }
-        else if(params.submitBtn == "Delete Saved Query")
+        else if(params.submitBtn == "Remove Query")
         {
             return deleteQuery(params);
         }
@@ -58,7 +58,6 @@ class SearchController {
         {
             _reloadPropertyConfiguration();
         }
-        target = target.domainObject;
         def classPropConfiguration = propertyConfiguration[target.class.name];
         if(classPropConfiguration)
         {

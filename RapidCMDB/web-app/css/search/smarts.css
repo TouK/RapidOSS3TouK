@@ -1,14 +1,3 @@
-* {
-    font-family: Arial, sans-serif;
-    padding: 0;
-    margin: 0;
-}
-
-body {
-    font-size: 0.9em;
-    padding: .5em;
-}
-
 table {
     font-size: 0.9em;
 }
@@ -28,24 +17,25 @@ table {
 }
 
 #header h1 {
-    letter-spacing: -0.1em;
+    font-size:18;
     float: left;
+    color: #323230;
+}
+.summaryInfo {
+    color: #323230;
 }
 
-#header h1 span {
-    font-family: Georgia, serif;
-    color: #424242;
-}
+
 #header form {
     padding-top: .1em;
 }
 
 .title {
-    margin: 1em 0;
+    margin: 5px 0;
     padding: .3em .5em;
     text-align: right;
-    background-color: seashell;
-    border-top: 1px solid lightblue;
+    border-bottom: 1px solid;
+    color:#AF670A;
 }
 
 .result {
@@ -77,9 +67,69 @@ li, p {
 }
 
 .resultProperty {
-    display:inline;
+    display: inline;
 }
+
 .propertyLabel {
-    font-size:1em;
-    padding-right:3px;
+    font-size: 1em;
+    padding-right: 3px;
+}
+
+.result {
+    background-color:#FFFFFF;
+    border-bottom:1px dotted;
+    padding:2px 2px 2px 1em;
+}
+
+.resultsHeader {
+    border-top-width: 0px;
+    clear: both;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    display: block;
+}
+
+.results {
+    clear: both;
+    overflow: auto;
+    width: 100%;
+}
+
+#header {
+    border-bottom: 1px solid;
+    display: block;
+    margin: 0px;
+    padding-bottom: 5px;
+    padding-top: 20px;
+    background-color: #eac696;
+    background-image: url( /RapidCMDB/images/skin/header2.gif );
+    background-repeat: repeat-x;
+}
+
+
+
+html, body {
+    margin: 0pt;
+    padding: 0pt;
+}
+
+body {
+    font-size: 0.71em;
+}
+
+body, select, p, td, th, ul, ol, li, input, textarea, select, blockquote, pre, .label, #eventCount, #bucketDate, #currentFilter, #savedSearchName {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.box {
+    margin:20px auto;
+    width:90%;
+    height:100%;
+}
+
+.innerbox {
+    background-color:white;
+    border:1px solid #AF670A;
+    padding:8px;
+    height:90%;
 }

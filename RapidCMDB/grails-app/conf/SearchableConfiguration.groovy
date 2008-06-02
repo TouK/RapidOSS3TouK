@@ -48,11 +48,11 @@ class SearchableConfiguration {
      */
     def dateFormat = ConfigurationHolder.getConfig().toProperties()["rapidcmdb.date.format"];
     Map compassSettings = ["compass.converter.date.type":CompassDateConverter.class.name,
-    "compass.converter.date.format":dateFormat,
+    "compass.converter.date.format":"${dateFormat};yyyy;yyyy-dd;yyyy-dd-MM;yyyy-dd-MM HH;yyyy-dd-MM HH:mm;yyyy-dd-MM HH:mm:ss;MM-dd-yyyy;MM-dd-yyyy HH;MM-dd-yyyy HH:mm;MM-dd-yyyy HH:mm:ss".toString(),
     "compass.converter.long.type":CompassLongConverter.class.name,
-    "compass.converter.long.format":"#",
+    "compass.converter.long.format":"#000000000000000000000000000000",
     "compass.converter.double.type":CompassDoubleConverter.class.name,
-    "compass.converter.double.format":"#"];
+    "compass.converter.double.format":"#000000000000000000000000000000"];
 
     /**
      * Default mapping property exclusions

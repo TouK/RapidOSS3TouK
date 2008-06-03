@@ -122,6 +122,9 @@ class ${className}Controller {
                                 returnedParams[propName] = propValue;
                             }
                         }
+                        else{
+                            returnedParams[propName] = null;
+                        }
                     }
                 }
             }

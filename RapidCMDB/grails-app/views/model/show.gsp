@@ -133,7 +133,7 @@
                                 modelRelationList.add(["id":it.id, "name":it.firstName, "to":it.secondModel, "type":it.firstCardinality + "To" + it.secondCardinality])
                             }
                             model.toRelations.each{
-                                modelRelationList.add(["id":it.id, "name":it.secondName, "to":it.firstModel, "type":it.secondCardinality + "To" + it.firstCardinality])
+                                modelRelationList.add(["id":it.id, "name":it.secondName, "to":it.firstModel, "type":it.secondCardinality + "To" + it.firstCardinality, "reverse":"true"])
                             }
                             modelRelationList.sort {p1, p2 ->
                                 def val1 = p1."${modelRelationSortProp}".toString();
@@ -174,7 +174,7 @@
                             <tbody>
                                 <g:each in="${modelRelationList}" status="i" var="modelRelation">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                        <td><g:link action="show" id="${modelRelation.id}" controller="modelRelation">${modelRelation.name?.encodeAsHTML()}</g:link></td>
+                                        <td><g:link action="show" id="${modelRelation.id}" controller="modelRelation" params="${modelRelation.reverse == 'true' ? ['reverse':'true']:[:]}">${modelRelation.name?.encodeAsHTML()}</g:link></td>
                                         <td><g:link action="show" id="${modelRelation.to.id}" controller="model">${modelRelation.to?.encodeAsHTML()}</g:link></td>
                                         <td>${modelRelation.type?.encodeAsHTML()}</td>
                                     </tr>

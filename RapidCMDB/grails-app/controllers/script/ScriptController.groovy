@@ -13,10 +13,8 @@ class ScriptController {
     def scaffold = CmdbScript;
     def save = {
         def script = new CmdbScript(params)
-        if (script.save() && !script.hasErrors()) {
-
+        if (script.validate() && !script.hasErrors()) {
             ScriptManager.getInstance().addScript(script.name);
-            flash.message = SUCCESSFULLY_CREATED
             if (script.scheduled && script.enabled) {
                 try {
                     if (script.scheduleType == CmdbScript.CRON) {
@@ -25,8 +23,6 @@ class ScriptController {
                     else {
                         ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
                     }
-                    flash.message = "Script ${params.id} updated"
-                    script.save();
                 }
                 catch (e) {
                     def errors = [message(code: "script.cannot.schedule", args: [script.name, e.getMessage()])]
@@ -35,6 +31,8 @@ class ScriptController {
                     return;
                 }
             }
+            script.save();
+            flash.message = SUCCESSFULLY_CREATED
             redirect(action: show, controller: 'script', id: script.id)
         }
         else {
@@ -71,8 +69,6 @@ class ScriptController {
                         else {
                             ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
                         }
-                        script.save();
-                        flash.message = "Script ${params.id} updated"
                     }
                     catch (e) {
                         def errors = [message(code: "script.cannot.schedule", args: [script.name, e.getMessage()])]
@@ -81,7 +77,8 @@ class ScriptController {
                         return;
                     }
                 }
-
+                script.save();
+                flash.message = "Script ${params.id} updated"
                 redirect(action: show, id: script.id)
             }
             else {

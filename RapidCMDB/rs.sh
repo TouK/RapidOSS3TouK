@@ -19,6 +19,8 @@ export GRAILS_HOME=$RS_HOME
 KILL_TIMEOUT=120
 MAX_MEMORY_SIZE="512"				#max heap size for JVM
 
+JAVA_OPTS=" -Xmx"$MAX_MEMORY_SIZE"m -Ddisable.auto.recompile=true -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp -Dgrails.env=production -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., -Dgroovy.full.stacktrace=false $JAVA_OPTS"
+
 PIDDIR=$RS_HOME/bin/pids  ##pid directory
 PIDFILE=$PIDDIR/rspid ##pid file
 
@@ -36,13 +38,8 @@ start() {
  getpid
   if [ "X$pid" = "X" ]
      then
-      if [ -f "$RS_HOME/temp/projects" ]
-       then
-	     rm -r $RS_HOME/temp/projects
-      fi
    	##starts the RS service
    	. $GRAILS_HOME/bin/startGrails run-app
-    JAVA_OPTS=" -Xmx"$MAX_MEMORY_SIZE"m -Ddisable.auto.recompile=true -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp -Dgrails.env=production -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., -Dgroovy.full.stacktrace=false $JAVA_OPTS"
 	startGrails com.ifountain.grails.RapidGrailsScriptRunner run-app &
    echo $! >> $PIDFILE
 
@@ -52,7 +49,6 @@ start() {
 }
 testApp() {
    	. $GRAILS_HOME/bin/startGrails test-app
-    JAVA_OPTS=" -Xmx"$MAX_MEMORY_SIZE"m -Ddisable.auto.recompile=true -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., -Dgroovy.full.stacktrace=false $JAVA_OPTS"
 	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app
 }
 stop(){

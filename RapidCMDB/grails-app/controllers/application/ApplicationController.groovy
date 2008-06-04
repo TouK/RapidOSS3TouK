@@ -23,6 +23,7 @@ import org.codehaus.groovy.grails.orm.hibernate.validation.UniqueConstraint
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import model.ModelProperty
 import model.PropertyAction
+import model.DatasourceName
 
 /**
 * Created by IntelliJ IDEA.
@@ -137,6 +138,7 @@ class ApplicationController {
         ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
         def configurationItems = [];
         configurationItems.addAll (BaseDatasource.list());
+        configurationItems.addAll (DatasourceName.list());
         configurationItems.addAll (Connection.list());
         configurationItems.addAll (Model.list());
         configurationItems.addAll (CmdbScript.list());

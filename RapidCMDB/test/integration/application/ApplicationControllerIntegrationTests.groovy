@@ -2,12 +2,12 @@ package application
 
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import model.Model
-import datasource.BaseDatasource
 import model.ModelProperty
 import model.ModelDatasource
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.domain.generation.ModelUtils
 import model.ModelDatasourceKeyMapping
+import model.DatasourceName
 
 /**
 * Created by IntelliJ IDEA.
@@ -20,7 +20,7 @@ class ApplicationControllerIntegrationTests extends RapidCmdbIntegrationTestCase
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         Model.list()*.delete(flush:true);
-        BaseDatasource.list()*.delete(flush:true);
+        DatasourceName.list()*.delete(flush:true);
         System.setProperty (ApplicationController.RESTART_APPLICATION, "false");
     }
 
@@ -107,8 +107,8 @@ class ApplicationControllerIntegrationTests extends RapidCmdbIntegrationTestCase
 
     private def addMasterDatasource(Model model)
     {
-        def datasource1 = new BaseDatasource(name:"ds1-sample_${model.name}").save(flush:true);
-        def modelDatasource1 = new ModelDatasource(datasource:datasource1, master:true, model:model).save(flush:true);
+        def datasourceName1 = new DatasourceName(name:"ds1-sample_${model.name}").save(flush:true);
+        def modelDatasource1 = new ModelDatasource(datasource:datasourceName1, master:true, model:model).save(flush:true);
         def keyProp = new ModelProperty(name:"keyprop", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:false,lazy:false).save(flush:true);
         def modelKey = new ModelDatasourceKeyMapping(property:keyProp, datasource:modelDatasource1, nameInDatasource:"keypropname").save(flush:true);
         modelDatasource1.refresh();

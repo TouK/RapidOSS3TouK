@@ -1,0 +1,7 @@
+-classpath/a %EXE4J_JVM_HOME%\..\lib\tools.jar
+-Xmx512m
+-Dserver.port=12223
+-Dgrails.env=production 
+-Ddisable.auto.recompile=true 
+-Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., 
+-Dgroovy.full.stacktrace=false

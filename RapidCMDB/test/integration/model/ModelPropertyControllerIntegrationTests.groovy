@@ -1,7 +1,6 @@
 package model
 
 import datasource.BaseDatasource
-import org.springframework.orm.hibernate3.SessionFactoryUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -34,13 +33,13 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         ModelProperty.list()*.delete();
         ModelDatasource.list()*.delete();
         Model.list()*.delete();
-        BaseDatasource.list()*.delete();
+        DatasourceName.list()*.delete();
     }
 
     void testSuccessfulSave(){
         def model = new Model(name: "Customer").save();
-        def rcmdb = new BaseDatasource(name: "RCMDB").save();
-        def ds1 = new BaseDatasource(name: "ds1").save();
+        def rcmdb = new DatasourceName(name: "RCMDB").save();
+        def ds1 = new DatasourceName(name: "ds1").save();
         def mpc = new ModelPropertyController();
         mpc.params["datasource.id"] = "" + rcmdb.id;
         mpc.params["model.id"] = "" + model.id;

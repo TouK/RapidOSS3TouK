@@ -23,6 +23,7 @@ import model.ModelProperty
 import model.ModelDatasourceKeyMapping
 import model.Model
 import model.ModelRelation
+import model.DatasourceName
 
 /**
 * Created by IntelliJ IDEA.
@@ -137,6 +138,36 @@ class ConfigurationImportExportUtilsTest extends RapidCmdbTestCase{
         assertEqualsXML(writer.toString(), returnedExportFile.getText());
     }
 
+     public void testExportDatasourceNames()
+    {
+        def configurationItems = [];
+        configurationItems += new DatasourceName(name:"dbds1");
+        configurationItems += new DatasourceName(name:"dbds2");
+        configurationItems += new DatasourceName(name:"dbds3");
+        configurationItems += new DatasourceName(name:"smartsDs1");
+        configurationItems += new DatasourceName(name:"smartsDs2");
+        configurationItems += new DatasourceName(name:"httpDs1");
+        configurationItems += new DatasourceName(name:"netcoolDs1");
+        configurationItems += new DatasourceName(name:"riDs1");
+        configurationItems += new DatasourceName(name:"cmdbDs1");
+
+        def exportDir = "${baseDir}/export"
+
+        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(baseDir);
+        impExpUtils.export(exportDir, configurationItems);
+
+        File returnedExportFile = new File(exportDir + "/datasourceNames.xml")
+
+        assertTrue (returnedExportFile.exists());
+
+        xmlBuilder.DatasourceNames{
+            configurationItems.each{
+                xmlBuilder.DatasourceName(name:it.name)
+            }
+        }
+        assertEqualsXML(writer.toString(), returnedExportFile.getText());
+    }
+
     public void testExportScripts()
     {
         def scripts = [];
@@ -165,9 +196,8 @@ class ConfigurationImportExportUtilsTest extends RapidCmdbTestCase{
         Model.metaClass.datasources = [];
         Model.metaClass.fromRelations = [];
         Model.metaClass.toRelations = [];
-        DatabaseConnection dbCon1 = new DatabaseConnection(name:"dbcon1", driver:"com.mysql.jdbc.Driver1", url:"localhost1", username:"root1", password:"password1");
-        DatabaseDatasource databaseDatasource = new DatabaseDatasource(name:"dbds1", connection:dbCon1);
-        RCMDBDatasource cmdbDatasource = new RCMDBDatasource(name:"dbds1");
+        DatasourceName databaseDatasource = new DatasourceName(name:"dbds1");
+        DatasourceName cmdbDatasource = new DatasourceName(name:"dbds1");
         ModelDatasource ds1 = new ModelDatasource(datasource:databaseDatasource, master:false);
         ModelDatasource ds2 = new ModelDatasource(datasource:cmdbDatasource, master:true);
         ModelProperty prop1 = new ModelProperty(name:"prop1", propertyDatasource:ds1, blank:true, lazy:false, defaultValue:"default", nameInDatasource:"prop1nameinds", type:ModelProperty.stringType);

@@ -31,7 +31,7 @@
                 <tr class="prop">
                     <td valign="top" class="name">Datasource:</td>
 
-                    <td valign="top" class="value"><g:link controller="baseDatasource" action="show" id="${modelDatasource?.datasource?.id}">${modelDatasource?.datasource}</g:link></td>
+                    <td valign="top" class="value"><g:link controller="datasourceName" action="show" id="${modelDatasource?.datasource?.id}">${modelDatasource?.datasource}</g:link></td>
 
                 </tr>
 

@@ -1,8 +1,7 @@
 package model
 
-import datasource.BaseDatasource;
 class ModelDatasource {
-    BaseDatasource datasource;
+    DatasourceName datasource;
     boolean master = false;
     Model model;
     static belongsTo = Model;

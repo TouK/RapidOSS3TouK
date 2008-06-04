@@ -1,7 +1,6 @@
 package model
 
 import com.ifountain.rcmdb.domain.generation.ModelGenerationException
-import datasource.BaseDatasource
 import com.ifountain.rcmdb.domain.generation.ModelUtils;
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
@@ -149,11 +148,11 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
     private Model createSimpleModel(String modelName)
     {
-        def datasource = new BaseDatasource(name:"ds1");
-        datasource.save();
+        def datasourceName = new DatasourceName(name:"ds1");
+        datasourceName.save();
         def model = new Model(name:modelName);
         model.save();
-        def modelDs = new ModelDatasource(datasource:datasource, master:true)
+        def modelDs = new ModelDatasource(datasource:datasourceName, master:true)
         def modelProp = new ModelProperty(name:"prop1",type:ModelProperty.stringType, defaultValue:"defaultValue", datasource:modelDs)
         model.addToDatasources(modelDs);
         model.addToModelProperties(modelProp);

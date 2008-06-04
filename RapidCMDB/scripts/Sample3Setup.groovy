@@ -44,7 +44,10 @@ Model.list()*.delete(flush:true);
 
 def datasources = checkDatasources();
 
-def rcmdbDS = BaseDatasource.findByName("RCMDB");
+def rcmdbDS = DatasourceName.findByName("RCMDB");
+if(rcmdbDS == null){
+    rcmdbDS = new DatasourceName(name: "RCMDB");
+}
 def rcmdbModelDatasource = new ModelDatasource(datasource:rcmdbDS, master:true);
 def eastRegionModelDatasource = new ModelDatasource(datasource:datasources.eastRegionDs, master:false);
 def westRegionModelDatasource = new ModelDatasource(datasource:datasources.westRegionDs, master:false);

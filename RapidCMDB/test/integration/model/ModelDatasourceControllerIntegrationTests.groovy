@@ -25,7 +25,6 @@
 
 package model
 
-import datasource.BaseDatasource
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 
@@ -33,7 +32,7 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
 
     void setUp() {
         super.setUp();
-        BaseDatasource.list()*.delete();
+        DatasourceName.list()*.delete();
         Model.list()*.delete();
         ModelDatasource.list()*.delete();
     }
@@ -52,7 +51,7 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
 
     void testSuccessfulSave() {
         def model = new Model(name: "Customer").save();
-        def datasource = new BaseDatasource(name: "RCMDB").save();
+        def datasource = new DatasourceName(name: "RCMDB").save();
         def mdc = new ModelDatasourceController();
         mdc.params["datasource.id"] = datasource.id;
         mdc.params["model.id"] = model.id;
@@ -78,7 +77,7 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
 
     void testSuccessfullDelete(){
         def model = new Model(name: "Customer").save(flush:true);
-        def datasource = new BaseDatasource(name: "RCMDB").save();
+        def datasource = new DatasourceName(name: "RCMDB").save();
         def mdc = new ModelDatasourceController();
         mdc.params["datasource.id"] = datasource.id;
         mdc.params["model.id"] = model.id;

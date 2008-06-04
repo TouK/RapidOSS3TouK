@@ -17,6 +17,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.converter.DoubleConverter
 import script.CmdbScript
 import org.codehaus.groovy.runtime.StackTraceUtils
+import model.DatasourceName
 
 class BootStrap {
     def quartzScheduler;
@@ -38,14 +39,21 @@ class BootStrap {
             adminUser.save();
         }
         new UserRoleRel(rsUser: adminUser, role: adminRole).save()
+
+
         def rcmdbDatasource = RCMDBDatasource.findByName(RapidCMDBConstants.RCMDB);
         if (rcmdbDatasource == null) {
             new RCMDBDatasource(name: RapidCMDBConstants.RCMDB).save();
         }
+        if(System.getProperty("rs.modeler") != null){
+            if(DatasourceName.findByName(RapidCMDBConstants.RCMDB) == null){
+                new DatasourceName(name: RapidCMDBConstants.RCMDB).save();
+            }
+        }
+
         ScriptManager.getInstance().initialize();
+
         def changedModelProperties = [:]
-
-
         PropertyAction.list().each {PropertyAction propAction ->
             if (!propAction.willBeDeleted)
             {

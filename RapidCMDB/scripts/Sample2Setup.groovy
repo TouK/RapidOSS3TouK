@@ -45,7 +45,10 @@ Model.findByName("Device")?.delete(flush:true);
 Model.findByName("Link")?.delete(flush:true);
 Model.findByName("Resource")?.delete(flush:true);
 
-def rcmdbDS = BaseDatasource.findByName("RCMDB");
+def rcmdbDS = DatasourceName.findByName("RCMDB");
+if(rcmdbDS == null){
+    rcmdbDS = new DatasourceName(name: "RCMDB");
+}
 
 // Customer class
 def customer = Model.create(name:"Customer");

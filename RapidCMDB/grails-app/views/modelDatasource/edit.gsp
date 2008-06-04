@@ -1,4 +1,4 @@
-<%@ page import="datasource.BaseDatasource; model.*" %>
+<%@ page import="model.*" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -39,7 +39,7 @@
                             <label for="datasource">Datasource:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelDatasource, field: 'datasource', 'errors')}">
-                            <g:select class="inputtextfield" optionKey="id" from="${BaseDatasource.list()}" name="datasource.id" value="${modelDatasource?.datasource?.id}"></g:select>
+                            <g:select class="inputtextfield" optionKey="id" from="${DatasourceName.list()}" name="datasource.id" value="${modelDatasource?.datasource?.id}"></g:select>
                         </td>
                     </tr>
 

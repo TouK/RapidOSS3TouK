@@ -1,7 +1,6 @@
 package model
 
 import groovy.mock.interceptor.StubFor
-import datasource.BaseDatasource
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
  * noted in a separate copyright notice. All rights reserved.
@@ -81,7 +80,7 @@ class ModelDatasourceControllerTests extends RapidCmdbTestCase{
      void testSuccessfulSave() {
         def model = new Model(name: "Customer");
         def modelId = "1";
-        def datasource = new BaseDatasource(name: "RCMDB");
+        def datasource = new DatasourceName(name: "RCMDB");
         def mdc = new ModelDatasourceController();
         mdc._getModelId = {modelDatasource ->  return modelId;};
 

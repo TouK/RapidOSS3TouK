@@ -1,10 +1,10 @@
 import model.Model
-import datasource.BaseDatasource
 import model.ModelDatasource
 import model.ModelProperty
 import model.ModelDatasourceKeyMapping
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import model.ModelRelation
+import model.DatasourceName
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -36,7 +36,11 @@ Model.findByName("Employee")?.delete(flush:true);
 Model.findByName("Person")?.delete(flush:true);
 Model.findByName("Team")?.delete(flush:true);
 Model.findByName("Task")?.delete(flush:true);
-def rcmdbDatasource = BaseDatasource.findByName("RCMDB");
+def rcmdbDatasource = DatasourceName.findByName("RCMDB");
+if(rcmdbDatasource == null){
+    rcmdbDatasource = new DatasourceName(name: "RCMDB");
+}
+
 
 def person = new Model(name:"Person");
 def modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);

@@ -1,6 +1,5 @@
 package model
 
-import datasource.BaseDatasource
 import com.ifountain.rcmdb.util.RapidCMDBConstants;
 
 class ModelPropertyController {
@@ -17,14 +16,14 @@ class ModelPropertyController {
     }
     def save = {
         if (params["datasource.id"] != null && params["datasource.id"] != "null") {
-            def baseDatasource = BaseDatasource.get(params["datasource.id"]);
+            def datasourceName = DatasourceName.get(params["datasource.id"]);
             def currentModel = Model.get(params["model.id"]);
             def tempModel = currentModel;
             def modelDatasource = null;
             while (tempModel != null && !modelDatasource) {
                 tempModel.datasources.each
                 {
-                    if (it.datasource.name == baseDatasource.name)
+                    if (it.datasource.name == datasourceName.name)
                     {
                         modelDatasource = it;
                         return;
@@ -36,10 +35,10 @@ class ModelPropertyController {
 
             if (!modelDatasource) {
                 def isMaster = false;
-                if (baseDatasource.name == RapidCMDBConstants.RCMDB && ModelDatasource.findByModelAndMaster(currentModel, true) == null) {
+                if (datasourceName.name == RapidCMDBConstants.RCMDB && ModelDatasource.findByModelAndMaster(currentModel, true) == null) {
                     isMaster = true;
                 }
-                modelDatasource = new ModelDatasource(model: currentModel, datasource: baseDatasource, master: isMaster).save();
+                modelDatasource = new ModelDatasource(model: currentModel, datasource: datasourceName, master: isMaster).save();
             }
             params.remove("datasource.id");
             params["propertyDatasource.id"] = modelDatasource.id;
@@ -88,14 +87,14 @@ class ModelPropertyController {
         def modelProperty = ModelProperty.get(params.id)
         if (modelProperty) {
             if (params["datasource.id"] != null && params["datasource.id"] != "null") {
-                def baseDatasource = BaseDatasource.get(params["datasource.id"]);
+                def datasourceName = DatasourceName.get(params["datasource.id"]);
                 def currentModel = Model.get(params["model.id"]);
                 def tempModel = currentModel;
                 def modelDatasource = null;
                 while (tempModel != null && !modelDatasource) {
                     tempModel.datasources.each
                     {
-                        if (it.datasource.name == baseDatasource.name)
+                        if (it.datasource.name == datasourceName.name)
                         {
                             modelDatasource = it;
                             return;
@@ -107,10 +106,10 @@ class ModelPropertyController {
 
                 if (!modelDatasource) {
                     def isMaster = false;
-                    if (baseDatasource.name == RapidCMDBConstants.RCMDB && ModelDatasource.findByModelAndMaster(currentModel, true) == null) {
+                    if (datasourceName.name == RapidCMDBConstants.RCMDB && ModelDatasource.findByModelAndMaster(currentModel, true) == null) {
                         isMaster = true;
                     }
-                    modelDatasource = new ModelDatasource(model: currentModel, datasource: baseDatasource, master: isMaster).save();
+                    modelDatasource = new ModelDatasource(model: currentModel, datasource: datasourceName, master: isMaster).save();
                 }
                 params.remove("datasource.id");
                 params["propertyDatasource.id"] = modelDatasource.id;

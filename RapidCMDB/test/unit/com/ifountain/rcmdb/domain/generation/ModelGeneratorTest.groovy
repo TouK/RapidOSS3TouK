@@ -5,7 +5,6 @@ import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import model.ModelProperty
 import model.ModelDatasource
 import model.ModelDatasourceKeyMapping
-import datasource.BaseDatasource
 import model.ModelRelation
 import org.apache.commons.io.FileUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
@@ -14,7 +13,8 @@ import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import org.codehaus.groovy.grails.validation.ConstrainedPropertyBuilder
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
-import com.ifountain.rcmdb.domain.constraints.KeyConstraint;
+import com.ifountain.rcmdb.domain.constraints.KeyConstraint
+import model.DatasourceName;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -81,7 +81,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     }
     private def addMasterDatasource(Model model)
     {
-        def datasource1 = new BaseDatasource(name:"ds1-sample");
+        def datasource1 = new DatasourceName(name:"ds1-sample");
         def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
         model.datasources += modelDatasource1;
         def keyProp = new ModelProperty(name:"keyprop", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:false);
@@ -207,7 +207,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             def converter = new DateConverter(dateFormatString);
             RapidConvertUtils.getInstance().register (converter, Date.class)
             def model = new MockModel(name:"Class1");
-            def datasource1 = new BaseDatasource(name:"ds1-sample");
+            def datasource1 = new DatasourceName(name:"ds1-sample");
             def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
             model.datasources += modelDatasource1;
 
@@ -308,8 +308,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     {
 
         def model = new MockModel(name:"Class1");
-        def datasource1 = new BaseDatasource(name:"ds1-sample");
-        def datasource2 = new BaseDatasource(name:"ds2");
+        def datasource1 = new DatasourceName(name:"ds1-sample");
+        def datasource2 = new DatasourceName(name:"ds2");
         def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:false, model:model);
         def modelDatasource2 = new MockModelDatasource(datasource:datasource2, master:true, model:model);
 
@@ -614,7 +614,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     public void testThrowsExceptionIfKeymappingsDoesnotExistsForADatasource()
     {
         def model1 = new MockModel(name:"Class1");
-        def datasource1 = new BaseDatasource(name:"ds1-sample");
+        def datasource1 = new DatasourceName(name:"ds1-sample");
         def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model1);
         model1.datasources += modelDatasource1;
         try

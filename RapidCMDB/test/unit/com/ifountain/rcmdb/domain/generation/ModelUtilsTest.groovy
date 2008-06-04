@@ -3,13 +3,13 @@ package com.ifountain.rcmdb.domain.generation
 import model.Model
 import model.ModelRelation
 import org.apache.commons.io.FileUtils
-import datasource.BaseDatasource
 import model.ModelProperty
 import model.ModelDatasourceKeyMapping
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
 import org.codehaus.groovy.grails.compiler.injection.ClassInjector
+import model.DatasourceName
 
 /**
 * Created by IntelliJ IDEA.
@@ -123,7 +123,7 @@ class ModelUtilsTest extends GroovyTestCase{
 
     private def addMasterDatasource(Model model)
     {
-        def datasource1 = new BaseDatasource(name:"ds1-sample");
+        def datasource1 = new DatasourceName(name:"ds1-sample");
         def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
         model.datasources += modelDatasource1;
         def keyProp = new ModelProperty(name:"keyprop", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:false);

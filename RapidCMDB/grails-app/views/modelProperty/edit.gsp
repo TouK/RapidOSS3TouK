@@ -1,4 +1,4 @@
-<%@ page import="datasource.BaseDatasource; model.*" %>
+<%@ page import="model.*" %>
 
 <html>
     <head>
@@ -67,7 +67,7 @@
                                     <label for="datasourceName">Static Datasource:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:modelProperty,field:'propertyDatasource','errors')}">
-                                    <g:select  class="inputtextfield" optionKey="id" from="${BaseDatasource.list()}" name="datasource.id" value="${modelProperty?.propertyDatasource?.datasource?.id}" noSelection="['null':'']"></g:select>
+                                    <g:select  class="inputtextfield" optionKey="id" from="${DatasourceName.list()}" name="datasource.id" value="${modelProperty?.propertyDatasource?.datasource?.id}" noSelection="['null':'']"></g:select>
                                 </td>
                             </tr>
 

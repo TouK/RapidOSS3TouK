@@ -55,14 +55,6 @@ class RapidGrailsScriptRunner {
 			println "Environment variable GRAILS_HOME not set. Please set it to the location of your Grails installation and try again."
 			System.exit(0)
 		}
-		try{
-            def workingDir = new File(System.properties.'grails.work.dir');
-            if(workingDir.exists()){
-                deleteDir(workingDir);
-            }    
-        }
-        catch(e){
-        }
 		ANT.property(file:"${grailsHome}/build.properties")
 		def grailsVersion =  ANT.antProject.properties.'grails.version'
 
@@ -240,16 +232,6 @@ class RapidGrailsScriptRunner {
 		}
 		return allArgs
 	}
-
-    private static deleteDir(File dir){
-        if (dir.isDirectory()) {
-            def children = dir.list();
-            for (child in children) {
-                deleteDir(new File(dir, child));
-            }
-        }
-        dir.delete();
-    }
 
 	private static establishBaseDir() {
 		def sysProp = System.getProperty("base.dir")

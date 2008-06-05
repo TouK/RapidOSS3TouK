@@ -10,7 +10,6 @@ import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInj
 import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
 import org.codehaus.groovy.grails.commons.GrailsClass
-import org.hibernate.cfg.ImprovedNamingStrategy
 import com.ifountain.rcmdb.utils.ConfigurationImportExportUtils
 import datasource.BaseDatasource
 import connection.Connection
@@ -19,9 +18,7 @@ import model.PropertyShouldBeCleared
 import model.ChangedModel
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
-import org.codehaus.groovy.grails.orm.hibernate.validation.UniqueConstraint
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
-import model.ModelProperty
 import model.PropertyAction
 import model.DatasourceName
 

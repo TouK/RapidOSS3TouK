@@ -16,7 +16,6 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.converter.DoubleConverter
 import script.CmdbScript
-import org.codehaus.groovy.runtime.StackTraceUtils
 import model.DatasourceName
 
 class BootStrap {

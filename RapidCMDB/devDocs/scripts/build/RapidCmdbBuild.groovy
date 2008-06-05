@@ -126,7 +126,14 @@ class RapidCmdbBuild extends Build{
 			ant.fileset(file : env.version);
 			ant.fileset(file : env.invalidNames);
 		}
-		
+		ant.copy(todir : "$env.dist_rapid_cmdb_modeler"){
+			ant.fileset(file : "$env.rapid_cmdb_cvs/rsmodeler.exe");
+			ant.fileset(file : "$env.rapid_cmdb_cvs/rsmodeler.vmoptions");
+			ant.fileset(file : "$env.rapid_cmdb_cvs/rsmodeler.sh");
+			ant.fileset(file : env.version);
+			ant.fileset(file : env.invalidNames);
+		}
+		ant.copy(file : "$env.rapid_cmdb_cvs/modelerApplication.properties", tofile : "$env.dist_rapid_cmdb_modeler/application.properties");
 		setVersionAndBuildNumber(env.versionInBuild);
 
 		ant.copy(todir : "$env.dist_rapid_cmdb/grails-app"){
@@ -136,6 +143,13 @@ class RapidCmdbBuild extends Build{
                 ant.exclude(name:"domain/*.groovy")
                 ant.exclude(name:"controllers/*.groovy")
 
+                //exclude model classes
+                ant.exclude(name:"controllers/model/**")
+                ant.exclude(name:"controllers/model")
+                ant.exclude(name:"views/model*/**")
+                ant.exclude(name:"views/model*")
+                ant.exclude(name:"views/datasourceName/**")
+                ant.exclude(name:"views/datasourceName")
                 // exclude Smarts classes
                 ant.exclude(name:"controllers/datasource/Smarts*.groovy")
                 ant.exclude(name:"controllers/connection/Smarts*.groovy")
@@ -153,33 +167,72 @@ class RapidCmdbBuild extends Build{
                 ant.exclude(name:"views/netcool*")
             }
 		}
+		ant.copy(todir : "$env.dist_rapid_cmdb_modeler/grails-app"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app"){
+                ant.exclude(name:"**/test/**")
+                ant.exclude(name:"**/*Test*")
+                ant.exclude(name:"controllers*/**")
+                ant.exclude(name:"views*/**")
+                ant.exclude(name:"domain/connection/**")
+                ant.exclude(name:"domain/datasource/**")
+            }
+		}
+		
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/BaseDatasource.groovy", toDir : "$env.dist_rapid_cmdb_modeler/grails-app/domain/datasource" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/RCMDBDatasource.groovy", toDir : "$env.dist_rapid_cmdb_modeler/grails-app/domain/datasource" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/SnmpDatasource.groovy", toDir : "$env.dist_rapid_cmdb_modeler/grails-app/domain/datasource" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/connection/Connection.groovy", toDir : "$env.dist_rapid_cmdb_modeler/grails-app/domain/connection" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/connection/SnmpConnection.groovy", toDir : "$env.dist_rapid_cmdb_modeler/grails-app/domain/connection" );
+
+		ant.copy(todir : "$env.dist_rapid_cmdb_modeler/grails-app/controllers"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app/controllers"){
+                ant.include(name:"application/**")
+                ant.include(name:"auth/**")
+                ant.include(name:"model/**")
+                ant.include(name:"script/**")
+            }
+		}
+		ant.copy(todir : "$env.dist_rapid_cmdb_modeler/grails-app/views"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app/views"){
+                ant.include(name:"application/**")
+                ant.include(name:"auth/**")
+                ant.include(name:"model*/**")
+                ant.include(name:"datasourceName/**")
+                ant.include(name:"script/**")
+                ant.include(name:"rsUser/**")
+                ant.include(name:"userRoleRel/**")
+                ant.include(name:"layouts/**")
+            }
+		}
 
 		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/ExecuteBatchController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers" );
 		ant.copy(file : "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir : "$env.dist_rapid_cmdb/scripts" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir : "$env.dist_rapid_cmdb_modeler/scripts" );
 
 		ant.copy(todir : "$env.dist_rapid_cmdb/operations"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/operations")
         }
 
-        ant.copy(todir : "$env.dist_rapid_cmdb/lib"){
-			ant.fileset(dir : "$env.rapid_cmdb_cvs/lib")
-        }
-
-		ant.copy(todir : "$env.dist_rapid_cmdb/licenses"){
+		ant.copy(todir : "$env.dist_rapid_server/licenses"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/licenses")
         }
 
 		ant.copy(todir : "$env.dist_rapid_cmdb/plugins"){
-			ant.fileset(dir : "$env.rapid_cmdb_cvs/plugins"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/plugins")
+        }
+        ant.copy(todir : "$env.dist_rapid_cmdb_modeler/plugins"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/plugins")
+        }
+		ant.copy(todir : "$env.dist_rapid_cmdb/src"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/src"){
                 if(!TEST){
                     ant.exclude(name:"**/test/**")
                     ant.exclude(name:"**/*Test*")
                 }
             }
         }
-		ant.copy(todir : "$env.dist_rapid_cmdb/src"){
+        ant.copy(todir : "$env.dist_rapid_cmdb_modeler/src"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/src"){
-//                ant.exclude(name:"**/java/**")
                 if(!TEST){
                     ant.exclude(name:"**/test/**")
                     ant.exclude(name:"**/*Test*")
@@ -194,8 +247,21 @@ class RapidCmdbBuild extends Build{
                 }
                 ant.exclude(name:"indexSmarts.gsp")
                 ant.exclude(name:"indexNetcool.gsp")
+                ant.exclude(name:"modelerIndex.gsp")
             }
         }
+        ant.copy(todir : "$env.dist_rapid_cmdb_modeler/web-app"){
+			ant.fileset(dir : "$env.rapid_cmdb_cvs/web-app"){
+                if(!TEST){
+                    ant.exclude(name:"**/test/**")
+                    ant.exclude(name:"**/*Test*")
+                }
+                ant.exclude(name:"indexSmarts.gsp")
+                ant.exclude(name:"indexNetcool.gsp")
+                ant.exclude(name:"index.gsp")
+            }
+        }
+        ant.rename(src:"${env.dist_rapid_cmdb_modeler}/web-app/modelerIndex.gsp", dest:"${env.dist_rapid_cmdb_modeler}/web-app/index.gsp")
         if(TEST){
            ant.copy(todir : "$env.dist_rapid_cmdb/test"){
 			    ant.fileset(dir : "$env.rapid_cmdb_cvs/test")
@@ -254,12 +320,19 @@ class RapidCmdbBuild extends Build{
 
 	def copyDependentJars(){
 		ant.copy(file : (String)classpath.getProperty("commons-betwixt-0_8_jar"), toDir : env.dist_rapid_cmdb_lib );
+		ant.copy(file : (String)classpath.getProperty("commons-betwixt-0_8_jar"), toDir : env.dist_rapid_cmdb_modeler_lib );
 		ant.copy(file : (String)classpath.getProperty("commons-digester-1_7_jar"), toDir : env.dist_rapid_cmdb_lib);
+		ant.copy(file : (String)classpath.getProperty("commons-digester-1_7_jar"), toDir : env.dist_rapid_cmdb_modeler_lib);
 		ant.copy(file : (String)classpath.getProperty("commons-configuration-1_2_jar"), toDir : env.dist_rapid_cmdb_lib );
+		ant.copy(file : (String)classpath.getProperty("commons-configuration-1_2_jar"), toDir : env.dist_rapid_cmdb_modeler_lib );
         ant.copy(file : (String)classpath.getProperty("commons-collections-3_2_jar"), toDir : env.dist_rapid_cmdb_lib );
+        ant.copy(file : (String)classpath.getProperty("commons-collections-3_2_jar"), toDir : env.dist_rapid_cmdb_modeler_lib );
 		ant.copy(file : (String)classpath.getProperty("commons-codec-1_3_jar"), toDir : env.dist_rapid_cmdb_lib);
+		ant.copy(file : (String)classpath.getProperty("commons-codec-1_3_jar"), toDir : env.dist_rapid_cmdb_modeler_lib);
 		ant.copy(file : (String)classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir : env.dist_rapid_cmdb_lib);
+		ant.copy(file : (String)classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir : env.dist_rapid_cmdb_modeler_lib);
 		ant.copy(file : (String)classpath.getProperty("SNMP4J_jar"), toDir : env.dist_rapid_cmdb_lib);
+		ant.copy(file : (String)classpath.getProperty("SNMP4J_jar"), toDir : env.dist_rapid_cmdb_modeler_lib);
 	}
 
     def unzipGrails(){

@@ -24,6 +24,7 @@ class RapidExtBuild extends Build{
 		copyResourcesForJar();
 		ant.jar(destfile : env.rapid_ext_jar, basedir : env.rapid_ext_build);
         ant.copy(file : env.rapid_ext_jar, toDir : env.dist_rapid_cmdb_lib);
+        ant.copy(file : env.rapid_ext_jar, toDir : env.dist_rapid_cmdb_modeler_lib);
 
 		copyDependentJars();
 	}

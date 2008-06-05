@@ -13,7 +13,6 @@ class MockModel extends Model
 {
     def static childModels;
 
-    def numberOfSaveCalls = 0;
     Set datasources = Collections.emptySet();
     Set modelProperties = Collections.emptySet()
     Set fromRelations = Collections.emptySet();

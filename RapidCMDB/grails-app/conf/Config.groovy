@@ -31,7 +31,8 @@ grails.views.gsp.encoding="UTF-8"
 grails.converters.encoding="UTF-8"
 grails.test.default.rollback = true
 
-
+rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/../RapidCMDB/generatedModels".toString();
+rapidCMDB.base.dir = System.getProperty("base.dir");
 rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss";
 rapidcmdb.invalid.names=[];
 def invalidNameFile = new File("invalidNames.txt" );

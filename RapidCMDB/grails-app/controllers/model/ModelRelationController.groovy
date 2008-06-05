@@ -47,12 +47,6 @@ class ModelRelationController {
             }
             modelRelation.properties = params
             if(!modelRelation.hasErrors() && modelRelation.save()) {
-                PropertyShouldBeCleared.findAllByModelNameAndPropertyName(modelRelation.firstModel.name, modelRelation.firstName)*.delete(flush:true);
-                PropertyShouldBeCleared.findAllByModelNameAndPropertyName(modelRelation.secondModel.name, modelRelation.secondName)*.delete(flush:true);
-                PropertyShouldBeCleared prop1 = new PropertyShouldBeCleared(modelName:modelRelation.firstModel.name, propertyName:modelRelation.firstName, isRelation:true);
-                prop1.save(flush:true);
-                prop1 = new PropertyShouldBeCleared(modelName:modelRelation.secondModel.name, propertyName:modelRelation.secondName, isRelation:true);
-                prop1.save(flush:true);
                 flash.message = "ModelRelation ${params.id} updated"
                 redirect(action:show,controller:'model', id:redirectModelId)
             }
@@ -72,7 +66,6 @@ class ModelRelationController {
             def modelId = modelRelation.firstModel?.id;
             try{
                 modelRelation.delete(flush:true)
-                PropertyShouldBeCleared.findAllByModelNameAndPropertyName(modelProperty.model.name, modelProperty.name)*.delete(flush:true);
                 flash.message = "Relation deleted"
                 redirect(action:show, controller:'model', id:modelId)
             }

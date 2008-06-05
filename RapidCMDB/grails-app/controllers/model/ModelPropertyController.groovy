@@ -49,9 +49,6 @@ class ModelPropertyController {
         }
         def modelProperty = new ModelProperty(params)
         if (!modelProperty.hasErrors() && modelProperty.save()) {
-            PropertyShouldBeCleared.findAllByModelNameAndPropertyName(modelProperty.model.name, modelProperty.name)*.delete(flush:true);
-            PropertyShouldBeCleared prop1 = new PropertyShouldBeCleared(modelName:modelProperty.model.name, propertyName:modelProperty.name, isRelation:false);
-            prop1.save(flush:true);
             flash.message = "ModelProperty ${modelProperty} created"
             redirect(action: show, controller: 'model', id: modelProperty.model?.id)
         }
@@ -67,7 +64,6 @@ class ModelPropertyController {
             def modelPropertyName = modelProperty.toString();
             try {
                 modelProperty.delete(flush: true)
-                PropertyShouldBeCleared.findAllByModelNameAndPropertyName(modelProperty.model.name, modelProperty.name)*.delete(flush:true);
                 flash.message = "Property ${modelPropertyName} deleted"
                 redirect(action: show, controller: 'model', id: modelId)
             }
@@ -120,9 +116,6 @@ class ModelPropertyController {
             }
             modelProperty.properties = params
             if (!modelProperty.hasErrors() && modelProperty.save()) {
-                PropertyShouldBeCleared.findAllByModelNameAndPropertyName(modelProperty.model.name, modelProperty.name)*.delete(flush:true);
-                PropertyShouldBeCleared prop1 = new PropertyShouldBeCleared(modelName:modelProperty.model.name, propertyName:modelProperty.name, isRelation:false);
-                prop1.save(flush:true);
                 flash.message = "ModelProperty ${modelProperty} updated"
                 redirect(action: "show", controller: 'model', id: _getModelId(modelProperty))
             }

@@ -16,12 +16,19 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.converter.DoubleConverter
 import script.CmdbScript
+import org.codehaus.groovy.runtime.StackTraceUtils
 import model.DatasourceName
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import model.ModelAction
 
 class BootStrap {
     def quartzScheduler;
     def init = {servletContext ->
+        String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];
+        String tempDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"];
+        ModelGenerator.getInstance().initialize (baseDirectory, tempDirectory, baseDirectory);
         registerDefaultConverters();
+
         def adminRole = Role.findByName("Administrator");
         if (!adminRole) {
             adminRole = new Role(name: "Administrator");
@@ -69,6 +76,18 @@ class BootStrap {
             }
         }
         int batch = 1000;
+        ModelAction.list().each{ModelAction modelAction->
+            if(modelAction.DELETE_ALL_INSTANCES)
+            {
+                DefaultGrailsDomainClass currentDomainObject =ApplicationHolder.application.getDomainClass(modelAction.modelName);
+                if(currentDomainObject)
+                {
+                    currentDomainObject.clazz.metaClass.invokeStaticMethod (currentDomainObject.clazz, "unindex", [] as Object[]);
+                }
+            }
+            modelAction.willBeDeleted = true;
+            modelAction.save();
+        }
 
         changedModelProperties.each {String modelName, Map modelProps ->
             DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(modelName);
@@ -79,43 +98,27 @@ class BootStrap {
                 while (true)
                 {
                     def res = currentModelClass.metaClass.invokeStaticMethod(currentModelClass, "search", ["id:[0 TO *]", [max: batch, offset: index]] as Object[]);
-                    boolean isDelete = false;
                     res.results.each {modelInstance ->
-                        if (!isDelete)
-                        {
-                            modelProps.each {propName, PropertyAction action ->
-                                def propVal = modelInstance[propName];
+                        modelProps.each {propName, PropertyAction action ->
+                            def propVal = modelInstance[propName];
 
-                                if (action.action == PropertyAction.CLEAR_RELATION)
+                            if (action.action == PropertyAction.CLEAR_RELATION)
+                            {
+                                if (propVal instanceof Collection)
                                 {
-                                    if (propVal instanceof Collection)
-                                    {
-                                        propVal.clear();
-                                    }
-                                    else
-                                    {
-                                        modelInstance[propName] = null;
-                                    }
+                                    propVal.clear();
                                 }
-                                else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
+                                else
                                 {
-                                    modelInstance[propName] = getDefaultValue(action.defaultValue, action.propType)
-                                }
-                                else if (action.action == PropertyAction.DELETE_ALL_INSTANCES)
-                                {
-                                    isDelete = true;
-                                    return;
+                                    modelInstance[propName] = null;
                                 }
                             }
+                            else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
+                            {
+                                modelInstance[propName] = getDefaultValue(action.defaultValue, action.propType)
+                            }
                         }
-                        if (isDelete)
-                        {
-                            modelInstance.unindex();
-                        }
-                        else
-                        {
-                            modelInstance.reindex();
-                        }
+                        modelInstance.reindex();
                     }
                     index += batch;
                     if (res.total < index)
@@ -159,7 +162,6 @@ class BootStrap {
         if (defaultValue) return defaultValue;
         if (String.isAssignableFrom(newPropType))
         {
-            Double
             return "RCMDB_Default"
         }
         else if (Number.isAssignableFrom(newPropType))

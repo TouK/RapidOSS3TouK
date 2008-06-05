@@ -9,7 +9,7 @@ package model
 class PropertyAction {
     public static final String CLEAR_RELATION = "clearrelation"
     public static final String SET_DEFAULT_VALUE = "setdefaultvalue"
-    public static final String DELETE_ALL_INSTANCES = "deleteall"
+    
 
     String propName;
     String modelName;

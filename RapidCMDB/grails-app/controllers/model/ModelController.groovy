@@ -1,6 +1,7 @@
 package model;
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.domain.generation.ModelUtils
+import org.apache.commons.io.FileUtils
 
 class ModelController {
     def static String MODEL_DOESNOT_EXIST = "Model does not exist";
@@ -9,8 +10,6 @@ class ModelController {
     def save = {
         def model = new Model(params)
         if (!model.hasErrors() && model.save()) {
-            ChangedModel.findByModelName(model.name)*.delete(flush:true);
-            PropertyShouldBeCleared.findByModelName(model.name)*.delete(flush:true);
             flash.message = "Model ${model.id} created"
             redirect(action: show, id: model.id)
         }
@@ -136,7 +135,6 @@ class ModelController {
         {
             def model = Model.get(params.id)
             if (model) {
-                def oldDependentModels = getOldDependentModels(model)
                 try {
                     model.delete(flush: true)
                 }
@@ -148,22 +146,11 @@ class ModelController {
                     return;
 
                 }
-                ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), model.name);
-                new ChangedModel(modelName:model.name, isDeleted:true).save(flush:true);
                 try
                 {
-                    oldDependentModels.each {key, value ->
-                        value.refresh();
-                        ModelGenerator.getInstance().generateModel(value);
-                    }
-                    def oldModel = GeneratedModel.findByModelName(model.name);
-                    handleGenerationOfModels(oldDependentModels);
-                    if (oldModel) {
-                        GeneratedModelRelation.findAllByFirstModel(oldModel)*.delete(flush:true);
-                        GeneratedModelRelation.findAllBySecondModel(oldModel)*.delete(flush:true);
-                        oldModel.refresh();
-                        oldModel.delete(flush:true);
-                    }
+                    def models = Model.list();
+                    FileUtils.deleteDirectory (ModelGenerator.getInstance().getTempModelDir());
+                    ModelGenerator.getInstance().generateModels(models);
                     flash.message = "Model ${params.id} deleted"
                     redirect(action: list, controller: 'model');
                 }
@@ -188,160 +175,19 @@ class ModelController {
 
 
     def generate = {
-        if (params.id)
-        {
-            def model = Model.get(params.id);
-            if (model)
+            def models = Model.list();
+            try
             {
-                try
-                {
-                    ModelGenerator.getInstance().generateModel(model);
-                    def oldDependentModels = getOldDependentModels(model);
-                    def newDependentModels = ModelUtils.getAllDependentModels(model);
-                    def modelsToBeGenerated = [:]
-                    modelsToBeGenerated.putAll(newDependentModels);
-                    newDependentModels.each {modelName, newDependentModel ->
-                        oldDependentModels.remove(modelName);
-                    }
-                    oldDependentModels.each {String modelName, Model oldDepModel ->
-                        ModelGenerator.getInstance().generateModel(oldDepModel);
-                    }
-                    modelsToBeGenerated.putAll(oldDependentModels);
-                    handleGenerationOfModels(modelsToBeGenerated);
-                    flash.message = "Model $model.name genarated successfully"
-                    redirect(action: show, controller: 'model', id: model?.id)
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                    log.error("Exception occurred while generating model ${model.name}", e);
-                    flash.message = e.getMessage();
-                    redirect(action: show, controller: 'model', id: model?.id)
-                }
-            }
-            else
-            {
-                flash.message = MODEL_DOESNOT_EXIST
+                FileUtils.deleteDirectory (ModelGenerator.getInstance().getTempModelDir());
+                ModelGenerator.getInstance().generateModels(models);
+                flash.message = "Models genarated successfully"
                 redirect(action: list, controller: 'model')
             }
-        }
-        else
-        {
-            redirect(action: list, controller: 'model')
-        }
-    }
-
-    def handleGenerationOfModels(modelsToBeGenerated) {
-        def newGeneratedModels = [:];
-        modelsToBeGenerated.each {modelName, newDependentModel ->
-            GeneratedModel newGeneratedModel = createGeneratedModelInfo(newDependentModel);
-            newGeneratedModels.put(newGeneratedModel.modelName, newGeneratedModel);
-        }
-        newGeneratedModels.each {modelName, generatedModel ->
-            createGeneratedModelRelationInfo(generatedModel, newGeneratedModels);
-        }
-    }
-
-    def getOldDependentModels(Model model)
-    {
-        Map dependentModels = [:]
-        GeneratedModel modelChangeLog = GeneratedModel.findByModelName(model.name);
-        if (modelChangeLog)
-        {
-            def childModels = GeneratedModel.findAllByParentModelName(model.name);
-            childModels.each {GeneratedModel oldChildModel ->
-                addOldDependentModel(oldChildModel.modelName, dependentModels);
-            }
-            def relatedModels = GeneratedModelRelation.findAllByFirstModel(modelChangeLog);
-            relatedModels.each {GeneratedModelRelation relation ->
-                addOldDependentModel(relation.secondModel.modelName, dependentModels);
-            }
-            relatedModels = GeneratedModelRelation.findAllBySecondModel(modelChangeLog);
-            relatedModels.each {GeneratedModelRelation relation ->
-                addOldDependentModel(relation.firstModel.modelName, dependentModels);
-            }
-        }
-        return dependentModels;
-    }
-
-    def addOldDependentModel(String name, Map dependentModels)
-    {
-        if (!dependentModels.containsKey(name))
-        {
-            def depModel = Model.findByName(name);
-            if (depModel)
+            catch (Exception e)
             {
-                dependentModels[name] = depModel;
+                log.error("Exception occurred while generating models", e);
+                flash.message = e.getMessage();
+                redirect(action: list, controller: 'model')
             }
-        }
     }
-
-    def isPropertyUnique(ModelProperty prop)
-    {
-        boolean isKey = false;
-        if (prop.propertyDatasource && prop.propertyDatasource.master)
-        {
-
-            prop.propertyDatasource.keyMappings.each {ModelDatasourceKeyMapping mapping ->
-                if (mapping.property.id == prop.id)
-                {
-                    isKey = true;
-                }
-            }
-        }
-        return isKey;
-    }
-
-    def isFederated(ModelProperty prop)
-    {
-        if (prop.propertyDatasource)
-        {
-            return !prop.propertyDatasource.master;
-        }
-        return true;
-    }
-
-    def createGeneratedModelInfo(Model model)
-    {
-        new ChangedModel(modelName:model.name).save(flush:true);
-        def oldModel = GeneratedModel.findByModelName(model.name);
-        if (oldModel) {
-            GeneratedModelRelation.findAllByFirstModel(oldModel)*.delete();
-            GeneratedModelRelation.findAllBySecondModel(oldModel)*.delete();
-            oldModel.delete();
-        }
-        def generatedModel = new GeneratedModel(modelName: model.name);
-        def masterDatasource = ModelDatasource.findByModelAndMaster(model, true);
-        if (masterDatasource) {
-            generatedModel.idSize = masterDatasource.keyMappings.size();
-        }
-        else {
-            generatedModel.idSize = 0;
-        }
-
-        if (model.parentModel)
-        {
-            generatedModel.parentModelName = model.parentModel.name;
-        }
-        generatedModel = generatedModel.save();
-        model.modelProperties.each {ModelProperty prop ->
-            def isFederated = isFederated(prop);
-            def isUnique = isPropertyUnique(prop)
-            def generatedModelProperty = new GeneratedModelProperty(model: generatedModel, propId: prop.id, propName: prop.name, isBlank: prop.blank, isFederated: isFederated, isUnique: isUnique, type: prop.type);
-            generatedModelProperty.save();
-        }
-        return generatedModel;
-    }
-
-    def createGeneratedModelRelationInfo(GeneratedModel gModel, Map newGeneratedModels) {
-        def model = Model.findByName(gModel.modelName);
-        model.fromRelations.each {ModelRelation relation ->
-            def generatedModelRelation = new GeneratedModelRelation(firstModel: gModel, secondModel: newGeneratedModels.get(relation.secondModel.name),
-                    firstName: relation.firstName, secondName: relation.secondName,
-                    firstCardinality: relation.firstCardinality, secondCardinality: relation.secondCardinality,
-                    isReverse: false, relationId: relation.id);
-            generatedModelRelation.save();
-        }
-    }
-
 }

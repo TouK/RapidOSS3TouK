@@ -14,13 +14,16 @@ import com.ifountain.rcmdb.utils.ConfigurationImportExportUtils
 import datasource.BaseDatasource
 import connection.Connection
 import script.CmdbScript
-import model.PropertyShouldBeCleared
-import model.ChangedModel
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import com.ifountain.rcmdb.domain.constraints.KeyConstraint
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.apache.commons.io.filefilter.FileFilterUtils
+import org.apache.commons.io.FileUtils
+import org.apache.commons.lang.StringUtils
+import com.ifountain.rcmdb.domain.generation.ExistingDataAnalyzer
 import model.PropertyAction
+import model.ModelAction
 import model.DatasourceName
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 /**
 * Created by IntelliJ IDEA.
@@ -35,94 +38,77 @@ class ApplicationController {
     def searchableService;
     def index = { render(view:"application") }
     def reload = {
-        def models = Model.findAllByResourcesWillBeGenerated(true);
+        def oldDomainClasses = [:]
+        PropertyAction.findAllByWillBeDeleted(true)*.delete(flush:true);
+        ModelAction.findAllByWillBeDeleted(true)*.delete(flush:true);
+        def baseDir = grailsApplication.config.toProperties()["rapidCMDB.base.dir"];
+        def tempBaseDir = grailsApplication.config.toProperties()["rapidCMDB.temp.dir"];
+        def currentModelDir = "${baseDir}/grails-app/domain";
+        def currentModelDirFile = new File(currentModelDir);
+        def tempModelDir = "${tempBaseDir}/grails-app/domain";
+        def tempModelDirFile = new File(tempModelDir);
+        Collection tempModelFileList = FileUtils.listFiles(tempModelDirFile, ["groovy"] as String[], false);
+        Collection currentModelFileList = FileUtils.listFiles(currentModelDirFile, ["groovy"] as String[], false);
+        currentModelFileList.each {File modelFile->
+            String modelName = StringUtils.substringBefore(modelFile.name, ".groovy");
+            GrailsDomainClass cls = grailsApplication.getDomainClass(modelName);
+            if(cls)
+            {
+                oldDomainClasses[modelName] = cls;
+            }
+        }
+        def domainClassesWillBeGenerated = [];
+        def newDomainClassesMap = [:];
         GrailsAwareClassLoader gcl = new GrailsAwareClassLoader(Thread.currentThread().getContextClassLoader().parent);
         gcl.setShouldRecompile(true);
-        String baseDirectory = System.getProperty("base.dir")
-        gcl.addClasspath(baseDirectory + "/grails-app/domain");
+        gcl.addClasspath(tempModelDir);
         gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
-        def domainClassesWillBeGenerated = [];
-        def domainClassesMap = [:];
-        models.each {Model model ->
-            try
+        tempModelFileList.each {File modelFile->
+            String modelName = StringUtils.substringBefore(modelFile.name, ".groovy");
+            def cls = gcl.loadClass(modelName);
+            def domainClass = new DefaultGrailsDomainClass(cls);
+            domainClassesWillBeGenerated += domainClass;
+            newDomainClassesMap[modelName] = domainClass;
+        }
+        GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClassesWillBeGenerated as GrailsClass[], newDomainClassesMap);
+        domainClassesWillBeGenerated.each {GrailsDomainClass domainClass ->
+            GrailsDomainClass oldDomainClass = oldDomainClasses[domainClass.name];
+            if(oldDomainClass)
             {
-                def cls = gcl.loadClass(model.name);
-                def domainClass = new DefaultGrailsDomainClass(cls);
-                domainClassesWillBeGenerated += domainClass;
-                domainClassesMap[model.name] = domainClass;
+                List actions = ExistingDataAnalyzer.createActions(domainClass, oldDomainClass);
+                if(!actions.isEmpty())
+                {
+                    ModelUtils.generateModelArtefacts(domainClass, baseDir);
+                    ModelGenerator.getInstance().createModelOperationsFile (domainClass.class);
+                    actions.each{
+                        it.save();
+                    }
+                }
             }
-            catch (t)
+            else
             {
-                log.error("Exception occurred while creating controller, view and operations files of model ${model.name}", StackTraceUtils.deepSanitize(t));
+                ModelUtils.generateModelArtefacts(domainClass, baseDir);
+                ModelGenerator.getInstance().createModelOperationsFile (domainClass.class);
             }
         }
-        GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClassesWillBeGenerated as GrailsClass[], domainClassesMap);
-        models.each {Model model ->
-            def domainClass = domainClassesMap[model.name];
-            if (domainClass)
+
+        oldDomainClasses.each {String oldClassName, GrailsDomainClass oldDomainClass ->
+            if(!newDomainClassesMap.containsKey(oldClassName))
             {
-                ModelUtils.generateModelArtefacts(domainClass, baseDirectory);
-                model.resourcesWillBeGenerated = false;
-                model.save(flush: true);
+                ModelUtils.deleteModelArtefacts (baseDir, oldClassName);
+                ModelGenerator.getInstance().getGeneratedModelFile (oldClassName).delete();
+                oldDomainClass.clazz.metaClass.invokeStaticMethod (oldDomainClass.clazz, "unindex", [] as Object[]);
             }
         }
-        correctModelData(domainClassesMap);
+
+        FileUtils.copyDirectory (tempModelDirFile, currentModelDirFile);
         flash.message = "Reloading application."
         render(view: "application", controller: "application");
         GroovyPagesTemplateEngine.pageCache.clear();
         System.setProperty(RESTART_APPLICATION, "true");
     }
 
-    def correctModelData(Map domainClassMap)
-    {
-        PropertyAction.list().each
-        {
-            if(it.willBeDeleted) it.delete(flush:true);
-        }
-        def modelsWillBeChanged = ChangedModel.list();
-        def distinctList = [:];
-        modelsWillBeChanged.each
-        {
-            if(!distinctList.containsKey(it.modelName))
-            {
-                distinctList[it.modelName] = it;
-            }
-        }
-        def changedProps = PropertyShouldBeCleared.list();
-        changedProps.each{PropertyShouldBeCleared propShouldBeCleared->
-            def modelName = propShouldBeCleared.modelName;
-            if(distinctList.containsKey(modelName))
-            {
-                def propName = propShouldBeCleared.propertyName;
-                def isRelation = propShouldBeCleared.isRelation;
-                GrailsDomainClass modelDomainObject = domainClassMap[modelName];
-                GrailsDomainClass currentDomainObject = grailsApplication.getDomainClass(modelName);
-                if(modelDomainObject && currentDomainObject)
-                {
-                    if(modelDomainObject.getPropertyByName(propName) != null)
-                    {
-                        PropertyActionFactory.createPropertyAction (currentDomainObject, modelDomainObject, modelName, propName,isRelation);
-                    }
-                }
-                propShouldBeCleared.delete();
-            }
-        }
 
-        int batch = 1000;
-        distinctList.each{modelName, ChangedModel changedModel->
-            DefaultGrailsDomainClass currentDomainObject = grailsApplication.getDomainClass(modelName);
-            if(currentDomainObject)
-            {
-                Class currentModelClass = currentDomainObject.clazz;
-                if(changedModel.isDeleted)
-                {
-                    currentModelClass.metaClass.invokeStaticMethod (currentModelClass, "unindexAll", [] as Object[]);
-                }
-            }
-            changedModel.delete();
-        }
-
-    }
 
 
 
@@ -154,50 +140,25 @@ class ApplicationController {
         impExpUtils.importConfiguration(importDir);
         redirect(action:reload,controller:'application');
     }
-}
 
-class PropertyActionFactory
-{
-    def static createPropertyAction(GrailsDomainClass currentDomainObject, DefaultGrailsDomainClass newDomainObject, String modelName, String propName, boolean isRelation)
+    def correctData(Map currentDomainClassObjects, Map newDomainClassObjects)
     {
-
-        boolean isUnique = false;
-        boolean isNullable = false;
-        boolean wasUnique = false;
-        boolean wasNullable = false;
-        def newPropType = newDomainObject.getPropertyByName(propName).type;
-        def oldPropType = currentDomainObject.hasProperty(propName)?currentDomainObject.getPropertyByName(propName).type:null;
-        def defaultValue = newDomainObject.newInstance()[propName];
-        ConstrainedProperty oldProp = currentDomainObject.getConstrainedProperties()[propName];
-        ConstrainedProperty newProp = newDomainObject.getConstrainedProperties()[propName]
-        if(oldProp)
-        {
-            KeyConstraint oldConst = oldProp.getAppliedConstraint(KeyConstraint.KEY_CONSTRAINT);
-            wasUnique = oldConst?oldConst.isKey():false;
-            wasNullable = oldProp.isNullable();
-        }
-        KeyConstraint newConst = newProp.getAppliedConstraint(KeyConstraint.KEY_CONSTRAINT);
-        isUnique = newConst?newConst.isKey():false;
-        isNullable = newProp.isNullable();
-        if(isRelation)
-        {
-            PropertyAction action = new PropertyAction(modelName:modelName, propName: propName, action:PropertyAction.CLEAR_RELATION);
-            action.save();
-        }
-        else
-        {
-            if(wasUnique && !isUnique)
+        currentDomainClassObjects.each{String className, GrailsDomainClass currentDomainClass->
+            GrailsDomainClass newDomainClass = newDomainClassObjects.get(className);
+            if(newDomainClass)
             {
-                PropertyAction action = new PropertyAction(modelName:modelName, propName: propName, action:PropertyAction.DELETE_ALL_INSTANCES);
-                action.save();
+                def actions = ExistingDataAnalyzer.createActions (currentDomainClass, newDomainClass);
+                actions.each{
+                    it.save();
+                }
             }
-            else if(oldPropType != null && wasNullable && !isNullable || oldPropType != null && newPropType != oldPropType || oldPropType == null && !isNullable)
+            else
             {
-                PropertyAction action = new PropertyAction(modelName:modelName, propName: propName, action:PropertyAction.SET_DEFAULT_VALUE);
-                action.save();
+                ModelUtils.deleteModelArtefacts (System.getProperty ("base.dir"), className);
+                currentDomainClass.clazz.metaClass.invokeStaticMethod (currentDomainClass.clazz, "unindex", [] as Object[]);
             }
-
         }
 
+        
     }
 }

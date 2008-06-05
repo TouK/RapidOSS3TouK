@@ -5,6 +5,6 @@ import ${it};
 <%
 }
 %>
-class ${model.model.name}Operations extends ${parentClassName}
+class ${name}Operations extends ${parentClassName}
 {
 }

@@ -50,9 +50,13 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     def findAllBySecondModelMethod;
     protected void setUp() {
         super.setUp();
-        if(System.getProperty("base.dir") == null)
+        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDB"))
         {
-            System.setProperty("base.dir", "RapidCMDB");
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, System.getProperty("base.dir"));
+        }
+        else
+        {
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDB");            
         }
         FileUtils.deleteDirectory (new File(base_directory));
         new File(base_directory).mkdirs();
@@ -94,13 +98,10 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         def model = new MockModel(name:"Class1");
         model.getControllerFile().createNewFile();
         addMasterDatasource(model);
-        assertFalse (model.resourcesWillBeGenerated);
 
         ModelGenerator.getInstance().generateModel(model);
-        assertTrue (model.resourcesWillBeGenerated);
-        assertEquals (1, model.numberOfSaveCalls);
-        assertTrue (model.getModelFile().exists());
-        assertTrue (model.getOperationsFile().exists());
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model.name).exists());
+
         Class cls = compileClass(model.name);
         def object = cls.newInstance();
         object.keyprop = "keypropvalue";
@@ -112,27 +113,26 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         searchable.call();
         assertTrue(closureGetter.propertiesSetByClosure["except"].isEmpty());
 
+        ModelGenerator.getInstance().createModelOperationsFile (cls);
+        assertTrue (ModelGenerator.getInstance().getOperationsModelFile(model.name).exists());
         Class modelOperations = compileClass(model.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
         assertTrue (AbstractDomainOperation.isAssignableFrom(modelOperations));
 
         ModelGenerator.DEFAULT_IMPORTS.each {
-            assertTrue(model.getModelFile().getText ().indexOf("import $it") >= 0);    
+            assertTrue(ModelGenerator.getInstance().getGeneratedModelFile(model.name).getText ().indexOf("import $it") >= 0);
         }
     }
 
     public void testGenerateModelExtendingAnotherModel()
     {
         def parentModel = new MockModel(name:"Class2");
-        parentModel.getControllerFile().createNewFile();
         def childModel = new MockModel(name:"Class1", parentModel:parentModel);
-        childModel.getControllerFile().createNewFile();
         addMasterDatasource(parentModel);
 
         ModelGenerator.getInstance().generateModel(childModel);
-        assertTrue (childModel.getModelFile().exists());
-        assertTrue (childModel.getOperationsFile().exists());
-        assertTrue (parentModel.getModelFile().exists());
-        assertTrue (parentModel.getOperationsFile().exists());
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(childModel.name).exists());
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(parentModel.name).exists());
+
 
         Class childModelClass = compileClass(childModel.name);
         def childModelInstance = childModelClass.newInstance();
@@ -144,6 +144,10 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         def parentModelInstance = parentModelClass.newInstance();
         checkExistanceOfMetaDataProperties(parentModelInstance);
 
+        ModelGenerator.getInstance().createModelOperationsFile (childModelClass);
+        ModelGenerator.getInstance().createModelOperationsFile (parentModelClass);
+        assertTrue (ModelGenerator.getInstance().getOperationsModelFile(parentModel.name).exists());
+        assertTrue (ModelGenerator.getInstance().getOperationsModelFile(childModel.name).exists());
         Class childOperationClass = compileClass(childModel.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
         Class parentOperationClass = compileClass(parentModel.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
         assertTrue (AbstractDomainOperation.isAssignableFrom(parentOperationClass));
@@ -174,27 +178,11 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         reverseModelRelations[relatedModel.name] = [relation1];
 
         ModelGenerator.getInstance().generateModel(parentModel);
-        assertTrue (new File(base_directory + "${rootModel.name}.groovy").exists());
-        assertTrue (new File(base_directory + "${rootModel.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
-        assertTrue (new File(base_directory + "${childModel.name}.groovy").exists());
-        assertTrue (new File(base_directory + "${childModel.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
-        assertTrue (new File(base_directory + "${parentModel.name}.groovy").exists());
-        assertTrue (new File(base_directory + "${parentModel.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
-        assertTrue (new File(base_directory + "${relatedModel.name}.groovy").exists());
-        assertTrue (new File(base_directory + "${relatedModel.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
-        assertTrue (new File(base_directory + "${childRelatedModel.name}.groovy").exists());
-        assertTrue (new File(base_directory + "${childRelatedModel.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
-
-        assertTrue (rootModel.resourcesWillBeGenerated);
-        assertEquals (1, rootModel.numberOfSaveCalls);
-        assertTrue (childModel.resourcesWillBeGenerated);
-        assertEquals (1, childModel.numberOfSaveCalls);
-        assertTrue (parentModel.resourcesWillBeGenerated);
-        assertEquals (1, parentModel.numberOfSaveCalls);
-        assertTrue (relatedModel.resourcesWillBeGenerated);
-        assertEquals (1, relatedModel.numberOfSaveCalls);
-        assertTrue (childRelatedModel.resourcesWillBeGenerated);
-        assertEquals (1, childRelatedModel.numberOfSaveCalls);
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(rootModel.name).exists());
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(childModel.name).exists());
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(parentModel.name).exists());
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(relatedModel.name).exists());
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(childRelatedModel.name).exists());
     }
 
     public void testWithSomeProperties()
@@ -225,7 +213,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp2, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
 
             ModelGenerator.getInstance().generateModel(model);
-            assertTrue (new File(base_directory + "${model.name}.groovy").exists());
+            assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model.name).exists());
             Class cls = compileClass(model.name);
             def object = cls.newInstance();
             assertTrue(object.hasMany instanceof Map);
@@ -332,7 +320,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
 
         ModelGenerator.getInstance().generateModel(model);
-        assertTrue (new File(base_directory + "${model.name}.groovy").exists());
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model.name).exists());
         Class cls = compileClass(model.name);
         def object = cls.newInstance();
         assertNull(object.prop1);
@@ -481,49 +469,56 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
                 }
             }""";
         def interfaceContent = "interface Trial {}";
-        model1.getModelFile().getParentFile().mkdirs();
-        model1.getModelFile().withWriter { w ->
+        File model1File = ModelGenerator.getInstance().getGeneratedModelFile(model1.name);
+        File model1OperationsFile = ModelGenerator.getInstance().getOperationsModelFile(model1.name);
+        model1File.getParentFile().mkdirs();
+        model1OperationsFile.getParentFile().mkdirs();
+        model1File.withWriter { w ->
             w.write(modelFileContent);
         }
-        model1.getOperationsFile().withWriter { w ->
+        model1OperationsFile.withWriter { w ->
             w.write(modelOperationsFileContent);
         }
 
-        new File(base_directory + "Trial.groovy").withWriter { w ->
+        ModelGenerator.getInstance().getGeneratedModelFile("Trial").withWriter { w ->
             w.write(interfaceContent);
         }
 
 
         model1.parentModel = model2;
         ModelGenerator.getInstance().generateModel(model1);
-        assertTrue (new File(base_directory + "${model1.name}.groovy").exists());
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model1.name).exists());
 
-        Class cls = compileClass(model1.name);
-        assertEquals (model2.name, cls.superclass.name);
-        def object = cls.newInstance();
+        Class cls1 = compileClass(model1.name);
+        Class cls2 = compileClass(model2.name);
+        assertEquals (model2.name, cls1.superclass.name);
+        def object = cls1.newInstance();
         checkExistanceOfMetaDataProperties(object);
         assertEquals ("method1", object.method1());
         assertTrue (object.class.interfaces[0].getName().equals("Trial") || object.class.interfaces[1].getName().equals("Trial"));
-        assertTrue(model1.getModelFile().getText (), model1.getModelFile().getText ().indexOf("import java.util.net.*;") >= 0);
+        assertTrue(model1File.getText (), model1File.getText ().indexOf("import java.util.net.*;") >= 0);
         ModelGenerator.DEFAULT_IMPORTS.each {
-            assertTrue(model1.getModelFile().getText ().indexOf("import $it") >= 0);    
+            assertTrue(model1File.getText ().indexOf("import $it") >= 0);
         }
-        def indexOfFirstAlreadyIncludedImport = model1.getModelFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
+        def indexOfFirstAlreadyIncludedImport = model1File.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
         assertTrue( indexOfFirstAlreadyIncludedImport >= 0);
-        assertFalse( model1.getModelFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
+        assertFalse( model1File.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
 
+
+        ModelGenerator.getInstance().createModelOperationsFile(cls1);
+        ModelGenerator.getInstance().createModelOperationsFile(cls2);
         Class operationsClass = compileClass(model1.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
         assertEquals (model2.name+ModelUtils.OPERATIONS_CLASS_EXTENSION, operationsClass.superclass.name);
         def operationsObject = operationsClass.newInstance();
         assertEquals ("method1", operationsObject.method1());
         assertTrue (operationsObject.class.interfaces[0].getName().equals("Trial") || operationsObject.class.interfaces[1].getName().equals("Trial"));
-        assertTrue(model1.getOperationsFile().getText (), model1.getOperationsFile().getText ().indexOf("import java.util.net.*;") >= 0);
+        assertTrue(model1OperationsFile.getText (), model1OperationsFile.getText ().indexOf("import java.util.net.*;") >= 0);
         ModelGenerator.DEFAULT_IMPORTS.each {
-            assertTrue(model1.getOperationsFile().getText ().indexOf("import $it") >= 0);
+            assertTrue(model1OperationsFile.getText ().indexOf("import $it") >= 0);
         }
-        indexOfFirstAlreadyIncludedImport = model1.getOperationsFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
+        indexOfFirstAlreadyIncludedImport = model1OperationsFile.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
         assertTrue( indexOfFirstAlreadyIncludedImport >= 0);
-        assertFalse( model1.getOperationsFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
+        assertFalse( model1OperationsFile.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
 
         ModelGenerator.getInstance().generateModel(model1);
         assertNotNull(compileClass(model1.name));
@@ -552,47 +547,52 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
                 }
             }""";
         def interfaceContent = "interface Trial {}";
-        model1.getModelFile().getParentFile().mkdirs();
-        model1.getModelFile().withWriter { w ->
+
+        File model1File = ModelGenerator.getInstance().getGeneratedModelFile(model1.name);
+        File model1OperationsFile = ModelGenerator.getInstance().getOperationsModelFile(model1.name);
+        model1File.getParentFile().mkdirs();
+        model1OperationsFile.getParentFile().mkdirs();
+
+        model1File.withWriter { w ->
             w.write(modelFileContent);
         }
-        model1.getOperationsFile().withWriter { w ->
+        model1OperationsFile.withWriter { w ->
                     w.write(modelOperationsFileContent);
                 }
         
 
-        new File(base_directory + "Trial.groovy").withWriter { w ->
+        ModelGenerator.getInstance().getGeneratedModelFile("Trial").withWriter { w ->
             w.write(interfaceContent);
         }
 
         ModelGenerator.getInstance().generateModel(model1);
-        assertTrue (new File(base_directory + "${model1.name}.groovy").exists());
+        assertTrue (model1File.exists());
         Class cls = compileClass(model1.name);
         def object = cls.newInstance();
         checkExistanceOfMetaDataProperties(object);
         assertEquals ("method1", object.method1());
         assertTrue (object.class.interfaces[0].getName().equals("Trial") || object.class.interfaces[1].getName().equals("Trial"));
-        assertTrue(model1.getModelFile().getText (), model1.getModelFile().getText ().indexOf("import java.util.net.*;") >= 0);
+        assertTrue(model1File.getText (), model1File.getText ().indexOf("import java.util.net.*;") >= 0);
         ModelGenerator.DEFAULT_IMPORTS.each {
-            assertTrue(model1.getModelFile().getText ().indexOf("import $it") >= 0);
+            assertTrue(model1File.getText ().indexOf("import $it") >= 0);
         }
-        def indexOfFirstAlreadyIncludedImport = model1.getModelFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
+        def indexOfFirstAlreadyIncludedImport = model1File.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
         assertTrue( indexOfFirstAlreadyIncludedImport >= 0);
-        assertFalse( model1.getModelFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
+        assertFalse( model1File.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
 
-
+        ModelGenerator.getInstance().createModelOperationsFile(cls);
         Class operationsClass = compileClass(model1.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
         assertEquals (AbstractDomainOperation.class.name, operationsClass.superclass.name);
         def operationsObject = operationsClass.newInstance();
         assertEquals ("method1", operationsObject.method1());
         assertTrue (operationsObject.class.interfaces[0].getName().equals("Trial") || operationsObject.class.interfaces[1].getName().equals("Trial"));
-        assertTrue(model1.getOperationsFile().getText (), model1.getOperationsFile().getText ().indexOf("import java.util.net.*;") >= 0);
+        assertTrue(model1OperationsFile.getText (),model1OperationsFile.getText ().indexOf("import java.util.net.*;") >= 0);
         ModelGenerator.DEFAULT_IMPORTS.each {
-            assertTrue(model1.getOperationsFile().getText ().indexOf("import $it") >= 0);
+            assertTrue(model1OperationsFile.getText ().indexOf("import $it") >= 0);
         }
-        indexOfFirstAlreadyIncludedImport = model1.getOperationsFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
+        indexOfFirstAlreadyIncludedImport = model1OperationsFile.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
         assertTrue( indexOfFirstAlreadyIncludedImport >= 0);
-        assertFalse( model1.getOperationsFile().getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
+        assertFalse( model1OperationsFile.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
     }
 
 
@@ -647,7 +647,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     def compileClass(String name)
     {
         GrailsAwareClassLoader cloader = new GrailsAwareClassLoader();
-        cloader.addClasspath (base_directory);
+        cloader.addClasspath ("${base_directory}/${ModelGenerator.MODEL_FILE_DIR}");
+        cloader.addClasspath ("${base_directory}/${ModelGenerator.OPERATIONS_FILE_DIR}");
         return cloader.loadClass(name);
     }
 }

@@ -15,8 +15,12 @@ class RapidStringUtilities {
      public static void registerStringUtils()
      {
         MetaClass tempCls = String.metaClass;
+        def metaMethods = [:]
+        tempCls.getMethods().each{
+            metaMethods[it.name] = it;
+        }
         StringUtils.metaClass.getMethods().each{MetaMethod method->
-            if(tempCls.getMetaMethod(method.name, method.getNativeParameterTypes()) == null)
+            if(tempCls.getMetaMethod(method.name, method.getNativeParameterTypes()) == null && metaMethods[method.name] == null)
             {
                 tempCls."${method.name}" = {args->
                     List newArgs = new ArrayList(InvokerHelper.asList (args));

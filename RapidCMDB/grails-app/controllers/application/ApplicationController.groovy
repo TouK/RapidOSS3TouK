@@ -106,8 +106,9 @@ class ApplicationController {
                 oldDomainClass.clazz.metaClass.invokeStaticMethod (oldDomainClass.clazz, "unindex", [] as Object[]);
             }
         }
-
-        FileUtils.copyDirectory (tempModelDirFile, currentModelDirFile);
+        if(tempModelDirFile.exists()){
+            FileUtils.copyDirectory (tempModelDirFile, currentModelDirFile);
+        }
         flash.message = "Reloading application."
         render(view: "application", controller: "application");
         GroovyPagesTemplateEngine.pageCache.clear();

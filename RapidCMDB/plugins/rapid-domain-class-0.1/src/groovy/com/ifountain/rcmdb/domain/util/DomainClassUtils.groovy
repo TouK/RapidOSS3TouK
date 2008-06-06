@@ -82,7 +82,7 @@ class DomainClassUtils
         def keys = [];
         def constrainedPropertiesMap = dc.getConstrainedProperties();
         constrainedPropertiesMap.each{String propName, ConstrainedProperty  prop->
-            KeyConstraint keyConst = prop.getAppliedConstraint (KeyConstraint.KEY_CONSTRAINT);
+            def keyConst = prop.getAppliedConstraint (KeyConstraint.KEY_CONSTRAINT);
             if(keyConst && keyConst.isKey())
             {
                 keys = keyConst.getKeys();

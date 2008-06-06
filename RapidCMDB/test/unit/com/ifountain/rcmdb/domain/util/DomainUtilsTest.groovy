@@ -33,7 +33,7 @@ class DomainUtilsTest extends RapidCmdbTestCase
     public void testGetKeys()
     {
         ConstrainedProperty.registerNewConstraint (KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
-        DefaultGrailsDomainClass domainClass1 = new DefaultGrailsDomainClass(DomainUtilsTestDomainClassSample1);
+        DefaultGrailsDomainClass domainClass1 = new DefaultGrailsDomainClass(DomainUtilsTestDomainClassSample3);
         def keys = DomainClassUtils.getKeys (domainClass1);
         assertEquals (2, keys.size());
         assertTrue(keys.contains("name"));
@@ -52,4 +52,19 @@ class DomainUtilsTestDomainClassSample1
     {
         name(key:["surname"], nullable:false)
     }
+}
+
+class DomainUtilsTestDomainClassSample2    extends DomainUtilsTestDomainClassSample1
+{
+    String ssn;
+
+    static constraints =
+    {
+        name(key:["surname"], nullable:false)
+    }
+}
+
+class DomainUtilsTestDomainClassSample3 extends DomainUtilsTestDomainClassSample2
+{
+    String age;
 }

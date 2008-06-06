@@ -47,7 +47,10 @@ class ApplicationController {
         def currentModelDirFile = new File(currentModelDir);
         def tempModelDir = "${tempBaseDir}/grails-app/domain";
         def tempModelDirFile = new File(tempModelDir);
-        Collection tempModelFileList = FileUtils.listFiles(tempModelDirFile, ["groovy"] as String[], false);
+        Collection tempModelFileList = [];
+        if(tempModelDirFile.exists()){
+           tempModelFileList = FileUtils.listFiles(tempModelDirFile, ["groovy"] as String[], false);   
+        }
         Collection currentModelFileList = FileUtils.listFiles(currentModelDirFile, ["groovy"] as String[], false);
         currentModelFileList.each {File modelFile->
             String modelName = StringUtils.substringBefore(modelFile.name, ".groovy");

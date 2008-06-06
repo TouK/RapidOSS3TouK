@@ -41,7 +41,7 @@
 
 <p/>
 <div class="front">
-    <table><tr><th width="50%">User Management</th>  <th>Application Management</th></tr>
+    <table><tr><th width="50%">User Management</th></tr>
         <tr><td><p style="margin-left:20px;">Manage Users and their Roles.</p>
             <br>
             <div class="dialog" style="margin-left:20px;">
@@ -49,15 +49,6 @@
                     <li class="controller"><g:link controller="rsUser">Users</g:link></li>
                 </ul>
             </div>
-        </td>
-            <td><p style="margin-left:20px;width:80%">Reload Application, Export/Import configuration.</p>
-                <br>
-                <div class="dialog" style="margin-left:20px;width:60%;">
-                    <ul style="margin-left:25px;">
-                        <li class="controller"><g:link controller="application">Application Management</g:link></li>
-                    </ul>
-                </div>
-            </td>
     </table></div>
 <br>
 <br>

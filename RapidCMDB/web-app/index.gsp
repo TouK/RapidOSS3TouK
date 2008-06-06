@@ -58,15 +58,8 @@
 
 <p/>
 <div class="front">
-    <table><tr><th width="50%">Modeling</th>  <th>Scripting</th></tr>
-        <tr><td><p style="margin-left:20px;">Model your Managed Classes.</p>
-            <br>
-            <div class="dialog" style="margin-left:20px;">
-                <ul style="margin-left:25px;">
-                    <li class="controller"><g:link controller="model">Model Managed Classes</g:link></li>
-                </ul>
-            </div>
-        </td>
+    <table><tr><th>Scripting</th></tr>
+        <tr>
             <td><p style="margin-left:20px;width:80%">Define and Run Scripts.</p>
                 <br>
                 <div class="dialog" style="margin-left:20px;width:60%;">

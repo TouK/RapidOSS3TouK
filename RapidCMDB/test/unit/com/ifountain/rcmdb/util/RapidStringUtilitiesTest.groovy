@@ -16,6 +16,7 @@ class RapidStringUtilitiesTest extends RapidCmdbTestCase{
         RapidStringUtilities.registerStringUtils();
         assertEquals ("tri", "trial".substringBefore("al"));
         assertEquals ("java.lang.String", String.name);
+        assertTrue ( "trial".equals("trial"));
 
     }
 

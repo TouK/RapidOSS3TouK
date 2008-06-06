@@ -29,6 +29,11 @@ class KeyConstraint extends AbstractConstraint{
         }
     }
 
+    public List getKeys()
+    {
+        return new ArrayList(keys);
+    }
+
     public boolean isKey()
     {
         return !keys.isEmpty();
@@ -40,11 +45,6 @@ class KeyConstraint extends AbstractConstraint{
 
     public String getName() {
         return KEY_CONSTRAINT; //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public List getKeys()
-    {
-        return keys;
     }
 
     public void setParameter(Object constraintParameter) {

@@ -29,14 +29,21 @@ class ExistingDataAnalyzer
         def oldClassProperties = getPropertyMap(currentDomainObject);
         def newClassProperties = getPropertyMap(newDomainObject);
         Map oldRelations = getRelationshipProperties(currentDomainObject.clazz);
+        Map oldConstrainedProps = currentDomainObject.getConstrainedProperties();
         Map newRelations = getRelationshipProperties(newDomainObject.clazz);
         def oldKeyProperties = getKeyProperties(currentDomainObject);
         def newKeyProperties = getKeyProperties(newDomainObject);
-        if(oldKeyProperties && newKeyProperties)
-        {
-            oldKeyProperties.removeAll (newKeyProperties);
+        Map newConstrainedProps = newDomainObject.getConstrainedProperties();
+        boolean willDeleteAll = false;
+
+        oldKeyProperties.each{String propname->
+            if(!(newKeyProperties.contains(propname) && newClassProperties[propname].type == oldClassProperties[propname].type))
+            {
+                willDeleteAll = true;
+                return;
+            }
         }
-        if(oldKeyProperties && !oldKeyProperties.isEmpty())
+        if(willDeleteAll)
         {
             actions += new ModelAction(modelName:currentDomainObject.name, action:ModelAction.DELETE_ALL_INSTANCES);
         }
@@ -44,7 +51,9 @@ class ExistingDataAnalyzer
         {
             newClassProperties.each{String propName, GrailsDomainClassProperty prop->
                 GrailsDomainClassProperty oldProperty = oldClassProperties[propName];
-                if(oldProperty == null || oldProperty.type != prop.type)
+                ConstrainedProperty oldConstrainedProp = oldConstrainedProps[propName];
+                ConstrainedProperty newConstrainedProp = newConstrainedProps[propName];
+                if(oldProperty == null || oldProperty.type != prop.type || oldConstrainedProp == null || newConstrainedProp == null || oldConstrainedProp.isBlank() && !newConstrainedProp.isBlank())
                 {
                     actions += new PropertyAction(modelName:currentDomainObject.name, propName:propName, action:PropertyAction.SET_DEFAULT_VALUE);
                 }
@@ -116,9 +125,9 @@ class ExistingDataAnalyzer
         List keyProperties = null;
         domainObject.getConstrainedProperties().each{String propName, ConstrainedProperty prop->
            KeyConstraint keyConst = prop.getAppliedConstraint (KeyConstraint.KEY_CONSTRAINT);
-           if(keyConst)
+           if(keyConst && keyConst.isKey())
            {
-               keyProperties = keyConst.keys;
+               keyProperties = keyConst.getKeys();
                return;
            }
         }

@@ -14,6 +14,7 @@ import model.ModelAction
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 import model.ModelRelation
+import model.DatasourceName
 
 /**
 * Created by IntelliJ IDEA.
@@ -27,10 +28,15 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
     def static base_directory = "../testoutput/";
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        if(System.getProperty("base.dir") == null)
+        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDB"))
         {
-            System.setProperty("base.dir", "RapidCMDB");
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, System.getProperty("base.dir"));
         }
+        else
+        {
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDB");
+        }
+        
         FileUtils.deleteDirectory (new File(base_directory));
         new File(base_directory).mkdirs();
     }
@@ -67,6 +73,32 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         assertEquals (modelName, action.modelName);
     }
 
+    public void testKeyPropertyTypeChange()
+    {
+        ConstrainedProperty.registerNewConstraint (KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+        String modelName = "Class1";
+
+        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
+
+        def propList = [prop1];
+        def keyPropList = [prop1];
+        generateModel (modelName, propList, keyPropList);
+        def oldDomainClass = loadGrailsDomainClass(modelName);
+        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
+
+        prop1.type = ModelProperty.numberType;
+        generateModel (modelName, propList, keyPropList);
+
+        def newDomainClass = loadGrailsDomainClass(modelName);
+        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
+        assertEquals (1, actions.size());
+        ModelAction action = actions[0];
+        assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
+        assertEquals (modelName, action.modelName);
+    }
+
     public void testIfPropertyDoesnotExistInOldModel()
     {
         String modelName = "Class1";
@@ -82,6 +114,35 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
 
         def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
         propList += prop2;
+        generateModel (modelName, propList, keyPropList);
+
+        def newDomainClass = loadGrailsDomainClass(modelName);
+        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
+        assertEquals (1, actions.size());
+        PropertyAction action = actions[0];
+        assertEquals (prop2.name, action.propName);
+        assertEquals (PropertyAction.SET_DEFAULT_VALUE, action.action);
+        assertEquals (modelName, action.modelName);
+    }
+
+
+    public void testIfPropertyNullSettingIsChanged()
+    {
+        String modelName = "Class1";
+
+        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
+        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:true, defaultValue:"1");
+
+
+        def propList = [prop1,prop2];
+        def keyPropList = [prop1];
+        generateModel (modelName, propList, keyPropList);
+        def oldDomainClass = loadGrailsDomainClass(modelName);
+        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
+
+        prop2.blank = false
         generateModel (modelName, propList, keyPropList);
 
         def newDomainClass = loadGrailsDomainClass(modelName);
@@ -135,6 +196,23 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         action = actions[0];
         assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
         assertEquals (modelName, action.modelName);
+
+        keyPropList = [prop1];
+        propList = [prop1, prop2];
+        generateModel (modelName, propList, keyPropList);
+        oldDomainClass = loadGrailsDomainClass(modelName);
+        oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
+
+        keyPropList = [prop1, prop2];
+        propList = [prop1, prop2];
+        generateModel (modelName, propList, keyPropList);
+
+        newDomainClass = loadGrailsDomainClass(modelName);  
+        newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
+
+
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
+        assertEquals (0, actions.size());
     }
 
     public void testIfRelationTypeIsChangedFromOneToOneToOneToMany()
@@ -285,7 +363,7 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
     def createModel(String name, List modelProperties, List keyProperties)
     {
         def model = new MockModel(name:name);
-        def datasource1 = new BaseDatasource(name:"ds1-sample");
+        def datasource1 = new DatasourceName(name:"ds1-sample");
         def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
         model.datasources += modelDatasource1;
         model.modelProperties += new ModelProperty(name:"id", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
@@ -306,7 +384,7 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
     {
         GrailsAwareClassLoader gcl = new GrailsAwareClassLoader(Thread.currentThread().getContextClassLoader());
         gcl.setShouldRecompile(true);
-        gcl.addClasspath(base_directory);
+        gcl.addClasspath(base_directory + ModelGenerator.MODEL_FILE_DIR);
         gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
         return gcl.loadClass (className);
     }

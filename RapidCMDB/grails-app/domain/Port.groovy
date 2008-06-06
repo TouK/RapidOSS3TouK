@@ -5,37 +5,38 @@ class Port  extends DeviceAdapter {
 
     //AUTO_GENERATED_CODE
 
-    static searchable = true;
+    static searchable = {
+        except = ["portNumber", "portKey"];
+    };
     static datasources = [:]
 
     
-    String portKey ;
+    String portType ;
     
     String portNumber ;
     
-    String portType ;
+    String portKey ;
     
 
     static hasMany = [:]
-
     
-
     static constraints={
-    portKey(blank:true,nullable:true)
+    portType(blank:true,nullable:true)
         
      portNumber(blank:true,nullable:true)
         
-     portType(blank:true,nullable:true)
+     portKey(blank:true,nullable:true)
         
      
     }
 
     static mappedBy=[:]
     static belongsTo = []
-    static propertyConfiguration= ["portKey":["nameInDs":"PortKey", "datasourceProperty":"smartDs", "lazy":true], "portNumber":["nameInDs":"PortNumber", "datasourceProperty":"smartDs", "lazy":false]]
-    static transients = ["portKey", "portNumber"];
+    static propertyConfiguration= ["portNumber":["nameInDs":"PortNumber", "datasourceProperty":"smartDs", "lazy":false], "portKey":["nameInDs":"PortKey", "datasourceProperty":"smartDs", "lazy":true]]
+    static transients = ["portNumber", "portKey"];
     
     //AUTO_GENERATED_CODE
+
 
 
 

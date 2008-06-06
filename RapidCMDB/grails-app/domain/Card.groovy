@@ -5,7 +5,9 @@ class Card  extends DeviceComponent {
 
     //AUTO_GENERATED_CODE
 
-    static searchable = true;
+    static searchable = {
+        except = ["status"];
+    };
     static datasources = [:]
 
     
@@ -13,9 +15,7 @@ class Card  extends DeviceComponent {
     
 
     static hasMany = [realises:DeviceAdapter]
-
     
-
     static constraints={
     status(blank:true,nullable:true)
         
@@ -28,6 +28,7 @@ class Card  extends DeviceComponent {
     static transients = ["status"];
     
     //AUTO_GENERATED_CODE
+
 
 
 

@@ -5,33 +5,35 @@ class SmartsObject {
 
     //AUTO_GENERATED_CODE
 
-    static searchable = true;
-    static datasources = ["eastRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "westRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]]]
+    static searchable = {
+        except = ["displayName"];
+    };
+    static datasources = ["westRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]], "eastRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]]]
 
-    
-    String smartDs ;
-    
-    String name ;
     
     String creationClassName ;
     
+    String smartDs ;
+    
     String displayName ;
+    
+    String name ;
     
 
     static hasMany = [:]
-
     
         static mapping = {
             tablePerHierarchy false
         }
     
-
     static constraints={
-    smartDs(blank:true,nullable:true)
+    creationClassName(blank:false,nullable:false)
         
-     creationClassName(unique:["name"])
+     smartDs(blank:true,nullable:true)
         
      displayName(blank:true,nullable:true)
+        
+     name(blank:false,nullable:false,key:["creationClassName"])
         
      
     }
@@ -43,10 +45,11 @@ class SmartsObject {
     
     public String toString()
     {
-    	return "${getClass().getName()}[name:$name, creationClassName:$creationClassName]";
+    	return "${getClass().getName()}[creationClassName:$creationClassName, name:$name]";
     }
     
     //AUTO_GENERATED_CODE
+
 
 
 

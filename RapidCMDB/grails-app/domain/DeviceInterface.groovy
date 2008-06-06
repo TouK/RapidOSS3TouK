@@ -5,7 +5,9 @@ class DeviceInterface  extends DeviceAdapter {
 
     //AUTO_GENERATED_CODE
 
-    static searchable = true;
+    static searchable = {
+        except = ["interfaceKey"];
+    };
     static datasources = [:]
 
     
@@ -15,9 +17,7 @@ class DeviceInterface  extends DeviceAdapter {
     
 
     static hasMany = [:]
-
     
-
     static constraints={
     interfaceKey(blank:true,nullable:true)
         
@@ -32,6 +32,7 @@ class DeviceInterface  extends DeviceAdapter {
     static transients = ["interfaceKey"];
     
     //AUTO_GENERATED_CODE
+
 
 
 

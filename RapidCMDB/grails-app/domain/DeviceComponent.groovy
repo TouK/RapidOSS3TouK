@@ -5,7 +5,9 @@ class DeviceComponent  extends SmartsObject {
 
     //AUTO_GENERATED_CODE
 
-    static searchable = true;
+    static searchable = {
+        except = [];
+    };
     static datasources = [:]
 
     
@@ -13,9 +15,7 @@ class DeviceComponent  extends SmartsObject {
     
 
     static hasMany = [:]
-
     
-
     static constraints={
     partOf(nullable:true)
         
@@ -28,6 +28,7 @@ class DeviceComponent  extends SmartsObject {
     static transients = [];
     
     //AUTO_GENERATED_CODE
+
 
 
 

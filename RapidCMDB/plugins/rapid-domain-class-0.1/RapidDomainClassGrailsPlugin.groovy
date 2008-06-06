@@ -143,6 +143,7 @@ class RapidDomainClassGrailsPlugin {
     {
         def mc = dc.metaClass;
         def relations = DomainClassUtils.getRelations(dc, domainClassMap);
+        dc.refreshConstraints();
         def keys = DomainClassUtils.getKeys(dc);
         def addMethod = new AddMethod(mc, dc.validator, relations, keys);
         def removeMethod = new RemoveMethod(mc, relations);

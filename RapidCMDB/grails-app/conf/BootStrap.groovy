@@ -16,49 +16,57 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.converter.DoubleConverter
 import script.CmdbScript
-import org.codehaus.groovy.runtime.StackTraceUtils
 import model.DatasourceName
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import model.ModelAction
+import com.ifountain.rcmdb.util.RapidStringUtilities
 
 class BootStrap {
     def quartzScheduler;
     def init = {servletContext ->
+        registerUtilities();
+        initializeModelGenerator();
+        registerDefaultConverters();
+        registerDefaultUsers();
+        registerDefaultDatasources();
+        corrrectModelData();
+        initializeScripting();
+    }
+
+    def registerUtilities()
+    {
+        RapidStringUtilities.registerStringUtils();
+    }
+
+    def initializeModelGenerator()
+    {
         String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];
         String tempDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"];
         ModelGenerator.getInstance().initialize (baseDirectory, tempDirectory, baseDirectory);
-        registerDefaultConverters();
+    }
 
-        def adminRole = Role.findByName("Administrator");
-        if (!adminRole) {
-            adminRole = new Role(name: "Administrator");
-            adminRole.save();
-        }
-        def userRole = Role.findByName("User");
-        if (!userRole) {
-            userRole = new Role(name: "User");
-            userRole.save();
-        }
-        def adminUser = RsUser.findByUsername("rsadmin");
-        if (!adminUser) {
-            adminUser = new RsUser(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
-            adminUser.save();
-        }
-        new UserRoleRel(rsUser: adminUser, role: adminRole).save()
-
-
-        def rcmdbDatasource = RCMDBDatasource.findByName(RapidCMDBConstants.RCMDB);
-        if (rcmdbDatasource == null) {
-            new RCMDBDatasource(name: RapidCMDBConstants.RCMDB).save();
-        }
-        if(System.getProperty("rs.modeler") != null){
-            if(DatasourceName.findByName(RapidCMDBConstants.RCMDB) == null){
-                new DatasourceName(name: RapidCMDBConstants.RCMDB).save();
-            }
-        }
-
+    def initializeScripting()
+    {
         ScriptManager.getInstance().initialize();
+        ScriptScheduler.getInstance().initialize(quartzScheduler);
+        CmdbScript.findAllByScheduledAndEnabled(true, true).each {
+            try {
+                if (it.scheduleType == CmdbScript.PERIODIC) {
+                    ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.period)
+                }
+                else {
+                    ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.cronExpression)
+                }
+            }
+            catch (e) {
+                log.warn("Error scheduling script ${it.name}: ${e.getMessage()}");
+            }
 
+        }
+    }
+
+    def corrrectModelData()
+    {
         def changedModelProperties = [:]
         PropertyAction.list().each {PropertyAction propAction ->
             if (!propAction.willBeDeleted)
@@ -132,21 +140,40 @@ class BootStrap {
                 propActionWillBeDeleted.save();
             }
         }
-        ScriptScheduler.getInstance().initialize(quartzScheduler);
-        CmdbScript.findAllByScheduledAndEnabled(true, true).each {
-            try {
-                if (it.scheduleType == CmdbScript.PERIODIC) {
-                    ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.period)
-                }
-                else {
-                    ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.cronExpression)
-                }
-            }
-            catch (e) {
-                log.warn("Error scheduling script ${it.name}: ${e.getMessage()}");
-            }
+    }
 
+    def registerDefaultDatasources()
+    {
+        def rcmdbDatasource = RCMDBDatasource.findByName(RapidCMDBConstants.RCMDB);
+        if (rcmdbDatasource == null) {
+            new RCMDBDatasource(name: RapidCMDBConstants.RCMDB).save();
         }
+        if(System.getProperty("rs.modeler") != null){
+            if(DatasourceName.findByName(RapidCMDBConstants.RCMDB) == null){
+                new DatasourceName(name: RapidCMDBConstants.RCMDB).save();
+            }
+        }
+    }
+
+    def registerDefaultUsers()
+    {
+        def adminRole = Role.findByName("Administrator");
+        if (!adminRole) {
+            adminRole = new Role(name: "Administrator");
+            adminRole.save();
+        }
+        def userRole = Role.findByName("User");
+        if (!userRole) {
+            userRole = new Role(name: "User");
+            userRole.save();
+        }
+        def adminUser = RsUser.findByUsername("rsadmin");
+        if (!adminUser) {
+            adminUser = new RsUser(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
+            adminUser.save();
+        }
+        new UserRoleRel(rsUser: adminUser, role: adminRole).save()
+        
     }
 
     def registerDefaultConverters()

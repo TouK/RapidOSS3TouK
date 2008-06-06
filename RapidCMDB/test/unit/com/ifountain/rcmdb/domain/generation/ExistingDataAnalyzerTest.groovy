@@ -66,11 +66,15 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
 
         def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-        assertEquals (1, actions.size());
+        assertEquals (2, actions.size());
         PropertyAction action = actions[0];
         assertEquals (prop2.name, action.propName);
         assertEquals (PropertyAction.SET_DEFAULT_VALUE, action.action);
         assertEquals (modelName, action.modelName);
+
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
     }
 
 
@@ -123,10 +127,14 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
 
         def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-        assertEquals (1, actions.size());
+        assertEquals (2, actions.size());
         ModelAction action = actions[0];
         assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
         assertEquals (modelName, action.modelName);
+
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
     }
 
     public void testIfPropertyDoesnotExistInOldModel()
@@ -150,11 +158,43 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
 
         def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-        assertEquals (1, actions.size());
+        assertEquals (2, actions.size());
         PropertyAction action = actions[0];
         assertEquals (prop2.name, action.propName);
         assertEquals (PropertyAction.SET_DEFAULT_VALUE, action.action);
         assertEquals (modelName, action.modelName);
+
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
+    }
+
+
+    public void testIfPropertyDoesnotExistInNewModel()
+    {
+        String modelName = "Class1";
+
+        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
+        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1];
+        generateModel (modelName, propList, keyPropList);
+        def oldDomainClass = loadGrailsDomainClass(modelName);
+        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
+
+
+        propList = [prop1];
+        generateModel (modelName, propList, keyPropList);
+
+        def newDomainClass = loadGrailsDomainClass(modelName);
+        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
+        assertEquals (1, actions.size());
+        ModelAction modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
     }
 
 
@@ -201,6 +241,7 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def oldDomainClass = loadGrailsDomainClass(modelName);
         def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
 
+        prop2.type = ModelProperty.numberType;
         keyPropList = [prop1];
         generateModel (modelName, propList, keyPropList);
 
@@ -208,10 +249,15 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
 
         def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-        assertEquals (1, actions.size());
+        assertEquals (2, actions.size());
         ModelAction action = actions[0];
         assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
         assertEquals (modelName, action.modelName);
+
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
+
 
         keyPropList = [prop1];
         propList = [prop1];
@@ -222,10 +268,14 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
 
 
         actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-        assertEquals (1, actions.size());
+        assertEquals (2, actions.size());
         action = actions[0];
         assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
         assertEquals (modelName, action.modelName);
+
+        modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
 
         keyPropList = [prop1];
         propList = [prop1, prop2];
@@ -281,16 +331,24 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def newGrailsDomainClass2 = new DefaultGrailsDomainClass(newDomainClass2);
 
         def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass1, newGrailsDomainClass1);
-        assertEquals (1, actions.size());
+        assertEquals (2, actions.size());
         PropertyAction action = actions[0];
         assertEquals (PropertyAction.CLEAR_RELATION, action.action);
         assertEquals (modelName1, action.modelName);
 
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName1, modelAction.modelName);
+
         actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass2, newGrailsDomainClass2);
-        assertEquals (1, actions.size());
+        assertEquals (2, actions.size());
         action = actions[0];
         assertEquals (PropertyAction.CLEAR_RELATION, action.action);
         assertEquals (modelName2, action.modelName);
+
+        modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName2, modelAction.modelName);
     }
 
     public void testIfRelationTypeIsChangedFromOneToManyToOneToOne()
@@ -329,17 +387,74 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def newGrailsDomainClass2 = new DefaultGrailsDomainClass(newDomainClass2);
 
         def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass1, newGrailsDomainClass1);
-        assertEquals (1, actions.size());
+        assertEquals (2, actions.size());
         PropertyAction action = actions[0];
         assertEquals (PropertyAction.CLEAR_RELATION, action.action);
         assertEquals (modelName1, action.modelName);
 
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName1, modelAction.modelName);
+
         actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass2, newGrailsDomainClass2);
-        assertEquals (1, actions.size());
+        assertEquals (2, actions.size());
         action = actions[0];
         assertEquals (PropertyAction.CLEAR_RELATION, action.action);
         assertEquals (modelName2, action.modelName);
+
+        modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName2, modelAction.modelName);
     }
+
+     public void testIfRelationIsDeleted()
+    {
+        String modelName1 = "Class1";
+        String modelName2 = "Class2";
+
+        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
+        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
+
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1, prop2];
+        MockModel model1 = createModel(modelName1, propList, keyPropList);
+        MockModel model2 = createModel (modelName2, propList, keyPropList);
+        def rel1 = new ModelRelation(firstName:"rel1",  secondName:"revrel1", firstModel:model1, secondModel:model2, firstCardinality:ModelRelation.MANY, secondCardinality:ModelRelation.ONE);
+        model1.fromRelations += rel1;
+        model2.toRelations += rel1;
+
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def oldDomainClass1 = loadGrailsDomainClass(modelName1);
+        def oldGrailsDomainClass1 = new DefaultGrailsDomainClass(oldDomainClass1);
+        def oldDomainClass2 = loadGrailsDomainClass(modelName2);
+        def oldGrailsDomainClass2 = new DefaultGrailsDomainClass(oldDomainClass2);
+
+        model1.fromRelations.clear();
+        model2.toRelations.clear();
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def newDomainClass1 = loadGrailsDomainClass(modelName1);
+        def newGrailsDomainClass1 = new DefaultGrailsDomainClass(newDomainClass1);
+        def newDomainClass2 = loadGrailsDomainClass(modelName2);
+        def newGrailsDomainClass2 = new DefaultGrailsDomainClass(newDomainClass2);
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass1, newGrailsDomainClass1);
+        assertEquals (1, actions.size());
+        ModelAction modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName1, modelAction.modelName);
+
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass2, newGrailsDomainClass2);
+        assertEquals (1, actions.size());
+        modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName2, modelAction.modelName);
+    }
+
 
     public void testWithNewRelation()
     {
@@ -375,9 +490,15 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def newGrailsDomainClass2 = new DefaultGrailsDomainClass(newDomainClass2);
 
         def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass1, newGrailsDomainClass1);
-        assertEquals (0, actions.size());
+        assertEquals (1, actions.size());
+        ModelAction modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName1, modelAction.modelName);
         actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass2, newGrailsDomainClass2);
-        assertEquals (0, actions.size());
+        assertEquals (1, actions.size());
+        modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName2, modelAction.modelName)
     }
 
 

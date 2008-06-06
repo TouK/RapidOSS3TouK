@@ -76,11 +76,14 @@ class ApplicationController {
             if(oldDomainClass)
             {
                 List actions = ExistingDataAnalyzer.createActions(oldDomainClass, newDomainClass);
-                if(!actions.isEmpty())
-                {
-                    ModelUtils.generateModelArtefacts(newDomainClass, baseDir);
-                    ModelGenerator.getInstance().createModelOperationsFile (newDomainClass.class);
-                    actions.each{
+                actions.each{
+                    if(it instanceof ModelAction && it.action == ModelAction.GENERATE_RESOURCES)
+                    {
+                        ModelUtils.generateModelArtefacts(newDomainClass, baseDir);
+                        ModelGenerator.getInstance().createModelOperationsFile (newDomainClass.class);
+                    }
+                    else
+                    {
                         it.save();
                     }
                 }

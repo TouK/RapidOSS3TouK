@@ -36,7 +36,7 @@ class ExistingDataAnalyzer
         def newKeyProperties = getKeyProperties(newDomainObject);
         Map newConstrainedProps = newDomainObject.getConstrainedProperties();
         boolean willDeleteAll = false;
-
+        boolean willResourcesBeRegenerated = false;
         oldKeyProperties.each{String propname->
             if(!(newKeyProperties.contains(propname) && newClassProperties[propname].type == oldClassProperties[propname].type))
             {
@@ -48,36 +48,61 @@ class ExistingDataAnalyzer
         {
             actions += new ModelAction(modelName:currentDomainObject.name, action:ModelAction.DELETE_ALL_INSTANCES);
         }
-        else
-        {
-            newClassProperties.each{String propName, GrailsDomainClassProperty prop->
-                GrailsDomainClassProperty oldProperty = oldClassProperties[propName];
-                ConstrainedProperty oldConstrainedProp = oldConstrainedProps[propName];
-                ConstrainedProperty newConstrainedProp = newConstrainedProps[propName];
-                if(oldProperty == null || oldProperty.type != prop.type || oldConstrainedProp == null || newConstrainedProp == null || oldConstrainedProp.isNullable() && !newConstrainedProp.isNullable())
+        
+        newClassProperties.each{String propName, GrailsDomainClassProperty prop->
+            GrailsDomainClassProperty oldProperty = oldClassProperties.remove(propName);
+            ConstrainedProperty oldConstrainedProp = oldConstrainedProps[propName];
+            ConstrainedProperty newConstrainedProp = newConstrainedProps[propName];
+            if(oldProperty == null || oldProperty.type != prop.type || oldConstrainedProp == null || newConstrainedProp == null || oldConstrainedProp.isNullable() && !newConstrainedProp.isNullable())
+            {
+                if(!willDeleteAll)
                 {
                     actions += new PropertyAction(modelName:currentDomainObject.name, propName:propName, action:PropertyAction.SET_DEFAULT_VALUE);
                 }
-            }
-            newRelations.each{String relationName, String reverseRelationName->
-                if(oldRelations.containsKey(relationName))
+                if(oldProperty == null || oldProperty.type != prop.type)
                 {
+                    willResourcesBeRegenerated = true;
+                }
+            }
+        }
+        if(!oldClassProperties.isEmpty())
+        {
+            willResourcesBeRegenerated = true;    
+        }
+        newRelations.each{String relationName, String reverseRelationName->
+            String oldRelationName = oldRelations.remove(relationName)
+            if(oldRelationName)
+            {
 
-                    boolean isOldMany = isMany(currentDomainObject.clazz, relationName);
-                    boolean isNewMany = isMany(newDomainObject.clazz, relationName);
+                boolean isOldMany = isMany(currentDomainObject.clazz, relationName);
+                boolean isNewMany = isMany(newDomainObject.clazz, relationName);
 
-                    def oldOthersideClass = !isOldMany?currentDomainObject.getPropertyByName(relationName).type:currentDomainObject.getRelatedClassType(relationName);
-                    def newOthersideClass = !isNewMany?newDomainObject.getPropertyByName(relationName).type:newDomainObject.getRelatedClassType(relationName);
-                    boolean isOldOthersideMany = isMany(oldOthersideClass, reverseRelationName)
-                    boolean isNewOthersideMany = isMany(newOthersideClass, reverseRelationName)
-                    if(isOldMany != isNewMany || isOldOthersideMany != isNewOthersideMany)
+                def oldOthersideClass = !isOldMany?currentDomainObject.getPropertyByName(relationName).type:currentDomainObject.getRelatedClassType(relationName);
+                def newOthersideClass = !isNewMany?newDomainObject.getPropertyByName(relationName).type:newDomainObject.getRelatedClassType(relationName);
+                boolean isOldOthersideMany = isMany(oldOthersideClass, reverseRelationName)
+                boolean isNewOthersideMany = isMany(newOthersideClass, reverseRelationName)
+                if(isOldMany != isNewMany || isOldOthersideMany != isNewOthersideMany)
+                {
+                    if(!willDeleteAll)
                     {
                         actions += new PropertyAction(modelName:currentDomainObject.name, propName:relationName, action:PropertyAction.CLEAR_RELATION);
                     }
+                    willResourcesBeRegenerated = true;
                 }
-
-
             }
+            else
+            {
+                willResourcesBeRegenerated = true;
+            }
+        }
+        if(!oldRelations.isEmpty())
+        {
+            willResourcesBeRegenerated = true;
+        }
+
+        if(willResourcesBeRegenerated)
+        {
+            actions += new ModelAction(modelName:currentDomainObject.name, action:ModelAction.GENERATE_RESOURCES);   
         }
         
         return actions;

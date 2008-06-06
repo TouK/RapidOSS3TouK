@@ -9,6 +9,8 @@ package model
 class ModelAction {
     public static final String DELETE_MODEL = "deletModel"
     public static final String DELETE_ALL_INSTANCES = "deleteall"
+    public static final String GENERATE_RESOURCES = "generateResources"
+
     String modelName;
     String action;
     boolean willBeDeleted = false;

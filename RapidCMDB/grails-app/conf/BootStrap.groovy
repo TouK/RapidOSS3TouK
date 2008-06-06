@@ -77,7 +77,7 @@ class BootStrap {
         }
         int batch = 1000;
         ModelAction.list().each{ModelAction modelAction->
-            if(modelAction.DELETE_ALL_INSTANCES)
+            if(modelAction.action == ModelAction.DELETE_ALL_INSTANCES)
             {
                 DefaultGrailsDomainClass currentDomainObject =ApplicationHolder.application.getDomainClass(modelAction.modelName);
                 if(currentDomainObject)
@@ -127,7 +127,7 @@ class BootStrap {
                     }
                 }
             }
-            PropertyAction.findByModelName(modelName).each {propActionWillBeDeleted ->
+            PropertyAction.findAllByModelName(modelName).each {propActionWillBeDeleted ->
                 propActionWillBeDeleted.willBeDeleted = true;
                 propActionWillBeDeleted.save();
             }

@@ -1,5 +1,3 @@
-import connection.*
-import datasource.*
 import model.*
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
@@ -152,20 +150,16 @@ ModelGenerator.getInstance().generateModel(port);
 
 def checkDatasources(){
 	def datasources =[:];
-	def conn1 = SmartsConnection.findByName("smartsconn");
-	if(conn1 == null){
-	    conn1 = new SmartsConnection(name:"smartsconn", broker:"192.168.1.102:426", domain:"INCHARGE-SA", username:"admin", password:"rcpass").save();
-	}
 
-	def eastRegionDs= SmartsTopologyDatasource.findByName("eastRegionDs");
+	def eastRegionDs= DatasourceName.findByName("eastRegionDs");
 	if (eastRegionDs == null){
-	    eastRegionDs = new SmartsTopologyDatasource(connection:conn1, name:"eastRegionDs").save();
+	    eastRegionDs = new DatasourceName(name:"eastRegionDs").save();
 	}
 	datasources.put("eastRegionDs",eastRegionDs);
 
-	def westRegionDs= SmartsTopologyDatasource.findByName("westRegionDs");
+	def westRegionDs= DatasourceName.findByName("westRegionDs");
 	if (westRegionDs == null){
-	    westRegionDs = new SmartsTopologyDatasource(connection:conn1, name:"westRegionDs").save();
+	    westRegionDs = new DatasourceName(name:"westRegionDs").save();
 	}
 	datasources.put("westRegionDs",westRegionDs);
 	

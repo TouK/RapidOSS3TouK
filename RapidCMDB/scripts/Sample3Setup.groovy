@@ -45,6 +45,7 @@ def datasources = checkDatasources();
 def rcmdbDS = DatasourceName.findByName("RCMDB");
 if(rcmdbDS == null){
     rcmdbDS = new DatasourceName(name: "RCMDB");
+    rcmdbDS.save();
 }
 def rcmdbModelDatasource = new ModelDatasource(datasource:rcmdbDS, master:true);
 def eastRegionModelDatasource = new ModelDatasource(datasource:datasources.eastRegionDs, master:false);

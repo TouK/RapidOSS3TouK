@@ -73,14 +73,14 @@ log4j {
     appender.'errorLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'errorLog.File'="logs/RapidServerErr.log"
 
-    rootLogger="error,errorLog"
+    rootLogger="warn,errorLog"
 
     logger {
         // COPY THE FOLLOWING LINE TO DEFINE A NEW LOGGER THAT WILL USE THE NEW APPENDER CREATED ABOVE
         models="info,modelsLog"
 
         grails="warn,rapidServerLog"
-        StackTrace="error,errorLog"
+        StackTrace="warn,errorLog"
         org {
             springframework="off"
             hibernate="off"

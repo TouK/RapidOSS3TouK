@@ -19,6 +19,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils
 
 class ExistingDataAnalyzer
 {
+    public static final Map excludedProps = ["id":"id", "version":"version"];
     def static correctModelData(Map newDomainClassMap, Map currentDomainClassMap)
     {
     }
@@ -53,7 +54,7 @@ class ExistingDataAnalyzer
                 GrailsDomainClassProperty oldProperty = oldClassProperties[propName];
                 ConstrainedProperty oldConstrainedProp = oldConstrainedProps[propName];
                 ConstrainedProperty newConstrainedProp = newConstrainedProps[propName];
-                if(oldProperty == null || oldProperty.type != prop.type || oldConstrainedProp == null || newConstrainedProp == null || oldConstrainedProp.isBlank() && !newConstrainedProp.isBlank())
+                if(oldProperty == null || oldProperty.type != prop.type || oldConstrainedProp == null || newConstrainedProp == null || oldConstrainedProp.isNullable() && !newConstrainedProp.isNullable())
                 {
                     actions += new PropertyAction(modelName:currentDomainObject.name, propName:propName, action:PropertyAction.SET_DEFAULT_VALUE);
                 }
@@ -96,9 +97,10 @@ class ExistingDataAnalyzer
 
     private static Map getPropertyMap(GrailsDomainClass domainObject)
     {
+
         def newClassProperties = [:];
         domainObject.getProperties().each{GrailsDomainClassProperty prop->
-           if(!prop.isAssociation())
+           if(!prop.isAssociation() && !excludedProps.containsKey(prop.name))
            {
                 newClassProperties[prop.name] = prop;    
            }
@@ -107,22 +109,10 @@ class ExistingDataAnalyzer
 
     }
 
-    private static Map getPropertyLookupMap(GrailsDomainClass domainObject)
-    {
-        def looupMap = [:];
-        def props = getPropertyMap(domainObject);
-        props.each{propName, prop->
-            looupMap.put (propName, propName);
-        }
-        domainObject.getAssociationMap().each{relName, relClass->
-            looupMap.put (relName, relName);
-        }
-        return looupMap;
-    }
 
     private static List getKeyProperties(GrailsDomainClass domainObject)
     {
-        List keyProperties = null;
+        List keyProperties = [];
         domainObject.getConstrainedProperties().each{String propName, ConstrainedProperty prop->
            KeyConstraint keyConst = prop.getAppliedConstraint (KeyConstraint.KEY_CONSTRAINT);
            if(keyConst && keyConst.isKey())

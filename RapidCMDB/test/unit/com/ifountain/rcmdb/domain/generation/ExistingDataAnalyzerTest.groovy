@@ -73,6 +73,36 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         assertEquals (modelName, action.modelName);
     }
 
+
+    public void testAnyChangeInExcludedListPropsWillNotBeManaged()
+    {
+        String modelName = "Class1";
+
+        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
+        def propList = [prop1];
+        ExistingDataAnalyzer.excludedProps.each {String propName, String propValue->
+            propList += new ModelProperty(name:propName, type:ModelProperty.stringType, blank:false, defaultValue:"1");
+        }
+
+        def keyPropList = [prop1];
+        generateModel (modelName, propList, keyPropList);
+        def oldDomainClass = loadGrailsDomainClass(modelName);
+        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
+
+        for(int i=1; i< propList.size(); i++)
+        {
+            propList[i].type = ModelProperty.numberType;
+        }
+        generateModel (modelName, propList, keyPropList);
+
+        def newDomainClass = loadGrailsDomainClass(modelName);
+        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
+        assertEquals (0, actions.size());
+    }
+
+
     public void testKeyPropertyTypeChange()
     {
         ConstrainedProperty.registerNewConstraint (KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
@@ -350,10 +380,10 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         assertEquals (0, actions.size());
     }
 
-    
 
 
     def generateModel(String name, List modelProperties, List keyProperties)
+
     {
         def model = createModel(name, modelProperties, keyProperties);
         
@@ -366,12 +396,28 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def datasource1 = new DatasourceName(name:"ds1-sample");
         def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
         model.datasources += modelDatasource1;
-        model.modelProperties += new ModelProperty(name:"id", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
-        model.modelProperties += new ModelProperty(name:"version", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
+        boolean isIdAdded = false;
+        boolean isVersionAdded = false;        
         modelProperties.each{ModelProperty prop->
             prop.propertyDatasource = modelDatasource1;
             prop.model = model;
             model.modelProperties += prop;
+            if(prop.name == "id")
+            {
+                isIdAdded = true;
+            }
+            if(prop.name == "version")
+            {
+                isVersionAdded = true;
+            }
+        }
+        if(!isIdAdded)
+        {
+            model.modelProperties += new ModelProperty(name:"id", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");   
+        }
+        if(!isVersionAdded)
+        {
+            model.modelProperties += new ModelProperty(name:"version", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
         }
         keyProperties.each{ModelProperty prop->
             modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:prop, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");;

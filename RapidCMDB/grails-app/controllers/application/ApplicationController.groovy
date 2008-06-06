@@ -71,15 +71,15 @@ class ApplicationController {
             newDomainClassesMap[modelName] = domainClass;
         }
         GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClassesWillBeGenerated as GrailsClass[], newDomainClassesMap);
-        domainClassesWillBeGenerated.each {GrailsDomainClass domainClass ->
-            GrailsDomainClass oldDomainClass = oldDomainClasses[domainClass.name];
+        domainClassesWillBeGenerated.each {GrailsDomainClass newDomainClass ->
+            GrailsDomainClass oldDomainClass = oldDomainClasses[newDomainClass.name];
             if(oldDomainClass)
             {
-                List actions = ExistingDataAnalyzer.createActions(domainClass, oldDomainClass);
+                List actions = ExistingDataAnalyzer.createActions(oldDomainClass, newDomainClass);
                 if(!actions.isEmpty())
                 {
-                    ModelUtils.generateModelArtefacts(domainClass, baseDir);
-                    ModelGenerator.getInstance().createModelOperationsFile (domainClass.class);
+                    ModelUtils.generateModelArtefacts(newDomainClass, baseDir);
+                    ModelGenerator.getInstance().createModelOperationsFile (newDomainClass.class);
                     actions.each{
                         it.save();
                     }
@@ -87,8 +87,8 @@ class ApplicationController {
             }
             else
             {
-                ModelUtils.generateModelArtefacts(domainClass, baseDir);
-                ModelGenerator.getInstance().createModelOperationsFile (domainClass.class);
+                ModelUtils.generateModelArtefacts(newDomainClass, baseDir);
+                ModelGenerator.getInstance().createModelOperationsFile (newDomainClass.class);
             }
         }
 
@@ -139,26 +139,5 @@ class ApplicationController {
         ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
         impExpUtils.importConfiguration(importDir);
         redirect(action:reload,controller:'application');
-    }
-
-    def correctData(Map currentDomainClassObjects, Map newDomainClassObjects)
-    {
-        currentDomainClassObjects.each{String className, GrailsDomainClass currentDomainClass->
-            GrailsDomainClass newDomainClass = newDomainClassObjects.get(className);
-            if(newDomainClass)
-            {
-                def actions = ExistingDataAnalyzer.createActions (currentDomainClass, newDomainClass);
-                actions.each{
-                    it.save();
-                }
-            }
-            else
-            {
-                ModelUtils.deleteModelArtefacts (System.getProperty ("base.dir"), className);
-                currentDomainClass.clazz.metaClass.invokeStaticMethod (currentDomainClass.clazz, "unindex", [] as Object[]);
-            }
-        }
-
-        
     }
 }

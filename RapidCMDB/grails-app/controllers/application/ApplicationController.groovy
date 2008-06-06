@@ -80,7 +80,7 @@ class ApplicationController {
                     if(it instanceof ModelAction && it.action == ModelAction.GENERATE_RESOURCES)
                     {
                         ModelUtils.generateModelArtefacts(newDomainClass, baseDir);
-                        ModelGenerator.getInstance().createModelOperationsFile (newDomainClass.class);
+                        ModelGenerator.getInstance().createModelOperationsFile (newDomainClass.clazz);
                     }
                     else
                     {

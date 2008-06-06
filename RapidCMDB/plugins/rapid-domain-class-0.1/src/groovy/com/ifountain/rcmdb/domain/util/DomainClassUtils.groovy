@@ -5,6 +5,8 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.springframework.validation.Errors
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.ObjectError
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -78,12 +80,13 @@ class DomainClassUtils
     def static getKeys(GrailsDomainClass dc)
     {
         def keys = [];
-        DatasourceConfigurationCache datasourceMetaData = new DatasourceConfigurationCache(dc)
-        if(datasourceMetaData.masterName)
-        {
-            def masterDsKeyMetaData = datasourceMetaData.datasources[datasourceMetaData.masterName].keys;
-            masterDsKeyMetaData.each{keyName, keyProps->
-                keys += keyName;
+        def constrainedPropertiesMap = dc.getConstrainedProperties();
+        constrainedPropertiesMap.each{String propName, ConstrainedProperty  prop->
+            KeyConstraint keyConst = prop.getAppliedConstraint (KeyConstraint.KEY_CONSTRAINT);
+            if(keyConst && keyConst.isKey())
+            {
+                keys = keyConst.getKeys();
+                return;
             }
         }
         return keys;

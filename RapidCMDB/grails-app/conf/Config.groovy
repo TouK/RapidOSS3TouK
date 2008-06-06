@@ -45,6 +45,9 @@ if(invalidNameFile.exists())
     }
     rapidcmdb.invalid.names = trimmedInvalidNames;
 }
+
+
+rapidcmdb.property.validname = "[a-z]{2,}[_a-zA-Z0-9]*"
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
 

@@ -23,9 +23,8 @@ class ModelProperty {
 
     static constraints = {
         name(blank:false, unique:'model', validator:{val, obj ->
-            def firstChar = val.charAt(0);
-            if(!(firstChar >= 'a' && firstChar <= 'z')){
-                return ['modelproperty.name.uppercased', obj.model.name];
+            if(!val.matches(ConfigurationHolder.config.toProperties()["rapidcmdb.property.validname"])){
+                return ['modelproperty.name.not.match', obj.model.name];
             }
             def invalidNames = ConfigurationHolder.config.flatten().get("rapidcmdb.invalid.names")
             if(invalidNames.contains(val.toLowerCase()))

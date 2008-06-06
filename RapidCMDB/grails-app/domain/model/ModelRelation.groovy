@@ -15,9 +15,8 @@ class ModelRelation {
          firstCardinality(inList:[ONE, MANY]);
          secondCardinality(inList:[ONE, MANY]);
          firstName(blank:false, unique:'firstModel', validator:{val, obj ->
-            def firstChar = val.charAt(0);
-            if(!(firstChar >= 'a' && firstChar <= 'z')){
-                return ['modelrelation.name.uppercased'];
+            if(!val.matches(ConfigurationHolder.config.toProperties()["rapidcmdb.property.validname"])){
+                return ['modelrelation.name.not.match'];
             }
             def invalidNames = ConfigurationHolder.config.flatten().get("rapidcmdb.invalid.names")
             if(invalidNames.contains(val.toLowerCase()))
@@ -26,9 +25,8 @@ class ModelRelation {
             }
         });
         secondName(blank:false, unique:'secondModel', validator:{val, obj ->
-            def firstChar = val.charAt(0);
-            if(!(firstChar >= 'a' && firstChar <= 'z')){
-                return ['modelrelation.name.uppercased'];
+            if(!val.matches(ConfigurationHolder.config.toProperties()["rapidcmdb.property.validname"])){
+                return ['modelrelation.name.not.match'];
             }
             def invalidNames = ConfigurationHolder.config.flatten().get("rapidcmdb.invalid.names")
             if(invalidNames.contains(val.toLowerCase()))

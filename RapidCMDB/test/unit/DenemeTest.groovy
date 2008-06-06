@@ -9,21 +9,10 @@ import org.codehaus.groovy.runtime.InvokerHelper
 * To change this template use File | Settings | File Templates.
 */
 class DenemeTest extends GroovyTestCase{
+
+    
     public void test3(){
-        MetaClass tempCls = String.metaClass;
-        StringUtils.metaClass.getMethods().each{MetaMethod method->
-            if(tempCls.getMetaMethod(method.name, method.getNativeParameterTypes()) == null)
-            {
-                tempCls."${method.name}" = {args->
-                    List newArgs = new ArrayList(InvokerHelper.asList (args));
-                    newArgs.add (0, delegate);
-                    return method.invoke(StringUtils, newArgs as Object[]);
-                }
-            }
-
-        }
-       // GroovySystem.getMetaClassRegistry().setMetaClass (String,tempCls);
-
+        "aaa"
     }
 
     public void test2(){

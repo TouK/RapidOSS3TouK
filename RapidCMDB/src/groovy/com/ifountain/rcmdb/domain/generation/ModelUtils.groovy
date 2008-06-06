@@ -79,4 +79,19 @@ class ModelUtils {
             getAllDependentModels(value, dependentModels);
         }
     }
+
+    public static def isPropertyName(model,dependentModels)
+    {
+        if(dependentModels.containsKey(model.name)) return;
+        dependentModels[model.name] = model;
+        def dependeeeModels = getDependeeModels(model);
+        if(model.parentModel)
+        {
+            getAllDependentModels(model.parentModel, dependentModels);
+        }
+        dependeeeModels.each{key, value->
+            getAllDependentModels(value, dependentModels);
+        }
+    }
+
 }

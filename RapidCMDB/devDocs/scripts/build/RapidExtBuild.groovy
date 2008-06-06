@@ -68,7 +68,7 @@ class RapidExtBuild extends Build {
             };
         }
         if (!TEST) {
-            ant.copy(todir: "$env.dist_rapid_cmdb/grails-app/ext") {
+            ant.copy(todir: "$env.dist_rapid_cmdb_modeler/grails-app/ext") {
                 ant.fileset(dir: "$env.rapid_ext/database/groovy")
                 ant.fileset(dir: "$env.rapid_ext/rapidinsight/groovy")
                 ant.fileset(dir: "$env.rapid_ext/http/groovy")

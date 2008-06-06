@@ -13,8 +13,6 @@ import model.ModelDatasource
 import model.ModelDatasourceKeyMapping
 import model.ModelProperty
 import model.ModelRelation
-import groovy.util.slurpersupport.NodeChild
-import groovy.util.slurpersupport.NodeChildren
 import model.DatasourceName;
 /**
  * Created by IntelliJ IDEA.

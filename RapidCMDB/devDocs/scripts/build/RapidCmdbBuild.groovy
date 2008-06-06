@@ -208,6 +208,7 @@ class RapidCmdbBuild extends Build {
                     ant.include(name: "rsUser/**")
                     ant.include(name: "userRoleRel/**")
                     ant.include(name: "layouts/**")
+                    ant.include(name: "error.gsp")
                 }
             }
 

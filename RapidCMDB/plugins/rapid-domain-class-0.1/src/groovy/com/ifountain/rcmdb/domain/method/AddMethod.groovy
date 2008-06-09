@@ -5,7 +5,9 @@ import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import com.ifountain.rcmdb.domain.util.ValidationUtils
 import org.springframework.validation.Validator
 import org.springframework.validation.Errors
-import org.springframework.validation.BeanPropertyBindingResult;
+import org.apache.commons.beanutils.ConversionException
+import org.springframework.validation.BeanPropertyBindingResult
+
 class AddMethod extends AbstractRapidDomainStaticMethod
 {
     def relations;
@@ -40,6 +42,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
              sampleBean = clazz.newInstance()
         }
 
+        Errors errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
         def relatedInstances = [:];
         def modelProperties = [:]
         props.each{key,value->
@@ -50,10 +53,24 @@ class AddMethod extends AbstractRapidDomainStaticMethod
                 if(fieldType)
                 {
 
-                    def converter = RapidConvertUtils.getInstance().lookup (fieldType);
-                    def propVal = converter.convert (fieldType, value);
-                    modelProperties[key] = propVal;
-                    sampleBean[key] = propVal;
+                    if(value != null)
+                    {
+                        try
+                        {
+                            def converter = RapidConvertUtils.getInstance().lookup (fieldType);
+                            def propVal = converter.convert (fieldType, value);
+                            modelProperties[key] = propVal;
+                            sampleBean[key] = propVal;
+                        }
+                        catch(ConversionException exception)
+                        {
+                            ValidationUtils.addFieldError (errors, key, value, "rapidcmdb.invalid.property.type", [fieldType.name, value.class.name]);
+                        }
+                    }
+                    else
+                    {
+                        sampleBean[key] = value;                        
+                    }
                 }
             }
             else
@@ -61,7 +78,11 @@ class AddMethod extends AbstractRapidDomainStaticMethod
                 relatedInstances[key] = value;
             }
         }
-        Errors errors = ValidationUtils.validate (validator, sampleBean);
+        if(errors.hasErrors()){
+            sampleBean.errors = errors;
+            return sampleBean;
+        }
+        validator.validate (sampleBean, errors)
 
         if(errors. hasErrors())
         {

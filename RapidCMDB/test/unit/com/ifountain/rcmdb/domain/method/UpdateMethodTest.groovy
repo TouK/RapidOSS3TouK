@@ -37,7 +37,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         AddMethodDomainObject1 relatedObject = new AddMethodDomainObject1(id:100);
 
         def relations = ["rel1":new Relation("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE)];
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, relations, ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
 
         def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
 
@@ -45,7 +45,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd, addedObject);
 
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject];
-        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, null, relations, ["prop1"]);
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
         def updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
@@ -58,7 +58,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
     {
         ChildAddMethodDomainObject objectBeforeAdd = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop6:"object1Prop6Value");
 
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, null, [:], ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:], ["prop1"]);
 
         def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop6:objectBeforeAdd.prop6];
 
@@ -66,7 +66,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd, addedObject);
 
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", prop6:"newProp6Value"];
-        UpdateMethod update = new UpdateMethod(ChildAddMethodDomainObject.metaClass, null, [:], ["prop1"]);
+        UpdateMethod update = new UpdateMethod(ChildAddMethodDomainObject.metaClass, new MockValidator(), [:], ["prop1"]);
         def updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
@@ -89,7 +89,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
 
             def props = [prop1:object.prop1, prop2:"newProp2Value",  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0"];
-            UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, null, [:], ["prop1"]);
+            UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:], ["prop1"]);
             def updatedObject = update.invoke (object, [props] as Object[]);
             assertEquals (100, updatedObject.id);
             assertEquals ("newProp2Value", updatedObject.prop2);
@@ -98,6 +98,66 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             assertEquals (new Double(5.0), updatedObject.doubleProp);
             SimpleDateFormat formater = new SimpleDateFormat(dateFormatString)  ;
             assertEquals (formater.parse("2000-01-01"), updatedObject.prop5);
+
+            props = [prop1:object.prop1, prop2:"",  prop4:"", prop5:"", doubleProp:""];
+            update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:], ["prop1"]);
+            updatedObject = update.invoke (object, [props] as Object[]);
+
+            assertEquals ("", updatedObject.prop2);
+            assertEquals ("object1Prop3Value", updatedObject.prop3);
+            assertEquals (null, updatedObject.prop4);
+            assertEquals (null, updatedObject.doubleProp);
+            assertEquals (null, updatedObject.prop5);
+
+            props = [prop1:object.prop1, prop2:null,  prop4:null, prop5:null, doubleProp:null];
+            update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:], ["prop1"]);
+            updatedObject = update.invoke (object, [props] as Object[]);
+
+            assertEquals (null, updatedObject.prop2);
+            assertEquals ("object1Prop3Value", updatedObject.prop3);
+            assertEquals (null, updatedObject.prop4);
+            assertEquals (null, updatedObject.doubleProp);
+            assertEquals (null, updatedObject.prop5);
+            
+
+        }
+        finally
+        {
+            RapidConvertUtils.getInstance().register (prevDateConf, Date.class)
+            RapidConvertUtils.getInstance().register (prevLongConf, Long.class)
+            RapidConvertUtils.getInstance().register (prevDoubleConf, Double.class)
+        }
+    }
+
+
+    public void testIfInvalidPropertyPassedReturnsError()
+    {
+
+        def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);
+        def prevLongConf = RapidConvertUtils.getInstance().lookup (Long);
+        def prevDoubleConf = RapidConvertUtils.getInstance().lookup (Double);
+        try
+        {
+            String dateFormatString = "yyyy-dd-MM";
+            RapidConvertUtils.getInstance().register (new DateConverter(dateFormatString), Date.class)
+            RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
+            RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
+
+            AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+
+            def props = [prop1:object.prop1,  prop4:"invalidData", prop5:"invalidData", doubleProp:"invalidData"];
+            UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:], ["prop1"]);
+            def updatedObject = update.invoke (object, [props] as Object[]);
+            assertEquals (null, updatedObject.prop4);
+            assertEquals (null, updatedObject.doubleProp);
+            assertEquals (null, updatedObject.prop5);
+            assertTrue (updatedObject.hasErrors());
+            assertTrue(updatedObject.errors.toString().indexOf("Field error in object") >= 0);
+            assertTrue(updatedObject.errors.toString().indexOf("prop4") >= 0);
+            assertTrue(updatedObject.errors.toString().indexOf("prop5") >= 0);
+            assertTrue(updatedObject.errors.toString().indexOf("doubleProp") >= 0);
+            assertTrue (AddMethodDomainObject1.indexList.isEmpty());
+
 
         }
         finally

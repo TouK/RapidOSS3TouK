@@ -1,7 +1,6 @@
 package com.ifountain.rcmdb.domain.method
 
 import org.codehaus.groovy.grails.commons.metaclass.AbstractStaticMethodInvocation
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
 /**
 * Created by IntelliJ IDEA.

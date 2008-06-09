@@ -26,9 +26,9 @@ class ValidationUtils {
         return errors;
     }
 
-    public static void addFieldError(BindingResult errors, String propName, Object propValue, String message)
+    public static void addFieldError(BindingResult errors, String propName, Object propValue, String messageCode, List params)
     {
-        FieldError error = new FieldError( errors.getObjectName(),propName,propValue,false,[] as String[], [] as Object[], message);
+        FieldError error = new FieldError( errors.getObjectName(),propName,propValue,false,[messageCode] as String[], params as Object[], "");
         (( BindingResult ) errors).addError( error );
     }
 }

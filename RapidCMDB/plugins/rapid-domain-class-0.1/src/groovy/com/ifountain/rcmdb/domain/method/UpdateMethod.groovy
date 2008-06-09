@@ -8,6 +8,8 @@ import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import org.springframework.validation.Errors
 import com.ifountain.rcmdb.domain.util.ValidationUtils
 import org.springframework.validation.Validator
+import org.apache.commons.beanutils.ConversionException
+import org.springframework.validation.BeanPropertyBindingResult
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -53,14 +55,29 @@ class UpdateMethod extends AbstractRapidDomainMethod{
     public Object invoke(Object domainObject, Object[] arguments) {
         def props = arguments[0];
         def relationMap = [:]
+        Errors errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
         props.each{key,value->
             if(!relations.containsKey(key))
             {
                 def fieldType = fieldTypes[key];
                 if(fieldType)
                 {
-                    def converter = RapidConvertUtils.getInstance().lookup (fieldType);
-                    domainObject.setProperty (key, converter.convert(fieldType, value));
+                    if(value != null)
+                    {
+                        try
+                        {
+                            def converter = RapidConvertUtils.getInstance().lookup (fieldType);
+                            domainObject.setProperty (key, converter.convert(fieldType, value));
+                        }
+                        catch(ConversionException exception)
+                        {
+                            ValidationUtils.addFieldError (errors, key, value, "rapidcmdb.invalid.property.type", [fieldType.name, value.class.name]);
+                        }
+                    }
+                    else
+                    {
+                        domainObject.setProperty (key, value);
+                    }
                 }
             }
             else
@@ -68,7 +85,10 @@ class UpdateMethod extends AbstractRapidDomainMethod{
                 relationMap[key] = value;
             }
         }
-        Errors errors = ValidationUtils.validate (validator, domainObject);
+        if(!errors.hasErrors())
+        {
+            validator.validate (domainObject, errors);
+        }
         if(!errors.hasErrors())
         {
             domainObject.index(domainObject);

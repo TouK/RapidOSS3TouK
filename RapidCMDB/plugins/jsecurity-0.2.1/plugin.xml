@@ -1,4 +1,4 @@
-<plugin name='jsecurity' version='0.2'>
+<plugin name='jsecurity' version='0.2.1'>
   <author>Peter Ledbrook</author>
   <authorEmail>peter@cacoethes.co.uk</authorEmail>
   <title>Security support via the JSecurity framework.</title>

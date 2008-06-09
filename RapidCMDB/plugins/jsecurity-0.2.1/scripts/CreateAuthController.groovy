@@ -3,7 +3,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 grailsHome = Ant.project.properties."environment.GRAILS_HOME"
 
 includeTargets << new File ("${grailsHome}/scripts/Init.groovy")
-includeTargets << new File ("${jsecurityPluginDir}/scripts/_Internal.groovy")
+includeTargets << new File ("${jsecurityPluginDir}/scripts/_JsecInternal.groovy")
 
 target("default": "The description of the script goes here!") {
     // Make sure any arguments have been parsed if the parser is

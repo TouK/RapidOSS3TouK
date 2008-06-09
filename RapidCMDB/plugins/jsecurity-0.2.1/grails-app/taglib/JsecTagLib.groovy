@@ -155,12 +155,18 @@ class JsecTagLib {
     private boolean checkRole(attrs) {
         // Extract the name of the role from the attributes.
         def roleName = attrs['name']
-        if (!roleName) {
-            throwTagError('Tag [hasRole] missing required attribute [name].')
+        def inList = attrs['in']
+        if (roleName) {
+            // Does the user have the required role?
+            return SecurityUtils.subject.hasRole(roleName)
         }
-
-        // Does the user have the required role?
-        return SecurityUtils.subject.hasRole(roleName)
+        else if (inList) {
+            boolean[] results = SecurityUtils.subject.hasRoles(inList)
+            return results.any()
+        }
+        else {
+            throwTagError('Tag [hasRole] must have one of [name] or [in] attributes.')
+        }
     }
 
     /**

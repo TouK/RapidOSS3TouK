@@ -4,7 +4,7 @@ Ant.property(environment: 'env')
 grailsHome = Ant.antProject.properties.'env.GRAILS_HOME'
 
 includeTargets << new File ("${grailsHome}/scripts/Init.groovy")
-includeTargets << new File ("${jsecurityPluginDir}/scripts/_Internal.groovy")
+includeTargets << new File ("${jsecurityPluginDir}/scripts/_JsecInternal.groovy")
 
 target ('default': 'Creates a database JSecurity realm') {
     // Make sure any arguments have been parsed if the parser is

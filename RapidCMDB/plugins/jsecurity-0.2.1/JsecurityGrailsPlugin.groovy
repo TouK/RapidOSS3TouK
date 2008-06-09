@@ -29,7 +29,7 @@ import org.jsecurity.web.DefaultWebSecurityManager
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean
 
 class JsecurityGrailsPlugin {
-    def version = '0.2'
+    def version = '0.2.1'
     def author = 'Peter Ledbrook'
     def authorEmail = 'peter@cacoethes.co.uk'
     def title = 'Security support via the JSecurity framework.'
@@ -147,10 +147,15 @@ protect pages based on a user's roles and/or permissions.
                 else {
                     // Default behaviour is to redirect to the login
                     // page.
+                    def targetUri = request.forwardURI - request.contextPath
+                    if (request.queryString) {
+                        targetUri += request.queryString
+                    }
+
                     redirect(
                             controller: 'auth',
                             action: 'login',
-                            params: [ targetUri: request.forwardURI - request.contextPath ])
+                            params: [ targetUri: targetUri ])
                 }
 
                 return false
@@ -203,6 +208,17 @@ protect pages based on a user's roles and/or permissions.
                     'param-name'('securityManagerBeanName')
                     'param-value'('jsecSecurityManager')
                 }
+
+                // If a JSecurity configuration is available, add it
+                // as an 'init-param' of the filter. This config should
+                // be in .ini format. See the JSecurity documentation
+                // for more information.
+                if (application.config.jsecurity.filter.config) {
+                    'init-param' {
+                        'param-name'('config')
+                        'param-value'(application.config.jsecurity.filter.config)
+                    }
+                }
             }
         }
 
@@ -218,38 +234,40 @@ protect pages based on a user's roles and/or permissions.
         // a SiteMesh one but no character encoding filter mapping.
         // Bleh.
 
-        // Of course, if there is no char encoding filter, the next
-        // requirement is that we come before the SiteMesh filter.
-        // This is trickier to accomplish. First we find out at what
-        // index the SiteMesh filter mapping is.
-        int i = 0
-        int siteMeshIndex = -1
-        webXml.'filter-mapping'.each {
-            if (it.'filter-name'.text().equalsIgnoreCase("sitemesh")) {
-                siteMeshIndex = i
+        if (!filter) {
+            // Of course, if there is no char encoding filter, the next
+            // requirement is that we come before the SiteMesh filter.
+            // This is trickier to accomplish. First we find out at what
+            // index the SiteMesh filter mapping is.
+            int i = 0
+            int siteMeshIndex = -1
+            webXml.'filter-mapping'.each {
+                if (it.'filter-name'.text().equalsIgnoreCase("sitemesh")) {
+                    siteMeshIndex = i
+                }
+                i++
             }
-            i++
-        }
 
-        if (siteMeshIndex > 0) {
-            // There is at least one other filter mapping that comes
-            // before the SiteMesh one, so we can simply use the filter
-            // mapping that comes immediately before SiteMesh as the
-            // insertion point.
-            filter = webXml.'filter-mapping'[siteMeshIndex - 1]
-        }
-        else if (siteMeshIndex == 0 || webXml.'filter-mapping'.size() == 0) {
-            // If the index of the SiteMesh filter mapping is 0, i.e.
-            // it's the first one, we need to use the last filter
-            // definition as the insertion point. We also need to do
-            // this if there are no filter mappings.
-            def filters = webXml.'filter'
-            filter = filters[filters.size() - 1]
-        }
-        else {
-            // Simply add this filter mapping to the end.
-            def filterMappings = webXml.'filter-mapping'
-            filter = filterMappings[filterMappings.size() - 1]
+            if (siteMeshIndex > 0) {
+                // There is at least one other filter mapping that comes
+                // before the SiteMesh one, so we can simply use the filter
+                // mapping that comes immediately before SiteMesh as the
+                // insertion point.
+                filter = webXml.'filter-mapping'[siteMeshIndex - 1]
+            }
+            else if (siteMeshIndex == 0 || webXml.'filter-mapping'.size() == 0) {
+                // If the index of the SiteMesh filter mapping is 0, i.e.
+                // it's the first one, we need to use the last filter
+                // definition as the insertion point. We also need to do
+                // this if there are no filter mappings.
+                def filters = webXml.'filter'
+                filter = filters[filters.size() - 1]
+            }
+            else {
+                // Simply add this filter mapping to the end.
+                def filterMappings = webXml.'filter-mapping'
+                filter = filterMappings[filterMappings.size() - 1]
+            }
         }
 
         // Finally add the JSecurity filter mapping after the selected

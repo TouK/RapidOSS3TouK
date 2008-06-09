@@ -22,15 +22,10 @@
  */
 package com.ifountain.smarts.datasource.queries;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
+import com.ifountain.smarts.datasource.BaseSmartsAdapter;
 import org.apache.log4j.Logger;
 
-import com.ifountain.smarts.datasource.BaseSmartsAdapter;
+import java.util.*;
 
 
 public class InstanceSet implements Iterator<Map<String,Object>> {

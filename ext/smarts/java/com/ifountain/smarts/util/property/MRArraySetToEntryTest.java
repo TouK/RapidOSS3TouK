@@ -22,17 +22,12 @@
  */
 package com.ifountain.smarts.util.property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.ifountain.smarts.test.util.SmartsTestUtils;
-import com.smarts.repos.MR_AnyVal;
-import com.smarts.repos.MR_AnyValArray;
-import com.smarts.repos.MR_AnyValArraySet;
-import com.smarts.repos.MR_AnyValObjRef;
-import com.smarts.repos.MR_AnyValString;
-import com.smarts.repos.MR_Ref;
+import com.smarts.repos.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MRArraySetToEntryTest extends SmartsTestCase {
 

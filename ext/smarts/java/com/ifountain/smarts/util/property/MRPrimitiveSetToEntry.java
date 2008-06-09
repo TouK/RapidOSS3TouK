@@ -22,18 +22,10 @@
  */
 package com.ifountain.smarts.util.property;
 
+import com.smarts.repos.*;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.smarts.repos.MR_AnyVal;
-import com.smarts.repos.MR_AnyValCharSet;
-import com.smarts.repos.MR_AnyValDoubleSet;
-import com.smarts.repos.MR_AnyValFloatSet;
-import com.smarts.repos.MR_AnyValIntSet;
-import com.smarts.repos.MR_AnyValLongSet;
-import com.smarts.repos.MR_AnyValShortSet;
-import com.smarts.repos.MR_AnyValStringSet;
-import com.smarts.repos.MR_ValType;
 
 public class MRPrimitiveSetToEntry extends MRToEntry {
 

@@ -1,17 +1,15 @@
 package com.ifountain.snmp.datasource;
 
+import com.ifountain.snmp.util.RSnmpConstants;
+import org.apache.log4j.Logger;
 import org.snmp4j.*;
-import org.snmp4j.transport.DefaultUdpTransportMapping;
 import org.snmp4j.smi.Address;
 import org.snmp4j.smi.GenericAddress;
 import org.snmp4j.smi.IpAddress;
-import org.snmp4j.smi.VariableBinding;
-import org.apache.log4j.Logger;
+import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 import java.io.IOException;
 import java.util.*;
-
-import com.ifountain.snmp.util.RSnmpConstants;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

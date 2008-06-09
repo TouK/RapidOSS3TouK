@@ -22,10 +22,10 @@
  */
 package com.ifountain.smarts.util.property;
 
+import com.smarts.repos.MR_AnyVal;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.smarts.repos.MR_AnyVal;
 
 public class MRArrayToMap {
 

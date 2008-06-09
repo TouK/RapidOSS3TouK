@@ -22,10 +22,10 @@
  */
 package com.ifountain.smarts.util;
 
-import java.util.ArrayList;
-
 import com.ifountain.smarts.datasource.BaseSmartsAdapter;
 import com.smarts.repos.MR_AnyVal;
+
+import java.util.ArrayList;
 
 public class SmartsHelper {
 

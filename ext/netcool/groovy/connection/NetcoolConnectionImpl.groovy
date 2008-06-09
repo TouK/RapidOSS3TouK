@@ -1,6 +1,6 @@
-package connection;
+package connection
 
-import java.sql.SQLException;
+import java.sql.SQLException
 import java.sql.Statement;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be

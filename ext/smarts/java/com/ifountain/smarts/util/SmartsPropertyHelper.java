@@ -23,28 +23,15 @@
 package com.ifountain.smarts.util;
 
 
+import com.ifountain.smarts.datasource.BaseNotificationAdapter;
+import com.ifountain.smarts.datasource.BaseSmartsAdapter;
+import com.ifountain.smarts.datasource.BaseTopologyAdapter;
+import com.smarts.repos.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.ifountain.smarts.datasource.BaseNotificationAdapter;
-import com.ifountain.smarts.datasource.BaseSmartsAdapter;
-import com.ifountain.smarts.datasource.BaseTopologyAdapter;
-import com.smarts.repos.MR_AnyVal;
-import com.smarts.repos.MR_AnyValBoolean;
-import com.smarts.repos.MR_AnyValDouble;
-import com.smarts.repos.MR_AnyValFloat;
-import com.smarts.repos.MR_AnyValInt;
-import com.smarts.repos.MR_AnyValLong;
-import com.smarts.repos.MR_AnyValShort;
-import com.smarts.repos.MR_AnyValString;
-import com.smarts.repos.MR_AnyValUnsignedInt;
-import com.smarts.repos.MR_AnyValUnsignedLong;
-import com.smarts.repos.MR_AnyValUnsignedShort;
-import com.smarts.repos.MR_PropertyNameValue;
-import com.smarts.repos.MR_Ref;
-import com.smarts.repos.MR_ValType;
 
 public class SmartsPropertyHelper {
 

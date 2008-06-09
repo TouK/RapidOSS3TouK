@@ -1,17 +1,16 @@
 package com.ifountain.snmp.datasource;
 
-import com.ifountain.core.test.util.RapidCoreTestCase;
 import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.comp.test.util.WaitAction;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
-import com.ifountain.snmp.util.RSnmpConstants;
+import com.ifountain.core.test.util.RapidCoreTestCase;
 import com.ifountain.snmp.test.util.SnmpTestUtils;
+import com.ifountain.snmp.util.RSnmpConstants;
+import org.snmp4j.mp.SnmpConstants;
+import org.snmp4j.smi.OID;
+import org.snmp4j.smi.TimeTicks;
 
 import java.util.*;
-
-import org.snmp4j.smi.TimeTicks;
-import org.snmp4j.smi.OID;
-import org.snmp4j.mp.SnmpConstants;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

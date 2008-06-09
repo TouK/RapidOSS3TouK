@@ -22,43 +22,19 @@
  */
 package com.ifountain.smarts.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import com.ifountain.smarts.connection.SmartsConnectionTest;
 import com.ifountain.smarts.datasource.BaseNotificationAdapterTest;
 import com.ifountain.smarts.datasource.BaseSmartsAdapterTest;
 import com.ifountain.smarts.datasource.BaseTopologyAdapterTest;
-import com.ifountain.smarts.datasource.actions.CreateInstanceActionTest;
-import com.ifountain.smarts.datasource.actions.DeleteInstanceActionTest;
-import com.ifountain.smarts.datasource.actions.FindInstancesActionTest;
-import com.ifountain.smarts.datasource.actions.GetActionTest;
-import com.ifountain.smarts.datasource.actions.GetAllPropertiesActionTest;
-import com.ifountain.smarts.datasource.actions.GetAttributeNamesActionTest;
-import com.ifountain.smarts.datasource.actions.GetAttributeTypesActionTest;
-import com.ifountain.smarts.datasource.actions.GetChildrenActionTest;
-import com.ifountain.smarts.datasource.actions.GetInstancesActionTest;
-import com.ifountain.smarts.datasource.actions.GetPropNamesActionTest;
-import com.ifountain.smarts.datasource.actions.GetPropTypeActionTest;
-import com.ifountain.smarts.datasource.actions.GetPropertiesActionTest;
-import com.ifountain.smarts.datasource.actions.GetRelationNamesActionTest;
-import com.ifountain.smarts.datasource.actions.GetRelationTypesActionTest;
-import com.ifountain.smarts.datasource.actions.GetReverseRelationActionTest;
-import com.ifountain.smarts.datasource.actions.InsertActionTest;
-import com.ifountain.smarts.datasource.actions.InstanceExistsActionTest;
-import com.ifountain.smarts.datasource.actions.InvokeOperationWithNativeParamsActionTest;
-import com.ifountain.smarts.datasource.actions.PutActionTest;
-import com.ifountain.smarts.datasource.actions.RemoveActionTest;
+import com.ifountain.smarts.datasource.actions.*;
 import com.ifountain.smarts.datasource.queries.FindTopologyInstancesQueryTest;
 import com.ifountain.smarts.datasource.queries.InstanceSetTest;
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.ifountain.smarts.util.SmartsHelperTest;
 import com.ifountain.smarts.util.SmartsPropertyHelperTest;
-import com.ifountain.smarts.util.property.MRArraySetToEntryTest;
-import com.ifountain.smarts.util.property.MRArrayToEntryTest;
-import com.ifountain.smarts.util.property.MRObjRefSetToEntryTest;
-import com.ifountain.smarts.util.property.MRObjRefToEntryTest;
-import com.ifountain.smarts.util.property.MRPrimitiveSetToEntryTest;
+import com.ifountain.smarts.util.property.*;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 public class AllUnitTests extends SmartsTestCase {
 

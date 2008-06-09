@@ -1,6 +1,6 @@
-package datasource;
+package datasource
 
-import com.ifountain.smarts.datasource.BaseTopologyAdapter;
+import com.ifountain.smarts.datasource.BaseTopologyAdapter
 import org.apache.log4j.Logger;
 
 public class TopologyAdapter extends BaseTopologyAdapter {

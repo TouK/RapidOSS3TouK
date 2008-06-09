@@ -3,7 +3,7 @@ package connection
 import com.ifountain.core.connection.BaseConnection
 import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
-import java.sql.*;
+import java.sql.*
 
 public class DatabaseConnectionImpl extends BaseConnection{
 

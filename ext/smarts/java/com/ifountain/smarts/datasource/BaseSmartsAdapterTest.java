@@ -22,36 +22,16 @@
  */
 package com.ifountain.smarts.datasource;
 
-import java.util.ArrayList;
-
 import com.ifountain.core.datasource.Action;
-import com.ifountain.smarts.datasource.actions.CreateInstanceAction;
-import com.ifountain.smarts.datasource.actions.DeleteInstanceAction;
-import com.ifountain.smarts.datasource.actions.FindInstancesAction;
-import com.ifountain.smarts.datasource.actions.GetAction;
-import com.ifountain.smarts.datasource.actions.GetAllPropertiesAction;
-import com.ifountain.smarts.datasource.actions.GetAttributeNamesAction;
-import com.ifountain.smarts.datasource.actions.GetAttributeTypesAction;
-import com.ifountain.smarts.datasource.actions.GetChildrenAction;
-import com.ifountain.smarts.datasource.actions.GetInstancesAction;
-import com.ifountain.smarts.datasource.actions.GetPropNamesAction;
-import com.ifountain.smarts.datasource.actions.GetPropTypeAction;
-import com.ifountain.smarts.datasource.actions.GetPropertiesAction;
-import com.ifountain.smarts.datasource.actions.GetRelationNamesAction;
-import com.ifountain.smarts.datasource.actions.GetRelationTypesAction;
-import com.ifountain.smarts.datasource.actions.GetReverseRelationAction;
-import com.ifountain.smarts.datasource.actions.InsertAction;
-import com.ifountain.smarts.datasource.actions.InstanceExistsAction;
-import com.ifountain.smarts.datasource.actions.InvokeOperationAction;
-import com.ifountain.smarts.datasource.actions.InvokeOperationWithNativeParamsAction;
-import com.ifountain.smarts.datasource.actions.PutAction;
-import com.ifountain.smarts.datasource.actions.RemoveAction;
+import com.ifountain.smarts.datasource.actions.*;
 import com.ifountain.smarts.test.mocks.BaseSmartsAdapterMock;
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.smarts.repos.MR_AnyVal;
 import com.smarts.repos.MR_AnyValObjRef;
 import com.smarts.repos.MR_AnyValString;
 import com.smarts.repos.MR_Ref;
+
+import java.util.ArrayList;
 
 public class BaseSmartsAdapterTest extends SmartsTestCase {
 

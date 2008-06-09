@@ -22,10 +22,9 @@
  */
 package com.ifountain.smarts.test;
 
+import com.ifountain.smarts.test.util.SmartsTestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import com.ifountain.smarts.test.util.SmartsTestCase;
 
 public class AllTests extends SmartsTestCase {
 

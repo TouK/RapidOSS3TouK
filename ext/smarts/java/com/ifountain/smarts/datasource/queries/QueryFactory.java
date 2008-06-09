@@ -22,11 +22,10 @@
  */
 package com.ifountain.smarts.datasource.queries;
 
-import java.util.List;
-
+import com.ifountain.smarts.datasource.BaseSmartsAdapter;
 import org.apache.log4j.Logger;
 
-import com.ifountain.smarts.datasource.BaseSmartsAdapter;
+import java.util.List;
 
 
 public class QueryFactory {

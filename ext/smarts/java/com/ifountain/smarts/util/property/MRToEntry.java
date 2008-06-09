@@ -22,9 +22,9 @@
  */
 package com.ifountain.smarts.util.property;
 
-import java.util.Map;
-
 import com.smarts.repos.MR_AnyVal;
+
+import java.util.Map;
 
 public abstract class MRToEntry {
 

@@ -22,15 +22,15 @@
  */
 package com.ifountain.smarts.util;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.ifountain.smarts.datasource.BaseTopologyAdapter;
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.ifountain.smarts.test.util.SmartsTestUtils;
 import com.smarts.repos.MR_PropertyNameValue;
 import com.smarts.repos.MR_Ref;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SmartsPropertyHelperTest extends SmartsTestCase {
 

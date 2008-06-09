@@ -22,12 +22,12 @@
  */
 package com.ifountain.smarts.test.mocks;
 
+import com.ifountain.core.datasource.Action;
+import com.ifountain.smarts.datasource.BaseSmartsAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.ifountain.core.datasource.Action;
-import com.ifountain.smarts.datasource.BaseSmartsAdapter;
 
 public class BaseSmartsAdapterMock extends BaseSmartsAdapter {
 

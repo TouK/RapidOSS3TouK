@@ -22,21 +22,20 @@
  */
 package com.ifountain.smarts.datasource.actions;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import com.ifountain.core.connection.IConnection;
 import com.ifountain.core.datasource.Action;
 import com.ifountain.smarts.connection.SmartsConnectionImpl;
 import com.ifountain.smarts.util.SmartsPropertyHelper;
-import com.smarts.remote.SmRemoteException;
-import com.smarts.repos.*;
 import com.ifountain.smarts.util.property.MRToEntry;
 import com.ifountain.smarts.util.property.MRToEntryFactory;
+import com.smarts.remote.SmRemoteException;
+import com.smarts.repos.*;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InvokeOperationAction implements Action {
 
@@ -59,8 +58,9 @@ public class InvokeOperationAction implements Action {
     	MR_AnyVal[] args = getArgsAsMRAnyValArray(conn, className, opName, opParams);
     	MR_AnyVal result = ((SmartsConnectionImpl)conn).getDomainManager().invokeOperation(className, instanceName, opName, args);
 
-    	MRToEntry entry = MRToEntryFactory.getMRToEntry("returnVal", result); 
-    	Object val = entry.getValue();
+    	MRToEntry entry = MRToEntryFactory.getMRToEntry("returnVal", result);
+        if(entry == null) return;
+        Object val = entry.getValue();
     	if(val instanceof HashMap[]){
     		HashMap[] mapArray = (HashMap[])val;
     		invokeResult = mapArray[0];

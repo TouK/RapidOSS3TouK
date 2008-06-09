@@ -22,22 +22,13 @@
  */
 package com.ifountain.smarts.datasource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import com.ifountain.smarts.datasource.queries.IQuery;
 import com.ifountain.smarts.datasource.queries.QueryFactory;
 import com.ifountain.smarts.util.SmartsPropertyHelper;
-import com.smarts.repos.MR_AnyVal;
-import com.smarts.repos.MR_AnyValObjRef;
-import com.smarts.repos.MR_Choice;
-import com.smarts.repos.MR_Ref;
-import com.smarts.repos.MR_ValType;
+import com.smarts.repos.*;
+import org.apache.log4j.Logger;
+
+import java.util.*;
 
 public class BaseTopologyAdapter extends BaseSmartsAdapter {
 

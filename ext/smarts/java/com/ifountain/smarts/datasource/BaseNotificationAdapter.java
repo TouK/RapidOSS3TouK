@@ -22,36 +22,16 @@
  */
 package com.ifountain.smarts.datasource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
 import com.ifountain.smarts.datasource.queries.IQuery;
 import com.ifountain.smarts.datasource.queries.QueryFactory;
 import com.ifountain.smarts.util.SmartsConstants;
 import com.ifountain.smarts.util.SmartsHelper;
 import com.ifountain.smarts.util.SmartsPropertyHelper;
-import com.ifountain.smarts.util.params.NotificationAcknowledgeParams;
-import com.ifountain.smarts.util.params.NotificationAggregateParams;
-import com.ifountain.smarts.util.params.NotificationAuditParams;
-import com.ifountain.smarts.util.params.NotificationClearParams;
-import com.ifountain.smarts.util.params.NotificationCreateParams;
-import com.ifountain.smarts.util.params.NotificationIdentifierParams;
-import com.ifountain.smarts.util.params.NotificationNotifyParams;
-import com.ifountain.smarts.util.params.NotificationParams;
-import com.ifountain.smarts.util.params.NotificationUpdateParams;
-import com.smarts.repos.MR_AnyVal;
-import com.smarts.repos.MR_AnyValObjRef;
-import com.smarts.repos.MR_AnyValString;
-import com.smarts.repos.MR_AnyValUnsignedInt;
-import com.smarts.repos.MR_Choice;
-import com.smarts.repos.MR_Ref;
+import com.ifountain.smarts.util.params.*;
+import com.smarts.repos.*;
+import org.apache.log4j.Logger;
+
+import java.util.*;
 
 public class BaseNotificationAdapter extends BaseSmartsAdapter {
     public BaseNotificationAdapter()

@@ -22,24 +22,14 @@
  */
 package com.ifountain.smarts.datasource;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.ifountain.smarts.test.util.SmartsTestUtils;
 import com.ifountain.smarts.util.SmartsPropertyHelper;
 import com.smarts.remote.SmRemoteException;
-import com.smarts.repos.MR_AnyVal;
-import com.smarts.repos.MR_AnyValObjRef;
-import com.smarts.repos.MR_AnyValObjRefSet;
-import com.smarts.repos.MR_AnyValString;
-import com.smarts.repos.MR_AnyValVoid;
-import com.smarts.repos.MR_Ref;
+import com.smarts.repos.*;
+
+import java.io.IOException;
+import java.util.*;
 
 public class BaseTopologyAdapterTest extends SmartsTestCase {
 

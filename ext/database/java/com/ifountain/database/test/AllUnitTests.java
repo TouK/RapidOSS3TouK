@@ -22,10 +22,9 @@
  */
 package com.ifountain.database.test;
 
+import com.ifountain.core.test.util.RapidCoreTestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import com.ifountain.core.test.util.RapidCoreTestCase;
 
 public class AllUnitTests extends RapidCoreTestCase {
 

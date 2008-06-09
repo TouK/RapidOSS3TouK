@@ -23,11 +23,11 @@
 package com.ifountain.smarts.util.property;
 
 
-import java.util.Map;
-
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.smarts.repos.MR_AnyValDoubleSet;
 import com.smarts.repos.MR_AnyValStringSet;
+
+import java.util.Map;
 
 public class MRPrimitiveSetToEntryTest extends SmartsTestCase {
 

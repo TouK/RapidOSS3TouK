@@ -17,9 +17,8 @@
  */
 package com.ifountain.smarts.connection;
 
-import com.ifountain.core.connection.ConnectionParam;
-import com.ifountain.core.connection.IConnection;
 import com.ifountain.core.connection.BaseConnection;
+import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException;
 import com.smarts.remote.SmRemoteBroker;
 import com.smarts.remote.SmRemoteDomainManager;

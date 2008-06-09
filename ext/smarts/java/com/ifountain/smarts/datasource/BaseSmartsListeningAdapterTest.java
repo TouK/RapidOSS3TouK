@@ -22,11 +22,6 @@
  */
 package com.ifountain.smarts.datasource;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Observable;
-
 import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.comp.test.util.WaitAction;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
@@ -41,6 +36,11 @@ import com.smarts.remote.SmRemoteDomainManager;
 import com.smarts.repos.MR_Choice;
 import com.smarts.repos.MR_PropertyChoice;
 import com.smarts.repos.MR_PropertyNameValue;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Observable;
 
 public class BaseSmartsListeningAdapterTest<E> extends SmartsTestCase {
     

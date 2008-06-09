@@ -20,15 +20,11 @@
  *
  * Author Sezgin Kucukkaraaslan
  */
-package datasource;
+package datasource
 
-import java.util.Map;
-
+import com.ifountain.core.connection.IConnection
+import com.ifountain.core.datasource.Action
 import org.apache.log4j.Logger;
-
-import com.ifountain.core.connection.IConnection;
-import com.ifountain.core.datasource.Action;
-import connection.HttpConnectionImpl;
 
 public class DoRequestAction implements Action {
 

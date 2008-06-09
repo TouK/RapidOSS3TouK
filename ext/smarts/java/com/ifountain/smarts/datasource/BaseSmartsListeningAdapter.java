@@ -22,11 +22,6 @@
  */
 package com.ifountain.smarts.datasource;
 
-import java.io.IOException;
-import java.util.Observable;
-
-import org.apache.log4j.Logger;
-
 import com.ifountain.core.datasource.BaseListeningAdapter;
 import com.ifountain.smarts.connection.SmartsConnectionImpl;
 import com.ifountain.smarts.util.DataFromObservable;
@@ -36,6 +31,10 @@ import com.smarts.remote.SmObserverEvent;
 import com.smarts.remote.SmRemoteException;
 import com.smarts.repos.MR_AnyValString;
 import com.smarts.repos.MR_PropertyNameValue;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.Observable;
 
 public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
 

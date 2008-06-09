@@ -19,9 +19,16 @@ package com.ifountain.smarts.test.util;
 
 public interface SmartsTestConstants {
 
-	public static final String SMARTS_BROKER = "SmartsBroker";
-	public static final String SMARTS_DOMAIN = "SmartsDomain";
-	public static final String SMARTS_USER = "SmartsUser";
-	public static final String SMARTS_PASSWORD = "SmartsPassword";
+	public static final String SMARTS_SAM_BROKER = "SmartsSAMBroker";
+	public static final String SMARTS_SAM_DOMAIN = "SmartsSAMDomain";
+	public static final String SMARTS_SAM_USER = "SmartsSAMUser";
+	public static final String SMARTS_SAM_PASSWORD = "SmartsSAMPassword";
 
+    public static final String SMARTS_AM_BROKER = "SmartsAMBroker";
+	public static final String SMARTS_AM_DOMAIN = "SmartsAMDomain";
+	public static final String SMARTS_AM_USER = "SmartsAMUser";
+	public static final String SMARTS_AM_PASSWORD = "SmartsAMPassword";
+
+    int SMARTS_SAM_CONNECTION_TYPE = 0;
+    int SMARTS_AM_CONNECTION_TYPE = 1;
 }

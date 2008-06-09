@@ -22,12 +22,12 @@
  */
 package com.ifountain.smarts.util.property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.smarts.repos.MR_AnyVal;
 import com.smarts.repos.MR_AnyValArray;
 import com.smarts.repos.MR_AnyValArraySet;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MRArraySetToEntry extends MRToEntry {
 

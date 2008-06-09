@@ -1,8 +1,6 @@
-package datasource;
+package datasource
 
-import java.util.Map;
 import org.apache.log4j.Logger;
-import com.ifountain.core.datasource.BaseAdapter;
 
 public class RapidInsightAdapter extends HttpAdapter {
 	

@@ -22,14 +22,10 @@
  */
 package com.ifountain.smarts.util.property;
 
-import java.util.Map;
-
 import com.ifountain.smarts.test.util.SmartsTestCase;
-import com.smarts.repos.MR_AnyVal;
-import com.smarts.repos.MR_AnyValArray;
-import com.smarts.repos.MR_AnyValObjRef;
-import com.smarts.repos.MR_AnyValString;
-import com.smarts.repos.MR_Ref;
+import com.smarts.repos.*;
+
+import java.util.Map;
 
 public class MRArrayToEntryTest extends SmartsTestCase {
 

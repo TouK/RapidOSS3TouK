@@ -1,19 +1,18 @@
 package com.ifountain.snmp.test.util;
 
-import org.snmp4j.smi.*;
+import com.ifountain.snmp.util.RSnmpConstants;
 import org.snmp4j.CommunityTarget;
-import org.snmp4j.PDUv1;
 import org.snmp4j.PDU;
+import org.snmp4j.PDUv1;
 import org.snmp4j.Snmp;
 import org.snmp4j.event.ResponseEvent;
-import org.snmp4j.transport.DefaultUdpTransportMapping;
 import org.snmp4j.mp.SnmpConstants;
+import org.snmp4j.smi.*;
+import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-
-import com.ifountain.snmp.util.RSnmpConstants;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

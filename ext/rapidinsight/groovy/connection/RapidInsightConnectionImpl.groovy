@@ -1,8 +1,6 @@
-package connection;
+package connection
 
 import com.ifountain.core.connection.ConnectionParam;
-import com.ifountain.core.connection.IConnection;
-import com.ifountain.core.connection.exception.UndefinedConnectionParameterException;
 
 public class RapidInsightConnectionImpl extends HttpConnectionImpl {
 

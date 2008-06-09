@@ -1,9 +1,9 @@
-package datasource;
+package datasource
 
-import java.sql.ResultSet;
+import com.ifountain.comp.utils.CaseInsensitiveMap
+import com.ifountain.core.datasource.BaseAdapter
+import java.sql.ResultSet
 import org.apache.log4j.Logger;
-import com.ifountain.core.datasource.BaseAdapter;
-import com.ifountain.comp.utils.CaseInsensitiveMap;
 
 public class DatabaseAdapter extends BaseAdapter {
     

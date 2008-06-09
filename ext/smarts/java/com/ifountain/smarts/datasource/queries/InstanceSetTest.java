@@ -22,14 +22,14 @@
  */
 package com.ifountain.smarts.datasource.queries;
 
+import com.ifountain.comp.test.util.logging.TestLogUtils;
+import com.ifountain.smarts.test.util.SmartsTestCase;
+import com.ifountain.smarts.test.util.SmartsTestUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.ifountain.comp.test.util.logging.TestLogUtils;
-import com.ifountain.smarts.test.util.SmartsTestCase;
-import com.ifountain.smarts.test.util.SmartsTestUtils;
 
 public class InstanceSetTest extends SmartsTestCase {
 

@@ -1,9 +1,7 @@
-package datasource;
+package datasource
 
+import com.ifountain.core.datasource.BaseAdapter
 import org.apache.log4j.Logger;
-import com.ifountain.core.datasource.BaseAdapter;
-import java.util.List;
-import java.util.Map;
 
 public class HttpAdapter extends BaseAdapter{
     

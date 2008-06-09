@@ -24,8 +24,6 @@ package com.ifountain.smarts.test;
 
 import com.ifountain.comp.test.util.testcase.AbstractTestInclusionTestCase;
 
-import java.io.File;
-
 public class TestInclusionTest extends AbstractTestInclusionTestCase {
 
     @Override

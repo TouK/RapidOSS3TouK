@@ -22,19 +22,18 @@
  */
 package com.ifountain.smarts.datasource.actions;
 
+import com.ifountain.core.connection.ConnectionParam;
+import com.ifountain.core.test.util.DatasourceTestUtils;
+import com.ifountain.smarts.connection.SmartsConnectionImpl;
+import com.ifountain.smarts.test.util.SmartsTestCase;
+import com.ifountain.smarts.test.util.SmartsTestUtils;
+import com.ifountain.smarts.test.util.SmartsTestConstants;
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.log4j.Logger;
-
-import com.ifountain.core.connection.ConnectionParam;
-import com.ifountain.smarts.connection.SmartsConnectionImpl;
-import com.ifountain.smarts.test.util.SmartsTestCase;
-import com.ifountain.smarts.test.util.SmartsTestUtils;
-import com.smarts.repos.MR_AnyVal;
-import com.smarts.repos.MR_AnyValString;
 
 public class InvokeOperationActionTest extends SmartsTestCase {
 
@@ -42,8 +41,6 @@ public class InvokeOperationActionTest extends SmartsTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        datasource = new SmartsConnectionImpl();
-        SmartsTestUtils.deleteAllTopologyInstances("Router", ".*");
     }
     @Override
     protected void tearDown() throws Exception {
@@ -55,8 +52,11 @@ public class InvokeOperationActionTest extends SmartsTestCase {
 
 
     public void testExecute() throws Exception {
-        ConnectionParam param = SmartsTestUtils.getDatasourceParam();
+        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME);
+        datasource = new SmartsConnectionImpl();
         datasource.init(param);
+        SmartsTestUtils.deleteAllTopologyInstances("Router", ".*");
+
 
         String className = "ICIM_ObjectFactory";
         String instanceName = "ICIM-ObjectFactory";
@@ -88,20 +88,7 @@ public class InvokeOperationActionTest extends SmartsTestCase {
         assertEquals("Router", ((HashMap)(action.getInvokeResult())).get("CreationClassName"));
         assertEquals("router1", ((HashMap)(action.getInvokeResult())).get("Name"));
 
-        routerInstanceName = "router2";
-        String routerDisplayName = "router2DisplayName";
-        opParams.clear();
-        opParams.add(routerInstanceName);
-        opParams.add(routerDisplayName);
 
-
-        action = new InvokeOperationAction(Logger.getRootLogger(), className, instanceName, "makeRouter", opParams);
-        action.execute(datasource);
-
-        Map<String, Object> instance = SmartsTestUtils.getTopologyAdapter().getObject(routerClassName, routerInstanceName);
-        assertEquals(routerClassName, instance.get("CreationClassName"));
-        assertEquals(routerInstanceName, instance.get("Name"));
-        assertEquals(routerDisplayName, instance.get("DisplayName"));
 
         // TEST ANOTHER OPERATION (makeServiceOffering)
         ArrayList parameters = new ArrayList();
@@ -124,5 +111,40 @@ public class InvokeOperationActionTest extends SmartsTestCase {
 
 
 
+    }
+
+    public void testWithAmOperationsWhichHasOptionalAndEmptyParams() throws Exception {
+
+        DatasourceTestUtils.getParamSupplier().setParam(SmartsTestUtils.getDatasourceParam(SmartsTestConstants.SMARTS_AM_CONNECTION_TYPE));
+        ConnectionParam param = SmartsTestUtils.getDatasourceParam(SmartsTestConstants.SMARTS_AM_CONNECTION_TYPE);
+        datasource = new SmartsConnectionImpl();
+        datasource.init(param);
+        datasource._connect();
+        SmartsTestUtils.deleteAllTopologyInstances("Router", ".*");
+
+
+        String className = "ICIM_ObjectFactory";
+        String instanceName = "ICIM-ObjectFactory";
+        String routerClassName = "Router";
+        String routerInstanceName = "router2";
+        String routerDisplayName = "router2DisplayName";
+        List opParams = new ArrayList();
+        opParams.add(routerInstanceName);
+        opParams.add(routerDisplayName);
+
+
+        InvokeOperationAction action = new InvokeOperationAction(Logger.getRootLogger(), className, instanceName, "makeRouter", opParams);
+        action.execute(datasource);
+
+        Map<String, Object> instance = SmartsTestUtils.getTopologyAdapter().getObject(routerClassName, routerInstanceName);
+        assertEquals(routerClassName, instance.get("CreationClassName"));
+        assertEquals(routerInstanceName, instance.get("Name"));
+        assertEquals(routerDisplayName, instance.get("DisplayName"));
+
+        action = new InvokeOperationAction(Logger.getRootLogger(), routerClassName, routerInstanceName, "remove", new ArrayList());
+        action.execute(datasource);
+
+        instance = SmartsTestUtils.getTopologyAdapter().getObject(routerClassName, routerInstanceName);
+        assertNull(instance);
     }
 }

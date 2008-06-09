@@ -22,18 +22,13 @@
  */
 package com.ifountain.smarts.datasource.queries;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import com.ifountain.smarts.datasource.BaseSmartsAdapter;
 import com.smarts.remote.SmRemoteException;
 import com.smarts.repos.MR_Choice;
 import com.smarts.repos.MR_Ref;
+import org.apache.log4j.Logger;
+
+import java.util.*;
 
 public class FindTopologyInstancesQuery implements IQuery {
 

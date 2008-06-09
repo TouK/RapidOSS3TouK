@@ -17,14 +17,6 @@
  */
 package com.ifountain.smarts.test.util;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import junit.framework.Assert;
-
 import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.core.connection.ConnectionParam;
@@ -35,21 +27,15 @@ import com.ifountain.smarts.datasource.BaseTopologyAdapter;
 import com.ifountain.smarts.util.SmartsConstants;
 import com.ifountain.smarts.util.SmartsHelper;
 import com.ifountain.smarts.util.SmartsPropertyHelper;
-import com.ifountain.smarts.util.params.NotificationAcknowledgeParams;
-import com.ifountain.smarts.util.params.NotificationAggregateParams;
-import com.ifountain.smarts.util.params.NotificationAuditParams;
-import com.ifountain.smarts.util.params.NotificationClearParams;
-import com.ifountain.smarts.util.params.NotificationCreateParams;
-import com.ifountain.smarts.util.params.NotificationIdentifierParams;
-import com.ifountain.smarts.util.params.NotificationNotifyParams;
-import com.smarts.repos.MR_AnyVal;
-import com.smarts.repos.MR_AnyValArray;
-import com.smarts.repos.MR_AnyValArraySet;
-import com.smarts.repos.MR_AnyValString;
-import com.smarts.repos.MR_AnyValUnsignedInt;
-import com.smarts.repos.MR_Choice;
-import com.smarts.repos.MR_PropertyNameValue;
-import com.smarts.repos.MR_Ref;
+import com.ifountain.smarts.util.params.*;
+import com.smarts.repos.*;
+import junit.framework.Assert;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SmartsTestUtils {
     private static String[] sessionNotifications = {
@@ -61,17 +47,31 @@ public class SmartsTestUtils {
     public static final String SMARTS_TEST_DATASOURCE_NAME = "SmartsTestDatasource";
     private static BaseNotificationAdapter notificationAdapter;
     private static BaseTopologyAdapter topologyAdapter;
-	public static SmartsConnectionParams getConnectionParams(){
-		return new SmartsConnectionParams(
-				CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_BROKER),
-				CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_DOMAIN),
-				CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_USER),
-				CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_PASSWORD)
-		);
-	}
-	
-	 public static ConnectionParam getDatasourceParam(){
-        SmartsConnectionParams connectionParams = getConnectionParams();
+	public static SmartsConnectionParams getConnectionParams(int domainType){
+        switch (domainType)
+        {
+            case SmartsTestConstants.SMARTS_SAM_CONNECTION_TYPE:
+                return new SmartsConnectionParams(
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_SAM_BROKER),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_SAM_DOMAIN),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_SAM_USER),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_SAM_PASSWORD)
+                );
+            case SmartsTestConstants.SMARTS_AM_CONNECTION_TYPE:
+                return new SmartsConnectionParams(
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_AM_BROKER),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_AM_DOMAIN),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_AM_USER),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_AM_PASSWORD)
+                );
+            default:
+                return null;
+        }
+    }
+
+
+     public static ConnectionParam getDatasourceParam(int domainType){
+        SmartsConnectionParams connectionParams = getConnectionParams(domainType);
         Map<String, Object> otherParams = new HashMap<String, Object>();
         otherParams.put(SmartsConnectionImpl.BROKER, connectionParams.getBroker());
         otherParams.put(SmartsConnectionImpl.DOMAIN, connectionParams.getDomain());

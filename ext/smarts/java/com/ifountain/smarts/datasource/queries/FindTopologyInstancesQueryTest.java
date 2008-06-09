@@ -22,19 +22,14 @@
  */
 package com.ifountain.smarts.datasource.queries;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.smarts.datasource.BaseSmartsAdapter;
 import com.ifountain.smarts.datasource.BaseTopologyAdapter;
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.ifountain.smarts.test.util.SmartsTestUtils;
+import org.apache.log4j.Logger;
+
+import java.util.*;
 
 public class FindTopologyInstancesQueryTest extends SmartsTestCase {
     

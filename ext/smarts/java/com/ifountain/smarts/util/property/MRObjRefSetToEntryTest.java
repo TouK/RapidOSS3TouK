@@ -23,12 +23,12 @@
 package com.ifountain.smarts.util.property;
 
 
-import java.util.Map;
-
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.smarts.repos.MR_AnyVal;
 import com.smarts.repos.MR_AnyValObjRefSet;
 import com.smarts.repos.MR_Ref;
+
+import java.util.Map;
 
 public class MRObjRefSetToEntryTest extends SmartsTestCase {
 

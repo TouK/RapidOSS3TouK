@@ -1,7 +1,6 @@
-package datasource;
+package datasource
 
 import org.apache.log4j.Logger;
-import java.util.Arrays;
 
 public class SingleTableDatabaseAdapter extends DatabaseAdapter {
     private String table;

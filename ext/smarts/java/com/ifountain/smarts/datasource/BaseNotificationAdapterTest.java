@@ -22,8 +22,6 @@
  */
 package com.ifountain.smarts.datasource;
 
-import java.util.*;
-
 import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.comp.test.util.WaitAction;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
@@ -32,21 +30,11 @@ import com.ifountain.smarts.test.util.SmartsTestUtils;
 import com.ifountain.smarts.util.SmartsConstants;
 import com.ifountain.smarts.util.SmartsHelper;
 import com.ifountain.smarts.util.SmartsPropertyHelper;
-import com.ifountain.smarts.util.params.NotificationAcknowledgeParams;
-import com.ifountain.smarts.util.params.NotificationAggregateParams;
-import com.ifountain.smarts.util.params.NotificationAuditParams;
-import com.ifountain.smarts.util.params.NotificationClearParams;
-import com.ifountain.smarts.util.params.NotificationCreateParams;
-import com.ifountain.smarts.util.params.NotificationIdentifierParams;
-import com.ifountain.smarts.util.params.NotificationUpdateParams;
+import com.ifountain.smarts.util.params.*;
 import com.smarts.remote.SmRemoteException;
-import com.smarts.repos.MR_AnyVal;
-import com.smarts.repos.MR_AnyValBoolean;
-import com.smarts.repos.MR_AnyValObjRef;
-import com.smarts.repos.MR_AnyValString;
-import com.smarts.repos.MR_AnyValUnsignedInt;
-import com.smarts.repos.MR_PropertyNameValue;
-import com.smarts.repos.MR_Ref;
+import com.smarts.repos.*;
+
+import java.util.*;
 
 public class BaseNotificationAdapterTest extends SmartsTestCase {
 

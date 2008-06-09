@@ -22,13 +22,14 @@
  */
 package com.ifountain.smarts.datasource.actions;
 
-import java.util.Arrays;
-
 import com.ifountain.core.connection.ConnectionParam;
+import com.ifountain.core.test.util.DatasourceTestUtils;
 import com.ifountain.smarts.connection.SmartsConnectionImpl;
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.ifountain.smarts.test.util.SmartsTestUtils;
 import com.smarts.remote.SmRemoteDomainManager;
+
+import java.util.Arrays;
 
 public class GetInstancesActionTest extends SmartsTestCase {
 
@@ -37,7 +38,7 @@ public class GetInstancesActionTest extends SmartsTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         datasource = new SmartsConnectionImpl();
-        ConnectionParam param = SmartsTestUtils.getDatasourceParam();
+        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME);
         datasource.init(param);
     }
     @Override

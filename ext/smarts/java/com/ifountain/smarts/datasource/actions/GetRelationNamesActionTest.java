@@ -22,13 +22,14 @@
  */
 package com.ifountain.smarts.datasource.actions;
 
-import java.util.Arrays;
-
 import com.ifountain.core.connection.ConnectionParam;
+import com.ifountain.core.test.util.DatasourceTestUtils;
 import com.ifountain.smarts.connection.SmartsConnectionImpl;
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.ifountain.smarts.test.util.SmartsTestUtils;
 import com.smarts.remote.SmRepositoryInterfaceHandler;
+
+import java.util.Arrays;
 
 public class GetRelationNamesActionTest extends SmartsTestCase {
 
@@ -46,7 +47,7 @@ public class GetRelationNamesActionTest extends SmartsTestCase {
         super.tearDown();
     }
     public void testExecute() throws Exception {
-        ConnectionParam param = SmartsTestUtils.getDatasourceParam();
+        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME);
         datasource.init(param);
         
         String className = "Router";

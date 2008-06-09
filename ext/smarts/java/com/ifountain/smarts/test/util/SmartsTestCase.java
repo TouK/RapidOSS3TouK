@@ -30,6 +30,6 @@ public class SmartsTestCase extends RapidCoreTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        DatasourceTestUtils.getParamSupplier().setParam(SmartsTestUtils.getDatasourceParam());
+        DatasourceTestUtils.getParamSupplier().setParam(SmartsTestUtils.getDatasourceParam(SmartsTestConstants.SMARTS_SAM_CONNECTION_TYPE));
     }
 }

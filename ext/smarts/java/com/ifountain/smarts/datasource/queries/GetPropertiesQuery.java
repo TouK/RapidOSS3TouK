@@ -22,17 +22,16 @@
  */
 package com.ifountain.smarts.datasource.queries;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import com.ifountain.smarts.datasource.BaseSmartsAdapter;
 import com.ifountain.smarts.util.property.MRArrayToMap;
 import com.smarts.remote.SmRemoteException;
 import com.smarts.repos.MR_AnyVal;
+import org.apache.log4j.Logger;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class GetPropertiesQuery implements IQuery {
 

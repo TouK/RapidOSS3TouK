@@ -1,12 +1,10 @@
-package datasource;
+package datasource
 
-import java.sql.PreparedStatement;
-
+import com.ifountain.core.connection.IConnection
+import com.ifountain.core.datasource.Action
+import connection.DatabaseConnectionImpl
+import java.sql.PreparedStatement
 import org.apache.log4j.Logger;
-
-import com.ifountain.core.connection.IConnection;
-import com.ifountain.core.datasource.Action;
-import connection.DatabaseConnectionImpl;
 
 public class ExecuteUpdateAction implements Action {
 

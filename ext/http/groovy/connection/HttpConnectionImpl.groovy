@@ -3,8 +3,7 @@ package connection
 import com.ifountain.comp.utils.HttpUtils
 import com.ifountain.core.connection.BaseConnection
 import com.ifountain.core.connection.ConnectionParam
-import com.ifountain.core.connection.exception.UndefinedConnectionParameterException;
-
+import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
 
 public class HttpConnectionImpl extends BaseConnection{
 

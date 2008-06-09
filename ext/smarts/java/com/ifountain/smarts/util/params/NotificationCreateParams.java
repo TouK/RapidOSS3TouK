@@ -17,9 +17,9 @@
  */
 package com.ifountain.smarts.util.params;
 
-import java.util.Map;
-
 import com.smarts.repos.MR_AnyVal;
+
+import java.util.Map;
 
 /**
  * User: kinikogl

@@ -154,9 +154,9 @@ public abstract class BaseSmartsAdapter extends BaseAdapter{
         return action.getInvokeResult();
     }
     public Object invokeOperation(String className, String instanceName, String opName, List<String>  opParams) throws Exception{
-    	List outerParams = new ArrayList();
-    	outerParams.add(opParams);
-        InvokeOperationAction action = new InvokeOperationAction(logger, className, instanceName, opName, outerParams);
+    	List tempParams = new ArrayList();
+    	tempParams.addAll(opParams);
+        InvokeOperationAction action = new InvokeOperationAction(logger, className, instanceName, opName, tempParams);
         executeAction(action);
         return action.getInvokeResult();
     }

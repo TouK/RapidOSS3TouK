@@ -25,6 +25,7 @@ package com.ifountain.smarts.datasource.actions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -42,6 +43,7 @@ public class InvokeOperationActionTest extends SmartsTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         datasource = new SmartsConnectionImpl();
+        SmartsTestUtils.deleteAllTopologyInstances("Router", ".*");
     }
     @Override
     protected void tearDown() throws Exception {
@@ -50,6 +52,8 @@ public class InvokeOperationActionTest extends SmartsTestCase {
         }
         super.tearDown();
     }
+
+
     public void testExecute() throws Exception {
         ConnectionParam param = SmartsTestUtils.getDatasourceParam();
         datasource.init(param);
@@ -60,10 +64,8 @@ public class InvokeOperationActionTest extends SmartsTestCase {
         
         String routerClassName = "Router";
         String routerInstanceName = "router1";
-        List innerParams = new ArrayList();
-        innerParams.add(routerInstanceName);
         List opParams = new ArrayList();
-        opParams.add(innerParams);
+        opParams.add(routerInstanceName);
         
         InvokeOperationAction action = new InvokeOperationAction(Logger.getRootLogger(), className, instanceName, opName, opParams);
         try {
@@ -85,13 +87,25 @@ public class InvokeOperationActionTest extends SmartsTestCase {
 
         assertEquals("Router", ((HashMap)(action.getInvokeResult())).get("CreationClassName"));
         assertEquals("router1", ((HashMap)(action.getInvokeResult())).get("Name"));
-        
+
+        routerInstanceName = "router2";
+        String routerDisplayName = "router2DisplayName";
+        opParams.clear();
+        opParams.add(routerInstanceName);
+        opParams.add(routerDisplayName);
+
+
+        action = new InvokeOperationAction(Logger.getRootLogger(), className, instanceName, "makeRouter", opParams);
+        action.execute(datasource);
+
+        Map<String, Object> instance = SmartsTestUtils.getTopologyAdapter().getObject(routerClassName, routerInstanceName);
+        assertEquals(routerClassName, instance.get("CreationClassName"));
+        assertEquals(routerInstanceName, instance.get("Name"));
+        assertEquals(routerDisplayName, instance.get("DisplayName"));
+
         // TEST ANOTHER OPERATION (makeServiceOffering)
-        ArrayList values = new ArrayList();
-        values.add("NewOffering");
-//        values.add("1");
         ArrayList parameters = new ArrayList();
-        parameters.add(values);
+        parameters.add("NewOffering");
         
         opName = "makeServiceOffering";
 //        action = new InvokeOperationAction(Logger.getRootLogger(), className, instanceName, opName, parameters);
@@ -100,14 +114,15 @@ public class InvokeOperationActionTest extends SmartsTestCase {
 //        assertEquals("true", ((HashMap)(action.getInvokeResult())));
         
         // TEST YET ANOTHER OPERATION (isInstanceOf)
-        values = new ArrayList();
-        values.add("Router");
         parameters = new ArrayList();
-        parameters.add(values);
+        parameters.add("Router");
         
         opName = "isInstanceOf";
         action = new InvokeOperationAction(Logger.getRootLogger(), "Router", "router1", opName, parameters);
         action.execute(datasource);
         assertEquals("true", ((HashMap)(action.getInvokeResult())).get("element0"));
+
+
+
     }
 }

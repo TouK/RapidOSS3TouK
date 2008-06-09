@@ -102,12 +102,8 @@ public class InvokeOperationAction implements Action {
         return args;
     }*/
     private MR_AnyVal[] getArgsAsMRAnyValArray(IConnection ds, String className, String methodName,  List stringArgs) throws IOException, SmRemoteException {
-    	String[] opargs = ((SmartsConnectionImpl)ds).getDomainManager().getOpArgs(className, methodName);
-    	if(opargs.length<stringArgs.size()) throw new SmRemoteException("Too many arguments provided for operation: " + methodName + ". Required " + opargs.length + " arguments.");
-    	StringBuffer opArgsBuffer = new StringBuffer();
-    	for (int i = 0; i < opargs.length; i++) {
-    		opArgsBuffer.append(opargs[i]).append(", ");
-    	}
+    	String[] opargs = ((SmartsConnectionImpl)ds).getDomainManager().getOpArgs(className, methodName);    	if(opargs.length<stringArgs.size()) throw new SmRemoteException("Too many arguments provided for operation: " + methodName + ". Required " + opargs.length + " arguments.");
+    	
     	MR_AnyVal[] args = null;
     	if(opargs.length == 0){
     		args = new MR_AnyVal[0];
@@ -118,7 +114,7 @@ public class InvokeOperationAction implements Action {
     		String oparg = opargs[i];
     		int argtype = ((SmartsConnectionImpl)ds).getDomainManager().getArgType(className, methodName, oparg);
     		logger.debug("Argument type for " + oparg + "is " + argtype);
-    		args[i] = getArgAsMRAnyVal(argtype, (List) stringArgs.get(i), methodName);
+    		args[i] = getArgAsMRAnyVal(argtype, stringArgs.get(i), methodName);
     		logger.debug("Arg type for primitive argument is: " + args[i].getType());
     		if(args[i] == null){
     			throw new IOException("Unsupported argument type: " + argtype);
@@ -127,84 +123,93 @@ public class InvokeOperationAction implements Action {
     	return args;
     }
 
-    public MR_AnyVal getArgAsMRAnyVal(int argtype, List args, String methodName) throws IOException{
+    public MR_AnyVal getArgAsMRAnyVal(int argtype, Object args, String methodName) throws IOException{
         MR_AnyVal val = null;
         logger.debug("Argument to convert into MRAnyVal: " + args);
         if(argtype == MR_ValType.MR_OBJREF){
-        	if (args.get(0) instanceof List) 
+            List listArgs = (List)args;
+            if (listArgs.get(0) instanceof List)
         	{
             	logger.debug("Processing OBJREF_SET argument");
             	MR_AnyValObjRefSet set = null;
             	if (methodName.equalsIgnoreCase("makeOneVuCircuit")) {
-            		set = processMakeOneVuCircuitObjRefSetArgument(args);
+            		set = processMakeOneVuCircuitObjRefSetArgument(listArgs);
             	}
             	if (methodName.equalsIgnoreCase("makeHOCircuit")) {
-            		set = processMakeOneVuCircuitObjRefSetArgument(args);
+            		set = processMakeOneVuCircuitObjRefSetArgument(listArgs);
             	}
             	if (methodName.equalsIgnoreCase("makeHOCircuitWithoutEndCTP")) {
-            		set = processMakeOneVuCircuitObjRefSetArgument(args);
+            		set = processMakeOneVuCircuitObjRefSetArgument(listArgs);
             	}
             	if (methodName.equalsIgnoreCase("makeLOCircuitWithoutEndCTP")) {
-            		set = processMakeOneVuCircuitObjRefSetArgument(args);
+            		set = processMakeOneVuCircuitObjRefSetArgument(listArgs);
             	}
                 if (methodName.equalsIgnoreCase("makeLOCircuit")) {
-                    set = processMakeOneVuCircuitObjRefSetArgument(args);
+                    set = processMakeOneVuCircuitObjRefSetArgument(listArgs);
                 }
             	val = set;
 			}
         	else
         	{
-                logger.debug("Processing ObjRef argument with arguments: " + (String)args.get(0) + " and " + (String)args.get(1));
-                if(args.size()!=2) throw new IOException(MSG_SUBARGUMENTS_REQUIRED);
-                MR_AnyValObjRef objRef = new MR_AnyValObjRef(new MR_Ref((String)args.get(0), (String)args.get(1)));
+                logger.debug("Processing ObjRef argument with arguments: " + (String)listArgs.get(0) + " and " + (String)listArgs.get(1));
+                if(listArgs.size()!=2) throw new IOException(MSG_SUBARGUMENTS_REQUIRED);
+                MR_AnyValObjRef objRef = new MR_AnyValObjRef(new MR_Ref((String)listArgs.get(0), (String)listArgs.get(1)));
                 val = objRef;
         	}
         }
         else if(argtype == MR_ValType.MR_ANYVALARRAY){
             logger.debug("Processing Array argument");
-            
+            List listArgs = (List)args;
             MR_AnyValArray mr_anyValArray = null;
             if (methodName.equalsIgnoreCase("makeOpticalNetworkElement")) {
-				mr_anyValArray = processMakeOpticalNetworkElementArrayArgument(args);
+				mr_anyValArray = processMakeOpticalNetworkElementArrayArgument(listArgs);
 			}
             else if (methodName.equalsIgnoreCase("makePG")) {
-            	mr_anyValArray = processMakePGArrayArgument(args);
+            	mr_anyValArray = processMakePGArrayArgument(listArgs);
 			}
             else {
-            	mr_anyValArray = processArrayArgument(args);
+            	mr_anyValArray = processArrayArgument(listArgs);
             }
             val = mr_anyValArray;
         }
         else if(argtype == MR_ValType.MR_OBJREF_SET){
         	logger.debug("Processing OBJREF_SET argument");
-        	MR_AnyValObjRefSet set = null;
+            List listArgs = (List)args;
+            MR_AnyValObjRefSet set = null;
         	
         	if (methodName.equalsIgnoreCase("makeOneVuCircuit")) 
         	{
-        		set = processMakeOneVuCircuitObjRefSetArgument(args);
+        		set = processMakeOneVuCircuitObjRefSetArgument(listArgs);
         	}
         	if (methodName.equalsIgnoreCase("makeHOCircuit")) 
         	{
-        		set = processMakeOneVuCircuitObjRefSetArgument(args);
+        		set = processMakeOneVuCircuitObjRefSetArgument(listArgs);
         	}
         	if (methodName.equalsIgnoreCase("makeHOCircuitWithoutEndCTP")) 
         	{
-        		set = processMakeOneVuCircuitObjRefSetArgument(args);
+        		set = processMakeOneVuCircuitObjRefSetArgument(listArgs);
         	}
         	if (methodName.equalsIgnoreCase("makeLOCircuitWithoutEndCTP")) {
-        		set = processMakeOneVuCircuitObjRefSetArgument(args);
+        		set = processMakeOneVuCircuitObjRefSetArgument(listArgs);
         	}
             if (methodName.equalsIgnoreCase("makeLOCircuit")) {
-                set = processMakeOneVuCircuitObjRefSetArgument(args);
+                set = processMakeOneVuCircuitObjRefSetArgument(listArgs);
             }
         	val = set;
         }
         else{
-            logger.debug("Processing primitive argument: " + (String)args.get(0));
-            val = SmartsPropertyHelper.getAsMrAnyVal(argtype, (String)args.get(0));
-            logger.debug("Arg type for primitive argument is: " + val.getType());
-            if(val == null){
-                throw new IOException("Unsupported argument type: " + argtype);
+            if(args instanceof String)
+            {
+                logger.debug("Processing primitive argument: " + (String)args);
+                val = SmartsPropertyHelper.getAsMrAnyVal(argtype, (String)args);
+                logger.debug("Arg type for primitive argument is: " + val.getType());
+                if(val == null){
+                    throw new IOException("Unsupported argument type: " + argtype);
+                }
+            }
+            else
+            {
+                throw new IOException("Unsupported argument : " + args + ".  Primitive argurments can only be passed string.");
             }
         }
         return val;

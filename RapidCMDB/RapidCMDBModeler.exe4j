@@ -16,7 +16,7 @@
       <versionLine x="20" y="40" text="version %VERSION%" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
     </text>
   </splashScreen>
-  <java mainClass="org.codehaus.groovy.grails.cli.support.GrailsStarter" vmParameters="&quot;-Dgroovy.starter.conf=%EXE4J_EXEDIR%..\conf\groovy-starter.conf&quot; &quot;-Dgrails.home=%EXE4J_EXEDIR%..&quot; &quot;-Dtools.jar=${JAVA_HOME}\lib\tools.jar&quot; &quot;-Dgrails.work.dir=%EXE4J_EXEDIR%..\temp&quot; &quot;-Dbase.dir=.&quot; &quot;-Drs.modeler=true&quot;" arguments="--main com.ifountain.grails.RapidGrailsScriptRunner --classpath . --conf %EXE4J_EXEDIR%..\conf\groovy-starter.conf run-app" allowVMPassthroughParameters="true" preferredVM="" minVersion="1.5" maxVersion="" allowBetaVM="false" jdkOnly="true">
+  <java mainClass="org.codehaus.groovy.grails.cli.support.GrailsStarter" vmParameters="&quot;-Dgroovy.starter.conf=%EXE4J_EXEDIR%..\conf\groovy-starter.conf&quot; &quot;-Dgrails.home=%EXE4J_EXEDIR%..&quot; &quot;-Dgrails.work.dir=%EXE4J_EXEDIR%..\temp&quot; &quot;-Dbase.dir=.&quot; &quot;-Drs.modeler=true&quot;" arguments="--main com.ifountain.grails.RapidGrailsScriptRunner --classpath . --conf %EXE4J_EXEDIR%..\conf\groovy-starter.conf run-app" allowVMPassthroughParameters="true" preferredVM="" minVersion="1.5" maxVersion="" allowBetaVM="false" jdkOnly="false">
     <searchSequence>
       <envVar name="JAVA_HOME" />
       <envVar name="JDK_HOME" />

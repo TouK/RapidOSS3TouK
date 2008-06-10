@@ -1,4 +1,5 @@
--classpath/a %EXE4J_JVM_HOME%\..\lib\tools.jar
+-classpath/a %EXE4J_EXEDIR%\..\lib\tools.jar
+-Dtools.jar=%EXE4J_EXEDIR%\..\lib\tools.jar
 -Xmx512m
 -Dserver.port=12222
 -Dgrails.env=production 

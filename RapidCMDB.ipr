@@ -281,7 +281,7 @@
             <SvnBranchConfiguration>
               <option name="branchUrls">
                 <list>
-                  <option value="http://dev.ifountain.org/repos/os/tags/RapidCMDB-0.2.1_20080421" />
+                  <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_b08052619" />
                 </list>
               </option>
               <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/RapidModules" />

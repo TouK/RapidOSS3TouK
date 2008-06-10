@@ -76,37 +76,6 @@ class ModelController {
         }
     }
 
-    def reloadOperations = {
-        def model = Model.get(params.id)
-        if (model) {
-            def modelClass = grailsApplication.getClassForName(model.name)
-            if (modelClass)
-            {
-                try
-                {
-
-                    modelClass.metaClass.invokeStaticMethod(modelClass, "reloadOperations", [] as Object[]);
-                    flash.message = "Model reloaded"
-                    redirect(action: show, id: model.id)
-                } catch (t)
-                {
-                    flash.message = "Exception occurred while reloading model operations Reason:${t.toString()}"
-                    redirect(action: show, id: model.id)
-                }
-            }
-            else
-            {
-                flash.message = "Model currently not loaded by application. You should reload application."
-                redirect(action: show, id: model.id)
-            }
-
-        }
-        else {
-            flash.message = MODEL_DOESNOT_EXIST
-            redirect(action: list, controller: 'model')
-        }
-    }
-
     def show = {
         def modelPropertySortProp = params.modelPropertySortProp != null ? params.modelPropertySortProp : "name"
         def modelPropertySortOrder = params.modelPropertySortOrder != null ? params.modelPropertySortOrder : "asc"

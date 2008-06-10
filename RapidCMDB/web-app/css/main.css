@@ -118,10 +118,10 @@ padding:7px 12px;
     right:0;
 }
 
-a.refresh {
+.menuButton a.refresh {
     background: url(../images/skin/arrow_refresh.png) center left no-repeat;
     padding-left: 25px;
-    font-size: 16px;
+    color: #333;
 }
 
 a.export {

@@ -260,4 +260,27 @@ class ${className}Controller {
             }
         }
     }
+
+    def reloadOperations = {
+        def modelClass = grailsApplication.getClassForName("${className}")
+        if (modelClass)
+        {
+            try
+            {
+
+                modelClass.metaClass.invokeStaticMethod(modelClass, "reloadOperations", [] as Object[]);
+                flash.message = "Model operations reloaded"
+                redirect(action:list)
+            } catch (t)
+            {
+                flash.message = "Exception occurred while reloading model operations Reason:\${t.toString()}"
+                 redirect(action:list)
+            }
+        }
+        else
+        {
+            flash.message = "Model currently not loaded by application. You should reload application."
+            redirect(action:list)
+        }
+    }
 }

@@ -104,6 +104,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         Class cls = compileClass(model.name);
         def object = cls.newInstance();
+        assertTrue(object instanceof IGeneratedModel)
         object.keyprop = "keypropvalue";
         checkExistanceOfMetaDataProperties(object);
         assertEquals ("Class1[keyprop:keypropvalue]", object.toString());
@@ -136,12 +137,14 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         Class childModelClass = compileClass(childModel.name);
         def childModelInstance = childModelClass.newInstance();
+        assertTrue(childModelInstance instanceof IGeneratedModel)
         checkExistanceOfMetaDataProperties(childModelInstance);
         childModelInstance.keyprop = "keyPropValue"
         assertEquals ("Class1[keyprop:keyPropValue]", childModelInstance.toString());
 
         Class parentModelClass = compileClass(parentModel.name);
         def parentModelInstance = parentModelClass.newInstance();
+        assertTrue(parentModelInstance instanceof IGeneratedModel)
         checkExistanceOfMetaDataProperties(parentModelInstance);
 
         ModelGenerator.getInstance().createModelOperationsFile (childModelClass);

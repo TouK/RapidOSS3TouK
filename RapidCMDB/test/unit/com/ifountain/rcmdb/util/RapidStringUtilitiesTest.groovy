@@ -17,7 +17,17 @@ class RapidStringUtilitiesTest extends RapidCmdbTestCase{
         assertEquals ("tri", "trial".substringBefore("al"));
         assertEquals ("java.lang.String", String.name);
         assertTrue ( "trial".equals("trial"));
+        try
+        {
+            "trial".undefinedMethod("al");
+            fail("Should throw exception");
+        }
+        catch(MissingMethodException  e)
+        {
 
+        }
     }
+
+
 
 }

@@ -36,11 +36,11 @@ class ApplicationController {
     public static final String RESTART_APPLICATION = "restart.application"
     def sessionFactory;
     def searchableService;
-    def index = { render(view:"application") }
+    def index = {render(view: "application")}
     def reload = {
         def oldDomainClasses = [:]
-        PropertyAction.findAllByWillBeDeleted(true)*.delete(flush:true);
-        ModelAction.findAllByWillBeDeleted(true)*.delete(flush:true);
+        PropertyAction.findAllByWillBeDeleted(true)*.delete(flush: true);
+        ModelAction.findAllByWillBeDeleted(true)*.delete(flush: true);
         def baseDir = grailsApplication.config.toProperties()["rapidCMDB.base.dir"];
         def tempBaseDir = grailsApplication.config.toProperties()["rapidCMDB.temp.dir"];
         def currentModelDir = "${baseDir}/grails-app/domain";
@@ -48,14 +48,14 @@ class ApplicationController {
         def tempModelDir = "${tempBaseDir}/grails-app/domain";
         def tempModelDirFile = new File(tempModelDir);
         Collection tempModelFileList = [];
-        if(tempModelDirFile.exists()){
-           tempModelFileList = FileUtils.listFiles(tempModelDirFile, ["groovy"] as String[], false);   
+        if (tempModelDirFile.exists()) {
+            tempModelFileList = FileUtils.listFiles(tempModelDirFile, ["groovy"] as String[], false);
         }
         Collection currentModelFileList = FileUtils.listFiles(currentModelDirFile, ["groovy"] as String[], false);
-        currentModelFileList.each {File modelFile->
+        currentModelFileList.each {File modelFile ->
             String modelName = StringUtils.substringBefore(modelFile.name, ".groovy");
             GrailsDomainClass cls = grailsApplication.getDomainClass(modelName);
-            if(cls)
+            if (cls)
             {
                 oldDomainClasses[modelName] = cls;
             }
@@ -65,8 +65,9 @@ class ApplicationController {
         GrailsAwareClassLoader gcl = new GrailsAwareClassLoader(Thread.currentThread().getContextClassLoader().parent);
         gcl.setShouldRecompile(true);
         gcl.addClasspath(tempModelDir);
+        gcl.addClasspath(baseDir + "/src/groovy");
         gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
-        tempModelFileList.each {File modelFile->
+        tempModelFileList.each {File modelFile ->
             String modelName = StringUtils.substringBefore(modelFile.name, ".groovy");
             def cls = gcl.loadClass(modelName);
             def domainClass = new DefaultGrailsDomainClass(cls);
@@ -76,14 +77,14 @@ class ApplicationController {
         GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClassesWillBeGenerated as GrailsClass[], newDomainClassesMap);
         domainClassesWillBeGenerated.each {GrailsDomainClass newDomainClass ->
             GrailsDomainClass oldDomainClass = oldDomainClasses[newDomainClass.name];
-            if(oldDomainClass)
+            if (oldDomainClass)
             {
                 List actions = ExistingDataAnalyzer.createActions(oldDomainClass, newDomainClass);
-                actions.each{
-                    if(it instanceof ModelAction && it.action == ModelAction.GENERATE_RESOURCES)
+                actions.each {
+                    if (it instanceof ModelAction && it.action == ModelAction.GENERATE_RESOURCES)
                     {
                         ModelUtils.generateModelArtefacts(newDomainClass, baseDir);
-                        ModelGenerator.getInstance().createModelOperationsFile (newDomainClass.clazz);
+                        ModelGenerator.getInstance().createModelOperationsFile(newDomainClass.clazz);
                     }
                     else
                     {
@@ -94,20 +95,20 @@ class ApplicationController {
             else
             {
                 ModelUtils.generateModelArtefacts(newDomainClass, baseDir);
-                ModelGenerator.getInstance().createModelOperationsFile (newDomainClass.class);
+                ModelGenerator.getInstance().createModelOperationsFile(newDomainClass.clazz);
             }
         }
 
         oldDomainClasses.each {String oldClassName, GrailsDomainClass oldDomainClass ->
-            if(!newDomainClassesMap.containsKey(oldClassName))
+            if (!newDomainClassesMap.containsKey(oldClassName))
             {
-                ModelUtils.deleteModelArtefacts (baseDir, oldClassName);
-                ModelGenerator.getInstance().getGeneratedModelFile (oldClassName).delete();
-                oldDomainClass.clazz.metaClass.invokeStaticMethod (oldDomainClass.clazz, "unindex", [] as Object[]);
+                ModelUtils.deleteModelArtefacts(baseDir, oldClassName);
+                ModelGenerator.getInstance().getGeneratedModelFile(oldClassName).delete();
+                oldDomainClass.clazz.metaClass.invokeStaticMethod(oldDomainClass.clazz, "unindex", [] as Object[]);
             }
         }
-        if(tempModelDirFile.exists()){
-            FileUtils.copyDirectory (tempModelDirFile, currentModelDirFile);
+        if (tempModelDirFile.exists()) {
+            FileUtils.copyDirectory(tempModelDirFile, currentModelDirFile);
         }
         flash.message = "Reloading application."
         render(view: "application", controller: "application");
@@ -116,35 +117,32 @@ class ApplicationController {
     }
 
 
-
-
-
     def exportConfiguration = {
         def exportDir = params.dir;
-        if(!exportDir)
+        if (!exportDir)
         {
             exportDir = "backup"
         }
         ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
         def configurationItems = [];
-        configurationItems.addAll (BaseDatasource.list());
-        configurationItems.addAll (DatasourceName.list());
-        configurationItems.addAll (Connection.list());
-        configurationItems.addAll (Model.list());
-        configurationItems.addAll (CmdbScript.list());
-        impExpUtils.export (exportDir, configurationItems);
+        configurationItems.addAll(BaseDatasource.list());
+        configurationItems.addAll(DatasourceName.list());
+        configurationItems.addAll(Connection.list());
+        configurationItems.addAll(Model.list());
+        configurationItems.addAll(CmdbScript.list());
+        impExpUtils.export(exportDir, configurationItems);
         flash.message = "Configuration data successfully exported to dir ${exportDir}."
         render(view: "application", controller: "application");
     }
 
     def importConfiguration = {
         def importDir = params.dir;
-        if(!importDir)
+        if (!importDir)
         {
             importDir = "backup"
         }
         ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
         impExpUtils.importConfiguration(importDir);
-        redirect(action:reload,controller:'application');
+        redirect(action: reload, controller: 'application');
     }
 }

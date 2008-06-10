@@ -19,7 +19,7 @@ export GRAILS_HOME=$RS_HOME
 KILL_TIMEOUT=120
 MAX_MEMORY_SIZE="512"				#max heap size for JVM
 
-JAVA_OPTS=" -Xmx"$MAX_MEMORY_SIZE"m -Ddisable.auto.recompile=true -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp -Dgrails.env=production -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., -Dgroovy.full.stacktrace=false $JAVA_OPTS"
+JAVA_OPTS=" -Xmx"$MAX_MEMORY_SIZE"m -Ddisable.auto.recompile=true -Dserver.port=12222 -Dgrails.work.dir=$RS_HOME/temp -Dgrails.env=production -Dtools.jar=$RS_HOME/lib/tools.jar -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., -Dgroovy.full.stacktrace=false $JAVA_OPTS"
 
 PIDDIR=$RS_HOME/bin/pids  ##pid directory
 PIDFILE=$PIDDIR/rspid ##pid file

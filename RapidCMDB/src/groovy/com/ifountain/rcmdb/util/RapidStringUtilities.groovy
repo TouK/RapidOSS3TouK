@@ -14,20 +14,20 @@ class RapidStringUtilities {
      private RapidStringUtilities(){}
      public static void registerStringUtils()
      {
-        MetaClass tempCls = String.metaClass;
-        def metaMethods = [:]
-        tempCls.getMethods().each{
-            metaMethods[it.name] = it;
-        }
-        StringUtils.metaClass.getMethods().each{MetaMethod method->
-            if(tempCls.getMetaMethod(method.name, method.getNativeParameterTypes()) == null && metaMethods[method.name] == null)
-            {
-                tempCls."${method.name}" = {args->
-                    List newArgs = new ArrayList(InvokerHelper.asList (args));
-                    newArgs.add (0, delegate);
-                    return method.invoke(StringUtils, newArgs as Object[]);
+        String.metaClass.methodMissing = {java.lang.String methodName, params->
+                def newParams = new ArrayList(InvokerHelper.asList(params));
+                newParams.add (0, delegate);
+                try
+                {
+                    return StringUtils.metaClass.invokeStaticMethod(StringUtils, methodName, newParams as Object[]);
                 }
-            }
+                catch(MissingMethodException e)
+                {
+                    throw new MissingMethodException (methodName, delegate.class, params);
+                }
         }
      }
+
+    
 }
+

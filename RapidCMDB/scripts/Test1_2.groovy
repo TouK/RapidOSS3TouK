@@ -24,8 +24,8 @@ for (i in 0.. results.size()-1){
 	
 	assert results[i].prop1 == null;
 	assert results[i].prop2 == null;
-	assert results[i].prop3 == "RCMDB_Default";
-	assert results[i].prop4 == -1111;
+	assert results[i].prop3 == "";
+	assert results[i].prop4 == 0;
 	assert results[i].prop5 == "my default for blank false";
 	assert results[i].prop6 == 9999;
 	assert results[i].prop7 == "my default for blank true";

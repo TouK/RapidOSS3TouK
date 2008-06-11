@@ -12,9 +12,9 @@ println "TEST RESULTS FOR TEST4_2"
 
 def results = SmartsObject.search("*").results;
 for (i in 0..results.size()-1){
-	assert results[i].displayName == "RCMDB_Default";
-	assert results[i].smartDs == -1111;
-	//assert results[i].prop5 == -1111;
+	assert results[i].displayName == "";
+	assert results[i].smartDs == 0;
+	//assert results[i].prop5 == 0;
 	//assert results[i].prop7 == null;
 }
 
@@ -25,7 +25,7 @@ println result.errors;  // assert for error message here since displayName and s
 result = SmartsObject.get(name:'route2',creationClassName:'Router');
 println "result.smartDs: $result.smartDs"
 assert result.smartDs == 6;
-assert result.prop5 == -1111;
+assert result.prop5 == 0;
 assert result.prop6 == 9999;
 //assert result.prop7 == null;
 //assert result.prop8 == 6666;

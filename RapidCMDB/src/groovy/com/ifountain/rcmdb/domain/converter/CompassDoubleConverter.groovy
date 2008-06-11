@@ -16,6 +16,6 @@ class CompassDoubleConverter extends AbstractCompassConverterWrapper{
     }
 
     protected Object getDefaultValue() {
-        return new Double(-1111.0);
+        return new Double(0);
     }
 }

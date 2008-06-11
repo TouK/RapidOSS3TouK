@@ -189,11 +189,11 @@ class BootStrap {
         if (defaultValue) return defaultValue;
         if (String.isAssignableFrom(newPropType))
         {
-            return "RCMDB_Default"
+            return ""
         }
         else if (Number.isAssignableFrom(newPropType))
         {
-            return -1111;
+            return 0;
         }
         else if (Date.isAssignableFrom(newPropType))
         {

@@ -41,7 +41,7 @@ prop.blank = false;
 
 prop.save(flush:true);
 
-// String to Number (blank=true, defaultValue provided by the user) expected after conversion: -1111
+// String to Number (blank=true, defaultValue provided by the user) expected after conversion: 0
 // This test fails: Invalid default value. It should be a number.
 prop= ModelProperty.findByNameAndModel("prop5",myModel);
 prop.type = ModelProperty.numberType;

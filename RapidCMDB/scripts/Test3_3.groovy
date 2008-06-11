@@ -11,6 +11,6 @@ import datasource.*
 println "TEST RESULTS FOR TEST3_3"
 def result = SmartsObject.get(name:'route3', creationClassName:'Router');
 println "result.prop4: $result.prop4"
-assert result.prop4 == -1111;   
+assert result.prop4 == 0;   
 
 return "Success";

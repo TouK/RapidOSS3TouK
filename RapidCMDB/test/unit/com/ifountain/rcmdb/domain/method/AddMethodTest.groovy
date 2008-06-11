@@ -247,6 +247,8 @@ class AddMethodDomainObject1
     def static query;
     def static indexList = [];
     def relationsShouldBeAdded;
+    def relationsShouldBeRemoved;
+    def rel1;
     Errors errors;
     String prop1;
     String prop2;
@@ -274,6 +276,11 @@ class AddMethodDomainObject1
     def addRelation(Map relations)
     {
         relationsShouldBeAdded = relations;
+    }
+
+    def removeRelation(Map relations)
+    {
+        relationsShouldBeRemoved = relations;
     }
 
     public boolean equals(Object obj) {

@@ -54,6 +54,48 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
     }
 
+
+    public void testUpdateMethodWithSettingRelationToNull()
+    {
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        AddMethodDomainObject1 relatedObject = new AddMethodDomainObject1(id:100);
+
+        def relations = ["rel1":new Relation("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE)];
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
+
+        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+
+        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        assertEquals (objectBeforeAdd, addedObject);
+        addedObject.rel1 = relatedObject;
+
+        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:null];
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
+        def updatedObject = update.invoke (addedObject, [props] as Object[]);
+        assertEquals (addedObject.id, updatedObject.id);
+        assertEquals ("newProp2Value", updatedObject.prop2);
+        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
+
+        assertEquals(0, updatedObject.relationsShouldBeAdded.size());
+        assertEquals(relatedObject, updatedObject.relationsShouldBeRemoved.get("rel1"));
+
+        addedObject.rel1 = null;
+
+        update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
+        updatedObject = update.invoke (addedObject, [props] as Object[]);
+
+        assertEquals(0, updatedObject.relationsShouldBeAdded.size());
+        assertEquals(0, updatedObject.relationsShouldBeRemoved.size());
+
+        addedObject.rel1 = [];
+
+        update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
+        updatedObject = update.invoke (addedObject, [props] as Object[]);
+
+        assertEquals(0, updatedObject.relationsShouldBeAdded.size());
+        assertEquals(0, updatedObject.relationsShouldBeRemoved.size());
+    }
+
     public void testUpdateWithChildClass()
     {
         ChildAddMethodDomainObject objectBeforeAdd = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop6:"object1Prop6Value");

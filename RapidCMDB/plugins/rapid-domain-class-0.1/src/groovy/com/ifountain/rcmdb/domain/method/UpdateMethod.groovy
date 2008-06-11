@@ -54,7 +54,8 @@ class UpdateMethod extends AbstractRapidDomainMethod{
 
     public Object invoke(Object domainObject, Object[] arguments) {
         def props = arguments[0];
-        def relationMap = [:]
+        def relationToBeAddedMap = [:]
+        def relationToBeRemovedMap = [:]
         Errors errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
         props.each{key,value->
             if(!relations.containsKey(key))
@@ -82,7 +83,18 @@ class UpdateMethod extends AbstractRapidDomainMethod{
             }
             else
             {
-                relationMap[key] = value;
+                if(value)
+                {
+                    relationToBeAddedMap[key] = value;
+                }
+                else
+                {
+                    def currentRelatedObjects = domainObject[key];
+                    if(currentRelatedObjects)
+                    {
+                        relationToBeRemovedMap[key] = currentRelatedObjects;
+                    }
+                }
             }
         }
         if(!errors.hasErrors())
@@ -92,7 +104,8 @@ class UpdateMethod extends AbstractRapidDomainMethod{
         if(!errors.hasErrors())
         {
             domainObject.index(domainObject);
-            domainObject.addRelation(relationMap);
+            domainObject.addRelation(relationToBeAddedMap);
+            domainObject.removeRelation(relationToBeRemovedMap);
         }
         else
         {

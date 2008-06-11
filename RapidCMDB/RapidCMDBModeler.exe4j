@@ -22,8 +22,8 @@
       <envVar name="JDK_HOME" />
     </searchSequence>
     <classPath>
-      <archive location="../lib/groovy-all-1.5.4.jar" failOnError="true" />
-      <archive location="../dist/grails-cli-1.0.1.jar" failOnError="true" />
+      <archive location="../lib/groovy-all-1.5.6.jar" failOnError="true" />
+      <archive location="../dist/grails-cli-1.0.3.jar" failOnError="true" />
       <archive location="../lib/runner.jar" failOnError="true" />
     </classPath>
     <nativeLibraryDirectories />

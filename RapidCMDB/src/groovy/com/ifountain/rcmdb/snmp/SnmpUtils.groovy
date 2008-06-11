@@ -167,7 +167,7 @@ public class SnmpUtils {
                     results.add(vbMap);
                 }
             } else {
-                throw new Exception("Snmp request for the table defined with " + o.toString() + " received timeout");
+                return new ArrayList();
             }
         }
         return results;

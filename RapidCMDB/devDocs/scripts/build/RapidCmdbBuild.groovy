@@ -137,6 +137,7 @@ class RapidCmdbBuild extends Build {
         setVersionAndBuildNumber(env.versionInBuild);
 
         ant.copy(todir: "$env.dist_rapid_cmdb/grails-app") {
+
             ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app") {
                 if (!TEST) {
                     ant.exclude(name: "**/test/**")
@@ -347,11 +348,13 @@ class RapidCmdbBuild extends Build {
     }
 
     def unzipGrails() {
-        ant.unzip(src: (String) classpath.getProperty("grails-1_0_1_zip"), dest: env.distribution);
+        ant.unzip(src: (String) classpath.getProperty("grails-1_0_3_zip"), dest: env.distribution);
         ant.copy(file: (String) classpath.getProperty("runner_jar"), toDir: env.distribution + "/RapidServer/lib");
-        ant.move(file: env.dist_rapid_server + "/INSTALL", tofile: env.dist_rapid_server + "/GRAILS_INSTALL");
-        ant.move(file: env.dist_rapid_server + "/README", tofile: env.dist_rapid_server + "/GRAILS_README");
-        ant.move(file: env.dist_rapid_server + "/LICENSE", tofile: env.dist_rapid_server + "/GRAILS_LICENSE");
+        ant.copy(file:"${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/RunApp.groovy", todir: "$env.dist_rapid_server/scripts", overwrite:true)
+        ant.copy(file:"${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/Init.groovy", todir: "$env.dist_rapid_server/scripts", overwrite:true)
+        ant.move(file: env.dist_rapid_server + "/LICENSE", tofile: env.dist_rapid_server + "/licenses/GRAILS_LICENSE");
+        ant.delete(file: env.dist_rapid_server + "/INSTALL");
+        ant.delete(file: env.dist_rapid_server + "/README");
     }
 
     def clean() {

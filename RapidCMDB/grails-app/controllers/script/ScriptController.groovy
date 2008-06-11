@@ -12,40 +12,26 @@ class ScriptController {
     public static final String SCRIPT_DOESNOT_EXIST = "Script does not exist";
     def scaffold = CmdbScript;
     def save = {
-        def script = new CmdbScript(params)
-        if (script.validate() && !script.hasErrors()) {
-            ScriptManager.getInstance().addScript(script.name);
-            if (script.scheduled && script.enabled) {
-                try {
-                    if (script.scheduleType == CmdbScript.CRON) {
-                        ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
-                    }
-                    else {
-                        ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
-                    }
-                }
-                catch (e) {
-                    def errors = [message(code: "script.cannot.schedule", args: [script.name, e.getMessage()])]
-                    flash.errors = errors;
-                    redirect(action: edit, id: params.id)
-                    return;
-                }
+        try{
+            def script = CmdbScript.addScript(params, true)
+            if(script.hasErrors()){
+                 render(view: 'create', controller: 'script', model: [cmdbScript: script])
             }
-            script.save();
-            flash.message = SUCCESSFULLY_CREATED
-            redirect(action: show, controller: 'script', id: script.id)
+            else{
+                flash.message = SUCCESSFULLY_CREATED
+                redirect(action: show, controller: 'script', id: script.id)
+            }
         }
-        else {
-            render(view: 'create', controller: 'script', model: [cmdbScript: script])
+        catch(e){
+            flash.errors = [e.getMessage()]
+            redirect(action: edit, id: params.id)
         }
     }
 
     def delete = {
         def script = CmdbScript.get(params.id)
         if (script) {
-            def scriptName = script.name;
-            script.delete()
-            ScriptScheduler.getInstance().unscheduleScript(scriptName)
+            CmdbScript.deleteScript(script);
             flash.message = "Script ${params.id} deleted"
             redirect(action: list)
         }
@@ -58,31 +44,19 @@ class ScriptController {
     def update = {
         def script = CmdbScript.get(params.id)
         if (script) {
-            script.properties = params
-            if (!script.hasErrors() && script.validate()) {
-                ScriptScheduler.getInstance().unscheduleScript(script.name)
-                if (script.scheduled && script.enabled) {
-                    try {
-                        if (script.scheduleType == CmdbScript.CRON) {
-                            ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
-                        }
-                        else {
-                            ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
-                        }
-                    }
-                    catch (e) {
-                        def errors = [message(code: "script.cannot.schedule", args: [script.name, e.getMessage()])]
-                        flash.errors = errors;
-                        redirect(action: edit, id: params.id)
-                        return;
-                    }
+            try{
+                script = CmdbScript.updateScript(script, params, true);
+                if(script.hasErrors()){
+                    render(view: 'edit', model: [cmdbScript: script])
                 }
-                script.save();
-                flash.message = "Script ${params.id} updated"
-                redirect(action: show, id: script.id)
+                else{
+                     flash.message = "Script ${params.id} updated"
+                     redirect(action: show, id: script.id)
+                }
             }
-            else {
-                render(view: 'edit', model: [cmdbScript: script])
+            catch(e){
+                 flash.errors = [e.getMessage()]
+                 redirect(action: edit, id: params.id)
             }
         }
         else {
@@ -119,10 +93,9 @@ class ScriptController {
         def script = CmdbScript.findByName(params.id);
         if (script)
         {
-            def bindings = ["params": params]
             try
             {
-                def result = ScriptManager.getInstance().runScript(script.name, bindings);
+                def result = CmdbScript.runScript(script, params)
                 render(text: String.valueOf(result), contentType: "text/html", encoding: "UTF-8");
             }
             catch (t)

@@ -248,6 +248,7 @@ class RelationMethodDomainObject1
 {
     BeanPropertyBindingResult errors = new BeanPropertyBindingResult(this,getClass().getName());
     def static indexList = [];
+    boolean isRemoved = false;
     def relationsToBeRemoved;
     RelationMethodDomainObject2 rel1;
     HashSet rel2 = [];
@@ -276,12 +277,18 @@ class RelationMethodDomainObject1
         return super.equals(obj);
     }
 
+    def remove()
+    {
+        isRemoved = true;
+    }
+
 }
 
 class RelationMethodDomainObject2
 {
     def static indexList = [];
     def relationsToBeRemoved;
+    boolean isRemoved = false;
     RelationMethodDomainObject1 revRel1;
     RelationMethodDomainObject1 revRel2;
     HashSet revRel4 = [];
@@ -298,6 +305,11 @@ class RelationMethodDomainObject2
     def removeRelation(Map relations)
     {
         relationsToBeRemoved = relations;
+    }
+
+    def remove()
+    {
+        isRemoved = true;
     }
     public boolean equals(Object obj) {
         if(obj instanceof RelationMethodDomainObject2)

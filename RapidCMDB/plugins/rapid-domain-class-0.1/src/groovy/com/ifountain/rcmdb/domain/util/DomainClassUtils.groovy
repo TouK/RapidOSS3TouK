@@ -42,9 +42,11 @@ class DomainClassUtils
     def static getRelations(GrailsDomainClass dc, Map domainClasses)
     {
         def allRelations = [:];
-        def hasMany = getStaticVariable(dc, "hasMany");
-        def mappedBy = getStaticVariable(dc, "mappedBy");
+        def hasMany = getStaticMapVariable(dc, "hasMany");
+        def mappedBy = getStaticMapVariable(dc, "mappedBy");
+        def cascadedObjects = getStaticMapVariable(dc, "cascaded");
         mappedBy.each{relationName, otherSideName->
+            def isCascaded = cascadedObjects[relationName] == true;
             def cardinalityIsMany = true;
             def otherSideClass = hasMany[relationName];
             if(!otherSideClass)
@@ -53,7 +55,7 @@ class DomainClassUtils
                 cardinalityIsMany = false;
             }
 
-            def otherSideHasMany = getStaticVariable(domainClasses[otherSideClass.name], "hasMany");
+            def otherSideHasMany = getStaticMapVariable(domainClasses[otherSideClass.name], "hasMany");
             def otherSideCardinalityIsMany = otherSideHasMany[otherSideName]?true:false;
             def relType;
             if(otherSideCardinalityIsMany && cardinalityIsMany)
@@ -72,7 +74,10 @@ class DomainClassUtils
             {
                 relType = Relation.ONE_TO_ONE;                
             }
-            allRelations[relationName] = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
+            def rel = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
+            rel.isCascade = isCascaded;
+            allRelations[relationName] = rel;
+
         }
         return allRelations;
     }
@@ -92,7 +97,7 @@ class DomainClassUtils
         return keys;
     }
 
-    def static getStaticVariable(GrailsDomainClass dc, String variableName)
+    def static getStaticMapVariable(GrailsDomainClass dc, String variableName)
     {
         def variableMap = [:];
         def tempObj = dc.metaClass.getTheClass();

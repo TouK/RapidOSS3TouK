@@ -32,22 +32,34 @@ class RemoveMethod extends AbstractRapidDomainMethod{
     }
 
     public Object invoke(Object domainObject, Object[] arguments) {
+        def cascadedObjectsToBeRemoved = [];
         def relsToBeRemoved = [:]
         relations.each{relationName,relation->
             def relatedObject = domainObject[relationName];
             if(relatedObject instanceof Collection)
             {
-                relsToBeRemoved[relationName] = relatedObject;       
+                relsToBeRemoved[relationName] = relatedObject;
+                if(relation.isCascade)
+                {
+                    cascadedObjectsToBeRemoved.addAll(relatedObject);
+                }
             }
             else if(relatedObject != null)
             {
-                relsToBeRemoved[relationName] = [relatedObject];            
+                relsToBeRemoved[relationName] = [relatedObject];
+                if(relation.isCascade)
+                {
+                    cascadedObjectsToBeRemoved.add(relatedObject);
+                }
             }
 
         }
         if(!relsToBeRemoved.isEmpty())
         {
             domainObject.removeRelation(relsToBeRemoved);
+        }
+        cascadedObjectsToBeRemoved.each{
+            it.remove();
         }
         CompassMethodInvoker.unindex(mc, domainObject);
     }

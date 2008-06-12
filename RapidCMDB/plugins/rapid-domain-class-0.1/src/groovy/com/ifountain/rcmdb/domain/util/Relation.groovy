@@ -35,6 +35,7 @@ class Relation
     String upperCasedOtherSideName;
     Class otherSideCls;
     Class cls;
+    boolean isCascade = false;
     int type;
     public Relation(String name, String otherSideName, Class cls, Class otherClass, int relType)
     {

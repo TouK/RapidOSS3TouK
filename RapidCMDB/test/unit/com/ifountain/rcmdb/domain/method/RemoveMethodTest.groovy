@@ -37,9 +37,11 @@ class RemoveMethodTest extends RapidCmdbTestCase{
         RelationMethodDomainObject2 relatedObj2 = new RelationMethodDomainObject2();
         RemoveMethodDomainObject objectToBeRemoved = new RemoveMethodDomainObject();
         objectToBeRemoved.rel1 = relatedObj1;
-        objectToBeRemoved.rel2 += relatedObj2;        
+        objectToBeRemoved.rel2 += relatedObj2;
+        def rel2 = new Relation("rel2", "revRel2", RemoveMethodDomainObject.class, RelationMethodDomainObject2.class, Relation.ONE_TO_MANY);
+        rel2.isCascade = true;
         def relationsForObjectToBeRemoved = ["rel1":new Relation("rel1", "revRel1", RemoveMethodDomainObject.class, RelationMethodDomainObject2.class, Relation.ONE_TO_ONE),
-        "rel2":new Relation("rel2", "revRel2", RemoveMethodDomainObject.class, RelationMethodDomainObject2.class, Relation.ONE_TO_MANY),
+        "rel2":rel2,
         "rel3":new Relation("rel3", "revRel3", RemoveMethodDomainObject.class, RelationMethodDomainObject2.class, Relation.ONE_TO_ONE)]
         RemoveMethod removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, relationsForObjectToBeRemoved);
         removeMethod.invoke (objectToBeRemoved, null);
@@ -47,7 +49,10 @@ class RemoveMethodTest extends RapidCmdbTestCase{
         assertTrue (objectToBeRemoved.relationsToBeRemoved["rel1"].contains(relatedObj1));
         assertTrue (objectToBeRemoved.relationsToBeRemoved["rel2"].contains(relatedObj2));
         assertSame(objectToBeRemoved, RemoveMethodDomainObject.unIndexList[0][0]);
+        assertTrue(relatedObj2.isRemoved);
+        assertFalse(relatedObj1.isRemoved);
     }
+    
 }
 
 class RemoveMethodDomainObject

@@ -123,7 +123,7 @@ class BootStrap {
                             }
                             else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
                             {
-                                modelInstance[propName] = getDefaultValue(action.defaultValue, action.propType)
+                                modelInstance[propName] = action.defaultValue;
                             }
                         }
                         modelInstance.reindex();
@@ -184,23 +184,7 @@ class BootStrap {
         RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
     }
 
-    def getDefaultValue(defaultValue, newPropType)
-    {
-        if (defaultValue) return defaultValue;
-        if (String.isAssignableFrom(newPropType))
-        {
-            return ""
-        }
-        else if (Number.isAssignableFrom(newPropType))
-        {
-            return 0;
-        }
-        else if (Date.isAssignableFrom(newPropType))
-        {
-            return new Date(0);
-        }
-        return null;
-    }
+
 
     def destroy = {
         SnmpDatasource.list().each {

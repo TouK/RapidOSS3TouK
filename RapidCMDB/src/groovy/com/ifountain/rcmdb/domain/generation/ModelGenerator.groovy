@@ -284,11 +284,6 @@ class ModelMetaData
             def generalPropConfig = [:];
             generalPropConfig["type"] = it.convertToRealType();
             generalPropConfig["name"] = it.name;
-
-            if(it.defaultValue)
-            {
-                generalPropConfig["defaultValue"] = getDefaultValue(it);
-            }
             propertyList += generalPropConfig;
             constraints[it.name] = [:];
             if(it.propertyDatasource != null && !it.propertyDatasource.master || it.propertySpecifyingDatasource != null)
@@ -307,14 +302,15 @@ class ModelMetaData
                 federatedPropertyConfiguration["lazy"] = it.lazy;
                 propertyConfigurations[it.name] = federatedPropertyConfiguration;
                 constraints[it.name][ConstrainedProperty.BLANK_CONSTRAINT] = it.blank;
-                constraints[it.name][ConstrainedProperty.NULLABLE_CONSTRAINT] = it.blank;
+                constraints[it.name][ConstrainedProperty.NULLABLE_CONSTRAINT] = true;
             }
             else
             {
+                generalPropConfig["defaultValue"] = getDefaultValue(it);
                 if(!masterDatasource || !masterDatasource.keys.containsKey(it.name))
                 {
                     constraints[it.name][ConstrainedProperty.BLANK_CONSTRAINT] = it.blank;
-                    constraints[it.name][ConstrainedProperty.NULLABLE_CONSTRAINT] = false;
+                    constraints[it.name][ConstrainedProperty.NULLABLE_CONSTRAINT] = true;
                 }
                 else
                 {
@@ -378,18 +374,19 @@ class ModelMetaData
 
     def getDefaultValue(modelProperty)
     {
+        def defaultVlue = modelProperty.defaultValue == ""?null:modelProperty.defaultValue;
         if(modelProperty.type == model.ModelProperty.stringType)
         {
-            return "\"$modelProperty.defaultValue\"";
+            return defaultVlue?"\"${defaultVlue}\"":"\"\"";
         }
         else if(modelProperty.type == model.ModelProperty.numberType || modelProperty.type == model.ModelProperty.floatType)
         {
-            return "$modelProperty.defaultValue";
+            return defaultVlue?"$defaultVlue":"0";
         }
         else if(modelProperty.type == model.ModelProperty.dateType)
         {
             DateConverter converter = RapidConvertUtils.getInstance().lookup (Date.class);
-            Date date = converter.formater.parse (modelProperty.defaultValue);
+            Date date = defaultVlue?converter.formater.parse (defaultVlue):new Date(0);
             return "new Date(${date.getTime()})";
         }
         else

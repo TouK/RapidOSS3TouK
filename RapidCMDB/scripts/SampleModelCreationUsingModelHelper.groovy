@@ -41,7 +41,7 @@ def modelhelperSO = new ModelHelper("SmartsObject");
 /* Define properties. Note that :
 1. 'propertyDatasource' takes the Datasource name
 2. 'propertySpecifyingDatasource' takes the dynamic datasource property name
-3. all the datasources refered to are assumed to be created before running the script
+3. all the datasources, except RCMDB, refered to are assumed to be created before running the script
 */
 
 def name = [name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];

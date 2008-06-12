@@ -1,28 +1,34 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class Team
+class Team implements com.ifountain.rcmdb.domain.generation.IGeneratedModel
 {
     
     //AUTO_GENERATED_CODE
 
-    static searchable = true;
+    static searchable = {
+        except = [];
+    };
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 
     
-    String maskot ;
+    String maskot ="";
     
-    String name ;
+    String name ="";
     
     Employee managedBy ;
     
 
     static hasMany = [:]
-
+    
+        static mapping = {
+            tablePerHierarchy false
+        }
+    
     static constraints={
-    maskot(blank:false,nullable:false)
+    maskot(blank:false,nullable:true)
         
-     name(unique:true)
+     name(blank:false,nullable:false,key:[])
         
      managedBy(nullable:true)
         

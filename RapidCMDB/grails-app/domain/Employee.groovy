@@ -6,38 +6,36 @@ class Employee extends Person
     
     //AUTO_GENERATED_CODE
 
-    static searchable = true;
+    static searchable = {
+        except = [];
+    };
     static datasources = [:]
 
     
-    Long salary =1000;
+    String dept ="";
     
-    String dept ;
+    Long salary =1000;
     
     Employee prevEmp ;
     
     Employee nextEmp ;
     
-    Employee manager ;
+
+    static hasMany = [manages:Team]
     
-
-    static hasMany = [employees:Employee, manages:Team]
-
     static constraints={
-    salary(blank:false,nullable:false)
+    dept(blank:false,nullable:true)
         
-     dept(blank:false,nullable:false)
+     salary(blank:false,nullable:true)
         
      prevEmp(nullable:true)
         
      nextEmp(nullable:true)
         
-     manager(nullable:true)
-        
      
     }
 
-    static mappedBy=["prevEmp":"nextEmp", "employees":"manager", "manages":"managedBy", "nextEmp":"prevEmp", "manager":"employees"]
+    static mappedBy=["prevEmp":"nextEmp", "manages":"managedBy", "nextEmp":"prevEmp"]
     static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];

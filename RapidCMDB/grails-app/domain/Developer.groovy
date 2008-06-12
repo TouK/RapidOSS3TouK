@@ -6,21 +6,22 @@ class Developer extends Employee
     
     //AUTO_GENERATED_CODE
 
-    static searchable = true;
+    static searchable = {
+        except = [];
+    };
     static datasources = [:]
 
     
-    String language ;
+    String language ="";
     
 
     static hasMany = [worksOn:Task]
-
+    
     static constraints={
-    language(blank:false,nullable:false)
+    language(blank:false,nullable:true)
         
      
     }
-    
 
     static mappedBy=["worksOn":"workedOnBy"]
     static belongsTo = []

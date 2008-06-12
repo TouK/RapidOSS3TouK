@@ -29,8 +29,6 @@
                    	    
                    	        <g:sortableColumn property="type" title="Type" />
                         
-                   	        <g:sortableColumn property="blank" title="Blank" />
-                        
                         </tr>
                     </thead>
                     <tbody>
@@ -44,8 +42,6 @@
                             <td>${modelProperty.propertySpecifyingDatasource?.encodeAsHTML()}</td>
                         
                             <td>${modelProperty.type?.encodeAsHTML()}</td>
-                        
-                            <td>${modelProperty.blank?.encodeAsHTML()}</td>
                         
                         </tr>
                     </g:each>

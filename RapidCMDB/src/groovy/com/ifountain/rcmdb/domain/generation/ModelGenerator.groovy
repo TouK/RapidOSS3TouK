@@ -314,7 +314,7 @@ class ModelMetaData
                 if(!masterDatasource || !masterDatasource.keys.containsKey(it.name))
                 {
                     constraints[it.name][ConstrainedProperty.BLANK_CONSTRAINT] = it.blank;
-                    constraints[it.name][ConstrainedProperty.NULLABLE_CONSTRAINT] = it.blank;
+                    constraints[it.name][ConstrainedProperty.NULLABLE_CONSTRAINT] = false;
                 }
                 else
                 {

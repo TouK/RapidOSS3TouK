@@ -58,13 +58,6 @@
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Blank:</td>
-
-                    <td valign="top" class="value">${modelProperty.blank}</td>
-
-                </tr>
-
-                <tr class="prop">
                     <td valign="top" class="name">Default Value:</td>
 
                     <td valign="top" class="value">${modelProperty.defaultValue}</td>

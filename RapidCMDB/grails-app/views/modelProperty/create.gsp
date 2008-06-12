@@ -112,15 +112,6 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="blank">Blank:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'blank', 'errors')}">
-                            <g:checkBox name="blank" value="${modelProperty?.blank}"></g:checkBox>
-                        </td>
-                    </tr>
-
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="defaultValue">Default Value:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'defaultValue', 'errors')}">

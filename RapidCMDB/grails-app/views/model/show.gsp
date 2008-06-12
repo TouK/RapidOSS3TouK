@@ -93,9 +93,6 @@
                                     <th class="${modelPropertySortProp == 'type' ? 'sorted ' + modelPropertySortOrder : ''}">
                                         <g:link action="show" id="${model.id}" params="${mpTypeSortLinkParams}">Type</g:link>
                                     </th>
-                                    <th class="${modelPropertySortProp == 'blank' ? 'sorted ' + modelPropertySortOrder : ''}">
-                                        <g:link action="show" id="${model.id}" params="${mpBlankSortLinkParams}">Blank</g:link>
-                                    </th>
                                     <th class="${modelPropertySortProp == 'propertyDatasource' ? 'sorted ' + modelPropertySortOrder : ''}">
                                         <g:link action="show" id="${model.id}" params="${mpDsSortLinkParams}">Static Datasource Name</g:link>
                                     </th>
@@ -109,7 +106,6 @@
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td><g:link action="show" id="${modelProperty.id}" controller="modelProperty">${modelProperty.name?.encodeAsHTML()}</g:link></td>
                                         <td>${modelProperty.type?.encodeAsHTML()}</td>
-                                        <td>${modelProperty.blank?.encodeAsHTML()}</td>
                                         <td>${modelProperty?.propertyDatasource?.datasource?.toString()?.encodeAsHTML()}</td>
                                         <td>${modelProperty.propertySpecifyingDatasource?.encodeAsHTML()}</td>
                                     </tr>

@@ -265,12 +265,12 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             assertNull ( prop.getAppliedConstraint("key"));
             
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop3"];
-            assertTrue (prop.isNullable());
+            assertFalse (prop.isNullable());
             assertTrue (prop.isBlank());
             assertNull ( prop.getAppliedConstraint("key"));
 
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop4"];
-            assertTrue(prop.isNullable());
+            assertFalse(prop.isNullable());
             assertTrue (prop.isBlank());
             assertNull ( prop.getAppliedConstraint("key"));
 
@@ -383,12 +383,12 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         model1.getControllerFile().createNewFile();
         addMasterDatasource(model1);
 
-        model1.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model1);
+        model1.modelProperties += new ModelProperty(name:"prop1", type:ModelProperty.stringType, model:model1);
         def model2 = new MockModel(name:"Class2");
         model2.getControllerFile().createNewFile();
         addMasterDatasource(model2);
 
-        model2.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:model2);
+        model2.modelProperties += new ModelProperty(name:"prop1", type:ModelProperty.stringType, model:model2);
         ModelRelation relation1 = new ModelRelation(firstName:"relation1", secondName:"reverseRelation1", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE, firstModel:model1, secondModel:model2);
         ModelRelation relation2 = new ModelRelation(firstName:"relation2", secondName:"reverseRelation2", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.MANY, firstModel:model2, secondModel:model1);
         ModelRelation relation3 = new ModelRelation(firstName:"relation3", secondName:"reverseRelation3", firstCardinality:ModelRelation.MANY, secondCardinality:ModelRelation.MANY, firstModel:model1, secondModel:model2);
@@ -418,7 +418,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         Class cls = compileClass(model1.name);
         def object = cls.newInstance();
-        
+
         assertEquals(model2.getName(), object.class.getDeclaredField("relation1").getType().getName());
         assertEquals(model2.getName(), object.class.getDeclaredField("reverseRelation2").getType().getName())
         assertEquals(model2.getName(), object.hasMany.relation3.getName())
@@ -428,6 +428,19 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals("relation2", object.mappedBy.reverseRelation2)
         assertEquals("reverseRelation3", object.mappedBy.relation3)
         assertEquals("reverseRelation4", object.mappedBy.relation4)
+
+        Closure contraintsClosure = object.constraints;
+        ConstrainedPropertyBuilder contraintsClosurePropertyBuilder = new ConstrainedPropertyBuilder(object);
+        contraintsClosure.setDelegate (contraintsClosurePropertyBuilder);
+        contraintsClosure.call();
+        ConstrainedProperty relProp = contraintsClosurePropertyBuilder.getConstrainedProperties()["relation1"];
+        assertTrue (relProp.isNullable());
+        relProp = contraintsClosurePropertyBuilder.getConstrainedProperties()["reverseRelation2"];
+        assertTrue (relProp.isNullable());
+        relProp = contraintsClosurePropertyBuilder.getConstrainedProperties()["relation3"];
+        assertNull(relProp);
+        relProp = contraintsClosurePropertyBuilder.getConstrainedProperties()["relation4"];
+        assertTrue (relProp.isNullable());
 
 
         Class cls2 = compileClass(model2.name);
@@ -443,12 +456,23 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals("relation3", object2.mappedBy.reverseRelation3)
         assertEquals("relation4", object2.mappedBy.reverseRelation4)
 
+        contraintsClosure = object2.constraints;
+        contraintsClosurePropertyBuilder = new ConstrainedPropertyBuilder(object2);
+        contraintsClosure.setDelegate (contraintsClosurePropertyBuilder);
+        contraintsClosure.call();
+        relProp = contraintsClosurePropertyBuilder.getConstrainedProperties()["reverseRelation1"];
+        assertTrue (relProp.isNullable());
+        relProp = contraintsClosurePropertyBuilder.getConstrainedProperties()["relation2"];
+        assertNull (relProp);
+        relProp = contraintsClosurePropertyBuilder.getConstrainedProperties()["reverseRelation3"];
+        assertNull(relProp);
+        relProp = contraintsClosurePropertyBuilder.getConstrainedProperties()["reverseRelation4"];
+        assertNull (relProp);
+
         assertEquals(1, object2.belongsTo.size())
         assertEquals(model1.getName(), object2.belongsTo[0].getName())
-
-
-
     }
+
     public void testIfModelAlreadyExistsChangesParentKeepsOtherCode()
     {
         def model1 = new MockModel(name:"Class1");

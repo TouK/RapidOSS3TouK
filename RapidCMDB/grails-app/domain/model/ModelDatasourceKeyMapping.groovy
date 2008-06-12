@@ -7,9 +7,6 @@ class ModelDatasourceKeyMapping {
 
     static constraints = {
         property(unique:'datasource', validator:{val, obj ->
-            if(val.blank && obj.datasource.master){
-                return ['model.keymapping.masterproperty.notblank']
-            }
             if(val.propertyDatasource && !val.propertyDatasource.master){
                 return ['model.keymapping.cannot.be.federated']
             }

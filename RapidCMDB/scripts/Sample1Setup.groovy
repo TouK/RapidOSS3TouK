@@ -73,7 +73,7 @@ keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:modelData
 task = constructModel(task, [name], [modelDatasource], keyMappings);
 
 createRelation(employee, employee, "prevEmp", "nextEmp", ModelRelation.ONE, ModelRelation.ONE);
-createRelation(employee, employee, "employees", "manager", ModelRelation.ONE, ModelRelation.MANY);
+//createRelation(employee, employee, "employees", "manager", ModelRelation.ONE, ModelRelation.MANY);
 createRelation(employee, team, "manages", "managedBy", ModelRelation.ONE, ModelRelation.MANY);
 createRelation(developer, task, "worksOn", "workedOnBy", ModelRelation.MANY, ModelRelation.MANY);
 

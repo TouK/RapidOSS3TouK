@@ -38,10 +38,9 @@ import org.springframework.validation.BeanPropertyBindingResult
 class UpdateMethod extends AbstractRapidDomainMethod{
 
     def relations;
-    def keys;
     def fieldTypes = [:]
     Validator validator;
-    public UpdateMethod(MetaClass mc, Validator validator, Map relations, List keys) {
+    public UpdateMethod(MetaClass mc, Validator validator, Map relations) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
         this.validator = validator;
         def fields = mc.getProperties();
@@ -49,7 +48,6 @@ class UpdateMethod extends AbstractRapidDomainMethod{
             fieldTypes[field.name] = field.type;
         }
         this.relations = relations;
-        this.keys = keys;
     }
 
     public Object invoke(Object domainObject, Object[] arguments) {

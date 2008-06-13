@@ -45,7 +45,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd, addedObject);
 
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject];
-        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations);
         def updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
@@ -70,7 +70,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         addedObject.rel1 = relatedObject;
 
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:null];
-        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations);
         def updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
@@ -81,7 +81,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
         addedObject.rel1 = null;
 
-        update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
+        update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations);
         updatedObject = update.invoke (addedObject, [props] as Object[]);
 
         assertEquals(0, updatedObject.relationsShouldBeAdded.size());
@@ -89,7 +89,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
         addedObject.rel1 = [];
 
-        update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
+        update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations);
         updatedObject = update.invoke (addedObject, [props] as Object[]);
 
         assertEquals(0, updatedObject.relationsShouldBeAdded.size());
@@ -108,7 +108,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd, addedObject);
 
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", prop6:"newProp6Value"];
-        UpdateMethod update = new UpdateMethod(ChildAddMethodDomainObject.metaClass, new MockValidator(), [:], ["prop1"]);
+        UpdateMethod update = new UpdateMethod(ChildAddMethodDomainObject.metaClass, new MockValidator(), [:]);
         def updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
@@ -131,7 +131,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
 
             def props = [prop1:object.prop1, prop2:"newProp2Value",  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0"];
-            UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:], ["prop1"]);
+            UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:]);
             def updatedObject = update.invoke (object, [props] as Object[]);
             assertEquals (100, updatedObject.id);
             assertEquals ("newProp2Value", updatedObject.prop2);
@@ -142,7 +142,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             assertEquals (formater.parse("2000-01-01"), updatedObject.prop5);
 
             props = [prop1:object.prop1, prop2:"",  prop4:"", prop5:"", doubleProp:""];
-            update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:], ["prop1"]);
+            update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:]);
             updatedObject = update.invoke (object, [props] as Object[]);
 
             assertEquals ("", updatedObject.prop2);
@@ -152,7 +152,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             assertEquals (null, updatedObject.prop5);
 
             props = [prop1:object.prop1, prop2:null,  prop4:null, prop5:null, doubleProp:null];
-            update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:], ["prop1"]);
+            update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:]);
             updatedObject = update.invoke (object, [props] as Object[]);
 
             assertEquals (null, updatedObject.prop2);
@@ -188,7 +188,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
 
             def props = [prop1:object.prop1,  prop4:"invalidData", prop5:"invalidData", doubleProp:"invalidData"];
-            UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:], ["prop1"]);
+            UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:]);
             def updatedObject = update.invoke (object, [props] as Object[]);
             assertEquals (null, updatedObject.prop4);
             assertEquals (null, updatedObject.doubleProp);

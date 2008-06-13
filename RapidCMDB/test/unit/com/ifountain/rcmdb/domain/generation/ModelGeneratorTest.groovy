@@ -334,8 +334,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         model.modelProperties += prop0;
         model.modelProperties += prop1;
         model.modelProperties += prop2;
-        model.modelProperties += new ModelProperty(name:"Prop3", type:ModelProperty.numberType, model:model, propertyDatasource:modelDatasource1, nameInDatasource:"Prop3NameInDs", lazy:false, blank:true);
-        model.modelProperties += new ModelProperty(name:"Prop4", type:ModelProperty.dateType, model:model, propertySpecifyingDatasource:prop2);
+        model.modelProperties += new ModelProperty(name:"prop3", type:ModelProperty.numberType, model:model, propertyDatasource:modelDatasource1, nameInDatasource:"Prop3NameInDs", lazy:false, blank:true);
+        model.modelProperties += new ModelProperty(name:"prop4", type:ModelProperty.dateType, model:model, propertySpecifyingDatasource:prop2);
 
         modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:prop0, datasource:modelDatasource1, nameInDatasource:"Prop1KeyNameInDs");
         modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:prop1, datasource:modelDatasource1);
@@ -352,10 +352,10 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals(object.class.getDeclaredField("prop1").getType(), String.class);
         assertEquals("", object.prop2);
         assertEquals(object.class.getDeclaredField("prop2").getType(), String.class);
-        assertNull(object.Prop3);
-        assertEquals(object.class.getDeclaredField("Prop3").getType(), Long.class);
-        assertNull(object.Prop4);
-        assertEquals(object.class.getDeclaredField("Prop4").getType(), Date.class);
+        assertEquals(new Long(0), object.prop3);
+        assertEquals(object.class.getDeclaredField("prop3").getType(), Long.class);
+        assertEquals(new Date(0), object.prop4);
+        assertEquals(object.class.getDeclaredField("prop4").getType(), Date.class);
         assertEquals("", object.dsname);
         assertNotNull (object.constraints);
 
@@ -375,28 +375,28 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         def transients = object.transients;
         assertEquals (2, transients.size());
-        assertTrue(transients.contains("Prop3"));
-        assertTrue(transients.contains("Prop4"));
+        assertTrue(transients.contains("prop3"));
+        assertTrue(transients.contains("prop4"));
 
         Closure searchable = object.searchable;
         ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
         searchable.setDelegate (closureGetter);
         searchable.call();
         assertEquals(2, closureGetter.propertiesSetByClosure["except"].size());
-        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("Prop3"));
-        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("Prop4"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop3"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop4"));
 
         def propertyConfiguration = object.propertyConfiguration;
 
-        assertEquals("Prop3NameInDs", propertyConfiguration["Prop3"].nameInDs);
-        assertEquals(modelDatasource1.datasource.name, propertyConfiguration["Prop3"].datasource);
-        assertNull(propertyConfiguration["Prop3"].datasourceProperty);
-        assertFalse(propertyConfiguration["Prop3"].lazy);
+        assertEquals("Prop3NameInDs", propertyConfiguration["prop3"].nameInDs);
+        assertEquals(modelDatasource1.datasource.name, propertyConfiguration["prop3"].datasource);
+        assertNull(propertyConfiguration["prop3"].datasourceProperty);
+        assertFalse(propertyConfiguration["prop3"].lazy);
 
-        assertEquals("Prop4", propertyConfiguration["Prop4"].nameInDs);
-        assertEquals("dsname", propertyConfiguration["Prop4"].datasourceProperty);
-        assertNull(propertyConfiguration["Prop4"].datasource);
-        assertTrue(propertyConfiguration["Prop4"].lazy);
+        assertEquals("prop4", propertyConfiguration["prop4"].nameInDs);
+        assertEquals("dsname", propertyConfiguration["prop4"].datasourceProperty);
+        assertNull(propertyConfiguration["prop4"].datasource);
+        assertTrue(propertyConfiguration["prop4"].lazy);
     }
 
     public void testGenerateModelWithRelation()

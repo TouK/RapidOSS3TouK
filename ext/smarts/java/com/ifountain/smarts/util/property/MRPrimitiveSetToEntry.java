@@ -103,7 +103,7 @@ public class MRPrimitiveSetToEntry extends MRToEntry {
         records[0] = new HashMap<String, Object>();
         
         for (int i = 0; i < values.length; i++) {
-            records[0].put("element"+i, values[i].toString());
+            records[0].put("element"+i, values[i]);
         }
         return records;
     }

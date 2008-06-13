@@ -32,7 +32,7 @@ public class MROthersToEntry extends MRToEntry {
 
     @Override
     public Object getValue() {
-        return String.valueOf(propertyValue.getValue());
+        return propertyValue.getValue();
     }
 
 }

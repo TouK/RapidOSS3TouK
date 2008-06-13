@@ -286,6 +286,7 @@ class ModelMetaData
             generalPropConfig["name"] = it.name;
             propertyList += generalPropConfig;
             constraints[it.name] = [:];
+            generalPropConfig["defaultValue"] = getDefaultValue(it);
             if(it.propertyDatasource != null && !it.propertyDatasource.master || it.propertySpecifyingDatasource != null)
             {
                 transientProps += it.name;
@@ -306,7 +307,6 @@ class ModelMetaData
             }
             else
             {
-                generalPropConfig["defaultValue"] = getDefaultValue(it);
                 if(!masterDatasource || !masterDatasource.keys.containsKey(it.name))
                 {
                     constraints[it.name][ConstrainedProperty.BLANK_CONSTRAINT] = it.blank;

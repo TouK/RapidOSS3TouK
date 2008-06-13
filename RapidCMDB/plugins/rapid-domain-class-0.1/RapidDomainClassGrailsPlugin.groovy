@@ -322,7 +322,11 @@ class RapidDomainClassGrailsPlugin {
                             return currentValue
                         }
                     }
-                    return getFederatedProperty(mc, domainObject, name, propConfigCache, dsConfigCache);
+                    def federatedValue = getFederatedProperty(mc, domainObject, name, propConfigCache, dsConfigCache);
+                    if(federatedValue != null)
+                    {
+                        return federatedValue;
+                    }
                 }
             }
             return currentValue;
@@ -365,7 +369,7 @@ class RapidDomainClassGrailsPlugin {
             }
         }
 
-        return "";
+        return null;
     }
 }
 

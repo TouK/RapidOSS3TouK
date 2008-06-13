@@ -103,7 +103,7 @@
 <br>
 
 <div class="front">
-    <table><tr><th width="50%">Modelled Classes</th></tr>
+    <table><tr><th width="50%">Modeled Classes</th></tr>
         <tr><td><p style="margin-left:20px;"></p>
             <br>
             <div class="dialog" style="margin-left:20px;">

@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class Team implements com.ifountain.rcmdb.domain.generation.IGeneratedModel
+class Team
 {
     
     //AUTO_GENERATED_CODE

@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class Task implements com.ifountain.rcmdb.domain.generation.IGeneratedModel
+class Task
 {
     
     //AUTO_GENERATED_CODE

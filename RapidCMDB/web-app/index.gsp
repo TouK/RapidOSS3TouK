@@ -1,4 +1,4 @@
-<%@ page import="com.ifountain.rcmdb.domain.generation.IGeneratedModel; model.*" %>
+<%@ page import="model.*" %>
 <%@ page import="connection.*" %>
 <%@ page import="datasource.*" %>
 <%@ page import="script.*" %>
@@ -64,8 +64,7 @@
                 <br>
                 <div class="dialog" style="margin-left:20px;width:60%;">
                     <ul style="margin-left:25px;">
-                        <li class="controller"><g:link controller="script">OnDemand Scripts</g:link></li>
-                        <li class="controller"><g:link controller="periodicScript">Periodic Scripts</g:link></li>
+                        <li class="controller"><g:link controller="script">Scripts</g:link></li>
                     </ul>
                 </div>
             </td>
@@ -100,7 +99,7 @@
 <br>
 
 <div class="front">
-    <table><tr><th width="50%">Modeled Classes</th></tr>
+    <table><tr><th width="50%">Modelled Classes</th></tr>
         <tr><td><p style="margin-left:20px;"></p>
             <br>
             <div class="dialog" style="margin-left:20px;">
@@ -108,8 +107,7 @@
                     <%
                         grailsApplication.domainClasses.each {
                             def mc = it.metaClass;
-                            def object = it.newInstance();
-                            if (object instanceof IGeneratedModel) {
+                            if (mc.getMetaProperty("propertyConfiguration") != null) {
                     %>
                     <li class="controller"><g:link controller="${it.logicalPropertyName}">${mc.getTheClass().name}</g:link></li>
                     <%

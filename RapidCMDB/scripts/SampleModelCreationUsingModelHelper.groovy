@@ -54,21 +54,32 @@ props.add(creationClassName);
 props.add(dynamicDs);
 props.add(displayName);
 
-// Identify the datasources. Since the user knows whether it is a Smarts, Netcool or DB datasource,
-// it makes sense to let the the user to get the datasource[s] and pass it to the ModelHelper. 
-def rcmdbDs = BaseDatasource.findByName("RCMDB");
+// Identify the datasource names. 
+def rcmdbDs = DatasourceName.findByName("RCMDB");
+if(rcmdbDs == null){
+    rcmdbDs = new DatasourceName(name: "RCMDB");
+    rcmdbDs.save();
+}
 def rcmdbKey1 = [name:"name"];
 def rcmdbKey2 = [name:"creationClassName"];
 datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey1, rcmdbKey2]]);
 
 // Specify keys to datasources. nameInDs is optional. If not given, it is assumed that 
 // the name is the same as nameInDs
-def eastRegionDs = SmartsTopologyDatasource.findByName("eastRegionDs");
+def eastRegionDs = DatasourceName.findByName("eastRegionDs");
+if(eastRegionDs == null){
+    eastRegionDs = new DatasourceName(name: "eastRegionDs");
+    eastRegionDs.save();
+}
 def eastRegionDsKey1 = [name:"name",nameInDs:"Name"];
 def eastRegionDsKey2 = [name:"creationClassName",nameInDs:"CreationClassName"];
 datasources.add([datasource:eastRegionDs, master:false, keys:[eastRegionDsKey1, eastRegionDsKey2]]);
 
-def westRegionDs = SmartsTopologyDatasource.findByName("westRegionDs");
+def westRegionDs = DatasourceName.findByName("westRegionDs");
+if(westRegionDs == null){
+    westRegionDs = new DatasourceName(name: "westRegionDs");
+    westRegionDs.save();
+}
 def westRegionDsKey1 = [name:"name",nameInDs:"Name"];
 def westRegionDsKey2 = [name:"creationClassName",nameInDs:"CreationClassName"];
 datasources.add([datasource:westRegionDs, master:false, keys:[westRegionDsKey1, westRegionDsKey2]]);

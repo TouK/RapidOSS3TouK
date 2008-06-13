@@ -53,7 +53,7 @@ class ExistingDataAnalyzer
             GrailsDomainClassProperty oldProperty = oldClassProperties.remove(propName);
             ConstrainedProperty oldConstrainedProp = oldConstrainedProps[propName];
             ConstrainedProperty newConstrainedProp = newConstrainedProps[propName];
-            if(oldProperty == null || oldProperty.type != prop.type || oldConstrainedProp == null || newConstrainedProp == null || oldConstrainedProp.isNullable() && !newConstrainedProp.isNullable())
+            if(oldProperty == null || oldProperty.type != prop.type || oldConstrainedProp == null || newConstrainedProp == null)
             {
                 if(!willDeleteAll)
                 {

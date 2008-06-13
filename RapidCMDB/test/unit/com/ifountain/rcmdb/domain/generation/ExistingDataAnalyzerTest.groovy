@@ -198,34 +198,6 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
     }
 
 
-    public void testIfPropertyNullSettingIsChanged()
-    {
-        String modelName = "Class1";
-
-        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:true, defaultValue:"1");
-
-
-        def propList = [prop1,prop2];
-        def keyPropList = [prop1];
-        generateModel (modelName, propList, keyPropList);
-        def oldDomainClass = loadGrailsDomainClass(modelName);
-        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
-
-        prop2.blank = false
-        generateModel (modelName, propList, keyPropList);
-
-        def newDomainClass = loadGrailsDomainClass(modelName);
-        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
-
-        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-        assertEquals (1, actions.size());
-        PropertyAction action = actions[0];
-        assertEquals (prop2.name, action.propName);
-        assertEquals (PropertyAction.SET_DEFAULT_VALUE, action.action);
-        assertEquals (modelName, action.modelName);
-    }
-
 
     public void testIfKeyIsRemoved()
     {

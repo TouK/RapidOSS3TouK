@@ -283,7 +283,7 @@ class RapidDomainClassGrailsPlugin {
                     operation.setProperty (name, value);
                 }
             }
-            if(flush && !EXCLUDED_PROPERTIES.containsKey(name))
+            if(flush && !EXCLUDED_PROPERTIES.containsKey(name) && delegate.id != null)
             {
                 delegate.reindex();    
             }

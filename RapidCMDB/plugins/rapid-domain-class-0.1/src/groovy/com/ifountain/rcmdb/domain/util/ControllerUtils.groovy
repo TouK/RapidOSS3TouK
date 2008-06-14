@@ -2,6 +2,7 @@ package com.ifountain.rcmdb.domain.util
 
 import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import java.text.SimpleDateFormat
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,6 +12,8 @@ import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
  * To change this template use File | Settings | File Templates.
  */
 class ControllerUtils {
+	def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+    def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def static getClassProperties(params, domainClass)
     {
         def returnedParams = [:]
@@ -35,11 +38,13 @@ class ControllerUtils {
                     }
                     else
                     {
+	                    
                         if(propValue.length() != 0)
                         {
                             def metaProp = domainClass.metaClass.getMetaProperty(propName);
                             if(metaProp)
                             {
+	                           
                                 if(metaProp.type == Date.class)
                                 {
                                     def year = params[propName+"_year"];
@@ -55,7 +60,20 @@ class ControllerUtils {
                             }
                         }
                         else{
-                            returnedParams[propName] = null;
+	                        if(propName.indexOf("_") == 0){
+		                        propName = propName.substring(1)
+		                    	def metaProp = domainClass.metaClass.getMetaProperty(propName)
+		                    	if(metaProp && (metaProp.type == boolean || metaProp.type == Boolean.class)){
+			                    	if(!returnedParams[propName]){
+				                    	returnedParams[propName] = false	
+				                    }
+			                    	
+			                    }  
+		                    }
+		                    else{
+			                	returnedParams[propName] = null;
+			                }
+                            
                         }
                     }
                 }

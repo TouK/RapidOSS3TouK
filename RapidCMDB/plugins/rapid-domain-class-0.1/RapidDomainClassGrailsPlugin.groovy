@@ -20,6 +20,7 @@ import com.ifountain.rcmdb.domain.method.CompassMethodInvoker
 import com.ifountain.rcmdb.domain.generation.ModelUtils
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
+import org.apache.commons.lang.StringUtils
 
 class RapidDomainClassGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
@@ -208,6 +209,7 @@ class RapidDomainClassGrailsPlugin {
     }
     def registerDynamicMethods(dc, application, ctx)
     {
+        def mc = dc.clazz.metaClass;
         try
         {
             dc.metaClass.getTheClass().newInstance().delete();
@@ -221,6 +223,25 @@ class RapidDomainClassGrailsPlugin {
         addQueryMethods (dc, application, ctx)
         addUtilityMetods (dc, application, ctx)
         addPropertyGetAndSetMethods(dc);
+        mc.'static'.methodMissing = {String methodName, args ->
+            if(methodName.startsWith("findBy"))
+            {
+                def searchKeyMap = [:]
+                def propName = StringUtils.substringAfter(methodName, "findBy");
+                propName = propName.substring(0,1).toLowerCase() + propName.substring(1,propName.length());
+                searchKeyMap[propName] = args[0];
+                return CompassMethodInvoker.search(mc, searchKeyMap).results[0];
+            }
+            else if(methodName.startsWith("findAllBy"))
+            {
+                def searchKeyMap = [:]
+                def propName = StringUtils.substringAfter(methodName, "findAllBy");
+                propName = propName.substring(0,1).toLowerCase() + propName.substring(1,propName.length());
+                searchKeyMap[propName] = args[0];
+                return CompassMethodInvoker.search(mc, searchKeyMap).results;
+            }
+            return null;
+        }
         for(subClass in dc.subClasses)
         {
             if(subClass.metaClass.getTheClass().getSuperclass().name == dc.metaClass.getTheClass().name)

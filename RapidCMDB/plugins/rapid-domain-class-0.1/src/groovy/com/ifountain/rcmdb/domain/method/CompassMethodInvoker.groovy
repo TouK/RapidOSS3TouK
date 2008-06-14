@@ -29,6 +29,7 @@ class CompassMethodInvoker {
 
     public static Object search(MetaClass mc, Map keys)
     {
+        if(keys.isEmpty()) return [total:0, results:[]]
         def queryBuffer = new StringBuffer("");
         for(key in keys){
             queryBuffer.append(key.key).append(":\"").append(key.value).append("\" AND ");

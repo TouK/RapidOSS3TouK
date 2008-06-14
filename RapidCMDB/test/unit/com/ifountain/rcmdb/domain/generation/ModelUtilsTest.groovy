@@ -28,9 +28,13 @@ class ModelUtilsTest extends GroovyTestCase{
     def findAllBySecondModelMethod;
     protected void setUp() {
         super.setUp();
-        if(System.getProperty("base.dir") == null)
+        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDB"))
         {
-            System.setProperty("base.dir", "RapidCMDB");
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, System.getProperty("base.dir"));
+        }
+        else
+        {
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDB");
         }
         FileUtils.deleteDirectory (new File(base_directory));
         new File(base_directory).mkdirs();
@@ -139,7 +143,7 @@ class ModelUtilsTest extends GroovyTestCase{
         ModelGenerator.getInstance().generateModel (model);
 
         GrailsAwareClassLoader classLoader = new GrailsAwareClassLoader();
-        classLoader.addClasspath (base_directory);
+        classLoader.addClasspath ("${base_directory}/${ModelGenerator.MODEL_FILE_DIR}");
         classLoader.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
 
         def modelClass = classLoader.loadClass (model.name);

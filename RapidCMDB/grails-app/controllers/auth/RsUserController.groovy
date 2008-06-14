@@ -1,5 +1,5 @@
 package auth;  
-
+import com.ifountain.rcmdb.domain.util.ControllerUtils;
 import org.jsecurity.crypto.hash.Sha1Hash         
 class RsUserController {
     
@@ -14,7 +14,7 @@ class RsUserController {
     }
 
     def show = {
-        def rsUser = RsUser.get( params.id )
+        def rsUser = RsUser.get( id:params.id )
 
         if(!rsUser) {
             flash.message = "User not found with id ${params.id}"
@@ -24,10 +24,10 @@ class RsUserController {
     }
 
     def delete = {
-        def rsUser = RsUser.get( params.id )
+        def rsUser = RsUser.get( id:params.id )
         if(rsUser) {
             try{
-                rsUser.delete(flush:true)
+                rsUser.remove()
                 flash.message = "User ${params.id} deleted"
                 redirect(action:list)
             }
@@ -44,7 +44,7 @@ class RsUserController {
     }
 
     def edit = {
-        def rsUser = RsUser.get( params.id )
+        def rsUser = RsUser.get( id:params.id )
 
         if(!rsUser) {
             flash.message = "User not found with id ${params.id}"
@@ -56,7 +56,7 @@ class RsUserController {
     }
 
     def update = {
-        def rsUser = RsUser.get( params.id )
+        def rsUser = RsUser.get( id:params.id )
         
         if(rsUser) {
 	        def password1 = params["password1"];
@@ -70,8 +70,8 @@ class RsUserController {
 			if(password1 != ""){
 				rsUser.passwordHash = new Sha1Hash(password1).toHex();	
 			}
-            rsUser.username = params["username"];
-            if(!rsUser.hasErrors() && rsUser.save()) {
+            rsUser.update([username:params["username"]])
+            if(!rsUser.hasErrors()) {
                 flash.message = "User ${params.id} updated"
                 redirect(action:show,id:rsUser.id)
             }
@@ -101,8 +101,8 @@ class RsUserController {
             return;
 		}
 		
-        def rsUser = new RsUser(username: params["username"], passwordHash: new Sha1Hash(password1).toHex());
-        if(!rsUser.hasErrors() && rsUser.save()) {
+        def rsUser = RsUser.add(username: params["username"], passwordHash: new Sha1Hash(password1).toHex());
+        if(!rsUser.hasErrors()) {
             flash.message = "User ${rsUser.id} created"
             redirect(action:show,id:rsUser.id)
         }

@@ -43,31 +43,24 @@ class JsecDbRealm {
     }
 
     def hasRole(principal, roleName) {
-        def criteria = UserRoleRel.createCriteria()
-        def roles = criteria.list {
-            role {
-                eq('name', roleName)
-            }
-            rsUser {
-                eq('username', principal)
-            }
-        }
-
-        return roles.size() > 0
+        def res = UserRoleRel.search("name:${roleName} AND username:${principal}".toString());
+        return res.total > 0
     }
 
     def hasAllRoles(principal, roles) {
-        def criteria = UserRoleRel.createCriteria()
-        def r = criteria.list {
-            role {
-                'in'('name', roles)
+        def query = "username:${principal} "
+        if(roles.size() > 0)
+        {
+            query += " AND ("
+            roles.each{
+                query += "name:${it.name} OR "
             }
-            rsUser {
-                eq('username', principal)
-            }
+            query = query.substring(0, query.length()-3);
+            query += ")"            
         }
+        def res = UserRoleRel.search(query.toString());
 
-        return r.size() == roles.size()
+        return res.total == roles.size()
     }
 
     def isPermitted(principal, requiredPermission) {
@@ -76,15 +69,7 @@ class JsecDbRealm {
         //
         // First find all the permissions that the user has that match
         // the required permission's type and project code.
-        def criteria = UserPermissionRel.createCriteria()
-        def permissions = criteria.list {
-            rsUser {
-                eq('username', principal)
-            }
-            permission {
-                eq('type', requiredPermission.class.name)
-            }
-        }
+        def permissions = UserPermissionRel.search("username:${principal} AND type:${requiredPermission.class.name}".toString()).results;
 
         // Try each of the permissions found and see whether any of
         // them confer the required permission.
@@ -124,20 +109,23 @@ class JsecDbRealm {
         //
         // First, find the roles that the user has.
         def user = RsUser.findByUsername(principal)
-        def roles = UserRoleRel.findAllByRsUser(user)
+        def roles = user.roles;
 
         // If the user has no roles, then he obviously has no permissions
         // via roles.
         if (roles.isEmpty()) return false
 
-        // Get the permissions from the roles that the user does have.
-        criteria = RolePermissionRel.createCriteria()
-        def results = criteria.list {
-            'in'('role', roles.collect { it.role })
-            permission {
-                eq('type', requiredPermission.class.name)
+        def results = [];
+        roles.each{role->
+            role.permissionRelations.each{rolePermissionRelation->
+                if(rolePermissionRelation.permission.type == requiredPermission.class.name)
+                {
+                    results.add(rolePermissionRelation);
+                }
             }
+            
         }
+        
 
         // There may be some duplicate entries in the results, but
         // at this stage it is not worth trying to remove them. Now,

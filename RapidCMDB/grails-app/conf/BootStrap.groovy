@@ -159,20 +159,17 @@ class BootStrap {
     {
         def adminRole = Role.findByName("Administrator");
         if (!adminRole) {
-            adminRole = new Role(name: "Administrator");
-            adminRole.save();
+            adminRole = Role.add(name: "Administrator");
         }
         def userRole = Role.findByName("User");
         if (!userRole) {
-            userRole = new Role(name: "User");
-            userRole.save();
+            userRole = Role.add(name: "User");
         }
         def adminUser = RsUser.findByUsername("rsadmin");
         if (!adminUser) {
-            adminUser = new RsUser(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
-            adminUser.save();
+            adminUser = RsUser.add(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
         }
-        new UserRoleRel(rsUser: adminUser, role: adminRole).save()
+        UserRoleRel.add(rsUser: adminUser, role: adminRole)
         
     }
 

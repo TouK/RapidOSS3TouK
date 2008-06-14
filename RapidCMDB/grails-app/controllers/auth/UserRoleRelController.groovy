@@ -1,4 +1,5 @@
-package auth;           
+package auth;
+import com.ifountain.rcmdb.domain.util.ControllerUtils;
 class UserRoleRelController {
     
     def index = { redirect(action:list,params:params) }
@@ -12,7 +13,7 @@ class UserRoleRelController {
     }
 
     def show = {
-        def userRoleRel = UserRoleRel.get( params.id )
+        def userRoleRel = UserRoleRel.get( id:params.id )
 
         if(!userRoleRel) {
             flash.message = "UserRoleRel not found with id ${params.id}"
@@ -22,11 +23,11 @@ class UserRoleRelController {
     }
 
     def delete = {
-        def userRoleRel = UserRoleRel.get( params.id )
+        def userRoleRel = UserRoleRel.get( id:params.id )
         if(userRoleRel) {
 	        try{
 		        def userId = userRoleRel.rsUser?.id;
-                userRoleRel.delete(flush:true)
+                userRoleRel.remove()
                 flash.message = "Role ${userRoleRel.role} unassigned"
                 redirect(action: show, controller: 'rsUser', id: userId)
             }
@@ -43,7 +44,7 @@ class UserRoleRelController {
     }
 
     def edit = {
-        def userRoleRel = UserRoleRel.get( params.id )
+        def userRoleRel = UserRoleRel.get( id:params.id )
 
         if(!userRoleRel) {
             flash.message = "UserRoleRel not found with id ${params.id}"
@@ -55,10 +56,10 @@ class UserRoleRelController {
     }
 
     def update = {
-        def userRoleRel = UserRoleRel.get( params.id )
+        def userRoleRel = UserRoleRel.get( id:params.id )
         if(userRoleRel) {
-            userRoleRel.properties = params
-            if(!userRoleRel.hasErrors() && userRoleRel.save()) {
+            userRoleRel.update(ControllerUtils.getClassProperties(params, UserRoleRel));
+            if(!userRoleRel.hasErrors()) {
                 flash.message = "UserRoleRel ${params.id} updated"
                 redirect(action:show,id:userRoleRel.id)
             }
@@ -79,7 +80,7 @@ class UserRoleRelController {
     }
 
     def save = {
-        def userRoleRel = new UserRoleRel(params)
+        def userRoleRel = UserRoleRel.add(ControllerUtils.getClassProperties(params, UserRoleRel));
         if(!userRoleRel.hasErrors() && userRoleRel.save()) {
             flash.message = "UserRoleRel ${userRoleRel.id} created"
             redirect(action: show, controller: 'rsUser', id: userRoleRel.rsUser?.id)

@@ -9,6 +9,7 @@ import auth.RsUser
 * To change this template use File | Settings | File Templates.
 */
 class SearchQuery {
+    static searchable = true;
     RsUser user;
     String query;
     static belongsTo = ["RsUser"];

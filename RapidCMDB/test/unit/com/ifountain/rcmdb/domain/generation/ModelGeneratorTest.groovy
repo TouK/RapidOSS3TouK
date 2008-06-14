@@ -51,11 +51,13 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         super.setUp();
         if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDB"))
         {
+            System.setProperty("basedir", ".")
             ModelGenerator.getInstance().initialize (base_directory, base_directory, System.getProperty("base.dir"));
         }
         else
         {
-            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDB");            
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDB");
+            System.setProperty("basedir", "RapidCMDB")
         }
         FileUtils.deleteDirectory (new File(base_directory));
         new File(base_directory).mkdirs();

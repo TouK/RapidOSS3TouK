@@ -53,6 +53,30 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
         assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
     }
+    public void testUpdateMethodWithEvents()
+    {
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), [:], ["prop1"]);
+
+        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+
+        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals (objectBeforeAdd, addedObject);
+        addedObject.isBeforeInsertCalled = false;
+        addedObject.isOnLoadCalled = false;
+        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value"];
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), [:]);
+        def updatedObject = update.invoke (addedObject, [props] as Object[]);
+        assertEquals (addedObject.id, updatedObject.id);
+        assertEquals ("newProp2Value", updatedObject.prop2);
+        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
+
+        assertTrue (updatedObject.isOnLoadCalled);
+        assertFalse (updatedObject.isBeforeInsertCalled);
+        assertTrue (updatedObject.isBeforeUpdateCalled);
+        assertFalse (updatedObject.isBeforeDeleteCalled);
+    }
 
 
     public void testUpdateMethodWithSettingRelationToNull()

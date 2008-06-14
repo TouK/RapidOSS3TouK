@@ -30,6 +30,19 @@ class RemoveMethodTest extends RapidCmdbTestCase{
         assertNull (objectToBeRemoved.relationsToBeRemoved);
     }
 
+    public void testRemoveObjectWithEvents()
+    {
+        RemoveMethodDomainObjectWithEvents objectToBeRemoved = new RemoveMethodDomainObjectWithEvents();
+        RemoveMethod removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, [:]);
+        removeMethod.invoke (objectToBeRemoved, null);
+        assertSame(objectToBeRemoved, RemoveMethodDomainObjectWithEvents.unIndexList[0][0]);
+        assertNull (objectToBeRemoved.relationsToBeRemoved);
+        assertTrue (objectToBeRemoved.isBeforeDeleteCalled);
+        assertFalse (objectToBeRemoved.isBeforeUpdateCalled);
+        assertFalse (objectToBeRemoved.isBeforeInsertCalled);
+        assertFalse (objectToBeRemoved.isOnLoadCalled);
+    }
+
     public void testRemoveObjectWithRelations()
     {
 
@@ -70,6 +83,27 @@ class RemoveMethodDomainObject
     def removeRelation(Map relations)
     {
         relationsToBeRemoved = relations;
+    }
+}
+
+class RemoveMethodDomainObjectWithEvents extends RemoveMethodDomainObject
+{
+    boolean isOnLoadCalled = false;
+    boolean isBeforeInsertCalled = false;
+    boolean isBeforeUpdateCalled = false;
+    boolean isBeforeDeleteCalled = false;
+    def onLoad = {
+        isOnLoadCalled = true;
+    }
+
+    def beforeInsert = {
+        isBeforeInsertCalled = true;
+    }
+    def beforeUpdate = {
+        isBeforeUpdateCalled = true;
+    }
+    def beforeDelete = {
+        isBeforeDeleteCalled = true;
     }
 }
 

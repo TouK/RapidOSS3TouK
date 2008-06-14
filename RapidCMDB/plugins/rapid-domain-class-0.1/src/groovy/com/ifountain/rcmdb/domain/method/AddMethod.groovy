@@ -93,12 +93,18 @@ class AddMethod extends AbstractRapidDomainStaticMethod
             if(existingInstances.total == 0)
             {
                 sampleBean["id"] = IdGenerator.getInstance().getNextId();
+                EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
+            }
+            else
+            {
+                EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
             }
             CompassMethodInvoker.index (mc, sampleBean);
             if(relatedInstances.size() > 0)
             {
                 sampleBean.addRelation(relatedInstances);
             }
+            EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.ONLOAD_EVENT);
         }
         return sampleBean;
     }

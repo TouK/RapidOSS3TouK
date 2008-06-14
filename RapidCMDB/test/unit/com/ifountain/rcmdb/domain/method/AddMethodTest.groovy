@@ -73,6 +73,33 @@ class AddMethodTest extends RapidCmdbTestCase{
 
     }
 
+    public void testAddMethodWithEvents()
+    {
+        AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value");
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, validator, [:], ["prop1"]);
+        def props = [prop1:expectedDomainObject1.prop1];
+        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertTrue (addedObject.isOnLoadCalled);
+        assertTrue (addedObject.isBeforeInsertCalled);
+        assertFalse (addedObject.isBeforeUpdateCalled);
+        assertFalse (addedObject.isBeforeDeleteCalled);
+        assertEquals (expectedDomainObject1, addedObject);
+        assertTrue (AddMethodDomainObjectWithEvents.indexList[0].contains(addedObject));
+        assertNull(addedObject.relationsShouldBeAdded)
+        assertEquals("prop1:\"${expectedDomainObject1.prop1}\"", AddMethodDomainObjectWithEvents.query);
+        
+        AddMethodDomainObjectWithEvents.searchResult = [total:1, results:[expectedDomainObject1]];
+
+        addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+
+        assertTrue (addedObject.isOnLoadCalled);
+        assertFalse (addedObject.isBeforeInsertCalled);
+        assertTrue (addedObject.isBeforeUpdateCalled);
+        assertFalse (addedObject.isBeforeDeleteCalled);
+        assertEquals (expectedDomainObject1, addedObject);
+        assertTrue (AddMethodDomainObjectWithEvents.indexList[0].contains(addedObject));
+    }
+
 
     public void testIfKeyIsNullReturnsError()
     {
@@ -296,6 +323,28 @@ class AddMethodDomainObject1
 class ChildAddMethodDomainObject extends AddMethodDomainObject1
 {
     String prop6;
+}
+
+class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
+{
+    boolean isOnLoadCalled = false;
+    boolean isBeforeInsertCalled = false;
+    boolean isBeforeUpdateCalled = false;
+    boolean isBeforeDeleteCalled = false;
+
+    def onLoad = {
+        isOnLoadCalled = true;
+    }
+
+    def beforeInsert = {
+        isBeforeInsertCalled = true;
+    }
+    def beforeUpdate = {
+        isBeforeUpdateCalled = true;
+    }
+    def beforeDelete = {
+        isBeforeDeleteCalled = true;
+    }
 }
 
 class MockValidator implements Validator{

@@ -61,6 +61,7 @@ class RemoveMethod extends AbstractRapidDomainMethod{
         cascadedObjectsToBeRemoved.each{
             it.remove();
         }
+        EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
         CompassMethodInvoker.unindex(mc, domainObject);
     }
 

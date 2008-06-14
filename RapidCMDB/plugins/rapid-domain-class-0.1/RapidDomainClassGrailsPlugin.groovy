@@ -23,6 +23,7 @@ import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 import org.apache.commons.lang.StringUtils
 
 class RapidDomainClassGrailsPlugin {
+    private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def version = 0.1
     def dependsOn = [searchable:"0.5-SNAPSHOT"]
@@ -282,7 +283,7 @@ class RapidDomainClassGrailsPlugin {
                     operation.setProperty (name, value);
                 }
             }
-            if(flush)
+            if(flush && !EXCLUDED_PROPERTIES.containsKey(name))
             {
                 delegate.reindex();    
             }

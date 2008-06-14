@@ -86,7 +86,14 @@ class ApplicationController {
                     }
                     else
                     {
-                        it.add(it.properties);
+                        if(it instanceof PropertyAction)
+                        {
+                            PropertyAction.add(propName:it.propName, action:it.action, modelName:it.modelName);
+                        }
+                        else
+                        {
+                            ModelAction.add(action:it.action, modelName:it.modelName);
+                        }
                     }
                 }
             }

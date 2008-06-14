@@ -81,7 +81,7 @@ class UserRoleRelController {
 
     def save = {
         def userRoleRel = UserRoleRel.add(ControllerUtils.getClassProperties(params, UserRoleRel));
-        if(!userRoleRel.hasErrors() && userRoleRel.save()) {
+        if(!userRoleRel.hasErrors()) {
             flash.message = "UserRoleRel ${userRoleRel.id} created"
             redirect(action: show, controller: 'rsUser', id: userRoleRel.rsUser?.id)
         }

@@ -39,8 +39,8 @@ class ApplicationController {
     def index = {render(view: "application")}
     def reload = {
         def oldDomainClasses = [:]
-        PropertyAction.findAllByWillBeDeleted(true)*.delete(flush: true);
-        ModelAction.findAllByWillBeDeleted(true)*.delete(flush: true);
+        PropertyAction.searchEvery("willBeDeleted:true").results*.remove();
+        ModelAction.searchEvery("willBeDeleted:true").results*.remove();
         def baseDir = grailsApplication.config.toProperties()["rapidCMDB.base.dir"];
         def tempBaseDir = grailsApplication.config.toProperties()["rapidCMDB.temp.dir"];
         def currentModelDir = "${baseDir}/grails-app/domain";

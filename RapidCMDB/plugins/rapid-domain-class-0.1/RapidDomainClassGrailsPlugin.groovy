@@ -284,7 +284,7 @@ class RapidDomainClassGrailsPlugin {
             }
             if(flush)
             {
-                operation.reindex();    
+                delegate.reindex();    
             }
         }
         mc.getProperty = {String name->

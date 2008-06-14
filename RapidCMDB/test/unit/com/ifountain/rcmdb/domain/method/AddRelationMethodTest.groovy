@@ -49,6 +49,8 @@ class AddRelationMethodTest extends RapidCmdbTestCase{
         assertTrue (RelationMethodDomainObject1.indexList[0].contains(expectedDomainObject1));
         assertEquals (1, RelationMethodDomainObject2.indexList.size());
         assertTrue (RelationMethodDomainObject2.indexList[0].contains(expectedDomainObject2));
+        assertEquals (1, expectedDomainObject1.numberOfFlushCalls);
+        assertEquals (1, expectedDomainObject2.numberOfFlushCalls);
 
         RelationMethodDomainObject2.indexList = []
         RelationMethodDomainObject1.indexList = []
@@ -81,6 +83,9 @@ class AddRelationMethodTest extends RapidCmdbTestCase{
         AddRelationMethod add = new AddRelationMethod(RelationMethodDomainObject1.metaClass, relations);
         def props = [rel2:[relatedDomainObject2, relatedDomainObject3]];
         add.invoke (relatedDomainObject1, [props] as Object[]);
+        assertEquals (1, relatedDomainObject2.numberOfFlushCalls);
+        assertEquals (1, relatedDomainObject3.numberOfFlushCalls);
+        assertEquals (0, relatedDomainObject1.numberOfFlushCalls);
 
         assertEquals(relatedDomainObject1, relatedDomainObject2.revRel2);
         assertEquals(relatedDomainObject1, relatedDomainObject3.revRel2);
@@ -123,6 +128,8 @@ class AddRelationMethodTest extends RapidCmdbTestCase{
         def props = [rel3:relatedDomainObject3];
         add.invoke (relatedDomainObject1, [props] as Object[]);
         add.invoke (relatedDomainObject2, [props] as Object[]);
+        assertEquals (1, relatedDomainObject1.numberOfFlushCalls);
+        assertEquals (1, relatedDomainObject2.numberOfFlushCalls);
 
         assertEquals(relatedDomainObject3, relatedDomainObject1.rel3);
         assertEquals(relatedDomainObject3, relatedDomainObject2.rel3);
@@ -249,6 +256,8 @@ class RelationMethodDomainObject1
     BeanPropertyBindingResult errors = new BeanPropertyBindingResult(this,getClass().getName());
     def static indexList = [];
     boolean isRemoved = false;
+    int numberOfFlushCalls = 0;
+    boolean isFlushedByProperty = false;
     def relationsToBeRemoved;
     RelationMethodDomainObject2 rel1;
     HashSet rel2 = [];
@@ -282,12 +291,21 @@ class RelationMethodDomainObject1
         isRemoved = true;
     }
 
+    public void setProperty(String propName, Object propValue, boolean flush)
+    {
+        setProperty (propName, propValue);
+        isFlushedByProperty = flush;
+        numberOfFlushCalls++;
+    }
+
 }
 
 class RelationMethodDomainObject2
 {
     def static indexList = [];
     def relationsToBeRemoved;
+    int numberOfFlushCalls = 0;
+    boolean isFlushedByProperty = false;
     boolean isRemoved = false;
     RelationMethodDomainObject1 revRel1;
     RelationMethodDomainObject1 revRel2;
@@ -317,5 +335,12 @@ class RelationMethodDomainObject2
             return obj.id == id;
         }
         return super.equals(obj);
+    }
+
+    public void setProperty(String propName, Object propValue, boolean flush)
+    {
+        setProperty (propName, propValue);
+        isFlushedByProperty = flush;
+        numberOfFlushCalls++;
     }
 }

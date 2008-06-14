@@ -54,8 +54,8 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                     if(domainObject[relation.name] && domainObject[relation.name].id == value.id)
                     {
                         storage+= value;
-                        domainObject[relation.name] = null;
-                        value[relation.otherSideName] = null;
+                        domainObject.setProperty(relation.name, null, false);
+                        value.setProperty(relation.otherSideName, null, false);
                     }
                 }
                 else if(relation.isManyToOne())
@@ -67,7 +67,7 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                     if(domainObject[relation.name] && domainObject[relation.name].id == value.id)
                     {
                         storage+= value;
-                        domainObject.setProperty(relation.name, null);
+                        domainObject.setProperty(relation.name, null, false);
                         def otherSideRelatedClasses = value[relation.otherSideName];
                         for(Iterator i = otherSideRelatedClasses.iterator(); i.hasNext(); )
                         {
@@ -90,9 +90,9 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                     {
                         storage += it;
                         relatedObjects.remove(it.id);
-                        it[relation.otherSideName] = null;
+                        it.setProperty(relation.otherSideName, null, false);
                     }
-                    domainObject[relation.name] = new ArrayList(relatedObjects.values());
+                    domainObject.setProperty(relation.name, new ArrayList(relatedObjects.values()), false);
                 }
                 else
                 {
@@ -114,7 +114,7 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                             }
                         }
                     }
-                    domainObject[relation.name] = new ArrayList(relatedObjects.values());
+                    domainObject.setProperty(relation.name, new ArrayList(relatedObjects.values()));
                 }
                 if(storage.size() > 0)
                 {

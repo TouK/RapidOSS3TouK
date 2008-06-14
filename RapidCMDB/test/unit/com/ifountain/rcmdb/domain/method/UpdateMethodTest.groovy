@@ -43,14 +43,16 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals (objectBeforeAdd, addedObject);
-
+        addedObject.numberOfFlushCalls = 0;
+        addedObject.isFlushedByProperty = false;
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations);
         def updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
-
+        assertEquals(2, addedObject.numberOfFlushCalls);
+        assertFalse(addedObject.isFlushedByProperty);
         assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
     }
     public void testUpdateMethodWithEvents()

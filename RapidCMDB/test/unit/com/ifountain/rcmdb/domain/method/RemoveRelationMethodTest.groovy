@@ -46,7 +46,16 @@ class RemoveRelationMethodTest extends RapidCmdbTestCase{
         AddRelationMethod add = new AddRelationMethod(RelationMethodDomainObject1.metaClass, relationsForObject1);
         def props = [rel1:expectedDomainObject2, rel2:[expectedDomainObject3,expectedDomainObject4], rel3:[expectedDomainObject5], rel4:[expectedDomainObject6, expectedDomainObject7]];
         add.invoke (expectedDomainObject1, [props] as Object[]);
-
+        expectedDomainObject1.numberOfFlushCalls = 0
+        expectedDomainObject2.numberOfFlushCalls = 0
+        expectedDomainObject3.numberOfFlushCalls = 0
+        expectedDomainObject3.numberOfFlushCalls = 0
+        expectedDomainObject4.numberOfFlushCalls = 0
+        expectedDomainObject5.numberOfFlushCalls = 0
+        expectedDomainObject6.numberOfFlushCalls = 0
+        expectedDomainObject7.numberOfFlushCalls = 0
+        anotherDomainObjectForManyToOneRelation.numberOfFlushCalls = 0
+        notRelatedObject.numberOfFlushCalls = 0
         RelationMethodDomainObject1.indexList = [];
         RelationMethodDomainObject2.indexList = [];
 
@@ -81,6 +90,13 @@ class RemoveRelationMethodTest extends RapidCmdbTestCase{
         assertFalse(RelationMethodDomainObject2.indexList[0].contains(expectedDomainObject1));
         assertFalse (RelationMethodDomainObject2.indexList[0].contains(expectedDomainObject4));
         assertFalse (RelationMethodDomainObject2.indexList[0].contains(expectedDomainObject6));
+        assertEquals (3, expectedDomainObject1.numberOfFlushCalls)
+        assertEquals (1, expectedDomainObject2.numberOfFlushCalls)
+        assertEquals (1, expectedDomainObject3.numberOfFlushCalls)
+        assertEquals (0, expectedDomainObject4.numberOfFlushCalls)
+        assertEquals (0, expectedDomainObject5.numberOfFlushCalls)
+        assertEquals (0, expectedDomainObject6.numberOfFlushCalls)
+        assertEquals (0, expectedDomainObject7.numberOfFlushCalls)
 
 
         RelationMethodDomainObject1.indexList = [];

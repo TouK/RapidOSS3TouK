@@ -48,6 +48,8 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
         assertEquals("", AddMethodDomainObject1.query);
+        assertFalse (addedObject.isFlushedByProperty);
+        assertEquals (2, addedObject.numberOfFlushCalls);
         def prevId = addedObject.id;
 
         AddMethodDomainObject1.indexList.clear();
@@ -276,6 +278,8 @@ class AddMethodDomainObject1
     def relationsShouldBeAdded;
     def relationsShouldBeRemoved;
     def rel1;
+    int numberOfFlushCalls = 0;
+    boolean isFlushedByProperty = false;
     Errors errors;
     String prop1;
     String prop2;
@@ -316,6 +320,13 @@ class AddMethodDomainObject1
             return obj.prop1 == prop1;
         }
         return false;
+    }
+
+    public void setProperty(String propName, Object propValue, boolean flush)
+    {
+        setProperty (propName, propValue);
+        numberOfFlushCalls++;
+           this.isFlushedByProperty = flush;
     }
 }
 

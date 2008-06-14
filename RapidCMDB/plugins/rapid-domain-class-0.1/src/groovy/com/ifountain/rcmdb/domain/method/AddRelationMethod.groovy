@@ -80,8 +80,8 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                             oldValue[relation.otherSideName] = null;
                             storage.add(oldValue);
                         }
-                        domainObject[relation.name] = value[0];
-                        value[0][relation.otherSideName] = domainObject;
+                        domainObject.setProperty(relation.name, value[0], false);
+                        value[0].setProperty(relation.otherSideName, domainObject, false);
                     }
                     else if(relation.type == Relation.ONE_TO_MANY)
                     {
@@ -94,7 +94,7 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                                 relationToBeRemoved[relation.otherSideName] = it[relation.otherSideName];
                                 it.removeRelation(relationToBeRemoved);
                             }
-                            it[relation.otherSideName] = domainObject;
+                            it.setProperty(relation.otherSideName, domainObject, false);
                         }
                     }
                     else if(relation.type == Relation.MANY_TO_ONE)
@@ -105,7 +105,7 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                             relationToBeRemoved[relation.name] = domainObject[relation.name];
                             domainObject.removeRelation(relationToBeRemoved);
                         }
-                        domainObject[relation.name] = value[0];
+                        domainObject.setProperty(relation.name, value[0], false);
                         value[0][relation.otherSideName] += domainObject;
                     }
                     else

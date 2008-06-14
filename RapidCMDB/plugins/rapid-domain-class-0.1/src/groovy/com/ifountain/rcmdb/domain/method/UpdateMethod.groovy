@@ -66,7 +66,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
                         try
                         {
                             def converter = RapidConvertUtils.getInstance().lookup (fieldType);
-                            domainObject.setProperty (key, converter.convert(fieldType, value));
+                            domainObject.setProperty (key, converter.convert(fieldType, value), false);
                         }
                         catch(ConversionException exception)
                         {
@@ -75,7 +75,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
                     }
                     else
                     {
-                        domainObject.setProperty (key, value);
+                        domainObject.setProperty (key, value, false);
                     }
                 }
             }
@@ -109,7 +109,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
         }
         else
         {
-            domainObject.setProperty("errors", errors);
+            domainObject.setProperty("errors", errors, false);
         }
         return domainObject;
     }

@@ -261,23 +261,30 @@ class RapidDomainClassGrailsPlugin {
         {
             mc.addMetaBeanProperty(new DatasourceProperty("isPropertiesLoaded", Object.class));
         }
-
         mc.setProperty = {String name, Object value->
+            delegate.setProperty(name, value, true);    
+        }
+
+        mc.setProperty = {String name, Object value, boolean flush->
             def operation = delegate.__InternalGetProperty__(DomainOperationProperty.PROP_NAME);
             if(!operation)
             {
-                return delegate.__InternalSetProperty__(name, value);
+                delegate.__InternalSetProperty__(name, value);
             }
             else
             {
                 try
                 {
-                    return operation.invokeMethod (GrailsClassUtils.getSetterName(name), [value] as Object[]);
+                    operation.invokeMethod (GrailsClassUtils.getSetterName(name), [value] as Object[]);
                 }
                 catch(groovy.lang.MissingMethodException m)
                 {
-                    return operation.setProperty (name, value);
+                    operation.setProperty (name, value);
                 }
+            }
+            if(flush)
+            {
+                operation.reindex();    
             }
         }
         mc.getProperty = {String name->

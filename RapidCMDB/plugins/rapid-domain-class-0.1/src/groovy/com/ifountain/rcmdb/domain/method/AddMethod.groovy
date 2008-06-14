@@ -44,7 +44,6 @@ class AddMethod extends AbstractRapidDomainStaticMethod
 
         Errors errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
         def relatedInstances = [:];
-        def modelProperties = [:]
         props.each{key,value->
             Relation relation = relations.get(key);
             if(!relation)
@@ -59,8 +58,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
                         {
                             def converter = RapidConvertUtils.getInstance().lookup (fieldType);
                             def propVal = converter.convert (fieldType, value);
-                            modelProperties[key] = propVal;
-                            sampleBean[key] = propVal;
+                            sampleBean.setProperty(key, propVal, false);
                         }
                         catch(ConversionException exception)
                         {
@@ -69,7 +67,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
                     }
                     else
                     {
-                        sampleBean[key] = value;                        
+                        sampleBean.setProperty(key, value, false);
                     }
                 }
             }
@@ -79,20 +77,20 @@ class AddMethod extends AbstractRapidDomainStaticMethod
             }
         }
         if(errors.hasErrors()){
-            sampleBean.errors = errors;
+            sampleBean.setProperty("errors", errors, false);
             return sampleBean;
         }
         validator.validate (sampleBean, errors)
 
         if(errors. hasErrors())
         {
-            sampleBean.setProperty("errors", errors);
+            sampleBean.setProperty("errors", errors, false);
         }
         else
         {
             if(existingInstances.total == 0)
             {
-                sampleBean["id"] = IdGenerator.getInstance().getNextId();
+                sampleBean.setProperty("id", IdGenerator.getInstance().getNextId(), false);
                 EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
             }
             else

@@ -32,7 +32,7 @@ class SearchController {
         }
         else if(params.queryId)
         {
-            params.q = SearchQuery.get(params.queryId).query;
+            params.q = SearchQuery.get(id:params.queryId).query;
             return search(params);
         }
         else
@@ -93,7 +93,7 @@ class SearchController {
     def deleteQuery(params){
         if(params.queryId)
         {
-            SearchQuery.get(params.queryId)?.delete(flush:true);
+            SearchQuery.get(id:params.queryId)?.remove();
         }
         def currentUser = RsUser.findByUsername(session.username);
         return [savedQueries:currentUser.queries];
@@ -122,8 +122,7 @@ class SearchController {
         else
         {
             def rsUser = RsUser.findByUsername(session.username);
-            SearchQuery query = new SearchQuery(user:rsUser, query:params.q);
-            query.save();
+            SearchQuery query = SearchQuery.add(user:rsUser, query:params.q);
             return search(params);
 
         }

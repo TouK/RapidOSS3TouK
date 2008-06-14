@@ -93,8 +93,7 @@ class BootStrap {
                     currentDomainObject.clazz.metaClass.invokeStaticMethod (currentDomainObject.clazz, "unindex", [] as Object[]);
                 }
             }
-            modelAction.willBeDeleted = true;
-            modelAction.save();
+            modelAction.remove();
         }
 
         changedModelProperties.each {String modelName, Map modelProps ->
@@ -125,6 +124,7 @@ class BootStrap {
                             {
                                 modelInstance[propName] = action.defaultValue;
                             }
+                            action.remove();
                         }
                         modelInstance.reindex();
                     }
@@ -135,10 +135,6 @@ class BootStrap {
                     }
                 }
             }
-            PropertyAction.searchEvery("modelName:modelName").results.each {propActionWillBeDeleted ->
-                propActionWillBeDeleted.willBeDeleted = true;
-                propActionWillBeDeleted.save();
-            }
         }
     }
 
@@ -146,7 +142,7 @@ class BootStrap {
     {
         def rcmdbDatasource = RCMDBDatasource.findByName(RapidCMDBConstants.RCMDB);
         if (rcmdbDatasource == null) {
-            new RCMDBDatasource(name: RapidCMDBConstants.RCMDB).save();
+            RCMDBDatasource.add(name: RapidCMDBConstants.RCMDB);
         }
         if(System.getProperty("rs.modeler") != null){
             if(DatasourceName.findByName(RapidCMDBConstants.RCMDB) == null){

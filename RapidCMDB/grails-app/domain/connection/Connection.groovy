@@ -1,15 +1,26 @@
 package connection;
 class Connection {
-       String name;
-       String connectionClass;
+       static searchable = {
+        except = [];
+    	};
+    static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
+
+    String name ="";
+    
+    String connectionClass ="";
+    
+
+    static hasMany = [:]
 
        static constraints = {
-            name(unique:true, blank:false, nullable:false);
-            connectionClass(blank:false, nullable:false);
+             name(blank:false,nullable:false,key:[])
+        
+     connectionClass(blank:true,nullable:true)
        };
-       static mapping = {
-	      table 'base_connection'
-	  } 
+       
+       static mappedBy=[:]
+    static belongsTo = []
+    static transients = [];
 
        String toString(){
            return "$name";

@@ -1,9 +1,28 @@
 package datasource;
 class BaseDatasource {
-     String name;
-     static constraints = {
-         name(blank:false, nullable:false, unique:true);
-     };
+     static searchable = {
+        except = [];
+    };
+    static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
+
+    String name ="";
+    
+
+    static hasMany = [:]
+    
+        static mapping = {
+            tablePerHierarchy false
+        }
+    
+    static constraints={
+    name(blank:false,nullable:false,key:[])
+        
+     
+    }
+
+    static mappedBy=[:]
+    static belongsTo = []
+    static transients = [];
 
      String toString(){
          return "$name";

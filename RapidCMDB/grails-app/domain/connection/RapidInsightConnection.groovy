@@ -1,13 +1,39 @@
 package connection;
+
+import datasource.*
 class RapidInsightConnection extends Connection{
-    String baseUrl;
-    String username;
-    String password;
+   
+    
+    
+    static searchable = {
+        except = [];
+        
+    };
+    static cascaded = ["rapidInsightDatasources":true]
+    static datasources = [:]
+
+    
+    String baseUrl ="";
+    
+    String password ="";
+    
+    String username ="";
     String connectionClass = "connection.RapidInsightConnectionImpl";
     
-    static constraints = {
-        baseUrl(blank:false, nullable:false);
-        username(blank:false, nullable:false);
-        password(blank:false,nullable:false);
-    };
+
+   static hasMany = [rapidInsightDatasources:RapidInsightDatasource]
+    
+    static constraints={
+    baseUrl(blank:true,nullable:true)
+        
+     password(blank:true,nullable:true)
+        
+     username(blank:true,nullable:true)
+        
+     
+    }
+
+    static mappedBy=["rapidInsightDatasources":"connection"]
+    static belongsTo = []
+    static transients = [];
 }

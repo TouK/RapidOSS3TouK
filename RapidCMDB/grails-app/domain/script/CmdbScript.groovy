@@ -3,21 +3,31 @@ import com.ifountain.rcmdb.exception.scripting.ScriptingException
 import com.ifountain.rcmdb.scripting.ScriptManager
 import org.quartz.CronExpression
 import com.ifountain.rcmdb.scripting.ScriptScheduler
+import datasource.SnmpDatasource;
 
 class CmdbScript {
     def messageService;
-    static transients = ["messageService"];
+    
     public static String CRON = "Cron";
     public static String PERIODIC = "Periodic";
-    String name;
+    static searchable = {
+        except = [];
+    };
+    static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]  
+    Long startDelay =0;     
+    String name ="";   
     boolean scheduled = false;
     boolean enabled = false;
-    long startDelay = 0;
     String scheduleType = PERIODIC;
     String cronExpression = "* * * * * ?";
-    long period = 1;
+    Long period = 1;
+    static hasMany = [snmpDatasources:SnmpDatasource]
+   static mappedBy=["snmpDatasources":"script"]
+    static belongsTo = []
+    static transients = ["messageService"];
+    
     static constraints = {
-        name(blank: false, unique: true, validator: {val, obj ->
+        name(blank: false, key:[], validator: {val, obj ->
             try
             {
                 ScriptManager.getInstance().checkScript(obj.name);
@@ -66,7 +76,7 @@ class CmdbScript {
                     throw new Exception(script.messageService.getMessage("script.cannot.schedule", [script.name, e.getMessage()], Locale.ENGLISH));
                 }
             }
-            script.save();
+            script = CmdbScript.add(params)
         }
         if (!fromController && script.hasErrors()) {
             throw new Exception(script.messageService.getMessage(script.errors.allErrors[0], Locale.ENGLISH))
@@ -79,7 +89,7 @@ class CmdbScript {
 
     static def deleteScript(CmdbScript script) throws Exception {
         def scriptName = script.name;
-        script.delete()
+        script.remove()
         ScriptScheduler.getInstance().unscheduleScript(scriptName)
     }
 
@@ -94,10 +104,11 @@ class CmdbScript {
     }
 
     static def updateScript(CmdbScript script, Map params, boolean fromController) throws Exception {
-        script.properties = params
-        if (!script.hasErrors() && script.validate()) {
+        script.update(params);
+        if (!script.hasErrors()) {
             ScriptScheduler.getInstance().unscheduleScript(script.name)
-            if (script.scheduled && script.enabled) {
+            if (script.scheduled && script.enabled){ 
+	             
                 try {
                     if (script.scheduleType == CmdbScript.CRON) {
                         ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
@@ -110,7 +121,6 @@ class CmdbScript {
                     throw new Exception(script.messageService.getMessage("script.cannot.schedule", [script.name, e.getMessage()], Locale.ENGLISH));
                 }
             }
-            script.save();
         }
         if (!fromController && script.hasErrors()) {
             throw new Exception(script.messageService.getMessage(script.errors.allErrors[0], Locale.ENGLISH))

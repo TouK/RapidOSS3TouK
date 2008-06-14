@@ -4,7 +4,25 @@ import org.apache.log4j.Logger
 import connection.NetcoolConnection
 
 class NetcoolDatasource extends BaseDatasource{
-    NetcoolConnection connection;
+    static searchable = {
+        except = [];
+    };
+    static datasources = [:]
+
+    
+    NetcoolConnection connection ;
+    
+
+    static hasMany = [:]
+    
+    static constraints={
+    connection(nullable:true)
+        
+     
+    }
+
+    static mappedBy=["connection":"netcoolDatasources"]
+    static belongsTo = []
 
     static STRING_COL_NAMES =[];
     static FIELDMAP =[:];

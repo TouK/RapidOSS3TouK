@@ -6,30 +6,82 @@ import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
 import junit.framework.TestResult
 import junit.framework.Test
 import com.ifountain.rcmdb.scripting.ScriptScheduler;
+import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsControllerHelper
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.converter.DateConverter
+import com.ifountain.rcmdb.domain.util.ControllerUtils
 
 class ScriptController {
     public static final String SUCCESSFULLY_CREATED = "Script created";
     public static final String SCRIPT_DOESNOT_EXIST = "Script does not exist";
-    def scaffold = CmdbScript;
+    
+    def index = { redirect(action:list,params:params) }
+
+    // the delete, save and update actions only accept POST requests
+    def allowedMethods = [delete:'POST', save:'POST', update:'POST']
+
+    def list = {
+        if(!params.max) params.max = 10
+        [ cmdbScriptList: CmdbScript.list( params ) ]
+    }
+
+    
+    def show = {
+        def cmdbScript = CmdbScript.get([id:params.id])
+
+        if(!cmdbScript) {
+            flash.message = "CmdbScript not found with id ${params.id}"
+            redirect(action:list)
+        }
+        else {
+            if(cmdbScript.class != CmdbScript)
+            {
+                def controllerName = cmdbScript.class.name;
+                if(controllerName.length() == 1)
+                {
+                    controllerName = controllerName.toLowerCase();
+                }
+                else
+                {
+                    controllerName = controllerName.substring(0,1).toLowerCase()+controllerName.substring(1);
+                }
+                redirect(action:show, controller:controllerName, id:params.id)
+            }
+            else
+            {
+                return [ cmdbScript : cmdbScript ]
+            }
+        }
+    }
+    
+    def create = {
+        def cmdbScript = new CmdbScript()
+        cmdbScript.properties = params
+        return ['cmdbScript':cmdbScript]
+    }
+    
     def save = {
         try{
-            def script = CmdbScript.addScript(params, true)
+            def script = CmdbScript.addScript(ControllerUtils.getClassProperties(params, CmdbScript), true)
             if(script.hasErrors()){
                  render(view: 'create', controller: 'script', model: [cmdbScript: script])
             }
             else{
+	           
                 flash.message = SUCCESSFULLY_CREATED
                 redirect(action: show, controller: 'script', id: script.id)
             }
         }
         catch(e){
+	        
             flash.errors = [e.getMessage()]
             redirect(action: edit, id: params.id)
         }
     }
 
     def delete = {
-        def script = CmdbScript.get(params.id)
+        def script = CmdbScript.get([id:params.id])
         if (script) {
             CmdbScript.deleteScript(script);
             flash.message = "Script ${params.id} deleted"
@@ -40,12 +92,24 @@ class ScriptController {
             redirect(action: list)
         }
     }
+    
+    def edit = {
+        def cmdbScript = CmdbScript.get( [id:params.id] )
+
+        if(!cmdbScript) {
+            flash.message = "CmdbScript not found with id ${params.id}"
+            redirect(action:list)
+        }
+        else {
+            return [ cmdbScript : cmdbScript ]
+        }
+    }
 
     def update = {
-        def script = CmdbScript.get(params.id)
+        def script = CmdbScript.get( [id:params.id] )
         if (script) {
             try{
-                script = CmdbScript.updateScript(script, params, true);
+                script = CmdbScript.updateScript(script, ControllerUtils.getClassProperties(params, CmdbScript), true);
                 if(script.hasErrors()){
                     render(view: 'edit', model: [cmdbScript: script])
                 }
@@ -111,7 +175,7 @@ class ScriptController {
             redirect(action: list, controller: 'script');
         }
     }
-
+   
     def test =
     {
         def testDir = "test/reports"

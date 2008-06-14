@@ -1,16 +1,38 @@
 package connection;
+import datasource.*
 class DatabaseConnection extends Connection{
 
-    String driver;
-    String url;
-    String username;
-    String password;
-    String connectionClass = "connection.DatabaseConnectionImpl";
+    static searchable = {
+        except = [];
+    };
+    static cascaded = ["singleTableDatabaseDatasources":true, "databaseDatasources":true]
+    static datasources = [:]
 
-    static constraints = {
-            driver(blank:false, nullable:false);
-            url(blank:false, nullable:false);
-            username(blank:false, nullable:false);
-            password(nullable:false);
-     };
+    String connectionClass = "connection.DatabaseConnectionImpl";
+    String url ="";
+    
+    String password ="";
+    
+    String username ="";
+    
+    String driver ="";
+    
+
+   static hasMany = [singleTableDatabaseDatasources:SingleTableDatabaseDatasource, databaseDatasources:DatabaseDatasource]
+    
+    static constraints={
+    url(blank:true,nullable:true)
+        
+     password(blank:true,nullable:true)
+        
+     username(blank:true,nullable:true)
+        
+     driver(blank:true,nullable:true)
+        
+     
+    }
+
+    static mappedBy=["singleTableDatabaseDatasources":"connection", "databaseDatasources":"connection"]
+    static belongsTo = []
+    static transients = [];
 }

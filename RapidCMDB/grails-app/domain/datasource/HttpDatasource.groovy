@@ -4,8 +4,28 @@ import org.apache.log4j.Logger
 import connection.HttpConnection
 
 class HttpDatasource extends BaseDatasource{
-      HttpConnection connection;
-      def adapter;
+    static searchable = {
+        except = [];
+    };
+    static datasources = [:]
+
+    
+    HttpConnection connection ;
+    def adapter;
+
+    static hasMany = [:]
+    
+    static constraints={
+    connection(nullable:true)
+        
+     
+    }
+
+    static mappedBy=["connection":"httpDatasources"]
+    static belongsTo = []
+    static transients = ["adapter"];
+    
+     
    
     def onLoad = {
        this.adapter = new HttpAdapter(connection.name, 0, Logger.getRootLogger());

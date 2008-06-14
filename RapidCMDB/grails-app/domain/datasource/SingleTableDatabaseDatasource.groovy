@@ -4,15 +4,36 @@ import org.apache.log4j.Logger
 import connection.DatabaseConnection
 
 class SingleTableDatabaseDatasource extends BaseDatasource{
-    DatabaseConnection connection;
-    String tableName;
-    String tableKeys;
+    static searchable = {
+        except = [];
+    };
+    static datasources = [:]
+
+    
+    String tableKeys ="";
+    
+    String tableName ="";
+    
+    DatabaseConnection connection ;
+    
+
+    static hasMany = [:]
+    
+    static constraints={
+    tableKeys(blank:true,nullable:true)
+        
+     tableName(blank:true,nullable:true)
+        
+     connection(nullable:true)
+        
+     
+    }
+
+    static mappedBy=["connection":"singleTableDatabaseDatasources"]
+    static belongsTo = []
     def adapter;
     static transients =  ['adapter']
-     static constraints = {
-        tableName(blank:false);
-        tableKeys(blank:false)
-    };
+     
 
     def onLoad = {
        this.adapter = new SingleTableDatabaseAdapter(connection.name, tableName, tableKeys, 0, Logger.getRootLogger());

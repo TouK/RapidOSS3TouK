@@ -1,5 +1,25 @@
 package connection;
+import datasource.*
 class NetcoolConnection extends DatabaseConnection{
-    final String driver = "com.sybase.jdbc2.jdbc.SybDriver";
-    final String connectionClass = "connection.NetcoolConnectionImpl";
+    String driver = "com.sybase.jdbc2.jdbc.SybDriver";
+    String connectionClass = "connection.NetcoolConnectionImpl";
+    static searchable = {
+        except = [];
+    };
+    static cascaded = ["netcoolDatasources":true]
+    static datasources = [:]
+    
+
+     static hasMany = [netcoolDatasources:NetcoolDatasource]
+    
+    static constraints={
+    driver(blank:true,nullable:true)
+        
+     
+    }
+
+    static mappedBy=["netcoolDatasources":"connection"]
+    static belongsTo = []
+    static propertyConfiguration= [:]
+    static transients = [];
 }

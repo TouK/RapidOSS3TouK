@@ -4,7 +4,25 @@ import org.apache.log4j.Logger
 import connection.SmartsConnection
 
 class SmartsTopologyDatasource extends BaseDatasource{
-    SmartsConnection connection;
+    static searchable = {
+        except = [];
+    };
+    static datasources = [:]
+
+    
+    SmartsConnection connection ;
+    
+
+    static hasMany = [:]
+    
+    static constraints={
+    connection(nullable:true)
+        
+     
+    }
+
+    static mappedBy=["connection":"smartsTopologyDatasources"]
+    static belongsTo = []
     def adapter;
     static transients =  ['adapter']
 

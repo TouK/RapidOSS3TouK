@@ -4,7 +4,25 @@ import org.apache.log4j.Logger
 import connection.DatabaseConnection
 
 class DatabaseDatasource extends BaseDatasource{
-    DatabaseConnection connection;
+    static searchable = {
+        except = [];
+    };
+    static datasources = [:]
+
+    
+    DatabaseConnection connection ;
+    
+
+    static hasMany = [:]
+    
+    static constraints={
+    connection(nullable:true)
+        
+     
+    }
+
+    static mappedBy=["connection":"databaseDatasources"]
+    static belongsTo = []
     def adapter;
     static transients =  ['adapter']
 

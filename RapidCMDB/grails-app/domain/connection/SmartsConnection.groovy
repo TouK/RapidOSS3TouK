@@ -1,15 +1,41 @@
 package connection;
-class SmartsConnection extends Connection{
-    String broker;
-    String domain;
-    String username;
-    String password;
-    String connectionClass = "com.ifountain.smarts.connection.SmartsConnectionImpl";
 
-     static constraints = {
-            broker(blank:false, nullable:false);
-            domain(blank:false, nullable:false);
-            username(blank:false, nullable:false);
-            password(nullable:false);
-     };
+import datasource.*
+class SmartsConnection extends Connection{
+    
+    
+
+     static searchable = {
+        except = [];
+    };
+    static cascaded = ["smartsTopologyDatasources":true, "smartsNotificationDatasources":true]
+    static datasources = [:]
+
+    String connectionClass = "com.ifountain.smarts.connection.SmartsConnectionImpl";
+    String username ="";
+    
+    String domain ="";
+    
+    String password ="";
+    
+    String broker ="";
+    
+
+    static hasMany = [smartsTopologyDatasources:SmartsTopologyDatasource, smartsNotificationDatasources:SmartsNotificationDatasource]
+    
+    static constraints={
+    username(blank:true,nullable:true)
+        
+     domain(blank:true,nullable:true)
+        
+     password(blank:true,nullable:true)
+        
+     broker(blank:true,nullable:true)
+        
+     
+    }
+
+    static mappedBy=["smartsTopologyDatasources":"connection", "smartsNotificationDatasources":"connection"]
+    static belongsTo = []
+    static transients = [];
 }

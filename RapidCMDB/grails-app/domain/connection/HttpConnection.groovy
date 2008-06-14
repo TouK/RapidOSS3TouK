@@ -1,10 +1,29 @@
 package connection;
+import datasource.*
 class HttpConnection extends Connection{
-     String baseUrl;
-     String connectionClass = "connection.HttpConnectionImpl";
+     
 
-     static constraints = {
-        baseUrl(blank:false, nullable:false);
-     };
+    static searchable = {
+        except = [];
+    };
+    static cascaded = ["httpDatasources":true]
+    static datasources = [:]
+
+    
+    String baseUrl ="";
+    String connectionClass = "connection.HttpConnectionImpl";
+    
+
+    static hasMany = [httpDatasources:HttpDatasource]
+    
+    static constraints={
+    baseUrl(blank:true,nullable:true)
+        
+     
+    }
+
+    static mappedBy=["httpDatasources":"connection"]
+    static belongsTo = []
+    static transients = [];
 
 }

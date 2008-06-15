@@ -14,6 +14,10 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
         def connection = Connection.findByName(connConfigName);
         if(connection){
             def optProps = new CaseInsensitiveMap(connection.properties);
+            if(optProps.userPassword)
+            {
+                optProps.put ("password",optProps.userPassword);
+            }
             optProps.remove("errors");
             return new ConnectionParam(connection.getClass().getName(), connection.name, connection.connectionClass,optProps)
         }

@@ -16,7 +16,7 @@ class SmartsConnection extends Connection{
     
     String domain ="";
     
-    String password ="";
+    String userPassword ="";
     
     String broker ="";
     
@@ -28,7 +28,7 @@ class SmartsConnection extends Connection{
         
      domain(blank:true,nullable:true)
         
-     password(blank:true,nullable:true)
+     userPassword(blank:true,nullable:true)
         
      broker(blank:true,nullable:true)
         

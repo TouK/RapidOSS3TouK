@@ -15,7 +15,7 @@ class RapidInsightConnection extends Connection{
     
     String baseUrl ="";
     
-    String password ="";
+    String userPassword ="";
     
     String username ="";
     String connectionClass = "connection.RapidInsightConnectionImpl";
@@ -26,7 +26,7 @@ class RapidInsightConnection extends Connection{
     static constraints={
     baseUrl(blank:true,nullable:true)
         
-     password(blank:true,nullable:true)
+     userPassword(blank:true,nullable:true)
         
      username(blank:true,nullable:true)
         

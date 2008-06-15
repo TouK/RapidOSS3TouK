@@ -30,7 +30,6 @@
                         
                    	        <g:sortableColumn property="username" title="Username" />
                         
-                   	        <g:sortableColumn property="password" title="Password" />
                         
                         </tr>
                     </thead>
@@ -45,9 +44,7 @@
                             <td>${rapidInsightConnection.baseUrl?.encodeAsHTML()}</td>
                         
                             <td>${rapidInsightConnection.username?.encodeAsHTML()}</td>
-                        
-                            <td>${rapidInsightConnection.password?.encodeAsHTML()}</td>
-                        
+
                         </tr>
                     </g:each>
                     </tbody>

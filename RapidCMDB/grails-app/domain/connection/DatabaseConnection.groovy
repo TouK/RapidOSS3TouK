@@ -11,7 +11,7 @@ class DatabaseConnection extends Connection{
     String connectionClass = "connection.DatabaseConnectionImpl";
     String url ="";
     
-    String password ="";
+    String userPassword ="";
     
     String username ="";
     
@@ -23,7 +23,7 @@ class DatabaseConnection extends Connection{
     static constraints={
     url(blank:true,nullable:true)
         
-     password(blank:true,nullable:true)
+     userPassword(blank:true,nullable:true)
         
      username(blank:true,nullable:true)
         

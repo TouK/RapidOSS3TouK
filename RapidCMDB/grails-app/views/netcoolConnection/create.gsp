@@ -76,8 +76,8 @@
                                 <td valign="top" class="name">
                                     <label for="password">Password:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:netcoolConnection,field:'password','errors')}">
-                                    <input type="password" class="inputtextfield" id="password" name="password" value="${fieldValue(bean:netcoolConnection,field:'password')}"/>
+                                <td valign="top" class="value ${hasErrors(bean:netcoolConnection,field:'userPassword','errors')}">
+                                    <input type="password" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:netcoolConnection,field:'userPassword')}"/>
                                 </td>
                             </tr> 
                         

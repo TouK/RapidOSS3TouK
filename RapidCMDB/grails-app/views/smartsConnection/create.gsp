@@ -76,8 +76,8 @@
                                 <td valign="top" class="name">
                                     <label for="password">Password:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:smartsConnection,field:'password','errors')}">
-                                    <input type="password" class="inputtextfield" id="password" name="password" value="${fieldValue(bean:smartsConnection,field:'password')}"/>
+                                <td valign="top" class="value ${hasErrors(bean:smartsConnection,field:'userPassword','errors')}">
+                                    <input type="password" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:smartsConnection,field:'userPassword')}"/>
                                 </td>
                             </tr> 
                         

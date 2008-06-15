@@ -41,13 +41,13 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethod()
     {
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], []);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1];
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals (expectedDomainObject1, addedObject);
         assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
-        assertEquals("", AddMethodDomainObject1.query);
+        assertEquals("prop1:\"object1Prop1Value\"", AddMethodDomainObject1.query);
         assertFalse (addedObject.isFlushedByProperty);
         assertEquals (2, addedObject.numberOfFlushCalls);
         def prevId = addedObject.id;
@@ -64,14 +64,14 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethodForAChildClass()
     {
         ChildAddMethodDomainObject expectedDomainObject1 = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop6:"object1Prop6Value");
-        AddMethod add = new AddMethod(ChildAddMethodDomainObject.metaClass, validator, [:], []);
+        AddMethod add = new AddMethod(ChildAddMethodDomainObject.metaClass, validator, [:], ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1, prop6:expectedDomainObject1.prop6];
         def addedObject = add.invoke (ChildAddMethodDomainObject.class, [props] as Object[]);
         assertEquals (expectedDomainObject1, addedObject);
         assertEquals (expectedDomainObject1.prop6, addedObject.prop6);
         assertTrue (ChildAddMethodDomainObject.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
-        assertEquals("", ChildAddMethodDomainObject.query);
+        assertEquals("prop1:\"object1Prop1Value\"", ChildAddMethodDomainObject.query);
 
     }
 
@@ -128,7 +128,7 @@ class AddMethodTest extends RapidCmdbTestCase{
             RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
             RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
             AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], []);
+            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], ["prop1"]);
             def props = [prop1:expectedDomainObject1.prop1,  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0"];
             def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
             assertEquals (100, addedObject.prop4);
@@ -172,7 +172,7 @@ class AddMethodTest extends RapidCmdbTestCase{
             RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
             RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
             AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], []);
+            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], ["prop1"]);
             def props = [prop1:expectedDomainObject1.prop1,  prop4:"invalidData", prop5:"invalidData", doubleProp:"invalidData"];
             def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
             assertEquals (null, addedObject.prop4);
@@ -199,7 +199,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         validator.supports = true;
         validator.error = new FieldError( AddMethodDomainObject1.class.name, "prop1","value1",false,[] as String[], [] as Object[], "");
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], []);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1];
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertTrue (addedObject.hasErrors());
@@ -210,7 +210,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethodWithUndefinedProperties()
     {
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], []);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1, undefinedProperty:"undefinedProp"];
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals (expectedDomainObject1, addedObject);
@@ -227,7 +227,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         def relations = ["rel1":new Relation("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE),
         "rel2":new Relation("rel2", "revRel2", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE)];
 
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, relations, []);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, relations, ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1, rel1:[expectedDomainObject2, expectedDomainObject3], rel2:expectedDomainObject4];
         def addedObject1 = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
 
@@ -288,7 +288,7 @@ class AddMethodDomainObject1
     Date prop5;
     Double doubleProp;
     long id;
-    def static search(queryClosure)
+    def static searchWithoutTriggering(queryClosure)
     {
         AddMethodDomainObject1.query = queryClosure;
         return searchResult

@@ -22,6 +22,7 @@
  * Time: 2:26:15 PM
  */
 class MessageService {
+    boolean transactional = false
     def messageSource;
     public void afterPropertiesSet(){}
     public String getMessage(code, args, defaultMessage, locale) {

@@ -31,6 +31,12 @@ grails.views.gsp.encoding="UTF-8"
 grails.converters.encoding="UTF-8"
 grails.test.default.rollback = true
 
+if(System.getProperty("rs.modeler") == null){
+    plugin {
+        excludes = "hibernate"
+    }
+}
+
 rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/../RapidCMDB/generatedModels".toString();
 rapidCMDB.base.dir = "${System.getProperty("base.dir")}/../RapidCMDB".toString();
 rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss";

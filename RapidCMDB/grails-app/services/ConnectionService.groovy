@@ -8,7 +8,7 @@ import org.springframework.beans.factory.InitializingBean
 import connection.Connection
 
 class ConnectionService implements InitializingBean, DisposableBean, ConnectionParameterSupplier{
-    boolean transactional = true
+    boolean transactional = false
 
     public ConnectionParam getConnectionParam(String connConfigName) {
         def connection = Connection.findByName(connConfigName);

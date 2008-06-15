@@ -52,8 +52,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
     def dependsOn = [dataSource: grailsVersion,
                      domainClass: grailsVersion,
                      i18n: grailsVersion,
-                     core:  grailsVersion,
-                     hibernate: grailsVersion]
+                     core:  grailsVersion]
 //	def watchedResources = "file:./grails-app/doai/*Codec.groovy"
     def config
 
@@ -190,14 +189,9 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
 
         // Compass::GPS
 //        compassGpsDevice(HibernateGpsDevice) {
-        compassGpsDevice(SpringHibernate3GpsDevice) {
-            name = "hibernate"
-            sessionFactory = sessionFactory
-            fetchCount = 5000
-        }
         compassGps(SingleCompassGps) {
             compass = compass
-            gpsDevices = [compassGpsDevice]
+            gpsDevices = []
         }
 
         searchableMethodFactory(DefaultSearchableMethodFactory) {

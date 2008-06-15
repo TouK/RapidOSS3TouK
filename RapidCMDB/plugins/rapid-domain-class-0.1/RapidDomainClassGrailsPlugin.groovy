@@ -207,6 +207,10 @@ class RapidDomainClassGrailsPlugin {
         mc.'static'.list = {Map options->
             return CompassMethodInvoker.search(mc, "id:[0 TO *]", options).results;
         }
+
+        mc.'static'.count = {->
+            return mc.invokeStaticMethod(mc.theClass, "countHits", ["id:[0 TO *]"] as Object[]);
+        }
     }
     def registerDynamicMethods(dc, application, ctx)
     {

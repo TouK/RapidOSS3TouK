@@ -29,7 +29,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 
 class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
-
+    static transactional = false;
     void setUp() {
         super.setUp();
         DatasourceName.list()*.delete();

@@ -30,6 +30,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
  * To change this template use File | Settings | File Templates.
  */
 class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
+    static transactional = false; 
    String modelName;
    String modelName2;
     public void setUp() {

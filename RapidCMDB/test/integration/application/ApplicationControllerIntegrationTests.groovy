@@ -17,6 +17,7 @@ import model.DatasourceName
 * To change this template use File | Settings | File Templates.
 */
 class ApplicationControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
+    static transactional = false;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         Model.list()*.delete(flush:true);

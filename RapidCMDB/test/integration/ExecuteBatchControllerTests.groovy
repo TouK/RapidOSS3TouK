@@ -28,6 +28,7 @@ import com.ifountain.rcmdb.test.util.IntegrationTestUtils
  * Time: 9:58:10 AM
  */
 class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
+    static transactional = false;
     private ExecuteBatchController ebc;
 
     void setUp() {

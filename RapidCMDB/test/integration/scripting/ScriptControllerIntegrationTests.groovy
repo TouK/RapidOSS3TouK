@@ -14,6 +14,7 @@ import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 * To change this template use File | Settings | File Templates.
 */
 class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
+    static transactional = false;
     String expectedScriptMessage;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.

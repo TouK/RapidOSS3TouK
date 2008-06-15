@@ -12,6 +12,7 @@ import com.ifountain.rcmdb.scripting.ScriptManager
 * To change this template use File | Settings | File Templates.
 */
 class ScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
+    static transactional = false;
     String expectedScriptMessage;
     String scriptName = "script1";
     public void setUp() {

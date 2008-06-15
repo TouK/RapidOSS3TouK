@@ -32,7 +32,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
         keys.each{keyPropName->
             keysMap[keyPropName] = props[keyPropName];
         }
-        def existingInstances = CompassMethodInvoker.search(mc, keysMap);
+        def existingInstances = CompassMethodInvoker.search(mc, keysMap, false);
         if(existingInstances.total != 0)
         {
             sampleBean = existingInstances.results[0];

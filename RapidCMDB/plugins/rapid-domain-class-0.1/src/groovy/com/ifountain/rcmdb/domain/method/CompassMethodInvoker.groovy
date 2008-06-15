@@ -29,6 +29,11 @@ class CompassMethodInvoker {
 
     public static Object search(MetaClass mc, Map keys)
     {
+        search (mc, keys, true);
+    }
+
+    public static Object search(MetaClass mc, Map keys, boolean triggerEvent)
+    {
         if(keys.isEmpty()) return [total:0, results:[]]
         def queryBuffer = new StringBuffer("");
         for(key in keys){
@@ -39,7 +44,14 @@ class CompassMethodInvoker {
         {
             query = query.substring(0, query.length() - 5);
         }
-        return search(mc, query);
+        if(triggerEvent)
+        {
+            return search(mc, query);
+        }
+        else
+        {
+            return mc.invokeStaticMethod(mc.theClass, "searchWithoutTriggering", [query] as Object[]);
+        }
     }
 
     public static Object search(MetaClass mc, String query)

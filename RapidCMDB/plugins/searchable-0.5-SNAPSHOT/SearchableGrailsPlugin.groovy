@@ -31,6 +31,7 @@ import org.springframework.util.ClassUtils
 
 import grails.spring.BeanBuilder
 import org.compass.gps.device.hibernate.HibernateGpsDevice
+import com.ifountain.rcmdb.domain.method.EventTriggeringUtils
 
 /**
 * @author Maurice Nicholson
@@ -72,21 +73,39 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
              * search: Returns a subset of the instances of this class matching the given query
              */
             grailsDomainClass.metaClass.'static'.search << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "search").invoke(*args)
+                def res = searchableMethodFactory.getMethod(delegate, "search").invoke(*args)
+                res.results.each{result->
+                    EventTriggeringUtils.triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
+                }
+
+                return res;
+            }
+
+            grailsDomainClass.metaClass.'static'.searchWithoutTriggering << { Object[] args ->
+                return searchableMethodFactory.getMethod(delegate, "search").invoke(*args)
             }
 
             /**
              * searchTop: Returns the top (most relevant) instance of this class matching the given query
              */
-            grailsDomainClass.metaClass.'static'.searchEvery << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "searchTop").invoke(*args)
+            grailsDomainClass.metaClass.'static'.searchTop << { Object[] args ->
+                def res = searchableMethodFactory.getMethod(delegate, "searchTop").invoke(*args)
+                if(res)
+                {
+                    EventTriggeringUtils.triggerEvent (res, EventTriggeringUtils.ONLOAD_EVENT);
+                }
+                return res;
             }
 
             /**
              * searchEvery: Returns all instance of this class matching the given query
              */
             grailsDomainClass.metaClass.'static'.searchEvery << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "searchEvery").invoke(*args)
+                def res = searchableMethodFactory.getMethod(delegate, "searchEvery").invoke(*args)
+                res.each{result->
+                    EventTriggeringUtils.triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
+                }
+                return res;
             }
 
             /**

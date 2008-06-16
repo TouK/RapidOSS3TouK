@@ -18,6 +18,7 @@
   </splashScreen>
   <java mainClass="org.codehaus.groovy.grails.cli.support.GrailsStarter" vmParameters="&quot;-Dgroovy.starter.conf=%EXE4J_EXEDIR%..\conf\groovy-starter.conf&quot; &quot;-Dgrails.home=%EXE4J_EXEDIR%..&quot; &quot;-Dgrails.work.dir=%EXE4J_EXEDIR%..\temp&quot; &quot;-Dbase.dir=.&quot;" arguments="--main com.ifountain.grails.RapidGrailsScriptRunner --classpath . --conf %EXE4J_EXEDIR%..\conf\groovy-starter.conf run-app" allowVMPassthroughParameters="true" preferredVM="" minVersion="1.6" maxVersion="" allowBetaVM="false" jdkOnly="false">
     <searchSequence>
+      <directory location="../jre" />
       <envVar name="JAVA_HOME" />
       <envVar name="JDK_HOME" />
       <envVar name="JRE_HOME" />

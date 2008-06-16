@@ -95,7 +95,7 @@ chmod +x *
 ./rs.sh -start
 dataDir=data
 loopcount=0
-until [ -f $dataDir]
+until [ -f $dataDir ]
 do
    if [ $loopcount -gt 300 ]
     then

@@ -88,9 +88,16 @@ class RapidCmdbBuild extends Build {
 
         ant.copy(todir: "$env.dist_rapid_cmdb/scripts") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/scripts") {
+            	ant.exclude(name: "${sampleName}Setup.groovy")
                 ant.include(name: "${sampleName}*.groovy")
             };
         }
+        
+        ant.copy(todir: "$env.dist_rapid_cmdb_modeler/scripts") {
+            ant.fileset(dir: "$env.rapid_cmdb_cvs/scripts") {
+                ant.include(name: "${sampleName}Setup.groovy")
+            };
+        }        
 
         def versionDate = getVersionWithDate();
         def zipFileName = "${env.distribution}/${sampleName}${versionDate}" + ".zip"

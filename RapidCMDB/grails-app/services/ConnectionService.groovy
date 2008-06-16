@@ -6,19 +6,33 @@ import org.apache.log4j.Logger
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
 import connection.Connection
+import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
 
 class ConnectionService implements InitializingBean, DisposableBean, ConnectionParameterSupplier{
     boolean transactional = false
-
+    def grailsApplication
     public ConnectionParam getConnectionParam(String connConfigName) {
         def connection = Connection.findByName(connConfigName);
         if(connection){
-            def optProps = new CaseInsensitiveMap(connection.properties);
+            def excludedProps = ['version',
+                                'id',
+                                Events.ONLOAD_EVENT,
+                                Events.BEFORE_DELETE_EVENT,
+                                Events.BEFORE_INSERT_EVENT,
+                                Events.BEFORE_UPDATE_EVENT]
+            def domainClass = grailsApplication.getDomainClass(connection.getClass().getName());
+			def props = domainClass.properties.findAll { !excludedProps.contains(it.name) }
+            def optProps = new CaseInsensitiveMap();
+            props.each{
+	            if(!(it.manyToOne || it.oneToOne || it.oneToMany || it.manyToMany)){
+		        	def propName = it.name
+	        		optProps.put(propName, connection."$propName")
+		        }
+	       	}
             if(optProps.userPassword)
             {
                 optProps.put ("password",optProps.userPassword);
             }
-            optProps.remove("errors");
             return new ConnectionParam(connection.getClass().getName(), connection.name, connection.connectionClass,optProps)
         }
         return null;

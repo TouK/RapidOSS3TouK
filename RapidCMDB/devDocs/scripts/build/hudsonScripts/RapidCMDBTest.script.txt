@@ -23,9 +23,9 @@ groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CompM
 
 cd RapidModules/
 groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild testBuild
-groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest 
-groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest 
-groovy RapidCMDB/devDocs/scripts/build/CompModuleTest 
+groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
+groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
+groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
 
 
 ################### generating test domain classes ##############
@@ -36,8 +36,25 @@ cp ../LicencedJars/lib/smarts/*.jar ../Distribution/RapidServer/lib
 
 scriptFileName1="Sample3Setup"
 scriptFileName2="Sample1Setup"
-cp ../RapidModules/RapidCMDB/scripts/$scriptFileName1.groovy ../Distribution/RapidServer/RapidCMDB/scripts
-cp ../RapidModules/RapidCMDB/scripts/$scriptFileName2.groovy ../Distribution/RapidServer/RapidCMDB/scripts
+cp RapidCMDB/scripts/$scriptFileName1.groovy ../Distribution/RapidServer/RapidCMDB/scripts
+cp RapidCMDB/scripts/$scriptFileName2.groovy ../Distribution/RapidServer/RapidCMDB/scripts
+
+rsbatchInput=input.txt
+echo  "/RapidCMDB/script/save?name=$scriptFileName1" >> $rsbatchInput
+echo  "/RapidCMDB/script/save?name=$scriptFileName2" >> $rsbatchInput
+echo  "/RapidCMDB/script/run/$scriptFileName1" >> $rsbatchInput
+echo  "/RapidCMDB/script/run/$scriptFileName2" >> $rsbatchInput
+
+for file in $(find RapidCMDB/scripts -name *Test.groovy)
+do
+     filename=${file#RapidCMDB/scripts/*}
+     echo "$filename"
+     cp RapidCMDB/scripts/$filename ../Distribution/RapidServer/RapidCMDB/scripts
+     echo "/RapidCMDB/script/save?name=$filename" >> $rsbatchInput
+     echo  "/RapidCMDB/script/test?id=$filename" >> $rsbatchInput
+done
+
+mv $rsbatchInput ../Distribution/RapidServer/RapidCMDB
 
 cd ../Distribution/RapidServer/RapidCMDB/
 export RS_HOME=/root/.hudson/jobs/RapidCMDBTests/workspace/Distribution/RapidServer
@@ -45,12 +62,13 @@ chmod +x *
 
 
 ./rs.sh -start
-dbfile=data/prodDb.script
+dataDir=data
 loopcount=0
-until [ -f $dbfile ]
+until [ -d $dataDir ]
 do
    if [ $loopcount -gt 300 ]
      then
+        ./rs.sh -stop
         exit 1
    fi
    sleep 1
@@ -58,16 +76,20 @@ do
 done
 sleep 20
 
-rsbatchInput=input.txt
-echo  "RapidCMDB/script/save?name=$scriptFileName1" >> $rsbatchInput
-echo  "RapidCMDB/script/save?name=$scriptFileName2" >> $rsbatchInput
-echo  "RapidCMDB/script/run/$scriptFileName1" >> $rsbatchInput
-echo  "RapidCMDB/script/run/$scriptFileName2" >> $rsbatchInput
-
-./rsbatch.sh -commandfile RapidCMDB/$rsbatchInput -host localhost -port 12222
+./rsbatch.sh -commandfile RapidCMDB/$rsbatchInput -host localhost -port 12222 -username rsadmin -password changeme
 
 sleep 2
 ./rs.sh -stop
+
+mv test/reports/*.xml ../../../TestResults
+
+generatedModelsDir=generatedModels
+if [ -d $generatedModelsDir ]
+  then
+      mv generatedModels/grails-app/domain/*.groovy grails-app/domain
+  else
+      echo "Test models couldnot be generated!!!!"
+fi
 
 rm -rf data
 

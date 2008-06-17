@@ -1,0 +1,35 @@
+.overlay { 
+	position:absolute;
+	width: 300px;
+	background:white;
+	border-top:1px solid gray;
+	border-left:1px solid gray;
+	border-right:2px solid gray;
+	border-bottom:2px solid gray;
+	padding:0px;
+	margin:0px;
+	z-index:30000; 
+}
+.overlay .hd { 
+	overflow:auto;
+	padding:0px;
+	z-index:30000;
+	border-bottom: 1px solid black;
+}
+.overlay .bd { 
+	overflow:auto;
+	padding:0px;
+	z-index:30000;
+	width:300px;
+	height:120px;
+}
+.overlay .ft { 
+	overflow:auto;
+	padding:0px;
+	z-index:30000; 
+}
+
+.ri-filterstool-selected
+{
+	background-color: #b3c8e8;
+}

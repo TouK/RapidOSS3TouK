@@ -1,0 +1,3 @@
+--Output from testBerkaySurnameIsSener2--
+TestStart [testBerkaySurnameIsSener2(BerkayTest), testBerkaySurnameIsSener2(BerkayTest), junit.framework.TestResult@148e8c]
+TestStart [testBerkaySurnameIsSener2(BerkayTest), testBerkaySurnameIsSener2(BerkayTest), junit.framework.TestResult@148e8c]

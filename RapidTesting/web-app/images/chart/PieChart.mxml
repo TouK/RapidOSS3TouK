@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!-- Simple example to demonstrate the PieChart control. -->
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="100%" 
+	height="100%" 
+	backgroundColor="0xFFFFFF" 
+	paddingBottom="0" 
+	paddingLeft="0" 
+	paddingRight="0"
+	paddingTop="0">
+
+    <mx:Script>
+        <![CDATA[
+        	import mx.controls.Alert;
+        	import mx.charts.events.ChartItemEvent;
+        	import mx.graphics.LinearGradient;
+        	import mx.graphics.GradientEntry;
+        	import mx.graphics.RadialGradient;
+        	import mx.graphics.IFill;
+          	import mx.collections.ArrayCollection;
+    
+        private function myLabelFunction(data:Object, field:String, index:Number, percentValue:Number):String {
+            return (percentValue + "").substring(0,5) + "%," + data.Label;
+        }
+        
+        public var refs:Array = [PieChart, PieSeries, FABridge, RadialGradient, GradientEntry];
+        
+        ]]>
+    </mx:Script>
+
+	<mx:Panel id="myPanel" height="100%" width="100%" borderStyle="none">
+	    <mx:PieChart id="myChart" showDataTips="true" width="100%" height="100%">
+	        <mx:series> 
+	            <mx:PieSeries id="mySeries" labelPosition="none" field="Data" labelFunction="myLabelFunction" nameField="Label">
+	            </mx:PieSeries>
+	        </mx:series>
+	    </mx:PieChart>
+	    <!-- <mx:Legend dataProvider="{myChart}" /> -->
+	</mx:Panel>
+    
+    <bridge:FABridge xmlns:bridge="bridge.*" id="bridgeInst" />
+</mx:Application>

@@ -1,0 +1,127 @@
+.r-admin-dlg-wrp{
+	padding: 10px;
+}
+.r-admin-form-table{
+	
+}
+.r-admin-dlg-txt{
+	height: 20px;
+	padding-top: 2px;
+	width: 100px;
+}
+.r-admin-condlg-txt{
+	height: 20px;
+	padding-top: 2px;
+	width: 150px;
+}
+.r-admin-dlg-intxt{
+	height: 20px;
+	padding-top: 2px;
+	width: 150px;
+	text-indent: 10px;
+}
+.r-admin-inputwrp{
+	height: 22px;
+}
+.r-admin-input{
+	height: 20px;
+	width: 200px;
+}
+.r-admin-checkbox{
+	height: 100%;
+}
+.r-admin-listwrp{
+
+}
+.r-admin-dlg-buttonswrp{
+
+}
+.r-admin-list{
+	overflow:auto;
+	width:200px;
+}
+.r-admin-conlist{
+	overflow:auto;
+	width:160px;
+}
+.r-admin-dlg-bwrap{
+
+}
+.r-admin-actioncollapsed{
+	background-image: url(../images/layout/Actions.png);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.r-admin-user-add{
+	background-image: url(../images/layout/user.png);
+}
+.r-admin-group-add{
+	background-image: url(../images/layout/group.png);
+}
+.r-admin-data-newsmarts{
+	background-image: url(../images/layout/chart_organisation.png);
+}
+.r-admin-data-newrs{
+	background-image: url(../images/RapidSuiteDatasource.gif);
+}
+.r-admin-data-newdb{
+	background-image: url(../images/layout/database.png);
+}
+.r-admin-script-add{
+	background-image: url(../images/layout/script.png);
+}
+.r-admin-conn-newdb{
+	background-image: url(../images/layout/database_connect.png);
+}
+.r-admin-conn-newfile{
+	background-image: url(../images/layout/page_red.png);
+}
+.r-admin-conn-newntf{
+	background-image: url(../images/layout/exclamation.png);
+}
+.r-admin-conn-newtopo{
+	background-image: url(../images/layout/chart_organisation.png);
+}
+.r-admin-conn-newNetcool{
+	background-image: url(../images/layout/netcool_connector.png);
+}
+.r-admin-user-add, .r-admin-group-add, .r-admin-data-newsmarts, .r-admin-data-newrs, .r-admin-data-newdb, .r-admin-conn-newNetcool,
+.r-admin-script-add, .r-admin-conn-newdb, .r-admin-conn-newfile, .r-admin-conn-newntf, .r-admin-conn-newtopo{
+	width: auto;
+	background-position:0px;
+	padding-left: 18px;
+}
+.r-admin-users-tabicon{
+	background-image:url(../images/layout/user.png);
+}
+.r-admin-groups-tabicon{
+	background-image:url(../images/layout/group.png);
+}
+.r-admin-datasources-tabicon{
+	background-image:url(../images/layout/datasource.png);
+}
+.r-admin-script-tabicon{
+	background-image: url(../images/layout/script.png);
+}
+.r-admin-conn-tabicon{
+	background-image:url(../images/layout/connect.png);
+}
+.r-admin-users-tabicon, .r-admin-datasources-tabicon, .r-admin-script-tabicon, .r-admin-groups-tabicon, .r-admin-conn-tabicon{
+	line-height: 1px;
+	font-size:1px;
+	background-repeat: no-repeat;
+	display:block;
+	position:absolute;
+	right:6px;top:2px;
+	width:16px;height:16px;
+}
+.r-admin-script-suggestion{
+	position:absolute;
+	width:200px;
+	z-index:19048;
+	display:block;
+}
+.r-admin-dbcondlg-sqlwrp{
+	width: 200px;
+	height: 88px;
+}

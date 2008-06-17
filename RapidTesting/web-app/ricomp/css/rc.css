@@ -1,0 +1,74 @@
+.rc-topo-detailwrp{
+	padding-top: 10px;
+	padding-left: 20px;
+	padding-bottom: 10px;
+}
+.rc-formtext{
+	display:block;
+	width: 150px;
+}
+.rc-topo-dlgformtext{
+	display:block;
+}
+
+.rc-topo-classwrp{
+}
+
+.rc-topo-addclswrp{
+	padding-top: 10px;
+}
+.rc-topo-clsgridwrp{
+	padding-top: 10px;
+	width: 352px;
+	height: 200px;
+}
+.rc-topo-dlgwrp{
+	padding-left: 10px;
+	padding-top: 10px;
+}
+
+.rc-ntf-detailwrp{
+	padding-top: 10px;
+	padding-left: 20px;
+	padding-bottom: 10px;
+}
+
+
+.rc-ntf-attselectwrp{
+}
+.rc-ntf-attbtnswrp{
+}
+.rc-ntf-monattwrp{
+}
+.rc-ntf-attselect{
+	overflow:auto;
+	width:160px;
+}
+.rc-ntf-monattselect{
+	overflow:auto;
+	width:160px;
+}
+.rc-ntf-attbtnwrp{
+}
+.rc-db-detailwrp{
+	padding-top: 10px;
+	padding-left: 20px;
+	padding-bottom: 10px;
+}
+
+
+.rc-db-sqlwrp{
+	width: 200px;
+	height: 88px;
+}
+.rc-db-sqlinput{
+	height: 100%;
+	width: 200px;
+}
+
+.rc-file-detailwrp{
+	padding-top: 10px;
+	padding-left: 20px;
+	padding-bottom: 10px;
+}
+

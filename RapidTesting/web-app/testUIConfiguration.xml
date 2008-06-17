@@ -1,0 +1,73 @@
+<TestPluginConfig>
+    <UiConfiguration>
+        <Urls>
+            <Url Name="getTestData" Address="test/list"/>
+            <Url Name="getTestResults" Address="test/run"/>
+
+        </Urls>
+
+        <Components>
+
+            <Tree Id="testTree" Url="getTestData" RefreshRate="30" RootTag="Tests" KeyAttributeName="name" ContentPath="Test" Title="All Tests">
+                <Columns>
+                    <Column Type="Link" Header="Name" Width="150" AttributeName="displayName" Align = "left" ActionId="runTestAction"/>
+                </Columns>
+                <Tools>
+                    <PollingTool/>
+                    <LoadingTool/>
+                </Tools>
+            </Tree>
+
+            <Html Id="resultHtml" Url="getTestResults" TitlePrefix="Test Results For " DynamicTitle="true"  Title="Test Results">
+                <Tools>
+                    <LoadingTool/>
+                </Tools>
+            </Html>
+        </Components>
+
+        <Dialogs>
+
+        </Dialogs>
+
+        <Links>
+            <Link From="testTree" To="resultHtml" DynamicTitleAttribute="name">
+                <Params>
+                    <Param Name="name" AttributeName="name"/>
+                    <Param Name="type" AttributeName="type"/>
+                </Params>
+            </Link>
+        </Links>
+
+        <Tabs>
+
+            <Tab Title="Tests">
+
+                <Layout >
+                    <West InitialSize="200" Split="true" UseShim="true" Titlebar="true">
+                        <Component Id="testTree">
+
+                        </Component>
+                    </West>
+                    <Center UseShim="true" Titlebar="true">
+                        <Component Id="resultHtml">
+                        </Component>
+                    </Center>
+
+                </Layout>
+            </Tab>
+        </Tabs>
+
+        <Actions>
+            <WindowAction Id="runTestAction" WindowId="resultHtml" DynamicTitleAttribute="name">
+                <Params>
+                    <Param Name="name" AttributeName="name"/>
+                    <Param Name="type" AttributeName="type"/>
+                </Params>
+            </WindowAction>
+        </Actions>
+
+        <ContextMenu>
+
+        </ContextMenu>
+    </UiConfiguration>
+</TestPluginConfig>

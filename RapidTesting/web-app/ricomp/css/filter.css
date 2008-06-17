@@ -1,0 +1,48 @@
+.r-ftree-addfilter{
+	float:right;
+}
+.r-ftree-addgroup{
+	float:right;
+}
+
+.ylayout-panel-hd-tools .r-button {
+	padding:2px;
+	z-index: 6;
+}
+.ylayout-panel-hd-tools .r-button-over {
+	padding:1px;
+    border:1px solid #98c0f4;
+    background-color:white;
+}
+.ylayout-panel-hd-tools .r-button-inner{
+	height:16px;
+    width:16px;
+}
+
+.r-ftree-addfilter .r-button-inner{
+	background:transparent url(../images/filterTool/filteradd.png) no-repeat scroll 0% 50%;
+}
+.r-ftree-addgroup .r-button-inner{
+	background:transparent url(../images/filterTool/filter_group.png) no-repeat scroll 0% 50%;
+}
+
+.r-ftree-gdlg-wrp{
+	padding: 10px;
+}
+.r-ftree-dlg-text{
+	height: 20px;
+	padding-top: 2px;
+	width: 100px;
+}
+.r-ftree-dlg-inputwrp{
+	height: 22px;
+}
+.r-ftree-dlg-input{
+	width: 150px;
+	height: 20px;
+	border: 1px solid #6593CF;
+}
+.r-ftree-dlg-textareawrp{
+	width: 280px;
+	height: 75px;
+}

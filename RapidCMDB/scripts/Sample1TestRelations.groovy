@@ -89,6 +89,8 @@ emp2= Employee.get(name:"ali");
 assert emp1.nextEmp == null;
 
 dev1= Developer.add(name:"gonca",bday:"4/4/44",dept:"Dev",language:"java");
+/* HAD TO REMOVE EMPLOYEES RELATION FOR THE TIME BEING
+
 // T5: add relation: emp1 manages emp3, dev2. Add relation in both directions (employees and manager)
 emp1.addRelation(employees:emp3);
 dev2.addRelation(manager:emp1);
@@ -101,7 +103,7 @@ emp1.employees.each{
 assert cntr == 2;
 
 // T6: add relation: dev1 manages emp2, emp1, dev3. Add relation in both directions (employees and manager)
-dev1.addRelation(employees:emp2);
+// dev1.addRelation(employees:emp2);
 dev3.addRelation(manager:dev1);
 emp1.addRelation(manager:dev1);
 dev1= Employee.get(name:"gonca");
@@ -123,6 +125,7 @@ println emp3.manager;
 println dev2.manager;
 println dev3.manager;
 emp1= Employee.add(name:"ayse",bday:"1/1/11",dept:"QA");
+*/
 
 // T8: add and change 1-m relation between employee/developer and team
 emp2.addRelation(manages:team1);
@@ -149,13 +152,19 @@ assert cntr == 2;
 dev1 = Developer.get(name:"gonca");
 assert dev1.language == "java";
 assert dev1.manages.size() == 1;
-assert dev1.manages[0].name == team2.name;
+// assert dev1.manages[0].name == team2.name;
+dev1.manages.each{
+	assert it.name == team2.name;
+}
 
 // T9: Remove a relation bw Employee and Team
 team1.removeRelation(managedBy:emp2);
 assert team1.managedBy == null;
 assert emp2.manages.size() == 1;
-assert emp2.manages[0].name == team3.name;
+// assert emp2.manages[0].name == team3.name;
+emp2.manages.each{
+	assert it.name == team3.name;
+}
 
 // T10: Remove instance with a relation bw Employee and Team
 emp2.remove()

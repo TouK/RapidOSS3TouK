@@ -63,61 +63,60 @@ def cleanRCMDB(){
 
 def checkDatasources(){
 	def datasources =[:];
-	def conn1 = DatabaseConnection.findByName("mysql");
+	def conn1 = DatabaseConnection.get(name:"mysql");
+	
 	if(conn1 == null){
-	    conn1 = new DatabaseConnection(name:"mysql", driver:"com.mysql.jdbc.Driver",
-	            url:"jdbc:mysql://192.168.1.100/test", username:"root", password:"root").save();
+	    conn1 = connection.DatabaseConnection.add(name:"mysql", driver:"com.mysql.jdbc.Driver", url:"jdbc:mysql://localhost/test", username:"root", userPassword:"root");
 	}
 
-	dsCustomer = SingleTableDatabaseDatasource.findByName("dsCustomer");
+	dsCustomer = SingleTableDatabaseDatasource.get(name:"dsCustomer");
 	if (dsCustomer == null){
-	    dsCustomer = new SingleTableDatabaseDatasource(connection:conn1, name:"dsCustomer", tableName:"customers", tableKeys:"name").save();
+	    dsCustomer = datasource.SingleTableDatabaseDatasource.add(connection:conn1, name:"dsCustomer", tableName:"customers", tableKeys:"name");
 	}
 	datasources.put("customer","dsCustomer");
 
-	dsService = SingleTableDatabaseDatasource.findByName("dsService");
+	dsService = SingleTableDatabaseDatasource.get(name:"dsService");
 	if (dsService == null){
-	    dsService = new SingleTableDatabaseDatasource(connection:conn1, name:"dsService", tableName:"services", tableKeys:"name").save();
+	    dsService = datasource.SingleTableDatabaseDatasource.add(connection:conn1, name:"dsService", tableName:"services", tableKeys:"name");
 	}
 	datasources.put("service","dsService");
 
-	dsEvent = SingleTableDatabaseDatasource.findByName("dsEvent");
+	dsEvent = SingleTableDatabaseDatasource.get(name:"dsEvent");
 	if (dsEvent == null){
-	    dsEvent= new SingleTableDatabaseDatasource(connection:conn1, name:"dsEvent", tableName:"events", tableKeys:"EventName").save();
+	    dsEvent= datasource.SingleTableDatabaseDatasource.add(connection:conn1, name:"dsEvent", tableName:"events", tableKeys:"EventName");
 	}
 	datasources.put("event","dsEvent");
 
-	dsDevice = SingleTableDatabaseDatasource.findByName("dsDevice");
+	dsDevice = SingleTableDatabaseDatasource.get(name:"dsDevice");
 	if (dsDevice == null){
-	    dsDevice = new SingleTableDatabaseDatasource(connection:conn1, name:"dsDevice", tableName:"deviceds", tableKeys:"ID").save();
+	    dsDevice = datasource.SingleTableDatabaseDatasource.add(connection:conn1, name:"dsDevice", tableName:"deviceds", tableKeys:"ID");
 	}
 	datasources.put("device","dsDevice");
 
-	dsLink = SingleTableDatabaseDatasource.findByName("dsLink");
+	dsLink = SingleTableDatabaseDatasource.get(name:"dsLink");
 	if (dsLink == null){
-	    dsLink = new SingleTableDatabaseDatasource(connection:conn1, name:"dsLink", tableName:"linkds", tableKeys:"ID").save();
+	    dsLink = datasource.SingleTableDatabaseDatasource.add(connection:conn1, name:"dsLink", tableName:"linkds", tableKeys:"ID");
 	}
 	datasources.put("link","dsLink");
 
-	dsResource1 = SingleTableDatabaseDatasource.findByName("dsResource1");
+	dsResource1 = SingleTableDatabaseDatasource.get(name:"dsResource1");
 	if (dsResource1 == null){
-	    dsResource1 = new SingleTableDatabaseDatasource(connection:conn1, name:"dsResource1", tableName:"resources1", tableKeys:"name").save();
+	    dsResource1 = datasource.SingleTableDatabaseDatasource.add(connection:conn1, name:"dsResource1", tableName:"resources1", tableKeys:"name");
 	}
 	datasources.put("resource1","dsResource1");
 
-	dsResource2 = SingleTableDatabaseDatasource.findByName("dsResource2");
+	dsResource2 = SingleTableDatabaseDatasource.get(name:"dsResource2");
 	if (dsResource2 == null){
-	    dsResource1 = new SingleTableDatabaseDatasource(connection:conn1, name:"dsResource2", tableName:"resources2", tableKeys:"ID").save();
+	    dsResource1 = datasource.SingleTableDatabaseDatasource.add(connection:conn1, name:"dsResource2", tableName:"resources2", tableKeys:"ID");
 	}
 	datasources.put("resource2","dsResource2");
 	return datasources;
 }
 
 def prepareDBTables(){
-	def dsConn = DatabaseConnection.findByName("mysql");
+	def dsConn = DatabaseConnection.get(name:"mysql");
 	if(dsConn == null){
-	    dsConn = DatabaseConnection.add(name:"mysql", driver:"com.mysql.jdbc.Driver",
-	            url:"jdbc:mysql://192.168.1.100/test", username:"root", password:"root");
+	    dsConn = connection.DatabaseConnection.add(name:"mysql", driver:"com.mysql.jdbc.Driver",url:"jdbc:mysql://localhost/test", username:"root", userPassword:"root");
 	}
 // Creating a DatabaseAdapter using "new" will only create a variable, and wont add to RapidCMDB
 	def dbDs = DatabaseDatasource.add(connection:dsConn,name:"dbDs");
@@ -206,11 +205,11 @@ def prepareDBTables(){
 }
 
 def populateRCMDB(datasources){
-	def ds1 = SingleTableDatabaseDatasource.findByName(datasources.resource1);
-	def ds2 = SingleTableDatabaseDatasource.findByName(datasources.resource2);
-	def serviceDs = SingleTableDatabaseDatasource.findByName(datasources.service);
-	def eventDs = SingleTableDatabaseDatasource.findByName(datasources.event);
-	def cds = SingleTableDatabaseDatasource.findByName(datasources.customer);
+	def ds1 = SingleTableDatabaseDatasource.get(name:datasources.resource1);
+	def ds2 = SingleTableDatabaseDatasource.get(name:datasources.resource2);
+	def serviceDs = SingleTableDatabaseDatasource.get(name:datasources.service);
+	def eventDs = SingleTableDatabaseDatasource.get(name:datasources.event);
+	def cds = SingleTableDatabaseDatasource.get(name:datasources.customer);
 
 	def records = cds.getRecords();
 	for(record in records){
@@ -254,28 +253,51 @@ def populateRCMDB(datasources){
 	    }
 	}
 
+	/*UNCOMMENT WHEN CMDB-283 IS FIXED 
+	
 	def service1 = Service.get(["name":"service1"]);
-	service1.addRelation(resources:Device.get(["name":"device1"]));
-	service1.addRelation(resources:Device.get(["name":"device2"]));
-	service1.addRelation(resources:Device.get(["name":"device3"]));
-	service1.addRelation(resources:Link.get(["name":"link1"]));
-	service1.addRelation(resources:Link.get(["name":"link2"]));
-	service1.addRelation(resources:Link.get(["name":"link3"]));
+	service1.addRelation(devices:Device.get(["name":"device1"]));
+	service1.addRelation(devices:Device.get(["name":"device2"]));
+	service1.addRelation(devices:Device.get(["name":"device3"]));
+	service1.addRelation(links:Link.get(["name":"link1"]));
+	service1.addRelation(links:Link.get(["name":"link2"]));
+	service1.addRelation(links:Link.get(["name":"link3"]));
 
 	def service2 = Service.get(["name":"service2"]);
-	service2.addRelation(resources:Device.get(["name":"device3"]));
-	service2.addRelation(resources:Device.get(["name":"device4"]));
-	service2.addRelation(resources:Link.get(["name":"link3"]));
-	service2.addRelation(resources:Link.get(["name":"link4"]));
+	service2.addRelation(devices:Device.get(["name":"device3"]));
+	service2.addRelation(devices:Device.get(["name":"device4"]));
+	service2.addRelation(links:Link.get(["name":"link3"]));
+	service2.addRelation(links:Link.get(["name":"link4"]));
 
 	def service3 = Service.get(["name":"service3"]);
-	service3.addRelation(resources:Device.get(["name":"device4"]));
-	service3.addRelation(resources:Device.get(["name":"device5"]));
-	service3.addRelation(resources:Device.get(["name":"device6"]));
-	service3.addRelation(resources:Link.get(["name":"link4"]));
-	service3.addRelation(resources:Link.get(["name":"link5"]));
-	service3.addRelation(resources:Link.get(["name":"link6"]));
+	service3.addRelation(devices:Device.get(["name":"device4"]));
+	service3.addRelation(devices:Device.get(["name":"device5"]));
+	service3.addRelation(devices:Device.get(["name":"device6"]));
+	service3.addRelation(links:Link.get(["name":"link4"]));
+	service3.addRelation(links:Link.get(["name":"link5"]));
+	service3.addRelation(links:Link.get(["name":"link6"]));*/
 
+	def service1 = Service.get(["name":"service1"]);
+	service1.addRelation(devices:Device.get(["name":"device1"]));
+	service1.addRelation(devices:Device.get(["name":"device2"]));
+	service1.addRelation(devices:Device.get(["name":"device3"]));
+	service1.addRelation(links:Link.get(["name":"link1"]));
+	service1.addRelation(links:Link.get(["name":"link2"]));
+	service1.addRelation(links:Link.get(["name":"link3"]));
+
+	def service2 = Service.get(["name":"service2"]);
+	service2.addRelation(devices:Device.get(["name":"device3"]));
+	service2.addRelation(devices:Device.get(["name":"device4"]));
+	service2.addRelation(links:Link.get(["name":"link3"]));
+	service2.addRelation(links:Link.get(["name":"link4"]));
+
+	def service3 = Service.get(["name":"service3"]);
+	service3.addRelation(devices:Device.get(["name":"device4"]));
+	service3.addRelation(devices:Device.get(["name":"device5"]));
+	service3.addRelation(devices:Device.get(["name":"device6"]));
+	service3.addRelation(links:Link.get(["name":"link4"]));
+	service3.addRelation(links:Link.get(["name":"link5"]));
+	service3.addRelation(links:Link.get(["name":"link6"]));
 
 	records = eventDs.getRecords();
 

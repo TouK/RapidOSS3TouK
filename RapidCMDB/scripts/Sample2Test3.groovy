@@ -29,6 +29,14 @@
  get the account manager's name
 
  Service name (Service), service level (Servicelevel), and operational state (State) are provided as parameters
+ ex: 
+http://localhost:12222/RapidCMDB/script/run/Sample2Test3?Service=service1&Servicelevel=Gold&State=state1
+ 
+ prints following lines in the RapidServer/RapidCMDB/logs/RapidServerOut.log
+
+Device Info: ["device1":["Vendor":"vendor1", "Model":"model1", "Location":"location1", "IP":"ip1"]]
+Cust Info: ["manager1"]
+
  */
 
 def service = Service.findByName(params.Service);
@@ -39,7 +47,9 @@ def downDeviceInfo = [:];
 def customerContactInfo = [];
 def serviceDown = false;
 
-def resources = service.getResources();
+/* UNCOMMENT WHEN CMDB-283 IS FIXED 
+
+def resources = service.resources;
 
 for (resource in resources){
     if ((resource instanceof Device) && (resource.operationalstate == operationalState)){
@@ -49,12 +59,24 @@ for (resource in resources){
         serviceDown = true;
     }
 }
+*/
+def resources = service.devices;
+
+for (resource in resources){
+    if (resource.operationalstate == operationalState){
+        def deviceInfo = [:];
+        deviceInfo = collectDeviceInfo(resource);
+        downDeviceInfo.put(resource.name, deviceInfo);
+        serviceDown = true;
+    }
+}
+
 if (serviceDown){
     customerContactInfo = findAllCustomersUsingThisServiceWithDownDevice(service, slaLevel);
     renderDownDeviceInfo(downDeviceInfo);
     renderCustomerInfo(customerContactInfo);
 }
-return "Successfully executed";
+return "Successfully executed. Please check RapidServer/RapidCMDB/logs/RapidServerOut.log file to verify the expected result.";
 
 def collectDeviceInfo(device){
     def deviceInfo = [:];
@@ -67,10 +89,13 @@ def collectDeviceInfo(device){
 
 def  findAllCustomersUsingThisServiceWithDownDevice(service, slaLevel){
     def custAccountMgrs = [];
-    def slas = Sla.findAllByServiceAndLevel(service, slaLevel);
-    for (sla in slas){
-        custAccountMgrs.add(sla.customer.accountmanager);
+    def slas = Sla.findByLevel(slaLevel);
+    slas.each{
+	    if (it.service.id == service.id){
+			custAccountMgrs.add(it.customer.accountmanager);    
+		}
     }
+    
     return custAccountMgrs;
 }
 

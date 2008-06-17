@@ -24,6 +24,15 @@
  */
 /*
     Service Level is provided as parameter (Servicelevel)
+
+     ex: 
+http://localhost:12222/RapidCMDB/script/run/Sample2Test2?Servicelevel=Gold
+ 
+ prints following lines in the RapidServer/RapidCMDB/logs/RapidServerOut.log
+
+Customer info
+["service1":"manager1"]
+    
 */
 def slaLevel = params.Servicelevel;
 def slas = Sla.findAllByLevel(slaLevel);
@@ -33,7 +42,7 @@ slas.each {
 }
 
 renderOutput(custInfo);
-return "Successfully executed. Please check cmd prompt to verify the expected result.";
+return "Successfully executed. Please check RapidServer/RapidCMDB/logs/RapidServerOut.log file to verify the expected result.";
 
 def renderOutput(info){
     println "Customer info"

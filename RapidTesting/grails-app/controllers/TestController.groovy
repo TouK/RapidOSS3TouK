@@ -13,7 +13,7 @@ import java.lang.reflect.Constructor
 
 class TestController {
     def index = {  }
-
+                                 
     def run = {  
         def testName = params.name;
         def testType = params.type;

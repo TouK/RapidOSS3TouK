@@ -88,13 +88,12 @@ class RapidCmdbBuild extends Build {
 
         ant.copy(todir: "$env.dist_rapid_cmdb/scripts") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/scripts") {
-            	ant.exclude(name: "${sampleName}Setup.groovy")
                 ant.include(name: "${sampleName}*.groovy")
             };
         }
         
         ant.copy(todir: "$env.dist_rapid_cmdb_modeler/scripts") {
-            ant.fileset(dir: "$env.rapid_cmdb_cvs/scripts") {
+            ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/scripts") {
                 ant.include(name: "${sampleName}Setup.groovy")
             };
         }        
@@ -128,7 +127,6 @@ class RapidCmdbBuild extends Build {
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.exe");
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.vmoptions");
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.sh");
-            ant.fileset(file: "$env.rapid_cmdb_cvs/rsbatch.sh");
         }
         ant.copy(todir: "$env.dist_rapid_cmdb/grails-app") {
 
@@ -239,6 +237,7 @@ class RapidCmdbBuild extends Build {
                 ant.exclude(name:"devDocs*/**")
                 ant.exclude(name:"*.iml")
                 ant.exclude(name:"version.txt")
+                ant.exclude(name:"rsbatch.sh")
             }
         }
     }
@@ -254,15 +253,16 @@ class RapidCmdbBuild extends Build {
         buildDependent();
         copyDependentJars();
         unzipGrails();
+        ant.copy(todir: "${env.distribution}/RapidServer/bin", file: "$env.rapid_cmdb_commons_cvs/rsbatch.sh")
         if (System.getProperty("os.name").indexOf("Windows") < 0)
         {
             def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
             process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
             process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
             process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
+            process = "dos2unix ${env.distribution}/RapidServer/bin/rsbatch.sh".execute();
             process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
             process = "dos2unix ${env.distribution}/RapidServer/RapidCMDBModeler/rsmodeler.sh".execute();
-            process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rsbatch.sh".execute();
         }
         def versionDate = getVersionWithDate();
         def zipFileName = "$env.distribution/RapidCMDB$versionDate" + ".zip"

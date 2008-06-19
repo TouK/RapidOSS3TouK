@@ -1,0 +1,149 @@
+package model
+
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import groovy.mock.interceptor.StubFor
+
+/* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
+ * noted in a separate copyright notice. All rights reserved.
+ * This file is part of RapidCMDB.
+ * 
+ * RapidCMDB is free software; you can redistribute it and/or modify
+ * it under the terms version 2 of the GNU General Public License as
+ * published by the Free Software Foundation. This program is distributed
+ * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA.
+ */
+/**
+ * Created by IntelliJ IDEA.
+ * User: Sezgin Kucukkaraaslan
+ * Date: Mar 27, 2008
+ * Time: 9:42:41 AM
+ * To change this template use File | Settings | File Templates.
+ */
+class ModelDatasourceControllerTests extends RapidCmdbTestCase{
+    def params
+    def redirectParams
+    def renderParams
+    def flash
+    def session
+    void setUp(){
+
+        session = [ : ]
+        ModelDatasourceController.metaClass.getSession = { -> session }
+
+        params = [ : ]
+        ModelDatasourceController.metaClass.getParams = { -> params }
+
+        redirectParams = [ : ]
+        ModelDatasourceController.metaClass.redirect = { Map args -> redirectParams = args  }
+
+        renderParams = [ : ]
+        ModelDatasourceController.metaClass.render = { Map args -> renderParams = args  }
+
+        flash = [ : ]
+        ModelDatasourceController.metaClass.getFlash = { -> flash }
+
+        def logger = new Expando( debug: { println it }, info: { println it },
+                                  warn: { println it }, error: { println it } )
+        ModelDatasourceController.metaClass.getLog = { -> logger }
+    }
+
+    void tearDown(){
+        def remove = GroovySystem.metaClassRegistry.&removeMetaClass
+        remove ModelDatasourceController;
+    }
+
+    void testSaveWithSaveIsNotSuccessful() {
+       def mockModelDatasource = new StubFor(ModelDatasource);
+       mockModelDatasource.demand.hasErrors{
+           return false;
+       }
+       mockModelDatasource.demand.save{
+           return false;
+       }
+
+        def mdc = new ModelDatasourceController();
+        mockModelDatasource.use{
+            mdc.save();
+            assertEquals("create", renderParams.view);
+            assertTrue(renderParams.model.modelDatasource instanceof ModelDatasource);    
+        }
+
+    }
+
+     void testSuccessfulSave() {
+        def model = new Model(name: "Customer");
+        def modelId = "1";
+        def datasource = new DatasourceName(name: "RCMDB");
+        def mdc = new ModelDatasourceController();
+        mdc._getModelId = {modelDatasource ->  return modelId;};
+
+        def mockModelDatasource = new StubFor(ModelDatasource);
+        def modelDatasourceId = "1";
+        mockModelDatasource.demand.hasErrors{
+           return false;
+        }
+        mockModelDatasource.demand.save{
+           return true;
+        }
+        mockModelDatasource.demand.toString{
+           return datasource.name;
+        }
+        mockModelDatasource.use{
+            mdc.save();
+//            assertEquals("ModelDatasource ${datasource.name} created", flash.message);
+            assertEquals("show", redirectParams.action);
+            assertEquals("model", redirectParams.controller);
+            assertEquals(modelId, redirectParams.id);
+        }
+
+    }
+
+    void testDeleteWhenModelDatasourceNotFound(){
+        def mdc = new ModelDatasourceController();
+        params["id"] = "5";
+
+        def mockModelDatasource = new StubFor(ModelDatasource);
+        mockModelDatasource.demand.get{id ->
+            return null;
+        };
+        mockModelDatasource.use{
+            mdc.delete();
+            assertEquals("ModelDatasource not found with id 5", flash.message);
+            assertEquals("list", redirectParams.action);
+            assertEquals("modelDatasource", redirectParams.controller);
+        }
+    }
+
+    void testSuccessfullDelete(){
+        def mdc = new ModelDatasourceController();
+        def modelId = "1";
+        mdc._getModelId = {modelDatasource ->  return modelId;};
+        params["id"] = "1";
+
+        def mockModelDatasource = new StubFor(ModelDatasource);
+        mockModelDatasource.demand.get{id ->
+            return new ModelDatasource();
+        };
+        mockModelDatasource.demand.delete{ flush->
+            return true;
+        };
+        mockModelDatasource.demand.toString{ ->
+            return "";
+        };
+        mockModelDatasource.use{
+            mdc.delete();
+//            assertEquals("ModelDatasource ${params.id} deleted", flash.message);
+            assertEquals("show", redirectParams.action);
+            assertEquals("model", redirectParams.controller);
+            assertEquals(modelId, redirectParams.id);
+        }
+    }
+}

@@ -1,0 +1,42 @@
+<Model name="${model.name}" parentModel='${model.parentModel?model.parentModel.name:""}'>
+   <Datasources>
+       <%
+       model.datasources.each{datasource->
+       %>
+       <Datasource name="${datasource.datasource.name}" master="${datasource.master}">
+           <Keys>
+               <%
+               datasource.keyMappings.each{keyMapping->
+               %>
+               <Key name="${keyMapping.property.name}" nameInDatasource='${keyMapping.nameInDatasource?keyMapping.nameInDatasource:""}'/>
+               <%
+               }
+               %>
+           </Keys>
+       </Datasource>
+       
+       <%
+       }
+       %>
+   </Datasources>
+   <Properties>
+       <%
+       model.modelProperties.each{property->
+       %>
+       <Property name="${property.name}" nameInDatasource='${property.nameInDatasource?property.nameInDatasource:""}' type="${property.type}" defaultValue='${property.defaultValue?property.defaultValue:""}' blank="${property.blank}" lazy="${property.lazy}" propertyDatasource='${property.propertyDatasource && property.propertyDatasource.datasource?property.propertyDatasource.datasource.name:""}' propertySpecifyingDatasource='${property.propertySpecifyingDatasource?property.propertySpecifyingDatasource.name:""}'/>
+       <%
+       }
+       %>
+   </Properties>
+
+    <Relations>
+       <%
+       model.fromRelations.each{relation->
+       %>
+       <Relation name="${relation.firstName}" reverseName="${relation.secondName}" toModel='${relation.secondModel.name}' cardinality="${relation.firstCardinality}" reverseCardinality="${relation.secondCardinality}"/>
+       <%
+       }
+       %>
+   </Relations>
+
+</Model>

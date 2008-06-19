@@ -42,8 +42,8 @@
                                 <td valign="top" class="name">
                                     <label for="script">Script:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:snmpDatasource,field:'script','errors')}">
-                                    <g:select class="inputtextfield" optionKey="id" from="${script.CmdbScript.list()}" name="script.id" value="${snmpDatasource?.script?.id}" ></g:select>
+                                <td valign="top" class="value ${hasErrors(bean:snmpDatasource,field:'scriptName','errors')}">
+                                    <g:select class="inputtextfield" optionKey="name" from="${script.CmdbScript.list()}" name="scriptName" value="${snmpDatasource?.scriptName}" ></g:select>
                                 </td>
                             </tr> 
                         

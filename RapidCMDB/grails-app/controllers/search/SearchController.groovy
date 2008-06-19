@@ -1,11 +1,6 @@
 package search
 
 import org.compass.core.engine.SearchEngineQueryParseException
-import org.jsecurity.SecurityUtils
-import auth.RsUser
-import groovy.text.SimpleTemplateEngine
-import groovy.text.SimpleTemplateEngine.SimpleTemplate
-import groovy.text.Template
 
 /**
 * Created by IntelliJ IDEA.
@@ -95,14 +90,12 @@ class SearchController {
         {
             SearchQuery.get(id:params.queryId)?.remove();
         }
-        def currentUser = RsUser.findByUsername(session.username);
-        return [savedQueries:currentUser.queries];
+        return [savedQueries:SearchQuery.findAllByUser(session.username)];
     }
 
     def search(params)
     {
-        def currentUser = RsUser.findByUsername(session.username);
-        def res = [savedQueries:currentUser.queries];
+        def res = SearchQuery.findAllByUser(session.username)
         if (!params.q?.trim()) {
             return res;
         }
@@ -121,8 +114,7 @@ class SearchController {
         }
         else
         {
-            def rsUser = RsUser.findByUsername(session.username);
-            SearchQuery query = SearchQuery.add(user:rsUser, query:params.q);
+            SearchQuery query = SearchQuery.add(user:session.username, query:params.q);
             return search(params);
 
         }

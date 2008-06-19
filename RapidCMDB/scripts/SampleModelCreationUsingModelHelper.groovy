@@ -1,6 +1,3 @@
-import datasource.*
-import model.*
-
 println "=========== STARTING THE PROCESS ==========="
 def datasources = [];
 def props = [];

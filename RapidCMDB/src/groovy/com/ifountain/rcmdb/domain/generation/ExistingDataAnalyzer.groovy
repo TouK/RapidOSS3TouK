@@ -1,13 +1,12 @@
 package com.ifountain.rcmdb.domain.generation
 
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import model.PropertyAction
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 import model.ModelAction
-import model.ModelRelation
+import model.PropertyAction
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
 
 /**
 * Created by IntelliJ IDEA.

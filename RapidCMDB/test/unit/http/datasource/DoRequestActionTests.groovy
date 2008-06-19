@@ -20,19 +20,13 @@
  *
  * Author Sezgin Kucukkaraaslan
  */
-package http.datasource;
+package http.datasource
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.httpclient.HttpException;
-
-import com.ifountain.comp.test.util.logging.TestLogUtils;
-import com.ifountain.comp.utils.HttpUtils;
-import com.ifountain.core.connection.ConnectionParam;
+import com.ifountain.comp.test.util.logging.TestLogUtils
+import com.ifountain.core.connection.ConnectionParam
 import connection.HttpConnectionImpl
-import datasource.DoRequestAction;
+import datasource.DoRequestAction
+import org.apache.commons.httpclient.HttpException;
 
 public class DoRequestActionTests extends GroovyTestCase {
 

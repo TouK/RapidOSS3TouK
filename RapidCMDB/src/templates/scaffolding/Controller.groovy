@@ -1,8 +1,5 @@
-import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsControllerHelper
-import java.text.SimpleDateFormat
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import com.ifountain.rcmdb.domain.converter.DateConverter
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 
 <%=packageName ? "import ${packageName}.${className}" : ''%>
 class ${className}Controller {

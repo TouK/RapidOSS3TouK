@@ -1,31 +1,28 @@
-import datasource.RCMDBDatasource
-import com.ifountain.rcmdb.util.RapidCMDBConstants
-import com.ifountain.rcmdb.scripting.ScriptManager
-import com.ifountain.rcmdb.scripting.ScriptScheduler
-import org.jsecurity.crypto.hash.Sha1Hash
 import auth.Role
 import auth.RsUser
 import auth.UserRoleRel
 import com.ifountain.rcmdb.domain.converter.DateConverter
-import com.ifountain.rcmdb.domain.converter.LongConverter
-import datasource.SnmpDatasource
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import model.PropertyAction
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.converter.DoubleConverter
-import script.CmdbScript
-import model.DatasourceName
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import model.ModelAction
+import com.ifountain.rcmdb.domain.converter.LongConverter
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.scripting.ScriptManager
+import com.ifountain.rcmdb.scripting.ScriptScheduler
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.util.RapidStringUtilities
+import datasource.RCMDBDatasource
+import datasource.SnmpDatasource
+import model.ModelAction
+import model.PropertyAction
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.jsecurity.crypto.hash.Sha1Hash
+import script.CmdbScript
 
 class BootStrap {
     def quartzScheduler;
     def init = {servletContext ->
         registerUtilities();
-        initializeModelGenerator();
         registerDefaultConverters();
         registerDefaultUsers();
         registerDefaultDatasources();
@@ -36,13 +33,6 @@ class BootStrap {
     def registerUtilities()
     {
         RapidStringUtilities.registerStringUtils();
-    }
-
-    def initializeModelGenerator()
-    {
-        String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];
-        String tempDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"];
-        ModelGenerator.getInstance().initialize (baseDirectory, tempDirectory, baseDirectory);
     }
 
     def initializeScripting()
@@ -144,11 +134,6 @@ class BootStrap {
         if (rcmdbDatasource == null) {
             RCMDBDatasource.add(name: RapidCMDBConstants.RCMDB);
         }
-        if(System.getProperty("rs.modeler") != null){
-            if(DatasourceName.findByName(RapidCMDBConstants.RCMDB) == null){
-                new DatasourceName(name: RapidCMDBConstants.RCMDB).save();
-            }
-        }
     }
 
     def registerDefaultUsers()
@@ -176,7 +161,6 @@ class BootStrap {
         RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
         RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
     }
-
 
 
     def destroy = {

@@ -1,8 +1,8 @@
-package datasource;
-import datasource.TopologyAdapter
-import org.apache.log4j.Logger
-import connection.SmartsConnection
+package datasource
 
+import connection.SmartsConnection
+import datasource.TopologyAdapter
+import org.apache.log4j.Logger;
 class SmartsTopologyDatasource extends BaseDatasource{
     static searchable = {
         except = [];

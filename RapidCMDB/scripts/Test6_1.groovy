@@ -4,10 +4,6 @@ Relation type change
 	Verify: Relation type is changed. Values for existing instances are lost.
 */	
 
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-
 SmartsObject.list()*.remove();
 
 def di1 = DeviceInterface.add(name:'devinterface1',creationClassName:'DevInterface');

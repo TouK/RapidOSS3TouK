@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.ifountain.grails;
-
-import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
+package com.ifountain.grails
 
 import gant.Gant
 import grails.util.GrailsUtil
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver
-import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 /**
  * Class that handles Grails command line interface for running scripts

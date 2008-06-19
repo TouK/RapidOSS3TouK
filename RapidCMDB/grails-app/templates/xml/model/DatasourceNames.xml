@@ -1,9 +1,0 @@
-<DatasourceNames>
-    <%
-    datasourceNames.each{
-    %>
-    <DatasourceName name="${it.name}"/>
-    <%
-    }
-    %>
-</DatasourceNames>

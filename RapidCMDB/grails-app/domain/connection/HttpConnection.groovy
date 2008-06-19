@@ -1,5 +1,6 @@
-package connection;
-import datasource.*
+package connection
+
+import datasource.HttpDatasource;
 class HttpConnection extends Connection{
      
 

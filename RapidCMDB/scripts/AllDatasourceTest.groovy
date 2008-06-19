@@ -1,5 +1,8 @@
-import datasource.*
-import connection.*
+import connection.DatabaseConnection
+import connection.NetcoolConnection
+import datasource.DatabaseDatasource
+import datasource.NetcoolDatasource
+import datasource.SingleTableDatabaseDatasource
 
 CONNAME = "mysql";
 DSNAME = "ds1";

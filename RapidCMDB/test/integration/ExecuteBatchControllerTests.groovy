@@ -1,8 +1,8 @@
-import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import com.ifountain.comp.utils.XMLTestUtils
+import com.ifountain.rcmdb.test.util.IntegrationTestUtils
+import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import groovy.xml.MarkupBuilder
-import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

@@ -1,7 +1,3 @@
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-
 SmartsObject.list()*.remove();
 
 def di1 = DeviceInterface.add(name:'devinterface1',creationClassName:'DevInterface');

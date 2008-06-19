@@ -1,6 +1,3 @@
-import com.ifountain.core.domain.annotations.*;
-
-
 class DeviceInterface  extends DeviceAdapter {
 
     //AUTO_GENERATED_CODE

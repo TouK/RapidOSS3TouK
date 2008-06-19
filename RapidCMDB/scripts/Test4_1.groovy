@@ -1,12 +1,10 @@
+import datasource.BaseDatasource
+
 /*
 Non-key property update
-	
-	Verify: Property is updated. 
-*/	
 
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
+    Verify: Property is updated.
+*/	
 
 SmartsObject.list()*.remove();
 

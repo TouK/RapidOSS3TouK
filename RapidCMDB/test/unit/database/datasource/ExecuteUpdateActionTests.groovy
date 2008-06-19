@@ -20,19 +20,16 @@
  *
  * Author Sezgin
  */
-package database.datasource;
+package database.datasource
 
-import java.sql.PreparedStatement;
-import groovy.util.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils;
-
-import com.ifountain.comp.test.util.logging.TestLogUtils;
-import connection.DatabaseConnectionImpl;
+import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.core.test.util.RapidCoreTestCase
-import datasource.ExecuteUpdateAction;
+import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils
+import connection.DatabaseConnectionImpl
+import datasource.ExecuteUpdateAction
+import java.sql.PreparedStatement
+import java.sql.ResultSet
+import java.sql.SQLException;
 
 public class ExecuteUpdateActionTests extends RapidCoreTestCase {
 

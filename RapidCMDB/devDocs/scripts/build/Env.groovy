@@ -1,8 +1,5 @@
 package build;
 
-import java.util.HashMap;
-import java.io.File;
-
 class Env {
 	
 	AntBuilder ant = null;
@@ -20,10 +17,12 @@ class Env {
 
     static def rapid_modules = basedir+"/RapidModules"
     static def rapid_cmdb_cvs = "$rapid_modules/RapidCMDB"
+    static def rapid_cmdb_modeler_cvs = "$rapid_modules/RapidCMDBModeler"
+    static def rapid_cmdb_commons_cvs = "$rapid_modules/RcmdbCommons"
     static def dev_docs = "$rapid_cmdb_cvs/devDocs"
-    static def version = "$rapid_cmdb_cvs/version.txt"
-    static def invalidNames = "$rapid_cmdb_cvs/invalidNames.txt"
-    static def versionInBuild = "$dist_rapid_cmdb/version.txt"
+    static def version = "$rapid_cmdb_commons_cvs/version.txt"
+    static def invalidNames = "$rapid_cmdb_modeler_cvs/invalidNames.txt"
+    static def versionInBuild = "$dist_rapid_server/version.txt"
     static def rapid_comp_build = basedir+"/build/comp"
     static def rapid_comp_src = "$rapid_modules/comp/java"
     static def rapid_comp_resources = "$rapid_modules/comp/resources"

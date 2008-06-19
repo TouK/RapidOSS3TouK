@@ -1,6 +1,7 @@
-package connection;
+package connection
 
-import datasource.*
+import datasource.RapidInsightDatasource;
+
 class RapidInsightConnection extends Connection{
    
     

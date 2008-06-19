@@ -1,8 +1,8 @@
-package datasource;
-import datasource.NotificationAdapter
-import org.apache.log4j.Logger
-import connection.SmartsConnection
+package datasource
 
+import connection.SmartsConnection
+import datasource.NotificationAdapter
+import org.apache.log4j.Logger;
 class SmartsNotificationDatasource extends BaseDatasource{
     static searchable = {
         except = [];

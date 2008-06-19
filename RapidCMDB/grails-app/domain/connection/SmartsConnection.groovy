@@ -1,6 +1,8 @@
-package connection;
+package connection
 
-import datasource.*
+import datasource.SmartsNotificationDatasource
+import datasource.SmartsTopologyDatasource;
+
 class SmartsConnection extends Connection{
     
     

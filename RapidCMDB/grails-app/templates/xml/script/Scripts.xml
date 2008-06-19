@@ -1,9 +1,0 @@
-<Scripts>
-    <%
-    scriptXmls.each{
-    %>
-${it}
-    <%
-    }
-    %>
-</Scripts>

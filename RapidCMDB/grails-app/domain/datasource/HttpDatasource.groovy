@@ -1,8 +1,8 @@
-package datasource;
-import datasource.HttpAdapter
-import org.apache.log4j.Logger
-import connection.HttpConnection
+package datasource
 
+import connection.HttpConnection
+import datasource.HttpAdapter
+import org.apache.log4j.Logger;
 class HttpDatasource extends BaseDatasource{
     static searchable = {
         except = [];

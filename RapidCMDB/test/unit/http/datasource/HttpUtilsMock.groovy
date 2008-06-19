@@ -1,7 +1,8 @@
-package http.datasource;
+package http.datasource
 
-import com.ifountain.comp.utils.*;
-import org.apache.commons.httpclient.*;
+import com.ifountain.comp.utils.HttpStatusException
+import com.ifountain.comp.utils.HttpUtils
+import org.apache.commons.httpclient.HttpException;
 
 class HttpUtilsMock extends HttpUtils{
         public boolean willThrowException = false;

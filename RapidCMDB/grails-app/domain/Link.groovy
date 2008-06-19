@@ -1,6 +1,3 @@
-import com.ifountain.core.domain.annotations.*;
-
-
 class Link  extends SmartsObject {
 
     //AUTO_GENERATED_CODE

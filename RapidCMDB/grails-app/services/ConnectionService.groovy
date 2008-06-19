@@ -1,12 +1,13 @@
+import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
+
 import com.ifountain.comp.utils.CaseInsensitiveMap
 import com.ifountain.core.connection.ConnectionManager
 import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.ConnectionParameterSupplier
+import connection.Connection
 import org.apache.log4j.Logger
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
-import connection.Connection
-import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
 
 class ConnectionService implements InitializingBean, DisposableBean, ConnectionParameterSupplier{
     boolean transactional = false

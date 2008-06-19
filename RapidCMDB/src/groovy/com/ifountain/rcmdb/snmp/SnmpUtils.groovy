@@ -1,20 +1,17 @@
-package com.ifountain.rcmdb.snmp;
+package com.ifountain.rcmdb.snmp
 
-import org.snmp4j.smi.*;
-import org.snmp4j.transport.AbstractTransportMapping;
-import org.snmp4j.transport.DefaultTcpTransportMapping;
-import org.snmp4j.transport.DefaultUdpTransportMapping;
-import org.snmp4j.*;
+import com.ifountain.snmp.util.RSnmpConstants
+import org.snmp4j.*
+import org.snmp4j.event.ResponseEvent
+import org.snmp4j.mp.SnmpConstants
+import org.snmp4j.smi.*
+import org.snmp4j.transport.AbstractTransportMapping
+import org.snmp4j.transport.DefaultTcpTransportMapping
+import org.snmp4j.transport.DefaultUdpTransportMapping
+import org.snmp4j.util.DefaultPDUFactory
+import org.snmp4j.util.TableEvent
 import org.snmp4j.util.TableUtils;
-import org.snmp4j.util.DefaultPDUFactory;
-import org.snmp4j.util.TableEvent;
-import org.snmp4j.event.ResponseEvent;
-import org.snmp4j.mp.SnmpConstants;
 
-import java.io.IOException;
-import java.util.*;
-import java.math.BigInteger
-import com.ifountain.snmp.util.RSnmpConstants;
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -263,7 +260,7 @@ public class SnmpUtils {
         if (responseEvent != null && (response = responseEvent.getResponse()) != null) {
             VariableBinding result = response.get(0);
             if (result != null) {
-                return result.getVariable().toString();
+                return getVariableValue(result.getVariable());
             }
         }
         return null;
@@ -387,5 +384,14 @@ public class SnmpUtils {
         pdu.setGenericTrap(genericTrap);
         pdu.setSpecificTrap(specificTrap);
         return pdu;
+    }
+
+    private static String getVariableValue(Variable v){
+        if(v instanceof OctetString){
+            OctetString oc = (OctetString)v;
+            char c = ' '
+            return oc.toASCII(c);
+        }
+        return v.toString();
     }
 }

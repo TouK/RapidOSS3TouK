@@ -1,7 +1,6 @@
-import model.*
-import connection.*
-import datasource.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import connection.NetcoolConnection
+import datasource.BaseDatasource
+import datasource.NetcoolDatasource
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

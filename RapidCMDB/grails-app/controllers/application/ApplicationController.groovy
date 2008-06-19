@@ -1,29 +1,17 @@
 package application
 
-import model.Model
-import com.ifountain.rcmdb.domain.generation.ModelUtils
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.codehaus.groovy.runtime.StackTraceUtils
-import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
-import org.codehaus.groovy.grails.compiler.injection.ClassInjector
-import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
-import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
-import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
-import org.codehaus.groovy.grails.commons.GrailsClass
-import com.ifountain.rcmdb.utils.ConfigurationImportExportUtils
-import datasource.BaseDatasource
-import connection.Connection
-import script.CmdbScript
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.apache.commons.io.filefilter.FileFilterUtils
+import model.ModelAction
+import model.PropertyAction
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
-import com.ifountain.rcmdb.domain.generation.ExistingDataAnalyzer
-import model.PropertyAction
-import model.ModelAction
-import model.DatasourceName
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsClass
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
+import org.codehaus.groovy.grails.compiler.injection.ClassInjector
+import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
+import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
+import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 
 /**
 * Created by IntelliJ IDEA.
@@ -121,33 +109,35 @@ class ApplicationController {
         System.setProperty(RESTART_APPLICATION, "true");
     }
 
+    
 
-    def exportConfiguration = {
-        def exportDir = params.dir;
-        if (!exportDir)
-        {
-            exportDir = "backup"
-        }
-        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
-        def configurationItems = [];
-        configurationItems.addAll(BaseDatasource.list());
-        configurationItems.addAll(DatasourceName.list());
-        configurationItems.addAll(Connection.list());
-        configurationItems.addAll(Model.list());
-        configurationItems.addAll(CmdbScript.list());
-        impExpUtils.export(exportDir, configurationItems);
-        flash.message = "Configuration data successfully exported to dir ${exportDir}."
-        render(view: "application", controller: "application");
-    }
 
-    def importConfiguration = {
-        def importDir = params.dir;
-        if (!importDir)
-        {
-            importDir = "backup"
-        }
-        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
-        impExpUtils.importConfiguration(importDir);
-        redirect(action: reload, controller: 'application');
-    }
+//    def exportConfiguration = {
+//        def exportDir = params.dir;
+//        if (!exportDir)
+//        {
+//            exportDir = "backup"
+//        }
+//        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
+//        def configurationItems = [];
+//        configurationItems.addAll(BaseDatasource.list());
+//        configurationItems.addAll(DatasourceName.list());
+//        configurationItems.addAll(Connection.list());
+//        configurationItems.addAll(Model.list());
+//        configurationItems.addAll(CmdbScript.list());
+//        impExpUtils.export(exportDir, configurationItems);
+//        flash.message = "Configuration data successfully exported to dir ${exportDir}."
+//        render(view: "application", controller: "application");
+//    }
+//
+//    def importConfiguration = {
+//        def importDir = params.dir;
+//        if (!importDir)
+//        {
+//            importDir = "backup"
+//        }
+//        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
+//        impExpUtils.importConfiguration(importDir);
+//        redirect(action: reload, controller: 'application');
+//    }
 }

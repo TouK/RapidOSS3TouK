@@ -1,5 +1,7 @@
-package connection;
-import datasource.*
+package connection
+
+import datasource.DatabaseDatasource
+import datasource.SingleTableDatabaseDatasource;
 class DatabaseConnection extends Connection{
 
     static searchable = {

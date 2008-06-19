@@ -1,11 +1,10 @@
+import datasource.SmartsTopologyDatasource
+
 /*
 Non-key property updated
-	
-	Verify: The property is updated. String to Number type results in data loss in the objects. For blank false proeprties
-*/	
 
-import model.*
-import datasource.*
+    Verify: The property is updated. String to Number type results in data loss in the objects. For blank false proeprties
+*/	
 
 // TEST AFTER MANUAL MODEL GENERATION AND APPLICATION RELOAD
 println "TEST RESULTS FOR TEST4_2"

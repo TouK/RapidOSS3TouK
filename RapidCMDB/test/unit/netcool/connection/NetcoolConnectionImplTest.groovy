@@ -1,9 +1,9 @@
 package netcool.connection
 
 import com.ifountain.core.test.util.RapidCoreTestCase
-import connection.NetcoolConnectionImpl
 import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils
 import com.ifountain.rcmdb.test.util.DatabaseTestConstants
+import connection.NetcoolConnectionImpl
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

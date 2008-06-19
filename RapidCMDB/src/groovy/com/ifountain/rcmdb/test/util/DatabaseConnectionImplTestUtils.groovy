@@ -20,18 +20,15 @@
  *
  * Author Sezgin
  */
-package com.ifountain.rcmdb.test.util;
+package com.ifountain.rcmdb.test.util
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.core.connection.ConnectionParam
+import connection.DatabaseConnectionImpl
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.PreparedStatement
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.ifountain.comp.test.util.CommonTestUtils;
-import com.ifountain.core.connection.ConnectionParam;
-import connection.DatabaseConnectionImpl;
 
 public class DatabaseConnectionImplTestUtils {
 

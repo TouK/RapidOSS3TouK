@@ -4,10 +4,6 @@ Non-key property rename
 	Verify: Property is renamed. Values for existing instances are lost. 
 */	
 
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-
 SmartsObject.list()*.remove();
 SmartsObject.add([name:'route1',creationClassName:'Router',smartDs:'eastRegionDs', prop3:'prop3 value route1', prop4:44]);
 SmartsObject.add([name:'route2',creationClassName:'Router',smartDs:'eastRegionDs', prop1:'prop1 value route2', prop2:11, prop3:'prop3 value route2', prop4:44, prop5:'prop5 value route2', prop6: 66, prop7:'prop7 for route2', prop8:88]);

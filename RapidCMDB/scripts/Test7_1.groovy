@@ -4,10 +4,6 @@ Relation remove and instance deletion from a many side of 1-m and m-m relation.
 	Verify: Relation is removed. Values for existing instances are lost. 
 */	
 
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-
 SmartsObject.list()*.remove();
 
 def di1 = DeviceInterface.add(name:'devinterface1',creationClassName:'DevInterface');

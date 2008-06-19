@@ -1,9 +1,6 @@
-package http.connection;
+package http.connection
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.ifountain.core.connection.ConnectionParam;
+import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
 import com.ifountain.core.test.util.RapidCoreTestCase
 import connection.HttpConnectionImpl;

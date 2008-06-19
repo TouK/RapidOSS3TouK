@@ -1,5 +1,6 @@
-package connection;
-import datasource.*
+package connection
+
+import datasource.NetcoolDatasource;
 class NetcoolConnection extends DatabaseConnection{
     String driver = "com.sybase.jdbc2.jdbc.SybDriver";
     String connectionClass = "connection.NetcoolConnectionImpl";

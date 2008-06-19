@@ -1,3 +1,9 @@
+import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
+
+import org.codehaus.groovy.control.CompilerConfiguration
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.springframework.core.io.FileSystemResource
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 
 /*
  * Copyright 2004-2005 the original author or authors.
@@ -22,12 +28,6 @@
 *
 * @since 0.4
 */
-
-import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver
-import org.codehaus.groovy.control.*
-import org.springframework.core.io.FileSystemResource
-import org.codehaus.groovy.grails.commons.GrailsApplication
 
 Ant.property(environment: "env")
 

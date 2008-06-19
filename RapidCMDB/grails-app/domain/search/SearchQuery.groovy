@@ -1,6 +1,4 @@
 package search;
-import auth.RsUser
-
 /**
 * Created by IntelliJ IDEA.
 * User: mustafa
@@ -10,7 +8,6 @@ import auth.RsUser
 */
 class SearchQuery {
     static searchable = true;
-    RsUser user;
+    String user;
     String query;
-    static belongsTo = ["RsUser"];
 }

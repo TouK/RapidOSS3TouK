@@ -1,8 +1,8 @@
-package datasource;
-import datasource.RapidInsightAdapter
-import org.apache.log4j.Logger
-import connection.RapidInsightConnection
+package datasource
 
+import connection.RapidInsightConnection
+import datasource.RapidInsightAdapter
+import org.apache.log4j.Logger;
 class RapidInsightDatasource extends BaseDatasource{
     static searchable = {
         except = [];

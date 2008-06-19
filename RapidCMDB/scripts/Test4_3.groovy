@@ -9,9 +9,6 @@ Non-key property updated
 				  RCMDB default is used if blank is false
 */	
 
-import model.*
-import datasource.*
-
 // TEST AFTER MANUAL MODEL GENERATION AND APPLICATION RELOAD
 println "TEST RESULTS FOR TEST4_3"
 def result = SmartsObject.get(name:'route2', creationClassName:'Router');

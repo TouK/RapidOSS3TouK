@@ -4,10 +4,6 @@ Relation type change
 	Verify: Relation type is changed to its original. Values for existing instances are lost. 
 */	
 // ?????????????????????/ MAY NEED TO CHANGE THE TEST FOR 1-M TO M-M
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-
 println "TEST RESULTS FOR TEST6_3"
 def result = DeviceInterface.get(name:'devinterface1',creationClassName:'DevInterface');
 assert result.underlying == null;

@@ -4,10 +4,6 @@ Model remove
 	Verify: Model is removed regardless of the hierarchy
 */	
 
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-
 def myModel = Model.findByName("Link");
 myModel.delete(flush:true);
 

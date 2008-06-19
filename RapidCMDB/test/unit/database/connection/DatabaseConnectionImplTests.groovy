@@ -20,13 +20,13 @@
  *
  * Author Sezgin
  */
-package database.connection;
+package database.connection
 
-import com.ifountain.core.connection.ConnectionParam;
-import com.ifountain.core.connection.exception.UndefinedConnectionParameterException;
-import com.ifountain.rcmdb.test.util.DatabaseConnectionParams;
-import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils;
+import com.ifountain.core.connection.ConnectionParam
+import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
 import com.ifountain.core.test.util.RapidCoreTestCase
+import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils
+import com.ifountain.rcmdb.test.util.DatabaseConnectionParams
 import connection.DatabaseConnectionImpl;
 
 public class DatabaseConnectionImplTests extends RapidCoreTestCase {

@@ -1,5 +1,6 @@
-import connection.*
-import datasource.*
+import connection.NetcoolConnection
+import datasource.NetcoolDatasource
+
 def lastStateChange = 0;
 
 /*NC_URL = 'jdbc:sybase:Tds:ossmuse:4100/?LITERAL_PARAMS=true';

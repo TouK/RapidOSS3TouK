@@ -1,5 +1,4 @@
-import com.ifountain.core.domain.annotations.*;
-import datasource.*;
+import datasource.NetcoolDatasource
 
 class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOperation
 {

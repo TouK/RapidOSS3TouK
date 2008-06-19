@@ -1,12 +1,10 @@
+import datasource.BaseDatasource
+
 /*
 Non-key property add test and make one property a key
-	Verify: New properties are added. Values for existing instances are not lost. For those
-			properties where blank is false, default values are filled in for existing instances.
+    Verify: New properties are added. Values for existing instances are not lost. For those
+            properties where blank is false, default values are filled in for existing instances.
 */	
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-
 // TEST AFTER MANUAL MODEL GENERATION AND APPLICATION RELOAD
 println "TEST RESULTS FOR TEST1_2"
 def results = SmartsObject.search("*").results;

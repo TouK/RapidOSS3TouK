@@ -1,7 +1,8 @@
 package datasource
+
+import connection.NetcoolConnection
 import datasource.SingleTableDatabaseAdapter
 import org.apache.log4j.Logger
-import connection.NetcoolConnection
 
 class NetcoolDatasource extends BaseDatasource{
     static searchable = {

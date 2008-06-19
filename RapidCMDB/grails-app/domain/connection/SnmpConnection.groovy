@@ -1,5 +1,6 @@
-package connection;
-import datasource.*
+package connection
+
+import datasource.SnmpDatasource;
 class SnmpConnection extends Connection{
     static searchable = {
         except = [];

@@ -1,10 +1,10 @@
-package datasource;
-import connection.SnmpConnection
-import com.ifountain.snmp.datasource.SnmpListeningAdapter
-import org.apache.log4j.Logger
-import script.CmdbScript
-import com.ifountain.rcmdb.snmp.ScriptTrapProcessor
+package datasource
 
+import com.ifountain.rcmdb.snmp.ScriptTrapProcessor
+import com.ifountain.snmp.datasource.SnmpListeningAdapter
+import connection.SnmpConnection
+import org.apache.log4j.Logger
+import script.CmdbScript;
 class SnmpDatasource extends BaseDatasource {
     public static def snmpListeningAdapters = [:];
      static searchable = {

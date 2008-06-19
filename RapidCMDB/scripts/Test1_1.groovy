@@ -1,16 +1,14 @@
+import datasource.BaseDatasource
+
 /*
 Non-key property add
-	i.blank false (all instances updated with default values)
-	ii.blank true (all instances with blank values)
-	iii.Repeat for number, and string data types
+    i.blank false (all instances updated with default values)
+    ii.blank true (all instances with blank values)
+    iii.Repeat for number, and string data types
 
-	Verify: New properties are added. Values for existing instances are not lost. For those
-			properties where blank is false, default values are filled in for existing instances.
+    Verify: New properties are added. Values for existing instances are not lost. For those
+            properties where blank is false, default values are filled in for existing instances.
 */	
-
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 SmartsObject.list()*.remove();
 

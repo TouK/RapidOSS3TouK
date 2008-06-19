@@ -4,10 +4,6 @@ Relation add
 	Verify: Relation is added back. Values for existing instances are lost. 
 */	
 
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-
 def model1 = Model.findByName("DeviceInterface");
 def model2 = Model.findByName("Ip");
 new ModelRelation(firstModel:model1, secondModel:model2, firstName:"underlying", secondName:"layeredOver", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE).save();

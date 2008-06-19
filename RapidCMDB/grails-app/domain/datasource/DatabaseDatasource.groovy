@@ -1,8 +1,8 @@
-package datasource;
-import datasource.DatabaseAdapter
-import org.apache.log4j.Logger
-import connection.DatabaseConnection
+package datasource
 
+import connection.DatabaseConnection
+import datasource.DatabaseAdapter
+import org.apache.log4j.Logger;
 class DatabaseDatasource extends BaseDatasource{
     static searchable = {
         except = [];

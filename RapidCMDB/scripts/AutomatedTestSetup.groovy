@@ -1,6 +1,6 @@
-import connection.*
-import datasource.*
-import script.*
+import connection.SmartsConnection
+import datasource.SmartsTopologyDatasource
+import script.CmdbScript
 
 CONNAME = 'smartsconn';
 BROKER = '192.168.1.102:426';

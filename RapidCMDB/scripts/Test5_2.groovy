@@ -4,10 +4,6 @@ Relation rename
 	Verify: Relation is renamed. Values for existing instances are lost. 
 */	
 
-import datasource.*
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-
 println "TEST RESULTS FOR TEST5_2"
 
 def result = DeviceInterface.get(name:'devinterface1',creationClassName:'DevInterface');

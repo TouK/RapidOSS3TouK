@@ -1,11 +1,10 @@
+import datasource.BaseDatasource
+
 /*
 Non-key property remove
-	
-	Verify: The property is removed. The instances do not have that column anymore.
-*/	
 
-import model.*
-import datasource.*
+    Verify: The property is removed. The instances do not have that column anymore.
+*/	
 
 // TEST AFTER MANUAL MODEL GENERATION AND APPLICATION RELOAD
 def myModel = Model.findByName("SmartsObject");

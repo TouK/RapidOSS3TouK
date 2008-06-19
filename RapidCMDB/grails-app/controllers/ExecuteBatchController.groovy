@@ -1,6 +1,5 @@
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import java.text.MessageFormat
-import org.codehaus.groovy.grails.commons.GrailsApplication
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

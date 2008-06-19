@@ -1,12 +1,7 @@
-package connection;
-import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsControllerHelper
-import java.text.SimpleDateFormat
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
-import com.ifountain.rcmdb.domain.converter.DateConverter
+package connection
+
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-
-
+import java.text.SimpleDateFormat;
 class NetcoolConnectionController {
     def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]

@@ -1,6 +1,4 @@
 package datasource;
-import com.ifountain.core.domain.annotations.*;
-
 class RCMDBDatasource extends BaseDatasource
 {
 

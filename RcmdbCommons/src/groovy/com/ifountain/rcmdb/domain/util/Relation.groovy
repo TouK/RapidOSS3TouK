@@ -44,12 +44,18 @@ class Relation
         this.otherSideCls = otherClass;
         this.cls = cls;
         this.upperCasedName = DomainClassUtils.getUppercasedPropertyName(name);
-        this.upperCasedOtherSideName = DomainClassUtils.getUppercasedPropertyName(otherSideName);
+        if(otherSideName)
+        {
+            this.upperCasedOtherSideName = DomainClassUtils.getUppercasedPropertyName(otherSideName);
+        }
         this.type = relType;
     }
 
 
-
+    def hasOtherSide()
+    {
+        return otherSideName != null;
+    }
     def isOneToOne()
     {
         return type == ONE_TO_ONE;

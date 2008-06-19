@@ -11,10 +11,10 @@ class ModelUtilsTest extends GroovyTestCase{
     public void testDeleteModelArtefacts()
     {
         def modelName = "ModelUtilsModel1";
+        new File("${base_directory}/operations").mkdirs();
         new File("${base_directory}/grails-app/views/${modelName}").mkdirs();
         new File("${base_directory}/grails-app/controllers").mkdirs();
         new File("${base_directory}/grails-app/domain").mkdirs();
-        new File("${base_directory}/grails-app/operations").mkdirs();
 
         new File("${base_directory}/grails-app/domain/${modelName}.groovy").createNewFile();
         new File("${base_directory}/grails-app/controllers/${modelName}Controller.groovy").createNewFile();

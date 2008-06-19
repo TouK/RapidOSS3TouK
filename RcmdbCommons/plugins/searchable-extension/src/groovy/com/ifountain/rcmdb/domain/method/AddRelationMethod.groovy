@@ -51,7 +51,7 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
         }
         return objectsWillBeAdded;
     }
-    
+
     public Object invoke(Object domainObject, Object[] arguments) {
 
         def props = arguments[0];
@@ -60,6 +60,7 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
             Relation relation = relations.get(key);
             if(relation)
             {
+
                 value = getItemsWillBeAdded(domainObject[relation.name], value);
                 if(value.size() >0){
                      def relatedClass = relation.otherSideCls;
@@ -71,27 +72,34 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                      }
                     if(relation.type == Relation.ONE_TO_ONE)
                     {
-                        def oldValue = domainObject[relation.name];
-                        if(oldValue)
+                        if(relation.hasOtherSide())
                         {
-                            oldValue[relation.otherSideName] = null;
-                            storage.add(oldValue);
+                            def oldValue = domainObject[relation.name];
+                            if(oldValue)
+                            {
+                                oldValue[relation.otherSideName] = null;
+                                storage.add(oldValue);
+                            }
+                            value[0].setProperty(relation.otherSideName, domainObject, false);
                         }
                         domainObject.setProperty(relation.name, value[0], false);
-                        value[0].setProperty(relation.otherSideName, domainObject, false);
+
                     }
                     else if(relation.type == Relation.ONE_TO_MANY)
                     {
                         domainObject[relation.name] += value;
-                        value.each
+                        if(relation.hasOtherSide())
                         {
-                            if(it[relation.otherSideName])
+                            value.each
                             {
-                                def relationToBeRemoved =[:]
-                                relationToBeRemoved[relation.otherSideName] = it[relation.otherSideName];
-                                it.removeRelation(relationToBeRemoved);
+                                if(it[relation.otherSideName])
+                                {
+                                    def relationToBeRemoved =[:]
+                                    relationToBeRemoved[relation.otherSideName] = it[relation.otherSideName];
+                                    it.removeRelation(relationToBeRemoved);
+                                }
+                                it.setProperty(relation.otherSideName, domainObject, false);
                             }
-                            it.setProperty(relation.otherSideName, domainObject, false);
                         }
                     }
                     else if(relation.type == Relation.MANY_TO_ONE)
@@ -103,17 +111,26 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                             domainObject.removeRelation(relationToBeRemoved);
                         }
                         domainObject.setProperty(relation.name, value[0], false);
-                        value[0][relation.otherSideName] += domainObject;
+                        if(relation.hasOtherSide())
+                        {
+                            value[0][relation.otherSideName] += domainObject;
+                        }
                     }
                     else
                     {
                         domainObject[relation.name] += value;
-                        value.each
+                        if(relation.hasOtherSide())
                         {
-                            it[relation.otherSideName] += domainObject;
+                            value.each
+                            {
+                                it[relation.otherSideName] += domainObject;
+                            }
                         }
                     }
-                    storage.addAll(value);
+                    if(relation.hasOtherSide())
+                    {
+                        storage.addAll(value);
+                    }
                 }
             }
         }
@@ -122,7 +139,10 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
             CompassMethodInvoker.index (mc, domainObject);
         }
         relatedInstances.each{instanceClass, instances->
-            CompassMethodInvoker.index (instanceClass.metaClass, instances);
+            if(!instances.isEmpty())
+            {
+                CompassMethodInvoker.index (instanceClass.metaClass, instances);
+            }
         }
 
         return domainObject;

@@ -132,4 +132,47 @@ class RemoveRelationMethodTest extends RapidCmdbTestCase{
 
     }
 
+
+    public void testRemoveRelationWithNoOtherside()
+    {
+        RelationMethodDomainObject1 expectedDomainObject1 = new RelationMethodDomainObject1(id:1);
+        RelationMethodDomainObject2 expectedDomainObject2 = new RelationMethodDomainObject2(id:2);
+        RelationMethodDomainObject2 expectedDomainObject3 = new RelationMethodDomainObject2(id:3);
+        RelationMethodDomainObject2 expectedDomainObject4 = new RelationMethodDomainObject2(id:4);
+        RelationMethodDomainObject2 expectedDomainObject5 = new RelationMethodDomainObject2(id:5);
+        expectedDomainObject2.revRel1 = expectedDomainObject1;
+        expectedDomainObject3.revRel2 = expectedDomainObject1;
+        expectedDomainObject4.revRel3 += expectedDomainObject1;
+        expectedDomainObject5.revRel4 += expectedDomainObject1;
+
+
+        def relationsForObject1 = ["rel1":new Relation("rel1", null, RelationMethodDomainObject1.class, RelationMethodDomainObject2.class, Relation.ONE_TO_ONE),
+        rel2:new Relation("rel2", null, RelationMethodDomainObject1.class, RelationMethodDomainObject2.class, Relation.ONE_TO_MANY),
+        rel3:new Relation("rel3", null, RelationMethodDomainObject1.class, RelationMethodDomainObject2.class, Relation.MANY_TO_ONE),
+        rel4:new Relation("rel4", null, RelationMethodDomainObject1.class, RelationMethodDomainObject2.class, Relation.MANY_TO_MANY)]
+
+        AddRelationMethod add = new AddRelationMethod(RelationMethodDomainObject1.metaClass, relationsForObject1);
+        def props = [rel1:expectedDomainObject2, rel2:expectedDomainObject3, rel3:expectedDomainObject4, rel4:expectedDomainObject5];
+        add.invoke (expectedDomainObject1, [props] as Object[]);
+        RelationMethodDomainObject1.indexList = [];
+        RelationMethodDomainObject2.indexList = [];
+
+        RemoveRelationMethod remove = new RemoveRelationMethod(RelationMethodDomainObject1.metaClass, relationsForObject1);
+        props = [rel1:expectedDomainObject2, rel2:expectedDomainObject3, rel3:expectedDomainObject4, rel4:expectedDomainObject5];
+        remove.invoke (expectedDomainObject1, [props] as Object[]);
+
+        assertNull (expectedDomainObject1.rel1);
+        assertTrue (expectedDomainObject1.rel2.isEmpty());
+        assertNull (expectedDomainObject1.rel3);
+        assertTrue (expectedDomainObject1.rel4.isEmpty());
+
+        assertEquals(expectedDomainObject1, expectedDomainObject2.revRel1);
+        assertEquals(expectedDomainObject1, expectedDomainObject3.revRel2);
+        assertTrue(expectedDomainObject4.revRel3.contains(expectedDomainObject1));
+        assertTrue(expectedDomainObject5.revRel4.contains(expectedDomainObject1));
+        assertEquals (1, RelationMethodDomainObject1.indexList.size());
+        assertTrue (RelationMethodDomainObject1.indexList[0].contains(expectedDomainObject1));
+        assertEquals (0, RelationMethodDomainObject2.indexList.size());
+    }
+
 }

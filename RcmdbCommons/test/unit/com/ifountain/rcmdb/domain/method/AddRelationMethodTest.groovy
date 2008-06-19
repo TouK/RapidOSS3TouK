@@ -248,6 +248,39 @@ class AddRelationMethodTest extends RapidCmdbTestCase{
         assertEquals(1, relatedDomainObject1.indexList.size());
     }
 
+    public void testWithNonExistingOtherSide()
+    {
+        RelationMethodDomainObject1 relatedDomainObject1 = new RelationMethodDomainObject1(id:1);
+        RelationMethodDomainObject2 relatedDomainObject2 = new RelationMethodDomainObject2(id:2);
+        RelationMethodDomainObject2 relatedDomainObject3 = new RelationMethodDomainObject2(id:3);
+        RelationMethodDomainObject2 relatedDomainObject4 = new RelationMethodDomainObject2(id:4);
+        RelationMethodDomainObject2 relatedDomainObject5 = new RelationMethodDomainObject2(id:5);
+
+        def relations = ["rel1":new Relation("rel1",null, RelationMethodDomainObject1.class, RelationMethodDomainObject2.class, Relation.ONE_TO_ONE),
+        "rel2":new Relation("rel2",null, RelationMethodDomainObject1.class, RelationMethodDomainObject2.class, Relation.ONE_TO_MANY),
+        "rel3":new Relation("rel3",null, RelationMethodDomainObject1.class, RelationMethodDomainObject2.class, Relation.MANY_TO_ONE),
+        "rel4":new Relation("rel4",null, RelationMethodDomainObject1.class, RelationMethodDomainObject2.class, Relation.MANY_TO_MANY)];
+
+        AddRelationMethod add = new AddRelationMethod(RelationMethodDomainObject1.metaClass, relations);
+        add = new AddRelationMethod(RelationMethodDomainObject1.metaClass, relations);
+        def props = [rel1:relatedDomainObject2, rel2:relatedDomainObject3, rel3:relatedDomainObject4, rel4:relatedDomainObject5];
+        add.invoke (relatedDomainObject1, [props] as Object[]);
+
+        assertEquals(relatedDomainObject2, relatedDomainObject1.rel1);
+        assertTrue(relatedDomainObject1.rel2.contains(relatedDomainObject3));
+        assertEquals(relatedDomainObject4, relatedDomainObject1.rel3);
+        assertTrue(relatedDomainObject1.rel4.contains(relatedDomainObject5));
+        assertNull(relatedDomainObject2.revRel1);
+        assertNull(relatedDomainObject3.revRel2);
+        assertTrue(relatedDomainObject4.revRel3.isEmpty());
+        assertTrue(relatedDomainObject5.revRel4.isEmpty());
+        assertEquals(1, relatedDomainObject1.indexList.size());
+        assertEquals(0, relatedDomainObject2.indexList.size());
+        assertEquals(0, relatedDomainObject3.indexList.size());
+        assertEquals(0, relatedDomainObject4.indexList.size());
+        assertEquals(0, relatedDomainObject5.indexList.size());
+    }
+
 }
 
 class RelationMethodDomainObject1

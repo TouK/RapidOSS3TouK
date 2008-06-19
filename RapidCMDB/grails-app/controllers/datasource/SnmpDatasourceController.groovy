@@ -1,7 +1,8 @@
 package datasource
 
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat
+import script.CmdbScript;
 class SnmpDatasourceController {
     def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
@@ -55,6 +56,7 @@ class SnmpDatasourceController {
             redirect(action:list)
         }
         else {
+            def script = CmdbScript.findByName(snmpDatasource.scriptName)
             if(snmpDatasource.class != SnmpDatasource)
             {
                 def controllerName = snmpDatasource.class.name;
@@ -66,11 +68,11 @@ class SnmpDatasourceController {
                 {
                     controllerName = controllerName.substring(0,1).toLowerCase()+controllerName.substring(1);
                 }
-                redirect(action:show, controller:controllerName, id:params.id)
+                redirect(action:show, controller:controllerName, id:params.id, script:script)
             }
             else
             {
-                return [ snmpDatasource : snmpDatasource ]
+                return [ snmpDatasource : snmpDatasource, script:script ]
             }
         }
     }

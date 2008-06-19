@@ -4,7 +4,6 @@ import com.ifountain.rcmdb.snmp.ScriptTrapProcessor
 import com.ifountain.snmp.datasource.SnmpListeningAdapter
 import connection.SnmpConnection
 import org.apache.log4j.Logger
-import script.CmdbScript;
 class SnmpDatasource extends BaseDatasource {
     public static def snmpListeningAdapters = [:];
      static searchable = {
@@ -15,7 +14,7 @@ class SnmpDatasource extends BaseDatasource {
     
     SnmpConnection connection ;
     
-    CmdbScript script ;
+    String scriptName = "";
     
 
     static hasMany = [:]
@@ -23,12 +22,12 @@ class SnmpDatasource extends BaseDatasource {
     static constraints={
     connection(nullable:true)
         
-     script(nullable:true)
+     scriptName(nullable:true, blank:true)
         
      
     }
 
-    static mappedBy=["connection":"snmpDatasources", "script":"snmpDatasources"]
+    static mappedBy=["connection":"snmpDatasources"]
     static belongsTo = []
     def beforeDelete = {
         def listeningAdapter = snmpListeningAdapters.remove(this.name);
@@ -48,13 +47,13 @@ class SnmpDatasource extends BaseDatasource {
         def listeningAdapter = snmpListeningAdapters[this.name];
         if (listeningAdapter == null) {
             listeningAdapter = new SnmpListeningAdapter(this.connection.host, this.connection.port.intValue(), Logger.getRootLogger());
-            listeningAdapter.addTrapProcessor(new ScriptTrapProcessor(this.script.name, Logger.getRootLogger()));
+            listeningAdapter.addTrapProcessor(new ScriptTrapProcessor(this.scriptName, Logger.getRootLogger()));
             listeningAdapter.open();
             snmpListeningAdapters.put(this.name, listeningAdapter);
         }
         else if(!listeningAdapter.isOpen()){
             listeningAdapter.removeAllTrapProcessors();
-            listeningAdapter.addTrapProcessor(new ScriptTrapProcessor(this.script.name, Logger.getRootLogger()));
+            listeningAdapter.addTrapProcessor(new ScriptTrapProcessor(this.scriptName, Logger.getRootLogger()));
             listeningAdapter.open();
         }
     }

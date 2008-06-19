@@ -47,7 +47,7 @@
  	white-space: nowrap;
 }
 .r-tree-headercell .sort-asc {
-	background-image: url(../images/grid/sort_asc.gif);
+	background-image: url( ../images/grid/sort_asc.gif );
 	background-position: right;
 	background-repeat: no-repeat;
 	display: none;
@@ -56,7 +56,7 @@
 }
 
 .r-tree-headercell .sort-desc {
-	background-image: url(../images/grid/sort_desc.gif);
+	background-image: url( ../images/grid/sort_desc.gif );
 	background-position: right;
 	background-repeat: no-repeat;
 	display: none;
@@ -67,7 +67,7 @@
 
 .r-tree-headersplit{
 	display:block;
-	background-image: url(../images/grid/grid-split.gif);
+	background-image: url( ../images/grid/grid-split.gif );
 	background-repeat: no-repeat;
 	background-position: center right;
 	width:6px;
@@ -113,47 +113,47 @@
 	height: 100%;
 }
 .r-tree-treerowicon-expanded{
-	background: url("../images/treegrid/expanded.gif");
+	background: url( "../images/treegrid/expanded.gif" );
 	background-repeat: no-repeat;
 	width: 20px;
 	height: 20px;
 }
 .r-tree-treerowicon-collapsed{
-	background: url("../images/treegrid/collapsed.gif");
+	background: url( "../images/treegrid/collapsed.gif" );
 	background-repeat: no-repeat;
 	width: 20px;
 	height: 20px;
 }
 .critical{
-	background: url("../images/states/red.png");
+	background: url( "../images/states/red.png" );
 	background-repeat: no-repeat;
 	background-position: center;
 	background-color: inherit;
 }
 
 .major{
-	background: url("../images/states/orange.png");
+	background: url( "../images/states/orange.png" );
 	background-repeat: no-repeat;
 	background-position: center;
 	background-color: inherit;
 }
 
 .minor{
-	background: url("../images/states/yellow.png");
+	background: url( "../images/states/yellow.png" );
 	background-repeat: no-repeat;
 	background-position: center;
 	background-color: inherit;
 }
 
 .unknown{
-	background: url("../images/states/blue.png");
+	background: url( "../images/states/blue.png" );
 	background-repeat: no-repeat;
 	background-position: center;
 	background-color: inherit;
 }
 
 .normal{
-	background: url("../images/states/green.png");
+	background: url( "../images/states/green.png" );
 	background-repeat: no-repeat;
 	background-position: center;
 	background-color: inherit;

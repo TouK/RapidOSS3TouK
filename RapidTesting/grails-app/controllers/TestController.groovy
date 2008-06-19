@@ -12,43 +12,49 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
 class TestController {
     def index = {  }
                                  
-    def run = {  
+    def run = {
         def testName = params.name;
         def testType = params.type;
         if(testName)
         {
 
-
-            TestResult res= new TestResult();
-            TestSuite suite = new TestSuite();
-            if(testType == "test")
+            com.ifountain.testing.TestLock.isTestRunning = true;
+            try
             {
-                def classLoader = new GroovyClassLoader(grailsApplication.getClassLoader())
-                classLoader.addClasspath ("test/integration");
-                classLoader.addClasspath ("test/unit");
-                def testClass = classLoader.loadClass(params.name);
-                suite.addTestSuite(testClass);  // non-groovy test cases welcome, too.
-            }
-            else if(testType == "testcase")
-            {
-                String className = StringUtils.substringBeforeLast(params.name, ".");
-                String methodName = StringUtils.substringAfterLast(params.name, ".");
-                def classLoader = new GroovyClassLoader(grailsApplication.getClassLoader())
-                classLoader.addClasspath ("test/integration");
-                classLoader.addClasspath ("test/unit");
-                def testClass = classLoader.loadClass(className);
-                suite.addTest(TestSuite.createTest(testClass, methodName));  // non-groovy test cases welcome, too.
-            }
-            else
-            {
-                def testSuite = getTestSuite("test/${testName}", grailsApplication);
-                testSuite.tests.each{test.Test test->
-                    suite.addTestSuite(test.testClass);  // non-groovy test cases welcome, too.
+                TestResult res= new TestResult();
+                TestSuite suite = new TestSuite();
+                if(testType == "test")
+                {
+                    def classLoader = new GroovyClassLoader(grailsApplication.getClassLoader())
+                    classLoader.addClasspath ("test/integration");
+                    classLoader.addClasspath ("test/unit");
+                    def testClass = classLoader.loadClass(params.name);
+                    suite.addTestSuite(testClass);  // non-groovy test cases welcome, too.
                 }
-            }
-            runTest(suite, "testOutput", res);
+                else if(testType == "testcase")
+                {
+                    String className = StringUtils.substringBeforeLast(params.name, ".");
+                    String methodName = StringUtils.substringAfterLast(params.name, ".");
+                    def classLoader = new GroovyClassLoader(grailsApplication.getClassLoader())
+                    classLoader.addClasspath ("test/integration");
+                    classLoader.addClasspath ("test/unit");
+                    def testClass = classLoader.loadClass(className);
+                    suite.addTest(TestSuite.createTest(testClass, methodName));  // non-groovy test cases welcome, too.
+                }
+                else
+                {
+                    def testSuite = getTestSuite("test/${testName}", grailsApplication);
+                    testSuite.tests.each{test.Test test->
+                        suite.addTestSuite(test.testClass);  // non-groovy test cases welcome, too.
+                    }
+                }
+                runTest(suite, "testOutput", res);
 
-            render(text:new File("testOutput/html/junit-noframes.html").text);
+                render(text:new File("testOutput/html/junit-noframes.html").text);
+            }finally
+            {
+                com.ifountain.testing.TestLock.isTestRunning = false;    
+            }
         }
         else
         {

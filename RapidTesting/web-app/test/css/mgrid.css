@@ -43,13 +43,13 @@
 }
 
 .r-mgrid-addview .r-button-inner{
-	background:transparent url(../images/layout/viewadd.png) no-repeat scroll 0% 50%;
+	background:transparent url( ../images/layout/viewadd.png ) no-repeat scroll 0% 50%;
 }
 .r-mgrid-updateview .r-button-inner{
-	background:transparent url(../images/layout/pencil.png) no-repeat scroll 0% 50%;
+	background:transparent url( ../images/layout/pencil.png ) no-repeat scroll 0% 50%;
 }
 .r-mgrid-removeview .r-button-inner{
-	background:transparent url(../images/layout/cross.png) no-repeat scroll 0% 50%;
+	background:transparent url( ../images/layout/cross.png ) no-repeat scroll 0% 50%;
 }
 .r-mgrid-quickfilter-wrp{
 	float: right;

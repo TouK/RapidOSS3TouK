@@ -1,28 +1,28 @@
 .layout-refreshtool
 {
-	background-image:url('../images/layout/arrow_refresh_small.png');
+	background-image:url( '../images/layout/arrow_refresh_small.png' );
 }
 .layout-helptool
 {
-	background-image:url('../images/help.png');
+	background-image:url( '../images/help.png' );
 }
 
 .ri-layout-loading
 {
-	background-image: url('../images/grid/loading.gif');
+	background-image: url( '../images/grid/loading.gif' );
 }
 
 .ri-layout-nonloading
 {
-	background-image: url('../images/grid/nowait.gif');
+	background-image: url( '../images/grid/nowait.gif' );
 }
 
 .ri-layout-polling{
-	background-image:url('../images/layout/transmit_blue.png');
+	background-image:url( '../images/layout/transmit_blue.png' );
 }
 
 .ri-layout-nonpolling{
-	background-image:url('../images/layout/transmit_delete.png');
+	background-image:url( '../images/layout/transmit_delete.png' );
 }
 
 .ri-layout-toolbarsplitter{
@@ -32,25 +32,25 @@
 }
 
 .ri-layout-configure{
-	background-image:url('../images/layout/configure.png');
+	background-image:url( '../images/layout/configure.png' );
 }
 .ri-layout-error{
-	background-image:url('../images/layout/exclamation.png');
+	background-image:url( '../images/layout/exclamation.png' );
 }
 
 .ri-layout-filters{
-	background-image:url('../images/filterTool/filter.png');
+	background-image:url( '../images/filterTool/filter.png' );
 }
 .ri-layout-filters-label{
 	cursor:pointer;
 	width: 282px;
 }
 .ri-layout-mappings{
-	background-image:url('../images/filterTool/arrow_switch.png');
+	background-image:url( '../images/filterTool/arrow_switch.png' );
 }
 
 .ri-layout-filters-addFilter{
-	background-image:url('../images/filterTool/add.png');
+	background-image:url( '../images/filterTool/add.png' );
 	background-repeat: no-repeat;
 	background-position: center;
 	width:18px;
@@ -59,7 +59,7 @@
 }
 
 .ri-layout-filters-noFilters{
-	background-image:url('../images/filterTool/delete_12px.png');
+	background-image:url( '../images/filterTool/delete_12px.png' );
 	background-repeat: no-repeat;
 	background-position: center;
 	width:18px;
@@ -68,7 +68,7 @@
 }
 
 .ri-layout-filters-filterEdit{
-	background-image:url('../images/filterTool/table_edit.png');
+	background-image:url( '../images/filterTool/table_edit.png' );
 	background-repeat: no-repeat;
 	background-position: center;
 	width:18px;
@@ -76,7 +76,7 @@
 	cursor: pointer;
 }
 .ri-layout-filters-filterDelete{
-	background-image:url('../images/filterTool/table_delete.png');
+	background-image:url( '../images/filterTool/table_delete.png' );
 	background-repeat: no-repeat;
 	background-position: center;
 	width:18px;

@@ -32,7 +32,7 @@
 }
 
 .rapid-submenu-arrow{
-	background-image: url('../images/menuarorght8_nrm_1.gif');
+	background-image: url( '../images/menuarorght8_nrm_1.gif' );
 	background-repeat: no-repeat;
 	background-position: center;
 	height: 20px;
@@ -69,7 +69,7 @@
 
 .ri-loading{
 	font-size:8pt;
-	background-image: url('../images/grid/loading.gif');
+	background-image: url( '../images/grid/loading.gif' );
 	background-repeat: no-repeat;
 	background-position: left;
 	padding-left:20px;
@@ -92,7 +92,7 @@
 
 .loading-indicator {
     font-size:8pt;
-    background-image:url(../images/grid/loading.gif);
+    background-image:url( ../images/grid/loading.gif );
     background-repeat: no-repeat;
     background-position:top left;
     padding-left:20px;
@@ -120,7 +120,7 @@
     font-size:1px;
     background-repeat:no-repeat;
     background-position:center;
-    background-image:url('../images/help.png');
+    background-image:url( '../images/help.png' );
 }
 .ydlg-help-over{
     border:1px solid #98c0f4;
@@ -133,7 +133,7 @@
     width:16px; 
     padding:2px;
     float: right;
-    background:url(../images/grid/loading.gif) no-repeat center;
+    background:url( ../images/grid/loading.gif ) no-repeat center;
 }
 
 .ygrid-row-actionimage{

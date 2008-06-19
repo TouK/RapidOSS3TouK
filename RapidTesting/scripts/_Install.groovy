@@ -10,4 +10,9 @@
 
 Ant.property(environment:"env")
 grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
+def baseDir = System.getProperty("base.dir");
+Ant.copy(toDir:"$baseDir/web-app/test")
+{
+    Ant.fileset(dir: "$baseDir/plugins/rapid-testing-0.1/web-app/test");
+}
 

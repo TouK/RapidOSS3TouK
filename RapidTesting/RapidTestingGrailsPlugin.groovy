@@ -2,8 +2,11 @@ import org.codehaus.groovy.grails.commons.GrailsClass
 import org.codehaus.groovy.grails.web.metaclass.RedirectDynamicMethod
 import org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod
 import org.springframework.context.ApplicationContext
+import org.codehaus.groovy.grails.plugins.web.ControllersGrailsPlugin
+import com.ifountain.testing.TestLock
 
 class RapidTestingGrailsPlugin {
+    
     def version = 0.1
     def dependsOn = [:]
 
@@ -44,6 +47,8 @@ class RapidTestingGrailsPlugin {
 
 
     def registerControllerMethods(MetaClass mc, ApplicationContext ctx) {
+        if(mc.theClass.name == TestController.name) return;
+
         def redirect = new RedirectDynamicMethod(ctx)
         def render = new RenderDynamicMethod()
         // the redirect dynamic method
@@ -52,26 +57,67 @@ class RapidTestingGrailsPlugin {
         mc.addMetaBeanProperty (redirectRequests)
         RedirectRequests renderRequests = new RedirectRequests("__render_requests__")
         mc.addMetaBeanProperty (renderRequests)
-
         mc.redirect = {Map args ->
-            renderRequests.getProperty(delegate).add(args);
+            if(TestLock.isTestRunning)
+            {
+                redirectRequests.getProperty(delegate).add(args);
+            }
+            else
+            {
+                redirect.invoke(delegate, "redirect", args)
+            }
         }
         // the render method
         mc.render = {Object o ->
-            renderRequests.getProperty(delegate).add(o?.inspect());
+            if(TestLock.isTestRunning)
+            {
+                renderRequests.getProperty(delegate).add(o?.inspect());
+            }
+            else
+            {
+              render.invoke(delegate, "render", [o?.inspect()] as Object[])
+            }
         }
 
         mc.render = {String txt ->
-            renderRequests.getProperty(delegate).add(txt);
+            if(TestLock.isTestRunning)
+            {
+                renderRequests.getProperty(delegate).add(txt);
+            }
+            else
+            {
+                render.invoke(delegate, "render", [txt] as Object[])
+            }
         }
         mc.render = {Map args ->
-            renderRequests.getProperty(delegate).add(args);
+            if(TestLock.isTestRunning)
+            {
+                renderRequests.getProperty(delegate).add(args);
+            }
+            else
+            {
+                render.invoke(delegate, "render", [args] as Object[])
+            }
         }
         mc.render = {Closure c ->
-            renderRequests.getProperty(delegate).add(c);
+            if(TestLock.isTestRunning)
+            {
+                renderRequests.getProperty(delegate).add(c);
+            }
+            else
+            {
+                render.invoke(delegate, "render", [c] as Object[])
+            }
         }
         mc.render = {Map args, Closure c ->
-            renderRequests.getProperty(delegate).add(args);
+            if(TestLock.isTestRunning)
+            {
+                renderRequests.getProperty(delegate).add(args);
+            }
+            else
+            {
+                render.invoke(delegate, "render", [args, c] as Object[])
+            }
         }
     }
 }

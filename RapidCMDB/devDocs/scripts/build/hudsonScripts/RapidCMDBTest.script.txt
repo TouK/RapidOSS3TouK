@@ -21,11 +21,14 @@ groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CompM
 #################### running test build and java tests #############
 ######################################################
 
+rm -rf TestResults/
+mkdir TestResults
+
 cd RapidModules/
 groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild testBuild
-groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
-groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
-groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
+#groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
+#groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
+#groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
 
 
 ################### generating test domain classes ##############
@@ -36,39 +39,39 @@ cp ../LicencedJars/lib/smarts/*.jar ../Distribution/RapidServer/lib
 
 scriptFileName1="Sample3Setup"
 scriptFileName2="Sample1Setup"
-cp RapidCMDB/scripts/$scriptFileName1.groovy ../Distribution/RapidServer/RapidCMDB/scripts
-cp RapidCMDB/scripts/$scriptFileName2.groovy ../Distribution/RapidServer/RapidCMDB/scripts
+cp RapidCMDBModeler/scripts/$scriptFileName1.groovy ../Distribution/RapidServer/RapidCMDBModeler/scripts
+cp RapidCMDBModeler/scripts/$scriptFileName2.groovy ../Distribution/RapidServer/RapidCMDBModeler/scripts
 
 rsbatchInput=input.txt
-echo  "/RapidCMDB/script/save?name=$scriptFileName1" >> $rsbatchInput
-echo  "/RapidCMDB/script/save?name=$scriptFileName2" >> $rsbatchInput
-echo  "/RapidCMDB/script/run/$scriptFileName1" >> $rsbatchInput
-echo  "/RapidCMDB/script/run/$scriptFileName2" >> $rsbatchInput
+echo  "/RapidCMDBModeler/script/save?name=$scriptFileName1" >> $rsbatchInput
+echo  "/RapidCMDBModeler/script/save?name=$scriptFileName2" >> $rsbatchInput
+echo  "/RapidCMDBModeler/script/run/$scriptFileName1" >> $rsbatchInput
+echo  "/RapidCMDBModeler/script/run/$scriptFileName2" >> $rsbatchInput
 
-for file in $(find RapidCMDB/scripts -name *Test.groovy)
-do
-     filename=${file#RapidCMDB/scripts/*}
-     echo "$filename"
-     cp RapidCMDB/scripts/$filename ../Distribution/RapidServer/RapidCMDB/scripts
-     echo "/RapidCMDB/script/save?name=$filename" >> $rsbatchInput
-     echo  "/RapidCMDB/script/test?id=$filename" >> $rsbatchInput
-done
+#for file in $(find RapidCMDB/scripts -name *Test.groovy)
+#do
+#     filename=${file#RapidCMDB/scripts/*}
+#     echo "$filename"
+#     cp RapidCMDB/scripts/$filename ../Distribution/RapidServer/RapidCMDB/scripts
+#     echo "/RapidCMDB/script/save?name=$filename" >> $rsbatchInput
+#     echo  "/RapidCMDB/script/test?id=$filename" >> $rsbatchInput
+#done
 
-mv $rsbatchInput ../Distribution/RapidServer/RapidCMDB
+mv $rsbatchInput ../Distribution/RapidServer/RapidCMDBModeler
 
-cd ../Distribution/RapidServer/RapidCMDB/
+cd ../Distribution/RapidServer/RapidCMDBModeler/
 export RS_HOME=/root/.hudson/jobs/RapidCMDBTests/workspace/Distribution/RapidServer
 chmod +x *
 
 
-./rs.sh -start
+./rsmodeler.sh -start
 dataDir=data
 loopcount=0
 until [ -d $dataDir ]
 do
    if [ $loopcount -gt 300 ]
      then
-        ./rs.sh -stop
+        ./rsmodeler.sh -stop
         exit 1
    fi
    sleep 1
@@ -76,21 +79,29 @@ do
 done
 sleep 20
 
-./rsbatch.sh -commandfile RapidCMDB/$rsbatchInput -host localhost -port 12222 -username rsadmin -password changeme
+cd ../bin
+chmod +x rsbatch.sh
+./rsbatch.sh -commandfile RapidCMDBModeler/$rsbatchInput -host localhost -port 12223 -username rsadmin -password changeme
+cd ../RapidCMDBModeler
 
 sleep 2
-./rs.sh -stop
+./rsmodeler.sh -stop
 
-mv test/reports/*.xml ../../../TestResults
+if [ -d test/reports ]
+ then
+   mv test/reports/*.xml ../../../TestResults
+fi
 
-generatedModelsDir=generatedModels
+cd ..
+generatedModelsDir=RapidCMDB/generatedModels
 if [ -d $generatedModelsDir ]
   then
-      mv generatedModels/grails-app/domain/*.groovy grails-app/domain
+      mv $generatedModelsDir/grails-app/domain/*.groovy RapidCMDB/grails-app/domain
   else
       echo "Test models couldnot be generated!!!!"
 fi
 
+cd RapidCMDBModeler
 rm -rf data
 
 
@@ -98,7 +109,21 @@ rm -rf data
 ######################################################
 
 cp ../../../RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
-./rs.sh -test
-rm -rf ../../../TestResults/reports
+./rsmodeler.sh -test
 rm -r test/reports/TESTS-TestSuites.xml
-mv test/reports ../../../TestResults
+if [ ! -d ../../../TestResults/RapidCMDBModeler ]
+  then
+    mkdir ../../../TestResults/RapidCMDBModeler
+fi
+mv test/reports/*.xml ../../../TestResults/RapidCMDBModeler
+
+cd ../RapidCMDB
+cp ../../../RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
+chmod +x rs.sh
+./rs.sh -test
+rm -r test/reports/TESTS-TestSuites.xml
+if [ ! -d ../../../TestResults/RapidCMDB ]
+  then
+    mkdir ../../../TestResults/RapidCMDB
+fi
+mv test/reports/*.xml  ../../../TestResults/RapidCMDB

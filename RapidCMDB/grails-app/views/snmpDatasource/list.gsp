@@ -40,7 +40,7 @@
                         
                             <td>${snmpDatasource.name?.encodeAsHTML()}</td>
                         
-                            <td>${snmpDatasource.script?.encodeAsHTML()}</td>
+                            <td>${snmpDatasource.scriptName?.encodeAsHTML()}</td>
                         
                             <td>${snmpDatasource.connection?.encodeAsHTML()}</td>
                         

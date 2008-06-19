@@ -46,7 +46,7 @@
                 <tr class="prop">
                     <td valign="top" class="name">Script:</td>
 
-                    <td valign="top" class="value"><g:link controller="script" action="show" id="${snmpDatasource?.script?.id}">${snmpDatasource?.script}</g:link></td>
+                    <td valign="top" class="value"><g:link controller="script" action="show" id="${script?.id}">${snmpDatasource?.scriptName}</g:link></td>
 
                 </tr>
 

@@ -1,15 +1,13 @@
+import junit.framework.TestResult
+import junit.framework.TestSuite
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.RegexFileFilter
 import org.apache.commons.io.filefilter.TrueFileFilter
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import junit.framework.TestResult
-import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
-import org.apache.tools.ant.taskdefs.optional.junit.PlainJUnitResultFormatter
-import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
 import org.apache.commons.lang.StringUtils
-import junit.framework.TestSuite
-import test.TestCase
-import java.lang.reflect.Constructor
+import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
+import org.apache.tools.ant.taskdefs.optional.junit.PlainJUnitResultFormatter
+import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
+import org.codehaus.groovy.grails.commons.GrailsApplication
 
 class TestController {
     def index = {  }

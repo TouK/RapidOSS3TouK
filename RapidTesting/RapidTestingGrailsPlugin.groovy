@@ -1,9 +1,8 @@
-import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.GrailsClass
-import org.codehaus.groovy.grails.plugins.web.ControllersGrailsPlugin
-import org.springframework.context.ApplicationContext
 import org.codehaus.groovy.grails.web.metaclass.RedirectDynamicMethod
 import org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod
+import org.springframework.context.ApplicationContext
+
 class RapidTestingGrailsPlugin {
     def version = 0.1
     def dependsOn = [:]

@@ -25,15 +25,15 @@ class MessageService {
     boolean transactional = false
     def messageSource;
     public void afterPropertiesSet(){}
-    public String getMessage(code, args, defaultMessage, locale) {
-        return messageSource.getMessage(code, args as Object[], defaultMessage, locale);        
+    public String getMessage(code, args, defaultMessage) {
+        return messageSource.getMessage(code, args as Object[], defaultMessage, Locale.ENGLISH);        
     }
 
-    public String getMessage(error, locale) {
-        return messageSource.getMessage(error, locale);
+    public String getMessage(error) {
+        return messageSource.getMessage(error, Locale.ENGLISH);
     }
 
-    public String getMessage(code, args, locale) {
-        return messageSource.getMessage(code, args as Object[], locale); 
+    public String getMessage(code, args) {
+        return messageSource.getMessage(code, args as Object[], Locale.ENGLISH); 
     }
 }

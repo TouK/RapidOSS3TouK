@@ -13,6 +13,7 @@ import script.CmdbScript
 */
 class ScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
     static transactional = false;
+    def messageService;
     String expectedScriptMessage;
     String scriptName = "script1";
     public void setUp() {
@@ -26,26 +27,30 @@ class ScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
         ScriptManager.getInstance().destroy();
         deleteSimpleScript(scriptName);
     }
-    public void testValidatesScriptBeforeAdd()
+    public void testSimpleScriptAdd()
     {
         createSimpleScript (scriptName);
-        def script = new CmdbScript(name:scriptName)
-        assertNotNull(script.save())
+        def script = CmdbScript.add(name:scriptName)
+        assertNotNull(script)
+        assertFalse(script.hasErrors())
     }
     public void testValidatesScriptBeforeAddAndIfScriptIsInvalidRetunsError()
     {
         createErrornousScript(scriptName);
-        def script = new CmdbScript(name:scriptName)
-        assertNull(script.save())
+        def script = CmdbScript.add(name:scriptName)
+        assertNotNull(script)
+        assertTrue(script.hasErrors())
+        assertEquals("script.compilation.error", script.errors.allErrors[0].code);
     }
     public void testNameisUnique()
     {
         createSimpleScript(scriptName);
-        def script = new CmdbScript(name:scriptName)
-        assertNotNull(script.save())
+        def script = CmdbScript.add(name:scriptName)
+        assertFalse(script.hasErrors())
 
-        script = new CmdbScript(name:scriptName)
-        assertNull(script.save())
+        script = CmdbScript.add(name:scriptName)
+        assertTrue(script.hasErrors())
+        assertEquals("default.not.unique.message", script.errors.getFieldError("name").code);
     }
 
     def createSimpleScript(scriptName)

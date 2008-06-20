@@ -75,7 +75,7 @@ class CmdbScript {
             }
         }
         if (!fromController && script.hasErrors()) {
-            throw new Exception(script.messageService.getMessage(script.errors.allErrors[0], Locale.ENGLISH))
+            throw new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
         }
         return script;
     }
@@ -113,7 +113,7 @@ class CmdbScript {
             }
         }
         if (!fromController && script.hasErrors()) {
-            throw new Exception(script.messageService.getMessage(script.errors.allErrors[0], Locale.ENGLISH))
+            throw new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
         }
         return script;
     }

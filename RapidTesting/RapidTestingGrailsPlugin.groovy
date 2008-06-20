@@ -17,9 +17,9 @@ class RapidTestingGrailsPlugin {
     def loadAfter = ['contollers','rapid-domain-class']
     // URL to the plugin's documentation
     def documentation = "http://grails.org/RapidTesting+Plugin"
-
+    def config;
     def doWithSpring = {
-
+        config = getConfiguration(parentCtx)
     }
 
     def doWithApplicationContext = { applicationContext ->
@@ -119,6 +119,14 @@ class RapidTestingGrailsPlugin {
                 render.invoke(delegate, "render", [args, c] as Object[])
             }
         }
+    }
+
+    private getConfiguration = { resourceLoader ->
+       try {
+           return Class.forName('RapidTestingConfiguration', true, Thread.currentThread().contextClassLoader).newInstance()
+       } catch (ClassNotFoundException e) {
+           return null
+       }
     }
 }
 

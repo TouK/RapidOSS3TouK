@@ -1,0 +1,15 @@
+<plugin name='rapid-testing' version='0.1'>
+  <title>A testing plugin</title>
+  <description>A testing plugin</description>
+  <documentation>http://grails.org/RapidTesting+Plugin</documentation>
+  <resources>
+    <resource>DataSource</resource>
+    <resource>RapidTestingConfiguration</resource>
+    <resource>UrlMappings</resource>
+    <resource>DenemeController</resource>
+    <resource>TestController</resource>
+    <resource>test.Test</resource>
+    <resource>test.TestCase</resource>
+    <resource>test.TestSuite</resource>
+  </resources>
+</plugin>

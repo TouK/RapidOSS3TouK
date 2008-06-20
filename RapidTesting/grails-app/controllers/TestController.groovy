@@ -8,10 +8,11 @@ import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
 import org.apache.tools.ant.taskdefs.optional.junit.PlainJUnitResultFormatter
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
 import org.codehaus.groovy.grails.commons.GrailsApplication
+import com.ifountain.testing.TestingManager
 
 class TestController {
     def index = {  }
-                                 
+
     def run = {
         def testName = params.name;
         def testType = params.type;
@@ -23,11 +24,12 @@ class TestController {
             {
                 TestResult res= new TestResult();
                 TestSuite suite = new TestSuite();
+                def classLoader = new GroovyClassLoader(grailsApplication.getClassLoader())
+                new RapidTestingConfiguration().testDirectories.each{File testDir->
+                    classLoader.addClasspath (testDir.getAbsolutePath());   
+                }
                 if(testType == "test")
                 {
-                    def classLoader = new GroovyClassLoader(grailsApplication.getClassLoader())
-                    classLoader.addClasspath ("test/integration");
-                    classLoader.addClasspath ("test/unit");
                     def testClass = classLoader.loadClass(params.name);
                     suite.addTestSuite(testClass);  // non-groovy test cases welcome, too.
                 }
@@ -35,17 +37,14 @@ class TestController {
                 {
                     String className = StringUtils.substringBeforeLast(params.name, ".");
                     String methodName = StringUtils.substringAfterLast(params.name, ".");
-                    def classLoader = new GroovyClassLoader(grailsApplication.getClassLoader())
-                    classLoader.addClasspath ("test/integration");
-                    classLoader.addClasspath ("test/unit");
                     def testClass = classLoader.loadClass(className);
                     suite.addTest(TestSuite.createTest(testClass, methodName));  // non-groovy test cases welcome, too.
                 }
                 else
                 {
-                    def testSuite = getTestSuite("test/${testName}", grailsApplication);
+                    def testSuite = getTestingManager(grailsApplication).testClasses[testName];
                     testSuite.tests.each{test.Test test->
-                        suite.addTestSuite(test.testClass);  // non-groovy test cases welcome, too.
+                        suite.addTestSuite(test.testClass);
                     }
                 }
                 runTest(suite, "testOutput", res);
@@ -64,61 +63,13 @@ class TestController {
     }
 
 
-    def getTestSuite(String dir, GrailsApplication grailsApplication)
-    {
-        def rootDir = new File(dir);
-        def rootAbsPath = rootDir.getAbsolutePath();
-        def testFiles = FileUtils.listFiles(rootDir, new RegexFileFilter(".*Test.groovy"), new TrueFileFilter());
-        def classLoader = new GroovyClassLoader(grailsApplication.getClassLoader())
-        classLoader.addClasspath ("test/integration");
-        classLoader.addClasspath ("test/unit");
-        test.TestSuite testSuite = new test.TestSuite(name:rootDir.name, tests:[]);
-        testFiles.each{File testFile->
-            String testPath = StringUtils.substringAfter(testFile.getAbsolutePath(), rootAbsPath);
-            testPath = StringUtils.substring(testPath, 1, testPath.length());
-            testPath = StringUtils.replaceChars(testPath, "/", ".")
-            testPath = StringUtils.replaceChars(testPath, "\\", ".")
-            Class testCaseClass = null;
-            try
-            {
-                testCaseClass = classLoader.loadClass(StringUtils.substringBefore(testPath, ".groovy"));
-                if(!GroovyTestCase.isAssignableFrom(testCaseClass))
-                {
-                    testCaseClass = null;    
-                }
-                else
-                {
-                    test.Test test = new test.Test(name:testCaseClass.name, testClass:testCaseClass, testCases:[]);
-                    testSuite.tests.add(test);
-
-                    testCaseClass.methods.each{
-                        if(it.name.startsWith("test"))
-                        {
-                            test.testCases.add(new test.TestCase(name:it.name, test:test));
-                        }
-                    }
-                }
-            }
-            catch(Throwable t)
-            {
-            }
-        }
-        return testSuite;
-    }
 
     def list =
     {    
-        def rootDir = new File("test");
-        def dirs = rootDir.listFiles();
-        def testSuites = [:]
-        dirs.each{File testDir->
-            test.TestSuite suite = getTestSuite(testDir.getPath(), grailsApplication);
-            testSuites[suite.name] = suite;
-        }
         render(contentType:'text/xml') {
             Tests(){
-                testSuites.each{String testSuiteName, test.TestSuite testSuite->
-                     Test(name:testSuiteName, displayName:testSuiteName, type:"suite")
+                getTestingManager(grailsApplication).testSuites.each{test.TestSuite testSuite->
+                     Test(name:testSuite.name, displayName:testSuite.name, type:"suite")
                      {
                          testSuite.tests.each{test.Test test->
                             Test(name:test.name, displayName:test.name, type:"test"){
@@ -225,7 +176,14 @@ class TestController {
             ANT.fileset(dir:testOutputDir);
             ANT.report(format:"noframes", todir:testOutputDir+"/html");
         }
+    }
 
-
+    def getTestingManager(GrailsApplication grailsApplication)
+    {
+        if(TestingManager.getInstance() == null)
+        {
+            TestingManager.initializeManager(new RapidTestingConfiguration(), grailsApplication.classLoader);
+        }
+        return TestingManager.getInstance();
     }
 }

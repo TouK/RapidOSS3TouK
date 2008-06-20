@@ -31,7 +31,10 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
-    
+
+    public void testRefactor(){
+        //fail("Refactor this test");
+    }
 //    public void testPropertyTypeChange()
 //    {
 //        String modelName = "Class1";

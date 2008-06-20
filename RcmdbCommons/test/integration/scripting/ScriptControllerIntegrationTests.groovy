@@ -19,6 +19,9 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         expectedScriptMessage = "script successfully executed";
+        CmdbScript.list().each{
+            it.remove();
+        }
         ScriptManager.getInstance().initialize();
     }
 
@@ -52,12 +55,11 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         createSimpleScript(scriptName);
         try
         {
-            def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.params["name"] = script.name;
+            scriptController.params["name"] = scriptName;
             scriptController.save();
 
-            script = CmdbScript.findByName(scriptName);
+            def script = CmdbScript.findByName(scriptName);
             assertNotNull (script);
             assertEquals("/script/show/" + script.id, scriptController.response.redirectedUrl);
         }
@@ -72,12 +74,11 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         createErrornousScript(scriptName);
         try
         {
-            def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.params["name"] = script.name;
+            scriptController.params["name"] = scriptName;
             scriptController.save();
 
-            script = CmdbScript.findByName(scriptName);
+            def script = CmdbScript.findByName(scriptName);
             assertNull (script);
             assertEquals(scriptName, scriptController.modelAndView.model.cmdbScript.name);
         }
@@ -93,12 +94,11 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         createSimpleScript(scriptName);
         try
         {
-            def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.params["name"] = script.name;
+            scriptController.params["name"] = scriptName;
             scriptController.save();
 
-            script = CmdbScript.findByName(scriptName);
+            def script = CmdbScript.findByName(scriptName);
 
             IntegrationTestUtils.resetController (scriptController);
             scriptController.params["id"] = script.name;
@@ -128,9 +128,8 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         String scriptName = "script1"
         try
         {
-            def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.params["id"] = script.name;
+            scriptController.params["id"] = scriptName;
             scriptController.reload();
             assertEquals(ScriptController.SCRIPT_DOESNOT_EXIST, scriptController.flash.message);
             assertEquals("/script/list", scriptController.response.redirectedUrl);
@@ -146,12 +145,11 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         createSimpleScript(scriptName);
         try
         {
-            def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.params["name"] = script.name;
+            scriptController.params["name"] = scriptName;
             scriptController.save();
 
-            script = CmdbScript.findByName(scriptName);
+            def script = CmdbScript.findByName(scriptName);
 
             createErrornousScript(scriptName);
             IntegrationTestUtils.resetController (scriptController);
@@ -176,9 +174,8 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         String scriptName = "script1"
         try
         {
-            def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.params["id"] = script.name;
+            scriptController.params["id"] = scriptName;
             scriptController.run();
             assertEquals(ScriptController.SCRIPT_DOESNOT_EXIST, scriptController.flash.message);
             assertEquals("/script/list", scriptController.response.redirectedUrl);
@@ -196,9 +193,12 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         scriptFile.write ("return null");
         try
         {
-            def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.params["id"] = script.name;
+            scriptController.params["name"] = scriptName;
+            scriptController.save();
+
+            IntegrationTestUtils.resetController (scriptController);
+            scriptController.params["id"] = scriptName;
             scriptController.run();
             assertEquals("", scriptController.response.contentAsString);
         }
@@ -216,13 +216,12 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         scriptFile.write ("throw new Exception(\"$exceptionMessage\")");
         try
         {
-            def script = new CmdbScript(name:scriptName);
             def scriptController = new ScriptController();
-            scriptController.params["name"] = script.name;
+            scriptController.params["name"] = scriptName;
             scriptController.save();
 
             IntegrationTestUtils.resetController (scriptController);
-            scriptController.params["id"] = script.name;
+            scriptController.params["id"] = scriptName;
             scriptController.run();
             assertTrue(scriptController.response.contentAsString, scriptController.response.contentAsString.indexOf(exceptionMessage) >= 0);
         }

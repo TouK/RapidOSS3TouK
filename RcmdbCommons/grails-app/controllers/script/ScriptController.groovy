@@ -141,6 +141,9 @@ class ScriptController {
             try
             {
                 def result = CmdbScript.runScript(script, params)
+                if(result == null){
+                    result = "";
+                }
                 render(text: String.valueOf(result), contentType: "text/html", encoding: "UTF-8");
             }
             catch (t)

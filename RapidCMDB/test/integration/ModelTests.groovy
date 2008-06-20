@@ -52,27 +52,27 @@ class ModelTests extends RapidCmdbIntegrationTestCase{
         assertEquals(1, Card.list().size());
     }
 
-    void testOneToManyRelationToSelf(){
-        def emp1= Employee.add(name:"ayse",bday:"1/1/11",dept:"QA");
-        def emp2= Employee.add(name:"ali",bday:"2/2/22",dept:"QA");
-        def dev1= Developer.add(name:"gonca",bday:"4/4/44",dept:"Dev",language:"java");
-
-        emp1.addRelation(employees:emp2);
-        assertEquals(1, emp1.employees.size());
-        assertEquals(emp2.name, emp1.employees.toArray()[0].name)
-        assertNotNull(emp2.manager);
-        assertEquals(emp1.name, emp2.manager.name)
-
-        emp1.addRelation(manager:dev1);
-        assertNotNull(emp1.manager);
-        assertEquals(dev1.name, emp1.manager.name)
-        assertEquals(1, dev1.employees.size());
-        assertEquals(emp1.name, dev1.employees.toArray()[0].name)
-
-        emp1.remove();
-        assertEquals(0, dev1.employees.size())
-        assertNull(emp2.manager);
-
-    }
+//    void testOneToManyRelationToSelf(){
+//        def emp1= Employee.add(name:"ayse",bday:"1/1/11",dept:"QA");
+//        def emp2= Employee.add(name:"ali",bday:"2/2/22",dept:"QA");
+//        def dev1= Developer.add(name:"gonca",bday:"4/4/44",dept:"Dev",language:"java");
+//
+//        emp1.addRelation(employees:emp2);
+//        assertEquals(1, emp1.employees.size());
+//        assertEquals(emp2.name, emp1.employees.toArray()[0].name)
+//        assertNotNull(emp2.manager);
+//        assertEquals(emp1.name, emp2.manager.name)
+//
+//        emp1.addRelation(manager:dev1);
+//        assertNotNull(emp1.manager);
+//        assertEquals(dev1.name, emp1.manager.name)
+//        assertEquals(1, dev1.employees.size());
+//        assertEquals(emp1.name, dev1.employees.toArray()[0].name)
+//
+//        emp1.remove();
+//        assertEquals(0, dev1.employees.size())
+//        assertNull(emp2.manager);
+//
+//    }
     
 }

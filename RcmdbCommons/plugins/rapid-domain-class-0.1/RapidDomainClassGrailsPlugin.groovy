@@ -79,6 +79,10 @@ class RapidDomainClassGrailsPlugin {
                 try {
                     return oprInstance.invokeMethod(name, args)
                 } catch (MissingMethodException e) {
+                    if(e.getType().name != oprInstance.class.name)
+                    {
+                        throw e;
+                    }
                 }
             }
             throw new MissingMethodException (name,  delegate.class, args);

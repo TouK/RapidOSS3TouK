@@ -7,6 +7,7 @@
  */
 class DenemeController {
     def show = {
-        return ["sezgin1"];
+        println grailsApplication;
+        render(text:"sezgin1");
     }
 }

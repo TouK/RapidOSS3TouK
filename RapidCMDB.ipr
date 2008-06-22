@@ -291,6 +291,7 @@
               <option name="branchUrls">
                 <list>
                   <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_b08052619" />
+                  <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_1_b08060618" />
                 </list>
               </option>
               <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/RapidModules" />
@@ -416,8 +417,8 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
     </library>
     <library name="quartz">
       <CLASSES>
@@ -429,8 +430,5 @@
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/quartz-0.2/lib" recursive="false" />
     </library>
   </component>
-  <UsedPathMacros>
-    <macro name="GRAILS_HOME" />
-  </UsedPathMacros>
 </project>
 

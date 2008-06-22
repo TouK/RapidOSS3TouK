@@ -8,6 +8,9 @@
 class BerkayTest extends GroovyTestCase{
     public void testBerkaySurnameIsSener()
     {
+        def cont = new DenemeController();
+        cont.show();
+        println cont.response.contentAsString
         assertEquals ("mollamustafaoglu", "mollamustafaoglu");
     }
 

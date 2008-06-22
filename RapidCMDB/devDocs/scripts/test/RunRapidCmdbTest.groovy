@@ -13,7 +13,8 @@ import build.RapidCmdbBuild
  */
 def ANT = new AntBuilder();
 long t = System.currentTimeMillis();
-def workspaceDir = "d:/workspace"
+def workspaceDir = ".."
+def workspaceDirFile = new File(workspaceDir);
 def zipFile = new File("${workspaceDir}/ThirdParty/lib/grails/grails-1.0.3.zip");
 def rootDir = new File("${workspaceDir}/test/RapidServer");
 Process proc = null;
@@ -85,7 +86,9 @@ if(!rootDir.exists())
 
     println "Installing testing plugin"
     def envVars = getEnvVars(rootDir);
-    proc = Runtime.getRuntime().exec("${rootDir.getPath()}/RapidCMDB/test.bat install-plugin ${workspaceDir}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString(), envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
+    def path = "${rootDir.getAbsolutePath()}/RapidCMDB/test.bat install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
+    println "Running command ${path} to install testing plugin"
+    proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
     proc.consumeProcessOutput(System.out, System.err);
     proc.waitFor();
 }
@@ -109,7 +112,10 @@ System.addShutdownHook {
     }
 }
 def envVars = getEnvVars(rootDir);
-proc = Runtime.getRuntime().exec("${rootDir.getPath()}/RapidCMDB/test.bat run-app".toString(), envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
+
+def path = "${rootDir.getAbsolutePath()}/RapidCMDB/test.bat run-app".toString();
+println "Running command ${path} to run application"
+proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
 proc.consumeProcessOutput(System.out, System.err);
 println "TOOK ${System.currentTimeMillis() - t} secs to start testing application." 
 proc.waitFor();

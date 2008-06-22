@@ -9,8 +9,19 @@ import org.apache.tools.ant.taskdefs.optional.junit.PlainJUnitResultFormatter
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import com.ifountain.testing.TestingManager
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
+import org.codehaus.groovy.grails.commons.spring.GrailsWebApplicationContext
+import org.springframework.mock.web.MockHttpServletRequest
+import org.springframework.mock.web.MockHttpServletResponse
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
+import org.codehaus.groovy.grails.web.servlet.mvc.ParameterCreationListener
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.context.ApplicationContextAware
+import org.springframework.context.ApplicationContext
+import grails.util.GrailsWebUtil
 
-class TestController {
+class TestController implements ApplicationContextAware{
+    ApplicationContext applicationContext
     def index = {  }
 
     def run = {
@@ -22,6 +33,8 @@ class TestController {
             com.ifountain.testing.TestLock.isTestRunning = true;
             try
             {
+                def prevAttributes = RequestContextHolder.getRequestAttributes();
+                
                 TestResult res= new TestResult();
                 TestSuite suite = new TestSuite();
                 def classLoader = new GroovyClassLoader(grailsApplication.getClassLoader())
@@ -47,7 +60,9 @@ class TestController {
                         suite.addTestSuite(test.testClass);
                     }
                 }
-                runTest(suite, "testOutput", res);
+
+                runTest(suite, "testOutput", res, applicationContext);
+                RequestContextHolder.setRequestAttributes (prevAttributes);
 
                 render(text:new File("testOutput/html/junit-noframes.html").text);
             }finally
@@ -84,7 +99,7 @@ class TestController {
         }
     }
 
-    def runTest(TestSuite suite, String testOutputDir, TestResult result)
+    def runTest(TestSuite suite, String testOutputDir, TestResult result, appCtx)
     {
         def ANT = new AntBuilder();
         ANT.delete(dir:testOutputDir);
@@ -125,6 +140,7 @@ class TestController {
                             tests.add(test);    
                         }
                         for (t in tests) {
+                            GrailsWebUtil.bindMockWebRequest(appCtx);
                             def thisTest = new TestResult()
                             thisTest.addListener(xmlOutput)
                             thisTest.addListener(plainOutput)

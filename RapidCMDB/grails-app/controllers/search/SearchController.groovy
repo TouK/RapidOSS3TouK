@@ -49,11 +49,7 @@ class SearchController {
 
     public static String getLinkProperty(Object target)
     {
-        if(propertyConfiguration == null)
-        {
-            _reloadPropertyConfiguration();
-        }
-        def classPropConfiguration = propertyConfiguration[target.class.name];
+        def classPropConfiguration = getPropertyConfiguration(target.class.name);
         if(classPropConfiguration)
         {
             String link = "";
@@ -78,6 +74,10 @@ class SearchController {
     {
         def content = new File("SmartsSearchPropertyConfiguration.txt").getText();
         propertyConfiguration = Eval.me(content);
+        if(!propertyConfiguration)
+        {
+            propertyConfiguration = [:]
+        }
     }
 
     def reloadPropertyConfiguration = {
@@ -95,7 +95,8 @@ class SearchController {
 
     def search(params)
     {
-        def res = SearchQuery.findAllByUser(session.username)
+        def queries = SearchQuery.findAllByUser(session.username)
+        def res = [savedQueries:queries]; 
         if (!params.q?.trim()) {
             return res;
         }

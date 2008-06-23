@@ -15,17 +15,17 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
     def static base_directory = "../testoutput/";
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDB"))
-        {
-            ModelGenerator.getInstance().initialize (base_directory, base_directory, System.getProperty("base.dir"));
-        }
-        else
-        {
-            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDB");
-        }
-        
-        FileUtils.deleteDirectory (new File(base_directory));
-        new File(base_directory).mkdirs();
+//        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDB"))
+//        {
+//            ModelGenerator.getInstance().initialize (base_directory, base_directory, System.getProperty("base.dir"));
+//        }
+//        else
+//        {
+//            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDB");
+//        }
+//
+//        FileUtils.deleteDirectory (new File(base_directory));
+//        new File(base_directory).mkdirs();
     }
 
     protected void tearDown() {

@@ -1,9 +1,10 @@
 package model
 
 import com.ifountain.rcmdb.domain.generation.ModelGenerationException
-import com.ifountain.rcmdb.domain.generation.ModelUtils
+import com.ifountain.rcmdb.domain.generation.ModelGenerationUtils
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
+import com.ifountain.rcmdb.domain.generation.ModelGenerationUtils
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -37,14 +38,14 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         modelName = "Model1";
         modelName2 = "Model2";
-        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName);
-        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
+        ModelGenerationUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName);
+        ModelGenerationUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
     }
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName);
-        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
+        ModelGenerationUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName);
+        ModelGenerationUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
     }
 
 
@@ -96,8 +97,8 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     }
 
     public void testDeleteModelWithDependentModels() {
-        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName);
-        ModelUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
+        ModelGenerationUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName);
+        ModelGenerationUtils.deleteModelArtefacts(System.getProperty("base.dir"), modelName2);
 
         Model model1  = createSimpleModel(modelName);
         Model model2  = createSimpleModel(modelName2);

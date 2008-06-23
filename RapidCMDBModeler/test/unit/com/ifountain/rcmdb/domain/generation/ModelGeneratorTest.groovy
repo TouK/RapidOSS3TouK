@@ -44,15 +44,15 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     def findAllBySecondModelMethod;
     protected void setUp() {
         super.setUp();
-        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDB"))
+        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDBModeler"))
         {
             System.setProperty("basedir", ".")
             ModelGenerator.getInstance().initialize (base_directory, base_directory, System.getProperty("base.dir"));
         }
         else
         {
-            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDB");
-            System.setProperty("basedir", "RapidCMDB")
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDBModeler");
+            System.setProperty("basedir", "RapidCMDBModeler")
         }
         FileUtils.deleteDirectory (new File(base_directory));
         new File(base_directory).mkdirs();
@@ -95,7 +95,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         model.getControllerFile().createNewFile();
         addMasterDatasource(model);
 
-        ModelGenerator.getInstance().generateModel(model);
+        ModelGenerator.getInstance().generateModels([model]);
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model.name).exists());
 
         Class cls = compileClass(model.name);
@@ -109,11 +109,6 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         searchable.call();
         assertTrue(closureGetter.propertiesSetByClosure["except"].isEmpty());
 
-        ModelGenerator.getInstance().createModelOperationsFile (cls);
-        assertTrue (ModelGenerator.getInstance().getOperationsModelFile(model.name).exists());
-        Class modelOperations = compileClass(model.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
-        assertTrue (AbstractDomainOperation.isAssignableFrom(modelOperations));
-
         ModelGenerator.DEFAULT_IMPORTS.each {
             assertTrue(ModelGenerator.getInstance().getGeneratedModelFile(model.name).getText ().indexOf("import $it") >= 0);
         }
@@ -125,7 +120,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         def childModel = new MockModel(name:"Class1", parentModel:parentModel);
         addMasterDatasource(parentModel);
 
-        ModelGenerator.getInstance().generateModel(childModel);
+        ModelGenerator.getInstance().generateModels([childModel, parentModel]);
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(childModel.name).exists());
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(parentModel.name).exists());
 
@@ -139,46 +134,6 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         Class parentModelClass = compileClass(parentModel.name);
         def parentModelInstance = parentModelClass.newInstance();
         checkExistanceOfMetaDataProperties(parentModelInstance);
-
-        ModelGenerator.getInstance().createModelOperationsFile (childModelClass);
-        ModelGenerator.getInstance().createModelOperationsFile (parentModelClass);
-        assertTrue (ModelGenerator.getInstance().getOperationsModelFile(parentModel.name).exists());
-        assertTrue (ModelGenerator.getInstance().getOperationsModelFile(childModel.name).exists());
-        Class childOperationClass = compileClass(childModel.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
-        Class parentOperationClass = compileClass(parentModel.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
-        assertTrue (AbstractDomainOperation.isAssignableFrom(parentOperationClass));
-        assertEquals(parentOperationClass.getName(), childOperationClass.getSuperclass().getName());
-        assertEquals(parentModelClass.getName(), childModelClass.getSuperclass().getName());
-    }
-
-    public void testGenerateModelGeneratesAllDependentModels()
-    {
-        def rootModel = new MockModel(name:"ClassRoot");
-        def parentModel = new MockModel(name:"Class2", parentModel:rootModel);
-        def childModel = new MockModel(name:"Class1", parentModel:parentModel);
-        addMasterDatasource(rootModel);
-
-        def relatedModel = new MockModel(name:"Class3");
-        def childRelatedModel = new MockModel(name:"Class4", parentModel:relatedModel);
-        addMasterDatasource(relatedModel);
-
-        relatedModel.modelProperties += new ModelProperty(name:"Prop1", type:ModelProperty.stringType, model:relatedModel);
-        ModelRelation relation1 = new ModelRelation(firstName:"relation1", secondName:"reverseRelation1", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE, firstModel:parentModel, secondModel:relatedModel);
-
-        parentModel.fromRelations += relation1;
-        relatedModel.toRelations += relation1;
-
-        childModels[parentModel.name] = [childModel];
-        childModels[relatedModel.name] = [childRelatedModel];
-        modelRelations[parentModel.name] = [relation1];
-        reverseModelRelations[relatedModel.name] = [relation1];
-
-        ModelGenerator.getInstance().generateModel(parentModel);
-        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(rootModel.name).exists());
-        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(childModel.name).exists());
-        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(parentModel.name).exists());
-        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(relatedModel.name).exists());
-        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(childRelatedModel.name).exists());
     }
 
     public void testWithSomeProperties()
@@ -211,7 +166,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp1, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
             modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp2, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
 
-            ModelGenerator.getInstance().generateModel(model);
+            ModelGenerator.getInstance().generateModels([model]);
             assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model.name).exists());
             Class cls = compileClass(model.name);
             def object = cls.newInstance();
@@ -337,7 +292,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
 
 
-        ModelGenerator.getInstance().generateModel(model);
+        ModelGenerator.getInstance().generateModels([model]);
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model.name).exists());
         Class cls = compileClass(model.name);
         def object = cls.newInstance();
@@ -429,7 +384,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
 
 
-        ModelGenerator.getInstance().generateModel(model1);
+        ModelGenerator.getInstance().generateModels([model1, model2]);
 
         Class cls = compileClass(model1.name);
         def object = cls.newInstance();
@@ -503,32 +458,20 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
                     return "method1";
                 }              
             }""";
-        def modelOperationsFileContent = """import java.util.net.*;
-            class ${model1.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION} extends ${AbstractDomainOperation.class.name} implements Trial{
-                def method1()
-                {
-                    return "method1";
-                }
-            }""";
+        
         def interfaceContent = "interface Trial {}";
         File model1File = ModelGenerator.getInstance().getGeneratedModelFile(model1.name);
-        File model1OperationsFile = ModelGenerator.getInstance().getOperationsModelFile(model1.name);
         model1File.getParentFile().mkdirs();
-        model1OperationsFile.getParentFile().mkdirs();
         model1File.withWriter { w ->
             w.write(modelFileContent);
         }
-        model1OperationsFile.withWriter { w ->
-            w.write(modelOperationsFileContent);
-        }
-
         ModelGenerator.getInstance().getGeneratedModelFile("Trial").withWriter { w ->
             w.write(interfaceContent);
         }
 
 
         model1.parentModel = model2;
-        ModelGenerator.getInstance().generateModel(model1);
+        ModelGenerator.getInstance().generateModels([model1, model2]);
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model1.name).exists());
 
         Class cls1 = compileClass(model1.name);
@@ -547,22 +490,9 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertFalse( model1File.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
 
 
-        ModelGenerator.getInstance().createModelOperationsFile(cls1);
-        ModelGenerator.getInstance().createModelOperationsFile(cls2);
-        Class operationsClass = compileClass(model1.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
-        assertEquals (model2.name+ModelUtils.OPERATIONS_CLASS_EXTENSION, operationsClass.superclass.name);
-        def operationsObject = operationsClass.newInstance();
-        assertEquals ("method1", operationsObject.method1());
-        assertTrue (operationsObject.class.interfaces[0].getName().equals("Trial") || operationsObject.class.interfaces[1].getName().equals("Trial"));
-        assertTrue(model1OperationsFile.getText (), model1OperationsFile.getText ().indexOf("import java.util.net.*;") >= 0);
-        ModelGenerator.DEFAULT_IMPORTS.each {
-            assertTrue(model1OperationsFile.getText ().indexOf("import $it") >= 0);
-        }
-        indexOfFirstAlreadyIncludedImport = model1OperationsFile.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
-        assertTrue( indexOfFirstAlreadyIncludedImport >= 0);
-        assertFalse( model1OperationsFile.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
+        
 
-        ModelGenerator.getInstance().generateModel(model1);
+        ModelGenerator.getInstance().generateModels([model1]);
         assertNotNull(compileClass(model1.name));
     }
 
@@ -581,33 +511,25 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
                     return "method1";
                 }
             }""";
-        def modelOperationsFileContent = """import java.util.net.*;
-            class ${model1.name}${ModelUtils.OPERATIONS_CLASS_EXTENSION} extends AnotherClass implements Trial{
-                def method1()
-                {
-                    return "method1";
-                }
-            }""";
+        
         def interfaceContent = "interface Trial {}";
 
         File model1File = ModelGenerator.getInstance().getGeneratedModelFile(model1.name);
-        File model1OperationsFile = ModelGenerator.getInstance().getOperationsModelFile(model1.name);
+
         model1File.getParentFile().mkdirs();
-        model1OperationsFile.getParentFile().mkdirs();
+        
 
         model1File.withWriter { w ->
             w.write(modelFileContent);
         }
-        model1OperationsFile.withWriter { w ->
-                    w.write(modelOperationsFileContent);
-                }
+        
         
 
         ModelGenerator.getInstance().getGeneratedModelFile("Trial").withWriter { w ->
             w.write(interfaceContent);
         }
 
-        ModelGenerator.getInstance().generateModel(model1);
+        ModelGenerator.getInstance().generateModels([model1]);
         assertTrue (model1File.exists());
         Class cls = compileClass(model1.name);
         def object = cls.newInstance();
@@ -622,19 +544,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue( indexOfFirstAlreadyIncludedImport >= 0);
         assertFalse( model1File.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
 
-        ModelGenerator.getInstance().createModelOperationsFile(cls);
-        Class operationsClass = compileClass(model1.name+ModelUtils.OPERATIONS_CLASS_EXTENSION);
-        assertEquals (AbstractDomainOperation.class.name, operationsClass.superclass.name);
-        def operationsObject = operationsClass.newInstance();
-        assertEquals ("method1", operationsObject.method1());
-        assertTrue (operationsObject.class.interfaces[0].getName().equals("Trial") || operationsObject.class.interfaces[1].getName().equals("Trial"));
-        assertTrue(model1OperationsFile.getText (),model1OperationsFile.getText ().indexOf("import java.util.net.*;") >= 0);
-        ModelGenerator.DEFAULT_IMPORTS.each {
-            assertTrue(model1OperationsFile.getText ().indexOf("import $it") >= 0);
-        }
-        indexOfFirstAlreadyIncludedImport = model1OperationsFile.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}");
-        assertTrue( indexOfFirstAlreadyIncludedImport >= 0);
-        assertFalse( model1OperationsFile.getText ().indexOf("${ModelGenerator.DEFAULT_IMPORTS[0]}", indexOfFirstAlreadyIncludedImport) < 0);
+        
     }
 
 
@@ -644,7 +554,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         def model1 = new MockModel(name:"Class2");
         try
         {
-            ModelGenerator.getInstance().generateModel(model1);
+            ModelGenerator.getInstance().generateModels([model1]);
             fail("Should throw exception since no master records specified");
         }
         catch(ModelGenerationException exception)
@@ -661,7 +571,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         model1.datasources += modelDatasource1;
         try
         {
-            ModelGenerator.getInstance().generateModel(model1);
+            ModelGenerator.getInstance().generateModels([model1]);
             fail("Should throw exception since no key mappings specified for datasource");
         }
         catch(ModelGenerationException exception)
@@ -690,7 +600,6 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     {
         GrailsAwareClassLoader cloader = new GrailsAwareClassLoader();
         cloader.addClasspath ("${base_directory}/${ModelGenerator.MODEL_FILE_DIR}");
-        cloader.addClasspath ("${base_directory}/${ModelGenerator.OPERATIONS_FILE_DIR}");
         return cloader.loadClass(name);
     }
 }

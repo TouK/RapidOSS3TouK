@@ -22,6 +22,7 @@
  * Time: 10:59:07 AM
  * To change this template use File | Settings | File Templates.
  */
+import model.*;
 ModelRelation.list()*.delete(flush:true);
 ModelDatasourceKeyMapping.list()*.delete(flush:true);
 ModelProperty.list().each{
@@ -142,8 +143,7 @@ createRelation(deviceAdapter, card, "realizedBy", "realises", ModelRelation.MANY
 createRelation(device, ip, "hostsAccessPoints", "hostedBy", ModelRelation.ONE, ModelRelation.MANY);
 createRelation(deviceInterface, ip, "underlying", "layeredOver", ModelRelation.ONE, ModelRelation.ONE);
 
-ModelGenerator.getInstance().generateModel(deviceInterface);
-ModelGenerator.getInstance().generateModel(port);
+ModelGenerator.getInstance().generateModels(Model.list());
 
 
 def checkDatasources(){

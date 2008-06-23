@@ -81,6 +81,7 @@ class KeyConstraintTest extends RapidCmdbTestCase{
         constraint.validate (obj1, obj1.key1, errors);
         assertTrue (errors.hasErrors());
         assertEquals(ConstrainedProperty.DEFAULT_MESSAGES.get(KeyConstraint.DEFAULT_NOT_UNIQUE_MESSAGE_CODE), errors.getFieldError().getDefaultMessage())
+        assertEquals(KeyConstraint.DEFAULT_NOT_UNIQUE_MESSAGE_CODE, errors.getFieldError().code)
         assertEquals (3, KeyConstraintDomainObjectForTest.searchParams.size());
         assertEquals ("key1val", KeyConstraintDomainObjectForTest.searchParams["key1"]);
         assertEquals ("key2val", KeyConstraintDomainObjectForTest.searchParams["key2"]);

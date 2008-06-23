@@ -29,7 +29,7 @@ class MockModel extends Model
 
     def getOperationsFile()
     {
-        return new File("../testoutput/${name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy");
+        return new File("../testoutput/${name}${ModelGenerationUtils.OPERATIONS_CLASS_EXTENSION}.groovy");
     }
 
     def save()

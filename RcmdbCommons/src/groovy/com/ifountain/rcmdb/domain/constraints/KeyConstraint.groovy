@@ -25,7 +25,7 @@ class KeyConstraint extends AbstractConstraint{
         if(res != null)
         {
             List args = [constraintPropertyName, constraintOwningClass, propertyValue ];
-            super.rejectValue(target, errors, KEY_CONSTRAINT, args as Object[], getDefaultMessage(DEFAULT_NOT_UNIQUE_MESSAGE_CODE));
+            super.rejectValue(target, errors, DEFAULT_NOT_UNIQUE_MESSAGE_CODE, args as Object[], getDefaultMessage(DEFAULT_NOT_UNIQUE_MESSAGE_CODE));
         }
     }
 

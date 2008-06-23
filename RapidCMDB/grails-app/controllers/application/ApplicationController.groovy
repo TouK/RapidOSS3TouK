@@ -12,6 +12,7 @@ import org.codehaus.groovy.grails.compiler.injection.ClassInjector
 import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
+import com.ifountain.rcmdb.util.ModelUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -69,8 +70,7 @@ class ApplicationController {
                 actions.each {
                     if (it instanceof ModelAction && it.action == ModelAction.GENERATE_RESOURCES)
                     {
-                        ModelUtils.generateModelArtefacts(newDomainClass, baseDir);
-                        ModelGenerator.getInstance().createModelOperationsFile(newDomainClass.clazz);
+                        ModelUtils.generateModelArtefacts(newDomainClass, baseDir, baseDir);
                     }
                     else
                     {
@@ -87,8 +87,7 @@ class ApplicationController {
             }
             else
             {
-                ModelUtils.generateModelArtefacts(newDomainClass, baseDir);
-                ModelGenerator.getInstance().createModelOperationsFile(newDomainClass.clazz);
+                ModelUtils.generateModelArtefacts(newDomainClass, baseDir, baseDir);
             }
         }
 
@@ -96,7 +95,8 @@ class ApplicationController {
             if (!newDomainClassesMap.containsKey(oldClassName))
             {
                 ModelUtils.deleteModelArtefacts(baseDir, oldClassName);
-                ModelGenerator.getInstance().getGeneratedModelFile(oldClassName).delete();
+                new File(tempModelDir + "/" + name + ".groovy")
+                ModelUtils.getGeneratedModelFile(oldClassName).delete();
                 oldDomainClass.clazz.metaClass.invokeStaticMethod(oldDomainClass.clazz, "unindex", [] as Object[]);
             }
         }

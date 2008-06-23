@@ -22,7 +22,7 @@
  * Time: 2:59:03 PM
  * To change this template use File | Settings | File Templates.
  */
-
+import model.*;
 def dsCustomer;
 def dsEvents;
 def dsDevice;
@@ -125,7 +125,7 @@ createRelation(resource, event, "events", "resource", ModelRelation.ONE, ModelRe
 createRelation(service, device, "devices", "services", ModelRelation.MANY, ModelRelation.MANY);
 createRelation(service, link, "links", "services", ModelRelation.MANY, ModelRelation.MANY);
 
-ModelGenerator.getInstance().generateModel(device);
+ModelGenerator.getInstance().generateModels(Model.list());
 
 return "Successfully created model classes for Scenario 2! Now, GENERATE ANY ONE OF THE MODEL CLASS, RESTART RapidCMDBModeler APPLICATION, and run SampleScenario2Connector.groovy to populate MySql DB and RCMDB tables.";
 

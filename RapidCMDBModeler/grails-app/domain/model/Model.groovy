@@ -1,8 +1,9 @@
 package model
 
 import com.ifountain.core.domain.annotations.CmdbOperation
-import com.ifountain.rcmdb.domain.generation.ModelUtils
+import com.ifountain.rcmdb.domain.generation.ModelGenerationUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import com.ifountain.rcmdb.domain.generation.ModelGenerationUtils
 
 class Model {
     String name;
@@ -48,7 +49,7 @@ class Model {
     }
     def getOperationsFile()
     {
-        return new File(System.getProperty("base.dir", ".")+"/operations/${name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy");
+        return new File(System.getProperty("base.dir", ".")+"/operations/${name}${ModelGenerationUtils.OPERATIONS_CLASS_EXTENSION}.groovy");
     }
 
     def getOperations()

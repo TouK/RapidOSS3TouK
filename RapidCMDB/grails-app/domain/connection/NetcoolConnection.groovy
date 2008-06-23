@@ -21,6 +21,5 @@ class NetcoolConnection extends DatabaseConnection{
 
     static mappedBy=["netcoolDatasources":"connection"]
     static belongsTo = []
-    static propertyConfiguration= [:]
     static transients = [];
 }

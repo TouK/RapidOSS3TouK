@@ -48,9 +48,11 @@ class ScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
         def script = CmdbScript.add(name:scriptName)
         assertFalse(script.hasErrors())
 
-        script = CmdbScript.add(name:scriptName)
+        script = new CmdbScript(name:scriptName)
+        script.validate();
         assertTrue(script.hasErrors())
-        assertEquals("default.not.unique.message", script.errors.getFieldError("name").code);
+        println script.errors;
+        assertEquals("default.not.unique.message", script.errors.allErrors[0].code);
     }
 
     def createSimpleScript(scriptName)

@@ -22,7 +22,7 @@
  * Time: 2:59:03 PM
  * To change this template use File | Settings | File Templates.
  */
-
+import model.*;
 Model.findByName("Developer")?.delete(flush:true);
 Model.findByName("Employee")?.delete(flush:true);
 Model.findByName("Person")?.delete(flush:true);
@@ -30,7 +30,7 @@ Model.findByName("Team")?.delete(flush:true);
 Model.findByName("Task")?.delete(flush:true);
 def rcmdbDatasource = DatasourceName.findByName("RCMDB");
 if(rcmdbDatasource == null){
-    rcmdbDatasource = new DatasourceName(name: "RCMDB");
+    rcmdbDatasource = new DsatasourceName(name: "RCMDB");
     rcmdbDatasource.save();
 }
 
@@ -70,7 +70,7 @@ createRelation(employee, team, "manages", "managedBy", ModelRelation.ONE, ModelR
 createRelation(developer, task, "worksOn", "workedOnBy", ModelRelation.MANY, ModelRelation.MANY);
 
 
-ModelGenerator.getInstance().generateModel(developer);
+ModelGenerator.getInstance().generateModels(Model.list());
 
 def constructModel(model, listOfProperties, listOfDatasources, listOfKeyMappings)
 {

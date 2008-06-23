@@ -16,18 +16,13 @@ long t = System.currentTimeMillis();
 def workspaceDir = ".."
 def workspaceDirFile = new File(workspaceDir);
 def zipFile = new File("${workspaceDir}/ThirdParty/lib/grails/grails-1.0.3.zip");
-def rootDir = new File("${workspaceDir}/test/RapidCMDB/RapidServer");
+def rootDir = new File("${workspaceDir}/test/RapidCMDBModeler/RapidServer");
 Process proc = null;
 
 
 def watchConfig = [
-        [new File("${workspaceDir}/RapidModules/RapidCMDB"), new File("${rootDir.absolutePath}/RapidCMDB")],
-        [new File("${workspaceDir}/RapidModules/RcmdbCommons"), new File("${rootDir.absolutePath}/RapidCMDB")],
-        [new File("${workspaceDir}/RapidModules/ext/database/groovy"), new File("${rootDir.absolutePath}/RapidCMDB/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/ext/http/groovy"), new File("${rootDir.absolutePath}/RapidCMDB/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/ext/netcool/groovy"), new File("${rootDir.absolutePath}/RapidCMDB/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/ext/rapidinsight/groovy"), new File("${rootDir.absolutePath}/RapidCMDB/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/ext/smarts/groovy"), new File("${rootDir.absolutePath}/RapidCMDB/grails-app/ext")]
+        [new File("${workspaceDir}/RapidModules/RapidCMDBModeler"), new File("${rootDir.absolutePath}/RapidCMDBModeler")],
+        [new File("${workspaceDir}/RapidModules/RcmdbCommons"), new File("${rootDir.absolutePath}/RapidCMDBModeler")]
 ]
 
 
@@ -44,37 +39,29 @@ if(!rootDir.exists())
             new File("${workspaceDir}/ThirdParty/lib/tools.jar"),
             new File("${workspaceDir}/ThirdParty/lib/log4j-1.2.13.jar"),
             new File("${workspaceDir}/ThirdParty/lib/grails/runner.jar"),
-            new File("${workspaceDir}/ThirdParty/lib/snmp"),
             new File("${workspaceDir}/ThirdParty/lib/testing"),
             new File("${workspaceDir}/LicencedJars/lib/jdbc"),
-            new File("${workspaceDir}/LicencedJars/lib/smarts")
     ]
 
     libs.each{File jarFile->
         if(jarFile.isDirectory())
         {
             FileUtils.listFiles(jarFile, ["jar"] as String[], true).each{
-                ANT.copy(file: it.path, toDir: "${rootDir.path}/RapidCMDB/lib");
+                ANT.copy(file: it.path, toDir: "${rootDir.path}/RapidCMDBModeler/lib");
             }
         }
         else
         {
-            ANT.copy(file: jarFile.path, toDir: "${rootDir.path}/RapidCMDB/lib");
+            ANT.copy(file: jarFile.path, toDir: "${rootDir.path}/RapidCMDBModeler/lib");
         }
     }
 
-    FileUtils.listFiles(new File("${workspaceDir}/LicencedJars"), ["jar"] as String[], true).each
-    {
-        ANT.copy(file: it.path, toDir: "${rootDir.path}/RapidCMDB/lib");
-    }
     def cmdbBuild = new RapidCmdbBuild();
     cmdbBuild.run(["testBuild"]);
-    ANT.copy(toDir: "${rootDir.path}/RapidCMDB/lib")
+    ANT.copy(toDir: "${rootDir.absolutePath}/RapidCMDBModeler/lib")
     {
-        ANT.fileset(dir: "$workspaceDir/Distribution/RapidServer/RapidCMDB/lib")
+        ANT.fileset(dir: "$workspaceDir/Distribution/RapidServer/RapidCMDBModeler/lib")
     }
-    ANT.unzip(src: "$workspaceDir/Distribution/SmartsModule${cmdbBuild.smartsBuild.getVersionWithDate()}" + ".zip", dest: "${rootDir.path}");
-    ANT.unzip(src: "$workspaceDir/Distribution/NetcoolModule${cmdbBuild.netcoolBuild.getVersionWithDate()}" + ".zip", dest: "${rootDir.path}");
 
 
     watchConfig.each{dirPairs ->
@@ -86,9 +73,9 @@ if(!rootDir.exists())
 
     println "Installing testing plugin"
     def envVars = getEnvVars(rootDir);
-    def path = "${rootDir.getAbsolutePath()}/RapidCMDB/test.bat install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
+    def path = "${workspaceDirFile.absolutePath}/RapidModules/RapidCMDB/test.bat install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
     println "Running command ${path} to install testing plugin"
-    proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
+    proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDBModeler"));
     proc.consumeProcessOutput(System.out, System.err);
     proc.waitFor();
 }
@@ -113,11 +100,11 @@ System.addShutdownHook {
 }
 def envVars = getEnvVars(rootDir);
 
-def path = "${rootDir.getAbsolutePath()}/RapidCMDB/test.bat run-app".toString();
+def path = "${workspaceDirFile.absolutePath}/RapidModules/RapidCMDB/test.bat run-app".toString();
 println "Running command ${path} to run application"
-proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
+proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDBModeler"));
 proc.consumeProcessOutput(System.out, System.err);
-println "TOOK ${System.currentTimeMillis() - t} secs to start testing application." 
+println "TOOK ${System.currentTimeMillis() - t} secs to start testing application."
 proc.waitFor();
 
 def getEnvVars(rootDir)

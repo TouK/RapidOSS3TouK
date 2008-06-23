@@ -32,9 +32,9 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
     static transactional = false;
     void setUp() {
         super.setUp();
-        DatasourceName.list()*.delete();
-        Model.list()*.delete();
-        ModelDatasource.list()*.delete();
+        ModelDatasource.list()*.delete(flush:true)
+        Model.list()*.delete(flush:true)
+        DatasourceName.list()*.delete(flush:true)
     }
     void testSaveWithSaveIsNotSuccessful() {
         def mdc = new ModelDatasourceController();
@@ -50,7 +50,10 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
 
 
     void testSuccessfulSave() {
-        def model = new Model(name: "Customer").save();
+        def model = new Model(name: "Customer");
+        model.validate();
+        println "model errors: " + model.errors;
+        model.save();
         def datasource = new DatasourceName(name: "RCMDB").save();
         def mdc = new ModelDatasourceController();
         mdc.params["datasource.id"] = datasource.id;

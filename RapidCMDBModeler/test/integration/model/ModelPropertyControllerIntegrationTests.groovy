@@ -30,10 +30,10 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     static transactional = false;
      void setUp() {
         super.setUp();
-        ModelProperty.list()*.delete();
-        ModelDatasource.list()*.delete();
-        Model.list()*.delete();
-        DatasourceName.list()*.delete();
+        ModelProperty.list()*.delete(flush:true);
+        ModelDatasource.list()*.delete(flush:true);
+        Model.list()*.delete(flush:true);
+        DatasourceName.list()*.delete(flush:true);
     }
 
     void testSuccessfulSave(){
@@ -45,6 +45,7 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         mpc.params["model.id"] = "" + model.id;
         mpc.params["type"] = ModelProperty.stringType;
         mpc.params["name"] = "prop1";
+        mpc.params["lazy"] = "false";
         mpc.save();
         def modelDatasources = ModelDatasource.list();
         assertEquals(1, modelDatasources.size());

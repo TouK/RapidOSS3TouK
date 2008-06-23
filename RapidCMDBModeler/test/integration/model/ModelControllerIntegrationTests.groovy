@@ -70,7 +70,7 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
 
     void testDeleteModel() {
-
+        fail("Failing while running with alltests");
         Model model = createSimpleModel(modelName);
         def modelFile = new File(generatedModelDir+ "/grails-app/domain/${model.name}.groovy");
         def mdc = new ModelController();
@@ -113,7 +113,7 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
 
     void testGenerateModel() {
-//        fail("Failing while running with alltests");
+        fail("Failing while running with alltests");
         Model model = createSimpleModel(modelName);
         def mdc = new ModelController();
         mdc.generate();
@@ -122,6 +122,7 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testPrintsExceptionIfMasterDatasourceDoesnotExist() {
+        fail("Failing while running with alltests");
         def model = new Model(name: "Model1");
         model.save();
 

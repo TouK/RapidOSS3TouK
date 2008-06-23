@@ -36,7 +36,7 @@ class BootStrap {
     {
         String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];
         String tempDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"];
-        ModelGenerator.getInstance().initialize (baseDirectory, tempDirectory, baseDirectory);
+        ModelGenerator.getInstance().initialize (baseDirectory, tempDirectory, System.getProperty("base.dir"));
     }
 
     def initializeScripting()

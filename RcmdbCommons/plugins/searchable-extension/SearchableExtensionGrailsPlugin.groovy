@@ -16,7 +16,7 @@ class SearchableExtensionGrailsPlugin {
     def logger = Logger.getLogger("grails.app.plugins.SearchableExtension")
     def version = 0.1
     def dependsOn = [searchable: "0.5-SNAPSHOT"]
-    def loadAfter = ['searchable']
+    def loadAfter = ['searchable', 'hibernate']
     def domainClassMap;
     def doWithSpring = {
     }

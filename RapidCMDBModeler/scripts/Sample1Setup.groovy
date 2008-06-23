@@ -30,7 +30,7 @@ Model.findByName("Team")?.delete(flush:true);
 Model.findByName("Task")?.delete(flush:true);
 def rcmdbDatasource = DatasourceName.findByName("RCMDB");
 if(rcmdbDatasource == null){
-    rcmdbDatasource = new DsatasourceName(name: "RCMDB");
+    rcmdbDatasource = new DatasourceName(name: "RCMDB");
     rcmdbDatasource.save();
 }
 

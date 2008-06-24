@@ -40,30 +40,30 @@ if(rcmdbDatasource == null){
 
 def person = new Model(name:"Person");
 def modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);
-def name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-def bday = new ModelProperty(name:"bday", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def name = new ModelProperty(name:"name", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
+def bday = new ModelProperty(name:"bday", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
 def keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:modelDatasource)]
 person = constructModel(person, [name, bday], [modelDatasource], keyMappings);
 
 def employee = new Model(name:"Employee", parentModel:person);
-def dept = new ModelProperty(name:"dept", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-def salary = new ModelProperty(name:"salary", type:ModelProperty.numberType, defaultValue:1000, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def dept = new ModelProperty(name:"dept", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
+def salary = new ModelProperty(name:"salary", type:ModelProperty.numberType, defaultValue:1000,  lazy:false, propertyDatasource:modelDatasource);
 employee = constructModel(employee, [dept, salary], [], []);
 
 def developer = new Model(name:"Developer", parentModel:employee);
-def language = new ModelProperty(name:"language", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+def language = new ModelProperty(name:"language", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
 developer = constructModel(developer, [language], [], []);
 
 def team = new Model(name:"Team");
 modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);
-name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-def maskot = new ModelProperty(name:"maskot", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+name = new ModelProperty(name:"name", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
+def maskot = new ModelProperty(name:"maskot", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
 keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:modelDatasource)]
 team = constructModel(team, [name, maskot], [modelDatasource], keyMappings);
 
 def task = new Model(name:"Task");
 modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);
-name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+name = new ModelProperty(name:"name", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
 keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:modelDatasource)]
 task = constructModel(task, [name], [modelDatasource], keyMappings);
 

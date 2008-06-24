@@ -9,16 +9,16 @@ class SmartsObject
     static searchable = {
         except = ["displayName"];
     };
-    static datasources = ["westRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "eastRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]]]
+    static datasources = ["eastRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]], "westRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]]]
 
-    
-    String displayName ="";
     
     String name ="";
     
+    String creationClassName ="";
+    
     String smartDs ="";
     
-    String creationClassName ="";
+    String displayName ="";
     
 
     static hasMany = [:]
@@ -28,13 +28,13 @@ class SmartsObject
         }
     
     static constraints={
-    displayName(blank:true,nullable:true)
+    name(blank:false,nullable:false)
         
-     name(blank:false,nullable:false)
+     creationClassName(blank:false,nullable:false,key:["name"])
         
      smartDs(blank:true,nullable:true)
         
-     creationClassName(blank:false,nullable:false,key:["name"])
+     displayName(blank:true,nullable:true)
         
      
     }

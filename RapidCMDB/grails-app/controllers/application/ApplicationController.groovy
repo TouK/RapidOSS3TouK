@@ -95,7 +95,7 @@ class ApplicationController {
             if (!newDomainClassesMap.containsKey(oldClassName))
             {
                 ModelUtils.deleteModelArtefacts(baseDir, oldClassName);
-                new File(tempModelDir + "/" + name + ".groovy")
+                new File(tempModelDir + "/" + oldClassName + ".groovy")
                 ModelUtils.getGeneratedModelFile(oldClassName).delete();
                 oldDomainClass.clazz.metaClass.invokeStaticMethod(oldDomainClass.clazz, "unindex", [] as Object[]);
             }

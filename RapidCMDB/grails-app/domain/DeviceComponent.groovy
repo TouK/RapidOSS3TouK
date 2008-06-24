@@ -1,5 +1,9 @@
-class DeviceComponent  extends SmartsObject {
 
+import com.ifountain.core.domain.annotations.*;
+
+class DeviceComponent extends SmartsObject
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -25,11 +29,4 @@ class DeviceComponent  extends SmartsObject {
     static transients = [];
     
     //AUTO_GENERATED_CODE
-
-
-
-
-
-
-
 }

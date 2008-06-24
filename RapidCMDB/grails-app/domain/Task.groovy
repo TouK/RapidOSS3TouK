@@ -1,7 +1,8 @@
 
-class Task
-{
-    
+import com.ifountain.core.domain.annotations.*;
+
+class Task {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -36,4 +37,5 @@ class Task
     }
     
     //AUTO_GENERATED_CODE
+    
 }

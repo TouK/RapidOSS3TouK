@@ -1,7 +1,8 @@
 
-class Employee extends Person
-{
-    
+import com.ifountain.core.domain.annotations.*;
+
+class Employee  extends Person {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -33,10 +34,11 @@ class Employee extends Person
      
     }
 
-    static mappedBy=["prevEmp":"nextEmp", "manages":"managedBy", "nextEmp":"prevEmp"]
+    static mappedBy=["manages":"managedBy", "prevEmp":"nextEmp", "nextEmp":"prevEmp"]
     static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];
     
     //AUTO_GENERATED_CODE
+    
 }

@@ -1,67 +1,64 @@
-class Device  extends SmartsObject {
 
+import com.ifountain.core.domain.annotations.*;
+
+class Device extends SmartsObject
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["description", "discoveredLastAt", "discoveryTime", "discoveryErrorInfo"];
+        except = ["discoveryErrorInfo", "discoveryTime", "description", "discoveredLastAt"];
     };
     static datasources = [:]
 
     
-    String snmpReadCommunity ;
+    String ipAddress ="";
     
-    String description ;
+    String snmpReadCommunity ="";
     
-    String model ;
+    String discoveryErrorInfo ="";
+    
+    String location ="";
+    
+    String model ="";
+    
+    String vendor ="";
+    
+    String discoveryTime ="";
+    
+    String description ="";
     
     Long discoveredLastAt =0;
     
-    String location ;
-    
-    String discoveryTime ;
-    
-    String discoveryErrorInfo ;
-    
-    String vendor ;
-    
-    String ipAddress ;
-    
 
-    static hasMany = [composedOf:DeviceComponent, connectedVia:Link, hostsAccessPoints:Ip]
+    static hasMany = [hostsAccessPoints:Ip, composedOf:DeviceComponent, connectedVia:Link]
     
     static constraints={
-    snmpReadCommunity(blank:true,nullable:true)
+    ipAddress(blank:true,nullable:true)
         
-     description(blank:false,nullable:false)
-        
-     model(blank:true,nullable:true)
-        
-     discoveredLastAt(blank:false,nullable:false)
-        
-     location(blank:true,nullable:true)
-        
-     discoveryTime(blank:true,nullable:true)
+     snmpReadCommunity(blank:true,nullable:true)
         
      discoveryErrorInfo(blank:true,nullable:true)
         
+     location(blank:true,nullable:true)
+        
+     model(blank:true,nullable:true)
+        
      vendor(blank:true,nullable:true)
         
-     ipAddress(blank:true,nullable:true)
+     discoveryTime(blank:true,nullable:true)
+        
+     description(blank:false,nullable:true)
+        
+     discoveredLastAt(blank:false,nullable:true)
         
      
     }
 
-    static mappedBy=["composedOf":"partOf", "connectedVia":"connectedSystems", "hostsAccessPoints":"hostedBy"]
+    static mappedBy=["hostsAccessPoints":"hostedBy", "composedOf":"partOf", "connectedVia":"connectedSystems"]
     static belongsTo = []
-    static propertyConfiguration= ["description":["nameInDs":"Description", "datasourceProperty":"smartDs", "lazy":true], "discoveredLastAt":["nameInDs":"DiscoveredLastAt", "datasourceProperty":"smartDs", "lazy":true], "discoveryTime":["nameInDs":"DiscoveryTime", "datasourceProperty":"smartDs", "lazy":true], "discoveryErrorInfo":["nameInDs":"DiscoveryErrorInfo", "datasourceProperty":"smartDs", "lazy":true]]
-    static transients = ["description", "discoveredLastAt", "discoveryTime", "discoveryErrorInfo"];
+    static propertyConfiguration= ["discoveryErrorInfo":["nameInDs":"DiscoveryErrorInfo", "datasourceProperty":"smartDs", "lazy":true], "discoveryTime":["nameInDs":"DiscoveryTime", "datasourceProperty":"smartDs", "lazy":true], "description":["nameInDs":"Description", "datasourceProperty":"smartDs", "lazy":true], "discoveredLastAt":["nameInDs":"DiscoveredLastAt", "datasourceProperty":"smartDs", "lazy":true]]
+    static transients = ["discoveryErrorInfo", "discoveryTime", "description", "discoveredLastAt"];
     
     //AUTO_GENERATED_CODE
-
-
-
-
-
-
-
 }

@@ -1,5 +1,9 @@
-class DeviceInterface  extends DeviceAdapter {
 
+import com.ifountain.core.domain.annotations.*;
+
+class DeviceInterface extends DeviceAdapter
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -8,7 +12,7 @@ class DeviceInterface  extends DeviceAdapter {
     static datasources = [:]
 
     
-    String interfaceKey ;
+    String interfaceKey ="";
     
     Ip underlying ;
     
@@ -29,11 +33,4 @@ class DeviceInterface  extends DeviceAdapter {
     static transients = ["interfaceKey"];
     
     //AUTO_GENERATED_CODE
-
-
-
-
-
-
-
 }

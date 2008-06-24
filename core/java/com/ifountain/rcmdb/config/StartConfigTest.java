@@ -34,7 +34,9 @@ public class StartConfigTest extends RapidTestCase{
     }
 
     protected void tearDown() throws Exception {
-        System.setProperty(StartConfig.RS_HOME, currentRsHome);
+        if(currentRsHome != null){
+            System.setProperty(StartConfig.RS_HOME, currentRsHome);
+        }
         StartConfig.getInstance().load();
         super.tearDown();
     }

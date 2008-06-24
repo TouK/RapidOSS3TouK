@@ -1,4 +1,6 @@
 
+import com.ifountain.core.domain.annotations.*;
+
 class Developer extends Employee
 {
     

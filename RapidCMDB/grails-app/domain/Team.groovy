@@ -1,7 +1,8 @@
 
-class Team
-{
-    
+import com.ifountain.core.domain.annotations.*;
+
+class Team {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -44,4 +45,5 @@ class Team
     }
     
     //AUTO_GENERATED_CODE
+    
 }

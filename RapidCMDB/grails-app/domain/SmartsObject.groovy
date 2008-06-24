@@ -1,20 +1,24 @@
-class SmartsObject {
 
+import com.ifountain.core.domain.annotations.*;
+
+class SmartsObject 
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
         except = ["displayName"];
     };
-    static datasources = ["westRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]], "eastRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]]]
+    static datasources = ["westRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "eastRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]]]
 
     
-    String creationClassName ;
+    String displayName ="";
     
-    String smartDs ;
+    String name ="";
     
-    String displayName ;
+    String smartDs ="";
     
-    String name ;
+    String creationClassName ="";
     
 
     static hasMany = [:]
@@ -24,13 +28,13 @@ class SmartsObject {
         }
     
     static constraints={
-    creationClassName(blank:false,nullable:false)
+    displayName(blank:true,nullable:true)
+        
+     name(blank:false,nullable:false)
         
      smartDs(blank:true,nullable:true)
         
-     displayName(blank:true,nullable:true)
-        
-     name(blank:false,nullable:false,key:["creationClassName"])
+     creationClassName(blank:false,nullable:false,key:["name"])
         
      
     }
@@ -46,11 +50,4 @@ class SmartsObject {
     }
     
     //AUTO_GENERATED_CODE
-
-
-
-
-
-
-
 }

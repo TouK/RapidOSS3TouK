@@ -1,5 +1,9 @@
-class Card  extends DeviceComponent {
 
+import com.ifountain.core.domain.annotations.*;
+
+class Card extends DeviceComponent
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -8,7 +12,7 @@ class Card  extends DeviceComponent {
     static datasources = [:]
 
     
-    String status ;
+    String status ="";
     
 
     static hasMany = [realises:DeviceAdapter]
@@ -25,11 +29,4 @@ class Card  extends DeviceComponent {
     static transients = ["status"];
     
     //AUTO_GENERATED_CODE
-
-
-
-
-
-
-
 }

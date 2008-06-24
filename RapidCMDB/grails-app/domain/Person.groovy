@@ -1,7 +1,8 @@
 
-class Person
-{
-    
+import com.ifountain.core.domain.annotations.*;
+
+class Person {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -10,9 +11,9 @@ class Person
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 
     
-    String name ="";
-    
     String bday ="";
+    
+    String name ="";
     
 
     static hasMany = [:]
@@ -22,9 +23,9 @@ class Person
         }
     
     static constraints={
-    name(blank:false,nullable:false,key:[])
+    bday(blank:false,nullable:true)
         
-     bday(blank:false,nullable:true)
+     name(blank:false,nullable:false,key:[])
         
      
     }
@@ -40,4 +41,5 @@ class Person
     }
     
     //AUTO_GENERATED_CODE
+    
 }

@@ -1,6 +1,9 @@
 
-class Port  extends DeviceAdapter {
+import com.ifountain.core.domain.annotations.*;
 
+class Port extends DeviceAdapter
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -9,21 +12,21 @@ class Port  extends DeviceAdapter {
     static datasources = [:]
 
     
-    String portType ;
+    String portNumber ="";
     
-    String portNumber ;
+    String portKey ="";
     
-    String portKey ;
+    String portType ="";
     
 
     static hasMany = [:]
     
     static constraints={
-    portType(blank:true,nullable:true)
-        
-     portNumber(blank:true,nullable:true)
+    portNumber(blank:true,nullable:true)
         
      portKey(blank:true,nullable:true)
+        
+     portType(blank:true,nullable:true)
         
      
     }
@@ -34,11 +37,4 @@ class Port  extends DeviceAdapter {
     static transients = ["portNumber", "portKey"];
     
     //AUTO_GENERATED_CODE
-
-
-
-
-
-
-    
 }

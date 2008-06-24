@@ -212,8 +212,10 @@ class ModelUtilsTest extends RapidCmdbTestCase{
             new File("$output_directory/${modelName}.groovy").setText (modelFileContent);
                 ExpandoMetaClassCreationHandle handle = new ExpandoMetaClassCreationHandle();
             GroovySystem.getMetaClassRegistry().setMetaClassCreationHandle(handle)
-                GrailsAwareClassLoader classLoader = new GrailsAwareClassLoader();
+
+            GrailsAwareClassLoader classLoader = new GrailsAwareClassLoader();
             classLoader.addClasspath (output_directory);
+            classLoader.addClasspath ("${output_directory}/grails-app/controllers");
             classLoader.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
 
             def modelClass = classLoader.loadClass (modelName);
@@ -230,6 +232,14 @@ class ModelUtilsTest extends RapidCmdbTestCase{
             assertTrue (new File("${output_directory}/grails-app/views/${grailsDomainClass.getLogicalPropertyName()}/list.gsp").exists());
             assertTrue (new File("${output_directory}/grails-app/views/${grailsDomainClass.getLogicalPropertyName()}/show.gsp").exists());
             assertTrue (new File("${output_directory}/grails-app/views/${grailsDomainClass.getLogicalPropertyName()}/addTo.gsp").exists());
+
+            classLoader = new GrailsAwareClassLoader();
+            classLoader.addClasspath (output_directory);
+            classLoader.addClasspath ("${output_directory}/grails-app/controllers");
+            classLoader.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
+            def cls = classLoader.loadClass("${modelName}Controller")
+            assertNotNull (cls);
+
         }finally
         {
             GroovySystem.getMetaClassRegistry().setMetaClassCreationHandle(prevHandle)

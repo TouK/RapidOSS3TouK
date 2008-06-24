@@ -1,9 +1,7 @@
-import com.ifountain.rcmdb.domain.converter.DateConverter
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.util.ControllerUtils;
 
 <%=packageName ? "import ${packageName}.${className}" : ''%>
 class ${className}Controller {
-    def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
 
@@ -76,62 +74,11 @@ class ${className}Controller {
         }
     }
 
-    def getClassProperties(params, domainClass)
-    {
-        def returnedParams = [:]
-        params.each{propName, propValue->
-            if(!PROPS_TO_BE_EXCLUDED.containsKey(propName))
-            {
-                def indexOfDot = propName.indexOf(".");
-                if(indexOfDot < 0)
-                {
-                     if(propValue instanceof Map)
-                    {
-                        if(propValue["id"] != "null")
-                        {
-                            def id = Long.parseLong(propValue["id"]);
-                            def fieldType = domainClass.metaClass.getMetaProperty(propName).type;
-                            returnedParams[propName] = fieldType.metaClass.invokeStaticMethod(fieldType, "get", [id] as Object[])
-                        }
-                        else
-                        {
-                            returnedParams[propName] = null;
-                        }
-                    }
-                    else
-                    {
-                        if(propValue.length() != 0)
-                        {
-                            def metaProp = domainClass.metaClass.getMetaProperty(propName);
-                            if(metaProp)
-                            {
-                                if(metaProp.type == Date.class)
-                                {
-                                    def year = params[propName+"_year"];
-                                    def day = params[propName+"_day"];
-                                    def month = params[propName+"_month"];
-                                    def hour = params[propName+"_hour"];
-                                    def min = params[propName+"_minute"];
-                                    def date = dateFormat.parse("\$year-\$month-\$day \$hour:\$min");
-                                    DateConverter converter = RapidConvertUtils.getInstance().lookup (Date.class);
-                                    propValue = converter.formater.format (date);
-                                }
-                                returnedParams[propName] = propValue;
-                            }
-                        }
-                        else{
-                            returnedParams[propName] = null;
-                        }
-                    }
-                }
-            }
-        }
-        return returnedParams;
-    }
+
     def update = {
         def ${propertyName} = ${className}.get( [id:params.id] )
         if(${propertyName}) {
-            ${propertyName}.update(getClassProperties(params, ${className}));
+            ${propertyName}.update(ControllerUtils.getClassProperties(params, ${className}));
             if(!${propertyName}.hasErrors()) {
                 flash.message = "${className} \${params.id} updated"
                 redirect(action:show,id:${propertyName}.id)
@@ -153,7 +100,7 @@ class ${className}Controller {
     }
 
     def save = {
-        def ${propertyName} = ${className}.add(getClassProperties(params, ${className}))
+        def ${propertyName} = ${className}.add(ControllerUtils.getClassProperties(params, ${className}))
         if(!${propertyName}.hasErrors()) {
             flash.message = "${className} \${${propertyName}.id} created"
             redirect(action:show,id:${propertyName}.id)

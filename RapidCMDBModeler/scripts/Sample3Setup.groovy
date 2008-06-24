@@ -23,6 +23,8 @@
  * To change this template use File | Settings | File Templates.
  */
 import model.*;
+import com.ifountain.rcmdb.domain.generation.ModelGenerator;
+
 ModelRelation.list()*.delete(flush:true);
 ModelDatasourceKeyMapping.list()*.delete(flush:true);
 ModelProperty.list().each{

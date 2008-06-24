@@ -22,7 +22,10 @@
  * Time: 2:59:03 PM
  * To change this template use File | Settings | File Templates.
  */
-import model.*;
+
+import model.*
+import com.ifountain.rcmdb.domain.generation.ModelGenerator;
+
 Model.findByName("Developer")?.delete(flush:true);
 Model.findByName("Employee")?.delete(flush:true);
 Model.findByName("Person")?.delete(flush:true);

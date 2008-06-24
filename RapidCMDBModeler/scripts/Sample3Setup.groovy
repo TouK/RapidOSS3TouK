@@ -52,89 +52,89 @@ def eastRegionModelDatasource = new ModelDatasource(datasource:datasources.eastR
 def westRegionModelDatasource = new ModelDatasource(datasource:datasources.westRegionDs, master:false);
 
 def smartsObject = new Model(name:"SmartsObject");
-def name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def creationClassName = new ModelProperty(name:"creationClassName", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
+def name = new ModelProperty(name:"name", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def creationClassName = new ModelProperty(name:"creationClassName", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
 def keyMappings = [new ModelDatasourceKeyMapping(property:name, nameInDatasource:"Name", datasource:eastRegionModelDatasource),
 				   new ModelDatasourceKeyMapping(property:creationClassName, nameInDatasource:"CreationClassName", datasource:eastRegionModelDatasource),
 				   new ModelDatasourceKeyMapping(property:name, nameInDatasource:"Name", datasource:westRegionModelDatasource),
 				   new ModelDatasourceKeyMapping(property:creationClassName, nameInDatasource:"CreationClassName", datasource:westRegionModelDatasource),
                    new ModelDatasourceKeyMapping(property:name, datasource:rcmdbModelDatasource),
                    new ModelDatasourceKeyMapping(property:creationClassName, datasource:rcmdbModelDatasource)];
-def smartDs= new ModelProperty(name:"smartDs", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def displayName= new ModelProperty(name:"displayName", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"DisplayName", propertySpecifyingDatasource:smartDs);
+def smartDs= new ModelProperty(name:"smartDs", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def displayName= new ModelProperty(name:"displayName", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"DisplayName", propertySpecifyingDatasource:smartDs);
 smartsObject = constructModel(smartsObject, [creationClassName, name, smartDs, displayName], [rcmdbModelDatasource, eastRegionModelDatasource, westRegionModelDatasource], keyMappings);
 
 /*def redundancyGroup = Model(name:"RedundancyGroup");
 modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);
-creationClassName = new ModelProperty(name:"creationClassName", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
-name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:modelDatasource);
+creationClassName = new ModelProperty(name:"creationClassName", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
+name = new ModelProperty(name:"name", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
 keyMappings = [new ModelDatasourceKeyMapping(property:creationClassName, datasource:modelDatasource),
                    new  ModelDatasourceKeyMapping(property:name, datasource:modelDatasource)]
 redundancyGroup = constructModel(redundancyGroup, [creationClassName, name], [modelDatasource], keyMappings);
 */
 def device = new Model(name:"Device", parentModel:smartsObject);
-def location= new ModelProperty(name:"location", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def model= new ModelProperty(name:"model", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def ipAddress= new ModelProperty(name:"ipAddress", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def snmpReadCommunity= new ModelProperty(name:"snmpReadCommunity", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def vendor= new ModelProperty(name:"vendor", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def discoveredLastAt= new ModelProperty(name:"discoveredLastAt", type:ModelProperty.numberType, blank:false, lazy:true, defaultValue:0, nameInDatasource:"DiscoveredLastAt", propertySpecifyingDatasource:smartDs);
-def description= new ModelProperty(name:"description", type:ModelProperty.stringType, blank:false, lazy:true, nameInDatasource:"Description", propertySpecifyingDatasource:smartDs);
-def discoveryErrorInfo= new ModelProperty(name:"discoveryErrorInfo", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"DiscoveryErrorInfo", propertySpecifyingDatasource:smartDs);
-def discoveryTime= new ModelProperty(name:"discoveryTime", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"DiscoveryTime", propertySpecifyingDatasource:smartDs);
+def location= new ModelProperty(name:"location", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def model= new ModelProperty(name:"model", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def ipAddress= new ModelProperty(name:"ipAddress", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def snmpReadCommunity= new ModelProperty(name:"snmpReadCommunity", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def vendor= new ModelProperty(name:"vendor", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def discoveredLastAt= new ModelProperty(name:"discoveredLastAt", type:ModelProperty.numberType,  lazy:true, defaultValue:0, nameInDatasource:"DiscoveredLastAt", propertySpecifyingDatasource:smartDs);
+def description= new ModelProperty(name:"description", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"Description", propertySpecifyingDatasource:smartDs);
+def discoveryErrorInfo= new ModelProperty(name:"discoveryErrorInfo", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"DiscoveryErrorInfo", propertySpecifyingDatasource:smartDs);
+def discoveryTime= new ModelProperty(name:"discoveryTime", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"DiscoveryTime", propertySpecifyingDatasource:smartDs);
 constructModel(device, [location,model,ipAddress,snmpReadCommunity,vendor,discoveredLastAt,description,discoveryErrorInfo,discoveryTime], [], []);
 
 def link = new Model(name:"Link", parentModel:smartsObject);
-def a_AdminStatus= new ModelProperty(name:"a_AdminStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"A_AdminStatus", propertySpecifyingDatasource:smartDs);
-def a_OperStatus= new ModelProperty(name:"a_OperStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"A_OperStatus", propertySpecifyingDatasource:smartDs);
-def a_DisplayName= new ModelProperty(name:"a_DisplayName", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"A_DisplayName", propertySpecifyingDatasource:smartDs);
-def z_AdminStatus= new ModelProperty(name:"z_AdminStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Z_AdminStatus", propertySpecifyingDatasource:smartDs);
-def z_OperStatus= new ModelProperty(name:"z_OperStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Z_OperStatus", propertySpecifyingDatasource:smartDs);
-def z_DisplayName= new ModelProperty(name:"z_DisplayName", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Z_DisplayName", propertySpecifyingDatasource:smartDs);
+def a_AdminStatus= new ModelProperty(name:"a_AdminStatus", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"A_AdminStatus", propertySpecifyingDatasource:smartDs);
+def a_OperStatus= new ModelProperty(name:"a_OperStatus", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"A_OperStatus", propertySpecifyingDatasource:smartDs);
+def a_DisplayName= new ModelProperty(name:"a_DisplayName", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"A_DisplayName", propertySpecifyingDatasource:smartDs);
+def z_AdminStatus= new ModelProperty(name:"z_AdminStatus", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"Z_AdminStatus", propertySpecifyingDatasource:smartDs);
+def z_OperStatus= new ModelProperty(name:"z_OperStatus", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"Z_OperStatus", propertySpecifyingDatasource:smartDs);
+def z_DisplayName= new ModelProperty(name:"z_DisplayName", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"Z_DisplayName", propertySpecifyingDatasource:smartDs);
 constructModel(link, [a_AdminStatus,a_OperStatus,a_DisplayName,z_AdminStatus,z_OperStatus,z_DisplayName], [], []);
 
 def deviceComponent = new Model(name:"DeviceComponent", parentModel:smartsObject);
 constructModel(deviceComponent, [], [], []);
 
 def deviceAdapter = new Model(name:"DeviceAdapter", parentModel:deviceComponent);
-description= new ModelProperty(name:"description", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def macAddress= new ModelProperty(name:"macAddress", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def type= new ModelProperty(name:"type", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def isManaged= new ModelProperty(name:"isManaged", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def maxSpeed= new ModelProperty(name:"maxSpeed", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"MaxSpeed", propertySpecifyingDatasource:smartDs);
-def adminStatus= new ModelProperty(name:"adminStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"AdminStatus", propertySpecifyingDatasource:smartDs);
-def maxTransferUnit= new ModelProperty(name:"maxTransferUnit", type:ModelProperty.numberType, blank:false, lazy:true, defaultValue:0, nameInDatasource:"MaxTransferUnit", propertySpecifyingDatasource:smartDs);
-def mode= new ModelProperty(name:"mode", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Mode", propertySpecifyingDatasource:smartDs);
-def status= new ModelProperty(name:"status", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Status", propertySpecifyingDatasource:smartDs);
-def duplexMode= new ModelProperty(name:"duplexMode", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"DuplexMode", propertySpecifyingDatasource:smartDs);
-def currentUtilization= new ModelProperty(name:"currentUtilization", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"CurrentUtilization",propertySpecifyingDatasource:smartDs);
-def operStatus= new ModelProperty(name:"operStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"OperStatus", propertySpecifyingDatasource:smartDs);
-def isFlapping= new ModelProperty(name:"isFlapping", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"IsFlapping", propertySpecifyingDatasource:smartDs);
-def deviceId= new ModelProperty(name:"deviceID", type:ModelProperty.stringType, blank:true, lazy:true,  nameInDatasource:"DeviceID", propertySpecifyingDatasource:smartDs);
-def peerSystemName= new ModelProperty(name:"peerSystemName", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"PeerSystemName", propertySpecifyingDatasource:smartDs);
+description= new ModelProperty(name:"description", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def macAddress= new ModelProperty(name:"macAddress", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def type= new ModelProperty(name:"type", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def isManaged= new ModelProperty(name:"isManaged", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def maxSpeed= new ModelProperty(name:"maxSpeed", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"MaxSpeed", propertySpecifyingDatasource:smartDs);
+def adminStatus= new ModelProperty(name:"adminStatus", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"AdminStatus", propertySpecifyingDatasource:smartDs);
+def maxTransferUnit= new ModelProperty(name:"maxTransferUnit", type:ModelProperty.numberType,  lazy:true, defaultValue:0, nameInDatasource:"MaxTransferUnit", propertySpecifyingDatasource:smartDs);
+def mode= new ModelProperty(name:"mode", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"Mode", propertySpecifyingDatasource:smartDs);
+def status= new ModelProperty(name:"status", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"Status", propertySpecifyingDatasource:smartDs);
+def duplexMode= new ModelProperty(name:"duplexMode", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"DuplexMode", propertySpecifyingDatasource:smartDs);
+def currentUtilization= new ModelProperty(name:"currentUtilization", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"CurrentUtilization",propertySpecifyingDatasource:smartDs);
+def operStatus= new ModelProperty(name:"operStatus", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"OperStatus", propertySpecifyingDatasource:smartDs);
+def isFlapping= new ModelProperty(name:"isFlapping", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"IsFlapping", propertySpecifyingDatasource:smartDs);
+def deviceId= new ModelProperty(name:"deviceID", type:ModelProperty.stringType,  lazy:true,  nameInDatasource:"DeviceID", propertySpecifyingDatasource:smartDs);
+def peerSystemName= new ModelProperty(name:"peerSystemName", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"PeerSystemName", propertySpecifyingDatasource:smartDs);
 constructModel(deviceAdapter, [description,macAddress,type,isManaged,maxSpeed,adminStatus,maxTransferUnit,mode,status,duplexMode,currentUtilization,operStatus,isFlapping,deviceId,peerSystemName], [], []);
 
 def ip = new Model(name:"Ip", parentModel:deviceComponent);
-ipAddress= new ModelProperty(name:"ipAddress", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def netMask= new ModelProperty(name:"netMask", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"NetMask", propertySpecifyingDatasource:smartDs);
-def interfaceAdminStatus= new ModelProperty(name:"interfaceAdminStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"InterfaceAdminStatus", propertySpecifyingDatasource:smartDs);
-def interfaceName= new ModelProperty(name:"interfaceName", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"InterfaceName", propertySpecifyingDatasource:smartDs);
-def interfaceOperStatus= new ModelProperty(name:"interfaceOperStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"InterfaceOperStatus", propertySpecifyingDatasource:smartDs);
-def ipStatus= new ModelProperty(name:"ipStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"IPStatus", propertySpecifyingDatasource:smartDs);
+ipAddress= new ModelProperty(name:"ipAddress", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def netMask= new ModelProperty(name:"netMask", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"NetMask", propertySpecifyingDatasource:smartDs);
+def interfaceAdminStatus= new ModelProperty(name:"interfaceAdminStatus", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"InterfaceAdminStatus", propertySpecifyingDatasource:smartDs);
+def interfaceName= new ModelProperty(name:"interfaceName", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"InterfaceName", propertySpecifyingDatasource:smartDs);
+def interfaceOperStatus= new ModelProperty(name:"interfaceOperStatus", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"InterfaceOperStatus", propertySpecifyingDatasource:smartDs);
+def ipStatus= new ModelProperty(name:"ipStatus", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"IPStatus", propertySpecifyingDatasource:smartDs);
 constructModel(ip, [ipAddress,netMask,interfaceAdminStatus,interfaceName,interfaceOperStatus,ipStatus], [], []);
 
 def deviceInterface = new Model(name:"DeviceInterface", parentModel:deviceAdapter);
-def interfaceKey= new ModelProperty(name:"interfaceKey", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"InterfaceKey", propertySpecifyingDatasource:smartDs);
+def interfaceKey= new ModelProperty(name:"interfaceKey", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"InterfaceKey", propertySpecifyingDatasource:smartDs);
 constructModel(deviceInterface, [interfaceKey], [], []);
 
 def port = new Model(name:"Port", parentModel:deviceAdapter);
-def portType= new ModelProperty(name:"portType", type:ModelProperty.stringType, blank:true, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def portNumber= new ModelProperty(name:"portNumber", type:ModelProperty.stringType, blank:true, lazy:false, nameInDatasource:"PortNumber", propertySpecifyingDatasource:smartDs);
-def portKey= new ModelProperty(name:"portKey", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"PortKey", propertySpecifyingDatasource:smartDs);
+def portType= new ModelProperty(name:"portType", type:ModelProperty.stringType,  lazy:false, propertyDatasource:rcmdbModelDatasource);
+def portNumber= new ModelProperty(name:"portNumber", type:ModelProperty.stringType,  lazy:false, nameInDatasource:"PortNumber", propertySpecifyingDatasource:smartDs);
+def portKey= new ModelProperty(name:"portKey", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"PortKey", propertySpecifyingDatasource:smartDs);
 constructModel(port, [portType,portNumber,portKey], [], []);
 
 def card = new Model(name:"Card", parentModel:deviceComponent);
-status= new ModelProperty(name:"status", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Status", propertySpecifyingDatasource:smartDs);
+status= new ModelProperty(name:"status", type:ModelProperty.stringType,  lazy:true, nameInDatasource:"Status", propertySpecifyingDatasource:smartDs);
 constructModel(card, [status], [], []);
 
 //createRelation(smartsObject, redundancyGroup, "memberOf", "consistsOf", ModelRelation.MANY, ModelRelation.ONE);

@@ -98,5 +98,5 @@
 	<classpathentry kind="lib" path="/Grails/dist/grails-web-1.0.3.jar"/>
 	<classpathentry kind="lib" path="/Grails/dist/grails-webflow-1.0.3.jar"/>
 	<classpathentry kind="lib" path="/RcmdbCommons/plugins/quartz-0.2/lib/quartz-1.5.2.jar"/>
-	<classpathentry kind="output" path="web-app/WEB-INF/classes"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

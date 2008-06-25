@@ -101,5 +101,6 @@
 	<classpathentry kind="lib" path="/RcmdbCommons/plugins/jsecurity-0.2.1/lib/jug.jar"/>
 	<classpathentry kind="lib" path="/RcmdbCommons/plugins/jsecurity-0.2.1/lib/quartz.jar"/>
 	<classpathentry kind="lib" path="/RcmdbCommons/plugins/jsecurity-0.2.1/lib/retroweaver-rt.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RcmdbCommons"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

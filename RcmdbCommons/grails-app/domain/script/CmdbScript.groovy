@@ -124,7 +124,7 @@ class CmdbScript {
             updateScript(script, params, false);
         }
         else {
-            throw new Exception("Script with name ${scriptName} does not exist")
+            throw new Exception("Script with name ${params.name} does not exist")
         }
     }
 

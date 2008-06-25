@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class Employee  extends Person {
+class Employee  extends Person {  
 
     //AUTO_GENERATED_CODE
 
@@ -23,9 +23,9 @@ class Employee  extends Person {
     static hasMany = [manages:Team]
     
     static constraints={
-    dept(blank:false,nullable:true)
+    dept(blank:true,nullable:true)
         
-     salary(blank:false,nullable:true)
+     salary(blank:true,nullable:true)
         
      prevEmp(nullable:true)
         

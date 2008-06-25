@@ -23,9 +23,9 @@ class Person {
         }
     
     static constraints={
-    bday(blank:false,nullable:true)
+    bday(blank:true,nullable:true)
         
-     name(blank:false,nullable:false,key:[])
+     name(blank:true,nullable:false,key:[])
         
      
     }

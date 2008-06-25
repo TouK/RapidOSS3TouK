@@ -25,9 +25,9 @@ class Team {
         }
     
     static constraints={
-    maskot(blank:false,nullable:true)
+    maskot(blank:true,nullable:true)
         
-     name(blank:false,nullable:false,key:[])
+     name(blank:true,nullable:false,key:[])
         
      managedBy(nullable:true)
         

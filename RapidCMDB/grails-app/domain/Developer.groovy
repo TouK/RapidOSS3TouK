@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class Developer extends Employee
+class Developer extends Employee  
 {
     
     //AUTO_GENERATED_CODE
@@ -18,7 +18,7 @@ class Developer extends Employee
     static hasMany = [worksOn:Task]
     
     static constraints={
-    language(blank:false,nullable:true)
+    language(blank:true,nullable:true)
         
      
     }

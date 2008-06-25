@@ -44,8 +44,7 @@ class FileWatcher implements Runnable{
             }
 
             filesToBeCopied.each{
-                int i=0;
-                for(; i < 20; i++)
+                for(int i=0; i < 20; i++)
                 {
                     try
                     {

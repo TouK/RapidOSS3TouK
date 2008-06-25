@@ -1,5 +1,7 @@
 package com.ifountain.rcmdb.domain.method
 
+import com.ifountain.rcmdb.domain.util.ValidationUtils
+
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -26,43 +28,57 @@ package com.ifountain.rcmdb.domain.method
  */
 class RemoveMethod extends AbstractRapidDomainMethod{
     def relations;
-    public RemoveMethod(MetaClass mc, Map relations) {
+    List keys;
+    public RemoveMethod(MetaClass mc, Map relations, List keys) {
         super(mc);
         this.relations = relations;
+        this.keys = keys;
     }
 
     public Object invoke(Object domainObject, Object[] arguments) {
-        def cascadedObjectsToBeRemoved = [];
-        def relsToBeRemoved = [:]
-        relations.each{relationName,relation->
-            def relatedObject = domainObject[relationName];
-            if(relatedObject instanceof Collection)
-            {
-                relsToBeRemoved[relationName] = relatedObject;
-                if(relation.isCascade)
-                {
-                    cascadedObjectsToBeRemoved.addAll(relatedObject);
-                }
-            }
-            else if(relatedObject != null)
-            {
-                relsToBeRemoved[relationName] = [relatedObject];
-                if(relation.isCascade)
-                {
-                    cascadedObjectsToBeRemoved.add(relatedObject);
-                }
-            }
-
+        def keyMap = [:];
+        keys.each{String keyPropName->
+            keyMap[keyPropName] = domainObject[keyPropName]
         }
-        if(!relsToBeRemoved.isEmpty())
+        def numberOfExistingObjects = CompassMethodInvoker.countHits(mc, keyMap);
+        if(numberOfExistingObjects == 0)
         {
-            domainObject.removeRelation(relsToBeRemoved);
+            ValidationUtils.addObjectError (domainObject.errors, "default.not.exist.message", []);            
         }
-        cascadedObjectsToBeRemoved.each{
-            it.remove();
+        else
+        {
+            def cascadedObjectsToBeRemoved = [];
+            def relsToBeRemoved = [:]
+            relations.each{relationName,relation->
+                def relatedObject = domainObject[relationName];
+                if(relatedObject instanceof Collection)
+                {
+                    relsToBeRemoved[relationName] = relatedObject;
+                    if(relation.isCascade)
+                    {
+                        cascadedObjectsToBeRemoved.addAll(relatedObject);
+                    }
+                }
+                else if(relatedObject != null)
+                {
+                    relsToBeRemoved[relationName] = [relatedObject];
+                    if(relation.isCascade)
+                    {
+                        cascadedObjectsToBeRemoved.add(relatedObject);
+                    }
+                }
+
+            }
+            if(!relsToBeRemoved.isEmpty())
+            {
+                domainObject.removeRelation(relsToBeRemoved);
+            }
+            cascadedObjectsToBeRemoved.each{
+                it.remove();
+            }
+            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
+            CompassMethodInvoker.unindex(mc, domainObject);
         }
-        EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
-        CompassMethodInvoker.unindex(mc, domainObject);
     }
 
 }

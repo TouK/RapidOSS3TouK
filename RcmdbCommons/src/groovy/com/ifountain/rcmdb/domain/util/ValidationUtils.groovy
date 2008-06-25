@@ -26,7 +26,7 @@ class ValidationUtils {
         (( BindingResult ) errors).addError( error );
     }
 
-    public static void addObjectError(BindingResult errors, String messageCode, List params)
+    public static void  addObjectError(BindingResult errors, String messageCode, List params)
     {
         ObjectError error = new ObjectError( errors.getObjectName(),[messageCode] as String[], params as Object[], "");
         (( BindingResult ) errors).addError( error );

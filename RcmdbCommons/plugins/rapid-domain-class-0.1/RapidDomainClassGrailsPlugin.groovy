@@ -142,12 +142,12 @@ class RapidDomainClassGrailsPlugin {
     def addUtilityMetods(dc, application, ctx)
     {
         def mc = dc.metaClass;
-        def asMapMethod = new AsMapMethod(mc, dc);
+        def asMapMethod = new AsMapMethod(mc, dc, logger);
         mc.asMap = {->
             return asMapMethod.invoke(delegate, null);
         };
-        mc.asMap = {List properties->
-            return asMapMethod.invoke(delegate, properties as Object[]);
+        mc.asMap = {List requestedProperties->
+            return asMapMethod.invoke(delegate, [requestedProperties] as Object[]);
         };
         mc.'static'.create = {Map props->
             def sampleBean = delegate.newInstance();

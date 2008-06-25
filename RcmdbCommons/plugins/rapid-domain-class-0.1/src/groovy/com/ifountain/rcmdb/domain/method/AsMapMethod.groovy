@@ -2,7 +2,7 @@ package com.ifountain.rcmdb.domain.method
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor
-
+import org.apache.log4j.Logger
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -30,15 +30,17 @@ import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringIn
  */
 class AsMapMethod extends AbstractRapidDomainMethod{
     def allProperties = [];
-    public AsMapMethod(MetaClass mc, GrailsDomainClass domainClass) {
+    Logger logger;
+    public AsMapMethod(MetaClass mc, GrailsDomainClass domainClass, Logger logger) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
+        this.logger = logger;
          def excludedProps = ['version',
                                      'id',
                                        ClosureEventTriggeringInterceptor.ONLOAD_EVENT,
                                        ClosureEventTriggeringInterceptor.BEFORE_DELETE_EVENT,
                                        ClosureEventTriggeringInterceptor.BEFORE_INSERT_EVENT,
                                        ClosureEventTriggeringInterceptor.BEFORE_UPDATE_EVENT]
-        def props = domainClass.properties.findAll { !excludedProps.contains(it.name) }
+        def props = domainClass.getProperties().findAll { !excludedProps.contains(it.name) }
         for(prop in props){
             if(!prop.oneToMany && !prop.manyToMany && !prop.oneToOne && !prop.manyToOne){
                 allProperties += prop.name;
@@ -57,7 +59,7 @@ class AsMapMethod extends AbstractRapidDomainMethod{
         {
             colList = arguments[0];
         }
-        for(prop in properties){
+        for(prop in colList){
            try{
                 propertyMap.put(prop, domainObject.getProperty(prop));
            }

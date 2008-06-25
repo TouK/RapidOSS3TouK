@@ -24,55 +24,137 @@ import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
  * Time: 9:58:10 AM
  * To change this template use File | Settings | File Templates.
  */
-class ModelTests extends RapidCmdbIntegrationTestCase{
+class ModelTests extends RapidCmdbIntegrationTestCase {
     static transactional = false;
+
     void setUp() {
         super.setUp();
-        SmartsObject.list()*.remove();
         Person.list()*.remove();
+    }
+
+    public void testAdd() {
+        Developer addedDeveloper = Developer.add(name: "ibrahim", bday: "01/01/1982");
+        assertFalse("No errors should occur while adding developer. However, ${addedDeveloper.errors}", addedDeveloper.hasErrors());
+
+        Developer returnedDeveloper = Developer.get(name: "ibrahim");
+        assertEquals(addedDeveloper.name, returnedDeveloper.name);
+        assertEquals(addedDeveloper.bday, returnedDeveloper.bday);
+        assertEquals(addedDeveloper.id, returnedDeveloper.id);
+    }
+
+    public void testAddReturnsErrorIfKeyAttributeNotSpecified() {
+        Developer addedDeveloper = Developer.add(bday: "01/01/1982");
+        assertTrue("Should return errors because key attribute not specified.", addedDeveloper.hasErrors());
+
+        Developer returnedDeveloper = Developer.get(name: "ibrahim");
+        assertNull(returnedDeveloper);
+    }
+
+    public void testAddWithNullAttribute() {
+        Developer addedDeveloper = Developer.add(name: "nurullah", bday: null);
+        assertFalse("Should return errors because attribute is null.", addedDeveloper.hasErrors());
+
+        Developer returnedDeveloper = Developer.get(name: "nurullah");
+        assertEquals("Expected default but was ${returnedDeveloper.bday}", "", returnedDeveloper.bday);
+    }
+
+    public void testUpdate() {
+        Developer dev = Developer.add(name: "nurullah", bday: "01/01/1982");
+        dev.update(bday: "01/01/1986");
+
+        assertFalse(dev.hasErrors());
+        assertEquals("01/01/1986", dev.bday);
+
+        Developer returnedDev = Developer.get(name: "nurullah");
+        assertEquals(dev.bday, returnedDev.bday);
+
+        dev.update(bday: "");
+
+        assertFalse(dev.hasErrors());
+        assertEquals("", dev.bday);
+    }
+
+    public void testUpdateReturnsErrorIfKeyUpdatedAndThereAreOtherExistingInstancesWithThisKey() {
+        Developer dev1 = Developer.add(name: "nurullah", bday: "01/01/1982");
+        Developer dev2 = Developer.add(name: "ibrahim", bday: "01/01/1982");
+        dev1.update(name: "ibrahim");
+
+        assertTrue(dev1.hasErrors());
+    }
+
+    public void testUpdateKeys() {
+        Developer dev1 = Developer.add(name: "nurullah", bday: "01/01/1982");
+        dev1.update(name: "ibrahim");
+
+        assertFalse(dev1.hasErrors());
+
+        Developer returnedDev = Developer.get(name: "nurullah");
+        assertNull (returnedDev);
+
+        returnedDev = Developer.get(name: "ibrahim");
+        assertEquals("01/01/1982", returnedDev.bday);
+    }
+
+    public void testUpdateWithNullAttribute() {
+        Developer dev = Developer.add(name: "nurullah", bday: "01/01/1982");
+        dev.update(bday: null);
+
+        assertFalse(dev.hasErrors());
+
+        Developer returnedDev = Developer.get(name: "nurullah");
+        assertEquals("Expected default but was ${returnedDev.bday}", "", returnedDev.bday);
+    }
+
+    public void testList() {
+        Developer dev1 = Developer.add(name: "ibrahim")
+        Developer dev2 = Developer.add(name: "nurullah")
+        List devList = Developer.list()
+
+        assertEquals([dev1, dev2].toString(), devList.toString())
+    }
+
+    public void testRemove() {
+        Developer dev1 = Developer.add(name:"ibrahim")
+        dev1.remove()
+        Developer developerInDB = Developer.get(name:"ibrahim")
+
+        assertNull(developerInDB)
+    }
+
+    public void testRemoveTwiceReturnsError() {
+        Developer dev1 = Developer.add(name:"ibrahim")
+        dev1.remove()
+        dev1.remove()
+
+        assertTrue(dev1.hasErrors())
+    }
+
+    public void testRemovePurgesPropertyValues() {
+        Developer dev1 = Developer.add(name:"ibrahim", bday:"01/01/1986")
+        dev1.remove()
+
+        Developer dev2 = Developer.add(name:"ibrahim")
+        assertEquals("", dev2.bday)
+    }
+
+
+    public void testAsMap() {
+        Developer dev1 = Developer.add(name:"ibrahim", bday:"01/01/1986")
+        Map returnedMap = dev1.asMap()
+
+        assertEquals (5, returnedMap.size());
+        assertEquals("ibrahim", returnedMap.name)
+        assertEquals("01/01/1986", returnedMap.bday)
+        assertEquals("", returnedMap.language)
 
     }
 
-    void testAddWithInheritance(){
-        DeviceComponent.add(name:"deviceComp1", creationClassName:"DeviceComponent");
-        assertEquals(1, DeviceComponent.list().size());
+    public void testAsMapWithProperties() {
+        Developer dev1 = Developer.add(name:"ibrahim", bday:"01/01/1986", language:"tr")
+        Map returnedMap = dev1.asMap(["name", "bday"])
 
-        Ip.add(name:"ip1", creationClassName:"Ip", ipAddress:"192.168.1.1");
-        assertEquals(2, DeviceComponent.list().size());
-        assertEquals(1, Ip.list().size());
-        def ip = Ip.get(name:"ip1", creationClassName:"Ip");
-        assertNotNull(ip);
-
-        DeviceComponent.add(name:"deviceComp2", creationClassName:"DeviceComponent");
-        assertEquals(3, DeviceComponent.list().size());
+        assertEquals (2, returnedMap.size());
+        assertEquals("ibrahim", returnedMap.name)
+        assertEquals("01/01/1986", returnedMap.bday)
     }
-
-    void testAddCard(){
-        Card.add(name:"card1", creationClassName:"Card");
-        assertEquals(1, Card.list().size());
-    }
-
-//    void testOneToManyRelationToSelf(){
-//        def emp1= Employee.add(name:"ayse",bday:"1/1/11",dept:"QA");
-//        def emp2= Employee.add(name:"ali",bday:"2/2/22",dept:"QA");
-//        def dev1= Developer.add(name:"gonca",bday:"4/4/44",dept:"Dev",language:"java");
-//
-//        emp1.addRelation(employees:emp2);
-//        assertEquals(1, emp1.employees.size());
-//        assertEquals(emp2.name, emp1.employees.toArray()[0].name)
-//        assertNotNull(emp2.manager);
-//        assertEquals(emp1.name, emp2.manager.name)
-//
-//        emp1.addRelation(manager:dev1);
-//        assertNotNull(emp1.manager);
-//        assertEquals(dev1.name, emp1.manager.name)
-//        assertEquals(1, dev1.employees.size());
-//        assertEquals(emp1.name, dev1.employees.toArray()[0].name)
-//
-//        emp1.remove();
-//        assertEquals(0, dev1.employees.size())
-//        assertNull(emp2.manager);
-//
-//    }
-    
 }

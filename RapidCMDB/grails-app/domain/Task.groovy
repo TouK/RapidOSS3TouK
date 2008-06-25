@@ -21,7 +21,7 @@ class Task {
         }
     
     static constraints={
-    name(blank:true,nullable:false,key:[])
+    name(blank:false,nullable:false,key:[])
         
      
     }

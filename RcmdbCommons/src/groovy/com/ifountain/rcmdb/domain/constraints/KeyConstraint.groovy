@@ -16,13 +16,13 @@ class KeyConstraint extends AbstractConstraint{
     List keys = new ArrayList();
     protected void processValidate(Object target, Object propertyValue, Errors errors)
     {
-        if(target["id"] != null) return;   
+
         Map keyMap = [:];
         keys.each{key->
             keyMap[key] = target.getProperty(key);
         }
         Object res = ((MetaClass)constraintOwningClass.metaClass).invokeStaticMethod(constraintOwningClass, "get", [keyMap] as Object[]);
-        if(res != null)
+        if(res != null && target.id != res.id)
         {
             List args = [constraintPropertyName, constraintOwningClass, propertyValue ];
             super.rejectValue(target, errors, DEFAULT_NOT_UNIQUE_MESSAGE_CODE, args as Object[], getDefaultMessage(DEFAULT_NOT_UNIQUE_MESSAGE_CODE));

@@ -72,7 +72,7 @@ class KeyConstraintTest extends RapidCmdbTestCase{
 
 
 
-        KeyConstraintDomainObjectForTest obj1 = new KeyConstraintDomainObjectForTest(key1:"key1val", key2:"key2val", key3:"key3val");
+        KeyConstraintDomainObjectForTest obj1 = new KeyConstraintDomainObjectForTest(id:1, key1:"key1val", key2:"key2val", key3:"key3val");
         Errors errors = new BeanPropertyBindingResult(obj1, obj1.getClass().getName());
         constraint.validate (obj1, obj1.key1, errors);
         assertFalse (errors.hasErrors());
@@ -88,7 +88,7 @@ class KeyConstraintTest extends RapidCmdbTestCase{
         assertEquals ("key3val", KeyConstraintDomainObjectForTest.searchParams["key3"]);
     }
 
-    public void testProcessValidateDoesnotReturnsErrorIfObjectExistsAndItHasAnIdField()
+    public void testProcessValidateDoesnotReturnsErrorIfObjectExistsAndItHasAnIdFieldDifferentThanCurrentId()
     {
         KeyConstraint constraint = new KeyConstraint();
         constraint.setPropertyName ("key1");
@@ -96,12 +96,20 @@ class KeyConstraintTest extends RapidCmdbTestCase{
         constraint.setParameter (compositeKeys);
         constraint.setOwningClass (KeyConstraintDomainObjectForTest.class);
 
+        KeyConstraintDomainObjectForTest existingInstance = new KeyConstraintDomainObjectForTest(id:1, key1:"key1val", key2:"key2val", key3:"key3val");
         KeyConstraintDomainObjectForTest obj1 = new KeyConstraintDomainObjectForTest(id:1, key1:"key1val", key2:"key2val", key3:"key3val");
         Errors errors = new BeanPropertyBindingResult(obj1, obj1.getClass().getName());
          
-        KeyConstraintDomainObjectForTest.existingInstance = new KeyConstraintDomainObjectForTest();
+        KeyConstraintDomainObjectForTest.existingInstance = existingInstance;
         constraint.validate (obj1, obj1.key1, errors);
         assertFalse (errors.hasErrors());
+
+
+        obj1 = new KeyConstraintDomainObjectForTest(id:2, key1:"key1val", key2:"key2val", key3:"key3val");
+        errors = new BeanPropertyBindingResult(obj1, obj1.getClass().getName());
+        constraint.validate (obj1, obj1.key1, errors);
+        assertTrue (errors.hasErrors());
+
 
     }
 }

@@ -24,6 +24,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         AddMethodDomainObject1.searchResult =  [total:0, results:[]];
         AddMethodDomainObject1.query = null;
         AddMethodDomainObject1.indexList = [];
+         AddMethodDomainObject1.reindexList = [];
     }
 
     protected void tearDown() {
@@ -44,6 +45,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd, addedObject);
         addedObject.numberOfFlushCalls = 0;
         addedObject.isFlushedByProperty = false;
+
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations);
         def updatedObject = update.invoke (addedObject, [props] as Object[]);
@@ -53,7 +55,12 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals(2, addedObject.numberOfFlushCalls);
         assertFalse(addedObject.isFlushedByProperty);
         assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
+        assertSame (updatedObject, AddMethodDomainObject1.reindexList[0]);
     }
+
+    
+
+
     public void testUpdateMethodWithEvents()
     {
         AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
@@ -72,6 +79,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
+        assertSame (updatedObject, AddMethodDomainObject1.reindexList[0]);
 
         assertTrue (updatedObject.isOnLoadCalled);
         assertFalse (updatedObject.isBeforeInsertCalled);
@@ -154,7 +162,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
 
             AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
-
+            AddMethodDomainObject1.reindexList.clear();
             def props = [prop1:object.prop1, prop2:"newProp2Value",  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0"];
             UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:]);
             def updatedObject = update.invoke (object, [props] as Object[]);
@@ -165,7 +173,9 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             assertEquals (new Double(5.0), updatedObject.doubleProp);
             SimpleDateFormat formater = new SimpleDateFormat(dateFormatString)  ;
             assertEquals (formater.parse("2000-01-01"), updatedObject.prop5);
+            assertSame (updatedObject, AddMethodDomainObject1.reindexList[0]);
 
+            AddMethodDomainObject1.reindexList.clear();
             props = [prop1:object.prop1, prop2:"",  prop4:"", prop5:"", doubleProp:""];
             update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:]);
             updatedObject = update.invoke (object, [props] as Object[]);
@@ -175,7 +185,9 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             assertEquals (null, updatedObject.prop4);
             assertEquals (null, updatedObject.doubleProp);
             assertEquals (null, updatedObject.prop5);
+            assertSame (updatedObject, AddMethodDomainObject1.reindexList[0]);
 
+            AddMethodDomainObject1.reindexList.clear();
             props = [prop1:object.prop1, prop2:null,  prop4:null, prop5:null, doubleProp:null];
             update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:]);
             updatedObject = update.invoke (object, [props] as Object[]);
@@ -185,6 +197,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             assertEquals (null, updatedObject.prop4);
             assertEquals (null, updatedObject.doubleProp);
             assertEquals (null, updatedObject.prop5);
+            assertSame (updatedObject, AddMethodDomainObject1.reindexList[0]);
             
 
         }
@@ -223,7 +236,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             assertTrue(updatedObject.errors.toString().indexOf("prop4") >= 0);
             assertTrue(updatedObject.errors.toString().indexOf("prop5") >= 0);
             assertTrue(updatedObject.errors.toString().indexOf("doubleProp") >= 0);
-            assertTrue (AddMethodDomainObject1.indexList.isEmpty());
+            assertTrue (AddMethodDomainObject1.reindexList.isEmpty());
 
 
         }

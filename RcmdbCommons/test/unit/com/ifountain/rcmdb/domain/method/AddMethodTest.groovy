@@ -273,6 +273,7 @@ class AddMethodDomainObject1
     def static searchResult = [total:0, results:[]];
     def static query;
     def static indexList = [];
+    def static reindexList = [];
     def relationsShouldBeAdded;
     def relationsShouldBeRemoved;
     def rel1;
@@ -295,6 +296,11 @@ class AddMethodDomainObject1
     def static index(objectList)
     {
         indexList.add(objectList);
+    }
+
+    def static reindex(objectList)
+    {
+        reindexList.add(objectList);
     }
 
     public boolean hasErrors()

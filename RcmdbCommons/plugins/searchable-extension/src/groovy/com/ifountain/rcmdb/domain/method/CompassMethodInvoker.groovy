@@ -52,6 +52,22 @@ class CompassMethodInvoker {
         }
     }
 
+    public static Object countHits(MetaClass mc, Map keys)
+    {
+        if(keys.isEmpty()) return 0;
+        def queryBuffer = new StringBuffer("");
+        for(key in keys){
+            queryBuffer.append(key.key).append(":\"").append(key.value).append("\" AND ");
+        }
+        String query = queryBuffer.toString();
+        if(keys.size() > 0)
+        {
+            query = query.substring(0, query.length() - 5);
+        }
+        return mc.invokeStaticMethod(mc.theClass, "countHits", [query] as Object[]);
+    }
+
+
     public static Object search(MetaClass mc, String query)
     {
         return mc.invokeStaticMethod(mc.theClass, "search", [query] as Object[]);

@@ -81,5 +81,5 @@
 	<classpathentry kind="lib" path="/Grails/dist/grails-test-1.0.3.jar"/>
 	<classpathentry kind="lib" path="/Grails/dist/grails-web-1.0.3.jar"/>
 	<classpathentry kind="lib" path="/Grails/dist/grails-webflow-1.0.3.jar"/>
-	<classpathentry kind="output" path="web-app/WEB-INF/classes"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

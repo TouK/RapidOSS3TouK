@@ -79,9 +79,9 @@ if(!rootDir.exists())
 
 
     watchConfig.each{dirPairs ->
-        def srcDir = dirPairs[0]
-        def destDir = dirPairs[1]
-        FileUtils.copyDirectory (srcDir, destDir, new NotFileFilter(new NameFileFilter(".svn")));
+        File srcDir = dirPairs[0]
+        File destDir = dirPairs[1]
+        FileUtils.copyDirectory (srcDir, destDir, new NotFileFilter(new NameFileFilter(".svn")), true);
         dirListeners += new BuildDirListener(srcDir, destDir, excludedDirs);
     }
 

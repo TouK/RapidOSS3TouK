@@ -1,10 +1,9 @@
 package com.ifountain.testing
 
-import com.ifountain.testing.DirListener
 import org.apache.commons.lang.StringUtils
 import test.TestSuite
 import test.Test
-import org.codehaus.groovy.grails.commons.GrailsApplication
+import com.ifountain.comp.file.DirListener
 
 /**
  * Created by IntelliJ IDEA.

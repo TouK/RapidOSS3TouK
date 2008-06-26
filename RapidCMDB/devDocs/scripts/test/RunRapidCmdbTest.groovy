@@ -1,8 +1,8 @@
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.NameFileFilter
 import org.apache.commons.io.filefilter.NotFileFilter
-import test.DirListener
 import build.RapidCmdbBuild
+import test.BuildDirListener
 
 /**
  * Created by IntelliJ IDEA.
@@ -81,7 +81,7 @@ if(!rootDir.exists())
         def srcDir = dirPairs[0]
         def destDir = dirPairs[1]
         FileUtils.copyDirectory (srcDir, destDir, new NotFileFilter(new NameFileFilter(".svn")));
-        dirListeners += new DirListener(srcDir, destDir, excludedDirs);
+        dirListeners += new BuildDirListener(srcDir, destDir, excludedDirs);
     }
 
     println "Installing testing plugin"
@@ -97,13 +97,13 @@ else
     watchConfig.each{dirPairs ->
         def srcDir = dirPairs[0]
         def destDir = dirPairs[1]
-        dirListeners += new DirListener(srcDir, destDir, excludedDirs);
+        dirListeners += new BuildDirListener(srcDir, destDir, excludedDirs);
     }
 }
 
 println "Stating Application"
 System.addShutdownHook {
-    dirListeners.each{DirListener list->
+    dirListeners.each{BuildDirListener list->
         list.destroy();
     }
     if(proc)

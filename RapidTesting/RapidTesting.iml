@@ -42,6 +42,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="GRAILS" level="application" />
+    <orderEntry type="module" module-name="comp" />
     <orderEntryProperties />
   </component>
 </module>

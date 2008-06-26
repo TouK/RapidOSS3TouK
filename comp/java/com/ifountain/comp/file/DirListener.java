@@ -1,12 +1,14 @@
-package com.ifountain.testing;
+package com.ifountain.comp.file;
 
-import org.apache.commons.io.FileUtils
+import java.util.Map;
+import java.util.List;
+import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Administrator
- * Date: Jun 19, 2008
- * Time: 6:09:46 PM
+ * Date: Jun 26, 2008
+ * Time: 9:47:32 AM
  * To change this template use File | Settings | File Templates.
  */
 abstract class DirListener {
@@ -16,19 +18,21 @@ abstract class DirListener {
     {
     }
 
-    def initialize(List dirsToWatch, Map exludedDirs)
+    public void initialize(List<File> dirsToWatch, Map exludedDirs)
     {
         this.exludedDirs = exludedDirs;
-        dirsToWatch.each{
-            createNewWatcherThread(it);    
+        for(int i=0; i < dirsToWatch.size(); i++)
+        {
+            File dir = dirsToWatch.get(i);
+            createNewWatcherThread(dir);
         }
 
     }
     public void createNewWatcherThread(File dir)
     {
-        if(exludedDirs.containsKey(dir.name)) return;
-        def watcher = new FileWatcher(dir, this);
-        def t = new Thread(allThreads, watcher);
+        if(exludedDirs.containsKey(dir.getName())) return;
+        FileWatcher watcher = new FileWatcher(dir, this);
+        Thread t = new Thread(allThreads, watcher);
         t.start();
     }
     abstract public void fileChanged(File file);

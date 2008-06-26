@@ -51,7 +51,11 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
         assertNull("layered over is not null", ip.layeredOver)
     }
 
-    void testAddingOneToOneRelationReplacesAlreadyExistingRelation() {
+    void testAddOneToOneRelationIsIgnoredIfRelationAlreadyExists(){
+ 
+    }
+    
+    void testAddOneToOneRelationReplacesAlreadyExistingRelation() {
         def ip = Ip.add(name: "myIp", creationClassName: "Ip", smartsDs: "smartsDs", ipAddress: "192.168.1.1");
 
         def devInterface1 = DeviceInterface.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
@@ -83,7 +87,7 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
 
     }
 
-    void testAddRelationWithInvalidRelationNameIsIgnored() {
+    void testAddOneToOneRelationWithInvalidRelationNameIsIgnored() {
         def ip = Ip.add(name: "myIp", creationClassName: "Ip", smartsDs: "smartsDs", ipAddress: "192.168.1.1");
 
         def devInterface = DeviceInterface.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
@@ -139,6 +143,15 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
 
     }
 
+    // Test removing the object from both sides of the relations 
+    void testRemoveOneToOneRelationObject(){
+    	
+    }
+    
+    void testUpdateOneToOneRelationObjectKeepsExistingRelations(){
+    	
+    }
+    
     void testAddOneToManyRelation() {
 
         def link = Link.add(name: "myLink", creationClassName: "Link", smartsDs: "smartsDs")
@@ -243,37 +256,10 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
 
     }
 
-    void testRemoveOneToManyRelationObjectFromOneSideChecksManySideRelationsIsDeleted() {
-
-        def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
-
-        def devAdapter1 = DeviceAdapter.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
-                smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")
-
-        link1.addRelation(connectedTo: devAdapter1);
-        assertEquals(1, link1.connectedTo.size());
-        assertTrue(link1.connectedTo.contains(devAdapter1))
-        def linkInCompass = Link.get(name: "myLink1", creationClassName: "Link")
-        assertEquals(1, linkInCompass.connectedTo.size());
-
-        def linkObject = devAdapter1.connectedVia;
-
-        def devAdapter2 = DeviceAdapter.add(name: "myDeviceInt2", creationClassName: "DeviceInterface",
-                smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")
-
-        link1.addRelation(connectedTo: devAdapter2);
-        assertEquals(2, link1.connectedTo.size());
-        assertTrue(link1.connectedTo.contains(devAdapter2))
-        linkInCompass = Link.get(name: "myLink1", creationClassName: "Link")
-        assertEquals(2, linkInCompass.connectedTo.size());
-
-        link1.remove();
-        assertNull(devAdapter1.connectedVia)
-        assertNull(DeviceAdapter.get(name: "myDeviceInt1", creationClassName: "DeviceInterface").connectedVia)
-        assertNull(devAdapter1.connectedVia)
-        assertNull(DeviceAdapter.get(name: "myDeviceInt2", creationClassName: "DeviceInterface").connectedVia)
+    void testAddOneToManyRelationWithInvalidRelationNameIsIgnored(){
+    	
     }
-
+    
     void testAddOneToManyRelationWithInvalidObjectType() {
         def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
 
@@ -290,7 +276,7 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
         assertFalse(link1.hasErrors());
         assertNull(link1.connectedTo)
     }
-
+    
     void testRemoveOneToManyRelation() {
 
         def link = Link.add(name: "myLink", creationClassName: "Link", smartsDs: "smartsDs")
@@ -317,6 +303,59 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
 
     }
 
+    //  Test removing the object from both sides of the relations
+    void testRemoveOneToManyRelationObject() {
+
+        def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
+
+        def devAdapter1 = DeviceAdapter.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
+                smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")
+
+        link1.addRelation(connectedTo: devAdapter1);
+        assertEquals(1, link1.connectedTo.size());
+        assertTrue(link1.connectedTo.contains(devAdapter1))
+        def linkInCompass = Link.get(name: "myLink1", creationClassName: "Link")
+        assertEquals(1, linkInCompass.connectedTo.size());
+
+        def linkObject = devAdapter1.connectedVia;
+
+        def devAdapter2 = DeviceAdapter.add(name: "myDeviceInt2", creationClassName: "DeviceInterface",
+                smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")
+
+        def link2 = Link.add(name: "myLink2", creationClassName: "Link", smartsDs: "smartsDs")
+        link2.addRelation(connectedTo: devAdapter1);
+        devAdapter2.addRelation(connectedVia: link2);
+        assertEquals(2, link2.connectedTo.size());
+        assertTrue(link2.connectedTo.contains(devAdapter1))
+        assertTrue(link2.connectedTo.contains(devAdapter2))
+        linkInCompass = Link.get(name: "myLink2", creationClassName: "Link")
+        assertEquals(1, linkInCompass.connectedTo.size());
+
+        link1.addRelation(connectedTo: devAdapter2);
+        assertEquals(2, link1.connectedTo.size());
+        assertTrue(link1.connectedTo.contains(devAdapter2))
+        linkInCompass = Link.get(name: "myLink1", creationClassName: "Link")
+        assertEquals(2, linkInCompass.connectedTo.size());
+
+        // test removing from many side
+        devAdapter2.remove();
+        assertEquals(1, link2.connectedTo.size());
+        assertTrue(link2.connectedTo.contains(devAdapter1))
+        linkInCompass = Link.get(name: "myLink2", creationClassName: "Link")
+        assertEquals(1, linkInCompass.connectedTo.size());
+        
+//      test removing from 1 side
+        link1.remove();
+        assertNull(devAdapter1.connectedVia)
+        assertNull(DeviceAdapter.get(name: "myDeviceInt1", creationClassName: "DeviceInterface").connectedVia)
+        assertNull(devAdapter1.connectedVia)
+        assertNull(DeviceAdapter.get(name: "myDeviceInt2", creationClassName: "DeviceInterface").connectedVia)
+    }
+
+    void testUpdateOneToManyRelationObjectKeepsExistingRelations(){
+    	
+    }
+    
     void testAddManyToManyRelation() {
 
         def device1 = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
@@ -377,7 +416,19 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
         assertFalse(link1.connectedSystems.contains(device1))
 
     }
+    
+    void testAddManyToManyRelationIsIgnoredIfRelationAlreadyExists(){
+    	
+    }
+    
+    void testAddManyToManyRelationWithInvalidRelationNameIsIgnored(){
+    	
+    }
+    
+    void testAddManyToManyRelationWithInvalidObjectType() {
 
+    }
+    
     void testRemoveManyToManyRelation() {
         def device1 = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
                 location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
@@ -407,6 +458,14 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
         assertFalse(device1.connectedVia.contains(link1))
         assertEquals(0, link1.connectedSystems.size())
         assertEquals(0, Link.get(name: "myLink1", creationClassName: "Link").connectedSystems.size())
+
+    }
+    
+    void testRemoveManyToManyRelationObjectDeletesManySideRelations() {
+
+    }
+
+    void testUpdateManyToManyRelationObjectKeepsExistingRelations() {
 
     }
 }

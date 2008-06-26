@@ -8,7 +8,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 * To change this template use File | Settings | File Templates.
 */
 class ModelRelationTests extends RapidCmdbIntegrationTestCase {
-
+   static transactional = false;
     public void setUp() {
         super.setUp();
         SmartsObject.list()*.remove();

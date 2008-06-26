@@ -12,7 +12,7 @@ import java.io.File;
  * To change this template use File | Settings | File Templates.
  */
 abstract class DirListener {
-    ThreadGroup allThreads = new ThreadGroup("DirListener")
+    ThreadGroup allThreads = new ThreadGroup("DirListener");
     Map exludedDirs;
     public DirListener()
     {

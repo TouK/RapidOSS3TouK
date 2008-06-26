@@ -12,7 +12,6 @@
 	<classpathentry kind="lib" path="/ThirdParty/lib/commons/commons-configuration-1.2.jar"/>
 	<classpathentry kind="lib" path="/ThirdParty/lib/commons/commons-digester-1.7.jar"/>
 	<classpathentry kind="lib" path="/ThirdParty/lib/commons/commons-httpclient-3.0.1.jar"/>
-	<classpathentry kind="lib" path="/ThirdParty/lib/commons/commons-io-1.2.jar"/>
 	<classpathentry kind="lib" path="/ThirdParty/lib/commons/commons-lang-2.1.jar"/>
 	<classpathentry kind="lib" path="/ThirdParty/lib/commons/commons-logging.jar"/>
 	<classpathentry kind="lib" path="/ThirdParty/lib/commons/commons-pool-1.4.jar"/>
@@ -20,5 +19,6 @@
 	<classpathentry kind="lib" path="/ThirdParty/lib/testing/ant-junit.jar"/>
 	<classpathentry kind="lib" path="/ThirdParty/lib/testing/ant-launcher.jar"/>
 	<classpathentry kind="lib" path="/ThirdParty/lib/testing/junit.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/commons/commons-io-1.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

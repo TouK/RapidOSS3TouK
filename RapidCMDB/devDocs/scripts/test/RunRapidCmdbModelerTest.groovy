@@ -1,3 +1,4 @@
+package test
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.NameFileFilter
 import org.apache.commons.io.filefilter.NotFileFilter

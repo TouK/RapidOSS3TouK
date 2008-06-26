@@ -20,7 +20,7 @@ class BuildDirListener extends DirListener{
         this.fromDir = fromDir;
         this.toDir = toDir;
         this.exludedDirs = exludedDirs;
-        initialize(fromDir, exludedDirs);
+        initialize([fromDir], exludedDirs);
     }
 
     public File getDestFile(File file)

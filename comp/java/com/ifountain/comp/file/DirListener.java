@@ -11,7 +11,7 @@ import java.io.File;
  * Time: 9:47:32 AM
  * To change this template use File | Settings | File Templates.
  */
-abstract class DirListener {
+public abstract class DirListener {
     ThreadGroup allThreads = new ThreadGroup("DirListener");
     Map exludedDirs;
     public DirListener()

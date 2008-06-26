@@ -11,7 +11,7 @@ import java.util.HashMap;
  * Time: 9:51:53 AM
  * To change this template use File | Settings | File Templates.
  */
-class FileWatcher implements Runnable{
+public class FileWatcher implements Runnable{
     File dirToWatch;
     Map files = new HashMap();
     Map dirs = new HashMap();

@@ -160,7 +160,20 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
 
     // Test removing the object from both sides of the relations 
     void testRemoveOneToOneRelationObject(){
-
+    	def ip = Ip.add(name: "myIp", creationClassName: "Ip", smartsDs: "smartsDs", ipAddress: "192.168.1.1");
+    	assertFalse(ip.hasErrors())
+        def devInterface = DeviceInterface.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
+                smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")
+        assertFalse(devInterface.hasErrors());
+    	
+        ip.addRelation(layeredOver: devInterface);
+        
+        assertNotNull(ip.layeredOver);        
+        assertEquals("myDeviceInt1", ip.layeredOver.name)
+         
+        ip.remove();
+        assertNull(devInterface.underlying)
+        assertNull(DeviceInterface.get(name: "myDeviceInt1", creationClassName: "DeviceInterface").underlying)
     }
     
     void testUpdateOneToOneRelationObjectKeepsExistingRelations(){

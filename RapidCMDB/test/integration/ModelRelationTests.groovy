@@ -285,7 +285,33 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testAddOneToManyRelationWithInvalidRelationNameIsIgnored(){
-    	
+    	 def link = Link.add(name: "myLink", creationClassName: "Link", smartsDs: "smartsDs")
+         assertFalse(link.hasErrors())
+
+         def devAdapter1 = DeviceAdapter.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
+                 smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")
+         assertFalse(devAdapter1.hasErrors());
+
+         link.addRelation(connectedTo: devAdapter1);
+         assertEquals(1, link.connectedTo.size());
+         assertTrue(link.connectedTo.contains(devAdapter1))
+         def linkInCompass = Link.get(name: "myLink", creationClassName: "Link")
+         assertEquals(1, linkInCompass.connectedTo.size());
+
+        try {
+            link.addRelation(invalidRelationName:devAdapter1)
+        }
+        catch (e) {
+            fail("Should not throw exception");
+        }
+        
+        link.addRelation(connectedTo: devAdapter1);
+        assertEquals(1, link.connectedTo.size());
+        assertTrue(link.connectedTo.contains(devAdapter1))
+        linkInCompass = Link.get(name: "myLink", creationClassName: "Link")
+        assertEquals(1, linkInCompass.connectedTo.size());
+
+        assertFalse(link.hasErrors());
     }
     
     void testAddOneToManyRelationWithInvalidObjectType() {

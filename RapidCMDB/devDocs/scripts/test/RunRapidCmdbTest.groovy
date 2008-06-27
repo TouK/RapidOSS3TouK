@@ -87,7 +87,7 @@ if(!rootDir.exists())
 
     println "Installing testing plugin"
     def envVars = getEnvVars(rootDir);
-    def path = "${getTestExecutableFileName()} install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
+    def path = "${getTestExecutableFileName(rootDir)} install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
     println "Running command ${path} to install testing plugin"
     proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
     proc.consumeProcessOutput(System.out, System.err);
@@ -114,7 +114,7 @@ System.addShutdownHook {
 }
 def envVars = getEnvVars(rootDir);
 
-def path = "${getTestExecutableFileName()} run-app".toString();
+def path = "${getTestExecutableFileName(rootDir)} run-app".toString();
 println "Running command ${path} to run application"
 proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
 proc.consumeProcessOutput(System.out, System.err);

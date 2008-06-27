@@ -13,6 +13,7 @@ import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInj
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 import com.ifountain.rcmdb.util.ModelUtils
+import com.ifountain.rcmdb.domain.generation.ExistingDataAnalyzer;
 
 /**
 * Created by IntelliJ IDEA.

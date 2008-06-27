@@ -141,6 +141,10 @@ def getTestExecutableFileName(File rootDir)
         def command = "${rootDir.getAbsolutePath()}/RapidCMDB/test.sh";
         def process = "sudo chmod +x ${command}".execute();
         process.consumeProcessOutput(System.out, System.err);
+        process.waitFor();
+        process = "sudo dos2unix ${command}".execute();
+        process.consumeProcessOutput(System.out, System.err);
+        process.waitFor();
         return command;
     }
 }

@@ -52,7 +52,22 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testAddOneToOneRelationIsIgnoredIfRelationAlreadyExists(){
- 
+    	def ip = Ip.add(name: "myIp", creationClassName: "Ip", smartsDs: "smartsDs", ipAddress: "192.168.1.1");
+    	assertFalse(ip.hasErrors())
+        def devInterface = DeviceInterface.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
+                smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")
+        assertFalse(devInterface.hasErrors());
+
+        ip.addRelation(layeredOver: devInterface);
+                
+        assertEquals("myDeviceInt1", ip.layeredOver.name)
+                
+        try {
+        	ip.addRelation(layeredOver: devInterface);
+        } catch (e)
+        {
+            fail("Should not throw exception")
+        }
     }
     
     void testAddOneToOneRelationReplacesAlreadyExistingRelation() {

@@ -87,7 +87,7 @@ if(!rootDir.exists())
 
     println "Installing testing plugin"
     def envVars = getEnvVars(rootDir);
-    def path = "${rootDir.getAbsolutePath()}/RapidCMDB/${getTestExecutableFileName()} install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
+    def path = "${getTestExecutableFileName()} install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
     println "Running command ${path} to install testing plugin"
     proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
     proc.consumeProcessOutput(System.out, System.err);
@@ -114,7 +114,7 @@ System.addShutdownHook {
 }
 def envVars = getEnvVars(rootDir);
 
-def path = "${rootDir.getAbsolutePath()}/RapidCMDB/${getTestExecutableFileName()} run-app".toString();
+def path = "${getTestExecutableFileName()} run-app".toString();
 println "Running command ${path} to run application"
 proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
 proc.consumeProcessOutput(System.out, System.err);
@@ -130,15 +130,18 @@ def getEnvVars(rootDir)
     return  tEnvVars;
 }
 
-def getTestExecutableFileName()
+def getTestExecutableFileName(File rootDir)
 {
     if(System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0)
     {
-        return "test.bat";
+        return "${rootDir.getAbsolutePath()}/RapidCMDB/test.bat";
     }
     else
     {
-        return "test.sh";        
+        def command = "${rootDir.getAbsolutePath()}/RapidCMDB/test.sh";
+        def process = "sudo chmod +x ${command}".execute();
+        process.consumeProcessOutput(System.out, System.err);
+        return command;
     }
 }
 

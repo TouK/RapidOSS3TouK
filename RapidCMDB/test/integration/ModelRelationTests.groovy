@@ -145,7 +145,7 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
 
     // Test removing the object from both sides of the relations 
     void testRemoveOneToOneRelationObject(){
-    	
+
     }
     
     void testUpdateOneToOneRelationObjectKeepsExistingRelations(){
@@ -329,27 +329,25 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
         assertTrue(link2.connectedTo.contains(devAdapter1))
         assertTrue(link2.connectedTo.contains(devAdapter2))
         linkInCompass = Link.get(name: "myLink2", creationClassName: "Link")
-        assertEquals(1, linkInCompass.connectedTo.size());
+        assertEquals(2, linkInCompass.connectedTo.size());
 
         link1.addRelation(connectedTo: devAdapter2);
-        assertEquals(2, link1.connectedTo.size());
+        assertEquals(1, link1.connectedTo.size());
         assertTrue(link1.connectedTo.contains(devAdapter2))
         linkInCompass = Link.get(name: "myLink1", creationClassName: "Link")
-        assertEquals(2, linkInCompass.connectedTo.size());
+        assertEquals(1, linkInCompass.connectedTo.size());
 
         // test removing from many side
         devAdapter2.remove();
+        assertEquals(0, link1.connectedTo.size());
+        assertEquals(0,Link.get(name: "myLink1", creationClassName: "Link").connectedTo.size())
         assertEquals(1, link2.connectedTo.size());
         assertTrue(link2.connectedTo.contains(devAdapter1))
-        linkInCompass = Link.get(name: "myLink2", creationClassName: "Link")
-        assertEquals(1, linkInCompass.connectedTo.size());
         
 //      test removing from 1 side
-        link1.remove();
+        link2.remove();
         assertNull(devAdapter1.connectedVia)
         assertNull(DeviceAdapter.get(name: "myDeviceInt1", creationClassName: "DeviceInterface").connectedVia)
-        assertNull(devAdapter1.connectedVia)
-        assertNull(DeviceAdapter.get(name: "myDeviceInt2", creationClassName: "DeviceInterface").connectedVia)
     }
 
     void testUpdateOneToManyRelationObjectKeepsExistingRelations(){

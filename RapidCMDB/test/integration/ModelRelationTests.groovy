@@ -471,10 +471,111 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     
     void testAddManyToManyRelationIsIgnoredIfRelationAlreadyExists(){
     	
-    }
-    
+    	def device1 = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
+                 location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
+
+        def device2 = Device.add(name: "myDevice2", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
+                 location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
+
+        assertFalse(device1.hasErrors())
+        assertFalse(device2.hasErrors())
+
+        def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
+        assertFalse(link1.hasErrors())
+
+        def link2 = Link.add(name: "myLink2", creationClassName: "Link", smartsDs: "smartsDs")
+        assertFalse(link2.hasErrors())
+
+        device1.addRelation(connectedVia: link1)
+        device1.addRelation(connectedVia: link2)
+        
+        assertEquals(2, device1.connectedVia.size())
+        assertEquals(2, Device.get(name: "myDevice1", creationClassName: "Device").connectedVia.size())
+        assertTrue(device1.connectedVia.contains(link1))
+        assertTrue(device1.connectedVia.contains(link2))
+        
+        assertEquals(1, link1.connectedSystems.size())
+        assertEquals(1, Link.get(name: "myLink1", creationClassName: "Link").connectedSystems.size())
+        assertTrue(link1.connectedSystems.contains(device1))
+
+        assertEquals(1, link2.connectedSystems.size())
+        assertEquals(1, Link.get(name: "myLink2", creationClassName: "Link").connectedSystems.size())
+        assertTrue(link2.connectedSystems.contains(device1))
+
+        try {
+        	 device1.addRelation(connectedVia: link1);
+        } catch (e)
+        {
+            fail("Should not throw exception")
+        }
+
+        assertEquals(2, device1.connectedVia.size())
+        assertEquals(2, Device.get(name: "myDevice1", creationClassName: "Device").connectedVia.size())
+        assertTrue(device1.connectedVia.contains(link1))
+        assertTrue(device1.connectedVia.contains(link2))
+        
+        assertEquals(1, link1.connectedSystems.size())
+        assertEquals(1, Link.get(name: "myLink1", creationClassName: "Link").connectedSystems.size())
+        assertTrue(link1.connectedSystems.contains(device1))
+	}
     void testAddManyToManyRelationWithInvalidRelationNameIsIgnored(){
-    	
+
+    	def device1 = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
+                 location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
+
+        def device2 = Device.add(name: "myDevice2", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
+                 location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
+
+        assertFalse(device1.hasErrors())
+        assertFalse(device2.hasErrors())
+
+        def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
+        assertFalse(link1.hasErrors())
+
+        def link2 = Link.add(name: "myLink2", creationClassName: "Link", smartsDs: "smartsDs")
+        assertFalse(link2.hasErrors())
+
+        device1.addRelation(connectedVia: link1)
+        device1.addRelation(connectedVia: link2)
+        
+        assertEquals(2, device1.connectedVia.size())
+        assertEquals(2, Device.get(name: "myDevice1", creationClassName: "Device").connectedVia.size())
+        assertTrue(device1.connectedVia.contains(link1))
+        assertTrue(device1.connectedVia.contains(link2))
+        
+        assertEquals(1, link1.connectedSystems.size())
+        assertEquals(1, Link.get(name: "myLink1", creationClassName: "Link").connectedSystems.size())
+        assertTrue(link1.connectedSystems.contains(device1))
+
+        assertEquals(1, link2.connectedSystems.size())
+        assertEquals(1, Link.get(name: "myLink2", creationClassName: "Link").connectedSystems.size())
+        assertTrue(link2.connectedSystems.contains(device1))
+
+
+        try {
+            device1.addRelation(invalidRelationName:link1)
+        }
+        catch (e) {
+            fail("Should not throw exception");
+        }
+        
+        device1.addRelation(connectedVia: link1)
+        device1.addRelation(connectedVia: link2)
+        
+        assertEquals(2, device1.connectedVia.size())
+        assertEquals(2, Device.get(name: "myDevice1", creationClassName: "Device").connectedVia.size())
+        assertTrue(device1.connectedVia.contains(link1))
+        assertTrue(device1.connectedVia.contains(link2))
+        
+        assertEquals(1, link1.connectedSystems.size())
+        assertEquals(1, Link.get(name: "myLink1", creationClassName: "Link").connectedSystems.size())
+        assertTrue(link1.connectedSystems.contains(device1))
+
+        assertEquals(1, link2.connectedSystems.size())
+        assertEquals(1, Link.get(name: "myLink2", creationClassName: "Link").connectedSystems.size())
+        assertTrue(link2.connectedSystems.contains(device1))
+
+        assertFalse(device1.hasErrors());
     }
     
     void testAddManyToManyRelationWithInvalidObjectType() {

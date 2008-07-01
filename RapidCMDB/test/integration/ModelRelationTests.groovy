@@ -177,7 +177,19 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
     
     void testUpdateOneToOneRelationObjectKeepsExistingRelations(){
+    	def ip = Ip.add(name: "myIp", creationClassName: "Ip", smartsDs: "smartsDs", ipAddress: "192.168.1.1");
+    	assertFalse(ip.hasErrors())
+        def devInterface = DeviceInterface.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
+                smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")
+        assertFalse(devInterface.hasErrors());
     	
+        ip.addRelation(layeredOver: devInterface);
+        
+        assertNotNull(ip.layeredOver);        
+        assertEquals("myDeviceInt1", ip.layeredOver.name)
+        
+        devInterface.name = "myDeviceInt"        
+        assertEquals("myDeviceInt", ip.layeredOver.name)
     }
     
     void testAddOneToManyRelation() {
@@ -405,7 +417,26 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testUpdateOneToManyRelationObjectKeepsExistingRelations(){
+    	def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
+
+        def devAdapter1 = DeviceAdapter.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
+                 smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")
+
+        devAdapter1.addRelation(connectedVia: link1);
     	
+    	assertEquals(1, link1.connectedTo.size());
+        assertTrue(link1.connectedTo.contains(devAdapter1))
+        def linkInCompass = Link.get(name: "myLink1", creationClassName: "Link")
+        assertEquals(1, linkInCompass.connectedTo.size());
+        
+        assertNotNull( devAdapter1.connectedVia);
+        assertEquals("myLink1",  devAdapter1.connectedVia.name)
+        
+        devAdapter1.connectedVia.name="myLink"
+        
+        assertNotNull( devAdapter1.connectedVia);
+        assertEquals("myLink",  devAdapter1.connectedVia.name)
+        
     }
     
     void testAddManyToManyRelation() {
@@ -579,6 +610,20 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
     
     void testAddManyToManyRelationWithInvalidObjectType() {
+    	def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
+    
+        def devAdapter1 = DeviceAdapter.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
+                smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")
+
+        try {
+            link1.addRelation(connectedSystems: devAdapter1);
+        }
+        catch (e) {
+            fail("Should not throw exception");
+        }
+
+        assertFalse(link1.hasErrors());
+        assertNull(link1.connectedSystems)
 
     }
     
@@ -615,10 +660,104 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
     
     void testRemoveManyToManyRelationObjectDeletesManySideRelations() {
+    	
+    	 def device1 = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
+                 location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
 
+         def device2 = Device.add(name: "myDevice2", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
+                 location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
+
+         assertFalse(device1.hasErrors())
+         assertFalse(device2.hasErrors())
+
+         def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
+         assertFalse(link1.hasErrors())
+
+         def link2 = Link.add(name: "myLink2", creationClassName: "Link", smartsDs: "smartsDs")
+         assertFalse(link2.hasErrors())
+
+         device1.addRelation(connectedVia: link1)
+         device1.addRelation(connectedVia: link2)
+
+         assertEquals(2, device1.connectedVia.size())
+         assertEquals(2, Device.get(name: "myDevice1", creationClassName: "Device").connectedVia.size())
+         assertTrue(device1.connectedVia.contains(link1))
+         assertTrue(device1.connectedVia.contains(link2))
+
+         assertEquals(1, link1.connectedSystems.size())
+         assertEquals(1, Link.get(name: "myLink1", creationClassName: "Link").connectedSystems.size())
+         assertTrue(link1.connectedSystems.contains(device1))
+
+         assertEquals(1, link2.connectedSystems.size())
+         assertEquals(1, Link.get(name: "myLink2", creationClassName: "Link").connectedSystems.size())
+         assertTrue(link2.connectedSystems.contains(device1))
+
+         device2.addRelation(connectedVia: link1)
+         device2.addRelation(connectedVia: link2)
+
+         assertEquals(2, device2.connectedVia.size())
+         assertEquals(2, Device.get(name: "myDevice2", creationClassName: "Device").connectedVia.size())
+         assertTrue(device2.connectedVia.contains(link1))
+         assertTrue(device2.connectedVia.contains(link2))
+
+         assertEquals(2, link1.connectedSystems.size())
+         assertEquals(2, Link.get(name: "myLink1", creationClassName: "Link").connectedSystems.size())
+         assertTrue(link1.connectedSystems.contains(device2))
+
+         assertEquals(2, link2.connectedSystems.size())
+         assertEquals(2, Link.get(name: "myLink2", creationClassName: "Link").connectedSystems.size())
+         assertTrue(link2.connectedSystems.contains(device2))
+
+         device1.remove()
+
+         assertEquals(1, link2.connectedSystems.size())
+         assertEquals(1, Link.get(name: "myLink2", creationClassName: "Link").connectedSystems.size())
+         assertFalse(link2.connectedSystems.contains(device1))
+
+         assertEquals(1, link1.connectedSystems.size())
+         assertEquals(1, Link.get(name: "myLink1", creationClassName: "Link").connectedSystems.size())
+         assertFalse(link1.connectedSystems.contains(device1))
+         
+         device2.remove()
+         
+         assertEquals(0, link2.connectedSystems.size())
+         assertEquals(0, Link.get(name: "myLink2", creationClassName: "Link").connectedSystems.size())
+         assertFalse(link2.connectedSystems.contains(device2))
+
+         assertEquals(0, link1.connectedSystems.size())
+         assertEquals(0, Link.get(name: "myLink1", creationClassName: "Link").connectedSystems.size())
+         assertFalse(link1.connectedSystems.contains(device2))
     }
 
     void testUpdateManyToManyRelationObjectKeepsExistingRelations() {
+    	def device1 = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
+                location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
+
+        def device2 = Device.add(name: "myDevice2", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
+                location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
+
+        assertFalse(device1.hasErrors())
+        assertFalse(device2.hasErrors())
+
+        def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
+        assertFalse(link1.hasErrors())
+
+        
+        device1.addRelation(connectedVia: link1)
+        
+        def mylinks=device1.connectedVia;
+    	
+    	mylinks.each{
+    		assertEquals("myLink1",it.name)
+    	}
+    	
+    	link1.name="myLink"
+    	
+    	mylinks.each{
+    		assertEquals("myLink",it.name)
+    	}
+    	
 
     }
+    
 }

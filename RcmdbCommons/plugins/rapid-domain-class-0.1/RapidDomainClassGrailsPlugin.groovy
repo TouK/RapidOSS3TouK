@@ -12,6 +12,7 @@ import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import java.lang.ref.WeakReference
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
@@ -337,10 +338,10 @@ class DatasourceProperty extends MetaBeanProperty
         def object = map[o];
         if(!object)
         {
-            object = [:];
+            object = new WeakReference([:]);
             map[o] = object;
         }
-        return object;
+        return object.get();
     }
 
     public void setProperty(Object o, Object o1) {
@@ -363,12 +364,18 @@ class DomainOperationProperty extends MetaBeanProperty
         def operation = map[o];
         if(!operation && operationClass)
         {
-            operation = operationClass.newInstance() ;
-            operationClass.metaClass.getMetaProperty("domainObject").setProperty(operation, o);
+            operation = new WeakReference(operationClass.newInstance()) ;
+            operationClass.metaClass.getMetaProperty("domainObject").setProperty(operation.get(), o);
             map[o] = operation;
         }
-
-        return operation;
+        if(operation)
+        {
+            return operation.get();
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public void setProperty(Object o, Object o1)

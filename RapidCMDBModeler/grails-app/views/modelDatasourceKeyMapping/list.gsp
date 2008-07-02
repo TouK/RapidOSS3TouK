@@ -46,7 +46,7 @@
                 </table>
             </div>
             <div class="paginateButtons">
-                <g:paginate total="${ModelDatasourceKeyMapping.count()}" />
+                <g:paginate total='${ModelDatasourceKeyMapping.countHits("id:*")}' />
             </div>
         </div>
     </body>

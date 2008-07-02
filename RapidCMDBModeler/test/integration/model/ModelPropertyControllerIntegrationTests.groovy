@@ -1,6 +1,7 @@
 package model
 
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -30,16 +31,16 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     static transactional = false;
      void setUp() {
         super.setUp();
-        ModelProperty.list()*.delete(flush:true);
-        ModelDatasource.list()*.delete(flush:true);
-        Model.list()*.delete(flush:true);
-        DatasourceName.list()*.delete(flush:true);
+        ModelProperty.list()*.remove();
+        ModelDatasource.list()*.remove();
+        Model.list()*.remove();
+        DatasourceName.list()*.remove();
     }
 
     void testSuccessfulSave(){
-        def model = new Model(name: "Customer").save();
-        def rcmdb = new DatasourceName(name: "RCMDB").save();
-        def ds1 = new DatasourceName(name: "ds1").save();
+        def model = Model.add(name: "Customer");
+        def rcmdb = DatasourceName.add(name: RapidCMDBConstants.RCMDB);
+        def ds1 = DatasourceName.add(name: "ds1");
         def mpc = new ModelPropertyController();
         mpc.params["datasource.id"] = "" + rcmdb.id;
         mpc.params["model.id"] = "" + model.id;
@@ -60,9 +61,6 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(model.id, modelProp.model?.id);
         assertEquals(rcmdbModelDatasource.id, modelProp.propertyDatasource?.id);
         
-        rcmdbModelDatasource.master = true;
-        rcmdbModelDatasource.save();
-
         mpc = new ModelPropertyController();
         resetController(mpc);
         mpc.params["datasource.id"] = "" + ds1.id;

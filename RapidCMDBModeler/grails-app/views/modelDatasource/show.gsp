@@ -35,12 +35,6 @@
 
                 </tr>
 
-                <tr class="prop">
-                    <td valign="top" class="name">Master:</td>
-
-                    <td valign="top" class="value">${modelDatasource.master}</td>
-
-                </tr>
             </tbody>
         </table>
     </div>

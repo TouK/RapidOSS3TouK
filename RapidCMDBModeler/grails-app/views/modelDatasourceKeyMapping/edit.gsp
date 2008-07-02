@@ -59,14 +59,14 @@
                                     def modelPropertyMap = [:];
                                     if(mdl)
                                     {
-                                       modelPropertyList = ModelProperty.findAllByModel(mdl);
+                                       modelPropertyList = mdl.modelProperties;
                                     }
                                     for(modelProp in modelPropertyList){
                                         modelPropertyMap.put(modelProp.name, modelProp);
                                     }
-                                    def tempModel = mdl.parentModel;
+                                    def tempModel = mdl?.parentModel;
                                     while(tempModel != null){
-                                        def parentModelProperties = ModelProperty.findAllByModel(tempModel);
+                                        def parentModelProperties = tempModel.modelProperties;
                                         for(prop in parentModelProperties){
                                             if(!modelPropertyMap.containsKey(prop.name)){
                                                 modelPropertyMap.put(prop.name, prop);
@@ -78,7 +78,7 @@
                                     }
                                 }
                                 else {
-                                    modelPropertyList = ModelProperty.findAllByModel(modelDatasourceKeyMapping?.datasource?.model);
+                                    modelPropertyList = modelDatasourceKeyMapping?.datasource?.model.modelProperties
                                 }
                             %>
 

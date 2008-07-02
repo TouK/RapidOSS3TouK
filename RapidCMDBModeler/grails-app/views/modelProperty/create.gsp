@@ -10,7 +10,7 @@
     <%
         if (params["model.id"] != null) {
     %>
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + params["model.id"])}">${Model.get(params["model.id"])?.name}</a></span>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + params["model.id"])}">${Model.get(id:params["model.id"])?.name}</a></span>
     <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
     <%
         }
@@ -50,14 +50,14 @@
                     <%
                         def modelPropertyList;
                         if (params["model.id"] != null) {
-                            def mdl = Model.get(params["model.id"]);
+                            def mdl = Model.get(id:params["model.id"]);
                             if(!mdl)
                             {
                                 modelPropertyList = [];
                             }
                             else
                             {
-                                modelPropertyList = ModelProperty.findAllByModel(mdl);    
+                                modelPropertyList = mdl.modelProperties;    
                             }
                             def modelPropertyMap = [:];
                             def modelDatasourceMap = [:];
@@ -65,9 +65,9 @@
                             for(modelProp in modelPropertyList){
                                 modelPropertyMap.put(modelProp.name, modelProp);
                             }
-                            def tempModel = mdl.parentModel;
+                            def tempModel = mdl?.parentModel;
                             while(tempModel != null){
-                                def parentModelProperties = ModelProperty.findAllByModel(tempModel);
+                                def parentModelProperties = tempModel.modelProperties;
                                 for(prop in parentModelProperties){
                                     if(!modelPropertyMap.containsKey(prop.name)){
                                         modelPropertyMap.put(prop.name, prop);

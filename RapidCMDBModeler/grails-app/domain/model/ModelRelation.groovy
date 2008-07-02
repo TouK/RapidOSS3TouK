@@ -3,6 +3,7 @@ package model
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class ModelRelation {
+     static searchable = true;
      public static String ONE = "One";
      public static String MANY = "Many";
      Model firstModel;
@@ -12,10 +13,11 @@ class ModelRelation {
      String firstCardinality;
      String secondCardinality;
      static belongsTo=[firstModel:Model, secondModel:Model];
+    static mappedBy = [firstModel:'fromRelations', secondModel:'toRelations']
      static constraints = {
          firstCardinality(inList:[ONE, MANY]);
          secondCardinality(inList:[ONE, MANY]);
-         firstName(blank:false, unique:'firstModel', validator:{val, obj ->
+         firstName(blank:false, key:['firstModel', 'secondName','secondModel'], validator:{val, obj ->
             if(!val.matches(ConfigurationHolder.config.toProperties()["rapidcmdb.property.validname"])){
                 return ['modelrelation.name.not.match'];
             }
@@ -25,7 +27,7 @@ class ModelRelation {
                 return ['modelrelation.name.invalid'];
             }
         });
-        secondName(blank:false, unique:'secondModel', validator:{val, obj ->
+        secondName(blank:false, validator:{val, obj ->
             if(!val.matches(ConfigurationHolder.config.toProperties()["rapidcmdb.property.validname"])){
                 return ['modelrelation.name.not.match'];
             }
@@ -40,19 +42,4 @@ class ModelRelation {
      String toString(){
          return "$firstName";
      }
-     
-     def xml(){
-		def relation = {
-			relation{
-				firstModel(firstModel.name)
-				secondModel(secondModel.name)
-				firstName(firstName)
-				secondName(secondName)
-				firstCardinality(firstCardinality)
-				secondCardinality(secondCardinality)
-			}
-		}
-		
-		return relation;
-     }     
 }

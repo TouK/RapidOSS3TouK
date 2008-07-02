@@ -11,12 +11,12 @@
     <%
         if (params["firstModel.id"]) {
     %>
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + params["firstModel.id"])}">${Model.get(params["firstModel.id"])?.name}</a></span>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + params["firstModel.id"])}">${Model.get(id:params["firstModel.id"])?.name}</a></span>
     <%
         }
         else {
     %>
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelId)}">${Model.get(modelId)?.name}</a></span>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelId)}">${Model.get(id:modelId)?.name}</a></span>
     <%
         }
     %>

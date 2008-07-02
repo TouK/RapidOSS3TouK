@@ -1,8 +1,12 @@
 package model;
 class DatasourceName {
+     static searchable = true;
+     static cascaded = [modelDatasources:true]
+     static hasMany = [modelDatasources: ModelDatasource];
+     static mappedBy = [modelDatasources:'datasource']     
      String name;
      static constraints = {
-         name(blank:false, nullable:false, unique:true);
+         name(blank:false, nullable:false, key:[]);
      };
 
      String toString(){

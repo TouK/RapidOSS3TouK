@@ -3,7 +3,7 @@
        <%
        model.datasources.each{datasource->
        %>
-       <Datasource name="${datasource.datasource.name}" master="${datasource.master}">
+       <Datasource name="${datasource.datasource.name}">
            <Keys>
                <%
                datasource.keyMappings.each{keyMapping->

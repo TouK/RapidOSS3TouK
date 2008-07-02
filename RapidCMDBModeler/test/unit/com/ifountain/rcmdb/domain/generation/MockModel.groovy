@@ -13,29 +13,15 @@ class MockModel extends Model
 {
     def static childModels;
 
-    Set datasources = Collections.emptySet();
-    Set modelProperties = Collections.emptySet()
-    Set fromRelations = Collections.emptySet();
-    Set toRelations = Collections.emptySet();
-    def getModelFile()
+    Set datasources;
+    Set modelProperties
+    Set fromRelations;
+    Set toRelations;
+    public MockModel()
     {
-        return new File("../testoutput/${name}.groovy");
+        datasources = Collections.emptySet();
+        modelProperties = Collections.emptySet()
+        fromRelations = Collections.emptySet();
+        toRelations = Collections.emptySet();
     }
-
-    def getControllerFile()
-    {
-        return new File("../testoutput/${name}Controller.groovy");
-    }
-
-    def getOperationsFile()
-    {
-        return new File("../testoutput/${name}${ModelGenerationUtils.OPERATIONS_CLASS_EXTENSION}.groovy");
-    }
-
-    def save()
-    {
-        numberOfSaveCalls++;
-    }
-
-
 }

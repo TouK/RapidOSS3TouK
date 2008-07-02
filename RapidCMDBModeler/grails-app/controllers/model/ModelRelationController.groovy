@@ -1,10 +1,26 @@
 package model;
-
+import com.ifountain.rcmdb.domain.util.ControllerUtils;
 class ModelRelationController {
-    def scaffold = ModelRelation;
+    def list = {
+        if(!params.max) params.max = 10
+        [ modelRelationList: ModelRelation.list( params ) ]
+    }
+
+    def edit = {
+        def modelRelation = ModelRelation.get( [id:params.id] )
+
+        if(!modelRelation) {
+            flash.message = "ModelRelation not found with id \${params.id}"
+            redirect(action:list)
+        }
+        else {
+            return [ modelRelation : modelRelation ]
+        }
+    }
+
 
      def show = {
-        def modelRelation = ModelRelation.get(params.id)
+        def modelRelation = ModelRelation.get(id:params.id)
         if (!modelRelation) {
             flash.message = "ModelRelation not found with id ${params.id}"
             redirect(action: list)
@@ -18,8 +34,8 @@ class ModelRelationController {
             params["firstCardinality"] = cardinalities[0];
             params["secondCardinality"] = cardinalities[1];
         }
-        def modelRelation = new ModelRelation(params)
-        if(!modelRelation.hasErrors() && modelRelation.save()) {
+        def modelRelation = ModelRelation.add(ControllerUtils.getClassProperties(params, ModelRelation))
+        if(!modelRelation.hasErrors()) {
             flash.message = "Relation created"
             redirect(action:show,controller:'model', id:modelRelation.firstModel?.id)
         }
@@ -34,7 +50,7 @@ class ModelRelationController {
             params["firstCardinality"] = cardinalities[0];
             params["secondCardinality"] = cardinalities[1];
         }
-        def modelRelation = ModelRelation.get( params.id )
+        def modelRelation = ModelRelation.get( id:params.id )
         if(modelRelation) {
             def isReverse = false;
             def redirectModelId = modelRelation.firstModel?.id;
@@ -45,8 +61,8 @@ class ModelRelationController {
                 redirectModelId = modelRelation.secondModel?.id;
 
             }
-            modelRelation.properties = params
-            if(!modelRelation.hasErrors() && modelRelation.save()) {
+            modelRelation.update(ControllerUtils.getClassProperties(params, ModelRelation));
+            if(!modelRelation.hasErrors()) {
                 flash.message = "ModelRelation ${params.id} updated"
                 redirect(action:show,controller:'model', id:redirectModelId)
             }
@@ -61,11 +77,11 @@ class ModelRelationController {
     }
 
     def delete = {
-        def modelRelation = ModelRelation.get( params.id )
+        def modelRelation = ModelRelation.get( id:params.id )
         if(modelRelation) {
             def modelId = modelRelation.firstModel?.id;
             try{
-                modelRelation.delete(flush:true)
+                modelRelation.remove()
                 flash.message = "Relation deleted"
                 redirect(action:show, controller:'model', id:modelId)
             }

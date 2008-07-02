@@ -202,11 +202,7 @@
 
                                 def mdDatasourceSortLinkParams = ['modelDatasourceSortProp': 'datasource',
                                         'modelDatasourceSortOrder': modelDatasourceSortProp == 'datasource' && modelDatasourceSortOrder == 'asc' ? 'desc' : 'asc'];
-                                def mdMasterSortLinkParams = ['modelDatasourceSortProp': 'master',
-                                        'modelDatasourceSortOrder': modelDatasourceSortProp == 'master' && modelDatasourceSortOrder == 'asc' ? 'desc' : 'asc'];
-
                                 mdDatasourceSortLinkParams.putAll(modelDatasourceSortLinkParams);
-                                mdMasterSortLinkParams.putAll(modelDatasourceSortLinkParams);
                             %>
                             <table><br>
                                 <thead>
@@ -214,66 +210,12 @@
                                         <th class="${modelDatasourceSortProp == 'datasource' ? 'sorted ' + modelDatasourceSortOrder : ''}">
                                             <g:link action="show" id="${model.id}" params="${mdDatasourceSortLinkParams}">Datasource</g:link>
                                         </th>
-                                        <th class="${modelDatasourceSortProp == 'master' ? 'sorted ' + modelDatasourceSortOrder : ''}">
-                                            <g:link action="show" id="${model.id}" params="${mdMasterSortLinkParams}">Master</g:link>
-                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <g:each in="${modelDatasourceList}" status="i" var="modelDatasource">
                                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                             <td><g:link action="show" controller="modelDatasource" id="${modelDatasource.id}">${modelDatasource.datasource?.encodeAsHTML()}</g:link></td>
-                                            <td>${modelDatasource.master?.encodeAsHTML()}</td>
-                                        </tr>
-                                    </g:each>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div style="margin-top:20px;">
-            <table style="width:900;">
-                <tr>
-                    <td>
-                        <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Operation List</span>
-                        <div class="list">
-                            <%
-                                def modelOperationList = model.getOperations().sort {p1, p2 ->
-                                    def val1 = p1."${modelDatasourceSortProp}".toString();
-                                    def val2 = p2."${modelDatasourceSortProp}".toString();
-                                    return modelDatasourceSortOrder == "asc" ? (val2 < val1 ? 1 : -1) : (val2 > val1 ? 1 : -1);
-                                }
-                                def modelOperationSortLinkParams = [
-                                        'modelPropertySortProp': modelPropertySortProp, 'modelPropertySortOrder': modelPropertySortOrder,
-                                        'modelRelationSortProp': modelRelationSortProp, 'modelRelationSortOrder': modelRelationSortOrder,
-                                        'modelDatasourceSortProp': modelDatasourceSortProp, 'modelDatasourceSortOrder': modelDatasourceSortOrder
-                                ];
-
-                                def moNameSortLinkParams = ['modelOperationSortProp': 'name',
-                                        'modelOperationSortOrder': modelOperationSortProp == 'name' && modelOperationSortOrder == 'asc' ? 'desc' : 'asc'];
-                                def moDescriptionSortLinkParams = ['modelOperationSortProp': 'description',
-                                        'modelOperationSortOrder': modelOperationSortProp == 'description' && modelOperationSortOrder == 'asc' ? 'desc' : 'asc'];
-                                moNameSortLinkParams.putAll(modelOperationSortLinkParams);
-                                moDescriptionSortLinkParams.putAll(modelOperationSortLinkParams);
-                            %>
-                            <table><br>
-                                <thead>
-                                    <tr>
-                                        <th class="${modelOperationSortProp == 'name' ? 'sorted ' + modelOperationSortOrder : ''}">
-                                            <g:link action="show" id="${model.id}" params="${moNameSortLinkParams}">Name</g:link>
-                                        </th>
-                                        <th class="${modelOperationSortProp == 'description' ? 'sorted ' + modelOperationSortOrder : ''}">
-                                            <g:link action="show" id="${model.id}" params="${moDescriptionSortLinkParams}">Name</g:link>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <g:each in="${modelOperationList}" status="i" var="operation">
-                                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                            <td>${operation.name?.encodeAsHTML()}</td>
-                                            <td>${operation.description?.encodeAsHTML()}</td>
                                         </tr>
                                     </g:each>
                                 </tbody>
@@ -289,22 +231,6 @@
                 <input type="hidden" name="id" value="${model?.id}"/>
                 <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
                 <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
-                <span class="button">
-                    <%
-                        if (!model.isGenerated()) {
-                    %>
-                    <g:actionSubmit class="generate" onclick="return confirm('Are you sure?');" value="Generate"/>
-                    <%
-                        }
-                        else
-                        {
-                    %>
-                    <g:actionSubmit class="generate" onclick="return confirm('Model already exists. All of the changes will be lost. Are you sure?');" value="Generate"/>
-                    <%
-                        }
-                    %>
-                </span>
-                <span class="button"><g:actionSubmit class="refresh" value="ReloadOperations"/></span>
             </g:form>
         </div>
     </div>

@@ -6,6 +6,7 @@ import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import com.ifountain.rcmdb.domain.generation.ModelGenerationUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -49,7 +50,7 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
             Model.list().each{
                 try
                 {
-                    it.delete(flush:true);
+                    it.remove();
                 }catch(t)
                 {
                     lastException = t;
@@ -59,7 +60,7 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
             if(deletedAllModels) break;
         }
         if(!deletedAllModels) throw lastException;
-        DatasourceName.list()*.delete(flush: true);
+        DatasourceName.list()*.remove();
         generatedModelDir = ConfigurationHolder.config.toProperties()["rapidCMDB.temp.dir"];
     }
 
@@ -100,8 +101,7 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         fail("Failing while running with alltests");
         Model parentModel = createSimpleModel(modelName);
         Model childModel = createSimpleModel(modelName2);
-        childModel.parentModel = parentModel;
-        childModel = childModel.save(flush:true);
+        childModel.addRelation(parentModel:parentModel);
         def mdc = new ModelController();
         mdc.params["id"] = parentModel.id;
         mdc.delete();
@@ -123,8 +123,7 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
     void testPrintsExceptionIfMasterDatasourceDoesnotExist() {
         fail("Failing while running with alltests");
-        def model = new Model(name: "Model1");
-        model.save();
+        def model = Model.add(name: "Model1");
 
         def mdc = new ModelController();
         mdc.generate();
@@ -133,21 +132,12 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     private Model createSimpleModel(String modelName) {
-        def datasourceName = new DatasourceName(name: "${modelName}ds1");
-        datasourceName.save(flush:true);
-        def model = new Model(name: modelName);
-        model.save(flush:true);
-        def modelDs = new ModelDatasource(datasource: datasourceName, master: true, model: model)
-        modelDs.save(flush:true);
-        modelDs.refresh();
-        def modelProp = new ModelProperty(name: "prop1", type: ModelProperty.stringType, defaultValue: "defaultValue", datasource: modelDs, model: model)
-        modelProp.save(flush:true);
-        modelProp.refresh();
-        def keyMapping = new ModelDatasourceKeyMapping(property: modelProp, nameInDatasource: "Prop1", datasource:modelDs)
-        keyMapping.save(flush:true);
-        modelDs.addToKeyMappings(keyMapping);
-        model.refresh();
-        println "DSS:"+model.datasources.keyMappings
-        return model;
+        def datasourceName = DatasourceName.add(name: RapidCMDBConstants.RCMDB);
+        def model = Model.add(name: modelName);
+        def modelDs = ModelDatasource.add(datasource: datasourceName, model: model)
+        def modelProp = ModelProperty.add(name: "prop1", type: ModelProperty.stringType, defaultValue: "defaultValue", datasource: modelDs, model: model)
+        def keyMapping = ModelDatasourceKeyMapping.add(property: modelProp, nameInDatasource: "Prop1", datasource:modelDs)
+        modelDs.addRelation(keyMappings:keyMapping);
+        return Model.get(name:modelName);
     }
 }

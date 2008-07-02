@@ -2,8 +2,10 @@ package model
 
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 class ModelProperty {
+    static searchable = true;
     def static final String stringType = "string";
     def static final String numberType = "number";
     def static final String dateType = "date";
@@ -11,7 +13,7 @@ class ModelProperty {
     String name;
     String type;
     boolean blank = true;
-    String defaultValue = "";
+    String defaultValue;
     ModelDatasource propertyDatasource;
     ModelProperty propertySpecifyingDatasource;
     String nameInDatasource;
@@ -19,9 +21,10 @@ class ModelProperty {
     boolean lazy = true;
 
     static belongsTo = Model;
-
+    static hasMany = [mappedKeys:ModelDatasourceKeyMapping]
+    static mappedBy = [model:'modelProperties', mappedKeys:"property"]
     static constraints = {
-        name(blank:false, unique:'model', validator:{val, obj ->
+        name(blank:false, key:['model'], validator:{val, obj ->
             if(!val.matches(ConfigurationHolder.config.toProperties()["rapidcmdb.property.validname"])){
                 return ['modelproperty.name.not.match', obj.model.name];
             }
@@ -33,7 +36,7 @@ class ModelProperty {
         });
         nameInDatasource(nullable:true);
         propertyDatasource(nullable:true);
-        defaultValue(validator:{val, obj ->
+        defaultValue(nullable:true, validator:{val, obj ->
             if(val)
             {
                 if(obj.type == numberType)
@@ -78,7 +81,7 @@ class ModelProperty {
         propertySpecifyingDatasource(nullable:true);
         type(inList:[stringType, numberType, dateType, floatType]);
         lazy(validator:{val, obj ->
-            if(val && obj.propertyDatasource != null && obj.propertyDatasource.master){
+            if(val && obj.propertyDatasource != null && obj.propertyDatasource.datasource.name == RapidCMDBConstants.RCMDB){
                 return ["model.invalid.lazy"]       
             }
         })
@@ -86,10 +89,19 @@ class ModelProperty {
         blank(validator:{val, obj ->
              if(val){
                  def isValid = true;
-                 if(ModelProperty.findByNameAndModel(obj.name, obj.model))
+                 def props = ModelProperty.findByName(obj.name);
+                 ModelProperty existingProp = null;
+                 props.each{
+                     if(it.model.id == obj.model.id)
+                     {
+                        existingProp = it;
+                         return;
+                     }
+                 }
+                 if(existingProp)
                  {
-                     ModelDatasourceKeyMapping.findAllByProperty(obj).each{
-                         if(it.datasource.master){
+                     existingProp.mappedKeys.each{
+                         if(it.datasource.datasource.name == RapidCMDBConstants.RCMDB){
                              isValid = false;
                          }
                      }
@@ -129,26 +141,5 @@ class ModelProperty {
     
     String toString(){
         return "$name";
-    }
-
-    def xml(){
-       	def property = {
-        		property{
-    			name(name)
-    			type(type)
-    			blank(blank)
-    			defaultValue(defaultValue)
-    			def datasourceName = null;
-    			if(propertyDatasource != null) datasourceName = propertyDatasource.datasource.name;
-    			datasource(datasourceName)
-    			def propertyNameSpecifyingDatasource = null;
-    			if(propertySpecifyingDatasource != null) propertyNameSpecifyingDatasource = propertySpecifyingDatasource.name;
-    			propertySpecifyingDatasource(propertyNameSpecifyingDatasource)
-    			nameInDatasource(nameInDatasource)
-    			lazy(lazy)
-    		}
-    	}
-
-    	return property;
     }
 }

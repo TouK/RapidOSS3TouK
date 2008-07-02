@@ -17,7 +17,7 @@
 
     static hasMany = ${!model.hasMany.isEmpty()?model.hasMany.toString().replaceAll('\\{', '\\[').replaceAll('\\}', '\\]').replaceAll('=', ':'):'[:]'}
     <%
-        if(model.model.parentModel == null){
+        if(model.parentModelName == null){
     %>
         static mapping = {
             tablePerHierarchy false

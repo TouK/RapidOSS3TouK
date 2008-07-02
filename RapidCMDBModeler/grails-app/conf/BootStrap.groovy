@@ -62,9 +62,7 @@ class BootStrap {
     
     def registerDefaultDatasourceNames()
     {
-        if(DatasourceName.findByName(RapidCMDBConstants.RCMDB) == null){
-            new DatasourceName(name: RapidCMDBConstants.RCMDB).save();
-        }
+        DatasourceName.add(name: RapidCMDBConstants.RCMDB)
     }
 
     def registerDefaultConverters()

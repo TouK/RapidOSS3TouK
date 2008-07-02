@@ -10,7 +10,7 @@
     <%
         if (params["model.id"] != null) {
     %>
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + params["model.id"])}">${Model.get(params["model.id"])?.name}</a></span>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + params["model.id"])}">${Model.get(id:params["model.id"])?.name}</a></span>
     <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
     <%
         }
@@ -31,7 +31,6 @@
     <p>Every property of the modeled class is retrieved from a datasource. There is always one master datasource for CRUD operations. Therefore id properties are defined for the master datasource. A modeled class may use multiple datasources and for each datasource, keys are listed, mapping properties to datasource fields. This defines how the datasource will be queried using the attributes of the modeled class.</p>
     <ul>
         <li><b>Datasource:</b>&nbsp; Name of the datasource instance as defined in the admin UI Datasources tab.</li>
-        <li><b>Master:</b> true/false. Default value is <b>false</b>. Declares which datasource will be used for CRUD operations.</li>
         <li><b>Model:</b> Preselected. No need to change.</li>
     </ul>
 
@@ -46,15 +45,6 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelDatasource, field: 'datasource', 'errors')}">
                             <g:select class="inputtextfield" optionKey="id" from="${DatasourceName.list()}" name="datasource.id" value="${modelDatasource?.datasource?.id}"></g:select>
-                        </td>
-                    </tr>
-
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="master">Master:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: modelDatasource, field: 'master', 'errors')}">
-                            <g:checkBox name="master" value="${modelDatasource?.master}"></g:checkBox>
                         </td>
                     </tr>
 

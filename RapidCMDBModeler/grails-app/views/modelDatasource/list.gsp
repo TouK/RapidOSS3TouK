@@ -22,7 +22,6 @@
                         <tr>
                         
                    	        <g:sortableColumn property="datasource" title="Datasource"/>
-                   	        <g:sortableColumn property="master" title="Master" />
                    	        <th>Model</th>
                    	    
                         </tr>
@@ -33,8 +32,6 @@
                         
                             <td><g:link action="show" id="${modelDatasource.id}">${modelDatasource.datasource?.encodeAsHTML()}</g:link></td>
                         
-                            <td>${modelDatasource.master?.encodeAsHTML()}</td>
-                        
                             <td>${modelDatasource.model?.encodeAsHTML()}</td>
                         
                         </tr>
@@ -43,7 +40,7 @@
                 </table>
             </div>
             <div class="paginateButtons">
-                <g:paginate total="${ModelDatasource.count()}" />
+                <g:paginate total='${ModelDatasource.countHits("id:*")}' />
             </div>
         </div>
     </body>

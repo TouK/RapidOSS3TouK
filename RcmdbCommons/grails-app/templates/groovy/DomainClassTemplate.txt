@@ -1,0 +1,11 @@
+<%
+DEFAULT_IMPORTS.each{
+%>
+import ${it};
+<%
+}
+%>
+class ${model.modelName} ${model.parentModelName == null?"":"extends "+model.parentModelName}
+{
+    ${AUTO_GENERATED_CODE}
+}

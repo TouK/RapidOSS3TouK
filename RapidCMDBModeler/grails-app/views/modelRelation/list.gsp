@@ -47,7 +47,7 @@
                 </table>
             </div>
             <div class="paginateButtons">
-                <g:paginate total="${ModelRelation.count()}" />
+                <g:paginate total='${ModelRelation.countHits("id:*")}' />
             </div>
         </div>
     </body>

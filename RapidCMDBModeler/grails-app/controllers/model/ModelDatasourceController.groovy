@@ -1,12 +1,33 @@
 package model;
-
+import com.ifountain.rcmdb.domain.util.ControllerUtils;
 class ModelDatasourceController {
 
-    def scaffold = ModelDatasource;
+    def list = {
+        if(!params.max) params.max = 10
+        [ modelDatasourceList: ModelDatasource.list( params ) ]
+    }
+
+    def edit = {
+        def modelDatasource = ModelDatasource.get( [id:params.id] )
+
+        if(!modelDatasource) {
+            flash.message = "ModelDatasource not found with id \${params.id}"
+            redirect(action:list)
+        }
+        else {
+            return [ modelDatasource : modelDatasource ]
+        }
+    }
+
+    def create = {
+        def modelDatasource = new ModelDatasource()
+        modelDatasource.properties = params
+        return ['modelDatasource':modelDatasource]
+    }
     def show = {
         def keyMappingSortProp = params.keyMappingSortProp != null ? params.keyMappingSortProp : "property"
         def keyMappingSortOrder = params.keyMappingSortOrder != null ? params.keyMappingSortOrder : "asc"
-        def modelDatasource = ModelDatasource.get(params.id)
+        def modelDatasource = ModelDatasource.get(id:params.id)
         if (!modelDatasource) {
             flash.message = "ModelDatasource not found with id ${params.id}"
             redirect(action: list)
@@ -16,8 +37,8 @@ class ModelDatasourceController {
 
 
     def save = {
-        def modelDatasource = new ModelDatasource(params);
-        if(!modelDatasource.hasErrors() && modelDatasource.save()) {
+        def modelDatasource = ModelDatasource.add(ControllerUtils.getClassProperties(params, ModelDatasource));
+        if(!modelDatasource.hasErrors()) {
             flash.message = "ModelDatasource ${modelDatasource} created"
             redirect(action:"show", controller:'model', id:_getModelId(modelDatasource))
         }
@@ -27,12 +48,12 @@ class ModelDatasourceController {
     }
 
     def delete = {
-        def modelDatasource = ModelDatasource.get( params.id )
+        def modelDatasource = ModelDatasource.get( id:params.id )
         if(modelDatasource) {
             def modelId = _getModelId(modelDatasource);
             def modelDatasourceName = modelDatasource.toString();
             try{
-                modelDatasource.delete(flush:true)
+                modelDatasource.remove()
                 flash.message = "ModelDatasource ${modelDatasourceName} deleted"
                 redirect(action:"show", controller:'model', id:modelId)
             }
@@ -50,10 +71,10 @@ class ModelDatasourceController {
     }
 
     def update = {
-        def modelDatasource = ModelDatasource.get( params.id )
+        def modelDatasource = ModelDatasource.get( id:params.id )
         if(modelDatasource) {
-            modelDatasource.properties = params
-            if(!modelDatasource.hasErrors() && modelDatasource.save()) {
+            modelDatasource.update(ControllerUtils.getClassProperties(params, ModelDatasource));
+            if(!modelDatasource.hasErrors()) {
                 flash.message = "ModelDatasource ${modelDatasource} updated"
                 redirect(action:"show",controller:'model', id:_getModelId(modelDatasource))
             }

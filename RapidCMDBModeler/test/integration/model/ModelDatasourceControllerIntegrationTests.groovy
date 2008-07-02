@@ -32,9 +32,9 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
     static transactional = false;
     void setUp() {
         super.setUp();
-        ModelDatasource.list()*.delete(flush:true)
-        Model.list()*.delete(flush:true)
-        DatasourceName.list()*.delete(flush:true)
+        ModelDatasource.list()*.remove()
+        Model.list()*.remove()
+        DatasourceName.list()*.remove()
     }
     void testSaveWithSaveIsNotSuccessful() {
         def mdc = new ModelDatasourceController();
@@ -54,18 +54,16 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
         model.validate();
         println "model errors: " + model.errors;
         model.save();
-        def datasource = new DatasourceName(name: "RCMDB").save();
+        def datasource = DatasourceName.add(name: "RCMDB");
         def mdc = new ModelDatasourceController();
         mdc.params["datasource.id"] = datasource.id;
         mdc.params["model.id"] = model.id;
-        mdc.params["master"] = "true";
         mdc.save();
         def modelDatasources = ModelDatasource.list();
         assertEquals(1, modelDatasources.size());
         def modelDatasource = modelDatasources[0];
         assertEquals(datasource.id, modelDatasource.datasource.id);
         assertEquals(model.id, modelDatasource.model.id);
-        assertTrue(modelDatasource.master);
         assertEquals("/model/show/" + model.id, mdc.response.redirectedUrl);
         assertEquals("ModelDatasource ${modelDatasource} created", mdc.flash.message);
     }
@@ -79,12 +77,11 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
     }
 
     void testSuccessfullDelete(){
-        def model = new Model(name: "Customer").save(flush:true);
-        def datasource = new DatasourceName(name: "RCMDB").save();
+        def model = Model.add(name: "Customer")
+        def datasource = DatasourceName.add(name: "RCMDB");
         def mdc = new ModelDatasourceController();
         mdc.params["datasource.id"] = datasource.id;
         mdc.params["model.id"] = model.id;
-        mdc.params["master"] = "true";
         mdc.save();
         def modelDatasources = ModelDatasource.list();
         assertEquals(1, modelDatasources.size());

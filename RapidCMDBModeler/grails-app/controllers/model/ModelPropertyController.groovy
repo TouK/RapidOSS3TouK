@@ -1,13 +1,34 @@
 package model
 
 import com.ifountain.rcmdb.util.RapidCMDBConstants
-
+import com.ifountain.rcmdb.domain.util.ControllerUtils;
 class ModelPropertyController {
 
-    def scaffold = ModelProperty;
+    def list = {
+        if(!params.max) params.max = 10
+        [ modelPropertyList: ModelProperty.list( params ) ]
+    }
+
+    def edit = {
+        def modelProperty = ModelProperty.get( [id:params.id] )
+
+        if(!modelProperty) {
+            flash.message = "ModelProperty not found with id \${params.id}"
+            redirect(action:list)
+        }
+        else {
+            return [ modelProperty : modelProperty ]
+        }
+    }
+
+    def create = {
+        def modelProperty = new ModelProperty()
+        modelProperty.properties = params
+        return ['modelProperty':modelProperty]
+    }
 
     def show = {
-        def modelProperty = ModelProperty.get(params.id)
+        def modelProperty = ModelProperty.get(id:params.id)
         if (!modelProperty) {
             flash.message = "ModelProperty not found with id ${params.id}"
             redirect(action: list)
@@ -16,8 +37,8 @@ class ModelPropertyController {
     }
     def save = {
         if (params["datasource.id"] != null && params["datasource.id"] != "null") {
-            def datasourceName = DatasourceName.get(params["datasource.id"]);
-            def currentModel = Model.get(params["model.id"]);
+            def datasourceName = DatasourceName.get(id:params["datasource.id"]);
+            def currentModel = Model.get(id:params["model.id"]);
             def tempModel = currentModel;
             def modelDatasource = null;
             while (tempModel != null && !modelDatasource) {
@@ -35,20 +56,19 @@ class ModelPropertyController {
 
             if (!modelDatasource) {
                 def isMaster = false;
-                if (datasourceName.name == RapidCMDBConstants.RCMDB && ModelDatasource.findByModelAndMaster(currentModel, true) == null) {
+                if (datasourceName.name == RapidCMDBConstants.RCMDB ) {
                     isMaster = true;
                 }
-                modelDatasource = new ModelDatasource(model: currentModel, datasource: datasourceName, master: isMaster).save();
+                modelDatasource = ModelDatasource.add(model: currentModel, datasource: datasourceName);
             }
-            params.remove("datasource.id");
-            params["propertyDatasource.id"] = modelDatasource.id;
+            params["propertyDatasource"] = ["id":modelDatasource.id];
         }
         else
         {
-            params["propertyDatasource.id"] = "null";
+            params["propertyDatasource"] = ["id":"null"];
         }
-        def modelProperty = new ModelProperty(params)
-        if (!modelProperty.hasErrors() && modelProperty.save()) {
+        def modelProperty = ModelProperty.add(ControllerUtils.getClassProperties(params, ModelProperty))
+        if (!modelProperty.hasErrors()) {
             flash.message = "ModelProperty ${modelProperty} created"
             redirect(action: show, controller: 'model', id: modelProperty.model?.id)
         }
@@ -58,12 +78,12 @@ class ModelPropertyController {
     }
 
     def delete = {
-        def modelProperty = ModelProperty.get(params.id)
+        def modelProperty = ModelProperty.get(id:params.id)
         if (modelProperty) {
             def modelId = modelProperty.model?.id;
             def modelPropertyName = modelProperty.toString();
             try {
-                modelProperty.delete(flush: true)
+                modelProperty.remove()
                 flash.message = "Property ${modelPropertyName} deleted"
                 redirect(action: show, controller: 'model', id: modelId)
             }
@@ -80,11 +100,11 @@ class ModelPropertyController {
     }
 
     def update = {
-        def modelProperty = ModelProperty.get(params.id)
+        def modelProperty = ModelProperty.get(id:params.id)
         if (modelProperty) {
             if (params["datasource.id"] != null && params["datasource.id"] != "null") {
-                def datasourceName = DatasourceName.get(params["datasource.id"]);
-                def currentModel = Model.get(params["model.id"]);
+                def datasourceName = DatasourceName.get(id:params["datasource.id"]);
+                def currentModel = Model.get(id:params["model.id"]);
                 def tempModel = currentModel;
                 def modelDatasource = null;
                 while (tempModel != null && !modelDatasource) {
@@ -102,20 +122,19 @@ class ModelPropertyController {
 
                 if (!modelDatasource) {
                     def isMaster = false;
-                    if (datasourceName.name == RapidCMDBConstants.RCMDB && ModelDatasource.findByModelAndMaster(currentModel, true) == null) {
+                    if (datasourceName.name == RapidCMDBConstants.RCMDB) {
                         isMaster = true;
                     }
-                    modelDatasource = new ModelDatasource(model: currentModel, datasource: datasourceName, master: isMaster).save();
+                    modelDatasource = ModelDatasource.add(model: currentModel, datasource: datasourceName);
                 }
-                params.remove("datasource.id");
-                params["propertyDatasource.id"] = modelDatasource.id;
+                params["propertyDatasource"] = ["id":modelDatasource.id];
             }
             else
             {
-                params["propertyDatasource.id"] = "null";
+                params["propertyDatasource"] = ["id":"null"];
             }
-            modelProperty.properties = params
-            if (!modelProperty.hasErrors() && modelProperty.save()) {
+            modelProperty.update(ControllerUtils.getClassProperties(params, ModelProperty));
+            if (!modelProperty.hasErrors()) {
                 flash.message = "ModelProperty ${modelProperty} updated"
                 redirect(action: "show", controller: 'model', id: _getModelId(modelProperty))
             }

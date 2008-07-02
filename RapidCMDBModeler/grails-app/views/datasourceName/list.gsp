@@ -41,7 +41,7 @@
                 </table>
             </div>
             <div class="paginateButtons">
-                <g:paginate total="${DatasourceName.count()}" />
+                <g:paginate total='${DatasourceName.countHits("id:*")}' />
             </div>
         </div>
     </body>

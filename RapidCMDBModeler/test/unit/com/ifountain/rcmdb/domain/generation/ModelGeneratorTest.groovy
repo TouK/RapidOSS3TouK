@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.validation.ConstrainedPropertyBuilder
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -36,53 +37,30 @@ import org.codehaus.groovy.grails.validation.ConstrainedPropertyBuilder
  */
 class ModelGeneratorTest extends RapidCmdbTestCase{
     def static base_directory = "../testoutput/";
-    def  modelRelations;
-    def  reverseModelRelations;
-    def  childModels;
-    def findAllByModelMethod;
-    def findAllByFirstModelMethod;
-    def findAllBySecondModelMethod;
-    protected void setUp() {
+    protected void setUp()
+    {
         super.setUp();
         if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDBModeler"))
         {
             System.setProperty("basedir", ".")
-            ModelGenerator.getInstance().initialize (base_directory, base_directory, System.getProperty("base.dir"));
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "${System.getProperty("base.dir")}/../RcmdbCommons");
         }
         else
         {
-            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDBModeler");
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RcmdbCommons");
             System.setProperty("basedir", "RapidCMDBModeler")
         }
         FileUtils.deleteDirectory (new File(base_directory));
         new File(base_directory).mkdirs();
-        modelRelations = [:];
-        reverseModelRelations = [:];
-        childModels = [:];
-        findAllByModelMethod = Model.metaClass.'static'.&findAllByParentModel;
-        findAllByFirstModelMethod = ModelRelation.metaClass.'static'.&findAllByFirstModel;
-        findAllBySecondModelMethod = ModelRelation.metaClass.'static'.&findAllBySecondModel;
-        Model.metaClass.'static'.findAllByParentModel = {Model model->
-            return childModels[model.name];
-        }
-        ModelRelation.metaClass.'static'.findAllBySecondModel = {Model model->
-            return reverseModelRelations[model.name];
-        }
-        ModelRelation.metaClass.'static'.findAllByFirstModel = {Model model->
-            return modelRelations[model.name];
-        }
     }
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-        Model.metaClass.'static'.findByModelMethod = findAllByModelMethod;
-        Model.metaClass.'static'.findByFirstModelMethod = findAllByFirstModelMethod;
-        Model.metaClass.'static'.findBySecondModelMethod = findAllBySecondModelMethod;
     }
     private def addMasterDatasource(Model model)
     {
-        def datasource1 = new DatasourceName(name:"ds1-sample");
-        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
+        def datasource1 = new DatasourceName(name:RapidCMDBConstants.RCMDB);
+        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, model:model);
         model.datasources += modelDatasource1;
         def keyProp = new ModelProperty(name:"keyprop", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model,blank:false);
         model.modelProperties += keyProp;
@@ -92,10 +70,9 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     public void testGenerateModel()
     {
         def model = new MockModel(name:"Class1");
-        model.getControllerFile().createNewFile();
         addMasterDatasource(model);
 
-        ModelGenerator.getInstance().generateModels([model]);
+        ModelGeneratorAdapter.generateModels([model]);
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model.name).exists());
 
         Class cls = compileClass(model.name);
@@ -120,7 +97,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         def childModel = new MockModel(name:"Class1", parentModel:parentModel);
         addMasterDatasource(parentModel);
 
-        ModelGenerator.getInstance().generateModels([childModel, parentModel]);
+        ModelGeneratorAdapter.generateModels([childModel, parentModel]);
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(childModel.name).exists());
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(parentModel.name).exists());
 
@@ -146,8 +123,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             def converter = new DateConverter(dateFormatString);
             RapidConvertUtils.getInstance().register (converter, Date.class)
             def model = new MockModel(name:"Class1");
-            def datasource1 = new DatasourceName(name:"ds1-sample");
-            def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
+            def datasource1 = new DatasourceName(name:"RCMDB");
+            def modelDatasource1 = new MockModelDatasource(datasource:datasource1, model:model);
             model.datasources += modelDatasource1;
 
             def date = System.currentTimeMillis();
@@ -166,7 +143,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp1, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
             modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp2, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
 
-            ModelGenerator.getInstance().generateModels([model]);
+            ModelGeneratorAdapter.generateModels([model]);
             assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model.name).exists());
             Class cls = compileClass(model.name);
             def object = cls.newInstance();
@@ -270,9 +247,9 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         def model = new MockModel(name:"Class1");
         def datasource1 = new DatasourceName(name:"ds1-sample");
-        def datasource2 = new DatasourceName(name:"ds2");
-        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:false, model:model);
-        def modelDatasource2 = new MockModelDatasource(datasource:datasource2, master:true, model:model);
+        def datasource2 = new DatasourceName(name:RapidCMDBConstants.RCMDB);
+        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, model:model);
+        def modelDatasource2 = new MockModelDatasource(datasource:datasource2, model:model);
 
         model.datasources += modelDatasource1;
         model.datasources += modelDatasource2;
@@ -292,7 +269,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
 
 
-        ModelGenerator.getInstance().generateModels([model]);
+        ModelGeneratorAdapter.generateModels([model]);
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model.name).exists());
         Class cls = compileClass(model.name);
         def object = cls.newInstance();
@@ -312,12 +289,10 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals ("Class1[prop1:prop1Value, prop2:prop2Value]", object.toString());
 
         def dsDefinition1 = object.datasources[modelDatasource1.datasource.name];
-        assertFalse(dsDefinition1.master);
         assertEquals("Prop1KeyNameInDs", dsDefinition1.keys["prop1"].nameInDs);
         assertEquals("prop2", dsDefinition1.keys["prop2"].nameInDs);
 
         def dsDefinition2 = object.datasources[modelDatasource2.datasource.name];
-        assertTrue(dsDefinition2.master);
         assertEquals("Prop1KeyNameInDs", dsDefinition2.keys["prop1"].nameInDs);
         assertEquals("prop2", dsDefinition2.keys["prop2"].nameInDs);
 
@@ -350,12 +325,10 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     public void testGenerateModelWithRelation()
     {
         def model1 = new MockModel(name:"Class1");
-        model1.getControllerFile().createNewFile();
         addMasterDatasource(model1);
 
         model1.modelProperties += new ModelProperty(name:"prop1", type:ModelProperty.stringType, model:model1);
         def model2 = new MockModel(name:"Class2");
-        model2.getControllerFile().createNewFile();
         addMasterDatasource(model2);
 
         model2.modelProperties += new ModelProperty(name:"prop1", type:ModelProperty.stringType, model:model2);
@@ -363,12 +336,6 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         ModelRelation relation2 = new ModelRelation(firstName:"relation2", secondName:"reverseRelation2", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.MANY, firstModel:model2, secondModel:model1);
         ModelRelation relation3 = new ModelRelation(firstName:"relation3", secondName:"reverseRelation3", firstCardinality:ModelRelation.MANY, secondCardinality:ModelRelation.MANY, firstModel:model1, secondModel:model2);
         ModelRelation relation4 = new ModelRelation(firstName:"relation4", secondName:"reverseRelation4", firstCardinality:ModelRelation.MANY, secondCardinality:ModelRelation.ONE, firstModel:model1, secondModel:model2);
-
-
-        modelRelations[model1.name] = [relation1,relation3,relation4];
-        modelRelations[model2.name] = [relation2];
-        reverseModelRelations[model1.name] = [relation2];
-        reverseModelRelations[model2.name] = [relation1,relation3,relation4];
 
         model1.fromRelations += relation1;
         model2.toRelations += relation1;
@@ -384,7 +351,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
 
 
-        ModelGenerator.getInstance().generateModels([model1, model2]);
+        ModelGeneratorAdapter.generateModels([model1, model2]);
 
         Class cls = compileClass(model1.name);
         def object = cls.newInstance();
@@ -471,7 +438,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
 
         model1.parentModel = model2;
-        ModelGenerator.getInstance().generateModels([model1, model2]);
+        ModelGeneratorAdapter.generateModels([model1, model2]);
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model1.name).exists());
 
         Class cls1 = compileClass(model1.name);
@@ -492,7 +459,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         
 
-        ModelGenerator.getInstance().generateModels([model1]);
+        ModelGeneratorAdapter.generateModels([model1]);
         assertNotNull(compileClass(model1.name));
     }
 
@@ -529,7 +496,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             w.write(interfaceContent);
         }
 
-        ModelGenerator.getInstance().generateModels([model1]);
+        ModelGeneratorAdapter.generateModels([model1]);
         assertTrue (model1File.exists());
         Class cls = compileClass(model1.name);
         def object = cls.newInstance();
@@ -554,7 +521,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         def model1 = new MockModel(name:"Class2");
         try
         {
-            ModelGenerator.getInstance().generateModels([model1]);
+            ModelGeneratorAdapter.generateModels([model1]);
             fail("Should throw exception since no master records specified");
         }
         catch(ModelGenerationException exception)
@@ -566,12 +533,12 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     public void testThrowsExceptionIfKeymappingsDoesnotExistsForADatasource()
     {
         def model1 = new MockModel(name:"Class1");
-        def datasource1 = new DatasourceName(name:"ds1-sample");
-        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model1);
+        def datasource1 = new DatasourceName(name:"RCMDB");
+        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, model:model1);
         model1.datasources += modelDatasource1;
         try
         {
-            ModelGenerator.getInstance().generateModels([model1]);
+            ModelGeneratorAdapter.generateModels([model1]);
             fail("Should throw exception since no key mappings specified for datasource");
         }
         catch(ModelGenerationException exception)

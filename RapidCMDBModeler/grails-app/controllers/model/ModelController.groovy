@@ -2,13 +2,36 @@ package model
 
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import org.apache.commons.io.FileUtils;
+import com.ifountain.rcmdb.domain.util.ControllerUtils;
 class ModelController {
     def static String MODEL_DOESNOT_EXIST = "Model does not exist";
-    def scaffold = model.Model;
+
+    def list = {
+        if(!params.max) params.max = 10
+        [ modelList: Model.list( params ) ]
+    }
+
+    def edit = {
+        def model = Model.get( [id:params.id] )
+
+        if(!model) {
+            flash.message = "Model not found with id \${params.id}"
+            redirect(action:list)
+        }
+        else {
+            return [ model : model ]
+        }
+    }
+
+    def create = {
+        def model = new Model()
+        model.properties = params
+        return ['model':model]
+    }
 
     def save = {
-        def model = new Model(params)
-        if (!model.hasErrors() && model.save()) {
+        def model = Model.add(ControllerUtils.getClassProperties(params, Model))
+        if (!model.hasErrors()) {
             flash.message = "Model ${model.id} created"
             redirect(action: show, id: model.id)
         }
@@ -18,7 +41,7 @@ class ModelController {
     }
 
     def update = {
-        def model = Model.get(params.id)
+        def model = Model.get(id:params.id)
         if (model) {
             //validating parentModel, should be implemented in validator
             if (model.parentModel && (params.parentModel.id == null || params.parentModel.id == "null")) {
@@ -60,8 +83,8 @@ class ModelController {
                     return;
                 }
             }
-            model.properties = params
-            if (!model.hasErrors() && model.save()) {
+            model.update(ControllerUtils.getClassProperties(params, Model));
+            if (!model.hasErrors()) {
                 flash.message = "Model ${params.id} updated"
                 redirect(action: show, id: model.id)
             }
@@ -85,7 +108,7 @@ class ModelController {
         def modelOpertionSortProp = params.modelOpertionSortProp != null ? params.modelOpertionSortProp : "name"
         def modelOpertionSortOrder = params.modelOpertionSortOrder != null ? params.modelOpertionSortOrder : "asc"
 
-        def model = Model.get(params.id)
+        def model = Model.get(id:params.id)
         if (!model) {
             flash.message = MODEL_DOESNOT_EXIST
             redirect(action: list)
@@ -101,10 +124,10 @@ class ModelController {
     def delete = {
         if (params.id)
         {
-            def model = Model.get(params.id)
+            def model = Model.get(id:params.id)
             if (model) {
                 try {
-                    model.delete(flush: true)
+                    model.remove()
                 }
                 catch (e)
                 {
@@ -118,7 +141,7 @@ class ModelController {
                 {
                     def models = Model.list();
                     FileUtils.deleteDirectory (ModelGenerator.getInstance().getTempModelDir());
-                    ModelGenerator.getInstance().generateModels(models);
+                    com.ifountain.rcmdb.domain.generation.ModelGeneratorAdapter.generateModels(models);
                     flash.message = "Model ${params.id} deleted"
                     redirect(action: list, controller: 'model');
                 }
@@ -147,7 +170,7 @@ class ModelController {
             try
             {
                 FileUtils.deleteDirectory (ModelGenerator.getInstance().getTempModelDir());
-                ModelGenerator.getInstance().generateModels(models);
+                com.ifountain.rcmdb.domain.generation.ModelGeneratorAdapter.generateModels(models);
                 flash.message = "Models genarated successfully"
                 redirect(action: list, controller: 'model')
             }

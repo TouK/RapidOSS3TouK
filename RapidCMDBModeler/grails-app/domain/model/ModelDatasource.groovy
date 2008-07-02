@@ -1,33 +1,16 @@
 package model
 
 class ModelDatasource {
+    static searchable = true;
     DatasourceName datasource;
-    boolean master = false;
     Model model;
     static belongsTo = Model;
 
     static hasMany = [keyMappings: ModelDatasourceKeyMapping];
-
+    static mappedBy = [model:'datasources',keyMappings:'datasource',datasource:"modelDatasources"]
+    static cascaded = ["keyMappings":true]
     static constraints = {
-        datasource(unique:'model');
-        master(validator: {val, obj ->
-            if (val){
-                def isValid = true;
-                ModelDatasource.findAllByModelAndMaster(obj.model, true).each
-                {
-                    if(it.datasource.name != obj.datasource.name)
-                    {
-                        isValid = false;
-                        return;
-                    }
-                }
-                if(!isValid){
-                    return ['model.invalid.master'];
-                }
-            }
-        })
-
-        model(validator: {val, obj ->
+        model(key:["datasource"], validator: {val, obj ->
             def error = null;
             def tempModel = val.parentModel;
             while(tempModel)
@@ -48,20 +31,4 @@ class ModelDatasource {
     String toString(){
         return datasource.name;  
     }
-
-    def xml(){
-       	def datasource = {
-        	datasource{
-    			datasourceName(datasource.name)
-    			master(master )
-    			mappings(){
-    				for(keyMapping in keyMappings){
-    					out << keyMapping.xml();
-    				}
-    			}		
-    		}
-    	}
-    	
-    	return datasource;
-        }    
 }

@@ -12,7 +12,7 @@ import org.springframework.validation.Validator
 class AddMethod extends AbstractRapidDomainStaticMethod
 {
     def relations;
-    def keys;
+    GetMethod getMethod
     def fieldTypes = [:]
     Validator validator;
     public AddMethod(MetaClass mc, Validator validator, Map relations, List keys) {
@@ -23,20 +23,16 @@ class AddMethod extends AbstractRapidDomainStaticMethod
             fieldTypes[field.name] = field.type;            
         }
         this.relations = relations
-        this.keys = keys;
+        getMethod = new GetMethod(mc, keys, relations);
     }
 
     public Object invoke(Class clazz, Object[] arguments) {
         def props = arguments[0];
         def sampleBean;
-        def keysMap = [:]
-        keys.each{keyPropName->
-            keysMap[keyPropName] = props[keyPropName];
-        }
-        def existingInstances = CompassMethodInvoker.search(mc, keysMap, false);
-        if(existingInstances.total != 0)
+        def existingInstance = getMethod.invoke(clazz, [props, false] as Object[])
+        if(existingInstance != null)
         {
-            sampleBean = existingInstances.results[0];
+            sampleBean = existingInstance;
         }
         else
         {
@@ -45,6 +41,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
 
         Errors errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
         def relatedInstances = [:];
+
         props.each{key,value->
             Relation relation = relations.get(key);
             if(!relation)
@@ -77,6 +74,10 @@ class AddMethod extends AbstractRapidDomainStaticMethod
                 relatedInstances[key] = value;
             }
         }
+        if(relatedInstances.size() > 0)
+        {
+            relatedInstances = sampleBean.addRelation(relatedInstances, false);
+        }
         if(errors.hasErrors()){
             sampleBean.setProperty("errors", errors, false);
             return sampleBean;
@@ -89,7 +90,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
         }
         else
         {
-            if(existingInstances.total == 0)
+            if(existingInstance == null)
             {
                 sampleBean.setProperty("id", IdGenerator.getInstance().getNextId(), false);
                 EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
@@ -99,10 +100,13 @@ class AddMethod extends AbstractRapidDomainStaticMethod
                 EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
             }
             CompassMethodInvoker.index (mc, sampleBean);
-            if(relatedInstances.size() > 0)
-            {
-                sampleBean.addRelation(relatedInstances);
+            relatedInstances.each{instanceClass, instances->
+                if(!instances.isEmpty())
+                {
+                    CompassMethodInvoker.index (instanceClass.metaClass, instances);
+                }
             }
+
             EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.ONLOAD_EVENT);
         }
         return sampleBean;

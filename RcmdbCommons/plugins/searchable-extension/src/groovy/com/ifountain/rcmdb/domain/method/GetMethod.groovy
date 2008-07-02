@@ -25,40 +25,92 @@ package com.ifountain.rcmdb.domain.method
  * To change this template use File | Settings | File Templates.
  */
 class GetMethod extends AbstractRapidDomainStaticMethod{
-    List keys;
-    public GetMethod(MetaClass mc, List keys) {
+    List propKeys;
+    List relationKeys;
+    Map relations
+    public GetMethod(MetaClass mc, List keys, Map relations) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
-        this.keys = keys;
+        propKeys = [];
+        relationKeys = [];
+        keys.each{
+            if(relations.containsKey(it))
+            {
+                relationKeys += it;
+            }
+            else
+            {
+                propKeys += it;
+            }
+        }
+        this.relations = relations;
     }
 
     public Object invoke(Class clazz, Object[] arguments) {
         def searchParams = arguments[0];
+        def willTriggerOnLoad = true;
+        if(arguments.size() == 2 && arguments[1] == false)
+        {
+            willTriggerOnLoad = false;
+        }
         if(searchParams instanceof Map)
         {
             Map keyMap = [:];
             if(searchParams.containsKey("id"))
             {
-                keyMap["id"] = searchParams["id"];    
+                keyMap["id"] = searchParams["id"];
+                def result = CompassMethodInvoker.search (mc, keyMap, willTriggerOnLoad)
+                return result.results[0];
             }
             else
             {
-                keys.each{
+                propKeys.each{
                     keyMap[it] = searchParams[it];
                 }
+                def result = null;
+                if(keyMap.isEmpty())
+                {
+                    result = CompassMethodInvoker.search (mc, "id:[0 TO *]", willTriggerOnLoad);
+                }
+                else
+                {
+                    result = CompassMethodInvoker.search (mc, keyMap, willTriggerOnLoad)
+                }
+                if(relationKeys.isEmpty())
+                {
+                    return result.results[0];
+                }
+                else
+                {
+                    def res = null;
+                    result.results.each{foundObject->
+                        boolean isMatched = true;
+                        relationKeys.each{relName->
+                            if(searchParams[relName] == null || foundObject[relName] == null || searchParams[relName].id != foundObject[relName].id)
+                            {
+                                isMatched = false;
+                                return;
+                            }
+                        }
+                        if(isMatched)
+                        {
+                            res = foundObject;
+                            return;
+                        }
+                    }
+                    return res;
+                }
             }
-            def result = CompassMethodInvoker.search (mc, keyMap)
-            return result.results[0];
         }
         else if(searchParams instanceof String || searchParams  instanceof GString)
         {
             searchParams = searchParams.toString();
-            def result = CompassMethodInvoker.search (mc, searchParams)
+            def result = CompassMethodInvoker.search (mc, searchParams, willTriggerOnLoad)
             return result;
         }
         else if(searchParams instanceof Number)
         {
             searchParams = "id:${searchParams}".toString();
-            def result = CompassMethodInvoker.search (mc, searchParams)
+            def result = CompassMethodInvoker.search (mc, searchParams, willTriggerOnLoad)
             return result.results[0];
         }
     }

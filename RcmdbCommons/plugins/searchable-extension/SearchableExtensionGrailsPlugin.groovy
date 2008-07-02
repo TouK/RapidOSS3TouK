@@ -101,11 +101,11 @@ class SearchableExtensionGrailsPlugin {
     def addBasicPersistenceMethods(dc, application, ctx)
     {
         def mc = dc.metaClass;
-        def relations = DomainClassUtils.getRelations(dc, domainClassMap);
+        def relations = DomainClassUtils.getRelations(dc);
         dc.refreshConstraints();
         def keys = DomainClassUtils.getKeys(dc);
         def addMethod = new AddMethod(mc, dc.validator, relations, keys);
-        def removeMethod = new RemoveMethod(mc, relations, keys);
+        def removeMethod = new RemoveMethod(mc, relations);
         def updateMethod = new UpdateMethod(mc, dc.validator, relations);
         def addRelationMethod = new AddRelationMethod(mc, relations);
         def removeRelationMethod = new RemoveRelationMethod(mc, relations);
@@ -115,8 +115,15 @@ class SearchableExtensionGrailsPlugin {
         mc.addRelation = {Map props->
           return addRelationMethod.invoke(delegate,  [props] as Object[])
         }
+        mc.addRelation = {Map props, boolean flush->
+          return addRelationMethod.invoke(delegate,  [props, flush] as Object[])
+        }
         mc.removeRelation = {Map props->
             return removeRelationMethod.invoke(delegate,  [props] as Object[])
+        }
+
+        mc.removeRelation = {Map props, boolean flush->
+            return removeRelationMethod.invoke(delegate,  [props, flush] as Object[])
         }
         mc.remove = {->
             return removeMethod.invoke(delegate, null);
@@ -130,7 +137,8 @@ class SearchableExtensionGrailsPlugin {
     {
         def mc = dc.metaClass;
         def keys = DomainClassUtils.getKeys(dc);
-        def getMethod = new GetMethod(mc, keys);
+        def relations = DomainClassUtils.getRelations(dc);
+        def getMethod = new GetMethod(mc, keys, relations);
         mc.'static'.get = {Map searchParams->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])
         }

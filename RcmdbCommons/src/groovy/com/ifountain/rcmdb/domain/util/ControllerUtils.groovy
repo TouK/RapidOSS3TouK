@@ -27,9 +27,13 @@ class ControllerUtils {
                     {
                         if(propValue["id"] != "null")
                         {
-                            def id = Long.parseLong(propValue["id"]);
-                            def fieldType = domainClass.metaClass.getMetaProperty(propName).type;
-                            returnedParams[propName] = fieldType.metaClass.invokeStaticMethod(fieldType, "get", [id] as Object[])
+                            def id = propValue["id"] instanceof Long?propValue["id"]:Long.parseLong(propValue["id"]);
+                            def metaProp = domainClass.metaClass.getMetaProperty(propName);
+                            if(metaProp)
+                            {
+                                def fieldType = metaProp.type;
+                                returnedParams[propName] = fieldType.metaClass.invokeStaticMethod(fieldType, "get", [id] as Object[])
+                            }
                         }
                         else
                         {

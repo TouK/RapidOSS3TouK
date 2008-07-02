@@ -90,9 +90,13 @@ class RemoveRelationMethodTest extends RapidCmdbTestCase{
         assertFalse(RelationMethodDomainObject2.indexList[0].contains(expectedDomainObject1));
         assertFalse (RelationMethodDomainObject2.indexList[0].contains(expectedDomainObject4));
         assertFalse (RelationMethodDomainObject2.indexList[0].contains(expectedDomainObject6));
-        assertEquals (3, expectedDomainObject1.numberOfFlushCalls)
+        assertEquals (4, expectedDomainObject1.numberOfFlushCalls)
+        expectedDomainObject1.isFlushedByProperty.each{
+            assertFalse(it);
+        }
         assertEquals (1, expectedDomainObject2.numberOfFlushCalls)
         assertEquals (1, expectedDomainObject3.numberOfFlushCalls)
+        assertFalse(expectedDomainObject3.isFlushedByProperty[0]);
         assertEquals (0, expectedDomainObject4.numberOfFlushCalls)
         assertEquals (0, expectedDomainObject5.numberOfFlushCalls)
         assertEquals (0, expectedDomainObject6.numberOfFlushCalls)
@@ -173,6 +177,35 @@ class RemoveRelationMethodTest extends RapidCmdbTestCase{
         assertEquals (1, RelationMethodDomainObject1.indexList.size());
         assertTrue (RelationMethodDomainObject1.indexList[0].contains(expectedDomainObject1));
         assertEquals (0, RelationMethodDomainObject2.indexList.size());
+    }
+
+
+    public void testRemoveMethodWithoutIndexing()
+    {
+        RelationMethodDomainObject1 expectedDomainObject1 = new RelationMethodDomainObject1(id:1);
+        RelationMethodDomainObject2 expectedDomainObject2 = new RelationMethodDomainObject2(id:2);
+
+        def relationsForObject1 = ["rel1":new Relation("rel1", "revRel1", RelationMethodDomainObject1.class, RelationMethodDomainObject2.class, Relation.ONE_TO_ONE)]
+
+        AddRelationMethod add = new AddRelationMethod(RelationMethodDomainObject1.metaClass, relationsForObject1);
+        def props = [rel1:expectedDomainObject2];
+        add.invoke (expectedDomainObject1, [props] as Object[]);
+        expectedDomainObject1.numberOfFlushCalls = 0
+        expectedDomainObject2.numberOfFlushCalls = 0
+        RelationMethodDomainObject1.indexList = [];
+        RelationMethodDomainObject2.indexList = [];
+
+        RemoveRelationMethod remove = new RemoveRelationMethod(RelationMethodDomainObject1.metaClass, relationsForObject1);
+        props = [rel1:[expectedDomainObject2]];
+        def relatedInstances = remove.invoke (expectedDomainObject1, [props, false] as Object[]);
+
+        assertNull (expectedDomainObject1.rel1);
+        assertNull (expectedDomainObject2.revRel1);
+        assertEquals (0, RelationMethodDomainObject1.indexList.size());
+        assertEquals (0, RelationMethodDomainObject2.indexList.size());
+        assertEquals (1, relatedInstances.size())
+        assertEquals (1, relatedInstances[RelationMethodDomainObject2].size())
+        assertTrue (relatedInstances[RelationMethodDomainObject2].contains(expectedDomainObject2))
     }
 
 }

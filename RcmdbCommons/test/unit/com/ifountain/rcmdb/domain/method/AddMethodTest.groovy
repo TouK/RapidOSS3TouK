@@ -41,13 +41,14 @@ class AddMethodTest extends RapidCmdbTestCase{
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1];
-        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        AddMethodDomainObject1 addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals (expectedDomainObject1, addedObject);
         assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
         assertEquals("prop1:\"object1Prop1Value\"", AddMethodDomainObject1.query);
-        assertFalse (addedObject.isFlushedByProperty);
         assertEquals (2, addedObject.numberOfFlushCalls);
+        assertFalse (addedObject.isFlushedByProperty[0]);
+        assertFalse (addedObject.isFlushedByProperty[1]);
         def prevId = addedObject.id;
 
         AddMethodDomainObject1.indexList.clear();
@@ -218,23 +219,36 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethodWithRelationProperties()
     {
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-        AddMethodDomainObject1 expectedDomainObject2 = new AddMethodDomainObject1(id:100);
-        AddMethodDomainObject1 expectedDomainObject3 = new AddMethodDomainObject1(id:101);
-        AddMethodDomainObject1 expectedDomainObject4 = new AddMethodDomainObject1(id:102);
+        AddMethodDomainObject1 expectedDomainObject2 = new AddMethodDomainObject1(id:100, prop1:"object2Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject3 = new AddMethodDomainObject1(id:101, prop1:"object3Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject4 = new AddMethodDomainObject1(id:102, prop1:"object4Prop1Value");
 
         def relations = ["rel1":new Relation("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE),
         "rel2":new Relation("rel2", "revRel2", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE)];
 
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, relations, ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1, rel1:[expectedDomainObject2, expectedDomainObject3], rel2:expectedDomainObject4];
-        def addedObject1 = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromAddRelationMethod = [:]
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromAddRelationMethod[AddMethodDomainObject1.class]= [expectedDomainObject2, expectedDomainObject3, expectedDomainObject4];
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromAddRelationMethod[ChildAddMethodDomainObject.class] =[]
+
+        AddMethodDomainObject1 addedObject1 = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+
 
         assertEquals(expectedDomainObject1.prop1, addedObject1.prop1);
         assertTrue(addedObject1.relationsShouldBeAdded.get("rel1").contains(expectedDomainObject2));
         assertTrue(addedObject1.relationsShouldBeAdded.get("rel1").contains(expectedDomainObject3));
         assertEquals(expectedDomainObject4, addedObject1.relationsShouldBeAdded.get("rel2"));
-        assertEquals (1, AddMethodDomainObject1.indexList.size());
+
+        assertFalse(addedObject1.addRelationsFlushed);
+        assertEquals (2, AddMethodDomainObject1.indexList.size());
         assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject1));
+        assertTrue (AddMethodDomainObject1.indexList[1].contains(expectedDomainObject2));
+        assertTrue (AddMethodDomainObject1.indexList[1].contains(expectedDomainObject3));
+        assertTrue (AddMethodDomainObject1.indexList[1].contains(expectedDomainObject4));
+
+
+
     }
 
 
@@ -268,17 +282,21 @@ class AddMethodTest extends RapidCmdbTestCase{
     }
 }
 
-class AddMethodDomainObject1
+class AddMethodDomainObject1  extends GroovyObjectSupport
 {
+    def static relatedInstancesShouldBeReturnedFromAddRelationMethod = [:];
+    def static relatedInstancesShouldBeReturnedFromRemoveRelationMethod = [:];
     def static searchResult = [total:0, results:[]];
     def static query;
     def static indexList = [];
     def static reindexList = [];
     def relationsShouldBeAdded;
+    boolean addRelationsFlushed;
+    boolean removeRelationsFlushed;
     def relationsShouldBeRemoved;
     def rel1;
     int numberOfFlushCalls = 0;
-    boolean isFlushedByProperty = false;
+    List isFlushedByProperty = [];
     Errors errors;
     String prop1;
     String prop2;
@@ -308,14 +326,18 @@ class AddMethodDomainObject1
         return errors && errors.hasErrors();
     }
 
-    def addRelation(Map relations)
+    def addRelation(Map relations, boolean flush)
     {
         relationsShouldBeAdded = relations;
+        addRelationsFlushed = flush;
+        return relatedInstancesShouldBeReturnedFromAddRelationMethod;
     }
 
-    def removeRelation(Map relations)
+    def removeRelation(Map relations, boolean flush)
     {
         relationsShouldBeRemoved = relations;
+        removeRelationsFlushed = flush;
+        return relatedInstancesShouldBeReturnedFromRemoveRelationMethod;
     }
 
     public boolean equals(Object obj) {
@@ -326,11 +348,21 @@ class AddMethodDomainObject1
         return false;
     }
 
+    public void setProperty(String propName, Object propValue)
+    {
+        setProperty (propName, propValue, true);        
+    }
+
     public void setProperty(String propName, Object propValue, boolean flush)
     {
-        setProperty (propName, propValue);
-        numberOfFlushCalls++;
-           this.isFlushedByProperty = flush;
+        super.setProperty (propName, propValue);
+        if(propName == "prop1" || propName == "prop2" || propName == "prop3"
+                || propName == "prop4" || propName == "prop5" || propName == "prop6"
+                || propName == "rel1" || propName == "doubleProp" || propName == "id")
+        {
+            numberOfFlushCalls++;
+            this.isFlushedByProperty += flush;
+        }
     }
 }
 

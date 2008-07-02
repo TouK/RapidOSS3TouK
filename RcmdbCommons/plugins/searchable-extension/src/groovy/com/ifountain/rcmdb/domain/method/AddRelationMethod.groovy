@@ -55,6 +55,14 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
     public Object invoke(Object domainObject, Object[] arguments) {
 
         def props = arguments[0];
+        def flush = true;
+        if(arguments.length == 2)
+        {
+            if(arguments[1] == false)
+            {
+                flush = false;
+            }
+        }
         def relatedInstances = [:]
         props.each{key,value->
             Relation relation = relations.get(key);
@@ -87,7 +95,7 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                     }
                     else if(relation.type == Relation.ONE_TO_MANY)
                     {
-                        domainObject[relation.name] += value;
+                        domainObject[relation.name].addAll(value);
                         if(relation.hasOtherSide())
                         {
                             value.each
@@ -113,17 +121,17 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                         domainObject.setProperty(relation.name, value[0], false);
                         if(relation.hasOtherSide())
                         {
-                            value[0][relation.otherSideName] += domainObject;
+                            value[0][relation.otherSideName].add(domainObject);
                         }
                     }
                     else
                     {
-                        domainObject[relation.name] += value;
+                        domainObject[relation.name].addAll(value);
                         if(relation.hasOtherSide())
                         {
                             value.each
                             {
-                                it[relation.otherSideName] += domainObject;
+                                it[relation.otherSideName].add(domainObject);
                             }
                         }
                     }
@@ -134,18 +142,25 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                 }
             }
         }
-        if(relatedInstances.size() > 0)
+        if(flush)
         {
-            CompassMethodInvoker.index (mc, domainObject);
-        }
-        relatedInstances.each{instanceClass, instances->
-            if(!instances.isEmpty())
+            if(relatedInstances.size() > 0)
             {
-                CompassMethodInvoker.index (instanceClass.metaClass, instances);
+                CompassMethodInvoker.index (mc, domainObject);
+                relatedInstances.each{instanceClass, instances->
+                    if(!instances.isEmpty())
+                    {
+                        CompassMethodInvoker.index (instanceClass.metaClass, instances);
+                    }
+                }
             }
+            return domainObject;
+        }
+        else
+        {
+            return relatedInstances;
         }
 
-        return domainObject;
     }
 
 }

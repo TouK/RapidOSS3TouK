@@ -36,6 +36,14 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
 
     public Object invoke(Object domainObject, Object[] arguments) {
         def props = arguments[0];
+        def flush = true;
+        if(arguments.length == 2)
+        {
+            if(arguments[1] == false)
+            {
+                flush = false;
+            }
+        }
         def changedInstances = [:]
         boolean isChanged = false;
         props.each{key,value->
@@ -128,7 +136,7 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                             }
                         }
                     }
-                    domainObject.setProperty(relation.name, new ArrayList(relatedObjects.values()));
+                    domainObject.setProperty(relation.name, new ArrayList(relatedObjects.values()), false);
                 }
                 if(storage.size() > 0)
                 {
@@ -144,9 +152,18 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                 }
             }
         }
-        CompassMethodInvoker.index (mc, domainObject);
-        changedInstances.each{instanceClass, instances->
-            CompassMethodInvoker.index (instanceClass.metaClass, instances);
+        if(flush)
+        {
+            CompassMethodInvoker.index (mc, domainObject);
+            changedInstances.each{instanceClass, instances->
+                CompassMethodInvoker.index (instanceClass.metaClass, instances);
+            }
+            return domainObject;
         }
+        else
+        {
+            return changedInstances;
+        }
+
     }
 }

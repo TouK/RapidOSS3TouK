@@ -16,6 +16,7 @@ class CompassMethodInvoker {
         }
         mc.invokeStaticMethod(mc.theClass, "unindex", [objects] as Object[]);
     }
+
     public static void index(MetaClass mc, objects)
     {
         if(!(objects instanceof Collection))
@@ -23,6 +24,15 @@ class CompassMethodInvoker {
             objects = [objects];
         }
         mc.invokeStaticMethod(mc.theClass, "index", [objects] as Object[]);
+    }
+
+    public static void reindex(MetaClass mc, objects)
+    {
+        if(!(objects instanceof Collection))
+        {
+            objects = [objects];
+        }
+        mc.invokeStaticMethod(mc.theClass, "reindex", [objects] as Object[]);
     }
 
     public static Object search(MetaClass mc, Map keys)
@@ -42,14 +52,7 @@ class CompassMethodInvoker {
         {
             query = query.substring(0, query.length() - 5);
         }
-        if(triggerEvent)
-        {
-            return search(mc, query);
-        }
-        else
-        {
-            return mc.invokeStaticMethod(mc.theClass, "searchWithoutTriggering", [query] as Object[]);
-        }
+        return search(mc, query, triggerEvent);
     }
 
     public static Object countHits(MetaClass mc, Map keys)
@@ -71,6 +74,18 @@ class CompassMethodInvoker {
     public static Object search(MetaClass mc, String query)
     {
         return mc.invokeStaticMethod(mc.theClass, "search", [query] as Object[]);
+    }
+
+    public static Object search(MetaClass mc, String query, boolean willTriggerEvents)
+    {
+        if(willTriggerEvents)
+        {
+            return mc.invokeStaticMethod(mc.theClass, "search", [query] as Object[]);
+        }
+        else
+        {
+            return mc.invokeStaticMethod(mc.theClass, "searchWithoutTriggering", [query] as Object[]);
+        }
     }
 
     public static Object searchEvery(MetaClass mc, String query)

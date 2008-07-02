@@ -174,12 +174,13 @@ class RapidDomainClassGrailsPlugin {
         }
     }
 
-    def addPropertyGetAndSetMethods(dc)
+    def addPropertyGetAndSetMethods(GrailsDomainClass dc)
     {
-        def relations = DomainClassUtils.getRelations(dc, domainClassMap);
+        def relations = DomainClassUtils.getRelations(dc);
         MetaClass mc = dc.metaClass
         def propConfigCache = new PropertyConfigurationCache(dc);
         def dsConfigCache = new DatasourceConfigurationCache(dc);
+        def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
         if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
         {
             mc.addMetaBeanProperty(new DatasourceProperty("isPropertiesLoaded", Object.class));
@@ -205,7 +206,7 @@ class RapidDomainClassGrailsPlugin {
                     operation.setProperty (name, value);
                 }
             }
-            if(flush && !EXCLUDED_PROPERTIES.containsKey(name) && delegate.id != null)
+            if(flush && !EXCLUDED_PROPERTIES.containsKey(name) && delegate.id != null && persistantProps.containsKey(name))
             {
                 delegate.reindex();
             }
@@ -249,9 +250,9 @@ class RapidDomainClassGrailsPlugin {
                 throw new MissingPropertyException(name, mc.getTheClass());
             }
             Relation relation = relations.get(name);
-            if(relation && (relation.isOneToMany() || relation.isManyToMany()) && !currentValue )
+            if(relation && (relation.isOneToMany() || relation.isManyToMany()) && currentValue == null)
             {
-                currentValue = [];
+                currentValue = new HashSet();
                 domainObject.__InternalSetProperty__(name, currentValue);
             }
             else if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())

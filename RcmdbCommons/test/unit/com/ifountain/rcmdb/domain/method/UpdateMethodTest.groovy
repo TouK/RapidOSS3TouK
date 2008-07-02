@@ -24,7 +24,9 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         AddMethodDomainObject1.searchResult =  [total:0, results:[]];
         AddMethodDomainObject1.query = null;
         AddMethodDomainObject1.indexList = [];
-         AddMethodDomainObject1.reindexList = [];
+        AddMethodDomainObject1.reindexList = [];
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromAddRelationMethod = [:]
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromRemoveRelationMethod = [:]
     }
 
     protected void tearDown() {
@@ -34,7 +36,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
     public void testUpdateMethod()
     {
         AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
-        AddMethodDomainObject1 relatedObject = new AddMethodDomainObject1(id:100);
+        AddMethodDomainObject1 relatedObject = new AddMethodDomainObject1(id:100, prop1:"object2Prop1Value");
 
         def relations = ["rel1":new Relation("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, Relation.ONE_TO_ONE)];
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations, ["prop1"]);
@@ -44,18 +46,26 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals (objectBeforeAdd, addedObject);
         addedObject.numberOfFlushCalls = 0;
-        addedObject.isFlushedByProperty = false;
+        addedObject.isFlushedByProperty = [];
+
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromAddRelationMethod = [:]
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromAddRelationMethod[AddMethodDomainObject1.class]= [relatedObject];
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromAddRelationMethod[ChildAddMethodDomainObject.class] =[]
 
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations);
-        def updatedObject = update.invoke (addedObject, [props] as Object[]);
+        AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
         assertEquals(2, addedObject.numberOfFlushCalls);
-        assertFalse(addedObject.isFlushedByProperty);
+        assertFalse(addedObject.isFlushedByProperty[0]);
+        assertFalse(addedObject.isFlushedByProperty[1]);
         assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
+        assertFalse (updatedObject.addRelationsFlushed);
+        assertEquals (2, AddMethodDomainObject1.reindexList.size());
         assertSame (updatedObject, AddMethodDomainObject1.reindexList[0]);
+        assertTrue (AddMethodDomainObject1.reindexList[1].contains(relatedObject));
     }
 
     
@@ -103,14 +113,24 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         addedObject.rel1 = relatedObject;
 
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:null];
+
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromRemoveRelationMethod = [:]
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromRemoveRelationMethod[AddMethodDomainObject1.class]= [relatedObject];
+        AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromRemoveRelationMethod[ChildAddMethodDomainObject.class] =[]
+
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations);
-        def updatedObject = update.invoke (addedObject, [props] as Object[]);
+        AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
 
         assertEquals(0, updatedObject.relationsShouldBeAdded.size());
         assertEquals(relatedObject, updatedObject.relationsShouldBeRemoved.get("rel1"));
+        assertFalse (updatedObject.removeRelationsFlushed);
+        assertEquals (2, AddMethodDomainObject1.reindexList.size())
+        assertSame (updatedObject, AddMethodDomainObject1.reindexList[0]);
+        assertTrue (AddMethodDomainObject1.reindexList[1].contains(relatedObject));
+
 
         addedObject.rel1 = null;
 
@@ -247,4 +267,5 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             RapidConvertUtils.getInstance().register (prevDoubleConf, Double.class)
         }
     }
+
 }

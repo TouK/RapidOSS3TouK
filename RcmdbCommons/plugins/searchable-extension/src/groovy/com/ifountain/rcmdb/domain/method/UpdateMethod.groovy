@@ -91,6 +91,9 @@ class UpdateMethod extends AbstractRapidDomainMethod{
                 }
             }
         }
+
+        def relatedInstancesFromAdd = domainObject.addRelation(relationToBeAddedMap, false);
+        def relatedInstancesFromRemove = domainObject.removeRelation(relationToBeRemovedMap, false);
         if(!errors.hasErrors())
         {
             validator.validate (domainObject, errors);
@@ -99,8 +102,15 @@ class UpdateMethod extends AbstractRapidDomainMethod{
         {
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
             domainObject.reindex(domainObject);
-            domainObject.addRelation(relationToBeAddedMap);
-            domainObject.removeRelation(relationToBeRemovedMap);
+            relatedInstancesFromAdd.each{instanceClass, instances->
+                if(!instances.isEmpty())
+                CompassMethodInvoker.reindex (instanceClass.metaClass,  instances);
+            }
+            relatedInstancesFromRemove.each{instanceClass, instances->
+                if(!instances.isEmpty())
+                CompassMethodInvoker.reindex (instanceClass.metaClass,  instances);
+            }
+
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.ONLOAD_EVENT);
         }
         else

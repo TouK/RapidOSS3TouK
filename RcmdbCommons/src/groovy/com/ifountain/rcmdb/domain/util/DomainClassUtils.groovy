@@ -6,7 +6,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.ObjectError
-
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -39,46 +39,60 @@ class DomainClassUtils
         }
     }
 
-    def static getRelations(GrailsDomainClass dc, Map domainClasses)
+    def static getPersistantProperties(GrailsDomainClass dc, boolean includeRelations)
+    {
+        def propMap = [:]
+        def domainObjectProperties = dc.getProperties();
+        domainObjectProperties.each{GrailsDomainClassProperty prop->
+            if(includeRelations || !prop.isAssociation())
+            {
+                if(prop.isPersistent())
+                {
+                    propMap[prop.name] = prop;
+                }
+            }
+        }
+        return propMap;
+    }
+
+
+    def static getRelations(GrailsDomainClass dc)
     {
         def allRelations = [:];
+        def domainObjectProperties = dc.getProperties();
         def hasMany = getStaticMapVariable(dc, "hasMany");
-        def mappedBy = getStaticMapVariable(dc, "mappedBy");
         def cascadedObjects = getStaticMapVariable(dc, "cascaded");
-        mappedBy.each{relationName, otherSideName->
-            def isCascaded = cascadedObjects[relationName] == true;
-            def cardinalityIsMany = true;
-            def otherSideClass = hasMany[relationName];
-            if(!otherSideClass)
+        domainObjectProperties.each{GrailsDomainClassProperty prop->
+            boolean isRel = prop.isAssociation() || hasMany.containsKey(prop.name);
+            if(isRel)
             {
-                otherSideClass = dc.getPropertyByName (relationName).getType();
-                cardinalityIsMany = false;
+                def relationName = prop.name;
+                def otherSideName = prop.getOtherSide()?prop.getOtherSide().name:null;
+                def isCascaded = cascadedObjects[relationName] == true;
+                def otherSideClass = prop.getReferencedPropertyType();
+                def relType;
+                if(prop.isManyToMany())
+                {
+                    relType = Relation.MANY_TO_MANY
+                }
+                else if(prop.isOneToMany())
+                {
+                    relType = Relation.ONE_TO_MANY
+                }
+                else if(prop.isManyToOne())
+                {
+                    relType = Relation.MANY_TO_ONE
+                }
+                else
+                {
+                    relType = Relation.ONE_TO_ONE;
+                }
+                def rel = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
+                rel.isCascade = isCascaded;
+                allRelations[relationName] = rel;
             }
-
-            def otherSideHasMany = getStaticMapVariable(domainClasses[otherSideClass.name], "hasMany");
-            def otherSideCardinalityIsMany = otherSideHasMany[otherSideName]?true:false;
-            def relType;
-            if(otherSideCardinalityIsMany && cardinalityIsMany)
-            {
-                relType = Relation.MANY_TO_MANY
-            }
-            else if(!otherSideCardinalityIsMany && cardinalityIsMany)
-            {
-                relType = Relation.ONE_TO_MANY
-            }
-            else if(otherSideCardinalityIsMany && !cardinalityIsMany)
-            {
-                relType = Relation.MANY_TO_ONE
-            }
-            else
-            {
-                relType = Relation.ONE_TO_ONE;                
-            }
-            def rel = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
-            rel.isCascade = isCascaded;
-            allRelations[relationName] = rel;
-
         }
+
         return allRelations;
     }
 

@@ -28,18 +28,13 @@ import com.ifountain.rcmdb.domain.util.ValidationUtils
  */
 class RemoveMethod extends AbstractRapidDomainMethod{
     def relations;
-    List keys;
-    public RemoveMethod(MetaClass mc, Map relations, List keys) {
+    public RemoveMethod(MetaClass mc, Map relations) {
         super(mc);
         this.relations = relations;
-        this.keys = keys;
     }
 
     public Object invoke(Object domainObject, Object[] arguments) {
-        def keyMap = [:];
-        keys.each{String keyPropName->
-            keyMap[keyPropName] = domainObject[keyPropName]
-        }
+        def keyMap = [id:domainObject.id];
         def numberOfExistingObjects = CompassMethodInvoker.countHits(mc, keyMap);
         if(numberOfExistingObjects == 0)
         {
@@ -71,7 +66,13 @@ class RemoveMethod extends AbstractRapidDomainMethod{
             }
             if(!relsToBeRemoved.isEmpty())
             {
-                domainObject.removeRelation(relsToBeRemoved);
+                def relationsToBeRemoved = domainObject.removeRelation(relsToBeRemoved, false);
+                relationsToBeRemoved.each{Class instanceClass, instances->
+                    if(!instances.isEmpty())
+                    {
+                        CompassMethodInvoker.reindex (instanceClass.metaClass, instances);
+                    }
+                }
             }
             cascadedObjectsToBeRemoved.each{
                 it.remove();

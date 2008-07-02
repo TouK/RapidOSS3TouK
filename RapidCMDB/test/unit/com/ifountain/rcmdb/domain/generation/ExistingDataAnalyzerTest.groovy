@@ -2,6 +2,18 @@ package com.ifountain.rcmdb.domain.generation
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.apache.commons.io.FileUtils
+import groovy.xml.MarkupBuilder
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import model.PropertyAction
+import model.ModelAction
+import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
+import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
+import org.codehaus.groovy.grails.compiler.injection.ClassInjector
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import com.ifountain.rcmdb.domain.constraints.KeyConstraint
+import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
+import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,507 +25,529 @@ import org.apache.commons.io.FileUtils
 class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
 
     def static base_directory = "../testoutput/";
+    StringWriter model;
+    def modelbuilder;
+    def metaClassCreationHandler;
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-//        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDB"))
-//        {
-//            ModelGenerator.getInstance().initialize (base_directory, base_directory, System.getProperty("base.dir"));
-//        }
-//        else
-//        {
-//            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RapidCMDB");
-//        }
-//
-//        FileUtils.deleteDirectory (new File(base_directory));
-//        new File(base_directory).mkdirs();
+        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDB"))
+        {
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "${System.getProperty("base.dir")}/../RcmdbCommons");
+        }
+        else
+        {
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RcmdbCommons");
+        }
+
+        FileUtils.deleteDirectory (new File(base_directory));
+        new File(base_directory).mkdirs();
+        metaClassCreationHandler = GroovySystem.getMetaClassRegistry().getMetaClassCreationHandler();
+        GroovySystem.getMetaClassRegistry().setMetaClassCreationHandle (new ExpandoMetaClassCreationHandle());
     }
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        GroovySystem.getMetaClassRegistry().setMetaClassCreationHandle(metaClassCreationHandler);
     }
 
-    public void testRefactor(){
-        //fail("Refactor this test");
+    public void testPropertyTypeChange()
+    {
+        String modelName = "Class1";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1];
+        generateModel (modelName, propList, keyPropList, []);
+        def oldDomainClass = loadGrailsDomainClass(modelName);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass])
+
+        prop2.type = ModelGenerator.NUMBER_TYPE;
+        generateModel (modelName, propList, keyPropList, []);
+
+        def newDomainClass = loadGrailsDomainClass(modelName);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass])
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
+        assertEquals (2, actions.size());
+        PropertyAction action = actions[0];
+        assertEquals (prop2.name, action.propName);
+        assertEquals (PropertyAction.SET_DEFAULT_VALUE, action.action);
+        assertEquals (modelName, action.modelName);
+
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
     }
-//    public void testPropertyTypeChange()
-//    {
-//        String modelName = "Class1";
-//
-//        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//
-//        def propList = [prop1, prop2];
-//        def keyPropList = [prop1];
-//        generateModel (modelName, propList, keyPropList);
-//        def oldDomainClass = loadGrailsDomainClass(modelName);
-//        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
-//
-//        prop2.type = ModelProperty.numberType;
-//        generateModel (modelName, propList, keyPropList);
-//
-//        def newDomainClass = loadGrailsDomainClass(modelName);
-//        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
-//
-//        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-//        assertEquals (2, actions.size());
-//        PropertyAction action = actions[0];
-//        assertEquals (prop2.name, action.propName);
-//        assertEquals (PropertyAction.SET_DEFAULT_VALUE, action.action);
-//        assertEquals (modelName, action.modelName);
-//
-//        ModelAction modelAction = actions[1];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName, modelAction.modelName);
-//    }
-//
-//
-//    public void testAnyChangeInExcludedListPropsWillNotBeManaged()
-//    {
-//        String modelName = "Class1";
-//
-//        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//        def propList = [prop1];
-//        ExistingDataAnalyzer.excludedProps.each {String propName, String propValue->
-//            propList += new ModelProperty(name:propName, type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//        }
-//
-//        def keyPropList = [prop1];
-//        generateModel (modelName, propList, keyPropList);
-//        def oldDomainClass = loadGrailsDomainClass(modelName);
-//        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
-//
-//        for(int i=1; i< propList.size(); i++)
-//        {
-//            propList[i].type = ModelProperty.numberType;
-//        }
-//        generateModel (modelName, propList, keyPropList);
-//
-//        def newDomainClass = loadGrailsDomainClass(modelName);
-//        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
-//
-//        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-//        assertEquals (0, actions.size());
-//    }
-//
-//
-//    public void testKeyPropertyTypeChange()
-//    {
-//        ConstrainedProperty.registerNewConstraint (KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
-//        String modelName = "Class1";
-//
-//        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//
-//        def propList = [prop1];
-//        def keyPropList = [prop1];
-//        generateModel (modelName, propList, keyPropList);
-//        def oldDomainClass = loadGrailsDomainClass(modelName);
-//        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
-//
-//        prop1.type = ModelProperty.numberType;
-//        generateModel (modelName, propList, keyPropList);
-//
-//        def newDomainClass = loadGrailsDomainClass(modelName);
-//        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
-//
-//        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-//        assertEquals (2, actions.size());
-//        ModelAction action = actions[0];
-//        assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
-//        assertEquals (modelName, action.modelName);
-//
-//        ModelAction modelAction = actions[1];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName, modelAction.modelName);
-//    }
-//
-//    public void testIfPropertyDoesnotExistInOldModel()
-//    {
-//        String modelName = "Class1";
-//
-//        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//
-//
-//        def propList = [prop1];
-//        def keyPropList = [prop1];
-//        generateModel (modelName, propList, keyPropList);
-//        def oldDomainClass = loadGrailsDomainClass(modelName);
-//        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
-//
-//        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//        propList += prop2;
-//        generateModel (modelName, propList, keyPropList);
-//
-//        def newDomainClass = loadGrailsDomainClass(modelName);
-//        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
-//
-//        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-//        assertEquals (2, actions.size());
-//        PropertyAction action = actions[0];
-//        assertEquals (prop2.name, action.propName);
-//        assertEquals (PropertyAction.SET_DEFAULT_VALUE, action.action);
-//        assertEquals (modelName, action.modelName);
-//
-//        ModelAction modelAction = actions[1];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName, modelAction.modelName);
-//    }
-//
-//
-//    public void testIfPropertyDoesnotExistInNewModel()
-//    {
-//        String modelName = "Class1";
-//
-//        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//
-//        def propList = [prop1, prop2];
-//        def keyPropList = [prop1];
-//        generateModel (modelName, propList, keyPropList);
-//        def oldDomainClass = loadGrailsDomainClass(modelName);
-//        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
-//
-//
-//        propList = [prop1];
-//        generateModel (modelName, propList, keyPropList);
-//
-//        def newDomainClass = loadGrailsDomainClass(modelName);
-//        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
-//
-//        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-//        assertEquals (1, actions.size());
-//        ModelAction modelAction = actions[0];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName, modelAction.modelName);
-//    }
-//
-//
-//
-//    public void testIfKeyIsRemoved()
-//    {
-//        ConstrainedProperty.registerNewConstraint (KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
-//        String modelName = "Class1";
-//
-//        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//
-//        def propList = [prop1, prop2];
-//        def keyPropList = [prop1, prop2];
-//        generateModel (modelName, propList, keyPropList);
-//        def oldDomainClass = loadGrailsDomainClass(modelName);
-//        def oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
-//
-//        prop2.type = ModelProperty.numberType;
-//        keyPropList = [prop1];
-//        generateModel (modelName, propList, keyPropList);
-//
-//        def newDomainClass = loadGrailsDomainClass(modelName);
-//        def newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
-//
-//        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-//        assertEquals (2, actions.size());
-//        ModelAction action = actions[0];
-//        assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
-//        assertEquals (modelName, action.modelName);
-//
-//        ModelAction modelAction = actions[1];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName, modelAction.modelName);
-//
-//
-//        keyPropList = [prop1];
-//        propList = [prop1];
-//        generateModel (modelName, propList, keyPropList);
-//
-//        newDomainClass = loadGrailsDomainClass(modelName);
-//        newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
-//
-//
-//        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-//        assertEquals (2, actions.size());
-//        action = actions[0];
-//        assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
-//        assertEquals (modelName, action.modelName);
-//
-//        modelAction = actions[1];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName, modelAction.modelName);
-//
-//        keyPropList = [prop1];
-//        propList = [prop1, prop2];
-//        generateModel (modelName, propList, keyPropList);
-//        oldDomainClass = loadGrailsDomainClass(modelName);
-//        oldGrailsDomainClass = new DefaultGrailsDomainClass(oldDomainClass);
-//
-//        keyPropList = [prop1, prop2];
-//        propList = [prop1, prop2];
-//        generateModel (modelName, propList, keyPropList);
-//
-//        newDomainClass = loadGrailsDomainClass(modelName);
-//        newGrailsDomainClass = new DefaultGrailsDomainClass(newDomainClass);
-//
-//
-//        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass, newGrailsDomainClass);
-//        assertEquals (0, actions.size());
-//    }
-//
-//    public void testIfRelationTypeIsChangedFromOneToOneToOneToMany()
-//    {
-//        String modelName1 = "Class1";
-//        String modelName2 = "Class2";
-//
-//        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//
-//
-//        def propList = [prop1, prop2];
-//        def keyPropList = [prop1, prop2];
-//        MockModel model1 = createModel(modelName1, propList, keyPropList);
-//        MockModel model2 = createModel (modelName2, propList, keyPropList);
-//        def rel1 = new ModelRelation(firstName:"rel1",  secondName:"revrel1", firstModel:model1, secondModel:model2, firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE);
-//        model1.fromRelations += rel1;
-//        model2.toRelations += rel1;
-//
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
-//
-//        def oldDomainClass1 = loadGrailsDomainClass(modelName1);
-//        def oldGrailsDomainClass1 = new DefaultGrailsDomainClass(oldDomainClass1);
-//        def oldDomainClass2 = loadGrailsDomainClass(modelName2);
-//        def oldGrailsDomainClass2 = new DefaultGrailsDomainClass(oldDomainClass2);
-//
-//        rel1.firstCardinality = ModelRelation.MANY;
-//
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
-//
-//        def newDomainClass1 = loadGrailsDomainClass(modelName1);
-//        def newGrailsDomainClass1 = new DefaultGrailsDomainClass(newDomainClass1);
-//        def newDomainClass2 = loadGrailsDomainClass(modelName2);
-//        def newGrailsDomainClass2 = new DefaultGrailsDomainClass(newDomainClass2);
-//
-//        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass1, newGrailsDomainClass1);
-//        assertEquals (2, actions.size());
-//        PropertyAction action = actions[0];
-//        assertEquals (PropertyAction.CLEAR_RELATION, action.action);
-//        assertEquals (modelName1, action.modelName);
-//
-//        ModelAction modelAction = actions[1];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName1, modelAction.modelName);
-//
-//        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass2, newGrailsDomainClass2);
-//        assertEquals (2, actions.size());
-//        action = actions[0];
-//        assertEquals (PropertyAction.CLEAR_RELATION, action.action);
-//        assertEquals (modelName2, action.modelName);
-//
-//        modelAction = actions[1];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName2, modelAction.modelName);
-//    }
-//
-//    public void testIfRelationTypeIsChangedFromOneToManyToOneToOne()
-//    {
-//        String modelName1 = "Class1";
-//        String modelName2 = "Class2";
-//
-//        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//
-//
-//        def propList = [prop1, prop2];
-//        def keyPropList = [prop1, prop2];
-//        MockModel model1 = createModel(modelName1, propList, keyPropList);
-//        MockModel model2 = createModel (modelName2, propList, keyPropList);
-//        def rel1 = new ModelRelation(firstName:"rel1",  secondName:"revrel1", firstModel:model1, secondModel:model2, firstCardinality:ModelRelation.MANY, secondCardinality:ModelRelation.ONE);
-//        model1.fromRelations += rel1;
-//        model2.toRelations += rel1;
-//
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
-//
-//        def oldDomainClass1 = loadGrailsDomainClass(modelName1);
-//        def oldGrailsDomainClass1 = new DefaultGrailsDomainClass(oldDomainClass1);
-//        def oldDomainClass2 = loadGrailsDomainClass(modelName2);
-//        def oldGrailsDomainClass2 = new DefaultGrailsDomainClass(oldDomainClass2);
-//
-//        rel1.firstCardinality = ModelRelation.ONE;
-//
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
-//
-//        def newDomainClass1 = loadGrailsDomainClass(modelName1);
-//        def newGrailsDomainClass1 = new DefaultGrailsDomainClass(newDomainClass1);
-//        def newDomainClass2 = loadGrailsDomainClass(modelName2);
-//        def newGrailsDomainClass2 = new DefaultGrailsDomainClass(newDomainClass2);
-//
-//        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass1, newGrailsDomainClass1);
-//        assertEquals (2, actions.size());
-//        PropertyAction action = actions[0];
-//        assertEquals (PropertyAction.CLEAR_RELATION, action.action);
-//        assertEquals (modelName1, action.modelName);
-//
-//        ModelAction modelAction = actions[1];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName1, modelAction.modelName);
-//
-//        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass2, newGrailsDomainClass2);
-//        assertEquals (2, actions.size());
-//        action = actions[0];
-//        assertEquals (PropertyAction.CLEAR_RELATION, action.action);
-//        assertEquals (modelName2, action.modelName);
-//
-//        modelAction = actions[1];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName2, modelAction.modelName);
-//    }
-//
-//     public void testIfRelationIsDeleted()
-//    {
-//        String modelName1 = "Class1";
-//        String modelName2 = "Class2";
-//
-//        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//
-//
-//        def propList = [prop1, prop2];
-//        def keyPropList = [prop1, prop2];
-//        MockModel model1 = createModel(modelName1, propList, keyPropList);
-//        MockModel model2 = createModel (modelName2, propList, keyPropList);
-//        def rel1 = new ModelRelation(firstName:"rel1",  secondName:"revrel1", firstModel:model1, secondModel:model2, firstCardinality:ModelRelation.MANY, secondCardinality:ModelRelation.ONE);
-//        model1.fromRelations += rel1;
-//        model2.toRelations += rel1;
-//
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
-//
-//        def oldDomainClass1 = loadGrailsDomainClass(modelName1);
-//        def oldGrailsDomainClass1 = new DefaultGrailsDomainClass(oldDomainClass1);
-//        def oldDomainClass2 = loadGrailsDomainClass(modelName2);
-//        def oldGrailsDomainClass2 = new DefaultGrailsDomainClass(oldDomainClass2);
-//
-//        model1.fromRelations.clear();
-//        model2.toRelations.clear();
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
-//
-//        def newDomainClass1 = loadGrailsDomainClass(modelName1);
-//        def newGrailsDomainClass1 = new DefaultGrailsDomainClass(newDomainClass1);
-//        def newDomainClass2 = loadGrailsDomainClass(modelName2);
-//        def newGrailsDomainClass2 = new DefaultGrailsDomainClass(newDomainClass2);
-//
-//        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass1, newGrailsDomainClass1);
-//        assertEquals (1, actions.size());
-//        ModelAction modelAction = actions[0];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName1, modelAction.modelName);
-//
-//        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass2, newGrailsDomainClass2);
-//        assertEquals (1, actions.size());
-//        modelAction = actions[0];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName2, modelAction.modelName);
-//    }
-//
-//
-//    public void testWithNewRelation()
-//    {
-//        String modelName1 = "Class1";
-//        String modelName2 = "Class2";
-//
-//        def prop1 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//        def prop2 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, blank:false, defaultValue:"1");
-//
-//
-//        def propList = [prop1, prop2];
-//        def keyPropList = [prop1, prop2];
-//        MockModel model1 = createModel(modelName1, propList, keyPropList);
-//        MockModel model2 = createModel (modelName2, propList, keyPropList);
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
-//
-//        def oldDomainClass1 = loadGrailsDomainClass(modelName1);
-//        def oldGrailsDomainClass1 = new DefaultGrailsDomainClass(oldDomainClass1);
-//        def oldDomainClass2 = loadGrailsDomainClass(modelName2);
-//        def oldGrailsDomainClass2 = new DefaultGrailsDomainClass(oldDomainClass2);
-//
-//        def rel1 = new ModelRelation(firstName:"rel1",  secondName:"revrel1", firstModel:model1, secondModel:model2, firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.MANY);
-//        model1.fromRelations += rel1;
-//        model2.toRelations += rel1;
-//        rel1.firstCardinality = ModelRelation.MANY;
-//
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
-//        def newDomainClass1 = loadGrailsDomainClass(modelName1);
-//        def newGrailsDomainClass1 = new DefaultGrailsDomainClass(newDomainClass1);
-//        def newDomainClass2 = loadGrailsDomainClass(modelName2);
-//        def newGrailsDomainClass2 = new DefaultGrailsDomainClass(newDomainClass2);
-//
-//        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass1, newGrailsDomainClass1);
-//        assertEquals (1, actions.size());
-//        ModelAction modelAction = actions[0];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName1, modelAction.modelName);
-//        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClass2, newGrailsDomainClass2);
-//        assertEquals (1, actions.size());
-//        modelAction = actions[0];
-//        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
-//        assertEquals (modelName2, modelAction.modelName)
-//    }
-//
-//
-//
-//    def generateModel(String name, List modelProperties, List keyProperties)
-//
-//    {
-//        def model = createModel(name, modelProperties, keyProperties);
-//
-//        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model);
-//    }
-//
-//    def createModel(String name, List modelProperties, List keyProperties)
-//    {
-//        def model = new MockModel(name:name);
-//        def datasource1 = new DatasourceName(name:"ds1-sample");
-//        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, master:true, model:model);
-//        model.datasources += modelDatasource1;
-//        boolean isIdAdded = false;
-//        boolean isVersionAdded = false;
-//        modelProperties.each{ModelProperty prop->
-//            prop.propertyDatasource = modelDatasource1;
-//            prop.model = model;
-//            model.modelProperties += prop;
-//            if(prop.name == "id")
-//            {
-//                isIdAdded = true;
-//            }
-//            if(prop.name == "version")
-//            {
-//                isVersionAdded = true;
-//            }
-//        }
-//        if(!isIdAdded)
-//        {
-//            model.modelProperties += new ModelProperty(name:"id", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
-//        }
-//        if(!isVersionAdded)
-//        {
-//            model.modelProperties += new ModelProperty(name:"version", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model,blank:false,defaultValue:"1");
-//        }
-//        keyProperties.each{ModelProperty prop->
-//            modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:prop, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");;
-//        }
-//
-//        return model;
-//    }
-//
-//    def loadGrailsDomainClass(String className)
-//    {
-//        GrailsAwareClassLoader gcl = new GrailsAwareClassLoader(Thread.currentThread().getContextClassLoader());
-//        gcl.setShouldRecompile(true);
-//        gcl.addClasspath(base_directory + ModelGenerator.MODEL_FILE_DIR);
-//        gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
-//        return gcl.loadClass (className);
-//    }
+
+
+    public void testAnyChangeInExcludedListPropsWillNotBeManaged()
+    {
+        String modelName = "Class1";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        def propList = [prop1];
+        ExistingDataAnalyzer.excludedProps.each {String propName, String propValue->
+            propList += [name:propName, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        }
+
+        def keyPropList = [prop1];
+        generateModel (modelName, propList, keyPropList, []);
+        def oldDomainClass = loadGrailsDomainClass(modelName);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass])
+
+        for(int i=1; i< propList.size(); i++)
+        {
+            propList[i].type = ModelGenerator.NUMBER_TYPE;
+        }
+        generateModel (modelName, propList, keyPropList, []);
+
+        def newDomainClass = loadGrailsDomainClass(modelName);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass])
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
+        assertEquals (0, actions.size());
+    }
+
+
+    public void testKeyPropertyTypeChange()
+    {
+        ConstrainedProperty.registerNewConstraint (KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+        String modelName = "Class1";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+        def propList = [prop1];
+        def keyPropList = [prop1];
+        generateModel (modelName, propList, keyPropList, []);
+        def oldDomainClass = loadGrailsDomainClass(modelName);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass])
+
+        prop1.type = ModelGenerator.NUMBER_TYPE;
+        generateModel (modelName, propList, keyPropList, []);
+
+        def newDomainClass = loadGrailsDomainClass(modelName);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass])
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
+        assertEquals (2, actions.size());
+        ModelAction action = actions[0];
+        assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
+        assertEquals (modelName, action.modelName);
+
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
+    }
+
+    public void testIfPropertyDoesnotExistInOldModel()
+    {
+        String modelName = "Class1";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+
+        def propList = [prop1];
+        def keyPropList = [prop1];
+        generateModel (modelName, propList, keyPropList, []);
+        def oldDomainClass = loadGrailsDomainClass(modelName);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass])
+
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        propList += prop2;
+        generateModel (modelName, propList, keyPropList, []);
+
+        def newDomainClass = loadGrailsDomainClass(modelName);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass])
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
+        assertEquals (2, actions.size());
+        PropertyAction action = actions[0];
+        assertEquals (prop2.name, action.propName);
+        assertEquals (PropertyAction.SET_DEFAULT_VALUE, action.action);
+        assertEquals (modelName, action.modelName);
+
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
+    }
+
+
+    public void testIfPropertyDoesnotExistInNewModel()
+    {
+        String modelName = "Class1";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1];
+        generateModel (modelName, propList, keyPropList, []);
+        def oldDomainClass = loadGrailsDomainClass(modelName);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass])
+
+
+        propList = [prop1];
+        generateModel (modelName, propList, keyPropList, []);
+
+        def newDomainClass = loadGrailsDomainClass(modelName);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass])
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
+        assertEquals (1, actions.size());
+        ModelAction modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
+    }
+
+
+
+    public void testIfKeyIsRemoved()
+    {
+        ConstrainedProperty.registerNewConstraint (KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+        String modelName = "Class1";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1, prop2];
+        generateModel (modelName, propList, keyPropList, []);
+        def oldDomainClass = loadGrailsDomainClass(modelName);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass])
+
+        prop2.type = ModelGenerator.NUMBER_TYPE;
+        keyPropList = [prop1];
+        generateModel (modelName, propList, keyPropList, []);
+
+        def newDomainClass = loadGrailsDomainClass(modelName);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass])
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
+        assertEquals (2, actions.size());
+        ModelAction action = actions[0];
+        assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
+        assertEquals (modelName, action.modelName);
+
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
+
+
+        keyPropList = [prop1];
+        propList = [prop1];
+        generateModel (modelName, propList, keyPropList, []);
+
+        newDomainClass = loadGrailsDomainClass(modelName);
+        newGrailsDomainClasses = generateDomainClasses([newDomainClass])
+
+
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
+        assertEquals (2, actions.size());
+        action = actions[0];
+        assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
+        assertEquals (modelName, action.modelName);
+
+        modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
+
+        keyPropList = [prop1];
+        propList = [prop1, prop2];
+        generateModel (modelName, propList, keyPropList, []);
+        oldDomainClass = loadGrailsDomainClass(modelName);
+        oldGrailsDomainClasses = generateDomainClasses([oldDomainClass])
+
+        keyPropList = [prop1, prop2];
+        propList = [prop1, prop2];
+        generateModel (modelName, propList, keyPropList, []);
+
+        newDomainClass = loadGrailsDomainClass(modelName);
+        newGrailsDomainClasses = generateDomainClasses([newDomainClass])
+
+
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
+        assertEquals (0, actions.size());
+    }
+
+    public void testIfRelationTypeIsChangedFromOneToOneToOneToMany()
+    {
+        String modelName1 = "Class1";
+        String modelName2 = "Class2";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1, prop2];
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:modelName2, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName1, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:false];
+        def model1 = createModel(modelName1, propList, keyPropList, [rel1]);
+        def model2 = createModel (modelName2, propList, keyPropList, [revrel1]);
+
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def oldDomainClass1 = loadGrailsDomainClass(modelName1);
+        def oldDomainClass2 = loadGrailsDomainClass(modelName2);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass1, oldDomainClass2])
+
+        rel1.cardinality = ModelGenerator.RELATION_TYPE_MANY;
+        revrel1.reverseCardinality= ModelGenerator.RELATION_TYPE_MANY;
+
+        model1 = createModel(modelName1, propList, keyPropList, [rel1]);
+        model2 = createModel (modelName2, propList, keyPropList, [revrel1]);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def newDomainClass1 = loadGrailsDomainClass(modelName1);
+        def newDomainClass2 = loadGrailsDomainClass(modelName2);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass1, newDomainClass2])
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName1], newGrailsDomainClasses[modelName1]);
+        assertEquals (2, actions.size());
+        PropertyAction action = actions[0];
+        assertEquals (PropertyAction.CLEAR_RELATION, action.action);
+        assertEquals (modelName1, action.modelName);
+
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName1, modelAction.modelName);
+
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName2], newGrailsDomainClasses[modelName2]);
+        assertEquals (2, actions.size());
+        action = actions[0];
+        assertEquals (PropertyAction.CLEAR_RELATION, action.action);
+        assertEquals (modelName2, action.modelName);
+
+        modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName2, modelAction.modelName);
+    }
+
+    public void testIfRelationTypeIsChangedFromOneToManyToOneToOne()
+    {
+        String modelName1 = "Class1";
+        String modelName2 = "Class2";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1, prop2];
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:modelName2, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName1, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+        def model1 = createModel(modelName1, propList, keyPropList, [rel1]);
+        def model2 = createModel (modelName2, propList, keyPropList, [revrel1]);
+                
+
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def oldDomainClass1 = loadGrailsDomainClass(modelName1);
+        def oldDomainClass2 = loadGrailsDomainClass(modelName2);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass1, oldDomainClass2])
+
+        rel1.cardinality = ModelGenerator.RELATION_TYPE_ONE;
+        revrel1.reverseCardinality= ModelGenerator.RELATION_TYPE_ONE;
+
+        model1 = createModel(modelName1, propList, keyPropList, [rel1]);
+        model2 = createModel (modelName2, propList, keyPropList, [revrel1]);
+
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def newDomainClass1 = loadGrailsDomainClass(modelName1);
+        def newDomainClass2 = loadGrailsDomainClass(modelName2);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass1, newDomainClass2])
+
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName1], newGrailsDomainClasses[modelName1]);
+        assertEquals (2, actions.size());
+        PropertyAction action = actions[0];
+        assertEquals (PropertyAction.CLEAR_RELATION, action.action);
+        assertEquals (modelName1, action.modelName);
+
+        ModelAction modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName1, modelAction.modelName);
+
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName2], newGrailsDomainClasses[modelName2]);
+        assertEquals (2, actions.size());
+        action = actions[0];
+        assertEquals (PropertyAction.CLEAR_RELATION, action.action);
+        assertEquals (modelName2, action.modelName);
+
+        modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName2, modelAction.modelName);
+    }
+
+     public void testIfRelationIsDeleted()
+    {
+        String modelName1 = "Class1";
+        String modelName2 = "Class2";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1, prop2];
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:modelName2, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName1, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+        def model1 = createModel(modelName1, propList, keyPropList, [rel1]);
+        def model2 = createModel (modelName2, propList, keyPropList, [revrel1]);
+
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def oldDomainClass1 = loadGrailsDomainClass(modelName1);
+        def oldDomainClass2 = loadGrailsDomainClass(modelName2);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass1, oldDomainClass2])
+
+        model1 = createModel(modelName1, propList, keyPropList, []);
+        model2 = createModel (modelName2, propList, keyPropList, []);
+
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def newDomainClass1 = loadGrailsDomainClass(modelName1);
+        def newDomainClass2 = loadGrailsDomainClass(modelName2);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass1, newDomainClass2])
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName1], newGrailsDomainClasses[modelName1]);
+        assertEquals (1, actions.size());
+        ModelAction modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName1, modelAction.modelName);
+
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName2], newGrailsDomainClasses[modelName2]);
+        assertEquals (1, actions.size());
+        modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName2, modelAction.modelName);
+    }
+
+
+    public void testWithNewRelation()
+    {
+        String modelName1 = "Class1";
+        String modelName2 = "Class2";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1, prop2];
+        def model1 = createModel(modelName1, propList, keyPropList, []);
+        def model2 = createModel (modelName2, propList, keyPropList, []);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def oldDomainClass1 = loadGrailsDomainClass(modelName1);
+        def oldDomainClass2 = loadGrailsDomainClass(modelName2);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass1, oldDomainClass2])
+
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:modelName2, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName1, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:false];
+        model1 = createModel(modelName1, propList, keyPropList, [rel1]);
+        model2 = createModel (modelName2, propList, keyPropList, [revrel1]);
+        
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+        def newDomainClass1 = loadGrailsDomainClass(modelName1);
+        def newDomainClass2 = loadGrailsDomainClass(modelName2);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass1, newDomainClass2])
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName1], newGrailsDomainClasses[modelName1]);
+        assertEquals (1, actions.size());
+        ModelAction modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName1, modelAction.modelName);
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName2], newGrailsDomainClasses[modelName2]);
+        assertEquals (1, actions.size());
+        modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName2, modelAction.modelName)
+    }
+
+    def generateDomainClasses(List classes)
+    {
+        def domainClassesMap = [:];
+        classes.each{
+            domainClassesMap[it.name] = new DefaultGrailsDomainClass(it);    
+        }
+        GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClassesMap.values() as GrailsDomainClass[], domainClassesMap);
+        return domainClassesMap;
+    }
+
+
+
+    def generateModel(String name, List modelProperties, List keyProperties, List relations)
+    {
+        
+        def model = createModel(name, modelProperties, keyProperties, relations);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model);
+    }
+
+    def createModel(String name, List modelProperties, List keyProperties, List relations)
+    {
+        model = new StringWriter();
+        modelbuilder = new MarkupBuilder(model);
+        modelbuilder.Model(name:name){
+            modelbuilder.Datasources(){
+                modelbuilder.Datasource(name:"RCMDB"){
+                    keyProperties.each{Map keyPropConfig->
+                        modelbuilder.Key(propertyName:keyPropConfig.name)    
+                    }
+                }
+            }
+
+            modelbuilder.Properties(){
+                boolean isIdAdded = false;
+                boolean isVersionAdded = false;
+                modelProperties.each{Map propConfig->
+                    modelbuilder.Property(propConfig)
+                    if(propConfig.name == "id")
+                    {
+                        isIdAdded = true;
+                    }
+                    if(propConfig.name == "version")
+                    {
+                        isVersionAdded = true;
+                    }
+                }
+                if(!isIdAdded)
+                {
+                    modelbuilder.Property(name:"id", type:ModelGenerator.NUMBER_TYPE, blank:false, defaultValue:"1");
+                }
+                if(!isVersionAdded)
+                {
+                    modelbuilder.Property(name:"version", type:ModelGenerator.NUMBER_TYPE, blank:false, defaultValue:"1");
+                }
+            }
+
+            modelbuilder.Relations(){
+                relations.each{
+                    modelbuilder.Relation(it);
+                }
+            }
+
+        }
+        return model.toString();
+    }
+
+    def loadGrailsDomainClass(String className)
+    {
+        GrailsAwareClassLoader gcl = new GrailsAwareClassLoader(Thread.currentThread().getContextClassLoader());
+        gcl.setShouldRecompile(true);
+        gcl.addClasspath(base_directory + ModelGenerator.MODEL_FILE_DIR);
+        gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
+        return gcl.loadClass (className);
+    }
 }

@@ -33,10 +33,6 @@ for(j in 0..10000) {
 		}
 	}
 
-	if(Device.list().size() != (100 * (j + 1))){
-		throw new Exception("invalid list size")
-	}
-
 	def current2  = System.currentTimeMillis()
 	def additionTimeOf100 = current2 - current;
 
@@ -56,10 +52,6 @@ for(j in 0..10000) {
 
 	100.downto(0) {
 		def searchResult = Device.search("vdor2")
-		searchResult.results.each {
-		if ("vdor2" != it.vendor)
-				throw new Exception("Search is not true")
-		}
 	}
 	def search3 = System.currentTimeMillis() - current4;
 	def current5  = System.currentTimeMillis()

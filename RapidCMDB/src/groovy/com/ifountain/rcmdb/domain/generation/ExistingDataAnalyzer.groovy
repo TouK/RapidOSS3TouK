@@ -7,6 +7,8 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import com.ifountain.rcmdb.domain.util.Relation
 
 /**
 * Created by IntelliJ IDEA.
@@ -28,9 +30,10 @@ class ExistingDataAnalyzer
         def actions = [];
         def oldClassProperties = getPropertyMap(currentDomainObject);
         def newClassProperties = getPropertyMap(newDomainObject);
-        Map oldRelations = getRelationshipProperties(currentDomainObject.clazz);
+
+        Map oldRelations = DomainClassUtils.getRelations(currentDomainObject);
         Map oldConstrainedProps = currentDomainObject.getConstrainedProperties();
-        Map newRelations = getRelationshipProperties(newDomainObject.clazz);
+        Map newRelations = DomainClassUtils.getRelations(newDomainObject);
         def oldKeyProperties = getKeyProperties(currentDomainObject);
         def newKeyProperties = getKeyProperties(newDomainObject);
         Map newConstrainedProps = newDomainObject.getConstrainedProperties();
@@ -68,18 +71,16 @@ class ExistingDataAnalyzer
         {
             willResourcesBeRegenerated = true;    
         }
-        newRelations.each{String relationName, String reverseRelationName->
-            String oldRelationName = oldRelations.remove(relationName)
-            if(oldRelationName)
+        newRelations.each{String relationName, Relation newRelation->
+            Relation oldRelation = oldRelations.remove(relationName)
+            if(oldRelation)
             {
 
-                boolean isOldMany = isMany(currentDomainObject.clazz, relationName);
-                boolean isNewMany = isMany(newDomainObject.clazz, relationName);
+                boolean isOldMany = oldRelation.isOneToMany() || oldRelation.isManyToMany();
+                boolean isNewMany = newRelation.isOneToMany() || newRelation.isManyToMany();
 
-                def oldOthersideClass = !isOldMany?currentDomainObject.getPropertyByName(relationName).type:currentDomainObject.getRelatedClassType(relationName);
-                def newOthersideClass = !isNewMany?newDomainObject.getPropertyByName(relationName).type:newDomainObject.getRelatedClassType(relationName);
-                boolean isOldOthersideMany = isMany(oldOthersideClass, reverseRelationName)
-                boolean isNewOthersideMany = isMany(newOthersideClass, reverseRelationName)
+                boolean isOldOthersideMany = oldRelation.hasOtherSide() && (oldRelation.isManyToOne() || oldRelation.isManyToMany())
+                boolean isNewOthersideMany = newRelation.hasOtherSide() && (newRelation.isManyToOne() || newRelation.isManyToMany())
                 if(isOldMany != isNewMany || isOldOthersideMany != isNewOthersideMany)
                 {
                     if(!willDeleteAll)
@@ -105,18 +106,6 @@ class ExistingDataAnalyzer
         }
         
         return actions;
-    }
-
-    private static Map getRelationshipProperties(Class domainObjectClass)
-    {
-        Map mappedBy=  GrailsClassUtils.getStaticPropertyValue(domainObjectClass, "mappedBy");
-        return mappedBy;
-    }
-
-    private static boolean isMany(Class domainObjectClass, String relName)
-    {
-        Map hasMany=  GrailsClassUtils.getStaticPropertyValue(domainObjectClass, "hasMany");
-        return hasMany.containsKey(relName)
     }
 
     private static Map getPropertyMap(GrailsDomainClass domainObject)

@@ -15,7 +15,7 @@ class Model {
     Model parentModel;
     static hasMany = [modelProperties:ModelProperty, datasources:ModelDatasource, fromRelations:ModelRelation, toRelations:ModelRelation];
     static mappedBy = [fromRelations:'firstModel', toRelations:'secondModel', modelProperties:'model', datasources:'model']
-    static cascaded = ["datasources":true, "firstModel":true, "secondModel":true, modelProperties:true]
+    static cascaded = ["datasources":true, "fromRelations":true, "toRelations":true, modelProperties:true]
     static constraints = {
         name(blank:false, key:[], validator:{val, obj ->
             def firstChar = val.charAt(0);

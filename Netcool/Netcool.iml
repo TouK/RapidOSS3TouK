@@ -47,6 +47,7 @@
     <orderEntry type="module" module-name="ext" />
     <orderEntry type="module" module-name="comp" />
     <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="RcmdbCommons" />
     <orderEntryProperties />
   </component>
 </module>

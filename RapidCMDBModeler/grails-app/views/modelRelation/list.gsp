@@ -23,11 +23,11 @@
                         <tr>
                         
                    	        <g:sortableColumn property="id" title="Id" />
-                   	        <g:sortableColumn property="cardinality" title="Cardinality" />
+                   	        <g:sortableColumn property="firstCardinality" title="Cardinality" />
                            <th>From Model</th>
-                           <g:sortableColumn property="fromName" title="Relation Name" />
+                           <g:sortableColumn property="firstModel" title="Relation Name" />
                    	        <th>To Model</th>
-                   	        <g:sortableColumn property="toName" title="Reverse Relation Name" />
+                   	        <g:sortableColumn property="secondModel" title="Reverse Relation Name" />
                         </tr>
                     </thead>
                     <tbody>
@@ -36,11 +36,11 @@
                         
                             <td><g:link action="show" id="${modelRelation.id}">${modelRelation.id?.encodeAsHTML()}</g:link></td>
                         
-                            <td>${modelRelation.cardinality?.encodeAsHTML()}</td>
-                            <td>${modelRelation.fromModel?.encodeAsHTML()}</td>
-                            <td>${modelRelation.fromName?.encodeAsHTML()}</td>
-                            <td>${modelRelation.toModel?.encodeAsHTML()}</td>
-                            <td>${modelRelation.toName?.encodeAsHTML()}</td>
+                            <td>${modelRelation.firstCardinality?.encodeAsHTML()}</td>
+                            <td>${modelRelation.firstModel?.encodeAsHTML()}</td>
+                            <td>${modelRelation.firstName?.encodeAsHTML()}</td>
+                            <td>${modelRelation.secondModel?.encodeAsHTML()}</td>
+                            <td>${modelRelation.secondName?.encodeAsHTML()}</td>
                         </tr>
                     </g:each>
                     </tbody>

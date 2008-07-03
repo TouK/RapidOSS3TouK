@@ -1,7 +1,8 @@
 package model;
 import com.ifountain.rcmdb.domain.util.ControllerUtils;
 class ModelRelationController {
-    def list = {
+	def index = {redirect(action: list, params: params)}
+	def list = {
         if(!params.max) params.max = 10
         [ modelRelationList: ModelRelation.list( params ) ]
     }

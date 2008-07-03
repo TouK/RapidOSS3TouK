@@ -2,6 +2,7 @@ package model;
 import com.ifountain.rcmdb.domain.util.ControllerUtils;
 class ModelDatasourceController {
 
+	def index = {redirect(action: list, params: params)}
     def list = {
         if(!params.max) params.max = 10
         [ modelDatasourceList: ModelDatasource.list( params ) ]

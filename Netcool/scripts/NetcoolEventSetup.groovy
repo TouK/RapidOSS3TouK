@@ -1,6 +1,7 @@
-import connection.NetcoolConnection
-import datasource.BaseDatasource
-import datasource.NetcoolDatasource
+import model.*
+import connection.*
+import datasource.*
+//import com.ifountain.rcmdb.domain.ModelGenerator
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -67,12 +68,12 @@ return "Successfully created NetcoolEvent model class.";
 def generateNetcoolConnAndDS(ncConName, ncDsName){
 	def conn1 = NetcoolConnection.findByName(ncConName);
 	if(conn1 == null){
-	    conn1 = new NetcoolConnection(name: ncConName, url: NC_URL,username: USERNAME, password:PSW).save();
+	    conn1 = NetcoolConnection.add(name: ncConName, url: NC_URL,username: USERNAME, password:PSW);
 	}
 
 	def ncDatasource= NetcoolDatasource.findByName(ncDsName);
 	if (ncDatasource == null){
-	    ncDatasource = new NetcoolDatasource(connection:conn1, name:ncDsName).save();
+	    ncDatasource = NetcoolDatasource.add(connection:conn1, name:ncDsName);
 	}
 }
 

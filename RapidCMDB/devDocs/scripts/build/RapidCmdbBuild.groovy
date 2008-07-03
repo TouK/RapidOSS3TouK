@@ -125,6 +125,8 @@ class RapidCmdbBuild extends Build {
          ant.copy(todir: "$env.dist_rapid_cmdb") {
             ant.fileset(file: "$env.rapid_cmdb_cvs/application.properties");
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.exe");
+            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
+            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.vmoptions");
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.sh");
         }
@@ -144,14 +146,6 @@ class RapidCmdbBuild extends Build {
                 ant.exclude(name: "domain/connection/Smarts*.groovy")
                 ant.exclude(name: "views/smarts*/*")
                 ant.exclude(name: "views/smarts*")
-
-                // exclude Netcool classes
-                ant.exclude(name: "controllers/datasource/Netcool*.groovy")
-                ant.exclude(name: "controllers/connection/Netcool*.groovy")
-                ant.exclude(name: "domain/datasource/Netcool*.groovy")
-                ant.exclude(name: "domain/connection/Netcool*.groovy")
-                ant.exclude(name: "views/netcool*/*")
-                ant.exclude(name: "views/netcool*")
             }
         }
         ant.copy(file: "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir: "$env.dist_rapid_cmdb/scripts");
@@ -178,7 +172,6 @@ class RapidCmdbBuild extends Build {
          ant.copy(todir: "$env.dist_rapid_cmdb/web-app") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/web-app") {
                 ant.exclude(name: "indexSmarts.gsp")
-                ant.exclude(name: "indexNetcool.gsp")
             }
         }
         if (TEST) {
@@ -194,6 +187,8 @@ class RapidCmdbBuild extends Build {
         ant.copy(todir: "$env.dist_rapid_cmdb_modeler") {
             ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/application.properties");
             ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.exe");
+            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
+            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
             ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.vmoptions");
             ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.sh");
             ant.fileset(file: env.invalidNames);
@@ -273,8 +268,8 @@ class RapidCmdbBuild extends Build {
             	ant.exclude(name:".project");
             }
         }
-        smartsBuild.run([]);
         netcoolBuild.run([]);
+        smartsBuild.run([]);
         buildSample("Sample1");
         buildSample("Sample2");
         return zipFileName;

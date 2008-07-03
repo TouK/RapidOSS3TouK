@@ -1,7 +1,8 @@
-package connection
+package com.ifountain.rcmdb.netcool
 
 import java.sql.SQLException
-import java.sql.Statement;
+import java.sql.Statement
+import connection.DatabaseConnectionImpl;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

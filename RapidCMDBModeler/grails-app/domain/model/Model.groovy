@@ -1,10 +1,6 @@
 package model
 
-import com.ifountain.core.domain.annotations.CmdbOperation
-import com.ifountain.rcmdb.domain.generation.ModelGenerationUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import com.ifountain.rcmdb.domain.generation.ModelGenerationUtils
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class Model {
     static searchable = {

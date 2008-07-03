@@ -50,10 +50,7 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
 
 
     void testSuccessfulSave() {
-        def model = new Model(name: "Customer");
-        model.validate();
-        println "model errors: " + model.errors;
-        model.save();
+        def model = Model.add(name: "Customer");
         def datasource = DatasourceName.add(name: "RCMDB");
         def mdc = new ModelDatasourceController();
         mdc.params["datasource.id"] = datasource.id;

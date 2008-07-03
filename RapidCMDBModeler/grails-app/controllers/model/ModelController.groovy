@@ -6,6 +6,7 @@ import com.ifountain.rcmdb.domain.util.ControllerUtils;
 class ModelController {
     def static String MODEL_DOESNOT_EXIST = "Model does not exist";
 
+    def index = {redirect(action: list, params: params)}
     def list = {
         if(!params.max) params.max = 10
         [ modelList: Model.list( params ) ]

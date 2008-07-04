@@ -4,7 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
-        <title>Create NetcoolConnection</title>         
+        <title>Create NetcoolConnection</title>
     </head>
     <body>
         <div class="nav">
@@ -38,30 +38,21 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="connectionClass">Connection Class:</label>
+                                    <label for="host">Host:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:netcoolConnection,field:'connectionClass','errors')}">
-                                    <input type="text" class="inputtextfieldl" id="connectionClass" name="connectionClass" value="${fieldValue(bean:netcoolConnection,field:'connectionClass')}"/>
+                                <td valign="top" class="value ${hasErrors(bean:netcoolConnection,field:'host','errors')}">
+                                    <input type="text" class="inputtextfieldl" id="host" name="host" value="${fieldValue(bean:netcoolConnection,field:'host')}"/>
                                 </td>
-                            </tr> 
-                        
-                            <tr class="prop">
+                            </tr>
+
+                           <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="driver">Driver:</label>
+                                    <label for="port">Port:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:netcoolConnection,field:'driver','errors')}">
-                                    <input type="text" class="inputtextfieldl" id="driver" name="driver" value="${fieldValue(bean:netcoolConnection,field:'driver')}"/>
+                                <td valign="top" class="value ${hasErrors(bean:netcoolConnection,field:'port','errors')}">
+                                    <input type="text" class="inputtextfieldl" id="port" name="port" value="${fieldValue(bean:netcoolConnection,field:'port')}"/>
                                 </td>
-                            </tr> 
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="url">Url:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:netcoolConnection,field:'url','errors')}">
-                                    <input type="text" class="inputtextfieldl" id="url" name="url" value="${fieldValue(bean:netcoolConnection,field:'url')}"/>
-                                </td>
-                            </tr> 
+                            </tr>
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
@@ -74,13 +65,12 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="password">Password:</label>
+                                    <label for="userPassword">Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:netcoolConnection,field:'userPassword','errors')}">
                                     <input type="password" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:netcoolConnection,field:'userPassword')}"/>
                                 </td>
                             </tr> 
-                        
                         </tbody>
                     </table>
                 </div>

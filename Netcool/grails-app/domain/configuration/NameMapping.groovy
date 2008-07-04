@@ -1,0 +1,19 @@
+package configuration
+/**
+ * Created by IntelliJ IDEA.
+ * User: Administrator
+ * Date: Jul 4, 2008
+ * Time: 8:53:58 AM
+ * To change this template use File | Settings | File Templates.
+ */
+class NameMapping {
+    static searchable = true;
+    String netcoolName;
+    String localName
+    boolean isDeleteMarker;
+
+    static constraints = {
+        netcoolName(key:[], nullable:false, blank:false);
+        localName(nullable:false, blank:false);
+    }
+}

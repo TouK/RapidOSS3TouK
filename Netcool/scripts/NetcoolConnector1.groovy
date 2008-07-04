@@ -2,14 +2,8 @@ import connection.*
 import datasource.*
 def lastStateChange = 0;
 
-NC_URL = 'jdbc:sybase:Tds:ossmuse:4100/?LITERAL_PARAMS=true';
-USERNAME = 'root';
-PSW = ''; 
-def ncConName = "ncConn";
-def ncDsName = "NCOMS";
-generateNetcoolConnAndDS(ncConName, ncDsName);
+def netcoolDatasources = NetcoolDatasource.list();
 
-def ncds = NetcoolDatasource.get(name:"NCOMS");
 def nameMap = [:];
 nameMap.putAll(NetcoolDatasource.NAMEMAP);
 nameMap.remove("netcoolclass");

@@ -3,36 +3,36 @@ import com.ifountain.core.domain.annotations.*;
 //import datasource.NetcoolDatasource // ADDED TO BE ABLE TO GET NCDS PER EVENT ONCE DURING onLoad()
 
 class NetcoolEvent {
-
+     static searchable = true;
     //AUTO_GENERATED_CODE
 
 
-    static datasources = ["RCMDB":["master":true, "keys":["serverserial":["nameInDs":"serverserial"]]]]
+    static datasources = ["RCMDB":["keys":["serverserial":["nameInDs":"serverserial"], "servername":["nameInDs":"servername"]]]]
 
     
-    String grade ;
+    Long grade ;
     
     String agent ;
     
-    String processreq ;
+    Long processreq ;
     
-    String x733eventtype ;
+    Long x733eventtype ;
     
-    String tally ;
+    Long tally ;
     
-    String type ;
+    Long type ;
     
     String servername ;
     
     String remoterootobj ;
     
-    String tasklist ;
+    Long tasklist ;
     
-    String severity ;
+    Long severity ;
     
     String manager ;
     
-    String flash ;
+    Long flash ;
     
     String location ;
     
@@ -40,11 +40,11 @@ class NetcoolEvent {
     
     String physicalcard ;
     
-    String physicalport ;
+    Long physicalport ;
     
-    String physicalslot ;
+    Long physicalslot ;
     
-    String lastoccurrence ;
+    Long lastoccurrence ;
     
     String customer ;
     
@@ -52,23 +52,23 @@ class NetcoolEvent {
     
     String url ;
     
-    String ownergid ;
+    Long ownergid ;
     
-    String nmosobjinst ;
+    Long nmosobjinst ;
     
-    String acknowledged ;
+    Long acknowledged ;
     
     String alertkey ;
     
-    String serial ;
+    Long serial ;
     
-    String owneruid ;
+    Long owneruid ;
     
     String x733corrnotif ;
     
     String nmosserial ;
     
-    String firstoccurrence ;
+    Long firstoccurrence ;
     
     String alertgroup ;
     
@@ -78,7 +78,7 @@ class NetcoolEvent {
     
     Long serverserial ;
     
-    String statechange ;
+    Long statechange ;
     
     String identifier ;
     
@@ -86,15 +86,15 @@ class NetcoolEvent {
     
     String localpriobj ;
     
-    String netcoolclass ;
+    Long netcoolclass ;
     
     String localsecobj ;
     
-    String expiretime ;
+    Long expiretime ;
     
-    String suppressescl ;
+    Long suppressescl ;
     
-    String nmoscausetype ;
+    Long nmoscausetype ;
     
     String service ;
     
@@ -104,15 +104,15 @@ class NetcoolEvent {
     
     String localnodealias ;
     
-    String poll ;
+    Long poll ;
     
     String remotepriobj ;
     
     String remotenodealias ;
     
-    String x733probablecause ;
+    Long x733probablecause ;
     
-    String internallast ;
+    Long internallast ;
     
 
     static hasMany = [:]
@@ -184,7 +184,7 @@ class NetcoolEvent {
         
      eventid(blank:true,nullable:true)
         
-     serverserial(unique:true)
+     serverserial(key:[servername])
         
      statechange(blank:true,nullable:true)
         
@@ -236,14 +236,4 @@ class NetcoolEvent {
     }
     
     //AUTO_GENERATED_CODE
-
-    // ADDED TO BE ABLE TO GET NCDS PER EVENT ONCE DURING onLoad()
-//    NetcoolDatasource NCDS;
-    
-    def onLoad = {
-	
-		if (servername!=null){
-			NCDS = NetcoolDatasource.get(name:servername);
-		}
-	}
 }

@@ -37,24 +37,18 @@
 
                 </tr>
 
-                <tr class="prop">
-                    <td valign="top" class="name">Connection Class:</td>
 
-                    <td valign="top" class="value">${netcoolConnection.connectionClass}</td>
+                <tr class="prop">
+                    <td valign="top" class="name">Host:</td>
+
+                    <td valign="top" class="value">${netcoolConnection.host}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Driver:</td>
+                    <td valign="top" class="name">Port:</td>
 
-                    <td valign="top" class="value">${netcoolConnection.driver}</td>
-
-                </tr>
-
-                <tr class="prop">
-                    <td valign="top" class="name">Url:</td>
-
-                    <td valign="top" class="value">${netcoolConnection.url}</td>
+                    <td valign="top" class="value">${netcoolConnection.port}</td>
 
                 </tr>
 

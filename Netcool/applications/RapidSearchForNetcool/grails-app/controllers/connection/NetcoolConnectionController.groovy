@@ -1,6 +1,3 @@
-
-
-
 package connection
 
 import com.ifountain.rcmdb.domain.util.ControllerUtils
@@ -47,10 +44,10 @@ class NetcoolConnectionController {
     }
 
     def delete = {
-        def netcoolConnection = NetcoolConnection.get( [id:params.id])
+        NetcoolConnection netcoolConnection = NetcoolConnection.get( [id:params.id])
         if(netcoolConnection) {
             try{
-                netcoolConnection.remove()
+                netcoolConnection.remove();
                 flash.message = "NetcoolConnection ${params.id} deleted"
                 redirect(action:list)
             }
@@ -105,8 +102,9 @@ class NetcoolConnectionController {
     }
 
     def save = {
-        def netcoolConnection = NetcoolConnection.add(ControllerUtils.getClassProperties(params, NetcoolConnection))
+        NetcoolConnection netcoolConnection = NetcoolConnection.add(ControllerUtils.getClassProperties(params, NetcoolConnection))
         if(!netcoolConnection.hasErrors()) {
+            datasource.NetcoolDatasource.add(name:netcoolConnection.name, connection:netcoolConnection);
             flash.message = "NetcoolConnection ${netcoolConnection.id} created"
             redirect(action:show,id:netcoolConnection.id)
         }

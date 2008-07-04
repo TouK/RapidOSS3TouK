@@ -25,13 +25,11 @@
                    	        <g:sortableColumn property="id" title="Id" />
                         
                    	        <g:sortableColumn property="name" title="Name" />
-                        
-                   	        <g:sortableColumn property="connectionClass" title="Connection Class" />
-                        
-                   	        <g:sortableColumn property="driver" title="Driver" />
-                        
-                   	        <g:sortableColumn property="url" title="Url" />
-                        
+
+                   	        <g:sortableColumn property="host" title="Host" />
+
+                            <g:sortableColumn property="port" title="Port" />
+
                    	        <g:sortableColumn property="username" title="Username" />
                         
                         </tr>
@@ -44,11 +42,9 @@
                         
                             <td>${netcoolConnection.name?.encodeAsHTML()}</td>
                         
-                            <td>${netcoolConnection.connectionClass?.encodeAsHTML()}</td>
+                            <td>${netcoolConnection.host?.encodeAsHTML()}</td>
                         
-                            <td>${netcoolConnection.driver?.encodeAsHTML()}</td>
-                        
-                            <td>${netcoolConnection.url?.encodeAsHTML()}</td>
+                            <td>${netcoolConnection.port?.encodeAsHTML()}</td>
                         
                             <td>${netcoolConnection.username?.encodeAsHTML()}</td>
                         

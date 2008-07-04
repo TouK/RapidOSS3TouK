@@ -203,6 +203,12 @@ class NetcoolDatasource extends BaseDatasource{
         def results = statusTableAdapter.getRecords(whereClause);
         return results;
     }
+    
+    def getJournalEntries(String whereClause){
+        def results = journalTableAdapter.getRecords(whereClause);
+        return results;
+    }
+
 
     def getSerial(identifier){
 		def event = getEventByIdentifier(identifier);

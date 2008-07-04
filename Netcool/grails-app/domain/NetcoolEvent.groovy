@@ -184,7 +184,7 @@ class NetcoolEvent {
         
      eventid(blank:true,nullable:true)
         
-     serverserial(key:[servername])
+     serverserial(key:["servername"])
         
      statechange(blank:true,nullable:true)
         

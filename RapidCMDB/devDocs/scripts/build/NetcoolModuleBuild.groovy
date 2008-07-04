@@ -42,13 +42,14 @@ class NetcoolModuleBuild extends Build{
         ant.exec(executable:"${new File("${env.dist_rapid_cmdb}/rsconsole.bat").absolutePath}", dir:"${new File("${env.rapid_netcool}").absolutePath}")
         {
             ant.arg(value:"package-plugin")
+            ant.arg(value:"-Dplugin.resources=\"applications/**,operations/**\"")
             System.getenv().each{envKey, envVal->
                 ant.env(key:"${envKey}", value:"${envVal}");    
             }
             ant.env(key:"RS_HOME", value:"${new File(env.dist_rapid_server).absolutePath}");
 
         }
-        ant.copy(todir:"${env.distribution}"){
+        ant.move(todir:"${env.distribution}"){
             ant.fileset(file: "$env.rapid_netcool/*netcool*.zip");
         }
     }

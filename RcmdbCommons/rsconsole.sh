@@ -17,9 +17,5 @@ fi
 
 export GRAILS_HOME=$RS_HOME
 
-if [ -f "$RS_HOME/temp/projects" ]
-then
-rm -r $RS_HOME/temp/projects
-fi
 . $GRAILS_HOME/bin/startGrails
 startGrails com.ifountain.grails.RapidGrailsScriptRunner  "$@"

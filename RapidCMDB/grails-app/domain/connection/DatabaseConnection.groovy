@@ -23,15 +23,10 @@ class DatabaseConnection extends Connection{
    static hasMany = [singleTableDatabaseDatasources:SingleTableDatabaseDatasource, databaseDatasources:DatabaseDatasource]
     
     static constraints={
-    url(blank:true,nullable:true)
-        
-     userPassword(blank:true,nullable:true)
-        
-     username(blank:true,nullable:true)
-        
-     driver(blank:true,nullable:true)
-        
-     
+        url(blank:false)
+        userPassword(blank:true,  nullable:true)
+        username(blank:false)
+        driver(blank:false)
     }
 
     static mappedBy=["singleTableDatabaseDatasources":"connection", "databaseDatasources":"connection"]

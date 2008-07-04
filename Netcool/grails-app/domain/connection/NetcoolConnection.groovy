@@ -5,7 +5,7 @@ import com.ifountain.rcmdb.netcool.NetcoolConnectionImpl;
 class NetcoolConnection extends DatabaseConnection{
     String driver = "com.sybase.jdbc2.jdbc.SybDriver";
     String host = "";
-    Long port = "";
+    Long port;
     String connectionClass = NetcoolConnectionImpl.class.name;
     static searchable = {
         except = [];
@@ -23,7 +23,7 @@ class NetcoolConnection extends DatabaseConnection{
     }
     public String getUrl()
     {
-        return "jdbc:sybase:Tds:${host}:${port}/?LITERAL_PARAMS=true"
+        return "jdbc:sybase:Tds:${host}:${port}/?LITERAL_PARAMS=true".toString()
     }
     static mappedBy=["netcoolDatasources":"connection"]
     static belongsTo = []

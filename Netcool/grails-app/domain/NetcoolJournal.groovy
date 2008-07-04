@@ -19,7 +19,7 @@ class NetcoolJournal {
     static hasMany = [:]
 
     static constraints={
-        servername(key:[keyfield], nullable:false, blank:false)
+        servername(key:["keyfield"], nullable:false, blank:false)
         keyfield(nullable:false, blank:false)
         text(nullable:false, blank:true)
         chrono(nullable:false)

@@ -45,7 +45,7 @@ public class DatabaseConnectionImpl extends BaseConnection{
 
     private String checkParam(String parameterName) throws UndefinedConnectionParameterException {
         if(!param.getOtherParams().containsKey(parameterName)){
-            throw new UndefinedConnectionParameterException(parameterName);
+            return "";
         }
         return (String) param.getOtherParams().get(parameterName);
     }

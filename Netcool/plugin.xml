@@ -5,12 +5,16 @@
 </description>
   <documentation>http://grails.org/Netcool+Plugin</documentation>
   <resources>
+    <resource>connection.NetcoolConnectionController</resource>
+    <resource>connector.NetcoolLastRecordIdentifier</resource>
     <resource>DataSource</resource>
     <resource>UrlMappings</resource>
     <resource>connection.NetcoolConnectionController</resource>
     <resource>datasource.NetcoolDatasourceController</resource>
+    <resource>configuration.NameMapping</resource>
     <resource>connection.NetcoolConnection</resource>
     <resource>datasource.NetcoolDatasource</resource>
     <resource>NetcoolEvent</resource>
+    <resource>NetcoolJournal</resource>
   </resources>
 </plugin>

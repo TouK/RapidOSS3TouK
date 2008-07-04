@@ -206,7 +206,7 @@ class ModelMetaData
             }
             else
             {
-                if(!masterDatasource.keys.containsKey(propertyName))
+                if(!masterDatasource || !masterDatasource.keys.containsKey(propertyName))
                 {
                     constraints[propertyName][ConstrainedProperty.BLANK_CONSTRAINT] = true;
                     constraints[propertyName][ConstrainedProperty.NULLABLE_CONSTRAINT] = true;

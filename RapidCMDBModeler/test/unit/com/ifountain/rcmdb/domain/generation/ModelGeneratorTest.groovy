@@ -96,6 +96,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         def parentModel = new MockModel(name:"Class2");
         def childModel = new MockModel(name:"Class1", parentModel:parentModel);
         addMasterDatasource(parentModel);
+        childModel.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.numberType, model:childModel,blank:false,defaultValue:"1");
 
         ModelGeneratorAdapter.generateModels([childModel, parentModel]);
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(childModel.name).exists());

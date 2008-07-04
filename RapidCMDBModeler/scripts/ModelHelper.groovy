@@ -32,19 +32,25 @@ class ModelHelper{
 	private props = [:];
 			
 	ModelHelper(modelName){
-		model = new Model(name:modelName);
+		model = Model.add(name:modelName);
+		if (model.hasErrors()) {
+			throw new Exception(model.errors.toString());
+		}
 	}
 	
 	ModelHelper(modelName, parentModelName){
 
 		def parent = Model.findByName(parentModelName);
-		model = new Model(name:modelName, parentModel:parent).save();
+		model = Model.add(name:modelName, parentModel:parent);
+		if (model.hasErrors()) {
+			throw new Exception(model.errors.toString());
+		}
 		def tempParent = parent;
 		while (tempParent!=null){
 			// find parent's datasources
-			def allparentds = ModelDatasource.findAllByModel(tempParent);
+			def allparentds = tempParent.datasources; //ModelDatasource.findAllByModel(tempParent);
 			for (ds in allparentds){
-				def dskeys = ModelDatasourceKeyMapping.findAllByDatasource(ds);
+				def dskeys = ds.keyMappings; //ModelDatasourceKeyMapping.findAllByDatasource(ds);
 				def keys =[];
 				for (key in dskeys){
 					keys.add(["name":key.property.name, "nameInDs":key.nameInDatasource]);
@@ -53,7 +59,7 @@ class ModelHelper{
 			}
 			
 			// find parent's properties
-			def allprops = ModelProperty.findAllByModel(tempParent);
+			def allprops = tempParent.modelProperties; // ModelProperty.findAllByModel(tempParent);
 			for (prop in allprops){
 				props.put(prop.name, prop);	
 			}
@@ -62,15 +68,16 @@ class ModelHelper{
 	}
 	
 	def setDatasources(List dsList){
-		model = model.save();
 	    dsList.each{
-			def modelDatasource = new ModelDatasource(datasource:it.datasource, master:it.master, model:model).save();
+			def modelDatasource = ModelDatasource.add(datasource:it.datasource, master:it.master, model:model);
+			if (modelDatasource.hasErrors()) {
+				throw new Exception(modelDatasource.errors.toString());
+			}
 			datasources.put(it.datasource.name, ['modelDatasource':modelDatasource, 'keys':it.keys]);
 	    }
 	}
 	
 	def setProps(List propList){
-		model = model.save();	
 		propList.each{
 			def propProperties = [:];
 			propProperties.putAll(it);
@@ -83,11 +90,11 @@ class ModelHelper{
 			else{
 				def dynamicModelDsName = propProperties.propertySpecifyingDatasource;
 				if (dynamicModelDsName != null){
-					def dynamicProp	= ModelProperty.findByModelAndName(model,dynamicModelDsName);
+					def dynamicProp = ModelProperty.list().find{it.model.name == model.name && it.name == dynamicModelDsName};
 					if (dynamicProp==null){
 						dynamicProp	= props[dynamicModelDsName];
 						if (dynamicProp == null){
-							throw exception("Dynamic datasource property can not be found!");	
+							throw new Exception("Dynamic datasource property can not be found!");	
 						}
 					}
 					propProperties.remove('propertySpecifyingDatasource');
@@ -95,29 +102,36 @@ class ModelHelper{
 				}
 			}
 			propProperties.put('model', model);
-			new ModelProperty(propProperties).save();
+			def result = ModelProperty.add(propProperties);
+			if (result.hasErrors()) {
+				throw new Exception(result.errors.toString());
+			}
 		}
 	}
 	
 	def setKeyMappings(){
-		model = model.save();
 		for (ds in datasources){
-			ds.value.keys.each{
-				def keyProp = ModelProperty.findByModelAndName(model, it.name);
-				def nameInDs = it.nameInDs;
+			ds.value.keys.each{			
+				def prop = it;
+				def keyProp = ModelProperty.list().find{it.model.name == model.name && it.name == prop.name};
+				def nameInDs = prop.nameInDs;
 				if (nameInDs == null){
-					nameInDs = it.name;
+					nameInDs = prop.name;
 				}
-				new ModelDatasourceKeyMapping(property:keyProp, nameInDatasource:nameInDs, datasource:ds.value.modelDatasource).save();
+				def result = ModelDatasourceKeyMapping.add(property:keyProp, nameInDatasource:nameInDs, datasource:ds.value.modelDatasource);
+				if (result.hasErrors()) {
+					throw new Exception(result.errors.toString());
+				}
 			}
 		}
 	}
 	
 	def createRelation(secondModelName, firstName, secondName, firstCar, secondCar){
 		def secondModel = Model.findByName(secondModelName);
-	    new ModelRelation(firstModel:model, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar).save();
-	    model.refresh();
-	    secondModel.refresh();
+	    def result = ModelRelation.add(firstModel:model, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar);
+	    if (result.hasErrors()) {
+			throw new Exception(result.errors.toString());
+		}
 	}
 
 

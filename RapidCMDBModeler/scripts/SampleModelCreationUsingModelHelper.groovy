@@ -1,3 +1,5 @@
+import model.*
+
 println "=========== STARTING THE PROCESS ==========="
 def datasources = [];
 def props = [];
@@ -5,32 +7,34 @@ def props = [];
 // SmartsObject
 // ModelHelper is the utility class to make the model generation  from script easier.
 
+// Model.list()*.remove();
+
 def myModel = Model.findByName("Ip");
-if (myModel!=null)	myModel.delete(flush:true);
+if (myModel!=null)	myModel.remove();
 
 myModel = Model.findByName("Port");
-if (myModel!=null)	myModel.delete(flush:true);
+if (myModel!=null)	myModel.remove();
 
 myModel = Model.findByName("Card");
-if (myModel!=null)	myModel.delete(flush:true);
+if (myModel!=null)	myModel.remove();
 
 myModel = Model.findByName("DeviceInterface");
-if (myModel!=null)	myModel.delete(flush:true);
+if (myModel!=null)	myModel.remove();
 
 myModel = Model.findByName("DeviceAdapter");
-if (myModel!=null)	myModel.delete(flush:true);
+if (myModel!=null)	myModel.remove();
 
 myModel = Model.findByName("DeviceComponent");
-if (myModel!=null)	myModel.delete(flush:true);
+if (myModel!=null)	myModel.remove();
 
 myModel = Model.findByName("Link");
-if (myModel!=null)	myModel.delete(flush:true);
+if (myModel!=null)	myModel.remove();
 
 myModel = Model.findByName("Device");
-if (myModel!=null)	myModel.delete(flush:true);
+if (myModel!=null)	myModel.remove();
 
 myModel = Model.findByName("SmartsObject");
-if (myModel!=null)	myModel.delete(flush:true);
+if (myModel!=null)	myModel.remove();
 
 
 def modelhelperSO = new ModelHelper("SmartsObject"); 
@@ -55,7 +59,6 @@ props.add(displayName);
 def rcmdbDs = DatasourceName.findByName("RCMDB");
 if(rcmdbDs == null){
     rcmdbDs = DatasourceName.add(name: "RCMDB");
-    rcmdbDs.save();
 }
 def rcmdbKey1 = [name:"name"];
 def rcmdbKey2 = [name:"creationClassName"];
@@ -66,7 +69,6 @@ datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey1, rcmdbKey2]]);
 def eastRegionDs = DatasourceName.findByName("eastRegionDs");
 if(eastRegionDs == null){
     eastRegionDs = DatasourceName.add(name: "eastRegionDs");
-    eastRegionDs.save();
 }
 def eastRegionDsKey1 = [name:"name",nameInDs:"Name"];
 def eastRegionDsKey2 = [name:"creationClassName",nameInDs:"CreationClassName"];
@@ -75,7 +77,6 @@ datasources.add([datasource:eastRegionDs, master:false, keys:[eastRegionDsKey1, 
 def westRegionDs = DatasourceName.findByName("westRegionDs");
 if(westRegionDs == null){
     westRegionDs = DatasourceName.add(name: "westRegionDs");
-    westRegionDs.save();
 }
 def westRegionDsKey1 = [name:"name",nameInDs:"Name"];
 def westRegionDsKey2 = [name:"creationClassName",nameInDs:"CreationClassName"];
@@ -119,12 +120,12 @@ modelhelperDevice.props = props;
 
 // Link
 def modelhelperLink = new ModelHelper("Link", "SmartsObject");
-def a_AdminStatus= [name:"a_AdminStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"A_AdminStatus", propertySpecifyingDatasource:"smartDs"];
-def a_OperStatus= [name:"a_OperStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"A_OperStatus", propertySpecifyingDatasource:"smartDs"];
-def a_DisplayName= [name:"a_DisplayName", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"A_DisplayName", propertySpecifyingDatasource:"smartDs"];
-def z_AdminStatus= [name:"z_AdminStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Z_AdminStatus", propertySpecifyingDatasource:"smartDs"];
-def z_OperStatus= [name:"z_OperStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Z_OperStatus", propertySpecifyingDatasource:"smartDs"];
-def z_DisplayName= [name:"z_DisplayName", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Z_DisplayName", propertySpecifyingDatasource:"smartDs"];
+def a_AdminStatus= [name:"aa_AdminStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"A_AdminStatus", propertySpecifyingDatasource:"smartDs"];
+def a_OperStatus= [name:"aa_OperStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"A_OperStatus", propertySpecifyingDatasource:"smartDs"];
+def a_DisplayName= [name:"aa_DisplayName", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"A_DisplayName", propertySpecifyingDatasource:"smartDs"];
+def z_AdminStatus= [name:"zz_AdminStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Z_AdminStatus", propertySpecifyingDatasource:"smartDs"];
+def z_OperStatus= [name:"zz_OperStatus", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Z_OperStatus", propertySpecifyingDatasource:"smartDs"];
+def z_DisplayName= [name:"zz_DisplayName", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Z_DisplayName", propertySpecifyingDatasource:"smartDs"];
 
 props = [];
 props.add(a_AdminStatus);
@@ -235,9 +236,14 @@ modelhelperCard.props = props;
 
 modelhelperDevice.createRelation("DeviceComponent", "composedOf", "partOf", ModelRelation.ONE, ModelRelation.MANY);
 modelhelperDevice.createRelation("Link", "connectedVia", "connectedSystems", ModelRelation.MANY, ModelRelation.MANY);
+modelhelperDevice.createRelation("Ip", "hostsAccessPoints", "hostedBy", ModelRelation.ONE, ModelRelation.MANY);
 modelhelperLink.createRelation("DeviceAdapter", "connectedTo", "connectedVia", ModelRelation.ONE, ModelRelation.MANY);
 modelhelperDeviceAdapter.createRelation("Card", "realizedBy", "realises", ModelRelation.MANY, ModelRelation.ONE);
-modelhelperDevice.createRelation("Ip", "hostsAccessPoints", "hostedBy", ModelRelation.ONE, ModelRelation.MANY);
 modelhelperDeviceInterface.createRelation("Ip", "underlying", "layeredOver", ModelRelation.ONE, ModelRelation.ONE);
+
+ModelRelation.list().each{
+	println it;
+// 	println "1stModel: $it.firstModel.name 2ndModel: it.secondModel.name 1stName: it.firstName 2ndName: it.secondName"
+}
 
 return "Success"

@@ -234,16 +234,12 @@ modelhelperCard.props = props;
 // Param4: Cardinality to first class
 // Param5: Cardinality to second class
 
-modelhelperDevice.createRelation("DeviceComponent", "composedOf", "partOf", ModelRelation.ONE, ModelRelation.MANY);
+
 modelhelperDevice.createRelation("Link", "connectedVia", "connectedSystems", ModelRelation.MANY, ModelRelation.MANY);
-modelhelperDevice.createRelation("Ip", "hostsAccessPoints", "hostedBy", ModelRelation.ONE, ModelRelation.MANY);
 modelhelperLink.createRelation("DeviceAdapter", "connectedTo", "connectedVia", ModelRelation.ONE, ModelRelation.MANY);
+modelhelperDevice.createRelation("Ip", "hostsAccessPoints", "hostedBy", ModelRelation.ONE, ModelRelation.MANY);
+modelhelperDevice.createRelation("DeviceComponent", "composedOf", "partOf", ModelRelation.ONE, ModelRelation.MANY);
 modelhelperDeviceAdapter.createRelation("Card", "realizedBy", "realises", ModelRelation.MANY, ModelRelation.ONE);
 modelhelperDeviceInterface.createRelation("Ip", "underlying", "layeredOver", ModelRelation.ONE, ModelRelation.ONE);
-
-ModelRelation.list().each{
-	println it;
-// 	println "1stModel: $it.firstModel.name 2ndModel: it.secondModel.name 1stName: it.firstName 2ndName: it.secondName"
-}
 
 return "Success"

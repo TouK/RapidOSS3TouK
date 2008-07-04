@@ -81,5 +81,9 @@
 	<classpathentry kind="lib" path="/Grails/dist/grails-test-1.0.3.jar"/>
 	<classpathentry kind="lib" path="/Grails/dist/grails-web-1.0.3.jar"/>
 	<classpathentry kind="lib" path="/Grails/dist/grails-webflow-1.0.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/comp"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RapidCMDB"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RcmdbCommons"/>
 	<classpathentry kind="output" path="web-app/WEB-INF/classes"/>
 </classpath>

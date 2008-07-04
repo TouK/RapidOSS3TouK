@@ -1,0 +1,1 @@
+YAHOO.namespace("rapidjs.rcmdb");

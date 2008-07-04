@@ -5,7 +5,6 @@
 	<classpathentry kind="src" path="snmp/java"/>
 	<classpathentry kind="src" path="database/java"/>
 	<classpathentry kind="src" path="http/groovy"/>
-	<classpathentry kind="src" path="netcool/groovy"/>
 	<classpathentry kind="src" path="rapidinsight/groovy"/>
 	<classpathentry kind="src" path="smarts/groovy"/>
 	<classpathentry kind="src" path="smarts/java"/>

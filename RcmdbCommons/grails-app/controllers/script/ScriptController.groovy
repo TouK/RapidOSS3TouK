@@ -144,7 +144,11 @@ class ScriptController {
                 if(result == null){
                     result = "";
                 }
-                render(text: String.valueOf(result), contentType: "text/html", encoding: "UTF-8");
+                def contentType = "text/html"
+                if(result.startsWith("<") && !result.startsWith("<html>")){
+                    contentType = "text/xml"
+                }
+                render(text: String.valueOf(result), contentType: contentType, encoding: "UTF-8");
             }
             catch (t)
             {

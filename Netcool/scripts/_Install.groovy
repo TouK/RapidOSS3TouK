@@ -26,6 +26,10 @@ def choices = choice.split(",", -1);
 choices.each{
     if(it == "1")
     {
+        Ant.move(toDir:"${baseDir}/grails-app/templates")
+        {
+            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/templates/**");
+        }
         Ant.move(toDir:"${baseDir}/plugins/netcool-0.2/grails-app")
         {
             Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/**");

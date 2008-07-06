@@ -26,8 +26,8 @@ class NetcoolDatasource extends BaseDatasource{
     static belongsTo = []
 
     static STRING_COL_NAMES =[];
-    static FIELDMAP =[:];
-    static NAMEMAP =[:];
+//    static FIELDMAP =[:];
+//    static NAMEMAP =[:];
 	static CONVERSIONMAP = [:];
 
     def statusTableAdapter;
@@ -396,26 +396,21 @@ class NetcoolDatasource extends BaseDatasource{
 		writeToJournal(event.serial, text);
     }
 
-    private def populateFieldMap(){
-	    def query = "select * from alerts.status";
+    public Map getFieldMap(){
+        def fieldMap = [:];
+        def query = "select * from alerts.status";
         def rs = statusTableAdapter.executeQuery(query,[],0);
 	 	def meta = rs.metaData;
 	 	def last = meta.columnCount+1;
 		for (i in 1..< last) {
 			if(meta.getColumnType(i) == 12 || meta.getColumnType(i) == 1 || meta.getColumnType(i) == -1 || meta.getColumnType(i) == 2004){
-				FIELDMAP.put(meta.getColumnLabel(i),"string");
-				NAMEMAP.put(meta.getColumnLabel(i).toLowerCase(), meta.getColumnLabel(i))
+				fieldMap.put(meta.getColumnLabel(i),"string");
 			}
 			else{
-				FIELDMAP.put(meta.getColumnLabel(i),"number");
-				NAMEMAP.put(meta.getColumnLabel(i).toLowerCase(), meta.getColumnLabel(i))
+				fieldMap.put(meta.getColumnLabel(i),"number");
 			}
 		}
-		FIELDMAP.remove("ServerSerial");
-		NAMEMAP.remove("serverserial");
-		NAMEMAP.remove("class");
-		NAMEMAP.put("netcoolclass","Class");
-		//return FIELDMAP;
+		return fieldMap;
     }
 
     def populateConversionMap(){

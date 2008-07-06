@@ -16,6 +16,7 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import groovy.lang.Closure;
+import groovy.lang.GString;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
@@ -66,6 +67,10 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
         for (int i = 0, max = args.length; i < max; i++) {
             if (args[i] instanceof Closure || args[i] instanceof String) {
                 return args[i];
+            }
+            else if(args[i] instanceof GString)
+            {
+                return args[i].toString();                
             }
         }
         return null;

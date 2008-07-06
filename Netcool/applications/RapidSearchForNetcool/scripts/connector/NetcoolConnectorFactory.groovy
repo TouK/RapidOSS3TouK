@@ -21,4 +21,8 @@ class NetcoolConnectorFactory {
         }
         return connector;
     }
+    public static clearConnectors()
+    {
+    	connectorList.clear();
+    }
 }

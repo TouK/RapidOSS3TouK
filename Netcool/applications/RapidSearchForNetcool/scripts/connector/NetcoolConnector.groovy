@@ -17,8 +17,12 @@ class NetcoolConnector {
     NetcoolDatasource datasource;
     NameMapping deleteMarkerField;
     def serverName;
+    Class NetcoolEvent;
+    Class NetcoolJournal;
     public NetcoolConnector(NetcoolDatasource datasource)
     {
+        NetcoolEvent = this.class.classLoader.loadClass("NetcoolEvent");
+        NetcoolJournal = this.class.classLoader.loadClass("NetcoolJournal");
         this.datasource = datasource;
         this.serverName = datasource.name;
         nameMappings = [:]
@@ -43,7 +47,7 @@ class NetcoolConnector {
         int batchSize = 1000;
         while(true)
         {
-            def res = NetcoolEvent.search("servername:${serverName} && ${deleteMarkerField.localName}:false", [max:batchSize, offset:offset, sort:"id"]);
+            def res = NetcoolEvent.metaClass.invokeStaticMethod(NetcoolEvent, "search", ["servername:${serverName} && ${deleteMarkerField.localName}:false", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
             if(res.total == 0)
             {
                 break;
@@ -67,19 +71,20 @@ class NetcoolConnector {
     {
 
         NetcoolLastRecordIdentifier lastRecordIdentifier = NetcoolLastRecordIdentifier.get(datasourceName:datasource.name);
-        def lastEventStateChange = lastRecordIdentifier.eventLastRecordIdentifier;
-        if( lastEventStateChange == null)
+        if(lastRecordIdentifier == null)
         {
-            lastEventStateChange = 0;
+            lastRecordIdentifier = NetcoolLastRecordIdentifier.add(datasourceName:datasource.name, eventLastRecordIdentifier:0, journalLastRecordIdentifier:0);
         }
-        def whereClause = "StateChange>$lastEventStateChange && StateChange <= getdate() - 1";
+        def lastEventStateChange = lastRecordIdentifier.eventLastRecordIdentifier;
+        def whereClause = "StateChange>$lastEventStateChange AND StateChange <= getdate - 1";
         List records = datasource.getEvents(whereClause);
         def size =  records.size()
         for (Map rec in records){
-            NetcoolEvent.add(getEventProperties(rec));
+            def res = NetcoolEvent.metaClass.invokeStaticMethod(NetcoolEvent, "add",[getEventProperties(rec)] as Object[]);
+            println res.errors; 
             def lastStateChange = Long.parseLong(rec.statechange);
-            if (longStateChange>lastStateChange){
-                lastEventStateChange = longStateChange;
+            if (lastStateChange > lastEventStateChange){
+                lastEventStateChange = lastStateChange;
             }
         }
         lastRecordIdentifier.eventLastRecordIdentifier = lastEventStateChange; 
@@ -93,13 +98,13 @@ class NetcoolConnector {
         {
             lastJournalStateChange = 0;
         }
-        def whereClause = "Chrono>$lastJournalStateChange && Chrono <= getdate() - 1";
+        def whereClause = "Chrono>$lastJournalStateChange AND Chrono <= getdate() - 1";
         List records = datasource.getJournalEntries(whereClause);
         def size =  records.size()
         for (Map rec in records){
-            NetcoolJournal.add(getJournalProperties(rec));
+            NetcoolJournal.metaClass.invokeStaticMethod(NetcoolJournal, "add", [getJournalProperties(rec)] as Object[]);
             def lastStateChange = Long.parseLong(rec.chrono);
-            if (longStateChange > lastStateChange){
+            if (lastStateChange > lastJournalStateChange){
                 lastJournalStateChange = lastStateChange;
             }
         }
@@ -115,7 +120,7 @@ class NetcoolConnector {
             {
                 localColName = propName;
             }
-            eventMap[localColName] = propValue;
+            eventMap[localColName.toLowerCase()] = propValue;
         }
         return eventMap;
     }
@@ -131,7 +136,7 @@ class NetcoolConnector {
             }
             else
             {
-                journalMap[localColName] = propValue;
+                journalMap[propName.toLowerCase()] = propValue;
             }
         }
         journalMap["text"] = text.toString();

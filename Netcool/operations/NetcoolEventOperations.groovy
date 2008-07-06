@@ -1,10 +1,13 @@
 import com.ifountain.core.domain.annotations.*;
 import datasource.*;
 
-class NetcoolEventOperations  extends com.ifountain.rcmdb.domain.AbstractDomainOperation {
-	
-    public void syncNc(Map params){
+class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOperation
+{
+	def propsThatCantBeChanged = ["identifier","serverserial","serial"];
+
+    public void updateAtNc(Map params){
 	    def tempParams = [:];
+	    def ncds = NetcoolDatasource.get(name:servername);
 	    tempParams.put("ServerSerial", serverserial);
 	    params.each{prop, newValue->
 	    	def propLowerCase = prop.toLowerCase();
@@ -12,98 +15,56 @@ class NetcoolEventOperations  extends com.ifountain.rcmdb.domain.AbstractDomainO
 		    	def propNameinDs = NetcoolDatasource.NAMEMAP[propLowerCase];
 		    	if (propNameinDs!=null){
 					tempParams.put(propNameinDs,newValue);
+					propLowerCase = newValue;
 				}
 				else{
-					throw new Exception("No such property ${prop}");		
+					throw new Exception("No such property ${prop}");
 				}
 			}
 			else{
-				throw new Exception("Can not modify ServerSerial or Identifier");		
+				throw new Exception("Can not modify ServerSerial or Identifier");
 			}
+
+
 	    }
-	    NCDS.updateEvent(tempParams);
-    }
-    
-    public void removeNc(){
-	    NCDS.removeEvent(serverserial);
-    }
-    
-    public void setProperty(String prop, Object newVal){
-	    if (id!=null){ // THE INSTANCE IS NOT SAVED TO RCMDB YET, IE: setProperty() IS CALLED FOR NetcoolEvent.add()
-		    def params = [:];
-			params.put(prop,newVal);
-			syncNc(params);
-		}
-		super.setProperty(prop, newVal);
-    }
-    
-    def void setIdentifier(val){
-	    if (id==null){
-		    identifier = val;
-	    }
+	    ncds.updateEvent(tempParams);
     }
 
-    def void setServername(val){
-	    if (id==null){
-		    servername = val;
-    	    if (NCDS==null){
-			    NCDS = NetcoolDatasource.get(name:val);
-		    }
-	    }
-    }
-    
-	def void setServerserial(val){
-		if (id==null){
-		    serverserial = val;
-	    }
+    public void removeFromNc(){
+	    def ncds = NetcoolDatasource.get(name:servername);
+	    ncds.removeEvent(serverserial);
     }
 
-    def void setSerial(val){
-	    if (id==null){
-		    serial = val;
-	    }
+    public void setSeverity(newValue, userName){
+	    def ncds = NetcoolDatasource.get(name:servername);
+	    ncds.setSeverityAction(serverserial, newValue, userName);
+	    severity = newValue;
+	    acknowledged = 0;
     }
-        
-    public void setSeverity(val, userName){
-        def oldVal= NCDS.CONVERSIONMAP["Severity"+severity];
-        def newVal = NCDS.CONVERSIONMAP["Severity"+val];
-        String text = "Alert is prioritized from ${oldVal} to ${newVal} by ${userName}";
-		NCDS.writeToJournal(serverserial, text);
-		
-	    severity = val;
-	    acknowledged = 0;		
-    }
-   
-    public void setSuppressescl(val, userName){
-	    def oldVal= CONVERSIONMAP.get("SuppressEscl"+suppress);
-        def newVal = CONVERSIONMAP.get("SuppressEscl"+val);
-		String text = "Alert is prioritized from ${oldVal} to ${newVal} by ${userName}";
 
-		NCDS.writeToJournal(serverserial, text);
-	    suppressescl = val;
+    public void setSuppressescl(newValue, userName){
+	    def ncds = NetcoolDatasource.get(name:servername);
+	    ncds.suppressAction(serverserial, newValue, userName);
+	    suppressescl = newValue;
     }
 
     public void addToTaskList(boolean action){
+	    def ncds = NetcoolDatasource.get(name:servername);
+	    ncds.taskListAction(serverserial,action);
 	    tasklist = action?"1":"0";
     }
-    
+
     public void acknowledge(boolean action, userName){
-	    if(action){
-            text = "Alert is acknowledged by " + userName;
-		}
-		else{
-			text = "Alert is unacknowledged by " + userName;
-		}
-		NCDS.writeToJournal(serverserial, text);
-		
+	    def ncds = NetcoolDatasource.get(name:servername);
+	    ncds.acknowledgeAction(serverserial, action, userName);
 	    acknowledged = action?"1":"0";
     }
-    
+
     public void assign(userId){
-		String text = "Event is assigned to $userId";
-		NCDS.writeToJournal(serverserial, text);
-		owneruid = userId;
-	 	acknowledged = 0;		
+	 	def ncds = NetcoolDatasource.get(name:servername);
+	 	ncds.assignAction(serverserial, userId);
+	 	owneruid = userId;
+	 	acknowledged = 0;
 
     }
 }

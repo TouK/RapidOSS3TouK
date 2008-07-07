@@ -6,7 +6,7 @@ import org.apache.log4j.Logger
 
 class NetcoolDatasource extends BaseDatasource{
     static searchable = {
-        except = [];
+        except = ["fieldMap",'statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter'];
     };
     static datasources = [:]
 
@@ -36,7 +36,7 @@ class NetcoolDatasource extends BaseDatasource{
     def conversionsTableAdapter;
     def masterTableAdapter;
 
-    static transients = ['statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter']
+    static transients = ["fieldMap",'statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter']
 
     def onLoad = {
         def statusTable = "alerts.status";
@@ -56,9 +56,9 @@ class NetcoolDatasource extends BaseDatasource{
         this.journalTableAdapter = new SingleTableDatabaseAdapter(connection.name, journalTable, journalTableKey, 0, Logger.getRootLogger());
         this.conversionsTableAdapter = new SingleTableDatabaseAdapter(connection.name, conversionsTable, conversionsTableKey, 0, Logger.getRootLogger());
         this.masterTableAdapter = new SingleTableDatabaseAdapter(connection.name, masterTable, masterTableKey, 0, Logger.getRootLogger());
-      	if (!FIELDMAP || FIELDMAP.size()==0){
-            populateFieldMap();
-        }
+//      	if (!FIELDMAP || FIELDMAP.size()==0){
+//            populateFieldMap();
+//        }
         if (!CONVERSIONMAP || CONVERSIONMAP.size()==0){
             populateConversionMap();
         }

@@ -18,16 +18,25 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 class BootStrap {
     def quartzScheduler;
     def init = {servletContext ->
         registerUtilities();
         registerDefaultConverters();
+        initializeModelGenerator();
         registerDefaultUsers();
         registerDefaultDatasources();
         corrrectModelData();
         initializeScripting();
+    }
+    
+    def initializeModelGenerator()
+    {
+        String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];
+        String tempDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"];
+        ModelGenerator.getInstance().initialize (baseDirectory, tempDirectory, System.getProperty("base.dir"));
     }
 
     def registerUtilities()

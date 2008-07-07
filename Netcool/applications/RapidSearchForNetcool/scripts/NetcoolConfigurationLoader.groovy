@@ -11,72 +11,63 @@ import com.ifountain.rcmdb.domain.generation.ModelGenerator
 * To change this template use File | Settings | File Templates.
 */
 def baseDir = System.getProperty ("base.dir");
-def netcoolConfigurationFile = new File("$baseDir/conf/NetcoolFieldConfiguration.xml");
+def netcoolConfigurationFile = new File("$baseDir/grails-app/conf/NetcoolFieldConfiguration.xml");
 if(!netcoolConfigurationFile.exists())
 {
     throw new Exception("Configuration file doesnot exist.");
 }
 def slurper = new XmlSlurper()
-def res = slurper.parse (netcoolConfigurationFile);
-def fields = res.Fields().Field();
-def modelString = new StringWriter();
-def eventModelBuilder = new MarkupBuilder(modelString);
-eventModelBuilder.Model(name:"NetcoolEvent")
+def res = slurper.parseText(netcoolConfigurationFile.getText());
+def netcoolEventXml = getModelXml(res.NetcoolEvent, true);
+def netcoolJournalXml = getModelXml(res.NetcoolJournal, false);
+ModelGenerator.getInstance().generateModels ([netcoolEventXml, netcoolJournalXml]);
+def getModelXml(modelXml, boolean addNameMappings)
 {
-    eventModelBuilder.Datasources()
+    def modelString = new StringWriter();
+    def eventModelBuilder = new MarkupBuilder(modelString);
+    def fields = modelXml.Fields.Field;
+    eventModelBuilder.Model(name:modelXml.name())
     {
-        eventModelBuilder.Datasource(name:"RCMDB")
+        def keys = [];
+        eventModelBuilder.Properties()
         {
-            eventModelBuilder.Key(propertyName:"servername", nameInDatasource:"servername");
-            eventModelBuilder.Key(propertyName:"serverserial", nameInDatasource:"serverserial");                
-        }
-    }
-    eventModelBuilder.Properties()
-    {
-        fields.each{field->
-            def netcoolName = field.@NetcoolName.text();
-            def localName = field.@LocalName.text();
-            def type = field.@Type.text();
-            def isDelMarker = new Boolean(field.@IsDeleteMarker.text()).booleanValue();
-            NameMapping.add(netcoolName:netcoolName, localName:localName, isDeleteMarker:isDelMarker);
-            if(type == "number")
-            {
-                eventModelBuilder.Property(name:localName, type:type, datasource:"RCMDB", defaultValue:"0", nameInDatasource:localName, lazy:false);
-            }
-            else
-            {
-                eventModelBuilder.Property(name:localName, type:type, datasource:"RCMDB", defaultValue:"", nameInDatasource:localName, lazy:false);    
-            }
-        }
-    }
-}
-def journalFields = ["serial":"string", "keyfield":"string", "text":"string", "chrono":"number"]
-def journalemodelString = new StringWriter();
-def journalModelBuilder = new MarkupBuilder(journalemodelString);
+            fields.each{field->
+                def netcoolName = field.@NetcoolName.text();
+                def localName = field.@LocalName.text();
+                def type = field.@Type.text();
+                def isDelMarker = new Boolean(field.@IsDeleteMarker.text()).booleanValue();
+                def isKey = new Boolean(field.@IsKey.text()).booleanValue();
+                if(addNameMappings)
+                {
+                    NameMapping.add(netcoolName:netcoolName, localName:localName, isDeleteMarker:isDelMarker);
+                }
+                if(type == "number")
+                {
+                    eventModelBuilder.Property(name:localName, type:type, datasource:"RCMDB", defaultValue:"0", nameInDatasource:localName, lazy:false);
+                }
+                else
+                {
+                    eventModelBuilder.Property(name:localName, type:type, datasource:"RCMDB", defaultValue:"", nameInDatasource:localName, lazy:false);
+                }
+                if(isKey)
+                {
+                    keys += localName;
+                }
 
-journalModelBuilder.Model(name:"NetcoolEvent")
-{
-    journalModelBuilder.Datasources()
-    {
-        journalModelBuilder.Datasource(name:"RCMDB")
+            }
+        }
+        eventModelBuilder.Datasources()
         {
-            journalModelBuilder.Key(propertyName:"servername", nameInDatasource:"servername");
-            journalModelBuilder.Key(propertyName:"keyfield", nameInDatasource:"keyfield");                
-        }
-    }
-    journalModelBuilder.Properties()
-    {
-        journalFields.each{localName, type->
-            if(type == "number")
+            eventModelBuilder.Datasource(name:"RCMDB")
             {
-                journalModelBuilder.Property(name:localName, type:type, datasource:"RCMDB", defaultValue:"0", nameInDatasource:localName, lazy:false);
-            }
-            else
-            {
-                journalModelBuilder.Property(name:localName, type:type, datasource:"RCMDB", defaultValue:"", nameInDatasource:localName, lazy:false);
+                keys.each{
+                    eventModelBuilder.Key(propertyName:it, nameInDatasource:it);
+                }
             }
         }
+
     }
+    return modelString.toString();
 }
 
-ModelGenerator.getInstance().generateModels ([modelString.toString(), journalemodelString.toString()]);
+

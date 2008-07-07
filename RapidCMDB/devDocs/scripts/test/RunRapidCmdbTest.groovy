@@ -4,6 +4,8 @@ import org.apache.commons.io.filefilter.NameFileFilter
 import org.apache.commons.io.filefilter.NotFileFilter
 import build.RapidCmdbBuild
 import test.BuildDirListener
+import org.apache.commons.io.filefilter.AndFileFilter
+import org.apache.commons.io.filefilter.PrefixFileFilter
 
 /**
  * Created by IntelliJ IDEA.
@@ -80,7 +82,7 @@ if(!rootDir.exists())
     watchConfig.each{dirPairs ->
         File srcDir = dirPairs[0]
         File destDir = dirPairs[1]
-        FileUtils.copyDirectory (srcDir, destDir, new NotFileFilter(new NameFileFilter(".svn")), true);
+        FileUtils.copyDirectory (srcDir, destDir, new AndFileFilter(new NotFileFilter(new NameFileFilter(".svn")), new NotFileFilter(new PrefixFileFilter("."))), true);
         dirListeners += new BuildDirListener(srcDir, destDir, excludedDirs);
     }
 
@@ -122,10 +124,11 @@ proc.waitFor();
 
 def getEnvVars(rootDir)
 {
-    def tEnvVars = ["RS_HOME=${rootDir.getAbsolutePath()}".toString()];
+    def tEnvVars = [];
     System.getenv().each{key, value->
         tEnvVars += "${key}=${value}".toString()
     }
+    tEnvVars.add("RS_HOME=${rootDir.getAbsolutePath()}".toString());
     return  tEnvVars;
 }
 

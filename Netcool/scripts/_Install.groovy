@@ -38,6 +38,10 @@ choices.each{
         {
             Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/scripts/**");
         }
+        Ant.move(toDir:"${baseDir}/web-app")
+        {
+            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/web-app/**");
+        }
     }
 }
 

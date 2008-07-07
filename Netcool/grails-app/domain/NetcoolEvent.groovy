@@ -3,10 +3,8 @@ import com.ifountain.core.domain.annotations.*;
 //import datasource.NetcoolDatasource // ADDED TO BE ABLE TO GET NCDS PER EVENT ONCE DURING onLoad()
 
 class NetcoolEvent {
-     static searchable = true;
     //AUTO_GENERATED_CODE
-
-
+    static searchable = true;
     static datasources = ["RCMDB":["keys":["serverserial":["nameInDs":"serverserial"], "servername":["nameInDs":"servername"]]]]
 
     

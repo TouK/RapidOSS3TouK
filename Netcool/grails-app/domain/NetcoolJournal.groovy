@@ -6,10 +6,9 @@
  * To change this template use File | Settings | File Templates.
  */
 class NetcoolJournal {
-    static searchable = true;
+
     //AUTO_GENERATED_CODE
-
-
+    static searchable = true;
     static datasources = ["RCMDB":["keys":["serverserial":["nameInDs":"serverserial"], "servername":["nameInDs":"servername"]]]]
     NetcoolEvent event;
     String servername;
@@ -24,4 +23,5 @@ class NetcoolJournal {
         text(nullable:false, blank:true)
         chrono(nullable:false)
     }
+    //AUTO_GENERATED_CODE
 }

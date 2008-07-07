@@ -112,7 +112,7 @@ class RapidCmdbBuild extends Build {
         ant.delete(dir: env.distribution + "/RapidServer");
         ant.unzip(src: "$env.distribution/RapidCMDB$versionDate" + ".zip", dest: env.distribution);
         ant.unzip(src: "$env.distribution/SmartsModule${smartsBuild.getVersionWithDate()}" + ".zip", dest: "$env.distribution/RapidServer");
-        ant.unzip(src: "$env.distribution/NetcoolModule${netcoolBuild.getVersionWithDate()}" + ".zip", dest: "$env.distribution/RapidServer");
+        //ant.unzip(src: "$env.distribution/NetcoolModule${netcoolBuild.getVersionWithDate()}" + ".zip", dest: "$env.distribution/RapidServer");
         ant.copy(todir: "$env.dist_rapid_cmdb/grails-app/domain") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {
                 ant.include(name: "*.groovy")

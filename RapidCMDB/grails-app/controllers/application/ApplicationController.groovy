@@ -13,7 +13,10 @@ import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInj
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 import com.ifountain.rcmdb.util.ModelUtils
-import com.ifountain.rcmdb.domain.generation.ExistingDataAnalyzer;
+import com.ifountain.rcmdb.domain.generation.ExistingDataAnalyzer
+import org.codehaus.groovy.control.MultipleCompilationErrorsException
+import org.codehaus.groovy.control.messages.SyntaxErrorMessage
+import org.codehaus.groovy.syntax.SyntaxException;
 
 /**
 * Created by IntelliJ IDEA.
@@ -55,12 +58,48 @@ class ApplicationController {
         gcl.addClasspath(tempModelDir);
         gcl.addClasspath(baseDir + "/src/groovy");
         gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
+        boolean isNewClassesLoadedSuccessfully = true;
         tempModelFileList.each {File modelFile ->
+
             String modelName = StringUtils.substringBefore(modelFile.name, ".groovy");
-            def cls = gcl.loadClass(modelName);
-            def domainClass = new DefaultGrailsDomainClass(cls);
-            domainClassesWillBeGenerated += domainClass;
-            newDomainClassesMap[modelName] = domainClass;
+            try
+            {
+                def cls = gcl.loadClass(modelName);
+                def domainClass = new DefaultGrailsDomainClass(cls);
+                domainClassesWillBeGenerated += domainClass;
+                newDomainClassesMap[modelName] = domainClass;
+            }
+            catch(MultipleCompilationErrorsException e)
+            {
+                e.printStackTrace();
+                isNewClassesLoadedSuccessfully = false;
+                if(e.getErrorCollector().getErrorCount() > 0)
+                {
+                    def exception = e.getErrorCollector().getError(0).getCause();
+                    if(exception instanceof SyntaxException)
+                    {
+                        if(exception.startLine > 0)
+                        {
+                            def syntaxError = modelFile.readLines()[exception.startLine-1]
+                            if(syntaxError != null && exception.startColumn > 0 && exception.startColumn <= syntaxError.length())
+                            {
+                                syntaxError = syntaxError.substring(exception.startColumn-1);
+                            }
+                            def errors =[message(code:"default.property.name.invalid", args:[syntaxError, modelName])]
+                            flash.errors = errors;
+                            return;
+                        }
+                    }
+
+                }
+                flash.message = "Could not reload because following exception occurred ${e.toString()}."
+                return;
+            }
+
+        }
+        if(!isNewClassesLoadedSuccessfully){
+            render(view: "application", controller: "application");
+            return;
         }
         GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClassesWillBeGenerated as GrailsClass[], newDomainClassesMap);
         domainClassesWillBeGenerated.each {GrailsDomainClass newDomainClass ->

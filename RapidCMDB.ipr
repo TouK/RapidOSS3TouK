@@ -269,6 +269,21 @@
   <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/../out" />
   </component>
+  <component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="RunRapidCmdbTest" type="GroovyScriptRunConfigurationType" factoryName="Groovy Script">
+      <module name="RapidCMDB" />
+      <setting name="path" value="$PROJECT_DIR$/RapidCMDB/devDocs/scripts/test/RunRapidCmdbTest.groovy" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="$PROJECT_DIR$" />
+      <setting name="debug" value="false" />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method>
+        <option name="Make" value="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="ResourceManagerContainer">
     <option name="myResourceBundles">
       <value>

@@ -3,6 +3,8 @@ package com.ifountain.rcmdb.scripting
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import script.CmdbScript
+import org.apache.log4j.Logger
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -28,6 +30,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
  * Time: 2:07:57 PM
  */
 class ScriptManager {
+    Logger logger = Logger.getLogger("scripting");
     public static final String SCRIPT_DIRECTORY = "scripts";
     private static ScriptManager manager;
     private def scripts;
@@ -43,11 +46,12 @@ class ScriptManager {
         return manager;
     }
 
-    public void initialize() {
+    public void initialize(ClassLoader parentClassLoader, String baseDir, List startupScriptList) {
         scripts = [:];
-        classLoader = ApplicationHolder.application.classLoader;
-        baseDirectory = System.getProperty("base.dir");
+        classLoader = parentClassLoader;
+        baseDirectory = baseDir;
         File scriptDirFile = new File(baseDirectory + "/${SCRIPT_DIRECTORY}");
+        scriptDirFile.mkdirs();
         def scriptFiles = FileUtils.listFiles(scriptDirFile, ["groovy"] as String[], false);
         scriptFiles.each {script ->
             try
@@ -56,6 +60,18 @@ class ScriptManager {
             }
             catch (t)
             {}
+        }
+        startupScriptList.each{
+            try
+            {
+                addScript(it);
+                runScript(it, [:]);
+            }
+            catch (t)
+            {
+                logger.warn ("An exception occurred while executing startup script ${it}.", t);    
+            }
+
         }
     }
     def addScript(String scriptPath) throws ScriptingException

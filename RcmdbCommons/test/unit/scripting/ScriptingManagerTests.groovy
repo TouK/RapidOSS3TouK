@@ -6,6 +6,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
 * Created by IntelliJ IDEA.
@@ -17,13 +18,13 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 class ScriptingManagerTests extends RapidCmdbTestCase{
     def expectedScriptMessage = "script executed successfully";
     def static base_directory = "../testoutput/";
+    def static scriptResultList;
     ScriptManager manager;
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        scriptResultList = [];
         manager = ScriptManager.getInstance();
-        manager.initialize();
-        manager.setClassLoader(this.class.getClassLoader());
-        manager.setBaseDirectory(base_directory);
+        manager.initialize(this.class.getClassLoader(), base_directory, []);
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
     }
 
@@ -195,37 +196,48 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
 
     public void testInitialize()
     {
-        def defaultApplication = ApplicationHolder.application;
-
-        System.setProperty ("base.dir", base_directory);
-        ApplicationHolder.application = new DefaultGrailsApplication();
-
-        try
-        {
-            def script1 = "script1.groovy";
-            def script2 = "script2.groovy";
-            def script3 = "script3.groovy";
-            def notScript = "notScript.xml";
-            createSimpleScript (script1)
-            createSimpleScript (script2)
-            createErrornousScript(script3);
-            createSimpleScript (notScript)
-            manager.initialize();
-            assertNotNull (manager.getScript(script1));
-            assertEquals ("script1", manager.getScript(script1).name);
-            assertNotNull (manager.getScript(script2));
-            assertEquals ("script2", manager.getScript(script2).name);
-            assertNull ("Should not load scripts containing syntax errors", manager.getScript(script3));
-            assertNull ("Should not load files other than groovy", manager.getScript("notScript"));
-
-        }
-        finally
-        {
-            ApplicationHolder.application = defaultApplication;
-        }
+        def script1 = "script1.groovy";
+        def script2 = "script2.groovy";
+        def script3 = "script3.groovy";
+        def notScript = "notScript.xml";
+        createSimpleScript (script1)
+        createSimpleScript (script2)
+        createErrornousScript(script3);
+        createSimpleScript (notScript)
+        manager.initialize(this.class.classLoader, base_directory, []);
+        assertNotNull (manager.getScript(script1));
+        assertEquals ("script1", manager.getScript(script1).name);
+        assertNotNull (manager.getScript(script2));
+        assertEquals ("script2", manager.getScript(script2).name);
+        assertNull ("Should not load scripts containing syntax errors", manager.getScript(script3));
+        assertNull ("Should not load files other than groovy", manager.getScript("notScript"));
 
     }
 
+    public void testStartupScripts()
+    {
+
+        def script1 = "script1.groovy";
+        def script2 = "script2.groovy";
+        def script3 = "script3.groovy";
+        createStartupScriptScript (script1)
+        createErrornousScript (script2)
+        createStartupScriptScript(script3);
+        manager.initialize(this.class.classLoader, base_directory, ["script1", "script2", "script3.groovy"]);
+        assertEquals (2, scriptResultList.size());
+
+
+    }
+
+    def static addScriptMessage(String message)
+    {
+        scriptResultList += message;    
+    }
+    def createStartupScriptScript(scriptName)
+    {
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write (""" ${ScriptingManagerTests.class.name}.scriptResultList.add("$expectedScriptMessage") """);
+    }
 
     def createSimpleScript(scriptName)
     {
@@ -239,4 +251,5 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
         scriptFile.write ("return \"$expectedScriptMessage");
     }
+
 }

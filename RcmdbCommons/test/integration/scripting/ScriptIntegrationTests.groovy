@@ -3,6 +3,7 @@ package scripting
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import script.CmdbScript
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,7 +20,7 @@ class ScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         expectedScriptMessage = "script successfully executed";
-        ScriptManager.getInstance().initialize();
+        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), []);
     }
 
     public void tearDown() {

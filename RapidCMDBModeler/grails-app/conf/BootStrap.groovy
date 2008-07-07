@@ -41,7 +41,7 @@ class BootStrap {
 
     def initializeScripting()
     {
-        ScriptManager.getInstance().initialize();
+        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), new StartupScriptsConfig().scripts);
         ScriptScheduler.getInstance().initialize(quartzScheduler);
         CmdbScript.searchEvery("scheduled:true AND enabled:true").each {
             try {

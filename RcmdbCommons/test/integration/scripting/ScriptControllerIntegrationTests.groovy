@@ -6,6 +6,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import script.CmdbScript
 import script.ScriptController
 import grails.util.GrailsWebUtil
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
 * Created by IntelliJ IDEA.
@@ -23,7 +24,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         CmdbScript.list().each{
             it.remove();
         }
-        ScriptManager.getInstance().initialize();
+        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), []);
     }
 
     public void tearDown() {

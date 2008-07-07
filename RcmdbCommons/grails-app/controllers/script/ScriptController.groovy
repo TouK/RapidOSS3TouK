@@ -144,6 +144,10 @@ class ScriptController {
                 if(result == null){
                     result = "";
                 }
+                else
+                {
+                    result = String.valueOf(result);
+                }
                 def contentType = "text/html"
                 if(result.startsWith("<") && !result.startsWith("<html>")){
                     contentType = "text/xml"

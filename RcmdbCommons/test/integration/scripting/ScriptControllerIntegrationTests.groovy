@@ -5,6 +5,7 @@ import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import script.CmdbScript
 import script.ScriptController
+import grails.util.GrailsWebUtil
 
 /**
 * Created by IntelliJ IDEA.
@@ -201,6 +202,53 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             scriptController.params["id"] = scriptName;
             scriptController.run();
             assertEquals("", scriptController.response.contentAsString);
+            assertEquals (GrailsWebUtil.getContentType("text/html", ""), scriptController.response.contentType);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
+
+    public void testRunWithReturningNonStringObject()
+    {
+        String scriptName = "script1"
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        scriptFile.write ("return new Integer(0)");
+        try
+        {
+            def scriptController = new ScriptController();
+            scriptController.params["name"] = scriptName;
+            scriptController.save();
+
+            IntegrationTestUtils.resetController (scriptController);
+            scriptController.params["id"] = scriptName;
+            scriptController.run();
+            assertEquals("0", scriptController.response.contentAsString);
+            assertEquals (GrailsWebUtil.getContentType("text/html", ""), scriptController.response.contentType);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
+
+    public void testRunWithReturningXml()
+    {
+        String scriptName = "script1"
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        scriptFile.write ("""return "<Records/>";""");
+        try
+        {
+            def scriptController = new ScriptController();
+            scriptController.params["name"] = scriptName;
+            scriptController.save();
+
+            IntegrationTestUtils.resetController (scriptController);
+            scriptController.params["id"] = scriptName;
+            scriptController.run();
+            assertEquals("<Records/>", scriptController.response.contentAsString);
+            assertEquals (GrailsWebUtil.getContentType("text/xml", ""), scriptController.response.contentType);
         }
         finally
         {

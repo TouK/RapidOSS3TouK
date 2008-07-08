@@ -172,7 +172,7 @@ class ModelController {
             {
                 FileUtils.deleteDirectory (ModelGenerator.getInstance().getTempModelDir());
                 com.ifountain.rcmdb.domain.generation.ModelGeneratorAdapter.generateModels(models);
-                flash.message = "Models genarated successfully"
+                flash.message = "Models are generated successfully"
                 redirect(action: list, controller: 'model')
             }
             catch (Exception e)

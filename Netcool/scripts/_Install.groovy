@@ -30,10 +30,15 @@ choices.each{
         {
             Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/templates/**");
         }
+        Ant.move(toDir:"${baseDir}/grails-app/conf")
+        {
+            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/conf/**");
+        }
         Ant.move(toDir:"${baseDir}/plugins/netcool-0.2/grails-app")
         {
             Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/**");
         }
+
         Ant.move(toDir:"${baseDir}/scripts")
         {
             Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/scripts/**");

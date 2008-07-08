@@ -3,10 +3,12 @@ package datasource
 import connection.NetcoolConnection
 import datasource.SingleTableDatabaseAdapter
 import org.apache.log4j.Logger
+import java.text.MessageFormat
+import groovy.text.SimpleTemplateEngine
 
 class NetcoolDatasource extends BaseDatasource{
     static searchable = {
-        except = ["fieldMap",'statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter'];
+        except = ['realvalue', 'convertedValue', 'conversionParams', "fieldMap",'statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter'];
     };
     static datasources = [:]
 
@@ -25,18 +27,13 @@ class NetcoolDatasource extends BaseDatasource{
     static mappedBy=["connection":"netcoolDatasources"]
     static belongsTo = []
 
-    static STRING_COL_NAMES =[];
-//    static FIELDMAP =[:];
-//    static NAMEMAP =[:];
-	static CONVERSIONMAP = [:];
-
     def statusTableAdapter;
     def detailsTableAdapter;
     def journalTableAdapter;
     def conversionsTableAdapter;
     def masterTableAdapter;
 
-    static transients = ["fieldMap",'statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter']
+    static transients = ['realvalue', 'convertedValue', 'conversionParams', "fieldMap",'statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter']
 
     def onLoad = {
         def statusTable = "alerts.status";
@@ -56,57 +53,42 @@ class NetcoolDatasource extends BaseDatasource{
         this.journalTableAdapter = new SingleTableDatabaseAdapter(connection.name, journalTable, journalTableKey, 0, Logger.getRootLogger());
         this.conversionsTableAdapter = new SingleTableDatabaseAdapter(connection.name, conversionsTable, conversionsTableKey, 0, Logger.getRootLogger());
         this.masterTableAdapter = new SingleTableDatabaseAdapter(connection.name, masterTable, masterTableKey, 0, Logger.getRootLogger());
-//      	if (!FIELDMAP || FIELDMAP.size()==0){
-//            populateFieldMap();
-//        }
-        if (!CONVERSIONMAP || CONVERSIONMAP.size()==0){
-            populateConversionMap();
-        }
     }
 
-    def getProperty(Map keys, String propName)
-    {
-        def props = statusTableAdapter.getRecordMultiKey(keys, [propName]);
-        if (props)
-        {
-            return props[propName];
-        }
-        return "";
-    }
 
-    def getProperties(Map keys, List properties)
-    {
-        def props = statusTableAdapter.getRecordMultiKey(keys, properties);
-        return props;
-    }
 
-    def addEvent(Map params1){
-	    def params = [:];
-	    params.putAll(params1);
+    private static ACTION_OWNER_PROPERTY_NAME = "____ACTION_OWNER___";
+    private static journalMessages = new SimpleTemplateEngine();
+    private static Map JOURNAL_MESSAGES = [Severity:journalMessages.createTemplate("Alert is prioritized from \${oldValue} to \${newValue} by \${audit}"),
+    SuppressEscl:journalMessages.createTemplate("Alert is prioritized from \${oldValue} to \${newValue} by \${audit}"),
+    Acknowledged:journalMessages.createTemplate("Alert is \${newValue == 1?'':'un'}acknowledged by \${audit}")]
+    static JOURNAL_TRACKING_PROPERTY_LIST = ["Severity", "SuppressEscl", "Acknowledged"]
+
+    
+    
+    def addEvent(Map params){
         String identifier = params.Identifier;
         if (identifier == null){
             throw new Exception("Missing identifier for add operation")
         }
-        if (params.ServerSerial){
-	        params.remove("ServerSerial");
-        }
-
         StringBuffer sb = new StringBuffer();
         sb.append("insert into alerts.status ");
 
         StringBuffer columns = new StringBuffer("(");
         StringBuffer values = new StringBuffer("(");
-        for (Iterator iter = params.keySet().iterator(); iter.hasNext();){
-            String columnName = (String)iter.next();
-            columns.append(columnName);
-            if( FIELDMAP.get(columnName)=="string"){
-                values.append("'" + params.get(columnName) + "'");
+        params1.each{String columnName, Object colValue->
+            if(columnName != "ServerSerial" && columnName != "Identifier" )
+            {
+                columns.append(columnName);
+                if( colValue instanceof Number){
+                    values.append(colValue);
+                }
+                else{
+                    values.append("'" + colValue + "'");
+                }
+                columns.append(" , ");
+                values.append(" , ");
             }
-            else{
-                values.append(params.get(columnName));
-            }
-            columns.append(" , ");
-            values.append(" , ");
         }
         columns.deleteCharAt(columns.length()-2);
         columns.append(")");
@@ -126,56 +108,41 @@ class NetcoolDatasource extends BaseDatasource{
 			throw new Exception("Event with ServerSerial <" + serverserial + "> does not exist");
 		}
 
-        def additional = [:];
-        additional.putAll(params);
-        additional.remove("ServerSerial");
-        additional.remove("Identifier");
-        if (additional.size()==0){
-	        throw new Exception("Can not update ServerSerial or Identifier!")
-        }
 		StringBuffer sb = new StringBuffer("update alerts.status set ");
 		StringBuffer updatedColumns= new StringBuffer();
-		for (Iterator iter = additional.keySet().iterator(); iter.hasNext();)
-		{
-			String columnName = (String) iter.next();
-			updatedColumns.append(columnName);
-            if( FIELDMAP.get(columnName)=="string"){
-				updatedColumns.append("='");
-				updatedColumns.append(additional.get(columnName));
-				updatedColumns.append("'");
-			}
-			else{
-				updatedColumns.append("=");
-				updatedColumns.append(additional.get(columnName));
-			}
-			updatedColumns.append(", ");
-		}
+        def actionOwner = params.remove(ACTION_OWNER_PROPERTY_NAME);
+        actionOwner = actionOwner?actionOwner:"Unknown";
+        params.each{String columnName, Object colValue->
+            if(columnName != "ServerSerial" && columnName != "Identifier" )
+            {
+                updatedColumns.append(columnName);
+                if( colValue instanceof Number){
+                    updatedColumns.append("=");
+                    updatedColumns.append(colValue);
+                }
+                else{
+                    updatedColumns.append("='");
+                    updatedColumns.append(colValue);
+                    updatedColumns.append("'");
+                }
+                updatedColumns.append(", ");
+            }
+        }
         updatedColumns.deleteCharAt(updatedColumns.length()-2);
 		sb.append(updatedColumns.toString());
 		sb.append(" where ServerSerial=").append(serverserial);
 
 		statusTableAdapter.executeUpdate(sb.toString(), []);
-    }
 
-    def getEventByIdentifier(identifier){
-	    def query = "select * from alerts.status where Identifier = ?";
-        def result = statusTableAdapter.executeQuery(query, [identifier]);
-		if(result.size() > 0){
-            return result[0];
+        JOURNAL_TRACKING_PROPERTY_LIST.each{String propertyName->
+            if(params[propertyName] != null && event[propertyName] != params[propertyName])
+            {
+                def oldVal = NetcoolConversionParameter.getConvertedValue(propertyName, event[propertyName]);
+                def newVal = NetcoolConversionParameter.getConvertedValue(propertyName, params[propertyName]);
+                def text = JOURNAL_MESSAGES[propertyName].make([oldValue:oldVal, newValue:newVal, audit:actionOwner]);
+                writeToJournal(serial, text);
+            }
         }
-        else{
-            return [:];
-        }
-    }
-
-    def getEvent(serverserial){
-        def event = statusTableAdapter.getRecord(serverserial, []);
-        return event;
-    }
-
-    def getEvent(serverserial, List columns){
-        def event = statusTableAdapter.getRecord(serverserial, columns);
-        return event;
     }
 
     def removeEvent(serverserial){
@@ -189,114 +156,27 @@ class NetcoolDatasource extends BaseDatasource{
 		journalTableAdapter.removeRecord(Integer.parseInt(event.serial));
     }
 
-    def getEvents(){
-        def results = statusTableAdapter.getRecords();
-        return results;
-    }
-
-    def getEvents(List colList){
-        def results = statusTableAdapter.getRecords(colList);
-        return results;
-    }
-
-    def getEvents(String whereClause){
-        def results = statusTableAdapter.getRecords(whereClause);
-        return results;
-    }
-    
-    def getJournalEntries(String whereClause){
-        def results = journalTableAdapter.getRecords(whereClause);
-        return results;
-    }
-
-
-    def getSerial(identifier){
-		def event = getEventByIdentifier(identifier);
-		if(event.size() == 0){
-			throw new Exception("Event <" + identifier+ "> does not exist");
-		}
-		return Integer.parseInt(event.serverserial);
-    }
-
-    def getSerialFromNetcool(identifier){
-	    def query = "Identifier='$identifier'";
-	    def event = statusTableAdapter.getRecords(query);
-		if(event.size() == 0){
-			throw new Exception("Event <" + identifier+ "> does not exist");
-		}
-		return Integer.parseInt(event[0].serverserial);
-    }
-
     def setSeverityAction(serverserial, severity, userName) {
-		def event = getEvent(serverserial);
-		if(event.size() == 0){
-			throw new Exception("Event with ServerSerial <" + serverserial + "> does not exist");
-		}
-
-        def oldSeverity = event.severity;
-
-		def updateProps = [:];
-		updateProps.put("ServerSerial", serverserial);
-		def intSeverity;
-		if (severity instanceof String){
-            intSeverity = Integer.parseInt(severity);
-        }
-        else{
-            intSeverity = severity;
-        }
-        updateProps.put("Severity",intSeverity);
+        def updateProps = [:]
+        updateProps.put("ServerSerial",serverserial);
+        updateProps.put("Severity",severity);
+        updateProps.put(ACTION_OWNER_PROPERTY_NAME,userName);
         updateProps.put("Acknowledged", 0);
-		statusTableAdapter.updateRecord(updateProps);
-		/*def whereClause= "Colname = 'Severity'";
-        def conversions = [:];
-        conversions = getFromConversions(whereClause);*/
-        def oldVal = "Severity"+oldSeverity;
-        oldVal= CONVERSIONMAP[oldVal];
-        def newVal = "Severity"+severity;
-        newVal = CONVERSIONMAP[newVal];
-        String text = "Alert is prioritized from ${oldVal} to ${newVal} by ${userName}";
-		writeToJournal(event.serial, text);
+		def updatedEvent = updateEvent(updateProps);
 	}
 
     def suppressAction(serverserial, suppress, userName){
-        def event = getEvent(serverserial);
-        if(event.size() == 0){
-            throw new Exception("Event with ServerSerial <" + serverserial + "> does not exist");
-        }
-
-        def oldSuppress = event.suppressescl;
 		def updateProps = [:];
-		updateProps.put("ServerSerial", serverserial);
-		def intSuppress;
-		if (suppress instanceof String){
-            intSuppress = Integer.parseInt(suppress);
-        }
-        else{
-            intSuppress = suppress;
-        }
+        updateProps.put("ServerSerial", serverserial);
         updateProps.put("SuppressEscl", intSuppress);
-		statusTableAdapter.updateRecord(updateProps);
-
-        /*def whereClause= "Colname = 'SuppressEscl'";
-        def conversions = [:];
-        conversions = getFromConversions(whereClause);*/
-        def oldVal= CONVERSIONMAP.get("SuppressEscl"+oldSuppress);
-        def newVal = CONVERSIONMAP.get("SuppressEscl"+suppress);
-		String text = "Alert is prioritized from ${oldVal} to ${newVal} by ${userName}";
-
-		writeToJournal(event.serial, text);
+		updateEvent(updateProps);
 	}
 
     def taskListAction(serverserial, boolean addToTaskList){
         def updateProps =[:];
 		updateProps.put("ServerSerial",serverserial);
-        if(addToTaskList){
-            updateProps.put("TaskList",1);
-        }
-		else{
-			updateProps.put("TaskList",0);
-        }
-        statusTableAdapter.updateRecord(updateProps);
+        updateProps.put("TaskList",addToTaskList?1:0)
+        updateEvent(updateProps);
     }
 
     def assignAction(serverserial, ownerUID){
@@ -310,25 +190,11 @@ class NetcoolDatasource extends BaseDatasource{
     }
 
     def acknowledgeAction(serverserial, boolean isAcknowledge, userName) {
-		String sql;
-		String text;
-		def event = getEvent(serverserial);
-		if( event.size() == 0){
-			throw new Exception("Event with ServerSerial <" + serverserial + "> does not exist");
-		}
-
 		def updateProps =[:];
 		updateProps.put("ServerSerial",serverserial);
-		if(isAcknowledge){
-			updateProps.put("Acknowledged",1);
-            text = "Alert is acknowledged by " + userName;
-		}
-		else{
-            updateProps.put("Acknowledged",0);
-			text = "Alert is unacknowledged by " + userName;
-		}
-        statusTableAdapter.updateRecord(updateProps);
-        writeToJournal(event.serial, text);
+		updateProps.put("Acknowledged",isAcknowledge?1:0);
+        updateProps.put(ACTION_OWNER_PROPERTY_NAME,userName);
+        updateEvent(updateProps);
 	}
 
 	def writeToJournal(serial, text){
@@ -353,19 +219,7 @@ class NetcoolDatasource extends BaseDatasource{
         sb.append("${intSerial},'${keyfield}',${date},'${text}')");
 		journalTableAdapter.executeUpdate(sb.toString(), []);
     }
-
-    /*public def getFromConversions(whereClause){
-        def conversions = [:];
-        def columns = ["KeyField", "Conversion"];
-        def records = conversionsTableAdapter.getRecords(whereClause, columns);
-        for (record in records){
-            def key = record.KeyField.toString().trim();
-            def value = record.Conversion.toString().trim();
-            conversions.put(key, value);
-        }
-        return conversions;
-    }
-*/
+    
     private def assign(serverserial, ownerUID, partOfAlertText){
         def intOwnerUID;
         if (ownerUID instanceof String){
@@ -390,10 +244,91 @@ class NetcoolDatasource extends BaseDatasource{
         updateProps.put("ServerSerial",serverserial);
         updateProps.put("OwnerUID",intOwnerUID);
         updateProps.put("Acknowledged",0);
-        statusTableAdapter.updateRecord(updateProps);
+        updateEvent(updateProps);
 
 		String text = partOfAlertText + nameRecord.name.trim() + ".";
 		writeToJournal(event.serial, text);
+    }
+
+    /*
+    *
+    * GET OPERATIONS
+    *
+    *
+     */
+
+    def getProperty(Map keys, String propName)
+    {
+        def props = statusTableAdapter.getRecordMultiKey(keys, [propName]);
+        if (props)
+        {
+            return props[propName];
+        }
+        return "";
+    }
+
+    def getProperties(Map keys, List properties)
+    {
+        def props = statusTableAdapter.getRecordMultiKey(keys, properties);
+        return props;
+    }
+    def getEventByIdentifier(identifier){
+	    def query = "select * from alerts.status where Identifier = ?";
+        def result = statusTableAdapter.executeQuery(query, [identifier]);
+		if(result.size() > 0){
+            return result[0];
+        }
+        else{
+            return [:];
+        }
+    }
+
+    def getEvent(serverserial){
+        def event = statusTableAdapter.getRecord(serverserial, []);
+        return event;
+    }
+
+    def getEvent(serverserial, List columns){
+        def event = statusTableAdapter.getRecord(serverserial, columns);
+        return event;
+    }
+
+    def getEvents(){
+        def results = statusTableAdapter.getRecords();
+        return results;
+    }
+
+    def getEvents(List colList){
+        def results = statusTableAdapter.getRecords(colList);
+        return results;
+    }
+
+    def getEvents(String whereClause){
+        def results = statusTableAdapter.getRecords(whereClause);
+        return results;
+    }
+
+    def getJournalEntries(String whereClause){
+        def results = journalTableAdapter.getRecords(whereClause);
+        return results;
+    }
+
+
+    def getSerial(identifier){
+		def event = getEventByIdentifier(identifier);
+		if(event.size() == 0){
+			throw new Exception("Event <" + identifier+ "> does not exist");
+		}
+		return Integer.parseInt(event.serverserial);
+    }
+
+    def getSerialFromNetcool(identifier){
+	    def query = "Identifier='$identifier'";
+	    def event = statusTableAdapter.getRecords(query);
+		if(event.size() == 0){
+			throw new Exception("Event <" + identifier+ "> does not exist");
+		}
+		return Integer.parseInt(event[0].serverserial);
     }
 
     public Map getFieldMap(){
@@ -413,13 +348,7 @@ class NetcoolDatasource extends BaseDatasource{
 		return fieldMap;
     }
 
-    def populateConversionMap(){
-        def columns = ["KeyField", "Conversion"];
-        def records = conversionsTableAdapter.getRecords(columns);
-        for (record in records){
-            def key = record.KeyField.toString().trim();
-            def value = record.Conversion.toString().trim();
-            CONVERSIONMAP.put(key, value);
-        }
+    def getConversionParams(){
+        return conversionsTableAdapter.getRecords();
     }
 }

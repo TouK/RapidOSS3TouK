@@ -1,4 +1,4 @@
-import configuration.NameMapping
+import datasource.NetcoolColumn
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
@@ -21,7 +21,7 @@ def res = slurper.parseText(netcoolConfigurationFile.getText());
 def netcoolEventXml = getModelXml(res.NetcoolEvent, true);
 def netcoolJournalXml = getModelXml(res.NetcoolJournal, false);
 ModelGenerator.getInstance().generateModels ([netcoolEventXml, netcoolJournalXml]);
-def getModelXml(modelXml, boolean addNameMappings)
+def getModelXml(modelXml, boolean createColumnObjects)
 {
     def modelString = new StringWriter();
     def eventModelBuilder = new MarkupBuilder(modelString);
@@ -37,9 +37,9 @@ def getModelXml(modelXml, boolean addNameMappings)
                 def type = field.@Type.text();
                 def isDelMarker = new Boolean(field.@IsDeleteMarker.text()).booleanValue();
                 def isKey = new Boolean(field.@IsKey.text()).booleanValue();
-                if(addNameMappings)
+                if(createColumnObjects)
                 {
-                    NameMapping.add(netcoolName:netcoolName, localName:localName, isDeleteMarker:isDelMarker);
+                    NetcoolColumn.add(netcoolName:netcoolName, localName:localName, isDeleteMarker:isDelMarker, type:type);
                 }
                 if(type == "number")
                 {

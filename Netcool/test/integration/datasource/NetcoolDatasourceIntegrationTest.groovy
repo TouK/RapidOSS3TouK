@@ -1,4 +1,7 @@
 package datasource
+
+import connection.NetcoolConnection
+
 /**
  * Created by IntelliJ IDEA.
  * User: Administrator

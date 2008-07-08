@@ -1,7 +1,7 @@
 package connector
 
 
-import configuration.NameMapping
+import datasource.NetcoolColumn
 import connector.NetcoolLastRecordIdentifier
 import datasource.NetcoolDatasource
 
@@ -15,7 +15,7 @@ import datasource.NetcoolDatasource
 class NetcoolConnector {
     Map nameMappings;
     NetcoolDatasource datasource;
-    NameMapping deleteMarkerField;
+    NetcoolColumn deleteMarkerField;
     def serverName;
     Class NetcoolEvent;
     Class NetcoolJournal;
@@ -26,7 +26,7 @@ class NetcoolConnector {
         this.datasource = datasource;
         this.serverName = datasource.name;
         nameMappings = [:]
-        NameMapping.list().each{NameMapping map->
+        NetcoolColumn.list().each{NetcoolColumn map->
             nameMappings[map.netcoolName] = map.localName;
             if(map.isDeleteMarker)
             {

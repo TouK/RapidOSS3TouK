@@ -1,5 +1,6 @@
 import datasource.NetcoolDatasource
 import groovy.xml.MarkupBuilder
+import datasource.NetcoolConversionParameter
 
 /**
 * Created by IntelliJ IDEA.
@@ -18,6 +19,10 @@ if(netcoolDatasources.isEmpty())
     throw new Exception("No netcool datasource is defined");
 }
 NetcoolDatasource netcoolDs = netcoolDatasources[0];
+def conversionParams = netcoolDs.getConversionParams();
+conversionParams.each{Map params->
+    NetcoolConversionParameter.add(keyField:params.keyfield, columnName:param.colName, value:params.value, conversion:params.conversion);
+}
 def netcoolFields = netcoolDs.getFieldMap();
 def fileWriter = new FileWriter(netcoolConfigurationFile);
 def netcoolConf = new MarkupBuilder(fileWriter);

@@ -132,8 +132,7 @@ class ModelHelper{
 		}
 	}
 	
-	def createRelation(secondModelName, firstName, secondName, firstCar, secondCar){
-		def secondModel = Model.findByName(secondModelName);
+	def createRelation(secondModel, firstName, secondName, firstCar, secondCar){
 	    def result = ModelRelation.add(firstModel:model, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar);
 	    if (result.hasErrors()) {
 			throw new Exception(result.errors.toString());

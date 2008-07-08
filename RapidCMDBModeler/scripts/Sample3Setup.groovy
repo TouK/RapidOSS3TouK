@@ -217,11 +217,11 @@ modelhelperCard.props = props;
 // Param5: Cardinality to second class
 
 
-modelhelperDevice.createRelation("Link", "connectedVia", "connectedSystems", ModelRelation.MANY, ModelRelation.MANY);
-modelhelperLink.createRelation("DeviceAdapter", "connectedTo", "connectedVia", ModelRelation.ONE, ModelRelation.MANY);
-modelhelperDevice.createRelation("Ip", "hostsAccessPoints", "hostedBy", ModelRelation.ONE, ModelRelation.MANY);
-modelhelperDevice.createRelation("DeviceComponent", "composedOf", "partOf", ModelRelation.ONE, ModelRelation.MANY);
-modelhelperDeviceAdapter.createRelation("Card", "realizedBy", "realises", ModelRelation.MANY, ModelRelation.ONE);
-modelhelperDeviceInterface.createRelation("Ip", "underlying", "layeredOver", ModelRelation.ONE, ModelRelation.ONE);
+modelhelperDevice.createRelation(modelhelperLink.model, "connectedVia", "connectedSystems", ModelRelation.MANY, ModelRelation.MANY);
+modelhelperLink.createRelation(modelhelperDeviceAdapter.model, "connectedTo", "connectedVia", ModelRelation.ONE, ModelRelation.MANY);
+modelhelperDevice.createRelation(modelhelperIp.model, "hostsAccessPoints", "hostedBy", ModelRelation.ONE, ModelRelation.MANY);
+modelhelperDevice.createRelation(modelhelperDeviceComponent.model, "composedOf", "partOf", ModelRelation.ONE, ModelRelation.MANY);
+modelhelperDeviceAdapter.createRelation(modelhelperCard.model, "realizedBy", "realises", ModelRelation.MANY, ModelRelation.ONE);
+modelhelperDeviceInterface.createRelation(modelhelperIp.model, "underlying", "layeredOver", ModelRelation.ONE, ModelRelation.ONE);
 
 return "Success"

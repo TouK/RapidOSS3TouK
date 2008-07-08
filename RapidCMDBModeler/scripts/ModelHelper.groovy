@@ -102,9 +102,12 @@ class ModelHelper{
 				}
 			}
 			propProperties.put('model', model);
-			def result = ModelProperty.add(propProperties);
-			if (result.hasErrors()) {
-				throw new Exception(result.errors.toString());
+			def property = ModelProperty.add(propProperties);
+			if (property.hasErrors()) {
+				throw new Exception(property.errors.toString());
+			}
+			else{
+				props.put(property.name, property);		
 			}
 		}
 	}
@@ -113,7 +116,10 @@ class ModelHelper{
 		for (ds in datasources){
 			ds.value.keys.each{			
 				def prop = it;
-				def keyProp = ModelProperty.list().find{it.model.name == model.name && it.name == prop.name};
+				def keyProp = props[it.name]; //ModelProperty.list().find{it.model.name == model.name && it.name == prop.name};
+				if (keyProp == null) {
+					throw new Exception("Datasource key must be a model property!");
+				}
 				def nameInDs = prop.nameInDs;
 				if (nameInDs == null){
 					nameInDs = prop.name;
@@ -133,7 +139,5 @@ class ModelHelper{
 			throw new Exception(result.errors.toString());
 		}
 	}
-
-
 }
  

@@ -58,7 +58,7 @@
                             }
                         }
                         datasourceMap.each {dsName, ds ->
-                            if (ds.master)
+                            if (dsName == "RCMDB")
                             {
                                 masterDsName = dsName;
                             }

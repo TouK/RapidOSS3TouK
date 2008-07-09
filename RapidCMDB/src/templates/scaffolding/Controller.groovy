@@ -13,24 +13,6 @@ class ${className}Controller {
         [ ${propertyName}List: ${className}.list( params ) ]
     }
 
-    def edit = {
-        def ${propertyName} = ${className}.get( [id:params.id] )
-
-        if(!${propertyName}) {
-            flash.message = "${className} not found with id \${params.id}"
-            redirect(action:list)
-        }
-        else {
-            return [ ${propertyName} : ${propertyName} ]
-        }
-    }
-
-    def create = {
-        def ${propertyName} = new ${className}()
-        ${propertyName}.properties = params
-        return ['${propertyName}':${propertyName}]
-    }
-
     def show = {
         def ${propertyName} = ${className}.get([id:params.id])
 

@@ -17,91 +17,103 @@
 */
 /**
  * Created by IntelliJ IDEA.
- * User: Sezgin Kucukkaraaslan
- * Date: Apr 7, 2008
+ * User: Pinar Kinikoglu
+ * Date: June 12, 2008
  * Time: 2:59:03 PM
  * To change this template use File | Settings | File Templates.
  */
 
-import model.*
-import com.ifountain.rcmdb.domain.generation.ModelGenerator;
+import model.*;
 
-Model.findByName("Developer")?.delete(flush:true);
-Model.findByName("Employee")?.delete(flush:true);
-Model.findByName("Person")?.delete(flush:true);
-Model.findByName("Team")?.delete(flush:true);
-Model.findByName("Task")?.delete(flush:true);
-def rcmdbDatasource = DatasourceName.findByName("RCMDB");
-if(rcmdbDatasource == null){
-    rcmdbDatasource = new DatasourceName(name: "RCMDB");
-    rcmdbDatasource.save();
-}
+def datasources = [];
+def props = [];
+
+Model.findByName("Developer")?.remove();
+Model.findByName("Employee")?.remove();
+Model.findByName("Person")?.remove();
+Model.findByName("Team")?.remove();
+Model.findByName("Task")?.remove();
+
+/* Define properties. Note that :
+1. 'propertyDatasource' takes the Datasource name
+2. 'propertySpecifyingDatasource' takes the dynamic datasource property name
+3. all the datasources, except RCMDB, refered to are assumed to be created before running the script
+*/
+def modelhelperPerson = new ModelHelper("Person");
+
+def name = [name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def bday = [name:"bday", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+props.add(name);
+props.add(bday);
+
+// Identify the datasource names. 
+def rcmdbDs = DatasourceName.findByName("RCMDB");
+def rcmdbKey = [name:"name"];
+datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
+
+// The order of setting datasources, properties, and keymappings should be as follows:
+modelhelperPerson.datasources = datasources;
+modelhelperPerson.props = props; 
+modelhelperPerson.setKeyMappings();  
+
+def modelhelperEmployee = new ModelHelper("Employee", "Person"); 
+def dept = [name:"dept", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def salary = [name:"salary", type:ModelProperty.numberType, defaultValue:1000, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+props = [];
+props.add(dept);
+props.add(salary);
+
+modelhelperEmployee.props = props; 
+
+def modelhelperDeveloper = new ModelHelper("Developer", "Employee"); 
+def language = [name:"language", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+props = [];
+props.add(language);
+
+modelhelperDeveloper.props = props; 
+
+def modelhelperTeam = new ModelHelper("Team"); 
+name = [name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def mascot = [name:"mascot", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+props = [];
+props.add(name);
+props.add(mascot);
+
+rcmdbDs = DatasourceName.findByName("RCMDB");
+rcmdbKey = [name:"name"];
+datasources = [];
+datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
+
+modelhelperTeam.datasources = datasources;
+modelhelperTeam.props = props; 
+modelhelperTeam.setKeyMappings();  
 
 
-def person = new Model(name:"Person");
-def modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);
-def name = new ModelProperty(name:"name", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
-def bday = new ModelProperty(name:"bday", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
-def keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:modelDatasource)]
-person = constructModel(person, [name, bday], [modelDatasource], keyMappings);
+def modelhelperTask = new ModelHelper("Task"); 
+name = [name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+props = [];
+props.add(name);
 
-def employee = new Model(name:"Employee", parentModel:person);
-def dept = new ModelProperty(name:"dept", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
-def salary = new ModelProperty(name:"salary", type:ModelProperty.numberType, defaultValue:1000,  lazy:false, propertyDatasource:modelDatasource);
-employee = constructModel(employee, [dept, salary], [], []);
+rcmdbDs = DatasourceName.findByName("RCMDB");
+rcmdbKey = [name:"name"];
+datasources = [];
+datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
 
-def developer = new Model(name:"Developer", parentModel:employee);
-def language = new ModelProperty(name:"language", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
-developer = constructModel(developer, [language], [], []);
+modelhelperTask.datasources = datasources;
+modelhelperTask.props = props; 
+modelhelperTask.setKeyMappings();  
 
-def team = new Model(name:"Team");
-modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);
-name = new ModelProperty(name:"name", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
-def maskot = new ModelProperty(name:"maskot", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
-keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:modelDatasource)]
-team = constructModel(team, [name, maskot], [modelDatasource], keyMappings);
+// Relation is supposed to be initiated from the first model class. 
+// Therefore, you only provide the secondClass name.
+// Param1: Second class name
+// Param2: Relation name from first class to second class
+// Param3: Reverse relation name from second class to first class
+// Param4: Cardinality to first class
+// Param5: Cardinality to second class
 
-def task = new Model(name:"Task");
-modelDatasource = new ModelDatasource(datasource:rcmdbDatasource, master:true);
-name = new ModelProperty(name:"name", type:ModelProperty.stringType,  lazy:false, propertyDatasource:modelDatasource);
-keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:modelDatasource)]
-task = constructModel(task, [name], [modelDatasource], keyMappings);
+modelhelperEmployee.createRelation(modelhelperEmployee.model, "prevEmp", "nextEmp", ModelRelation.ONE, ModelRelation.ONE);
+// UNCOMMENT WHEN CMDB-283 IS FIXED modelhelperEmployee.createRelation(modelhelperEmployee.model, "employees", "manager", ModelRelation.ONE, ModelRelation.MANY);
+modelhelperEmployee.createRelation(modelhelperTeam.model, "manages", "managedBy", ModelRelation.ONE, ModelRelation.MANY);
+modelhelperDeveloper.createRelation(modelhelperTask.model, "worksOn", "workedOnBy", ModelRelation.MANY, ModelRelation.MANY);
 
-createRelation(employee, employee, "prevEmp", "nextEmp", ModelRelation.ONE, ModelRelation.ONE);
-//createRelation(employee, employee, "employees", "manager", ModelRelation.ONE, ModelRelation.MANY);
-createRelation(employee, team, "manages", "managedBy", ModelRelation.ONE, ModelRelation.MANY);
-createRelation(developer, task, "worksOn", "workedOnBy", ModelRelation.MANY, ModelRelation.MANY);
-
-
-ModelGenerator.getInstance().generateModels(Model.list());
-
-def constructModel(model, listOfProperties, listOfDatasources, listOfKeyMappings)
-{
-    model = model.save();
-    listOfDatasources.each
-    {
-        it.model = model;
-        it.save();
-    }
-    listOfProperties.each {
-        it.model = model;
-        it.save();
-    }
-
-    listOfKeyMappings.each
-    {
-        it.save();
-    }
-    listOfDatasources.each
-    {
-        it.refresh();
-    }
-    model.refresh();
-    return model;
-}
-
-def createRelation(firstModel, secondModel, firstName, secondName, firstCar, secondCar){
-    new ModelRelation(firstModel:firstModel, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar).save();
-    firstModel.refresh();
-    secondModel.refresh();
-}
+return "Success"

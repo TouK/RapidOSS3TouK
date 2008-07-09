@@ -22,183 +22,237 @@
  * Time: 2:59:03 PM
  * To change this template use File | Settings | File Templates.
  */
+ 
 import model.*;
-import com.ifountain.rcmdb.domain.generation.ModelGenerator;
 
-def dsCustomer;
-def dsEvents;
-def dsDevice;
-def dsLink;
-def dsResource1;
-def dsResource2;
+println "======================== STARTING =========================="
+def datasources = [];
+def props = [];
 
-def datasources = checkDatasources();
+def datasourceNames = checkDatasourceNames(); 
 
-Model.findByName("Customer")?.delete(flush:true);
-Model.findByName("Service")?.delete(flush:true);
-Model.findByName("Event")?.delete(flush:true);
-Model.findByName("Sla")?.delete(flush:true);
-Model.findByName("Device")?.delete(flush:true);
-Model.findByName("Link")?.delete(flush:true);
-Model.findByName("Resource")?.delete(flush:true);
+Model.findByName("Customer")?.remove();
+Model.findByName("Service")?.remove();
+Model.findByName("Event")?.remove();
+Model.findByName("Sla")?.remove();
+Model.findByName("Device")?.remove();
+Model.findByName("Link")?.remove();
+Model.findByName("Resource")?.remove();
 
-def rcmdbDS = DatasourceName.findByName("RCMDB");
-if(rcmdbDS == null){
-    rcmdbDS = new DatasourceName(name: "RCMDB");
-}
+/* Define properties. Note that :
+1. 'propertyDatasource' takes the Datasource name
+2. 'propertySpecifyingDatasource' takes the dynamic datasource property name
+3. all the datasources, except RCMDB, refered to are assumed to be created before running the script
+*/
 
 // Customer class
-def customer = new Model(name:"Customer");
-def rcmdbModelDatasource = new ModelDatasource(datasource:rcmdbDS, master:true);
-def custModelDatasource = new ModelDatasource(datasource:datasources.customer, master:false);
-def name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def accountmanager = new ModelProperty(name:"accountmanager", type:ModelProperty.stringType, blank:false, lazy:true, nameInDatasource:"manager", propertyDatasource:custModelDatasource);
-def keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:rcmdbModelDatasource), new ModelDatasourceKeyMapping(property:name, datasource:custModelDatasource)];
-customer = constructModel(customer, [name, accountmanager], [rcmdbModelDatasource, custModelDatasource], keyMappings);
+def customer = new ModelHelper("Customer");
+def name = [name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def accountmanager = [name:"accountmanager", type:ModelProperty.stringType, blank:false, lazy:true, nameInDatasource:"manager", propertyDatasource:datasourceNames.customer];
+
+props.add(name);
+props.add(accountmanager);
+
+// Identify the datasource names. 
+def rcmdbDs = DatasourceName.findByName("RCMDB");
+def rcmdbKey = [name:"name"];
+def custDs = DatasourceName.findByName(datasourceNames.customer);
+def custdbKey = [name:"name"];
+datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
+datasources.add([datasource:custDs, master:false, keys:[custdbKey]]);
+
+// The order of setting datasources, properties, and keymappings should be as follows:
+customer.datasources = datasources;
+customer.props = props; 
+customer.setKeyMappings();  
 
 // Service class
-def service = new Model(name:"Service");
-rcmdbModelDatasource = new ModelDatasource(datasource:rcmdbDS, master:true);
-name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:rcmdbModelDatasource)];
-def manager = new ModelProperty(name:"manager", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def status = new ModelProperty(name:"status", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-service = constructModel(service, [name, manager, status], [rcmdbModelDatasource], keyMappings);
+def service = new ModelHelper("Service");
+name = [name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def manager = [name:"manager", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def status = [name:"status", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+
+props = [];
+props.add(name);
+props.add(manager);
+props.add(status);
+
+datasources = [];
+datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
+
+service.datasources = datasources;
+service.props = props; 
+service.setKeyMappings();  
 
 // Resource class
-def resource = new Model(name:"Resource");
-rcmdbModelDatasource = new ModelDatasource(datasource:rcmdbDS, master:true);
-def resource1ModelDatasource = new ModelDatasource(datasource:datasources.resource1, master:false);
-def resource2ModelDatasource = new ModelDatasource(datasource:datasources.resource2, master:false);
-name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:rcmdbModelDatasource)];
-keyMappings += new ModelDatasourceKeyMapping(property:name, datasource:resource1ModelDatasource)
-keyMappings += new ModelDatasourceKeyMapping(property:name, nameInDatasource:"ID", datasource:resource2ModelDatasource);
-def displayname = new ModelProperty(name:"displayname", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def dsname = new ModelProperty(name:"dsname", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def operationalstate = new ModelProperty(name:"operationalstate", type:ModelProperty.stringType, blank:true, lazy:true, propertySpecifyingDatasource:dsname);
-def vendor = new ModelProperty(name:"vendor", type:ModelProperty.stringType, blank:true, lazy:true, propertySpecifyingDatasource:dsname);
-def location = new ModelProperty(name:"location", type:ModelProperty.stringType, blank:true, lazy:true, propertySpecifyingDatasource:dsname);
-def model = new ModelProperty(name:"model", type:ModelProperty.stringType, blank:true, lazy:true, propertySpecifyingDatasource:dsname);
-resource = constructModel(resource, [name, displayname, dsname, operationalstate, vendor, location, model], [rcmdbModelDatasource, resource1ModelDatasource, resource2ModelDatasource], keyMappings);
-resource.refresh();
+def resource = new ModelHelper("Resource");
+
+name = [name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def displayname = [name:"displayname", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def dynamicDsname = [name:"dsname", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def operationalstate = [name:"operationalstate", type:ModelProperty.stringType, blank:true, lazy:true, propertySpecifyingDatasource:"dsname"];
+def vendor = [name:"vendor", type:ModelProperty.stringType, blank:true, lazy:true, propertySpecifyingDatasource:"dsname"];
+def location = [name:"location", type:ModelProperty.stringType, blank:true, lazy:true, propertySpecifyingDatasource:"dsname"];
+def model = [name:"model", type:ModelProperty.stringType, blank:true, lazy:true, propertySpecifyingDatasource:"dsname"];
+
+props = [];
+props.add(name);
+props.add(displayname);
+props.add(dynamicDsname);
+props.add(operationalstate);
+props.add(vendor);
+props.add(location);
+props.add(model);
+
+datasources = [];
+def resourceDs1 = DatasourceName.findByName(datasourceNames.resource1);
+def resourcedbKey1 = [name:"name"];
+def resourceDs2 = DatasourceName.findByName(datasourceNames.resource2);
+def resourcedbKey2 = [name:"name", nameInDs:"ID"];
+
+datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
+datasources.add([datasource:resourceDs1, master:false, keys:[resourcedbKey1]]);
+datasources.add([datasource:resourceDs2, master:false, keys:[resourcedbKey2]]);
+
+resource.datasources = datasources;
+resource.props = props; 
+resource.setKeyMappings();  
 
 //Device class
-def device = new Model(name:"Device", parentModel:resource);
-def deviceModelDatasource = new ModelDatasource(datasource:datasources.device, master:false);
-def ipaddress = new ModelProperty(name:"ipaddress", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"ip", propertyDatasource:deviceModelDatasource);
-keyMappings = [new ModelDatasourceKeyMapping(property:name, nameInDatasource:"ID", datasource:deviceModelDatasource)];
-device = constructModel(device, [ipaddress], [deviceModelDatasource], keyMappings);
+def device = new ModelHelper("Device", "Resource");
+def ipaddress = [name:"ipaddress", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"ip", propertyDatasource:datasourceNames.device];
+
+props = [];
+props.add(ipaddress);
+
+datasources = [];
+def deviceDs = DatasourceName.findByName(datasourceNames.device);
+def devicedbKey = [name:"name", nameInDs:"ID"];
+datasources.add([datasource:deviceDs, master:false, keys:[devicedbKey]]);
+
+device.datasources = datasources;
+device.props = props; 
+device.setKeyMappings();  
 
 //Link class
-def link = new Model(name:"Link", parentModel:resource);
-def linkModelDatasource = new ModelDatasource(datasource:datasources.link, master:false);
-def memberof = new ModelProperty(name:"memberOf", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"memberof", propertyDatasource:linkModelDatasource);
-keyMappings = [new ModelDatasourceKeyMapping(property:name, nameInDatasource:"ID", datasource:linkModelDatasource)];
-link = constructModel(link, [memberof], [linkModelDatasource], keyMappings);
+def link = new ModelHelper("Link", "Resource");
+def memberof = [name:"memberOf", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"memberof", propertyDatasource:datasourceNames.link];
+
+props = [];
+props.add(memberof);
+
+datasources = [];
+def linkDs = DatasourceName.findByName(datasourceNames.link);
+def linkdbKey = [name:"name", nameInDs:"ID"];
+datasources.add([datasource:linkDs, master:false, keys:[linkdbKey]]);
+
+link.datasources = datasources;
+link.props = props; 
+link.setKeyMappings();  
 
 // Event class
-def event = new Model(name:"Event");
-rcmdbModelDatasource = new ModelDatasource(datasource:rcmdbDS, master:true);
-def eventModelDatasource = new ModelDatasource(datasource:datasources.event, master:false);
-name = new ModelProperty(name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-keyMappings = [new ModelDatasourceKeyMapping(property:name, datasource:rcmdbModelDatasource), new ModelDatasourceKeyMapping(property:name, nameInDatasource:"EventName", datasource:eventModelDatasource)];
-def severity = new ModelProperty(name:"severity", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Severity", propertyDatasource:eventModelDatasource);
-def ack = new ModelProperty(name:"ack", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Acknowledged", propertyDatasource:eventModelDatasource);
-def owner = new ModelProperty(name:"owner", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Owner", propertyDatasource:eventModelDatasource);
-def description = new ModelProperty(name:"description", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Description", propertyDatasource:eventModelDatasource);
-def lastOccured = new ModelProperty(name:"lastOccured", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"LastOccuredAt", propertyDatasource:eventModelDatasource);
-def lastChanged = new ModelProperty(name:"lastChanged", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"LastChangedAt", propertyDatasource:eventModelDatasource);
-event = constructModel(event, [name, severity, ack, owner, description, lastOccured, lastChanged], [rcmdbModelDatasource, eventModelDatasource], keyMappings);
+def event = new ModelHelper("Event");
+name = [name:"name", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def severity = [name:"severity", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Severity", propertyDatasource:datasourceNames.event];
+def ack = [name:"ack", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Acknowledged", propertyDatasource:datasourceNames.event];
+def owner = [name:"owner", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Owner", propertyDatasource:datasourceNames.event];
+def description = [name:"description", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"Description", propertyDatasource:datasourceNames.event];
+def lastOccured = [name:"lastOccured", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"LastOccuredAt", propertyDatasource:datasourceNames.event];
+def lastChanged = [name:"lastChanged", type:ModelProperty.stringType, blank:true, lazy:true, nameInDatasource:"LastChangedAt", propertyDatasource:datasourceNames.event];
+
+props = [];
+props.add(name);
+props.add(severity);
+props.add(ack);
+props.add(owner);
+props.add(description);
+props.add(lastOccured);
+props.add(lastChanged);
+
+datasources = [];
+datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
+def eventDs = DatasourceName.findByName(datasourceNames.event);
+def eventdbKey = [name:"name"];
+
+datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
+datasources.add([datasource:eventDs, master:false, keys:[eventdbKey]]);
+
+event.datasources = datasources;
+event.props = props; 
+event.setKeyMappings();  
 
 // Sla class
-def sla = new Model(name:"Sla");
-rcmdbModelDatasource = new ModelDatasource(datasource:rcmdbDS, master:true);
-def slaId = new ModelProperty(name:"slaId", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-def level = new ModelProperty(name:"level", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource);
-keyMappings = [new ModelDatasourceKeyMapping(property:slaId, datasource:rcmdbModelDatasource)];
-sla = constructModel(sla, [slaId, level], [rcmdbModelDatasource], keyMappings);
+def sla = new ModelHelper("Sla");
+def slaId = [name:"slaId", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
+def level = [name:"level", type:ModelProperty.stringType, blank:false, lazy:false, propertyDatasource:"RCMDB"];
 
+props = [];
+props.add(slaId);
+props.add(level);
 
-createRelation(customer, sla, "slas", "customer", ModelRelation.ONE, ModelRelation.MANY);
-createRelation(service, sla, "slas", "service", ModelRelation.ONE, ModelRelation.MANY);
-createRelation(resource, event, "events", "resource", ModelRelation.ONE, ModelRelation.MANY);
+datasources = [];
+rcmdbKey = [name:"slaId"];
+datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
+
+sla.datasources = datasources;
+sla.props = props; 
+sla.setKeyMappings();  
+
+customer.createRelation(sla.model, "slas", "customer", ModelRelation.ONE, ModelRelation.MANY);
+service.createRelation(sla.model, "slas", "service", ModelRelation.ONE, ModelRelation.MANY);
+resource.createRelation(event.model, "events", "resource", ModelRelation.ONE, ModelRelation.MANY);
 // UNCOMMENT WHEN CMDB-283 IS FIXED createRelation(service, resource, "resources", "services", ModelRelation.MANY, ModelRelation.MANY);
-createRelation(service, device, "devices", "services", ModelRelation.MANY, ModelRelation.MANY);
-createRelation(service, link, "links", "services", ModelRelation.MANY, ModelRelation.MANY);
+service.createRelation(device.model, "devices", "services", ModelRelation.MANY, ModelRelation.MANY);
+service.createRelation(link.model, "links", "services", ModelRelation.MANY, ModelRelation.MANY);
 
-ModelGenerator.getInstance().generateModels(Model.list());
+return "Successfully created model classes for Scenario 2! Now, GENERATE, RELOAD RapidCMDB APPLICATION, and run SampleScenario2Connector.groovy to populate MySql DB and RCMDB tables.";
 
-return "Successfully created model classes for Scenario 2! Now, GENERATE ANY ONE OF THE MODEL CLASS, RESTART RapidCMDBModeler APPLICATION, and run SampleScenario2Connector.groovy to populate MySql DB and RCMDB tables.";
+def checkDatasourceNames(){
+	def dsCustomer;
+	def dsEvents;
+	def dsDevice;
+	def dsLink;
+	def dsResource1;
+	def dsResource2;
 
-def checkDatasources(){
 	def datasources =[:];
 
 	dsCustomer = DatasourceName.findByName("dsCustomer");
 	if (dsCustomer == null){
-	    dsCustomer = new DatasourceName(name:"dsCustomer").save();
+	    dsCustomer = DatasourceName.add(name:"dsCustomer");
 	}
-	datasources.put("customer",dsCustomer);
+	datasources.put("customer",dsCustomer.name);
 
 	dsEvent = DatasourceName.findByName("dsEvent");
 	if (dsEvent == null){
-	    dsEvent= new DatasourceName(name:"dsEvent").save();
+	    dsEvent= DatasourceName.add(name:"dsEvent");
 	}
-	datasources.put("event",dsEvent);
+	datasources.put("event",dsEvent.name);
 
 	dsDevice = DatasourceName.findByName("dsDevice");
 	if (dsDevice == null){
-	    dsDevice = new DatasourceName(name:"dsDevice").save();
+	    dsDevice = DatasourceName.add(name:"dsDevice");
 	}
-	datasources.put("device",dsDevice);
+	datasources.put("device",dsDevice.name);
 
 	dsLink = DatasourceName.findByName("dsLink");
 	if (dsLink == null){
-	    dsLink = new DatasourceName(name:"dsLink").save();
+	    dsLink = DatasourceName.add(name:"dsLink");
 	}
-	datasources.put("link",dsLink);
+	datasources.put("link",dsLink.name);
 
 	dsResource1 = DatasourceName.findByName("dsResource1");
 	if (dsResource1 == null){
-	    dsResource1 = new DatasourceName(name:"dsResource1").save();
+	    dsResource1 = DatasourceName.add(name:"dsResource1");
 	}
-	datasources.put("resource1",dsResource1);
+	datasources.put("resource1",dsResource1.name);
 
 	dsResource2 = DatasourceName.findByName("dsResource2");
 	if (dsResource2 == null){
-	    dsResource2 = new DatasourceName(name:"dsResource2").save();
+	    dsResource2 = DatasourceName.add(name:"dsResource2");
 	}
-	datasources.put("resource2",dsResource2);
+	datasources.put("resource2",dsResource2.name);
 	return datasources;
-}
-
-def constructModel(model, listOfProperties, listOfDatasources, listOfKeyMappings)
-{
-    model = model.save();
-    listOfDatasources.each{
-        it.model = model;
-        it.save();
-    }
-    listOfProperties.each{
-        it.model = model;
-        it.save();
-    }
-
-    listOfKeyMappings.each{
-    	it.save();
-    }
-
-    listOfDatasources.each{
-        it.refresh();
-    }
-    model.refresh();
-    return model;
-}
-
-def createRelation(firstModel, secondModel, firstName, secondName, firstCar, secondCar){
-    new ModelRelation(firstModel:firstModel, secondModel:secondModel, firstName:firstName, secondName:secondName, firstCardinality:firstCar, secondCardinality:secondCar).save();
-    firstModel.refresh();
-    secondModel.refresh();
 }
 
 

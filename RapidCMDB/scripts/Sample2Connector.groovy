@@ -118,7 +118,6 @@ def prepareDBTables(){
 	if(dsConn == null){
 	    dsConn = connection.DatabaseConnection.add(name:"mysql", driver:"com.mysql.jdbc.Driver",url:"jdbc:mysql://localhost/test", username:"root", userPassword:"root");
 	}
-// Creating a DatabaseAdapter using "new" will only create a variable, and wont add to RapidCMDB
 	def dbDs = DatabaseDatasource.add(connection:dsConn,name:"dbDs");
 
 	try{

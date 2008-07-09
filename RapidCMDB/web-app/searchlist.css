@@ -82,3 +82,8 @@
     left: 0;
     background: #eeeeee;
 }
+
+.rcmdb-search-box{
+    height: 30px;
+    background: gray;
+}

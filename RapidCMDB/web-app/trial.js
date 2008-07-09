@@ -26,6 +26,7 @@ function render(){
     var searchConfig = {
         id:'searchList',
         url:'/RapidCMDB/script/run/getDevices',
+        searchQueryParamName:'query',
         rootTag:'Results',
         contentPath:'Result',
         indexAtt:'id',
@@ -34,6 +35,7 @@ function render(){
         sortOrderAttribute:'sortOrder',
         fields:['id', 'name', 'creationClassName', 'vendor', 'description', 'location']
     }
+
     searchList = new YAHOO.rapidjs.rcmdb.SearchList(searchContainer, searchConfig)
     layout.add('center', new YAHOO.rapidjs.rcmdb.SearchListPanel(searchList, {fitToFrame:true}));
     layout.endUpdate();

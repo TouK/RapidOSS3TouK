@@ -1,7 +1,10 @@
+
 YAHOO.rapidjs.rcmdb.SearchList = function(container, config) {
     this.id = null;
     this.url = null;
+    this.searchQueryParamName = config.searchQueryParamName;
     this.contentPath = null;
+    this.currentlyExecutingQuery = null;
     this.indexAtt = null;
     this.rootTag = null;
     this.totalCountAttribute = null;
@@ -32,15 +35,24 @@ YAHOO.rapidjs.rcmdb.SearchList = function(container, config) {
     this.render();
 };
 
+
+
 YAHOO.rapidjs.rcmdb.SearchList.prototype = {
     render : function() {
         var dh = YAHOO.ext.DomHelper;
+
+
         this.wrapper = dh.append(this.container, {tag: 'div', cls:'rcmdb-search'});
-        this.header = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-header',
+        this.header = dh.append(this.wrapper, {tag:'div'}, true);
+        this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
+            html:'<input type="text"/><button>Search</button>' +
+                 ''}, true);
+        this.gridHeader = dh.append(this.header.dom, {tag:'div', cls:'rcmdb-search-header',
             html:'<div style="float:right"><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
                  '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
                  '<option value="7">7</option><option value="8">8</option></select></div>'}, true);
-        this.lineSizeSelector = this.header.dom.getElementsByTagName('select')[0];
+
+        this.lineSizeSelector = this.gridHeader.dom.getElementsByTagName('select')[0];
         SelectUtils.selectTheValue(this.lineSizeSelector, this.lineSize, 0);
 
         this.body = dh.append(this.wrapper, {tag: 'div', cls:'rcmdb-search-body'}, true);
@@ -50,7 +62,8 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
         this.bufferView.rowEls = [];
         this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask', html:'Loading..', style:'text-align:center;'}, true);
         this.hideMask();
-
+        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'change', this.deneme, this, true);
+        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('button')[0], 'click', this.deneme, this, true);
         YAHOO.util.Event.addListener(this.lineSizeSelector, 'change', this.handleLineSizeChange, this, true);
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
@@ -68,6 +81,11 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
             {text:'sort desc', onclick: { fn: this.cellMenuItemClicked, scope: this }}
         ]);
         this.cellMenu.render(document.body);
+    },
+
+    deneme: function() {
+        this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
+        this.poll();
     },
 
     updateSearchData: function() {
@@ -310,6 +328,7 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
     },
 
     scrollPoll : function(offset) {
+
         this.showMask();
         this.poll(offset, this.lastSortAtt, this.lastSortOrder);
     },
@@ -325,10 +344,14 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
             success: this.processSuccess,
             failure : this.processFailure,
             scope : this,
-            timeout : 3000
+            timeout : 30000
         };
         var url;
         var params = [];
+        if(this.currentlyExecutingQuery != null)
+        {
+            params[params.length] = this.searchQueryParamName + "="+this.currentlyExecutingQuery;
+        }
         params[params.length] = 'max=' + this.maxRowsDisplayed;
         if (offset != null) {
             params[params.length] = 'offset=' + offset;
@@ -343,6 +366,7 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
     },
 
     processSuccess: function(response) {
+
         var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response, this.indexAtt);
         var node = newData.getRootNode(this.rootTag);
         if (node) {
@@ -378,14 +402,19 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
 		}
     },
     showMask: function() {
-        this.mask.setBounds(this.body.getX(), this.body.getY(), this.body.dom.clientWidth, this.body.dom.clientHeight);
+        console.log("show mask");
+        this.mask.setTop(this.header.dom.offsetHeight);
+        this.mask.setWidth(this.body.dom.clientWidth);
+        this.mask.setHeight(this.body.dom.clientHeight);
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', '');
     },
     hideMask: function() {
+        console.log("show mask");
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
     },
 
     sort:function(sortAtt, sortOrder) {
+
         this.showMask();
         this.lastSortAtt = sortAtt;
         this.lastSortOrder = sortOrder;

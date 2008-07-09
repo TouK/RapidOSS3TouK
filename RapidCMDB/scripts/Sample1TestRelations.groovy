@@ -89,7 +89,7 @@ emp2= Employee.get(name:"ali");
 assert emp1.nextEmp == null;
 
 dev1= Developer.add(name:"gonca",bday:"4/4/44",dept:"Dev",language:"java");
-/* HAD TO REMOVE EMPLOYEES RELATION FOR THE TIME BEING
+/* UNCOMMENT WHEN CMDB-283 IS FIXED 
 
 // T5: add relation: emp1 manages emp3, dev2. Add relation in both directions (employees and manager)
 emp1.addRelation(employees:emp3);

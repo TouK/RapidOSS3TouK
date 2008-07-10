@@ -4,44 +4,6 @@ YAHOO.rapidjs.Actions = {};
 YAHOO.rapidjs.Components = {};
 
 
-Function.prototype.createCallback = function(/*args...*/){
-    // make args available, in function below
-    var args = arguments;
-    var method = this;
-    return function() {
-        return method.apply(window, args);
-    };
-};
-Function.prototype.createDelegate = function(obj, args, appendArgs){
-    var method = this;
-    return function() {
-        var callArgs = args || arguments;
-        if(appendArgs === true){
-            callArgs = Array.prototype.slice.call(arguments, 0);
-            callArgs = callArgs.concat(args);
-        }else if(typeof appendArgs == 'number'){
-            callArgs = Array.prototype.slice.call(arguments, 0); // copy arguments first
-            var applyArgs = [appendArgs, 0].concat(args); // create method call params
-            Array.prototype.splice.apply(callArgs, applyArgs); // splice them in
-        }
-        return method.apply(obj || window, callArgs);
-    };
-};
-Function.prototype.defer = function(millis, obj, args, appendArgs){
-    return setTimeout(this.createDelegate(obj, args, appendArgs), millis);
-};
-Function.prototype.createSequence = function(fcn, scope){
-    if(typeof fcn != 'function'){
-        return this;
-    }
-    var method = this;
-    return function() {
-        var retval = method.apply(this || window, arguments);
-        fcn.apply(scope || this || window, arguments);
-        return retval;
-    };
-};
-
 String.prototype.trim = function() {
 	a = this.replace(/^\s+/, '');
 	return a.replace(/\s+$/, '');
@@ -111,34 +73,3 @@ YAHOO.rapidjs.CursorManager = new function(){
 	};
 }();
 
-
-YAHOO.rapidjs.DelayedTask = function(fn, scope, args){
-    var timeoutId = null;
-
-    /**
-     * Cancels any pending timeout and queues a new one
-     * @param {Number} delay The milliseconds to delay
-     * @param {Function} newFn (optional) Overrides function passed to constructor
-     * @param {Object} newScope (optional) Overrides scope passed to constructor
-     * @param {Array} newArgs (optional) Overrides args passed to constructor
-     */
-    this.delay = function(delay, newFn, newScope, newArgs){
-        if(timeoutId){
-            clearTimeout(timeoutId);
-        }
-        fn = newFn || fn;
-        scope = newScope || scope;
-        args = newArgs || args;
-        timeoutId = setTimeout(fn.createDelegate(scope, args), delay);
-    };
-
-    /**
-     * Cancel the last queued timeout
-     */
-    this.cancel = function(){
-        if(timeoutId){
-            clearTimeout(timeoutId);
-            timeoutId = null;
-        }
-    };
-};

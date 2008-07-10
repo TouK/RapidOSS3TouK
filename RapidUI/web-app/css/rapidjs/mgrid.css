@@ -1,0 +1,95 @@
+.r-mgrid-tools{
+	padding-right:2px;
+	padding-top:2px;
+	position:absolute;
+	right:80px;
+	text-align:right;
+	top:0px;
+}
+.r-mgrid-tools-text{
+	float: right;
+	padding-top: 2px;
+	padding-right: 4px;
+}
+.r-mgrid-viewselect-wrp{
+	float: right;
+	padding-left: 40px;
+}
+
+.r-mgrid-viewselect{
+	width: 100px;
+}
+.r-mgrid-addview{
+	float:right;
+}
+.r-mgrid-updateview{
+	float:right;
+}
+.r-mgrid-removeview{
+	float:right;
+}
+.r-mgrid-tools .r-button {
+	padding:2px;
+	z-index: 6;
+}
+.r-mgrid-tools .r-button-over {
+	padding:1px;
+    border:1px solid #98c0f4;
+    background-color:white;
+}
+.r-mgrid-tools .r-button-inner{
+	height:16px;
+    width:16px;
+}
+
+.r-mgrid-addview .r-button-inner{
+	background:transparent url( ../images/layout/viewadd.png ) no-repeat scroll 0% 50%;
+}
+.r-mgrid-updateview .r-button-inner{
+	background:transparent url( ../images/layout/pencil.png ) no-repeat scroll 0% 50%;
+}
+.r-mgrid-removeview .r-button-inner{
+	background:transparent url( ../images/layout/cross.png ) no-repeat scroll 0% 50%;
+}
+.r-mgrid-quickfilter-wrp{
+	float: right;
+}
+.r-mgrid-quickfilter{
+	width: 180px;
+	height: 18px;
+}
+
+.r-mgrid-view-wrp{
+	padding: 10px;
+}
+.r-mgrid-view-text{
+	height: 20px;
+	padding-top: 2px;
+	width: 150px;
+}
+.r-mgrid-view-inputwrp{
+	height: 22px;
+}
+.r-mgrid-view-input{
+	width: 150px;
+	height: 20px;
+	border: 1px solid #6593CF;
+}
+.r-mgrid-view-fields{
+
+}
+.r-mgrid-view-fieldlist{
+	width: 150px;
+}
+.r-mgrid-view-buttons{
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.r-mgrid-view-btnwrp{
+	margin-bottom: 1px;
+}
+.r-mgrid-view-gridcols{
+}
+.r-mgrid-view-collist{
+	width: 150px;
+}

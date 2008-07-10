@@ -1,7 +1,8 @@
+
 YAHOO.rapidjs.component.PollingComponentContainer = function(container, config)
 {
 	YAHOO.rapidjs.component.PollingComponentContainer.superclass.constructor.call(this,container, config);
-    this.pollTask = new YAHOO.rapidjs.DelayedTask(this.poll, this);
+    this.pollTask = new YAHOO.ext.util.DelayedTask(this.poll, this);
 	if(config.pollingInterval)
 	{
 		this.setPollingInterval(config.pollingInterval*1);

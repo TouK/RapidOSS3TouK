@@ -29,8 +29,7 @@ props.add(prop2);
 // Identify the datasource names. 
 def rcmdbDs = DatasourceName.findByName("RCMDB");
 if(rcmdbDs == null){
-    rcmdbDs = new DatasourceName(name: "RCMDB");
-    rcmdbDs.save();
+    rcmdbDs = DatasourceName.add(name: "RCMDB");
 }
 def rcmdbKey = [name:"prop1"];
 datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
@@ -77,13 +76,6 @@ props.add(creationClassName);
 props.add(dynamicDs);
 props.add(displayName);
 
-// Identify the datasource names. 
-/*rcmdbDs = DatasourceName.findByName("RCMDB");
-if(rcmdbDs == null){
-    rcmdbDs = new DatasourceName(name: "RCMDB");
-    rcmdbDs.save();
-}
-*/
 def rcmdbKey1 = [name:"name"];
 def rcmdbKey2 = [name:"creationClassName"];
 datasources = [];
@@ -93,8 +85,7 @@ datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey1, rcmdbKey2]]);
 // the name is the same as nameInDs
 def eastRegionDs = DatasourceName.findByName("eastRegionDs");
 if(eastRegionDs == null){
-    eastRegionDs = new DatasourceName(name: "eastRegionDs");
-    eastRegionDs.save();
+    eastRegionDs = DatasourceName.add(name: "eastRegionDs");
 }
 def eastRegionDsKey1 = [name:"name",nameInDs:"Name"];
 def eastRegionDsKey2 = [name:"creationClassName",nameInDs:"CreationClassName"];
@@ -102,8 +93,7 @@ datasources.add([datasource:eastRegionDs, master:false, keys:[eastRegionDsKey1, 
 
 def westRegionDs = DatasourceName.findByName("westRegionDs");
 if(westRegionDs == null){
-    westRegionDs = new DatasourceName(name: "westRegionDs");
-    westRegionDs.save();
+    westRegionDs = DatasourceName.add(name: "westRegionDs");
 }
 def westRegionDsKey1 = [name:"name",nameInDs:"Name"];
 def westRegionDsKey2 = [name:"creationClassName",nameInDs:"CreationClassName"];

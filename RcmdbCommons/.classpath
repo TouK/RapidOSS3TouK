@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/groovy"/>
+	<classpathentry kind="src" path="grails-app/conf"/>
 	<classpathentry kind="src" path="grails-app/domain"/>
 	<classpathentry kind="src" path="plugins/jsecurity-0.2.1/grails-app/domain"/>
 	<classpathentry kind="src" path="plugins/searchable-extension/grails-app/domain"/>

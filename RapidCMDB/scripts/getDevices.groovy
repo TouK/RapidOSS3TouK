@@ -32,4 +32,4 @@ else
 
 
 
-return writer.toString();
+new File("res.xml").setText(writer.toString());

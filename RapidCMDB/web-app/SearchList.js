@@ -33,6 +33,9 @@ YAHOO.rapidjs.rcmdb.SearchList = function(container, config) {
     };
     this.calculateRowHeight();
     this.render();
+
+    this.menuItems = config.menuItems;
+    this.menuItemUrlParamName = config.menuItemUrlParamName;
 };
 
 
@@ -45,14 +48,17 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
         this.wrapper = dh.append(this.container, {tag: 'div', cls:'rcmdb-search'});
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
-            html:'<input type="text"/><button>Search</button>' +
-                 ''}, true);
-        this.gridHeader = dh.append(this.header.dom, {tag:'div', cls:'rcmdb-search-header',
+            html:'<table><tr><td width="100%"><table width="100%"><tr><td><input type="text" style="width:100%;"/></td></tr></table></td><td><table width="215px"><tr><td><button>Search</button></td>' +
+                 '<td><a href="#">Save Query</a></td><td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
+                 '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
+                 '<option value="7">7</option><option value="8">8</option></select></td></tr></table></td></tr></table>'}, true);
+
+        /*this.gridHeader = dh.append(this.header.dom, {tag:'div', cls:'rcmdb-search-header',
             html:'<div style="float:right"><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
                  '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
-                 '<option value="7">7</option><option value="8">8</option></select></div>'}, true);
+                 '<option value="7">7</option><option value="8">8</option></select></div>'}, true);  */
 
-        this.lineSizeSelector = this.gridHeader.dom.getElementsByTagName('select')[0];
+        this.lineSizeSelector = this.searchBox.dom.getElementsByTagName('select')[0];
         SelectUtils.selectTheValue(this.lineSizeSelector, this.lineSize, 0);
 
         this.body = dh.append(this.wrapper, {tag: 'div', cls:'rcmdb-search-body'}, true);
@@ -62,17 +68,26 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
         this.bufferView.rowEls = [];
         this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask', html:'Loading..', style:'text-align:center;'}, true);
         this.hideMask();
-        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'change', this.deneme, this, true);
-        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('button')[0], 'click', this.deneme, this, true);
+        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleSearchClick, this, true);
+        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('button')[0], 'click', this.handleSearchClick, this, true);
+        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('a')[0], 'click', this.handleSaveQueryClick, this, true);
         YAHOO.util.Event.addListener(this.lineSizeSelector, 'change', this.handleLineSizeChange, this, true);
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);
+        YAHOO.util.Event.addListener(this.body.dom, 'click', this.handleGridClick, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
 
         this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic"});
-        this.rowHeaderMenu.addItems([
+
+        for (var i in this.menuItems){
+            this.rowHeaderMenu.addItem( {text:i, onclick: { fn: this.rowHeaderMenuItemClicked, scope: this } });
+        }
+
+
+        /*this.rowHeaderMenu.addItems([
             {text:'item1', onclick: { fn: this.rowHeaderMenuItemClicked, scope: this }},
             {text:'item2', onclick: { fn: this.rowHeaderMenuItemClicked, scope: this }}
-        ]);
+        ]);*/
+
         this.rowHeaderMenu.render(document.body);
 
         this.cellMenu = new YAHOO.widget.Menu(this.id + '_cellMenu', {position: "dynamic"});
@@ -83,9 +98,32 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
         this.cellMenu.render(document.body);
     },
 
-    deneme: function() {
-        this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
-        this.poll();
+    handleSaveQueryClick: function(e)
+    {
+        alert( "Query " + escape(this.currentlyExecutingQuery) + " saved succesfully.");
+    },
+    handleGridClick: function(e)
+    {
+
+        var dh = YAHOO.ext.DomHelper;
+        var sender = (typeof( window.event ) != "undefined" ) ? e.srcElement : e.target;
+        if(sender.className == "rcmdb-search-cell-value")
+        {
+            var key = sender.previousSibling.innerHTML;
+            var value = sender.innerHTML;
+            key = key.substring(0, key.length - 1);
+            this.currentlyExecutingQuery += " " + key + ":\"" + value + "\"";
+            this.searchBox.dom.getElementsByTagName('input')[0].value = this.currentlyExecutingQuery;           
+            this.poll();
+        }
+
+    },
+    handleSearchClick: function(e) {
+        if( (e.type == "keypress" && e.keyCode == 13) || (e.type == "click" ) )
+        {
+            this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
+            this.poll();
+        }
     },
 
     updateSearchData: function() {
@@ -188,6 +226,7 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
         }
         if (interval > this.bufferView.rowEls.length)
         {
+
             this.createEmptyRows(interval - this.bufferView.rowEls.length);
         }
         else if (interval < this.bufferView.rowEls.length)
@@ -240,7 +279,7 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
            for (var fieldIndex = 0; fieldIndex < this.fields.length; fieldIndex++) {
                innerHtml += '<div class="rcmdb-search-cell">' +
                          '<span class="rcmdb-search-cell-key"></span>' +
-                         '<label class="rcmdb-search-cell-value"></label>' +
+                         '<a href="#" class="rcmdb-search-cell-value"></a>' +
                          '<a class="rcmdb-search-cell-menu">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> | ' +
                          '</div>';
            }
@@ -289,6 +328,21 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
             if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-row-headermenu')) {
                 this.rowHeaderMenu.row = row;
                 this.rowHeaderMenu.cfg.setProperty("context", [target, 'tl', 'bl']);
+                var searchNode = this.searchData[row.rowIndex - this.lastOffset];
+                var dataNode = searchNode.xmlData;
+                var index = 0;
+                for (var i in this.menuItems){
+                    if( this.menuItems[i].condition != null ){
+                        var value = dataNode.getAttribute(this.menuItemUrlParamName);
+                        var menuItem = this.rowHeaderMenu.getItem(index);
+                        var condRes = this.menuItems[i].condition( value);
+                        if( !condRes)
+                            menuItem.element.style.display = "none";
+                        else
+                            menuItem.element.style.display = ""; 
+                    }
+                    index++;
+                }
                 this.rowHeaderMenu.show();
             }
             else {
@@ -402,14 +456,14 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
 		}
     },
     showMask: function() {
-        console.log("show mask");
+        //console.log("show mask");
         this.mask.setTop(this.header.dom.offsetHeight);
         this.mask.setWidth(this.body.dom.clientWidth);
         this.mask.setHeight(this.body.dom.clientHeight);
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', '');
     },
     hideMask: function() {
-        console.log("show mask");
+        //console.log("show mask");
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
     },
 
@@ -527,9 +581,12 @@ YAHOO.rapidjs.rcmdb.SearchList.prototype = {
     rowHeaderMenuItemClicked: function(eventType, args, menuItem){
         //var event = args[0];
         var menuItemText = menuItem.cfg.getProperty("text");
+        var menuItemUrl = this.menuItems[menuItemText].url;
+        alert( menuItemText + "  " + menuItemUrl);
         var row = this.rowHeaderMenu.row;
         this.rowHeaderMenu.row = null;
         var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
+        //alert( xmlData);
         this.fireRowHeaderMenuClick(xmlData, menuItemText);
     },
 

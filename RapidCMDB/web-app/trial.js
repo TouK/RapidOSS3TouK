@@ -33,7 +33,9 @@ function render(){
         totalCountAttribute:'Total',
         offsetAttribute:'Offset',
         sortOrderAttribute:'sortOrder',
-        fields:['id', 'name', 'creationClassName', 'vendor', 'description', 'location']
+        fields:['id', 'name', 'creationClassName', 'vendor', 'description', 'location'],
+        menuItems:{ item1 : { url: "url1" }, item2 : { url: "url2", condition : function(data) {return data == "3001"} }, item3 : { url: "url3" } } ,
+        menuItemUrlParamName: 'id'
     }
 
     searchList = new YAHOO.rapidjs.rcmdb.SearchList(searchContainer, searchConfig)

@@ -10,14 +10,19 @@ def builder = new MarkupBuilder(writer);
 def sortOrder = 0;
 if(query != null)
 {
-    def res = Device.search(query, params);
-    builder.Results(Total:res.total, Offset:res.offset){
-        res.results.each{
-            def atts = it.asMap();
-            atts.put("id", it.id);
-            atts.put("sortOrder", sortOrder++)
-            builder.Result(atts);
+    try{
+        def res = Device.search(query, params);
+        builder.Results(Total:res.total, Offset:res.offset){
+            res.results.each{
+                def atts = it.asMap();
+                atts.put("id", it.id);
+                atts.put("sortOrder", sortOrder++)
+                builder.Result(atts);
+            }
         }
+    }catch(e)
+    {
+       builder.Results(Total:0, Offset:0) 
     }
 }
 else

@@ -13,28 +13,6 @@ class SearchController {
     def searchableService;
     def static Map propertyConfiguration = null;
     def index = {
-        if(params.submitBtn == "Save")
-        {
-            return save(params);
-        }
-        else if(params.submitBtn == "Search")
-        {
-            return search(params);
-        }
-        else if(params.submitBtn == "Remove Query")
-        {
-            return deleteQuery(params);
-        }
-        else if(params.queryId)
-        {
-            params.q = SearchQuery.get(id:params.queryId).query;
-            return search(params);
-        }
-        else
-        {
-            return search(params);   
-        }
-
     }
 
     public static List getPropertyConfiguration(String className)
@@ -96,12 +74,12 @@ class SearchController {
     def search(params)
     {
         def queries = SearchQuery.findAllByUser(session.username)
-        def res = [savedQueries:queries]; 
+        def res = [savedQueries:queries];
         if (!params.q?.trim()) {
             return res;
         }
         try {
-            res["searchResult"] = searchableService.search(params.q, params); 
+            res["searchResult"] = searchableService.search(params.q, params);
         } catch (SearchEngineQueryParseException ex) {
             res["parseException"] = true;
         }

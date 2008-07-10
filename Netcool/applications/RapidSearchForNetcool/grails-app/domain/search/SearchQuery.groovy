@@ -1,4 +1,6 @@
-package search;
+package search
+
+import auth.RsUser;
 /**
 * Created by IntelliJ IDEA.
 * User: mustafa
@@ -8,6 +10,9 @@ package search;
 */
 class SearchQuery {
     static searchable = true;
-    String user;
+    RsUser user;
+    SearchQueryGroup group;
+    String name;
     String query;
+    static mappedBy = [group:"queries"]
 }

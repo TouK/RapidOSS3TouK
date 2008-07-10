@@ -12,7 +12,7 @@ import auth.RsUser
 class SearchQueryGroup {
     static searchable = true;
     RsUser user;
-    String groupName;
+    String name;
     static hasMany = [queries:SearchQuery]
     static mappedBy = ["queries":"group"]
 

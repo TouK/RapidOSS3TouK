@@ -1,6 +1,7 @@
 package search;
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-import grails.converters.XML;
+import grails.converters.XML
+import auth.RsUser;
 
 class SearchQueryController {
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
@@ -13,7 +14,7 @@ class SearchQueryController {
         if(!params.max) params.max = 10
         def searchQueries = SearchQuery.list( params );
         withFormat {
-			html searchQueryList:books
+			html searchQueryList:searchQueries
 			xml { render searchQueries as XML }
 		}
     }
@@ -33,7 +34,7 @@ class SearchQueryController {
         }
         else {
             withFormat {
-                html searchQuery : searchQuery
+                html {render(view:"show",model:[searchQuery:searchQuery])}
                 xml { render searchQuery as XML }
             }
         }
@@ -134,6 +135,8 @@ class SearchQueryController {
     }
 
     def save = {
+        def user = RsUser.get(username:session.username);
+        params["user"] = ["id":user.id]
         def searchQuery = SearchQuery.add(ControllerUtils.getClassProperties(params, SearchQuery))
         if(!searchQuery.hasErrors()) {
             withFormat {
@@ -150,7 +153,7 @@ class SearchQueryController {
                 html {
                     render(view:'create',model:[searchQuery:searchQuery])
                 }
-                xml { }
+                xml { render searchQuery as XML }
             }
 
         }

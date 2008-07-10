@@ -28,7 +28,7 @@
                 <div class="dialog">
                     <table>
                         <tbody>
-                        
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="name">Name:</label>
@@ -36,8 +36,8 @@
                                 <td valign="top" class="value ${hasErrors(bean:httpDatasource,field:'name','errors')}">
                                     <input type="text" class="inputtextfield" id="name" name="name" value="${fieldValue(bean:httpDatasource,field:'name')}"/>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="connection">Connection:</label>
@@ -45,8 +45,8 @@
                                 <td valign="top" class="value ${hasErrors(bean:httpDatasource,field:'connection','errors')}">
                                     <g:select class="inputtextfield" optionKey="id" from="${connection.HttpConnection.list()}" name="connection.id" value="${httpDatasource?.connection?.id}" ></g:select>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                         </tbody>
                     </table>
                 </div>

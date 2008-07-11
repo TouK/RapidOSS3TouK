@@ -1,17 +1,19 @@
-<SalesDatabase>
-    <Employee id="1" Company="Acme11" Title="President">
-        <Employee id="5" Company="Acme21111" Title="President"/>
-        <Employee id="6" Company="Acme22222" Title="President"/>
-        <Employee id="7" Company="Acme2" Title="President"/>
-        <Employee id="8" Company="Acme2" Title="President"/>
-        <Employee id="9" Company="A" Title="President"/>
-        <Employee id="19" Company="A" Title="President"/>
-    </Employee>
-    <Employee id="2" Company="Acme2" Title="President">
-    </Employee>
-    <Employee id="3" Company="Acme3" Title="President">
-    </Employee>
-    <Employee id="4" Company="Acme3" Title="President">
-    </Employee>
-               
-</SalesDatabase>
+<Filters>
+    <Filter id="1" name="Group1" nodeType="group">
+        <Filter id="5" name="filter3" nodeType="filter" query = "aaa"/>
+        <Filter id="6" name="filter4" nodeType="filter" query = "bbb"/>
+
+    </Filter>
+    <Filter id="2" name="Group2" nodeType="group">
+        <Filter id="7" name="filter5" nodeType="filter" query = "ccc"/>
+        <Filter id="8" name="filter6" nodeType="filter" query = "ddd"/>
+
+    </Filter>
+    <Filter id="3" name="Group3" nodeType="group">
+        <Filter id="9" name="filter1" nodeType="filter" query = "eee"/>
+        <Filter id="19" name="filter2" nodeType="filter" query = "fff"/>
+    </Filter>
+    <Filter id="4" name="Group4" nodeType="group">
+    </Filter>
+
+</Filters>

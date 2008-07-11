@@ -1,7 +1,7 @@
-
 YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.id = null;
     this.url = null;
+    this.saveQueryFunction = config.saveQueryFunction;
     this.searchQueryParamName = config.searchQueryParamName;
     this.contentPath = null;
     this.currentlyExecutingQuery = null;
@@ -46,17 +46,13 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
 
         this.wrapper = dh.append(this.container, {tag: 'div', cls:'rcmdb-search'});
+        
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
             html:'<table><tr><td width="100%"><table width="100%"><tr><td><input type="text" style="width:100%;"/></td></tr></table></td><td><table width="215px"><tr><td><button>Search</button></td>' +
-                 '<td><a href="#">Save Query</a></td><td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
+                 '<td id="saveQuery1"><a href="#">Save Query</a></td><td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
                  '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
                  '<option value="7">7</option><option value="8">8</option></select></td></tr></table></td></tr></table>'}, true);
-
-        /*this.gridHeader = dh.append(this.header.dom, {tag:'div', cls:'rcmdb-search-header',
-            html:'<div style="float:right"><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
-                 '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
-                 '<option value="7">7</option><option value="8">8</option></select></div>'}, true);  */
 
         this.lineSizeSelector = this.searchBox.dom.getElementsByTagName('select')[0];
         SelectUtils.selectTheValue(this.lineSizeSelector, this.lineSize, 0);
@@ -82,12 +78,6 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             this.rowHeaderMenu.addItem( {text:i, onclick: { fn: this.rowHeaderMenuItemClicked, scope: this } });
         }
 
-
-        /*this.rowHeaderMenu.addItems([
-            {text:'item1', onclick: { fn: this.rowHeaderMenuItemClicked, scope: this }},
-            {text:'item2', onclick: { fn: this.rowHeaderMenuItemClicked, scope: this }}
-        ]);*/
-
         this.rowHeaderMenu.render(document.body);
 
         this.cellMenu = new YAHOO.widget.Menu(this.id + '_cellMenu', {position: "dynamic"});
@@ -96,11 +86,21 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             {text:'sort desc', onclick: { fn: this.cellMenuItemClicked, scope: this }}
         ]);
         this.cellMenu.render(document.body);
+         
+
+  },
+
+    setQuery: function(queryString)
+    {
+        this.currentlyExecutingQuery = queryString;
+        this.searchBox.dom.getElementsByTagName('input')[0].value = queryString;
+        this.poll();
     },
 
     handleSaveQueryClick: function(e)
     {
-        alert( "Query " + escape(this.currentlyExecutingQuery) + " saved succesfully.");
+        this.saveQueryFunction(this.searchBox.dom.getElementsByTagName('input')[0].value);
+        //alert( "Query " + escape(this.searchBox.dom.getElementsByTagName('input')[0].value) + " saved succesfully.");
     },
     handleGridClick: function(e)
     {
@@ -112,7 +112,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             var key = sender.previousSibling.innerHTML;
             var value = sender.innerHTML;
             key = key.substring(0, key.length - 1);
-            this.currentlyExecutingQuery += " " + key + ":\"" + value + "\"";
+            this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value + " " + key + ":\"" + value + "\"";
             this.searchBox.dom.getElementsByTagName('input')[0].value = this.currentlyExecutingQuery;
             this.poll();
         }

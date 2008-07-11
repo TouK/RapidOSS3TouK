@@ -19,6 +19,57 @@ YAHOO.rapidjs.ArrayUtils = new function()
 	};
 }();
 
+YAHOO.rapidjs.Connect = new function()
+{
+	this.containsError = function(response)
+	{
+		try
+		{
+			if(response.responseXML)
+			{
+				var errors = response.responseXML.getElementsByTagName("Errors");
+				if(!errors)
+				{
+					return false;
+				}
+				if(errors.length != null)
+				{
+					return errors.length > 0;
+				}
+				else
+				{
+					return errors != null;
+				}
+			}
+			else
+			{
+				//if response.responseXML is undefined, than we have no errors since RI sends errors in XML.
+				return false;
+			}
+		}
+		catch(e)
+		{
+			return response.responseText.indexOf("Errors") >= 0
+		}
+
+	};
+
+	this.getErrorMessages = function(xmlDoc){
+		return xmlDoc.getElementsByTagName('Error');
+	};
+	this.getSuccessMessage = function(xmlDoc){
+		var success = xmlDoc.getElementsByTagName('Successful');
+		if(success && success.length > 0 && success[0].firstChild)
+		{
+			return success[0].firstChild.nodeValue;
+		}
+		else
+		{
+			return "";
+		}
+	};
+}();
+
 YAHOO.rapidjs.DomUtils = new function()
 {
 	this.findParent = function(element, className){

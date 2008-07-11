@@ -23,22 +23,46 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
 
     processSuccess : function(response){
+        try
+        {
+            if(YAHOO.rapidjs.Connect.containsError(response) == false)
+            {
+                this.handleSuccess(response);   
+            }
+            else
+            {
+                this.handleFailure(response);
+            }
+
+        }
+        catch(e)
+        {
+        }
         if(this.pollingInterval > 0)
         {
-            this.pollTask.delay(this.pollingInterval*1000);
+            this.pollTask.delay(this.pollingInterval*10000);
         }
-        this.processData(response)
+
 
     },
 
-    processData: function(response)
+    handleSuccess: function(response)
+    {
+        alert("extenders of PollingComponentContainer should override processData");
+    },
+
+    handleFailure: function(response)
+    {
+        alert("extenders of PollingComponentContainer should override processData");
+    },
+    handleTimeout: function(response)
     {
         alert("extenders of PollingComponentContainer should override processData");
     },
 
     processFailure : function(response)
     {
-        console.log("hata buyuk hata");
+        this.handleFailure(response);
         if(this.pollingInterval > 0 && this.panel.isVisible)
         {
             this.pollTask.delay(this.pollingInterval*1000);
@@ -55,7 +79,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 
     timeout : function(response)
     {
-        console.log("Timeout");
+        this.handleTimeout(response);
         if(this.pollingInterval > 0 && this.panel.isVisible)
         {
             this.pollTask.delay(this.pollingInterval*1000);
@@ -63,14 +87,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
     doRequest: function(url, params)
     {
-        if(this.lastConnection){
-            var callStatus = YAHOO.util.Connect.isCallInProgress(this.lastConnection);
-            if(callStatus == true){
-                YAHOO.util.Connect.abort(this.lastConnection);
-                this.lastConnection = null;
-            }
-        }
-        this.pollTask.cancel();
+        this.abort();
+
         if(params == null)
         {
             params = {};
@@ -103,6 +121,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
             }
         }
         this.lastConnection = YAHOO.util.Connect.asyncRequest('GET',url , callback, null);
+    },
+
+    abort: function()
+    {
+        if(this.lastConnection){
+            var callStatus = YAHOO.util.Connect.isCallInProgress(this.lastConnection);
+            if(callStatus == true){
+                YAHOO.util.Connect.abort(this.lastConnection);
+                this.lastConnection = null;
+            }
+        }
+        this.pollTask.cancel();
     },
     setPollingInterval: function(newPollInterval)
     {

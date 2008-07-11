@@ -1,14 +1,12 @@
 package search;
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import grails.converters.XML
-import auth.RsUser;
+import auth.RsUser
+import org.springframework.validation.BindException;
 
 class SearchQueryController {
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
-
-    // the delete, save and update actions only accept POST requests
-    def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
     def list = {
         if(!params.max) params.max = 10
@@ -23,12 +21,13 @@ class SearchQueryController {
         def searchQuery = SearchQuery.get([id:params.id])
 
         if(!searchQuery) {
+            addError("default.object.not.found", [SearchQuery.class.name, params.id]);
             withFormat {
                 html {
-                    flash.message = "SearchQuery not found with id ${params.id}"
+                    flash.errors = errors;
                     redirect(action:list)
                 }
-                xml { render searchQuery as XML }
+                xml { errors as XML }
             }
 
         }
@@ -44,7 +43,7 @@ class SearchQueryController {
         def searchQuery = SearchQuery.get( [id:params.id])
         if(searchQuery) {
             try{
-                searchQuery.remove()
+                searchQuery.remove();
                 withFormat {
                     html {
                         flash.message = "SearchQuery ${params.id} deleted"
@@ -55,9 +54,9 @@ class SearchQueryController {
 
             }
             catch(e){
+                addError("default.couldnot.delete", [SearchQuery, searchQuery])
                 withFormat {
                     html {
-                        def errors =[message(code:"default.couldnot.delete", args:[SearchQuery, searchQuery])]
                         flash.errors = errors;
                         redirect(action:show, id:searchQuery.id)
                     }
@@ -68,9 +67,10 @@ class SearchQueryController {
 
         }
         else {
+            addError("default.object.not.found", [SearchQuery.class.name, params.id]);
             withFormat {
                 html {
-                    flash.message = "SearchQuery not found with id ${params.id}"
+                    flash.errors = errors;
                     redirect(action:list)
                 }
                 xml {  }
@@ -83,7 +83,8 @@ class SearchQueryController {
         def searchQuery = SearchQuery.get( [id:params.id] )
 
         if(!searchQuery) {
-            flash.message = "SearchQuery not found with id ${params.id}"
+            addError("default.object.not.found", [SearchQuery.class.name, params.id]);
+            flash.errors = errors;
             redirect(action:list)
         }
         else {
@@ -113,13 +114,13 @@ class SearchQueryController {
                     }
                     xml {  }
                 }
-
             }
         }
         else {
+            addError("default.object.not.found", [SearchQuery.class.name, params.id]);
             withFormat {
                 html {
-                    flash.message = "SearchQuery not found with id ${params.id}"
+                    flash.errors = errors;
                     redirect(action:edit,id:params.id)
                 }
                 xml {  }

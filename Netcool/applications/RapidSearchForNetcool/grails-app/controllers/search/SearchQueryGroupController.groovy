@@ -7,9 +7,6 @@ class SearchQueryGroupController {
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
 
-    // the delete, save and update actions only accept POST requests
-    def allowedMethods = [delete:'POST', save:'POST', update:'POST']
-
     def list = {
         if(!params.max) params.max = 10
         def searchQueryGroups = SearchQueryGroup.list( params );
@@ -21,11 +18,11 @@ class SearchQueryGroupController {
 
     def show = {
         def searchQueryGroup = SearchQueryGroup.get([id:params.id])
-
         if(!searchQueryGroup) {
+            addError("default.object.not.found", [SearchQueryGroup.class.name, params.id]);
             withFormat {
                 html {
-                    flash.message = "SearchQueryGroup not found with id ${params.id}"
+                    flash.errors = errors;
                     redirect(action:list)
                 }
                 xml { render searchQueryGroup as XML }
@@ -55,9 +52,9 @@ class SearchQueryGroupController {
 
             }
             catch(e){
+                addError("default.couldnot.delete", [SearchQueryGroup, searchQueryGroup])
                 withFormat {
                     html {
-                        def errors =[message(code:"default.couldnot.delete", args:[SearchQueryGroup, searchQueryGroup])]
                         flash.errors = errors;
                         redirect(action:show, id:searchQueryGroup.id)
                     }
@@ -68,9 +65,10 @@ class SearchQueryGroupController {
 
         }
         else {
+            addError("default.object.not.found", [SearchQueryGroup.class.name, params.id]);
             withFormat {
                 html {
-                    flash.message = "SearchQueryGroup not found with id ${params.id}"
+                    flash.errors = errors;
                     redirect(action:list)
                 }
                 xml {  }
@@ -83,7 +81,8 @@ class SearchQueryGroupController {
         def searchQueryGroup = SearchQueryGroup.get( [id:params.id] )
 
         if(!searchQueryGroup) {
-            flash.message = "SearchQueryGroup not found with id ${params.id}"
+            addError("default.object.not.found", [SearchQueryGroup.class.name, params.id]);
+            flash.errors = errors;
             redirect(action:list)
         }
         else {
@@ -117,9 +116,10 @@ class SearchQueryGroupController {
             }
         }
         else {
+            addError("default.object.not.found", [SearchQueryGroup.class.name, params.id]);
             withFormat {
                 html {
-                    flash.message = "SearchQueryGroup not found with id ${params.id}"
+                    flash.errors = errors;
                     redirect(action:edit,id:params.id)
                 }
                 xml {  }

@@ -18,10 +18,11 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <g:hasErrors bean="${searchQueryGroup}">
-            <div class="errors">
-                <g:renderErrors bean="${searchQueryGroup}" as="list" />
-            </div>
+            <g:hasErrors>
+                <div class="errors">
+                    <g:renderErrors bean="${flash.errors}"/>
+                    <g:renderErrors bean="${searchQueryGroup}"/>
+                </div>
             </g:hasErrors>
             <g:form method="post" >
                 <input type="hidden" name="id" value="${searchQueryGroup?.id}" />

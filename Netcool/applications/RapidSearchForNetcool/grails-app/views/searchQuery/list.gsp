@@ -17,6 +17,12 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
+            <g:hasErrors>
+                <div class="errors">
+                    <g:renderErrors bean="${flash.errors}"/>
+                    <g:renderErrors bean="${searchQuery}"/>
+                </div>
+            </g:hasErrors>
             <div class="list">
                 <table>
                     <thead>

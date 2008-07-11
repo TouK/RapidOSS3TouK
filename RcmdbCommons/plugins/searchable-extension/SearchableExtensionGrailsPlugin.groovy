@@ -4,6 +4,9 @@ import com.ifountain.rcmdb.domain.method.*
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.commons.GrailsClass
+import org.springframework.validation.BindException
+import org.springframework.validation.Errors
 
 /**
 * Created by IntelliJ IDEA.
@@ -48,6 +51,28 @@ class SearchableExtensionGrailsPlugin {
         for (dc in domainClassesToBeCreated) {
             MetaClass mc = dc.metaClass
             registerDynamicMethods(dc, application, ctx);
+        }
+
+        for (GrailsClass controller in application.controllerClasses) {
+            MetaClass mc = controller.metaClass
+            mc.addError = {String messageCode->
+
+                delegate.addError(messageCode, [])
+
+            }
+            mc.addError = {String messageCode, List params->
+
+                delegate.addError(messageCode, params, "")
+
+            }
+            mc.addError = {String messageCode, List params, String defaultMessage->
+                if(!delegate.hasErrors())
+                {
+                    delegate.errors = new RapidBindException(delegate, delegate.class.name);
+                }
+                delegate.errors.reject(messageCode, params as Object[],defaultMessage)
+
+            }
         }
     }
 
@@ -166,6 +191,20 @@ class SearchableExtensionGrailsPlugin {
     {
         def metaProp = mc.getMetaProperty("searchable");
         return metaProp != null;
+    }
+
+}
+
+class RapidBindException extends BindException
+{
+
+    public RapidBindException(Object o, String s) {
+        super(o, s); 
+    }
+
+    public void addAllErrors(Errors errors) {
+        if(errors == null) return;
+        super.addAllErrors(errors);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
 }

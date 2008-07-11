@@ -16,7 +16,7 @@ return "successfully run";
 def generateConnAndDSForDatabase(){
   def conn1 = DatabaseConnection.findByName(CONNAME);
 	if(conn1 == null){
-	    conn1 = DatabaseConnection.add(name:CONNAME, driver:"com.mysql.jdbc.Driver",url:"jdbc:mysql://192.168.1.100/test", username:"root", password:"root");
+	    conn1 = DatabaseConnection.add(name:CONNAME, driver:"com.mysql.jdbc.Driver",url:"jdbc:mysql://192.168.1.100/test", username:"root", userPassword:"root");
 	}
 	def ds= DatabaseDatasource.findByName(DSNAME);
 	if (ds == null){

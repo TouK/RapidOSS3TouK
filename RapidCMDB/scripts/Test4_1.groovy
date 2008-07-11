@@ -28,8 +28,6 @@ prop.lazy = false;
 prop.blank = false;
 prop.propertySpecifyingDatasource = null;
 
-prop.save(flush:true);
-
 // String to Number
 // This test fails: For existing instances, it gives org.codehaus.groovy.runtime.InvokerInvocationException: java.lang.NumberFormatException: For input string: "eastRegionDs
 prop= ModelProperty.findByNameAndModel("smartDs",myModel);
@@ -37,21 +35,14 @@ prop.type = ModelProperty.numberType;
 prop.lazy = false;
 prop.blank = false;
 
-prop.save(flush:true);
-
 // String to Number (blank=true, defaultValue provided by the user) expected after conversion: 0
 // This test fails: Invalid default value. It should be a number.
 prop= ModelProperty.findByNameAndModel("prop5",myModel);
 prop.type = ModelProperty.numberType;
 
-prop.save(flush:true);
-
 // String to Number (blank=false, defaultValue provided by the user) expected after conversion: null
 // This test fails: Invalid default value. It should be a number.
 prop= ModelProperty.findByNameAndModel("prop7",myModel);
 prop.type = ModelProperty.numberType;
-
-prop.save(flush:true);
-
 
 return "Model is modified. Generate SmartsObject and reload application!";

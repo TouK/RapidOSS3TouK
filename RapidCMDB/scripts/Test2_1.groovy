@@ -14,34 +14,26 @@ assert count == 2
 def myModel = Model.findByName("SmartsObject");
 def prop= ModelProperty.findByNameAndModel("prop1",myModel);
 prop.name = 'prop1_1';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop2",myModel);
 prop.name = 'prop1_2';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop3",myModel);
 prop.name = 'prop1_3';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop4",myModel);
 prop.name = 'prop1_4';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop5",myModel);
 prop.name = 'prop1_5';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop6",myModel);
 prop.name = 'prop1_6';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop7",myModel);
 prop.name = 'prop1_7';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop8",myModel);
 prop.name = 'prop1_8';
-prop.save();
 
 return "Model is modified. Generate SmartsObject and reload application!";

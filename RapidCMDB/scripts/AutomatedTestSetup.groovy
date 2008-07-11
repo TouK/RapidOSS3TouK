@@ -12,45 +12,45 @@ DS2 = 'westRegionDs';
 
 def conn1 = SmartsConnection.findByName(CONNAME);
 if(conn1 == null){
-    conn1 = new SmartsConnection(name:CONNAME, broker:BROKER, domain:DOMAIN, username:USERNAME, password:PSW).save();
+    conn1 = SmartsConnection.add(name:CONNAME, broker:BROKER, domain:DOMAIN, username:USERNAME, userPassword:PSW);
 }
 
 def eastRegionDs= SmartsTopologyDatasource.findByName(DS1);
 if (eastRegionDs == null){
-    eastRegionDs = new SmartsTopologyDatasource(connection:conn1, name:DS1).save();
+    eastRegionDs = SmartsTopologyDatasource.add(connection:conn1, name:DS1);
 }
 
 def westRegionDs= SmartsTopologyDatasource.findByName(DS2);
 if (westRegionDs == null){
-    westRegionDs = new SmartsTopologyDatasource(connection:conn1, name:DS2).save();
+    westRegionDs = SmartsTopologyDatasource.add(connection:conn1, name:DS2);
 }
 
-new CmdbScript(name:'ModelHelper').save();
-new CmdbScript(name:'SampleModelCreationUsingModelHelper').save();
+CmdbScript.add(name:'ModelHelper');
+CmdbScript.add(name:'SampleModelCreationUsingModelHelper');
 /*
-new CmdbScript(name:'Sample3Setup').save();
-new CmdbScript(name:'Test1_1').save();
-new CmdbScript(name:'Test1_2').save();
-new CmdbScript(name:'Test1_3').save();
-new CmdbScript(name:'Test1_4').save();
-new CmdbScript(name:'Test2_1').save();
-new CmdbScript(name:'Test2_2').save();
-new CmdbScript(name:'Test2_3').save();
-new CmdbScript(name:'Test3_1').save();
-new CmdbScript(name:'Test3_2').save();
-new CmdbScript(name:'Test3_3').save();
-new CmdbScript(name:'Test4_1').save();
-new CmdbScript(name:'Test4_2').save();
-new CmdbScript(name:'Test4_3').save();
-new CmdbScript(name:'Test5_1').save();
-new CmdbScript(name:'Test5_2').save();
-new CmdbScript(name:'Test5_3').save();
-new CmdbScript(name:'Test6_1').save();
-new CmdbScript(name:'Test6_2').save();
-new CmdbScript(name:'Test6_3').save();
-new CmdbScript(name:'Test7_1').save();
-new CmdbScript(name:'Test7_2').save();
-new CmdbScript(name:'Test8_1').save();
-new CmdbScript(name:'Test8_2').save();
+CmdbScript.add(name:'Sample3Setup');
+CmdbScript.add(name:'Test1_1');
+CmdbScript.add(name:'Test1_2');
+CmdbScript.add(name:'Test1_3');
+CmdbScript.add(name:'Test1_4');
+CmdbScript.add(name:'Test2_1');
+CmdbScript.add(name:'Test2_2');
+CmdbScript.add(name:'Test2_3');
+CmdbScript.add(name:'Test3_1');
+CmdbScript.add(name:'Test3_2');
+CmdbScript.add(name:'Test3_3');
+CmdbScript.add(name:'Test4_1');
+CmdbScript.add(name:'Test4_2');
+CmdbScript.add(name:'Test4_3');
+CmdbScript.add(name:'Test5_1');
+CmdbScript.add(name:'Test5_2');
+CmdbScript.add(name:'Test5_3');
+CmdbScript.add(name:'Test6_1');
+CmdbScript.add(name:'Test6_2');
+CmdbScript.add(name:'Test6_3');
+CmdbScript.add(name:'Test7_1');
+CmdbScript.add(name:'Test7_2');
+CmdbScript.add(name:'Test8_1');
+CmdbScript.add(name:'Test8_2');
 */
 return "Successfully created connection, datasources, and scripts!"

@@ -114,22 +114,17 @@ def relation= ModelRelation.findByFirstNameAndFirstModel("underlyingIP", model1)
 relation.firstName = 'underlying';
 relation.secondName = 'layeredOver';
 
-relation.save();
-
 model1 = Model.findByName("Device");
 model2 = Model.findByName("Link");
 relation= ModelRelation.findByFirstNameAndFirstModel("connectedViaLink", model1);
 
 relation.firstName = 'connectedVia';
 relation.secondName = 'connectedSystems';
-relation.save();
 
 model2 = Model.findByName("DeviceComponent");
 relation= ModelRelation.findByFirstNameAndFirstModel("composedOfParts", model1);
 
 relation.firstName = 'composedOf';
 relation.secondName = 'partOf';
-relation.save();
-
 
 return "Model is modified. Generate SmartsObject and reload application!";

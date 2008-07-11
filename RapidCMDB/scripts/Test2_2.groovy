@@ -45,34 +45,26 @@ assert result.prop1_8 == 6666;
 def myModel = Model.findByName("SmartsObject");
 def prop= ModelProperty.findByNameAndModel("prop1_1",myModel);
 prop.name = 'prop1';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop1_2",myModel);
 prop.name = 'prop2';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop1_3",myModel);
 prop.name = 'prop3';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop1_4",myModel);
 prop.name = 'prop4';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop1_5",myModel);
 prop.name = 'prop5';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop1_6",myModel);
 prop.name = 'prop6';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop1_7",myModel);
 prop.name = 'prop7';
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop1_8",myModel);
 prop.name = 'prop8';
-prop.save();
 
 return "Success";

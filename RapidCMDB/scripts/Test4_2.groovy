@@ -39,20 +39,16 @@ prop.propertySpecifyingDatasource = ModelProperty.findByModelAndName(myModel,"sm
 prop.type = ModelProperty.stringType;
 prop.lazy = true;
 prop.blank = true;
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("smartDs",myModel);
 prop.type = ModelProperty.stringType;
 prop.lazy = false;
 prop.blank = true;
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop5",myModel);
 prop.type = ModelProperty.stringType;
-prop.save();
 
 prop= ModelProperty.findByNameAndModel("prop7",myModel);
 prop.type = ModelProperty.stringType;
-prop.save();
 
 return "Model is modified. Generate SmartsObject and reload application!";

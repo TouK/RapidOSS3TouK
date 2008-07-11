@@ -44,7 +44,6 @@ def relation= ModelRelation.findByFirstNameAndFirstModel("underlying", model1);
 
 relation.firstCardinality = ModelRelation.ONE;
 relation.secondCardinality = ModelRelation.ONE;
-relation.save();
 
 model1 = Model.findByName("Device");
 model2 = Model.findByName("Link");
@@ -53,14 +52,12 @@ relation= ModelRelation.findByFirstNameAndFirstModel("connectedVia", model1);
 relation.firstCardinality = ModelRelation.MANY;
 relation.secondCardinality = ModelRelation.MANY;
 relation.belongsTo = model1;
-relation.save();
 
 /* UNCOMMENT WHEN THE TEST PASSES
 relation= ModelRelation.findByFirstNameAndFirstModel("composedOf", model1);
 
 relation.firstCardinality = ModelRelation.ONE;
 relation.secondCardinality = ModelRelation.MANY;
-relation.save();
 */
 
 return "Model is modified. Generate SmartsObject and reload application!";

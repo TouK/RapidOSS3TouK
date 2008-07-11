@@ -6,11 +6,11 @@ Relation add
 
 def model1 = Model.findByName("DeviceInterface");
 def model2 = Model.findByName("Ip");
-new ModelRelation(firstModel:model1, secondModel:model2, firstName:"underlying", secondName:"layeredOver", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE).save();
+ModelRelation.add(firstModel:model1, secondModel:model2, firstName:"underlying", secondName:"layeredOver", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE);
 
 model1 = Model.findByName("Device");
 model2 = Model.findByName("DeviceComponent");
-new ModelRelation(firstModel:model1, secondModel:model2, firstName:"composedOf", secondName:"partOf", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.MANY).save();
+ModelRelation.add(firstModel:model1, secondModel:model2, firstName:"composedOf", secondName:"partOf", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.MANY);
 
 //model2 = Model.findByName("Link");
 //new ModelRelation(firstModel:model1, secondModel:model2, firstName:"connectedVia", secondName:"connectedSystems", firstCardinality:ModelRelation.ONE, secondCardinality:ModelRelation.ONE).save();

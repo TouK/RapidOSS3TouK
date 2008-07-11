@@ -58,6 +58,6 @@ def rcmdbDS = BaseDatasource.findByName("RCMDB");
 def rcmdbModelDatasource = ModelDatasource.findByModelAndDatasource(myModel,rcmdbDS);
 def prop= ModelProperty.findByNameAndModel("prop3",myModel);
 
-new ModelDatasourceKeyMapping(property:prop, datasource:rcmdbModelDatasource).save();
+ModelDatasourceKeyMapping.add(property:prop, datasource:rcmdbModelDatasource);
 
 return "Model is modified. Generate SmartsObject and reload application!";

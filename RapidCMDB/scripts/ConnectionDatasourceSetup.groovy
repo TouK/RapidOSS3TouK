@@ -27,11 +27,11 @@ import datasource.SingleTableDatabaseDatasource
  */
 def conn1 = DatabaseConnection.findByName("mysql");
 if(conn1 == null){
-    conn1 = new DatabaseConnection(name:"mysql", driver:"com.mysql.jdbc.Driver",
-            url:"jdbc:mysql://192.168.1.100/test", username:"root", password:"root").save();
+    conn1 = DatabaseConnection.add(name:"mysql", driver:"com.mysql.jdbc.Driver",
+            url:"jdbc:mysql://192.168.1.100/test", username:"root", userPassword:"root");
 }
 
 def ds1 = SingleTableDatabaseDatasource.findByName("ds1");
 if (ds1 == null){
-    ds1 = new SingleTableDatabaseDatasource(connection:conn1, name:"ds1", tableName:"table1", tableKeys:"prop0").save();
+    ds1 = SingleTableDatabaseDatasource.add(connection:conn1, name:"ds1", tableName:"table1", tableKeys:"prop0");
 }

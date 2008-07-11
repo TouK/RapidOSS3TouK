@@ -18,6 +18,6 @@ for (prop in props){
 }
 assert !propnames.contains('prop4')
 
-def newProp= new ModelProperty(name:"prop4", type:ModelProperty.numberType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource, model:myModel).save();
+def newProp= ModelProperty.add(name:"prop4", type:ModelProperty.numberType, blank:false, lazy:false, propertyDatasource:rcmdbModelDatasource, model:myModel);
 
 return "Model is modified. Generate SmartsObject and reload application!";

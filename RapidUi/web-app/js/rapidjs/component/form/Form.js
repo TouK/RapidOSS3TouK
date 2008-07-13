@@ -22,13 +22,23 @@ YAHOO.rapidjs.component.Form = function(container, config)
     this.updateUrl = config.updateUrl;
     this.mode = this.CREATE_MODE;
     this.isSubmitInProggress = false;
+    this.render();
 
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingComponentContainer, {
+    render: function()
+    {
+        var dh = YAHOO.ext.DomHelper;
+        this.errors = dh.insertBefore(this.dialog.form.firstChild, {tag: 'div', cls:'rapid-errors'}, true);
+        this.errors.setVisibilityMode(YAHOO.ext.Element.DISPLAY);
+    },
     formAction: function()
     {
 
+    },
+    handleTimeout: function(response)
+    {
     },
     handleSuccess: function(response)
     {
@@ -57,6 +67,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     
     handleSubmit: function()
     {
+        this.errors.dom.innerHTML = "";
+        this.errors.hide() ;
         this.isSubmitInProggress = true;
         if(this.mode == this.EDIT_MODE)
         {
@@ -83,12 +95,20 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
 
     handleFailure: function(response)
     {
+        var dh = YAHOO.ext.DomHelper;
         this.isSubmitInProggress = false;
-        var errors = YAHOO.rapidjs.Connect.getErrorMessages(response);
+        var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
+        for(var i=0; i < errors.length; i++)
+        {
+            var listItem = dh.append(this.errors.dom, {tag:"li"});
+           listItem.appendChild(document.createTextNode(errors[i].getAttribute("error")));
+        }
+        this.errors.show();
     },
 
     show: function(mode)
     {
+        this.errors.hide() ;
         this.mode = mode;
         if(mode == this.EDIT_MODE && this.editUrl != null)
         {
@@ -104,6 +124,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     },
     hide: function()
     {
+        this.errors.dom.innerHTML = "";
+        this.errors.hide() ;
         this.abort();
         this.isSubmitInProggress = false;
         this.clearAllFields();

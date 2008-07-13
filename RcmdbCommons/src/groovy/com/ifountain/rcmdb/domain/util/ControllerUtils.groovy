@@ -7,6 +7,9 @@ import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import groovy.xml.MarkupBuilder
 import grails.converters.XML
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.springframework.context.MessageSource
+import java.text.MessageFormat
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,20 +24,21 @@ class ControllerUtils {
 
     def static convertErrorsToXml(Errors errors)
     {
+        MessageSource messageSource = ApplicationHolder.application.getParentContext().getBean("messageSource")
         StringWriter writer = new StringWriter();
         def builder = new MarkupBuilder(writer);
         builder.Errors(){
             errors.getAllErrors().each{error->
+                def message = messageSource.getMessage( error, Locale.getDefault());
+                def  errorText = MessageFormat.format(message, error.arguments);
                 if(error instanceof FieldError)
                 {
-                    FieldError fiedlError = error;
-                    def field = fiedlError.getField();
-                    def exception = fiedlError.toString();
-                    builder.Error(field:field, error:exception.encodeAsXML())
+                    def field = error.getField();
+                    builder.Error(field:field, error:errorText)
                 }
                 else
                 {
-                    builder.Error(error:exception.encodeAsXML())                    
+                    builder.Error(error:errorText)                    
                 }
             }
         }

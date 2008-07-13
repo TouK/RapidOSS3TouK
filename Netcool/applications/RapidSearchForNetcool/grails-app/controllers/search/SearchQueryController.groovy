@@ -99,11 +99,12 @@ class SearchQueryController {
         if(searchQuery) {
             if(params.group)
             {
-                def group = SearchQueryGroup.get(name:params.group, user:searchQuery.user);
-                if(group  != null)
+                def group = SearchQueryGroup.get(name:params.group, user:user);
+                if(group  == null)
                 {
-                    params["group"] = ["id":group.id];
+                    group = SearchQueryGroup.add(name:params.group, user:user);
                 }
+                params["group"] = ["id":group.id];
             }
             searchQuery.update(ControllerUtils.getClassProperties(params, SearchQuery));
             if(!searchQuery.hasErrors()) {
@@ -150,10 +151,12 @@ class SearchQueryController {
         if(params.group != null)
         {
             def group = SearchQueryGroup.get(name:params.group, user:user);
-            if(group  != null)
+            if(group  == null)
             {
-                params["group"] = ["id":group.id];
+                group = SearchQueryGroup.add(name:params.group, user:user);
             }
+            params["group"] = ["id":group.id];
+
         }
         def searchQuery = SearchQuery.add(ControllerUtils.getClassProperties(params, SearchQuery))
         if(!searchQuery.hasErrors()) {

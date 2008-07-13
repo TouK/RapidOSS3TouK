@@ -3,6 +3,10 @@ package com.ifountain.rcmdb.domain.util
 import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import java.text.SimpleDateFormat
+import org.springframework.validation.Errors
+import org.springframework.validation.FieldError
+import groovy.xml.MarkupBuilder
+import grails.converters.XML
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,6 +18,41 @@ import java.text.SimpleDateFormat
 class ControllerUtils {
 	def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
+
+    def static convertErrorsToXml(Errors errors)
+    {
+        StringWriter writer = new StringWriter();
+        def builder = new MarkupBuilder(writer);
+        builder.Errors(){
+            errors.getAllErrors().each{error->
+                if(error instanceof FieldError)
+                {
+                    FieldError fiedlError = error;
+                    def field = fiedlError.getField();
+                    def exception = fiedlError.toString();
+                    builder.Error(field:field, error:exception.encodeAsXML())
+                }
+                else
+                {
+                    builder.Error(error:exception.encodeAsXML())                    
+                }
+            }
+        }
+
+        return writer.toString();
+
+    }
+
+    def static convertSuccessToXml(String successMessage)
+    {
+        StringWriter writer = new StringWriter();
+        def builder = new MarkupBuilder(writer);
+        builder.Successfull(successMessage.toString().encodeAsXML());
+
+        return writer.toString();
+
+    }
+
     def static getClassProperties(params, domainClass)
     {
         def returnedParams = [:]

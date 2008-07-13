@@ -10,4 +10,8 @@
 
 Ant.property(environment:"env")
 grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
-
+def baseDir = System.getProperty("base.dir");
+Ant.move(toDir:"$baseDir/web-app/js")
+{
+    Ant.fileset(dir: "$baseDir/plugins/rapid-ui-0.1/js");
+}

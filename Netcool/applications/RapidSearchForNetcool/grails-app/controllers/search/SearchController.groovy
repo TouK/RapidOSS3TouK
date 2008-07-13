@@ -1,6 +1,9 @@
 package search
 
 import org.compass.core.engine.SearchEngineQueryParseException
+import grails.converters.XML
+import groovy.xml.MarkupBuilder
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,89 +16,21 @@ class SearchController {
     def searchableService;
     def static Map propertyConfiguration = null;
     def index = {
-    }
-
-    public static List getPropertyConfiguration(String className)
-    {
-        if(propertyConfiguration == null)
+        def searchResults = searchableService.search(params.query, params);
+        StringWriter sw = new StringWriter();
+        def builder = new MarkupBuilder(sw);
+        builder.Objects(total:searchResults.total, offset:searchResults.offset)
         {
-            _reloadPropertyConfiguration();
-        }
-        def res = propertyConfiguration[className]?propertyConfiguration[className].propertyList:null;
-        return res?res:[];
-    }
-
-    public static String getLinkProperty(Object target)
-    {
-        def classPropConfiguration = getPropertyConfiguration(target.class.name);
-        if(classPropConfiguration)
-        {
-            String link = "";
-            classPropConfiguration.linkPropertyFormat.each
-            {
-                link += target[it] + " ";
+            searchResults.results.each{result->
+                GrailsDomainClass grailsDomainClass = grailsApplication.getDomainClass(result.class.name);
+                def props = [:];
+                grailsDomainClass.getProperties().each{resultProperty->
+                    props[resultProperty.name] = result[resultProperty.name];
+                }
+                builder.Object(props);
             }
-            if(link.length() == 0)
-            {
-                link = target.toString();
-            }
-            else
-            {
-                link = link.substring(0, link.length()-1);
-            }
-            return link;
-        }
-        return target.toString();
-    }
-
-    def static _reloadPropertyConfiguration()
-    {
-        def content = new File("SmartsSearchPropertyConfiguration.txt").getText();
-        propertyConfiguration = Eval.me(content);
-        if(!propertyConfiguration)
-        {
-            propertyConfiguration = [:]
-        }
-    }
-
-    def reloadPropertyConfiguration = {
-        _reloadPropertyConfiguration();
-        redirect(action: index);
-    }
-
-    def deleteQuery(params){
-        if(params.queryId)
-        {
-            SearchQuery.get(id:params.queryId)?.remove();
-        }
-        return [savedQueries:SearchQuery.findAllByUser(session.username)];
-    }
-
-    def search(params)
-    {
-        def queries = SearchQuery.findAllByUser(session.username)
-        def res = [savedQueries:queries];
-        if (!params.q?.trim()) {
-            return res;
-        }
-        try {
-            res["searchResult"] = searchableService.search(params.q, params);
-        } catch (SearchEngineQueryParseException ex) {
-            res["parseException"] = true;
-        }
-        return res;
-    }
-
-    def save(params)
-    {
-        if (!params.q?.trim()) {
-            return [:]
-        }
-        else
-        {
-            SearchQuery query = SearchQuery.add(user:session.username, query:params.q);
-            return search(params);
 
         }
+        render(text:sw.toString(), contentType:"text/xml");
     }
 }

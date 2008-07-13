@@ -15,4 +15,7 @@ class SearchQuery {
     String name;
     String query;
     static mappedBy = [group:"queries"]
+    static constraints = {
+        name(key:["user"]);
+    }
 }

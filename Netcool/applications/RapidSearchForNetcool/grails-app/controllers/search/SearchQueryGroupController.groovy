@@ -25,7 +25,7 @@ class SearchQueryGroupController {
                     flash.errors = errors;
                     redirect(action:list)
                 }
-                xml { render searchQueryGroup as XML }
+                xml { render(text:ControllerUtils.convertErrorsToXml(errors), contentType:"text/xml") }
             }
 
         }
@@ -47,7 +47,7 @@ class SearchQueryGroupController {
                         flash.message = "SearchQueryGroup ${params.id} deleted"
                         redirect(action:list)
                     }
-                    xml {  }
+                    xml { render(text:ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} deleted"), contentType:"text/xml") }
                 }
 
             }
@@ -58,7 +58,7 @@ class SearchQueryGroupController {
                         flash.errors = errors;
                         redirect(action:show, id:searchQueryGroup.id)
                     }
-                    xml {  }
+                    xml { render(text:ControllerUtils.convertErrorsToXml(errors), contentType:"text/xml") }
                 }
 
             }
@@ -71,7 +71,7 @@ class SearchQueryGroupController {
                     flash.errors = errors;
                     redirect(action:list)
                 }
-                xml {  }
+                xml { render(text:ControllerUtils.convertErrorsToXml(errors), contentType:"text/xml") }
             }
 
         }
@@ -101,7 +101,7 @@ class SearchQueryGroupController {
                         flash.message = "SearchQueryGroup ${params.id} updated"
                         redirect(action:show,id:searchQueryGroup.id)
                     }
-                    xml {  }
+                    xml { render(text:ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} updated</Successfull>"), contentType:"text/xml") }
                 }
 
             }
@@ -110,7 +110,7 @@ class SearchQueryGroupController {
                     html {
                         render(view:'edit',model:[searchQueryGroup:searchQueryGroup])
                     }
-                    xml {  }
+                    xml { render(text:ControllerUtils.convertErrorsToXml(searchQueryGroup.errors), contentType:"text/xml") }
                 }
 
             }
@@ -122,7 +122,7 @@ class SearchQueryGroupController {
                     flash.errors = errors;
                     redirect(action:edit,id:params.id)
                 }
-                xml {  }
+                xml { render(text:ControllerUtils.convertErrorsToXml(errors), contentType:"text/xml") }
             }
 
         }
@@ -144,7 +144,7 @@ class SearchQueryGroupController {
                     flash.message = "SearchQueryGroup ${searchQueryGroup.id} created"
                     redirect(action:show,id:searchQueryGroup.id)
                 }
-                xml { render searchQueryGroup as XML }
+                xml { render(text:ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} created</Successfull>"), contentType:"text/xml") }
             }
 
         }
@@ -153,7 +153,7 @@ class SearchQueryGroupController {
                 html {
                     render(view:'create',model:[searchQueryGroup:searchQueryGroup])
                 }
-                xml { }
+                xml { render(text:ControllerUtils.convertErrorsToXml(searchQueryGroup.errors), contentType:"text/xml") }
             }
 
         }

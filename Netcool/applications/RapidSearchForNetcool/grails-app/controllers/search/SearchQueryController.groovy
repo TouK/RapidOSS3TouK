@@ -27,7 +27,7 @@ class SearchQueryController {
                     flash.errors = errors;
                     redirect(action:list)
                 }
-                xml { errors as XML }
+                xml { ControllerUtils.convertErrorsToXml(errors) }
             }
 
         }
@@ -49,7 +49,7 @@ class SearchQueryController {
                         flash.message = "SearchQuery ${params.id} deleted"
                         redirect(action:list)
                     }
-                    xml {  }
+                    xml {render(text:ControllerUtils.convertSuccessToXml( "SearchQuery ${searchQuery.id} deleted</Successfull>"), contentType:"text/xml")}
                 }
 
             }
@@ -60,7 +60,7 @@ class SearchQueryController {
                         flash.errors = errors;
                         redirect(action:show, id:searchQuery.id)
                     }
-                    xml {  }
+                    xml { render(text:ControllerUtils.convertErrorsToXml(errors), contentType:"text/xml") }
                 }
 
             }
@@ -73,7 +73,7 @@ class SearchQueryController {
                     flash.errors = errors;
                     redirect(action:list)
                 }
-                xml {  }
+                xml { render(text:ControllerUtils.convertErrorsToXml(errors), contentType:"text/xml") }
             }
 
         }
@@ -95,7 +95,16 @@ class SearchQueryController {
 
     def update = {
         def searchQuery = SearchQuery.get( [id:params.id] )
+
         if(searchQuery) {
+            if(params.group)
+            {
+                def group = SearchQueryGroup.get(name:params.group, user:searchQuery.user);
+                if(group  != null)
+                {
+                    params["group"] = ["id":group.id];
+                }
+            }
             searchQuery.update(ControllerUtils.getClassProperties(params, SearchQuery));
             if(!searchQuery.hasErrors()) {
                 withFormat {
@@ -103,7 +112,7 @@ class SearchQueryController {
                         flash.message = "SearchQuery ${params.id} updated"
                         redirect(action:show,id:searchQuery.id)
                     }
-                    xml {  }
+                    xml {render(text:ControllerUtils.convertSuccessToXml( "SearchQuery ${searchQuery.id} updated</Successfull>"), contentType:"text/xml")}
                 }
 
             }
@@ -112,7 +121,7 @@ class SearchQueryController {
                     html {
                         render(view:'edit',model:[searchQuery:searchQuery])
                     }
-                    xml {  }
+                    xml { render(text:ControllerUtils.convertErrorsToXml(searchQuery.errors), contentType:"text/xml") }
                 }
             }
         }
@@ -123,7 +132,7 @@ class SearchQueryController {
                     flash.errors = errors;
                     redirect(action:edit,id:params.id)
                 }
-                xml {  }
+                xml { render(text:ControllerUtils.convertErrorsToXml(errors), contentType:"text/xml") }
             }
 
         }
@@ -138,6 +147,14 @@ class SearchQueryController {
     def save = {
         def user = RsUser.get(username:session.username);
         params["user"] = ["id":user.id]
+        if(params.group != null)
+        {
+            def group = SearchQueryGroup.get(name:params.group, user:user);
+            if(group  != null)
+            {
+                params["group"] = ["id":group.id];
+            }
+        }
         def searchQuery = SearchQuery.add(ControllerUtils.getClassProperties(params, SearchQuery))
         if(!searchQuery.hasErrors()) {
             withFormat {
@@ -145,7 +162,7 @@ class SearchQueryController {
                     flash.message = "SearchQuery ${searchQuery.id} created"
                     redirect(action:show,id:searchQuery.id)
                 }
-                xml { render searchQuery as XML }
+                xml {render(text:ControllerUtils.convertSuccessToXml( "SearchQuery ${searchQuery.id} created</Successfull>"), contentType:"text/xml")}
             }
 
         }
@@ -154,7 +171,7 @@ class SearchQueryController {
                 html {
                     render(view:'create',model:[searchQuery:searchQuery])
                 }
-                xml { render searchQuery as XML }
+                xml { render(text:ControllerUtils.convertErrorsToXml(searchQuery.errors), contentType:"text/xml") }
             }
 
         }

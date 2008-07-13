@@ -15,5 +15,8 @@ class SearchQueryGroup {
     String name;
     static hasMany = [queries:SearchQuery]
     static mappedBy = ["queries":"group"]
+    static constraints = {
+        name(key:["user"]);
+    }
 
 }

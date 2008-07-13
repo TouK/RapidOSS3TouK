@@ -50,7 +50,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
             html:'<table><tr><td width="100%"><table width="100%"><tr><td><input type="text" style="width:100%;"/></td></tr></table></td><td><table width="215px"><tr><td><button>Search</button></td>' +
-                 '<td id="saveQuery1"><a href="#">Save Query</a></td><td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
+                 '<td><a href="#">Save Query</a></td><td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
                  '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
                  '<option value="7">7</option><option value="8">8</option></select></td></tr></table></td></tr></table>'}, true);
 
@@ -99,8 +99,11 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
     handleSaveQueryClick: function(e)
     {
-        this.saveQueryFunction(this.searchBox.dom.getElementsByTagName('input')[0].value);
-        //alert( "Query " + escape(this.searchBox.dom.getElementsByTagName('input')[0].value) + " saved succesfully.");
+        if(this.searchBox.dom.getElementsByTagName('input')[0].value != "")
+        {
+            this.saveQueryFunction(this.searchBox.dom.getElementsByTagName('input')[0].value);
+            //alert( "Query " + escape(this.searchBox.dom.getElementsByTagName('input')[0].value) + " saved succesfully.");
+        }
     },
     handleGridClick: function(e)
     {

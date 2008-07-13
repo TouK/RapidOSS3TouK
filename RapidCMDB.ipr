@@ -259,7 +259,7 @@
       <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" filepath="$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidTesting/RapidTesting.iml" filepath="$PROJECT_DIR$/RapidTesting/RapidTesting.iml" />
-      <module fileurl="file://$PROJECT_DIR$/RapidUI/RapidUI.iml" filepath="$PROJECT_DIR$/RapidUI/RapidUI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RapidUi/RapidUi.iml" filepath="$PROJECT_DIR$/RapidUi/RapidUi.iml" />
       <module fileurl="file://$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" filepath="$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" />
       <module fileurl="file://$PROJECT_DIR$/../ThirdParty/ThirdParty.iml" filepath="$PROJECT_DIR$/../ThirdParty/ThirdParty.iml" />
       <module fileurl="file://$PROJECT_DIR$/comp/comp.iml" filepath="$PROJECT_DIR$/comp/comp.iml" />
@@ -277,7 +277,6 @@
       <setting name="vmparams" value="" />
       <setting name="params" value="" />
       <setting name="workDir" value="$PROJECT_DIR$" />
-      <setting name="debug" value="false" />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method>
@@ -434,8 +433,8 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
     </library>
     <library name="quartz">
       <CLASSES>
@@ -447,8 +446,5 @@
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/quartz-0.2/lib" recursive="false" />
     </library>
   </component>
-  <UsedPathMacros>
-    <macro name="GRAILS_HOME" />
-  </UsedPathMacros>
 </project>
 

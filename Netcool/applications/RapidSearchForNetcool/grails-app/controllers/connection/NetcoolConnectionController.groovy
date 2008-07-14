@@ -1,7 +1,10 @@
 package connection
 
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat
+import groovy.text.SimpleTemplateEngine
+import datasource.NetcoolDatasource
+import script.CmdbScript;
 class NetcoolConnectionController {
     def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
@@ -48,6 +51,10 @@ class NetcoolConnectionController {
         if(netcoolConnection) {
             try{
                 netcoolConnection.remove();
+                datasource.NetcoolDatasource.get(name:netcoolConnection.name)?.remove();
+                def script = CmdbScript.get(name:"${datasource.name}Connector")
+                CmdbScript.deleteScript(script);
+                new File("${System.getProperty("base.dir")}/scripts/${datasource.name}Connector.groovy").delete();
                 flash.message = "NetcoolConnection ${params.id} deleted"
                 redirect(action:list)
             }
@@ -104,12 +111,24 @@ class NetcoolConnectionController {
     def save = {
         NetcoolConnection netcoolConnection = NetcoolConnection.add(ControllerUtils.getClassProperties(params, NetcoolConnection))
         if(!netcoolConnection.hasErrors()) {
-            datasource.NetcoolDatasource.add(name:netcoolConnection.name, connection:netcoolConnection);
+            def datasource = datasource.NetcoolDatasource.add(name:netcoolConnection.name, connection:netcoolConnection);
+            createConnectorScript(datasource);
             flash.message = "NetcoolConnection ${netcoolConnection.id} created"
             redirect(action:show,id:netcoolConnection.id)
         }
         else {
             render(view:'create',model:[netcoolConnection:netcoolConnection])
         }
+    }
+
+    def createConnectorScript(NetcoolDatasource datasource)
+    {
+        def scriptName = "${datasource.name}Connector";
+        SimpleTemplateEngine engine = new SimpleTemplateEngine();
+        def template = engine.createTemplate(new File("${System.getProperty("base.dir")}/grails-app/templates/groovy/NetcoolConnectorScriptTemplate.txt"))
+        def fw = new FileWriter(new File("${System.getProperty("base.dir")}/scripts/${scriptName}.groovy"));
+        template.make([datasourceName:datasource.name]).writeTo(fw);
+        fw.close();
+        CmdbScript.addScript(name:scriptName, enabled:true, scheduled:true);
     }
 }

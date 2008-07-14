@@ -1,9 +1,3 @@
-
-YAHOO.rapidjs.Links = [];
-YAHOO.rapidjs.Actions = {};
-YAHOO.rapidjs.Components = {};
-
-
 String.prototype.trim = function() {
 	a = this.replace(/^\s+/, '');
 	return a.replace(/\s+$/, '');

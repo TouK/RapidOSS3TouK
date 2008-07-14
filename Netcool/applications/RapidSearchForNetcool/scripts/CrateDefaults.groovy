@@ -8,5 +8,6 @@ import script.CmdbScript
  * To change this template use File | Settings | File Templates.
  */
 
-CmdbScript.add(name:"NetcoolColumnMapping");
-CmdbScript.add(name:"NetcoolConfigurationLoader");
+CmdbScript.addScript(name:"NetcoolColumnMapping");
+CmdbScript.addScript(name:"NetcoolConfigurationLoader");
+CmdbScript.addScript(name:"queryList");

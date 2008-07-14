@@ -4,6 +4,7 @@ package connector
 import datasource.NetcoolColumn
 import connector.NetcoolLastRecordIdentifier
 import datasource.NetcoolDatasource
+import org.apache.log4j.Logger
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,8 +20,10 @@ class NetcoolConnector {
     def serverName;
     Class NetcoolEvent;
     Class NetcoolJournal;
-    public NetcoolConnector(NetcoolDatasource datasource)
+    Logger logger;
+    public NetcoolConnector(NetcoolDatasource datasource, Logger logger)
     {
+        this.logger = logger;
         NetcoolEvent = this.class.classLoader.loadClass("NetcoolEvent");
         NetcoolJournal = this.class.classLoader.loadClass("NetcoolJournal");
         this.datasource = datasource;
@@ -81,10 +84,16 @@ class NetcoolConnector {
         def size =  records.size()
         for (Map rec in records){
             def res = NetcoolEvent.metaClass.invokeStaticMethod(NetcoolEvent, "add",[getEventProperties(rec)] as Object[]);
-            println res.errors; 
-            def lastStateChange = Long.parseLong(rec.statechange);
-            if (lastStateChange > lastEventStateChange){
-                lastEventStateChange = lastStateChange;
+            if(!res.hasErrors())
+            {
+                def lastStateChange = Long.parseLong(rec.statechange);
+                if (lastStateChange > lastEventStateChange){
+                    lastEventStateChange = lastStateChange;
+                }
+            }
+            else
+            {
+                logger.warn("Could not added event with serial ${rec.SERVERSERIAL}. Reason :${res.errors}");    
             }
         }
         lastRecordIdentifier.eventLastRecordIdentifier = lastEventStateChange; 

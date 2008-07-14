@@ -26,7 +26,7 @@
 }
 
 .rcmdb-search-row-headermenu {
-    background-image: url(arrow_contextMenu.gif);
+    background-image: url(../../images/rapidjs/component/searchlist/arrow_contextMenu.gif);
     background-repeat: no-repeat;
     height: 15px;
     overflow: hidden;
@@ -62,7 +62,7 @@
 }
 
 .rcmdb-search-cell-menu {
-    background-image: url(arrow_contextMenu_small.gif);
+    background-image: url(../../images/rapidjs/component/searchlist/arrow_contextMenu_small.gif);
     background-repeat:no-repeat;
     display: inline;
     margin-bottom: 0px;

@@ -1,6 +1,7 @@
 package connector
 
 import datasource.NetcoolDatasource
+import org.apache.log4j.Logger
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,7 +17,8 @@ class NetcoolConnectorFactory {
         def connector = connectorList.get(datasource.name);
         if(connector == null)
         {
-            connector = new NetcoolConnector(datasource);
+            Logger logger = Logger.getLogger("connector."+datasource.name);
+            connector = new NetcoolConnector(datasource, logger);
             connectorList[datasource.name] = connector;
         }
         return connector;

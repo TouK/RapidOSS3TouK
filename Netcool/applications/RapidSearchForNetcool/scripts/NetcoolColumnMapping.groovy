@@ -21,12 +21,11 @@ if(netcoolDatasources.isEmpty())
 NetcoolDatasource netcoolDs = netcoolDatasources[0];
 def conversionParams = netcoolDs.getConversionParams();
 conversionParams.each{Map params->
-    NetcoolConversionParameter.add(keyField:params.keyfield, columnName:param.colName, value:params.value, conversion:params.conversion);
+    NetcoolConversionParameter.add(keyField:params.keyfield, columnName:params.colName, value:params.value, conversion:params.conversion);
 }
 def netcoolFields = netcoolDs.getFieldMap();
 def fileWriter = new FileWriter(netcoolConfigurationFile);
 def netcoolConf = new MarkupBuilder(fileWriter);
-netcoolFields["servername"] = "string";
 netcoolConf.NetcoolConfiguration()
 {
     netcoolConf.NetcoolEvent()

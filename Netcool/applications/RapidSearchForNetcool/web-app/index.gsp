@@ -28,6 +28,8 @@
                 <div class="dialog" style="margin-left:20px;width:60%;">
                     <ul style="margin-left:25px;">
                         <li class="controller"><g:link controller="netcoolConnection">Netcool Connection</g:link></li>
+                        <li class="controller"><g:link controller="netcoolConnection" action="startConnectors">Start Connectors</g:link></li>
+                        <li class="controller"><g:link controller="netcoolConnection" action="stopConnectors">Stop Connectors</g:link></li>
                     </ul>
                 </div>
             </td>
@@ -39,6 +41,7 @@
                         <li class="controller"><g:link controller="script" action="run" id="NetcoolColumnMapping">Import Netcool Columns</g:link></li>
                         <li class="controller"><g:link controller="script" action="run" id="NetcoolConfigurationLoader">Create RapidCMDB Models</g:link></li>
                         <li class="controller"><g:link controller="application" action="reload">Reload Application</g:link></li>
+
                     </ul>
                 </div>
             </td>

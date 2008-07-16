@@ -19,6 +19,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/applications/RapidSearchForNetcool/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/applications/RapidSearchForNetcool/scripts" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/applications/RapidSearchForNetcool/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/conf" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/conf/hibernate" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/controllers" isTestSource="false" />

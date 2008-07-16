@@ -16,12 +16,13 @@ if(!netcoolConfigurationFile.exists())
 {
     throw new Exception("Configuration file doesnot exist.");
 }
+NetcoolColumn*.remove();
 def slurper = new XmlSlurper()
 def res = slurper.parseText(netcoolConfigurationFile.getText());
-def netcoolEventXml = getModelXml(res.NetcoolEvent, true);
-def netcoolJournalXml = getModelXml(res.NetcoolJournal, false);
+def netcoolEventXml = getModelXml(res.NetcoolEvent, true, [[name:"journals", reverseName:"event", toModel:"NetcoolJournal", cardinality:"One", reverseCardinality:"Many", isOwner:true]]);
+def netcoolJournalXml = getModelXml(res.NetcoolJournal, false, [[name:"event", reverseName:"journals", toModel:"NetcoolEvent", cardinality:"Many", reverseCardinality:"One", isOwner:false]]);
 ModelGenerator.getInstance().generateModels ([netcoolEventXml, netcoolJournalXml]);
-def getModelXml(modelXml, boolean createColumnObjects)
+def getModelXml(modelXml, boolean createColumnObjects, relations)
 {
     def modelString = new StringWriter();
     def eventModelBuilder = new MarkupBuilder(modelString);
@@ -63,6 +64,13 @@ def getModelXml(modelXml, boolean createColumnObjects)
                 keys.each{
                     eventModelBuilder.Key(propertyName:it, nameInDatasource:it);
                 }
+            }
+        }
+
+        eventModelBuilder.Relations()
+        {
+            relations.each{
+                eventModelBuilder.Relation(it);
             }
         }
 

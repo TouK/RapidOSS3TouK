@@ -121,6 +121,29 @@ class NetcoolConnectionController {
         }
     }
 
+    def startConnectors = {
+        connector.NetcoolConnectorFactory.clearConnectors();
+        def connectors = NetcoolConnection.list()
+        connectors.each{NetcoolConnection conn->
+            def scriptName = "${conn.name}Connector";
+            def script = CmdbScript.updateScript(CmdbScript.get(name:scriptName), [enabled:true], true);    
+        }
+        flash.message = "Connectors successfully started"
+        redirect(uri:'/index.gsp');
+    }
+
+    def stopConnectors = {
+        def connectors = NetcoolConnection.list()
+        connectors.each{NetcoolConnection conn->
+            def scriptName = "${conn.name}Connector";
+            def script = CmdbScript.updateScript(CmdbScript.get(name:scriptName), [enabled:false], true);
+        }
+        connector.NetcoolConnectorFactory.clearConnectors();
+        flash.message = "Connectors successfully stopped";
+        redirect(uri:'/index.gsp');
+    }
+
+
     def createConnectorScript(NetcoolDatasource datasource)
     {
         def scriptName = "${datasource.name}Connector";
@@ -129,6 +152,6 @@ class NetcoolConnectionController {
         def fw = new FileWriter(new File("${System.getProperty("base.dir")}/scripts/${scriptName}.groovy"));
         template.make([datasourceName:datasource.name]).writeTo(fw);
         fw.close();
-        CmdbScript.addScript(name:scriptName, enabled:true, scheduled:true);
+        CmdbScript.addScript(name:scriptName, enabled:false, scheduled:true);
     }
 }

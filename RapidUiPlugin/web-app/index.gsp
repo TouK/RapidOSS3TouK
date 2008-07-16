@@ -1,41 +1,59 @@
 <html>
 <head>
-    <rui:javascript dir="yui/yahoo" file="yahoo-min.js"></rui:javascript>
-    <rui:javascript dir="yui/event" file="event-min.js"></rui:javascript>
-    <rui:javascript dir="yui/datasource" file="datasource-beta-min.js"></rui:javascript>
-    <rui:javascript dir="yui/connection" file="connection-min.js"></rui:javascript>
-    <rui:javascript dir="yui/utilities" file="utilities.js"></rui:javascript>
-    <rui:javascript dir="yui/container" file="container_core-min.js"></rui:javascript>
-    <rui:javascript dir="yui/treeview" file="treeview-min.js"></rui:javascript>
-    <rui:javascript dir="yui/resize" file="resize-beta-min.js"></rui:javascript>
-    <rui:javascript dir="yui/layout" file="layout-beta-min.js"></rui:javascript>
-    <rui:javascript dir="yui/menu" file="menu-min.js"></rui:javascript>
-    <rui:javascript dir="yui/dom" file="dom-min.js"></rui:javascript>
-    <rui:javascript dir="yui/button" file="button-min.js"></rui:javascript>
-    <rui:javascript dir="yui/dragdrop" file="dragdrop-min.js"></rui:javascript>   
-    <rui:javascript dir="yui/container" file="container-min.js"></rui:javascript>
+
+  <rui:javascript dir="yui/treeview" file="treeview-min.js"/>
+  <rui:javascript dir="yui/button" file="button-min.js"/>
+  <rui:javascript dir="yui/container" file="container-min.js"/>
+  <rui:javascript dir="yui/connection" file="connection-min.js"/>
+  <rui:javascript dir="yui/treeview" file="treeview-min.js"/>
+  <rui:javascript dir="yui/dragdrop" file="dragdrop-min.js"/>
+  <rui:javascript dir="yui/layout" file="layout-beta-min.js"/>
+  <rui:javascript dir="yui/menu" file="menu-min.js"/>
+  <rui:javascript dir="ext" file="ext.js"></rui:javascript>
+  <rui:javascript dir="rapidjs" file="rapidjs.js"></rui:javascript>
+  <rui:javascript dir="rapidjs" file="RapidUtil.js"></rui:javascript>
+  <rui:javascript dir="rapidjs" file="SelectUtils.js"></rui:javascript>
+  <rui:javascript dir="rapidjs/component" file="ComponentContainer.js"></rui:javascript>
+  <rui:javascript dir="rapidjs/component" file="PollingComponentContainer.js"></rui:javascript>
+  <rui:javascript dir="rapidjs/component" file="RapidElement.js"></rui:javascript>
+
+  <rui:javascript dir="rapidjs/component/form" file="Form.js"></rui:javascript>
+  <rui:javascript dir="rapidjs/component/search" file="SearchNode.js"></rui:javascript>
+  <rui:javascript dir="rapidjs/component/search" file="SearchList.js"></rui:javascript>
+
+  <rui:javascript dir="rapidjs/component/tree" file="Tree.js"></rui:javascript>
+
+  <rui:javascript dir="rapidjs/data" file="RapidXmlDocument.js"></rui:javascript>
+  <rui:javascript dir="rapidjs/data" file="CaseInsensitiveMap.js"></rui:javascript>
+  <rui:javascript dir="rapidjs/data" file="CaseInsensitiveXmlDoc.js"></rui:javascript>
+  <rui:javascript dir="rapidjs/data" file="NodeFactory.js"></rui:javascript>
+  <rui:javascript dir="rapidjs/data" file="xml2json.js"></rui:javascript>
 
 
-    <rui:javascript dir="ext" file="yutil.js"></rui:javascript>
-    <rui:javascript dir="ext" file="Element.js"></rui:javascript>
-    <rui:javascript dir="ext" file="DomHelper.js"></rui:javascript>
-    <rui:javascript dir="ext" file="CSS.js"></rui:javascript>
-
-    <rui:javascript dir="rapidjs" file="rapidjs.js"></rui:javascript>
-    <rui:javascript dir="rapidjs" includeType="recursive"></rui:javascript>
-    <rui:javascript dir="rapidjs/component/form" file="Form.js"></rui:javascript>
-
-    <rui:stylesheet dir="js/yui/treeview" includeType="recursive"></rui:stylesheet>
-    <rui:stylesheet dir="js/yui/resize" includeType="recursive"></rui:stylesheet>
-    <rui:stylesheet dir="js/yui/layout" includeType="recursive"></rui:stylesheet>
-    <rui:stylesheet dir="js/yui/assets/skins/sam" file="menu.css"></rui:stylesheet>
-    <rui:stylesheet dir="css/rapidjs" file="yui-ext.css"></rui:stylesheet>
-    <rui:stylesheet dir="css/rapidjs" file="common.css"></rui:stylesheet>
-    <rui:stylesheet dir="css/rapidjs" file="layout.css"></rui:stylesheet>
-    <rui:stylesheet dir="css/rapidjs" file="searchlist.css"></rui:stylesheet>
-    <rui:stylesheet dir="js/yui/button/assets/skins/sam" file="button.css"></rui:stylesheet>
   
-    <rui:stylesheet dir="js/yui/container/assets/skins/sam" file="container.css"></rui:stylesheet>
+  <rui:stylesheet dir="css/rapidjs" file="yui-ext.css"></rui:stylesheet>
+  <rui:stylesheet dir="css/rapidjs" file="common.css"></rui:stylesheet>
+  <rui:stylesheet dir="js/yui/layout/assets/skins/sam" file="layout.css"></rui:stylesheet>
+  <rui:stylesheet dir="css/rapidjs" file="searchlist.css"></rui:stylesheet>
+  <rui:stylesheet dir="css/rapidjs" file="treenode.css"></rui:stylesheet>
+
+  <rui:stylesheet dir="js/yui/button/assets/skins/sam" file="button.css"></rui:stylesheet>
+
+  <rui:stylesheet dir="js/yui/treeview" includeType="recursive"></rui:stylesheet>
+  <rui:stylesheet dir="js/yui/resize" includeType="recursive"></rui:stylesheet>
+  <rui:stylesheet dir="js/yui/layout" includeType="recursive"></rui:stylesheet>
+  <rui:stylesheet dir="js/yui/assets/skins/sam" file="menu.css"></rui:stylesheet>
+  <rui:stylesheet dir="js/yui/container/assets/skins/sam" file="container.css"></rui:stylesheet>
+
+
+
+
+
+
+
+  
+
+  
 </head>
 <body class=" yui-skin-sam">
 <div id="filterDialog">
@@ -96,7 +114,8 @@
 
 
     var config = {  id:"filterTree","pollingInterval":1, "url":"a2.xml", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
-                    "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query"
+                    "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
+                    menuItems:{ Edit : { onClickFunction: function(){ alert( "Edit"); }, condition : function(node) {return node.data.label != "filterab"} }, Delete : { onClickFunction: function(){ alert( "Delete"); }, condition : function(node) {return node.data.label != "filterabcabcabc"} }  }
     };
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
     tree.poll();
@@ -115,7 +134,7 @@
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
 
     Event.onDOMReady(function() {
-        console.log("rendered layout");
+       // console.log("rendered layout");
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'center', header: 'Netcool Events', body: 'right', resize: false, gutter: '1px' },

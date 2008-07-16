@@ -110,7 +110,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
         var dh = YAHOO.ext.DomHelper;
         var sender = (typeof( window.event ) != "undefined" ) ? e.srcElement : e.target;
-        if(sender.className == "rcmdb-search-cell-value")
+        if(YAHOO.util.Dom.hasClass(sender, "rcmdb-search-cell-value") )
         {
             var key = sender.previousSibling.innerHTML;
             var value = sender.innerHTML;

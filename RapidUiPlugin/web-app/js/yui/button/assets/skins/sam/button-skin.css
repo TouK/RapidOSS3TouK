@@ -9,7 +9,7 @@ version: 2.5.2
     border-width: 1px 0;
     border-style: solid;
     border-color: #808080;
-    background: url(../../../../assets/skins/sam/sprite.png) repeat-x 0 0;
+    background: url('../../../../assets/skins/sam/sprite.png') repeat-x 0 0;
     margin: auto .25em;
     
 }

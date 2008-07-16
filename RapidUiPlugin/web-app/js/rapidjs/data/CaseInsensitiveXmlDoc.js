@@ -40,7 +40,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.data.CaseInsensitiveXmlDoc, YAHOO.rapidjs.data.R
 YAHOO.rapidjs.data.CaseInsensitiveNode = function(mainDocument, xmlNode, nodeType, nodeName, indexingAttributes){
 	YAHOO.rapidjs.data.CaseInsensitiveNode.superclass.constructor.call(this, mainDocument, xmlNode, nodeType, nodeName, indexingAttributes);
 };
-YAHOO.extendX(YAHOO.rapidjs.data.CaseInsensitiveNode, YAHOO.rapidjs.data.Node, {
+YAHOO.lang.extend(YAHOO.rapidjs.data.CaseInsensitiveNode, YAHOO.rapidjs.data.Node, {
 	createIndexes: function(){
 		this.indexes = {};
 		if(this.indexingAttributes)
@@ -119,7 +119,7 @@ YAHOO.rapidjs.data.CaseInsensitiveXmlNode = function(mainDocument, xmlNode, node
 	YAHOO.rapidjs.data.CaseInsensitiveXmlNode.superclass.constructor.call(this, mainDocument, xmlNode, nodeType, nodeName, indexingAttributes);
 };
 
-YAHOO.extendX(YAHOO.rapidjs.data.CaseInsensitiveXmlNode, YAHOO.rapidjs.data.CaseInsensitiveNode, {
+YAHOO.lang.extend(YAHOO.rapidjs.data.CaseInsensitiveXmlNode, YAHOO.rapidjs.data.CaseInsensitiveNode, {
 	createChildNode: function(xmlNode, nodeType, nodeName)
 	 {
 	 	return new YAHOO.rapidjs.data.CaseInsensitiveXmlNode(this.mainDocument, xmlNode, nodeType, nodeName, this.indexingAttributes);
@@ -155,7 +155,7 @@ YAHOO.rapidjs.data.CaseInsensitiveJsonNode = function(mainDocument, xmlNode, nod
 	YAHOO.rapidjs.data.CaseInsensitiveJsonNode.superclass.constructor.call(this, mainDocument, xmlNode, nodeType, nodeName, indexingAttributes);
 };
 
-YAHOO.extendX(YAHOO.rapidjs.data.CaseInsensitiveJsonNode, YAHOO.rapidjs.data.CaseInsensitiveNode, {
+YAHOO.lang.extend(YAHOO.rapidjs.data.CaseInsensitiveJsonNode, YAHOO.rapidjs.data.CaseInsensitiveNode, {
 	createChildNodes: function(xmlNode)
 	 {
 	 	this.attributes={};

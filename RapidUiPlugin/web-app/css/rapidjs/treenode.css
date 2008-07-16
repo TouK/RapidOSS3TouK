@@ -1,0 +1,36 @@
+.selected_tree_node {
+    color: #0000dd;
+}
+
+.ygtvitem table {
+    border:medium none;
+    margin-bottom:0pt;
+}
+
+.treeNodeLabel {
+    cursor: pointer;
+    text-decoration: underline;
+   
+}
+
+.rcmdb-tree-node-headermenu {
+    background-image:url(../../images/rapidjs/component/tree/arrow_contextMenu.gif);
+    background-repeat:no-repeat;
+    cursor:pointer;
+    height:15px;
+    overflow:hidden;
+    width:15px;
+    z-index:1;
+    background-position:0 3;
+
+}
+
+.disabledMenu {
+    background-image:url(../../images/rapidjs/component/tree/treeview-sprite.gif);
+    background-repeat:no-repeat;
+    overflow:hidden;
+
+
+    height:15px;
+    width:15px;
+}

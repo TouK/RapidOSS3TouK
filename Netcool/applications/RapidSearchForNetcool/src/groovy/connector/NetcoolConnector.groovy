@@ -5,6 +5,7 @@ import datasource.NetcoolColumn
 import connector.NetcoolLastRecordIdentifier
 import datasource.NetcoolDatasource
 import org.apache.log4j.Logger
+import com.ifountain.comp.utils.CaseInsensitiveMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +29,7 @@ class NetcoolConnector {
         NetcoolJournal = this.class.classLoader.loadClass("NetcoolJournal");
         this.datasource = datasource;
         this.serverName = datasource.name;
-        nameMappings = [:]
+        nameMappings = new CaseInsensitiveMap();
         NetcoolColumn.list().each{NetcoolColumn map->
             nameMappings[map.netcoolName] = map.localName;
             if(map.isDeleteMarker)
@@ -50,7 +51,7 @@ class NetcoolConnector {
         int batchSize = 1000;
         while(true)
         {
-            def res = NetcoolEvent.metaClass.invokeStaticMethod(NetcoolEvent, "search", ["servername:${serverName} && ${deleteMarkerField.localName}:false", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
+            def res = invokeMethod(NetcoolEvent, "search", ["servername:${serverName} && ${deleteMarkerField.localName}:false", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
             if(res.total == 0)
             {
                 break;
@@ -83,7 +84,7 @@ class NetcoolConnector {
         List records = datasource.getEvents(whereClause);
         def size =  records.size()
         for (Map rec in records){
-            def res = NetcoolEvent.metaClass.invokeStaticMethod(NetcoolEvent, "add",[getEventProperties(rec)] as Object[]);
+            def res = invokeMethod(NetcoolEvent, "add",[getEventProperties(rec)] as Object[]);
             if(!res.hasErrors())
             {
                 def lastStateChange = Long.parseLong(rec.statechange);
@@ -111,7 +112,7 @@ class NetcoolConnector {
         List records = datasource.getJournalEntries(whereClause);
         def size =  records.size()
         for (Map rec in records){
-            NetcoolJournal.metaClass.invokeStaticMethod(NetcoolJournal, "add", [getJournalProperties(rec)] as Object[]);
+            invokeMethod(NetcoolJournal, "add", [getJournalProperties(rec)] as Object[]);
             def lastStateChange = Long.parseLong(rec.chrono);
             if (lastStateChange > lastJournalStateChange){
                 lastJournalStateChange = lastStateChange;
@@ -122,7 +123,7 @@ class NetcoolConnector {
 
     def getEventProperties(Map rec)
     {
-        def eventMap = [servername:serverName]
+        def eventMap = [:]
         rec.each{String propName, String propValue->
             def localColName = nameMappings[propName];
             if(localColName == null)
@@ -131,12 +132,21 @@ class NetcoolConnector {
             }
             eventMap[localColName.toLowerCase()] = propValue;
         }
+        eventMap["servername"] = serverName
         return eventMap;
     }
 
+    def invokeMethod(opClass, methodName, args)
+    {
+        return opClass.metaClass.invokeStaticMethod(opClass, methodName, args);
+    }
     def getJournalProperties(Map rec)
     {
-        def journalMap = [servername:serverName]
+        def eventSearchParams = [:];
+        eventSearchParams[nameMappings["serverserial"]?nameMappings["serverserial"]:"serverserial"] = rec.SERIAL;
+        eventSearchParams[nameMappings["servername"]?nameMappings["servername"]:"servername"] = this.serverName;
+        def event = invokeMethod(NetcoolEvent, "get", eventSearchParams);
+        def journalMap = [servername:serverName, event:event]
         StringBuffer text = new StringBuffer();
         rec.each{String propName, String propValue->
             if(propName.startsWith("text") && propValue != "")

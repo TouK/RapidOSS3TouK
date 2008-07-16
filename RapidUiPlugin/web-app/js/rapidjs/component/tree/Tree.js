@@ -1,12 +1,13 @@
 YAHOO.rapidjs.component.Tree = function(container, config)
 {
 	YAHOO.rapidjs.component.Tree.superclass.constructor.call(this, container, config);
-    this.id = null;
+    this.id = container.id;
     this.menuItems = config.menuItems;
     this.tree = new YAHOO.widget.TreeView(container);
 
-    YAHOO.util.Event.addListener(container, 'click', this.fireTreeNodeClick.createDelegate(this), this, true);
+    YAHOO.util.Event.addListener(container, 'click', this.fireTreeClick.createDelegate(this), this, true);
     this.selectedNode = null;
+    this.menuSelectedIndex = null;
     this.nodeId = config.nodeId;
 
     this.nodeTag = config.nodeTag;
@@ -14,10 +15,9 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     this.attributeToBeDisplayed = config.displayAttribute;
     this.queryAttribute = config.queryAttribute;
     this.events = {
-        'treenodeclick' : new YAHOO.util.CustomEvent('treenodeclick')    
+        'treeclick' : new YAHOO.util.CustomEvent('treeclick'),
+        'treemenuitemclick' : new YAHOO.util.CustomEvent('treemenuitemclick')        
     };
-
-
 
 
 
@@ -25,7 +25,8 @@ YAHOO.rapidjs.component.Tree = function(container, config)
 
     for (var i in this.menuItems)
     {
-            this.treeNodeMenu.addItem( {text:i, onclick: { fn: this.menuItems[i].onClickFunction, scope: this } });
+            var item = this.treeNodeMenu.addItem( {text:this.menuItems[i].label});
+            YAHOO.util.Event.addListener(item.element, "click" , this.fireTreeMenuItemClick , i , this);
     }
 
     this.treeNodeMenu.render(document.body);
@@ -56,7 +57,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         this.tree.draw();
         
     },
-    fireTreeNodeClick: function(e){
+    fireTreeClick: function(e){
         var target = YAHOO.util.Event.getTarget(e);
         if( YAHOO.util.Dom.hasClass( target, "treeNodeLabel") )
         {
@@ -73,12 +74,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
             }
             YAHOO.util.Dom.addClass( e.target , 'selected_tree_node');
             this.selectedNode = e.target;
-            this.events['treenodeclick'].fireDirect(nodeType, query);
+            this.events['treeclick'].fireDirect(nodeType, query);
         }
         else if ( YAHOO.util.Dom.hasClass(target, "rcmdb-tree-node-headermenu" ) )
         {
             var parentId = target.parentNode.parentNode.parentNode.parentNode.id;
             var nodeIndex = parseInt( parentId.substr(4, parentId.length) );
+            this.menuSelectedIndex = nodeIndex;
             var node = this.tree.getNodeByIndex(nodeIndex);
 
             this.treeNodeMenu.cfg.setProperty("context", [target, 'tl', 'bl']);
@@ -106,6 +108,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
                 this.treeNodeMenu.show();
         }
 
+    },
+    fireTreeMenuItemClick: function(e, i)
+    {
+        var id = this.menuItems[i].id;
+        var data = this.tree.getNodeByIndex(this.menuSelectedIndex).data;
+        this.events['treemenuitemclick'].fireDirect(id, data);
     }
 })
 

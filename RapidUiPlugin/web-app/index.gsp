@@ -100,32 +100,51 @@
         offsetAttribute:'Offset',
         sortOrderAttribute:'sortOrder',
         fields:['id', 'name', 'creationClassName', 'vendor', 'description', 'location'],
-        menuItems:{ item1 : { url: "url1" }, item2 : { url: "url2", condition : function(data) {return data == "3001"} }, item3 : { url: "url3" } } ,
+        menuItems:{ item1 : { id : 'item1', label : 'item1' }  , item2 : { id : 'item2', label : 'item2', condition : function(data) {return data == "3001"} }, item3 : {id : 'item3', label : 'item3' } } ,
         menuItemUrlParamName: 'id',
         saveQueryFunction: function(query){
                     dialog.dialog.form.query.value = query;
                     dialog.show(dialog.CREATE_MODE);
         }
     }
-
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
 
-
+    searchList.events["rowheadermenuclick"].subscribe(function(xmlData, id) {
+            if( id == "item1")
+                alert( "item1 with query " + xmlData );
+            else if( id == "item2")
+            {
+                alert( "item2 with query " + xmlData );
+            }
+            else if( id == "item3")
+            {
+                alert( "item3 with query " + xmlData );
+            }
+    }, this, true);
 
 
     var config = {  id:"filterTree","pollingInterval":1, "url":"a2.xml", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
                     "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
-                    menuItems:{ Edit : { onClickFunction: function(){ alert( "Edit"); }, condition : function(node) {return node.data.label != "filterab"} }, Delete : { onClickFunction: function(){ alert( "Delete"); }, condition : function(node) {return node.data.label != "filterabcabcabc"} }  }
+                    menuItems:{ Edit : { id: 'edit', label : 'Edit', condition : function(node) {return node.data.label != "filterab"} }, Delete : { id: 'delete', label : 'Delete',  condition : function(node) {return node.data.label != "filterabcabcabc"} }  }
     };
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
     tree.poll();
 
-     tree.events["treenodeclick"].subscribe(function(nodeType, query) {
+     tree.events["treeclick"].subscribe(function(nodeType, query) {
             if( nodeType == "group")
-                alert( "Look kamil this is group!" );
+                alert( "Group!" );
             else if(  nodeType == "filter")
             {
                searchList.setQuery( query );
+            }
+    }, this, true);
+
+    tree.events["treemenuitemclick"].subscribe(function(id, data) {
+            if( id == "edit")
+                alert( "Edit with query " + data.query );
+            else if( id == "delete")
+            {
+                alert( "Delete with query " + data.query );
             }
     }, this, true);
 

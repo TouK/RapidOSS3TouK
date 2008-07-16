@@ -75,7 +75,8 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic"});
 
         for (var i in this.menuItems){
-            this.rowHeaderMenu.addItem( {text:i, onclick: { fn: this.rowHeaderMenuItemClicked, scope: this } });
+            var item = this.rowHeaderMenu.addItem( {text:this.menuItems[i].label });
+            YAHOO.util.Event.addListener(item.element, "click" , this.rowHeaderMenuItemClicked, i , this);
         }
 
         this.rowHeaderMenu.render(document.body);
@@ -581,20 +582,17 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.fireCellMenuClick(cell.propKey, cell.propValue, xmlData, menuItemText);
     },
 
-    rowHeaderMenuItemClicked: function(eventType, args, menuItem){
+    rowHeaderMenuItemClicked: function(eventType, key){
         //var event = args[0];
-        var menuItemText = menuItem.cfg.getProperty("text");
-        var menuItemUrl = this.menuItems[menuItemText].url;
-        alert( menuItemText + "  " + menuItemUrl);
+        var id = this.menuItems[key].id;
         var row = this.rowHeaderMenu.row;
         this.rowHeaderMenu.row = null;
         var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
-        //alert( xmlData);
-        this.fireRowHeaderMenuClick(xmlData, menuItemText);
+        this.fireRowHeaderMenuClick(xmlData, id);
     },
 
-    fireRowHeaderMenuClick: function(data, menuText){
-        this.events['rowheadermenuclick'].fireDirect(data, menuText);
+    fireRowHeaderMenuClick: function(data, id){
+        this.events['rowheadermenuclick'].fireDirect(data, id);
     },
     fireCellMenuClick: function(key, value, data, menuText){
         this.events['cellmenuclick'].fireDirect(key, value, data, menuText);

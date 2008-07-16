@@ -1,30 +1,12 @@
 <html>
 <head>
-    <rui:javascript dir="yui/yahoo" file="yahoo-min.js"></rui:javascript>
-    <rui:javascript dir="yui/event" file="event-min.js"></rui:javascript>
-    <rui:javascript dir="yui/datasource" file="datasource-beta-min.js"></rui:javascript>
-    <rui:javascript dir="yui/connection" file="connection-min.js"></rui:javascript>
-    <rui:javascript dir="yui/utilities" file="utilities.js"></rui:javascript>
-    <rui:javascript dir="yui/container" file="container_core-min.js"></rui:javascript>
-    <rui:javascript dir="yui/treeview" file="treeview-min.js"></rui:javascript>
-    <rui:javascript dir="yui/resize" file="resize-beta-min.js"></rui:javascript>
-    <rui:javascript dir="yui/layout" file="layout-beta-min.js"></rui:javascript>
-    <rui:javascript dir="yui/menu" file="menu-min.js"></rui:javascript>
-    <rui:javascript dir="yui/dom" file="dom-min.js"></rui:javascript>
-    <rui:javascript dir="yui/button" file="button-min.js"></rui:javascript>
-    <rui:javascript dir="yui/dragdrop" file="dragdrop-min.js"></rui:javascript>
-    <rui:javascript dir="yui/container" file="container-min.js"></rui:javascript>
-
-
-    <rui:javascript dir="ext" file="yutil.js"></rui:javascript>
-    <rui:javascript dir="ext" file="Element.js"></rui:javascript>
-    <rui:javascript dir="ext" file="DomHelper.js"></rui:javascript>
-    <rui:javascript dir="ext" file="CSS.js"></rui:javascript>
-
-    <rui:javascript dir="rapidjs" file="rapidjs.js"></rui:javascript>
-    <rui:javascript dir="rapidjs" includeType="recursive"></rui:javascript>
+    <rui:javascript dir="yui/layout" file="layout-beta-min.js"/>
+    <rui:javascript dir="ext" file="ext.js"></rui:javascript>
     <rui:javascript dir="rapidjs/component/form" file="Form.js"></rui:javascript>
-
+    <rui:javascript dir="rapidjs/component/search" file="SearchList.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/tree" file="Tree.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/action" file="Action.js"></rui:javascript>
+    
     <rui:stylesheet dir="js/yui/treeview" includeType="recursive"></rui:stylesheet>
     <rui:stylesheet dir="js/yui/resize" includeType="recursive"></rui:stylesheet>
     <rui:stylesheet dir="js/yui/layout" includeType="recursive"></rui:stylesheet>
@@ -70,7 +52,9 @@
 
 <script type="text/javascript">
 
-
+    var actionConfig = {url:'searchQuery/delete.xml'}
+    var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
+    
     var searchConfig = {
         id:'searchList',
         url:'search',
@@ -82,7 +66,11 @@
         offsetAttribute:'offset',
         sortOrderAttribute:'sortOrder',
         fields:['id', 'name', 'creationClassName', 'vendor', 'description', 'location'],
-        menuItems:{ item1 : { url: "url1" }, item2 : { url: "url2", condition : function(data) {return data == "3001"} }, item3 : { url: "url3" } } ,
+        menuItems:{
+            /*item1 : { id : 'item1', label : 'item1' },
+            item2 : { id : 'item2', label : 'item2', condition : function(data) {return data == "3001"} },
+            item3 : {id : 'item3', label : 'item3' }*/
+        } ,
         menuItemUrlParamName: 'id',
         saveQueryFunction: function(query){
                     dialog.dialog.form.query.value = query;
@@ -91,22 +79,45 @@
     }
 
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
-
+    /*searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
+            if( id == "item1")
+                alert( "item1 with query " + xmlData );
+            else if( id == "item2")
+            {
+                alert( "item2 with query " + xmlData );
+            }
+            else if( id == "item3")
+            {
+                alert( "item3 with query " + xmlData );
+            }
+    }, this, true);   */
 
 
 
     var config = {  id:"filterTree","pollingInterval":1, "url":"script/run/queryList", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
-                    "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query"
+                    "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
+                    menuItems:{
+                        Delete : { id: 'delete', label : 'Delete',  condition : function(node) {return node.data.type != "group"} }
+                    }
     };
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
     tree.poll();
+    deleteQueryAction.events.success.subscribe(tree.poll(), tree, true);
+    deleteQueryAction.events.failure.subscribe(function(){alert("Error");}, this, true);
 
-     tree.events["treenodeclick"].subscribe(function(nodeType, query) {
+    tree.events["treeClick"].subscribe(function(nodeType, query) {
             if( nodeType == "group")
-                alert( "Look kamil this is group!" );
+                alert( "Group!" );
             else if(  nodeType == "filter")
             {
                searchList.setQuery( query );
+            }
+    }, this, true);
+
+    tree.events["treeMenuItemClick"].subscribe(function(id, data) {
+            if( id == "delete")
+            {
+                alert( "Delete with query " + data.query );
             }
     }, this, true);
 

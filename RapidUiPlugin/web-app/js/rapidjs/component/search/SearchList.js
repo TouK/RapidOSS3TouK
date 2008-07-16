@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.search');
 YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.id = null;
     this.url = null;
@@ -27,9 +28,9 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.scrollPollTask = new YAHOO.ext.util.DelayedTask(this.scrollPoll, this);
     this.events = {
-        'rowheadermenuclick' : new YAHOO.util.CustomEvent('rowheadermenuclick'),
-        'cellmenuclick' : new YAHOO.util.CustomEvent('cellmenuclick'),
-        'propertyclick' : new YAHOO.util.CustomEvent('propertyclick')
+        'rowHeaderMenuClick' : new YAHOO.util.CustomEvent('rowHeaderMenuClick'),
+        'cellMenuClick' : new YAHOO.util.CustomEvent('cellMenuClick'),
+        'propertyClick' : new YAHOO.util.CustomEvent('propertyClick')
     };
     this.calculateRowHeight();
     this.render();
@@ -360,7 +361,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
                     }
                     else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
                          var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
-                         this.firePropertyClick(cell.propKey, cell.propValue, xmlData);
+                         this.firepropertyClick(cell.propKey, cell.propValue, xmlData);
                     }
                 }
             }
@@ -579,7 +580,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         else if(menuItemText == 'sort desc'){
             this.sort(cell.propKey, 'desc');
         }
-        this.fireCellMenuClick(cell.propKey, cell.propValue, xmlData, menuItemText);
+        this.firecellMenuClick(cell.propKey, cell.propValue, xmlData, menuItemText);
     },
 
     rowHeaderMenuItemClicked: function(eventType, key){
@@ -588,17 +589,17 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         var row = this.rowHeaderMenu.row;
         this.rowHeaderMenu.row = null;
         var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
-        this.fireRowHeaderMenuClick(xmlData, id);
+        this.firerowHeaderMenuClick(xmlData, id);
     },
 
-    fireRowHeaderMenuClick: function(data, id){
-        this.events['rowheadermenuclick'].fireDirect(data, id);
+    firerowHeaderMenuClick: function(data, id){
+        this.events['rowHeaderMenuClick'].fireDirect(data, id);
     },
-    fireCellMenuClick: function(key, value, data, menuText){
-        this.events['cellmenuclick'].fireDirect(key, value, data, menuText);
+    firecellMenuClick: function(key, value, data, menuText){
+        this.events['cellMenuClick'].fireDirect(key, value, data, menuText);
     },
-    firePropertyClick: function(key, value, data){
-        this.events['propertyclick'].fireDirect(key, value, data);
+    firepropertyClick: function(key, value, data){
+        this.events['propertyClick'].fireDirect(key, value, data);
     }
 
 

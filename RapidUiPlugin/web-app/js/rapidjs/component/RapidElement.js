@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.RapidElement= function(xmlData)
 {
 	this.xmlData = xmlData;

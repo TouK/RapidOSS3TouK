@@ -1,15 +1,9 @@
 <html>
 <head>
 
-  <rui:javascript dir="yui/treeview" file="treeview-min.js"/>
-  <rui:javascript dir="yui/button" file="button-min.js"/>
-  <rui:javascript dir="yui/container" file="container-min.js"/>
-  <rui:javascript dir="yui/connection" file="connection-min.js"/>
-  <rui:javascript dir="yui/treeview" file="treeview-min.js"/>
-  <rui:javascript dir="yui/dragdrop" file="dragdrop-min.js"/>
+
   <rui:javascript dir="yui/treeview" file="treeview-min.js"/>
   <rui:javascript dir="yui/layout" file="layout-beta-min.js"/>
-  <rui:javascript dir="yui/menu" file="menu-min.js"/>
   <rui:javascript dir="ext" file="ext.js"></rui:javascript>
   <rui:javascript dir="rapidjs" file="rapidjs.js"></rui:javascript>
   <rui:javascript dir="rapidjs" file="RapidUtil.js"></rui:javascript>

@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs', 'rapidjs.data');
 YAHOO.rapidjs.data.RapidXmlDocument=function(response, indexingAttributes)
 {
 	this.response = response;

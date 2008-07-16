@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs');
 YAHOO.rapidjs.Components = {};
 String.prototype.trim = function() {
 	a = this.replace(/^\s+/, '');

@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs', 'rapidjs.data');
 YAHOO.rapidjs.data.CaseInsensitiveXmlDoc = function(response, indexingAttributes){
 	YAHOO.rapidjs.data.CaseInsensitiveXmlDoc.superclass.constructor.call(this, response, indexingAttributes);
 };

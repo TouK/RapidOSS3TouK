@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.ComponentContainer = function(container, config){
 	this.id = config.id;
 	this.container = container;

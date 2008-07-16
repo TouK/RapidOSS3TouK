@@ -1,4 +1,4 @@
-
+YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.Form = function(container, config)
 {
     YAHOO.rapidjs.component.Form.superclass.constructor.call(this, container, config);

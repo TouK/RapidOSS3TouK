@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.Tree = function(container, config)
 {
 	YAHOO.rapidjs.component.Tree.superclass.constructor.call(this, container, config);
@@ -15,8 +16,8 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     this.attributeToBeDisplayed = config.displayAttribute;
     this.queryAttribute = config.queryAttribute;
     this.events = {
-        'treeclick' : new YAHOO.util.CustomEvent('treeclick'),
-        'treemenuitemclick' : new YAHOO.util.CustomEvent('treemenuitemclick')        
+        'treeClick' : new YAHOO.util.CustomEvent('treeClick'),
+        'treeMenuItemClick' : new YAHOO.util.CustomEvent('treeMenuItemClick')
     };
 
 
@@ -26,7 +27,7 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     for (var i in this.menuItems)
     {
             var item = this.treeNodeMenu.addItem( {text:this.menuItems[i].label});
-            YAHOO.util.Event.addListener(item.element, "click" , this.fireTreeMenuItemClick , i , this);
+            YAHOO.util.Event.addListener(item.element, "click" , this.firetreeMenuItemClick , i , this);
     }
 
     this.treeNodeMenu.render(document.body);
@@ -57,7 +58,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         this.tree.draw();
         
     },
-    fireTreeClick: function(e){
+    firetreeClick: function(e){
         var target = YAHOO.util.Event.getTarget(e);
         if( YAHOO.util.Dom.hasClass( target, "treeNodeLabel") )
         {
@@ -74,7 +75,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
             }
             YAHOO.util.Dom.addClass( e.target , 'selected_tree_node');
             this.selectedNode = e.target;
-            this.events['treeclick'].fireDirect(nodeType, query);
+            this.events['treeClick'].fireDirect(nodeType, query);
         }
         else if ( YAHOO.util.Dom.hasClass(target, "rcmdb-tree-node-headermenu" ) )
         {
@@ -109,11 +110,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         }
 
     },
-    fireTreeMenuItemClick: function(e, i)
+    firetreeMenuItemClick: function(e, i)
     {
         var id = this.menuItems[i].id;
         var data = this.tree.getNodeByIndex(this.menuSelectedIndex).data;
-        this.events['treemenuitemclick'].fireDirect(id, data);
+        this.events['treeMenuItemClick'].fireDirect(id, data);
     }
 })
 

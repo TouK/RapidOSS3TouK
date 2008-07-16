@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs', 'rapidjs.data');
 YAHOO.rapidjs.data.CaseInsensitiveMap = function(){
 	this.lowerCaseMap = {};
 	this.data = {};

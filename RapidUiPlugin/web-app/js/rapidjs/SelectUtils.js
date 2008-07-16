@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs');
 YAHOO.rapidjs.SelectUtils = new function(){
 	this.collectSelectedIndicesFromSelect = function(aSelect)
 	{

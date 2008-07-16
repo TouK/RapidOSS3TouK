@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs', 'rapidjs.data');
 YAHOO.rapidjs.data.NodeFactory = new function(){
 	this.getRootNode = function(xmlDoc,isCaseSensitive){
 		var response = xmlDoc.response;

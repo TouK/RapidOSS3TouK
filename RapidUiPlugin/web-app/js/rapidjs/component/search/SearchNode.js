@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.search');
 YAHOO.rapidjs.component.search.SearchNode = function(xmlData)
 {
     YAHOO.rapidjs.component.search.SearchNode.superclass.constructor.call(this, xmlData);

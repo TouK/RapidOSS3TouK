@@ -1,4 +1,4 @@
-
+YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.PollingComponentContainer = function(container, config)
 {
 	YAHOO.rapidjs.component.PollingComponentContainer.superclass.constructor.call(this,container, config);

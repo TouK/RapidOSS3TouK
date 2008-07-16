@@ -12,7 +12,8 @@ import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
-import java.lang.ref.WeakReference
+import org.codehaus.groovy.grails.commons.metaclass.WeakGenericDynamicProperty
+import org.codehaus.groovy.grails.commons.metaclass.FunctionCallback
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
@@ -327,51 +328,46 @@ class RapidDomainClassGrailsPlugin {
 
 
 
-class DatasourceProperty extends MetaBeanProperty
+class DatasourceProperty extends MetaBeanProperty implements FunctionCallback
 {
-
+    WeakGenericDynamicProperty dynamicProp;
     public DatasourceProperty(String s, Class aClass) {
         super(s, aClass, null, null); //To change body of overridden methods use File | Settings | File Templates.
+        dynamicProp = new WeakGenericDynamicProperty(s, aClass, this, false)
     }
 
-   WeakHashMap map = new WeakHashMap()
     public Object getProperty(Object o) {
-        def object = map[o];
-        if(!object)
-        {
-            object = new WeakReference([:]);
-            map[o] = object;
-        }
-        return object.get();
+        return dynamicProp.get(o)
     }
+
+    public Object execute(Object object) {
+        return [:];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 
     public void setProperty(Object o, Object o1) {
-
-
     }
 }
 
-class DomainOperationProperty extends MetaBeanProperty
+class DomainOperationProperty extends MetaBeanProperty  implements FunctionCallback
 {
-    WeakHashMap map = new WeakHashMap()
+    WeakGenericDynamicProperty dynamicProp;
     Class operationClass;
     public static final String PROP_NAME = "__operation_class__";
     public DomainOperationProperty() {
         super(PROP_NAME, AbstractDomainOperation,null,null); //To change body of overridden methods use File | Settings | File Templates.
+        dynamicProp = new WeakGenericDynamicProperty(PROP_NAME, AbstractDomainOperation, this, false)
     }
 
-
+    public Object execute(Object object) {
+        def operation = operationClass.newInstance() ;
+        operationClass.metaClass.getMetaProperty("domainObject").setProperty(operation, object);
+        return operation;
+    }
     public Object getProperty(Object o) {
-        def operation = map[o];
-        if(!operation && operationClass)
+        if(operationClass)
         {
-            operation = new WeakReference(operationClass.newInstance()) ;
-            operationClass.metaClass.getMetaProperty("domainObject").setProperty(operation.get(), o);
-            map[o] = operation;
-        }
-        if(operation)
-        {
-            return operation.get();
+            return dynamicProp.get(o)
         }
         else
         {

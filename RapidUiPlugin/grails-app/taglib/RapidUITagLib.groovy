@@ -67,9 +67,13 @@ class RapidUITagLib
             def importFileArray = importFile.getText().split ("\\s+", -1);
             def index = 0;
             importFileArray.each {
-                String filePath = root + importFileArray[index];
-                def aFile = new File( filePath );
-                findFilesToBeImportedWithMap( importMap, aFile , iteration + 1 );                       
+                String fileName = it.trim();
+                if(fileName != "")
+                {
+                    String filePath = root + importFileArray[index];
+                    def aFile = new File( filePath );
+                    findFilesToBeImportedWithMap( importMap, aFile , iteration + 1 );
+                }
                 index++;
             }                       
         }       

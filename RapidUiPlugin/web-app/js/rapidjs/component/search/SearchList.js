@@ -361,7 +361,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
                     }
                     else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
                          var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
-                         this.firepropertyClick(cell.propKey, cell.propValue, xmlData);
+                         this.firePropertyClick(cell.propKey, cell.propValue, xmlData);
                     }
                 }
             }
@@ -580,7 +580,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         else if(menuItemText == 'sort desc'){
             this.sort(cell.propKey, 'desc');
         }
-        this.firecellMenuClick(cell.propKey, cell.propValue, xmlData, menuItemText);
+        this.fireCellMenuClick(cell.propKey, cell.propValue, xmlData, menuItemText);
     },
 
     rowHeaderMenuItemClicked: function(eventType, key){
@@ -589,16 +589,16 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         var row = this.rowHeaderMenu.row;
         this.rowHeaderMenu.row = null;
         var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
-        this.firerowHeaderMenuClick(xmlData, id);
+        this.fireRowHeaderMenuClick(xmlData, id);
     },
 
-    firerowHeaderMenuClick: function(data, id){
+    fireRowHeaderMenuClick: function(data, id){
         this.events['rowHeaderMenuClick'].fireDirect(data, id);
     },
-    firecellMenuClick: function(key, value, data, menuText){
+    fireCellMenuClick: function(key, value, data, menuText){
         this.events['cellMenuClick'].fireDirect(key, value, data, menuText);
     },
-    firepropertyClick: function(key, value, data){
+    firePropertyClick: function(key, value, data){
         this.events['propertyClick'].fireDirect(key, value, data);
     }
 

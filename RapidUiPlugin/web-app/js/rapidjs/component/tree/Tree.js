@@ -6,7 +6,7 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     this.menuItems = config.menuItems;
     this.tree = new YAHOO.widget.TreeView(container);
 
-    YAHOO.util.Event.addListener(container, 'click', this.fireTreeClick.createDelegate(this), this, true);
+    YAHOO.util.Event.addListener(container, 'click', this.fireTreeClick, this, true);
     this.selectedNode = null;
     this.menuSelectedIndex = null;
     this.nodeId = config.nodeId;
@@ -27,7 +27,7 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     for (var i in this.menuItems)
     {
             var item = this.treeNodeMenu.addItem( {text:this.menuItems[i].label});
-            YAHOO.util.Event.addListener(item.element, "click" , this.firetreeMenuItemClick , i , this);
+            YAHOO.util.Event.addListener(item.element, "click" , this.fireTreeMenuItemClick , i , this);
     }
 
     this.treeNodeMenu.render(document.body);
@@ -58,7 +58,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         this.tree.draw();
         
     },
-    firetreeClick: function(e){
+    fireTreeClick: function(e){
         var target = YAHOO.util.Event.getTarget(e);
         if( YAHOO.util.Dom.hasClass( target, "treeNodeLabel") )
         {
@@ -110,7 +110,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         }
 
     },
-    firetreeMenuItemClick: function(e, i)
+    fireTreeMenuItemClick: function(e, i)
     {
         var id = this.menuItems[i].id;
         var data = this.tree.getNodeByIndex(this.menuSelectedIndex).data;

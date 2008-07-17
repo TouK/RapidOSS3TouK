@@ -2,30 +2,12 @@
 <head>
 
 
-  <rui:javascript dir="yui/treeview" file="treeview-min.js"/>
-  <rui:javascript dir="yui/layout" file="layout-beta-min.js"/>
-  <rui:javascript dir="ext" file="ext.js"></rui:javascript>
-  <rui:javascript dir="rapidjs" file="rapidjs.js"></rui:javascript>
-  <rui:javascript dir="rapidjs" file="RapidUtil.js"></rui:javascript>
-  <rui:javascript dir="rapidjs" file="SelectUtils.js"></rui:javascript>
-  <rui:javascript dir="rapidjs/component" file="ComponentContainer.js"></rui:javascript>
-  <rui:javascript dir="rapidjs/component" file="PollingComponentContainer.js"></rui:javascript>
-  <rui:javascript dir="rapidjs/component" file="RapidElement.js"></rui:javascript>
+    <rui:javascript dir="yui/layout" file="layout-beta-min.js"/>
+    <rui:javascript dir="rapidjs/component/form" file="Form.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/search" file="SearchList.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/tree" file="Tree.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/action" file="Action.js"></rui:javascript>
 
-  <rui:javascript dir="rapidjs/component/form" file="Form.js"></rui:javascript>
-  <rui:javascript dir="rapidjs/component/search" file="SearchNode.js"></rui:javascript>
-  <rui:javascript dir="rapidjs/component/search" file="SearchList.js"></rui:javascript>
-
-  <rui:javascript dir="rapidjs/component/tree" file="Tree.js"></rui:javascript>
-
-  <rui:javascript dir="rapidjs/data" file="RapidXmlDocument.js"></rui:javascript>
-  <rui:javascript dir="rapidjs/data" file="CaseInsensitiveMap.js"></rui:javascript>
-  <rui:javascript dir="rapidjs/data" file="CaseInsensitiveXmlDoc.js"></rui:javascript>
-  <rui:javascript dir="rapidjs/data" file="NodeFactory.js"></rui:javascript>
-  <rui:javascript dir="rapidjs/data" file="xml2json.js"></rui:javascript>
-
-
-  
   <rui:stylesheet dir="css/rapidjs" file="yui-ext.css"></rui:stylesheet>
   <rui:stylesheet dir="css/rapidjs" file="common.css"></rui:stylesheet>
   <rui:stylesheet dir="js/yui/layout/assets/skins/sam" file="layout.css"></rui:stylesheet>
@@ -104,7 +86,7 @@
     }
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
 
-    searchList.events["rowheadermenuclick"].subscribe(function(xmlData, id) {
+    searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
             if( id == "item1")
                 alert( "item1 with query " + xmlData );
             else if( id == "item2")
@@ -125,7 +107,7 @@
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
     tree.poll();
 
-     tree.events["treeclick"].subscribe(function(nodeType, query) {
+     tree.events["treeClick"].subscribe(function(nodeType, query) {
             if( nodeType == "group")
                 alert( "Group!" );
             else if(  nodeType == "filter")
@@ -134,7 +116,7 @@
             }
     }, this, true);
 
-    tree.events["treemenuitemclick"].subscribe(function(id, data) {
+    tree.events["treeMenuItemClick"].subscribe(function(id, data) {
             if( id == "edit")
                 alert( "Edit with query " + data.query );
             else if( id == "delete")

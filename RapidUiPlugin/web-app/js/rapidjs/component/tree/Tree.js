@@ -49,7 +49,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         {
             this.rootNode = node;
 
-            this.rootTreeNode = new  YAHOO.rapidjs.component.TreeNode(node, this.tree, this.nodeTag, null, this.attributeToBeDisplayed, this.nodeTypeAttribute, this.queryAttribute, this.menuItems);
+            this.rootTreeNode = new  YAHOO.rapidjs.component.TreeNode(node, this.tree, this.nodeTag, null, this.attributeToBeDisplayed, this.menuItems);
         }
         if(this.selectedNode != null)
         {
@@ -62,25 +62,21 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         var target = YAHOO.util.Event.getTarget(e);
         if( YAHOO.util.Dom.hasClass( target, "treeNodeLabel") )
         {
-            var parentId = target.parentNode.parentNode.parentNode.parentNode.parentNode.id;
-            var nodeIndex = parseInt( parentId.substr(13, parentId.length) );
+            var parentId = target.id;
+            var nodeIndex = parseInt( parentId.substr(3, parentId.length) );
             var node = this.tree.getNodeByIndex(nodeIndex);
-
-            var nodeType = node.data.nodeType;
-            var query = node.data.query;
-
             if(this.selectedNode != null)
             {
                 YAHOO.util.Dom.removeClass( this.selectedNode , 'selected_tree_node');
             }
             YAHOO.util.Dom.addClass( e.target , 'selected_tree_node');
             this.selectedNode = e.target;
-            this.events['treeClick'].fireDirect(nodeType, query);
+            this.events['treeClick'].fireDirect(node.data);
         }
         else if ( YAHOO.util.Dom.hasClass(target, "rcmdb-tree-node-headermenu" ) )
         {
-            var parentId = target.parentNode.parentNode.parentNode.parentNode.id;
-            var nodeIndex = parseInt( parentId.substr(4, parentId.length) );
+            var parentId = target.id;
+            var nodeIndex = parseInt( parentId.substr(3, parentId.length) );
             this.menuSelectedIndex = nodeIndex;
             var node = this.tree.getNodeByIndex(nodeIndex);
 
@@ -90,7 +86,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
             for (var i in this.menuItems){
                 if( this.menuItems[i].condition != null ){
                     var menuItem = this.treeNodeMenu.getItem(index);
-                    var condRes = this.menuItems[i].condition( node);
+                    var condRes = this.menuItems[i].condition( node.data);
                     if( !condRes)
                     {
                         menuItem.element.style.display = "none";
@@ -119,27 +115,19 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
 })
 
 
-YAHOO.rapidjs.component.TreeNode = function(xmlData, tree, nodeTag, parentNode, attributeToBeDisplayed, nodeTypeAttribute, queryAttribute, menuItems)
+YAHOO.rapidjs.component.TreeNode = function(xmlData, tree, nodeTag, parentNode, attributeToBeDisplayed, menuItems)
 {
 	YAHOO.rapidjs.component.TreeNode.superclass.constructor.call(this, xmlData);
     this.nodeTag = nodeTag;
     this.tree = tree;
     this.attributeToBeDisplayed = attributeToBeDisplayed;
-    this.nodeTypeAttribute = nodeTypeAttribute;
     this.treeNode = null;
-    this.queryAttribute =  queryAttribute;
     this.menuItems = menuItems;
     if(parentNode != null)
     {
         var text = xmlData.getAttribute(attributeToBeDisplayed);
-        var nodeType = xmlData.getAttribute(nodeTypeAttribute);
-        var query = xmlData.getAttribute(queryAttribute);
-
 
         this.treeNode = new YAHOO.widget.HTMLNode("abc" ,parentNode.treeNode, true, true);
-
-        this.treeNode.data = { "nodeType": nodeType, "query": query, "label": text};
-
         var htmlString = "<table><tr>";
         var index = 0;
         var invisibleCount = 0;
@@ -147,7 +135,7 @@ YAHOO.rapidjs.component.TreeNode = function(xmlData, tree, nodeTag, parentNode, 
         for (var i in this.menuItems)
         {
             if( this.menuItems[i].condition != null ){
-                var condRes = this.menuItems[i].condition( this.treeNode);
+                var condRes = this.menuItems[i].condition( this.xmlData);
                 if( !condRes)
                 {
                     invisibleCount++;
@@ -155,18 +143,18 @@ YAHOO.rapidjs.component.TreeNode = function(xmlData, tree, nodeTag, parentNode, 
             }
             index++;
         }
-        htmlString += '<td><label class="treeNodeLabel">' + text + "</label></td></tr></table>"
+        htmlString += '<td><label id="tnl'+this.treeNode.index+'" class="treeNodeLabel">' + text + "</label></td>"
         if( invisibleCount < index)
         {
-            htmlString += '<td class="rcmdb-tree-node-headermenu"></td>';
+            htmlString += '<td id="tnm'+this.treeNode.index+'" class="rcmdb-tree-node-headermenu"></td>';
         }
+        htmlString += '</tr></table>'
+        this.treeNode.html = htmlString;
+        this.treeNode.data = this.xmlData;
         /*else
         {
              htmlString += '<td class="disabledMenu"></td>'
         } */
-
-
-        this.treeNode.html = htmlString;
 
         //this.treeNode.href = "#";
     }
@@ -192,7 +180,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeNode, YAHOO.rapidjs.component.Rapi
         }       
     },
     childAdded : function(newChild){
-        new YAHOO.rapidjs.component.TreeNode(newChild, this.tree, this.nodeTag, this, this.attributeToBeDisplayed, this.nodeTypeAttribute, this.queryAttribute, this.menuItems);
+        new YAHOO.rapidjs.component.TreeNode(newChild, this.tree, this.nodeTag, this, this.attributeToBeDisplayed, this.menuItems);
     },
 	childAddedBefore : function(newChild, refChild){
     },

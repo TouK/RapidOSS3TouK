@@ -11,10 +11,7 @@
     <rui:stylesheet dir="js/yui/resize" includeType="recursive"></rui:stylesheet>
     <rui:stylesheet dir="js/yui/layout" includeType="recursive"></rui:stylesheet>
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="menu.css"></rui:stylesheet>
-    <rui:stylesheet dir="css/rapidjs" file="yui-ext.css"></rui:stylesheet>
-    <rui:stylesheet dir="css/rapidjs" file="common.css"></rui:stylesheet>
-    <rui:stylesheet dir="css/rapidjs" file="layout.css"></rui:stylesheet>
-    <rui:stylesheet dir="css/rapidjs" file="searchlist.css"></rui:stylesheet>
+    <rui:stylesheet dir="css/rapidjs" includeType="recursive"></rui:stylesheet>
     <rui:stylesheet dir="js/yui/button/assets/skins/sam" file="button.css"></rui:stylesheet>
 
     <rui:stylesheet dir="js/yui/container/assets/skins/sam" file="container.css"></rui:stylesheet>
@@ -97,20 +94,20 @@
     var config = {  id:"filterTree","pollingInterval":1, "url":"script/run/queryList", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
                     "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
                     menuItems:{
-                        Delete : { id: 'delete', label : 'Delete',  condition : function(node) {return node.data.type != "group"} }
+                        Delete : { id: 'delete', label : 'Delete',  condition : function(data) {return data.getAttribute("nodeType") != "group"} }
                     }
     };
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
     tree.poll();
-    deleteQueryAction.events.success.subscribe(tree.poll(), tree, true);
+    deleteQueryAction.events.success.subscribe(tree.poll, tree, true);
     deleteQueryAction.events.failure.subscribe(function(){alert("Error");}, this, true);
 
-    tree.events["treeClick"].subscribe(function(nodeType, query) {
-            if( nodeType == "group")
+    tree.events["treeClick"].subscribe(function(data) {
+            if( data.nodeType == "group")
                 alert( "Group!" );
-            else if(  nodeType == "filter")
+            else if(  data.nodeType == "filter")
             {
-               searchList.setQuery( query );
+               searchList.setQuery( data.query );
             }
     }, this, true);
 

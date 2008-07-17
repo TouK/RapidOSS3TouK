@@ -35,7 +35,9 @@
   
 </head>
 <body class=" yui-skin-sam">
+
 <div id="filterDialog">
+    <button onclick='html.show("x.gsp")'></button>
     <div class="hd">Save query</div>
     <div class="bd">
     <form method="POST" action="javascript://nothing">
@@ -55,6 +57,7 @@
 <div id="right">
     <div id="searchDiv"></div>
 </div>
+
   <style>
     .dragging, .drag-hint {
       border: 1px solid gray;

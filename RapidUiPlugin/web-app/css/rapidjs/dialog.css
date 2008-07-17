@@ -4,10 +4,11 @@
 }
 
 .resizable-panel-body {
-    overflow:auto;
+    overflow:scroll;
+    overflow-x:auto;
+    overflow-y:auto;
     height:10em;
     background-color:#fff;
-    padding:10px;
 }
 
 .resizable-panel-footer {
@@ -22,3 +23,5 @@
     width: 8px;
     position:absolute;
 }
+
+

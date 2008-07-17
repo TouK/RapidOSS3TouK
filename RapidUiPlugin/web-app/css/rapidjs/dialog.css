@@ -1,0 +1,24 @@
+.resizable-panel {
+}
+.resizable-panel-header {
+}
+
+.resizable-panel-body {
+    overflow:auto;
+    height:10em;
+    background-color:#fff;
+    padding:10px;
+}
+
+.resizable-panel-footer {
+    height:15px;
+    padding:0;
+}
+
+.resizable-panel .yui-resize-handle-br {
+    right:0;
+    bottom:0;
+    height: 8px;
+    width: 8px;
+    position:absolute;
+}

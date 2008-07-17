@@ -7,9 +7,11 @@
     <rui:javascript dir="rapidjs/component/search" file="SearchList.js"></rui:javascript>
     <rui:javascript dir="rapidjs/component/tree" file="Tree.js"></rui:javascript>
     <rui:javascript dir="rapidjs/component/action" file="Action.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/html" file="Html.js"></rui:javascript>
 
   <rui:stylesheet dir="css/rapidjs" file="yui-ext.css"></rui:stylesheet>
   <rui:stylesheet dir="css/rapidjs" file="common.css"></rui:stylesheet>
+  <rui:stylesheet dir="css/rapidjs" file="dialog.css"></rui:stylesheet>
   <rui:stylesheet dir="js/yui/layout/assets/skins/sam" file="layout.css"></rui:stylesheet>
   <rui:stylesheet dir="css/rapidjs" file="searchlist.css"></rui:stylesheet>
   <rui:stylesheet dir="css/rapidjs" file="treenode.css"></rui:stylesheet>
@@ -116,6 +118,9 @@
 
     })
 
+    var conf =  {width:400, height:400};
+    var html = new YAHOO.rapidjs.component.Html(conf)
+    html.show("x.gsp");
 
 
 </script>

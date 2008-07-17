@@ -185,7 +185,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeNode, YAHOO.rapidjs.component.Rapi
 	childAddedBefore : function(newChild, refChild){
     },
 	childRemoved : function(oldChild){
-
+        
     },
 	dataChanged : function(attributeName, attributeValue){
         if(attributeName == this.attributeToBeDisplayed)

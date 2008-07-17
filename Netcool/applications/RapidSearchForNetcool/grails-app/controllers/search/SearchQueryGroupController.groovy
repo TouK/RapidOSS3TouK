@@ -101,7 +101,7 @@ class SearchQueryGroupController {
                         flash.message = "SearchQueryGroup ${params.id} updated"
                         redirect(action:show,id:searchQueryGroup.id)
                     }
-                    xml { render(text:ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} updated</Successfull>"), contentType:"text/xml") }
+                    xml { render(text:ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} updated"), contentType:"text/xml") }
                 }
 
             }
@@ -144,7 +144,7 @@ class SearchQueryGroupController {
                     flash.message = "SearchQueryGroup ${searchQueryGroup.id} created"
                     redirect(action:show,id:searchQueryGroup.id)
                 }
-                xml { render(text:ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} created</Successfull>"), contentType:"text/xml") }
+                xml { render(text:ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} created"), contentType:"text/xml") }
             }
 
         }

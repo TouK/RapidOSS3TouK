@@ -9,6 +9,7 @@ YAHOO.rapidjs.component.action.RequestAction = function(config)
         'timeout' : new YAHOO.util.CustomEvent('timeout')
     };
     this.lastConnection = null;
+    this.timeout = config.timeout != null?config.timeout:30000;
 };
 YAHOO.rapidjs.component.action.RequestAction.prototype = {
 
@@ -26,7 +27,7 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
 		}
 		return postData
 	},
-    execute : function(url, params, arguments){
+    execute : function( params, arguments){
         if(this.allowMultipleRequests != true)
         {
             this.abort();
@@ -48,10 +49,6 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
     processFailure: function(response, arguments)
     {
         this.events['failure'].fireDirect(response, arguments);
-    },
-    timeout: function(response, arguments)
-    {
-        this.events['timeout'].fireDirect(response, arguments);
     },
     abort: function()
     {

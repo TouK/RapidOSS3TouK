@@ -20,3 +20,8 @@ Ant.move(toDir:"$baseDir/web-app/css")
 {
     Ant.fileset(dir: "$baseDir/web-app/plugins/rapid-ui-0.1/css");
 }
+
+Ant.move(toDir:"$baseDir/web-app/images")
+{
+    Ant.fileset(dir: "$baseDir/web-app/plugins/rapid-ui-0.1/images");
+}

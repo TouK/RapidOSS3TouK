@@ -75,16 +75,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 			this.clearData();
 		}
 		return node;
-	}, 
-
-    timeout : function(response)
-    {
-        this.handleTimeout(response);
-        if(this.pollingInterval > 0)
-        {
-            this.pollTask.delay(this.pollingInterval*1000);
-        }
-    },
+	},
     doRequest: function(url, params)
     {
         this.abort();

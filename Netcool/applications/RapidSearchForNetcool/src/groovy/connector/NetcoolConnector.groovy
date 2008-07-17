@@ -37,11 +37,10 @@ class NetcoolConnector {
                 deleteMarkerField = map;
             }
         }
-        if(deleteMarkerField == null)
+        if(deleteMarkerField != null)
         {
-            throw new Exception("Please specify a marker field for deleted events.");
+            markAllEventsAsDeleted();
         }
-        markAllEventsAsDeleted();
     }
 
 

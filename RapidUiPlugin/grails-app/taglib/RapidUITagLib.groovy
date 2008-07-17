@@ -1,6 +1,7 @@
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.SuffixFileFilter
 import org.apache.commons.lang.StringUtils
+import org.apache.commons.collections.map.ReferenceMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,9 +14,15 @@ class RapidUITagLib
 {
     static namespace = "rui"
     static root = "web-app\\js\\";
-
+    static ReferenceMap map = new ReferenceMap(ReferenceMap.WEAK, ReferenceMap.WEAK);
     
     def javascript = { attrs ->
+        Map previouslyAddedJavascriptFiles = map.get(out);
+        if(previouslyAddedJavascriptFiles == null)
+        {
+            previouslyAddedJavascriptFiles = [:]
+            map.put(out, previouslyAddedJavascriptFiles);
+        }
         if (!attrs.dir)
             throwTagError("Tag [javascript] is missing required attribute [dir]")
         if (!attrs.file)
@@ -30,7 +37,11 @@ class RapidUITagLib
         importedFiles.each{JavascriptFile jsFileObject->
                 def importedJsFileLink = jsFileObject.file.absolutePath.substring(rootDir.absolutePath.length()+1).replace('\\', '/')
                 importedJsFileLink = createLinkTo(file: importedJsFileLink)
-                addScriptFile(out, importedJsFileLink);
+                if(!previouslyAddedJavascriptFiles.containsKey(importedJsFileLink))
+                {
+                    previouslyAddedJavascriptFiles[importedJsFileLink] = importedJsFileLink;
+                    addScriptFile(out, importedJsFileLink);
+                }
         }
     }
 

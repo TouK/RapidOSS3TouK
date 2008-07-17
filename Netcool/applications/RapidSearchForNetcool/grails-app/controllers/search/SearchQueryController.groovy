@@ -49,7 +49,7 @@ class SearchQueryController {
                         flash.message = "SearchQuery ${params.id} deleted"
                         redirect(action:list)
                     }
-                    xml {render(text:ControllerUtils.convertSuccessToXml( "SearchQuery ${searchQuery.id} deleted</Successfull>"), contentType:"text/xml")}
+                    xml {render(text:ControllerUtils.convertSuccessToXml( "SearchQuery ${searchQuery.id} deleted"), contentType:"text/xml")}
                 }
 
             }
@@ -113,7 +113,7 @@ class SearchQueryController {
                         flash.message = "SearchQuery ${params.id} updated"
                         redirect(action:show,id:searchQuery.id)
                     }
-                    xml {render(text:ControllerUtils.convertSuccessToXml( "SearchQuery ${searchQuery.id} updated</Successfull>"), contentType:"text/xml")}
+                    xml {render(text:ControllerUtils.convertSuccessToXml( "SearchQuery ${searchQuery.id} updated"), contentType:"text/xml")}
                 }
 
             }
@@ -165,7 +165,7 @@ class SearchQueryController {
                     flash.message = "SearchQuery ${searchQuery.id} created"
                     redirect(action:show,id:searchQuery.id)
                 }
-                xml {render(text:ControllerUtils.convertSuccessToXml( "SearchQuery ${searchQuery.id} created</Successfull>"), contentType:"text/xml")}
+                xml {render(text:ControllerUtils.convertSuccessToXml( "SearchQuery ${searchQuery.id} created"), contentType:"text/xml")}
             }
 
         }

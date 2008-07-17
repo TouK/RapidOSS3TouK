@@ -11,6 +11,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.totalCountAttribute = null;
     this.offsetAttribute = null;
     this.fields = null;
+    this.titleAttribute = null;
     this.maxRowsDisplayed = 200;
     this.lineSize = 4;
     this.sortOrderAttribute = null;
@@ -30,6 +31,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.events = {
         'rowHeaderMenuClick' : new YAHOO.util.CustomEvent('rowHeaderMenuClick'),
         'cellMenuClick' : new YAHOO.util.CustomEvent('cellMenuClick'),
+        'rowHeaderClick' : new YAHOO.util.CustomEvent('rowHeaderClick'),
         'propertyClick' : new YAHOO.util.CustomEvent('propertyClick')
     };
     this.calculateRowHeight();
@@ -47,7 +49,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
 
         this.wrapper = dh.append(this.container, {tag: 'div', cls:'rcmdb-search'});
-        
+
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
             html:'<table><tr><td width="100%"><table width="100%"><tr><td><input type="text" style="width:100%;"/></td></tr></table></td><td><table width="215px"><tr><td><button>Search</button></td>' +
@@ -88,7 +90,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             {text:'sort desc', onclick: { fn: this.cellMenuItemClicked, scope: this }}
         ]);
         this.cellMenu.render(document.body);
-         
+
 
   },
 
@@ -295,12 +297,17 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
             var rowEl = YAHOO.ext.DomHelper.append(this.bufferView.dom, {tag:'div', cls:'rcmdb-search-row',
                 html:'<table><tr><td width="0%"><div class="rcmdb-search-row-headermenu"></div></td>' +
-                     '<td width="100%"><div class="rcmdb-search-rowdata">' + innerHtml + '</div></td></tr></table>'}, true);
+                     '<td width="100%">'+
+                        '<div class="rcmdb-search-rowheader"><a href="#" class="rcmdb-search-rowheader-value"></a></div>'+
+                        '<div class="rcmdb-search-rowdata">' + innerHtml + '</div>'+
+                     '</td></tr></table>'}, true);
             this.bufferView.rowEls[this.bufferView.rowEls.length] = rowEl;
             YAHOO.util.Dom.setStyle(rowEl.dom, 'display', 'none');
             rowEl.setHeight(this.rowHeight);
             var cells = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-cell', 'div', rowEl.dom)
+            var header = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-rowheader-value', 'a', rowEl.dom)
             rowEl.cells = cells;
+            rowEl.header = header[0];
         }
 
     },
@@ -310,6 +317,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
             var dataNode = searchNode.xmlData;
             var nOfFields = this.fields.length;
+            rowEl.header.innerHTML= dataNode.getAttribute(this.titleAttribute);
             for (var fieldIndex = 0; fieldIndex < nOfFields; fieldIndex++) {
                 var att = this.fields[fieldIndex];
                 var cell = rowEl.cells[fieldIndex];
@@ -349,6 +357,11 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
                     index++;
                 }
                 this.rowHeaderMenu.show();
+            }
+            else if(YAHOO.util.Dom.hasClass(target, 'rcmdb-search-rowheader'))
+            {
+                var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
+                this.fireRowHeaderClicked(xmlData);
             }
             else {
                 var cell = this.getCellFromChild(target);
@@ -597,6 +610,9 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
     },
     fireCellMenuClick: function(key, value, data, menuText){
         this.events['cellMenuClick'].fireDirect(key, value, data, menuText);
+    },
+    fireRowHeaderClicked: function( data){
+        this.events['rowHeaderClick'].fireDirect(data);
     },
     firePropertyClick: function(key, value, data){
         this.events['propertyClick'].fireDirect(key, value, data);

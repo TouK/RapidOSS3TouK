@@ -22,7 +22,22 @@
   padding : 1px 2px 2px 1px;
   border-bottom: 1px dotted #DDDDDD;
   overflow:hidden;
+  line-height:20px;
 
+}
+
+.rcmdb-search-rowheader {
+    border-color: #DDDDDD;
+    display:block;
+    padding-left:20px;
+    position: relative;
+    top:0px;
+    height:20px;
+}
+.rcmdb-search-rowheader-value {
+    display: inline;
+    font-size:13px;
+    color: #000000;
 }
 
 .rcmdb-search-row-headermenu {

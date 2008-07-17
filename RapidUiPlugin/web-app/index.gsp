@@ -74,10 +74,11 @@
         contentPath:'Result',
         indexAtt:'id',
         totalCountAttribute:'Total',
+        titleAttribute:"name",
         offsetAttribute:'Offset',
         sortOrderAttribute:'sortOrder',
         fields:['id', 'name', 'creationClassName', 'vendor', 'description', 'location'],
-        menuItems:{ item1 : { id : 'item1', label : 'item1' }  , item2 : { id : 'item2', label : 'item2', condition : function(data) {return data == "3001"} }, item3 : {id : 'item3', label : 'item3' } } ,
+        menuItems:{  } ,
         menuItemUrlParamName: 'id',
         saveQueryFunction: function(query){
                     dialog.dialog.form.query.value = query;
@@ -86,44 +87,13 @@
     }
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
 
-    searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
-            if( id == "item1")
-                alert( "item1 with query " + xmlData );
-            else if( id == "item2")
-            {
-                alert( "item2 with query " + xmlData );
-            }
-            else if( id == "item3")
-            {
-                alert( "item3 with query " + xmlData );
-            }
-    }, this, true);
-
 
     var config = {  id:"filterTree","pollingInterval":1, "url":"a2.xml", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
                     "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
-                    menuItems:{ Edit : { id: 'edit', label : 'Edit', condition : function(node) {return node.data.label != "filterab"} }, Delete : { id: 'delete', label : 'Delete',  condition : function(node) {return node.data.label != "filterabcabcabc"} }  }
+                    menuItems:{   }
     };
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
     tree.poll();
-
-     tree.events["treeClick"].subscribe(function(nodeType, query) {
-            if( nodeType == "group")
-                alert( "Group!" );
-            else if(  nodeType == "filter")
-            {
-               searchList.setQuery( query );
-            }
-    }, this, true);
-
-    tree.events["treeMenuItemClick"].subscribe(function(id, data) {
-            if( id == "edit")
-                alert( "Edit with query " + data.query );
-            else if( id == "delete")
-            {
-                alert( "Delete with query " + data.query );
-            }
-    }, this, true);
 
     var filterDefinitionDialogConfig = {width:"30em",editUrl:"a3.xml", saveUrl:"a3.xml", updateUrl:"",rootTag:"Filter", successfulyExecuted: function () { tree.poll() }};
     var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);

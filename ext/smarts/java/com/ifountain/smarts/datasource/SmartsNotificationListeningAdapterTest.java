@@ -647,6 +647,171 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
 
     }
 
+    public void testChangeNotifyOnAClearedEvent() throws Exception {
+        int transientInterval = 100;
+        // create notification
+        SmartsTestUtils.createNotification("Host", "ercaswnyc2", "Down", new HashMap());
+        SmartsTestUtils.clearNotification("Host", "ercaswnyc2", "Down");
+
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList, transientInterval, false);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+        checkObjectListSize(receivedObjects, 1);
+        assertNotNull(receivedObjects.get("NOTIFICATION-Host_ercaswnyc2_Down1CLEAR"));
+        //          Attribute changed
+        HashMap attributes = new HashMap();
+        attributes.put("Severity", 4);
+        SmartsTestUtils.updateNotification("Host", "ercaswnyc2", "Down", attributes);
+        checkObjectListSize(receivedObjects, 1);
+
+        // New Notification
+        SmartsTestUtils.createNotification("Host", "ercaswnyc2", "Down", new HashMap());
+        checkObjectListSize(receivedObjects, 2);
+        assertNotNull(receivedObjects.get("NOTIFICATION-Host_ercaswnyc2_Down2NOTIFY"));
+    }
+
+    public void testChangeNotifyOnAClearedEventWithTransientIntervalZero() throws Exception {
+        int transientInterval = 0;
+        SmartsTestUtils.createNotification("Host", "ercaswnyc2", "Down", new HashMap());
+        SmartsTestUtils.clearNotification("Host", "ercaswnyc2", "Down");
+
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList, transientInterval, false);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+        checkObjectListSize(receivedObjects, 1);
+        assertNotNull(receivedObjects.get("NOTIFICATION-Host_ercaswnyc2_Down1CLEAR"));
+
+        //          Attribute changed
+        HashMap attributes = new HashMap();
+        attributes.put("Severity", 4);
+        SmartsTestUtils.updateNotification("Host", "ercaswnyc2", "Down", attributes);
+        checkObjectListSize(receivedObjects, 2);
+        assertNotNull(receivedObjects.get("NOTIFICATION-Host_ercaswnyc2_Down2CHANGE"));
+
+        // New Notification
+        SmartsTestUtils.createNotification("Host", "ercaswnyc2", "Down", new HashMap());
+        checkObjectListSize(receivedObjects, 3);
+        assertNotNull(receivedObjects.get("NOTIFICATION-Host_ercaswnyc2_Down3NOTIFY"));
+    }
+
+    public void testNotifyClearSTARTAcknowledgeArchive() throws Exception {
+        int transientInterval = 0;
+        // create notification
+        String notificationName = "NOTIFICATION-Switch_ercaswnyc2_Down";
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", new HashMap());
+        // clear notification
+        SmartsTestUtils.clearNotification("Switch", "ercaswnyc2", "Down");
+
+        CommonTestUtils.wait(3000);
+
+        monitoredAtts.add("LastChangedAt");
+        monitoredAtts.add("Owner");
+        monitoredAtts.add("Acknowledged");
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList, transientInterval, false);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+        checkObjectListSize(receivedObjects, 1);
+        assertNotNull(receivedObjects.get(notificationName + "1CLEAR"));
+
+        // Acknowledge
+        SmartsTestUtils.acknowledgeNotification("Switch", "ercaswnyc2", "Down");
+        checkObjectListSize(receivedObjects, 2);
+        assertNotNull(receivedObjects.get(notificationName + "2CHANGE"));
+
+        // Archive
+        SmartsTestUtils.archiveNotification("Switch", "ercaswnyc2", "Down");
+        checkObjectListSize(receivedObjects, 3);
+        assertNotNull(receivedObjects.get(notificationName + "3ARCHIVE"));
+    }
+
+    public void testNotifyClearSTARTUnacknowledgeAcknowledgeArchive() throws Exception {
+        int transientInterval = 0;
+
+        // create notification
+        String notificationName = "NOTIFICATION-Switch_ercaswnyc2_Down";
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", new HashMap());
+        // clear notification
+        SmartsTestUtils.clearNotification("Switch", "ercaswnyc2", "Down");
+
+        monitoredAtts.add("LastChangedAt");
+        monitoredAtts.add("Owner");
+        monitoredAtts.add("Acknowledged");
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList, transientInterval, false);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+        checkObjectListSize(receivedObjects, 1);
+        assertNotNull(receivedObjects.get(notificationName + "1CLEAR"));
+
+        // Unacknowledge
+        SmartsTestUtils.unAcknowledgeNotification("Switch", "ercaswnyc2", "Down");
+        checkObjectListSize(receivedObjects, 2);
+        assertNotNull(receivedObjects.get(notificationName + "2CHANGE"));
+
+        // Acknowledge
+        SmartsTestUtils.acknowledgeNotification("Switch", "ercaswnyc2", "Down");
+        checkObjectListSize(receivedObjects, 3);
+        assertNotNull(receivedObjects.get(notificationName + "3CHANGE"));
+
+        // Archive
+        SmartsTestUtils.archiveNotification("Switch", "ercaswnyc2", "Down");
+        checkObjectListSize(receivedObjects, 4);
+        assertNotNull(receivedObjects.get(notificationName + "4ARCHIVE"));
+    }
+
+    public void testAttributeChangesForClearedNotificationsAreNotIgnored() throws Exception, SmRemoteException {
+        int transientInterval = 100;
+
+
+        monitoredAtts.add("Owner");
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList, transientInterval, true);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+
+        String param = "NOTIFICATION-Host_ercaswnyc2_Down";
+        // create a notification
+        SmartsTestUtils.createNotification("Host", "ercaswnyc2", "Down", new HashMap());
+        checkObjectListSize(receivedObjects, 1);
+        assertNotNull(receivedObjects.get(param + "1NOTIFY"));
+
+        // clear the notification
+        SmartsTestUtils.clearNotification("Host", "ercaswnyc2", "Down");
+        NotificationIdentifierParams identiferParams = new NotificationIdentifierParams("Host", "ercaswnyc2", "Down");
+        assertTrue("Notification could not be updated in time", SmartsTestUtils.waitForNotificationAttributeUpdate(identiferParams, "Active", "false"));
+        checkObjectListSize(receivedObjects, 2);
+        Map notification = (Map)receivedObjects.get(param + "2CLEAR");
+        assertNotNull(notification);
+        assertEquals("false", notification.get("Active"));
+        assertEquals("2", notification.get("NextSerialNumber"));
+        assertEquals("INACTIVE", notification.get("EventState"));
+
+        // ACKNOWLEDGE
+        NotificationAcknowledgeParams acknowledgeParameters = SmartsTestUtils.getTestParametersForAcknowledge();
+        acknowledgeParameters.setUser("NewOwner");
+        acknowledgeParameters.setAuditTrailText("Acknowledging the notification");
+        SmartsTestUtils.getNotificationAdapter().acknowledge(identiferParams, acknowledgeParameters);
+        checkObjectListSize(receivedObjects, 3);
+        assertNotNull(receivedObjects.get(param + "3CHANGE"));
+
+        // RELEASE OWNERSHIP
+        NotificationAcknowledgeParams releaseOwnershipParameters = SmartsTestUtils.getTestParametersForAcknowledge();
+        releaseOwnershipParameters.setUser("ReleasingOwner");
+        releaseOwnershipParameters.setAuditTrailText("Releasing ownership of the notification");
+        SmartsTestUtils.getNotificationAdapter().releaseOwnership(identiferParams, releaseOwnershipParameters);
+        checkObjectListSize(receivedObjects, 4);
+        assertNotNull(receivedObjects.get(param + "4CHANGE"));
+
+        // TAKE OWNERSHIP
+        NotificationAcknowledgeParams takeOwnershipParameters = SmartsTestUtils.getTestParametersForAcknowledge();
+        SmartsTestUtils.getNotificationAdapter().takeOwnership(identiferParams, takeOwnershipParameters);
+        checkObjectListSize(receivedObjects, 5);
+        assertNotNull(receivedObjects.get(param + "5CHANGE"));
+    }
+
 
     class NotificationCreatorChangeClearThread extends NotificationCreatorThread {
         public NotificationCreatorChangeClearThread(int count, int delay) {

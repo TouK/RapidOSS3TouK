@@ -31,6 +31,7 @@ import com.ifountain.smarts.test.util.SmartsTestUtils;
 import com.ifountain.smarts.util.DataFromObservable;
 import com.ifountain.smarts.util.SmartsConstants;
 import com.ifountain.smarts.util.params.SmartsSubscribeParameters;
+import com.ifountain.core.connection.ConnectionManager;
 import com.smarts.remote.SmObserverEvent;
 import com.smarts.remote.SmRemoteDomainManager;
 import com.smarts.repos.MR_Choice;
@@ -42,190 +43,221 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Observable;
 
+import org.apache.log4j.Logger;
+
 public class BaseSmartsListeningAdapterTest<E> extends SmartsTestCase {
-    
-    private BaseSmartsListeningAdapter smartsAdapter;
-    LinkedList<MR_PropertyNameValue[]> receivedObjects;
+
+    private BaseSmartsListeningAdapterImpl smartsAdapter;
+    LinkedList receivedObjects;
     int numberOfDiscconnectionMessages = 0;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         SmartsTestUtils.deleteAllTopologyInstances("Router", ".*");
-        receivedObjects = new LinkedList<MR_PropertyNameValue[]>();
-        smartsAdapter = new BaseSmartsListeningAdapter(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME, 0, TestLogUtils.log, null){
-            @Override
-            public Object processIncomingData(DataFromObservable data) {
-                MR_PropertyNameValue[] nameValuePairs = convertIncomingDataToMR_PropertyNameValue(data);
-
-                switch (data.getEventType())
-                {
-                    case SmObserverEvent.INSTANCE_CREATE:
-                    {
-                        receivedObjects.add(nameValuePairs);
-                        break;
-                    }
-                    case SmObserverEvent.INSTANCE_DELETE:
-                    {
-                        receivedObjects.add(nameValuePairs);
-                        break;
-                    }
-                    case SmObserverEvent.ATTRIBUTE_CHANGE:
-                    {
-                        receivedObjects.add(nameValuePairs);
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                return null;
-            }
-
-            @Override
-            protected void subscribeTo() throws Exception {
-                SmRemoteDomainManager domainManager = ((SmartsConnectionImpl)getConnection()).getDomainManager();
-                domainManager.topologySubscribe();
-                if(subscribeParams != null){
-                    SmartsSubscribeParameters param = subscribeParams[0];
-                    MR_PropertyChoice choice = new MR_PropertyChoice(param.getClassName(), 
-                            param.getInstanceName(), param.getParameter(0), MR_PropertyChoice.STICKY | MR_PropertyChoice.EXPAND_SUBCLASSES);
-                    domainManager.propertySubscribeAll(choice, 1);
-                }
-            }
-
-            @Override
-            protected void unsubscribeFrom() throws Exception {
-                SmRemoteDomainManager domainManager = ((SmartsConnectionImpl)getConnection()).getDomainManager();
-                domainManager.propertyUnsubscribeAll(new MR_PropertyChoice(".*",".*",".*", MR_Choice.EXPAND_SUBCLASSES));
-                domainManager.topologyUnsubscribe();
-            }
-            
-            @Override
-            protected void disconnectDetected() throws Exception {
-                numberOfDiscconnectionMessages ++;
-            }
-        };
+        receivedObjects = new LinkedList();
+        numberOfDiscconnectionMessages = 0;
+        smartsAdapter = new BaseSmartsListeningAdapterImpl(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0, TestLogUtils.log, null);
     }
-    
+
     @Override
     protected void tearDown() throws Exception {
         smartsAdapter.unsubscribe();
         super.tearDown();
     }
-    
+
     public void testGettingNewObjects() throws Exception {
         smartsAdapter.subscribe();
-        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(),0,1);
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(), 0, 1);
         checkObjectListForObjects(receivedObjects, "Router", "routertrial", 0, 1);
     }
-    
-    public void testGettingQuicklyCreatedObjectsCorrectly() throws Exception
-    {
+
+    public void testGettingQuicklyCreatedObjectsCorrectly() throws Exception {
         smartsAdapter.subscribe();
-        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(),0,200);
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(), 0, 200);
         checkObjectListForObjects(receivedObjects, "Router", "routertrial", 0, 200);
     }
-    public void testGettingDeletedObjects() throws Exception
-    {
+
+    public void testGettingDeletedObjects() throws Exception {
         smartsAdapter.subscribe();
-        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(),0,1);
-        checkObjectListForObjects(receivedObjects, "Router", "routertrial",0,1);
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(), 0, 1);
+        checkObjectListForObjects(receivedObjects, "Router", "routertrial", 0, 1);
         SmartsTestUtils.deleteTopologyInstancesWithPrefixes("Router", "routertrial", 0, 1);
-        checkObjectListForObjects(receivedObjects, "Router", "routertrial",1,1);
+        checkObjectListForObjects(receivedObjects, "Router", "routertrial", 1, 1);
     }
-    
-    public void testUnsubscribedAttributesOfExistingObjectsAreNotReceived() throws Exception
-    {
-        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(),0,1);
+
+    public void testUnsubscribedAttributesOfExistingObjectsAreNotReceived() throws Exception {
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(), 0, 1);
         smartsAdapter.subscribe();
         Thread.sleep(2000);
         assertEquals(0, receivedObjects.size());
     }
-    
-    public void testGettingPropertiesOfObjectsCreatedAfterSubscriptionProperties() throws Exception
-    {
+
+    public void testGettingPropertiesOfObjectsCreatedAfterSubscription() throws Exception {
         subcribeToPropertyChanges("Router", "routertrial.*", "Location");
         smartsAdapter.subscribe();
-        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(),0,1);
-        checkObjectListForObjects(receivedObjects, "Router", "routertrial",0,2);//create and update for location
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(), 0, 1);
+        checkObjectListForObjects(receivedObjects, "Router", "routertrial", 0, 2);//create and update for location
     }
-    public void testGettingPropertiesOfObjectsCreatedBeforeSubscriptionProperties() throws Exception
-    {
-        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(),0,1);
+
+    public void testGettingPropertiesOfObjectsCreatedBeforeSubscription() throws Exception {
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(), 0, 1);
         subcribeToPropertyChanges("Router", "routertrial.*", "Location");
         smartsAdapter.subscribe();
-        checkObjectListForObjects(receivedObjects, "Router", "routertrial",0,1);//update for location
+        checkObjectListForObjects(receivedObjects, "Router", "routertrial", 0, 1);//update for location
     }
-    
-    public void testGettingUpdatedPropertiesOfObjects() throws Exception
-    {
-        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(),0,1);
+
+    public void testSubscriberDoesnotSendRecievedObjectsTillExistingObjectsRetrieved() throws Exception {
+        SmartsConnectionImpl conn = (SmartsConnectionImpl) ConnectionManager.getConnection(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
+        SmRemoteDomainManager domainManager = conn.getDomainManager();
+        smartsAdapter.setExitingObjectsRetrieved(false);
+        domainManager.createObserver(smartsAdapter);
+        domainManager.topologySubscribe();
+        smartsAdapter.setSubscribed(true);
+        smartsAdapter.setObserverCreated(true);
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap(), 0, 1);
+        Thread.sleep(1500);//give time to processor thread to notify reader
+
+        assertTrue("Reader should not recive any object from observer because exiosting ones not finished", receivedObjects.isEmpty());//There is no Recieved objects becuase existing objects not finished
+        smartsAdapter.setExitingObjectsRetrieved(true);
+        checkObjectListForObjects(receivedObjects, "Router", "routertrial", 0, 1);
+        domainManager.topologyUnsubscribe();
+        domainManager.deleteObserver(smartsAdapter);
+        smartsAdapter.setObserverCreated(false);
+        smartsAdapter.setSubscribed(false);
+        ConnectionManager.releaseConnection(conn);
+    }
+
+    public void testGettingUpdatedPropertiesOfObjects() throws Exception {
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(), 0, 1);
         subcribeToPropertyChanges("Router", "routertrial.*", "Location");
         smartsAdapter.subscribe();
         Map<String, String> props = new HashMap<String, String>();
         props.put("Location", "changed");
         SmartsTestUtils.updateTopologyInstanceWithProperties("Router", "routertrial0", props);
-        checkObjectListForObjects(receivedObjects, "Router", "routertrial",0,2);//2 number of data will come first gives us value
+        checkObjectListForObjects(receivedObjects, "Router", "routertrial", 0, 2);//2 number of data will come first gives us value
         Thread.sleep(2000);
     }
-    
-    public void testIfDomainDisconnectEventRecievedListenerWillBeNotified() throws Exception
-    {
+
+    public void testIfDomainDisconnectEventRecievedListenerWillBeNotified() throws Exception {
         Observable observable = new Observable();
         SmObserverEvent event = new SmObserverEvent(SmObserverEvent.DOMAIN_DISCONNECT);
-        smartsAdapter.update(observable,event);
-        
-        assertEquals("Observer doesnot notify listeners about disconnection", 1, numberOfDiscconnectionMessages );
-    }
-    public void testIfDomainDetachEventRecievedListenerWillBeNotified() throws Exception
-    {
-        Observable observable = new Observable();
-        SmObserverEvent event = new SmObserverEvent(SmObserverEvent.DOMAIN_DETACH);
-        smartsAdapter.update(observable,event);
-        
+        smartsAdapter.subscribe();
+        smartsAdapter.update(observable, event);
+
         assertEquals("Observer doesnot notify listeners about disconnection", 1, numberOfDiscconnectionMessages);
     }
-    
+
+    public void testIfDomainDetachEventRecievedListenerWillBeNotified() throws Exception {
+        Observable observable = new Observable();
+        SmObserverEvent event = new SmObserverEvent(SmObserverEvent.DOMAIN_DETACH);
+        smartsAdapter.subscribe();
+        smartsAdapter.update(observable, event);
+
+        assertEquals("Observer doesnot notify listeners about disconnection", 1, numberOfDiscconnectionMessages);
+    }
+
     private void subcribeToPropertyChanges(String className, String instanceNamePattern, String property) {
         SmartsSubscribeParameters param = new SmartsSubscribeParameters(className, instanceNamePattern, new String[]{property});
-        SmartsSubscribeParameters[] params= new SmartsSubscribeParameters[]{param};
+        SmartsSubscribeParameters[] params = new SmartsSubscribeParameters[]{param};
         smartsAdapter.setSubscribeParams(params);
     }
 
-    public static void checkObjectListForObjects(final LinkedList<MR_PropertyNameValue[]> recievedObjects, final String className, final String instancePrefix, final int startIndex, final int numberOfObjects) throws Exception
-    {
-        CommonTestUtils.waitFor(new WaitAction(){
+    public static void checkObjectListForObjects(final LinkedList recievedObjects, final String className, final String instancePrefix, final int startIndex, final int numberOfObjects) throws Exception {
+        CommonTestUtils.waitFor(new WaitAction() {
             @Override
             public void check() throws Exception {
                 int size = 0;
                 int sIndex = startIndex;
-                for (int i = sIndex; i < recievedObjects.size(); i++)
-                {
-                    MR_PropertyNameValue[] nameValuePairs = (MR_PropertyNameValue[]) recievedObjects.get(i);
+                for (int i = sIndex; i < recievedObjects.size(); i++) {
+                    Map properties = (Map) recievedObjects.get(i);
                     boolean classNameFound = false;
                     boolean instanceNameFound = false;
-                    for (int j = 0; j < nameValuePairs.length; j++)
-                    {
-                        if(nameValuePairs[j].getPropertyName().equals(SmartsConstants.CLASSNAME) && nameValuePairs[j].getPropertyValue().toString().equals(className))
-                        {
-                            classNameFound = true;
-                        }
-                        else if(nameValuePairs[j].getPropertyName().equals(SmartsConstants.INSTANCENAME) && nameValuePairs[j].getPropertyValue().toString().startsWith(instancePrefix))
-                        {
-                            instanceNameFound = true;
-                        }
-                        
-                        if(classNameFound && instanceNameFound)
-                        {
-                            size++;
-                            break;
-                        }
-                            
+                    String receivedClassName = properties.get(SmartsConstants.CLASSNAME).toString();
+                    String receivedInstanceName = properties.get(SmartsConstants.INSTANCENAME).toString();
+                    if (className.equals(receivedClassName)) {
+                        classNameFound = true;
+                    }
+                    if (receivedInstanceName != null && receivedInstanceName.startsWith(instancePrefix)) {
+                        instanceNameFound = true;
+                    }
+                    if (classNameFound && instanceNameFound) {
+                        size++;
                     }
                     sIndex++;
                 }
                 assertEquals("Expected number of objects couldnot be recieved", numberOfObjects, size);
             }
         }, 100);
+    }
+
+    class BaseSmartsListeningAdapterImpl extends BaseSmartsListeningAdapter {
+        public BaseSmartsListeningAdapterImpl(String connectionName, long reconnectInterval, Logger logger, SmartsSubscribeParameters[] subscribeParams) {
+            super(connectionName, reconnectInterval, logger, subscribeParams);
+
+        }
+
+        @Override
+        public Object processIncomingData(DataFromObservable data) {
+            MR_PropertyNameValue[] nameValuePairs = convertIncomingDataToMR_PropertyNameValue(data);
+            switch (data.getEventType()) {
+                case SmObserverEvent.INSTANCE_CREATE: {
+                    receivedObjects.add(createObject(CREATE, nameValuePairs));
+                    break;
+                }
+                case SmObserverEvent.INSTANCE_DELETE: {
+                    receivedObjects.add(createObject(DELETE, nameValuePairs));
+                    break;
+                }
+                case SmObserverEvent.ATTRIBUTE_CHANGE: {
+                    receivedObjects.add(createObject(CHANGE, nameValuePairs));
+                    break;
+                }
+                default:
+                    break;
+            }
+            return null;
+        }
+
+        protected void getExistingObjects(SmartsSubscribeParameters[] parameters) throws Exception {
+
+        }
+
+        @Override
+        protected void subscribeTo() throws Exception {
+            SmRemoteDomainManager domainManager = ((SmartsConnectionImpl) getConnection()).getDomainManager();
+            domainManager.topologySubscribe();
+            if (subscribeParams != null) {
+                SmartsSubscribeParameters param = subscribeParams[0];
+                MR_PropertyChoice choice = new MR_PropertyChoice(param.getClassName(),
+                        param.getInstanceName(), param.getParameter(0), MR_PropertyChoice.STICKY | MR_PropertyChoice.EXPAND_SUBCLASSES);
+                domainManager.propertySubscribeAll(choice, 1);
+            }
+        }
+
+        @Override
+        protected void unsubscribeFrom() throws Exception {
+            SmRemoteDomainManager domainManager = ((SmartsConnectionImpl) getConnection()).getDomainManager();
+            domainManager.propertyUnsubscribeAll(new MR_PropertyChoice(".*", ".*", ".*", MR_Choice.EXPAND_SUBCLASSES));
+            domainManager.topologyUnsubscribe();
+        }
+
+        @Override
+        protected void disconnectDetected() throws Exception {
+            numberOfDiscconnectionMessages++;
+        }
+
+        public void setExitingObjectsRetrieved(boolean existingObjectsRetrieved) {
+            this.existingObjectsRetrieved = existingObjectsRetrieved;
+        }
+
+        public void setSubscribed(boolean isSubscribed){
+            this.isSubscribed = isSubscribed;
+        }
+        public void setObserverCreated(boolean isObserverCreated){
+            this.isObserverCreated = isObserverCreated;
+        }
+
     }
 
 }

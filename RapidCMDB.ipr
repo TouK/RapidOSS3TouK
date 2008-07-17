@@ -259,7 +259,6 @@
       <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" filepath="$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidTesting/RapidTesting.iml" filepath="$PROJECT_DIR$/RapidTesting/RapidTesting.iml" />
-      <module fileurl="file://$PROJECT_DIR$/RapidUi/RapidUi.iml" filepath="$PROJECT_DIR$/RapidUi/RapidUi.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" filepath="$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" filepath="$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" />
       <module fileurl="file://$PROJECT_DIR$/../ThirdParty/ThirdParty.iml" filepath="$PROJECT_DIR$/../ThirdParty/ThirdParty.iml" />
@@ -270,21 +269,6 @@
   </component>
   <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/../out" />
-  </component>
-  <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="RunRapidCmdbTest" type="GroovyScriptRunConfigurationType" factoryName="Groovy Script">
-      <module name="RapidCMDB" />
-      <setting name="path" value="$PROJECT_DIR$/RapidCMDB/devDocs/scripts/test/RunRapidCmdbTest.groovy" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workDir" value="$PROJECT_DIR$" />
-      <setting name="debug" value="false" />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
   </component>
   <component name="ResourceManagerContainer">
     <option name="myResourceBundles">
@@ -444,12 +428,9 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/quartz-0.2/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/quartz-0.2/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/quartz-0.2/lib" recursive="false" />
     </library>
   </component>
-  <UsedPathMacros>
-    <macro name="GRAILS_HOME" />
-  </UsedPathMacros>
 </project>
 

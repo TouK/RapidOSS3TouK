@@ -37,76 +37,67 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     protected long reconnectInterval = 0;
     protected Logger logger;
     protected IConnection connection;
-    private boolean isSubscribed = false;
+    protected boolean isSubscribed = false;
+
     public BaseListeningAdapter(String connectionName, long reconnectInterval, Logger logger) {
         this.connectionName = connectionName;
         this.reconnectInterval = reconnectInterval;
         this.logger = logger;
     }
-    
-    public BaseListeningAdapter() {
-    }
-    
+
     @Override
     public void update(Observable o, Object arg) {
         Object objectToDelegate = _update(o, arg);
-        if(objectToDelegate != null){
+        sendDataToObservers(objectToDelegate);
+    }
+
+    public void sendDataToObservers(Object data) {
+        if (data != null) {
             setChanged();
-            notifyObservers();
+            notifyObservers(data);
         }
     }
 
     public abstract Object _update(Observable o, Object arg);
+
     protected abstract void _subscribe() throws Exception;
+
     protected abstract void _unsubscribe();
-    
-    public void subscribe() throws Exception{
-        if(!isSubscribed()){
-            while(true)
-            {
-                try
-                {
+
+    public void subscribe() throws Exception {
+        if (!isSubscribed()) {
+            while (true) {
+                try {
                     connection = ConnectionManager.getConnection(connectionName);
                 }
-                catch (ConnectionException e)
-                {
-                    if(reconnectInterval > 0)
-                    {
+                catch (ConnectionException e) {
+                    if (reconnectInterval > 0) {
                         Thread.sleep(reconnectInterval);
                         continue;
-                    }
-                    else
-                    {
+                    } else {
                         throw e;
                     }
                 }
-                try
-                {
+                try {
                     _subscribe();
                     isSubscribed = true;
                     break;
-                    
+
                 }
                 catch (Exception e) {
-                    if(connection.isConnected())
-                    {
+                    if (connection.isConnected()) {
                         throw e;
-                    }
-                    else
-                    {
+                    } else {
                         connection.setConnectedOnce(false);
-                        if(reconnectInterval > 0)
-                        {
+                        if (reconnectInterval > 0) {
                             Thread.sleep(reconnectInterval);
-                        }
-                        else
-                        {
+                        } else {
                             throw new ConnectionException(e);
                         }
                     }
                 }
-                finally{
-                    if(!isSubscribed()){
+                finally {
+                    if (!isSubscribed()) {
                         ConnectionManager.releaseConnection(connection);
                         connection = null;
                     }
@@ -114,17 +105,19 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
             }
         }
     }
-    
-    public void unsubscribe() throws Exception{
-        if(isSubscribed()){
+
+    public void unsubscribe() throws Exception {
+        if (isSubscribed()) {
             _unsubscribe();
             isSubscribed = false;
-            ConnectionManager.releaseConnection(connection);
-            connection = null;
+            if (connection != null) {
+                ConnectionManager.releaseConnection(connection);
+                connection = null;
+            }
         }
     }
-    
-    protected void disconnectDetected() throws Exception{
+
+    protected void disconnectDetected() throws Exception {
         unsubscribe();
         subscribe();
     }
@@ -160,6 +153,6 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     protected IConnection getConnection() {
         return connection;
     }
-    
-    
+
+
 }

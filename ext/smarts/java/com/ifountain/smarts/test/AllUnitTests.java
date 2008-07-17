@@ -23,9 +23,7 @@
 package com.ifountain.smarts.test;
 
 import com.ifountain.smarts.connection.SmartsConnectionTest;
-import com.ifountain.smarts.datasource.BaseNotificationAdapterTest;
-import com.ifountain.smarts.datasource.BaseSmartsAdapterTest;
-import com.ifountain.smarts.datasource.BaseTopologyAdapterTest;
+import com.ifountain.smarts.datasource.*;
 import com.ifountain.smarts.datasource.actions.*;
 import com.ifountain.smarts.datasource.queries.FindTopologyInstancesQueryTest;
 import com.ifountain.smarts.datasource.queries.InstanceSetTest;
@@ -65,6 +63,7 @@ public class AllUnitTests extends SmartsTestCase {
         suite.addTestSuite(GetRelationTypesActionTest.class);
         suite.addTestSuite(InsertActionTest.class);
         suite.addTestSuite(InstanceExistsActionTest.class);
+        suite.addTestSuite(InvokeOperationActionTest.class);
         suite.addTestSuite(RemoveActionTest.class);
         suite.addTestSuite(BaseNotificationAdapterTest.class);
         suite.addTestSuite(BaseSmartsAdapterTest.class);
@@ -78,6 +77,10 @@ public class AllUnitTests extends SmartsTestCase {
         suite.addTestSuite(MRObjRefSetToEntryTest.class);
         suite.addTestSuite(MRObjRefToEntryTest.class);
         suite.addTestSuite(MRPrimitiveSetToEntryTest.class);
+        suite.addTestSuite(StagingAreaTest.class);
+        suite.addTestSuite(BaseSmartsListeningAdapterTest.class);
+        suite.addTestSuite(SmartsTopologyListeningAdapterTest.class);
+        suite.addTestSuite(SmartsNotificationListeningAdapterTest.class);
         return suite;
     }
 }

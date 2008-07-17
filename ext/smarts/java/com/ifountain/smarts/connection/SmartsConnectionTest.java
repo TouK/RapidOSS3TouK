@@ -33,7 +33,7 @@ public class SmartsConnectionTest extends SmartsTestCase {
 	SmartsConnectionImpl datasource;
 	SmartsConnectionParams connectionParams;
 	public SmartsConnectionTest() {
-		connectionParams = SmartsTestUtils.getConnectionParams(SmartsTestConstants.SMARTS_SAM_CONNECTION_TYPE);
+		connectionParams = SmartsTestUtils.getSmartsConnectionParams(SmartsTestConstants.SMARTS_SAM_CONNECTION_TYPE);
 	}
 	
 	@Override
@@ -50,7 +50,7 @@ public class SmartsConnectionTest extends SmartsTestCase {
 	}
 	
 	public void testInit() throws Exception {
-		ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME);
+		ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
 		try {
 			datasource.init(param);
 		} catch (Exception e) {
@@ -90,7 +90,7 @@ public class SmartsConnectionTest extends SmartsTestCase {
 	
 	public void testConnect() throws Exception {
         assertFalse(datasource.isConnected());
-        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME);
+        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
         datasource.init(param);
         assertFalse(datasource.isConnected());
         
@@ -114,7 +114,7 @@ public class SmartsConnectionTest extends SmartsTestCase {
     }
 	
 	public void testConnectThrowsExceptionWithInvalidParams() throws Exception {
-	    ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME);
+	    ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
 	    param.getOtherParams().put(SmartsConnectionImpl.BROKER, "InvalidBroker");
         datasource.init(param);
         try {
@@ -126,7 +126,7 @@ public class SmartsConnectionTest extends SmartsTestCase {
     }
 	
 	public void testDisconnect() throws Exception {
-	    ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME);
+	    ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
         datasource.init(param);
         datasource.connect();
         assertTrue(datasource.isConnected());

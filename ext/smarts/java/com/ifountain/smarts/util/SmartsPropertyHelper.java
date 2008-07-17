@@ -27,6 +27,7 @@ import com.ifountain.smarts.datasource.BaseNotificationAdapter;
 import com.ifountain.smarts.datasource.BaseSmartsAdapter;
 import com.ifountain.smarts.datasource.BaseTopologyAdapter;
 import com.smarts.repos.*;
+import com.smarts.remote.SmRepositoryInterfaceHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -151,6 +152,21 @@ public class SmartsPropertyHelper {
         } else {
             return mr_anyVal;
         }
+    }
+
+    public static String[] getObservablePropertyNamesOfanICNotification(SmRepositoryInterfaceHandler domainManager, String notificationListName) throws Exception
+    {
+		MR_AnyVal val = domainManager.get(SmartsConstants.NOTIFICATION_LIST_CLASS, notificationListName, SmartsConstants.COLUMNINFOBYTYPE);
+		MR_AnyValArraySet set = (MR_AnyValArraySet) val;
+		String [] propNames = new String[set.getArraySetValue().length];
+		for (int i = 0 ; i < set.getArraySetValue().length ; i++)
+		{
+			MR_AnyValArray array = set.getArraySetValue()[i];
+			MR_AnyVal[] mrAnyValArray = array.getArrayValue();
+			int index = ((MR_AnyValInt)mrAnyValArray[0]).getIntValue();
+			propNames[index] = ((MR_AnyValString)mrAnyValArray[1]).getStringValue();
+		}
+		return propNames;
     }
 
     public static MR_AnyVal getAsMrAnyVal(int type, String value) {

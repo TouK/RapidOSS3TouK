@@ -46,7 +46,7 @@ public class GetActionTest extends SmartsTestCase {
         super.tearDown();
     }
     public void testExecute() throws Exception {
-        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME);
+        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
         datasource.init(param);
         
         String className = "Router";

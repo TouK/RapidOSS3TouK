@@ -39,7 +39,7 @@ public class GetAllPropertiesActionTest extends SmartsTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         datasource = new SmartsConnectionImpl();
-        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME);
+        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
         datasource.init(param);
     }
     @Override

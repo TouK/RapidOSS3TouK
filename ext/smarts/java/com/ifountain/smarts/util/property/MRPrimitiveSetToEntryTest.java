@@ -43,9 +43,9 @@ public class MRPrimitiveSetToEntryTest extends SmartsTestCase {
         assertEquals(1, records.length);
         Map<String, Object> record = records[0];
         assertEquals(3, record.size());
-        assertEquals("1.0", record.get("element0"));
-        assertEquals("1.1", record.get("element1"));
-        assertEquals("1.11", record.get("element2"));
+        assertEquals(1.0, record.get("element0"));
+        assertEquals(1.1, record.get("element1"));
+        assertEquals(1.11, record.get("element2"));
     }
 
     public void testGetFieldForStringSet() throws Exception {

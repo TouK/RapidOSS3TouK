@@ -44,10 +44,10 @@ public class SmartsTestUtils {
         "NOTIFICATION-Session_SESSION-APP-InChargeService__CNCC-SA->APP-InChargeService__CNCC-ASM_Disconnected",
         "NOTIFICATION-Session_SESSION-APP-InChargeService__CNCC-SA->APP-InChargeService__WestRegion_Disconnected",
         "NOTIFICATION-Session_SESSION-APP-InChargeService__CNCC-OI->APP-InChargeService__WestRegion_Disconnected"};
-    public static final String SMARTS_TEST_DATASOURCE_NAME = "SmartsTestDatasource";
+    public static final String SMARTS_TEST_CONNECTION_NAME = "SmartsTestConnection";
     private static BaseNotificationAdapter notificationAdapter;
     private static BaseTopologyAdapter topologyAdapter;
-	public static SmartsConnectionParams getConnectionParams(int domainType){
+	public static SmartsConnectionParams getSmartsConnectionParams(int domainType){
         switch (domainType)
         {
             case SmartsTestConstants.SMARTS_SAM_CONNECTION_TYPE:
@@ -70,25 +70,25 @@ public class SmartsTestUtils {
     }
 
 
-     public static ConnectionParam getDatasourceParam(int domainType){
-        SmartsConnectionParams connectionParams = getConnectionParams(domainType);
+     public static ConnectionParam getConnectionParam(int domainType){
+        SmartsConnectionParams connectionParams = getSmartsConnectionParams(domainType);
         Map<String, Object> otherParams = new HashMap<String, Object>();
         otherParams.put(SmartsConnectionImpl.BROKER, connectionParams.getBroker());
         otherParams.put(SmartsConnectionImpl.DOMAIN, connectionParams.getDomain());
         otherParams.put(SmartsConnectionImpl.USERNAME, connectionParams.getUsername());
         otherParams.put(SmartsConnectionImpl.PASSWORD, connectionParams.getPassword());
-        return new ConnectionParam("SmartsConnection", SMARTS_TEST_DATASOURCE_NAME, SmartsConnectionImpl.class.getName(), otherParams, 10);
+        return new ConnectionParam("SmartsConnection", SMARTS_TEST_CONNECTION_NAME, SmartsConnectionImpl.class.getName(), otherParams, 10);
     }
 	 
 	public static BaseNotificationAdapter getNotificationAdapter(){
 	    if(notificationAdapter == null){
-	        notificationAdapter = new BaseNotificationAdapter(SMARTS_TEST_DATASOURCE_NAME, 0, TestLogUtils.log);
+	        notificationAdapter = new BaseNotificationAdapter(SMARTS_TEST_CONNECTION_NAME, 0, TestLogUtils.log);
 	    }
 	    return notificationAdapter;
 	}
 	public static BaseTopologyAdapter getTopologyAdapter(){
 	    if(topologyAdapter == null){
-	        topologyAdapter = new BaseTopologyAdapter(SMARTS_TEST_DATASOURCE_NAME, 0, TestLogUtils.log);
+	        topologyAdapter = new BaseTopologyAdapter(SMARTS_TEST_CONNECTION_NAME, 0, TestLogUtils.log);
 	    }
 	    return topologyAdapter;
 	}
@@ -131,16 +131,16 @@ public class SmartsTestUtils {
         getNotificationAdapter().createNotification(className, instanceName, eventName, attributes);
     }
 
-    public static void clearNotification(String className, String instanceName, String eventName) throws Exception
+    public static boolean clearNotification(String className, String instanceName, String eventName) throws Exception
     {
         NotificationClearParams params = getTestParametersForClear();
-        getNotificationAdapter().clearNotification(className, instanceName, eventName, params.getSource(), params.getUser(), params.getAuditTrailText());
+        return getNotificationAdapter().clearNotification(className, instanceName, eventName, params.getSource(), params.getUser(), params.getAuditTrailText());
     }
 	
     public static void archiveAllNotifications() throws Exception
     {
-        String[] instances = notificationAdapter.getInstances(SmartsConstants.NOTIFICATION_CLASS);
-        ArrayList<String> notificationsInAllList = SmartsHelper.getExistingNotificationsOfAList(notificationAdapter, "ICS_NL-ALL_NOTIFICATIONS");
+        String[] instances = getNotificationAdapter().getInstances(SmartsConstants.NOTIFICATION_CLASS);
+        ArrayList<String> notificationsInAllList = SmartsHelper.getExistingNotificationsOfAList(getNotificationAdapter(), "ICS_NL-ALL_NOTIFICATIONS");
         int numberOfDeletedObjectsInInstances = 0;
         int numberOfDeletedObjectsInNotificationList = 0;
         for (int i = 0; i < notificationsInAllList.size(); i++){

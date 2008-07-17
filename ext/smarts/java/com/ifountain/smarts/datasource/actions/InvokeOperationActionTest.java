@@ -52,7 +52,7 @@ public class InvokeOperationActionTest extends SmartsTestCase {
 
 
     public void testExecute() throws Exception {
-        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME);
+        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
         datasource = new SmartsConnectionImpl();
         datasource.init(param);
         SmartsTestUtils.deleteAllTopologyInstances("Router", ".*");
@@ -115,8 +115,8 @@ public class InvokeOperationActionTest extends SmartsTestCase {
 
     public void testWithAmOperationsWhichHasOptionalAndEmptyParams() throws Exception {
 
-        DatasourceTestUtils.getParamSupplier().setParam(SmartsTestUtils.getDatasourceParam(SmartsTestConstants.SMARTS_AM_CONNECTION_TYPE));
-        ConnectionParam param = SmartsTestUtils.getDatasourceParam(SmartsTestConstants.SMARTS_AM_CONNECTION_TYPE);
+        DatasourceTestUtils.getParamSupplier().setParam(SmartsTestUtils.getConnectionParam(SmartsTestConstants.SMARTS_AM_CONNECTION_TYPE));
+        ConnectionParam param = SmartsTestUtils.getConnectionParam(SmartsTestConstants.SMARTS_AM_CONNECTION_TYPE);
         datasource = new SmartsConnectionImpl();
         datasource.init(param);
         datasource._connect();

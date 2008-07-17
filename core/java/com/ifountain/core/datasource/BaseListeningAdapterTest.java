@@ -141,34 +141,34 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         assertTrue(conn.isConnected());
     }
     
-//    public void testDelegatingUpdateEventsToSubscribers() throws Exception {
-//        final ObservableSource source = new ObservableSource();
-//        final Object changeArg = new Object();
-//        source.setChangeArg(new Object());
-//        listeningAdapter = new MockBaseListeningAdapter(connectionName){
-//            @Override
-//            protected void _subscribe() throws Exception {
-//                source.addObserver(this);
-//            }
-//            @Override
-//            public Object _update(Observable o, Object arg) {
-//                return changeArg;
-//            }
-//        };
-//        final List<Object> argList = new ArrayList<Object>();
-//        Observer subscriber = new Observer(){
-//            @Override
-//            public void update(Observable o, Object arg) {
-//                argList.add(arg);
-//            }
-//        };
-//        listeningAdapter.addObserver(subscriber);
-//        listeningAdapter.subscribe();
-//
-//        source.sourceChanged();
-//        assertEquals(1, argList.size());
-//        assertSame(changeArg, argList.get(0));
-//    }
+    public void testDelegatingUpdateEventsToSubscribers() throws Exception {
+        final ObservableSource source = new ObservableSource();
+        final Object changeArg = new Object();
+        source.setChangeArg(changeArg);
+        listeningAdapter = new MockBaseListeningAdapter(connectionName){
+            @Override
+            protected void _subscribe() throws Exception {
+                source.addObserver(this);
+            }
+            @Override
+            public Object _update(Observable o, Object arg) {
+                return changeArg;
+            }
+        };
+        final List<Object> argList = new ArrayList<Object>();
+        Observer subscriber = new Observer(){
+            @Override
+            public void update(Observable o, Object arg) {
+                argList.add(arg);
+            }
+        };
+        listeningAdapter.addObserver(subscriber);
+        listeningAdapter.subscribe();
+
+        source.sourceChanged();
+        assertEquals(1, argList.size());
+        assertSame(changeArg, argList.get(0));
+    }
     
     public void testNullValuesAreNotDelegated() throws Exception {
         final ObservableSource source = new ObservableSource();

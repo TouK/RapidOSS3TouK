@@ -488,9 +488,8 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
             MR_AnyVal[] inactivePropValue = {new MR_AnyValBoolean(false)};
 
             // SCENARIO 1: CREATE NOTIFICATION WITH MOCK makeAggregate THAT THROWS AN EXCEPTION
-            notificationAdapter = new BaseNotificationAdapter(SmartsTestUtils.SMARTS_TEST_DATASOURCE_NAME, 0, TestLogUtils.log) {
+            notificationAdapter = new BaseNotificationAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0, TestLogUtils.log) {
                 protected String makeAggregateNotification(NotificationAggregateParams aggregateParameters, MR_AnyVal notification) {
-                    // System.out.println("MOCK AggregateNotification is returning null");
                     return null;
                 }
             };
@@ -628,7 +627,6 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
                 nonSessionNotificationCountBefore++;
             }
         }
-        // System.out.println("Notification instanceCount: " + instanceCount);
 
         String notificationName = notificationAdapter.createNotification(createParameters);
         assertNotNull("Notification was not created", notificationName);

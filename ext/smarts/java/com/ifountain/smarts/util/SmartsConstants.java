@@ -60,8 +60,14 @@ public interface SmartsConstants {
     final static String PARAM_UNKNOWNAGENT = "UnknownAgent";
     final static String PARAM_CREATE = "Create";
     final static String PARAM_IGNORE = "Ignore";
-    static final String NOTIFICATION_LIST_CLASS = "ICS_NotificationList";
-    
+
     final static String CLASSNAME = "CreationClassName";
     final static String INSTANCENAME = "Name";
+
+    public static final String NOTIFICATION_REMOVAL_ATT = "NotificationDataRemoval";
+    public static final String NOTIFICATION_CHANGE_ATT = "NotificationDataChange";
+    public static final String NOTIFICATION_LIST_CLASS = "ICS_NotificationList";
+
+    public static final String COLUMNINFOBYTYPE = "ColumnInfoByType";
+
 }

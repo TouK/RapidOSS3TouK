@@ -32,10 +32,7 @@ import com.smarts.repos.*;
 import junit.framework.Assert;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class SmartsTestUtils {
     private static String[] sessionNotifications = {
@@ -122,13 +119,14 @@ public class SmartsTestUtils {
     
     public static void takeOwnershipNotification(String className, String instanceName, String eventName, String user, String auditTrailText) throws Exception
     {
-        NotificationAcknowledgeParams params = getTestParametersForAcknowledge();
-        getNotificationAdapter().takeOwnership(className, instanceName, eventName, params.getUser(), params.getAuditTrailText());
+        getNotificationAdapter().takeOwnership(className, instanceName, eventName, user, auditTrailText);
     }
     
     public static void createNotification(String className, String instanceName, String eventName, Map<String, Object> attributes) throws Exception
     {
-        getNotificationAdapter().createNotification(className, instanceName, eventName, attributes);
+        Map smartsAttributes = convertStringAttributesToSmartsTypeAttributes(attributes);
+        NotificationCreateParams createParams = getTestParametersForCreate(className, instanceName, eventName, smartsAttributes);
+        getNotificationAdapter().createNotification(createParams);
     }
 
     public static boolean clearNotification(String className, String instanceName, String eventName) throws Exception
@@ -267,6 +265,7 @@ public class SmartsTestUtils {
         attributes.put("Description", new MR_AnyValString("TUGRUL"));
         attributes.put("Severity", new MR_AnyValUnsignedInt(2));
         attributes.put("EventType", new MR_AnyValString("MOMENTARY"));
+        attributes.put("SourceDomainName", new MR_AnyValString("EastRegion"));        
         return attributes;
     }
     
@@ -401,5 +400,17 @@ public class SmartsTestUtils {
             else break;
         }
         if (notification!= null) Assert.fail("Could not archive notification instance in time");
+    }
+
+    public static Map convertStringAttributesToSmartsTypeAttributes(Map stringAttributes) throws Exception{
+        Map smartsAttributes = new HashMap();
+        Iterator iterator = stringAttributes.keySet().iterator();
+        while(iterator.hasNext()){
+            String propertyName = (String)iterator.next();
+            String propertyValue = (String)stringAttributes.get(propertyName);
+            MR_AnyVal smartsPropValue = SmartsPropertyHelper.getPropertyValue(getNotificationAdapter(), "ICS_Notification", propertyName, propertyValue);
+            smartsAttributes.put(propertyName, smartsPropValue);
+        }
+        return smartsAttributes;
     }
 }

@@ -52,7 +52,7 @@ class Build extends Parent{
     def createPlugin(pluginDir, pluginResources)
     {
         ant.copy(file:"$env.rapid_cmdb_cvs/devDocs/groovy-starter.conf", todir:"${env.dist_rapid_server}/conf")
-        ant.exec(executable:"${new File("${env.dist_rapid_cmdb}/rsconsole.bat").absolutePath}", dir:"${new File("${env.dist_rapid_cmdb}").absolutePath}")
+        ant.exec(executable:"${getRsConsoleExecutableFileName(new File("${env.dist_rapid_cmdb}"))}", dir:"${new File("${env.dist_rapid_cmdb}").absolutePath}")
         {
             ant.arg(value:"compile")
             System.getenv().each{envKey, envVal->
@@ -63,7 +63,7 @@ class Build extends Parent{
             }
             ant.env(key:"RS_HOME", value:"${new File(env.dist_rapid_server).absolutePath}");
         }
-        ant.exec(executable:"${new File("${env.dist_rapid_cmdb}/rsconsole.bat").absolutePath}", dir:"${new File("${pluginDir}").absolutePath}")
+        ant.exec(executable:"${getRsConsoleExecutableFileName(new File("${env.dist_rapid_cmdb}"))}", dir:"${new File("${pluginDir}").absolutePath}")
         {
             ant.arg(value:"package-plugin")
             if(!pluginResources.isEmpty())
@@ -201,5 +201,24 @@ class Build extends Parent{
 			
 		}
 	}
+
+    def getRsConsoleExecutableFileName(File rootDir)
+    {
+        if(System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0)
+        {
+            return "${rootDir.getAbsolutePath()}/rsconsole.bat";
+        }
+        else
+        {
+            def command = "${rootDir.getAbsolutePath()}/rsconsole.sh";
+            def process = "sudo chmod +x ${command}".execute();
+            process.consumeProcessOutput(System.out, System.err);
+            process.waitFor();
+            process = "sudo dos2unix ${command}".execute();
+            process.consumeProcessOutput(System.out, System.err);
+            process.waitFor();
+            return command;
+        }
+    }
 
 }

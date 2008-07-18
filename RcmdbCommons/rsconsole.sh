@@ -18,4 +18,4 @@ fi
 export GRAILS_HOME=$RS_HOME
 
 . $GRAILS_HOME/bin/startGrails
-startGrails com.ifountain.grails.RapidGrailsScriptRunner  "$@"
+startGrails com.ifountain.grails.RapidGrailsScriptRunner  "$@" -Dgrails.work.dir=%RS_HOME%\temp

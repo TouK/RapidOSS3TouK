@@ -72,7 +72,7 @@ YAHOO.rapidjs.Connect = new function()
         var authenticate = xmlDoc.responseXML.getElementsByTagName('Authenticate');
 		if(authenticate && authenticate.length > 0)
 		{
-            window.location = "/auth/login?targetUri="+window.location;
+            window.location = "auth/login?targetUri="+window.location;
             return false;
         }
 		else

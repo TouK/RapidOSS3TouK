@@ -12,6 +12,7 @@ YAHOO.rapidjs.component.PollingComponentContainer = function(container, config)
 		this.setPollingInterval(0);
 	}
 	this.params = null;
+    this.format = config.format;
     this.rootTag = config.rootTag;
     this.lastConnection = null;
     this.configureTimeout(config);
@@ -25,7 +26,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     processSuccess : function(response){
         try
         {
-            if(YAHOO.rapidjs.Connect.containsError(response) == false)
+
+            if(YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
+            {
+                this.handleAuthenticate();
+                return;
+            }
+            else if(YAHOO.rapidjs.Connect.containsError(response) == false)
             {
                 this.handleSuccess(response);
             }
@@ -48,25 +55,40 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 
     handleSuccess: function(response)
     {
-        alert("extenders of PollingComponentContainer should override processData");
     },
-
     handleFailure: function(response)
     {
-        alert("extenders of PollingComponentContainer should override processData");
     },
     handleTimeout: function(response)
     {
-        alert("extenders of PollingComponentContainer should override processData");
     },
-
+    handleUnknownUrl: function(response)
+    {
+    },
+    handleAuthenticate: function(response)
+    {
+    },
     processFailure : function(response)
     {
-        this.handleFailure(response);
+        var st = response.status;
+		if(st == -1){
+            this.handleTimeout(response);
+        }
+		else if(st == 404){
+			this.handleUnknownUrl(response);
+		}
+		else if(st == 0){
+			YAHOO.rapidjs.serverDownEvent.fireDirect(response);
+		}
+        else
+        {
+            this.handleFailure(response);
+        }
         if(this.pollingInterval > 0)
         {
             this.pollTask.delay(this.pollingInterval*1000);
         }
+
     },
 
     getRootNode: function(data, responseText){
@@ -84,7 +106,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         {
             params = {};
         }
-
+        if(this.format)
+        {
+            params["format"] = this.format;
+        }
         var postData = "";
         for(var paramName in params) {
             postData = postData + paramName + "=" + escape(params[paramName])+"&";

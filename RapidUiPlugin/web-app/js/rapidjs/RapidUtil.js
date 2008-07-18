@@ -15,6 +15,8 @@ YAHOO.rapidjs.ArrayUtils = new function()
 	};
 }();
 
+YAHOO.rapidjs.serverDownEvent = new YAHOO.util.CustomEvent("serverDownEvent");
+
 YAHOO.rapidjs.Connect = new function()
 {
 	this.containsError = function(response)

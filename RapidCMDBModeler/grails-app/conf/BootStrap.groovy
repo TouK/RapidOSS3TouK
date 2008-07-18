@@ -43,7 +43,7 @@ class BootStrap {
     {
         ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), new StartupScriptsConfig().scripts);
         ScriptScheduler.getInstance().initialize(quartzScheduler);
-        CmdbScript.searchEvery("scheduled:true AND enabled:true").each {
+        CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {
             try {
                 if (it.scheduleType == CmdbScript.PERIODIC) {
                     ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.period)

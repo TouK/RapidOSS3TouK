@@ -3,7 +3,7 @@ package datasource
 import connection.SmartsConnection
 import datasource.NotificationAdapter
 import org.apache.log4j.Logger;
-class SmartsNotificationDatasource extends BaseDatasource{
+class SmartsNotificationDatasource extends BaseListeningDatasource{
     static searchable = {
         except = [];
     };
@@ -42,6 +42,10 @@ class SmartsNotificationDatasource extends BaseDatasource{
     def getProperties(Map keys, List properties){
         def prop = this.adapter.getNotification (keys.ClassName, keys.InstanceName, keys.EventName);
         return prop;
+    }
+
+    def getListeningAdapter(Map params){
+
     }
 
     def addNotification(Map params){

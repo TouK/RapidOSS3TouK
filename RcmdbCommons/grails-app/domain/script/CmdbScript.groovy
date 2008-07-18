@@ -3,27 +3,31 @@ package script
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.scripting.ScriptScheduler
 import com.ifountain.rcmdb.scripting.ScriptingException
-import org.quartz.CronExpression
-import com.ifountain.rcmdb.domain.util.ValidationUtils
 import org.quartz.CronTrigger
+import datasource.BaseListeningDatasource
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 
 class CmdbScript {
     def messageService;
 
     public static String CRON = "Cron";
     public static String PERIODIC = "Periodic";
+    public static String ONDEMAND = "OnDemand";
+    public static String SCHEDULED = "Scheduled";
+    public static String LISTENING = "Listening";
     static searchable = {
         except = [];
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
     Long startDelay = 0;
     String name = "";
-    boolean scheduled = false;
+    String type = ONDEMAND;
     boolean enabled = false;
     String scheduleType = PERIODIC;
     String cronExpression = "* * * * * ?";
     Long period = 1;
-    static mappedBy = [:]
+    BaseListeningDatasource listeningDatasource;
+    static mappedBy = ["listeningDatasource":"listeningScript"]
     static belongsTo = []
     static transients = ["messageService"];
 
@@ -38,8 +42,9 @@ class CmdbScript {
                 return ['script.compilation.error', t.toString()];
             }
         });
-
+        type(inList:[ONDEMAND, SCHEDULED, LISTENING]);
         scheduleType(inList: [PERIODIC, CRON])
+        listeningDatasource(nullable:true)
         cronExpression(validator: {val, obj ->
             try {
                 def trigger = new CronTrigger(obj.name, null, val);
@@ -49,6 +54,25 @@ class CmdbScript {
                 return ['script.cron.doesnt.match', t.toString()];
             }
         })
+    }
+
+    def beforeDelete = {
+        if(this.type == LISTENING ){
+            def scriptInCompass = CmdbScript.get(this.id);
+            if(scriptInCompass.listeningDatasource){
+                ListeningAdapterManager.getInstance().stopAdapter(scriptInCompass.listeningDatasource);    
+            }
+
+        }
+    }
+
+     def beforeUpdate = {
+        if(this.type == LISTENING ){
+            def scriptInCompass = CmdbScript.get(this.id);
+            if(scriptInCompass.listeningDatasource){
+                ListeningAdapterManager.getInstance().stopAdapter(scriptInCompass.listeningDatasource);
+            }
+        }
     }
 
     def reload() throws ScriptingException
@@ -65,7 +89,7 @@ class CmdbScript {
         def script = CmdbScript.add(params)
         if (!script.hasErrors()) {
             ScriptManager.getInstance().addScript(script.name);
-            if (script.scheduled && script.enabled) {
+            if (script.type == SCHEDULED && script.enabled) {
                 if (script.scheduleType == CmdbScript.CRON) {
                     ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
                 }
@@ -103,7 +127,7 @@ class CmdbScript {
         script.update(params);
         if (!script.hasErrors()) {
             ScriptScheduler.getInstance().unscheduleScript(script.name)
-            if (script.scheduled && script.enabled) {
+            if (script.type == SCHEDULED && script.enabled) {
                 if (script.scheduleType == CmdbScript.CRON) {
                     ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
                 }

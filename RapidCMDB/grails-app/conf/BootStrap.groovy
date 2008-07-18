@@ -19,6 +19,7 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 
 class BootStrap {
     def quartzScheduler;
@@ -48,7 +49,7 @@ class BootStrap {
     {
         ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), new StartupScriptsConfig().scripts);
         ScriptScheduler.getInstance().initialize(quartzScheduler);
-        CmdbScript.searchEvery("scheduled:true AND enabled:true").each {
+        CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {
             try {
                 if (it.scheduleType == CmdbScript.PERIODIC) {
                     ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.period)
@@ -62,6 +63,7 @@ class BootStrap {
             }
 
         }
+        ListeningAdapterManager.getInstance().initialize();
     }
 
     def corrrectModelData()
@@ -176,6 +178,7 @@ class BootStrap {
         SnmpDatasource.list().each {
             it.close();
         }
+        ListeningAdapterManager.getInstance().destroy();
         ScriptManager.getInstance().destroy();
     }
 

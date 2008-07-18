@@ -6,6 +6,7 @@ import junit.framework.TestResult
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
 import com.ifountain.rcmdb.domain.util.ControllerUtils
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 
 class ScriptController {
     public static final String SUCCESSFULLY_CREATED = "Script created";
@@ -141,7 +142,7 @@ class ScriptController {
             try
             {
                 def result = CmdbScript.runScript(script, params)
-                if(result == null){
+                if (result == null) {
                     result = "";
                 }
                 else
@@ -149,7 +150,7 @@ class ScriptController {
                     result = String.valueOf(result);
                 }
                 def contentType = "text/html"
-                if(result.startsWith("<") && !result.startsWith("<html>")){
+                if (result.startsWith("<") && !result.startsWith("<html>")) {
                     contentType = "text/xml"
                 }
                 render(text: String.valueOf(result), contentType: contentType, encoding: "UTF-8");
@@ -160,6 +161,63 @@ class ScriptController {
                 render(text: t.toString(), contentType: "text/html", encoding: "UTF-8");
             }
 
+        }
+        else
+        {
+            flash.message = SCRIPT_DOESNOT_EXIST
+            redirect(action: list, controller: 'script');
+        }
+    }
+
+    def start = {
+        def script = CmdbScript.findByName(params.id);
+        if (script)
+        {
+            if (script.listeningDatasource) {
+                try {
+                    ListeningAdapterManager.getInstance().startAdapter(script.listeningDatasource);
+                    flash.message = "Script ${params.id} started to listen"
+                    redirect(action: show, id: script.id)
+                }
+                catch (e) {
+                    def errors = [e.getMessage()]
+                    flash.errors = errors;
+                    redirect(action: show, id: script.id)
+                }
+            }
+            else{
+               flash.message = "No listening datasource defined";
+               redirect(action: show, id: script.id)
+            }
+
+        }
+        else
+        {
+            flash.message = SCRIPT_DOESNOT_EXIST
+            redirect(action: list, controller: 'script');
+        }
+    }
+
+    def stop = {
+        def script = CmdbScript.findByName(params.id);
+        if (script)
+        {
+            if (script.listeningDatasource) {
+                try {
+                    ListeningAdapterManager.getInstance().stopAdapter(script.listeningDatasource);
+                    flash.message = "Script ${params.id} stopped to listen"
+                    redirect(action: show, id: script.id)
+                }
+                catch (e) {
+                    def errors = [e.getMessage()]
+                    flash.errors = errors;
+                    redirect(action: show, id: script.id)
+                }
+            }
+            else{
+               flash.message = "No listening datasource defined";
+               redirect(action: show, id: script.id)
+            }
         }
         else
         {

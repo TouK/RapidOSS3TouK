@@ -1,4 +1,4 @@
-<%@ page import="script.CmdbScript" %>
+<%@ page import="com.ifountain.rcmdb.datasource.ListeningAdapterManager; script.CmdbScript" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -16,6 +16,15 @@
     <h1>Show Script</h1>
     <g:if test="${flash.message}">
         <div class="message">${flash.message}</div>
+    </g:if>
+    <g:if test="${flash.errors}">
+        <div class="errors">
+            <ul>
+                <g:each var="error" in="${flash?.errors}">
+                    <li>${error}</li>
+                </g:each>
+            </ul>
+        </div>
     </g:if>
     <div class="dialog">
         <table>
@@ -36,60 +45,70 @@
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Scheduled:</td>
+                    <td valign="top" class="name">Type:</td>
 
-                    <td valign="top" class="value">${cmdbScript.scheduled}</td>
+                    <td valign="top" class="value">${cmdbScript.type}</td>
 
                 </tr>
                 <%
-                    if (cmdbScript.scheduled) {
+                    if (cmdbScript.type == CmdbScript.SCHEDULED) {
                 %>
-                    <tr class="prop">
-                        <td valign="top" class="name">Schedule Type:</td>
+                <tr class="prop">
+                    <td valign="top" class="name">Schedule Type:</td>
 
-                        <td valign="top" class="value">${cmdbScript.scheduleType}</td>
+                    <td valign="top" class="value">${cmdbScript.scheduleType}</td>
 
-                    </tr>
+                </tr>
 
-                    <tr class="prop">
-                        <td valign="top" class="name">Start Delay:</td>
+                <tr class="prop">
+                    <td valign="top" class="name">Start Delay:</td>
 
-                        <td valign="top" class="value">${cmdbScript.startDelay}</td>
-    
-                    </tr>
+                    <td valign="top" class="value">${cmdbScript.startDelay}</td>
 
-                    <%
-                      if(cmdbScript.scheduleType == CmdbScript.PERIODIC){
+                </tr>
 
-                    %>
-                        <tr class="prop">
-                            <td valign="top" class="name">Period:</td>
+                <%
+                        if (cmdbScript.scheduleType == CmdbScript.PERIODIC) {
 
-                            <td valign="top" class="value">${cmdbScript.period}</td>
+                %>
+                <tr class="prop">
+                    <td valign="top" class="name">Period:</td>
 
-                        </tr>
-                    <%
-                      }
-                      else{
-                     %>
-                        <tr class="prop">
-                            <td valign="top" class="name">Cron Expression:</td>
+                    <td valign="top" class="value">${cmdbScript.period}</td>
 
-                            <td valign="top" class="value">${cmdbScript.cronExpression}</td>
-
-                        </tr>
-                    <%      
-                      }
-                    %>
-
-                    <tr class="prop">
-                        <td valign="top" class="name">Enabled:</td>
-
-                        <td valign="top" class="value">${cmdbScript.enabled}</td>
-
-                    </tr>
+                </tr>
                 <%
                     }
+                    else {
+                %>
+                <tr class="prop">
+                    <td valign="top" class="name">Cron Expression:</td>
+
+                    <td valign="top" class="value">${cmdbScript.cronExpression}</td>
+
+                </tr>
+                <%
+                        }
+                %>
+
+                <tr class="prop">
+                    <td valign="top" class="name">Enabled:</td>
+
+                    <td valign="top" class="value">${cmdbScript.enabled}</td>
+
+                </tr>
+                <%
+                    }
+                    else if (cmdbScript.type == CmdbScript.LISTENING) {
+                %>
+                <tr class="prop">
+                    <td valign="top" class="name">Datasource:</td>
+
+                    <td valign="top" class="value">${cmdbScript.listeningDatasource}</td>
+
+                </tr>
+                <%
+                        }
                 %>
 
             </tbody>
@@ -104,7 +123,25 @@
         <g:form style="display:inline">
             <input type="hidden" name="id" value="${cmdbScript?.name}"/>
             <span class="button"><g:actionSubmit class="refresh" value="Reload"/></span>
+            <%
+                if (cmdbScript.type == CmdbScript.LISTENING && cmdbScript.listeningDatasource) {
+                    if (ListeningAdapterManager.getInstance().isSubscribed(cmdbScript.listeningDatasource)) {
+            %>
+            <span class="button"><g:actionSubmit class="close" value="Stop"/></span>
+            <%
+                }
+                else {
+            %>
+            <span class="button"><g:actionSubmit class="run" value="Start"/></span>
+            <%
+                    }
+                }
+                else {
+            %>
             <span class="button"><g:actionSubmit class="run" value="Run"/></span>
+            <%
+                }
+            %>
         </g:form>
     </div>
 </div>

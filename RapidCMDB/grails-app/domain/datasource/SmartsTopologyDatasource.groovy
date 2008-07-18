@@ -2,8 +2,11 @@ package datasource
 
 import connection.SmartsConnection
 import datasource.TopologyAdapter
-import org.apache.log4j.Logger;
-class SmartsTopologyDatasource extends BaseDatasource{
+import org.apache.log4j.Logger
+import com.ifountain.smarts.datasource.SmartsTopologyListeningAdapter
+import com.ifountain.smarts.util.params.SmartsSubscribeParameters;
+
+class SmartsTopologyDatasource extends BaseListeningDatasource{
     static searchable = {
         except = [];
     };
@@ -42,6 +45,11 @@ class SmartsTopologyDatasource extends BaseDatasource{
 
     def getProperties(Map keys, List properties){
         return this.adapter.getObject(keys.CreationClassName, keys.Name, properties);
+    }
+
+    def getListeningAdapter(Map params){
+        def paramsArray  = [new SmartsSubscribeParameters("Router", ".*", [] as String[])];
+        return new SmartsTopologyListeningAdapter(connection.name, 0, Logger.getRootLogger(), paramsArray as SmartsSubscribeParameters[]);
     }
 
     def addObject(Map params){

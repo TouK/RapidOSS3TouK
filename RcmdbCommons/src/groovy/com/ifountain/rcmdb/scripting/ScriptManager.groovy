@@ -150,6 +150,19 @@ class ScriptManager {
         }
     }
 
+    def getScriptObject(scriptPath){
+         scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
+        def scriptClass = scripts[scriptPath];
+        if (scriptClass)
+        {
+            return scriptClass.newInstance();
+        }
+        else
+        {
+            throw ScriptingException.scriptDoesnotExist(scriptPath);
+        }
+    }
+
     public void destroy() {
         clearScripts();
     }

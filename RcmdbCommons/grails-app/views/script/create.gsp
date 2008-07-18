@@ -1,46 +1,49 @@
-<%@ page import="script.CmdbScript" %>
+<%@ page import="datasource.BaseListeningDatasource; script.CmdbScript" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="main"/>
     <title>Create Script</title>
     <script>
-        function render(){
-            scheduledChanged();
-        }
-        function scheduledChanged(){
-            var scheduledBox = document.getElementById('scheduled');
-            var scheduleTypeSelect = document.getElementById('scheduleType');
-            var startDelayInput = document.getElementById('startDelay');
-            var periodInput = document.getElementById('period');
-            var cronInput = document.getElementById('cronExpression');
-            var enabledInput = document.getElementById('enabled');
-            scheduleTypeSelect.disabled = !scheduledBox.checked;
-            startDelayInput.disabled = !scheduledBox.checked;
-            periodInput.disabled = !scheduledBox.checked;
-            cronInput.disabled = !scheduledBox.checked;
-            enabledInput.disabled = !scheduledBox.checked;
-            scheduleTypeChanged();
-        }
+    function render(){
+        typeChanged();
+    }
+    function typeChanged(){
+        var scheduleTypeRow = document.getElementById('scheduleTypeRow');
+        var startDelayRow = document.getElementById('startDelayRow');
+        var periodRow = document.getElementById('periodRow');
+        var cronRow = document.getElementById('cronExpressionRow');
+        var enabledRow = document.getElementById('enabledRow');
+        var datasourceRow = document.getElementById('datasourceRow');
+        var typeSelect = document.getElementById("type");
+        var scriptType = typeSelect.options[typeSelect.selectedIndex].value;
+        datasourceRow.style.display = (scriptType == "Listening"? "":"none");
+        scheduleTypeRow.style.display = (scriptType == "Scheduled"? "":"none");
+        startDelayRow.style.display = (scriptType == "Scheduled"? "":"none");
+        periodRow.style.display = (scriptType == "Scheduled"? "":"none");
+        cronRow.style.display = (scriptType == "Scheduled"? "":"none");
+        enabledRow.style.display = (scriptType == "Scheduled"? "":"none");
+        scheduleTypeChanged();
+    }
 
-        function scheduleTypeChanged(){
-            var scheduleTypeSelect = document.getElementById('scheduleType');
-            var periodInput = document.getElementById('period');
-            var cronInput = document.getElementById('cronExpression');
-            if(!scheduleTypeSelect.disabled){
-                var scheduleType = scheduleTypeSelect.options[scheduleTypeSelect.selectedIndex].value;
-                if(scheduleType == 'Cron'){
-                    periodInput.disabled = true;
-                    periodInput.value = "1";
-                    cronInput.disabled = false;
-                }
-                else{
-                    periodInput.disabled = false;
-                    cronInput.disabled = true;
-                    cronInput.value = "* * * * * ?";
-                }
+    function scheduleTypeChanged(){
+        var scheduleTypeSelect = document.getElementById('scheduleType');
+        var periodInput = document.getElementById('period');
+        var cronInput = document.getElementById('cronExpression');
+        if(!scheduleTypeSelect.disabled){
+            var scheduleType = scheduleTypeSelect.options[scheduleTypeSelect.selectedIndex].value;
+            if(scheduleType == 'Cron'){
+                periodInput.disabled = true;
+                periodInput.value = "1";
+                cronInput.disabled = false;
+            }
+            else{
+                periodInput.disabled = false;
+                cronInput.disabled = true;
+                cronInput.value = "* * * * * ?";
             }
         }
+    }
     </script>
 </head>
 <body onload="render()">
@@ -84,57 +87,65 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="scheduled">Scheduled:</label>
+                            <label for="type">Type:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'scheduled', 'errors')}">
-                            <g:checkBox name="scheduled" value="${cmdbScript?.scheduled}" onclick="scheduledChanged()"></g:checkBox>
-                        </td>
-                    </tr>
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="scheduleType">Schedule Type:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'scheduleType', 'errors')}">
-                            <g:select id="scheduleType" name="scheduleType" from="${cmdbScript.constraints.scheduleType.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:cmdbScript,field:'scheduleType')}" onchange="scheduleTypeChanged()"></g:select>
+                        <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'type', 'errors')}">
+                            <g:select class="inputtextfield" id="type" name="type" from="${cmdbScript.constraints.type.inList.collect{it.encodeAsHTML()}}"
+                                    value="${fieldValue(bean:cmdbScript,field:'type')}" onchange="typeChanged()"></g:select>
                         </td>
                     </tr>
+                        <tr class="prop" id="scheduleTypeRow">
+                            <td valign="top" class="name">
+                                <label for="scheduleType">Schedule Type:</label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'scheduleType', 'errors')}">
+                                <g:select id="scheduleType" name="scheduleType" from="${cmdbScript.constraints.scheduleType.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:cmdbScript,field:'scheduleType')}" onchange="scheduleTypeChanged()"></g:select>
+                            </td>
+                        </tr>
 
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="startDelay">Start Delay:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'startDelay', 'errors')}">
-                            <input type="text" id="startDelay" name="startDelay" value="${fieldValue(bean: cmdbScript, field: 'startDelay')}"/>
-                        </td>
-                    </tr>
+                        <tr class="prop" id="startDelayRow">
+                            <td valign="top" class="name">
+                                <label for="startDelay">Start Delay:</label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'startDelay', 'errors')}">
+                                <input type="text" id="startDelay" name="startDelay" value="${fieldValue(bean: cmdbScript, field: 'startDelay')}"/>
+                            </td>
+                        </tr>
 
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="period">Period:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'period', 'errors')}">
-                            <input type="text" id="period" name="period" value="${fieldValue(bean: cmdbScript, field: 'period')}"/>
-                        </td>
-                    </tr>
+                        <tr class="prop" id="periodRow">
+                            <td valign="top" class="name">
+                                <label for="period">Period:</label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'period', 'errors')}">
+                                <input type="text" id="period" name="period" value="${fieldValue(bean: cmdbScript, field: 'period')}"/>
+                            </td>
+                        </tr>
 
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="cronExpression">Cron Expression:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'cronExpression', 'errors')}">
-                            <input type="text" id="cronExpression" name="cronExpression" value="${fieldValue(bean: cmdbScript, field: 'cronExpression')}"/>
-                        </td>
-                    </tr>
+                        <tr class="prop" id="cronExpressionRow">
+                            <td valign="top" class="name">
+                                <label for="cronExpression">Cron Expression:</label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'cronExpression', 'errors')}">
+                                <input type="text" id="cronExpression" name="cronExpression" value="${fieldValue(bean: cmdbScript, field: 'cronExpression')}"/>
+                            </td>
+                        </tr>
 
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="enabled">Enabled:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'enabled', 'errors')}">
-                            <g:checkBox name="enabled" value="${cmdbScript?.enabled}"></g:checkBox>
-                        </td>
-                    </tr>
-
+                        <tr class="prop" id="enabledRow">
+                            <td valign="top" class="name">
+                                <label for="enabled">Enabled:</label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'enabled', 'errors')}">
+                                <g:checkBox name="enabled" value="${cmdbScript?.enabled}"></g:checkBox>
+                            </td>
+                        </tr>
+                        <tr class="prop" id="datasourceRow">
+                            <td valign="top" class="name">
+                                <label for="listeningDatasource">Datasource:</label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'listeningDatasource', 'errors')}">
+                                <g:select optionKey="id" from="${BaseListeningDatasource.list()}" name="listeningDatasource.id" value="${cmdbScript?.listeningDatasource?.id}" noSelection="['null':'']"></g:select>
+                            </td>
+                        </tr>
                 </tbody>
             </table>
         </div>

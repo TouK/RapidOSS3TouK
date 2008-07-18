@@ -55,8 +55,11 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
         if (data != null) {
             setChanged();
             notifyObservers(data);
+            
         }
     }
+
+
 
     public abstract Object _update(Observable o, Object arg);
 

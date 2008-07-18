@@ -208,7 +208,7 @@ public class SmartsTopologyListeningAdapter extends BaseSmartsListeningAdapter {
         String[] allAttributes = new String[attributes.length + relations.length];
         System.arraycopy(attributes, 0, allAttributes, 0, attributes.length);
         System.arraycopy(relations, 0, allAttributes, attributes.length, relations.length);
-        if (propertyFilterList == null) {
+        if (propertyFilterList == null || propertyFilterList.length == 0) {
             propertyFilterList = new String[]{".*"};
         }
         for (int j = 0; j < propertyFilterList.length; j++) {

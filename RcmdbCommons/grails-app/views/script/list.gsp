@@ -24,6 +24,7 @@
                         
                    	        <g:sortableColumn property="id" title="Id" />
                    	        <g:sortableColumn property="name" title="Name" />
+                   	        <g:sortableColumn property="type" title="Type" />
                             <th></th>
                         </tr>
                     </thead>
@@ -32,7 +33,8 @@
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                             <td><g:link action="show" id="${cmdbScript.id}">${cmdbScript.id?.encodeAsHTML()}</g:link></td>
                             <td>${cmdbScript.name?.encodeAsHTML()}</td>
-                            <td><g:link action="run" id="${cmdbScript.name}">Run</g:link></td> 
+                            <td>${cmdbScript.type?.encodeAsHTML()}</td>
+                            <td><g:link action="run" id="${cmdbScript.name}">Run</g:link></td>
                         </tr>
                     </g:each>
                     </tbody>

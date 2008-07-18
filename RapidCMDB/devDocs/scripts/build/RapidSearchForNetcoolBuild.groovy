@@ -9,9 +9,9 @@ package build
  */
 class RapidSearchForNetcoolBuild extends Build{
     def rapidCmdbBuild;
-    public RapidSearchForNetcoolBuild(rapidCmdbBuild)
+    public RapidSearchForNetcoolBuild(rapidCmdbBuildP)
     {
-        rapidCmdbBuild = rapidCmdbBuild;
+        this.rapidCmdbBuild = rapidCmdbBuildP;
     }
     public RapidSearchForNetcoolBuild()
     {

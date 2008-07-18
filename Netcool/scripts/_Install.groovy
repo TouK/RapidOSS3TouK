@@ -1,4 +1,3 @@
-import org.apache.commons.io.FileUtils
 
 //
 // This script is executed by Grails after plugin was installed to project.

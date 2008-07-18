@@ -64,6 +64,19 @@ YAHOO.rapidjs.Connect = new function()
 			return "";
 		}
 	};
+
+    this.checkAuthentication = function(xmlDoc){
+		var authenticate = xmlDoc.responseXML.getElementsByTagName('Authenticate');
+		if(authenticate && authenticate.length > 0)
+		{
+            window.location = "/auth/login?targetUri="+window.location;
+            return false;
+        }
+		else
+		{
+			return true;
+		}
+	};
 }();
 
 YAHOO.rapidjs.DomUtils = new function()

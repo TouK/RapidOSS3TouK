@@ -13,16 +13,13 @@ import org.apache.commons.io.filefilter.FalseFileFilter
  */
 class RapidSearchForNetcoolBuild extends Build{
     def rapidCmdbBuild;
-    public RapidSearchForNetcoolBuild(runRapidCmdbBuild)
+    public RapidSearchForNetcoolBuild(rapidCmdbBuild)
     {
-        if(runRapidCmdbBuild)
-        {
-            rapidCmdbBuild = new RapidCmdbBuild();
-        }
+        rapidCmdbBuild = rapidCmdbBuild;
     }
     public RapidSearchForNetcoolBuild()
     {
-        this(true);
+        this(null);
     }
 
     static void main(String[] args) {

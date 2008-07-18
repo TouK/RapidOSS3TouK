@@ -39,6 +39,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     },
     handleTimeout: function(response)
     {
+        this.errors.dom.innerHTML = "";
+        var dh = YAHOO.ext.DomHelper;
+        this.isSubmitInProggress = false;
+
+        var listItem = dh.append(this.errors.dom, {tag:"li"});
+        listItem.appendChild(document.createTextNode("Request timeout"));        
+        this.errors.show();
     },
     handleSuccess: function(response)
     {

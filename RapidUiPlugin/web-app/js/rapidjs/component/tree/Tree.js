@@ -58,6 +58,15 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         this.tree.draw();
         
     },
+    handleFailure: function(response)
+    {
+
+    },
+    handleTimeout: function(response)
+    {
+
+    },
+
     fireTreeClick: function(e){
         var target = YAHOO.util.Event.getTarget(e);
         if( YAHOO.util.Dom.hasClass( target, "treeNodeLabel") )

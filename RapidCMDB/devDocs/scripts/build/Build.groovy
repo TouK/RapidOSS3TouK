@@ -72,7 +72,7 @@ class Build extends Parent{
                     resources += it + ","
                 }
                 resources = resources.substring(0, resources.length()-1)+"\"";
-                if(!System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0)
+                if(System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0)
                 {
                     ant.arg(value:resources)
                 }

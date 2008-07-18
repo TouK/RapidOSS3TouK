@@ -39,7 +39,7 @@ class RapidSearchForNetcoolBuild extends Build{
 //        }
         ant.delete(dir:env.dist_rapid_server);
 
-        def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDBp");
+        def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB");
         ant.unzip(src: rapidCmdb.absolutePath, dest: env.distribution);
         ant.delete(dir:env.dist_rapid_cmdb_modeler);
 

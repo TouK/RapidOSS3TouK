@@ -3,7 +3,6 @@ package build
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.RegexFileFilter
 import org.apache.commons.io.filefilter.FalseFileFilter
-import org.apache.commons.lang.StringUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,19 +46,32 @@ class RapidSearchForNetcoolBuild extends Build{
         }
         ant.delete(dir:env.dist_rapid_server);
 
-        def rapidCmdb = FileUtils.listFiles(new File(env.distribution), new RegexFileFilter("RapidCMDB.*\\.zip"), new FalseFileFilter());
+        def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB.*\\.zip");
         ant.unzip(src: rapidCmdb[0].absolutePath, dest: env.distribution);
         ant.delete(dir:env.dist_rapid_cmdb_modeler);
 
-        def netcoolPlugin = FileUtils.listFiles(new File(env.distribution), new RegexFileFilter(".*netcool.*\\.zip"), new FalseFileFilter());
+        def netcoolPlugin = listFiles(new File(env.distribution), ".*netcool.*\\.zip");
         installPlugin(netcoolPlugin[0], env.dist_rapid_cmdb, [Ant:ant], ["netcool_applications":"1"]);
 
-        def rapidUiPlugin = FileUtils.listFiles(new File(env.distribution), new RegexFileFilter(".*rapid-ui.*\\.zip"), new FalseFileFilter());
+        def rapidUiPlugin = listFiles(new File(env.distribution), ".*rapid-ui.*\\.zip");
         installPlugin(rapidUiPlugin[0], env.dist_rapid_cmdb, [Ant:ant], [:]);
         def zipFileName = "${env.distribution}/RapidSearchForNetcool.zip"
         ant.zip(destfile: zipFileName) {
            ant.zipfileset(dir : "$env.distribution/RapidServer", prefix:"RapidServer")
         }
+    }
+
+    def listFiles(File rootDir, String regexp)
+    {
+        File file = null;
+        rootDir.listFiles(){File f->
+            if(f.absolutePath.matches(regexp))
+            {
+                file = f;
+                return;
+            }
+        }
+        return file;
     }
 
 

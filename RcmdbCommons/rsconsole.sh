@@ -16,6 +16,6 @@ exit 0
 fi
 
 export GRAILS_HOME=$RS_HOME
-
+echo $JAVA_OPTS
 . $GRAILS_HOME/bin/startGrails
-startGrails com.ifountain.grails.RapidGrailsScriptRunner  "$@" -Dgrails.work.dir=%RS_HOME%\temp
+startGrails com.ifountain.grails.RapidGrailsScriptRunner  "$@" -Dgrails.work.dir=$RS_HOME/temp

@@ -32,11 +32,11 @@ class RapidSearchForNetcoolBuild extends Build{
 
 
     def build() {
-        if(this.rapidCmdbBuild != null )
-        {
-            clean();
-            rapidCmdbBuild.build();
-        }
+//        if(this.rapidCmdbBuild != null )
+//        {
+//            clean();
+//            rapidCmdbBuild.build();
+//        }
         ant.delete(dir:env.dist_rapid_server);
 
         def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB.*\\.zip");

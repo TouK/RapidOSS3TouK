@@ -35,6 +35,7 @@ class Env {
     static def rapid_ext_build = basedir+"/build/ext"
 
     static def rapid_netcool = "$rapid_modules/Netcool"
+    static def rapid_ui = "$rapid_modules/RapidUiPlugin"
 
     static def rapid_cmdb_src = "$rapid_cmdb_cvs/src/java"
     static def rapid_cmdb_build = basedir+"/build/rcmdb"

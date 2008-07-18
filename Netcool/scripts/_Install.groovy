@@ -13,16 +13,21 @@ import org.apache.commons.io.FileUtils
 Ant.property(environment:"env")
 grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
 def baseDir = System.getProperty("base.dir");
+def choices = System.getProperty("netcool_applications");
 def apps = ["RapidSearchForNetcool"]
-println "Netcool plugin has following applications. Select one of them to install or skip:"
-for(int i=0; i < apps.size(); i++)
+if(choices == null)
 {
-    println "${i+1}. ${apps[i]}"
+    println "Netcool plugin has following applications. Select one of them to install or skip:"
+    for(int i=0; i < apps.size(); i++)
+    {
+        println "${i+1}. ${apps[i]}"
+    }
+
+    def buffReader = new BufferedReader(new InputStreamReader(System.in));
+    def choice = buffReader.readLine();
+    choice = choice.trim()
+    choices = choice.split(",", -1);
 }
-def buffReader = new BufferedReader(new InputStreamReader(System.in));
-def choice = buffReader.readLine();
-choice = choice.trim()
-def choices = choice.split(",", -1);
 choices.each{
     if(it == "1")
     {

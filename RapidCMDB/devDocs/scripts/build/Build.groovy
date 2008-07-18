@@ -1,4 +1,6 @@
-package build;
+package build
+
+import org.apache.commons.lang.StringUtils;
 
 class Build extends Parent{
 	
@@ -45,9 +47,73 @@ class Build extends Parent{
 		
 		buildNo =  new java.text.SimpleDateFormat("yyMMddHH").format(new Date(System.currentTimeMillis()));
 		verFile.append("\rBuild: " + buildNo);
-	}	
-	
-	def setClasspathForBuild(){
+	}
+
+    def createPlugin(pluginDir, pluginResources)
+    {
+        ant.copy(file:"$env.rapid_cmdb_cvs/devDocs/groovy-starter.conf", todir:"${env.dist_rapid_server}/conf")
+        ant.exec(executable:"${new File("${env.dist_rapid_cmdb}/rsconsole.bat").absolutePath}", dir:"${new File("${env.dist_rapid_cmdb}").absolutePath}")
+        {
+            ant.arg(value:"compile")
+            System.getenv().each{envKey, envVal->
+                ant.env(key:"${envKey}", value:"${envVal}");
+            }
+            ant.env(key:"RS_HOME", value:"${new File(env.dist_rapid_server).absolutePath}");
+        }
+        ant.exec(executable:"${new File("${env.dist_rapid_cmdb}/rsconsole.bat").absolutePath}", dir:"${new File("${pluginDir}").absolutePath}")
+        {
+            ant.arg(value:"package-plugin")
+            if(!pluginResources.isEmpty())
+            {
+                def resources = "-Dplugin.resources=\"";
+                pluginResources.each{
+                    resources += it + ","
+                }
+                resources = resources.substring(0, resources.length()-1)+"\"";
+                ant.arg(value:resources)
+            }
+            System.getenv().each{envKey, envVal->
+                ant.env(key:"${envKey}", value:"${envVal}");
+            }
+            ant.env(key:"RS_HOME", value:"${new File(env.dist_rapid_server).absolutePath}");
+
+        }
+        ant.move(todir:"${env.distribution}"){
+            ant.fileset(file: "$pluginDir/grails-*.zip");
+        }
+    }
+
+    def installPlugin(pluginFile, destionationApplicationPath, params, systemParams)
+    {
+
+        def netcoolPluginFilePath = pluginFile.absolutePath;
+        def netcoolPluginName = StringUtils.substringBetween(pluginFile.name, "grails-", ".zip")
+        ant.unzip(src: netcoolPluginFilePath, dest: env.dist_rapid_cmdb+"/plugins/${netcoolPluginName}");
+        def classLoader = new GroovyClassLoader();
+        classLoader.addClasspath ("${destionationApplicationPath}/plugins/${netcoolPluginName}/scripts")
+        def installScriptClass = classLoader.loadClass("_Install");
+
+        def prevSystemParams = [:]
+        systemParams["base.dir"] = destionationApplicationPath;
+        systemParams.each{paramName, paramValue->
+            prevSystemParams[paramName] = System.getProperty(paramName)
+            System.setProperty(paramName, paramValue)
+        }
+
+        def instance = installScriptClass.newInstance();
+        instance.properties.putAll( params);
+        instance.setBinding(new Binding(params));
+        instance.run();
+
+        prevSystemParams.each{paramName, paramValue->
+            if(paramValue)
+            {
+                System.setProperty(paramName, paramValue)
+            }
+        }
+    }
+
+    def setClasspathForBuild(){
 		ant.path(id : "classpath"){
 			ant.pathelement(location : env.rapid_comp_jar);
 			ant.pathelement(location : env.rapid_core_jar);

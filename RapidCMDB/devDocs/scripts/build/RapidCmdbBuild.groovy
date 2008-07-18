@@ -25,7 +25,9 @@ package build;
  */
 class RapidCmdbBuild extends Build {
     def smartsBuild = new SmartsModuleBuild();
+    def rapidSearchForNetcoolBuild = new RapidSearchForNetcoolBuild(false);
     def netcoolBuild = new NetcoolModuleBuild();
+    def rapidUiBuild = new RapidUiPluginBuild();
     static void main(String[] args) {
         RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();
         rapidCmdbBuilder.run(args);
@@ -269,9 +271,11 @@ class RapidCmdbBuild extends Build {
             }
         }
         netcoolBuild.run([]);
+        rapidUiBuild.run([]);
         smartsBuild.run([]);
         buildSample("Sample1");
         buildSample("Sample2");
+        rapidSearchForNetcoolBuild.run([]);
         return zipFileName;
     }
 

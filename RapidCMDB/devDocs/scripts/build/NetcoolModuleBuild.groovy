@@ -30,28 +30,7 @@ class NetcoolModuleBuild extends Build{
 	}
 
     def build(){
-        ant.copy(file:"$env.rapid_cmdb_cvs/devDocs/groovy-starter.conf", todir:"${env.dist_rapid_server}/conf")
-        ant.exec(executable:"${new File("${env.dist_rapid_cmdb}/rsconsole.bat").absolutePath}", dir:"${new File("${env.dist_rapid_cmdb}").absolutePath}")
-        {
-            ant.arg(value:"compile")
-            System.getenv().each{envKey, envVal->
-                ant.env(key:"${envKey}", value:"${envVal}");
-            }
-            ant.env(key:"RS_HOME", value:"${new File(env.dist_rapid_server).absolutePath}");
-        }
-        ant.exec(executable:"${new File("${env.dist_rapid_cmdb}/rsconsole.bat").absolutePath}", dir:"${new File("${env.rapid_netcool}").absolutePath}")
-        {
-            ant.arg(value:"package-plugin")
-            ant.arg(value:"-Dplugin.resources=\"applications/**,operations/**\"")
-            System.getenv().each{envKey, envVal->
-                ant.env(key:"${envKey}", value:"${envVal}");    
-            }
-            ant.env(key:"RS_HOME", value:"${new File(env.dist_rapid_server).absolutePath}");
-
-        }
-        ant.move(todir:"${env.distribution}"){
-            ant.fileset(file: "$env.rapid_netcool/*netcool*.zip");
-        }
+        createPlugin(env.rapid_netcool,["applications/**","operations/**","generatedModels/**"]);
     }
 
 }

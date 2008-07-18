@@ -266,11 +266,13 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
 
         // SCENARIO 1: NOTIFY + CHANGE(S)
         // create a notification
-        SmartsTestUtils.createNotification("Host", "ercaswnyc2", "Down", new HashMap());
+        Map atts = new HashMap();
+        atts.put("EventType", "MOMENTARY");
+        SmartsTestUtils.createNotification("Host", "ercaswnyc2", "Down", atts);
         String param = "NOTIFICATION-Host_ercaswnyc2_Down";
 
         // create the same notification   // this will cause a CHANGE event due to count change
-        SmartsTestUtils.createNotification("Host", "ercaswnyc2", "Down", new HashMap());
+        SmartsTestUtils.createNotification("Host", "ercaswnyc2", "Down", atts);
 
         // SCENARIO 2: MULTIPLE CHANGE EVENTS
         // TAKE OWNERSHIP
@@ -287,21 +289,21 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
         checkObjectListSize(receivedObjects, 11);
         assertNotNull(receivedObjects.get(param1 + "1NOTIFY"));
         assertNotNull(receivedObjects.get(param1 + "2CLEAR"));
-        assertNotNull(receivedObjects.get(param1 + "3NOTIFY"));
-        assertNotNull(receivedObjects.get(param1 + "4CHANGE"));
-        Map notification = (Map) receivedObjects.get(param1 + "5CHANGE");
+        assertNotNull(receivedObjects.get(param + "3NOTIFY"));
+        assertNotNull(receivedObjects.get(param + "4CHANGE"));
+        Map notification = (Map) receivedObjects.get(param + "5CHANGE");
         assertNotNull(notification);
         assertEquals("Owner", notification.get("Owner"));
-        notification = (Map) receivedObjects.get(param1 + "6CHANGE");
+        notification = (Map) receivedObjects.get(param + "6CHANGE");
         assertNotNull(notification);
         assertEquals("Owner1", notification.get("Owner"));
-        notification = (Map) receivedObjects.get(param1 + "7CHANGE");
+        notification = (Map) receivedObjects.get(param + "7CHANGE");
         assertNotNull(notification);
         assertEquals("Owner2", notification.get("Owner"));
-        assertNotNull(receivedObjects.get(param1 + "8CHANGE"));
-        assertNotNull(receivedObjects.get(param1 + "9CHANGE"));
-        assertNotNull(receivedObjects.get(param1 + "10CLEAR"));
-        assertNotNull(receivedObjects.get(param1 + "11CHANGE"));
+        assertNotNull(receivedObjects.get(param + "8CHANGE"));
+        assertNotNull(receivedObjects.get(param + "9CHANGE"));
+        assertNotNull(receivedObjects.get(param + "10CLEAR"));
+        assertNotNull(receivedObjects.get(param + "11CHANGE"));
     }
 
     public void testArchiveCanBeSubscribedTo() throws Exception {
@@ -403,12 +405,14 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
 
         // create a notification
         String param = "NOTIFICATION-Switch_ercaswnyc2_Down";
-        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", new HashMap());
+        Map atts = new HashMap();
+        atts.put("EventType", "MOMENTARY");
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", atts);
         checkObjectListSize(receivedObjects, 1); // make sure transient interval passes and we get the notify update
 
-        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", new HashMap());
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", atts);
         SmartsTestUtils.clearNotification("Switch", "ercaswnyc2", "Down");
-        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", new HashMap());
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", atts);
         checkObjectListSize(receivedObjects, 4);
         assertNotNull(receivedObjects.get(param + "1NOTIFY"));
         assertNotNull(receivedObjects.get(param + "2CHANGE"));
@@ -767,6 +771,7 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
 
 
         monitoredAtts.add("Owner");
+        monitoredAtts.add("EventState");
         notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
                 TestLogUtils.log, monitoredAtts, nlList, transientInterval, true);
         notificationAdapter.addObserver(this);
@@ -785,8 +790,7 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
         checkObjectListSize(receivedObjects, 2);
         Map notification = (Map)receivedObjects.get(param + "2CLEAR");
         assertNotNull(notification);
-        assertEquals("false", notification.get("Active"));
-        assertEquals("2", notification.get("NextSerialNumber"));
+        assertEquals(false, notification.get("Active"));
         assertEquals("INACTIVE", notification.get("EventState"));
 
         // ACKNOWLEDGE

@@ -121,7 +121,7 @@
 
     })
 
-    var conf =  {width:400, height:400};
+    var conf =  {width:400, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf)
     html.show("x.gsp");
 

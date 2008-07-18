@@ -5,6 +5,7 @@ YAHOO.rapidjs.component.Html = function(config)
 
     this.width = config.width;
     this.height = config.height;
+    this.iframe = config.iframe
     this.render();
     this.url = null
 
@@ -12,9 +13,18 @@ YAHOO.rapidjs.component.Html = function(config)
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingComponentContainer, {
     render: function()
-    {  var dh = YAHOO.ext.DomHelper;
+    {
+        var dh = YAHOO.ext.DomHelper;
         this.container = dh.append(document.body, {tag: 'div', cls:'resizable-panel'});
         this.body = dh.append(document.body, {tag: 'div', cls:'resizable-panel-body'});
+        if(this.iframe == true)
+        {
+            this.body = dh.append(document.body, {tag: 'iframe', frameborder:0, scrolling:"yes"});
+        }
+        else
+        {
+            this.body = dh.append(document.body, {tag: 'div', cls:'resizable-panel-body'});
+        }
         this.footer = dh.append(document.body, {tag: 'div', cls:'resizable-panel-footer'});
             // Create a panel Instance, from the 'resizablepanel' DIV standard module markup
             this.panel = new YAHOO.widget.Panel(this.container , {
@@ -56,6 +66,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
                 YAHOO.util.Dom.setStyle(this.body, 'height', bodyContentHeight + 'px');
                 YAHOO.util.Dom.setStyle(this.body.childNodes[0], 'height', bodyContentHeight + 'px');
                 YAHOO.util.Dom.setStyle(this.body.childNodes[0], 'width', bodyWidth + 'px');
+                
                 if (IE_SYNC) {
                     this.sizeUnderlay();
                     this.syncIframe();
@@ -85,7 +96,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         {
             this.url = url;
         }
-        this.doRequest(this.url);
+        if(this.iframe == true)
+        {
+            this.body.src = this.url;
+        }
+        else
+        {
+            this.doRequest(this.url);
+        }
         this.panel.show();
     },
     hide: function()

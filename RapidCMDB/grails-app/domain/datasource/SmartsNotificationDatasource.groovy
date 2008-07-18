@@ -2,7 +2,8 @@ package datasource
 
 import connection.SmartsConnection
 import datasource.NotificationAdapter
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import com.ifountain.smarts.datasource.SmartsNotificationListeningAdapter;
 class SmartsNotificationDatasource extends BaseListeningDatasource{
     static searchable = {
         except = [];
@@ -45,7 +46,8 @@ class SmartsNotificationDatasource extends BaseListeningDatasource{
     }
 
     def getListeningAdapter(Map params){
-
+         return new SmartsNotificationListeningAdapter(connection.name, 0, Logger.getRootLogger(),
+                 params.Attributes, params.NotificationList, params.TransientInterval, params.TailMode);
     }
 
     def addNotification(Map params){

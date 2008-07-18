@@ -72,12 +72,12 @@ Ant.move(toDir:"${baseDir}/grails-app/controllers")
 }
 Ant.move(toDir:"${baseDir}/grails-app/views/netcoolEvent")
 {
-    Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/grails-app/controllers/netcoolEvent");
+    Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/grails-app/views/netcoolEvent");
 }
 
 Ant.move(toDir:"${baseDir}/grails-app/views/netcoolJournal")
 {
-    Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/grails-app/controllers/netcoolJournal");
+    Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/grails-app/views/netcoolJournal");
 }
 
 Ant.move(toDir:"${baseDir}/grails-app/domain")

@@ -1,6 +1,5 @@
 package build
 
-import org.apache.commons.lang.StringUtils;
 
 class Build extends Parent{
 	
@@ -93,7 +92,7 @@ class Build extends Parent{
     {
 
         def netcoolPluginFilePath = pluginFile.absolutePath;
-        def netcoolPluginName = StringUtils.substringBetween(pluginFile.name, "grails-", ".zip")
+        def netcoolPluginName = pluginFile.name.substring("grails-".length(), pluginFile.name.length()-".zip".length())
         ant.unzip(src: netcoolPluginFilePath, dest: env.dist_rapid_cmdb+"/plugins/${netcoolPluginName}");
         def classLoader = new GroovyClassLoader();
         classLoader.addClasspath ("${destionationApplicationPath}/plugins/${netcoolPluginName}/scripts")

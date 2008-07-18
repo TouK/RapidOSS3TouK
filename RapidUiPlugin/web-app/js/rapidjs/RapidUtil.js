@@ -68,7 +68,8 @@ YAHOO.rapidjs.Connect = new function()
 	};
 
     this.checkAuthentication = function(xmlDoc){
-		var authenticate = xmlDoc.responseXML.getElementsByTagName('Authenticate');
+        if(xmlDoc.responseXML == null) return true;
+        var authenticate = xmlDoc.responseXML.getElementsByTagName('Authenticate');
 		if(authenticate && authenticate.length > 0)
 		{
             window.location = "/auth/login?targetUri="+window.location;

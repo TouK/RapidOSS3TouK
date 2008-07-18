@@ -32,7 +32,7 @@ appName = ""
 Ant.property(environment:"env")
 grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
 def otherResources = System.getProperty("plugin.resources", "");
-
+ println "OTHER RES:"+otherResources;
 pluginIncludes = [
 	"application.properties",
 	"*GrailsPlugin.groovy",

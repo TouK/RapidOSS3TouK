@@ -15,6 +15,7 @@ import com.ifountain.comp.utils.CaseInsensitiveMap
  * To change this template use File | Settings | File Templates.
  */
 class NetcoolConnector {
+    public static MAPPING_FOR_KNOWN_COLUMNS = ["class":"netcoolclass"]
     Map nameMappings;
     NetcoolDatasource datasource;
     NetcoolColumn deleteMarkerField;
@@ -127,7 +128,7 @@ class NetcoolConnector {
             def localColName = nameMappings[propName];
             if(localColName == null)
             {
-                localColName = propName;
+                localColName = MAPPING_FOR_KNOWN_COLUMNS[propName.toLowerCase()]!= null?MAPPING_FOR_KNOWN_COLUMNS[propName.toLowerCase()]:propName;
             }
             eventMap[localColName.toLowerCase()] = propValue;
         }

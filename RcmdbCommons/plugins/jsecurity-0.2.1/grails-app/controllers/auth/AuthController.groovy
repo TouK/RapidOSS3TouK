@@ -10,7 +10,18 @@ class AuthController {
     def index = { redirect(action: 'login', params: params) }
 
     def login = {
-        return [ username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri ]
+        if(params.format == "xml"){
+            render(contentType:'text/xml') {
+                Authenticate()
+                {
+                    Url(params.targetUri);    
+                }
+            }
+        }
+        else{
+            return [ username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri ]
+        }
+
     }
 
     def signIn = {

@@ -433,12 +433,16 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         }
         params[params.length] = 'sort=' + (sortAtt || this.indexAtt);
         params[params.length] = 'order=' + (sortOrder || 'asc');
+        params[params.length] = 'format=xml';
         url = this.url + '?' + params.join('&');
         this.lastConnection = YAHOO.util.Connect.asyncRequest('GET', url, callback);
     },
 
     processSuccess: function(response) {
-
+        if(YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
+        {
+            return;
+        }
         var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response, this.indexAtt);
         var node = newData.getRootNode(this.rootTag);
         if (node) {

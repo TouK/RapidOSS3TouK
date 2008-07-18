@@ -6,6 +6,7 @@ YAHOO.rapidjs.component.Html = function(config)
     this.width = config.width;
     this.height = config.height;
     this.iframe = config.iframe
+    this.format = "html";
     this.render();
     this.url = null
 

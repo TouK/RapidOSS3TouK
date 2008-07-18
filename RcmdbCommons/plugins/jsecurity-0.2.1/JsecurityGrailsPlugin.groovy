@@ -149,11 +149,16 @@ protect pages based on a user's roles and/or permissions.
                     if (request.queryString) {
                         targetUri += request.queryString
                     }
+                    def format =  params.format;
+                    if(format == null)
+                    {
+                        format = targetUri.endsWith("xml")?"xml":"html";
+                    }
 
                     redirect(
                             controller: 'auth',
                             action: 'login',
-                            params: [ targetUri: targetUri ])
+                            params: [ targetUri: targetUri, format:format ])
                 }
 
                 return false

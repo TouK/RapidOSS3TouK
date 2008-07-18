@@ -60,6 +60,26 @@ choices.each{
     }
 }
 
+Ant.move(toDir:"${baseDir}/generatedModels")
+{
+    Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/generatedModels");
+}
+
+Ant.move(toDir:"${baseDir}/grails-app/controllers")
+{
+    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/grails-app/controllers/NetcoolEventController.groovy");
+    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/grails-app/controllers/NetcoolJournalController.groovy");
+}
+Ant.move(toDir:"${baseDir}/grails-app/views/netcoolEvent")
+{
+    Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/grails-app/controllers/netcoolEvent");
+}
+
+Ant.move(toDir:"${baseDir}/grails-app/views/netcoolJournal")
+{
+    Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/grails-app/controllers/netcoolJournal");
+}
+
 Ant.move(toDir:"${baseDir}/grails-app/domain")
 {
     Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/grails-app/domain/NetcoolEvent.groovy");

@@ -61,7 +61,7 @@ class RapidSearchForNetcoolBuild extends Build{
     def listFiles(File rootDir, String regexp)
     {
         File file = null;
-        rootDir.listFiles(){File f->
+        rootDir.listFiles().each{File f->
             if(f.absolutePath.matches(regexp))
             {
                 file = f;

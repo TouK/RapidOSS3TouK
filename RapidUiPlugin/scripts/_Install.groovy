@@ -13,6 +13,7 @@ grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
 def baseDir = System.getProperty("base.dir");
 Ant.move(toDir:"$baseDir/web-app")
 {
-    Ant.fileset(dir: "$baseDir/plugins/rapid-ui-0.1/web-app");
+    Ant.fileset(dir: "$baseDir/plugins/rapid-ui-0.1/web-app", excludes="test/**")
+
 }
 

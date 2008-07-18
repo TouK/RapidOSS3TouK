@@ -73,11 +73,11 @@ class Build extends Parent{
                 }
                 if(System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0)
                 {
-                    resources = "-Dplugin.resources=\""resources.substring(0, resources.length()-1)+"\"";
+                    resources = "-Dplugin.resources=\""+resources.substring(0, resources.length()-1)+"\"";
                 }
                 else
                 {
-                    resources = "-Dplugin.resources="resources.substring(0, resources.length()-1);
+                    resources = "-Dplugin.resources="+resources.substring(0, resources.length()-1);
                 }
                 ant.arg(value:resources)
             }

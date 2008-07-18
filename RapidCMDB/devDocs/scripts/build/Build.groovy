@@ -67,19 +67,20 @@ class Build extends Parent{
             ant.arg(value:"package-plugin")
             if(!pluginResources.isEmpty())
             {
-                def resources = "";
+                def resources = "-Dplugin.resources=";
                 pluginResources.each{
                     resources += it + ","
                 }
+                resources = resources.substring(0, resources.length()-1)+"";
                 if(System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0)
                 {
-                    resources = "-Dplugin.resources=\""+resources.substring(0, resources.length()-1)+"\"";
+                    ant.arg(value:resources)
                 }
                 else
                 {
-                    resources = "-Dplugin.resources="+resources.substring(0, resources.length()-1);
+                    ant.arg(value:resources)
+                    ant.env(key:"JAVA_OPTS", value:"${resources}");
                 }
-                ant.arg(value:resources)
             }
             System.getenv().each{envKey, envVal->
                 if(envKey != "RS_HOME")

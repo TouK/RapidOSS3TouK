@@ -27,7 +27,7 @@
                 <br>
                 <div class="dialog" style="margin-left:20px;width:60%;">
                     <ul style="margin-left:25px;">
-                        <li class="controller"><g:link controller="smartsConnection">SmartsConnection</g:link></li>
+                        <li class="controller"><g:link controller="netcoolConnection">NetcoolConnection</g:link></li>
                         <li class="controller"><g:link controller="httpConnection">HttpConnection</g:link></li>
                         <li class="controller"><g:link controller="databaseConnection">DatabaseConnection</g:link></li>
                         <li class="controller"><g:link controller="rapidInsightConnection">RapidInsightConnection</g:link></li>
@@ -40,8 +40,7 @@
                 <br>
                 <div class="dialog" style="margin-left:20px;width:60%;">
                     <ul style="margin-left:25px;">
-                        <li class="controller"><g:link controller="smartsTopologyDatasource">SmartsTopologyDatasource</g:link></li>
-                        <li class="controller"><g:link controller="smartsNotificationDatasource">SmartsNotificationDatasource</g:link></li>
+                        <li class="controller"><g:link controller="netcoolDatasource">NetcoolDatasource</g:link></li>
                         <li class="controller"><g:link controller="httpDatasource">HttpDatasource</g:link></li>
                         <li class="controller"><g:link controller="databaseDatasource">DatabaseDatasource</g:link></li>
                         <li class="controller"><g:link controller="singleTableDatabaseDatasource">SingleTableDatabaseDatasource</g:link></li>
@@ -100,27 +99,6 @@
     </table></div>
 <br>
 <br>
-
-<div class="front">
-    <table><tr><th width="50%">Modeled Classes</th></tr>
-        <tr><td><p style="margin-left:20px;"></p>
-            <br>
-            <div class="dialog" style="margin-left:20px;">
-                <ul style="margin-left:25px;">
-                   <%
-                        grailsApplication.domainClasses.each {
-                            def mc = it.metaClass;
-                            if (mc.getMetaProperty("propertyConfiguration") != null) {
-                    %>
-                    <li class="controller"><g:link controller="${it.logicalPropertyName}">${mc.getTheClass().name}</g:link></li>
-                    <%
-                            }
-                        }
-                    %>
-                </ul>
-            </div>
-        </td>
-    </table></div>
 
 </body>
 </html>

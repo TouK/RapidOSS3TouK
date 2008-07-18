@@ -171,7 +171,7 @@ class RapidCmdbBuild extends Build {
         }
          ant.copy(todir: "$env.dist_rapid_cmdb/web-app") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/web-app") {
-                ant.exclude(name: "indexSmarts.gsp")
+                ant.exclude(name: "adminSmarts.gsp")
             }
         }
         if (TEST) {

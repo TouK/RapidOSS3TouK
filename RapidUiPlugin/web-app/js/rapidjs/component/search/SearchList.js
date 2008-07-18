@@ -358,7 +358,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
                 }
                 this.rowHeaderMenu.show();
             }
-            else if(YAHOO.util.Dom.hasClass(target, 'rcmdb-search-rowheader'))
+            else if(YAHOO.util.Dom.hasClass(target, 'rcmdb-search-rowheader') || YAHOO.util.Dom.hasClass(target, 'rcmdb-search-rowheader-value'))
             {
                 var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
                 this.fireRowHeaderClicked(xmlData);

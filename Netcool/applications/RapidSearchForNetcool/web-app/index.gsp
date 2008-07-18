@@ -6,7 +6,8 @@
     <rui:javascript dir="rapidjs/component/search" file="SearchList.js"></rui:javascript>
     <rui:javascript dir="rapidjs/component/tree" file="Tree.js"></rui:javascript>
     <rui:javascript dir="rapidjs/component/action" file="Action.js"></rui:javascript>
-    
+    <rui:javascript dir="rapidjs/component/html" file="Html.js"></rui:javascript>
+
     <rui:stylesheet dir="js/yui/treeview" includeType="recursive"></rui:stylesheet>
     <rui:stylesheet dir="js/yui/resize" includeType="recursive"></rui:stylesheet>
     <rui:stylesheet dir="js/yui/layout" includeType="recursive"></rui:stylesheet>
@@ -48,7 +49,9 @@
     </style>
 
 <script type="text/javascript">
-
+    var conf =  {width:400, height:400, iframe:false};
+    var html = new YAHOO.rapidjs.component.Html(conf);
+    html.hide();
     var actionConfig = {url:'searchQuery/delete.xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
     
@@ -62,7 +65,8 @@
         totalCountAttribute:'total',
         offsetAttribute:'offset',
         sortOrderAttribute:'sortOrder',
-        fields:['id', 'serverserial', '', 'vendor', 'description', 'location'],
+        titleAttribute:"serverserial",
+        fields:['id', 'serverserial'],
         menuItems:{
             /*item1 : { id : 'item1', label : 'item1' },
             item2 : { id : 'item2', label : 'item2', condition : function(data) {return data == "3001"} },
@@ -88,6 +92,12 @@
                 alert( "item3 with query " + xmlData );
             }
     }, this, true);   */
+    searchList.events["rowHeaderClick"].subscribe(function(xmlData) {
+        var type = xmlData.getAttribute("alias");
+        var id = xmlData.getAttribute("id");
+        var url = "getDetails.gsp?type="+type + "&id="+id;
+        html.show(url);
+    }, this, true);
 
 
 
@@ -136,6 +146,7 @@
         });
 
     })
+
 
 
 

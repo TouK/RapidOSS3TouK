@@ -30,6 +30,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
             this.panel = new YAHOO.widget.Panel(this.container , {
                 draggable: true,
                 fixedcenter:true,
+                visible:false,
                 width:this.width+"px",
                 height:this.height+"px"
             });
@@ -109,7 +110,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
     hide: function()
     {
         this.abort();
-        this.dialog.hide();
+        this.panel.hide();
     }
 })
 

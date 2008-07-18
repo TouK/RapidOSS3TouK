@@ -48,8 +48,12 @@ class SmartsTopologyDatasource extends BaseListeningDatasource{
     }
 
     def getListeningAdapter(Map params){
-        def paramsArray  = [new SmartsSubscribeParameters("Router", ".*", [] as String[])];
-        return new SmartsTopologyListeningAdapter(connection.name, 0, Logger.getRootLogger(), paramsArray as SmartsSubscribeParameters[]);
+        def paramsList = params.subscribeParameters;
+        def smartsSubscribeParamsList = [];
+        paramsList.each{
+            smartsSubscribeParamsList.add(new SmartsSubscribeParameters(it.CreationClassName, it.Name, it.Attributes as String[]));
+        }
+        return new SmartsTopologyListeningAdapter(connection.name, 0, Logger.getRootLogger(), smartsSubscribeParamsList as SmartsSubscribeParameters[]);
     }
 
     def addObject(Map params){

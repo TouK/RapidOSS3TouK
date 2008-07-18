@@ -72,7 +72,14 @@ class Build extends Parent{
                     resources += it + ","
                 }
                 resources = resources.substring(0, resources.length()-1)+"\"";
-                ant.arg(value:resources)
+                if(!System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0)
+                {
+                    ant.arg(value:resources)
+                }
+                else
+                {
+                    ant.env(key:"JAVA_OPTS", value:"${resources}");
+                }
             }
             System.getenv().each{envKey, envVal->
                 if(envKey != "RS_HOME")

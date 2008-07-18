@@ -56,7 +56,10 @@ class Build extends Parent{
         {
             ant.arg(value:"compile")
             System.getenv().each{envKey, envVal->
-                ant.env(key:"${envKey}", value:"${envVal}");
+                if(envKey != "RS_HOME")
+                {
+                    ant.env(key:"${envKey}", value:"${envVal}");
+                }
             }
             ant.env(key:"RS_HOME", value:"${new File(env.dist_rapid_server).absolutePath}");
         }

@@ -4,7 +4,7 @@ def getParameters(){
            "subscribeParameters":[
                ["CreationClassName":"Router", "Name":".*", "Attributes":["Model", "Location"]],
                ["CreationClassName":"Switch", "Name":".*", "Attributes":["Model", "Location"]],
-               ["CreationClassName":"Host", "Name":".*", "Attributes":null]
+               ["CreationClassName":"Host", "Name":".*", "Attributes":[]]
            ]
    ]
 }

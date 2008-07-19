@@ -50,8 +50,8 @@
                                 <td valign="top" class="name">
                                     <label for="reconnectInterval">Reconnect Interval:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:smartsNotificationDatasource,field:'reconnectInterval','errors')}">
-                                    <input type="text" class="inputtextfield" id="reconnectInterval" name="reconnectInterval" value="${fieldValue(bean:smartsNotificationDatasource,field:'reconnectInterval')}" /> sec.
+                                <td valign="top" class="value ${hasErrors(bean:smartsTopologyDatasource,field:'reconnectInterval','errors')}">
+                                    <input type="text" class="inputtextfield" id="reconnectInterval" name="reconnectInterval" value="${fieldValue(bean:smartsTopologyDatasource,field:'reconnectInterval')}" /> sec.
                                 </td>
                             </tr> 
                         

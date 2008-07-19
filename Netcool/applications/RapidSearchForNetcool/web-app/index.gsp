@@ -131,7 +131,6 @@
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
 
     Event.onDOMReady(function() {
-        console.log("rendered layout");
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'center', header: 'Netcool Events', body: 'right', resize: false, gutter: '1px' },

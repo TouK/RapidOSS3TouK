@@ -78,6 +78,25 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         MockConnectionImpl conn5 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertTrue(conn5.isConnected());
     }
+
+    public void testUpdatingMaxNumberOfConnections() throws Exception{
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        param.setMaxNumberOfConnectionsInPool(1);
+        parameterSupplier.setParam(param);
+
+        MockConnectionImpl conn1 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
+        assertTrue(conn1.isConnected());
+
+        param.setMaxNumberOfConnectionsInPool(2);
+        parameterSupplier.setParam(param);
+
+        MockConnectionImpl conn2 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
+        assertTrue(conn2.isConnected());
+
+        ConnectionManager.releaseConnection(conn1);
+        ConnectionManager.releaseConnection(conn2);
+    }
     
     public void testGetDatasourceValidatesObject() throws Exception
     {

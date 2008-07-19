@@ -8,6 +8,7 @@ class Connection {
     String name ="";
     
     String connectionClass ="";
+    int maxNumberOfConnections = 10;
     
 
     static hasMany = [:]

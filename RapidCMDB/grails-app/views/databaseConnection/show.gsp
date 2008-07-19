@@ -44,6 +44,13 @@
 
                 </tr>
 
+                 <tr class="prop">
+                    <td valign="top" class="name">Max. Active:</td>
+
+                    <td valign="top" class="value">${databaseConnection.maxNumberOfConnections}</td>
+
+                </tr>
+
                 <tr class="prop">
                     <td valign="top" class="name">Driver:</td>
 

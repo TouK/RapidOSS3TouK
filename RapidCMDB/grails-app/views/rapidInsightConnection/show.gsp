@@ -43,6 +43,12 @@
                     <td valign="top" class="value">${rapidInsightConnection.connectionClass}</td>
 
                 </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Max. Active:</td>
+
+                    <td valign="top" class="value">${rapidInsightConnection.maxNumberOfConnections}</td>
+
+                </tr>
 
                 <tr class="prop">
                     <td valign="top" class="name">Base Url:</td>

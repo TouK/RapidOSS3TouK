@@ -17,6 +17,7 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
         if(connection){
             def excludedProps = ['version',
                                 'id',
+                                'maxNumberOfConnections',
                                 Events.ONLOAD_EVENT,
                                 Events.BEFORE_DELETE_EVENT,
                                 Events.BEFORE_INSERT_EVENT,
@@ -34,7 +35,8 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
             {
                 optProps.put ("password",optProps.userPassword);
             }
-            return new ConnectionParam(connection.getClass().getName(), connection.name, connection.connectionClass,optProps)
+            return new ConnectionParam(connection.getClass().getName(), connection.name,
+                    connection.connectionClass,optProps, connection.maxNumberOfConnections)
         }
         return null;
 

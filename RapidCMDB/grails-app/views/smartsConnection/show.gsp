@@ -45,6 +45,14 @@
                 </tr>
 
                 <tr class="prop">
+                    <td valign="top" class="name">Max. Active:</td>
+
+                    <td valign="top" class="value">${smartsConnection.maxNumberOfConnections}</td>
+
+                </tr>
+
+
+                <tr class="prop">
                     <td valign="top" class="name">Broker:</td>
 
                     <td valign="top" class="value">${smartsConnection.broker}</td>
@@ -65,7 +73,7 @@
 
                 </tr>
 
-              </tbody>
+            </tbody>
         </table>
     </div>
     <div class="buttons">

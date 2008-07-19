@@ -45,6 +45,13 @@
                 </tr>
 
                 <tr class="prop">
+                    <td valign="top" class="name">Max. Active:</td>
+
+                    <td valign="top" class="value">${httpConnection.maxNumberOfConnections}</td>
+
+                </tr>
+
+                <tr class="prop">
                     <td valign="top" class="name">Base Url:</td>
 
                     <td valign="top" class="value">${httpConnection.baseUrl}</td>

@@ -45,6 +45,13 @@
                 </tr>
 
                 <tr class="prop">
+                    <td valign="top" class="name">Max. Active:</td>
+
+                    <td valign="top" class="value">${snmpConnection.maxNumberOfConnections}</td>
+
+                </tr>
+
+                <tr class="prop">
                     <td valign="top" class="name">Host:</td>
 
                     <td valign="top" class="value">${snmpConnection.host}</td>

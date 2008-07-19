@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}">Home</a></span>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir:'admin.gsp')}">Home</a></span>
     <span class="menuButton"><g:link class="list" action="list">HttpDatasource List</g:link></span>
     <span class="menuButton"><g:link class="create" action="create">New HttpDatasource</g:link></span>
     <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>

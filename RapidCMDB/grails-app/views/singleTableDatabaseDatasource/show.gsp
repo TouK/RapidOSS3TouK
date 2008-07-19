@@ -58,6 +58,13 @@
 
                 </tr>
 
+                 <tr class="prop">
+                    <td valign="top" class="name">Reconnect Interval:</td>
+
+                    <td valign="top" class="value">${singleTableDatabaseDatasource.reconnectInterval} sec.</td>
+
+                </tr>
+
             </tbody>
         </table>
     </div>

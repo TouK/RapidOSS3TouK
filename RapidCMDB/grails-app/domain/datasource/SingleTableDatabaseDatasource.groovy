@@ -15,6 +15,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
     String tableName ="";
     
     DatabaseConnection connection ;
+    int reconnectInterval = 0;
     
 
     static hasMany = [:]
@@ -36,7 +37,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
      
 
     def onLoad = {
-       this.adapter = new SingleTableDatabaseAdapter(connection.name, tableName, tableKeys, 0, Logger.getRootLogger());
+       this.adapter = new SingleTableDatabaseAdapter(connection.name, tableName, tableKeys, reconnectInterval, Logger.getRootLogger());
     }
 
     def getProperty(Map keys, String propName){

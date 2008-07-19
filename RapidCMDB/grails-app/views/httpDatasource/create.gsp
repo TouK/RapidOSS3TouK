@@ -43,6 +43,15 @@
                                 <td valign="top" class="value ${hasErrors(bean:httpDatasource,field:'connection','errors')}">
                                     <g:select class="inputtextfield" optionKey="id" from="${connection.HttpConnection.list()}" name="connection.id" value="${httpDatasource?.connection?.id}" ></g:select>
                                 </td>
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="reconnectInterval">Reconnect Interval:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:httpDatasource,field:'reconnectInterval','errors')}">
+                                    <input type="text" class="inputtextfield" id="reconnectInterval" name="reconnectInterval" value="${fieldValue(bean:httpDatasource,field:'reconnectInterval')}" />sec.
+                                </td>
                             </tr> 
                         
                         </tbody>

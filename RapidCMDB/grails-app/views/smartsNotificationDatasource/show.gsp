@@ -43,6 +43,12 @@
                     <td valign="top" class="value"><g:link controller="smartsConnection" action="show" id="${smartsNotificationDatasource?.connection?.id}">${smartsNotificationDatasource?.connection}</g:link></td>
 
                 </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Reconnect Interval:</td>
+
+                    <td valign="top" class="value">${smartsNotificationDatasource.reconnectInterval} sec.</td>
+
+                </tr>
 
             </tbody>
         </table>

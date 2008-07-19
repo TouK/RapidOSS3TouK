@@ -11,6 +11,7 @@ class HttpDatasource extends BaseDatasource{
 
     
     HttpConnection connection ;
+    int reconnectInterval = 0;
     def adapter;
 
     static hasMany = [:]
@@ -28,7 +29,7 @@ class HttpDatasource extends BaseDatasource{
      
    
     def onLoad = {
-       this.adapter = new HttpAdapter(connection.name, 0, Logger.getRootLogger());
+       this.adapter = new HttpAdapter(connection.name, reconnectInterval, Logger.getRootLogger());
     }
 
     def doRequest(String url, Map params, int type){

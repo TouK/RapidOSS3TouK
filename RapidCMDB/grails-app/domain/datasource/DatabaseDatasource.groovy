@@ -28,7 +28,7 @@ class DatabaseDatasource extends BaseDatasource{
     static transients =  ['adapter']
 
     def onLoad = {
-       this.adapter = new DatabaseAdapter(connection.name, reconnectInterval, Logger.getRootLogger());
+       this.adapter = new DatabaseAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger());
     }
     def runUpdate(sql){
         return this.adapter.executeUpdate(sql, []);

@@ -29,7 +29,7 @@ class SmartsNotificationDatasource extends BaseListeningDatasource{
     static transients =  ['adapter']
 
     def onLoad = {
-        this.adapter = new NotificationAdapter(connection.name, reconnectInterval, Logger.getRootLogger());
+        this.adapter = new NotificationAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger());
     }
 
     def getProperty(Map keys, String propName){
@@ -47,7 +47,7 @@ class SmartsNotificationDatasource extends BaseListeningDatasource{
     }
 
     def getListeningAdapter(Map params){
-         return new SmartsNotificationListeningAdapter(connection.name, reconnectInterval, Logger.getRootLogger(),
+         return new SmartsNotificationListeningAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger(),
                  params.Attributes, params.NotificationList, params.TransientInterval, params.TailMode);
     }
 

@@ -28,12 +28,20 @@ public class RapidCompassSession implements CompassSession{
     }
 
     public CompassTransaction beginTransaction() throws CompassException {
-        transaction.startTransaction();
+        transaction.startWriteTransaction();
         return transaction;
     }
 
     public CompassTransaction beginTransaction(CompassTransaction.TransactionIsolation transactionIsolation) throws CompassException {
-        throw new RuntimeException("Not supported");
+        if(transactionIsolation == CompassTransaction.TransactionIsolation.READ_COMMITTED || transactionIsolation == CompassTransaction.TransactionIsolation.READ_ONLY_READ_COMMITTED)
+        {
+            transaction.startTransaction();
+        }
+        else
+        {
+            transaction.startWriteTransaction();
+        }
+        return transaction;
     }
 
     public int getNumberOfUnfinishedTransactions()
@@ -46,7 +54,11 @@ public class RapidCompassSession implements CompassSession{
         return transaction.getNumberOfExecutedTransactions();
     }
 
-    public void close() throws CompassException {
+    public void close() throws CompassException
+    {
+    }
+
+    public void realClose() throws CompassException {
         synchronized (transaction)
         {
             transaction.commit(true);

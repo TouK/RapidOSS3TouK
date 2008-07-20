@@ -25,7 +25,8 @@ class SearchableConfiguration {
             append(GrailsUtil.getEnvironment()).
             toString();
 
-
+    int batchSize = 100;
+    long maxTransactionWaitTime = 20000;
     /**
      * Any settings you wish to pass to Compass
      *

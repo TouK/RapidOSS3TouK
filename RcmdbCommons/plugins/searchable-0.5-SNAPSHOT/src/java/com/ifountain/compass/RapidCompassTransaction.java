@@ -27,6 +27,12 @@ public class RapidCompassTransaction implements CompassTransaction{
     public synchronized  void startTransaction()
     {
         numberOfUnFinishedTransactions++;
+
+    }
+
+    public synchronized  void startWriteTransaction()
+    {
+        startTransaction();
         numberOfExecutedTransactions++;
     }
 

@@ -11,6 +11,8 @@ import org.compass.core.config.CompassSettings;
 
 import javax.naming.Reference;
 import javax.naming.NamingException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,18 +21,56 @@ import javax.naming.NamingException;
  * Time: 1:42:15 PM
  * To change this template use File | Settings | File Templates.
  */
-public class RapidCompass implements Compass{
+public class RapidCompass extends TimerTask implements Compass{
     Compass compassInstance;
-    public RapidCompass(Compass compassInstance)
+    Timer compassTransactionCommitTimer;
+    int maxNumberOfTransaction;
+    long maxTime;
+    RapidCompassSession lastSession;
+    public RapidCompass(Compass compassInstance, int maxNumberOfTransaction, long maxTime)
     {
-        this.compassInstance = compassInstance;        
+        this.compassInstance = compassInstance;
+        compassTransactionCommitTimer = new Timer();
+        compassTransactionCommitTimer.schedule(this,maxTime);
+        this.maxNumberOfTransaction = maxNumberOfTransaction;
+        this.maxTime = maxTime;
     }
+
+    public synchronized void run() {
+        if(lastSession != null)
+        {
+            lastSession.close();
+            lastSession = new RapidCompassSession(compassInstance.openSession());
+        }
+        startTimer();
+    }
+
+    public void startTimer()
+    {
+        if(compassTransactionCommitTimer != null)
+        {
+            compassTransactionCommitTimer.cancel();
+        }
+        compassTransactionCommitTimer = new Timer();
+        compassTransactionCommitTimer.schedule(this,maxTime);
+    }
+
     public boolean isClosed() {
         return compassInstance.isClosed();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public CompassSession openSession() throws CompassException {
-        return new RapidCompassSession(compassInstance.openSession());  //To change body of implemented methods use File | Settings | File Templates.
+    public synchronized CompassSession openSession() throws CompassException {
+        if(lastSession == null)
+        {
+            lastSession = new RapidCompassSession(compassInstance.openSession());
+        }
+        else if(lastSession.getNumberOfExecutedTransactions() >= maxNumberOfTransaction && lastSession.getNumberOfUnfinishedTransactions() == 0)
+        {
+            startTimer();
+            lastSession.close();
+            lastSession = new RapidCompassSession(compassInstance.openSession());
+        }
+        return lastSession;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void close() throws CompassException {
@@ -38,7 +78,7 @@ public class RapidCompass implements Compass{
     }
 
     public Compass clone(CompassSettings compassSettings) {
-        return new RapidCompass(compassInstance.clone(compassSettings));
+        return new RapidCompass(compassInstance.clone(compassSettings), maxNumberOfTransaction, maxTime);
     }
 
     public ResourceFactory getResourceFactory() {

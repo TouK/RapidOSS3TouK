@@ -11,12 +11,12 @@ import org.compass.core.config.CompassSettings;
  * To change this template use File | Settings | File Templates.
  */
 public class RapidCompassSession implements CompassSession{
-    CompassTransaction transaction;
+    RapidCompassTransaction transaction;
     CompassSession session;
     public RapidCompassSession(CompassSession session)
     {
         this.session = session;
-        transaction = session.beginTransaction();
+        transaction = new RapidCompassTransaction(session.beginTransaction());
     }
 
     public CompassAnalyzerHelper analyzerHelper() throws CompassException {
@@ -28,6 +28,7 @@ public class RapidCompassSession implements CompassSession{
     }
 
     public CompassTransaction beginTransaction() throws CompassException {
+        transaction.startTransaction();
         return transaction;
     }
 
@@ -35,8 +36,22 @@ public class RapidCompassSession implements CompassSession{
         throw new RuntimeException("Not supported");
     }
 
+    public int getNumberOfUnfinishedTransactions()
+    {
+        return transaction.getNumberOfUnfinishedTransactions();
+    }
+
+    public int getNumberOfExecutedTransactions()
+    {
+        return transaction.getNumberOfExecutedTransactions();
+    }
+
     public void close() throws CompassException {
-        session.close();
+        synchronized (transaction)
+        {
+            transaction.commit(true);
+            session.close();
+        }
     }
 
     public CompassSettings getSettings() {

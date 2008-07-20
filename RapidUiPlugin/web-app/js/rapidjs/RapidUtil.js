@@ -72,7 +72,12 @@ YAHOO.rapidjs.Connect = new function()
         var authenticate = xmlDoc.responseXML.getElementsByTagName('Authenticate');
 		if(authenticate && authenticate.length > 0)
 		{
-            window.location = "auth/login?targetUri="+window.location;
+            var location = window.location.pathname.substring("/RapidCMDB/".length);
+            if(window.location.search != "")
+            {
+                location = location + "?"+window.location.search;
+            }
+            window.location = "auth/login?targetUri="+encodeURI(location);
             return false;
         }
 		else

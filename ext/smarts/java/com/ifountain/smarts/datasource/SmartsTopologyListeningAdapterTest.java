@@ -6,6 +6,7 @@ import com.ifountain.smarts.util.params.SmartsSubscribeParameters;
 import com.ifountain.smarts.util.SmartsConstants;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.comp.test.util.CommonTestUtils;
+import com.ifountain.comp.test.util.WaitAction;
 
 import java.util.*;
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -410,6 +411,38 @@ public class SmartsTopologyListeningAdapterTest extends SmartsTestCase implement
         BaseSmartsListeningAdapterTest.checkObjectListForObjects(receivedObjects, "Router", "routerTrial", 0, 2);
         object = (Map)receivedObjects.get(1);
         assertEquals(BaseSmartsListeningAdapter.DELETE, object.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
+    }
+
+    public void testRelationChange() throws Exception
+    {
+        SmartsTestUtils.createTopologyInstanceWithProperties("Router", "trial1", new HashMap());
+        SmartsTestUtils.createTopologyInstanceWithProperties("Cable", "cable1", new HashMap());
+
+        SmartsSubscribeParameters param = new SmartsSubscribeParameters("Router", "trial.*", new String[]{"ConnectedVia"});
+        topologyAdapter = new SmartsTopologyListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0, TestLogUtils.log,
+                new SmartsSubscribeParameters[]{param});
+        topologyAdapter.addObserver(this);
+        topologyAdapter.subscribe();
+        CommonTestUtils.waitFor(new WaitAction(){
+            public void check() throws Exception {
+                assertEquals(1, receivedObjects.size());
+            }
+        }, 100);
+
+        SmartsTestUtils.addRelationship("Router", "trial1", "Cable", "cable1", "ConnectedVia");
+         CommonTestUtils.waitFor(new WaitAction(){
+            public void check() throws Exception {
+                assertEquals(2, receivedObjects.size());
+            }
+        }, 100);
+
+        Map object = (Map)receivedObjects.get(1);
+        assertEquals(BaseSmartsListeningAdapter.CHANGE, object.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
+        assertEquals("ConnectedVia", object.get("ModifiedAttributeName"));
+        Map[] connectedVias = (Map[]) object.get("ModifiedAttributeValue");
+        assertEquals(1, connectedVias.length);
+        assertEquals("Cable", connectedVias[0].get("CreationClassName"));
+        assertEquals("cable1", connectedVias[0].get("Name"));
     }
 
 

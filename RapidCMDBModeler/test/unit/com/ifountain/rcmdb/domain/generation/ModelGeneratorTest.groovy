@@ -47,7 +47,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         }
         else
         {
-            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RcmdbCommons");
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, ".");
             System.setProperty("basedir", "RapidCMDBModeler")
         }
         FileUtils.deleteDirectory (new File(base_directory));

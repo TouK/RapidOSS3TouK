@@ -10,6 +10,7 @@ import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.validation.ConstrainedPropertyBuilder
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -40,10 +41,9 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     protected void setUp()
     {
         super.setUp();
-        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDBModeler"))
+        if(ApplicationHolder.application == null)
         {
-            System.setProperty("basedir", ".")
-            ModelGenerator.getInstance().initialize (base_directory, base_directory, "${System.getProperty("base.dir")}/../RcmdbCommons");
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RcmdbCommons");
         }
         else
         {

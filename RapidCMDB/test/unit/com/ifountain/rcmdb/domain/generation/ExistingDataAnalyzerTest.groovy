@@ -14,6 +14,7 @@ import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
 * Created by IntelliJ IDEA.
@@ -30,9 +31,9 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
     def metaClassCreationHandler;
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        if(new File(System.getProperty("base.dir")?System.getProperty("base.dir"):".").getAbsolutePath().endsWith("RapidCMDB"))
+        if(ApplicationHolder.application == null)
         {
-            ModelGenerator.getInstance().initialize (base_directory, base_directory, "${System.getProperty("base.dir")}/../RcmdbCommons");
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RcmdbCommons");
         }
         else
         {

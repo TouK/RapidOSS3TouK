@@ -92,7 +92,7 @@
 
 
 
-    var config = {  id:"filterTree","pollingInterval":0, "url":"script/run/queryList", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
+    var config = {  id:"filterTree", "url":"script/run/queryList", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
                     "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
                     menuItems:{
                         Delete : { id: 'delete', label : 'Delete',  condition : function(data) {return data.getAttribute("nodeType") != "group"} }

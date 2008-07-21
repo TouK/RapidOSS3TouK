@@ -51,6 +51,10 @@
     </style>
 
 <script type="text/javascript">
+    function searchListPropertyMenuConditionFunction(key, value, data)
+    {
+        return key == "severity" || key == "lastoccurrence" || key=="statechange"
+    }
     var conf =  {width:400, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
     html.hide();
@@ -68,15 +72,16 @@
         offsetAttribute:'offset',
         sortOrderAttribute:'sortOrder',
         titleAttribute:"serverserial",
-        fields:['id', 'serverserial'],
+        lineSize:3,
+        fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey'],
         menuItems:{
             item1 : { id : 'eventDetails', label : 'Event Details' }
         } ,
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
             item2 : { id : 'sortDesc', label : 'Sort desc' },
-            item3 : { id : 'greaterThan', label : 'Greater than',  condition: function(key, value, data) {return key == "serverserial"}},
-            item4 : { id : 'lessThan', label : 'Less than' , condition: function(key, value, data) {return key == "serverserial"}}
+            item3 : { id : 'greaterThan', label : 'Greater than',  condition: searchListPropertyMenuConditionFunction},
+            item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunction}
         } ,
         saveQueryFunction: function(query){
                     dialog.dialog.form.query.value = query;
@@ -95,7 +100,7 @@
         }
     }, this, true);
 
-    searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData) {
+    searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
         if( id == "sortAsc"){
             searchList.setSortDirection(key, true);
         }
@@ -103,10 +108,10 @@
             searchList.setSortDirection(key, false);
         }
         else if( id == "greaterThan"){
-            //searchList.setSortDirection(key, false);
+            searchList.appendToQuery(key+":{"+value+" TO *}");
         }
         else if( id == "lessThan"){
-            //searchList.setSortDirection(key, false);
+            searchList.appendToQuery(key+":{* TO "+value+"}");
         }
     }, this, true);
 

@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir:'admin.gsp')}">Home</a></span>
     <span class="menuButton"><g:link class="create" action="create">New NetcoolColumn</g:link></span>
     <span class="menuButton"><g:link class="refresh" action="reloadOperations">Reload Operations</g:link></span>
 </div>

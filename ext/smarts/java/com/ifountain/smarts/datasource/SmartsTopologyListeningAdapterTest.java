@@ -392,6 +392,26 @@ public class SmartsTopologyListeningAdapterTest extends SmartsTestCase implement
         assertEquals(101, receivedObjects.size());
     }
 
+    public void testDeleteTopologyObjectCreatesEvent() throws Exception
+    {
+    	SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routerTrial", new HashMap(), 0, 1);
+        SmartsSubscribeParameters param = new SmartsSubscribeParameters("Router", "routerTrial.*", new String[]{".*"});
+        topologyAdapter = new SmartsTopologyListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0, TestLogUtils.log,
+                new SmartsSubscribeParameters[]{param});
+        topologyAdapter.addObserver(this);
+        topologyAdapter.subscribe();
+
+        BaseSmartsListeningAdapterTest.checkObjectListForObjects(receivedObjects, "Router", "routerTrial", 0, 1);
+        Map object = (Map)receivedObjects.get(0);
+        assertEquals(BaseSmartsListeningAdapter.CREATE, object.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
+
+        SmartsTestUtils.deleteAllTopologyInstances("Router", ".*");
+
+        BaseSmartsListeningAdapterTest.checkObjectListForObjects(receivedObjects, "Router", "routerTrial", 0, 2);
+        object = (Map)receivedObjects.get(1);
+        assertEquals(BaseSmartsListeningAdapter.DELETE, object.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
+    }
+
 
     public void update(Observable o, Object arg) {
         receivedObjects.add(arg);

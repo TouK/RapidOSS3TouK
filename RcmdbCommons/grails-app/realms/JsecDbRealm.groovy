@@ -1,10 +1,9 @@
 import auth.RsUser
-import auth.UserPermissionRel
-import auth.UserRoleRel
 import org.jsecurity.authc.AccountException
 import org.jsecurity.authc.IncorrectCredentialsException
 import org.jsecurity.authc.SimpleAccount
 import org.jsecurity.authc.UnknownAccountException
+import auth.Role
 
 class JsecDbRealm {
     static authTokenClass = org.jsecurity.authc.UsernamePasswordToken
@@ -42,24 +41,26 @@ class JsecDbRealm {
     }
 
     def hasRole(principal, roleName) {
-        def res = UserRoleRel.search("name:${roleName} AND username:${principal}".toString());
-        return res.total > 0
+        def user = RsUser.get(username:principal);
+        def res = user.roles.findAll{it.role.name == roleName};
+        return res.size() > 0
     }
 
     def hasAllRoles(principal, roles) {
-        def query = "username:${principal} "
-        if(roles.size() > 0)
-        {
-            query += " AND ("
-            roles.each{
-                query += "name:${it.name} OR "
+        def user = RsUser.get(username:principal);
+        int numberOfFoundRoles = 0;
+        roles.each{Role role->
+            user.roles.each{userRoleRel->
+                if(role.name == userRoleRel.role.name)
+                {
+                    numberOfFoundRoles++;
+                    return;
+                }
             }
-            query = query.substring(0, query.length()-3);
-            query += ")"            
-        }
-        def res = UserRoleRel.search(query.toString());
 
-        return res.total == roles.size()
+        }
+
+        return numberOfFoundRoles == roles.size()
     }
 
     def isPermitted(principal, requiredPermission) {
@@ -68,7 +69,8 @@ class JsecDbRealm {
         //
         // First find all the permissions that the user has that match
         // the required permission's type and project code.
-        def permissions = UserPermissionRel.search("username:${principal} AND type:${requiredPermission.class.name}".toString()).results;
+        def user = RsUser.get(username:principal);
+        def permissions = user.permissionRelations.findAll{it.permission.type == requiredPermission.class.name}
 
         // Try each of the permissions found and see whether any of
         // them confer the required permission.
@@ -107,7 +109,6 @@ class JsecDbRealm {
         // If not, does he gain it through a role?
         //
         // First, find the roles that the user has.
-        def user = RsUser.findByUsername(principal)
         def roles = user.roles;
 
         // If the user has no roles, then he obviously has no permissions

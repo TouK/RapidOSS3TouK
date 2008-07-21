@@ -31,7 +31,7 @@ class UserRoleRelController {
 		        def userId = userRoleRel.rsUser?.id;
                 userRoleRel.remove()
                 flash.message = "Role ${userRoleRel.role} unassigned"
-                redirect(action: show, controller: 'rsUser', id: userId)
+                redirect(action: "show", controller: 'rsUser', id: userId)
             }
             catch(e){
                 def errors =[message(code:"default.couldnot.delete", args:[UserRoleRel.class.getName(), userRoleRel])]

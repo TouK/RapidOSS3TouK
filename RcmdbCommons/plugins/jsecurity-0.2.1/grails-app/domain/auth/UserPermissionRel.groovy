@@ -1,9 +1,6 @@
 package auth;
 class UserPermissionRel {
-    static searchable = {
-        rsUser component: true
-        permission component: true
-    }
+    static searchable = true;
     RsUser rsUser
     Permission permission
     String target
@@ -13,6 +10,6 @@ class UserPermissionRel {
         target(nullable: true, blank: false)
         actions(nullable: false, blank: false)
         permission(nullable: true)
-        rsUser(nullable: true)
+        rsUser(nullable: true, key:["permission"])
     }
 }

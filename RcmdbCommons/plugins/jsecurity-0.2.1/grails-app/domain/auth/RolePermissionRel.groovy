@@ -1,9 +1,6 @@
 package auth;
 class RolePermissionRel {
-   static searchable = {
-        role component: true
-        permission component: true
-    }
+   static searchable = true;
     Role role
     Permission permission
     String target
@@ -11,7 +8,7 @@ class RolePermissionRel {
     static mappedBy=["permission":"roleRelations", "role":"permissionRelations"]
     static constraints = {
         actions(nullable: false, blank: false)
-        role(nullable: true)
+        role(nullable: true, key:["permission"])
         permission(nullable: true)
     }
 }

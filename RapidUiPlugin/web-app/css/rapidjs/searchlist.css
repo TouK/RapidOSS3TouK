@@ -26,6 +26,10 @@
 
 }
 
+.rcmdb-search-row a, a:hover{
+	font-size:13px;
+}
+
 .rcmdb-search-rowheader {
     border-color: #DDDDDD;
     display:block;
@@ -36,12 +40,9 @@
 }
 .rcmdb-search-rowheader-value {
     display: inline;
-    font-size:13px;
     color: #000000;
 }
-.rcmdb-search-rowheader-value:hover{
-    font-size:13px;
-}
+
 
 .rcmdb-search-row-headermenu {
     background-image: url(../../images/rapidjs/component/searchlist/arrow_contextMenu.gif);
@@ -75,12 +76,9 @@
 
 .rcmdb-search-cell-value {
     display: inline;
-    font-size:13px;
     color: #000000;
 }
-.rcmdb-search-cell-value:hover{
-    font-size:13px;
-}
+
 
 .rcmdb-search-cell-menu {
     background-image: url(../../images/rapidjs/component/searchlist/arrow_contextMenu_small.gif);

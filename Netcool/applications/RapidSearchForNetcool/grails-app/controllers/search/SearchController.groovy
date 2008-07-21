@@ -16,6 +16,7 @@ class SearchController {
     def searchableService;
     def static Map propertyConfiguration = null;
     def index = {
+        def sortOrder = 0;
         def query = params.query;
         if(query == "")
         {
@@ -32,6 +33,7 @@ class SearchController {
                 grailsDomainClass.getProperties().each{resultProperty->
                     props[resultProperty.name] = result[resultProperty.name];
                 }
+                props.put("sortOrder", sortOrder++)
                 builder.Object(props);
             }
 

@@ -57,7 +57,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
-            html:'<div><form><table><tbody>' +
+            html:'<div><form action="#"><table><tbody>' +
                  '<tr>' +
                  '<td  width="93%"><input type="text" style="width:100%;"/></td>' +
                  '<td><button>Search</button></td>' +

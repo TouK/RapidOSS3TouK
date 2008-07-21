@@ -22,21 +22,28 @@ class SearchController {
         {
             query = "id:*";
         }
-        def searchResults = NetcoolEvent.search(query, params);
         StringWriter sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        builder.Objects(total:searchResults.total, offset:searchResults.offset)
+        try
         {
-            searchResults.results.each{result->
-                GrailsDomainClass grailsDomainClass = grailsApplication.getDomainClass(result.class.name);
-                def props = [alias:result.class.name];
-                grailsDomainClass.getProperties().each{resultProperty->
-                    props[resultProperty.name] = result[resultProperty.name];
+            def searchResults = NetcoolEvent.search(query, params);
+            builder.Objects(total:searchResults.total, offset:searchResults.offset)
+            {
+                searchResults.results.each{result->
+                    GrailsDomainClass grailsDomainClass = grailsApplication.getDomainClass(result.class.name);
+                    def props = [alias:result.class.name];
+                    grailsDomainClass.getProperties().each{resultProperty->
+                        props[resultProperty.name] = result[resultProperty.name];
+                    }
+                    props.put("sortOrder", sortOrder++)
+                    builder.Object(props);
                 }
-                props.put("sortOrder", sortOrder++)
-                builder.Object(props);
-            }
 
+            }
+        }
+        catch(Throwable t)
+        {
+             builder.Objects(total:0, offset:0);
         }
         render(text:sw.toString(), contentType:"text/xml");
     }

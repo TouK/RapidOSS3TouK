@@ -100,6 +100,8 @@ class Build extends Parent{
         ant.move(todir:"${env.distribution}"){
             ant.fileset(file: "$pluginDir/grails-*.zip");
         }
+
+        ant.delete(file: "$pluginDir/plugin.xml");
     }
 
     def installPlugin(pluginFile, destionationApplicationPath, params, systemParams)

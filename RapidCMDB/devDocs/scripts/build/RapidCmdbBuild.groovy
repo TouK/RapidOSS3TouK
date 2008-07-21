@@ -187,7 +187,7 @@ class RapidCmdbBuild extends Build {
                 if (TEST && copyTests) {
                     ant.include(name: "**/test/**")
                 }
-                if (TEST && !copyTests) {
+                else if (TEST && !copyTests) {
                     ant.include(name: "**/*TestCase*")
                 }
                 else

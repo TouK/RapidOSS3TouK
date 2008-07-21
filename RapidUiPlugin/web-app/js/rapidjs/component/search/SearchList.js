@@ -26,6 +26,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.lastSortOrder = 'asc';
     this.rowHeaderMenu = null;
     this.cellMenu = null;
+    this.rowHeaderAttribute = config.rowHeaderAttribute;
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.scrollPollTask = new YAHOO.ext.util.DelayedTask(this.scrollPoll, this);
     this.events = {
@@ -46,16 +47,37 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
 YAHOO.rapidjs.component.search.SearchList.prototype = {
     render : function() {
         var dh = YAHOO.ext.DomHelper;
-
-
         this.wrapper = dh.append(this.container, {tag: 'div', cls:'rcmdb-search'});
-
-        this.header = dh.append(this.wrapper, {tag:'div'}, true);
-        this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
-            html:'<table><tr><td width="100%"><table width="100%"><tr><td><input type="text" style="width:100%;"/></td></tr></table></td><td><table width="215px"><tr><td><button>Search</button></td>' +
+        /*
+        html:'<table><tr><td width="100%"><table width="100%"><tr><td><input type="text" style="width:100%;"/></td></tr></table></td><td><table width="225px"><tr>' +
+                 '<td><button>Search</button></td></tr>' +
                  '<td><a href="#">Save Query</a></td><td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
                  '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
-                 '<option value="7">7</option><option value="8">8</option></select></td></tr></table></td></tr></table>'}, true);
+                 '<option value="7">7</option><option value="8">8</option></select></td></tr></table></td></tr></table>'}, true);*/
+
+       
+        this.header = dh.append(this.wrapper, {tag:'div'}, true);
+        this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
+            html:'<table>' +
+                    '<tr>' +
+                        '<td  width="93%"><input type="text" style="width:100%;"/></td>' +
+                        '<td><button>Search</button></td>' +
+                        '<td  width="100%"><a href="#">Save Query</a></td>' +
+                    '</tr>' +
+                    '<tr>' +
+                        '<table align="right">' +
+                            '<tr>' +
+                                '<td align="right"><label for="count"> </label></td>' +
+                                '<td width="5px"/>' +
+                                '<td width="5px"/>' +
+                                '<td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
+                                    '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
+                                    '<option value="7">7</option><option value="8">8</option></select>' +
+                                '</td>' +
+                            '</tr>' +
+                        '</table>' +
+                    '</tr>' +
+                 '</table>'}, true);
 
         this.lineSizeSelector = this.searchBox.dom.getElementsByTagName('select')[0];
         SelectUtils.selectTheValue(this.lineSizeSelector, this.lineSize, 0);
@@ -298,12 +320,16 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             innerHtml = innerHtml.substring(0, innerHtml.length - 9) + '</div>';
         }
         for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+            var rowHtml = '<table><tr><td width="0%"><div class="rcmdb-search-row-headermenu"></div></td>' +
+                     '<td width="100%">';
+            if( this.rowHeaderAttribute != null)
+            {
+                   rowHtml +='<div class="rcmdb-search-rowheader"><a href="#" class="rcmdb-search-rowheader-value"></a></div>';
+            }
+            rowHtml += '<div class="rcmdb-search-rowdata">' + innerHtml + '</div>'+
+                     '</td></tr></table>';
             var rowEl = YAHOO.ext.DomHelper.append(this.bufferView.dom, {tag:'div', cls:'rcmdb-search-row',
-                html:'<table><tr><td width="0%"><div class="rcmdb-search-row-headermenu"></div></td>' +
-                     '<td width="100%">'+
-                        '<div class="rcmdb-search-rowheader"><a href="#" class="rcmdb-search-rowheader-value"></a></div>'+
-                        '<div class="rcmdb-search-rowdata">' + innerHtml + '</div>'+
-                     '</td></tr></table>'}, true);
+                html:rowHtml}, true);
             this.bufferView.rowEls[this.bufferView.rowEls.length] = rowEl;
             YAHOO.util.Dom.setStyle(rowEl.dom, 'display', 'none');
             rowEl.setHeight(this.rowHeight);
@@ -320,7 +346,10 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
             var dataNode = searchNode.xmlData;
             var nOfFields = this.fields.length;
-            rowEl.header.innerHTML= dataNode.getAttribute(this.titleAttribute);
+            if( this.rowHeaderAttribute != null)
+            {
+                rowEl.header.innerHTML= dataNode.getAttribute(this.rowHeaderAttribute);
+            }
             for (var fieldIndex = 0; fieldIndex < nOfFields; fieldIndex++) {
                 var att = this.fields[fieldIndex];
                 var cell = rowEl.cells[fieldIndex];
@@ -450,6 +479,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         var node = newData.getRootNode(this.rootTag);
         if (node) {
             this.totalRowCount = parseInt(node.getAttribute(this.totalCountAttribute), 10)
+            this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;
             this.lastOffset = parseInt(node.getAttribute(this.offsetAttribute), 10)
             if (this.data) {
 
@@ -604,7 +634,6 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
     },
 
     rowHeaderMenuItemClicked: function(eventType, key){
-        //var event = args[0];
         var id = this.menuItems[key].id;
         var row = this.rowHeaderMenu.row;
         this.rowHeaderMenu.row = null;

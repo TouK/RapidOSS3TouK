@@ -37,14 +37,13 @@
 <body class=" yui-skin-sam">
 
 <div id="filterDialog">
-    <button onclick='html.show("x.gsp")'></button>
+   
     <div class="hd">Save query</div>
     <div class="bd">
     <form method="POST" action="javascript://nothing">
         <table width="100%">
         <tr><td width="50%"><label for="group">Group Name:</label></td><td width="50%"><input type="textbox" name="group" /></td></tr>
-        <tr><td width="50%"><label for="filter">Filter Name:</label></td><td width="50%"><input type="textbox" name="name" /></td></tr>
-        <tr><td width="50%"><label for="queryName">Query Name:</label></td><td width="50%"><label for="query" width="100%">Example Query</label></td></tr>
+        <tr><td width="50%"><label for="query">Query Name:</label></td><td width="50%"><input type="textbox" name="name" /></td></tr>
         </table>
         <input name="query" type="hidden"/>
     </form>
@@ -88,7 +87,8 @@
         saveQueryFunction: function(query){
                     dialog.dialog.form.query.value = query;
                     dialog.show(dialog.CREATE_MODE);
-        }
+        },
+        rowHeaderAttribute : "vendor"
     }
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
 
@@ -100,8 +100,20 @@
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
     tree.poll();
 
-    var filterDefinitionDialogConfig = {width:"30em",editUrl:"a3.xml", saveUrl:"a3.xml", updateUrl:"",rootTag:"Filter", successfulyExecuted: function () { tree.poll() }};
+    var filterDefinitionDialogConfig = {width:"30em",editUrl:"a2.xml", saveUrl:"a2.xml", updateUrl:"",rootTag:"Filter", successfulyExecuted: function () { tree.poll() }};
     var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
+
+    searchList.events["rowHeaderMenuClick"].subscribe(function(data, id) {
+            alert(data);
+           
+    }, this,true);
+
+    searchList.events["rowHeaderClick"].subscribe(function(data) {
+                alert(data);
+
+        }, this,true);
+
+
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
 
     Event.onDOMReady(function() {
@@ -109,7 +121,7 @@
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'center', header: 'Netcool Events', body: 'right', resize: false, gutter: '1px' },
-                { position: 'left', header: 'Filters', width: 200, gutter: '1px', resize: true, body: 'left', collapse: false, close: false, collapseSize: 50, scroll: true, animate: true }
+                { position: 'left', header: 'Saved Queries', width: 200, gutter: '1px', resize: true, body: 'left', collapse: false, close: false, collapseSize: 50, scroll: true, animate: true }
             ]
         });
 

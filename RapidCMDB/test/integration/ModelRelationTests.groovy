@@ -71,6 +71,7 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
     
     void testAddOneToOneRelationReplacesAlreadyExistingRelation() {
+        fail("Fix later");
         def ip = Ip.add(name: "myIp", creationClassName: "Ip", smartsDs: "smartsDs", ipAddress: "192.168.1.1");
 
         def devInterface1 = DeviceInterface.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
@@ -118,6 +119,7 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testAddOneToOneRelationWithInvalidObjectType() {
+        fail("Fix later");
         def ip = Ip.add(name: "myIp", creationClassName: "Ip", smartsDs: "smartsDs", ipAddress: "192.168.1.1");
 
         def device = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
@@ -327,6 +329,7 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
     
     void testAddOneToManyRelationWithInvalidObjectType() {
+        fail("Fix later");
         def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
 
         def device = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
@@ -610,7 +613,8 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
     
     void testAddManyToManyRelationWithInvalidObjectType() {
-    	def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
+        fail("Fix later");
+        def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
     
         def devAdapter1 = DeviceAdapter.add(name: "myDeviceInt1", creationClassName: "DeviceInterface",
                 smartsDs: "smartsDs", description: "desc", isManaged: "true", macAddress: "3245", type: "myType")

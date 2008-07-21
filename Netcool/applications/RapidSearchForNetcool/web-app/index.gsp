@@ -134,7 +134,7 @@
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'center', header: 'Netcool Events', body: 'right', resize: false, gutter: '1px' },
-                { position: 'left', header: 'Filters', width: 200, gutter: '1px', resize: true, body: 'left', collapse: false, close: false, collapseSize: 50, scroll: true, animate: true }
+                { position: 'left', header: 'Saved Queries', width: 200, gutter: '1px', resize: true, body: 'left', collapse: false, close: false, collapseSize: 50, scroll: true, animate: true }
             ]
         });
 

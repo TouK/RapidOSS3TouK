@@ -10,6 +10,8 @@ YAHOO.rapidjs.component.Form = function(container, config)
                                               { text:"Cancel", handler:this.handleCancel.createDelegate(this), scope:this } ]
                                     });
 
+    YAHOO.util.Event.addListener(container, 'keypress', this.handleKeypress, this, true);
+
     this.successful = config.successfulyExecuted;
     this.EDIT_MODE = 0;
     this.CREATE_MODE = 1;
@@ -71,7 +73,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         }
         this.isSubmitInProggress = false;
     },
-    
+    handleKeypress: function(e)
+    {
+        if( (e.type == "keypress" && e.keyCode == 13) )
+        {
+            this.handleSubmit();
+        }
+    },
+
     handleSubmit: function()
     {
         this.errors.dom.innerHTML = "";

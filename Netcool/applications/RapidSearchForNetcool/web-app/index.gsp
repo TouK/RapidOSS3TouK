@@ -16,6 +16,9 @@
     <rui:stylesheet dir="js/yui/button/assets/skins/sam" file="button.css"></rui:stylesheet>
 
     <rui:stylesheet dir="js/yui/container/assets/skins/sam" file="container.css"></rui:stylesheet>
+    <jsec:isNotLoggedIn>
+	  <g:javascript>window.location='auth/login?targetUri=/index.gsp'</g:javascript>
+	</jsec:isNotLoggedIn>
 </head>
 <body class=" yui-skin-sam">
 <div id="filterDialog">

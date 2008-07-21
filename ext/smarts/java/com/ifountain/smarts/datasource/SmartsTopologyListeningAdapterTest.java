@@ -183,7 +183,23 @@ public class SmartsTopologyListeningAdapterTest extends SmartsTestCase implement
         topologyAdapter.addObserver(this);
         topologyAdapter.subscribe();
         BaseSmartsListeningAdapterTest.checkObjectListForObjects(receivedObjects, "Router", "trial", 0, 1);
+        Map object = (Map)receivedObjects.get(0);
+        assertTrue(object.containsKey("Location"));
+        assertTrue(object.containsKey("Model"));
+    }
 
+     public void testIfNoAttributeSpecifiedAdapterSubscribesAllProperties() throws Exception {
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "trial", new HashMap(), 0, 1);
+
+        SmartsSubscribeParameters param = new SmartsSubscribeParameters("Router", "trial.*", new String[0]);
+        topologyAdapter = new SmartsTopologyListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0, TestLogUtils.log,
+                new SmartsSubscribeParameters[]{param});
+        topologyAdapter.addObserver(this);
+        topologyAdapter.subscribe();
+        BaseSmartsListeningAdapterTest.checkObjectListForObjects(receivedObjects, "Router", "trial", 0, 1);
+        Map object = (Map)receivedObjects.get(0);
+        assertTrue(object.containsKey("Location"));
+        assertTrue(object.containsKey("Model"));
     }
 
 

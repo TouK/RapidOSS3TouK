@@ -35,6 +35,10 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
             {
                 optProps.put ("password",optProps.userPassword);
             }
+            else
+            {
+                optProps.put ("password","");                
+            }
             return new ConnectionParam(connection.getClass().getName(), connection.name,
                     connection.connectionClass,optProps, connection.maxNumberOfConnections)
         }

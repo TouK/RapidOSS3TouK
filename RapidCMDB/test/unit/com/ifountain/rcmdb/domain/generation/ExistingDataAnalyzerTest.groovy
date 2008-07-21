@@ -36,7 +36,7 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         }
         else
         {
-            ModelGenerator.getInstance().initialize (base_directory, base_directory, "RcmdbCommons");
+            ModelGenerator.getInstance().initialize (base_directory, base_directory, ".");
         }
 
         FileUtils.deleteDirectory (new File(base_directory));

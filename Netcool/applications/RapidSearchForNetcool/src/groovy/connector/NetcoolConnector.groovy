@@ -44,7 +44,7 @@ class NetcoolConnector {
         }
     }
 
-
+    //Get all events after marking as deleted. discard lastrecordidentifier
     def markAllEventsAsDeleted()
     {
         int offset= 0 ;

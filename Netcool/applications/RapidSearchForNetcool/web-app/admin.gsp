@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<div class="front"><h1>RapidSearch For Netcool UI</h1></div>
+<div class="nav"><h1 style="display:inline">RapidSearch For Netcool UI</h1><span class="menuButton"><a href="/RapidCMDB/auth/logout?targetUri=/admin.gsp" class="logout">Logout</a></span></div>
 <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define your connections, create NetcoolEvent and NetcoolJournal models, import conversion parameters.</p>
 <br>
 <p/>

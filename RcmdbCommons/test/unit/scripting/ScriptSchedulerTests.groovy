@@ -37,12 +37,12 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
     public static int executionCount = 0;
     protected void setUp() {
         super.setUp();
-        executionCount = 0;
         qScheduler = StdSchedulerFactory.getDefaultScheduler();
         qScheduler.start();
         scriptScheduler = ScriptScheduler.getInstance();
         scriptScheduler.initialize(qScheduler);
         scriptScheduler.setScriptExecutorClass(MockQuartzJob.class);
+        executionCount = 0;
     }
 
     protected void tearDown() {

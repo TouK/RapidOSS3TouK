@@ -40,7 +40,19 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
             argument: arguments,
             timeout: this.timeout
 		};
-		this.lastConnection = YAHOO.util.Connect.asyncRequest('POST', this.url, callback, postData);
+        var tmpUrl = this.url;
+        if(postData && postData != "")
+        {
+            if(tmpUrl.indexOf("?") >= 0)
+            {
+                tmpUrl = tmpUrl + "&" + postData;
+            }
+            else
+            {
+                tmpUrl = tmpUrl + "?" + postData;
+            }
+        }
+        this.lastConnection = YAHOO.util.Connect.asyncRequest('GET', tmpUrl, callback);
     },
     processSuccess: function(response, arguments)
     {

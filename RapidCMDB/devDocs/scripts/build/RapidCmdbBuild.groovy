@@ -40,49 +40,6 @@ class RapidCmdbBuild extends Build {
         return "";
     }
 
-//    def buildSmartsModules() {
-//
-//        ant.delete(dir: env.distribution + "/RapidServer");
-//        ant.delete(file: "$env.distribution/SmartsModule*.zip");
-//        ant.delete(dir: env.rapid_ext_build);
-//        ant.mkdir(dir: env.rapid_ext_build);
-//
-//        ant.javac(srcdir: "$env.rapid_ext/smarts/java", destdir: env.rapid_ext_build, excludes: getExcludedClasses()) {
-//            ant.classpath(refid: "classpath");
-//        }
-//
-//        ant.copy(todir: "$env.dist_rapid_cmdb/grails-app/ext") {
-//            ant.fileset(dir: "$env.rapid_ext/smarts/groovy") {
-//                if (!TEST) {
-//                    ant.exclude(name: "**/test/**")
-//                    ant.exclude(name: "**/*Test*")
-//                }
-//            };
-//        }
-//
-//        ant.copy(file: "$env.rapid_cmdb_cvs/grails-app/domain/datasource/SmartsNotificationDatasource.groovy", toDir: "$env.dist_rapid_cmdb/grails-app/domain/datasource");
-//        ant.copy(file: "$env.rapid_cmdb_cvs/grails-app/domain/datasource/SmartsTopologyDatasource.groovy", toDir: "$env.dist_rapid_cmdb/grails-app/domain/datasource");
-//        ant.copy(file: "$env.rapid_cmdb_cvs/grails-app/domain/connection/SmartsConnection.groovy", toDir: "$env.dist_rapid_cmdb/grails-app/domain/connection");
-//        ant.copy(file: "$env.rapid_cmdb_cvs/grails-app/controllers/connection/SmartsConnectionController.groovy", toDir: "$env.dist_rapid_cmdb/grails-app/controllers/connection");
-//        ant.copy(file: "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/SmartsNotificationDatasourceController.groovy", toDir: "$env.dist_rapid_cmdb/grails-app/controllers/datasource");
-//        ant.copy(file: "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/SmartsTopologyDatasourceController.groovy", toDir: "$env.dist_rapid_cmdb/grails-app/controllers/datasource");
-//        ant.copy(todir: "$env.dist_rapid_cmdb/grails-app/views") {
-//            ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/views") {
-//                ant.include(name: "smarts*/*")
-//            }
-//        }
-//
-//        ant.copy(file: "$env.rapid_cmdb_cvs/web-app/indexSmarts.gsp", tofile: "$env.dist_rapid_cmdb/web-app/index.gsp");
-//
-//        ant.jar(destfile: env.rapid_smarts_jar, basedir: env.rapid_ext_build, manifest: env.versionInBuild);
-//        ant.copy(file: env.rapid_smarts_jar, toDir: env.dist_rapid_cmdb_lib);
-//
-//        def versionDate = getVersionWithDate();
-//        def zipFileName = "$env.distribution/SmartsModule$versionDate" + ".zip"
-//        ant.zip(destfile: zipFileName) {
-//            ant.zipfileset(dir: "$env.distribution/RapidServer")
-//        }
-//    }
 
     def buildSample(sampleName) {
         ant.delete(dir: env.distribution + "/RapidServer");
@@ -182,7 +139,7 @@ class RapidCmdbBuild extends Build {
             }
         }
 
-        copyCommons(env.dist_rapid_cmdb);
+        copyCommons(env.dist_rapid_cmdb, true);
     }
 
     def buildRCMDBModeler(){
@@ -221,22 +178,23 @@ class RapidCmdbBuild extends Build {
                 ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/test")
             }
         }
-        copyCommons(env.dist_rapid_cmdb_modeler);
+        copyCommons(env.dist_rapid_cmdb_modeler, false);
     }
 
-    def copyCommons(toDir){
+    def copyCommons(toDir, copyTests){
         ant.copy(todir: toDir) {
             ant.fileset(dir: "$env.rapid_cmdb_commons_cvs") {
-                if (!TEST) {
-                    ant.exclude(name: "**/*Test*")
-                }             	
+                if (TEST && copyTests) {
+                    ant.include(name: "**/test/**")
+                }
+                else
+                {
+                    ant.exclude(name: "**/*Test*")                        
+                }
                 ant.include(name: "**/grails-app/**");
                 ant.include(name: "**/plugins/**");
                 ant.include(name: "**/src/**");
                 ant.include(name: "**/web-app/**");
-                if (TEST) {
-                    ant.include(name: "**/test/**")
-                }                
             }
         }
     }

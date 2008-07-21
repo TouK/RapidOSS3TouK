@@ -43,7 +43,6 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
 };
 
 
-
 YAHOO.rapidjs.component.search.SearchList.prototype = {
     render : function() {
         var dh = YAHOO.ext.DomHelper;
@@ -55,30 +54,29 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
                  '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
                  '<option value="7">7</option><option value="8">8</option></select></td></tr></table></td></tr></table>'}, true);*/
 
-       
+
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
-            html:'<table>' +
-                    '<tr>' +
-                        '<td  width="93%"><input type="text" style="width:100%;"/></td>' +
-                        '<td><button>Search</button></td>' +
-                        '<td  width="100%"><a href="#">Save Query</a></td>' +
-                    '</tr>' +
-                    '<tr>' +
-                        '<table align="right">' +
-                            '<tr>' +
-                                '<td align="right"><label for="count"> </label></td>' +
-                                '<td width="5px"/>' +
-                                '<td width="5px"/>' +
-                                '<td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
-                                    '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
-                                    '<option value="7">7</option><option value="8">8</option></select>' +
-                                '</td>' +
-                            '</tr>' +
-                        '</table>' +
-                    '</tr>' +
-                 '</table>'}, true);
-
+            html:'<div><form><table><tbody>' +
+                 '<tr>' +
+                 '<td  width="93%"><input type="text" style="width:100%;"/></td>' +
+                 '<td><button>Search</button></td>' +
+                 '<td  width="100%"><a href="#">Save Query</a></td>' +
+                 '</tr>' +
+                 '</tbody></table></form></div>' +
+                 '<div>' +
+                 '<table align="right">' +
+                 '<tr>' +
+                 '<td align="right"><label for="count"> </label></td>' +
+                 '<td width="5px"/>' +
+                 '<td width="5px"/>' +
+                 '<td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
+                 '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
+                 '<option value="7">7</option><option value="8">8</option></select>' +
+                 '</td>' +
+                 '</tr>' +
+                 '</table>' +
+                 '</div>'}, true);
         this.lineSizeSelector = this.searchBox.dom.getElementsByTagName('select')[0];
         SelectUtils.selectTheValue(this.lineSizeSelector, this.lineSize, 0);
 
@@ -99,9 +97,9 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
         this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic"});
 
-        for (var i in this.menuItems){
-            var item = this.rowHeaderMenu.addItem( {text:this.menuItems[i].label });
-            YAHOO.util.Event.addListener(item.element, "click" , this.rowHeaderMenuItemClicked, i , this);
+        for (var i in this.menuItems) {
+            var item = this.rowHeaderMenu.addItem({text:this.menuItems[i].label });
+            YAHOO.util.Event.addListener(item.element, "click", this.rowHeaderMenuItemClicked, i, this);
         }
 
         this.rowHeaderMenu.render(document.body);
@@ -114,7 +112,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.cellMenu.render(document.body);
 
 
-  },
+    },
 
     setQuery: function(queryString)
     {
@@ -126,7 +124,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
     handleSaveQueryClick: function(e)
     {
-        if(this.searchBox.dom.getElementsByTagName('input')[0].value != "")
+        if (this.searchBox.dom.getElementsByTagName('input')[0].value != "")
         {
             this.saveQueryFunction(this.searchBox.dom.getElementsByTagName('input')[0].value);
             //alert( "Query " + escape(this.searchBox.dom.getElementsByTagName('input')[0].value) + " saved succesfully.");
@@ -137,7 +135,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
         var dh = YAHOO.ext.DomHelper;
         var sender = (typeof( window.event ) != "undefined" ) ? e.srcElement : e.target;
-        if(YAHOO.util.Dom.hasClass(sender, "rcmdb-search-cell-value") )
+        if (YAHOO.util.Dom.hasClass(sender, "rcmdb-search-cell-value"))
         {
             var key = sender.previousSibling.innerHTML;
             var value = sender.innerHTML;
@@ -150,7 +148,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
     },
     handleSearchClick: function(e) {
-        if( (e.type == "keypress" && e.keyCode == 13) || (e.type == "click" ) )
+        if ((e.type == "keypress" && e.keyCode == 13) || (e.type == "click" ))
         {
             this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
             this.showMask();
@@ -266,7 +264,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             while (this.bufferView.rowEls.length > interval) {
                 var rowEl = this.bufferView.rowEls[this.bufferView.rowEls.length - 1];
                 rowEl.dom.rowIndex = null;
-                if(this.rowHeaderMenu.row == rowEl.dom){
+                if (this.rowHeaderMenu.row == rowEl.dom) {
                     this.rowHeaderMenu.row = null;
                     this.rowHeaderMenu.hide();
                 }
@@ -307,27 +305,27 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
     createEmptyRows : function(rowCount) {
         var innerHtml = '';
-        if(this.fields){
-           for (var fieldIndex = 0; fieldIndex < this.fields.length; fieldIndex++) {
-               innerHtml += '<div class="rcmdb-search-cell">' +
-                         '<span class="rcmdb-search-cell-key"></span>' +
-                         '<a href="#" class="rcmdb-search-cell-value"></a>' +
-                         '<a class="rcmdb-search-cell-menu">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> | ' +
-                         '</div>';
-           }
+        if (this.fields) {
+            for (var fieldIndex = 0; fieldIndex < this.fields.length; fieldIndex++) {
+                innerHtml += '<div class="rcmdb-search-cell">' +
+                             '<span class="rcmdb-search-cell-key"></span>' +
+                             '<a href="#" class="rcmdb-search-cell-value"></a>' +
+                             '<a class="rcmdb-search-cell-menu">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> | ' +
+                             '</div>';
+            }
         }
         if (innerHtml.length > 0) {
             innerHtml = innerHtml.substring(0, innerHtml.length - 9) + '</div>';
         }
         for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
             var rowHtml = '<table><tr><td width="0%"><div class="rcmdb-search-row-headermenu"></div></td>' +
-                     '<td width="100%">';
-            if( this.rowHeaderAttribute != null)
+                          '<td width="100%">';
+            if (this.rowHeaderAttribute != null)
             {
-                   rowHtml +='<div class="rcmdb-search-rowheader"><a href="#" class="rcmdb-search-rowheader-value"></a></div>';
+                rowHtml += '<div class="rcmdb-search-rowheader"><a href="#" class="rcmdb-search-rowheader-value"></a></div>';
             }
-            rowHtml += '<div class="rcmdb-search-rowdata">' + innerHtml + '</div>'+
-                     '</td></tr></table>';
+            rowHtml += '<div class="rcmdb-search-rowdata">' + innerHtml + '</div>' +
+                       '</td></tr></table>';
             var rowEl = YAHOO.ext.DomHelper.append(this.bufferView.dom, {tag:'div', cls:'rcmdb-search-row',
                 html:rowHtml}, true);
             this.bufferView.rowEls[this.bufferView.rowEls.length] = rowEl;
@@ -342,13 +340,13 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
     },
 
     renderRow: function(rowEl) {
-        if(this.fields){
+        if (this.fields) {
             var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
             var dataNode = searchNode.xmlData;
             var nOfFields = this.fields.length;
-            if( this.rowHeaderAttribute != null)
+            if (this.rowHeaderAttribute != null)
             {
-                rowEl.header.innerHTML= dataNode.getAttribute(this.rowHeaderAttribute);
+                rowEl.header.innerHTML = dataNode.getAttribute(this.rowHeaderAttribute);
             }
             for (var fieldIndex = 0; fieldIndex < nOfFields; fieldIndex++) {
                 var att = this.fields[fieldIndex];
@@ -376,12 +374,12 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
                 var searchNode = this.searchData[row.rowIndex - this.lastOffset];
                 var dataNode = searchNode.xmlData;
                 var index = 0;
-                for (var i in this.menuItems){
-                    if( this.menuItems[i].condition != null ){
+                for (var i in this.menuItems) {
+                    if (this.menuItems[i].condition != null) {
                         var value = dataNode.getAttribute(this.menuItemUrlParamName);
                         var menuItem = this.rowHeaderMenu.getItem(index);
-                        var condRes = this.menuItems[i].condition( value);
-                        if( !condRes)
+                        var condRes = this.menuItems[i].condition(value);
+                        if (!condRes)
                             menuItem.element.style.display = "none";
                         else
                             menuItem.element.style.display = "";
@@ -390,7 +388,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
                 }
                 this.rowHeaderMenu.show();
             }
-            else if(YAHOO.util.Dom.hasClass(target, 'rcmdb-search-rowheader') || YAHOO.util.Dom.hasClass(target, 'rcmdb-search-rowheader-value'))
+            else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-rowheader') || YAHOO.util.Dom.hasClass(target, 'rcmdb-search-rowheader-value'))
             {
                 var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
                 this.fireRowHeaderClicked(xmlData);
@@ -405,8 +403,8 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
                         this.cellMenu.show();
                     }
                     else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
-                         var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
-                         this.firePropertyClick(cell.propKey, cell.propValue, xmlData);
+                        var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
+                        this.firePropertyClick(cell.propKey, cell.propValue, xmlData);
                     }
                 }
             }
@@ -452,9 +450,9 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         };
         var url;
         var params = [];
-        if(this.currentlyExecutingQuery != null)
+        if (this.currentlyExecutingQuery != null)
         {
-            params[params.length] = this.searchQueryParamName + "="+this.currentlyExecutingQuery;
+            params[params.length] = this.searchQueryParamName + "=" + this.currentlyExecutingQuery;
         }
         params[params.length] = 'max=' + this.maxRowsDisplayed;
         if (offset != null) {
@@ -471,7 +469,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
     },
 
     processSuccess: function(response) {
-        if(YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
+        if (YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
         {
             return;
         }
@@ -492,7 +490,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
                 this.loadData(node);
             }
         }
-        else{
+        else {
             alert('xmlde hata var');
             this.hideMask();
         }
@@ -500,15 +498,15 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
     processFailure: function(response) {
         var st = response.status;
-		if(st == -1){
-			alert('Request received a timeout');
-		}
-		else if(st == 404){
-			alert('Specified url cannot be found');
-		}
-		else if(st == 0){
-			alert('Server is not available');
-		}
+        if (st == -1) {
+            alert('Request received a timeout');
+        }
+        else if (st == 404) {
+            alert('Specified url cannot be found');
+        }
+        else if (st == 0) {
+            alert('Server is not available');
+        }
     },
     showMask: function() {
         //console.log("show mask");
@@ -568,7 +566,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
     },
 
     resize : function(width, height) {
-        this.body.setStyle("height",height- this.header.dom.offsetHeight);
+        this.body.setStyle("height", height - this.header.dom.offsetHeight);
         this._verticalScrollChanged();
     },
     getRowFromChild : function(childEl) {
@@ -616,7 +614,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.updateBodyHeight();
     },
 
-    cellMenuItemClicked: function(eventType, args, menuItem){
+    cellMenuItemClicked: function(eventType, args, menuItem) {
         //var event = args[0];
         var menuItemText = menuItem.cfg.getProperty("text");
         var row = this.cellMenu.row;
@@ -624,16 +622,16 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.cellMenu.row = null;
         this.cellMenu.cell = null;
         var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
-        if(menuItemText == 'sort asc'){
+        if (menuItemText == 'sort asc') {
             this.sort(cell.propKey, 'asc');
         }
-        else if(menuItemText == 'sort desc'){
+        else if (menuItemText == 'sort desc') {
             this.sort(cell.propKey, 'desc');
         }
         this.fireCellMenuClick(cell.propKey, cell.propValue, xmlData, menuItemText);
     },
 
-    rowHeaderMenuItemClicked: function(eventType, key){
+    rowHeaderMenuItemClicked: function(eventType, key) {
         var id = this.menuItems[key].id;
         var row = this.rowHeaderMenu.row;
         this.rowHeaderMenu.row = null;
@@ -641,16 +639,16 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.fireRowHeaderMenuClick(xmlData, id);
     },
 
-    fireRowHeaderMenuClick: function(data, id){
+    fireRowHeaderMenuClick: function(data, id) {
         this.events['rowHeaderMenuClick'].fireDirect(data, id);
     },
-    fireCellMenuClick: function(key, value, data, menuText){
+    fireCellMenuClick: function(key, value, data, menuText) {
         this.events['cellMenuClick'].fireDirect(key, value, data, menuText);
     },
-    fireRowHeaderClicked: function( data){
+    fireRowHeaderClicked: function(data) {
         this.events['rowHeaderClick'].fireDirect(data);
     },
-    firePropertyClick: function(key, value, data){
+    firePropertyClick: function(key, value, data) {
         this.events['propertyClick'].fireDirect(key, value, data);
     }
 

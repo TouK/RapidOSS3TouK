@@ -97,15 +97,16 @@ class SearchQueryController {
         def searchQuery = SearchQuery.get( [id:params.id] )
 
         if(searchQuery) {
-            if(params.group)
+            if(params.group == "")
             {
-                def group = SearchQueryGroup.get(name:params.group, user:user);
-                if(group  == null)
-                {
-                    group = SearchQueryGroup.add(name:params.group, user:user);
-                }
-                params["group"] = ["id":group.id];
+                params.group = "Default";
             }
+            def group = SearchQueryGroup.get(name:params.group, user:user);
+            if(group  == null)
+            {
+                group = SearchQueryGroup.add(name:params.group, user:user);
+            }
+            params["group"] = ["id":group.id];
             searchQuery.update(ControllerUtils.getClassProperties(params, SearchQuery));
             if(!searchQuery.hasErrors()) {
                 withFormat {
@@ -148,16 +149,16 @@ class SearchQueryController {
     def save = {
         def user = RsUser.get(username:session.username);
         params["user"] = ["id":user.id]
-        if(params.group != null)
+        if(params.group == "")
         {
-            def group = SearchQueryGroup.get(name:params.group, user:user);
-            if(group  == null)
-            {
-                group = SearchQueryGroup.add(name:params.group, user:user);
-            }
-            params["group"] = ["id":group.id];
-
+            params.group = "Default";
         }
+        def group = SearchQueryGroup.get(name:params.group, user:user);
+        if(group  == null)
+        {
+            group = SearchQueryGroup.add(name:params.group, user:user);
+        }
+        params["group"] = ["id":group.id];
         def searchQuery = SearchQuery.add(ControllerUtils.getClassProperties(params, SearchQuery))
         if(!searchQuery.hasErrors()) {
             withFormat {

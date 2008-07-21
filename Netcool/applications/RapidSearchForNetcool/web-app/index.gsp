@@ -72,7 +72,12 @@
         menuItems:{
             item1 : { id : 'eventDetails', label : 'Event Details' }
         } ,
-        menuItemUrlParamName: 'id',
+        propertyMenuItems:{
+            item1 : { id : 'sortAsc', label : 'Sort asc' },
+            item2 : { id : 'sortDesc', label : 'Sort desc' },
+            item3 : { id : 'greaterThan', label : 'Greater than',  condition: function(key, value, data) {return key == "serverserial"}},
+            item4 : { id : 'lessThan', label : 'Less than' , condition: function(key, value, data) {return key == "serverserial"}}
+        } ,
         saveQueryFunction: function(query){
                     dialog.dialog.form.query.value = query;
                     dialog.show(dialog.CREATE_MODE);
@@ -87,6 +92,21 @@
             var url = "getDetails.gsp?type="+type + "&id="+eventId;
             html.show(url);
 
+        }
+    }, this, true);
+
+    searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData) {
+        if( id == "sortAsc"){
+            searchList.setSortDirection(key, true);
+        }
+        else if( id == "sortDesc"){
+            searchList.setSortDirection(key, false);
+        }
+        else if( id == "greaterThan"){
+            //searchList.setSortDirection(key, false);
+        }
+        else if( id == "lessThan"){
+            //searchList.setSortDirection(key, false);
         }
     }, this, true);
 

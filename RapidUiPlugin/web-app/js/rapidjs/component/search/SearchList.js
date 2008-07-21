@@ -57,10 +57,10 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
-            html:'<div><form action="#"><table><tbody>' +
+            html:'<div><form action="javascript:void(0)"><table><tbody>' +
                  '<tr>' +
                  '<td  width="93%"><input type="text" style="width:100%;"/></td>' +
-                 '<td><button>Search</button></td>' +
+                 '<td><input type="submit" value="Search"></input></td>' +
                  '<td  width="100%"><a href="#">Save Query</a></td>' +
                  '</tr>' +
                  '</tbody></table></form></div>' +
@@ -88,7 +88,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask', html:'Loading..', style:'text-align:center;'}, true);
         this.hideMask();
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleSearchClick, this, true);
-        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('button')[0], 'click', this.handleSearchClick, this, true);
+        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[1], 'click', this.handleSearchClick, this, true);
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('a')[0], 'click', this.handleSaveQueryClick, this, true);
         YAHOO.util.Event.addListener(this.lineSizeSelector, 'change', this.handleLineSizeChange, this, true);
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);

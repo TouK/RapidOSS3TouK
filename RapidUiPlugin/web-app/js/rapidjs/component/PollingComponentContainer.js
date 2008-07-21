@@ -47,7 +47,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         }
         if(this.pollingInterval > 0)
         {
-            this.pollTask.delay(this.pollingInterval*10000);
+            this.pollTask.delay(this.pollingInterval*1000);
         }
 
 

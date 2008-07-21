@@ -98,6 +98,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
     {
         this.currentlyExecutingQuery = queryString;
         this.searchBox.dom.getElementsByTagName('input')[0].value = queryString;
+        this.showMask();
         this.poll();
     },
 
@@ -121,6 +122,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             key = key.substring(0, key.length - 1);
             this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value + " " + key + ":\"" + value + "\"";
             this.searchBox.dom.getElementsByTagName('input')[0].value = this.currentlyExecutingQuery;
+            this.showMask();
             this.poll();
         }
 
@@ -129,6 +131,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         if( (e.type == "keypress" && e.keyCode == 13) || (e.type == "click" ) )
         {
             this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
+            this.showMask();
             this.poll();
         }
     },

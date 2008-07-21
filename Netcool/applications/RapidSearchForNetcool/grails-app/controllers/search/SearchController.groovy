@@ -16,7 +16,7 @@ class SearchController {
     def searchableService;
     def static Map propertyConfiguration = null;
     def index = {
-        def query = params.query + " (alias:NetcoolEvent OR alias:NetcoolJournal)"
+        def query = params.query + " alias:NetcoolEvent"
         def searchResults = searchableService.search(query, params);
         StringWriter sw = new StringWriter();
         def builder = new MarkupBuilder(sw);

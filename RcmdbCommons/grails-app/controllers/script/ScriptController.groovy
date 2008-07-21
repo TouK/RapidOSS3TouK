@@ -141,6 +141,7 @@ class ScriptController {
         {
             try
             {
+                params.rsUser = session.username;
                 def result = CmdbScript.runScript(script, params)
                 if (result == null) {
                     result = "";

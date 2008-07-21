@@ -121,6 +121,11 @@ public class SmartsTestUtils {
     {
         getNotificationAdapter().takeOwnership(className, instanceName, eventName, user, auditTrailText);
     }
+
+    public static void releaseOwnershipNotification(String className, String instanceName, String eventName, String user, String auditTrailText) throws Exception
+    {
+        getNotificationAdapter().releaseOwnership(className, instanceName, eventName, user, auditTrailText);
+    }
     
     public static void createNotification(String className, String instanceName, String eventName, Map<String, Object> attributes) throws Exception
     {

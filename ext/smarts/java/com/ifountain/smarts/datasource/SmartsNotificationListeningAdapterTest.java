@@ -420,101 +420,69 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
         assertNotNull(receivedObjects.get(param + "4NOTIFY"));
     }
 
-//     public void testNotificationList() throws Exception {
-//    	ICNotificationReaderObserver.CONNECTION_RETRY_COUNT = 2;
-//    	int transientInterval = 100;
-//        RapidInChargeDomainManager domainManager = InChargeTestUtils.getTestRapidDomainManager();
-//        InChargeTestUtils.archiveAllNotifications(domainManager);
-//
-//        ICNotificationReaderMockImpl inchargeReader = new ICNotificationReaderMockImpl();
-//
-//        // Start reader adapter.
-//        ICNotificationReaderAdapterParams readerParams = getTestParams();
-//
-//        ICNotificationReaderAdapterImplMock inChargeReaderAdapterImpl = null;
-//        try{
-//            inChargeReaderAdapterImpl = new ICNotificationReaderAdapterImplMock(inchargeReader, readerParams,InChargeTestUtils.getInChargeConnectionParams(), transientInterval);
-//
-//            // create first notification  (Switch)
-//            InChargeNotificationWriterCreateParameters createParameters = InChargeTestUtils.getTestParametersForCreate();
-//            ICWriterAdapter.createNotification(createParameters);
-//
-//            // create second notification  (Session)
-//            createParameters.getIdentifierParameters().setClassName("Session");
-//            ICWriterAdapter.createNotification(createParameters);
-//
-//            // nlDeveloper will only see Switch
-//            InChargeTestUtils.assertExpectedNotificationReadEventCount(inChargeReaderAdapterImpl.list, 1);
-//        }
-//        finally{
-//            inChargeReaderAdapterImpl.closeAdapter();
-//        }
-//
-//        // subscribe to an non-existent list with tail mode false (should throw exception)
-//        readerParams.setNlName("NonExistentList");
-//        inchargeReader = new ICNotificationReaderMockImpl();
-//        try{
-//            inChargeReaderAdapterImpl =
-//                    new ICNotificationReaderAdapterImplMock(inchargeReader, readerParams,InChargeTestUtils.getInChargeConnectionParams(), transientInterval);
-//            fail("Exception should have been thrown");
-//        }
-//        catch(Exception e){
-//            inChargeReaderAdapterImpl.closeAdapter();
-//        }
-//
-//        // subscribe to an non-existent list with tail mode true (should throw exception)
-//        readerParams.setNlName("NonExistentList");
-//        readerParams.setTailMode(true);
-//        inchargeReader = new ICNotificationReaderMockImpl();
-//        try{
-//            inChargeReaderAdapterImpl =
-//                    new ICNotificationReaderAdapterImplMock(inchargeReader, readerParams,InChargeTestUtils.getInChargeConnectionParams(), transientInterval);
-//            fail("Exception should have been thrown");
-//        }
-//        catch(Exception e){
-//            inChargeReaderAdapterImpl.closeAdapter();
-//        }
-//
-//        // Subscribe to ALL_NOTIFICATIONS list
-//        readerParams.setNlName("ALL_NOTIFICATIONS");
-//        readerParams.setTailMode(false); // this time we will read all notifications but only one of them will be non-Session
-//        inchargeReader = new ICNotificationReaderMockImpl();
-//        try{
-//            inChargeReaderAdapterImpl = new ICNotificationReaderAdapterImplMock(inchargeReader, readerParams,InChargeTestUtils.getInChargeConnectionParams(), transientInterval);
-//            boolean found = false;
-//            for (int i = 0 ; i < 100 ; i++)
-//			{
-//            	int sessionNotificationCount = 0;
-//                int nonSessionNotificationCount = 0;
-//                Iterator iterator = inChargeReaderAdapterImpl.list.keySet().iterator();
-//            	while(iterator.hasNext())
-//                {
-//                	if(iterator.next().toString().indexOf("Session") > -1)
-//                	{
-//                		sessionNotificationCount++;
-//                	}
-//                	else
-//                	{
-//                		nonSessionNotificationCount++;
-//                	}
-//                }
-//            	if(nonSessionNotificationCount == 1 && sessionNotificationCount >= 1)
-//            	{
-//            		found = true;
-//            		break;
-//            	}
-//            	CommonTestUtils.wait(100);
-//			}
-//
-//            if(!found)
-//            {
-//            	fail("Could not read all notifications from ALL_NOTIFICATIONS notification list");
-//            }
-//        }
-//        finally{
-//            inChargeReaderAdapterImpl.closeAdapter();
-//        }
-//    }
+    public void testNotificationList() throws Exception {
+        SmartsNotificationListeningAdapter.CONNECTION_RETRY_COUNT = 2;
+        int transientInterval = 100;
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList, transientInterval, false);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", new HashMap());
+        SmartsTestUtils.createNotification("Session", "ercaswnyc2", "Down", new HashMap());
+        checkObjectListSize(receivedObjects, 1);
+        notificationAdapter.unsubscribe();
+        receivedObjects.clear();
+
+        // subscribe to an non-existent list with tail mode false (should throw exception)
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, "NonExistantList", transientInterval, false);
+        try {
+            notificationAdapter.subscribe();
+            fail("Exception should have been thrown");
+        }
+        catch (Exception e) {
+        }
+
+        // subscribe to an non-existent list with tail mode true (should throw exception)
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, "NonExistantList", transientInterval, true);
+        try {
+            notificationAdapter.subscribe();
+            fail("Exception should have been thrown");
+        }
+        catch (Exception e) {
+        }
+
+        // Subscribe to ALL_NOTIFICATIONS list
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, "ALL_NOTIFICATIONS", transientInterval, false);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+
+        boolean found = false;
+        for (int i = 0; i < 100; i++) {
+            int sessionNotificationCount = 0;
+            int nonSessionNotificationCount = 0;
+            Iterator iterator = receivedObjects.keySet().iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().toString().indexOf("Session") > -1) {
+                    sessionNotificationCount++;
+                } else {
+                    nonSessionNotificationCount++;
+                }
+            }
+            if (nonSessionNotificationCount == 1 && sessionNotificationCount >= 1) {
+                found = true;
+                break;
+            }
+            CommonTestUtils.wait(100);
+        }
+
+        if (!found) {
+            fail("Could not read all notifications from ALL_NOTIFICATIONS notification list");
+        }
+    }
 
     public void testTailModeTrue() throws Exception {
         int transientInterval = 100;
@@ -768,8 +736,6 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
 
     public void testAttributeChangesForClearedNotificationsAreNotIgnored() throws Exception, SmRemoteException {
         int transientInterval = 100;
-
-
         monitoredAtts.add("Owner");
         monitoredAtts.add("EventState");
         notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
@@ -788,7 +754,7 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
         NotificationIdentifierParams identiferParams = new NotificationIdentifierParams("Host", "ercaswnyc2", "Down");
         assertTrue("Notification could not be updated in time", SmartsTestUtils.waitForNotificationAttributeUpdate(identiferParams, "Active", "false"));
         checkObjectListSize(receivedObjects, 2);
-        Map notification = (Map)receivedObjects.get(param + "2CLEAR");
+        Map notification = (Map) receivedObjects.get(param + "2CLEAR");
         assertNotNull(notification);
         assertEquals(false, notification.get("Active"));
         assertEquals("INACTIVE", notification.get("EventState"));
@@ -814,6 +780,126 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
         SmartsTestUtils.getNotificationAdapter().takeOwnership(identiferParams, takeOwnershipParameters);
         checkObjectListSize(receivedObjects, 5);
         assertNotNull(receivedObjects.get(param + "5CHANGE"));
+    }
+
+    public void testNotificationSubscription() throws Exception {
+        int transientInterval = 100;
+        monitoredAtts.add("Active");
+        monitoredAtts.add("LastClearedAt");
+        monitoredAtts.add("EventState");
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList, transientInterval, true);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+
+        // create a notification
+        String param1 = "NOTIFICATION-Switch_ercaswnyc2_Down";
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", new HashMap());
+        checkObjectListSize(receivedObjects, 1);
+        Map notification = (Map) receivedObjects.get(param1 + "1NOTIFY");
+        assertNotNull(notification);
+        assertEquals(true, notification.get("Active"));
+        assertEquals(new Long(0), notification.get("LastClearedAt"));
+        assertEquals("ACTIVE", notification.get("EventState"));
+
+        // clear the notification
+        SmartsTestUtils.clearNotification("Switch", "ercaswnyc2", "Down");
+        checkObjectListSize(receivedObjects, 2);
+        notification = (Map) receivedObjects.get(param1 + "2CLEAR");
+        assertNotNull(notification);
+        assertEquals(false, notification.get("Active"));
+        assertEquals("INACTIVE", notification.get("EventState"));
+
+        // create another notification
+        SmartsTestUtils.createNotification("Router", "MyRouter", "Down", new HashMap());
+        String param2 = "NOTIFICATION-Router_MyRouter_Down";
+        checkObjectListSize(receivedObjects, 3);
+        notification = (Map) receivedObjects.get(param2 + "3NOTIFY");
+        assertNotNull(notification);
+        assertEquals(true, notification.get("Active"));
+        assertEquals(new Long(0), notification.get("LastClearedAt"));
+        assertEquals("ACTIVE", notification.get("EventState"));
+
+        // clear second notification
+        SmartsTestUtils.clearNotification("Router", "MyRouter", "Down");
+        checkObjectListSize(receivedObjects, 4);
+        notification = (Map) receivedObjects.get(param2 + "4CLEAR");
+        assertNotNull(notification);
+        assertEquals(false, notification.get("Active"));
+        assertEquals("INACTIVE", notification.get("EventState"));
+    }
+
+    public void testPropertyChangeSubscription() throws Exception {
+        int transientInterval = 100;
+        monitoredAtts.add("Owner");
+        monitoredAtts.add("Active");
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Up", new HashMap());
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList, transientInterval, false);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+
+        String param1 = "NOTIFICATION-Switch_ercaswnyc2_Up";
+        checkObjectListSize(receivedObjects, 1);
+        Map notification = (Map) receivedObjects.get(param1 + "1NOTIFY");
+        assertNotNull(notification);
+        assertEquals(true, notification.get("Active"));
+        assertEquals("", notification.get("Owner"));
+
+        // TAKE OWNERSHIP
+        SmartsTestUtils.takeOwnershipNotification("Switch", "ercaswnyc2", "Up", "Owner", "taking ownership");
+        checkObjectListSize(receivedObjects, 2);
+        notification = (Map) receivedObjects.get(param1 + "2CHANGE");
+        assertNotNull(notification);
+        assertEquals("Owner", notification.get("Owner"));
+
+        // RELEASE OWNERSHIP
+        SmartsTestUtils.releaseOwnershipNotification("Switch", "ercaswnyc2", "Up", "ReleasingOwner", "releasing ownership");
+        checkObjectListSize(receivedObjects, 3);
+        notification = (Map) receivedObjects.get(param1 + "3CHANGE");
+        assertNotNull(notification);
+        assertEquals("", notification.get("Owner"));
+    }
+
+    public void testFirstTimeRetrieveCreatesEventForClearedNotifications() throws Exception {
+        // create a notification
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", new HashMap());
+        // clear the notification
+        SmartsTestUtils.clearNotification("Switch", "ercaswnyc2", "Down");
+        NotificationIdentifierParams identifierParams = new NotificationIdentifierParams("Switch", "ercaswnyc2", "Down");
+        assertTrue(SmartsTestUtils.waitForNotificationAttributeUpdate(identifierParams, "Active", "false"));
+
+        // create another notification
+        SmartsTestUtils.createNotification("Router", "ercaswnyc2", "Down", new HashMap());
+
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, new ArrayList(), nlList, 0, false);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+
+        String param1 = "NOTIFICATION-Switch_ercaswnyc2_Down";
+        String param2 = "NOTIFICATION-Router_ercaswnyc2_Down";
+        checkObjectListSize(receivedObjects, 2);
+        assertNotNull(receivedObjects.get(param1 + "1CLEAR"));
+        assertNotNull(receivedObjects.get(param2 + "2NOTIFY"));
+    }
+
+    public void testFirstTimeClearIsNotMissed() throws Exception {
+        // create a notification
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", new HashMap());
+
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList, 0, true);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+
+        SmartsTestUtils.clearNotification("Switch", "ercaswnyc2", "Down");
+        NotificationIdentifierParams identifierParams = new NotificationIdentifierParams("Switch", "ercaswnyc2", "Down");
+        assertTrue(SmartsTestUtils.waitForNotificationAttributeUpdate(identifierParams, "Active", "false"));
+
+        String param = "NOTIFICATION-Switch_ercaswnyc2_Down";
+        checkObjectListSize(receivedObjects, 1);
+        assertNotNull(param + "1CLEAR");
     }
 
 

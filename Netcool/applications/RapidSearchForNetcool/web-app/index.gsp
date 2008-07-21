@@ -26,9 +26,8 @@
     <div class="bd">
     <form method="POST" action="javascript://nothing">
         <table width="100%">
-        <tr><td width="50%"><label for="group">Group Name:</label></td><td width="50%"><input type="textbox" name="group" /></td></tr>
-        <tr><td width="50%"><label for="filter">Filter Name:</label></td><td width="50%"><input type="textbox" name="name" /></td></tr>
-        <tr><td width="50%"><label for="queryName">Query Name:</label></td><td width="50%"><label for="query" width="100%">Example Query</label></td></tr>
+        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="group" /></td></tr>
+        <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" /></td></tr>
         </table>
         <input name="query" type="hidden"/>
     </form>
@@ -71,9 +70,7 @@
         titleAttribute:"serverserial",
         fields:['id', 'serverserial'],
         menuItems:{
-            /*item1 : { id : 'item1', label : 'item1' },
-            item2 : { id : 'item2', label : 'item2', condition : function(data) {return data == "3001"} },
-            item3 : {id : 'item3', label : 'item3' }*/
+            item1 : { id : 'eventDetails', label : 'Event Details' }
         } ,
         menuItemUrlParamName: 'id',
         saveQueryFunction: function(query){
@@ -83,23 +80,14 @@
     }
 
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
-    /*searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
-            if( id == "item1")
-                alert( "item1 with query " + xmlData );
-            else if( id == "item2")
-            {
-                alert( "item2 with query " + xmlData );
-            }
-            else if( id == "item3")
-            {
-                alert( "item3 with query " + xmlData );
-            }
-    }, this, true);   */
-    searchList.events["rowHeaderClick"].subscribe(function(xmlData) {
-        var type = xmlData.getAttribute("alias");
-        var id = xmlData.getAttribute("id");
-        var url = "getDetails.gsp?type="+type + "&id="+id;
-        html.show(url);
+    searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
+        if( id == "eventDetails"){
+             var type = xmlData.getAttribute("alias");
+            var eventId = xmlData.getAttribute("id");
+            var url = "getDetails.gsp?type="+type + "&id="+eventId;
+            html.show(url);
+
+        }
     }, this, true);
 
 

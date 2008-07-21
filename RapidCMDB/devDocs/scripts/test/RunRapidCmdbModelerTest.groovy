@@ -18,17 +18,6 @@ def workspaceDir = ".."
 def workspaceDirFile = new File(workspaceDir);
 def zipFile = new File("${workspaceDir}/ThirdParty/lib/grails/grails-1.0.3.zip");
 def rootDir = new File("${workspaceDir}/test/RapidCMDBModeler/RapidServer");
-def processVersionFile = new File("${rootDir.absolutePath}/processid.txt")
-if(processVersionFile.exists())
-{
-    def version = processVersionFile.getText();
-    processVersionFile.setText (Long.parseLong(version)+1);
-    Thread.sleep (10000);
-}
-else
-{
-    processVersionFile.setText (0);
-}
 Process proc = null;
 
 

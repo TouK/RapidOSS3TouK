@@ -140,7 +140,7 @@ class NetcoolDatasource extends BaseDatasource{
                 def oldVal = NetcoolConversionParameter.getConvertedValue(propertyName, event[propertyName]);
                 def newVal = NetcoolConversionParameter.getConvertedValue(propertyName, params[propertyName]);
                 def text = JOURNAL_MESSAGES[propertyName].make([oldValue:oldVal, newValue:newVal, audit:actionOwner]);
-                writeToJournal(serial, text);
+                writeToJournal(serverserial, text);
             }
         }
     }

@@ -534,9 +534,11 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     public void testThrowsExceptionIfKeymappingsDoesnotExistsForADatasource()
     {
         def model1 = new MockModel(name:"Class1");
-        def datasource1 = new DatasourceName(name:"RCMDB");
-        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, model:model1);
-        model1.datasources += modelDatasource1;
+        addMasterDatasource(model1);
+
+        def datasource2 = new DatasourceName(name:"anotherDs");
+        def modelDatasource2 = new MockModelDatasource(datasource:datasource2, model:model1);
+        model1.datasources += modelDatasource2;
         try
         {
             ModelGeneratorAdapter.generateModels([model1]);
@@ -544,9 +546,21 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         }
         catch(ModelGenerationException exception)
         {
-            assertEquals (ModelGenerationException.noKeySpecifiedForDatasource(modelDatasource1.datasource.name, model1.name).getMessage(), exception.getMessage());
+            assertEquals (ModelGenerationException.noKeySpecifiedForDatasource(modelDatasource2.datasource.name, model1.name).getMessage(), exception.getMessage());
         }
     }
+
+    public void testIfKeymappingsDoesnotExistsForMasterDatasourceAddAIdAsMasterDatasourceKey()
+    {
+        def model1 = new MockModel(name:"Class1");
+        def datasource1 = new DatasourceName(name:"RCMDB");
+        def modelDatasource1 = new MockModelDatasource(datasource:datasource1, model:model1);
+        model1.datasources += modelDatasource1;
+        ModelGeneratorAdapter.generateModels([model1]);
+        Class cls = compileClass(model1.name);
+        assertTrue(cls.newInstance().datasources.RCMDB.keys.containsKey("id"));
+    }
+
 
 
     private void checkExistanceOfMetaDataProperties(object)

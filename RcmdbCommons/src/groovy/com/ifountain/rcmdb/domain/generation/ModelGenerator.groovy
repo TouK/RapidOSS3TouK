@@ -94,7 +94,7 @@ class ModelGenerator
             modelMetaData.datasourceConfiguration.each{dsName,dsConf->
                 if(dsConf.keys.size() == 0)
                 {
-                    throw ModelGenerationException.noKeySpecifiedForDatasource(dsName, modelName);   
+                    throw ModelGenerationException.noKeySpecifiedForDatasource(dsName, modelName);
                 }
             }
         }
@@ -170,6 +170,10 @@ class ModelMetaData
             if(dsName == "RCMDB")
             {
                 masterDatasource = dsConf;
+                if(keys.isEmpty())
+                {
+                    keys["id"] = ["nameInDs":"id"];
+                }
             }
             datasourceConfiguration[dsName] = dsConf;
         }

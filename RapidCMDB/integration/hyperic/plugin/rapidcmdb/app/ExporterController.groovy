@@ -38,7 +38,7 @@ class ExporterController
 
         def aMan = AlertMan.one
 
-        urlfor(url:"/alerts/New.do?form=NewAlertDefinitionForm")
+        //urlfor(url:"/alerts/New.do?form=NewAlertDefinitionForm")
         //(url:"/alerts/New.do?form=NewAlertDefinitionForm")
         //pageInfo = new PageInfo(AlertSortField.DATE, true)
         //def alerts = ahelp.findAlerts(AlertSeverity.LOW, pageInfo)

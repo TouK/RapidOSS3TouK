@@ -6,6 +6,7 @@ import connector.NetcoolLastRecordIdentifier
 import datasource.NetcoolDatasource
 import org.apache.log4j.Logger
 import com.ifountain.comp.utils.CaseInsensitiveMap
+import datasource.NetcoolConversionParameter
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,9 +24,11 @@ class NetcoolConnector {
     Class NetcoolEvent;
     Class NetcoolJournal;
     Logger logger;
-    public NetcoolConnector(NetcoolDatasource datasource, Logger logger)
+    Map columnConversionParameters;
+    public NetcoolConnector(NetcoolDatasource datasource, Logger logger, Map columnConversionParameters)
     {
         this.logger = logger;
+        this.columnConversionParameters = columnConversionParameters;
         NetcoolEvent = this.class.classLoader.loadClass("NetcoolEvent");
         NetcoolJournal = this.class.classLoader.loadClass("NetcoolJournal");
         this.datasource = datasource;
@@ -47,21 +50,42 @@ class NetcoolConnector {
     //Get all events after marking as deleted. discard lastrecordidentifier
     def markAllEventsAsDeleted()
     {
-        int offset= 0 ;
-        int batchSize = 1000;
-        while(true)
-        {
-            def res = invokeMethod(NetcoolEvent, "search", ["servername:${serverName} && ${deleteMarkerField.localName}:false", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
-            if(res.total == 0)
-            {
-                break;
-            }
-            res.each{event->
-                event[deleteMarkerField.localName] = true;
-            }
-            offset += batchSize;
-        }
-        run();
+//        def markedEvents = [:];
+//        int offset= 0 ;
+//        int batchSize = 1000;
+//        while(true)
+//        {
+//            def res = invokeMethod(NetcoolEvent, "search", ["servername:${serverName} && ${deleteMarkerField.localName}:1", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
+//            if(res.total == 0)
+//            {
+//                break;
+//            }
+//            res.each{event->
+//                markedEvents[event.serverserial] = event;
+//            }
+//            offset += batchSize;
+//        }
+//
+//        def whereClause = "StateChange <= getdate - 1 AND ${deleteMarkerField.netcoolName} == 0";
+//        List records = datasource.getEvents(whereClause);
+//        def lastEventStateChange = 0;
+//        for (Map rec in records){
+//            def eventProps = getEventProperties(rec);
+//
+//            def res = invokeMethod(NetcoolEvent, "add",[getEventProperties(rec)] as Object[]);
+//            if(!res.hasErrors())
+//            {
+//                def lastStateChange = Long.parseLong(rec.statechange);
+//                if (lastStateChange > lastEventStateChange){
+//                    lastEventStateChange = lastStateChange;
+//                }
+//            }
+//            else
+//            {
+//                logger.warn("Could not added event with serial ${rec.SERVERSERIAL}. Reason :${res.errors}");
+//            }
+//        }
+//        NetcoolLastRecordIdentifier.add(datasourceName:datasource.name, eventLastRecordIdentifier:lastEventStateChange);
     }
 
 
@@ -125,6 +149,11 @@ class NetcoolConnector {
     {
         def eventMap = [:]
         rec.each{String propName, String propValue->
+            def convProp = this.columnConversionParameters[propName];
+            if(convProp != null)
+            {
+                propValue = convProp[propValue] 
+            }
             def localColName = nameMappings[propName];
             if(localColName == null)
             {

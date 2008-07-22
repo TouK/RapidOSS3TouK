@@ -1,6 +1,7 @@
 import datasource.NetcoolDatasource
 import groovy.xml.MarkupBuilder
 import datasource.NetcoolConversionParameter
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 /**
 * Created by IntelliJ IDEA.
@@ -9,6 +10,7 @@ import datasource.NetcoolConversionParameter
 * Time: 11:33:27 AM
 * To change this template use File | Settings | File Templates.
 */
+
 def defaultConversionColumnConfiguration = ["Class":"netcoolclass"]
 def deleteColName = "isdeleted"
 def baseDir = System.getProperty ("base.dir");
@@ -23,6 +25,7 @@ def conversionParams = netcoolDs.getConversionParams();
 conversionParams.each{Map params->
     NetcoolConversionParameter.add(keyField:params.keyfield, columnName:params.colName, value:params.value, conversion:params.conversion);
 }
+def convertedColumns = NetcoolConversionParameter.termFreqs("columnName");
 def netcoolFields = netcoolDs.getFieldMap();
 def fileWriter = new FileWriter(netcoolConfigurationFile);
 def netcoolConf = new MarkupBuilder(fileWriter);
@@ -33,6 +36,10 @@ netcoolConf.NetcoolConfiguration()
         netcoolConf.Fields()
         {
             netcoolFields.each{String colName, String colType->
+                if(convertedColumns[colName] != null)
+                {
+                    colType = ModelGenerator.STRING_TYPE;
+                }
                 def localName = defaultConversionColumnConfiguration[colName]==null?colName.toLowerCase(): defaultConversionColumnConfiguration[colName]
                 def isKey = localName == "servername" || localName == "serverserial";
                 netcoolConf.Field(NetcoolName:colName, LocalName:localName, IsDeleteMarker:colName==deleteColName, Type:colType, IsKey:isKey);

@@ -18,6 +18,6 @@ class NetcoolLastRecordIdentifier
     static constraints = {
         datasourceName(nullable:false, blank:false, key:[]);
         eventLastRecordIdentifier(nullable:true);
-        eventLastRecordIdentifier(nullable:true);
+        journalLastRecordIdentifier(nullable:true);
     }
 }

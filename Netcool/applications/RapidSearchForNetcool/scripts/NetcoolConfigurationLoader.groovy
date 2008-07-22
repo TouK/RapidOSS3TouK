@@ -2,6 +2,7 @@ import datasource.NetcoolColumn
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import datasource.NetcoolConversionParameter
 
 /**
 * Created by IntelliJ IDEA.
@@ -17,6 +18,9 @@ if(!netcoolConfigurationFile.exists())
     throw new Exception("Configuration file doesnot exist.");
 }
 NetcoolColumn*.remove();
+
+def convertedColumns = NetcoolConversionParameter.termFreqs("columnName");
+
 def slurper = new XmlSlurper()
 def res = slurper.parseText(netcoolConfigurationFile.getText());
 def netcoolEventXml = getModelXml(res.NetcoolEvent, true, [[name:"journals", reverseName:"event", toModel:"NetcoolJournal", cardinality:"One", reverseCardinality:"Many", isOwner:true]]);
@@ -36,6 +40,10 @@ def getModelXml(modelXml, boolean createColumnObjects, relations)
                 def netcoolName = field.@NetcoolName.text();
                 def localName = field.@LocalName.text();
                 def type = field.@Type.text();
+                if(convertedColumns[netcoolName] != null)
+                {
+                    type = ModelGenerator.STRING_TYPE;                    
+                }
                 def isDelMarker = new Boolean(field.@IsDeleteMarker.text()).booleanValue();
                 def isKey = new Boolean(field.@IsKey.text()).booleanValue();
                 if(createColumnObjects)

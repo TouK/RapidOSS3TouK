@@ -3,6 +3,7 @@ import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import datasource.NetcoolConversionParameter
+import com.ifountain.comp.utils.CaseInsensitiveMap
 
 /**
 * Created by IntelliJ IDEA.
@@ -20,7 +21,7 @@ if(!netcoolConfigurationFile.exists())
 NetcoolColumn*.remove();
 
 convertedColumnsArray = NetcoolConversionParameter.termFreqs("columnName");
-convertedColumnsMap = [:];
+convertedColumnsMap = new CaseInsensitiveMap();
 convertedColumnsArray.each{
     convertedColumnsMap[it.getTerm()] = it;
 }

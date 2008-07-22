@@ -2,6 +2,7 @@ import datasource.NetcoolDatasource
 import groovy.xml.MarkupBuilder
 import datasource.NetcoolConversionParameter
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.comp.utils.CaseInsensitiveMap
 
 /**
 * Created by IntelliJ IDEA.
@@ -26,7 +27,7 @@ conversionParams.each{Map params->
     NetcoolConversionParameter.add(keyField:params.keyfield, columnName:params.colName, value:params.value, conversion:params.conversion);
 }
 def convertedColumnsArray = NetcoolConversionParameter.termFreqs("columnName");
-def convertedColumnsMap = [:];
+def convertedColumnsMap = new CaseInsensitiveMap();
 convertedColumnsArray.each{
     convertedColumnsMap[it.getTerm()] = it;
 }

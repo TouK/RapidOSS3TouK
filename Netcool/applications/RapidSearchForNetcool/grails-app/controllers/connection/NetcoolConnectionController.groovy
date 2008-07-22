@@ -152,6 +152,6 @@ class NetcoolConnectionController {
         def fw = new FileWriter(new File("${System.getProperty("base.dir")}/scripts/${scriptName}.groovy"));
         template.make([datasourceName:datasource.name]).writeTo(fw);
         fw.close();
-        CmdbScript.addScript(name:scriptName, enabled:false, type:CmdbScript.SCHEDULED, period:60000);
+        CmdbScript.addScript(name:scriptName, enabled:false, type:CmdbScript.SCHEDULED, period:30);
     }
 }

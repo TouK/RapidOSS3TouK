@@ -7,6 +7,7 @@ import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
+import com.ifountain.comp.utils.CaseInsensitiveMap
 
 class ScriptController {
     public static final String SUCCESSFULLY_CREATED = "Script created";
@@ -141,8 +142,10 @@ class ScriptController {
         {
             try
             {
-                params.rsUser = session.username;
-                def result = CmdbScript.runScript(script, params)
+                def controllerDelegateMetaClass = new DelegateMt(this);
+                def scriptParams = ["web":this, "params":params];
+                def result = CmdbScript.runScript(script, scriptParams);
+                if(controllerDelegateMetaClass.isRendered) return;
                 if (result == null) {
                     result = "";
                 }
@@ -226,7 +229,7 @@ class ScriptController {
             redirect(action: list, controller: 'script');
         }
     }
-
+         
     def test =
     {
         def testDir = "test/reports"
@@ -286,6 +289,33 @@ class ScriptController {
             redirect(action: list, controller: 'script');
         }
     }
+}
+class DelegateMt extends DelegatingMetaClass
+{
+    boolean isRendered = false;
+    ScriptController controller;
+    public DelegateMt(ScriptController controller)
+    {
+        super(controller.metaClass);
+        controller.setMetaClass (this);
+    }
+
+    public Object invokeMethod(Object o, String s, Object o1) {
+         if(s == "render" || s == "redirect")
+        {
+            metaClass.getMetaProperty("isRendered").setProperty(this, true);
+        }
+        return super.invokeMethod(o, s, o1);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    public Object invokeMethod(Object o, String s, Object[] objects) {
+         if(s == "render" || s == "redirect")
+        {
+            metaClass.getMetaProperty("isRendered").setProperty(this, true);
+        }
+        return super.invokeMethod(o, s, objects);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
 }
 
 class MockScriptTest implements Test {

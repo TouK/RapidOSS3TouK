@@ -171,6 +171,33 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         }
     }
 
+
+    public void testControllerParamatersAndMethodsAreAvailableToScript()
+    {
+        String scriptName = "script1"
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        scriptFile.write ("""
+        web.render(text:web.session.toString(), contentType: "text/html", encoding: "UTF-8");
+        return "<This will be discarded/>"
+        """);
+        try
+        {
+            def scriptController = new ScriptController();
+            scriptController.params["name"] = scriptName;
+            scriptController.save();
+
+            IntegrationTestUtils.resetController (scriptController);
+            scriptController.params["id"] = scriptName;
+            scriptController.run();
+            assertEquals(scriptController.session.toString(), scriptController.response.contentAsString);
+            assertEquals (GrailsWebUtil.getContentType("text/html", ""), scriptController.response.contentType);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
+
     public void testRunReturnsErrorIfScriptDoesnotExist()
     {
         String scriptName = "script1"

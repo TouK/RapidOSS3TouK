@@ -167,7 +167,6 @@ class CmdbScript {
     }
 
     static def runScript(CmdbScript script, Map params) throws Exception {
-        def bindings = ["params": params]
-        return ScriptManager.getInstance().runScript(script.name, bindings);
+        return ScriptManager.getInstance().runScript(script.name, params);
     }
 }

@@ -60,7 +60,7 @@
     html.hide();
     var actionConfig = {url:'searchQuery/delete.xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
-    
+
     var searchConfig = {
         id:'searchList',
         url:'search',
@@ -120,7 +120,7 @@
     var config = {  id:"filterTree", "url":"script/run/queryList", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
                     "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
                     menuItems:{
-                        Delete : { id: 'delete', label : 'Delete',  condition : function(data) {return data.getAttribute("nodeType") != "group"} }
+                        Delete : { id: 'delete', label : 'Delete',  condition : function(data) {return true;} }
                     }
     };
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);

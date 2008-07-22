@@ -10,7 +10,7 @@ YAHOO.rapidjs.component.Form = function(container, config)
                                               { text:"Cancel", handler:this.handleCancel.createDelegate(this), scope:this } ]
                                     });
 
-    YAHOO.util.Event.addListener(container, 'keypress', this.handleKeypress, this, true);
+
 
     this.successful = config.successfulyExecuted;
     this.EDIT_MODE = 0;
@@ -24,6 +24,7 @@ YAHOO.rapidjs.component.Form = function(container, config)
     this.updateUrl = config.updateUrl;
     this.mode = this.CREATE_MODE;
     this.isSubmitInProggress = false;
+    YAHOO.util.Event.addListener(this.dialog.body, 'keypress', this.handleKeypress, this, true);
     this.render();
 
 };
@@ -46,7 +47,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         this.isSubmitInProggress = false;
 
         var listItem = dh.append(this.errors.dom, {tag:"li"});
-        listItem.appendChild(document.createTextNode("Request timeout"));        
+        listItem.appendChild(document.createTextNode("Request timeout"));
         this.errors.show();
     },
     handleSuccess: function(response)
@@ -153,7 +154,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         var inputs = this.dialog.form.elements;
         for(var i=0; i < inputs.length; i++)
         {
-            inputs[i].value = null;   
+            inputs[i].value = null;
         }
     }
 })

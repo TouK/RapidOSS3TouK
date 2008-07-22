@@ -88,7 +88,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.bufferView.rowEls = [];
         this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask', html:'Loading..', style:'text-align:center;'}, true);
         this.hideMask();
-        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleSearchClick, this, true);
+        //YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleSearchClick, this, true);
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[1], 'click', this.handleSearchClick, this, true);
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('a')[0], 'click', this.handleSaveQueryClick, this, true);
         YAHOO.util.Event.addListener(this.lineSizeSelector, 'change', this.handleLineSizeChange, this, true);
@@ -147,12 +147,11 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
 
     handleSearchClick: function(e) {
-        if ((e.type == "keypress" && e.keyCode == 13) || (e.type == "click" ))
-        {
+
             this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
             this.showMask();
             this.poll();
-        }
+
     },
 
     updateSearchData: function() {

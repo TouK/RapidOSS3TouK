@@ -19,10 +19,10 @@ if(!netcoolConfigurationFile.exists())
 }
 NetcoolColumn*.remove();
 
-def convertedColumnsArray = NetcoolConversionParameter.termFreqs("columnName");
-def convertedColumnsMap = [:];
+convertedColumnsArray = NetcoolConversionParameter.termFreqs("columnName");
+convertedColumnsMap = [:];
 convertedColumnsArray.each{
-    convertedColumnsMap[it.getProperty()] = it;
+    convertedColumnsMap[it.getPropertyName()] = it;
 }
 
 def slurper = new XmlSlurper()
@@ -44,7 +44,7 @@ def getModelXml(modelXml, boolean createColumnObjects, relations)
                 def netcoolName = field.@NetcoolName.text();
                 def localName = field.@LocalName.text();
                 def type = field.@Type.text();
-                if(convertedColumns[netcoolName] != null)
+                if(convertedColumnsMap[netcoolName] != null)
                 {
                     type = ModelGenerator.STRING_TYPE;                    
                 }

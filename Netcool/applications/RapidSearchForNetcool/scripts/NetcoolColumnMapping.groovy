@@ -28,7 +28,7 @@ conversionParams.each{Map params->
 def convertedColumnsArray = NetcoolConversionParameter.termFreqs("columnName");
 def convertedColumnsMap = [:];
 convertedColumnsArray.each{
-    convertedColumnsMap[it.getProperty()] = it;
+    convertedColumnsMap[it.getPropertyName()] = it;
 }
 def netcoolFields = netcoolDs.getFieldMap();
 def fileWriter = new FileWriter(netcoolConfigurationFile);

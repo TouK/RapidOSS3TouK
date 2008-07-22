@@ -22,7 +22,7 @@ NetcoolColumn*.remove();
 convertedColumnsArray = NetcoolConversionParameter.termFreqs("columnName");
 convertedColumnsMap = [:];
 convertedColumnsArray.each{
-    convertedColumnsMap[it.getPropertyName()] = it;
+    convertedColumnsMap[it.getTerm()] = it;
 }
 
 def slurper = new XmlSlurper()

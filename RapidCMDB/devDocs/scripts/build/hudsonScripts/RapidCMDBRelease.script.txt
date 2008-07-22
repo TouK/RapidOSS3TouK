@@ -1,7 +1,7 @@
 ############### tagging svn and checking out the tag #########
 #################################################
 
-TAG_NAME="RCMDB_v0_3_2_b"
+TAG_NAME="RCMDB_v0_3_4_b"
 CURRENT_DATE=$(date +%y%m%d%H)
 TAG_NAME=$TAG_NAME$CURRENT_DATE
 
@@ -19,7 +19,7 @@ rm -rf RapidModules
 rm -rf ThirdParty
 rm -rf Artifacts
 
-svn checkout http://dev.ifountain.org/repos/os/tags/$TAG_NAME/RapidModules ./RapidModules
+svn checkout http://dev.ifountain.org/repos/os/tags/$TAG_NAME/RapidModules ./RapidModules 
 svn checkout http://dev.ifountain.org/repos/os/tags/$TAG_NAME/ThirdParty ./ThirdParty
 
 ############## compiling build scripts ###################
@@ -35,24 +35,33 @@ groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Netco
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCompBuild.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCoreBuild.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidExtBuild.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidUiPluginBuild.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidSearchForNetcoolBuild.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCmdbBuild.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleTest.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CoreModuleTest.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CompModuleTest.groovy
 
 
+######################building####################
+###############################################
+cd RapidModules/
+groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild
+
+mkdir ../Artifacts
+mv ../Distribution/*.zip ../Artifacts
 
 #################### running test build and java tests #############
 ######################################################
 
-rm -rf TestResults/
-mkdir TestResults
+rm -rf ../TestResults/
+mkdir ../TestResults
 
-cd RapidModules/
+
 groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild testBuild
-#groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
-#groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
-#groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
+#groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest 
+#groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest 
+#groovy RapidCMDB/devDocs/scripts/build/CompModuleTest 
 
 
 ################### generating test domain classes ##############
@@ -65,6 +74,7 @@ scriptFileName1="Sample3Setup"
 scriptFileName2="Sample1Setup"
 cp RapidCMDBModeler/scripts/$scriptFileName1.groovy ../Distribution/RapidServer/RapidCMDBModeler/scripts
 cp RapidCMDBModeler/scripts/$scriptFileName2.groovy ../Distribution/RapidServer/RapidCMDBModeler/scripts
+cp RapidCMDBModeler/scripts/ModelHelper.groovy ../Distribution/RapidServer/RapidCMDBModeler/scripts
 
 rsbatchInput=input.txt
 echo  "/RapidCMDBModeler/script/save?name=$scriptFileName1" >> $rsbatchInput
@@ -86,6 +96,8 @@ mv $rsbatchInput ../Distribution/RapidServer/RapidCMDBModeler
 cd ../Distribution/RapidServer/RapidCMDBModeler/
 export RS_HOME=/root/.hudson/jobs/RapidCMDBRelease/workspace/Distribution/RapidServer
 chmod +x *
+
+sed -i "s/-Dserver.port=12223/-Dserver.port=9999/g" rsmodeler.sh
 
 
 ./rsmodeler.sh -start

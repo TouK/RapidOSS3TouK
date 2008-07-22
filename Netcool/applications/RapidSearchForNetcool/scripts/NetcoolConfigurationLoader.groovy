@@ -19,7 +19,11 @@ if(!netcoolConfigurationFile.exists())
 }
 NetcoolColumn*.remove();
 
-def convertedColumns = NetcoolConversionParameter.termFreqs("columnName");
+def convertedColumnsArray = NetcoolConversionParameter.termFreqs("columnName");
+def convertedColumnsMap = [:];
+convertedColumnsArray.each{
+    convertedColumnsMap[it.getProperty()] = it;
+}
 
 def slurper = new XmlSlurper()
 def res = slurper.parseText(netcoolConfigurationFile.getText());

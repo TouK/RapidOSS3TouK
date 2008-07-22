@@ -25,7 +25,11 @@ def conversionParams = netcoolDs.getConversionParams();
 conversionParams.each{Map params->
     NetcoolConversionParameter.add(keyField:params.keyfield, columnName:params.colName, value:params.value, conversion:params.conversion);
 }
-def convertedColumns = NetcoolConversionParameter.termFreqs("columnName");
+def convertedColumnsArray = NetcoolConversionParameter.termFreqs("columnName");
+def convertedColumnsMap = [:];
+convertedColumnsArray.each{
+    convertedColumnsMap[it.getProperty()] = it;
+}
 def netcoolFields = netcoolDs.getFieldMap();
 def fileWriter = new FileWriter(netcoolConfigurationFile);
 def netcoolConf = new MarkupBuilder(fileWriter);
@@ -36,7 +40,7 @@ netcoolConf.NetcoolConfiguration()
         netcoolConf.Fields()
         {
             netcoolFields.each{String colName, String colType->
-                if(convertedColumns[colName] != null)
+                if(convertedColumnsMap[colName] != null)
                 {
                     colType = ModelGenerator.STRING_TYPE;
                 }

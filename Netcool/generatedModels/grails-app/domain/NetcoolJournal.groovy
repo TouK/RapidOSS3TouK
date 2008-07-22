@@ -63,4 +63,7 @@ class NetcoolJournal {
     
     //AUTO_GENERATED_CODE
 
+
+
+
 }

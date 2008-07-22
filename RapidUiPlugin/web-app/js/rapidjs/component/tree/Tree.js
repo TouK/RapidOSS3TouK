@@ -36,7 +36,7 @@ YAHOO.rapidjs.component.Tree = function(container, config)
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingComponentContainer, {
-    
+
     handleSuccess: function(response)
     {
         var data = new YAHOO.rapidjs.data.RapidXmlDocument(response,[this.nodeId]);
@@ -51,12 +51,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
 
             this.rootTreeNode = new  YAHOO.rapidjs.component.TreeNode(node, this.tree, this.nodeTag, null, this.attributeToBeDisplayed, this.menuItems);
         }
+
+
+
+        this.tree.draw();
+
         if(this.selectedNode != null)
         {
-            YAHOO.util.Dom.addClass( node.getEl().firstChild , 'selected_tree_node');
+
+            YAHOO.util.Dom.addClass( this.selectedNode.getEl().getElementsByTagName('label')[0], 'selected_tree_node');
         }
-        this.tree.draw();
-        
+
+
     },
     handleFailure: function(response)
     {
@@ -71,15 +77,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         var target = YAHOO.util.Event.getTarget(e);
         if( YAHOO.util.Dom.hasClass( target, "treeNodeLabel") )
         {
+	        if(this.selectedNode != null)
+            {
+                YAHOO.util.Dom.removeClass( this.selectedNode.getEl().getElementsByTagName('label')[0], 'selected_tree_node');
+            }
+
             var parentId = target.id;
             var nodeIndex = parseInt( parentId.substr(3, parentId.length) );
             var node = this.tree.getNodeByIndex(nodeIndex);
-            if(this.selectedNode != null)
-            {
-                YAHOO.util.Dom.removeClass( this.selectedNode , 'selected_tree_node');
-            }
-            YAHOO.util.Dom.addClass( e.target , 'selected_tree_node');
-            this.selectedNode = e.target;
+
+            this.selectedNode = this.tree.getNodeByIndex(nodeIndex);
+            YAHOO.util.Dom.addClass( this.selectedNode.getEl().getElementsByTagName('label')[0] , 'selected_tree_node');
+
             this.events['treeClick'].fireDirect(node.data);
         }
         else if ( YAHOO.util.Dom.hasClass(target, "rcmdb-tree-node-headermenu" ) )
@@ -140,7 +149,7 @@ YAHOO.rapidjs.component.TreeNode = function(xmlData, tree, nodeTag, parentNode, 
         var htmlString = "<table><tr>";
         var index = 0;
         var invisibleCount = 0;
-        
+
         for (var i in this.menuItems)
         {
             if( this.menuItems[i].condition != null ){
@@ -186,7 +195,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeNode, YAHOO.rapidjs.component.Rapi
             {
                 this.childAdded(childDataNode);
             }
-        }       
+        }
     },
     childAdded : function(newChild){
         new YAHOO.rapidjs.component.TreeNode(newChild, this.tree, this.nodeTag, this, this.attributeToBeDisplayed, this.menuItems);
@@ -194,7 +203,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeNode, YAHOO.rapidjs.component.Rapi
 	childAddedBefore : function(newChild, refChild){
     },
 	childRemoved : function(oldChild){
-        
+
     },
 	dataChanged : function(attributeName, attributeValue){
         if(attributeName == this.attributeToBeDisplayed)
@@ -215,7 +224,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeNode, YAHOO.rapidjs.component.Rapi
 
     },
 	mergeFinished: function(){
-       
+
     }
 })
 

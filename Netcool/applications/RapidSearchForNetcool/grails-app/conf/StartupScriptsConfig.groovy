@@ -1,3 +1,3 @@
 class StartupScriptsConfig{
-    def scripts = ["CrateDefaults"];
+    def scripts = ["CreateDefaultScripts"];
 }

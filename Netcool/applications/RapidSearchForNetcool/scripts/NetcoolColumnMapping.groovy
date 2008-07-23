@@ -11,7 +11,7 @@ import com.ifountain.comp.utils.CaseInsensitiveMap
 * Time: 11:33:27 AM
 * To change this template use File | Settings | File Templates.
 */
-
+def COLUMNS_WILL_BE_CONVERTED = ["Severity":"", "Class":"", "OwnerUID":"", "OwnerGID":""];
 def defaultConversionColumnConfiguration = ["Class":"netcoolclass"]
 def deleteColName = "isdeleted"
 def baseDir = System.getProperty ("base.dir");
@@ -24,7 +24,10 @@ if(netcoolDatasources.isEmpty())
 NetcoolDatasource netcoolDs = netcoolDatasources[0];
 def conversionParams = netcoolDs.getConversionParams();
 conversionParams.each{Map params->
-    NetcoolConversionParameter.add(keyField:params.keyfield, columnName:params.colName, value:params.value, conversion:params.conversion);
+    if(COLUMNS_WILL_BE_CONVERTED.containsKey(params.colName))
+    {
+        NetcoolConversionParameter.add(keyField:params.keyfield, columnName:params.colName, value:params.value, conversion:params.conversion);
+    }
 }
 def convertedColumnsArray = NetcoolConversionParameter.termFreqs("columnName");
 def convertedColumnsMap = new CaseInsensitiveMap();
@@ -41,7 +44,7 @@ netcoolConf.NetcoolConfiguration()
         netcoolConf.Fields()
         {
             netcoolFields.each{String colName, String colType->
-                if(convertedColumnsMap[colName] != null)
+                if(COLUMNS_WILL_BE_CONVERTED.containsKey(colName))
                 {
                     colType = ModelGenerator.STRING_TYPE;
                 }

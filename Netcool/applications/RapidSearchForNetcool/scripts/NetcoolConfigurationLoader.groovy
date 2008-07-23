@@ -28,8 +28,8 @@ convertedColumnsArray.each{
 
 def slurper = new XmlSlurper()
 def res = slurper.parseText(netcoolConfigurationFile.getText());
-def netcoolEventXml = getModelXml(res.NetcoolEvent, true, [[name:"journals", reverseName:"event", toModel:"NetcoolJournal", cardinality:"One", reverseCardinality:"Many", isOwner:true]]);
-def netcoolJournalXml = getModelXml(res.NetcoolJournal, false, [[name:"event", reverseName:"journals", toModel:"NetcoolEvent", cardinality:"Many", reverseCardinality:"One", isOwner:false]]);
+def netcoolEventXml = getModelXml(res.NetcoolEvent, true, []);
+def netcoolJournalXml = getModelXml(res.NetcoolJournal, false, []);
 ModelGenerator.getInstance().generateModels ([netcoolEventXml, netcoolJournalXml]);
 web.flash.message = "Models generated successfully."
 web.redirect(uri:'/admin.gsp');

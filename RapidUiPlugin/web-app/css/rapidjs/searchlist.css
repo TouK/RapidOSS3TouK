@@ -6,10 +6,6 @@
     width: 100%;
     height: 100%;
 }
-.rcmdb-search-header{
-    height: 30px;
-    background: yellow;
-}
 
 .rcmdb-search-body {
     position: relative;
@@ -103,5 +99,5 @@
 
 .rcmdb-search-box{
     height: 55px;
-    background: #33CCCC;
+    background: #C3D9FF;
 }

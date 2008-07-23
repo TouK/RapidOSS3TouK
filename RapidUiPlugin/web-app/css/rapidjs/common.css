@@ -19,7 +19,7 @@
 }
 .rapid-context-menu-item-selected{
 	height: 20px;
-	background-color: ddddff;	
+	background-color: #ddddff;	
 	color: black;
 }
 
@@ -61,7 +61,6 @@
 }
 
 .ri-comp-conf-formelement{
-	text-align:5px;
 	padding-left:5px;
 	padding-top:10px;
 }
@@ -72,84 +71,6 @@
 
 .ri-comp-conf-input-large{
 
-}
-
-.ri-loading{
-	font-size:8pt;
-	background-image: url( '../images/grid/loading.gif' );
-	background-repeat: no-repeat;
-	background-position: left;
-	padding-left:20px;
-	padding-top:3px;
-	height:18px;
-}
-#loading{
-	position:absolute;
-	left:45%;
-	top:40%;
-	border:3px solid #B2D0F7;
-	background:white url(block-bg.gif) repeat-x;
-	padding:10px;
-	font:bold 14px verdana,tahoma,helvetica;
-	color:#003366;
-	width:150px;
-	text-align:center;
-	z-index: 30000;
-}
-
-.loading-indicator {
-    font-size:8pt;
-    background-image:url( ../images/grid/loading.gif );
-    background-repeat: no-repeat;
-    background-position:top left;
-    padding-left:20px;
-	height:18px;
-	text-align:left;
-}
-.ydlg-tools{
-	position: absolute;
-    top: 5px;
-    right: 27px;
-}
-.ydlg-help{
-	z-index:6;
-    cursor:pointer;
-    visibility: inherit;
-    height:16px;
-    width:16px; 
-    padding:2px;
-    float: right;
-}
-.ydlg-help-inner{
-	height:16px;
-    width:16px;
-    line-height:1px;
-    font-size:1px;
-    background-repeat:no-repeat;
-    background-position:center;
-    background-image:url( '../images/help.png' );
-}
-.ydlg-help-over{
-    border:1px solid #98c0f4;
-    background-color:white;
-    padding: 1px;
-}
-.ydlg-loading{
-    z-index:6;
-    height:16px;
-    width:16px; 
-    padding:2px;
-    float: right;
-    background:url( ../images/grid/loading.gif ) no-repeat center;
-}
-
-.ygrid-row-actionimage{
-	cursor: pointer;
-}
-.ygrid-cell-image{
-	background-repeat: no-repeat;
-	width: 100%;
-	height: 100%;
 }
 .rapid-formtext{
 	display:block;

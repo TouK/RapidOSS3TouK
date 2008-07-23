@@ -3,13 +3,13 @@ YAHOO.rapidjs.component.Form = function(container, config)
 {
     YAHOO.rapidjs.component.Form.superclass.constructor.call(this, container, config);
     this.dialog = new YAHOO.widget.Dialog(container, { width : config.width,
-                                      fixedcenter : true,
-                                      visible : false,
-                                      constraintoviewport : true,
-                                      buttons : [ { text:"Save", handler:this.handleSubmit.createDelegate(this), isDefault:true, scope:this },
-                                              { text:"Cancel", handler:this.handleCancel.createDelegate(this), scope:this } ]
-                                    });
-
+        fixedcenter : true,
+        visible : false,
+        constraintoviewport : true,
+        close:false,
+        buttons : [ { text:"Save", handler:this.handleSubmit.createDelegate(this), isDefault:true, scope:this },
+            { text:"Cancel", handler:this.handleCancel.createDelegate(this), scope:this } ]
+    });
 
 
     this.successful = config.successfulyExecuted;
@@ -52,31 +52,52 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     },
     handleSuccess: function(response)
     {
-        if(this.isSubmitInProggress)
+        if (this.isSubmitInProggress)
         {
             this.successful();
             this.hide();
             return;
         }
-        var data = new YAHOO.rapidjs.data.RapidXmlDocument(response,[this.nodeId]);
-		var node = this.getRootNode(data, response.responseText);
-        var inputs = this.dialog.form.elements;
-        for(var i=0; i < inputs.length; i++)
+        var formElements = this.dialog.form.elements;
+        for (var i = 0; i < formElements.length; i++)
         {
-            var input = inputs[i];
-
-            var dataColumnName = input.name;
-            if(this.mapping != null && this.mapping[dataColumnName] != null)
-            {
-                dataColumnName = this.mapping[input.name];;
-            }
-            input.value = node.getAttribute(dataColumnName);
+            this.setFormElementValue(formElements[i], response.responseXML);
         }
         this.isSubmitInProggress = false;
     },
+
+    setFormElementValue: function(formElement, rootNode) {
+        var dataTagName = formElement.name;
+        if (this.mapping != null && this.mapping[dataTagName] != null)
+        {
+            dataTagName = this.mapping[formElement.name];
+        }
+        var xmlNode = null;
+        var nodes = rootNode.getElementsByTagName(dataTagName);
+        if (nodes.length > 0) {
+            xmlNode = nodes[0];
+            if (formElement.nodeName == 'SELECT') {
+                var options = xmlNode.childNodes
+                for (var i = 0; i < options.length; i++)
+                {
+                    var option = options[i];
+                    if(option.nodeType == 1){
+                        var optionValue = option.firstChild.nodeValue;
+                        SelectUtils.addOption(formElement, optionValue, optionValue);
+                        if(option.getAttribute('selected')){
+                            SelectUtils.selectTheValue(formElement, optionValue, 0);
+                        }
+                    }
+                }
+            }
+            else{
+                formElement.value = xmlNode.firstChild.nodeValue
+            }
+        }
+    },
     handleKeypress: function(e)
     {
-        if( (e.type == "keypress" && e.keyCode == 13) )
+        if ((e.type == "keypress" && e.keyCode == 13))
         {
             this.handleSubmit();
         }
@@ -85,54 +106,61 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     handleSubmit: function()
     {
         this.errors.dom.innerHTML = "";
-        this.errors.hide() ;
+        this.errors.hide();
         this.isSubmitInProggress = true;
-        if(this.mode == this.EDIT_MODE)
+        if (this.mode == this.EDIT_MODE)
         {
             this.url = this.updateUrl;
 
         }
-        else if(this.mode  == this.CREATE_MODE)
+        else if (this.mode == this.CREATE_MODE)
         {
             this.url = this.saveUrl;
         }
-        var inputs = this.dialog.form.elements;
+        var formElements = this.dialog.form.elements;
         var params = {};
-        for(var i=0; i < inputs.length; i++)
+        for (var i = 0; i < formElements.length; i++)
         {
-            var input = inputs[i];
-            params[input.name] = input.value;
+            var formElement = formElements[i];
+            params[formElement.name] = this.getFormElementValue(formElement);
         }
         this.doRequest(this.url, params);
     },
-    handleCancel: function(){
+    handleCancel: function() {
         this.hide();
     },
-
+    getFormElementValue : function(formElement){
+         if (formElement.nodeName == 'SELECT') {
+             return formElement.options[formElement.selectedIndex].value;
+         }
+         else{
+             return formElement.value;
+         }
+    }, 
 
     handleFailure: function(response)
     {
         var dh = YAHOO.ext.DomHelper;
         this.isSubmitInProggress = false;
         var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
-        for(var i=0; i < errors.length; i++)
+        for (var i = 0; i < errors.length; i++)
         {
             var listItem = dh.append(this.errors.dom, {tag:"li"});
-           listItem.appendChild(document.createTextNode(errors[i].getAttribute("error")));
+            listItem.appendChild(document.createTextNode(errors[i].getAttribute("error")));
         }
         this.errors.show();
     },
 
     show: function(mode)
     {
-        this.errors.hide() ;
+        this.errors.hide();
         this.mode = mode;
-        if(mode == this.EDIT_MODE && this.editUrl != null)
+        if (mode == this.EDIT_MODE && this.editUrl != null)
         {
             this.doRequest(this.editUrl);
 
         }
-        else if(mode  == this.CREATE_MODE && this.createUrl != null)
+        else if (mode == this.CREATE_MODE && this.createUrl != null)
         {
             this.doRequest(this.createUrl);
         }
@@ -142,7 +170,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     hide: function()
     {
         this.errors.dom.innerHTML = "";
-        this.errors.hide() ;
+        this.errors.hide();
         this.abort();
         this.isSubmitInProggress = false;
         this.clearAllFields();
@@ -152,7 +180,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     clearAllFields: function()
     {
         var inputs = this.dialog.form.elements;
-        for(var i=0; i < inputs.length; i++)
+        for (var i = 0; i < inputs.length; i++)
         {
             inputs[i].value = null;
         }

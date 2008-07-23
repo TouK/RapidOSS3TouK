@@ -3,7 +3,7 @@ import groovy.xml.MarkupBuilder
 import search.SearchQueryGroup
 import auth.*;
 
-def user = RsUser.findByUsername(params.rsUser);
+def user = RsUser.findByUsername(web.session.username);
 def defaultGroup = SearchQueryGroup.get(name: "Default", user: user);
 if (defaultGroup == null) {
     SearchQueryGroup.add(name: "Default", user: user);

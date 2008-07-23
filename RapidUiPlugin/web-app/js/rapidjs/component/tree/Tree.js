@@ -13,7 +13,7 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     this.tree = new YAHOO.widget.TreeView(this.body);
 
     YAHOO.util.Event.addListener(this.body, 'click', this.fireTreeClick, this, true);
-    this.selectedNode = null;
+
     this.menuSelectedIndex = null;
     this.nodeId = config.nodeId;
 
@@ -26,6 +26,9 @@ YAHOO.rapidjs.component.Tree = function(container, config)
         'treeMenuItemClick' : new YAHOO.util.CustomEvent('treeMenuItemClick')
     };
     YAHOO.ext.util.Config.apply(this.events, events);
+
+    this.treeRootNode = this.tree.getRoot();
+    this.treeRootNode.data = null;
 
 
 
@@ -56,17 +59,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         {
             this.rootNode = node;
 
-            this.rootTreeNode = new  YAHOO.rapidjs.component.TreeNode(node, this.tree, this.nodeTag, null, this.attributeToBeDisplayed, this.menuItems);
+            this.rootTreeNode = new  YAHOO.rapidjs.component.TreeNode(node, this.tree, this.nodeTag, null, this.attributeToBeDisplayed, this.menuItems, this );
         }
 
 
 
         this.tree.draw();
 
-        if(this.selectedNode != null)
+        if(this.treeRootNode.data != null)
         {
 
-            YAHOO.util.Dom.addClass( this.selectedNode.getEl().getElementsByTagName('label')[0], 'selected_tree_node');
+            YAHOO.util.Dom.addClass( this.treeRootNode.data.getEl().getElementsByTagName('label')[0], 'selected_tree_node');
         }
 
 
@@ -84,17 +87,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
         var target = YAHOO.util.Event.getTarget(e);
         if( YAHOO.util.Dom.hasClass( target, "treeNodeLabel") )
         {
-	        if(this.selectedNode != null)
+	        if(this.treeRootNode.data != null)
             {
-                YAHOO.util.Dom.removeClass( this.selectedNode.getEl().getElementsByTagName('label')[0], 'selected_tree_node');
+                YAHOO.util.Dom.removeClass( this.treeRootNode.data.getEl().getElementsByTagName('label')[0], 'selected_tree_node');
             }
 
             var parentId = target.id;
             var nodeIndex = parseInt( parentId.substr(3, parentId.length) );
             var node = this.tree.getNodeByIndex(nodeIndex);
 
-            this.selectedNode = this.tree.getNodeByIndex(nodeIndex);
-            YAHOO.util.Dom.addClass( this.selectedNode.getEl().getElementsByTagName('label')[0] , 'selected_tree_node');
+            this.treeRootNode.data = this.tree.getNodeByIndex(nodeIndex);
+            YAHOO.util.Dom.addClass( this.treeRootNode.data.getEl().getElementsByTagName('label')[0] , 'selected_tree_node');
 
             this.events['treeClick'].fireDirect(node.data);
         }
@@ -224,6 +227,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeNode, YAHOO.rapidjs.component.Rapi
 	dataDestroyed : function(){
         if(this.tree.getNodeByIndex(this.treeNode.index) != null)
         {
+            if( this.tree.getRoot().data == this.treeNode)
+            {
+                this.tree.getRoot().data = null;
+            }
             this.tree.removeNode(this.treeNode, true) ;
         }
     },

@@ -220,7 +220,7 @@
                             <label for="netcoolclass">netcoolclass:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'netcoolclass','errors')}">
-                            <input type="text" id="netcoolclass" name="netcoolclass" value="${fieldValue(bean:netcoolEvent,field:'netcoolclass')}" />
+                            <input type="text" id="netcoolclass" name="netcoolclass" value="${fieldValue(bean:netcoolEvent,field:'netcoolclass')}"/>
                         </td>
                     </tr>
                     
@@ -274,7 +274,7 @@
                             <label for="ownergid">ownergid:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'ownergid','errors')}">
-                            <input type="text" id="ownergid" name="ownergid" value="${fieldValue(bean:netcoolEvent,field:'ownergid')}" />
+                            <input type="text" id="ownergid" name="ownergid" value="${fieldValue(bean:netcoolEvent,field:'ownergid')}"/>
                         </td>
                     </tr>
                     
@@ -283,7 +283,7 @@
                             <label for="owneruid">owneruid:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'owneruid','errors')}">
-                            <input type="text" id="owneruid" name="owneruid" value="${fieldValue(bean:netcoolEvent,field:'owneruid')}" />
+                            <input type="text" id="owneruid" name="owneruid" value="${fieldValue(bean:netcoolEvent,field:'owneruid')}"/>
                         </td>
                     </tr>
                     
@@ -391,7 +391,7 @@
                             <label for="severity">severity:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'severity','errors')}">
-                            <input type="text" id="severity" name="severity" value="${fieldValue(bean:netcoolEvent,field:'severity')}" />
+                            <input type="text" id="severity" name="severity" value="${fieldValue(bean:netcoolEvent,field:'severity')}"/>
                         </td>
                     </tr>
                     

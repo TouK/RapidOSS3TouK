@@ -98,17 +98,17 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
             searchMethod.setHitCollector(new DefaultSearchableSubsetHitCollector());
             searchMethod.setSearchResultFactory(new SearchableSubsetSearchResultFactory());
         }
-        if (methodName.equals("searchEvery")) {
+        else if (methodName.equals("searchTop")) {
             searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
             searchMethod.setHitCollector(new DefaultSearchableTopHitCollector());
             searchMethod.setSearchResultFactory(new SearchableHitsOnlySearchResultFactory());
         }
-        if (methodName.equals("searchEvery")) {
+        else if (methodName.equals("searchEvery")) {
             searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
             searchMethod.setHitCollector(new DefaultSearchableEveryHitCollector());
             searchMethod.setSearchResultFactory(new SearchableHitsOnlySearchResultFactory());
         }
-        if (methodName.equals("countHits")) {
+        else if (methodName.equals("countHits")) {
             searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
             searchMethod.setHitCollector(new CountOnlyHitCollector());
             searchMethod.setSearchResultFactory(new SearchableHitsOnlySearchResultFactory());

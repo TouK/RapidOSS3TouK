@@ -20,6 +20,14 @@
 <br>
 <br>
 <div class="front">
+    <g:if test="${flash.message}">
+        <div class="message">${flash.message}</div>
+    </g:if>
+    <g:hasErrors>
+        <div class="errors">
+            <g:renderErrors bean="${flash.errors}"/>
+        </div>
+    </g:hasErrors>
     <table>
         <tr>
             <th width="50%">Connections</th>

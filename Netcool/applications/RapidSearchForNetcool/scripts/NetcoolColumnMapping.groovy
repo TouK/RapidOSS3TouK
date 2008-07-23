@@ -69,5 +69,5 @@ netcoolConf.NetcoolConfiguration()
 }
 fileWriter.flush();
 fileWriter.close();
-
+web.flash.message = "Conversion parameters and columns imported successfully."
 web.redirect(uri:'/admin.gsp');

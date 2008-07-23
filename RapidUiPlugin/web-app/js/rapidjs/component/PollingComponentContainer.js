@@ -45,6 +45,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         catch(e)
         {
         }
+        this.events["loadstatechanged"].fireDirect(this, false);
         if(this.pollingInterval > 0)
         {
             this.pollTask.delay(this.pollingInterval*1000);
@@ -70,6 +71,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
     processFailure : function(response)
     {
+        if(!this.lastConnection|| YAHOO.util.Connect.isCallInProgress(this.lastConnection) == false){
+
+			this.events["loadstatechanged"].fireDirect(this, false);
+		}
         var st = response.status;
 		if(st == -1){
             this.handleTimeout(response);
@@ -137,6 +142,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
             }
         }
         this.lastConnection = YAHOO.util.Connect.asyncRequest('GET',url , callback, null);
+        this.events["loadstatechanged"].fireDirect(this, true);
     },
 
     abort: function()
@@ -145,6 +151,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
             var callStatus = YAHOO.util.Connect.isCallInProgress(this.lastConnection);
             if(callStatus == true){
                 YAHOO.util.Connect.abort(this.lastConnection);
+                this.events["loadstatechanged"].fireDirect(this, false);
                 this.lastConnection = null;
             }
         }

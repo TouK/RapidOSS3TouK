@@ -197,25 +197,6 @@
 .r-tooltip-body{
 	
 }
-.r-button{
-	display:block;
-	cursor:pointer;
-}
-.r-button-inner{
-	display: block;
-	white-space: nowrap;
-}
-.r-button-disabled{
-}
-.r-button-over{
-}
-.r-button-down{
-}
-.r-button-disabled .r-button-inner{
-	color:gray;
-	cursor:default;
-}
-
 td,textarea,input,div,span,a,a:visited,a:hover,a:active,select{
 	font-family: Arial, Tahoma, Verdana, Helvetica;
 	font-size: 11px;

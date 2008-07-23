@@ -1,0 +1,56 @@
+.r-buttontoolbar {
+    background: transparent url( ../../../js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -200px;
+    border-bottom: 1px solid #CFCFCF;
+    color: black;
+    position: relative;
+    height: 25px;
+}
+
+.r-buttontoolbar-text {
+    color: #083772;
+    display: block;
+    font-family: tahoma, verdana, helvetica;
+    font-size: 11px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    line-height: normal;
+    padding: 4px
+}
+
+.r-buttontoolbar-tools {
+    padding-right: 2px;
+    padding-top: 2px;
+    position: absolute;
+    right: 0px;
+    text-align: right;
+    top: 0px
+}
+
+.r-buttontoolbar-button {
+    float: right;
+}
+.r-buttontoolbar-tools .r-button{
+    padding: 2px;
+}
+
+.r-buttontoolbar-tools .r-button-over {
+    background-color: white;
+    border: 1px solid #98C0F4;
+    padding: 1px;
+}
+
+.r-buttontoolbar-tools .r-button-inner {
+    height: 16px;
+    width: 16px;
+}
+
+.r-tool-loading {
+    background-image: url( ../../../images/rapidjs/component/tools/loading.gif );
+}
+
+.r-tool-refresh {
+    background-image: url( ../../../images/rapidjs/component/tools/arrow_refresh_small.png );
+}

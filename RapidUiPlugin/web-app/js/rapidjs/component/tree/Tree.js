@@ -4,9 +4,15 @@ YAHOO.rapidjs.component.Tree = function(container, config)
 	YAHOO.rapidjs.component.Tree.superclass.constructor.call(this, container, config);
     this.id = container.id;
     this.menuItems = config.menuItems;
-    this.tree = new YAHOO.widget.TreeView(container);
+    var dh = YAHOO.ext.DomHelper;
+    this.wrapper = dh.append(this.container, {tag: 'div', cls:'r-yui-tree'});
+    this.header = dh.append(this.container, {tag: 'div', cls:'r-yui-tree-header'});
+    this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {});
+    this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
+    this.body = dh.append(this.container, {tag: 'div', cls:'r-yui-tree-body'});
+    this.tree = new YAHOO.widget.TreeView(this.body);
 
-    YAHOO.util.Event.addListener(container, 'click', this.fireTreeClick, this, true);
+    YAHOO.util.Event.addListener(this.body, 'click', this.fireTreeClick, this, true);
     this.selectedNode = null;
     this.menuSelectedIndex = null;
     this.nodeId = config.nodeId;
@@ -15,10 +21,11 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     this.nodeTypeAttribute = config.nodeTypeAttribute;
     this.attributeToBeDisplayed = config.displayAttribute;
     this.queryAttribute = config.queryAttribute;
-    this.events = {
+    var events = {
         'treeClick' : new YAHOO.util.CustomEvent('treeClick'),
         'treeMenuItemClick' : new YAHOO.util.CustomEvent('treeMenuItemClick')
     };
+    YAHOO.ext.util.Config.apply(this.events, events);
 
 
 

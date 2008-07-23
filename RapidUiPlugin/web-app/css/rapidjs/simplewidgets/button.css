@@ -1,0 +1,18 @@
+.r-button{
+	display:block;
+	cursor:pointer;
+}
+.r-button-inner{
+	display: block;
+	white-space: nowrap;
+}
+.r-button-disabled{
+}
+.r-button-over{
+}
+.r-button-down{
+}
+.r-button-disabled .r-button-inner{
+	color:gray;
+	cursor:default;
+}

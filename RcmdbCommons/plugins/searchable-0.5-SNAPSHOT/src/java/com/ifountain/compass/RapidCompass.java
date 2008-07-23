@@ -10,7 +10,6 @@ import org.compass.core.transaction.LocalTransactionFactory;
 import org.compass.core.transaction.TransactionFactory;
 import org.compass.core.executor.ExecutorManager;
 import org.compass.core.events.CompassEventManager;
-import org.compass.core.events.RebuildEventListener;
 import org.compass.core.converter.ConverterLookup;
 import org.compass.core.spi.InternalCompass;
 import org.compass.core.engine.SearchEngineOptimizer;
@@ -19,7 +18,6 @@ import org.compass.core.engine.SearchEngineFactory;
 import org.compass.core.engine.naming.PropertyNamingStrategy;
 import org.compass.core.engine.spellcheck.SearchEngineSpellCheckManager;
 import org.compass.core.config.CompassSettings;
-import org.compass.core.config.CompassConfiguration;
 
 import javax.naming.Reference;
 import javax.naming.NamingException;
@@ -170,21 +168,8 @@ public class RapidCompass implements InternalCompass{
         return compassInstance.getSearchEngineFactory();
     }
 
-    public void removeRebuildEventListener(RebuildEventListener rebuildEventListener) {
-        compassInstance.removeRebuildEventListener(rebuildEventListener);
-    }
 
-    public void addRebuildEventListener(RebuildEventListener rebuildEventListener) {
-        compassInstance.addRebuildEventListener(rebuildEventListener);
-    }
-
-    public void rebuild() {
-        compassInstance.rebuild();
-    }
-
-    public CompassConfiguration getConfig() {
-        return compassInstance.getConfig();
-    }
+    
 }
 
 class CompassSessionCloserTask extends TimerTask

@@ -117,7 +117,7 @@ class NetcoolEvent {
     java.lang.String url ="";
     
 
-    static hasMany = [journals:NetcoolJournal]
+    static hasMany = [:]
     
         static mapping = {
             tablePerHierarchy false
@@ -231,7 +231,7 @@ class NetcoolEvent {
      
     }
 
-    static mappedBy=["journals":"event"]
+    static mappedBy=[:]
     static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];

@@ -26,8 +26,6 @@ class NetcoolJournal {
     
     java.lang.String servername ="";
     
-    NetcoolEvent event ;
-    
 
     static hasMany = [:]
     
@@ -46,12 +44,10 @@ class NetcoolJournal {
         
      servername(blank:false,nullable:false,key:["keyfield"])
         
-     event(nullable:true)
-        
-     
+
     }
 
-    static mappedBy=["event":"journals"]
+    static mappedBy=[:]
     static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];

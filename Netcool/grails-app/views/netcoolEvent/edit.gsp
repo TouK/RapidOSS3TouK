@@ -154,24 +154,6 @@
                         </td>
                     </tr>
                     
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="journals">journals:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'journals','errors')}">
-                            
-<ul>
-<g:each var="j" in="${netcoolEvent?.journals?}">
-    <li style="margin-bottom:3px;">
-        <g:link controller="netcoolJournal" action="show" id="${j.id}">${j}</g:link>
-        <g:link class="delete" action="removeRelation" params="['id':netcoolEvent?.id, 'relationName':'journals', 'relatedObjectId':j.id]"></g:link>
-    </li>
-</g:each>
-</ul>
-<g:link params="['id':netcoolEvent?.id, 'relationName':'journals']" action="addTo">Add NetcoolJournal</g:link>
-
-                        </td>
-                    </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">

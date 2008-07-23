@@ -55,15 +55,6 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="event">event:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolJournal,field:'event','errors')}">
-                            <g:select optionKey="id" from="${NetcoolEvent.list()}" name="event.id" value="${netcoolJournal?.event?.id}" noSelection="['null':'']"></g:select>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="serial">serial:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolJournal,field:'serial','errors')}">

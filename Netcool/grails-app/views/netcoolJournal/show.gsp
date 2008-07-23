@@ -60,13 +60,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">event:</td>
-                    
-                    <td valign="top" class="value"><g:link controller="netcoolEvent" action="show" id="${netcoolJournal?.event?.id}">${netcoolJournal?.event}</g:link></td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">serial:</td>
                     
                     <td valign="top" class="value">${netcoolJournal.serial}</td>

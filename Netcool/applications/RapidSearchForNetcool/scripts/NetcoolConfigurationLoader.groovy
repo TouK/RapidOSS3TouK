@@ -32,7 +32,7 @@ def netcoolEventXml = getModelXml(res.NetcoolEvent, true, [[name:"journals", rev
 def netcoolJournalXml = getModelXml(res.NetcoolJournal, false, [[name:"event", reverseName:"journals", toModel:"NetcoolEvent", cardinality:"Many", reverseCardinality:"One", isOwner:false]]);
 ModelGenerator.getInstance().generateModels ([netcoolEventXml, netcoolJournalXml]);
 
-web.redirect(url:"admin.gsp");
+web.redirect(uri:'/admin.gsp');
 def getModelXml(modelXml, boolean createColumnObjects, relations)
 {
     def modelString = new StringWriter();

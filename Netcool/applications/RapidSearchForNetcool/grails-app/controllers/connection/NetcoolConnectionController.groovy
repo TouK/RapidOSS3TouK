@@ -129,7 +129,7 @@ class NetcoolConnectionController {
             def script = CmdbScript.updateScript(CmdbScript.get(name:scriptName), [enabled:true], true);    
         }
         flash.message = "Connectors successfully started"
-        redirect(uri:'/index.gsp');
+        redirect(uri:'/admin.gsp');
     }
 
     def stopConnectors = {
@@ -140,7 +140,7 @@ class NetcoolConnectionController {
         }
         connector.NetcoolConnectorFactory.clearConnectors();
         flash.message = "Connectors successfully stopped";
-        redirect(uri:'/index.gsp');
+        redirect(uri:'/admin.gsp');
     }
 
 

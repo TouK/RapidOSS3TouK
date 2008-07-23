@@ -70,4 +70,4 @@ netcoolConf.NetcoolConfiguration()
 fileWriter.flush();
 fileWriter.close();
 
-web.redirect(url:"admin.gsp");
+web.redirect(uri:'/admin.gsp');

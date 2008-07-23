@@ -42,7 +42,7 @@ class NetcoolEvent {
     
     java.lang.Long poll =0;
     
-    java.lang.String type ="";
+    java.lang.Long type =0;
     
     java.lang.Long tally =0;
     
@@ -56,7 +56,7 @@ class NetcoolEvent {
     
     java.lang.String ownergid ="";
     
-    java.lang.String acknowledged ="";
+    java.lang.Long acknowledged =0;
     
     java.lang.Long flash =0;
     
@@ -66,7 +66,7 @@ class NetcoolEvent {
     
     java.lang.Long processreq =0;
     
-    java.lang.String suppressescl ="";
+    java.lang.Long suppressescl =0;
     
     java.lang.String customer ="";
     
@@ -84,7 +84,7 @@ class NetcoolEvent {
     
     java.lang.Long nmosobjinst =0;
     
-    java.lang.String nmoscausetype ="";
+    java.lang.Long nmoscausetype =0;
     
     java.lang.String localnodealias ="";
     
@@ -102,9 +102,9 @@ class NetcoolEvent {
     
     java.lang.String remoterootobj ="";
     
-    java.lang.String x733eventtype ="";
+    java.lang.Long x733eventtype =0;
     
-    java.lang.String x733probablecause ="";
+    java.lang.Long x733probablecause =0;
     
     java.lang.String x733specificprob ="";
     
@@ -242,6 +242,7 @@ class NetcoolEvent {
     }
     
     //AUTO_GENERATED_CODE
+
 
 
 

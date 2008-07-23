@@ -19,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.DefaultCompassConverterLookupHelper;
 import org.compass.core.config.CompassConfigurationFactory;
-import org.compass.core.impl.DefaultCompass;
+import org.compass.core.impl.RefreshableCompass;
 import org.springframework.util.ClassUtils;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class SearchableGrailsDomainClassCompassClassMapperFactory {
 
     public static CompositeSearchableGrailsDomainClassCompassClassMapper getDefaultSearchableGrailsDomainClassCompassClassMapper(List defaultExcludedProperties, Map defaultFormats) {
         DefaultCompassConverterLookupHelper converterLookupHelper = new DefaultCompassConverterLookupHelper();
-        converterLookupHelper.setConverterLookup(((DefaultCompass) CompassConfigurationFactory.newConfiguration().setConnection("ram://dummy").buildCompass()).getConverterLookup());
+        converterLookupHelper.setConverterLookup(((RefreshableCompass) CompassConfigurationFactory.newConfiguration().setConnection("ram://dummy").buildCompass()).getConverterLookup());
 
         SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory = new SearchableGrailsDomainClassPropertyMappingFactory();
         domainClassPropertyMappingFactory.setDefaultFormats(defaultFormats);

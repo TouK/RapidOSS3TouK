@@ -54,7 +54,8 @@ class SearchableConfiguration {
     "compass.converter.long.format":"#000000000000000000000000000000",
     "compass.converter.double.type":CompassDoubleConverter.class.name,
     "compass.converter.double.format":"#000000000000000000000000000000",
-    "compass.engine.analyzer.default.type": org.apache.lucene.analysis.SimpleAnalyzer.class.name];
+    "compass.engine.analyzer.default.type": org.apache.lucene.analysis.SimpleAnalyzer.class.name,
+    "compass.engine.analyzer.search.type": org.apache.lucene.analysis.SimpleAnalyzer.class.name];
 
     /**
      * Default mapping property exclusions

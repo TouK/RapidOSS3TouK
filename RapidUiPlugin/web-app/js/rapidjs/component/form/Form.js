@@ -151,18 +151,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         this.errors.show();
     },
 
-    show: function(mode)
+    show: function(mode, params)
     {
         this.errors.hide();
         this.mode = mode;
         if (mode == this.EDIT_MODE && this.editUrl != null)
         {
-            this.doRequest(this.editUrl);
+            this.doRequest(this.editUrl, params);
 
         }
         else if (mode == this.CREATE_MODE && this.createUrl != null)
         {
-            this.doRequest(this.createUrl);
+            this.doRequest(this.createUrl, params);
         }
 
         this.dialog.show();

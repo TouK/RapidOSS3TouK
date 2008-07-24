@@ -98,7 +98,8 @@ class SearchQueryGroupController {
                 xml{
 	                render(contentType: 'text/xml') {
 		            	Edit{
-	                        name(searchQueryGroup.name)
+                            id(searchQueryGroup.id)
+                            name(searchQueryGroup.name)
 	                    }
 	            	}
 

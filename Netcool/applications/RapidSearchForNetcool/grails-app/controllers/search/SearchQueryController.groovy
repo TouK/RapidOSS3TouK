@@ -88,6 +88,7 @@ class SearchQueryController {
                     };
                     render(contentType: 'text/xml') {
                         Edit {
+                            id(searchQuery.id)
                             name(searchQuery.name)
                             query(searchQuery.query)
                             group {
@@ -112,7 +113,7 @@ class SearchQueryController {
 
     def update = {
         def searchQuery = SearchQuery.get([id: params.id])
-
+        def user = RsUser.get(username: session.username);
         if (searchQuery) {
             if (params.group == "")
             {

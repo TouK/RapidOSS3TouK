@@ -19,6 +19,16 @@
     <jsec:isNotLoggedIn>
 	  <g:javascript>window.location='auth/login?targetUri=/index.gsp'</g:javascript>
 	</jsec:isNotLoggedIn>
+    <style>
+		.r-filterTree-groupAdd{
+			background-image: url( images/rapidjs/component/tools/filter_group.png);
+		}
+	</style>
+	<style>
+		.r-filterTree-queryAdd{
+			background-image: url( images/rapidjs/component/tools/filteradd.png);
+		}
+	</style>
 </head>
 <body class=" yui-skin-sam">
 <div id="filterDialog">
@@ -26,10 +36,23 @@
     <div class="bd">
     <form method="POST" action="javascript://nothing">
         <table width="100%">
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="group" /></td></tr>
+        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select type="textbox" name="group" /></td></tr>
         <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" /></td></tr>
+        <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" /></td></tr>
         </table>
-        <input name="query" type="hidden"/>
+        <input type="hidden" name="id">
+    </form>
+
+    </div>
+</div>
+<div id="filterGroup">
+    <div class="hd">Save group</div>
+    <div class="bd">
+    <form method="POST" action="javascript://nothing">
+        <table width="100%">
+        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" /></td></tr>
+        </table>
+        <input type="hidden" name="id">
     </form>
 
     </div>
@@ -66,7 +89,7 @@
         return data.getAttribute("acknowledged") == 1;
     }
 
-    var conf =  {width:400, height:400, iframe:false};
+    var conf = {width:400, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
     html.hide();
     var actionConfig = {url:'searchQuery/delete.xml'}
@@ -95,14 +118,14 @@
             item3 : { id : 'deacknowledge', label : 'Deacknowledge', condition: searchListHeaderMenuConditionFunctionDeacknowledge },
             item4 : { id : 'takeOwnership', label : 'Take Ownership' },
             item5 : { id : 'severity', label : 'Change Severity', submenuItems : {
-                            subItem1 : { id: 'critical', label : 'Critical' },
-                            subItem2 : { id: 'major', label : 'Major' },
-                            subItem3 : { id: 'minor', label : 'Minor' },
-                            subItem4 : { id: 'warning', label : 'Warning' },
-                            subItem5 : { id: 'indeterminate', label : 'Indeterminate' },
-                            subItem6 : { id: 'clear', label : 'Clear' }
-                        }
-                    }
+                subItem1 : { id: 'critical', label : 'Critical' },
+                subItem2 : { id: 'major', label : 'Major' },
+                subItem3 : { id: 'minor', label : 'Minor' },
+                subItem4 : { id: 'warning', label : 'Warning' },
+                subItem5 : { id: 'indeterminate', label : 'Indeterminate' },
+                subItem6 : { id: 'clear', label : 'Clear' }
+            }
+            }
         } ,
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
@@ -110,9 +133,9 @@
             item3 : { id : 'greaterThan', label : 'Greater than',  condition: searchListPropertyMenuConditionFunction},
             item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunction}
         } ,
-        saveQueryFunction: function(query){
-                    dialog.dialog.form.query.value = query;
-                    dialog.show(dialog.CREATE_MODE);
+        saveQueryFunction: function(query) {
+            dialog.dialog.form.query.value = query;
+            dialog.show(dialog.CREATE_MODE);
         }
     }
 
@@ -120,91 +143,141 @@
 
 
     var acknowledgeConfig = { url: 'script/run/acknowledge' };
-	var acknowledgeAction = new YAHOO.rapidjs.component.action.RequestAction(acknowledgeConfig);
-	acknowledgeAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
-	acknowledgeAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
+    var acknowledgeAction = new YAHOO.rapidjs.component.action.RequestAction(acknowledgeConfig);
+    acknowledgeAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
+    acknowledgeAction.events.failure.subscribe(function() {
+        alert("Error occurred");
+    }, this, true);
 
     var deacknowledgeConfig = { url: 'script/run/acknowledge' };
-	var deacknowledgeAction = new YAHOO.rapidjs.component.action.RequestAction(deacknowledgeConfig);
-	deacknowledgeAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
-	deacknowledgeAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
+    var deacknowledgeAction = new YAHOO.rapidjs.component.action.RequestAction(deacknowledgeConfig);
+    deacknowledgeAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
+    deacknowledgeAction.events.failure.subscribe(function() {
+        alert("Error occurred");
+    }, this, true);
 
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
-        if( id == "eventDetails"){
+        if (id == "eventDetails") {
             var type = xmlData.getAttribute("alias");
             var eventId = xmlData.getAttribute("id");
-            var url = "getDetails.gsp?type="+type + "&id="+eventId;
+            var url = "getDetails.gsp?type=" + type + "&id=" + eventId;
             html.show(url);
 
         }
-        else if( id == 'acknowledge' )
+        else if (id == 'acknowledge')
         {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
+            var serverName = xmlData.getAttribute("servername");
+            var serverSerial = xmlData.getAttribute("serverserial");
             acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"true"});
         }
-        else if( id == 'deacknowledge' )
+        else if (id == 'deacknowledge')
         {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-    		deacknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"false"});
+            var serverName = xmlData.getAttribute("servername");
+            var serverSerial = xmlData.getAttribute("serverserial");
+            deacknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"false"});
         }
     }, this, true);
 
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
-        if( id == "sortAsc"){
+        if (id == "sortAsc") {
             searchList.setSortDirection(key, true);
         }
-        else if( id == "sortDesc"){
+        else if (id == "sortDesc") {
             searchList.setSortDirection(key, false);
         }
-        else if( id == "greaterThan"){
-            searchList.appendToQuery(key+":{"+value+" TO *}");
+        else if (id == "greaterThan") {
+            searchList.appendToQuery(key + ":{" + value + " TO *}");
         }
-        else if( id == "lessThan"){
-            searchList.appendToQuery(key+":{* TO "+value+"}");
+        else if (id == "lessThan") {
+            searchList.appendToQuery(key + ":{* TO " + value + "}");
         }
     }, this, true);
 
 
     var treeDisplayAttribute = "name";
-    function treeNodesDeleteConditionFunction(data)
+    function treeNodesConditionFunction(data)
     {
         return data.getAttribute(treeDisplayAttribute) != "Default";
     }
+    var groupDefinitionDialogConfig = {
+        width:"30em",
+        editUrl:"searchQueryGroup/edit.xml",
+        saveUrl:"searchQueryGroup/save.xml",
+        updateUrl:"searchQueryGroup/update.xml",
+        successfulyExecuted: function () {
+            tree.poll()
+        }
+    };
+    var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
 
     var config = {  id:"filterTree", "url":"script/run/queryList", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
-                    "displayAttribute":treeDisplayAttribute, "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
-                    menuItems:{
-                        Delete : { id: 'delete', label : 'Delete',  condition : treeNodesDeleteConditionFunction }
-                    }
+        "displayAttribute":treeDisplayAttribute, "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
+        menuItems:{
+            Delete : { id: 'delete', label : 'Delete',  condition : treeNodesConditionFunction },
+            Update : { id: 'update', label : 'Update',  condition : treeNodesConditionFunction }
+        }
     };
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
+    tree.addToolbarButton({
+        className:'r-filterTree-groupAdd',
+        scope:this,
+        tooltip: 'Add group',
+        click:function() {
+            groupDialog.show(groupDialog.CREATE_MODE);
+        }
+    });
+    tree.addToolbarButton({
+        className:'r-filterTree-queryAdd',
+        scope:this,
+        tooltip: 'Add query',
+        click:function() {
+            dialog.show(dialog.CREATE_MODE);
+        }
+    });
     tree.poll();
     deleteQueryAction.events.success.subscribe(tree.poll, tree, true);
-    deleteQueryAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
+    deleteQueryAction.events.failure.subscribe(function() {
+        alert("Error occurred");
+    }, this, true);
 
     deleteQueryGroupAction.events.success.subscribe(tree.poll, tree, true);
-    deleteQueryGroupAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
+    deleteQueryGroupAction.events.failure.subscribe(function() {
+        alert("Error occurred");
+    }, this, true);
 
     tree.events["treeClick"].subscribe(function(data) {
-            if(  data.getAttribute("nodeType") == "filter")
-            {
-               searchList.setQuery( data.getAttribute("query") );
-            }
+        if (data.getAttribute("nodeType") == "filter")
+        {
+            searchList.setQuery(data.getAttribute("query"));
+        }
     }, this, true);
 
     tree.events["treeMenuItemClick"].subscribe(function(id, data) {
-            if( id == "delete")
-            {
-                if( data.getAttribute("nodeType") == "filter" )
-                    deleteQueryAction.execute({id:data.getAttribute("id")});
-                else if( data.getAttribute("nodeType") == "group" )
-                    deleteQueryGroupAction.execute({id:data.getAttribute("id")});
-            }
+        if (id == "delete")
+        {
+            if (data.getAttribute("nodeType") == "filter")
+                deleteQueryAction.execute({id:data.getAttribute("id")});
+            else if (data.getAttribute("nodeType") == "group")
+                deleteQueryGroupAction.execute({id:data.getAttribute("id")});
+        }
+        else if(id == "update"){
+            if (data.getAttribute("nodeType") == "filter")
+                dialog.show(dialog.EDIT_MODE, {id:data.getAttribute("id")})
+            else if(data.getAttribute("nodeType") == "group")
+                groupDialog.show(groupDialog.EDIT_MODE, {id:data.getAttribute("id")})
+        }
     }, this, true);
 
-    var filterDefinitionDialogConfig = {width:"30em", saveUrl:"searchQuery/save.xml", updateUrl:"searchQuery/update.xml",rootTag:"Filter", successfulyExecuted: function () { tree.poll() }};
+    var filterDefinitionDialogConfig = {
+        width:"40em",
+        createUrl:"searchQuery/create.xml",
+        editUrl:"searchQuery/edit.xml",
+        saveUrl:"searchQuery/save.xml",
+        updateUrl:"searchQuery/update.xml",
+        successfulyExecuted: function () {
+            tree.poll()
+        }
+    };
     var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
 
@@ -217,13 +290,12 @@
         });
 
         layout.render();
-    searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
-    layout.on('resize', function() {
+        searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+        layout.on('resize', function() {
             searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
         });
 
     })
-
 </script>
 
 </body>

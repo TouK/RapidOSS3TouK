@@ -87,7 +87,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
     },
 
 
-    handleFailure: function(response)
+    handleErrors: function(response)
     {
         this.body.innerHTML = "";
         var dh = YAHOO.ext.DomHelper;

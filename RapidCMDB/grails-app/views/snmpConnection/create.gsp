@@ -36,14 +36,6 @@
                                 </td>
                             </tr>
 
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="maxNumberOfConnections">Max. Active:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:snmpConnection,field:'maxNumberOfConnections','errors')}">
-                                    <input type="text" class="inputtextfield" id="maxNumberOfConnections" name="maxNumberOfConnections" value="${fieldValue(bean:snmpConnection,field:'maxNumberOfConnections')}" />
-                                </td>
-                            </tr> 
                         
                             <tr class="prop">
                                 <td valign="top" class="name">

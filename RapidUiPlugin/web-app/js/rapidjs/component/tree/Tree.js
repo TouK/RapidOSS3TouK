@@ -7,7 +7,7 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     var dh = YAHOO.ext.DomHelper;
     this.wrapper = dh.append(this.container, {tag: 'div', cls:'r-yui-tree'});
     this.header = dh.append(this.container, {tag: 'div', cls:'r-yui-tree-header'});
-    this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {});
+    this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title:this.title});
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
     this.body = dh.append(this.container, {tag: 'div', cls:'r-yui-tree-body'});
     this.tree = new YAHOO.widget.TreeView(this.body);
@@ -74,7 +74,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
 
 
     },
-    handleFailure: function(response)
+    handleErrors: function(response)
     {
 
     },

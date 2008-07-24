@@ -115,7 +115,7 @@
         searchQueryParamName:'query',
         rootTag:'Objects',
         contentPath:'Object',
-        indexAtt:'id',
+        keyAttribute:'id',
         totalCountAttribute:'total',
         offsetAttribute:'offset',
         sortOrderAttribute:'sortOrder',

@@ -1,12 +1,11 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.search');
 YAHOO.rapidjs.component.search.SearchList = function(container, config) {
-    this.id = null;
-    this.url = null;
-    this.saveQueryFunction = config.saveQueryFunction;
-    this.searchQueryParamName = config.searchQueryParamName;
+    YAHOO.rapidjs.component.search.SearchList.superclass.constructor.call(this, container, config);
+    this.saveQueryFunction = null
+    this.searchQueryParamName = null
     this.contentPath = null;
     this.currentlyExecutingQuery = null;
-    this.indexAtt = null;
+    this.keyAttribute = null;
     this.rootTag = null;
     this.totalCountAttribute = null;
     this.offsetAttribute = null;
@@ -22,19 +21,21 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.rowHeight = null;
     this.totalRowCount = 0;
     this.lastOffset = 0;
-    this.lastSortAtt = this.indexAtt;
+    this.lastSortAtt = this.keyAttribute;
     this.lastSortOrder = 'asc';
+    this.params = {'offset':this.lastOffset, 'sort':this.lastSortAtt, 'order':this.lastSortOrder, 'max':this.maxRowsDisplayed};
     this.rowHeaderMenu = null;
     this.cellMenu = null;
     this.rowHeaderAttribute = config.rowHeaderAttribute;
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.scrollPollTask = new YAHOO.ext.util.DelayedTask(this.scrollPoll, this);
-    this.events = {
+    var events = {
         'rowHeaderMenuClick' : new YAHOO.util.CustomEvent('rowHeaderMenuClick'),
         'cellMenuClick' : new YAHOO.util.CustomEvent('cellMenuClick'),
         'rowHeaderClick' : new YAHOO.util.CustomEvent('rowHeaderClick'),
         'propertyClick' : new YAHOO.util.CustomEvent('propertyClick')
     };
+    YAHOO.ext.util.Config.apply(this.events, events);
     this.calculateRowHeight();
     this.render();
 
@@ -44,19 +45,115 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
 };
 
 
-YAHOO.rapidjs.component.search.SearchList.prototype = {
+YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.component.PollingComponentContainer, {
+
+    scrollPoll : function(offset) {
+        this.showMask();
+        this.params['offset'] = offset;
+        this.params['sort'] = this.lastSortAtt;
+        this.params['order'] = this.lastSortOrder;
+        this.poll();
+    },
+
+    setQuery: function(queryString)
+    {
+        this.currentlyExecutingQuery = queryString;
+        this.searchBox.dom.getElementsByTagName('input')[0].value = queryString;
+        this.showMask();
+        this.params[this.searchQueryParamName] = this.currentlyExecutingQuery;
+        this.poll();
+    },
+
+    appendToQuery: function(query)
+    {
+        this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value + " " + query;
+        this.searchBox.dom.getElementsByTagName('input')[0].value = this.currentlyExecutingQuery;
+        this.showMask();
+        this.params[this.searchQueryParamName] = this.currentlyExecutingQuery;
+        this.poll();
+    },
+    handleSearchClick: function(e) {
+        this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
+        this.showMask();
+        this.params[this.searchQueryParamName] = this.currentlyExecutingQuery;
+        this.poll();
+    },
+    sort:function(sortAtt, sortOrder) {
+        this.showMask();
+        this.lastSortAtt = sortAtt;
+        this.lastSortOrder = sortOrder;
+        this.params['sort'] = this.lastSortAtt;
+        this.params['order'] = this.lastSortOrder;
+        this.poll(this.lastOffset, sortAtt, sortOrder);
+    },
+
+    handleSuccess: function(response)
+    {
+        var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response, this.keyAttribute);
+        var node = this.getRootNode(newData);
+        if (node) {
+            this.totalRowCount = parseInt(node.getAttribute(this.totalCountAttribute), 10)
+            this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;
+            this.lastOffset = parseInt(node.getAttribute(this.offsetAttribute), 10)
+            if (this.data) {
+
+                this.data.mergeData(node, this.keyAttribute);
+                this.refreshData();
+
+            }
+            else {
+                this.data = node;
+                this.loadData(node);
+            }
+        }
+    },
+    handleErrors: function(response)
+    {
+
+    },
+    handleTimeout: function(response)
+    {
+    },
+    handleUnknownUrl: function(response)
+    {
+    },
+
+    clearData: function() {
+        this.totalRowCount = 0;
+        this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;
+        this.lastOffset = 0;
+        if (this.rootNode && this.rootNode.xmlData) {
+            var currentChildren = this.rootNode.xmlData.childNodes();
+            while (currentChildren.length > 0) {
+                var childNode = currentChildren[0];
+                this.rootNode.xmlData.removeChild(childNode);
+            }
+        }
+        this.refreshData();
+    },
+    handleSaveQueryClick: function(e)
+    {
+        if (this.searchBox.dom.getElementsByTagName('input')[0].value != "")
+        {
+            this.saveQueryFunction(this.searchBox.dom.getElementsByTagName('input')[0].value);
+        }
+    },
+
+    loadData : function(data) {
+        if (this.rootNode) {
+            this.rootNode.destroy();
+        }
+        this.rootNode = new YAHOO.rapidjs.component.search.RootSearchNode(data, this.contentPath);
+        this.updateSearchData();
+        this.updateBodyHeight();
+    },
+
     render : function() {
         var dh = YAHOO.ext.DomHelper;
         this.wrapper = dh.append(this.container, {tag: 'div', cls:'rcmdb-search'});
-        /*
-        html:'<table><tr><td width="100%"><table width="100%"><tr><td><input type="text" style="width:100%;"/></td></tr></table></td><td><table width="225px"><tr>' +
-                 '<td><button>Search</button></td></tr>' +
-                 '<td><a href="#">Save Query</a></td><td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
-                 '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
-                 '<option value="7">7</option><option value="8">8</option></select></td></tr></table></td></tr></table>'}, true);*/
-
-
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
+        this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header.dom, {title:this.title});
+        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
             html:'<div><form action="javascript:void(0)"><table><tbody>' +
                  '<tr>' +
@@ -88,7 +185,6 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.bufferView.rowEls = [];
         this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask', html:'Loading..', style:'text-align:center;'}, true);
         this.hideMask();
-        //YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleSearchClick, this, true);
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[1], 'click', this.handleSearchClick, this, true);
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('a')[0], 'click', this.handleSaveQueryClick, this, true);
         YAHOO.util.Event.addListener(this.lineSizeSelector, 'change', this.handleLineSizeChange, this, true);
@@ -98,10 +194,10 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic"});
 
         for (var i in this.menuItems) {
-            if( this.menuItems[i].submenuItems)
+            if (this.menuItems[i].submenuItems)
             {
-	            var subMenu = new YAHOO.widget.Menu( this.id + '_rowHeaderSubmenu_' + i, {position: "dynamic"});
-                for( var j in this.menuItems[i].submenuItems )
+                var subMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderSubmenu_' + i, {position: "dynamic"});
+                for (var j in this.menuItems[i].submenuItems)
                 {
 
                     var subItem = subMenu.addItem({text:this.menuItems[i].submenuItems[j].label });
@@ -122,46 +218,8 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             YAHOO.util.Event.addListener(item.element, "click", this.cellMenuItemClicked, i, this);
 
         }
-//        this.cellMenu.addItems([
-//            {text:'sort asc', onclick: { fn: this.cellMenuItemClicked, scope: this }},
-//            {text:'sort desc', onclick: { fn: this.cellMenuItemClicked, scope: this }}
-//        ]);
         this.cellMenu.render(document.body);
 
-
-    },
-
-    setQuery: function(queryString)
-    {
-        this.currentlyExecutingQuery = queryString;
-        this.searchBox.dom.getElementsByTagName('input')[0].value = queryString;
-        this.showMask();
-        this.poll();
-    },
-
-    handleSaveQueryClick: function(e)
-    {
-        if (this.searchBox.dom.getElementsByTagName('input')[0].value != "")
-        {
-            this.saveQueryFunction(this.searchBox.dom.getElementsByTagName('input')[0].value);
-            //alert( "Query " + escape(this.searchBox.dom.getElementsByTagName('input')[0].value) + " saved succesfully.");
-        }
-    },
-    appendToQuery: function(query)
-    {
-        this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value + " " + query;
-        this.searchBox.dom.getElementsByTagName('input')[0].value = this.currentlyExecutingQuery;
-        this.showMask();
-        this.poll();
-
-    },
-
-
-    handleSearchClick: function(e) {
-
-            this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
-            this.showMask();
-            this.poll();
 
     },
 
@@ -217,8 +275,10 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
             rowStartIndex = 0;
             interval = this.totalRowCount;
         }
+
         if (rowStartIndex < this.lastOffset + 2) {
             var nextOffset = (rowStartIndex + interval * 2) - this.maxRowsDisplayed;
+
             if (nextOffset < 0) {
                 nextOffset = 0;
             }
@@ -371,8 +431,6 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         }
 
     },
-
-
     handleClick: function(e) {
         var target = YAHOO.util.Event.getTarget(e);
         var row = this.getRowFromChild(target);
@@ -434,14 +492,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         }
     },
 
-    loadData : function(data) {
-        if (this.rootNode) {
-            this.rootNode.destroy();
-        }
-        this.rootNode = new YAHOO.rapidjs.component.search.RootSearchNode(data, this.contentPath);
-        this.updateSearchData();
-        this.updateBodyHeight();
-    },
+
 
     updateBodyHeight : function() {
         this.scrollPos.setHeight(this.totalRowCount * this.rowHeight);
@@ -452,104 +503,17 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         return this.rowHeight;
     },
 
-    scrollPoll : function(offset) {
 
-        this.showMask();
-        this.poll(offset, this.lastSortAtt, this.lastSortOrder);
-    },
-    poll: function(offset, sortAtt, sortOrder) {
-        if (this.lastConnection) {
-            var callStatus = YAHOO.util.Connect.isCallInProgress(this.lastConnection);
-            if (callStatus == true) {
-                YAHOO.util.Connect.abort(this.lastConnection);
-                this.lastConnection = null;
-            }
-        }
-        var callback = {
-            success: this.processSuccess,
-            failure : this.processFailure,
-            scope : this,
-            timeout : 30000
-        };
-        var url;
-        var params = [];
-        if (this.currentlyExecutingQuery != null)
-        {
-            params[params.length] = this.searchQueryParamName + "=" + this.currentlyExecutingQuery;
-        }
-        params[params.length] = 'max=' + this.maxRowsDisplayed;
-        if (offset != null) {
-            params[params.length] = 'offset=' + offset;
-        }
-        else {
-            params[params.length] = 'offset=' + this.lastOffset;
-        }
-        params[params.length] = 'sort=' + (sortAtt || this.indexAtt);
-        params[params.length] = 'order=' + (sortOrder || 'asc');
-        params[params.length] = 'format=xml';
-        url = this.url + '?' + params.join('&');
-        this.lastConnection = YAHOO.util.Connect.asyncRequest('GET', url, callback);
-    },
-
-    processSuccess: function(response) {
-        if (YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
-        {
-            return;
-        }
-        var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response, this.indexAtt);
-        var node = newData.getRootNode(this.rootTag);
-        if (node) {
-            this.totalRowCount = parseInt(node.getAttribute(this.totalCountAttribute), 10)
-            this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;
-            this.lastOffset = parseInt(node.getAttribute(this.offsetAttribute), 10)
-            if (this.data) {
-
-                this.data.mergeData(node, this.indexAtt);
-                this.refreshData();
-
-            }
-            else {
-                this.data = node;
-                this.loadData(node);
-            }
-        }
-        else {
-            alert('xmlde hata var');
-            this.hideMask();
-        }
-    },
-
-    processFailure: function(response) {
-        var st = response.status;
-        if (st == -1) {
-            alert('Request received a timeout');
-        }
-        else if (st == 404) {
-            alert('Specified url cannot be found');
-        }
-        else if (st == 0) {
-            alert('Server is not available');
-        }
-    },
     showMask: function() {
-        //console.log("show mask");
         this.mask.setTop(this.header.dom.offsetHeight);
         this.mask.setWidth(this.body.dom.clientWidth);
         this.mask.setHeight(this.body.dom.clientHeight);
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', '');
     },
     hideMask: function() {
-        //console.log("show mask");
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
     },
 
-    sort:function(sortAtt, sortOrder) {
-
-        this.showMask();
-        this.lastSortAtt = sortAtt;
-        this.lastSortOrder = sortOrder;
-        this.poll(this.lastOffset, sortAtt, sortOrder);
-    },
 
     _sort:function(arrayToBeSorted) {
         var dsc = false;
@@ -652,7 +616,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         if (isAsc) {
             this.sort(propKey, 'asc');
         }
-        else{
+        else {
             this.sort(propKey, 'desc');
         }
     },
@@ -680,10 +644,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
 
     refreshAndPoll: function ()
     {
-	    this.showMask();
-	    //this.refreshData();
-        this.poll(this.lastOffset, this.lastSortAtt, this.lastSortOrder);
+        this.showMask();
+        this.poll();
     }
-
-
-}
+});

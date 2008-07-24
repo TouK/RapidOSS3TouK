@@ -138,7 +138,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
          }
     }, 
 
-    handleFailure: function(response)
+    handleErrors: function(response)
     {
         var dh = YAHOO.ext.DomHelper;
         this.isSubmitInProggress = false;

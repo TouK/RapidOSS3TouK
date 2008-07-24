@@ -18,7 +18,7 @@ class SearchController {
     def index = {
         def sortOrder = 0;
         def query = params.query;
-        if(query == "")
+        if(query == "" || query == null)
         {
             query = "id:*";
         }

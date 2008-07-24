@@ -38,7 +38,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
             }
             else
             {
-                this.handleFailure(response);
+                this.handleErrors(response);
             }
 
         }
@@ -61,7 +61,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     handleSuccess: function(response)
     {
     },
-    handleFailure: function(response)
+    handleErrors: function(response)
     {
     },
     handleTimeout: function(response)
@@ -89,10 +89,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 		else if(st == 0){
 			YAHOO.rapidjs.serverDownEvent.fireDirect(response);
 		}
-        else
-        {
-            this.handleFailure(response);
-        }
         if(this.pollingInterval > 0)
         {
             this.pollTask.delay(this.pollingInterval*1000);
@@ -169,7 +165,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
 	getPollingInterval: function()
 	{
-		return this.datasource.getPollingInterval();
+		return this.pollingInterval;
 	},
     configureTimeout: function(config){
 		if(config.timeout){

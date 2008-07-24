@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <exe4j version="4.1" transformSequenceNumber="1">
   <directoryPresets config="" />
-  <application name="iFountain RapidCMDBModeler" distributionSourceDir=".">
+  <application name="iFountain Modeler" distributionSourceDir=".">
     <languages>
       <principalLanguage id="en" customLocalizationFile="" />
     </languages>
   </application>
-  <executable name="rsmodeler" type="1" iconSet="true" iconFile="ifountain.ico" executableDir="." redirectStderr="true" stderrFile="logs/RapidServerErr.log" redirectStdout="true" stdoutFile="logs/RapidServerOut.log" failOnStderrOutput="false" executableMode="3" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="Starts iFountain RapidCMDBModeler" jreLocation="" executionLevel="asInvoker" amd64="false">
+  <executable name="rsmodeler" type="1" iconSet="true" iconFile="ifountain.ico" executableDir="." redirectStderr="true" stderrFile="logs/RapidServerErr.log" redirectStdout="true" stdoutFile="logs/RapidServerOut.log" failOnStderrOutput="false" executableMode="3" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="Starts iFountain Modeler" jreLocation="" executionLevel="asInvoker" amd64="false">
     <messageSet />
     <versionInfo include="false" fileVersion="" fileDescription="ProcessManager Service Executable" legalCopyright="Ifountain" internalName="" companyName="IFountain" productVersion="" />
   </executable>

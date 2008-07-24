@@ -64,8 +64,8 @@ class NetcoolDatasource extends BaseDatasource{
     Acknowledged:journalMessages.createTemplate("Alert is \${newValue == 1?'':'un'}acknowledged by \${audit}")]
     static JOURNAL_TRACKING_PROPERTY_LIST = ["Severity", "SuppressEscl", "Acknowledged"]
 
-    
-    
+
+
     def addEvent(Map params){
         String identifier = params.Identifier;
         if (identifier == null){
@@ -101,7 +101,7 @@ class NetcoolDatasource extends BaseDatasource{
 		statusTableAdapter.executeUpdate(sb.toString(), []);
     }
 
-    def updateEvent(Map params){
+    def updateEvent(Map params, Map journalParams ){
         def serverserial = params.ServerSerial;
         def event = getEvent(serverserial);
 		if(event.size() == 0){
@@ -135,7 +135,8 @@ class NetcoolDatasource extends BaseDatasource{
 		statusTableAdapter.executeUpdate(sb.toString(), []);
 
         JOURNAL_TRACKING_PROPERTY_LIST.each{String propertyName->
-            if(params[propertyName] != null && event[propertyName] != params[propertyName])
+            if(params[propertyName] != null && event[propertyName] != params[propertyName]
+                && ( !journalParams || (journalParams[propertyName] == null) || (journalParams[propertyName] != null && journalParams[propertyName])) )
             {
                 def oldVal = NetcoolConversionParameter.getConvertedValue(propertyName, event[propertyName]);
                 def newVal = NetcoolConversionParameter.getConvertedValue(propertyName, params[propertyName]);
@@ -158,11 +159,13 @@ class NetcoolDatasource extends BaseDatasource{
 
     def setSeverityAction(serverserial, severity, userName) {
         def updateProps = [:]
+        def journalParams = [:]
         updateProps.put("ServerSerial",serverserial);
         updateProps.put("Severity",severity);
         updateProps.put(ACTION_OWNER_PROPERTY_NAME,userName);
         updateProps.put("Acknowledged", 0);
-		def updatedEvent = updateEvent(updateProps);
+        journalParams.put( "Acknowledged", false);
+		def updatedEvent = updateEvent(updateProps, journalParams );
 	}
 
     def suppressAction(serverserial, suppress, userName){
@@ -219,7 +222,7 @@ class NetcoolDatasource extends BaseDatasource{
         sb.append("${intSerial},'${keyfield}',${date},'${text}')");
 		journalTableAdapter.executeUpdate(sb.toString(), []);
     }
-    
+
     private def assign(serverserial, ownerUID, partOfAlertText){
         def intOwnerUID;
         if (ownerUID instanceof String){

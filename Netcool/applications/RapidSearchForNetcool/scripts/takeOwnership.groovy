@@ -13,4 +13,5 @@ def user = RsUser.findByUsername(web.session.username);
 
 def netcoolEvent = NetcoolEvent.get(servername:netcoolServerName, serverserial:serverSerial);
 netcoolEvent.assign(user.getProperty("userId"));
-netcoolEvent.setProperty ( "owneruid", user);
+netcoolEvent.setProperty ( "owneruid", user.getProperty("userId"));
+netcoolEvent.setProperty ( "acknowledged", 0);

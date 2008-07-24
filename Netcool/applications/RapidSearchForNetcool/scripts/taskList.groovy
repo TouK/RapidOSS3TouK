@@ -14,11 +14,11 @@ def taskList = params.taskList;
 def netcoolEvent = NetcoolEvent.get(servername:netcoolServerName, serverserial:serverSerial);
 if(taskList == "true")
 {
-	netcoolEvent.addToTaskList(true);
 	netcoolEvent.setProperty ( "tasklist", 1);
+	netcoolEvent.addToTaskList(true);
 }
 else if(taskList == "false")
 {
-	netcoolEvent.addToTaskList(false);
 	netcoolEvent.setProperty ( "tasklist", 0);
+	netcoolEvent.addToTaskList(false);
 }

@@ -17,12 +17,14 @@ def acknowledged = params.acknowledged;
 def netcoolEvent = NetcoolEvent.get(servername:netcoolServerName, serverserial:serverSerial);
 if(acknowledged == "true")
 {
-	netcoolEvent.acknowledge(true, user);
+
 	netcoolEvent.setProperty ( "acknowledged", 1);
+	netcoolEvent.acknowledge(true, user);
 }
 else if(acknowledged == "false")
 {
-	netcoolEvent.acknowledge(false, user);
+
 	netcoolEvent.setProperty ( "acknowledged", 0);
+	netcoolEvent.acknowledge(false, user);
 }
 

@@ -55,11 +55,26 @@
     {
         return key == "severity" || key == "lastoccurrence" || key=="statechange"
     }
+
+    function searchListHeaderMenuConditionFunctionAcknowledge(data)
+    {
+        return data.getAttribute("acknowledged") == 0;
+    }
+
+    function searchListHeaderMenuConditionFunctionDeacknowledge(data)
+    {
+        return data.getAttribute("acknowledged") == 1;
+    }
+
     var conf =  {width:400, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
     html.hide();
     var actionConfig = {url:'searchQuery/delete.xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
+
+    var actionGroupConfig = {url:'searchQueryGroup/delete.xml'}
+    var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
+
 
     var searchConfig = {
         id:'searchList',
@@ -75,7 +90,19 @@
         lineSize:3,
         fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey'],
         menuItems:{
-            item1 : { id : 'eventDetails', label : 'Event Details' }
+            item1 : { id : 'eventDetails', label : 'Event Details' },
+            item2 : { id : 'acknowledge', label : 'Acknowledge', condition: searchListHeaderMenuConditionFunctionAcknowledge },
+            item3 : { id : 'deacknowledge', label : 'Deacknowledge', condition: searchListHeaderMenuConditionFunctionDeacknowledge },
+            item4 : { id : 'takeOwnership', label : 'Take Ownership' },
+            item5 : { id : 'severity', label : 'Change Severity', submenuItems : {
+                            subItem1 : { id: 'critical', label : 'Critical' },
+                            subItem2 : { id: 'major', label : 'Major' },
+                            subItem3 : { id: 'minor', label : 'Minor' },
+                            subItem4 : { id: 'warning', label : 'Warning' },
+                            subItem5 : { id: 'indeterminate', label : 'Indeterminate' },
+                            subItem6 : { id: 'clear', label : 'Clear' }
+                        }
+                    }
         } ,
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
@@ -90,13 +117,37 @@
     }
 
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
+
+
+    var acknowledgeConfig = { url: 'script/run/acknowledge' };
+	var acknowledgeAction = new YAHOO.rapidjs.component.action.RequestAction(acknowledgeConfig);
+	acknowledgeAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
+	acknowledgeAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
+
+    var deacknowledgeConfig = { url: 'script/run/acknowledge' };
+	var deacknowledgeAction = new YAHOO.rapidjs.component.action.RequestAction(deacknowledgeConfig);
+	deacknowledgeAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
+	deacknowledgeAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
+
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
         if( id == "eventDetails"){
-             var type = xmlData.getAttribute("alias");
+            var type = xmlData.getAttribute("alias");
             var eventId = xmlData.getAttribute("id");
             var url = "getDetails.gsp?type="+type + "&id="+eventId;
             html.show(url);
 
+        }
+        else if( id == 'acknowledge' )
+        {
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+            acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"true"});
+        }
+        else if( id == 'deacknowledge' )
+        {
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+    		deacknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"false"});
         }
     }, this, true);
 
@@ -116,17 +167,25 @@
     }, this, true);
 
 
+    var treeDisplayAttribute = "name";
+    function treeNodesDeleteConditionFunction(data)
+    {
+        return data.getAttribute(treeDisplayAttribute) != "Default";
+    }
 
     var config = {  id:"filterTree", "url":"script/run/queryList", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
-                    "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
+                    "displayAttribute":treeDisplayAttribute, "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
                     menuItems:{
-                        Delete : { id: 'delete', label : 'Delete',  condition : function(data) {return true;} }
+                        Delete : { id: 'delete', label : 'Delete',  condition : treeNodesDeleteConditionFunction }
                     }
     };
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
     tree.poll();
     deleteQueryAction.events.success.subscribe(tree.poll, tree, true);
     deleteQueryAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
+
+    deleteQueryGroupAction.events.success.subscribe(tree.poll, tree, true);
+    deleteQueryGroupAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
     tree.events["treeClick"].subscribe(function(data) {
             if(  data.getAttribute("nodeType") == "filter")
@@ -138,7 +197,10 @@
     tree.events["treeMenuItemClick"].subscribe(function(id, data) {
             if( id == "delete")
             {
-                deleteQueryAction.execute({id:data.getAttribute("id")});
+                if( data.getAttribute("nodeType") == "filter" )
+                    deleteQueryAction.execute({id:data.getAttribute("id")});
+                else if( data.getAttribute("nodeType") == "group" )
+                    deleteQueryGroupAction.execute({id:data.getAttribute("id")});
             }
     }, this, true);
 

@@ -51,13 +51,13 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOp
     public void addToTaskList(boolean action){
 	    def ncds = NetcoolDatasource.get(name:servername);
 	    ncds.taskListAction(serverserial,action);
-	    tasklist = action?"1":"0";
+	    tasklist = action?1:0;
     }
 
     public void acknowledge(boolean action, userName){
 	    def ncds = NetcoolDatasource.get(name:servername);
 	    ncds.acknowledgeAction(serverserial, action, userName);
-	    acknowledged = action?"1":"0";
+	    //update(acknowledged:action?1:0);
     }
 
     public void assign(userId){

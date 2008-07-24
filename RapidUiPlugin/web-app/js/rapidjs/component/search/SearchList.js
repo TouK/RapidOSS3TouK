@@ -98,7 +98,17 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic"});
 
         for (var i in this.menuItems) {
-            var item = this.rowHeaderMenu.addItem({text:this.menuItems[i].label });
+            if( this.menuItems[i].submenuItems)
+            {
+	            var subMenu = new YAHOO.widget.Menu( this.id + '_rowHeaderSubmenu_' + i, {position: "dynamic"});
+                for( var j in this.menuItems[i].submenuItems )
+                {
+
+                    var subItem = subMenu.addItem({text:this.menuItems[i].submenuItems[j].label });
+                    YAHOO.util.Event.addListener(subItem.element, "click", this.rowHeaderMenuItemClicked, j, this);
+                }
+            }
+            var item = this.rowHeaderMenu.addItem({text:this.menuItems[i].label, submenu : subMenu });
             YAHOO.util.Event.addListener(item.element, "click", this.rowHeaderMenuItemClicked, i, this);
         }
 
@@ -110,6 +120,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
         for (var i in this.propertyMenuItems) {
             var item = this.cellMenu.addItem({text:this.propertyMenuItems[i].label });
             YAHOO.util.Event.addListener(item.element, "click", this.cellMenuItemClicked, i, this);
+
         }
 //        this.cellMenu.addItems([
 //            {text:'sort asc', onclick: { fn: this.cellMenuItemClicked, scope: this }},
@@ -376,7 +387,7 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
                     if (this.menuItems[i].condition != null) {
                         var value = dataNode.getAttribute(this.menuItemUrlParamName);
                         var menuItem = this.rowHeaderMenu.getItem(index);
-                        var condRes = this.menuItems[i].condition(value);
+                        var condRes = this.menuItems[i].condition(dataNode);
                         if (!condRes)
                             menuItem.element.style.display = "none";
                         else
@@ -665,6 +676,13 @@ YAHOO.rapidjs.component.search.SearchList.prototype = {
     },
     firePropertyClick: function(key, value, data) {
         this.events['propertyClick'].fireDirect(key, value, data);
+    },
+
+    refreshAndPoll: function ()
+    {
+	    this.showMask();
+	    //this.refreshData();
+        this.poll(this.lastOffset, this.lastSortAtt, this.lastSortOrder);
     }
 
 

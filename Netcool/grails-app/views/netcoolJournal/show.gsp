@@ -60,9 +60,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">serial:</td>
+                    <td valign="top" class="name">connectorname:</td>
                     
-                    <td valign="top" class="value">${netcoolJournal.serial}</td>
+                    <td valign="top" class="value">${netcoolJournal.connectorname}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">serverserial:</td>
+                    
+                    <td valign="top" class="value">${netcoolJournal.serverserial}</td>
                     
                 </tr>
                 

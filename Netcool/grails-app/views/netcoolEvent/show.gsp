@@ -81,6 +81,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">connectorname:</td>
+                    
+                    <td valign="top" class="value">${netcoolEvent.connectorname}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">customer:</td>
                     
                     <td valign="top" class="value">${netcoolEvent.customer}</td>

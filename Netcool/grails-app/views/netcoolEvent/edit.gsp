@@ -84,6 +84,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="connectorname">connectorname:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'connectorname','errors')}">
+                            <input type="text" id="connectorname" name="connectorname" value="${fieldValue(bean:netcoolEvent,field:'connectorname')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="customer">customer:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'customer','errors')}">
@@ -153,7 +162,6 @@
                             <input type="text" id="internallast" name="internallast" value="${fieldValue(bean:netcoolEvent,field:'internallast')}" />
                         </td>
                     </tr>
-                    
                     
                     <tr class="prop">
                         <td valign="top" class="name">

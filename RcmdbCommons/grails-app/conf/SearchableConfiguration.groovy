@@ -3,6 +3,7 @@ import com.ifountain.rcmdb.domain.converter.CompassDoubleConverter
 import com.ifountain.rcmdb.domain.converter.CompassLongConverter
 import grails.util.GrailsUtil
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import com.ifountain.compass.analyzer.WhiteSpaceLowerCaseAnalyzer
 
 /**
 * Grails Searchable Plugin configuration
@@ -54,8 +55,7 @@ class SearchableConfiguration {
     "compass.converter.long.format":"#000000000000000000000000000000",
     "compass.converter.double.type":CompassDoubleConverter.class.name,
     "compass.converter.double.format":"#000000000000000000000000000000",
-    "compass.engine.analyzer.default.type": org.apache.lucene.analysis.SimpleAnalyzer.class.name,
-    "compass.engine.analyzer.search.type": org.apache.lucene.analysis.SimpleAnalyzer.class.name];
+    "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name];
 
     /**
      * Default mapping property exclusions

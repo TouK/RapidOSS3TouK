@@ -57,10 +57,19 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="serial">serial:</label>
+                            <label for="connectorname">connectorname:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolJournal,field:'serial','errors')}">
-                            <input type="text" id="serial" name="serial" value="${fieldValue(bean:netcoolJournal,field:'serial')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolJournal,field:'connectorname','errors')}">
+                            <input type="text" id="connectorname" name="connectorname" value="${fieldValue(bean:netcoolJournal,field:'connectorname')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="serverserial">serverserial:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolJournal,field:'serverserial','errors')}">
+                            <input type="text" id="serverserial" name="serverserial" value="${fieldValue(bean:netcoolJournal,field:'serverserial')}"/>
                         </td>
                     </tr>
                     

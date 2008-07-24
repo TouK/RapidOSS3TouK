@@ -16,7 +16,7 @@ class NetcoolJournal {
     static datasources = ["RCMDB":["keys":["keyfield":["nameInDs":"keyfield"], "servername":["nameInDs":"servername"]]]]
 
     
-    java.lang.String serial ="";
+    java.lang.String serverserial ="";
     
     java.lang.String keyfield ="";
     
@@ -26,6 +26,8 @@ class NetcoolJournal {
     
     java.lang.String servername ="";
     
+    java.lang.String connectorname ="";
+    
 
     static hasMany = [:]
     
@@ -34,7 +36,7 @@ class NetcoolJournal {
         }
     
     static constraints={
-    serial(blank:true,nullable:true)
+    serverserial(blank:true,nullable:true)
         
      keyfield(blank:false,nullable:false)
         
@@ -44,7 +46,9 @@ class NetcoolJournal {
         
      servername(blank:false,nullable:false,key:["keyfield"])
         
-
+     connectorname(blank:true,nullable:true)
+        
+     
     }
 
     static mappedBy=[:]
@@ -58,6 +62,7 @@ class NetcoolJournal {
     }
     
     //AUTO_GENERATED_CODE
+
 
 
 

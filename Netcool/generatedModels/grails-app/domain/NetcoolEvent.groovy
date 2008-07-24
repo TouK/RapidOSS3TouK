@@ -116,6 +116,8 @@ class NetcoolEvent {
     
     java.lang.String url ="";
     
+    java.lang.String connectorname ="";
+    
 
     static hasMany = [:]
     
@@ -228,6 +230,8 @@ class NetcoolEvent {
         
      url(blank:true,nullable:true)
         
+     connectorname(blank:true,nullable:true)
+        
      
     }
 
@@ -242,6 +246,7 @@ class NetcoolEvent {
     }
     
     //AUTO_GENERATED_CODE
+
 
 
 

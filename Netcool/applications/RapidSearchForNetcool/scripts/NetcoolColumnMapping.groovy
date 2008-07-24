@@ -35,6 +35,7 @@ convertedColumnsArray.each{
     convertedColumnsMap[it.getTerm()] = it;
 }
 def netcoolFields = netcoolDs.getFieldMap();
+netcoolFields["connectorname"] = ModelGenerator.STRING_TYPE;
 def fileWriter = new FileWriter(netcoolConfigurationFile);
 def netcoolConf = new MarkupBuilder(fileWriter);
 netcoolConf.NetcoolConfiguration()
@@ -54,7 +55,7 @@ netcoolConf.NetcoolConfiguration()
             }
         }
     }
-    def journalFields = ["serial":"string", "keyfield":"string", "text":"string", "chrono":"number", servername:"string"];
+    def journalFields = ["serverserial":"string", "keyfield":"string", "text":"string", "chrono":"number", servername:"string", connectorname:"string"];
     netcoolConf.NetcoolJournal()
     {
         netcoolConf.Fields()

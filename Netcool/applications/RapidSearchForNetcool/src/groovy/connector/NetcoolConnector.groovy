@@ -20,7 +20,7 @@ class NetcoolConnector {
     Map nameMappings;
     NetcoolDatasource datasource;
     NetcoolColumn deleteMarkerField;
-    def serverName;
+    def connectorName;
     Class NetcoolEvent;
     Class NetcoolJournal;
     Logger logger;
@@ -32,7 +32,7 @@ class NetcoolConnector {
         NetcoolEvent = this.class.classLoader.loadClass("NetcoolEvent");
         NetcoolJournal = this.class.classLoader.loadClass("NetcoolJournal");
         this.datasource = datasource;
-        this.serverName = datasource.name;
+        this.connectorName = datasource.name;
         nameMappings = new CaseInsensitiveMap();
         NetcoolColumn.list().each{NetcoolColumn map->
             nameMappings[map.netcoolName] = map.localName;
@@ -104,13 +104,18 @@ class NetcoolConnector {
             lastRecordIdentifier = NetcoolLastRecordIdentifier.add(datasourceName:datasource.name, eventLastRecordIdentifier:0, journalLastRecordIdentifier:0);
         }
         def lastEventStateChange = lastRecordIdentifier.eventLastRecordIdentifier;
+        logger.info("Processing journals. after ${lastEventStateChange}");
         def whereClause = "StateChange>$lastEventStateChange AND StateChange <= getdate - 1";
         List records = datasource.getEvents(whereClause);
-        def size =  records.size()
+        logger.info("Got ${records.size()} number of records");
         for (Map rec in records){
-            def res = invokeMethod(NetcoolEvent, "add",[getEventProperties(rec)] as Object[]);
+            logger.info("Adding event ${rec}");
+            def eventProps = getEventProperties(rec);
+            logger.info("Event properties are ${eventProps}");
+            def res = invokeMethod(NetcoolEvent, "add",[eventProps] as Object[]);
             if(!res.hasErrors())
             {
+                logger.info("Record added.");
                 def lastStateChange = Long.parseLong(rec.statechange);
                 if (lastStateChange > lastEventStateChange){
                     lastEventStateChange = lastStateChange;
@@ -128,18 +133,31 @@ class NetcoolConnector {
     {
         NetcoolLastRecordIdentifier lastRecordIdentifier = NetcoolLastRecordIdentifier.get(datasourceName:datasource.name);
         def lastJournalStateChange = lastRecordIdentifier.journalLastRecordIdentifier;
+        logger.info("Processing journals. after ${lastJournalStateChange}");
         if( lastJournalStateChange == null)
         {
             lastJournalStateChange = 0;
         }
-        def whereClause = "Chrono>$lastJournalStateChange AND Chrono <= getdate() - 1";
+        def whereClause = "Chrono>$lastJournalStateChange AND Chrono <= getdate() - 1 ORDER BY Chrono";
         List records = datasource.getJournalEntries(whereClause);
-        def size =  records.size()
+        logger.info("Got ${records.size()} number of journals.");
         for (Map rec in records){
-            invokeMethod(NetcoolJournal, "add", [getJournalProperties(rec)] as Object[]);
-            def lastStateChange = Long.parseLong(rec.chrono);
-            if (lastStateChange > lastJournalStateChange){
-                lastJournalStateChange = lastStateChange;
+            logger.info("Adding journal ${rec}");
+            def journalProps = getJournalProperties(rec);
+
+            if(journalProps != null)
+            {
+                logger.info("Adding journal with properties${journalProps}");
+                invokeMethod(NetcoolJournal, "add", [journalProps] as Object[]);
+                def lastStateChange = Long.parseLong(rec.chrono);
+                if (lastStateChange > lastJournalStateChange){
+                    lastJournalStateChange = lastStateChange;
+                }
+            }
+            else
+            {
+                logger.info("Found a journal with non existing event in rapidcmdb. Will retry to process journals ");
+                break;
             }
         }
         lastRecordIdentifier.journalLastRecordIdentifier = lastJournalStateChange;
@@ -161,7 +179,7 @@ class NetcoolConnector {
             }
             eventMap[localColName.toLowerCase()] = propValue;
         }
-        eventMap["servername"] = serverName
+        eventMap["connectorname"] = connectorName
         return eventMap;
     }
 
@@ -173,9 +191,10 @@ class NetcoolConnector {
     {
         def eventSearchParams = [:];
         eventSearchParams[nameMappings["serverserial"]?nameMappings["serverserial"]:"serverserial"] = rec.SERIAL;
-        eventSearchParams[nameMappings["servername"]?nameMappings["servername"]:"servername"] = this.serverName;
+        eventSearchParams[nameMappings["connectorname"]?nameMappings["connectorname"]:"connectorname"] = this.connectorName;
         def event = invokeMethod(NetcoolEvent, "get", eventSearchParams);
-        def journalMap = [servername:serverName, event:event]
+        if(event == null) return null;
+        def journalMap = [servername:event.servername, serverserial:event.serverserial, connectorname:this.connectorName]
         StringBuffer text = new StringBuffer();
         rec.each{String propName, String propValue->
             if(propName.startsWith("text") && propValue != "")

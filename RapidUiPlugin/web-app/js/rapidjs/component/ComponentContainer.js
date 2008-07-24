@@ -5,7 +5,8 @@ YAHOO.rapidjs.component.ComponentContainer = function(container, config){
 	this.config = config;
 	this.url = config.url;
 	this.title = config.title;
-	this.events = {
+    this.toolbar = null;
+    this.events = {
 		'contextmenuclicked': new YAHOO.util.CustomEvent('contextmenuclicked'),
 		'loadstatechanged' :new YAHOO.util.CustomEvent('loadstatechanged'),
 	    'erroroccurred' : new YAHOO.util.CustomEvent('erroroccurred')
@@ -24,7 +25,14 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
 	}, 
 	
 	handleUnvisible: function(){
-	}
+	},
+
+    addToolbarButton: function(buttonConfig){
+         if(this.toolbar){
+             return this.toolbar.addButton(buttonConfig)
+         }
+    }
+
 };
 
 

@@ -179,10 +179,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
 
     clearAllFields: function()
     {
-        var inputs = this.dialog.form.elements;
-        for (var i = 0; i < inputs.length; i++)
+        var formElements = this.dialog.form.elements;
+        for (var i = 0; i < formElements.length; i++)
         {
-            inputs[i].value = null;
+            var formElement = formElements[i];
+            if(formElement.nodeName == 'SELECT'){
+                SelectUtils.clear(formElement);
+            }
+            else{
+                formElement.value = '';
+            }
         }
     }
 })

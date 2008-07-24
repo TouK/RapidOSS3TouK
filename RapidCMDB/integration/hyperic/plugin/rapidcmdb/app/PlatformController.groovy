@@ -26,6 +26,7 @@ class PlatformController
         def plats        = rhelp.findAllPlatforms()
         def pMan = PlatMan.one
         def i = 0
+
         xml.'RapidCMDB'('source':'Hyperic HQ', 'date':formatter.format(new Date())) {
             platforms.each { res ->
             	def plat = plats.getAt(i)

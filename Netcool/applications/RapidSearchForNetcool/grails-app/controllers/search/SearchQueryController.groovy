@@ -7,7 +7,7 @@ import org.springframework.validation.BindException;
 class SearchQueryController {
     def final static PROPS_TO_BE_EXCLUDED = ["id": "id", "_action_Update": "_action_Update", "controller": "controller", "action": "action"]
     def index = {redirect(action: list, params: params)}
-    def allowedMethods = [delete:['POST','GET'], save:['POST','GET'], update:['POST','GET']]
+    def allowedMethods = [delete: ['POST', 'GET'], save: ['POST', 'GET'], update: ['POST', 'GET']]
     def list = {
         if (!params.max) params.max = 10
         def searchQueries = SearchQuery.list(params);
@@ -66,15 +66,47 @@ class SearchQueryController {
 
     def edit = {
         def searchQuery = SearchQuery.get([id: params.id])
-
         if (!searchQuery) {
             addError("default.object.not.found", [SearchQuery.class.name, params.id]);
-            flash.errors = errors;
-            redirect(action: list)
+            withFormat {
+                html {
+                    flash.errors = errors;
+                    redirect(action: list)
+                }
+                xml {render(text: ControllerUtils.convertErrorsToXml(errors), contentType: "text/xml")}
+            }
         }
         else {
-            return [searchQuery: searchQuery]
+            withFormat {
+                html {
+                    return [searchQuery: searchQuery]
+                }
+                xml {
+                    def userName = session.username;
+                    def searchQueryGroups = SearchQueryGroup.list().findAll {
+                        it.user.username == userName
+                    };
+                    render(contentType: 'text/xml') {
+                        Edit {
+                            name(searchQuery.name)
+                            query(searchQuery.query)
+                            group {
+                                searchQueryGroups.each {
+                                    if(it.name == searchQuery.group.name){
+                                        option(selected:"true", it.name)    
+                                    }
+                                    else{
+                                        option(it.name)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
+
     }
 
 
@@ -126,9 +158,29 @@ class SearchQueryController {
     }
 
     def create = {
-        def searchQuery = new SearchQuery()
-        searchQuery.properties = params
-        return ['searchQuery': searchQuery]
+        withFormat {
+            html {
+                def searchQuery = new SearchQuery()
+                searchQuery.properties = params
+                return ['searchQuery': searchQuery]
+            }
+            xml {
+                def userName = session.username;
+                def searchQueryGroups = SearchQueryGroup.list().findAll {
+                    it.user.username == userName
+                };
+                render(contentType: 'text/xml') {
+                    Create {
+                        group {
+                            searchQueryGroups.each {
+                                option(it.name)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     def save = {

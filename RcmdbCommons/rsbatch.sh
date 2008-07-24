@@ -17,7 +17,7 @@ if [ "$RS_HOME" == "" ]; then
 fi
 
 jars=`ls -d $RS_HOME/lib/*.jar`
-rcmdbjars=`ls -d $RS_HOME/RapidCMDB/lib/*.jar`
+rcmdbjars=`ls -d $RS_HOME/RapidSuite/lib/*.jar`
 jars_str=""
 for f in $jars; do
 	jars_str=$jars_str:$f;

@@ -101,7 +101,7 @@ class NetcoolDatasource extends BaseDatasource{
 		statusTableAdapter.executeUpdate(sb.toString(), []);
     }
 
-    def updateEvent(Map params, Map journalParams ){
+    def updateEvent(Map params ){
         def serverserial = params.ServerSerial;
         def event = getEvent(serverserial);
 		if(event.size() == 0){
@@ -113,7 +113,7 @@ class NetcoolDatasource extends BaseDatasource{
         def actionOwner = params.remove(ACTION_OWNER_PROPERTY_NAME);
         actionOwner = actionOwner?actionOwner:"Unknown";
         params.each{String columnName, Object colValue->
-            if(columnName != "ServerSerial" && columnName != "Identifier" )
+            if(columnName != "ServerSerial" && columnName != "Identifier" && columnName != "journalParams" )
             {
                 updatedColumns.append(columnName);
                 if( colValue instanceof Number){
@@ -136,7 +136,8 @@ class NetcoolDatasource extends BaseDatasource{
 
         JOURNAL_TRACKING_PROPERTY_LIST.each{String propertyName->
             if(params[propertyName] != null && event[propertyName] != params[propertyName]
-                && ( !journalParams || (journalParams[propertyName] == null) || (journalParams[propertyName] != null && journalParams[propertyName])) )
+                && ( !params.journalParams || (params.journalParams[propertyName] == null)
+                || (params.journalParams[propertyName] != null && params.journalParams[propertyName] == "true")) )
             {
                 def oldVal = NetcoolConversionParameter.getConvertedValue(propertyName, event[propertyName]);
                 def newVal = NetcoolConversionParameter.getConvertedValue(propertyName, params[propertyName]);
@@ -164,8 +165,9 @@ class NetcoolDatasource extends BaseDatasource{
         updateProps.put("Severity",severity);
         updateProps.put(ACTION_OWNER_PROPERTY_NAME,userName);
         updateProps.put("Acknowledged", 0);
-        journalParams.put( "Acknowledged", false);
-		def updatedEvent = updateEvent(updateProps, journalParams );
+        journalParams.put("Acknowledged", false);
+        updateProps.put( "journalParams", journalParams);
+		def updatedEvent = updateEvent(updateProps );
 	}
 
     def suppressAction(serverserial, suppress, userName){

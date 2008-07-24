@@ -89,6 +89,16 @@
         return data.getAttribute("acknowledged") == 1;
     }
 
+    function searchListHeaderMenuConditionFunctionAddTaskToList(data)
+    {
+        return data.getAttribute("tasklist") == 0;
+    }
+
+    function searchListHeaderMenuConditionFunctionRemoveTaskFromList(data)
+    {
+        return data.getAttribute("tasklist") == 1;
+    }
+
     var conf = {width:400, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
     html.hide();
@@ -117,15 +127,17 @@
             item2 : { id : 'acknowledge', label : 'Acknowledge', condition: searchListHeaderMenuConditionFunctionAcknowledge },
             item3 : { id : 'deacknowledge', label : 'Deacknowledge', condition: searchListHeaderMenuConditionFunctionDeacknowledge },
             item4 : { id : 'takeOwnership', label : 'Take Ownership' },
-            item5 : { id : 'severity', label : 'Change Severity', submenuItems : {
-                subItem1 : { id: 'critical', label : 'Critical' },
-                subItem2 : { id: 'major', label : 'Major' },
-                subItem3 : { id: 'minor', label : 'Minor' },
-                subItem4 : { id: 'warning', label : 'Warning' },
-                subItem5 : { id: 'indeterminate', label : 'Indeterminate' },
-                subItem6 : { id: 'clear', label : 'Clear' }
-            }
-            }
+            item5 : { id : 'addTaskToList', label : 'Add Task To List', condition: searchListHeaderMenuConditionFunctionAddTaskToList },
+            item6 : { id : 'removeTaskFromList', label : 'Remove Task From List', condition: searchListHeaderMenuConditionFunctionRemoveTaskFromList },
+            item7 : { id : 'severity', label : 'Change Severity', submenuItems : {
+                            subItem1 : { id: 'critical', label : 'Critical' },
+                            subItem2 : { id: 'major', label : 'Major' },
+                            subItem3 : { id: 'minor', label : 'Minor' },
+                            subItem4 : { id: 'warning', label : 'Warning' },
+                            subItem5 : { id: 'indeterminate', label : 'Indeterminate' },
+                            subItem6 : { id: 'clear', label : 'Clear' }
+                        }
+                    }
         } ,
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
@@ -143,38 +155,87 @@
 
 
     var acknowledgeConfig = { url: 'script/run/acknowledge' };
-    var acknowledgeAction = new YAHOO.rapidjs.component.action.RequestAction(acknowledgeConfig);
-    acknowledgeAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
-    acknowledgeAction.events.failure.subscribe(function() {
-        alert("Error occurred");
-    }, this, true);
+	var acknowledgeAction = new YAHOO.rapidjs.component.action.RequestAction(acknowledgeConfig);
+	acknowledgeAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
+	acknowledgeAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
-    var deacknowledgeConfig = { url: 'script/run/acknowledge' };
-    var deacknowledgeAction = new YAHOO.rapidjs.component.action.RequestAction(deacknowledgeConfig);
-    deacknowledgeAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
-    deacknowledgeAction.events.failure.subscribe(function() {
-        alert("Error occurred");
-    }, this, true);
+	var taskListConfig = { url: 'script/run/taskList' };
+	var taskListAction = new YAHOO.rapidjs.component.action.RequestAction(taskListConfig);
+	taskListAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
+	taskListAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
+
+	var severityConfig = { url: 'script/run/severity' };
+	var severityAction = new YAHOO.rapidjs.component.action.RequestAction(severityConfig);
+	severityAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
+	severityAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
-        if (id == "eventDetails") {
+        if( id == "eventDetails"){
             var type = xmlData.getAttribute("alias");
             var eventId = xmlData.getAttribute("id");
-            var url = "getDetails.gsp?type=" + type + "&id=" + eventId;
+            var url = "getDetails.gsp?type="+type + "&id="+eventId;
             html.show(url);
 
         }
-        else if (id == 'acknowledge')
+        else if( id == 'acknowledge' )
         {
-            var serverName = xmlData.getAttribute("servername");
-            var serverSerial = xmlData.getAttribute("serverserial");
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
             acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"true"});
         }
-        else if (id == 'deacknowledge')
+        else if( id == 'deacknowledge' )
         {
-            var serverName = xmlData.getAttribute("servername");
-            var serverSerial = xmlData.getAttribute("serverserial");
-            deacknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"false"});
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+    		acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"false"});
+        }
+        else if( id == 'addTaskToList' )
+        {
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+    		taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"true"});
+        }
+        else if( id == 'removeTaskFromList' )
+        {
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+    		taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"false"});
+        }
+        else if( id == 'critical' )
+        {
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:5});
+        }
+        else if( id == 'major' )
+        {
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:4});
+        }
+        else if( id == 'minor' )
+        {
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:3});
+        }
+        else if( id == 'warning' )
+        {
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:2});
+        }
+        else if( id == 'indeterminate' )
+        {
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:1});
+        }
+        else if( id == 'clear' )
+        {
+        	var serverName = xmlData.getAttribute("servername");
+        	var serverSerial = xmlData.getAttribute("serverserial");
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:0});
         }
     }, this, true);
 

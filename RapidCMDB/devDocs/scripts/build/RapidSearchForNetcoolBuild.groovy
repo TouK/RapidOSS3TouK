@@ -41,13 +41,13 @@ class RapidSearchForNetcoolBuild extends Build{
 
         def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB");
         ant.unzip(src: rapidCmdb.absolutePath, dest: env.distribution);
-        ant.delete(dir:env.dist_rapid_cmdb_modeler);
+        ant.delete(dir:env.dist_modeler);
 
         def netcoolPlugin = listFiles(new File(env.distribution), "grails-netcool");
-        installPlugin(netcoolPlugin, env.dist_rapid_cmdb, [Ant:ant], ["netcool_applications":"1"]);
+        installPlugin(netcoolPlugin, env.dist_rapid_suite, [Ant:ant], ["netcool_applications":"1"]);
 
         def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
-        installPlugin(rapidUiPlugin, env.dist_rapid_cmdb, [Ant:ant], [:]);
+        installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant:ant], [:]);
         def zipFileName = "${env.distribution}/RapidSearchForNetcool.zip"
         ant.zip(destfile: zipFileName) {
            ant.zipfileset(dir : "$env.distribution/RapidServer", prefix:"RapidServer")

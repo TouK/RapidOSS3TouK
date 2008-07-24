@@ -38,7 +38,7 @@ class Test extends Parent{
 	
 	def Properties getLibJars(){
 		Properties libJars = new Properties();
-		File file1 = new File(env.dist_rapid_cmdb_lib);
+		File file1 = new File(env.dist_rapid_suite_lib);
 		File file2 = new File(env.dist_rapid_server_lib);
 		env.getLibProperties(libJars, file1);
 		env.getLibProperties(libJars, file2);

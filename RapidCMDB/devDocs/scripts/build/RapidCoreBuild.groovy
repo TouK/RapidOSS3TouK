@@ -24,8 +24,8 @@ class RapidCoreBuild extends Build{
 		compile();
 		copyResourcesForJar();
 		ant.jar(destfile : env.rapid_core_jar, basedir : env.rapid_core_build, manifest : env.versionInBuild);
-        ant.copy(file : env.rapid_core_jar, toDir : env.dist_rapid_cmdb_lib);
-        ant.copy(file : env.rapid_core_jar, toDir : env.dist_rapid_cmdb_modeler_lib);
+        ant.copy(file : env.rapid_core_jar, toDir : env.dist_rapid_suite_lib);
+        ant.copy(file : env.rapid_core_jar, toDir : env.dist_modeler_lib);
 		copyDependentJars();
 	}
 

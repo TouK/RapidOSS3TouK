@@ -29,7 +29,7 @@ class Build extends Parent{
 
 	
 	def cleanDistribution(){
-		ant.delete(dir : env.dist_rapid_cmdb);
+		ant.delete(dir : env.dist_rapid_suite);
 		ant.delete(){
 			ant.fileset(dir : env.distribution, excludes : "*.project*, *.classpath");
 		}
@@ -51,7 +51,7 @@ class Build extends Parent{
     def createPlugin(pluginDir, pluginResources)
     {
         ant.copy(file:"$env.rapid_cmdb_cvs/devDocs/groovy-starter.conf", todir:"${env.dist_rapid_server}/conf")
-        ant.exec(executable:"${getRsConsoleExecutableFileName(new File("${env.dist_rapid_cmdb}"))}", dir:"${new File("${env.dist_rapid_cmdb}").absolutePath}")
+        ant.exec(executable:"${getRsConsoleExecutableFileName(new File("${env.dist_rapid_suite}"))}", dir:"${new File("${env.dist_rapid_suite}").absolutePath}")
         {
             ant.arg(value:"compile")
             System.getenv().each{envKey, envVal->
@@ -62,7 +62,7 @@ class Build extends Parent{
             }
             ant.env(key:"RS_HOME", value:"${new File(env.dist_rapid_server).absolutePath}");
         }
-        ant.exec(executable:"${getRsConsoleExecutableFileName(new File("${env.dist_rapid_cmdb}"))}", dir:"${new File("${pluginDir}").absolutePath}")
+        ant.exec(executable:"${getRsConsoleExecutableFileName(new File("${env.dist_rapid_suite}"))}", dir:"${new File("${pluginDir}").absolutePath}")
         {
             ant.arg(value:"package-plugin")
             if(!pluginResources.isEmpty())
@@ -109,7 +109,7 @@ class Build extends Parent{
 
         def netcoolPluginFilePath = pluginFile.absolutePath;
         def netcoolPluginName = pluginFile.name.substring("grails-".length(), pluginFile.name.length()-".zip".length())
-        ant.unzip(src: netcoolPluginFilePath, dest: env.dist_rapid_cmdb+"/plugins/${netcoolPluginName}");
+        ant.unzip(src: netcoolPluginFilePath, dest: env.dist_rapid_suite+"/plugins/${netcoolPluginName}");
         def classLoader = new GroovyClassLoader();
         classLoader.addClasspath ("${destionationApplicationPath}/plugins/${netcoolPluginName}/scripts")
         def installScriptClass = classLoader.loadClass("_Install");

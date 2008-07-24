@@ -87,7 +87,6 @@
 	<classpathentry kind="lib" path="/Grails/dist/grails-test-1.0.3.jar"/>
 	<classpathentry kind="lib" path="/Grails/dist/grails-web-1.0.3.jar"/>
 	<classpathentry kind="lib" path="/Grails/dist/grails-webflow-1.0.3.jar"/>
-	<classpathentry kind="lib" path="/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/lib/compass-2.0.0.jar"/>
 	<classpathentry kind="lib" path="/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/lib/easymock.jar"/>
 	<classpathentry kind="lib" path="/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/lib/jmock-1.1.0.jar"/>
 	<classpathentry kind="lib" path="/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/lib/lucene-analyzers.jar"/>
@@ -102,5 +101,6 @@
 	<classpathentry kind="lib" path="/RcmdbCommons/plugins/jsecurity-0.2.1/lib/quartz.jar"/>
 	<classpathentry kind="lib" path="/RcmdbCommons/plugins/jsecurity-0.2.1/lib/retroweaver-rt.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/RcmdbCommons"/>
+	<classpathentry kind="lib" path="/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/lib/compass.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

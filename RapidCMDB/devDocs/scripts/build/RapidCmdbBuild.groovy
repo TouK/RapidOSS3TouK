@@ -45,13 +45,13 @@ class RapidCmdbBuild extends Build {
         ant.delete(dir: env.distribution + "/RapidServer");
         ant.delete(file: "${env.distribution}/${sampleName}*.zip");
 
-        ant.copy(todir: "$env.dist_rapid_cmdb/scripts") {
+        ant.copy(todir: "$env.dist_rapid_suite/scripts") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/scripts") {
                 ant.include(name: "${sampleName}*.groovy")
             };
         }
         
-        ant.copy(todir: "$env.dist_rapid_cmdb_modeler/scripts") {
+        ant.copy(todir: "$env.dist_modeler/scripts") {
             ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/scripts") {
                 ant.include(name: "${sampleName}Setup.groovy")
             };
@@ -72,7 +72,7 @@ class RapidCmdbBuild extends Build {
         ant.unzip(src: "$env.distribution/RapidCMDB$versionDate" + ".zip", dest: env.distribution);
         ant.unzip(src: "$env.distribution/SmartsModule${smartsBuild.getVersionWithDate()}" + ".zip", dest: "$env.distribution/RapidServer");
         //ant.unzip(src: "$env.distribution/NetcoolModule${netcoolBuild.getVersionWithDate()}" + ".zip", dest: "$env.distribution/RapidServer");
-        ant.copy(todir: "$env.dist_rapid_cmdb/grails-app/domain") {
+        ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {
                 ant.include(name: "*.groovy")
                 ant.include(name: "test/*")
@@ -81,7 +81,7 @@ class RapidCmdbBuild extends Build {
     }
 
     def buildRCMDB(){
-         ant.copy(todir: "$env.dist_rapid_cmdb") {
+         ant.copy(todir: "$env.dist_rapid_suite") {
             ant.fileset(file: "$env.rapid_cmdb_cvs/application.properties");
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.exe");
             ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
@@ -89,7 +89,7 @@ class RapidCmdbBuild extends Build {
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.vmoptions");
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.sh");
         }
-        ant.copy(todir: "$env.dist_rapid_cmdb/grails-app") {
+        ant.copy(todir: "$env.dist_rapid_suite/grails-app") {
 
             ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app") {
                 if (!TEST) {
@@ -107,9 +107,9 @@ class RapidCmdbBuild extends Build {
                 ant.exclude(name: "views/smarts*")
             }
         }
-        ant.copy(file: "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir: "$env.dist_rapid_cmdb/scripts");
+        ant.copy(file: "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir: "$env.dist_rapid_suite/scripts");
 
-        ant.copy(todir: "$env.dist_rapid_cmdb/operations") {
+        ant.copy(todir: "$env.dist_rapid_suite/operations") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/operations")
         }
 
@@ -117,10 +117,10 @@ class RapidCmdbBuild extends Build {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/licenses")
         }
 
-        ant.copy(todir: "$env.dist_rapid_cmdb/plugins") {
+        ant.copy(todir: "$env.dist_rapid_suite/plugins") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/plugins")
         }
-        ant.copy(todir: "$env.dist_rapid_cmdb/src") {
+        ant.copy(todir: "$env.dist_rapid_suite/src") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/src") {
                 if (!TEST) {
                     ant.exclude(name: "**/test/**")
@@ -128,22 +128,22 @@ class RapidCmdbBuild extends Build {
                 }
             }
         }
-         ant.copy(todir: "$env.dist_rapid_cmdb/web-app") {
+         ant.copy(todir: "$env.dist_rapid_suite/web-app") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/web-app") {
                 ant.exclude(name: "adminSmarts.gsp")
             }
         }
         if (TEST) {
-            ant.copy(todir: "$env.dist_rapid_cmdb/test") {
+            ant.copy(todir: "$env.dist_rapid_suite/test") {
                 ant.fileset(dir: "$env.rapid_cmdb_cvs/test")
             }
         }
 
-        copyCommons(env.dist_rapid_cmdb, true);
+        copyCommons(env.dist_rapid_suite, true);
     }
 
     def buildRCMDBModeler(){
-        ant.copy(todir: "$env.dist_rapid_cmdb_modeler") {
+        ant.copy(todir: "$env.dist_modeler") {
             ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/application.properties");
             ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.exe");
             ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
@@ -152,7 +152,7 @@ class RapidCmdbBuild extends Build {
             ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.sh");
             ant.fileset(file: env.invalidNames);
         }
-        ant.copy(todir: "$env.dist_rapid_cmdb_modeler/grails-app") {
+        ant.copy(todir: "$env.dist_modeler/grails-app") {
             ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/grails-app") {
                 if (!TEST) {
                     ant.exclude(name: "**/test/**")
@@ -160,9 +160,9 @@ class RapidCmdbBuild extends Build {
                 }
             }
         }
-        ant.copy(file: "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir: "$env.dist_rapid_cmdb_modeler/scripts");
+        ant.copy(file: "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir: "$env.dist_modeler/scripts");
       
-        ant.copy(todir: "$env.dist_rapid_cmdb_modeler/src") {
+        ant.copy(todir: "$env.dist_modeler/src") {
             ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/src") {
                 if (!TEST) {
                     ant.exclude(name: "**/test/**")
@@ -170,15 +170,15 @@ class RapidCmdbBuild extends Build {
                 }
             }
         }
-         ant.copy(todir: "$env.dist_rapid_cmdb_modeler/web-app") {
+         ant.copy(todir: "$env.dist_modeler/web-app") {
             ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/web-app") 
         }
         if (TEST) {
-            ant.copy(todir: "$env.dist_rapid_cmdb_modeler/test") {
+            ant.copy(todir: "$env.dist_modeler/test") {
                 ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/test")
             }
         }
-        copyCommons(env.dist_rapid_cmdb_modeler, false);
+        copyCommons(env.dist_modeler, false);
     }
 
     def copyCommons(toDir, copyTests){
@@ -221,8 +221,8 @@ class RapidCmdbBuild extends Build {
             process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
             process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
             process = "dos2unix ${env.distribution}/RapidServer/bin/rsbatch.sh".execute();
-            process = "dos2unix ${env.distribution}/RapidServer/RapidCMDB/rs.sh".execute();
-            process = "dos2unix ${env.distribution}/RapidServer/RapidCMDBModeler/rsmodeler.sh".execute();
+            process = "dos2unix ${env.dist_rapid_suite}/rs.sh".execute();
+            process = "dos2unix ${env.dist_modeler}/rsmodeler.sh".execute();
         }
         def versionDate = getVersionWithDate();
         def zipFileName = "$env.distribution/RapidCMDB$versionDate" + ".zip"
@@ -260,20 +260,20 @@ class RapidCmdbBuild extends Build {
     }
 
     def copyDependentJars() {
-        ant.copy(file: (String) classpath.getProperty("commons-betwixt-0_8_jar"), toDir: env.dist_rapid_cmdb_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-betwixt-0_8_jar"), toDir: env.dist_rapid_cmdb_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-digester-1_7_jar"), toDir: env.dist_rapid_cmdb_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-digester-1_7_jar"), toDir: env.dist_rapid_cmdb_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-configuration-1_2_jar"), toDir: env.dist_rapid_cmdb_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-configuration-1_2_jar"), toDir: env.dist_rapid_cmdb_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-collections-3_2_jar"), toDir: env.dist_rapid_cmdb_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-collections-3_2_jar"), toDir: env.dist_rapid_cmdb_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-codec-1_3_jar"), toDir: env.dist_rapid_cmdb_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-codec-1_3_jar"), toDir: env.dist_rapid_cmdb_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir: env.dist_rapid_cmdb_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir: env.dist_rapid_cmdb_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("SNMP4J_jar"), toDir: env.dist_rapid_cmdb_lib);
-        ant.copy(file: (String) classpath.getProperty("SNMP4J_jar"), toDir: env.dist_rapid_cmdb_modeler_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-betwixt-0_8_jar"), toDir: env.dist_rapid_suite_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-betwixt-0_8_jar"), toDir: env.dist_modeler_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-digester-1_7_jar"), toDir: env.dist_rapid_suite_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-digester-1_7_jar"), toDir: env.dist_modeler_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-configuration-1_2_jar"), toDir: env.dist_rapid_suite_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-configuration-1_2_jar"), toDir: env.dist_modeler_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-collections-3_2_jar"), toDir: env.dist_rapid_suite_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-collections-3_2_jar"), toDir: env.dist_modeler_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-codec-1_3_jar"), toDir: env.dist_rapid_suite_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-codec-1_3_jar"), toDir: env.dist_modeler_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir: env.dist_rapid_suite_lib);
+        ant.copy(file: (String) classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir: env.dist_modeler_lib);
+        ant.copy(file: (String) classpath.getProperty("SNMP4J_jar"), toDir: env.dist_rapid_suite_lib);
+        ant.copy(file: (String) classpath.getProperty("SNMP4J_jar"), toDir: env.dist_modeler_lib);
         ant.copy(file: (String) classpath.getProperty("tools_jar"), toDir: env.dist_rapid_server_lib);
     }
 

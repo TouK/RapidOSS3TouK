@@ -23,8 +23,8 @@ class RapidExtBuild extends Build {
         compile();
         copyResourcesForJar();
         ant.jar(destfile: env.rapid_ext_jar, basedir: env.rapid_ext_build);
-        ant.copy(file: env.rapid_ext_jar, toDir: env.dist_rapid_cmdb_lib);
-        ant.copy(file: env.rapid_ext_jar, toDir: env.dist_rapid_cmdb_modeler_lib);
+        ant.copy(file: env.rapid_ext_jar, toDir: env.dist_rapid_suite_lib);
+        ant.copy(file: env.rapid_ext_jar, toDir: env.dist_modeler_lib);
 
         copyDependentJars();
     }
@@ -47,7 +47,7 @@ class RapidExtBuild extends Build {
 
 
     def copyResourcesForJar() {
-        ant.copy(todir: "$env.dist_rapid_cmdb/grails-app/ext") {
+        ant.copy(todir: "$env.dist_rapid_suite/grails-app/ext") {
             ant.fileset(dir: "$env.rapid_ext/database/groovy") {
                 if (!TEST) {
                     ant.exclude(name: "**/test/**")

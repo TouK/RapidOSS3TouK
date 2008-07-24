@@ -24,7 +24,7 @@ package build;
 class SmartsModuleBuild extends Build{
 	 
 	def version = "$env.rapid_ext/smarts/smartsModuleVersion.txt"; 
-	def versionInBuild = "$env.dist_rapid_cmdb/smartsModuleVersion.txt";
+	def versionInBuild = "$env.dist_rapid_suite/smartsModuleVersion.txt";
 	 
     static void main(String []args){
     	SmartsModuleBuild smartsModuleBuild = new SmartsModuleBuild();
@@ -48,7 +48,7 @@ class SmartsModuleBuild extends Build{
 			ant.classpath(refid : "classpath");
 		}
 
-		ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/ext"){
+		ant.copy(todir : "$env.dist_rapid_suite/grails-app/ext"){
 			ant.fileset(dir : "$env.rapid_ext/smarts/groovy"){
                 if(!TEST){
                     ant.exclude(name:"**/test/**")
@@ -58,22 +58,22 @@ class SmartsModuleBuild extends Build{
         }
 
 		ant.copy(file : version, tofile : versionInBuild );
-		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/SmartsNotificationDatasource.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/domain/datasource" );
-		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/SmartsTopologyDatasource.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/domain/datasource" );
-		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/connection/SmartsConnection.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/domain/connection" );
-		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/connection/SmartsConnectionController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/connection" );
-		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/SmartsNotificationDatasourceController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/datasource" );
-		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/SmartsTopologyDatasourceController.groovy", toDir : "$env.dist_rapid_cmdb/grails-app/controllers/datasource" );
-        ant.copy(todir : "$env.dist_rapid_cmdb/grails-app/views"){
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/SmartsNotificationDatasource.groovy", toDir : "$env.dist_rapid_suite/grails-app/domain/datasource" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/datasource/SmartsTopologyDatasource.groovy", toDir : "$env.dist_rapid_suite/grails-app/domain/datasource" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/domain/connection/SmartsConnection.groovy", toDir : "$env.dist_rapid_suite/grails-app/domain/connection" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/connection/SmartsConnectionController.groovy", toDir : "$env.dist_rapid_suite/grails-app/controllers/connection" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/SmartsNotificationDatasourceController.groovy", toDir : "$env.dist_rapid_suite/grails-app/controllers/datasource" );
+		ant.copy(file : "$env.rapid_cmdb_cvs/grails-app/controllers/datasource/SmartsTopologyDatasourceController.groovy", toDir : "$env.dist_rapid_suite/grails-app/controllers/datasource" );
+        ant.copy(todir : "$env.dist_rapid_suite/grails-app/views"){
 			ant.fileset(dir : "$env.rapid_cmdb_cvs/grails-app/views"){
                 ant.include(name:"smarts*/*")
             }
 		}
 
-        ant.copy(file : "$env.rapid_cmdb_cvs/web-app/adminSmarts.gsp", tofile : "$env.dist_rapid_cmdb/web-app/admin.gsp");
+        ant.copy(file : "$env.rapid_cmdb_cvs/web-app/adminSmarts.gsp", tofile : "$env.dist_rapid_suite/web-app/admin.gsp");
 
         ant.jar(destfile : env.rapid_smarts_jar, basedir : env.rapid_ext_build);
-        ant.copy(file : env.rapid_smarts_jar, toDir : env.dist_rapid_cmdb_lib);
+        ant.copy(file : env.rapid_smarts_jar, toDir : env.dist_rapid_suite_lib);
 
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();

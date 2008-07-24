@@ -9,10 +9,10 @@ class Env {
 	static def distribution = basedir+"/Distribution";
 	static def testresults = basedir+"/TestResults";
 	static def dist_rapid_server = "$distribution/RapidServer";
-	static def dist_rapid_cmdb = "$dist_rapid_server/RapidCMDB";
-	static def dist_rapid_cmdb_modeler = "$dist_rapid_server/RapidCMDBModeler";
-	static def dist_rapid_cmdb_lib = dist_rapid_cmdb + "/lib";
-	static def dist_rapid_cmdb_modeler_lib = dist_rapid_cmdb_modeler + "/lib";
+	static def dist_rapid_suite = "$dist_rapid_server/RapidSuite";
+	static def dist_modeler = "$dist_rapid_server/Modeler";
+	static def dist_rapid_suite_lib = dist_rapid_suite + "/lib";
+	static def dist_modeler_lib = dist_modeler + "/lib";
 	static def dist_rapid_server_lib = "$distribution/RapidServer/lib";
 
     static def rapid_modules = basedir+"/RapidModules"

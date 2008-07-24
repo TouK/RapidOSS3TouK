@@ -36,9 +36,9 @@
     <div class="bd">
     <form method="POST" action="javascript://nothing">
         <table width="100%">
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select type="textbox" name="group" /></td></tr>
-        <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" /></td></tr>
-        <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" /></td></tr>
+        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select type="textbox" name="group" style="width:175px"/></td></tr>
+        <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
+        <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
         </table>
         <input type="hidden" name="id">
     </form>
@@ -201,7 +201,6 @@
     }
     var groupDefinitionDialogConfig = {
         width:"30em",
-        editUrl:"searchQueryGroup/edit.xml",
         saveUrl:"searchQueryGroup/save.xml",
         updateUrl:"searchQueryGroup/update.xml",
         successfulyExecuted: function () {
@@ -263,13 +262,16 @@
         else if(id == "update"){
             if (data.getAttribute("nodeType") == "filter")
                 dialog.show(dialog.EDIT_MODE, {id:data.getAttribute("id")})
-            else if(data.getAttribute("nodeType") == "group")
-                groupDialog.show(groupDialog.EDIT_MODE, {id:data.getAttribute("id")})
+            else if(data.getAttribute("nodeType") == "group"){
+                groupDialog.dialog.form.name.value = data.getAttribute("name")
+                groupDialog.show(groupDialog.EDIT_MODE)
+            }
+
         }
     }, this, true);
 
     var filterDefinitionDialogConfig = {
-        width:"40em",
+        width:"35em",
         createUrl:"searchQuery/create.xml",
         editUrl:"searchQuery/edit.xml",
         saveUrl:"searchQuery/save.xml",

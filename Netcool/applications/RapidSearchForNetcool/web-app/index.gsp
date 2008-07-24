@@ -325,6 +325,7 @@
                 dialog.show(dialog.EDIT_MODE, {id:data.getAttribute("id")})
             else if(data.getAttribute("nodeType") == "group"){
                 groupDialog.dialog.form.name.value = data.getAttribute("name")
+                groupDialog.dialog.form.id.value = data.getAttribute("id")
                 groupDialog.show(groupDialog.EDIT_MODE)
             }
 

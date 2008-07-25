@@ -176,7 +176,8 @@ YAHOO.rapidjs.component.TreeNode = function(xmlData, tree, nodeTag, parentNode, 
         {
             htmlString += '<td id="tnm'+this.treeNode.index+'" class="rcmdb-tree-node-headermenu"></td>';
         }
-        htmlString += '</tr></table>'
+        htmlString += '</tr></table>';
+
         this.treeNode.html = htmlString;
         this.treeNode.data = this.xmlData;
         /*else
@@ -218,7 +219,32 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeNode, YAHOO.rapidjs.component.Rapi
 	dataChanged : function(attributeName, attributeValue){
         if(attributeName == this.attributeToBeDisplayed)
         {
-            this.treeNode.label = attributeValue;
+	      	var htmlString = "<table><tr>";
+	        var index = 0;
+	        var invisibleCount = 0;
+
+	        for (var i in this.menuItems)
+	        {
+	            if( this.menuItems[i].condition != null ){
+	                var condRes = this.menuItems[i].condition( this.xmlData);
+	                if( !condRes)
+	                {
+	                    invisibleCount++;
+	                }
+	            }
+	            index++;
+	        }
+	        htmlString += '<td><label id="tnl'+this.treeNode.index+'" class="treeNodeLabel">' + attributeValue + "</label></td>"
+	        if( invisibleCount < index)
+	        {
+	            htmlString += '<td id="tnm'+this.treeNode.index+'" class="rcmdb-tree-node-headermenu"></td>';
+	        }
+	        htmlString += '</tr></table>';
+
+	        this.treeNode.html = htmlString;
+	        //this.tree.getNodeByIndex(this.treeNode.index).getEl().getElementsByTagName('label')[0].innerHTML = attributeValue;
+	        //this.tree._nodes[this.treeNode.index].getEl().getElementsByTagName('label')[0].innerHTML = attributeValue;
+
         }
     },
 	batchDataChanged : function(){

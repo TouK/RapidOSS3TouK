@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.domain.converter
 
 import org.compass.core.converter.Converter
+import org.compass.core.converter.basic.FormatConverter
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +13,7 @@ import org.compass.core.converter.Converter
 public class CompassLongConverter extends AbstractCompassConverterWrapper
 {
     org.compass.core.converter.basic.LongConverter longConverter = new org.compass.core.converter.basic.LongConverter();
-    protected Converter getConverter() {
+    protected FormatConverter getConverter() {
         return longConverter; //To change body of implemented methods use File | Settings | File Templates.
     }
 

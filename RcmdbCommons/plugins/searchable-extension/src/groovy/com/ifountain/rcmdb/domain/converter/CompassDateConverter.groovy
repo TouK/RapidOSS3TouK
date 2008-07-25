@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.domain.converter
 
 import org.compass.core.converter.Converter
+import org.compass.core.converter.basic.FormatConverter
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,7 +14,7 @@ public class CompassDateConverter extends AbstractCompassConverterWrapper
 {
     org.compass.core.converter.basic.DateConverter dateConverter = new org.compass.core.converter.basic.DateConverter();
 
-    protected Converter getConverter() {
+    protected FormatConverter getConverter() {
         return dateConverter; //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -5,8 +5,8 @@ YAHOO.rapidjs.component.action.RequestAction = function(config)
     this.allowMultipleRequests = config.allowMultipleRequests;
     this.events = {
         'success' : new YAHOO.util.CustomEvent('success'),
-        'failure' : new YAHOO.util.CustomEvent('failure'),
-        'timeout' : new YAHOO.util.CustomEvent('timeout')
+        'error' : new YAHOO.util.CustomEvent('error'),
+        'failure' : new YAHOO.util.CustomEvent('failure')
     };
     this.lastConnection = null;
     this.timeout = config.timeout != null?config.timeout:30000;
@@ -54,13 +54,44 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         }
         this.lastConnection = YAHOO.util.Connect.asyncRequest('GET', tmpUrl, callback);
     },
-    processSuccess: function(response, arguments)
+    processSuccess: function(response)
     {
-        this.events['success'].fireDirect(response, arguments);
+        try
+        {
+
+            if(YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
+            {
+                return;
+            }
+            else if(YAHOO.rapidjs.Connect.containsError(response) == false)
+            {
+                this.handleSuccess(response);
+                this.events['success'].fireDirect(response, response.argument);
+            }
+            else
+            {
+                this.handleErrors(response);
+                this.events['error'].fireDirect(response, response.argument);
+            }
+        }
+        catch(e)
+        {
+        }
+
     },
-    processFailure: function(response, arguments)
+    processFailure: function(response)
     {
-        this.events['failure'].fireDirect(response, arguments);
+        var st = response.status;
+		if(st == -1){
+            this.events['failure'].fireDirect(response, response.argument, 'Request received a timeout.');
+        }
+		else if(st == 404){
+			this.events['failure'].fireDirect(response, response.argument, 'Specified url cannot be found.');
+		}
+		else if(st == 0){
+			YAHOO.rapidjs.serverDownEvent.fireDirect(response);
+		}
+
     },
     abort: function()
     {
@@ -71,5 +102,24 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
                 this.lastConnection = null;
             }
         }
-    }
+    },
+    handleSuccess: function(response){},
+    handleErrors: function(response){}
 };
+
+YAHOO.rapidjs.component.action.MergeAction = function(config){
+    YAHOO.rapidjs.component.action.MergeAction.superclass.constructor.call(this, config);
+    this.removeAttribute = config.removeAttribute;
+};
+
+YAHOO.lang.extend(YAHOO.rapidjs.component.action.MergeAction, YAHOO.rapidjs.component.action.RequestAction, {
+    handleSuccess: function(response)
+    {
+        var componentList = response.argument
+        if(componentList && componentList.length){
+            for(var i=0; i<componentList.length; i++){
+               componentList[i].handleSuccess(response, true, this.removeAttribute) 
+            }
+        }
+    }
+});

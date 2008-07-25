@@ -81,7 +81,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
             func.createDelegate(this.panel,args,true).call(args);
 
     },
-    handleSuccess: function(response)
+    handleSuccess: function(response, keepExisting, removeAttribute)
     {
         this.body.innerHTML = "<div>"+response.responseText+"</div>";
     },

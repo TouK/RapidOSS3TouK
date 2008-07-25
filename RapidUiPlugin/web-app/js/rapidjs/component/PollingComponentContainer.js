@@ -58,7 +58,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 
     },
 
-    handleSuccess: function(response)
+    handleSuccess: function(response, keepExisting, removeAttribute)
     {
     },
     handleErrors: function(response)

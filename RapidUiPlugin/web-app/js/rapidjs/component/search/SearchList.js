@@ -87,17 +87,23 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.poll(this.lastOffset, sortAtt, sortOrder);
     },
 
-    handleSuccess: function(response)
+    handleSuccess: function(response, keepExisting, removeAttribute)
     {
-        var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response, this.keyAttribute);
+        var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
         var node = this.getRootNode(newData);
         if (node) {
-            this.totalRowCount = parseInt(node.getAttribute(this.totalCountAttribute), 10)
-            this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;
-            this.lastOffset = parseInt(node.getAttribute(this.offsetAttribute), 10)
+            var rowCount =  node.getAttribute(this.totalCountAttribute);
+            if(rowCount != null){
+                this.totalRowCount = parseInt(rowCount, 10)
+                this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;
+            }
+            var offset = node.getAttribute(this.offsetAttribute);
+            if(offset != null){
+                this.lastOffset = parseInt(offset, 10)
+            }
             if (this.data) {
 
-                this.data.mergeData(node, this.keyAttribute);
+                this.data.mergeData(node, this.keyAttribute, keepExisting, removeAttribute);
                 this.refreshData();
 
             }

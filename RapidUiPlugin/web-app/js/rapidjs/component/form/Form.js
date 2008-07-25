@@ -50,7 +50,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         listItem.appendChild(document.createTextNode("Request timeout"));
         this.errors.show();
     },
-    handleSuccess: function(response)
+    handleSuccess: function(response, keepExisting, removeAttribute)
     {
         if (this.isSubmitInProggress)
         {

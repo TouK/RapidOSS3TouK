@@ -47,13 +47,13 @@ YAHOO.rapidjs.component.Tree = function(container, config)
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingComponentContainer, {
 
-    handleSuccess: function(response)
+    handleSuccess: function(response, keepExisting, removeAttribute)
     {
         var data = new YAHOO.rapidjs.data.RapidXmlDocument(response,[this.nodeId]);
 		var node = this.getRootNode(data, response.responseText);
         if(this.rootNode != null)
         {
-            this.rootNode.mergeData(node, this.nodeId, false, null);
+            this.rootNode.mergeData(node, this.nodeId, keepExisting, removeAttribute);
         }
         else
         {

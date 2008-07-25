@@ -16,7 +16,7 @@ class NetcoolJournal {
     static datasources = ["RCMDB":["keys":["keyfield":["nameInDs":"keyfield"], "servername":["nameInDs":"servername"]]]]
 
     
-    java.lang.Long serverserial ="";
+    java.lang.Long serverserial =0;
     
     java.lang.String keyfield ="";
     

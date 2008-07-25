@@ -159,13 +159,11 @@
 	acknowledgeAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
 	var taskListConfig = { url: 'script/run/taskList' };
-	var taskListAction = new YAHOO.rapidjs.component.action.RequestAction(taskListConfig);
-	taskListAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
+	var taskListAction = new YAHOO.rapidjs.component.action.MergeAction(taskListConfig);
 	taskListAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
 	var severityConfig = { url: 'script/run/severity' };
-	var severityAction = new YAHOO.rapidjs.component.action.RequestAction(severityConfig);
-	severityAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
+	var severityAction = new YAHOO.rapidjs.component.action.MergeAction(severityConfig);
 	severityAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
@@ -192,49 +190,49 @@
         {
         	var serverName = xmlData.getAttribute("servername");
         	var serverSerial = xmlData.getAttribute("serverserial");
-    		taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"true"});
+    		taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"true"}, [searchList]);
         }
         else if( id == 'removeTaskFromList' )
         {
         	var serverName = xmlData.getAttribute("servername");
         	var serverSerial = xmlData.getAttribute("serverserial");
-    		taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"false"});
+    		taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"false"}, [searchList]);
         }
         else if( id == 'critical' )
         {
         	var serverName = xmlData.getAttribute("servername");
         	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:5});
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:5}, [searchList]);
         }
         else if( id == 'major' )
         {
         	var serverName = xmlData.getAttribute("servername");
         	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:4});
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:4}, [searchList]);
         }
         else if( id == 'minor' )
         {
         	var serverName = xmlData.getAttribute("servername");
         	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:3});
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:3}, [searchList]);
         }
         else if( id == 'warning' )
         {
         	var serverName = xmlData.getAttribute("servername");
         	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:2});
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:2}, [searchList]);
         }
         else if( id == 'indeterminate' )
         {
         	var serverName = xmlData.getAttribute("servername");
         	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:1});
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:1}, [searchList]);
         }
         else if( id == 'clear' )
         {
         	var serverName = xmlData.getAttribute("servername");
         	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:0});
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:0}, [searchList]);
         }
     }, this, true);
 

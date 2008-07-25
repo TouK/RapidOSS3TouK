@@ -188,6 +188,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
 
         // Compass
         LOG.debug("Defining Compass and Compass::GPS beans")
+        config?.compassSettings["compass.transaction.disableThreadBoundLocalTransaction"] = "true"
         compass(DefaultSearchableCompassFactoryBean) { bean ->
             grailsApplication = application
             compassConnection = config?.compassConnection

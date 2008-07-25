@@ -25,7 +25,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMapp
 */
 class TestCompassUtils {
 
-    static withCompassQueryBuilder(compass, closure) {
+    static withCompassQueryBuilder(compass, Closure closure) {
         def session = compass.openSession()
         def tx = session.beginTransaction()
         def result
@@ -39,7 +39,7 @@ class TestCompassUtils {
         return result
     }
 
-    static withCompassSession(compass, closure) {
+    static withCompassSession(compass, Closure closure) {
         def session = compass.openSession()
         def tx = session.beginTransaction()
         def result

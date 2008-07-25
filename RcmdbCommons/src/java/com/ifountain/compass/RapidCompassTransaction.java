@@ -12,49 +12,27 @@ import org.compass.core.CompassSession;
  * To change this template use File | Settings | File Templates.
  */
 public class RapidCompassTransaction implements CompassTransaction{
-    int numberOfUnFinishedTransactions = 0;
-    int numberOfExecutedTransactions = 0;
+    private static long transactionId = 0;
     CompassTransaction transaction;
-    public RapidCompassTransaction(CompassTransaction tr)
+    TransactionListener listener;
+    long id;
+    public RapidCompassTransaction(CompassTransaction tr, TransactionListener listener)
     {
+        this.id = getNextTransactionId();
         transaction = tr;
+        this.listener = listener;
+        this.listener.transactionStarted(this);
+    }
+
+    public static synchronized long getNextTransactionId()
+    {
+        return transactionId++;
     }
 
     public void commit() throws CompassException {
-        commit(false);
+        transaction.commit();
+        this.listener.transactionCommitted(this);
     }
-
-    public synchronized  void startTransaction()
-    {
-        numberOfUnFinishedTransactions++;
-
-    }
-
-    public synchronized  void startWriteTransaction()
-    {
-        startTransaction();
-        numberOfExecutedTransactions++;
-    }
-
-    public synchronized  int getNumberOfUnfinishedTransactions()
-    {
-        return numberOfUnFinishedTransactions;        
-    }
-
-    public synchronized  int getNumberOfExecutedTransactions()
-    {
-        return numberOfExecutedTransactions;
-    }
-
-    public synchronized  void commit(boolean finishTr) throws CompassException {
-        numberOfUnFinishedTransactions--;
-        if(finishTr)
-        {
-            transaction.commit();
-        }
-    }
-
-
 
     public CompassSession getSession() {
         return transaction.getSession();

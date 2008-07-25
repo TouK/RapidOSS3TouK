@@ -31,6 +31,7 @@ class SearchController {
             {
                 searchResults.results.each{result->
                     GrailsDomainClass grailsDomainClass = grailsApplication.getDomainClass(result.class.name);
+                    def props = [:];
                     grailsDomainClass.getProperties().each{resultProperty->
                         props[resultProperty.name] = result[resultProperty.name];
                     }

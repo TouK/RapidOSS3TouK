@@ -4,30 +4,44 @@
     def id = params.id;
     def allProperties = [];
     def domainObject = null;
-    if(type != null)
+    if (type != null)
     {
         GrailsDomainClass domainClass = ApplicationHolder.application.getDomainClass(type);
-        if(domainClass != null && id != null)
+        if (domainClass != null && id != null)
         {
             allProperties = domainClass.getProperties();
-            domainObject = domainClass?.metaClass.invokeStaticMethod(domainClass.clazz, "get", [[id:id]] as Object[]);
+            domainObject = domainClass?.metaClass.invokeStaticMethod(domainClass.clazz, "get", [[id: id]] as Object[]);
         }
     }
+    if (domainObject != null) {
 %>
-<g:if test="${domainObject != null}">
-    <table>
-        <tbody>
+<div class="yui-navset yui-navset-top">
+    <ul class="yui-nav">
+        <li class="selected"><a href="#"><em>Event</em></a></li>
+        <li><a href="#" onclick="window.html.show('getJournals.gsp?type=NetcoolJournal&id=${domainObject?.id}');"><em>Journal</em></a></li>
+    </ul>
+    <div style="display:block">
+        <table>
+            <tbody>
 
-        <g:each var="property" in="${allProperties}">
-            <tr>
-                <td>${property.name}</td>
-                <td>${domainObject[property.name]}</td>
-            </tr>
-        </g:each>
+                <g:each var="property" in="${allProperties}">
+                    <tr>
+                        <td>${property.name}</td>
+                        <td>${domainObject[property.name]}</td>
+                    </tr>
+                </g:each>
 
-        </tbody>
-    </table>
-</g:if>
-<g:else>
-    No data found
-</g:else>
+            </tbody>
+        </table>
+    </div>
+</div>
+<%
+    }
+    else {
+%>
+No data found
+<%
+    }
+%>
+
+

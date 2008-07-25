@@ -12,6 +12,7 @@
     <rui:stylesheet dir="js/yui/resize" includeType="recursive"></rui:stylesheet>
     <rui:stylesheet dir="js/yui/layout" includeType="recursive"></rui:stylesheet>
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="menu.css"></rui:stylesheet>
+    <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
     <rui:stylesheet dir="css/rapidjs" includeType="recursive"></rui:stylesheet>
     <rui:stylesheet dir="js/yui/button/assets/skins/sam" file="button.css"></rui:stylesheet>
 

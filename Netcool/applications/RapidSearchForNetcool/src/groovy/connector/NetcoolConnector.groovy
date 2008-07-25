@@ -115,7 +115,7 @@ class NetcoolConnector {
             def res = invokeMethod(NetcoolEvent, "add",[eventProps] as Object[]);
             if(!res.hasErrors())
             {
-                logger.info("Record added.");
+                logger.info("Event added.");
                 def lastStateChange = Long.parseLong(rec.statechange);
                 if (lastStateChange > lastEventStateChange){
                     lastEventStateChange = lastStateChange;
@@ -148,11 +148,20 @@ class NetcoolConnector {
             if(journalProps != null)
             {
                 logger.info("Adding journal with properties${journalProps}");
-                invokeMethod(NetcoolJournal, "add", [journalProps] as Object[]);
-                def lastStateChange = Long.parseLong(rec.chrono);
-                if (lastStateChange > lastJournalStateChange){
-                    lastJournalStateChange = lastStateChange;
+                def res = invokeMethod(NetcoolJournal, "add", [journalProps] as Object[]);
+                if(!res.hasErrors())
+                {
+                    logger.info("Jourmal added.");
+                    def lastStateChange = Long.parseLong(rec.chrono);
+                    if (lastStateChange > lastJournalStateChange){
+                        lastJournalStateChange = lastStateChange;
+                    }
                 }
+                else
+                {
+                    logger.warn("Could not added journal with serial ${journalProps.serverserial}. Reason :${res.errors}");    
+                }
+
             }
             else
             {
@@ -189,10 +198,10 @@ class NetcoolConnector {
     }
     def getJournalProperties(Map rec)
     {
-        def eventSearchParams = [:];
-        eventSearchParams[nameMappings["serverserial"]?nameMappings["serverserial"]:"serverserial"] = rec.SERIAL;
-        eventSearchParams[nameMappings["connectorname"]?nameMappings["connectorname"]:"connectorname"] = this.connectorName;
-        def event = invokeMethod(NetcoolEvent, "get", eventSearchParams);
+        def serverSerialColName = nameMappings["serverserial"]?nameMappings["serverserial"]:"serverserial";
+        def connectorNameColName = nameMappings["connectorname"]?nameMappings["connectorname"]:"connectorname";
+        def query = "${serverSerialColName}:\"${rec.SERIAL}\" AND ${connectorNameColName}:\"${this.connectorName}\""
+        def event = invokeMethod(NetcoolEvent, "search", [query] as Object[]).results[0];
         if(event == null) return null;
         def journalMap = [servername:event.servername, serverserial:event.serverserial, connectorname:this.connectorName]
         StringBuffer text = new StringBuffer();

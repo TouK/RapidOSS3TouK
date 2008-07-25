@@ -11,6 +11,8 @@ groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Netco
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCompBuild.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCoreBuild.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidExtBuild.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidUiPluginBuild.groovy
+groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidSearchForNetcoolBuild.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCmdbBuild.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleTest.groovy
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CoreModuleTest.groovy
@@ -26,9 +28,9 @@ mkdir TestResults
 
 cd RapidModules/
 groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild testBuild
-#groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
-#groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
-#groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
+#groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest 
+#groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest 
+#groovy RapidCMDB/devDocs/scripts/build/CompModuleTest 
 
 
 ################### generating test domain classes ##############
@@ -39,30 +41,32 @@ cp ../LicencedJars/lib/smarts/*.jar ../Distribution/RapidServer/lib
 
 scriptFileName1="Sample3Setup"
 scriptFileName2="Sample1Setup"
-cp RapidCMDBModeler/scripts/$scriptFileName1.groovy ../Distribution/RapidServer/RapidCMDBModeler/scripts
-cp RapidCMDBModeler/scripts/$scriptFileName2.groovy ../Distribution/RapidServer/RapidCMDBModeler/scripts
+cp RapidCMDBModeler/scripts/$scriptFileName1.groovy ../Distribution/RapidServer/Modeler/scripts
+cp RapidCMDBModeler/scripts/$scriptFileName2.groovy ../Distribution/RapidServer/Modeler/scripts
+cp RapidCMDBModeler/scripts/ModelHelper.groovy ../Distribution/RapidServer/Modeler/scripts
 
 rsbatchInput=input.txt
-echo  "/RapidCMDBModeler/script/save?name=$scriptFileName1" >> $rsbatchInput
-echo  "/RapidCMDBModeler/script/save?name=$scriptFileName2" >> $rsbatchInput
-echo  "/RapidCMDBModeler/script/run/$scriptFileName1" >> $rsbatchInput
-echo  "/RapidCMDBModeler/script/run/$scriptFileName2" >> $rsbatchInput
+echo  "/Modeler/script/save?name=$scriptFileName1" >> $rsbatchInput
+echo  "/Modeler/script/save?name=$scriptFileName2" >> $rsbatchInput
+echo  "/Modeler/script/run/$scriptFileName1" >> $rsbatchInput
+echo  "/Modeler/script/run/$scriptFileName2" >> $rsbatchInput
 
 #for file in $(find RapidCMDB/scripts -name *Test.groovy)
 #do
 #     filename=${file#RapidCMDB/scripts/*}
 #     echo "$filename"
-#     cp RapidCMDB/scripts/$filename ../Distribution/RapidServer/RapidCMDB/scripts
-#     echo "/RapidCMDB/script/save?name=$filename" >> $rsbatchInput
-#     echo  "/RapidCMDB/script/test?id=$filename" >> $rsbatchInput
+#     cp RapidCMDB/scripts/$filename ../Distribution/RapidServer/RapidSuite/scripts
+#     echo "/RapidSuite/script/save?name=$filename" >> $rsbatchInput
+#     echo  "/RapidSuite/script/test?id=$filename" >> $rsbatchInput
 #done
 
-mv $rsbatchInput ../Distribution/RapidServer/RapidCMDBModeler
+mv $rsbatchInput ../Distribution/RapidServer/Modeler
 
-cd ../Distribution/RapidServer/RapidCMDBModeler/
+cd ../Distribution/RapidServer/Modeler/
 export RS_HOME=/root/.hudson/jobs/RapidCMDB/workspace/Distribution/RapidServer
 chmod +x *
 
+sed -i "s/-Dserver.port=12223/-Dserver.port=9999/g" rsmodeler.sh
 
 ./rsmodeler.sh -start
 dataDir=data
@@ -81,8 +85,8 @@ sleep 20
 
 cd ../bin
 chmod +x rsbatch.sh
-./rsbatch.sh -commandfile RapidCMDBModeler/$rsbatchInput -host localhost -port 12223 -username rsadmin -password changeme
-cd ../RapidCMDBModeler
+./rsbatch.sh -commandfile Modeler/$rsbatchInput -host localhost -port 9999 -username rsadmin -password changeme
+cd ../Modeler
 
 sleep 2
 ./rsmodeler.sh -stop
@@ -93,15 +97,15 @@ if [ -d test/reports ]
 fi
 
 cd ..
-generatedModelsDir=RapidCMDB/generatedModels
+generatedModelsDir=RapidSuite/generatedModels
 if [ -d $generatedModelsDir ]
   then
-      mv $generatedModelsDir/grails-app/domain/*.groovy RapidCMDB/grails-app/domain
+      mv $generatedModelsDir/grails-app/domain/*.groovy RapidSuite/grails-app/domain
   else
       echo "Test models couldnot be generated!!!!"
 fi
 
-cd RapidCMDBModeler
+cd Modeler
 rm -rf data
 
 
@@ -111,22 +115,22 @@ rm -rf data
 cp ../../../RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
 ./rsmodeler.sh -test
 rm -r test/reports/TESTS-TestSuites.xml
-if [ ! -d ../../../TestResults/RapidCMDBModeler ]
+if [ ! -d ../../../TestResults/Modeler ]
   then
-    mkdir ../../../TestResults/RapidCMDBModeler
+    mkdir ../../../TestResults/Modeler
 fi
-mv test/reports/*.xml ../../../TestResults/RapidCMDBModeler
+mv test/reports/*.xml ../../../TestResults/Modeler
 
-cd ../RapidCMDB
+cd ../RapidSuite
 cp ../../../RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
 chmod +x rs.sh
 ./rs.sh -test
 rm -r test/reports/TESTS-TestSuites.xml
-if [ ! -d ../../../TestResults/RapidCMDB ]
+if [ ! -d ../../../TestResults/RapidSuite ]
   then
-    mkdir ../../../TestResults/RapidCMDB
+    mkdir ../../../TestResults/RapidSuite
 fi
-mv test/reports/*.xml  ../../../TestResults/RapidCMDB
+mv test/reports/*.xml  ../../../TestResults/RapidSuite
 
 ########################### building ####################
 #####################################################

@@ -16,7 +16,7 @@ class NetcoolJournal {
     static datasources = ["RCMDB":["keys":["keyfield":["nameInDs":"keyfield"], "servername":["nameInDs":"servername"]]]]
 
     
-    java.lang.String serverserial ="";
+    java.lang.Long serverserial =0;
     
     java.lang.String keyfield ="";
     
@@ -36,7 +36,7 @@ class NetcoolJournal {
         }
     
     static constraints={
-    serverserial(blank:true,nullable:true)
+    serverserial(blank:false,nullable:true)
         
      keyfield(blank:false,nullable:false)
         

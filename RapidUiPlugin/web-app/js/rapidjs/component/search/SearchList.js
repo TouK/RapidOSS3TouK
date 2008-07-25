@@ -207,11 +207,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 {
 
                     var subItem = subMenu.addItem({text:this.menuItems[i].submenuItems[j].label });
-                    YAHOO.util.Event.addListener(subItem.element, "click", this.rowHeaderMenuItemClicked, j, this);
+                    YAHOO.util.Event.addListener(subItem.element, "click", this.rowHeaderMenuItemClicked, { parentKey:i, subKey:j}, this);
                 }
             }
             var item = this.rowHeaderMenu.addItem({text:this.menuItems[i].label, submenu : subMenu });
-            YAHOO.util.Event.addListener(item.element, "click", this.rowHeaderMenuItemClicked, i, this);
+            if(!(this.menuItems[i].submenuItems))
+                YAHOO.util.Event.addListener(item.element, "click", this.rowHeaderMenuItemClicked,{ parentKey:i }, this);
         }
 
 
@@ -447,15 +448,30 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 var searchNode = this.searchData[row.rowIndex - this.lastOffset];
                 var dataNode = searchNode.xmlData;
                 var index = 0;
+
                 for (var i in this.menuItems) {
                     if (this.menuItems[i].condition != null) {
-                        var value = dataNode.getAttribute(this.menuItemUrlParamName);
-                        var menuItem = this.rowHeaderMenu.getItem(index);
                         var condRes = this.menuItems[i].condition(dataNode);
+                        var menuItem = this.rowHeaderMenu.getItem(index);
                         if (!condRes)
                             menuItem.element.style.display = "none";
                         else
                             menuItem.element.style.display = "";
+
+                    }
+                    var subIndex = 0;
+                    for( var j in this.menuItems[i].submenuItems )
+                    {
+                        var submenuItem = this.rowHeaderMenu.getItem(index)._oSubmenu.getItem(subIndex);
+                        if( this.menuItems[i].submenuItems[j].condition != null )
+                        {
+                            var conSub = this.menuItems[i].submenuItems[j].condition( dataNode, this.menuItems[i].submenuItems[j].label )
+                            if (!conSub)
+                                submenuItem.element.style.display = "none";
+                            else
+                                submenuItem.element.style.display = "";
+                        }
+                        subIndex++;
                     }
                     index++;
                 }
@@ -627,8 +643,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         }
     },
 
-    rowHeaderMenuItemClicked: function(eventType, key) {
-        var id = this.menuItems[key].id;
+    rowHeaderMenuItemClicked: function(eventType, params) {
+        var id;
+        var parentKey = params.parentKey;
+        if( params.subKey != null)
+        {
+            var subKey = params.subKey;
+            id = this.menuItems[parentKey].submenuItems[subKey].id;
+        }
+        else
+        {
+            id = this.menuItems[parentKey].id;
+        }
         var row = this.rowHeaderMenu.row;
         this.rowHeaderMenu.row = null;
         var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;

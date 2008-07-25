@@ -55,7 +55,7 @@ netcoolConf.NetcoolConfiguration()
             }
         }
     }
-    def journalFields = ["serverserial":"string", "keyfield":"string", "text":"string", "chrono":"number", servername:"string", connectorname:"string"];
+    def journalFields = ["serverserial":"number", "keyfield":"string", "text":"string", "chrono":"number", servername:"string", connectorname:"string"];
     netcoolConf.NetcoolJournal()
     {
         netcoolConf.Fields()

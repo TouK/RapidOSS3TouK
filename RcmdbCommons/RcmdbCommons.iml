@@ -40,6 +40,7 @@
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/test" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />

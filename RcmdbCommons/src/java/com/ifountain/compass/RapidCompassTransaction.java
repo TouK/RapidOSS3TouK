@@ -30,7 +30,6 @@ public class RapidCompassTransaction implements CompassTransaction{
     }
 
     public void commit() throws CompassException {
-        transaction.commit();
         this.listener.transactionCommitted(this);
     }
 
@@ -48,5 +47,11 @@ public class RapidCompassTransaction implements CompassTransaction{
 
     public boolean wasRolledBack() throws CompassException {
         return transaction.wasRolledBack();
+    }
+
+    public boolean equals(Object obj) {
+        RapidCompassTransaction other = (RapidCompassTransaction)obj;
+
+        return other.transaction == transaction;    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

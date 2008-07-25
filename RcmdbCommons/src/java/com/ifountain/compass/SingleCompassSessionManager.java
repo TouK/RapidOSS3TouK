@@ -19,16 +19,17 @@ public class SingleCompassSessionManager {
     private static long maxWaitTime;
     private static int numberOfExecutedTrs;
     private static CompassSession compassSessionInstance;
+    private static CompassTransaction compassTransactionInstance;
     private static Map uncommittedTransactions = new HashMap();
     private static Timer timer = new Timer();
     private static boolean timeout = false;
+    private static Object sessionLock = new Object();
 
     static TransactionListener listenerInstance = new TransactionListener()
     {
-        public void transactionStarted(RapidCompassTransaction tr) {
-            if(maxNumberOfTrs > 0)
+        public synchronized void transactionStarted(RapidCompassTransaction tr) {
+            if(isBatchInsertMode())
             {
-                startTimer();
                 uncommittedTransactions.put(tr.id, tr);
                 numberOfExecutedTrs++;
             }
@@ -36,39 +37,60 @@ public class SingleCompassSessionManager {
 
         public void transactionCommitted(RapidCompassTransaction tr)
         {
-            if(maxNumberOfTrs > 0)
+            if(isBatchInsertMode())
             {
-                System.out.println(tr.id);
                 uncommittedTransactions.remove(tr.id);
-                System.out.println(uncommittedTransactions.isEmpty());
-                System.out.println(uncommittedTransactions);
+                SingleCompassSessionManager.closeSession(tr.getSession());
             }
-            SingleCompassSessionManager.closeSession(tr.getSession());
+            else
+            {
+                tr.getSession().close();
+            }
+
         }
 
         public void transactionRolledback(RapidCompassTransaction tr)
         {
-            if(maxNumberOfTrs > 0)
+            if(isBatchInsertMode())
             {
                 uncommittedTransactions.remove(tr.id);
+                SingleCompassSessionManager.closeSession(tr.getSession());
             }
-            SingleCompassSessionManager.closeSession(tr.getSession());
+            else
+            {
+                tr.getSession().close();
+            }
+
         }
     };
+
+    private static boolean isBatchInsertMode()
+    {
+        return maxNumberOfTrs > 0 || maxWaitTime > 0;
+    }
     public static void initialize(Compass compass)
     {
         SingleCompassSessionManager.initialize(compass, 0, 0);
     }
     public static void initialize(Compass compass, int maxNumberOfTrs, long maxWaitTime)
     {
-        compassInstance = compass;
-        compassSessionInstance = compassInstance.openSession();
         SingleCompassSessionManager.maxNumberOfTrs = maxNumberOfTrs;
         SingleCompassSessionManager.maxWaitTime = maxWaitTime;
+        compassInstance = compass;
+        if(isBatchInsertMode()){
+            synchronized (sessionLock)
+            {
+                compassSessionInstance = compassInstance.openSession();
+                compassTransactionInstance = compassSessionInstance.beginTransaction();
+            }
+        }
+
+        startTimer();
     }
 
     private static void startTimer()
     {
+        if(maxWaitTime <= 0) return;
         if(timer != null)
         {
             timer.purge();
@@ -77,41 +99,48 @@ public class SingleCompassSessionManager {
         TimerTask closeTask = new TimerTask()
         {
             public void run() {
-                timeout = true;
-                System.out.println("timeout");
-                SingleCompassSessionManager.closeSession(SingleCompassSessionManager.compassSessionInstance);
-                timeout = false;
+                synchronized (sessionLock)
+                {
+                    timeout = true;
+                    SingleCompassSessionManager.closeSession(SingleCompassSessionManager.compassSessionInstance);
+                    timeout = false;
+                }
             }
         };
-        timer.schedule(closeTask, maxWaitTime);
+        timer.schedule(closeTask, maxWaitTime, maxWaitTime);
     }
 
-    private static synchronized void closeSession(CompassSession session)
+    private static void closeSession(CompassSession session)
     {
-        if(maxNumberOfTrs <= 0 || maxNumberOfTrs >0 && numberOfExecutedTrs >= maxNumberOfTrs && uncommittedTransactions.isEmpty() || timeout && uncommittedTransactions.isEmpty())
+        synchronized (sessionLock)
         {
-            System.out.println("asdasd");
-            session.close();
-        }
-        else if(timeout && !uncommittedTransactions.isEmpty())
-        {
-            startTimer();
-        }
-    }
-
-    public static synchronized CompassTransaction beginTransaction()
-    {
-        if(maxNumberOfTrs > 0)
-        {
-            if(compassSessionInstance.isClosed())
+            if(numberOfExecutedTrs >= maxNumberOfTrs && uncommittedTransactions.isEmpty() || numberOfExecutedTrs > 0 && timeout && uncommittedTransactions.isEmpty())
             {
-                compassSessionInstance =  compassInstance.openSession();
+                compassTransactionInstance.commit();
+                session.close();
+                numberOfExecutedTrs = 0;
             }
-            return new RapidCompassTransaction(compassSessionInstance.beginTransaction(), listenerInstance);
         }
-        else
+    }
+
+    public static CompassTransaction beginTransaction()
+    {
+
+        synchronized (sessionLock)
         {
-            return new RapidCompassTransaction(compassInstance.openSession().beginTransaction(), listenerInstance);
+            if(isBatchInsertMode())
+            {
+                if(compassSessionInstance.isClosed())
+                {
+                    compassSessionInstance =  compassInstance.openSession();
+                    compassTransactionInstance = compassSessionInstance.beginTransaction();
+                }
+                return new RapidCompassTransaction(compassTransactionInstance, listenerInstance);
+            }
+            else
+            {
+                return new RapidCompassTransaction(compassInstance.openSession().beginTransaction(), listenerInstance);
+            }
         }
 
     }
@@ -123,6 +152,10 @@ public class SingleCompassSessionManager {
 
     public static void destroy()
     {
+        if(timer != null)
+        {
+            timer.purge();
+        }
         uncommittedTransactions.clear();       
     }
 }

@@ -48,6 +48,7 @@ class TestCompassFactory {
         )
         def config = new CompassConfiguration()
         config.setConnection("ram://testindex")
+        config.getSettings().setSetting ("compass.transaction.disableThreadBoundLocalTransaction", "true");
         configurator.configure(config, [:])
         def compass = config.buildCompass()
 

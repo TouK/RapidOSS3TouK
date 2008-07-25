@@ -26,6 +26,7 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
     {
         SingleCompassSessionManager.initialize(compass);
         RapidCompassTransaction tr = SingleCompassSessionManager.beginTransaction();
+        Thread.sleep (1000);
         CompassSession session = tr.getSession();
         assertNotNull (tr);
         assertFalse (SingleCompassSessionManager.getUncommittedTransactions().contains(tr));
@@ -56,6 +57,30 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
         tr.commit();
         assertTrue (tr.getSession().isClosed());
     }
+
+    public void testBeginTransactionWithMaxTime()
+    {
+        int maxNumberOfTransactions = 0;
+        int maxWaitTime = 1000;
+        SingleCompassSessionManager.initialize(compass, maxNumberOfTransactions, maxWaitTime);
+        RapidCompassTransaction tr1 = SingleCompassSessionManager.beginTransaction();
+        RapidCompassTransaction tr2 = SingleCompassSessionManager.beginTransaction();
+        RapidCompassTransaction tr3 = SingleCompassSessionManager.beginTransaction();
+        tr1.commit();
+        tr2.commit();
+        Thread.sleep (1100);
+        assertFalse (tr1.getSession().isClosed());
+        assertFalse (tr2.getSession().isClosed());
+        assertFalse (tr3.getSession().isClosed());
+        tr3.commit();
+        Thread.sleep (1100);
+        assertTrue (tr1.getSession().isClosed());
+        assertTrue (tr2.getSession().isClosed());
+        assertTrue (tr3.getSession().isClosed());
+        RapidCompassTransaction tr4 = SingleCompassSessionManager.beginTransaction();
+        assertNotSame(tr1.getSession(), tr4.getSession());
+    }
+
 
     public void testBeginTransactionWithMaxTransactionCountAndIfThereExistUncommittedTransactionsDoesnotCloseSession()
     {

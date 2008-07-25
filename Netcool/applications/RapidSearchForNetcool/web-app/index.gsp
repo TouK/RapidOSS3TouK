@@ -155,8 +155,7 @@
 
 
     var acknowledgeConfig = { url: 'script/run/acknowledge' };
-	var acknowledgeAction = new YAHOO.rapidjs.component.action.RequestAction(acknowledgeConfig);
-	acknowledgeAction.events.success.subscribe(searchList.refreshAndPoll, searchList, true);
+	var acknowledgeAction = new YAHOO.rapidjs.component.action.MergeAction(acknowledgeConfig);
 	acknowledgeAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
 	var taskListConfig = { url: 'script/run/taskList' };
@@ -181,13 +180,13 @@
         {
         	var serverName = xmlData.getAttribute("servername");
         	var serverSerial = xmlData.getAttribute("serverserial");
-            acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"true"});
+            acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"true"}, [searchList]);
         }
         else if( id == 'deacknowledge' )
         {
         	var serverName = xmlData.getAttribute("servername");
         	var serverSerial = xmlData.getAttribute("serverserial");
-    		acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"false"});
+    		acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"false"}, [searchList]);
         }
         else if( id == 'addTaskToList' )
         {

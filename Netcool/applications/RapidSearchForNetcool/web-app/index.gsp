@@ -60,6 +60,9 @@
 <div id="left">
     <div id="treeDiv1"></div>
 </div>
+<div id="top">
+    IFOUNTAIN
+</div>
 <div id="right">
     <div id="searchDiv"></div>
 </div>
@@ -121,6 +124,7 @@
         sortOrderAttribute:'sortOrder',
         titleAttribute:"serverserial",
         lineSize:3,
+        title:'Netcool Events',
         fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey'],
         menuItems:{
             item1 : { id : 'eventDetails', label : 'Event Details' },
@@ -268,7 +272,7 @@
     var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
 
     var config = {  id:"filterTree", "url":"script/run/queryList", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
-        "displayAttribute":treeDisplayAttribute, "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
+        "displayAttribute":treeDisplayAttribute, "nodeTypeAttribute":"nodeType", "queryAttribute":"query", title:'Saved Queries',
         menuItems:{
             Delete : { id: 'delete', label : 'Delete',  condition : treeNodesConditionFunction },
             Update : { id: 'update', label : 'Update',  condition : treeNodesConditionFunction }
@@ -345,12 +349,22 @@
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
             units: [
-                { position: 'center', header: 'Netcool Events', body: 'right', resize: false, gutter: '1px' },
-                { position: 'left', header: 'Saved Queries', width: 200, gutter: '1px', resize: true, body: 'left', collapse: false, close: false, collapseSize: 50, scroll: true, animate: true }
+                { position: 'top', body: 'top', resize: false, height:40},
+                { position: 'center', body: 'right', resize: false, gutter: '1px' },
+                { position: 'left', width: 200, resize: true, body: 'left', scroll: true}
             ]
         });
-
+        layout.on('render', function(){
+            var header = layout.getUnitByPosition('top').body;
+            YAHOO.util.Dom.setStyle(header, 'border', 'none');
+            var left = layout.getUnitByPosition('left').body;
+            YAHOO.util.Dom.setStyle(left, 'top', '1px');
+        });
         layout.render();
+        var layoutLeft = layout.getUnitByPosition('left');
+        layoutLeft.on('resize', function(){
+            YAHOO.util.Dom.setStyle(layoutLeft.body, 'top', '1px');
+        });
         searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
         layout.on('resize', function() {
             searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);

@@ -11,6 +11,7 @@ import org.compass.core.converter.mapping.ResourcePropertyConverter
 import org.compass.core.mapping.Mapping
 import org.compass.core.mapping.ResourcePropertyMapping
 import org.compass.core.marshall.MarshallingContext
+import org.compass.core.converter.basic.FormatConverter
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,7 +20,7 @@ import org.compass.core.marshall.MarshallingContext
 * Time: 1:21:35 PM
 * To change this template use File | Settings | File Templates.
 */
-abstract class AbstractCompassConverterWrapper  implements Converter, CompassConfigurable, ResourcePropertyConverter{
+abstract class AbstractCompassConverterWrapper  implements FormatConverter, CompassConfigurable, ResourcePropertyConverter{
     public boolean marshall(Resource resource, Object o, Mapping mapping, MarshallingContext marshallingContext) {
         return getConverter().marshall(resource, o, mapping, marshallingContext);
     }
@@ -66,6 +67,14 @@ abstract class AbstractCompassConverterWrapper  implements Converter, CompassCon
         return ((ResourcePropertyConverter)getConverter()).suggestOmitNorms ();
     }
 
-    protected abstract Converter getConverter();
+    public void setFormat(String s) {
+        getConverter().setFormat (s);
+    }
+
+    public FormatConverter copy() {
+        return getConverter().copy();
+    }
+
+    protected abstract FormatConverter getConverter();
     protected abstract Object getDefaultValue();
 }

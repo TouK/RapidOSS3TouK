@@ -7,7 +7,7 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOp
 
     public void updateAtNc(Map params){
 	    def tempParams = [:];
-	    def ncds = NetcoolDatasource.get(name:servername);
+	    def ncds = NetcoolDatasource.get(name:connectorname);
 	    tempParams.put("ServerSerial", serverserial);
 	    params.each{prop, newValue->
 	    	def propLowerCase = prop.toLowerCase();
@@ -31,37 +31,37 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOp
     }
 
     public void removeFromNc(){
-	    def ncds = NetcoolDatasource.get(name:servername);
+	    def ncds = NetcoolDatasource.get(name:connectorname);
 	    ncds.removeEvent(serverserial);
     }
 
     public void setSeverity(newValue, userName){
-	    def ncds = NetcoolDatasource.get(name:servername);
+	    def ncds = NetcoolDatasource.get(name:connectorname);
 	    ncds.setSeverityAction(serverserial, newValue, userName);
 	    severity = newValue;
 	    acknowledged = 0;
     }
 
     public void setSuppressescl(newValue, userName){
-	    def ncds = NetcoolDatasource.get(name:servername);
+	    def ncds = NetcoolDatasource.get(name:connectorname);
 	    ncds.suppressAction(serverserial, newValue, userName);
 	    suppressescl = newValue;
     }
 
     public void addToTaskList(boolean action){
-	    def ncds = NetcoolDatasource.get(name:servername);
+	    def ncds = NetcoolDatasource.get(name:connectorname);
 	    ncds.taskListAction(serverserial,action);
 	    tasklist = action?1:0;
     }
 
     public void acknowledge(boolean action, userName){
-	    def ncds = NetcoolDatasource.get(name:servername);
+	    def ncds = NetcoolDatasource.get(name:connectorname);
 	    ncds.acknowledgeAction(serverserial, action, userName);
 	    //update(acknowledged:action?1:0);
     }
 
     public void assign(userId){
-	 	def ncds = NetcoolDatasource.get(name:servername);
+	 	def ncds = NetcoolDatasource.get(name:connectorname);
 	 	ncds.assignAction(serverserial, userId);
 	 	owneruid = userId;
 	 	acknowledged = 0;

@@ -19,9 +19,13 @@ import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
 import org.compass.core.Compass;
 import org.compass.core.CompassCallback;
 import org.compass.core.CompassTemplate;
+import org.compass.core.CompassTransaction;
+import org.compass.core.lucene.engine.transaction.readcommitted.BitSetByAliasFilter;
 import org.springframework.util.Assert;
 
 import java.util.Map;
+
+import com.ifountain.compass.SingleCompassSessionManager;
 
 /**
  * @author Maurice Nicholson
@@ -49,8 +53,43 @@ public abstract class AbstractSearchableMethod implements SearchableMethod {
     }
 
     protected Object doInCompass(CompassCallback compassCallback) {
-        CompassTemplate template = new CompassTemplate(compass);
-        return template.execute(compassCallback);
+        CompassTransaction tx=null;
+        try {
+            tx = SingleCompassSessionManager.beginTransaction();
+            while(true)
+            {
+                try
+                {
+                    Object result = compassCallback.doInCompass(tx.getSession());
+                    tx.commit();
+                    return result;
+                }
+                catch(UnsupportedOperationException exception)
+                {
+                    if(!exception.getStackTrace()[0].getClassName().equals(BitSetByAliasFilter.AllSetBitSet.class.getName()))
+                    {
+                        throw exception;
+                    }
+                }
+            }
+
+        } catch (RuntimeException e) {
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                }
+            }
+            throw e;
+        } catch (Error err) {
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                }
+            }
+            throw err;
+        }
     }
 
     public Map getDefaultOptions() {

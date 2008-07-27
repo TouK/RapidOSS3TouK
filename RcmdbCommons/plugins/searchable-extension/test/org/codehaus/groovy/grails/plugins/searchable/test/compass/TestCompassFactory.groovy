@@ -38,16 +38,30 @@ class TestCompassFactory {
 
     static getCompass(Collection classes, Collection instances = null) {
         def grailsApplication = getGrailsApplication(classes)
-        return getCompass(grailsApplication, instances)
+        return getCompass(grailsApplication, instances, false)
     }
 
-    static getCompass(GrailsApplication grailsApplication, Collection instances = null) {
+    static getPersistedCompass(Collection classes, Collection instances = null) {
+        def grailsApplication = getGrailsApplication(classes)
+        return getCompass(grailsApplication, instances, true)
+    }
+
+
+    static getCompass(GrailsApplication grailsApplication, Collection instances = null, boolean willPersist) {
         def configurator = SearchableCompassConfiguratorFactory.getDomainClassMappingConfigurator(
             grailsApplication,
             [SearchableGrailsDomainClassMappingConfiguratorFactory.getSearchableClassPropertyMappingConfigurator([(Long):"#000000000000000000000000000000"], [], new DefaultSearchableCompassClassMappingXmlBuilder())] as SearchableGrailsDomainClassMappingConfigurator[]
         )
         def config = new CompassConfiguration()
-        config.setConnection("ram://testindex")
+        if(willPersist)
+        {
+            config.setConnection("../testindex")    
+        }
+        else
+        {
+            config.setConnection("ram://testindex")
+        }
+//        config.getSettings().setSetting ("compass.transaction.isolation", "lucene");
         config.getSettings().setSetting ("compass.transaction.disableThreadBoundLocalTransaction", "true");
         configurator.configure(config, [:])
         def compass = config.buildCompass()

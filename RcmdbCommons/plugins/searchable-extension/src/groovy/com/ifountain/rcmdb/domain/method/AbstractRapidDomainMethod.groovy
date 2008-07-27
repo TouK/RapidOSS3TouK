@@ -26,15 +26,26 @@ import org.codehaus.groovy.grails.commons.metaclass.AbstractDynamicMethodInvocat
  * Time: 1:35:27 PM
  * To change this template use File | Settings | File Templates.
  */
-abstract class AbstractRapidDomainMethod extends AbstractDynamicMethodInvocation{
+abstract class AbstractRapidDomainMethod{
     MetaClass mc;
     public AbstractRapidDomainMethod(MetaClass mc) {
-        super(null)
         this.mc = mc;
     }
-    public Object invoke(Object target, String methodName, Object[] arguments) {
-        return invoke(domainObject, arguments); //To change body of implemented methods use File | Settings | File Templates.
+    public final Object invoke(Object domainObject, Object[] arguments) {
+        if(isWriteOperation())
+        {
+            synchronized (WriteOperationSynchronizer.writeOperationLock)
+            {
+                return _invoke(domainObject, arguments);
+            }
+        }
+        else
+        {
+            return _invoke(domainObject, arguments);
+        }
+
     }
 
-    abstract Object invoke(Object domainObject, Object[] arguments);
+    abstract boolean isWriteOperation();
+    abstract protected Object _invoke(Object domainObject, Object[] arguments);
 }

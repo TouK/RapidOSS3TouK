@@ -26,6 +26,7 @@ class GetMethodTest extends RapidCmdbTestCase{
     {
         def keys = ["prop1",  "prop2"]
         GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, [:]);
+        assertFalse (get.isWriteOperation());
         def result = get.invoke (GetMethodDomainObject, [[prop1:"prop1Value", prop3:"prop3Value"]] as Object[]);
         assertNull (result);
         assertEquals ("prop1:\"prop1Value\" AND prop2:\"null\"", GetMethodDomainObject.query);

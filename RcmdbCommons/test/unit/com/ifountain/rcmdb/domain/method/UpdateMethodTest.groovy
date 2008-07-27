@@ -54,6 +54,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations);
+        assertTrue (update.isWriteOperation());
         AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);

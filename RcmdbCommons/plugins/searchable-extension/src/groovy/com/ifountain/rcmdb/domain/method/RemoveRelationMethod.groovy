@@ -34,7 +34,11 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
         this.relations = relations;
     }
 
-    public Object invoke(Object domainObject, Object[] arguments) {
+    public boolean isWriteOperation() {
+        return true;
+    }
+
+    protected Object _invoke(Object domainObject, Object[] arguments) {
         def props = arguments[0];
         def flush = true;
         if(arguments.length == 2)

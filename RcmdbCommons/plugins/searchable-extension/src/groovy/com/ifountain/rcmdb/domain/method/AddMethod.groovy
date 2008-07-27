@@ -26,7 +26,13 @@ class AddMethod extends AbstractRapidDomainStaticMethod
         getMethod = new GetMethod(mc, keys, relations);
     }
 
-    public Object invoke(Class clazz, Object[] arguments) {
+    public boolean isWriteOperation() {
+        return true;
+    }
+
+
+
+    protected Object _invoke(Class clazz, Object[] arguments) {
         def props = arguments[0];
         def sampleBean;
         def existingInstance = getMethod.invoke(clazz, [props, false] as Object[])

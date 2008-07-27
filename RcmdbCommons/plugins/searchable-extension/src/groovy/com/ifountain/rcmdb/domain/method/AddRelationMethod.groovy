@@ -33,6 +33,10 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
         this.relations = relations;
     }
 
+    public boolean isWriteOperation() {
+        return true;
+    }
+
     private List getItemsWillBeAdded(oldValue, currentValue)
     {
         boolean contains = false;
@@ -52,7 +56,7 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
         return objectsWillBeAdded;
     }
 
-    public Object invoke(Object domainObject, Object[] arguments) {
+    protected Object _invoke(Object domainObject, Object[] arguments) {
 
         def props = arguments[0];
         def flush = true;

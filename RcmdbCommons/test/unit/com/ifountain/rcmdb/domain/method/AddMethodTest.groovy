@@ -40,6 +40,8 @@ class AddMethodTest extends RapidCmdbTestCase{
     {
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], ["prop1"]);
+        assertTrue (add.isWriteOperation());
+
         def props = [prop1:expectedDomainObject1.prop1];
         AddMethodDomainObject1 addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals (expectedDomainObject1, addedObject);

@@ -45,7 +45,11 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
         this.relations = relations;
     }
 
-    public Object invoke(Class clazz, Object[] arguments) {
+    public boolean isWriteOperation() {
+        return false;
+    }
+
+    protected Object _invoke(Class clazz, Object[] arguments) {
         def searchParams = arguments[0];
         def willTriggerOnLoad = true;
         if(arguments.size() == 2 && arguments[1] == false)

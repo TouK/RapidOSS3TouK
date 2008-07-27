@@ -39,6 +39,7 @@ class AddRelationMethodTest extends RapidCmdbTestCase{
         def relationsForObject1 = ["rel1":new Relation(fromRelation, toRelation, fromRelationClass, toRelationClass, Relation.ONE_TO_ONE)]
 
         AddRelationMethod add = new AddRelationMethod(RelationMethodDomainObject1.metaClass, relationsForObject1);
+        assertTrue (add.isWriteOperation());
         def props = [rel1:expectedDomainObject2];
         add.invoke (expectedDomainObject1, [props] as Object[]);
 

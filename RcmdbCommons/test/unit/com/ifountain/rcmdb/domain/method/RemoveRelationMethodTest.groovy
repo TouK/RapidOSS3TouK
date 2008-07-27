@@ -60,6 +60,7 @@ class RemoveRelationMethodTest extends RapidCmdbTestCase{
         RelationMethodDomainObject2.indexList = [];
 
         RemoveRelationMethod remove = new RemoveRelationMethod(RelationMethodDomainObject1.metaClass, relationsForObject1);
+        assertTrue (remove.isWriteOperation());
         props = [rel1:[expectedDomainObject2], rel2:[expectedDomainObject3], rel3:[expectedDomainObject5], rel4:expectedDomainObject7];
         remove.invoke (expectedDomainObject1, [props] as Object[]);
 

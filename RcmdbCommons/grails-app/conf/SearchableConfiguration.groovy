@@ -55,7 +55,8 @@ class SearchableConfiguration {
     "compass.converter.long.format":"#000000000000000000000000000000",
     "compass.converter.double.type":CompassDoubleConverter.class.name,
     "compass.converter.double.format":"#000000000000000000000000000000",
-    "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name];
+    "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name,
+    "compass.transaction.disableThreadBoundLocalTransaction":"true"];
 
     /**
      * Default mapping property exclusions
@@ -66,7 +67,7 @@ class SearchableConfiguration {
      * This does not apply for classes using "searchable = [only/except: [...]]"
      * mapping by closure
      */
-    List defaultExcludedProperties = ["password"]
+    List defaultExcludedProperties = []
 
     /**
      * Default property formats

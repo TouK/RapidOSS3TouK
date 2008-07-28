@@ -15,8 +15,6 @@ YAHOO.rapidjs.ArrayUtils = new function()
 	};
 }();
 
-YAHOO.rapidjs.serverDownEvent = new YAHOO.util.CustomEvent("serverDownEvent");
-
 YAHOO.rapidjs.Connect = new function()
 {
 	this.containsError = function(response)
@@ -53,8 +51,13 @@ YAHOO.rapidjs.Connect = new function()
 	};
 
 	this.getErrorMessages = function(xmlDoc){
-		return xmlDoc.getElementsByTagName('Error');
-	};
+        var errors = [];
+        var errorNodes = xmlDoc.getElementsByTagName('Error');
+        for(var i; i<errorNodes.length; i++){
+            errors.push(errorNodes[i].getAttribute('error'));
+        }
+        return errors;
+    };
 	this.getSuccessMessage = function(xmlDoc){
 		var success = xmlDoc.getElementsByTagName('Successful');
 		if(success && success.length > 0 && success[0].firstChild)
@@ -139,5 +142,21 @@ YAHOO.rapidjs.CursorManager = new function(){
 		this.processes.push('');
 		document.body.style.cursor = 'wait';
 	};
+}();
+
+YAHOO.rapidjs.ErrorManager = new function(){
+    this.errorOccurredEvent = new YAHOO.util.CustomEvent('errorOccurred');
+    this.serverDownEvent = new YAHOO.util.CustomEvent('serverDown');
+    this.serverUpEvent = new YAHOO.util.CustomEvent('serverUp');
+    this.errorOccurred = function(obj, messages){
+        this.errorOccurredEvent.fireDirect(obj, messages)
+    };
+
+    this.serverDown = function(){
+        this.serverDownEvent.fireDirect()
+    };
+     this.serverUp = function(){
+        this.serverUpEvent.fireDirect()
+    };
 }();
 

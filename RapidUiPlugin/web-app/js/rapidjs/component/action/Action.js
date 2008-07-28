@@ -5,8 +5,7 @@ YAHOO.rapidjs.component.action.RequestAction = function(config)
     this.allowMultipleRequests = config.allowMultipleRequests;
     this.events = {
         'success' : new YAHOO.util.CustomEvent('success'),
-        'error' : new YAHOO.util.CustomEvent('error'),
-        'failure' : new YAHOO.util.CustomEvent('failure')
+        'error' : new YAHOO.util.CustomEvent('error')
     };
     this.lastConnection = null;
     this.timeout = config.timeout != null?config.timeout:30000;
@@ -56,6 +55,7 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
     },
     processSuccess: function(response)
     {
+        YAHOO.rapidjs.ErrorManager.serverUp();
         try
         {
 
@@ -83,13 +83,13 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
     {
         var st = response.status;
 		if(st == -1){
-            this.events['failure'].fireDirect(response, response.argument, 'Request received a timeout.');
+            YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Request received timeout.']);
         }
 		else if(st == 404){
-			this.events['failure'].fireDirect(response, response.argument, 'Specified url cannot be found.');
+			YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Specified url cannot be found.']);
 		}
 		else if(st == 0){
-			YAHOO.rapidjs.serverDownEvent.fireDirect(response);
+			YAHOO.rapidjs.ErrorManager.serverDown();
 		}
 
     },
@@ -104,7 +104,10 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         }
     },
     handleSuccess: function(response){},
-    handleErrors: function(response){}
+    handleErrors: function(response){
+        var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
+        YAHOO.rapidjs.ErrorManager.errorOccurred(this, errors);
+    }
 };
 
 YAHOO.rapidjs.component.action.MergeAction = function(config){

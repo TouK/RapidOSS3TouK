@@ -24,6 +24,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
 
     processSuccess : function(response){
+        YAHOO.rapidjs.ErrorManager.serverUp()
         try
         {
 
@@ -63,12 +64,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
     handleErrors: function(response)
     {
+        this.clearData();
+        var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
+        YAHOO.rapidjs.ErrorManager.errorOccurred(this, errors);
     },
     handleTimeout: function(response)
     {
+        YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Request received timeout.']);
     },
     handleUnknownUrl: function(response)
     {
+        YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Specified url cannot be found.']);
     },
     handleAuthenticate: function(response)
     {
@@ -87,7 +93,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 			this.handleUnknownUrl(response);
 		}
 		else if(st == 0){
-			YAHOO.rapidjs.serverDownEvent.fireDirect(response);
+			YAHOO.rapidjs.ErrorManager.serverDown();
 		}
         if(this.pollingInterval > 0)
         {

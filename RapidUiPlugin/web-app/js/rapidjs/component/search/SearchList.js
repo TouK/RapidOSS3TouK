@@ -113,17 +113,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             }
         }
     },
-    handleErrors: function(response)
-    {
-
-    },
-    handleTimeout: function(response)
-    {
-    },
-    handleUnknownUrl: function(response)
-    {
-    },
-
+    
     clearData: function() {
         this.totalRowCount = 0;
         this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;

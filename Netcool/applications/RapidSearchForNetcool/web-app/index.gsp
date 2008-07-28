@@ -24,12 +24,21 @@
 		.r-filterTree-groupAdd{
 			background-image: url( images/rapidjs/component/tools/filter_group.png);
 		}
-	</style>
-	<style>
 		.r-filterTree-queryAdd{
 			background-image: url( images/rapidjs/component/tools/filteradd.png);
 		}
-	</style>
+        #errors{
+            padding: 10px;
+            font-style: italic;
+            background:yellow;
+            width:600px;
+            position:absolute;
+            top:-100;
+            background:#FFF3F3 none repeat scroll 0%;
+            border:1px solid red;
+            color:#CC0000;
+        }
+    </style>
 </head>
 <body class=" yui-skin-sam">
 <div id="filterDialog">
@@ -66,6 +75,8 @@
 </div>
 <div id="right">
     <div id="searchDiv"></div>
+</div>
+<div id="errors">
 </div>
   <style>
     .dragging, .drag-hint {
@@ -107,6 +118,36 @@
         var severity = data.getAttribute("severity");
         return !(severity == label);
     }
+    var errorAnim = null;
+    var errorFadeAnim = null;
+    YAHOO.rapidjs.ErrorManager.errorOccurredEvent.subscribe(function(obj, errors){
+        if(errorAnim){
+            errorAnim.stop();
+        }
+        if(errorFadeAnim){
+            errorFadeAnim.stop();
+        }
+        var errorsElement = YAHOO.ext.Element.get('errors');
+        var xCoord = (YAHOO.util.Dom.getViewportWidth()/2) - (errorsElement.getWidth()/2);
+        YAHOO.util.Dom.setStyle(errorsElement.dom, 'opacity', '1');
+        errorsElement.dom.innerHTML = errors.join("<br>");
+        errorsElement.setHeight(window.layout.getUnitByPosition('top').get('height'));
+        errorAnim = new YAHOO.util.Motion('errors', {points:{ from:[xCoord,-100], to: [xCoord, 1] }},1, YAHOO.util.Easing.elasticBoth);
+        errorFadeAnim = new YAHOO.util.Anim("errors", {
+	        opacity: {to: 0}
+        }, 5);
+        errorAnim.animate();
+        errorAnim.onComplete.subscribe(function() {
+	        errorFadeAnim.animate();
+	    });
+    }, this, true);
+    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
+
+    }, this, true);
+    YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
+
+    }, this, true);
+
 
     var conf = {width:400, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
@@ -166,15 +207,12 @@
 
     var acknowledgeConfig = { url: 'script/run/acknowledge' };
 	var acknowledgeAction = new YAHOO.rapidjs.component.action.MergeAction(acknowledgeConfig);
-	acknowledgeAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
 	var taskListConfig = { url: 'script/run/taskList' };
 	var taskListAction = new YAHOO.rapidjs.component.action.MergeAction(taskListConfig);
-	taskListAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
 	var severityConfig = { url: 'script/run/severity' };
 	var severityAction = new YAHOO.rapidjs.component.action.MergeAction(severityConfig);
-	severityAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
         if( id == "eventDetails"){
@@ -337,14 +375,8 @@
     });
     tree.poll();
     deleteQueryAction.events.success.subscribe(tree.poll, tree, true);
-    deleteQueryAction.events.failure.subscribe(function() {
-        alert("Error occurred");
-    }, this, true);
 
     deleteQueryGroupAction.events.success.subscribe(tree.poll, tree, true);
-    deleteQueryGroupAction.events.failure.subscribe(function() {
-        alert("Error occurred");
-    }, this, true);
 
     tree.events["treeClick"].subscribe(function(data) {
         if (data.getAttribute("nodeType") == "filter")
@@ -376,7 +408,7 @@
     var filterDefinitionDialogConfig = {
         width:"35em",
         createUrl:"searchQuery/create.xml",
-        editUrl:"searchQuery/edit.xml",                                  
+        editUrl:"searchQuery/edit.xml",
         saveUrl:"searchQuery/save.xml",
         updateUrl:"searchQuery/update.xml",
         successfulyExecuted: function () {
@@ -409,6 +441,7 @@
         layout.on('resize', function() {
             searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
         });
+        window.layout = layout;
 
     })
 </script>

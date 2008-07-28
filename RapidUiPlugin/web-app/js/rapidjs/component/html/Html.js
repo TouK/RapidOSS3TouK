@@ -86,25 +86,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.body.innerHTML = "<div>"+response.responseText+"</div>";
     },
 
-
-    handleErrors: function(response)
-    {
-        this.body.innerHTML = "";
-        var dh = YAHOO.ext.DomHelper;
-        var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
-        for(var i=0; i < errors.length; i++)
-        {
-           var listItem = dh.append(this.body.dom, {tag:"li"});
-           listItem.appendChild(document.createTextNode(errors[i].getAttribute("error")));
-        }
-
-    },
-
-    handleTimeout: function(response)
-    {
-       this.body.innerHTML = "<div>Request timeout.</div>";
-    },
-
     show: function(url)
     {
         if(url)

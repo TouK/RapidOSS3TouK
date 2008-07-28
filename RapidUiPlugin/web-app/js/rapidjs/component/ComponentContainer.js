@@ -8,8 +8,7 @@ YAHOO.rapidjs.component.ComponentContainer = function(container, config){
     this.toolbar = null;
     this.events = {
 		'contextmenuclicked': new YAHOO.util.CustomEvent('contextmenuclicked'),
-		'loadstatechanged' :new YAHOO.util.CustomEvent('loadstatechanged'),
-	    'erroroccurred' : new YAHOO.util.CustomEvent('erroroccurred')
+		'loadstatechanged' :new YAHOO.util.CustomEvent('loadstatechanged')
 	};
 	YAHOO.rapidjs.Components[this.id] = this;
 };

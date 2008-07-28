@@ -146,7 +146,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         for (var i = 0; i < errors.length; i++)
         {
             var listItem = dh.append(this.errors.dom, {tag:"li"});
-            listItem.appendChild(document.createTextNode(errors[i].getAttribute("error")));
+            listItem.appendChild(document.createTextNode(errors[i]));
         }
         this.errors.show();
     },

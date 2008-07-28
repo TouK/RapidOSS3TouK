@@ -25,7 +25,7 @@ class SearchQueryGroupController {
                     flash.errors = errors;
                     redirect(action: list)
                 }
-                xml {render(text: ControllerUtils.convertErrorsToXml(errors), contentType: "text/xml")}
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
 
         }
@@ -58,7 +58,7 @@ class SearchQueryGroupController {
                         flash.errors = errors;
                         redirect(action: show, id: searchQueryGroup.id)
                     }
-                    xml {render(text: ControllerUtils.convertErrorsToXml(errors), contentType: "text/xml")}
+                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
                 }
 
             }
@@ -71,7 +71,7 @@ class SearchQueryGroupController {
                     flash.errors = errors;
                     redirect(action: list)
                 }
-                xml {render(text: ControllerUtils.convertErrorsToXml(errors), contentType: "text/xml")}
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
 
         }
@@ -87,7 +87,7 @@ class SearchQueryGroupController {
                     flash.errors = errors;
                     redirect(action: list)
                 }
-                xml {render(text: ControllerUtils.convertErrorsToXml(errors), contentType: "text/xml")}
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
         }
         else {
@@ -129,7 +129,7 @@ class SearchQueryGroupController {
                     html {
                         render(view: 'edit', model: [searchQueryGroup: searchQueryGroup])
                     }
-                    xml {render(text: ControllerUtils.convertErrorsToXml(searchQueryGroup.errors), contentType: "text/xml")}
+                    xml {render(text: errorsToXml(searchQueryGroup.errors), contentType: "text/xml")}
                 }
 
             }
@@ -141,7 +141,7 @@ class SearchQueryGroupController {
                     flash.errors = errors;
                     redirect(action: edit, id: params.id)
                 }
-                xml {render(text: ControllerUtils.convertErrorsToXml(errors), contentType: "text/xml")}
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
 
         }
@@ -172,7 +172,7 @@ class SearchQueryGroupController {
                 html {
                     render(view: 'create', model: [searchQueryGroup: searchQueryGroup])
                 }
-                xml {render(text: ControllerUtils.convertErrorsToXml(searchQueryGroup.errors), contentType: "text/xml")}
+                xml {render(text: errorsToXml(searchQueryGroup.errors), contentType: "text/xml")}
             }
 
         }

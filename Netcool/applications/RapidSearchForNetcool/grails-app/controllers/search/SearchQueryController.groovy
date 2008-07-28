@@ -27,7 +27,7 @@ class SearchQueryController {
                     flash.errors = errors;
                     redirect(action: list)
                 }
-                xml {ControllerUtils.convertErrorsToXml(errors)}
+                xml {errorsToXml(errors)}
             }
 
         }
@@ -58,7 +58,7 @@ class SearchQueryController {
                     flash.errors = errors;
                     redirect(action: list)
                 }
-                xml {render(text: ControllerUtils.convertErrorsToXml(errors), contentType: "text/xml")}
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
 
         }
@@ -73,7 +73,7 @@ class SearchQueryController {
                     flash.errors = errors;
                     redirect(action: list)
                 }
-                xml {render(text: ControllerUtils.convertErrorsToXml(errors), contentType: "text/xml")}
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
         }
         else {
@@ -141,7 +141,7 @@ class SearchQueryController {
                     html {
                         render(view: 'edit', model: [searchQuery: searchQuery])
                     }
-                    xml {render(text: ControllerUtils.convertErrorsToXml(searchQuery.errors), contentType: "text/xml")}
+                    xml {render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")}
                 }
             }
         }
@@ -152,7 +152,7 @@ class SearchQueryController {
                     flash.errors = errors;
                     redirect(action: edit, id: params.id)
                 }
-                xml {render(text: ControllerUtils.convertErrorsToXml(errors), contentType: "text/xml")}
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
 
         }
@@ -213,7 +213,7 @@ class SearchQueryController {
                 html {
                     render(view: 'create', model: [searchQuery: searchQuery])
                 }
-                xml {render(text: ControllerUtils.convertErrorsToXml(searchQuery.errors), contentType: "text/xml")}
+                xml {render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")}
             }
 
         }

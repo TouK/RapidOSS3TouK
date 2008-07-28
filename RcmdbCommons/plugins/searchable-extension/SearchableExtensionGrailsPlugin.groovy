@@ -7,6 +7,9 @@ import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.springframework.validation.BindException
 import org.springframework.validation.Errors
+import org.springframework.context.MessageSource
+import groovy.xml.MarkupBuilder
+import org.springframework.validation.FieldError
 
 /**
 * Created by IntelliJ IDEA.
@@ -73,6 +76,33 @@ class SearchableExtensionGrailsPlugin {
                 delegate.errors.reject(messageCode, params as Object[],defaultMessage)
 
             }
+            def messageSource = ctx.getBean("messageSource");
+            mc.errorsToXml = {->
+                delegate.errorsToXml(delegate.errors);
+            }
+            mc.errorsToXml = {errors->
+                StringWriter writer = new StringWriter();
+                def builder = new MarkupBuilder(writer);
+                builder.Errors(){
+                    errors.getAllErrors().each{error->
+                        def message = messageSource.getMessage( error.code, error.arguments as Object[],Locale.ENGLISH);
+                        if(error instanceof FieldError)
+                        {
+                            def field = error.getField();
+                            builder.Error(field:field, error:message)
+                        }
+                        else
+                        {
+                            builder.Error(error:message)
+                        }
+                    }
+                }
+
+                return writer.toString();
+
+            }
+
+
         }
     }
 

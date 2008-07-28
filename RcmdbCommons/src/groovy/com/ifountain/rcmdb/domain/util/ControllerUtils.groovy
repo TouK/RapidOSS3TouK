@@ -22,31 +22,6 @@ class ControllerUtils {
 	def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
 
-    def static convertErrorsToXml(Errors errors)
-    {
-        MessageSource messageSource = ApplicationHolder.application.getParentContext().getBean("messageSource")
-        StringWriter writer = new StringWriter();
-        def builder = new MarkupBuilder(writer);
-        builder.Errors(){
-            errors.getAllErrors().each{error->
-                def message = messageSource.getMessage( error, Locale.getDefault());
-                def  errorText = MessageFormat.format(message, error.arguments);
-                if(error instanceof FieldError)
-                {
-                    def field = error.getField();
-                    builder.Error(field:field, error:errorText)
-                }
-                else
-                {
-                    builder.Error(error:errorText)                    
-                }
-            }
-        }
-
-        return writer.toString();
-
-    }
-
     def static convertSuccessToXml(String successMessage)
     {
         StringWriter writer = new StringWriter();

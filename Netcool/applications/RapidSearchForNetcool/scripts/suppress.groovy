@@ -15,7 +15,6 @@ def serverSerial = params.serverserial;
 def user = RsUser.findByUsername(web.session.username);
 def suppress = Integer.parseInt(params.suppress);
 
-println "supress: " + suppress;
 def netcoolEvent = NetcoolEvent.get(servername: netcoolServerName, serverserial: serverSerial);
 if (netcoolEvent) {
     def convertedValue;

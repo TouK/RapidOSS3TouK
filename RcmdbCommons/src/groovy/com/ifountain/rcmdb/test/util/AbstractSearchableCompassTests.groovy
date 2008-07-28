@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.compass.test
+package com.ifountain.rcmdb.test.util
 
-import org.codehaus.groovy.grails.plugins.searchable.compass.*
-import org.codehaus.groovy.grails.plugins.searchable.test.compass.*
+import com.ifountain.rcmdb.test.util.compass.TestCompassUtils
 
 /**
  * 

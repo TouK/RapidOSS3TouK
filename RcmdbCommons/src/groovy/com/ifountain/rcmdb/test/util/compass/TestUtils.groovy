@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable
+package com.ifountain.rcmdb.test.util.compass
 
-import org.codehaus.groovy.grails.commons.*
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsClass
+import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
 
 /**
 * Test utils

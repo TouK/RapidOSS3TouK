@@ -1,7 +1,7 @@
 package com.ifountain.compass
 
-import org.codehaus.groovy.grails.plugins.searchable.compass.test.AbstractSearchableCompassTests
-import org.codehaus.groovy.grails.plugins.searchable.test.compass.TestCompassFactory
+import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
+import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.compass.core.CompassSession
 
 /**

@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.test.compass
+package com.ifountain.rcmdb.test.util.compass
 
-import org.compass.core.*
-import org.compass.core.config.CompassConfiguration
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
-import org.codehaus.groovy.grails.plugins.searchable.compass.config.*
-import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.*
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*
-import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator
 import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.SearchableCompassConfiguratorFactory
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfiguratorFactory
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.DefaultSearchableCompassClassMappingXmlBuilder
+import org.compass.core.CompassCallback
+import org.compass.core.CompassException
+import org.compass.core.CompassSession
+import org.compass.core.CompassTemplate
+import org.compass.core.config.CompassConfiguration
 
 /**
  *

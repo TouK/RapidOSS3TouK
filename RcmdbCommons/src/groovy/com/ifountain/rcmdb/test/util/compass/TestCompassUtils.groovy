@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.test.compass
+package com.ifountain.rcmdb.test.util.compass
 
-import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils
+import com.ifountain.compass.SingleCompassSessionManager
 
 /**
 *
@@ -40,14 +40,12 @@ class TestCompassUtils {
     }
 
     static withCompassSession(compass, Closure closure) {
-        def session = compass.openSession()
-        def tx = session.beginTransaction()
+        def tx =SingleCompassSessionManager.beginTransaction();
         def result
         try {
-            result = closure(session)
+            result = closure(tx.getSession())
         } finally {
             tx.commit()
-            session.close()
         }
         return result
     }

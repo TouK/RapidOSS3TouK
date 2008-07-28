@@ -142,10 +142,22 @@
 	    });
     }, this, true);
     YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
-
+        if(errorAnim){
+            errorAnim.stop();
+        }
+        if(errorFadeAnim){
+            errorFadeAnim.stop();
+        }
+        var errorsElement = YAHOO.ext.Element.get('errors');
+        var xCoord = (YAHOO.util.Dom.getViewportWidth()/2) - (errorsElement.getWidth()/2);
+        YAHOO.util.Dom.setStyle(errorsElement.dom, 'opacity', '1');
+        errorsElement.dom.innerHTML = 'Server is not available.';
+        errorsElement.setHeight(window.layout.getUnitByPosition('top').get('height'));
+        errorAnim = new YAHOO.util.Motion('errors', {points:{ from:[xCoord,-100], to: [xCoord, 1] }},1, YAHOO.util.Easing.elasticBoth);
+        errorAnim.animate();
     }, this, true);
     YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
-
+        YAHOO.util.Dom.setStyle(YAHOO.ext.Element.get('errors').dom, 'opacity', '0');
     }, this, true);
 
 

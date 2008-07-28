@@ -42,11 +42,11 @@ class NetcoolEvent {
     
     java.lang.Long poll =0;
     
-    java.lang.Long type =0;
+    java.lang.Long nctype =0;
     
     java.lang.Long tally =0;
     
-    java.lang.String netcoolclass ="";
+    java.lang.String ncclass ="";
     
     java.lang.Long grade =0;
     
@@ -156,11 +156,11 @@ class NetcoolEvent {
         
      poll(blank:true,nullable:true)
         
-     type(blank:true,nullable:true)
+     nctype(blank:true,nullable:true)
         
      tally(blank:true,nullable:true)
         
-     netcoolclass(blank:true,nullable:true)
+     ncclass(blank:true,nullable:true)
         
      grade(blank:true,nullable:true)
         
@@ -246,6 +246,8 @@ class NetcoolEvent {
     }
     
     //AUTO_GENERATED_CODE
+
+
 
 
 

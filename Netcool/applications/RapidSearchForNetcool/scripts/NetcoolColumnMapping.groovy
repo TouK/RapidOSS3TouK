@@ -12,7 +12,7 @@ import com.ifountain.comp.utils.CaseInsensitiveMap
 * To change this template use File | Settings | File Templates.
 */
 def COLUMNS_WILL_BE_CONVERTED = ["Severity":"", "Class":"", "OwnerUID":"", "OwnerGID":""];
-def defaultConversionColumnConfiguration = ["Class":"netcoolclass"]
+def defaultConversionColumnConfiguration = ["Class":"ncclass", "Type":"nctype"]
 def deleteColName = "isdeleted"
 def baseDir = System.getProperty ("base.dir");
 def netcoolConfigurationFile = new File("$baseDir/grails-app/conf/NetcoolFieldConfiguration.xml"); 

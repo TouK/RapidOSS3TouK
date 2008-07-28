@@ -228,10 +228,19 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="netcoolclass">netcoolclass:</label>
+                            <label for="ncclass">ncclass:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'netcoolclass','errors')}">
-                            <input type="text" id="netcoolclass" name="netcoolclass" value="${fieldValue(bean:netcoolEvent,field:'netcoolclass')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'ncclass','errors')}">
+                            <input type="text" id="ncclass" name="ncclass" value="${fieldValue(bean:netcoolEvent,field:'ncclass')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="nctype">nctype:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'nctype','errors')}">
+                            <input type="text" id="nctype" name="nctype" value="${fieldValue(bean:netcoolEvent,field:'nctype')}" />
                         </td>
                     </tr>
                     
@@ -448,15 +457,6 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'tasklist','errors')}">
                             <input type="text" id="tasklist" name="tasklist" value="${fieldValue(bean:netcoolEvent,field:'tasklist')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="type">type:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'type','errors')}">
-                            <input type="text" id="type" name="type" value="${fieldValue(bean:netcoolEvent,field:'type')}" />
                         </td>
                     </tr>
                     

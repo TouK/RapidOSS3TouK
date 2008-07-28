@@ -193,9 +193,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">netcoolclass:</td>
+                    <td valign="top" class="name">ncclass:</td>
                     
-                    <td valign="top" class="value">${netcoolEvent.netcoolclass}</td>
+                    <td valign="top" class="value">${netcoolEvent.ncclass}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">nctype:</td>
+                    
+                    <td valign="top" class="value">${netcoolEvent.nctype}</td>
                     
                 </tr>
                 
@@ -364,13 +371,6 @@
                     <td valign="top" class="name">tasklist:</td>
                     
                     <td valign="top" class="value">${netcoolEvent.tasklist}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">type:</td>
-                    
-                    <td valign="top" class="value">${netcoolEvent.type}</td>
                     
                 </tr>
                 

@@ -16,9 +16,9 @@
       <Field NetcoolName='LastOccurrence' LocalName='lastoccurrence' IsDeleteMarker='false' Type='number' IsKey='false' />
       <Field NetcoolName='InternalLast' LocalName='internallast' IsDeleteMarker='false' Type='number' IsKey='false' />
       <Field NetcoolName='Poll' LocalName='poll' IsDeleteMarker='false' Type='number' IsKey='false' />
-      <Field NetcoolName='Type' LocalName='type' IsDeleteMarker='false' Type='number' IsKey='false' />
+      <Field NetcoolName='Type' LocalName='nctype' IsDeleteMarker='false' Type='number' IsKey='false' />
       <Field NetcoolName='Tally' LocalName='tally' IsDeleteMarker='false' Type='number' IsKey='false' />
-      <Field NetcoolName='Class' LocalName='netcoolclass' IsDeleteMarker='false' Type='string' IsKey='false' />
+      <Field NetcoolName='Class' LocalName='ncclass' IsDeleteMarker='false' Type='string' IsKey='false' />
       <Field NetcoolName='Grade' LocalName='grade' IsDeleteMarker='false' Type='number' IsKey='false' />
       <Field NetcoolName='Location' LocalName='location' IsDeleteMarker='false' Type='string' IsKey='false' />
       <Field NetcoolName='OwnerUID' LocalName='owneruid' IsDeleteMarker='false' Type='string' IsKey='false' />
@@ -53,15 +53,17 @@
       <Field NetcoolName='ServerName' LocalName='servername' IsDeleteMarker='false' Type='string' IsKey='true' />
       <Field NetcoolName='ServerSerial' LocalName='serverserial' IsDeleteMarker='false' Type='number' IsKey='true' />
       <Field NetcoolName='URL' LocalName='url' IsDeleteMarker='false' Type='string' IsKey='false' />
+      <Field NetcoolName='connectorname' LocalName='connectorname' IsDeleteMarker='false' Type='string' IsKey='false' />
     </Fields>
   </NetcoolEvent>
   <NetcoolJournal>
     <Fields>
-      <Field NetcoolName='serial' LocalName='serial' Type='string' IsDeleteMarker='false' IsKey='false' />
+      <Field NetcoolName='serverserial' LocalName='serverserial' Type='number' IsDeleteMarker='false' IsKey='false' />
       <Field NetcoolName='keyfield' LocalName='keyfield' Type='string' IsDeleteMarker='false' IsKey='true' />
       <Field NetcoolName='text' LocalName='text' Type='string' IsDeleteMarker='false' IsKey='false' />
       <Field NetcoolName='chrono' LocalName='chrono' Type='number' IsDeleteMarker='false' IsKey='false' />
       <Field NetcoolName='servername' LocalName='servername' Type='string' IsDeleteMarker='false' IsKey='true' />
+      <Field NetcoolName='connectorname' LocalName='connectorname' Type='string' IsDeleteMarker='false' IsKey='false' />
     </Fields>
   </NetcoolJournal>
 </NetcoolConfiguration>

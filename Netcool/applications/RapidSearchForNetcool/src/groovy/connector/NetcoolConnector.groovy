@@ -16,7 +16,7 @@ import datasource.NetcoolConversionParameter
  * To change this template use File | Settings | File Templates.
  */
 class NetcoolConnector {
-    public static MAPPING_FOR_KNOWN_COLUMNS = ["class":"netcoolclass"]
+    public static MAPPING_FOR_KNOWN_COLUMNS = ["class":"netcoolclass", "type":"nctype"]
     Map nameMappings;
     NetcoolDatasource datasource;
     NetcoolColumn deleteMarkerField;

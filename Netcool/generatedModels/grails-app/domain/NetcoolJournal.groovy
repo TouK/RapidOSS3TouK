@@ -36,7 +36,7 @@ class NetcoolJournal {
         }
     
     static constraints={
-    serverserial(blank:false,nullable:true)
+    serverserial(blank:true,nullable:true)
         
      keyfield(blank:false,nullable:false)
         
@@ -62,6 +62,8 @@ class NetcoolJournal {
     }
     
     //AUTO_GENERATED_CODE
+
+
 
 
 

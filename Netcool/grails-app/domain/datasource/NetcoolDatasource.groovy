@@ -173,7 +173,7 @@ class NetcoolDatasource extends BaseDatasource{
     def suppressAction(serverserial, suppress, userName){
 		def updateProps = [:];
         updateProps.put("ServerSerial", serverserial);
-        updateProps.put("SuppressEscl", intSuppress);
+        updateProps.put("SuppressEscl", suppress);
 		updateEvent(updateProps);
 	}
 

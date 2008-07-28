@@ -11,3 +11,8 @@ import script.CmdbScript
 CmdbScript.addScript(name:"NetcoolColumnMapping");
 CmdbScript.addScript(name:"NetcoolConfigurationLoader");
 CmdbScript.addScript(name:"queryList");
+CmdbScript.addScript(name:"acknowledge");
+CmdbScript.addScript(name:"severity");
+CmdbScript.addScript(name:"takeOwnership");
+CmdbScript.addScript(name:"taskList");
+CmdbScript.addScript(name:"suppress");

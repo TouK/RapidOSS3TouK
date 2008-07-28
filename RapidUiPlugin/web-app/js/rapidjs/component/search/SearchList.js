@@ -672,11 +672,5 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
     firePropertyClick: function(key, value, data) {
         this.events['propertyClick'].fireDirect(key, value, data);
-    },
-
-    refreshAndPoll: function ()
-    {
-        this.showMask();
-        this.poll();
-    }
+    }    
 });

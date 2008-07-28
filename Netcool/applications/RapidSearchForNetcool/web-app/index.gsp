@@ -102,6 +102,11 @@
     {
         return data.getAttribute("tasklist") == 1;
     }
+    function searchListHeaderMenuConditionFunctionSeveritySubmenu( data, label )
+    {
+        var severity = data.getAttribute("severity");
+        return !(severity == label);
+    }
 
     var conf = {width:400, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
@@ -135,12 +140,12 @@
             item5 : { id : 'addTaskToList', label : 'Add Task To List', condition: searchListHeaderMenuConditionFunctionAddTaskToList },
             item6 : { id : 'removeTaskFromList', label : 'Remove Task From List', condition: searchListHeaderMenuConditionFunctionRemoveTaskFromList },
             item7 : { id : 'severity', label : 'Change Severity', submenuItems : {
-                            subItem1 : { id: 'critical', label : 'Critical' },
-                            subItem2 : { id: 'major', label : 'Major' },
-                            subItem3 : { id: 'minor', label : 'Minor' },
-                            subItem4 : { id: 'warning', label : 'Warning' },
-                            subItem5 : { id: 'indeterminate', label : 'Indeterminate' },
-                            subItem6 : { id: 'clear', label : 'Clear' }
+                            subItem1 : { id: 'critical', label : 'Critical', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
+                            subItem2 : { id: 'major', label : 'Major', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
+                            subItem3 : { id: 'minor', label : 'Minor', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
+                            subItem4 : { id: 'warning', label : 'Warning',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
+                            subItem5 : { id: 'indeterminate', label : 'Indeterminate',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
+                            subItem6 : { id: 'clear', label : 'Clear',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu }
                         }
                     }
         } ,
@@ -242,18 +247,52 @@
     }, this, true);
 
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
-        if (id == "sortAsc") {
-            searchList.setSortDirection(key, true);
-        }
-        else if (id == "sortDesc") {
-            searchList.setSortDirection(key, false);
-        }
-        else if (id == "greaterThan") {
-            searchList.appendToQuery(key + ":{" + value + " TO *}");
-        }
-        else if (id == "lessThan") {
-            searchList.appendToQuery(key + ":{* TO " + value + "}");
-        }
+
+	        if (id == "sortAsc") {
+	            searchList.setSortDirection(key, true);
+	        }
+	        else if (id == "sortDesc") {
+	            searchList.setSortDirection(key, false);
+	        }
+	        else if (id == "greaterThan") {
+	        	if( key == "severity")
+ 	  			{
+	 	  			if( value == 'Critical' )
+			           	searchList.appendToQuery("");
+			        else if( value == 'Major' )
+			        	searchList.appendToQuery("severity: Critical");
+			        else if( value == 'Minor' )
+			        	searchList.appendToQuery("severity: Critical and Major");
+			        else if( value == 'Warning' )
+			        	searchList.appendToQuery("severity: Critical OR Major ");
+			        else if( value == 'Indeterminate' )
+			        	searchList.appendToQuery("severity: Critical OR Major OR Warning");
+			        else if( value == 'Clear' )
+			        	searchList.appendToQuery("severity: Critical OR Major OR Warning OR Indeterminate");
+	 	  		}
+ 	  			else
+	            	searchList.appendToQuery(key + ":{" + value + " TO *}");
+	        }
+	        else if (id == "lessThan") {
+	        	if( key == "severity")
+ 	  			{
+	 	  			if( value == 'Critical' )
+			        	searchList.appendToQuery("severity: Major OR Warning OR Indeterminate OR Clear");
+			        else if( value == 'Major' )
+			        	searchList.appendToQuery("severity: Minor OR Warning OR Indeterminate OR Clear");
+			        else if( value == 'Minor' )
+			        	searchList.appendToQuery("severity: Warning OR Indeterminate OR Clear");
+			        else if( value == 'Warning' )
+			        	searchList.appendToQuery("severity: Indeterminate OR Clear ");
+			        else if( value == 'Indeterminate' )
+			        	searchList.appendToQuery("severity: Clear");
+			        else if( value == 'Clear' )
+			        	searchList.appendToQuery("");
+	 	  		}
+	        	else
+	            	searchList.appendToQuery(key + ":{* TO " + value + "}");
+	        }
+
     }, this, true);
 
 
@@ -337,7 +376,7 @@
     var filterDefinitionDialogConfig = {
         width:"35em",
         createUrl:"searchQuery/create.xml",
-        editUrl:"searchQuery/edit.xml",
+        editUrl:"searchQuery/edit.xml",                                  
         saveUrl:"searchQuery/save.xml",
         updateUrl:"searchQuery/update.xml",
         successfulyExecuted: function () {

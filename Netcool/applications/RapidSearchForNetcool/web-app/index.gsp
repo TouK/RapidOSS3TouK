@@ -249,7 +249,6 @@
 
     var suppressConfig = { url: 'script/run/suppress' };
 	var suppressAction = new YAHOO.rapidjs.component.action.MergeAction(suppressConfig);
-	suppressAction.events.failure.subscribe(function(){alert("Error occurred");}, this, true);
 
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
         if( id == "eventDetails"){

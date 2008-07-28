@@ -78,7 +78,7 @@ log4j {
     appender.'errorLog.layout.ConversionPattern' = '%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'errorLog.File' = "logs/RapidServerErr.log"
 
-    rootLogger = "warn,errorLog"
+    rootLogger = "warn,rapidServerLog"
 
     logger {
         // COPY THE FOLLOWING LINE TO DEFINE A NEW LOGGER THAT WILL USE THE NEW APPENDER CREATED ABOVE

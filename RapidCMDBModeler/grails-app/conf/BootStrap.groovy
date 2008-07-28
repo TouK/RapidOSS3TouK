@@ -15,6 +15,7 @@ import script.CmdbScript
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.compass.SingleCompassSessionManager
 
 class BootStrap {
     def quartzScheduler;
@@ -94,6 +95,18 @@ class BootStrap {
 
     def destroy = {
         ScriptManager.getInstance().destroy();
+        SingleCompassSessionManager.destroy();
+        for(int i=0; i < 100; i++)
+        {
+            if(!SingleCompassSessionManager.isClosedLastSession())
+            {
+                Thread.sleep (100);
+            }
+            else
+            {
+                break;
+            }
+        }
     }
 
 }

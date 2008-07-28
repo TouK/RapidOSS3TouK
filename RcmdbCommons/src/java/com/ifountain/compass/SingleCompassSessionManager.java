@@ -168,4 +168,11 @@ public class SingleCompassSessionManager {
             isDestroyed = true;
         }
     }
+    public static boolean isClosedLastSession()
+    {
+        synchronized (sessionLock)
+        {
+            return compassSessionInstance.isClosed();
+        }
+    }
 }

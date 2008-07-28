@@ -20,6 +20,7 @@ import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
+import com.ifountain.compass.SingleCompassSessionManager
 
 class BootStrap {
     def quartzScheduler;
@@ -180,6 +181,18 @@ class BootStrap {
         }
         ListeningAdapterManager.getInstance().destroy();
         ScriptManager.getInstance().destroy();
+        SingleCompassSessionManager.destroy();
+        for(int i=0; i < 100; i++)
+        {
+            if(!SingleCompassSessionManager.isClosedLastSession())
+            {
+                Thread.sleep (100);
+            }
+            else
+            {
+                break;
+            }
+        }
     }
 
 }

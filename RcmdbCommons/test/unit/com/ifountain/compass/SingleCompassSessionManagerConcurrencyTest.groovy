@@ -19,6 +19,7 @@ class SingleCompassSessionManagerConcurrencyTest extends AbstractSearchableCompa
 
     protected void tearDown() {
         compass.close();
+        SingleCompassSessionManager.destroy();
     }
 
     public void testConcurrency()
@@ -87,8 +88,6 @@ class CompassConcurrencyThread extends Thread{
         }catch(Throwable t)
         {
             t.printStackTrace();
-            System.err.println("HATA "+i)
-            System.exit (0);
 
             isExceptionThrown = true;
         }

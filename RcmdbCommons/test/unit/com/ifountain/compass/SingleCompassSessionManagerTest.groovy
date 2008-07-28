@@ -126,7 +126,43 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
         tr4.commit();
         Thread.sleep (1100);
         assertTrue (tr4.getSession().isClosed());
+    }
 
+    public void testBeginTransactionThrowsExceptionAfterDestroy()
+    {
+        int maxNumberOfTransactions = 200;
+        int maxWaitTime = 1000;
+        SingleCompassSessionManager.initialize(compass, maxNumberOfTransactions, maxWaitTime);
+        SingleCompassSessionManager.destroy();
+        try
+        {
+            SingleCompassSessionManager.beginTransaction();
+            fail("Should throw exception");
+        }
+        catch(UnInitializedSessionManagerException exception)
+        {
+        }
+    }
 
+    public void testDestroyWillMarkSessionToBeClosed()
+    {
+        int maxNumberOfTransactions = 200;
+        int maxWaitTime = 10;
+        SingleCompassSessionManager.initialize(compass, maxNumberOfTransactions, maxWaitTime);
+        RapidCompassTransaction tr1 = SingleCompassSessionManager.beginTransaction();
+        RapidCompassTransaction tr2 = SingleCompassSessionManager.beginTransaction();
+        Thread.sleep (100);
+        assertFalse (tr1.getSession().isClosed())
+        assertFalse (tr2.getSession().isClosed())
+        SingleCompassSessionManager.destroy();
+        Thread.sleep (100);
+        assertFalse (tr1.getSession().isClosed())
+        assertFalse (tr2.getSession().isClosed())
+        tr1.commit();
+        assertFalse (tr1.getSession().isClosed())
+        assertFalse (tr2.getSession().isClosed())
+        tr2.commit();
+        assertTrue (tr1.getSession().isClosed())
+        assertTrue (tr2.getSession().isClosed())
     }
 }

@@ -23,15 +23,19 @@ public class SingleCompassSessionManager {
     private static Map uncommittedTransactions = new HashMap();
     private static Timer timer = new Timer();
     private static boolean timeout = false;
+    private static boolean isDestroyed = true;
     private static Object sessionLock = new Object();
 
     static TransactionListener listenerInstance = new TransactionListener()
     {
-        public synchronized void transactionStarted(RapidCompassTransaction tr) {
+        public void transactionStarted(RapidCompassTransaction tr) {
             if(isBatchInsertMode())
             {
-                uncommittedTransactions.put(tr.id, tr);
-                numberOfExecutedTrs++;
+                synchronized (sessionLock)
+                {
+                    uncommittedTransactions.put(tr.id, tr);
+                    numberOfExecutedTrs++;
+                }
             }
         }
 
@@ -39,8 +43,11 @@ public class SingleCompassSessionManager {
         {
             if(isBatchInsertMode())
             {
-                uncommittedTransactions.remove(tr.id);
-                SingleCompassSessionManager.closeSession(tr.getSession());
+                synchronized (sessionLock)
+                {
+                    uncommittedTransactions.remove(tr.id);
+                    SingleCompassSessionManager.closeSession(tr.getSession());
+                }
             }
             else
             {
@@ -53,8 +60,11 @@ public class SingleCompassSessionManager {
         {
             if(isBatchInsertMode())
             {
-                uncommittedTransactions.remove(tr.id);
-                SingleCompassSessionManager.closeSession(tr.getSession());
+                synchronized (sessionLock)
+                {
+                    uncommittedTransactions.remove(tr.id);
+                    SingleCompassSessionManager.closeSession(tr.getSession());
+                }
             }
             else
             {
@@ -74,6 +84,8 @@ public class SingleCompassSessionManager {
     }
     public static void initialize(Compass compass, int maxNumberOfTrs, long maxWaitTime)
     {
+        isDestroyed = false;
+        uncommittedTransactions.clear();
         SingleCompassSessionManager.maxNumberOfTrs = maxNumberOfTrs;
         SingleCompassSessionManager.maxWaitTime = maxWaitTime;
         compassInstance = compass;
@@ -83,18 +95,13 @@ public class SingleCompassSessionManager {
                 compassSessionInstance = compassInstance.openSession();
                 compassTransactionInstance = compassSessionInstance.beginTransaction();
             }
+            startTimer();
         }
-
-        startTimer();
     }
 
     private static void startTimer()
     {
         if(maxWaitTime <= 0) return;
-        if(timer != null)
-        {
-            timer.purge();
-        }
         timer = new Timer();
         TimerTask closeTask = new TimerTask()
         {
@@ -114,7 +121,7 @@ public class SingleCompassSessionManager {
     {
         synchronized (sessionLock)
         {
-            if(numberOfExecutedTrs >= maxNumberOfTrs && uncommittedTransactions.isEmpty() || numberOfExecutedTrs > 0 && timeout && uncommittedTransactions.isEmpty())
+            if(maxNumberOfTrs > 0 && numberOfExecutedTrs >= maxNumberOfTrs && uncommittedTransactions.isEmpty() || numberOfExecutedTrs > 0 && timeout && uncommittedTransactions.isEmpty() || isDestroyed && !timeout && uncommittedTransactions.isEmpty())
             {
                 compassTransactionInstance.commit();
                 session.close();
@@ -125,7 +132,7 @@ public class SingleCompassSessionManager {
 
     public static CompassTransaction beginTransaction()
     {
-
+        if(isDestroyed) throw new UnInitializedSessionManagerException();
         synchronized (sessionLock)
         {
             if(isBatchInsertMode())
@@ -152,10 +159,13 @@ public class SingleCompassSessionManager {
 
     public static void destroy()
     {
-        if(timer != null)
+        synchronized (sessionLock)
         {
-            timer.purge();
+            if(timer != null)
+            {
+                timer.purge();
+            }
+            isDestroyed = true;
         }
-        uncommittedTransactions.clear();       
     }
 }

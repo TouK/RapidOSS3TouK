@@ -49,9 +49,11 @@ start() {
  getpid
   if [ "X$pid" = "X" ]
      then
+     rm -f logs/RapidServerOut.log
+     rm -f logs/RapidServerErr.log
    	##starts the RS service
    	. $GRAILS_HOME/bin/startGrails run-app
-	startGrails com.ifountain.grails.RapidGrailsScriptRunner run-app &
+	startGrails com.ifountain.grails.RapidGrailsScriptRunner run-app & > logs/RapidServerOut.log  2> logs/RapidServerErr.log
    echo $! >> $PIDFILE
 
  else

@@ -53,7 +53,7 @@ YAHOO.rapidjs.Connect = new function()
 	this.getErrorMessages = function(xmlDoc){
         var errors = [];
         var errorNodes = xmlDoc.getElementsByTagName('Error');
-        for(var i; i<errorNodes.length; i++){
+        for(var i=0; i<errorNodes.length; i++){
             errors.push(errorNodes[i].getAttribute('error'));
         }
         return errors;

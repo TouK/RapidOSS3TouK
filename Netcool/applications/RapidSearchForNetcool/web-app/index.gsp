@@ -252,11 +252,9 @@
 
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
         if( id == "eventDetails"){
-            var type = xmlData.getAttribute("alias");
             var eventId = xmlData.getAttribute("id");
-            var url = "getDetails.gsp?type="+type + "&id="+eventId;
+            var url = "getDetails.gsp?id="+eventId;
             html.show(url);
-
         }
         else if( id == 'acknowledge' )
         {

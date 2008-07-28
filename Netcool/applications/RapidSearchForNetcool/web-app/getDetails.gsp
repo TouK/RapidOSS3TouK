@@ -4,14 +4,11 @@
     def id = params.id;
     def allProperties = [];
     def domainObject = null;
-    if (type != null)
+    GrailsDomainClass domainClass = ApplicationHolder.application.getDomainClass("NetcoolEvent");
+    if (domainClass != null && id != null)
     {
-        GrailsDomainClass domainClass = ApplicationHolder.application.getDomainClass(type);
-        if (domainClass != null && id != null)
-        {
-            allProperties = domainClass.getProperties();
-            domainObject = domainClass?.metaClass.invokeStaticMethod(domainClass.clazz, "get", [[id: id]] as Object[]);
-        }
+        allProperties = domainClass.getProperties();
+        domainObject = NetcoolEvent.get(id: id);
     }
     if (domainObject != null) {
 %>

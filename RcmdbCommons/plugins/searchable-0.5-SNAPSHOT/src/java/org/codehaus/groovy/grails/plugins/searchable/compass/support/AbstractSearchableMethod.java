@@ -55,9 +55,10 @@ public abstract class AbstractSearchableMethod implements SearchableMethod {
     protected Object doInCompass(CompassCallback compassCallback) {
         CompassTransaction tx=null;
         try {
-            tx = SingleCompassSessionManager.beginTransaction();
-            while(true)
+
+            for(int i=0; i < 2000; i++)
             {
+	            tx = SingleCompassSessionManager.beginTransaction();
                 try
                 {
                     Object result = compassCallback.doInCompass(tx.getSession());
@@ -70,8 +71,10 @@ public abstract class AbstractSearchableMethod implements SearchableMethod {
                     {
                         throw exception;
                     }
+                    tx.commit();
                 }
             }
+            throw new RuntimeException("!!!!BUG:Compass bitset exception.");
 
         } catch (RuntimeException e) {
             if (tx != null) {

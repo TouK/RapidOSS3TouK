@@ -68,10 +68,10 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOp
         }
     }
 
-    public void assign(userId){
+    public void assign(newValue){
 	 	def ncds = NetcoolDatasource.get(name:connectorname);
-	 	ncds.assignAction(serverserial, userId);
-	 	owneruid = userId;
+	 	ncds.assignAction(serverserial, NetcoolConversionParameter.getRealValue("OwnerUID", newValue));
+	 	owneruid = newValue;
 	 	acknowledged = NetcoolConversionParameter.getConvertedValue("Acknowledged", 0);
 
     }

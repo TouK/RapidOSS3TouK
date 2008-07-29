@@ -31,7 +31,7 @@
             padding: 3px;
             font-style: italic;
             background:yellow;
-            width:600px;
+            width:800px;
             position:absolute;
             top:-100;
             background:#FFF3F3 none repeat scroll 0%;
@@ -262,6 +262,9 @@
     var suppressConfig = { url: 'script/run/suppress' };
 	var suppressAction = new YAHOO.rapidjs.component.action.MergeAction(suppressConfig);
 
+    var takeOwnershipConfig = { url: 'script/run/takeOwnership' };
+	var takeOwnershipAction = new YAHOO.rapidjs.component.action.MergeAction(takeOwnershipConfig);
+
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
     	var serverName = xmlData.getAttribute("servername");
        	var serverSerial = xmlData.getAttribute("serverserial");
@@ -288,6 +291,8 @@
 
         else if (parentId == 'severity')
         	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:id}, [searchList]);
+        else if (id == 'takeOwnership')
+        	takeOwnershipAction.execute({servername:serverName, serverserial : serverSerial}, [searchList]);
 
     }, this, true);
 

@@ -7,6 +7,7 @@
  */
 
 import auth.RsUser;
+import datasource.NetcoolConversionParameter;
 
 def netcoolServerName = params.servername;
 def serverSerial = params.serverserial;
@@ -14,8 +15,11 @@ def user = RsUser.findByUsername(web.session.username);
 
 def netcoolEvent = NetcoolEvent.get(servername: netcoolServerName, serverserial: serverSerial);
 if (netcoolEvent) {
-    netcoolEvent.assign(user.getProperty("userId"));
-   
+    def userId = NetcoolConversionParameter.search("columnName:OwnerUID AND conversion:$user.username").results[0]
+    if(userId == null){
+        throw new Exception("No user found in Netcool repository with name: ${user.username}")
+    }
+    netcoolEvent.assign(user.username);
     def props = [:];
     def grailsDomainClass = web.grailsApplication.getDomainClass(netcoolEvent.class.name);
     grailsDomainClass.getProperties().each {netcoolProperty ->

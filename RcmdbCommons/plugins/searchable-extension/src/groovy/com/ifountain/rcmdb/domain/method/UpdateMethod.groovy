@@ -52,6 +52,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
 
     protected Object _invoke(Object domainObject, Object[] arguments) {
         def props = arguments[0];
+        props.remove("id");
         def relationToBeAddedMap = [:]
         def relationToBeRemovedMap = [:]
         Errors errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());

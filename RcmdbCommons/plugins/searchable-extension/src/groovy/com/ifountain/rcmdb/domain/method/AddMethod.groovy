@@ -35,6 +35,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
     protected Object _invoke(Class clazz, Object[] arguments) {
         def props = arguments[0];
         def sampleBean;
+        props.remove("id");
         def existingInstance = getMethod.invoke(clazz, [props, false] as Object[])
         if(existingInstance != null)
         {

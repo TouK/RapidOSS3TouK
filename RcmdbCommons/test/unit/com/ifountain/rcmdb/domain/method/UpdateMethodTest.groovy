@@ -52,7 +52,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromAddRelationMethod[AddMethodDomainObject1.class]= [relatedObject];
         AddMethodDomainObject1.relatedInstancesShouldBeReturnedFromAddRelationMethod[ChildAddMethodDomainObject.class] =[]
 
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject];
+        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject, id:5000];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), relations);
         assertTrue (update.isWriteOperation());
         AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);

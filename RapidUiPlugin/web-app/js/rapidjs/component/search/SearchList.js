@@ -72,6 +72,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.params[this.searchQueryParamName] = this.currentlyExecutingQuery;
         this.poll();
     },
+    handleInputEnter : function(e){
+        if ((e.type == "keypress" && e.keyCode == 13))
+        {
+            this.handleSearchClick();
+        }
+    },
+    
     handleSearchClick: function(e) {
         this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
         this.showMask();
@@ -154,7 +161,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             html:'<div><form action="javascript:void(0)"><table><tbody>' +
                  '<tr>' +
                  '<td  width="93%"><input type="text" style="width:100%;"/></td>' +
-                 '<td><input type="submit" value="Search"></input></td>' +
+                 '<td><button type="button">Search</button></td>' +
                  '<td  width="100%"><a href="#">Save Query</a></td>' +
                  '</tr>' +
                  '</tbody></table></form></div>' +
@@ -181,7 +188,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.bufferView.rowEls = [];
         this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask', html:'Loading..', style:'text-align:center;'}, true);
         this.hideMask();
-        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[1], 'click', this.handleSearchClick, this, true);
+        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('button')[0], 'click', this.handleSearchClick, this, true);
+        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleInputEnter, this, true);
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('a')[0], 'click', this.handleSaveQueryClick, this, true);
         YAHOO.util.Event.addListener(this.lineSizeSelector, 'change', this.handleLineSizeChange, this, true);
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);

@@ -11,7 +11,7 @@ import com.ifountain.comp.utils.CaseInsensitiveMap
 * Time: 11:33:27 AM
 * To change this template use File | Settings | File Templates.
 */
-def COLUMNS_WILL_BE_CONVERTED = ["Severity":"", "Class":"", "OwnerUID":"", "OwnerGID":""];
+def COLUMNS_WILL_BE_CONVERTED = ["Severity":"", "Class":"", "OwnerUID":"", "OwnerGID":"", "SuppressEscl":""];
 def defaultConversionColumnConfiguration = ["Class":"ncclass", "Type":"nctype"]
 def deleteColName = "isdeleted"
 def baseDir = System.getProperty ("base.dir");

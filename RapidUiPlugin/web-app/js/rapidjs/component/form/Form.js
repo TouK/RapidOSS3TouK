@@ -13,11 +13,13 @@ YAHOO.rapidjs.component.Form = function(container, config)
             { text:"Cancel", handler:this.handleCancel.createDelegate(this), scope:this } ]
     });
 
-    this.dialog.hideEvent.subscribe(function(){
+	this.dialog.hideEvent.subscribe(function(){
 			YAHOO.util.Dom.setStyle(this.dialog.form, 'overflow', 'hidden');
+			YAHOO.util.Event.removeListener(this.dialog.form, 'keypress');
 		}, this, true)
 	this.dialog.beforeShowEvent.subscribe(function(){
 			YAHOO.util.Dom.setStyle(this.dialog.form, 'overflow', 'auto');
+			YAHOO.util.Event.addListener(this.dialog.form, 'keypress', this.handleKeypress, this, true);
 		}, this, true)
     this.successful = config.successfulyExecuted;
     this.EDIT_MODE = 0;
@@ -30,7 +32,6 @@ YAHOO.rapidjs.component.Form = function(container, config)
     this.updateUrl = config.updateUrl;
     this.mode = this.CREATE_MODE;
     this.isSubmitInProggress = false;
-    YAHOO.util.Event.addListener(this.dialog.body, 'keypress', this.handleKeypress, this, true);
     this.render();
 
 };
@@ -138,7 +139,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
          else{
              return formElement.value;
          }
-    }, 
+    },
 
     handleErrors: function(response)
     {
@@ -156,6 +157,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     show: function(mode, params)
     {
         this.errors.hide();
+        this.clearAllFields();
         this.mode = mode;
         if (mode == this.EDIT_MODE && this.editUrl != null)
         {
@@ -166,18 +168,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         {
             this.doRequest(this.createUrl, params);
         }
-
         this.dialog.show();
     },
     hide: function()
     {
-        this.errors.dom.innerHTML = "";
-        this.errors.hide();
         this.abort();
         this.isSubmitInProggress = false;
         this.clearAllFields();
-        this.dialog.form.blur();
         this.dialog.hide();
+        this.errors.dom.innerHTML = "";
+        this.errors.hide();
     },
 
     clearAllFields: function()
@@ -195,4 +195,3 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         }
     }
 })
-

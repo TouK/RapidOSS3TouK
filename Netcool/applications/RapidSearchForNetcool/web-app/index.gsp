@@ -242,8 +242,8 @@
             item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunctionLessThan}
         } ,
         saveQueryFunction: function(query) {
-            dialog.dialog.form.query.value = query;
             dialog.show(dialog.CREATE_MODE);
+            dialog.dialog.form.query.value = query;
         }
     }
 

@@ -18,7 +18,6 @@ YAHOO.rapidjs.component.Form = function(container, config)
     this.EDIT_MODE = 0;
     this.CREATE_MODE = 1;
     this.dialog.render();
-    this.dialog.form.action = this.formAction;
     this.mapping = config.mapping;
     this.editUrl = config.editUrl;
     this.createUrl = config.createUrl;
@@ -35,12 +34,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     render: function()
     {
         var dh = YAHOO.ext.DomHelper;
-        this.errors = dh.insertBefore(this.dialog.form.firstChild, {tag: 'div', cls:'rapid-errors'}, true);
+        this.errors = dh.insertBefore(this.dialog.form.firstChild, {tag: 'ul', cls:'rapid-errors'}, true);
         this.errors.setVisibilityMode(YAHOO.ext.Element.DISPLAY);
-    },
-    formAction: function()
-    {
-
     },
     handleTimeout: function(response)
     {

@@ -85,7 +85,7 @@ class SearchableExtensionGrailsPlugin {
                 def builder = new MarkupBuilder(writer);
                 builder.Errors(){
                     errors.getAllErrors().each{error->
-                        def message = messageSource.getMessage( error.code, error.arguments as Object[],Locale.ENGLISH);
+                        def message = messageSource.getMessage( error,Locale.ENGLISH);
                         if(error instanceof FieldError)
                         {
                             def field = error.getField();

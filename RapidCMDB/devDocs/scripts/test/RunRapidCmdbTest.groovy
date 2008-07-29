@@ -24,12 +24,12 @@ Process proc = null;
 
 
 def watchConfig = [
-        [new File("${workspaceDir}/RapidModules/RapidCMDB"), new File("${rootDir.absolutePath}/RapidCMDB")],
-        [new File("${workspaceDir}/RapidModules/RcmdbCommons"), new File("${rootDir.absolutePath}/RapidCMDB")],
-        [new File("${workspaceDir}/RapidModules/ext/database/groovy"), new File("${rootDir.absolutePath}/RapidCMDB/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/ext/http/groovy"), new File("${rootDir.absolutePath}/RapidCMDB/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/ext/rapidinsight/groovy"), new File("${rootDir.absolutePath}/RapidCMDB/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/ext/smarts/groovy"), new File("${rootDir.absolutePath}/RapidCMDB/grails-app/ext")]
+        [new File("${workspaceDir}/RapidModules/RapidCMDB"), new File("${rootDir.absolutePath}/RapidSuite")],
+        [new File("${workspaceDir}/RapidModules/RcmdbCommons"), new File("${rootDir.absolutePath}/RapidSuite")],
+        [new File("${workspaceDir}/RapidModules/ext/database/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")],
+        [new File("${workspaceDir}/RapidModules/ext/http/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")],
+        [new File("${workspaceDir}/RapidModules/ext/rapidinsight/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")],
+        [new File("${workspaceDir}/RapidModules/ext/smarts/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")]
 ]
 
 
@@ -56,24 +56,24 @@ if(!rootDir.exists())
         if(jarFile.isDirectory())
         {
             FileUtils.listFiles(jarFile, ["jar"] as String[], true).each{
-                ANT.copy(file: it.path, toDir: "${rootDir.path}/RapidCMDB/lib");
+                ANT.copy(file: it.path, toDir: "${rootDir.path}/RapidSuite/lib");
             }
         }
         else
         {
-            ANT.copy(file: jarFile.path, toDir: "${rootDir.path}/RapidCMDB/lib");
+            ANT.copy(file: jarFile.path, toDir: "${rootDir.path}/RapidSuite/lib");
         }
     }
 
     FileUtils.listFiles(new File("${workspaceDir}/LicencedJars"), ["jar"] as String[], true).each
     {
-        ANT.copy(file: it.path, toDir: "${rootDir.path}/RapidCMDB/lib");
+        ANT.copy(file: it.path, toDir: "${rootDir.path}/RapidSuite/lib");
     }
     def cmdbBuild = new RapidCmdbBuild();
     cmdbBuild.run(["testBuild"]);
-    ANT.copy(toDir: "${rootDir.path}/RapidCMDB/lib")
+    ANT.copy(toDir: "${rootDir.path}/RapidSuite/lib")
     {
-        ANT.fileset(dir: "$workspaceDir/Distribution/RapidServer/RapidCMDB/lib")
+        ANT.fileset(dir: "$workspaceDir/Distribution/RapidServer/RapidSuite/lib")
     }
     ANT.copy(toDir: "${rootDir.path}/scripts")
     {
@@ -94,7 +94,7 @@ if(!rootDir.exists())
     def envVars = getEnvVars(rootDir);
     def path = "${getTestExecutableFileName(rootDir)} install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
     println "Running command ${path} to install testing plugin"
-    proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
+    proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidSuite"));
     proc.consumeProcessOutput(System.out, System.err);
     proc.waitFor();
 }
@@ -121,7 +121,7 @@ def envVars = getEnvVars(rootDir);
 
 def path = "${getTestExecutableFileName(rootDir)} run-app".toString();
 println "Running command ${path} to run application"
-proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDB"));
+proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidSuite"));
 proc.consumeProcessOutput(System.out, System.err);
 println "TOOK ${System.currentTimeMillis() - t} secs to start testing application." 
 proc.waitFor();
@@ -140,11 +140,11 @@ def getTestExecutableFileName(File rootDir)
 {
     if(System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0)
     {
-        return "${rootDir.getAbsolutePath()}/RapidCMDB/test.bat";
+        return "${rootDir.getAbsolutePath()}/RapidSuite/test.bat";
     }
     else
     {
-        def command = "${rootDir.getAbsolutePath()}/RapidCMDB/test.sh";
+        def command = "${rootDir.getAbsolutePath()}/RapidSuite/test.sh";
         def process = "sudo chmod +x ${command}".execute();
         process.consumeProcessOutput(System.out, System.err);
         process.waitFor();

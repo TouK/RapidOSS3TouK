@@ -7,6 +7,7 @@ YAHOO.rapidjs.component.Form = function(container, config)
         visible : false,
         constraintoviewport : true,
         close:false,
+        postmethod:'none',
         buttons : [ { text:"Save", handler:this.handleSubmit.createDelegate(this), isDefault:true, scope:this },
             { text:"Cancel", handler:this.handleCancel.createDelegate(this), scope:this } ]
     });

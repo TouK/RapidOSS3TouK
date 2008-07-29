@@ -158,7 +158,7 @@
         errorAnim = new YAHOO.util.Motion('errors', {points:{ from:[xCoord,-100], to: [xCoord, 1] }},1, YAHOO.util.Easing.elasticBoth);
         errorFadeAnim = new YAHOO.util.Anim("errors", {
 	        opacity: {to: 0}
-        }, 5);
+        }, 10);
         errorAnim.animate();
         errorAnim.onComplete.subscribe(function() {
 	        errorFadeAnim.animate();

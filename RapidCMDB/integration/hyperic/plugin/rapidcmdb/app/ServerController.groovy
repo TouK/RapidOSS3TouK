@@ -20,7 +20,6 @@ class ServerController
     }
 
     def list(xml, params) {
-        def formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         def pageInfo = new PageInfo(ResourceSortField.NAME, true)
         //def servers2 = resourceHelper.findServers(pageInfo)
         def overlord     = HQUtil.overlord
@@ -39,7 +38,7 @@ class ServerController
 
         def i = 0
         def pMan = PlatMan.one
-        xml.'RapidCMDB'('source':'Hyperic HQ', 'date':formatter.format(new Date())) {
+        xml.'RapidCMDB'('source':'Hyperic HQ', 'date':new Date()) {
             xml.Servers() {
                 if (servers != null) {
                     for (s in servers) {
@@ -65,7 +64,7 @@ class ServerController
                                     xml.metric(name: metric.template.name,
                                                value: metricData.value,
                                                units: metric.template.units,
-                                               time: formatter.format(new Date(metricData.timestamp)))
+                                               time: metricData.timestamp)
                             }
                         }
                         i++
@@ -80,7 +79,6 @@ class ServerController
 
 
     def get(xml, params) {
-        def formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         def pageInfo = new PageInfo(ResourceSortField.NAME, true)
         //def servers = resourceHelper.findServers(pageInfo)
         def overlord     = HQUtil.overlord
@@ -101,7 +99,7 @@ class ServerController
             servers = null
         }
         def pMan = PlatMan.one
-        xml.'RapidCMDB'('source':'Hyperic HQ', 'date':formatter.format(new Date())) {
+        xml.'RapidCMDB'('source':'Hyperic HQ', 'date':new Date()) {
             xml.Servers() {
                 if (servers != null) {
                     for (s2 in servers) {
@@ -124,7 +122,7 @@ class ServerController
                                     xml.metric(name: metric.template.name,
                                                value: metricData.value,
                                                units: metric.template.units,
-                                               time: formatter.format(new Date(metricData.timestamp)))
+                                               time: metricData.timestamp)
                             }
                         }
                     }

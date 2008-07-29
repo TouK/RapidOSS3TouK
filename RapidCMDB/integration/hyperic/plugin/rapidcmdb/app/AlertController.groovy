@@ -24,7 +24,6 @@ class AlertController
     }
 
     def list(xml, params) {
-        def formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         def pageInfo = new PageInfo(AlertSortField.DATE, true)
         def overlord     = HQUtil.overlord
         def rhelp        = new ResourceHelper(overlord)
@@ -36,18 +35,19 @@ class AlertController
 
         def begin = params.getOne('begin')
 
-        xml.'RapidCMDB'('source':'Hyperic HQ', 'date':formatter.format(new Date())) {
+        xml.'RapidCMDB'('source':'Hyperic HQ', 'date':new Date()) {
             xml.'Alerts'() {
                 def alerts = aMan.findAllAlerts()
 
                 if (alerts != null) {
-
-                    for (int i = 0; i < (alerts.size() / 2); i++) {
+                    def i = 0
+                    while (i < (alerts.size() / 2)) {  //because findAllAlerts, unexpectedly, returns the alert set twice
                         def myAlert2 = alerts.getAt(i)
                     //for (myAlert2 in alerts) {
                         def myAlert = aMan.findAlertById(myAlert2.id)
                         if (begin != null) {
                             if (myAlert.alertValue.ctime.toString() < begin.toString()) {
+                                i++
                                 continue;
                             }
                         }
@@ -60,12 +60,12 @@ class AlertController
                                     'owner_name': aev.getName(),
     /*                                'aeid': aeid,
                                     'aeid-type': aeid.authzTypeId,*/
-                                    'creationTime': formatter.format(new Date(myAlert.alertValue.ctime)),
                                     'timestamp': myAlert.alertValue.ctime,
                                     'fixed': myAlert.fixed,
     //                                'reason': aMan.getShortReason(myAlert),
                                     'long_reason': aMan.getLongReason(myAlert)
                         )
+                        i++
                     }
                 }
             }
@@ -75,7 +75,6 @@ class AlertController
     
 
     def get(xml, params) {
-        def formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         //def pageInfo = new PageInfo(ResourceSortField.NAME, true)
         def overlord     = HQUtil.overlord
         def rhelp        = new ResourceHelper(overlord)
@@ -150,7 +149,7 @@ class AlertController
                 break;
         }
 
-        xml.'RapidCMDB'('source':'Hyperic HQ', 'date':formatter.format(new Date())) {
+        xml.'RapidCMDB'('source':'Hyperic HQ', 'date':new Date()) {
             //def alerts = aMan.findAllAlerts()
             xml.'Alerts'() {
                 if (alerts != null) {
@@ -168,7 +167,6 @@ class AlertController
                         xml.'alert'('id': myAlert.id,
                                     'alert_name': myAlert.alertDefinition.alertDefinitionValue.name,
                                     'owner_name': aev.getName(),
-                                    'creationTime': formatter.format(new Date(myAlert.alertValue.ctime)),
                                     'timestamp': myAlert.alertValue.ctime,
                                     'fixed': myAlert.fixed,
                                     'long_reason': aMan.getLongReason(myAlert)

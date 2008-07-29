@@ -150,7 +150,7 @@ class AlertController
         xml.'RapidCMDB'('source':'Hyperic HQ', 'date':formatter.format(new Date())) {
             //def alerts = aMan.findAllAlerts()
             if (alerts != null) {
-                xml.'Alerts'(/*'numberOfAlerts': alerts.getTotalSize()*/) {
+                xml.'Alerts'() {
                     for (myAlert2 in alerts) {
                         def myAlert = aMan.findAlertById(myAlert2.id)
                         if (begin != null) {
@@ -172,9 +172,6 @@ class AlertController
                         )
                     }
                 }
-            }
-            else {
-                xml.'alerts'('numberOfAlerts': 0)
             }
         }
        xml

@@ -161,8 +161,9 @@ class ScriptController {
             }
             catch (t)
             {
+                addError("script.execute.error", [t.toString()])
                 log.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
-                render(text: t.toString(), contentType: "text/html", encoding: "UTF-8");
+                render(text: errorsToXml(errors), contentType: "text/xml")
             }
 
         }

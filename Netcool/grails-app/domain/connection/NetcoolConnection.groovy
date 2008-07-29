@@ -17,7 +17,17 @@ class NetcoolConnection extends DatabaseConnection{
      static hasMany = [netcoolDatasources:NetcoolDatasource]
 
     static constraints={
-        driver(blank:true,nullable:true)
+        driver(blank:true,nullable:true, validator:{val, obj ->
+            try
+            {
+                Class.forName(val)
+            }
+            catch(ClassNotFoundException e)
+            {
+                return 'database.driver.does.not.exist';
+            }
+
+        })
         host(blank:false,nullable:false)
         port(blank:false,nullable:false)
     }

@@ -146,6 +146,17 @@ class NetcoolConnectionController {
 
     def createConnectorScript(NetcoolDatasource datasource)
     {
+        if(CmdbScript.get(name:"getConversionParameters") == null)
+        {
+            CmdbScript.addScript(name:"getConversionParameters", enabled:false, type:CmdbScript.SCHEDULED, period:3600);
+            try
+            {
+                CmdbScript.runScript("getConversionParameters", [:])
+            }catch(Throwable e)
+            {
+            }
+            CmdbScript.addScript(name:"getConversionParameters", enabled:true, type:CmdbScript.SCHEDULED, period:3600);
+        }
         def scriptName = "${datasource.name}Connector";
         SimpleTemplateEngine engine = new SimpleTemplateEngine();
         def template = engine.createTemplate(new File("${System.getProperty("base.dir")}/grails-app/templates/groovy/NetcoolConnectorScriptTemplate.txt"))

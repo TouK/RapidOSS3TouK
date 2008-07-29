@@ -56,25 +56,10 @@ public abstract class AbstractSearchableMethod implements SearchableMethod {
         CompassTransaction tx=null;
         try {
 
-            for(int i=0; i < 2000; i++)
-            {
 	            tx = SingleCompassSessionManager.beginTransaction();
-                try
-                {
-                    Object result = compassCallback.doInCompass(tx.getSession());
-                    tx.commit();
-                    return result;
-                }
-                catch(UnsupportedOperationException exception)
-                {
-                    if(!exception.getStackTrace()[0].getClassName().equals(BitSetByAliasFilter.AllSetBitSet.class.getName()))
-                    {
-                        throw exception;
-                    }
-                    tx.commit();
-                }
-            }
-            throw new RuntimeException("!!!!BUG:Compass bitset exception.");
+                Object result = compassCallback.doInCompass(tx.getSession());
+                tx.commit();
+                return result;
 
         } catch (RuntimeException e) {
             if (tx != null) {

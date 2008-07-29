@@ -67,13 +67,13 @@ public class SearchableCompassQueryBuilderClassOptionHelper implements Searchabl
      * @param subClasses
      */
     private static void setPolyClassFilter(SearchableCompassQueryBuilderClassOptionHelper searchableCompassQueryBuilderClassOptionHelper, CompassSession compassSession, CompassQuery compassQuery, Class clazz, Set subClasses) {
-        if (subClasses.size() > 1) {
+        /*if (subClasses.size() > 1) {
             Set clazzes = new HashSet(GrailsDomainClassUtils.getClazzes(subClasses));
             clazzes.add(clazz);
             CompassQuery polyClassQuery = searchableCompassQueryBuilderClassOptionHelper.buildPolyClassQuery(compassSession, clazzes);
             CompassQueryFilter instanceFilter = compassSession.queryFilterBuilder().query(polyClassQuery);
             compassQuery.setFilter(instanceFilter);
-        }
+        }*/
     }
 
     /**

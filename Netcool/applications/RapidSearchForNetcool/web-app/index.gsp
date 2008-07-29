@@ -28,7 +28,7 @@
 			background-image: url( images/rapidjs/component/tools/filteradd.png);
 		}
         #errors{
-            padding: 10px;
+            padding: 3px;
             font-style: italic;
             background:yellow;
             width:600px;
@@ -37,6 +37,7 @@
             background:#FFF3F3 none repeat scroll 0%;
             border:1px solid red;
             color:#CC0000;
+            overflow:hidden;
         }
     </style>
 </head>
@@ -71,7 +72,18 @@
     <div id="treeDiv1"></div>
 </div>
 <div id="top">
-    IFOUNTAIN
+    <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
+        <td width="0%">
+            <img src="images/RapidInsight.png">
+        </td>
+        <td width="100%"></td>
+        <td width="0%">
+           <div style="vertical-align:bottom">
+               <span style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;">${session.username}</span>
+               <a href="auth/logout" style="font-size:13px;font-weight:bold;color:#083772;text-align:right;text-decoration:none">Logout</a>
+           </div>
+        </td>
+    </tr></tbody></table>
 </div>
 <div id="right">
     <div id="searchDiv"></div>

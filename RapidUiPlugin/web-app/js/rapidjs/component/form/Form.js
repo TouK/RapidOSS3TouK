@@ -13,7 +13,12 @@ YAHOO.rapidjs.component.Form = function(container, config)
             { text:"Cancel", handler:this.handleCancel.createDelegate(this), scope:this } ]
     });
 
-
+    this.dialog.hideEvent.subscribe(function(){
+			YAHOO.util.Dom.setStyle(this.dialog.form, 'overflow', 'hidden');
+		}, this, true)
+	this.dialog.beforeShowEvent.subscribe(function(){
+			YAHOO.util.Dom.setStyle(this.dialog.form, 'overflow', 'auto');
+		}, this, true)
     this.successful = config.successfulyExecuted;
     this.EDIT_MODE = 0;
     this.CREATE_MODE = 1;

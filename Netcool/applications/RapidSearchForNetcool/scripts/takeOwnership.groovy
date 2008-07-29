@@ -15,8 +15,7 @@ def user = RsUser.findByUsername(web.session.username);
 def netcoolEvent = NetcoolEvent.get(servername: netcoolServerName, serverserial: serverSerial);
 if (netcoolEvent) {
     netcoolEvent.assign(user.getProperty("userId"));
-    netcoolEvent.setProperty("owneruid", user.getProperty("userId"));
-    netcoolEvent.setProperty("acknowledged", 0);
+   
     def props = [:];
     def grailsDomainClass = web.grailsApplication.getDomainClass(netcoolEvent.class.name);
     grailsDomainClass.getProperties().each {netcoolProperty ->

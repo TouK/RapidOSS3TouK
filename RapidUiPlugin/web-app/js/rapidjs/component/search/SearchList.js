@@ -113,7 +113,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             }
         }
     },
-    
+
     clearData: function() {
         this.totalRowCount = 0;
         this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;
@@ -645,14 +645,15 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         {
             id = this.menuItems[parentKey].id;
         }
+        var parentId = this.menuItems[parentKey].id;
         var row = this.rowHeaderMenu.row;
         this.rowHeaderMenu.row = null;
         var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
-        this.fireRowHeaderMenuClick(xmlData, id);
+        this.fireRowHeaderMenuClick(xmlData, id, parentId);
     },
 
-    fireRowHeaderMenuClick: function(data, id) {
-        this.events['rowHeaderMenuClick'].fireDirect(data, id);
+    fireRowHeaderMenuClick: function(data, id, parentId) {
+        this.events['rowHeaderMenuClick'].fireDirect(data, id, parentId);
     },
     fireCellMenuClick: function(key, value, data, id) {
         this.events['cellMenuClick'].fireDirect(key, value, data, id);
@@ -662,5 +663,5 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
     firePropertyClick: function(key, value, data) {
         this.events['propertyClick'].fireDirect(key, value, data);
-    }    
+    }
 });

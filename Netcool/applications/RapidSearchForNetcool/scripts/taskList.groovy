@@ -14,15 +14,10 @@ def taskList = params.taskList;
 def netcoolEvent = NetcoolEvent.get(servername: netcoolServerName, serverserial: serverSerial);
 if (netcoolEvent) {
     if (taskList == "true")
-    {
-        netcoolEvent.setProperty("tasklist", 1);
         netcoolEvent.addToTaskList(true);
-    }
     else if (taskList == "false")
-    {
-        netcoolEvent.setProperty("tasklist", 0);
         netcoolEvent.addToTaskList(false);
-    }
+        
     def props = [:];
     def grailsDomainClass = web.grailsApplication.getDomainClass(netcoolEvent.class.name);
     grailsDomainClass.getProperties().each {netcoolProperty ->

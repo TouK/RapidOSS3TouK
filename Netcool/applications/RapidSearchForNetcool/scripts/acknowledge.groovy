@@ -9,17 +9,10 @@ def acknowledged = params.acknowledged;
 def netcoolEvent = NetcoolEvent.get(servername: netcoolServerName, serverserial: serverSerial);
 if (netcoolEvent) {
     if (acknowledged == "true")
-    {
-
-        netcoolEvent.setProperty("acknowledged", 1);
         netcoolEvent.acknowledge(true, user);
-    }
     else if (acknowledged == "false")
-    {
-
-        netcoolEvent.setProperty("acknowledged", 0);
         netcoolEvent.acknowledge(false, user);
-    }
+
     def props = [:];
     def grailsDomainClass = web.grailsApplication.getDomainClass(netcoolEvent.class.name);
     grailsDomainClass.getProperties().each {netcoolProperty ->

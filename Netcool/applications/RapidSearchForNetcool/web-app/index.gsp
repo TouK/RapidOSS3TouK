@@ -112,12 +112,12 @@
 
     function searchListHeaderMenuConditionFunctionAcknowledge(data)
     {
-        return data.getAttribute("acknowledged") == 0;
+        return data.getAttribute("acknowledged") == "No";
     }
 
     function searchListHeaderMenuConditionFunctionDeacknowledge(data)
     {
-        return data.getAttribute("acknowledged") == 1;
+        return data.getAttribute("acknowledged") == "Yes";
     }
 
     function searchListHeaderMenuConditionFunctionAddTaskToList(data)
@@ -140,7 +140,7 @@
         var suppress = data.getAttribute("suppressescl");
         return !(suppress == label);
     }
-     
+
     var errorAnim = null;
     var errorFadeAnim = null;
     YAHOO.rapidjs.ErrorManager.errorOccurredEvent.subscribe(function(obj, errors){
@@ -216,22 +216,22 @@
             item5 : { id : 'addTaskToList', label : 'Add Task To List', condition: searchListHeaderMenuConditionFunctionAddTaskToList },
             item6 : { id : 'removeTaskFromList', label : 'Remove Task From List', condition: searchListHeaderMenuConditionFunctionRemoveTaskFromList },
             item7 : { id : 'suppressEscalate', label : 'Suppress/Escalate',  submenuItems : {
-                            subItem1 : { id: 'normal', label : 'Normal', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu},
-                            subItem2 : { id: 'escalated', label : 'Escalated', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu},
-                            subItem3 : { id: 'escalatedLevel2', label : 'Escalated-Level 2', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem4 : { id: 'escalatedLevel3', label : 'Escalated-Level 3',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem5 : { id: 'suppressed', label : 'Suppressed',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem6 : { id: 'hidden', label : 'Hidden',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem7 : { id: 'maintenance', label : 'Maintenance',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu }
+                            subItem1 : { id: 'Normal', label : 'Normal', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu},
+                            subItem2 : { id: 'Escalated', label : 'Escalated', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu},
+                            subItem3 : { id: 'Escalated-Level 2', label : 'Escalated-Level 2', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
+                            subItem4 : { id: 'Escalated-Level 3', label : 'Escalated-Level 3',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
+                            subItem5 : { id: 'Suppressed', label : 'Suppressed',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
+                            subItem6 : { id: 'Hidden', label : 'Hidden',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
+                            subItem7 : { id: 'Maintenance', label : 'Maintenance',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu }
                         }
                     },
             item8 : { id : 'severity', label : 'Change Severity', submenuItems : {
-                            subItem1 : { id: 'critical', label : 'Critical', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
-                            subItem2 : { id: 'major', label : 'Major', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
-                            subItem3 : { id: 'minor', label : 'Minor', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
-                            subItem4 : { id: 'warning', label : 'Warning',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
-                            subItem5 : { id: 'indeterminate', label : 'Indeterminate',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
-                            subItem6 : { id: 'clear', label : 'Clear',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu }
+                            subItem1 : { id: 'Critical', label : 'Critical', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
+                            subItem2 : { id: 'Major', label : 'Major', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
+                            subItem3 : { id: 'Minor', label : 'Minor', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
+                            subItem4 : { id: 'Warning', label : 'Warning',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
+                            subItem5 : { id: 'Indeterminate', label : 'Indeterminate',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
+                            subItem6 : { id: 'Clear', label : 'Clear',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu }
                         }
                     }
         } ,
@@ -262,114 +262,33 @@
     var suppressConfig = { url: 'script/run/suppress' };
 	var suppressAction = new YAHOO.rapidjs.component.action.MergeAction(suppressConfig);
 
-    searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id) {
+    searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
+    	var serverName = xmlData.getAttribute("servername");
+       	var serverSerial = xmlData.getAttribute("serverserial");
+
         if( id == "eventDetails"){
             var eventId = xmlData.getAttribute("id");
             var url = "getDetails.gsp?id="+eventId;
             html.show(url);
         }
         else if( id == 'acknowledge' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
             acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"true"}, [searchList]);
-        }
+
         else if( id == 'deacknowledge' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
     		acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"false"}, [searchList]);
-        }
+
         else if( id == 'addTaskToList' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-    		taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"true"}, [searchList]);
-        }
+        	taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"true"}, [searchList]);
+
         else if( id == 'removeTaskFromList' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-    		taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"false"}, [searchList]);
-        }
-        else if( id == 'normal' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-    		suppressAction.execute({servername:serverName, serverserial : serverSerial, suppressescl:0 }, [searchList]);
-        }
-        else if( id == 'escalated' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-    		suppressAction.execute({servername:serverName, serverserial : serverSerial,  suppressescl:1}, [searchList]);
-        }
-        else if( id == 'escalatedLevel2' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-    		suppressAction.execute({servername:serverName, serverserial : serverSerial,  suppressescl:2}, [searchList]);
-        }
-        else if( id == 'escalatedLevel3' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-    		suppressAction.execute({servername:serverName, serverserial : serverSerial,  suppressescl:3}, [searchList]);
-        }
-        else if( id == 'suppressed' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-    		suppressAction.execute({servername:serverName, serverserial : serverSerial,  suppressescl:4}, [searchList]);
-        }
-        else if( id == 'hidden' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-    		suppressAction.execute({servername:serverName, serverserial : serverSerial,  suppressescl:5}, [searchList]);
-        }
-        else if( id == 'maintenance' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-    		suppressAction.execute({servername:serverName, serverserial : serverSerial, suppressescl:6}, [searchList]);
-        }
-        else if( id == 'critical' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:5}, [searchList]);
-        }
-        else if( id == 'major' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:4}, [searchList]);
-        }
-        else if( id == 'minor' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:3}, [searchList]);
-        }
-        else if( id == 'warning' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:2}, [searchList]);
-        }
-        else if( id == 'indeterminate' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:1}, [searchList]);
-        }
-        else if( id == 'clear' )
-        {
-        	var serverName = xmlData.getAttribute("servername");
-        	var serverSerial = xmlData.getAttribute("serverserial");
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:0}, [searchList]);
-        }
+        	taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"false"}, [searchList]);
+
+        else if( parentId == 'suppressEscalate' )
+        	suppressAction.execute({servername:serverName, serverserial : serverSerial, suppressescl:id }, [searchList]);
+
+        else if (parentId == 'severity')
+        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:id}, [searchList]);
+
     }, this, true);
 
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
@@ -386,7 +305,7 @@
 	 	  			if( value == 'Major' )
 			        	searchList.appendToQuery("severity: Critical");
 			        else if( value == 'Minor' )
-			        	searchList.appendToQuery("severity: Critical and Major");
+			        	searchList.appendToQuery("severity: Critical OR Major");
 			        else if( value == 'Warning' )
 			        	searchList.appendToQuery("severity: Critical OR Major ");
 			        else if( value == 'Indeterminate' )

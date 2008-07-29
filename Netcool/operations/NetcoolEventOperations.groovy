@@ -49,7 +49,7 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOp
 	    def ncds = NetcoolDatasource.get(name:connectorname);
         ncds.setSeverityAction(serverserial, getConvertedValue("Severity", newValue), userName);
         severity = newValue;
-	    acknowledged = 0;
+	    acknowledged = getConvertedValue("Acknowledged", 0);
 
     }
 
@@ -68,14 +68,21 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOp
     public void acknowledge(boolean action, userName){
 	    def ncds = NetcoolDatasource.get(name:connectorname);
 	    ncds.acknowledgeAction(serverserial, action, userName);
-	    //update(acknowledged:action?1:0);
+        if(action)
+        {
+            acknowledged = getConvertedValue("Acknowledged", 1);    
+        }
+        else
+        {
+            acknowledged = getConvertedValue("Acknowledged", 0);
+        }
     }
 
     public void assign(userId){
 	 	def ncds = NetcoolDatasource.get(name:connectorname);
 	 	ncds.assignAction(serverserial, userId);
 	 	owneruid = userId;
-	 	acknowledged = 0;
+	 	acknowledged = getConvertedValue("Acknowledged", 0);
 
     }
 }

@@ -56,7 +56,7 @@ class NetcoolEvent {
     
     java.lang.String ownergid ="";
     
-    java.lang.Long acknowledged =0;
+    java.lang.String acknowledged ="";
     
     java.lang.Long flash =0;
     

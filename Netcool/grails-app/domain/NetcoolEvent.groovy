@@ -66,7 +66,7 @@ class NetcoolEvent {
     
     java.lang.Long processreq =0;
     
-    java.lang.Long suppressescl =0;
+    java.lang.String suppressescl ="";
     
     java.lang.String customer ="";
     

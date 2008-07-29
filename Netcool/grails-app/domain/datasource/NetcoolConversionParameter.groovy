@@ -21,7 +21,7 @@ class NetcoolConversionParameter {
 
     def static getRealValue(String colName, String val)
     {
-        NetcoolConversionParameter conversion = NetcoolConversionParameter.get(columnName:colName, conversion:val);
+        NetcoolConversionParameter conversion = NetcoolConversionParameter.search("columnName:$colName AND conversion:$val").results[0];
         if(conversion)
         {
             return conversion.value;
@@ -29,7 +29,7 @@ class NetcoolConversionParameter {
         return val;
     }
 
-    def static getConvertedValue(String colName, String val)
+    def static getConvertedValue(String colName, Object val)
     {
         NetcoolConversionParameter conversion = NetcoolConversionParameter.get(keyField:"$colName$val".toString());
         if(conversion)

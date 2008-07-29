@@ -10,7 +10,7 @@
         <li><a href="#" onclick="window.html.show('getDetails.gsp?type=NetcoolEvent&id=${netcoolEvent?.id}');"><em>Event</em></a></li>
         <li class="selected"><a href="#"><em>Journal</em></a></li>
     </ul>
-    <div style="display:block">
+    <div style="display:block;padding-top:5px;padding-left:5px">
         <%
 
             def userConversions = NetcoolConversionParameter.search("columnName:OwnerUID").results;

@@ -310,13 +310,13 @@
 	 	  			if( value == 'Major' )
 			        	searchList.appendToQuery("severity: Critical");
 			        else if( value == 'Minor' )
-			        	searchList.appendToQuery("severity: Critical OR Major");
+			        	searchList.appendToQuery("severity: Critical OR severity:Major");
 			        else if( value == 'Warning' )
-			        	searchList.appendToQuery("severity: Critical OR Major ");
+			        	searchList.appendToQuery("severity: Critical OR severity:Major OR severity:Minor");
 			        else if( value == 'Indeterminate' )
-			        	searchList.appendToQuery("severity: Critical OR Major OR Warning");
+			        	searchList.appendToQuery("severity: Critical OR severity:Major OR severity:Minor OR severity:Warning");
 			        else if( value == 'Clear' )
-			        	searchList.appendToQuery("severity: Critical OR Major OR Warning OR Indeterminate");
+			        	searchList.appendToQuery("severity: Critical OR severity:Major OR severity:Minor OR severity:Warning OR severity:Indeterminate");
 	 	  		}
  	  			else
 	            	searchList.appendToQuery(key + ":{" + value + " TO *}");
@@ -325,13 +325,13 @@
 	        	if( key == "severity")
  	  			{
 	 	  			if( value == 'Critical' )
-			        	searchList.appendToQuery("severity: Major OR Warning OR Indeterminate OR Clear");
+			        	searchList.appendToQuery("severity: Major OR severity:Minor OR severity:Warning OR severity:Indeterminate OR severity:Clear");
 			        else if( value == 'Major' )
-			        	searchList.appendToQuery("severity: Minor OR Warning OR Indeterminate OR Clear");
+			        	searchList.appendToQuery("severity: Minor OR severity:Warning OR severity:Indeterminate OR severity:Clear");
 			        else if( value == 'Minor' )
-			        	searchList.appendToQuery("severity: Warning OR Indeterminate OR Clear");
+			        	searchList.appendToQuery("severity: Warning OR severity:Indeterminate OR severity:Clear");
 			        else if( value == 'Warning' )
-			        	searchList.appendToQuery("severity: Indeterminate OR Clear ");
+			        	searchList.appendToQuery("severity: Indeterminate OR severity:Clear ");
 			        else if( value == 'Indeterminate' )
 			        	searchList.appendToQuery("severity: Clear");
 	 	  		}

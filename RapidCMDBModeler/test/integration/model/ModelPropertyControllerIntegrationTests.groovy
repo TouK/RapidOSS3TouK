@@ -27,9 +27,9 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
  * Time: 9:58:10 AM
  * To change this template use File | Settings | File Templates.
  */
-class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
+class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     static transactional = false;
-     void setUp() {
+    void setUp() {
         super.setUp();
         ModelProperty.list()*.remove();
         ModelDatasource.list()*.remove();
@@ -37,12 +37,14 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         DatasourceName.list()*.remove();
     }
 
-    void testSuccessfulSave(){
+    void testSuccessfulSave() {
         def model = Model.add(name: "Customer");
         def rcmdb = DatasourceName.add(name: RapidCMDBConstants.RCMDB);
         def ds1 = DatasourceName.add(name: "ds1");
         def mpc = new ModelPropertyController();
         mpc.params["datasource.id"] = "" + rcmdb.id;
+        mpc.params["datasource"] = ["id": "" + rcmdb.id];
+        mpc.params["model"] = ["id": "" + model.id];
         mpc.params["model.id"] = "" + model.id;
         mpc.params["type"] = ModelProperty.stringType;
         mpc.params["name"] = "prop1";
@@ -60,11 +62,13 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals("prop1", modelProp.name);
         assertEquals(model.id, modelProp.model?.id);
         assertEquals(rcmdbModelDatasource.id, modelProp.propertyDatasource?.id);
-        
+
         mpc = new ModelPropertyController();
         resetController(mpc);
         mpc.params["datasource.id"] = "" + ds1.id;
+        mpc.params["datasource"] = ["id": "" + ds1.id];
         mpc.params["model.id"] = "" + model.id;
+         mpc.params["model"] = ["id": "" + model.id];
         mpc.params["type"] = ModelProperty.stringType;
         mpc.params["name"] = "prop2";
         mpc.save();
@@ -72,13 +76,16 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         modelDatasources = ModelDatasource.list();
         assertEquals(2, modelDatasources.size());
 
-        def ds1ModelDatasource = ModelDatasource.findByDatasource(ds1);
+        def ds1ModelDatasource = ModelDatasource.list().find{
+            it.datasource.name == ds1.name
+        };
+        assertNotNull(ds1ModelDatasource)
         assertEquals(model.id, ds1ModelDatasource.model?.id);
 
         modelProps = ModelProperty.list();
         assertEquals(2, modelProps.size());
         modelProp = ModelProperty.findByName("prop2");
-        
+
         assertEquals(model.id, modelProp.model?.id);
         assertEquals(ds1ModelDatasource.id, modelProp.propertyDatasource?.id);
     }

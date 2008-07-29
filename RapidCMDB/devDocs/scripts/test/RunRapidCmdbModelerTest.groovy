@@ -22,8 +22,8 @@ Process proc = null;
 
 
 def watchConfig = [
-        [new File("${workspaceDir}/RapidModules/RapidCMDBModeler"), new File("${rootDir.absolutePath}/RapidCMDBModeler")],
-        [new File("${workspaceDir}/RapidModules/RcmdbCommons"), new File("${rootDir.absolutePath}/RapidCMDBModeler")]
+        [new File("${workspaceDir}/RapidModules/RapidCMDBModeler"), new File("${rootDir.absolutePath}/Modeler")],
+        [new File("${workspaceDir}/RapidModules/RcmdbCommons"), new File("${rootDir.absolutePath}/Modeler")]
 ]
 
 
@@ -48,27 +48,27 @@ if(!rootDir.exists())
         if(jarFile.isDirectory())
         {
             FileUtils.listFiles(jarFile, ["jar"] as String[], true).each{
-                ANT.copy(file: it.path, toDir: "${rootDir.path}/RapidCMDBModeler/lib");
+                ANT.copy(file: it.path, toDir: "${rootDir.path}/Modeler/lib");
             }
         }
         else
         {
-            ANT.copy(file: jarFile.path, toDir: "${rootDir.path}/RapidCMDBModeler/lib");
+            ANT.copy(file: jarFile.path, toDir: "${rootDir.path}/Modeler/lib");
         }
     }
 
     def cmdbBuild = new RapidCmdbBuild();
     cmdbBuild.run(["testBuild"]);
-    ANT.copy(toDir: "${rootDir.absolutePath}/RapidCMDBModeler/lib")
+    ANT.copy(toDir: "${rootDir.absolutePath}/Modeler/lib")
     {
-        ANT.fileset(dir: "$workspaceDir/Distribution/RapidServer/RapidCMDBModeler/lib")
+        ANT.fileset(dir: "$workspaceDir/Distribution/RapidServer/Modeler/lib")
     }
 
 
     watchConfig.each{dirPairs ->
         def srcDir = dirPairs[0]
         def destDir = dirPairs[1]
-        FileUtils.copyDirectory (srcDir, destDir, new NotFileFilter(new NameFileFilter(".svn")));
+        FileUtils.copyDirectory (srcDir, destDir, new NotFileFilter(new NameFileFilter([".svn", ".classpath"] as String[])));
         dirListeners += new BuildDirListener(srcDir, destDir, excludedDirs);
     }
 
@@ -76,7 +76,7 @@ if(!rootDir.exists())
     def envVars = getEnvVars(rootDir);
     def path = "${workspaceDirFile.absolutePath}/RapidModules/RapidCMDB/${getTestExecutableFileName()} install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
     println "Running command ${path} to install testing plugin"
-    proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDBModeler"));
+    proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/Modeler"));
     proc.consumeProcessOutput(System.out, System.err);
     proc.waitFor();
 
@@ -104,7 +104,7 @@ def envVars = getEnvVars(rootDir);
 
 def path = "${workspaceDirFile.absolutePath}/RapidModules/RapidCMDB/${getTestExecutableFileName()} run-app".toString();
 println "Running command ${path} to run application"
-proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidCMDBModeler"));
+proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/Modeler"));
 proc.consumeProcessOutput(System.out, System.err);
 println "TOOK ${System.currentTimeMillis() - t} secs to start testing application."
 proc.waitFor();

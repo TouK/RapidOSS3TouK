@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<div class="nav"><h1 style="display:inline">RapidCMDB Admin UI</h1><span class="menuButton"><a href="/RapidCMDB/auth/logout?targetUri=/index.gsp" class="logout">Logout</a></span></div>
+<div class="nav"><h1 style="display:inline">RapidCMDB Admin UI</h1><span class="menuButton"><a href="auth/logout?targetUri=/index.gsp" class="logout">Logout</a></span></div>
 <p style="margin-left:20px;width:80%">This is the basic user interface through which you can work with your modeled classes.</p>
 <br>
 <p/>

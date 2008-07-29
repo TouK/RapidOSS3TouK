@@ -19,7 +19,7 @@ class NetcoolConnector {
     public static MAPPING_FOR_KNOWN_COLUMNS = ["class":"netcoolclass", "type":"nctype"]
     Map nameMappings;
     NetcoolDatasource datasource;
-    NetcoolColumn deleteMarkerField;
+    def deleteMarkerField ;
     def connectorName;
     Class NetcoolEvent;
     Class NetcoolJournal;
@@ -41,51 +41,45 @@ class NetcoolConnector {
                 deleteMarkerField = map;
             }
         }
-        if(deleteMarkerField != null)
-        {
-            markAllEventsAsDeleted();
-        }
+        markAllEventsAsDeleted();
     }
 
     //Get all events after marking as deleted. discard lastrecordidentifier
     def markAllEventsAsDeleted()
     {
-//        def markedEvents = [:];
-//        int offset= 0 ;
-//        int batchSize = 1000;
-//        while(true)
-//        {
-//            def res = invokeMethod(NetcoolEvent, "search", ["servername:${serverName} && ${deleteMarkerField.localName}:1", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
-//            if(res.total == 0)
-//            {
-//                break;
-//            }
-//            res.each{event->
-//                markedEvents[event.serverserial] = event;
-//            }
-//            offset += batchSize;
-//        }
-//
-//        def whereClause = "StateChange <= getdate - 1 AND ${deleteMarkerField.netcoolName} == 0";
-//        List records = datasource.getEvents(whereClause);
-//        def lastEventStateChange = 0;
-//        for (Map rec in records){
-//            def eventProps = getEventProperties(rec);
-//
-//            def res = invokeMethod(NetcoolEvent, "add",[getEventProperties(rec)] as Object[]);
-//            if(!res.hasErrors())
-//            {
-//                def lastStateChange = Long.parseLong(rec.statechange);
-//                if (lastStateChange > lastEventStateChange){
-//                    lastEventStateChange = lastStateChange;
-//                }
-//            }
-//            else
-//            {
-//                logger.warn("Could not added event with serial ${rec.SERVERSERIAL}. Reason :${res.errors}");
-//            }
-//        }
-//        NetcoolLastRecordIdentifier.add(datasourceName:datasource.name, eventLastRecordIdentifier:lastEventStateChange);
+        def deleteMarkerLocalName = deleteMarkerField?deleteMarkerField.localName:"severity"
+        def deleteMarkerNetcoolName = deleteMarkerField?deleteMarkerField.netcoolName:"Severity"
+        def markedEvents = [:];
+        int offset= 0 ;
+        int batchSize = 1000;
+        def lastUpdateTime = 0;
+        while(true)
+        {
+            def res = invokeMethod(NetcoolEvent, "search", ["connectorname:${connectorName} AND ${deleteMarkerLocalName}:{0 TO *}", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
+            if(res.results.isEmpty())
+            {
+                break;
+            }
+            res.results.each{event->
+                markedEvents[event.servername+event.serverserial] = event;
+                if(event.statechange > lastUpdateTime)
+                {
+                    lastUpdateTime = event.statechange;
+                }
+            }
+            offset += batchSize;
+        }
+
+        def whereClause = "StateChange <= ${lastUpdateTime} AND ${deleteMarkerNetcoolName} > 0";
+        List records = datasource.getEvents(whereClause);
+        for (Map rec in records)
+        {
+            markedEvents.remove(rec.SERVERNAME+rec.SERVERSERIAL);
+        }
+        logger.info("Following events are deleted before connector start ${markedEvents}");
+        markedEvents.each{key, event->
+             event.setProperty(deleteMarkerLocalName, 0);
+        }
     }
 
 
@@ -105,7 +99,7 @@ class NetcoolConnector {
         }
         def lastEventStateChange = lastRecordIdentifier.eventLastRecordIdentifier;
         logger.info("Processing journals. after ${lastEventStateChange}");
-        def whereClause = "StateChange>$lastEventStateChange AND StateChange <= getdate - 1";
+        def whereClause = "StateChange > ${lastEventStateChange} AND StateChange <= getdate - 1";
         List records = datasource.getEvents(whereClause);
         logger.info("Got ${records.size()} number of records");
         for (Map rec in records){

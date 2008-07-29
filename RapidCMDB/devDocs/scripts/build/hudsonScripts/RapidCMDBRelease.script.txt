@@ -1,3 +1,27 @@
+############### tagging svn and checking out the tag #########
+#################################################
+
+TAG_NAME="RCMDB_v0_3_5_b"
+CURRENT_DATE=$(date +%y%m%d%H)
+TAG_NAME=$TAG_NAME$CURRENT_DATE
+
+taglist=`svn list http://dev.ifountain.org/repos/os/tags`
+if [ "$taglist" != "${taglist#*$TAG_NAME}" ]
+  then
+     svn delete -m "Deleting obsolete tag" http://dev.ifountain.org/repos/os/tags/$TAG_NAME
+fi
+
+svn mkdir -m "Creating tag $TAG_NAME" http://dev.ifountain.org/repos/os/tags/$TAG_NAME
+svn copy http://dev.ifountain.org/repos/os/ThirdParty http://dev.ifountain.org/repos/os/tags/$TAG_NAME -m "Tagging ThirdParty"
+svn copy http://dev.ifountain.org/repos/os/RapidModules http://dev.ifountain.org/repos/os/tags/$TAG_NAME -m "Tagging RapidModules"
+
+rm -rf RapidModules
+rm -rf ThirdParty
+rm -rf Artifacts
+
+svn checkout http://dev.ifountain.org/repos/os/tags/$TAG_NAME/RapidModules ./RapidModules 
+svn checkout http://dev.ifountain.org/repos/os/tags/$TAG_NAME/ThirdParty ./ThirdParty
+
 ############## compiling build scripts ###################
 ################################################
 
@@ -19,13 +43,21 @@ groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CoreM
 groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CompModuleTest.groovy
 
 
+######################building####################
+###############################################
+cd RapidModules/
+groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild
+
+mkdir ../Artifacts
+mv ../Distribution/*.zip ../Artifacts
+
 #################### running test build and java tests #############
 ######################################################
 
-rm -rf TestResults/
-mkdir TestResults
+rm -rf ../TestResults/
+mkdir ../TestResults
 
-cd RapidModules/
+
 groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild testBuild
 #groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest 
 #groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest 
@@ -62,10 +94,11 @@ echo  "/Modeler/script/run/$scriptFileName2" >> $rsbatchInput
 mv $rsbatchInput ../Distribution/RapidServer/Modeler
 
 cd ../Distribution/RapidServer/Modeler/
-export RS_HOME=/root/.hudson/jobs/RapidCMDBTests/workspace/Distribution/RapidServer
+export RS_HOME=/root/.hudson/jobs/RapidCMDBRelease/workspace/Distribution/RapidServer
 chmod +x *
 
 sed -i "s/-Dserver.port=12223/-Dserver.port=9999/g" rsmodeler.sh
+
 
 ./rsmodeler.sh -start
 dataDir=data
@@ -84,7 +117,7 @@ sleep 20
 
 cd ../bin
 chmod +x rsbatch.sh
-./rsbatch.sh -commandfile Modeler/$rsbatchInput -host localhost -port 9999 -username rsadmin -password changeme
+./rsbatch.sh -commandfile Modeler/$rsbatchInput -host localhost -port 12223 -username rsadmin -password changeme
 cd ../Modeler
 
 sleep 2

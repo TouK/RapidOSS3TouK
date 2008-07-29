@@ -35,16 +35,27 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOp
 	    ncds.removeEvent(serverserial);
     }
 
+    private Object getConvertedValue(String propName, Object value)
+    {
+        def convParam = NetcoolConversionParameter.search("columnName:${propName} AND conversion:${value}");
+        if(convParam.total > 0)
+        {
+            value = convParam.results[0].value;
+        }
+        return value;
+    }
+
     public void setSeverity(newValue, userName){
 	    def ncds = NetcoolDatasource.get(name:connectorname);
-	    ncds.setSeverityAction(serverserial, newValue, userName);
-	    severity = newValue;
+        ncds.setSeverityAction(serverserial, getConvertedValue("Severity", newValue), userName);
+        severity = newValue;
 	    acknowledged = 0;
+
     }
 
     public void setSuppressescl(newValue, userName){
 	    def ncds = NetcoolDatasource.get(name:connectorname);
-	    ncds.suppressAction(serverserial, newValue, userName);
+	    ncds.suppressAction(serverserial, getConvertedValue("SuppressEscl", newValue), userName);
 	    suppressescl = newValue;
     }
 

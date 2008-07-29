@@ -175,6 +175,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         this.abort();
         this.isSubmitInProggress = false;
         this.clearAllFields();
+        this.dialog.form.blur();
         this.dialog.hide();
     },
 

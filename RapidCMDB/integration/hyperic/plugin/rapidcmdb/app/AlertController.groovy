@@ -37,11 +37,14 @@ class AlertController
         def begin = params.getOne('begin')
 
         xml.'RapidCMDB'('source':'Hyperic HQ', 'date':formatter.format(new Date())) {
-            def alerts = aMan.findAllAlerts()
+            xml.'Alerts'() {
+                def alerts = aMan.findAllAlerts()
 
-            if (alerts != null) {
-                xml.'Alerts'() {
-                    for (myAlert2 in alerts) {
+                if (alerts != null) {
+
+                    for (int i = 0; i < (alerts.size() / 2); i++) {
+                        def myAlert2 = alerts.getAt(i)
+                    //for (myAlert2 in alerts) {
                         def myAlert = aMan.findAlertById(myAlert2.id)
                         if (begin != null) {
                             if (myAlert.alertValue.ctime.toString() < begin.toString()) {
@@ -149,8 +152,8 @@ class AlertController
 
         xml.'RapidCMDB'('source':'Hyperic HQ', 'date':formatter.format(new Date())) {
             //def alerts = aMan.findAllAlerts()
-            if (alerts != null) {
-                xml.'Alerts'() {
+            xml.'Alerts'() {
+                if (alerts != null) {
                     for (myAlert2 in alerts) {
                         def myAlert = aMan.findAlertById(myAlert2.id)
                         if (begin != null) {

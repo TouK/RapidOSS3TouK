@@ -19,13 +19,13 @@ class AuthController {
             }
         }
         else{
-            return [ username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri ]
+            return [ username: params.login, rememberMe: (params.rememberMe != null), targetUri: params.targetUri ]
         }
 
     }
 
     def signIn = {
-        def authToken = new UsernamePasswordToken(params.username, params.password)
+        def authToken = new UsernamePasswordToken(params.login, params.password)
 
         // Support for "remember me"
         if (params.rememberMe) {
@@ -43,7 +43,7 @@ class AuthController {
             def targetUri = params.targetUri ?: "/"
 
             log.info "Redirecting to '${targetUri}'."
-            session.username = params.username;
+            session.username = params.login;
             if(params.format == "xml"){
                 render(contentType:'text/xml') {
                     Successful("Successfully logged in.")
@@ -57,12 +57,12 @@ class AuthController {
         catch (AuthenticationException ex){
             // Authentication failed, so display the appropriate message
             // on the login page.
-            log.info "Authentication failure for user '${params.username}'."
+            log.info "Authentication failure for user '${params.login}'."
             flash.message = message(code: "login.failed")
 
             // Keep the username and "remember me" setting so that the
             // user doesn't have to enter them again.
-            def m = [ username: params.username ]
+            def m = [ login: params.login ]
             if (params.rememberMe) {
                 m['rememberMe'] = true
             }

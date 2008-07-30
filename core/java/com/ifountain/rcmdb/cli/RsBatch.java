@@ -215,7 +215,7 @@ public class RsBatch extends CommandLineUtility {
         String response = "";
          try {
              Map params = new HashMap();
-             params.put("username", login);
+             params.put("login", login);
              params.put("password", pass);
              params.put("format", "xml");
              response = httpUtils.doPostRequest("http://" + host + ":" + port + "/RapidCMDB/auth/signIn", params);

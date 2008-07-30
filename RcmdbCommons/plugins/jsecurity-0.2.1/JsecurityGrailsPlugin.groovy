@@ -139,15 +139,15 @@ protect pages based on a user's roles and/or permissions.
 
             // First check that the user is authenticated.
             def subject = SecurityUtils.subject
-            if (!subject.authenticated && params.username != null && params.password != null) {
+            if (!subject.authenticated && params.login != null && params.password != null) {
                 def mgr = applicationContext.getBean('jsecSecurityManager');
-                def authToken = new UsernamePasswordToken(params.username, params.password)
+                def authToken = new UsernamePasswordToken(params.login, params.password)
                 if (params.rememberMe) {
                     authToken.rememberMe = true
                 }
                 try {
                     mgr.login(authToken)
-                    session.username = params.username;
+                    session.username = params.login;
                 }
                 catch (AuthenticationException ex) {}
 

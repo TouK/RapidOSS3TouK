@@ -25,7 +25,7 @@ package build;
  */
 class RapidCmdbBuild extends Build {
     def smartsBuild = new SmartsModuleBuild();
-    def rapidSearchForNetcoolBuild = new RapidSearchForNetcoolBuild(this);
+    def rapidSearchForNetcoolBuild = new RapidInsightForNetcoolBuild(this);
     def netcoolBuild = new NetcoolModuleBuild();
     def rapidUiBuild = new RapidUiPluginBuild();
     static void main(String[] args) {

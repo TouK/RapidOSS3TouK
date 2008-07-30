@@ -3,6 +3,7 @@ package com.ifountain.compass
 import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.compass.core.CompassSession
+import org.compass.core.Compass
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +13,7 @@ import org.compass.core.CompassSession
  * To change this template use File | Settings | File Templates.
  */
 class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
-    def compass;
+    Compass compass;
     void setUp() {
         compass = TestCompassFactory.getCompass([CompassTestObject]);
 
@@ -164,5 +165,21 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
         tr2.commit();
         assertTrue (tr1.getSession().isClosed())
         assertTrue (tr2.getSession().isClosed())
+    }
+
+    public void testChangingLoadedObjectsPropertyDoesnotEffectIndexedObject()
+    {
+        int batchSize = 3;
+        long maxWaitTime = 0;
+        SingleCompassSessionManager.initialize(compass, batchSize, maxWaitTime)
+        def obj = new CompassTestObject(id:0, prop1:"prop1val");
+        saveToCompass(obj)
+        def objLoaded = loadFromCompass(CompassTestObject, 0);
+        println System.identityHashCode(objLoaded)
+        objLoaded.prop1 = "updatedProp1Value"
+        def objLoadedAgain = loadFromCompass(CompassTestObject, 0);
+        println System.identityHashCode(objLoadedAgain)
+        assertEquals ("prop1val", objLoadedAgain.prop1);
+
     }
 }

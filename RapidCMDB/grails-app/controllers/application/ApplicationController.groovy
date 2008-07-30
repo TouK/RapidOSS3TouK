@@ -148,35 +148,15 @@ class ApplicationController {
         System.setProperty(RESTART_APPLICATION, "true");
     }
 
+    def reloadControllers = {
+        org.codehaus.groovy.grails.plugins.PluginManagerHolder.getPluginManager().getGrailsPlugin("controllers").checkForChanges()
+        flash.message = "Controllers reloaded successfully."
+        render(view: "application", controller: "application");
+    }
     
-
-
-//    def exportConfiguration = {
-//        def exportDir = params.dir;
-//        if (!exportDir)
-//        {
-//            exportDir = "backup"
-//        }
-//        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
-//        def configurationItems = [];
-//        configurationItems.addAll(BaseDatasource.list());
-//        configurationItems.addAll(DatasourceName.list());
-//        configurationItems.addAll(Connection.list());
-//        configurationItems.addAll(Model.list());
-//        configurationItems.addAll(CmdbScript.list());
-//        impExpUtils.export(exportDir, configurationItems);
-//        flash.message = "Configuration data successfully exported to dir ${exportDir}."
-//        render(view: "application", controller: "application");
-//    }
-//
-//    def importConfiguration = {
-//        def importDir = params.dir;
-//        if (!importDir)
-//        {
-//            importDir = "backup"
-//        }
-//        ConfigurationImportExportUtils impExpUtils = new ConfigurationImportExportUtils(System.getProperty("base.dir") + "/grails-app/templates/xml", log);
-//        impExpUtils.importConfiguration(importDir);
-//        redirect(action: reload, controller: 'application');
-//    }
+    def reloadViews = {
+        GroovyPagesTemplateEngine.pageCache.clear();
+        flash.message = "Views reloaded successfully."
+        render(view: "application", controller: "application");
+    }
 }

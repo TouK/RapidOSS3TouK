@@ -26,8 +26,8 @@
     <g:form method="post">
 	    <div class="buttons">
 	        <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="Reload"/></span>
-	        <span class="button"><g:actionSubmit class="export" onclick="return confirm('Are you sure?');" value="ExportConfiguration"/></span>
-	        <span class="button"><g:actionSubmit class="import" onclick="return confirm('All configuration data will be replaced and application will restart. Are you sure?');" value="ImportConfiguration"/></span>
+	        <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="ReloadControllers"/></span>
+	        <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="ReloadViews"/></span>
 	    </div>
     </g:form>
 </div>

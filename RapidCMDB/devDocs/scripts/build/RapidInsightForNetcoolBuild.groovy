@@ -7,20 +7,20 @@ package build
  * Time: 1:44:17 PM
  * To change this template use File | Settings | File Templates.
  */
-class RapidSearchForNetcoolBuild extends Build{
+class RapidInsightForNetcoolBuild extends Build{
     def rapidCmdbBuild;
-    public RapidSearchForNetcoolBuild(rapidCmdbBuildP)
+    public RapidInsightForNetcoolBuild(rapidCmdbBuildP)
     {
         this.rapidCmdbBuild = rapidCmdbBuildP;
     }
-    public RapidSearchForNetcoolBuild()
+    public RapidInsightForNetcoolBuild()
     {
         this(null);
     }
 
     static void main(String[] args) {
-        RapidSearchForNetcoolBuild rapidSearchForNetcoolBuilder = new RapidSearchForNetcoolBuild();
-        rapidSearchForNetcoolBuilder.run(args);
+        RapidInsightForNetcoolBuild rapidInsightForNetcoolBuilder = new RapidInsightForNetcoolBuild();
+        rapidInsightForNetcoolBuilder.run(args);
     }
 
     def String getExcludedClasses() {
@@ -48,7 +48,7 @@ class RapidSearchForNetcoolBuild extends Build{
 
         def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
         installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant:ant], [:]);
-        def zipFileName = "${env.distribution}/RapidSearchForNetcool.zip"
+        def zipFileName = "${env.distribution}/RapidInsightForNetcool.zip"
         ant.zip(destfile: zipFileName) {
            ant.zipfileset(dir : "$env.distribution/RapidServer", prefix:"RapidServer")
         }

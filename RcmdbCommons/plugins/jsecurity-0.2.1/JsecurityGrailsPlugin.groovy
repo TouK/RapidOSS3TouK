@@ -9,6 +9,8 @@ import org.jsecurity.realm.Realm
 import org.jsecurity.subject.DelegatingSubject
 import org.jsecurity.web.DefaultWebSecurityManager
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean
+import org.jsecurity.authc.UsernamePasswordToken
+import org.jsecurity.authc.AuthenticationException
 
 /*
 * Copyright 2007 Peter Ledbrook.
@@ -38,10 +40,10 @@ protect pages based on a user's roles and/or permissions.
     def documentation = 'http://grails.codehaus.org/JSecurity+Plugin'
 
     def grailsVersion = GrailsPluginUtils.grailsVersion
-    def loadAfter = [ 'controllers', 'services' ]
-    def observe = [ 'controllers' ]
+    def loadAfter = ['controllers', 'services']
+    def observe = ['controllers']
     def watchedResources = 'file:./grails-app/realms/**/*Realm.groovy'
-    def artefacts = [ RealmArtefactHandler ]
+    def artefacts = [RealmArtefactHandler]
 
     def roleMaps = [:]
     def permMaps = [:]
@@ -50,7 +52,7 @@ protect pages based on a user's roles and/or permissions.
         // Configure the realms defined in the project.
         def realmBeans = []
         def realmClasses = application.realmClasses
-        application.realmClasses.each { realmClass ->
+        application.realmClasses.each {realmClass ->
             log.info "Registering realm: ${realmClass.fullName}"
             configureRealm.delegate = delegate
 
@@ -59,7 +61,7 @@ protect pages based on a user's roles and/or permissions.
 
         // This currently does not work in certain cases because of
         // a bug in Grails.
-//        'org.jsecurity.spring.LifecycleBeanPostProcessor'(org.jsecurity.spring.LifecycleBeanPostProcessor)
+        //        'org.jsecurity.spring.LifecycleBeanPostProcessor'(org.jsecurity.spring.LifecycleBeanPostProcessor)
 
 
         // The default credential matcher.
@@ -67,11 +69,11 @@ protect pages based on a user's roles and/or permissions.
             storedCredentialsHexEncoded = true
         }
 
-        jsecSecurityManager(DefaultWebSecurityManager) { bean ->
+        jsecSecurityManager(DefaultWebSecurityManager) {bean ->
             bean.initMethod = "init"
             bean.destroyMethod = "destroy"
 
-            realms = realmBeans.collect { ref(it) }
+            realms = realmBeans.collect {ref(it)}
 
             // Allow the user to customise the session type: either
             // 'http' or 'jsecurity'.
@@ -86,7 +88,7 @@ protect pages based on a user's roles and/or permissions.
         }
     }
 
-    def doWithApplicationContext = { applicationContext ->
+    def doWithApplicationContext = {applicationContext ->
         // Add any extra realms that might have been defined in the
         // project. To do that, we first just get all the beans that
         // implement the Realm interface.
@@ -94,12 +96,12 @@ protect pages based on a user's roles and/or permissions.
 
         // Now filter out the beans created by the plugin for the
         // realm artefacts.
-        beans = beans.findAll { !(it.endsWith("Wrapper") || it.endsWith("Proxy")) }
+        beans = beans.findAll {!(it.endsWith("Wrapper") || it.endsWith("Proxy"))}
 
         // Finally add the remaining beans to the security manager.
         log.info "Registering native realms: $beans"
         def mgr = applicationContext.getBean('jsecSecurityManager')
-        mgr.realms.addAll(beans.collect { applicationContext.getBean(it) })
+        mgr.realms.addAll(beans.collect {applicationContext.getBean(it)})
     }
 
     /**
@@ -107,26 +109,26 @@ protect pages based on a user's roles and/or permissions.
      * so that our before-interceptor can query them to find out
      * whether a user has the required role/permission for an action.
      */
-    def doWithDynamicMethods = { ctx ->
+    def doWithDynamicMethods = {ctx ->
         // Get the access control information from the controllers, if
         // there are any.
         if (manager?.hasGrailsPlugin("controllers")) {
             // Process each controller.
-            application.controllerClasses.each { controllerClass ->
+            application.controllerClasses.each {controllerClass ->
                 processController(controllerClass, log)
             }
         }
 
-        application.filtersClasses.each { filterClass ->
-            filterClass.clazz.metaClass.getRoleMap = { String controller -> return roleMaps[controller] }
-            filterClass.clazz.metaClass.getPermissionMap = { String controller -> return permMaps[controller] }
+        application.filtersClasses.each {filterClass ->
+            filterClass.clazz.metaClass.getRoleMap = {String controller -> return roleMaps[controller]}
+            filterClass.clazz.metaClass.getPermissionMap = {String controller -> return permMaps[controller]}
         }
 
         // Add an 'accessControl' method to FilterConfig (so that it's
         // available from Grails filters).
         def mc = FilterConfig.metaClass
 
-        def controlCheck = { Closure c ->
+        def controlCheck = {Closure c ->
             // If we're accessing the auth controller itself, we don't
             // want to check whether the user is authenticated, otherwise
             // we end up in an infinite loop of redirects.
@@ -137,6 +139,20 @@ protect pages based on a user's roles and/or permissions.
 
             // First check that the user is authenticated.
             def subject = SecurityUtils.subject
+            if (!subject.authenticated && params.username != null && params.password != null) {
+                def mgr = applicationContext.getBean('jsecSecurityManager');
+                def authToken = new UsernamePasswordToken(params.username, params.password)
+                if (params.rememberMe) {
+                    authToken.rememberMe = true
+                }
+                try {
+                    mgr.login(authToken)
+                    session.username = params.username;
+                }
+                catch (AuthenticationException ex) {}
+
+            }
+            subject = SecurityUtils.subject
             if (!subject.authenticated) {
                 // User is not authenticated, so deal with it.
                 if (filtersClass.metaClass.respondsTo(filtersClass, 'onNotAuthenticated')) {
@@ -149,16 +165,16 @@ protect pages based on a user's roles and/or permissions.
                     if (request.queryString) {
                         targetUri += request.queryString
                     }
-                    def format =  params.format;
-                    if(format == null)
+                    def format = params.format;
+                    if (format == null)
                     {
-                        format = targetUri.endsWith("xml")?"xml":"html";
+                        format = targetUri.endsWith("xml") ? "xml" : "html";
                     }
 
                     redirect(
                             controller: 'auth',
                             action: 'login',
-                            params: [ targetUri: targetUri, format:format ])
+                            params: [targetUri: targetUri, format: format])
                 }
 
                 return false
@@ -189,7 +205,7 @@ protect pages based on a user's roles and/or permissions.
                     // 'unauthorized' page.
                     redirect(controller: 'auth', action: 'unauthorized')
                 }
-                
+
                 return false
             }
             else {
@@ -201,7 +217,7 @@ protect pages based on a user's roles and/or permissions.
         mc.accessControl = controlCheck
     }
 
-    def doWithWebDescriptor = { webXml ->
+    def doWithWebDescriptor = {webXml ->
         def contextParam = webXml.'context-param'
         contextParam[contextParam.size() - 1] + {
             'filter' {
@@ -227,7 +243,7 @@ protect pages based on a user's roles and/or permissions.
 
         // Place the JSecurity filter after the Spring character encoding
         // filter, otherwise the latter filter won't work.
-        def filter = webXml.'filter-mapping'.find { it.'filter-name'.text() == "charEncodingFilter" }
+        def filter = webXml.'filter-mapping'.find {it.'filter-name'.text() == "charEncodingFilter"}
 
         // NOTE: The following shenanigans are designed to ensure that
         // the filter mapping is inserted in the right location under
@@ -283,7 +299,7 @@ protect pages based on a user's roles and/or permissions.
         }
     }
 
-    def onChange = { event ->
+    def onChange = {event ->
         if (application.isControllerClass(event.source)) {
             // Get the GrailsClass instance for the controller.
             def controllerClass = application.getControllerClass(event.source?.name)
@@ -302,7 +318,7 @@ protect pages based on a user's roles and/or permissions.
         }
         else if (application.isRealmClass(event.source)) {
             log.info "Realm modified!"
-            
+
             def context = event.ctx
             if (!context) {
                 log.debug("Application context not found - can't reload.")
@@ -371,12 +387,12 @@ protect pages based on a user's roles and/or permissions.
         }
     }
 
-    def onApplicationChange = { event ->
+    def onApplicationChange = {event ->
         // TODO Implement code that is executed when any class in a GrailsApplication changes
         // the event contain: event.source, event.application and event.applicationContext objects
     }
 
-    def configureRealm = { grailsClass ->
+    def configureRealm = {grailsClass ->
         def realmName = grailsClass.shortName
 
         // Create the realm bean.
@@ -474,7 +490,7 @@ protect pages based on a user's roles and/or permissions.
      */
     def processAnnotations(controllerClass, roleMap, permissionMap, log) {
         def clazz = controllerClass.clazz
-        clazz.declaredFields.each { field ->
+        clazz.declaredFields.each {field ->
             // First see whether this field/action requires any roles.
             // We load the annotation classes dynamically so that the
             // plugin can be used with the 1.4 JDK.
@@ -509,8 +525,8 @@ protect pages based on a user's roles and/or permissions.
                     permissionMap[field.name] = permissions
                 }
 
-                def constructor = ann.type().getConstructor([ String, String ] as Class[])
-                permissions << constructor.newInstance([ ann.target(), ann.actions() ] as Object[])
+                def constructor = ann.type().getConstructor([String, String] as Class[])
+                permissions << constructor.newInstance([ann.target(), ann.actions()] as Object[])
             }
         }
     }

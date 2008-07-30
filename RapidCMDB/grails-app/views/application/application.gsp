@@ -25,10 +25,10 @@
     </g:if>
     <g:form method="post">
 	    <div class="buttons">
-	        <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="Reload"/></span>
 	        <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="ReloadControllers"/></span>
 	        <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="ReloadViews"/></span>
-	    </div>
+            <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="Reload Application"/></span>
+        </div>
     </g:form>
 </div>
 </body>

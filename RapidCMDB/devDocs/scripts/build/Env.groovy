@@ -6,6 +6,7 @@ class Env {
 	def thirdPartyJars = new Properties();
 	static def basedir = "..";
 // Common environment properties	
+	static def jreDir = basedir+"/jre1.6.0_04";
 	static def distribution = basedir+"/Distribution";
 	static def testresults = basedir+"/TestResults";
 	static def dist_rapid_server = "$distribution/RapidServer";

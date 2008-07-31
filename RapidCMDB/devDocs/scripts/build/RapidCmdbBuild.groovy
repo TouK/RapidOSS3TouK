@@ -140,6 +140,10 @@ class RapidCmdbBuild extends Build {
         }
 
         copyCommons(env.dist_rapid_suite, true);
+        
+        ant.copy(todir: "$env.dist_rapid_server/jre") {
+            ant.fileset(dir: "$env.jreDir")
+        }
     }
 
     def buildRCMDBModeler(){

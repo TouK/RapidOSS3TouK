@@ -103,11 +103,11 @@
 <script type="text/javascript">
      function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
     {
-    	return (key == "severity" && value != "Critical") || (!(key == "severity" && value == "Critical")) || key == "lastoccurrence" || key=="statechange"
+    	return (key == "severity" && value != "Critical") || key == "lastoccurrence" || key=="statechange"
     }
     function searchListPropertyMenuConditionFunctionLessThan(key, value, data)
 	{
-    	return (key == "severity" && value != "Clear") || (!(key == "severity" && value == "Clear")) || key == "lastoccurrence" || key=="statechange"
+    	return (key == "severity" && value != "Clear") || key == "lastoccurrence" || key=="statechange"
     }
 
     function searchListHeaderMenuConditionFunctionAcknowledge(data)

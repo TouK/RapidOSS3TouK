@@ -27,7 +27,7 @@ class SearchableConfiguration {
             toString();
 
     int batchSize = 100;
-    long maxTransactionWaitTime = 20000;
+    long maxTransactionWaitTime = 5000;
     /**
      * Any settings you wish to pass to Compass
      *
@@ -56,7 +56,8 @@ class SearchableConfiguration {
     "compass.converter.double.type":CompassDoubleConverter.class.name,
     "compass.converter.double.format":"#000000000000000000000000000000",
     "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name,
-    "compass.transaction.disableThreadBoundLocalTransaction":"true"];
+    "compass.transaction.disableThreadBoundLocalTransaction":"true",
+    "compass.cache.first":"org.compass.core.cache.first.NullFirstLevelCache"];
 
     /**
      * Default mapping property exclusions

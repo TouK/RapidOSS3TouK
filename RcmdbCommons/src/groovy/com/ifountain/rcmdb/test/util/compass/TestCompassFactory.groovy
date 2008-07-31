@@ -66,6 +66,7 @@ class TestCompassFactory {
         }
 //        config.getSettings().setSetting ("compass.transaction.isolation", "lucene");
         config.getSettings().setSetting ("compass.transaction.disableThreadBoundLocalTransaction", "true");
+        config.getSettings().setSetting ("compass.cache.first", "org.compass.core.cache.first.NullFirstLevelCache");
         configurator.configure(config, [:])
         def compass = config.buildCompass()
 

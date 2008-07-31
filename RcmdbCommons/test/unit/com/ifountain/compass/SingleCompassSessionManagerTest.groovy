@@ -4,6 +4,7 @@ import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.compass.core.CompassSession
 import org.compass.core.Compass
+import org.apache.commons.io.FileUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -175,10 +176,8 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
         def obj = new CompassTestObject(id:0, prop1:"prop1val");
         saveToCompass(obj)
         def objLoaded = loadFromCompass(CompassTestObject, 0);
-        println System.identityHashCode(objLoaded)
         objLoaded.prop1 = "updatedProp1Value"
         def objLoadedAgain = loadFromCompass(CompassTestObject, 0);
-        println System.identityHashCode(objLoadedAgain)
         assertEquals ("prop1val", objLoadedAgain.prop1);
 
     }

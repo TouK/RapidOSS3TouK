@@ -163,7 +163,7 @@ protect pages based on a user's roles and/or permissions.
                     // page.
                     def targetUri = request.forwardURI - request.contextPath
                     if (request.queryString) {
-                        targetUri += request.queryString
+                        targetUri += "?${request.queryString}"
                     }
                     def format = params.format;
                     if (format == null)

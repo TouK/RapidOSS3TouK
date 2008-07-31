@@ -27,7 +27,7 @@
 	    <div class="buttons">
 	        <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="ReloadControllers"/></span>
 	        <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="ReloadViews"/></span>
-            <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="Reload Application"/></span>
+            <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="Reload"/></span>
         </div>
     </g:form>
 </div>

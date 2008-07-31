@@ -17,7 +17,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
     {
         var dh = YAHOO.ext.DomHelper;
         this.container = dh.append(document.body, {tag: 'div', cls:'resizable-panel'});
-        this.body = dh.append(document.body, {tag: 'div', cls:'resizable-panel-body'});
         if(this.iframe == true)
         {
             this.body = dh.append(document.body, {tag: 'iframe', frameborder:0, scrolling:"yes"});
@@ -68,7 +67,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
                 YAHOO.util.Dom.setStyle(this.body, 'height', bodyContentHeight + 'px');
                 YAHOO.util.Dom.setStyle(this.body.childNodes[0], 'height', bodyContentHeight + 'px');
                 YAHOO.util.Dom.setStyle(this.body.childNodes[0], 'width', bodyWidth + 'px');
-                
+
                 if (IE_SYNC) {
                     this.sizeUnderlay();
                     this.syncIframe();

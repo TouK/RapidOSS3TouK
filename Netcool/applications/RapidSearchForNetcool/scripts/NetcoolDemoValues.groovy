@@ -149,7 +149,7 @@ class NetcoolDemoValues {
 
 
     def getNode() {
-        return nodeOptions[nextNumber(nodeOptions.size())] + (Math.random() * 100000);
+        return nodeOptions[nextNumber(nodeOptions.size())] + nextNumber(1000000);
     }
 
     public Map getJournalProperties(connectorName, serverName, serial) {

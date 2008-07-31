@@ -28,11 +28,15 @@ abstract class AbstractDomainOperation {
     def domainObject;
     public Object getProperty(String propName)
     {
-        if(propName == "metaClass" || propName == "class")
+        def prop = AbstractDomainOperation.metaClass.getMetaProperty(propName);
+        if(prop != null && propName != "properties")
         {
-            return AbstractDomainOperation.metaClass.getMetaProperty(propName).getProperty(this);
+            return prop.getProperty(this);
         }
-        return domainObject.__InternalGetProperty__(propName);
+        else
+        {
+            return domainObject.__InternalGetProperty__(propName);
+        }
     }
 
     public Map getProperties()
@@ -42,7 +46,20 @@ abstract class AbstractDomainOperation {
 
     public void setProperty(String propName, Object value)
     {
-            domainObject.__InternalSetProperty__(propName, value);
+            def prop = AbstractDomainOperation.metaClass.getMetaProperty(propName);
+            if(prop != null && propName != "properties")
+            {
+                prop.setProperty(this, value);
+            }
+            else
+            {
+                domainObject.__InternalSetProperty__(propName, value);
+            }
+    }
+
+    public Object methodMissing(String methodName, Object args)
+    {
+    	domainObject.methodMissing(methodName, args, false);
     }
 
 }

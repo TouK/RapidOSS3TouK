@@ -75,17 +75,23 @@ class RapidDomainClassGrailsPlugin {
         mc.addMetaBeanProperty (operationProperty)
         def operationClassName = dc.name + "Operations";
         mc.methodMissing =  {String name, args ->
-            def oprInstance = operationProperty.getProperty(delegate);
-            if(oprInstance)
-            {
-                try {
-                    return oprInstance.invokeMethod(name, args)
-                } catch (MissingMethodException e) {
-                    if(e.getType().name != oprInstance.class.name)
-                    {
-                        throw e;
-                    }
-                }
+        	delegate.methodMissing(name, args, true);
+        }
+        mc.methodMissing =  {String name, args, willDelagateToOperation ->
+        	if(willDelagateToOperation)
+        	{
+	            def oprInstance = operationProperty.getProperty(delegate);
+	            if(oprInstance)
+	            {
+	                try {
+	                    return oprInstance.invokeMethod(name, args)
+	                } catch (MissingMethodException e) {
+	                    if(e.getType().name != oprInstance.class.name)
+	                    {
+	                        throw e;
+	                    }
+	                }
+	            }
             }
             throw new MissingMethodException (name,  delegate.class, args);
         }

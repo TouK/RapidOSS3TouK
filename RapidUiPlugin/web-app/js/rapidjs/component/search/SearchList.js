@@ -15,6 +15,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.lineSize = 4;
     this.sortOrderAttribute = null;
     this.renderCellFunction = null;
+    this.images = null;
     YAHOO.ext.util.Config.apply(this, config);
     this.rootNode = null;
     this.container = container;
@@ -73,13 +74,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.params[this.searchQueryParamName] = this.currentlyExecutingQuery;
         this.poll();
     },
-    handleInputEnter : function(e){
+    handleInputEnter : function(e) {
         if ((e.type == "keypress" && e.keyCode == 13))
         {
             this.handleSearchClick();
         }
     },
-    
+
     handleSearchClick: function(e) {
         this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
         this.showMask();
@@ -100,13 +101,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
         var node = this.getRootNode(newData);
         if (node) {
-            var rowCount =  node.getAttribute(this.totalCountAttribute);
-            if(rowCount != null){
+            var rowCount = node.getAttribute(this.totalCountAttribute);
+            if (rowCount != null) {
                 this.totalRowCount = parseInt(rowCount, 10)
                 this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;
             }
             var offset = node.getAttribute(this.offsetAttribute);
-            if(offset != null){
+            if (offset != null) {
                 this.lastOffset = parseInt(offset, 10)
             }
             if (this.data) {
@@ -210,8 +211,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 }
             }
             var item = this.rowHeaderMenu.addItem({text:this.menuItems[i].label, submenu : subMenu });
-            if(!(this.menuItems[i].submenuItems))
-                YAHOO.util.Event.addListener(item.element, "click", this.rowHeaderMenuItemClicked,{ parentKey:i }, this);
+            if (!(this.menuItems[i].submenuItems))
+                YAHOO.util.Event.addListener(item.element, "click", this.rowHeaderMenuItemClicked, { parentKey:i }, this);
         }
 
 
@@ -393,7 +394,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             innerHtml = innerHtml.substring(0, innerHtml.length - 9) + '</div>';
         }
         for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-            var rowHtml = '<table><tr><td width="0%"><div class="rcmdb-search-row-headermenu"></div></td>' +
+            var rowHtml = '<table><tr>' + (this.images ? '<td width="0%"><div class="rcmdb-search-row-headerimage"></div></td>' : '') +
+                          '<td width="0%"><div class="rcmdb-search-row-headermenu"></div></td>' +
                           '<td width="100%">';
             if (this.rowHeaderAttribute != null)
             {
@@ -418,6 +420,19 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         if (this.fields) {
             var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
             var dataNode = searchNode.xmlData;
+            if (this.images) {
+                var data = dataNode.getAttributes();
+                for (var i = 0; i < this.images.length; i++)
+                {
+                    var currentExpressionStr = this.images[i]['exp'];
+                    var evaluationResult = eval(currentExpressionStr);
+                    if (evaluationResult == true)
+                    {
+                        var imageSrc = this.images[i]['src'];
+                        YAHOO.util.Dom.getElementsByClassName('rcmdb-search-row-headerimage', 'div', rowEl.dom)[0].style.backgroundImage = 'url("' + imageSrc + '")';
+                    }
+                }
+            }
             var nOfFields = this.fields.length;
             if (this.rowHeaderAttribute != null)
             {
@@ -429,7 +444,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 var keyEl = cell.firstChild;
                 var valueEl = keyEl.nextSibling;
                 var value = dataNode.getAttribute(att);
-                valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode):value);
+                valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) : value);
                 keyEl.innerHTML = att + '=';
                 cell.propKey = att;
                 cell.propValue = value;
@@ -459,12 +474,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
                     }
                     var subIndex = 0;
-                    for( var j in this.menuItems[i].submenuItems )
+                    for (var j in this.menuItems[i].submenuItems)
                     {
                         var submenuItem = this.rowHeaderMenu.getItem(index)._oSubmenu.getItem(subIndex);
-                        if( this.menuItems[i].submenuItems[j].condition != null )
+                        if (this.menuItems[i].submenuItems[j].condition != null)
                         {
-                            var conSub = this.menuItems[i].submenuItems[j].condition( dataNode, this.menuItems[i].submenuItems[j].label )
+                            var conSub = this.menuItems[i].submenuItems[j].condition(dataNode, this.menuItems[i].submenuItems[j].label)
                             if (!conSub)
                                 submenuItem.element.style.display = "none";
                             else
@@ -645,7 +660,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     rowHeaderMenuItemClicked: function(eventType, params) {
         var id;
         var parentKey = params.parentKey;
-        if( params.subKey != null)
+        if (params.subKey != null)
         {
             var subKey = params.subKey;
             id = this.menuItems[parentKey].submenuItems[subKey].id;

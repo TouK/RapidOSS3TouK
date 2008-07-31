@@ -235,6 +235,14 @@
                         }
                     }
         } ,
+        images:[
+            {exp:'data["severity"] == "Critical"', src:'images/rapidjs/component/states/red.png'},
+            {exp:'data["severity"] == "Major"', src:'images/rapidjs/component/states/orange.png'},
+            {exp:'data["severity"] == "Minor"', src:'images/rapidjs/component/states/yellow.png'},
+            {exp:'data["severity"] == "Warning"', src:'images/rapidjs/component/states/red_clear.png'},
+            {exp:'data["severity"] == "Indeterminate"', src:'images/rapidjs/component/states/orange_clear.png'},
+            {exp:'data["severity"] == "Clear"', src:'images/rapidjs/component/states/green.png'}
+        ],
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
             item2 : { id : 'sortDesc', label : 'Sort desc' },

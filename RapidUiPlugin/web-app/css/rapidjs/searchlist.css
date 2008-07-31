@@ -48,6 +48,14 @@
     cursor:pointer;
 }
 
+.rcmdb-search-row-headerimage{
+    background-repeat: no-repeat;
+    background-position:center;
+    height: 18px;
+    overflow: hidden;
+    width: 18px;
+}
+
 .rcmdb-search-rowdata {
     border-color: #DDDDDD;
     display:block;

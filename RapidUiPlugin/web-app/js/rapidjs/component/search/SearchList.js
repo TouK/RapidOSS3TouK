@@ -14,6 +14,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.maxRowsDisplayed = 200;
     this.lineSize = 4;
     this.sortOrderAttribute = null;
+    this.renderCellFunction = null;
     YAHOO.ext.util.Config.apply(this, config);
     this.rootNode = null;
     this.container = container;
@@ -428,7 +429,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 var keyEl = cell.firstChild;
                 var valueEl = keyEl.nextSibling;
                 var value = dataNode.getAttribute(att);
-                valueEl.innerHTML = value;
+                valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode):value);
                 keyEl.innerHTML = att + '=';
                 cell.propKey = att;
                 cell.propValue = value;

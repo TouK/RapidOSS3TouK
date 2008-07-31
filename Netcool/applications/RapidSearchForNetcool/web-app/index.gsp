@@ -244,6 +244,14 @@
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE);
             dialog.dialog.form.query.value = query;
+        },
+        renderCellFunction : function(key, value, data){
+        	if(key == "lastoccurrence" || key == "statechange"){
+                var d = new Date();
+                d.setTime(parseFloat(value)*1000)
+                return d.format("d/m/Y H:i:s");
+            }
+            return value;
         }
     }
 

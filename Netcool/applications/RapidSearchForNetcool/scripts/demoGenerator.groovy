@@ -10,10 +10,25 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
  */
 def static DemoValues = new NetcoolDemoValues();
 
-for(int i=0; i < 100000; i++)
+for(int i=0; i < 1000000; i++)
 {
     def props = DemoValues.getEventProperties();
-    NetcoolEvent.add(props);
+    def event = NetcoolEvent.add(props);
+    if(event.hasErrors())
+    {
+        println event.errors;
+    }
+    else
+    {
+        for(int j = 0; j < DemoValues.nextNumber(5); j++)
+        {
+            def journal = NetcoolJournal.add(DemoValues.getJournalProperties(props.connectorname, props.servername, props.serial));
+            if(journal.hasErrors())
+            {
+                println journal.errors
+            }
+        }
+    }
 }
 
 

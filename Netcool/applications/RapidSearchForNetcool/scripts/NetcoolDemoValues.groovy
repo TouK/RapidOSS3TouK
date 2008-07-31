@@ -14,10 +14,21 @@ class NetcoolDemoValues {
     public int numberOfEvents = 0;
     public eventProperties = ["servername", "connectorname", "acknowledge", "severity", "suppressescl", "ncclass","tally", "owneruid", "ownergid",
             "tasklist","alertgroup","node","manager","agent"]
+
+    public journalProperties = ["text"]
     def servernameOptions = ["NCOMS", "NCOMS2"];
     def connectornameOptions = ["con1", "con2"];
     def acknowledgeOptions = ["Yes", "No"];
     def tallyOptions = [1]
+    def textOptions = [
+        "Alert is unacknowledged by rsadmin",
+        """Alert is acknowledged by rsadmin""",
+        "Alert is prioritized from 4 to 5 by Unknown",
+        "Alert is prioritized from 2 to 3 by Unknown",
+        "Alert is prioritized from 1 to 2 by Unknown",
+        "Alert is prioritized from 2 to 5 by Unknown",
+        "Put in task list by rsadmin"
+    ]
     def severityOptions = [
             "Clear",
             "Indeterminate",
@@ -96,7 +107,7 @@ class NetcoolDemoValues {
         "MachineLogs",
         "MachineStats",
         "MachineLogs"
-    ]
+    ];
     def nodeOptions = [
             "muppet",
             "link",
@@ -139,6 +150,12 @@ class NetcoolDemoValues {
 
     def getNode() {
         return nodeOptions[nextNumber(nodeOptions.size())] + (Math.random() * 100000);
+    }
+
+    public Map getJournalProperties(connectorName, serverName, serial) {
+        def ch = (System.currentTimeMillis()- nextNumber(200000))/1000;
+        return [keyfield:"$serial:0;$ch", connectorName:connectorName, servername:servername, serverserial:serial, chrono:ch, text:textOptions[nextNumber(textOptions.size())]];
+
     }
 
     public Map getEventProperties() {

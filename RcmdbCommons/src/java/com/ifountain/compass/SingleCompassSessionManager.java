@@ -51,6 +51,7 @@ public class SingleCompassSessionManager {
             }
             else
             {
+                tr.transaction.commit();
                 tr.getSession().close();
             }
 
@@ -68,6 +69,7 @@ public class SingleCompassSessionManager {
             }
             else
             {
+                tr.transaction.rollback();
                 tr.getSession().close();
             }
 

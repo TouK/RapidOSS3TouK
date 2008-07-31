@@ -130,6 +130,28 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
         assertTrue (tr4.getSession().isClosed());
     }
 
+    public void testBeginTransactionWithZeroMaxTransactionCountAndTimer()
+    {
+        int maxNumberOfTransactions = 0;
+        int maxWaitTime = 0;
+        SingleCompassSessionManager.initialize(compass, maxNumberOfTransactions, maxWaitTime);
+        RapidCompassTransaction tr1 = SingleCompassSessionManager.beginTransaction();
+        RapidCompassTransaction tr2 = SingleCompassSessionManager.beginTransaction();
+        RapidCompassTransaction tr3 = SingleCompassSessionManager.beginTransaction();
+        tr1.commit();
+        tr2.commit();
+        tr3.commit();
+        assertNotSame (tr2.session, tr1.session);
+        assertNotSame (tr3.session, tr1.session);
+        assertNotSame (tr3.session, tr2.session);
+        assertTrue (tr1.session.isClosed());
+        assertTrue (tr1.transaction.wasCommitted());
+        assertTrue (tr2.session.isClosed());
+        assertTrue (tr2.transaction.wasCommitted());
+        assertTrue (tr3.session.isClosed());
+        assertTrue (tr3.transaction.wasCommitted());
+    }
+
     public void testBeginTransactionThrowsExceptionAfterDestroy()
     {
         int maxNumberOfTransactions = 200;

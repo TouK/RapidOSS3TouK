@@ -13,7 +13,7 @@ class NetcoolDemoValues {
     def engine = new SimpleTemplateEngine();
     public int numberOfEvents = 0;
     public eventProperties = ["servername", "connectorname", "acknowledge", "severity", "suppressescl", "ncclass","tally", "owneruid", "ownergid",
-            "tasklist","alertgroup","node","manager"]
+            "tasklist","alertgroup","node","manager","agent"]
     def servernameOptions = ["NCOMS", "NCOMS2"];
     def connectornameOptions = ["con1", "con2"];
     def acknowledgeOptions = ["Yes", "No"];
@@ -90,6 +90,13 @@ class NetcoolDemoValues {
             GATEWAY:[engine.createTemplate("A GATEWAY process \${summaryParam} running on OSSMUSE has disconnected")]
     ];//summarynin icine dinamik bisey koyalim bir rakam olabilir
 
+    def agentOptions = [
+        "MachineMon",
+        "LinkMon",
+        "MachineLogs",
+        "MachineStats",
+        "MachineLogs"
+    ]
     def nodeOptions = [
             "muppet",
             "link",
@@ -160,6 +167,8 @@ class NetcoolDemoValues {
             }
         }
 
+        def identifier = props["node"]+props["agent"]+props["severity"]+props["alertgroup"]
+        props["identifier"]=identifier;
         return props;
     }
 

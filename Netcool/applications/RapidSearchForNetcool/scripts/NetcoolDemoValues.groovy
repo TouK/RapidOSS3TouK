@@ -154,7 +154,7 @@ class NetcoolDemoValues {
 
     public Map getJournalProperties(connectorName, serverName, serial) {
         def ch = (System.currentTimeMillis()- nextNumber(200000))/1000;
-        return [keyfield:"$serial:0;$ch", connectorName:connectorName, servername:serverName, serverserial:serial, chrono:ch, text:textOptions[nextNumber(textOptions.size())]];
+        return [keyfield:"$serial:0:$ch", connectorName:connectorName, servername:serverName, serverserial:serial, chrono:ch, text:textOptions[nextNumber(textOptions.size())]];
 
     }
 

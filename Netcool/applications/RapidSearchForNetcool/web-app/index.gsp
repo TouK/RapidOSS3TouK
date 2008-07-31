@@ -196,7 +196,7 @@
 
     var searchConfig = {
         id:'searchList',
-        url:'search',
+        url:'search.xml',
         searchQueryParamName:'query',
         rootTag:'Objects',
         contentPath:'Object',
@@ -250,19 +250,19 @@
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
 
 
-    var acknowledgeConfig = { url: 'script/run/acknowledge' };
+    var acknowledgeConfig = { url: 'script/run/acknowledge?format=xml' };
 	var acknowledgeAction = new YAHOO.rapidjs.component.action.MergeAction(acknowledgeConfig);
 
-	var taskListConfig = { url: 'script/run/taskList' };
+	var taskListConfig = { url: 'script/run/taskList?format=xml' };
 	var taskListAction = new YAHOO.rapidjs.component.action.MergeAction(taskListConfig);
 
-	var severityConfig = { url: 'script/run/severity' };
+	var severityConfig = { url: 'script/run/severity?format=xml' };
 	var severityAction = new YAHOO.rapidjs.component.action.MergeAction(severityConfig);
 
-    var suppressConfig = { url: 'script/run/suppress' };
+    var suppressConfig = { url: 'script/run/suppress?format=xml' };
 	var suppressAction = new YAHOO.rapidjs.component.action.MergeAction(suppressConfig);
 
-    var takeOwnershipConfig = { url: 'script/run/takeOwnership' };
+    var takeOwnershipConfig = { url: 'script/run/takeOwnership?format=xml' };
 	var takeOwnershipAction = new YAHOO.rapidjs.component.action.MergeAction(takeOwnershipConfig);
 
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
@@ -356,7 +356,7 @@
     };
     var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
 
-    var config = {  id:"filterTree", "url":"script/run/queryList", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
+    var config = {  id:"filterTree", "url":"script/run/queryList?format=xml", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
         "displayAttribute":treeDisplayAttribute, "nodeTypeAttribute":"nodeType", "queryAttribute":"query", title:'Saved Queries',
         menuItems:{
             Delete : { id: 'delete', label : 'Delete',  condition : treeNodesConditionFunction },

@@ -91,16 +91,11 @@ class RapidCmdbBuild extends Build {
     def buildRCMDB(){
          ant.copy(todir: "$env.dist_rapid_suite") {
             ant.fileset(file: "$env.rapid_cmdb_cvs/application.properties");
-            if(osType == WINDOWS){
-	            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.exe");
-	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
-	            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.vmoptions");
-	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
-            }
-            if(osType == UNIX){
-	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
-	            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.sh");
-            }
+            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.exe");
+            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
+            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.vmoptions");
+            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
+            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.sh");
         }
         ant.copy(todir: "$env.dist_rapid_suite/grails-app") {
 
@@ -164,16 +159,11 @@ class RapidCmdbBuild extends Build {
     def buildRCMDBModeler(){
         ant.copy(todir: "$env.dist_modeler") {
             ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/application.properties");
-            if(osType == WINDOWS){
-	            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.exe");
-	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
-	            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.vmoptions");
-	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
-            }
-            if (osType == UNIX){
-	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
-	            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.sh");
-            }
+            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.exe");
+            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
+            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.vmoptions");
+            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
+            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.sh");
             ant.fileset(file: env.invalidNames);
         }
         ant.copy(todir: "$env.dist_modeler/grails-app") {
@@ -259,8 +249,9 @@ class RapidCmdbBuild extends Build {
         buildDependent();
         copyDependentJars();
         unzipGrails();
+        
         if(osType == UNIX){
-        	ant.copy(todir: "{env.distribution}/RapidServer/bin", file: "$env.rapid_cmdb_commons_cvs/rsbatch.sh")
+        	ant.copy(todir: "${env.dist_rapid_server}/bin", file: "${env.rapid_cmdb_commons_cvs}/rsbatch.sh")
         }
         if ((System.getProperty("os.name").indexOf("Windows") < 0) && (osType == UNIX))
         {

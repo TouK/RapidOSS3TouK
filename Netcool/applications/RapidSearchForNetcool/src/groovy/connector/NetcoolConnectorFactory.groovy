@@ -6,6 +6,7 @@ import datasource.NetcoolConversionParameter
 import com.ifountain.comp.utils.CaseInsensitiveMap
 import org.apache.log4j.RollingFileAppender
 import org.apache.log4j.DailyRollingFileAppender
+import org.apache.log4j.Level
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +18,7 @@ import org.apache.log4j.DailyRollingFileAppender
 class NetcoolConnectorFactory {
     private static Map connectorList = [:];
     private static Map conversionParams = new CaseInsensitiveMap();
-    public static createConnector(NetcoolDatasource datasource)
+    public static createConnector(NetcoolDatasource datasource, String logLevel)
     {
         if(conversionParams.isEmpty())
         {
@@ -31,7 +32,7 @@ class NetcoolConnectorFactory {
                 convParamMap[convParam.value]=convParam.conversion;
             }
         }
-        def connector = connectorList.get(datasource.name);
+        NetcoolConnector connector = connectorList.get(datasource.name);
         if(connector == null)
         {
             Logger logger = Logger.getLogger("connector."+datasource.name);
@@ -42,6 +43,7 @@ class NetcoolConnectorFactory {
             connector = new NetcoolConnector(datasource, logger, conversionParams);
             connectorList[datasource.name] = connector;
         }
+        connector.logger.setLevel (Level.toLevel(logLevel))
         return connector;
     }
     

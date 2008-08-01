@@ -1,6 +1,6 @@
 import datasource.NetcoolDatasource
 import connector.NetcoolConnectorFactory
-
+def logLevel = "WARN";
 def netcoolDatasource = NetcoolDatasource.get(name:"${datasourceName}");
-def connector = NetcoolConnectorFactory.createConnector(netcoolDatasource);
+def connector = NetcoolConnectorFactory.createConnector(netcoolDatasource, logLevel);
 connector.run();

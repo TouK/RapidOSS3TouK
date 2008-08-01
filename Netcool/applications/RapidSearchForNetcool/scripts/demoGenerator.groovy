@@ -9,25 +9,58 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
  * To change this template use File | Settings | File Templates.
  */
 def static DemoValues = new NetcoolDemoValues();
-
+def t = System.nanoTime();
+def totalTime = 0;
+def totalEventInsertTime = 0;
+def totalJournalInsertTime = 0;
+def totalInsertedEvents = 0;
+def totalInsertedJournals = 0;
+println "Inserted number of events, Number of Journals, Event insertion time, journal insertion time, total  time";
 for(int i=0; i < 1000000; i++)
 {
     def props = DemoValues.getEventProperties();
+    def tempT = System.nanoTime();
     def event = NetcoolEvent.add(props);
+    def interval = System.nanoTime() - tempT;
     if(event.hasErrors())
     {
         println event.errors;
     }
     else
     {
+        totalInsertedEvents++;
+        totalEventInsertTime += interval;
         for(int j = 0; j < DemoValues.nextNumber(5); j++)
         {
-            def journal = NetcoolJournal.add(DemoValues.getJournalProperties(props.connectorname, props.servername, props.serial));
+            def journalProps = DemoValues.getJournalProperties(props.connectorname, props.servername, props.serial);
+            tempT = System.nanoTime();
+            def journal = NetcoolJournal.add(journalProps);
+            interval = System.nanoTime() - tempT;
             if(journal.hasErrors())
             {
                 println journal.errors
             }
+            else
+            {
+                totalInsertedJournals++;
+                totalJournalInsertTime += interval;
+            }
         }
+    }
+    if(i  % 1000 == 0)
+    {
+        Thread.sleep (300);        
+    }
+
+    if(i  % 20000 == 0)
+    {
+        totalTime = System.nanoTime() - t;
+        println "${totalInsertedEvents}, ${totalInsertedJournals},${totalEventInsertTime/Math.pow(10,12)},${totalJournalInsertTime/Math.pow(10,12)},${totalTime/Math.pow(10,12)}";
+        totalEventInsertTime = 0;
+        totalJournalInsertTime = 0;
+        totalInsertedEvents = 0;
+        totalInsertedJournals = 0;
+        t = System.nanoTime();
     }
 }
 

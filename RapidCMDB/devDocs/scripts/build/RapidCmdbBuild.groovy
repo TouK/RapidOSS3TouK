@@ -24,8 +24,11 @@ package build;
  * To change this template use File | Settings | File Templates.
  */
 class RapidCmdbBuild extends Build {
+	def UNIX = "Unix";
+	def WINDOWS = "Windows";
+	def osType; 
     def smartsBuild = new SmartsModuleBuild();
-    def rapidSearchForNetcoolBuild = new RapidInsightForNetcoolBuild(this);
+    def rapidInsightForNetcoolBuild = new RapidInsightForNetcoolBuild(this);
     def netcoolBuild = new NetcoolModuleBuild();
     def rapidUiBuild = new RapidUiPluginBuild();
     static void main(String[] args) {
@@ -69,7 +72,12 @@ class RapidCmdbBuild extends Build {
         build();
         def versionDate = getVersionWithDate();
         ant.delete(dir: env.distribution + "/RapidServer");
-        ant.unzip(src: "$env.distribution/RapidCMDB$versionDate" + ".zip", dest: env.distribution);
+        if (System.getProperty("os.name").indexOf("Windows") < 0){
+        	ant.unzip(src: "$env.distribution/RapidCMDB_Unix$versionDate" + ".zip", dest: env.distribution);
+        }
+        else{
+        	ant.unzip(src: "$env.distribution/RapidCMDB_Windows$versionDate" + ".zip", dest: env.distribution);
+        }
         ant.unzip(src: "$env.distribution/SmartsModule${smartsBuild.getVersionWithDate()}" + ".zip", dest: "$env.distribution/RapidServer");
         //ant.unzip(src: "$env.distribution/NetcoolModule${netcoolBuild.getVersionWithDate()}" + ".zip", dest: "$env.distribution/RapidServer");
         ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
@@ -83,11 +91,15 @@ class RapidCmdbBuild extends Build {
     def buildRCMDB(){
          ant.copy(todir: "$env.dist_rapid_suite") {
             ant.fileset(file: "$env.rapid_cmdb_cvs/application.properties");
-            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.exe");
-            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
-            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
-            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.vmoptions");
-            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.sh");
+            if(osType == WINDOWS){
+	            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.exe");
+	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
+	            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.vmoptions");
+            }
+            if(osType == UNIX){
+	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
+	            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.sh");
+            }
         }
         ant.copy(todir: "$env.dist_rapid_suite/grails-app") {
 
@@ -141,19 +153,25 @@ class RapidCmdbBuild extends Build {
 
         copyCommons(env.dist_rapid_suite, true);
         
-        ant.copy(todir: "$env.dist_rapid_server/jre") {
-            ant.fileset(dir: "$env.jreDir")
+        if(osType == WINDOWS){
+	        ant.copy(todir: "$env.dist_rapid_server/jre") {
+	            ant.fileset(dir: "$env.jreDir")
+	        }
         }
     }
 
     def buildRCMDBModeler(){
         ant.copy(todir: "$env.dist_modeler") {
             ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/application.properties");
-            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.exe");
-            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
-            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
-            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.vmoptions");
-            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.sh");
+            if(osType == WINDOWS){
+	            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.exe");
+	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
+	            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.vmoptions");
+            }
+            if (osType == UNIX){
+	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
+	            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.sh");
+            }
             ant.fileset(file: env.invalidNames);
         }
         ant.copy(todir: "$env.dist_modeler/grails-app") {
@@ -206,8 +224,30 @@ class RapidCmdbBuild extends Build {
         }
     }
 
-    def build() {
-        clean();
+    def build(){
+    	clean();
+    	buildPerOS(WINDOWS);
+	    // save the zip file
+    	ant.copy(todir: env.save) {
+	        ant.fileset(dir: env.distribution) {
+	            ant.include(name: "RapidCMDB*.zip")
+	            ant.include(name: "RapidInsight*.zip")
+	        }
+	    }
+        ant.delete(dir: env.distribution);
+        ant.delete(dir: "$env.basedir/build");
+        buildPerOS(UNIX);
+        // bring back windows zips to distribution
+    	ant.copy(todir: env.distribution) {
+	        ant.fileset(dir: env.save) {
+	            ant.include(name: "RapidCMDB*.zip")
+	            ant.include(name: "RapidInsight*.zip")
+	        }
+	    }
+    }
+    
+    def buildPerOS(type) {
+        osType = type;
         ant.copy(todir: "$env.dist_rapid_server", file: env.version)
         setVersionAndBuildNumber(env.versionInBuild);
 
@@ -217,8 +257,10 @@ class RapidCmdbBuild extends Build {
         buildDependent();
         copyDependentJars();
         unzipGrails();
-        ant.copy(todir: "${env.distribution}/RapidServer/bin", file: "$env.rapid_cmdb_commons_cvs/rsbatch.sh")
-        if (System.getProperty("os.name").indexOf("Windows") < 0)
+        if(osType == UNIX){
+        	ant.copy(todir: "{env.distribution}/RapidServer/bin", file: "$env.rapid_cmdb_commons_cvs/rsbatch.sh")
+        }
+        if ((System.getProperty("os.name").indexOf("Windows") < 0) && (osType == UNIX))
         {
             def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
             process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
@@ -229,7 +271,7 @@ class RapidCmdbBuild extends Build {
             process = "dos2unix ${env.dist_modeler}/rsmodeler.sh".execute();
         }
         def versionDate = getVersionWithDate();
-        def zipFileName = "$env.distribution/RapidCMDB$versionDate" + ".zip"
+        def zipFileName = "$env.distribution/RapidCMDB_$osType$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
             ant.zipfileset(dir: "$env.distribution"){
             	ant.exclude(name:".project");
@@ -240,7 +282,7 @@ class RapidCmdbBuild extends Build {
         smartsBuild.run([]);
         buildSample("Sample1");
         buildSample("Sample2");
-        rapidSearchForNetcoolBuild.run([]);
+        rapidInsightForNetcoolBuild.run([]);
         return zipFileName;
     }
 
@@ -293,6 +335,7 @@ class RapidCmdbBuild extends Build {
     }
 
     def clean() {
+    	ant.delete(dir: env.save);
         ant.delete(dir: env.distribution);
         ant.delete(dir: "$env.basedir/build");
     }

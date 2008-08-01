@@ -48,7 +48,9 @@ class RapidInsightForNetcoolBuild extends Build{
 
         def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
         installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant:ant], [:]);
-        def zipFileName = "${env.distribution}/RapidInsightForNetcool.zip"
+        def osType = "Unix";
+        if (rapidCmdb.getName().indexOf("Windows") > -1) osType = "Windows"
+        def zipFileName = "${env.distribution}/RapidInsightForNetcool$osType.zip"
         ant.zip(destfile: zipFileName) {
            ant.zipfileset(dir : "$env.distribution/RapidServer", prefix:"RapidServer")
         }

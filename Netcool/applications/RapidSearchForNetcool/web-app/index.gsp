@@ -90,13 +90,18 @@
     </style>
 
 <script type="text/javascript">
-     function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
+    function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
     {
     	return (key == "severity" && value != "Critical") || key == "lastoccurrence" || key=="statechange"
     }
     function searchListPropertyMenuConditionFunctionLessThan(key, value, data)
 	{
     	return (key == "severity" && value != "Clear") || key == "lastoccurrence" || key=="statechange"
+    }
+
+    function searchListPropertyMenuConditionFunctionGreaterLessThanOrEqualTo(key, value, data)
+    {
+           return key == "severity" || key == "lastoccurrence" || key=="statechange"
     }
 
     function searchListHeaderMenuConditionFunctionAcknowledge(data)
@@ -200,7 +205,9 @@
             item1 : { id : 'sortAsc', label : 'Sort asc' },
             item2 : { id : 'sortDesc', label : 'Sort desc' },
             item3 : { id : 'greaterThan', label : 'Greater than',  condition: searchListPropertyMenuConditionFunctionGreaterThan},
-            item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunctionLessThan}
+            item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunctionLessThan},
+            item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: searchListPropertyMenuConditionFunctionGreaterLessThanOrEqualTo},
+            item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: searchListPropertyMenuConditionFunctionGreaterLessThanOrEqualTo}
         } ,
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE);
@@ -290,7 +297,45 @@
  	  			else
 	            	searchList.appendToQuery(key + ":{" + value + " TO *}");
 	        }
-	        else if (id == "lessThan") {
+            else if (id == "greaterThanOrEqualTo") {
+	        	if( key == "severity")
+ 	  			{
+                    if(value == 'Critical')
+                         searchList.appendToQuery("severity: Critical");
+                    else if( value == 'Major' )
+                         searchList.appendToQuery("severity: Critical OR severity:Major");
+                    else if( value == 'Minor' )
+                        searchList.appendToQuery("severity: Critical OR severity:Major OR severity:Minor");
+                    else if( value == 'Warning' )
+                        searchList.appendToQuery("severity: Critical OR severity:Major OR severity:Minor OR severity:Warning");
+                    else if( value == 'Indeterminate' )
+                        searchList.appendToQuery("severity: * - severity:Clear" );
+                    else if( value == 'Clear' )
+                            searchList.appendToQuery("severity:*");
+	 	  		}
+ 	  			else
+	            	searchList.appendToQuery(key + ":[" + value + " TO *]");
+	        }
+            else if (id == "lessThanOrEqualTo") {
+	        	if( key == "severity")
+ 	  			{
+	 	  			if( value == 'Critical' )
+			        	searchList.appendToQuery("severity:*");
+			        else if( value == 'Major' )
+			        	searchList.appendToQuery("severity: * - severity: Critical");
+			        else if( value == 'Minor' )
+			        	searchList.appendToQuery("severity: Minor OR severity: Warning OR severity:Indeterminate OR severity:Clear");
+			        else if( value == 'Warning' )
+			        	searchList.appendToQuery("severity: Warning OR severity: Indeterminate OR severity:Clear ");
+			        else if( value == 'Indeterminate' )
+			        	searchList.appendToQuery("severity: Indeterminate OR severity: Clear");
+                    else if( value == 'Clear')
+                        searchList.appendToQuery("severity: Clear");                        
+                   }
+ 	  			else
+	            	searchList.appendToQuery(key + ":[* TO " + value + "]");
+	        }
+            else if (id == "lessThan") {
 	        	if( key == "severity")
  	  			{
 	 	  			if( value == 'Critical' )

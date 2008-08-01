@@ -11,6 +11,8 @@ def queryBuilder = new MarkupBuilder(writer);
 def tenMinBeforeNow = (System.currentTimeMillis() / 1000) - (1000*60*10) ;
 
 SearchQueryGroup.add(name: "Default", user: user);
+def defaultGroup = SearchQueryGroup.get(name: "Default", user: user);
+
 SearchQuery.add(group:defaultGroup, name: "All Events", query: "id:*", user: user);
 SearchQuery.add(group:defaultGroup, name: "Critical Events", query: "severity: Critical", user: user);
 SearchQuery.add(group:defaultGroup, name: "Last 10 Minutes", query: "statechange: [" +tenMinBeforeNow+ "TO NOW]", user: user);

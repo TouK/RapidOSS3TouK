@@ -95,6 +95,7 @@ class RapidCmdbBuild extends Build {
 	            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.exe");
 	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
 	            ant.fileset(file: "$env.rapid_cmdb_cvs/rs.vmoptions");
+	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
             }
             if(osType == UNIX){
 	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
@@ -167,6 +168,7 @@ class RapidCmdbBuild extends Build {
 	            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.exe");
 	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.bat");
 	            ant.fileset(file: "$env.rapid_cmdb_modeler_cvs/rsmodeler.vmoptions");
+	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
             }
             if (osType == UNIX){
 	            ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");

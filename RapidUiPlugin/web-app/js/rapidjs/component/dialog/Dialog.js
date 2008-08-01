@@ -1,30 +1,17 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component');
-YAHOO.rapidjs.component.Html = function(config)
+YAHOO.rapidjs.component.Dialog = function(config)
 {
-    YAHOO.rapidjs.component.Html.superclass.constructor.call(this, null, config);
-
     this.width = config.width;
     this.height = config.height;
-    this.iframe = config.iframe
-    this.format = "html";
     this.render();
-    this.url = null
-
 };
 
-YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingComponentContainer, {
+YAHOO.rapidjs.component.Dialog.prototype = {
     render: function()
     {
         var dh = YAHOO.ext.DomHelper;
         this.container = dh.append(document.body, {tag: 'div', cls:'resizable-panel'});
-        if (this.iframe == true)
-        {
-            this.body = dh.append(document.body, {tag: 'iframe', frameborder:0, scrolling:"yes"});
-        }
-        else
-        {
-            this.body = dh.append(document.body, {tag: 'div', cls:'resizable-panel-body'});
-        }
+        this.body = dh.append(document.body, {tag: 'div', cls:'resizable-panel-body'});
         this.footer = dh.append(document.body, {tag: 'div', cls:'resizable-panel-footer'});
             // Create a panel Instance, from the 'resizablepanel' DIV standard module markup
         this.panel = new YAHOO.widget.Panel(this.container, {
@@ -80,31 +67,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         func.createDelegate(this.panel, args, true).call(args);
 
     },
-    handleSuccess: function(response, keepExisting, removeAttribute)
-    {
-        this.body.innerHTML = "<div>" + response.responseText + "</div>";
-    },
 
     show: function(url)
     {
-        if (url)
-        {
-            this.url = url;
-        }
-        if (this.iframe == true)
-        {
-            this.body.src = this.url;
-        }
-        else
-        {
-            this.doRequest(this.url);
-        }
         this.panel.show();
     },
     hide: function()
     {
-        this.abort();
         this.panel.hide();
     }
-})
-
+};

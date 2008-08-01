@@ -47,7 +47,7 @@ class Build extends Parent{
 		buildNo =  new java.text.SimpleDateFormat("yyMMddHH").format(new Date(System.currentTimeMillis()));
 		verFile.append("\rBuild: " + buildNo);
 	}
-
+	
     def createPlugin(pluginDir, pluginResources)
     {
         ant.copy(file:"$env.rapid_cmdb_cvs/devDocs/groovy-starter.conf", todir:"${env.dist_rapid_server}/conf")

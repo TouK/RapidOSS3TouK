@@ -8,6 +8,8 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class RapidInsightForNetcoolBuild extends Build{
+	def version = "$env.rapid_netcool/RI4NCVersion.txt"; 
+	def versionInBuild = "$env.dist_rapid_suite/RI4NCVersion.txt";
     def rapidCmdbBuild;
     public RapidInsightForNetcoolBuild(rapidCmdbBuildP)
     {
@@ -48,9 +50,14 @@ class RapidInsightForNetcoolBuild extends Build{
 
         def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
         installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant:ant], [:]);
+        
+        ant.copy(file : version, tofile : versionInBuild );
+        setVersionAndBuildNumber(versionInBuild);
+        def versionDate = getVersionWithDate();
+        
         def osType = "Unix";
         if (rapidCmdb.getName().indexOf("Windows") > -1) osType = "Windows"
-        def zipFileName = "${env.distribution}/RapidInsightForNetcool_$osType" + ".zip"
+        def zipFileName = "${env.distribution}/RapidInsightForNetcool_$osType$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
            ant.zipfileset(dir : "$env.distribution/RapidServer", prefix:"RapidServer")
         }

@@ -159,11 +159,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
         this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header.dom, {title:this.title});
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
-        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
             html:'<div><form action="javascript:void(0)"><table><tbody>' +
                  '<tr>' +
-                 '<td  width="93%"><input type="text" style="width:100%;"/></td>' +
+                 '<td  width="93%"><input type="textbox" style="width:100%;" name="search"/></td>' +
                  '<td><button type="button">Search</button></td>' +
                  '<td  width="100%"><a href="#">Save Query</a></td>' +
                  '</tr>' +

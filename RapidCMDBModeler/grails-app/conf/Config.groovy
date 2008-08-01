@@ -63,17 +63,17 @@ environments {
 // log4j configuration
 log4j {
     // COPY AND MODIFY THE FOLLOWING SECTION TO CREATE A NEW LOG APPENDER
-    appender.modelsLog = "org.apache.log4j.FileAppender"
+    appender.modelsLog = "org.apache.log4j.DailyRollingFileAppender"
     appender.'modelsLog.layout' = "org.apache.log4j.PatternLayout"
     appender.'modelsLog.layout.ConversionPattern' = '%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'modelsLog.File' = "logs/Models.log"
 
-    appender.rapidServerLog = "org.apache.log4j.FileAppender"
+    appender.rapidServerLog = "org.apache.log4j.DailyRollingFileAppender"
     appender.'rapidServerLog.layout' = "org.apache.log4j.PatternLayout"
     appender.'rapidServerLog.layout.ConversionPattern' = '%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'rapidServerLog.File' = "logs/RapidServer.log"
 
-    appender.errorLog = "org.apache.log4j.FileAppender"
+    appender.errorLog = "org.apache.log4j.DailyRollingFileAppender"
     appender.'errorLog.layout' = "org.apache.log4j.PatternLayout"
     appender.'errorLog.layout.ConversionPattern' = '%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'errorLog.File' = "logs/RapidServerErr.log"

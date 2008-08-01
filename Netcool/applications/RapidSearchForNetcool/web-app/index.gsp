@@ -27,18 +27,6 @@
 		.r-filterTree-queryAdd{
 			background-image: url( images/rapidjs/component/tools/filteradd.png);
 		}
-        #errors{
-            padding: 3px;
-            font-style: italic;
-            background:yellow;
-            width:800px;
-            position:absolute;
-            top:-100;
-            background:#FFF3F3 none repeat scroll 0%;
-            border:1px solid red;
-            color:#CC0000;
-            overflow:hidden;
-        }
     </style>
 </head>
 <body class=" yui-skin-sam">
@@ -77,6 +65,9 @@
             <img src="images/RapidInsight.png">
         </td>
         <td width="100%"></td>
+        <td id="serverDownEl" width="0%" style="display:none">
+            <img src="images/network-offline.png"/>
+        </td>
         <td width="0%">
            <div style="vertical-align:bottom">
                <span style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;">${session.username}</span>
@@ -87,8 +78,6 @@
 </div>
 <div id="right">
     <div id="searchDiv"></div>
-</div>
-<div id="errors">
 </div>
   <style>
     .dragging, .drag-hint {
@@ -140,47 +129,11 @@
         var suppress = data.getAttribute("suppressescl");
         return !(suppress == label);
     }
-
-    var errorAnim = null;
-    var errorFadeAnim = null;
-    YAHOO.rapidjs.ErrorManager.errorOccurredEvent.subscribe(function(obj, errors){
-        if(errorAnim){
-            errorAnim.stop();
-        }
-        if(errorFadeAnim){
-            errorFadeAnim.stop();
-        }
-        var errorsElement = YAHOO.ext.Element.get('errors');
-        var xCoord = (YAHOO.util.Dom.getViewportWidth()/2) - (errorsElement.getWidth()/2);
-        YAHOO.util.Dom.setStyle(errorsElement.dom, 'opacity', '1');
-        errorsElement.dom.innerHTML = errors.join("<br>");
-        errorsElement.setHeight(window.layout.getUnitByPosition('top').get('height'));
-        errorAnim = new YAHOO.util.Motion('errors', {points:{ from:[xCoord,-100], to: [xCoord, 1] }},1, YAHOO.util.Easing.elasticBoth);
-        errorFadeAnim = new YAHOO.util.Anim("errors", {
-	        opacity: {to: 0}
-        }, 10);
-        errorAnim.animate();
-        errorAnim.onComplete.subscribe(function() {
-	        errorFadeAnim.animate();
-	    });
-    }, this, true);
     YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
-        if(errorAnim){
-            errorAnim.stop();
-        }
-        if(errorFadeAnim){
-            errorFadeAnim.stop();
-        }
-        var errorsElement = YAHOO.ext.Element.get('errors');
-        var xCoord = (YAHOO.util.Dom.getViewportWidth()/2) - (errorsElement.getWidth()/2);
-        YAHOO.util.Dom.setStyle(errorsElement.dom, 'opacity', '1');
-        errorsElement.dom.innerHTML = 'Server is not available.';
-        errorsElement.setHeight(window.layout.getUnitByPosition('top').get('height'));
-        errorAnim = new YAHOO.util.Motion('errors', {points:{ from:[xCoord,-100], to: [xCoord, 1] }},1, YAHOO.util.Easing.elasticBoth);
-        errorAnim.animate();
+        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
     }, this, true);
     YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
-        YAHOO.util.Dom.setStyle(YAHOO.ext.Element.get('errors').dom, 'opacity', '0');
+        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
     }, this, true);
 
 

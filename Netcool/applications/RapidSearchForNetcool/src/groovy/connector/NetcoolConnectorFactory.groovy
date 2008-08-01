@@ -4,6 +4,8 @@ import datasource.NetcoolDatasource
 import org.apache.log4j.Logger
 import datasource.NetcoolConversionParameter
 import com.ifountain.comp.utils.CaseInsensitiveMap
+import org.apache.log4j.RollingFileAppender
+import org.apache.log4j.DailyRollingFileAppender
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,6 +35,10 @@ class NetcoolConnectorFactory {
         if(connector == null)
         {
             Logger logger = Logger.getLogger("connector."+datasource.name);
+            logger.removeAllAppenders();
+            def layout = new org.apache.log4j.PatternLayout("%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n");
+            def appender = new DailyRollingFileAppender(layout, "logs/${datasource.name}Connector.log",  true);
+            logger.addAppender (appender);
             connector = new NetcoolConnector(datasource, logger, conversionParams);
             connectorList[datasource.name] = connector;
         }

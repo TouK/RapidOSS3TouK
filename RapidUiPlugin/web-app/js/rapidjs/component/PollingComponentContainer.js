@@ -24,7 +24,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
 
     processSuccess : function(response){
-        YAHOO.rapidjs.ErrorManager.serverUp()
+        YAHOO.rapidjs.ErrorManager.serverUp();
         try
         {
 
@@ -35,6 +35,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
             }
             else if(YAHOO.rapidjs.Connect.containsError(response) == false)
             {
+                this.events["success"].fireDirect(this);
                 this.handleSuccess(response);
             }
             else
@@ -66,14 +67,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     {
         this.clearData();
         var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
+        this.events["error"].fireDirect(this, errors);
         YAHOO.rapidjs.ErrorManager.errorOccurred(this, errors);
     },
     handleTimeout: function(response)
     {
+        this.events["error"].fireDirect(this,  ['Request received timeout.']);
         YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Request received timeout.']);
     },
     handleUnknownUrl: function(response)
     {
+        this.events["error"].fireDirect(this,  ['Specified url cannot be found.']);
         YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Specified url cannot be found.']);
     },
     handleAuthenticate: function(response)

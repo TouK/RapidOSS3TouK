@@ -103,21 +103,6 @@
 .rapid-usertool-visited{
 	color: #424973;
 }
-
-.r-tooltip{
-	position:absolute;
-	color:#333;
-	background-color:#FDFFB4;
-	font-family:arial,helvetica,verdana,sans-serif;
-	padding:2px;
-	border:1px solid #FCC90D;
-	font:100% sans-serif;
-	width:auto;
-	z-index: 20000;	
-}
-.r-tooltip-body{
-	
-}
 td,textarea,input,div,span,a,a:visited,a:hover,a:active,select{
 	font-family: Arial, Tahoma, Verdana, Helvetica;
 	font-size: 11px;

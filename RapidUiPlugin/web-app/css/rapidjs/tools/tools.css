@@ -54,3 +54,32 @@
 .r-tool-refresh {
     background-image: url( ../../../images/rapidjs/component/tools/arrow_refresh_small.png );
 }
+.r-tool-error{
+    background-image: url( ../../../images/rapidjs/component/tools/exclamation.png);
+}
+
+.r-tooltip{
+	position:absolute;
+	color:#333;
+	background-color:#FDFFB4;
+	font-family:arial,helvetica,verdana,sans-serif;
+	padding:2px;
+	border:1px solid #FCC90D;
+	font:100% sans-serif;
+	width:auto;
+	z-index: 20000;
+}
+.r-tooltip-error{
+	position:absolute;
+	color:#333;
+	background-color:#FFD6CF;
+	font-family:arial,helvetica,verdana,sans-serif;
+	padding:2px;
+	border:3px solid #A1311F;
+	font:100% sans-serif;
+	width:auto;
+	z-index: 20000;
+}
+.r-tooltip-body{
+
+}

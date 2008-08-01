@@ -83,10 +83,10 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
     {
         var st = response.status;
 		if(st == -1){
-            YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Request received timeout.']);
+            this._fireErrors(response, ['Request received timeout.']);
         }
 		else if(st == 404){
-			YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Specified url cannot be found.']);
+            this._fireErrors(response, ['Specified url cannot be found.']);
 		}
 		else if(st == 0){
 			YAHOO.rapidjs.ErrorManager.serverDown();
@@ -103,9 +103,26 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
             }
         }
     },
-    handleSuccess: function(response){},
+    handleSuccess: function(response){
+        var componentList = response.argument
+        if(componentList && componentList.length){
+            for(var i=0; i<componentList.length; i++){
+               componentList[i].events['success'].fireDirect();
+            }
+        }
+    },
     handleErrors: function(response){
         var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
+        this._fireErrors(response, errors);
+
+    },
+    _fireErrors : function(response, errors){
+        var componentList = response.argument
+        if(componentList && componentList.length){
+            for(var i=0; i<componentList.length; i++){
+               componentList[i].events['error'].fireDirect(componentList[i], errors);
+            }
+        }
         YAHOO.rapidjs.ErrorManager.errorOccurred(this, errors);
     }
 };
@@ -121,7 +138,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.action.MergeAction, YAHOO.rapidjs.comp
         var componentList = response.argument
         if(componentList && componentList.length){
             for(var i=0; i<componentList.length; i++){
-               componentList[i].handleSuccess(response, true, this.removeAttribute) 
+               componentList[i].events['success'].fireDirect();
+               componentList[i].handleSuccess(response, true, this.removeAttribute)
             }
         }
     }

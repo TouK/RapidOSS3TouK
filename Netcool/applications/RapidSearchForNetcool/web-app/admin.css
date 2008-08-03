@@ -1,0 +1,30 @@
+.admin h1{
+	color: #233D5F;
+}
+
+.admin .nav {
+    background: transparent url( js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -1300px;
+    border-color: #BFDAFF;
+}
+
+.admin th {
+background: transparent url( js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -1300px;
+
+}
+.admin .list th, .admin .list td {
+border-left:1px solid #BFDAFF;
+}
+.admin table {
+border:1px solid #A8B9CF;
+width:100%;
+}
+
+.admin .list tr:hover {
+    background: #B3B9BF;
+}
+.admin .list th:hover {
+	background: #B3B9BF url( js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -100px;
+}
+.admin th a:link, .admin th a:visited, .admin th a:hover {
+color:#2647A0;
+}

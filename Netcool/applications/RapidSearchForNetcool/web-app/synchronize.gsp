@@ -18,7 +18,7 @@
 <div class="yui-navset">
     <ul class="yui-nav">
         <li><a href="${createLinkTo(file: 'admin.gsp')}"><em>Connectors</em></a></li>
-        <li class="selected"><a href="${createLinkTo(file: 'synchronize.gsp')}"><em>Synch</em></a></li>
+        <li class="selected"><a href="${createLinkTo(file: 'synchronize.gsp')}"><em>Configuration Sync.</em></a></li>
         <li><g:link action="list" controller="script"><em>Scripts</em></g:link></li>
         <li><g:link action="list" controller="netcoolConversionParameter"><em>Conversion Parameters</em></g:link></li>
     </ul>

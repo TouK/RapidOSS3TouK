@@ -131,7 +131,7 @@ class NetcoolConnectionController {
             connector.NetcoolConnectorFactory.removeConnector(netcoolConnection.name);
             def scriptName = "${netcoolConnection.name}Connector";
             def script = CmdbScript.updateScript(CmdbScript.get(name: scriptName), [enabled: true], true);
-            flash.message = "Connectors successfully started"
+            flash.message = "Connector ${netcoolConnection.name}Connector successfully started"
             redirect(uri: '/admin.gsp');
         }
     }
@@ -146,7 +146,7 @@ class NetcoolConnectionController {
             connector.NetcoolConnectorFactory.removeConnector(netcoolConnection.name);
             def scriptName = "${netcoolConnection.name}Connector";
             def script = CmdbScript.updateScript(CmdbScript.get(name: scriptName), [enabled: false], true);
-            flash.message = "Connectors successfully stopped"
+            flash.message = "Connector ${netcoolConnection.name}Connector successfully stopped"
             redirect(uri: '/admin.gsp');
         }
     }

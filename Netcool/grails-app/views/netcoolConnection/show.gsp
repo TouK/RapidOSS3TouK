@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="main"/>
     <title>Show NetcoolConnection</title>
 </head>
 <body>
@@ -10,7 +9,6 @@
     <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'admin.gsp')}">Home</a></span>
     <span class="menuButton"><g:link class="list" action="list">NetcoolConnection List</g:link></span>
     <span class="menuButton"><g:link class="create" action="create">New NetcoolConnection</g:link></span>
-    <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
 </div>
 <div class="body">
     <h1>Show NetcoolConnection</h1>
@@ -59,7 +57,6 @@
 
                 </tr>
 
-                
             </tbody>
         </table>
     </div>

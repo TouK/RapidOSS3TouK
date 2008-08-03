@@ -51,4 +51,9 @@ class NetcoolConnectorFactory {
     {
     	connectorList.clear();
     }
+
+    public static removeConnector(connectorName)
+    {
+    	connectorList.remove(connectorName);
+    }
 }

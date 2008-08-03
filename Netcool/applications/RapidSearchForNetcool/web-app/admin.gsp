@@ -1,70 +1,80 @@
-<%@ page import="model.*" %>
-<%@ page import="connection.*" %>
-<%@ page import="datasource.*" %>
-<%@ page import="script.*" %>
-<html>
+<%@ page import="script.CmdbScript; connection.NetcoolConnection" %><html>
 <head>
-    <title>RapidSearch For Netcool Admin UI</title>
-    <meta name="layout" content="main"/>
+    <title>RapidInsight For Netcool Admin UI</title>
+    <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
+    <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
+    <link rel="stylesheet" href="${createLinkTo(file: 'admin.css')}"/>
     <jsec:isNotLoggedIn>
-	  <g:javascript>window.location='auth/login?targetUri=/admin.gsp'</g:javascript>
-	</jsec:isNotLoggedIn>
+        <g:javascript>window.location='auth/login?targetUri=/admin.gsp'</g:javascript>
+    </jsec:isNotLoggedIn>
 </head>
-<body>
-
-<div class="nav"><h1 style="display:inline">RapidSearch For Netcool UI</h1><span class="menuButton"><a href="auth/logout?targetUri=/admin.gsp" class="logout">Logout</a></span></div>
+<body class="yui-skin-sam admin">
+<div><img src="images/RapidInsight.png"></div>
+<div class="nav"><h1 style="display:inline">RapidInsight For Netcool</h1><span class="menuButton"><a href="auth/logout?targetUri=/admin.gsp" class="logout">Logout</a></span></div>
 <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define your connections, create NetcoolEvent and NetcoolJournal models, import conversion parameters.</p>
 <br>
 <p/>
 <p/>
-<br>
-<br>
-<div class="front">
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:hasErrors>
-        <div class="errors">
-            <g:renderErrors bean="${flash.errors}"/>
+<div class="yui-navset">
+    <ul class="yui-nav">
+        <li class="selected"><a href="${createLinkTo(file: 'admin.gsp')}"><em>Connectors</em></a></li>
+        <li><a href="${createLinkTo(file: 'synchronize.gsp')}"><em>Synch</em></a></li>
+        <li><g:link action="list" controller="script"><em>Scripts</em></g:link></li>
+        <li><g:link action="list" controller="netcoolConversionParameter"><em>Conversion Parameters</em></g:link></li>
+    </ul>
+    <div style="margin:20px 15px 10px;">
+        <div class="nav">
+            <span class="menuButton"><g:link class="create" action="create" controller="netcoolConnection">New Connector</g:link></span>
         </div>
-    </g:hasErrors>
-    <table>
-        <tr>
-            <th width="50%">Connections</th>
-            <th>ModelOperations</th>
-        </tr>
-        <tr>
-            <td><p style="margin-left:20px;width:80%">Define your Netcool connections (connection parameters):</p>
-                <br>
-                <div class="dialog" style="margin-left:20px;width:60%;">
-                    <ul style="margin-left:25px;">
-                        <li class="controller"><g:link controller="netcoolConnection">Netcool Connection</g:link></li>
-                        <li class="controller"><g:link controller="netcoolConnection" action="startConnectors">Start Connectors</g:link></li>
-                        <li class="controller"><g:link controller="netcoolConnection" action="stopConnectors">Stop Connectors</g:link></li>
-                    </ul>
-                </div>
-            </td>
-            <td>
-                <p style="margin-left:20px;width:80%">Import Netcool configuration into RapidCMDB and Reload Application:</p>
-                <br>
-                <div class="dialog" style="margin-left:20px;width:60%;">
-                    <ul style="margin-left:25px;">
-                        <li class="controller"><g:link controller="script" action="run" id="NetcoolColumnMapping">Import Netcool Columns</g:link></li>
-                        <li class="controller"><g:link controller="script" action="run" id="NetcoolConfigurationLoader">Create RapidCMDB Models</g:link></li>
-                        <li class="controller"><g:link controller="application" action="reload">Reload Application</g:link></li>
+        <g:if test="${flash.message}">
+            <div class="message">${flash.message}</div>
+        </g:if>
+        <g:hasErrors>
+            <div class="errors">
+                <g:renderErrors bean="${flash.errors}"/>
+            </div>
+        </g:hasErrors>
+        <div class="list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Host</th>
+                        <th>Port</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
 
-                    </ul>
-                </div>
-            </td>
-        </tr>
-    </table>
+                    <g:each in="${NetcoolConnection.list()}" status="i" var="netcoolConnection">
+                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+
+                            <td><g:link action="show" controller="netcoolConnection" id="${netcoolConnection.id}">${netcoolConnection.name?.encodeAsHTML()}Connector</g:link></td>
+
+                            <td>${netcoolConnection.host?.encodeAsHTML()}</td>
+
+                            <td>${netcoolConnection.port?.encodeAsHTML()}</td>
+                            <%
+                                def connName = "${netcoolConnection.name}Connector";
+                                def connScript = CmdbScript.get(name: connName);
+                                if (connScript?.enabled) {
+                            %>
+                            <td><g:link action="stopConnector" controller="netcoolConnection" id="${netcoolConnection.id}" class="stop">Stop</g:link></td>
+                            <%
+                                }
+                                else {
+                            %>
+                            <td><g:link action="startConnector" controller="netcoolConnection" id="${netcoolConnection.id}" class="start">Start</g:link></td>
+                            <%
+                                }
+                            %>
+
+                        </tr>
+                    </g:each>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-<p/>
-<br>
-<br>
-<p/>
-
-
-
 </body>
 </html>

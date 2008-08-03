@@ -64,4 +64,4 @@ netcoolConf.NetcoolConfiguration()
 fileWriter.flush();
 fileWriter.close();
 web.flash.message = "Columns imported successfully."
-web.redirect(uri:'/admin.gsp');
+web.redirect(uri:'/synchronize.gsp');

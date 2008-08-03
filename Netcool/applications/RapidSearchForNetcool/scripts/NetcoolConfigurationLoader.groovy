@@ -32,7 +32,7 @@ def netcoolEventXml = getModelXml(res.NetcoolEvent, true, []);
 def netcoolJournalXml = getModelXml(res.NetcoolJournal, false, []);
 ModelGenerator.getInstance().generateModels ([netcoolEventXml, netcoolJournalXml]);
 web.flash.message = "Models generated successfully."
-web.redirect(uri:'/admin.gsp');
+web.redirect(uri:'/synchronize.gsp');
 def getModelXml(modelXml, boolean createColumnObjects, relations)
 {
     def modelString = new StringWriter();

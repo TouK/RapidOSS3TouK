@@ -57,7 +57,8 @@ class SearchableConfiguration {
     "compass.converter.double.format":"#000000000000000000000000000000",
     "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name,
     "compass.transaction.disableThreadBoundLocalTransaction":"true",
-    "compass.cache.first":"org.compass.core.cache.first.NullFirstLevelCache"];
+    "compass.cache.first":"org.compass.core.cache.first.NullFirstLevelCache",
+    "compass.transaction.lockTimeout":600];
 
     /**
      * Default mapping property exclusions

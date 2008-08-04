@@ -96,6 +96,10 @@ public class DefaultUnindexMethod extends AbstractDefaultIndexMethod implements 
                 if(queryString != null)
                 {
                     query = queryBuilder.queryString(queryString).toQuery();
+                    if (clazz != null)
+                    {
+                        query.setTypes(new Class[] {clazz});   
+                    }
                 }
                 else
                 {

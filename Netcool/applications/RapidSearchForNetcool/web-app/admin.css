@@ -18,7 +18,7 @@
 
 .admin table {
     border: 1px solid #A8B9CF;
-    width: 100%;
+    width:100%;
 }
 
 .admin .list tr:hover {
@@ -49,4 +49,21 @@
    background: transparent url( js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -1300px;
      border-color: #BFDAFF;
 }
-
+.admin .body{
+	float:none;
+}
+.admin div.list{
+	overflow: hidden;
+	width:100%;
+}
+.admin .body form{
+	overflow: hidden;
+	width:100%;
+}
+.admin .body .buttons form{
+	width:auto;
+}
+.admin .body .dialog{
+	overflow: hidden;
+	width:100%;
+}

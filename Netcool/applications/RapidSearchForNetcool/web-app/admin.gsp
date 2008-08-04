@@ -34,45 +34,48 @@
                 <g:renderErrors bean="${flash.errors}"/>
             </div>
         </g:hasErrors>
-        <div class="list">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Host</th>
-                        <th>Port</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
+        <div class="body">
+        	<br><br>
+	        <div class="list">
+	            <table>
+	                <thead>
+	                    <tr>
+	                        <th>Name</th>
+	                        <th>Host</th>
+	                        <th>Port</th>
+	                        <th></th>
+	                    </tr>
+	                </thead>
+	                <tbody>
 
-                    <g:each in="${NetcoolConnection.list()}" status="i" var="netcoolConnection">
-                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+	                    <g:each in="${NetcoolConnection.list()}" status="i" var="netcoolConnection">
+	                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-                            <td><g:link action="show" controller="netcoolConnection" id="${netcoolConnection.id}">${netcoolConnection.name?.encodeAsHTML()}Connector</g:link></td>
+	                            <td><g:link action="show" controller="netcoolConnection" id="${netcoolConnection.id}">${netcoolConnection.name?.encodeAsHTML()}Connector</g:link></td>
 
-                            <td>${netcoolConnection.host?.encodeAsHTML()}</td>
+	                            <td>${netcoolConnection.host?.encodeAsHTML()}</td>
 
-                            <td>${netcoolConnection.port?.encodeAsHTML()}</td>
-                            <%
-                                def connName = "${netcoolConnection.name}Connector";
-                                def connScript = CmdbScript.get(name: connName);
-                                if (connScript?.enabled) {
-                            %>
-                            <td><g:link action="stopConnector" controller="netcoolConnection" id="${netcoolConnection.id}" class="stop">Stop</g:link></td>
-                            <%
-                                }
-                                else {
-                            %>
-                            <td><g:link action="startConnector" controller="netcoolConnection" id="${netcoolConnection.id}" class="start">Start</g:link></td>
-                            <%
-                                }
-                            %>
+	                            <td>${netcoolConnection.port?.encodeAsHTML()}</td>
+	                            <%
+	                                def connName = "${netcoolConnection.name}Connector";
+	                                def connScript = CmdbScript.get(name: connName);
+	                                if (connScript?.enabled) {
+	                            %>
+	                            <td><g:link action="stopConnector" controller="netcoolConnection" id="${netcoolConnection.id}" class="stop">Stop</g:link></td>
+	                            <%
+	                                }
+	                                else {
+	                            %>
+	                            <td><g:link action="startConnector" controller="netcoolConnection" id="${netcoolConnection.id}" class="start">Start</g:link></td>
+	                            <%
+	                                }
+	                            %>
 
-                        </tr>
-                    </g:each>
-                </tbody>
-            </table>
+	                        </tr>
+	                    </g:each>
+	                </tbody>
+	            </table>
+	        </div>
         </div>
     </div>
 </div>

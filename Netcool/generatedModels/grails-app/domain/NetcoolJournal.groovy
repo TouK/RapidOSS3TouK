@@ -1,17 +1,13 @@
-/**
- * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: Jul 4, 2008
- * Time: 11:30:34 AM
- * To change this template use File | Settings | File Templates.
- */
-import com.ifountain.core.domain.annotations.*;
-class NetcoolJournal {
 
+import com.ifountain.core.domain.annotations.*;
+
+class NetcoolJournal 
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = [];
+        except = ["errors", "__operation_class__"];
     };
     static datasources = ["RCMDB":["keys":["keyfield":["nameInDs":"keyfield"], "servername":["nameInDs":"servername"]]]]
 
@@ -27,6 +23,10 @@ class NetcoolJournal {
     java.lang.String servername ="";
     
     java.lang.String connectorname ="";
+    
+    org.springframework.validation.Errors errors ;
+    
+    java.lang.Object __operation_class__ ;
     
 
     static hasMany = [:]
@@ -48,13 +48,17 @@ class NetcoolJournal {
         
      connectorname(blank:true,nullable:true)
         
+     __operation_class__(nullable:true)
+        
+     errors(nullable:true)
+        
      
     }
 
     static mappedBy=[:]
     static belongsTo = []
     static propertyConfiguration= [:]
-    static transients = [];
+    static transients = ["errors", "__operation_class__"];
     
     public String toString()
     {
@@ -62,12 +66,4 @@ class NetcoolJournal {
     }
     
     //AUTO_GENERATED_CODE
-
-
-
-
-
-
-
-
 }

@@ -59,9 +59,9 @@
 <div id="left">
     <div id="treeDiv1"></div>
 </div>
-<div id="top">
+<div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
-        <td width="0%">
+        <td width="0%" style="padding-left:10px;padding-top:5px;">
             <img src="images/RapidInsight.png">
         </td>
         <td width="100%"></td>
@@ -194,12 +194,12 @@
                     }
         } ,
         images:[
-            {exp:'data["severity"] == "Critical"', src:'images/rapidjs/component/states/red.png'},
-            {exp:'data["severity"] == "Major"', src:'images/rapidjs/component/states/orange.png'},
-            {exp:'data["severity"] == "Minor"', src:'images/rapidjs/component/states/yellow.png'},
-            {exp:'data["severity"] == "Warning"', src:'images/rapidjs/component/states/red_clear.png'},
-            {exp:'data["severity"] == "Indeterminate"', src:'images/rapidjs/component/states/orange_clear.png'},
-            {exp:'data["severity"] == "Clear"', src:'images/rapidjs/component/states/green.png'}
+            {exp:'data["severity"] == "Critical"', src:'images/rapidjs/component/searchlist/red.png'},
+            {exp:'data["severity"] == "Major"', src:'images/rapidjs/component/searchlist/orange.png'},
+            {exp:'data["severity"] == "Minor"', src:'images/rapidjs/component/searchlist/yellow.png'},
+            {exp:'data["severity"] == "Warning"', src:'images/rapidjs/component/searchlist/blue.png'},
+            {exp:'data["severity"] == "Indeterminate"', src:'images/rapidjs/component/searchlist/purple.png'},
+            {exp:'data["severity"] == "Clear"', src:'images/rapidjs/component/searchlist/green.png'}
         ],
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
@@ -330,7 +330,7 @@
 			        else if( value == 'Indeterminate' )
 			        	searchList.appendToQuery("severity: Indeterminate OR severity: Clear");
                     else if( value == 'Clear')
-                        searchList.appendToQuery("severity: Clear");                        
+                        searchList.appendToQuery("severity: Clear");
                    }
  	  			else
 	            	searchList.appendToQuery(key + ":[* TO " + value + "]");
@@ -448,7 +448,9 @@
             ]
         });
         layout.on('render', function(){
-            var header = layout.getUnitByPosition('top').body;
+        	var topUnit = layout.getUnitByPosition('top');
+        	YAHOO.util.Dom.setStyle(topUnit.get('wrap'), 'background-color', '#BBD4F6')
+            var header = topUnit.body;
             YAHOO.util.Dom.setStyle(header, 'border', 'none');
             var left = layout.getUnitByPosition('left').body;
             YAHOO.util.Dom.setStyle(left, 'top', '1px');

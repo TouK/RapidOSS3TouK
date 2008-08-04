@@ -21,15 +21,15 @@
     width:100%;
 }
 
-.admin .list tr:hover {
+.admin .list tr:hover, .admin .list tr:focus {
     background: #B3B9BF;
 }
 
-.admin .list th:hover {
+.admin .list th:hover, .admin .list th:focus {
     background: #B3B9BF url( js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -100px;
 }
 
-.admin th a:link, .admin th a:visited, .admin th a:hover {
+.admin th a:link, .admin th a:visited, .admin th a:hover, .admin th a:focus{
     color: #2647A0;
 }
 

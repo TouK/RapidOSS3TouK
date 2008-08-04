@@ -104,7 +104,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             var rowCount = node.getAttribute(this.totalCountAttribute);
             if (rowCount != null) {
                 this.totalRowCount = parseInt(rowCount, 10)
-                this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;
+                YAHOO.util.Dom.getElementsByClassName('rcmdb-search-count', 'div', this.searchBox.dom)[0].innerHTML = "Count: " + this.totalRowCount;
             }
             var offset = node.getAttribute(this.offsetAttribute);
             if (offset != null) {
@@ -164,23 +164,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             html:'<div><form action="javascript:void(0)"><table><tbody>' +
                  '<tr>' +
                  '<td  width="93%"><input type="textbox" style="width:100%;" name="search"/></td>' +
-                 '<td><button type="button">Search</button></td>' +
-                 '<td  width="100%"><a href="#">Save Query</a></td>' +
-                 '</tr>' +
-                 '</tbody></table></form></div>' +
-                 '<div>' +
-                 '<table align="right">' +
-                 '<tr>' +
-                 '<td align="right"><label for="count"> </label></td>' +
-                 '<td width="5px"/>' +
-                 '<td width="5px"/>' +
-                 '<td><span>Line Size:</span><select><option value="1">1</option><option value="2">2</option>' +
+                 '<td><div class="rcmdb-search-searchbutton"><a href="#">&nbsp;</a></div></td>' +
+                 '<td  width="100%"><div class="rcmdb-search-savequery"><a href="#">&nbsp;</a></div></td>' +
+                 '<td  width="0%"><div class="rcmdb-search-count"></div></td>' +
+                 '<td  width="0%"><select><option value="1">1</option><option value="2">2</option>' +
                  '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
-                 '<option value="7">7</option><option value="8">8</option></select>' +
-                 '</td>' +
+                 '<option value="7">7</option><option value="8">8</option></select></td>' +
                  '</tr>' +
-                 '</table>' +
-                 '</div>'}, true);
+                 '</tbody></table></form></div>'}, true);
         this.lineSizeSelector = this.searchBox.dom.getElementsByTagName('select')[0];
         SelectUtils.selectTheValue(this.lineSizeSelector, this.lineSize, 0);
 
@@ -192,9 +183,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask',
         	html:'<div class="rcmdb-search-mask-loadingwrp"><div class="rcmdb-search-mask-loading">Loading...</div></div>', style:'text-align:center;'}, true);
         this.hideMask();
-        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('button')[0], 'click', this.handleSearchClick, this, true);
+        YAHOO.util.Event.addListener(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-searchbutton', 'div', this.searchBox.dom)[0], 'click', this.handleSearchClick, this, true);
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleInputEnter, this, true);
-        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('a')[0], 'click', this.handleSaveQueryClick, this, true);
+        YAHOO.util.Event.addListener(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-savequery', 'div', this.searchBox.dom)[0], 'click', this.handleSaveQueryClick, this, true);
         YAHOO.util.Event.addListener(this.lineSizeSelector, 'change', this.handleLineSizeChange, this, true);
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);

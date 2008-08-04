@@ -97,7 +97,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    background: #eeeeee;
+    background: #dfdfdf;
 }
 
 .rcmdb-search-mask-loadingwrp{
@@ -123,6 +123,41 @@
 }
 
 .rcmdb-search-box{
-    height: 55px;
-    background: #C3D9FF;
+    background: #f2f2f2;
+    border-bottom: 2px solid #CFCFCF;
+}
+.rcmdb-search-searchbutton{
+	width:90px;
+	height:30px;
+	margin:auto 0.25em;
+	cursor:pointer;
+}
+.rcmdb-search-searchbutton a{
+	background: url(../../images/rapidjs/component/searchlist/Search.png) no-repeat center;
+	display:block;
+	text-decoration:none;
+	width:100%;
+	height:100%;
+}
+.rcmdb-search-searchbutton a:hover, .rcmdb-search-savequery a:focus{
+	background: url(../../images/rapidjs/component/searchlist/Search-hover.png) no-repeat center;
+}
+.rcmdb-search-savequery{
+	width:100px;
+	height:30px;
+	margin:auto 0.25em;
+	cursor:pointer;
+}
+.rcmdb-search-savequery a{
+	background: url(../../images/rapidjs/component/searchlist/SaveQuery.png) no-repeat center;
+	display:block;
+	text-decoration:none;
+	width:100%;
+	height:100%;
+}
+.rcmdb-search-savequery a:hover, .rcmdb-search-savequery a:focus{
+	background: url(../../images/rapidjs/component/searchlist/SaveQuery-hover.png) no-repeat center;
+}
+.rcmdb-search-count{
+	width:100px;
 }

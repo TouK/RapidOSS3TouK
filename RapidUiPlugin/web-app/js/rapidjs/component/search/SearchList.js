@@ -164,8 +164,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             html:'<div><form action="javascript:void(0)"><table><tbody>' +
                  '<tr>' +
                  '<td  width="93%"><input type="textbox" style="width:100%;" name="search"/></td>' +
-                 '<td><div class="rcmdb-search-searchbutton"><a href="#">&nbsp;</a></div></td>' +
-                 '<td  width="100%"><div class="rcmdb-search-savequery"><a href="#">&nbsp;</a></div></td>' +
+                 '<td><div class="rcmdb-search-searchbutton"><a>&nbsp;</a></div></td>' +
+                 '<td  width="100%"><div class="rcmdb-search-savequery"><a>&nbsp;</a></div></td>' +
                  '<td  width="0%"><div class="rcmdb-search-count"></div></td>' +
                  '<td  width="0%"><select><option value="1">1</option><option value="2">2</option>' +
                  '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +

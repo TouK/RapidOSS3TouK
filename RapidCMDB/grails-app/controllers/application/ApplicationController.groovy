@@ -69,23 +69,23 @@ class ApplicationController {
                 domainClassesWillBeGenerated += domainClass;
                 newDomainClassesMap[modelName] = domainClass;
             }
-            catch(MultipleCompilationErrorsException e)
+            catch (MultipleCompilationErrorsException e)
             {
                 e.printStackTrace();
                 isNewClassesLoadedSuccessfully = false;
-                if(e.getErrorCollector().getErrorCount() > 0)
+                if (e.getErrorCollector().getErrorCount() > 0)
                 {
                     def exception = e.getErrorCollector().getError(0).getCause();
-                    if(exception instanceof SyntaxException)
+                    if (exception instanceof SyntaxException)
                     {
-                        if(exception.startLine > 0)
+                        if (exception.startLine > 0)
                         {
-                            def syntaxError = modelFile.readLines()[exception.startLine-1]
-                            if(syntaxError != null && exception.startColumn > 0 && exception.startColumn <= syntaxError.length())
+                            def syntaxError = modelFile.readLines()[exception.startLine - 1]
+                            if (syntaxError != null && exception.startColumn > 0 && exception.startColumn <= syntaxError.length())
                             {
-                                syntaxError = syntaxError.substring(exception.startColumn-1);
+                                syntaxError = syntaxError.substring(exception.startColumn - 1);
                             }
-                            def errors =[message(code:"default.property.name.invalid", args:[syntaxError, modelName])]
+                            def errors = [message(code: "default.property.name.invalid", args: [syntaxError, modelName])]
                             flash.errors = errors;
                             return;
                         }
@@ -97,8 +97,13 @@ class ApplicationController {
             }
 
         }
-        if(!isNewClassesLoadedSuccessfully){
-            render(view: "application", controller: "application");
+        if (!isNewClassesLoadedSuccessfully) {
+            if (params.targetURI) {
+                redirect(uri: params.targetURI);
+            }
+            else {
+                render(view: "application", controller: "application");
+            }
             return;
         }
         GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClassesWillBeGenerated as GrailsClass[], newDomainClassesMap);
@@ -114,13 +119,13 @@ class ApplicationController {
                     }
                     else
                     {
-                        if(it instanceof PropertyAction)
+                        if (it instanceof PropertyAction)
                         {
-                            PropertyAction.add(propName:it.propName, action:it.action, modelName:it.modelName);
+                            PropertyAction.add(propName: it.propName, action: it.action, modelName: it.modelName);
                         }
                         else
                         {
-                            ModelAction.add(action:it.action, modelName:it.modelName);
+                            ModelAction.add(action: it.action, modelName: it.modelName);
                         }
                     }
                 }
@@ -143,7 +148,12 @@ class ApplicationController {
             FileUtils.copyDirectory(tempModelDirFile, currentModelDirFile);
         }
         flash.message = "Reloading application."
-        render(view: "application", controller: "application");
+        if (params.targetURI) {
+            redirect(uri: params.targetURI);
+        }
+        else {
+            render(view: "application", controller: "application");
+        }
         GroovyPagesTemplateEngine.pageCache.clear();
         System.setProperty(RESTART_APPLICATION, "true");
     }
@@ -151,12 +161,22 @@ class ApplicationController {
     def reloadControllers = {
         org.codehaus.groovy.grails.plugins.PluginManagerHolder.getPluginManager().getGrailsPlugin("controllers").checkForChanges()
         flash.message = "Controllers reloaded successfully."
-        render(view: "application", controller: "application");
+        if (params.targetURI) {
+            redirect(uri: params.targetURI);
+        }
+        else {
+            render(view: "application", controller: "application");
+        }
     }
-    
+
     def reloadViews = {
         GroovyPagesTemplateEngine.pageCache.clear();
         flash.message = "Views reloaded successfully."
-        render(view: "application", controller: "application");
+        if (params.targetURI) {
+            redirect(uri: params.targetURI);
+        }
+        else {
+            render(view: "application", controller: "application");
+        }
     }
 }

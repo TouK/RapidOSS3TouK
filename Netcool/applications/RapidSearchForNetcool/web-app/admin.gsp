@@ -21,6 +21,7 @@
         <li><a href="${createLinkTo(file: 'synchronize.gsp')}"><em>Configuration Sync.</em></a></li>
         <li><g:link action="list" controller="script"><em>Scripts</em></g:link></li>
         <li><g:link action="list" controller="netcoolConversionParameter"><em>Conversion Parameters</em></g:link></li>
+        <li><a href="${createLinkTo(file: 'reload.gsp')}"><em>Reload</em></a></li>
     </ul>
     <div style="margin:20px 15px 10px;">
         <div class="nav">

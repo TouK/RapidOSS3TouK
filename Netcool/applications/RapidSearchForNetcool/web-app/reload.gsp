@@ -1,4 +1,5 @@
-<%@ page import="script.CmdbScript; connection.NetcoolConnection" %><html>
+<%@ page import="script.CmdbScript; connection.NetcoolConnection" %>
+<html>
 <head>
     <title>RapidInsight For Netcool Admin UI</title>
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
@@ -18,12 +19,19 @@
 <div class="yui-navset">
     <ul class="yui-nav">
         <li><a href="${createLinkTo(file: 'admin.gsp')}"><em>Connectors</em></a></li>
-        <li class="selected"><a href="${createLinkTo(file: 'synchronize.gsp')}"><em>Configuration Sync.</em></a></li>
+        <li><a href="${createLinkTo(file: 'synchronize.gsp')}"><em>Configuration Sync.</em></a></li>
         <li><g:link action="list" controller="script"><em>Scripts</em></g:link></li>
         <li><g:link action="list" controller="netcoolConversionParameter"><em>Conversion Parameters</em></g:link></li>
-        <li><a href="${createLinkTo(file: 'reload.gsp')}"><em>Reload</em></a></li>
+        <li class="selected"><a href="${createLinkTo(file: 'reload.gsp')}"><em>Reload</em></a></li>
     </ul>
     <div style="margin:20px 15px 10px;">
+        <div class="nav">
+            <span class="menuButton"><g:link class="refresh" action="reload" controller="application" params="['targetURI':'/reload.gsp']">Reload App.</g:link></span>
+            <span class="menuButton"><g:link class="refresh" action="reloadControllers" controller="application" params="['targetURI':'/reload.gsp']">Reload Controllers</g:link></span>
+            <span class="menuButton"><g:link class="refresh" action="reloadViews" controller="application" params="['targetURI':'/reload.gsp']">Reload Views</g:link></span>
+            <span class="menuButton"><g:link class="refresh" action="reloadOperations" controller="netcoolEvent" params="['targetURI':'/reload.gsp']">Reload NetcoolEvent Operations</g:link></span>
+            <span class="menuButton"><g:link class="refresh" action="reloadOperations" controller="netcoolJournal" params="['targetURI':'/reload.gsp']">Reload NetcoolJournal Operations</g:link></span>
+        </div>
         <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
         </g:if>
@@ -32,12 +40,6 @@
                 <g:renderErrors bean="${flash.errors}"/>
             </div>
         </g:hasErrors>
-        <ul style="margin-left:25px;">
-            <li class="controller"><g:link controller="script" action="run" id="NetcoolColumnMapping">Import Netcool Columns</g:link></li>
-            <li class="controller"><g:link controller="script" action="run" id="NetcoolConfigurationLoader">Create RapidCMDB Models</g:link></li>
-            <li class="controller"><g:link controller="application" action="reload" params="['targetURI':'/synchronize.gsp']">Reload Application</g:link></li>
-
-        </ul>
     </div>
 </div>
 </body>

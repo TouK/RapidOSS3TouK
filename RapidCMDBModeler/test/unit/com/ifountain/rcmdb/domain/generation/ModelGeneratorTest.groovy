@@ -11,6 +11,8 @@ import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.validation.ConstrainedPropertyBuilder
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.springframework.validation.Errors
+import com.ifountain.rcmdb.domain.AbstractDomainOperation
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -79,12 +81,18 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         def object = cls.newInstance();
         object.keyprop = "keypropvalue";
         checkExistanceOfMetaDataProperties(object);
+        assertNull (object.errors);
+        assertEquals (Errors.class, object.metaClass.getMetaProperty("errors").type);
+        assertNull (object["__operation_class__"]);
+        assertEquals (Object.class, object.metaClass.getMetaProperty("__operation_class__").type);
         assertEquals ("Class1[keyprop:keypropvalue]", object.toString());
         Closure searchable = object.searchable;
         ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
         searchable.setDelegate (closureGetter);
         searchable.call();
-        assertTrue(closureGetter.propertiesSetByClosure["except"].isEmpty());
+        assertEquals(2, closureGetter.propertiesSetByClosure["except"].size());
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("__operation_class__"));
 
         ModelGenerator.DEFAULT_IMPORTS.each {
             assertTrue(ModelGenerator.getInstance().getGeneratedModelFile(model.name).getText ().indexOf("import $it") >= 0);
@@ -170,8 +178,12 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
             searchable.setDelegate (closureGetter);
             searchable.call();
-            assertTrue(closureGetter.propertiesSetByClosure["except"].isEmpty());
-            assertTrue(object.transients.isEmpty());
+            assertEquals(2, closureGetter.propertiesSetByClosure["except"].size());
+            assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
+            assertTrue(closureGetter.propertiesSetByClosure["except"].contains("__operation_class__"));
+            assertEquals(2, object.transients.size());
+            assertTrue(object.transients.contains("errors"));
+            assertTrue(object.transients.contains("__operation_class__"));
 
             assertEquals("prop1 default value", object.prop1);
             assertEquals(1, object.prop2);
@@ -298,17 +310,21 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals("prop2", dsDefinition2.keys["prop2"].nameInDs);
 
         def transients = object.transients;
-        assertEquals (2, transients.size());
+        assertEquals (4, transients.size());
         assertTrue(transients.contains("prop3"));
         assertTrue(transients.contains("prop4"));
+        assertTrue(transients.contains("errors"));
+        assertTrue(transients.contains("__operation_class__"));
 
         Closure searchable = object.searchable;
         ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
         searchable.setDelegate (closureGetter);
         searchable.call();
-        assertEquals(2, closureGetter.propertiesSetByClosure["except"].size());
+        assertEquals(4, closureGetter.propertiesSetByClosure["except"].size());
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop3"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop4"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("__operation_class__"));
 
         def propertyConfiguration = object.propertyConfiguration;
 
@@ -569,7 +585,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue(object.propertyConfiguration instanceof Map);
         assertTrue(object.propertyConfiguration.isEmpty());
         assertTrue(object.transients instanceof List);
-        assertTrue(object.transients.isEmpty());
+        assertTrue(object.transients.contains("errors"));
+        assertTrue(object.transients.contains("__operation_class__"));
         assertTrue(object.hasMany instanceof Map);
         assertTrue(object.hasMany.isEmpty());
         assertTrue(object.belongsTo instanceof List);

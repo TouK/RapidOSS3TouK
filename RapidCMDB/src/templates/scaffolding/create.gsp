@@ -30,7 +30,7 @@
                 <tbody>
                     <%
 
-                        excludedProps = ['version',
+                        excludedProps = ['version','errors', '__operation_class__',
                                 'id',
                                 Events.ONLOAD_EVENT,
                                 Events.BEFORE_DELETE_EVENT,

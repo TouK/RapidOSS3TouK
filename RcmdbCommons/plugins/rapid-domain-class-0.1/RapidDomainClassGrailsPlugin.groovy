@@ -14,9 +14,13 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.commons.metaclass.WeakGenericDynamicProperty
 import org.codehaus.groovy.grails.commons.metaclass.FunctionCallback
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.Errors
+import java.lang.reflect.Field
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
+    public static final String OPERATION_PROP_NAME = "__operation_class__";
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def version = 0.1
     def loadAfter = ['searchable-extension']
@@ -67,79 +71,120 @@ class RapidDomainClassGrailsPlugin {
         return metaProp != null;
     }
 
-
+    def addErrorsSupport(GrailsDomainClass dc, application, ctx)
+    {
+        def mc = dc.metaClass;
+        try
+        {
+        	Field errField = mc.theClass.getDeclaredField("errors");
+            errField.setAccessible (true);
+            mc.hasErrors = {-> delegate.errors?.hasErrors() }
+	        mc.getErrors = {->
+	            def errors = errField.get(delegate);
+	            if(errors == null)
+	            {
+	            	errors = new BeanPropertyBindingResult(delegate, delegate.getClass().getName());
+	            	delegate.setErrors(errors);
+	            }
+	            return errors;
+	       }
+	        mc.setErrors = { Errors errors ->
+	            errField.set(delegate, errors);
+	        }
+	        mc.clearErrors = {->
+	            delegate.setErrors (new BeanPropertyBindingResult(delegate, delegate.getClass().getName()))
+	        }
+        }
+        catch(java.lang.NoSuchFieldException ex)
+        {
+        }
+    }
     def addOperationsSupport(GrailsDomainClass dc, application, ctx)
     {
         def mc = dc.metaClass;
-        DomainOperationProperty operationProperty = new DomainOperationProperty()
-        mc.addMetaBeanProperty (operationProperty)
-        def operationClassName = dc.name + "Operations";
-        mc.methodMissing =  {String name, args ->
-        	delegate.methodMissing(name, args, true);
-        }
-        mc.methodMissing =  {String name, args, willDelagateToOperation ->
-        	if(willDelagateToOperation)
-        	{
-	            def oprInstance = operationProperty.getProperty(delegate);
-	            if(oprInstance)
-	            {
-	                try {
-	                    return oprInstance.invokeMethod(name, args)
-	                } catch (MissingMethodException e) {
-	                    if(e.getType().name != oprInstance.class.name)
-	                    {
-	                        throw e;
-	                    }
-	                }
-	            }
-            }
-            throw new MissingMethodException (name,  delegate.class, args);
-        }
-        mc.'static'.reloadOperations = {
-            mc.invokeStaticMethod (dc.clazz, "reloadOperations", true);
-        }
-        mc.'static'.reloadOperations = {reloadSubclasses->
-            def opClassLoader = new GroovyClassLoader(dc.clazz.classLoader);
-            opClassLoader.addClasspath ("${System.getProperty("base.dir")}/operations");
-            try
-            {
-                def oprClass = opClassLoader.loadClass (operationClassName);
-                if(reloadSubclasses != false )
+        try
+        {
+            mc.theClass.getDeclaredField(OPERATION_PROP_NAME);
+            def operationClassName = dc.name + "Operations";
+            Class operationClass = null;
+            def operationMethods = [:]
+            mc.methodMissing =  {String name, args ->
+                if(operationClass != null)
                 {
-                    def lastObjectNeedsToBeReloaded = null;
-                    try
+                    if(operationMethods.containsKey(name))
                     {
-                        dc.getSubClasses().each{subDomainObject->
-                            lastObjectNeedsToBeReloaded = subDomainObject.name;
-                            subDomainObject.metaClass.invokeStaticMethod (subDomainObject.clazz, "reloadOperations", false);
+                        def oprInstance = delegate[OPERATION_PROP_NAME];
+                        if(oprInstance == null)
+                        {
+                            oprInstance = operationClass.newInstance() ;
+                            operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
+                        }
+                        try {
+                            return oprInstance.invokeMethod(name, args)
+                        } catch (MissingMethodException e) {
+                            if(e.getType().name != oprInstance.class.name)
+                            {
+                                throw e;
+                            }
                         }
                     }
-                    catch(t)
-                    {
-                        logger.info("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading.", t);
-                        throw new RuntimeException("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading. Reason:${t.toString()}", t)
-                    }
                 }
-                operationProperty.operationClass = oprClass;
+                throw new MissingMethodException (name,  delegate.class, args);
             }
-            catch(java.lang.ClassNotFoundException classNotFound)
+            mc.'static'.reloadOperations = {
+                mc.invokeStaticMethod (dc.clazz, "reloadOperations", true);
+            }
+            mc.'static'.reloadOperations = {reloadSubclasses->
+                def opClassLoader = new GroovyClassLoader(dc.clazz.classLoader);
+                opClassLoader.addClasspath ("${System.getProperty("base.dir")}/operations");
+                try
+                {
+                    def oprClass = opClassLoader.loadClass (operationClassName);
+                    if(reloadSubclasses != false )
+                    {
+                        def lastObjectNeedsToBeReloaded = null;
+                        try
+                        {
+                            dc.getSubClasses().each{subDomainObject->
+                                lastObjectNeedsToBeReloaded = subDomainObject.name;
+                                subDomainObject.metaClass.invokeStaticMethod (subDomainObject.clazz, "reloadOperations", false);
+                            }
+                        }
+                        catch(t)
+                        {
+                            logger.info("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading.", t);
+                            throw new RuntimeException("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading. Reason:${t.toString()}", t)
+                        }
+                    }
+                    operationMethods.clear();
+                    operationClass = oprClass;
+                    operationClass.metaClass.methods.each{
+                        operationMethods[it.name] = it.name;
+                    };
+                }
+                catch(java.lang.ClassNotFoundException classNotFound)
+                {
+                    logger.info("${operationClassName} file does not exist.");
+                    throw new FileNotFoundException("${System.getProperty("base.dir")}/operations/${operationClassName}.groovy", null);
+                }
+                catch(t)
+                {
+                    logger.info("Error occurred while reloading operation ${operationClassName}", t);
+                    throw t;
+                }
+            }
+
+            try
             {
-                logger.info("${operationClassName} file does not exist.");
-                throw new FileNotFoundException("${System.getProperty("base.dir")}/operations/${operationClassName}.groovy", null);
+                mc.invokeStaticMethod (dc.clazz, "reloadOperations", false);
             }
             catch(t)
             {
-                logger.info("Error occurred while reloading operation ${operationClassName}", t);
-                throw t;
             }
         }
+        catch(NoSuchFieldException  ex)
+        {
 
-        try
-        {
-            mc.invokeStaticMethod (dc.clazz, "reloadOperations", false);
-        }
-        catch(t)
-        {
         }
     }
 
@@ -169,6 +214,7 @@ class RapidDomainClassGrailsPlugin {
     def registerDynamicMethods(dc, application, ctx)
     {
         def mc = dc.clazz.metaClass;
+        addErrorsSupport(dc, application, ctx)
         addOperationsSupport(dc, application, ctx)
         addUtilityMetods (dc, application, ctx)
         addPropertyGetAndSetMethods(dc);
@@ -183,8 +229,10 @@ class RapidDomainClassGrailsPlugin {
 
     def addPropertyGetAndSetMethods(GrailsDomainClass dc)
     {
+
         def relations = DomainClassUtils.getRelations(dc);
         MetaClass mc = dc.metaClass
+        def hasOperationProp = GrailsClassUtils.getProperty(mc.theClass, OPERATION_PROP_NAME, AbstractDomainOperation) != null
         def propConfigCache = new PropertyConfigurationCache(dc);
         def dsConfigCache = new DatasourceConfigurationCache(dc);
         def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
@@ -197,7 +245,11 @@ class RapidDomainClassGrailsPlugin {
         }
 
         mc.setProperty = {String name, Object value, boolean flush->
-            def operation = delegate.__InternalGetProperty__(DomainOperationProperty.PROP_NAME);
+            def operation = null
+            if(hasOperationProp)
+            {
+                operation = delegate.__InternalGetProperty__(OPERATION_PROP_NAME);
+            }
             if(!operation)
             {
                 delegate.__InternalSetProperty__(name, value);
@@ -219,7 +271,11 @@ class RapidDomainClassGrailsPlugin {
             }
         }
         mc.getProperty = {String name->
-            def operation = delegate.__InternalGetProperty__(DomainOperationProperty.PROP_NAME);
+            def operation = null
+            if(hasOperationProp)
+            {
+                operation = delegate.__InternalGetProperty__(OPERATION_PROP_NAME);
+            }
             if(!operation)
             {
                 return delegate.__InternalGetProperty__(name);
@@ -353,36 +409,4 @@ class DatasourceProperty extends MetaBeanProperty implements FunctionCallback
 
     public void setProperty(Object o, Object o1) {
     }
-}
-
-class DomainOperationProperty extends MetaBeanProperty  implements FunctionCallback
-{
-    WeakGenericDynamicProperty dynamicProp;
-    Class operationClass;
-    public static final String PROP_NAME = "__operation_class__";
-    public DomainOperationProperty() {
-        super(PROP_NAME, AbstractDomainOperation,null,null); //To change body of overridden methods use File | Settings | File Templates.
-        dynamicProp = new WeakGenericDynamicProperty(PROP_NAME, AbstractDomainOperation, this, false)
-    }
-
-    public Object execute(Object object) {
-        def operation = operationClass.newInstance() ;
-        operationClass.metaClass.getMetaProperty("domainObject").setProperty(operation, object);
-        return operation;
-    }
-    public Object getProperty(Object o) {
-        if(operationClass)
-        {
-            return dynamicProp.get(o)
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public void setProperty(Object o, Object o1)
-    {
-    }
-
 }

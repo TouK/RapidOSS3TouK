@@ -6,6 +6,7 @@ import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import groovy.text.SimpleTemplateEngine
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import groovy.util.slurpersupport.GPathResult
+import org.springframework.validation.Errors
 
 class ModelGenerator 
 {
@@ -234,6 +235,13 @@ class ModelMetaData
             }
             constraints[masterKeyPropName][KeyConstraint.KEY_CONSTRAINT] = uniqueKeys;
         }
+
+        propertyList += [type:Errors.name, name:"errors"];
+        propertyList += [type:Object.name, name:"__operation_class__"];
+        constraints["__operation_class__"] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
+        constraints["errors"] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
+        transientProps += "errors";
+        transientProps += "__operation_class__";
     }
 
     private def processRelation(cardinality, oppositeCardinality, name, oppositeName, oppositeType, isOwner)

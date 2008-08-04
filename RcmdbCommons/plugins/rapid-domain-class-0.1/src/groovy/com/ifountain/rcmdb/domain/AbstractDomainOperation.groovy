@@ -1,5 +1,8 @@
 package com.ifountain.rcmdb.domain
 
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import org.codehaus.groovy.runtime.InvokerHelper
+
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -59,7 +62,18 @@ abstract class AbstractDomainOperation {
 
     public Object methodMissing(String methodName, Object args)
     {
-    	domainObject.methodMissing(methodName, args, false);
+        def argsInList = InvokerHelper.asList(args)
+        def types = [];
+        argsInList.each{
+            types += it.class;
+        }
+        if(domainObject.metaClass.getMetaMethod(methodName, types as Object[]) != null)
+        {
+            return domainObject.invokeMethod(methodName, args);
+        }
+
+        throw new MissingMethodException (methodName,  this.class, args); 
+
     }
 
 }

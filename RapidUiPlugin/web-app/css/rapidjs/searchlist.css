@@ -39,27 +39,22 @@
 
 
 .rcmdb-search-row-headermenu {
-    background-image: url(../../images/rapidjs/component/tools/arrow_contextMenu.png);
+    background-image: url(../../images/rapidjs/component/searchlist/default.png);
     background-repeat: no-repeat;
-    height: 15px;
+    height: 100%;
     overflow: hidden;
-    width: 15px;
+    width: 19px;
     z-index: 1;
     cursor:pointer;
 }
-
-.rcmdb-search-row-headerimage{
-    background-repeat: no-repeat;
-    background-position:center;
-    height: 19px;
-    overflow: hidden;
-    width: 19px;
+.rcmdb-search-row-menupos{
+	font-size:17px;
 }
 
 .rcmdb-search-rowdata {
     border-color: #DDDDDD;
     display:block;
-    padding-left:20px;
+    padding-left:10px;
     position: relative;
     top:0px;
     color:#999999;
@@ -103,6 +98,28 @@
     top: 0;
     left: 0;
     background: #eeeeee;
+}
+
+.rcmdb-search-mask-loadingwrp{
+	position:absolute;
+	left:45%;
+	top:40%;
+	border:3px solid #B2D0F7;
+	padding:10px;
+	font:bold 14px verdana,tahoma,helvetica;
+	color:#003366;
+	width:150px;
+	text-align:center;
+	z-index: 30000;
+}
+.rcmdb-search-mask-loading{
+	background-image: url(../../images/rapidjs/component/tools/loading.gif );
+	background-repeat: no-repeat;
+    background-position:top left;
+    padding-left:20px;
+	height:18px;
+	text-align:left;
+	font-size:8pt;
 }
 
 .rcmdb-search-box{

@@ -189,7 +189,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.bufferPos = dh.append(this.scrollPos.dom, {tag:'div'}, true);
         this.bufferView = dh.append(this.scrollPos.dom, {tag:'div'}, true);
         this.bufferView.rowEls = [];
-        this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask', html:'Loading..', style:'text-align:center;'}, true);
+        this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask',
+        	html:'<div class="rcmdb-search-mask-loadingwrp"><div class="rcmdb-search-mask-loading">Loading...</div></div>', style:'text-align:center;'}, true);
         this.hideMask();
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('button')[0], 'click', this.handleSearchClick, this, true);
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleInputEnter, this, true);
@@ -395,8 +396,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             innerHtml = innerHtml.substring(0, innerHtml.length - 9) + '</div>';
         }
         for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-            var rowHtml = '<table><tr>' + (this.images ? '<td width="0%"><div class="rcmdb-search-row-headerimage"></div></td>' : '') +
-                          '<td width="0%"><div class="rcmdb-search-row-headermenu"></div></td>' +
+            var rowHtml = '<table style="height:100%"><tr>'+
+                          '<td width="0%"><div class="rcmdb-search-row-headermenu"><span class="rcmdb-search-row-menupos">&nbsp;</span></div></td>' +
                           '<td width="100%">';
             if (this.rowHeaderAttribute != null)
             {
@@ -430,7 +431,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                     if (evaluationResult == true)
                     {
                         var imageSrc = this.images[i]['src'];
-                        YAHOO.util.Dom.getElementsByClassName('rcmdb-search-row-headerimage', 'div', rowEl.dom)[0].style.backgroundImage = 'url("' + imageSrc + '")';
+                        YAHOO.util.Dom.getElementsByClassName('rcmdb-search-row-headermenu', 'div', rowEl.dom)[0].style.backgroundImage = 'url("' + imageSrc + '")';
                     }
                 }
             }
@@ -459,7 +460,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         if (row) {
             if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-row-headermenu')) {
                 this.rowHeaderMenu.row = row;
-                this.rowHeaderMenu.cfg.setProperty("context", [target, 'tl', 'bl']);
+                this.rowHeaderMenu.cfg.setProperty("context", [target.firstChild, 'tl', 'bl']);
                 var searchNode = this.searchData[row.rowIndex - this.lastOffset];
                 var dataNode = searchNode.xmlData;
                 var index = 0;

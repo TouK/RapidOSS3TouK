@@ -1,6 +1,6 @@
 .r-buttontoolbar {
-    background: transparent url( ../../../js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -2000px;
-    border-bottom: 1px solid #CFCFCF;
+    background: transparent url( ../../../images/rapidjs/component/tools/toolbar.gif ) repeat-x scroll;
+    border-bottom: 1px solid #BFDAFF;
     color: black;
     position: relative;
     height: 22px;

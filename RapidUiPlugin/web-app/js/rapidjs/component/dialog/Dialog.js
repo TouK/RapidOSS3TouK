@@ -11,6 +11,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
     {
         var dh = YAHOO.ext.DomHelper;
         this.container = dh.append(document.body, {tag: 'div', cls:'resizable-panel'});
+        YAHOO.util.Dom.generateId(this.container, 'r-dialog-')
         this.body = dh.append(document.body, {tag: 'div', cls:'resizable-panel-body'});
         this.footer = dh.append(document.body, {tag: 'div', cls:'resizable-panel-footer'});
             // Create a panel Instance, from the 'resizablepanel' DIV standard module markup

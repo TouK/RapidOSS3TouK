@@ -142,7 +142,7 @@
     }, this, true);
 
 
-    var conf = {width:400, height:400, iframe:false};
+    var conf = {width:500, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
     html.hide();
     var actionConfig = {url:'searchQuery/delete.xml'}
@@ -418,9 +418,9 @@
             if (data.getAttribute("nodeType") == "filter")
                 dialog.show(dialog.EDIT_MODE, {id:data.getAttribute("id")})
             else if(data.getAttribute("nodeType") == "group"){
+                groupDialog.show(groupDialog.EDIT_MODE)
                 groupDialog.dialog.form.name.value = data.getAttribute("name")
                 groupDialog.dialog.form.id.value = data.getAttribute("id")
-                groupDialog.show(groupDialog.EDIT_MODE)
             }
 
         }

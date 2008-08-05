@@ -14,8 +14,7 @@ class NetcoolConnectionController {
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 
     def list = {
-        if (!params.max) params.max = 10
-        [netcoolConnectionList: NetcoolConnection.list(params)]
+        redirect(uri:'/admin.gsp');
     }
 
     def show = {

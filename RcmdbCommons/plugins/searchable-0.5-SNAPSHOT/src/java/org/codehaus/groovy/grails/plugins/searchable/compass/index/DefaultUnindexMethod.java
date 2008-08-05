@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import groovy.lang.GString;
-
 /*
     unindexAll()
 
@@ -68,16 +66,9 @@ public class DefaultUnindexMethod extends AbstractDefaultIndexMethod implements 
         this(methodName, compass, new HashMap());
     }
 
-    protected String getQuery(Object[] args) {
-        if (args == null || args.length != 1 || !(args[0] instanceof String || args[0] instanceof GString)) return null;
-        return args[0].toString();
-
-    }
-
     public Object invoke(final Object[] args) {
         Map options = SearchableMethodUtils.getOptionsArgument(args, getDefaultOptions());
         final Class clazz = (Class) options.get("class");
-        final String queryString = getQuery(args);
         final List ids = getIds(args);
         final List objects = getObjects(args);
 
@@ -93,22 +84,11 @@ public class DefaultUnindexMethod extends AbstractDefaultIndexMethod implements 
                 }
                 CompassQuery query = null;
                 CompassQueryBuilder queryBuilder = session.queryBuilder();
-                if(queryString != null)
-                {
-                    query = queryBuilder.queryString(queryString).toQuery();
-                    if (clazz != null)
-                    {
-                        query.setTypes(new Class[] {clazz});   
-                    }
+                if (args.length == 0) {
+                    query = queryBuilder.matchAll();
                 }
-                else
-                {
-                    if (args.length == 0) {
-                        query = queryBuilder.matchAll();
-                    }
-                    if (clazz != null && ids.isEmpty()) {
-                        query = queryBuilder.matchAll().setTypes(new Class[] {clazz});
-                    }
+                if (clazz != null && ids.isEmpty()) {
+                    query = queryBuilder.matchAll().setTypes(new Class[] {clazz});
                 }
                 if (query != null) {
                     session.delete(query);

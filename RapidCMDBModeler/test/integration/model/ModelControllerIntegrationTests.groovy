@@ -96,20 +96,6 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals("/model/list", mdc.response.redirectedUrl);
     }
 
-    public void testReturnsErrorIfModelHasChildModels() {
-        Model parentModel = createSimpleModel(modelName);
-        Model childModel = createSimpleModel(modelName2);
-        childModel.addRelation(parentModel:parentModel);
-        def mdc = new ModelController();
-        mdc.params["id"] = parentModel.id;
-        mdc.delete();
-
-        assertNotNull(Model.findByName(parentModel.name));
-        assertEquals("/model/show/" + parentModel.id, mdc.response.redirectedUrl);
-        assertEquals(1, mdc.flash.errors.size());
-    }
-
-
     void testGenerateModel() {
         Model model = createSimpleModel(modelName);
         def mdc = new ModelController();

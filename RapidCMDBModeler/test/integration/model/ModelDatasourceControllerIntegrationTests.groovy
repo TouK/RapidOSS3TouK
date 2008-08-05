@@ -54,7 +54,9 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
         def datasource = DatasourceName.add(name: "RCMDB");
         def mdc = new ModelDatasourceController();
         mdc.params["datasource.id"] = datasource.id;
+        mdc.params["datasource"] = ["id": "" + datasource.id];
         mdc.params["model.id"] = model.id;
+        mdc.params["model"] = ["id": "" + model.id];
         mdc.save();
         def modelDatasources = ModelDatasource.list();
         assertEquals(1, modelDatasources.size());
@@ -78,7 +80,9 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
         def datasource = DatasourceName.add(name: "RCMDB");
         def mdc = new ModelDatasourceController();
         mdc.params["datasource.id"] = datasource.id;
+        mdc.params["datasource"] = ["id": "" + datasource.id];
         mdc.params["model.id"] = model.id;
+        mdc.params["model"] = ["id": "" + model.id];
         mdc.save();
         def modelDatasources = ModelDatasource.list();
         assertEquals(1, modelDatasources.size());

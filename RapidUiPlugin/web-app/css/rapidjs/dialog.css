@@ -10,15 +10,12 @@
     height:10em;
     background-color:#fff;
 }
+
 .resizable-panel-footer {
     height:15px;
     padding:0;
 }
-.panel-footer {
-	border-top:medium none;
-	text-align:right;
 
-}
 .resizable-panel .yui-resize-handle-br {
     right:0;
     bottom:0;
@@ -26,5 +23,9 @@
     width: 8px;
     position:absolute;
 }
+
+
+
+
 
 

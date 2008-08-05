@@ -36,7 +36,16 @@ class PlatformController
                 platforms.each { res ->
                     def plat = plats.getAt(i)
                     def p = pMan.findPlatformById(res.instanceId)
-                    xml.platform('id':p.id, 'name': p.name, 'ip':p.fqdn) {
+                    def last_timestamp = 0
+                    for (metric in plat.enabledMetrics) {
+                        if (metric.template.name == "Availability") {
+                        	if (metric.lastDataPoint != null)
+                        		last_timestamp = metric.lastDataPoint.timestamp
+                        	break;
+                        }
+                    }
+                    
+                    xml.platform('id':p.id, 'name': p.name, 'ip':p.fqdn, 'last_timestamp': last_timestamp) {
                         for (metric in plat.enabledMetrics) {
                             def metricData = metric.lastDataPoint
                             xml.'metric'('name': metric.template.name,
@@ -76,7 +85,15 @@ class PlatformController
             xml.'Platforms'() {
                 if (platform != null) {
                     def p = pMan.findPlatformById(plat.instanceId)
-                    xml.platform('id':p.id, 'name': p.name, 'ip':p.fqdn) {
+                    def last_timestamp = 0
+                    for (metric in plat.enabledMetrics) {
+                        if (metric.template.name == "Availability") {
+                        	if (metric.lastDataPoint != null)
+                        		last_timestamp = metric.lastDataPoint.timestamp
+                        	break;
+                        }
+                    }
+                    xml.platform('id':p.id, 'name': p.name, 'ip':p.fqdn, 'last_timestamp': last_timestamp) {
                         for (metric in plat.enabledMetrics) {
                             def metricData = metric.lastDataPoint
                             xml.'metric'('name': metric.template.name,
@@ -88,6 +105,6 @@ class PlatformController
                 }
             }
         }
-       xml
+        xml
     }
 }

@@ -66,7 +66,15 @@ class ServiceController
                         }
 
                         //sMan2.getServerResourceValue 
-                        xml.service(name: svc.name, id: svc.id, server: serverName, platform: platName) {
+                        def last_timestamp = 0
+                        for (metric in svc.enabledMetrics) {
+                            if (metric.template.name == "Availability") {
+                            	if (metric.lastDataPoint != null)
+                            		last_timestamp = metric.lastDataPoint.timestamp
+                            	break;
+                            }
+                        }
+                        xml.service(name: svc.name, id: svc.id, server: serverName, platform: platName, last_timestamp: last_timestamp) {
                             for (metric in svc.enabledMetrics) {
                                 def metricData = metric.lastDataPoint
                                 if (metricData == null) {
@@ -126,7 +134,16 @@ class ServiceController
                         catch (PlatformNotFoundException pe) {
                             platName = ""
                         }
-                        xml.service(name: svc.name, id: svc.id, server: serverName, platform: platName) {
+                        def last_timestamp = 0
+                        for (metric in svc.enabledMetrics) {
+                            if (metric.template.name == "Availability") {
+                            	if (metric.lastDataPoint != null)
+                            		last_timestamp = metric.lastDataPoint.timestamp
+                            	break;
+                            }
+                        }
+                        
+                        xml.service(name: svc.name, id: svc.id, server: serverName, platform: platName, last_timestamp: last_timestamp) {
                             for (metric in svc.enabledMetrics) {
                                 def metricData = metric.lastDataPoint
                                 if (metricData == null)

@@ -55,7 +55,15 @@ class ServerController
                             platName = ""
                         }
 
-                        xml.server(name: ss.name, id: ss.id, platform: platName) {
+                        def last_timestamp = 0
+                        for (metric in ss.enabledMetrics) {
+                            if (metric.template.name == "Availability") {
+                            	if (metric.lastDataPoint != null)
+                            		last_timestamp = metric.lastDataPoint.timestamp
+                            	break;
+                            }
+                        }
+                        xml.server(name: ss.name, id: ss.id, platform: platName, last_timestamp: last_timestamp) {
                             for (metric in ss.enabledMetrics) {
                                 def metricData = metric.lastDataPoint
                                 if (metricData == null)
@@ -113,7 +121,15 @@ class ServerController
                             platName = "nur"
                         }
 
-                        xml.server(name: s.name, id: s.id, platform: platName) {
+                        def last_timestamp = 0
+                        for (metric in s.enabledMetrics) {
+                            if (metric.template.name == "Availability") {
+                            	if (metric.lastDataPoint != null)
+                            		last_timestamp = metric.lastDataPoint.timestamp
+                            	break;
+                            }
+                        }
+                        xml.server(name: s.name, id: s.id, platform: platName, last_timestamp) {
                             for (metric in s.enabledMetrics) {
                                 def metricData = metric.lastDataPoint
                                 if (metricData == null)

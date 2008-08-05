@@ -32,12 +32,29 @@
                 <g:renderErrors bean="${flash.errors}"/>
             </div>
         </g:hasErrors>
-        <ul style="margin-left:25px;">
+        <p></p>
+        RapidInsight for Netcool comes with a default model for NetcoolEvent and NetcoolJournal that defines the properties of each event object. 
+        Netcool utilizes conversion tables to use different values while storing and displaying values for some properties. 
+        RapidInsight for Netcool allows you to synchronize the configuration data (such as the properties and their conversions) with your Netcool server.
+        <p></p>
+        <ol style="margin-left:25px;">
             <li class="controller"><g:link controller="script" action="run" id="NetcoolColumnMapping">Import Netcool Columns</g:link></li>
-            <li class="controller"><g:link controller="script" action="run" id="NetcoolConfigurationLoader">Create RapidCMDB Models</g:link></li>
+            <p></p>
+            Retrieves the column (property) information for the events and journals from the Netcool server. 
+            When this action is executed, the columns for the event and journal tables will be retrieved and saved into the RS_HOME/RapidSuite/grails-app/conf/NetcoolFieldConfiguration.xml file. 
+            This will be used as an input by the next step, event model creation. The XML file shows all the properties supported by your Netcool server. 
+            You can remove properties from this file before modifying the model. 
+            <p></p> 
+            <li class="controller"><g:link controller="script" action="run" id="NetcoolConfigurationLoader">Create Event and Journal Models</g:link></li>
+            <p></p>
+            Overwrites the default event model with the new one. This process uses the edited XML file (RS_HOME/RapidSuite/grails-app/conf/NetcoolFieldConfiguration.xm) 
+            as the input. RapidInsight for Netcool will generate all necessary files to update the Event and Journal models.
+            <p></p>
             <li class="controller"><g:link controller="application" action="reload" params="['targetURI':'/synchronize.gsp']">Reload Application</g:link></li>
-
-        </ul>
+			<p></p>
+			Restarts the RapidInsight for Netcool application to deploy the new model files. As the final step, reload the application for the model changes to take effect.
+			<p></p>
+        </ol>
     </div>
 </div>
 </body>

@@ -193,6 +193,11 @@ class BootStrap {
                 break;
             }
         }
+
+        if(!SingleCompassSessionManager.isClosedLastSession())
+        {
+            SingleCompassSessionManager.forceCloseSession();
+        }
     }
 
 }

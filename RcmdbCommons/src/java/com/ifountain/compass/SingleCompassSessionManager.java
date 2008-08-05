@@ -170,6 +170,18 @@ public class SingleCompassSessionManager {
             isDestroyed = true;
         }
     }
+
+    public static void forceCloseSession()
+    {
+        synchronized (sessionLock)
+        {
+            if(compassSessionInstance != null && !compassSessionInstance.isClosed())
+            {
+                compassTransactionInstance.commit();
+                compassSessionInstance.close();       
+            }
+        }
+    }
     public static boolean isClosedLastSession()
     {
         synchronized (sessionLock)

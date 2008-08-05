@@ -23,9 +23,8 @@
     width: 8px;
     position:absolute;
 }
+.resizable-panel-button-footer{
+	border-top:medium none;
+	text-align:right;
 
-
-
-
-
-
+}

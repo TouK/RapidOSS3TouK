@@ -6,6 +6,7 @@ import org.apache.commons.beanutils.ConversionException
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -120,7 +121,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
         }
         else
         {
-            domainObject.setProperty("errors", errors, false);
+            domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
         }
         return domainObject;
     }

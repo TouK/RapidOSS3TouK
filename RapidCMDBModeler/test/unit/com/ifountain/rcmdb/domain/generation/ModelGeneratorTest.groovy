@@ -83,8 +83,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         checkExistanceOfMetaDataProperties(object);
         assertNull (object.errors);
         assertEquals (Errors.class, object.metaClass.getMetaProperty("errors").type);
-        assertNull (object["__operation_class__"]);
-        assertEquals (Object.class, object.metaClass.getMetaProperty("__operation_class__").type);
+        assertNull (object[com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME]);
+        assertEquals (Object.class, object.metaClass.getMetaProperty(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME).type);
         assertEquals ("Class1[keyprop:keypropvalue]", object.toString());
         Closure searchable = object.searchable;
         ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
@@ -92,7 +92,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         searchable.call();
         assertEquals(2, closureGetter.propertiesSetByClosure["except"].size());
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
-        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("__operation_class__"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
 
         ModelGenerator.DEFAULT_IMPORTS.each {
             assertTrue(ModelGenerator.getInstance().getGeneratedModelFile(model.name).getText ().indexOf("import $it") >= 0);
@@ -180,10 +180,10 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             searchable.call();
             assertEquals(2, closureGetter.propertiesSetByClosure["except"].size());
             assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
-            assertTrue(closureGetter.propertiesSetByClosure["except"].contains("__operation_class__"));
+            assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
             assertEquals(2, object.transients.size());
             assertTrue(object.transients.contains("errors"));
-            assertTrue(object.transients.contains("__operation_class__"));
+            assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
 
             assertEquals("prop1 default value", object.prop1);
             assertEquals(1, object.prop2);
@@ -318,7 +318,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue(transients.contains("prop3"));
         assertTrue(transients.contains("prop4"));
         assertTrue(transients.contains("errors"));
-        assertTrue(transients.contains("__operation_class__"));
+        assertTrue(transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
 
         Closure searchable = object.searchable;
         ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
@@ -328,7 +328,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop3"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop4"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
-        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("__operation_class__"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
 
         def propertyConfiguration = object.propertyConfiguration;
 
@@ -590,7 +590,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue(object.propertyConfiguration.isEmpty());
         assertTrue(object.transients instanceof List);
         assertTrue(object.transients.contains("errors"));
-        assertTrue(object.transients.contains("__operation_class__"));
+        assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
         assertTrue(object.hasMany instanceof Map);
         assertTrue(object.hasMany.isEmpty());
         assertTrue(object.belongsTo instanceof List);

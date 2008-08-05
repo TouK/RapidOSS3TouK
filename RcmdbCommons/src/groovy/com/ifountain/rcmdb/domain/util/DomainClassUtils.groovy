@@ -7,6 +7,7 @@ import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.ObjectError
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -63,33 +64,36 @@ class DomainClassUtils
         def hasMany = getStaticMapVariable(dc, "hasMany");
         def cascadedObjects = getStaticMapVariable(dc, "cascaded");
         domainObjectProperties.each{GrailsDomainClassProperty prop->
-            boolean isRel = prop.isAssociation() || hasMany.containsKey(prop.name);
-            if(isRel)
+            if(prop.name != RapidCMDBConstants.ERRORS_PROPERTY_NAME && prop.name != RapidCMDBConstants.OPERATION_PROPERTY_NAME)
             {
-                def relationName = prop.name;
-                def otherSideName = prop.getOtherSide()?prop.getOtherSide().name:null;
-                def isCascaded = cascadedObjects[relationName] == true;
-                def otherSideClass = prop.getReferencedPropertyType();
-                def relType;
-                if(prop.isManyToMany())
+                boolean isRel = prop.isAssociation() || hasMany.containsKey(prop.name);
+                if(isRel)
                 {
-                    relType = Relation.MANY_TO_MANY
+                    def relationName = prop.name;
+                    def otherSideName = prop.getOtherSide()?prop.getOtherSide().name:null;
+                    def isCascaded = cascadedObjects[relationName] == true;
+                    def otherSideClass = prop.getReferencedPropertyType();
+                    def relType;
+                    if(prop.isManyToMany())
+                    {
+                        relType = Relation.MANY_TO_MANY
+                    }
+                    else if(prop.isOneToMany())
+                    {
+                        relType = Relation.ONE_TO_MANY
+                    }
+                    else if(prop.isManyToOne())
+                    {
+                        relType = Relation.MANY_TO_ONE
+                    }
+                    else
+                    {
+                        relType = Relation.ONE_TO_ONE;
+                    }
+                    def rel = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
+                    rel.isCascade = isCascaded;
+                    allRelations[relationName] = rel;
                 }
-                else if(prop.isOneToMany())
-                {
-                    relType = Relation.ONE_TO_MANY
-                }
-                else if(prop.isManyToOne())
-                {
-                    relType = Relation.MANY_TO_ONE
-                }
-                else
-                {
-                    relType = Relation.ONE_TO_ONE;
-                }
-                def rel = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
-                rel.isCascade = isCascaded;
-                allRelations[relationName] = rel;
             }
         }
 
@@ -153,7 +157,7 @@ class DomainClassUtils
         BeanPropertyBindingResult errors = target.errors; 
         if(!errors){
             errors = new BeanPropertyBindingResult(target, target.getClass().getName());
-            target.metaClass.setProperty(target, "errors", errors);    
+            target.metaClass.setProperty(target, RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors);    
         }
         errors.addError(objectError);
     }

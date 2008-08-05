@@ -409,7 +409,9 @@
         <root url="file://$PROJECT_DIR$/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/lib" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://C:/Documents and Settings/Administrator/Desktop/compass-2.0.0/src/main/src" />
+      </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/searchable-0.5-SNAPSHOT/lib" recursive="false" />
     </library>

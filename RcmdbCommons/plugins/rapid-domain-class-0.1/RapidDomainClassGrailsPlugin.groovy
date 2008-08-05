@@ -20,7 +20,6 @@ import java.lang.reflect.Field
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
-    public static final String OPERATION_PROP_NAME = "__operation_class__";
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def version = 0.1
     def loadAfter = ['searchable-extension']
@@ -104,7 +103,7 @@ class RapidDomainClassGrailsPlugin {
         def mc = dc.metaClass;
         try
         {
-            mc.theClass.getDeclaredField(OPERATION_PROP_NAME);
+            mc.theClass.getDeclaredField(RapidCMDBConstants.OPERATION_PROPERTY_NAME);
             def operationClassName = dc.name + "Operations";
             Class operationClass = null;
             def operationMethods = [:]
@@ -113,7 +112,7 @@ class RapidDomainClassGrailsPlugin {
                 {
                     if(operationMethods.containsKey(name))
                     {
-                        def oprInstance = delegate[OPERATION_PROP_NAME];
+                        def oprInstance = delegate[RapidCMDBConstants.OPERATION_PROPERTY_NAME];
                         if(oprInstance == null)
                         {
                             oprInstance = operationClass.newInstance() ;
@@ -232,7 +231,7 @@ class RapidDomainClassGrailsPlugin {
 
         def relations = DomainClassUtils.getRelations(dc);
         MetaClass mc = dc.metaClass
-        def hasOperationProp = GrailsClassUtils.getProperty(mc.theClass, OPERATION_PROP_NAME, AbstractDomainOperation) != null
+        def hasOperationProp = GrailsClassUtils.getProperty(mc.theClass, RapidCMDBConstants.OPERATION_PROPERTY_NAME, AbstractDomainOperation) != null
         def propConfigCache = new PropertyConfigurationCache(dc);
         def dsConfigCache = new DatasourceConfigurationCache(dc);
         def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
@@ -248,7 +247,7 @@ class RapidDomainClassGrailsPlugin {
             def operation = null
             if(hasOperationProp)
             {
-                operation = delegate.__InternalGetProperty__(OPERATION_PROP_NAME);
+                operation = delegate.__InternalGetProperty__(RapidCMDBConstants.OPERATION_PROPERTY_NAME);
             }
             if(!operation)
             {
@@ -274,7 +273,7 @@ class RapidDomainClassGrailsPlugin {
             def operation = null
             if(hasOperationProp)
             {
-                operation = delegate.__InternalGetProperty__(OPERATION_PROP_NAME);
+                operation = delegate.__InternalGetProperty__(RapidCMDBConstants.OPERATION_PROPERTY_NAME);
             }
             if(!operation)
             {

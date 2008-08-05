@@ -245,12 +245,12 @@ class ModelMetaData
             constraints[masterKeyPropName][KeyConstraint.KEY_CONSTRAINT] = uniqueKeys;
         }
 
-        propertyList += [type:Errors.name, name:"errors"];
-        propertyList += [type:Object.name, name:"__operation_class__"];
-        constraints["__operation_class__"] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
-        constraints["errors"] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
-        transientProps += "errors";
-        transientProps += "__operation_class__";
+        propertyList += [type:Errors.name, name:com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME];
+        propertyList += [type:Object.name, name:com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME];
+        constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
+        constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
+        transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME;
+        transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME;
     }
 
     private def processRelation(cardinality, oppositeCardinality, name, oppositeName, oppositeType, isOwner)

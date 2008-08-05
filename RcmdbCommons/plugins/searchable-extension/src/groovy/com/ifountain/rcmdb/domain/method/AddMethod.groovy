@@ -8,6 +8,7 @@ import org.apache.commons.beanutils.ConversionException
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 class AddMethod extends AbstractRapidDomainStaticMethod
 {
@@ -86,14 +87,14 @@ class AddMethod extends AbstractRapidDomainStaticMethod
             relatedInstances = sampleBean.addRelation(relatedInstances, false);
         }
         if(errors.hasErrors()){
-            sampleBean.setProperty("errors", errors, false);
+            sampleBean.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
             return sampleBean;
         }
         validator.validate (sampleBean, errors)
 
         if(errors. hasErrors())
         {
-            sampleBean.setProperty("errors", errors, false);
+            sampleBean.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
         }
         else
         {

@@ -314,7 +314,7 @@
                             searchList.appendToQuery("severity:*");
 	 	  		}
  	  			else
-	            	searchList.appendToQuery(key + ":{" + value + " TO *} OR "+ key + ":" + value);
+	            	searchList.appendToQuery(key + ":[" + value + " TO *]");
 	        }
             else if (id == "lessThanOrEqualTo") {
 	        	if( key == "severity")
@@ -333,7 +333,7 @@
                         searchList.appendToQuery("severity: Clear");
                    }
  	  			else
-	            	searchList.appendToQuery(key + ":{* TO " + value + "} OR "+ key + ":" + value);
+	            	searchList.appendToQuery(key + ":[* TO " + value + "]");
 	        }
             else if (id == "lessThan") {
 	        	if( key == "severity")

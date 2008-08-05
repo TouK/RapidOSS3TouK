@@ -1,3 +1,6 @@
+import script.CmdbScript
+import connection.NetcoolConnection
+
 /**
  * Created by IntelliJ IDEA.
  * User: Administrator
@@ -7,3 +10,9 @@
  */
 NetcoolEvent.removeAll();
 NetcoolJournal.removeAll();
+NetcoolLastRecordIdentifier.removeAll();
+NetcoolConnection.list().each{
+    CmdbScript.deleteScript("Connector");
+    it.remove();
+}
+CmdbScript.get(name:"getConversionParameters")?.remove();

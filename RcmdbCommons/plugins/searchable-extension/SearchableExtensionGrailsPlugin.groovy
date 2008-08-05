@@ -160,6 +160,7 @@ class SearchableExtensionGrailsPlugin {
         dc.refreshConstraints();
         def keys = DomainClassUtils.getKeys(dc);
         def addMethod = new AddMethod(mc, dc.validator, relations, keys);
+        def removeAllMethod = new RemoveAllMethod(mc);
         def removeMethod = new RemoveMethod(mc, relations);
         def updateMethod = new UpdateMethod(mc, dc.validator, relations);
         def addRelationMethod = new AddRelationMethod(mc, relations);
@@ -182,6 +183,9 @@ class SearchableExtensionGrailsPlugin {
         }
         mc.remove = {->
             return removeMethod.invoke(delegate, null);
+        }
+        mc.'static'.removeAll = {->
+            removeAllMethod.invoke(mc.theClass, null);
         }
         mc.'static'.add = {Map props->
             return addMethod.invoke(mc.theClass, [props] as Object[]);

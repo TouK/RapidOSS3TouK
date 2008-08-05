@@ -62,7 +62,13 @@ shouldPackageTemplates=true
 target ('default': "Run's a Grails application in Jetty") {
     Ant.delete(dir : projectWorkDir);
     depends( checkVersion, configureProxy, packageApp )
-	runApp()
+    Runtime.getRuntime().addShutdownHook(new Thread({
+    	if(grailsServer != null)
+    	{
+    		grailsServer.stop();
+    	}
+    }));
+    runApp()
 	watchContext()
 }
 target ( runApp : "Main implementation that executes a Grails application") {

@@ -64,36 +64,33 @@ class DomainClassUtils
         def hasMany = getStaticMapVariable(dc, "hasMany");
         def cascadedObjects = getStaticMapVariable(dc, "cascaded");
         domainObjectProperties.each{GrailsDomainClassProperty prop->
-            if(prop.name != RapidCMDBConstants.ERRORS_PROPERTY_NAME && prop.name != RapidCMDBConstants.OPERATION_PROPERTY_NAME)
+            boolean isRel = prop.isAssociation() || hasMany.containsKey(prop.name);
+            if(isRel && prop.isPersistent())
             {
-                boolean isRel = prop.isAssociation() || hasMany.containsKey(prop.name);
-                if(isRel)
+                def relationName = prop.name;
+                def otherSideName = prop.getOtherSide()?prop.getOtherSide().name:null;
+                def isCascaded = cascadedObjects[relationName] == true;
+                def otherSideClass = prop.getReferencedPropertyType();
+                def relType;
+                if(prop.isManyToMany())
                 {
-                    def relationName = prop.name;
-                    def otherSideName = prop.getOtherSide()?prop.getOtherSide().name:null;
-                    def isCascaded = cascadedObjects[relationName] == true;
-                    def otherSideClass = prop.getReferencedPropertyType();
-                    def relType;
-                    if(prop.isManyToMany())
-                    {
-                        relType = Relation.MANY_TO_MANY
-                    }
-                    else if(prop.isOneToMany())
-                    {
-                        relType = Relation.ONE_TO_MANY
-                    }
-                    else if(prop.isManyToOne())
-                    {
-                        relType = Relation.MANY_TO_ONE
-                    }
-                    else
-                    {
-                        relType = Relation.ONE_TO_ONE;
-                    }
-                    def rel = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
-                    rel.isCascade = isCascaded;
-                    allRelations[relationName] = rel;
+                    relType = Relation.MANY_TO_MANY
                 }
+                else if(prop.isOneToMany())
+                {
+                    relType = Relation.ONE_TO_MANY
+                }
+                else if(prop.isManyToOne())
+                {
+                    relType = Relation.MANY_TO_ONE
+                }
+                else
+                {
+                    relType = Relation.ONE_TO_ONE;
+                }
+                def rel = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
+                rel.isCascade = isCascaded;
+                allRelations[relationName] = rel;
             }
         }
 

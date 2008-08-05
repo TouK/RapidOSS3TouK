@@ -1,5 +1,6 @@
 import script.CmdbScript
 import connection.NetcoolConnection
+import connector.NetcoolLastRecordIdentifier
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +13,11 @@ NetcoolEvent.removeAll();
 NetcoolJournal.removeAll();
 NetcoolLastRecordIdentifier.removeAll();
 NetcoolConnection.list().each{
-    CmdbScript.deleteScript("Connector");
+    def connectorScriptName = it.name+"Connector";
+    if(CmdbScript.get(name:connectorScriptName) != null)
+    {
+        CmdbScript.deleteScript(connectorScriptName);
+    }
     it.remove();
 }
 CmdbScript.get(name:"getConversionParameters")?.remove();

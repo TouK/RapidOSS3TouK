@@ -396,7 +396,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                           '<td width="100%">';
             if (this.rowHeaderAttribute != null)
             {
-                rowHtml += '<div class="rcmdb-search-rowheader"><a href="#" class="rcmdb-search-rowheader-value"></a></div>';
+                rowHtml += '<div class="rcmdb-search-rowheader"><a class="rcmdb-search-rowheader-value"></a></div>';
             }
             rowHtml += '<div class="rcmdb-search-rowdata">' + innerHtml + '</div>' +
                        '</td></tr></table>';

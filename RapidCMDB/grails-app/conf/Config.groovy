@@ -51,7 +51,7 @@ environments {
 log4j {
     // COPY AND MODIFY THE FOLLOWING SECTION TO CREATE A NEW LOG APPENDER
     appender.modelsLog = "org.apache.log4j.DailyRollingFileAppender"
-    appender.'modelsLog.datePattern'="'.'yyyy-MM-dd-HH-mm"
+    appender.'modelsLog.datePattern'="'.'yyyy-MM-dd"
     appender.'modelsLog.layout'="org.apache.log4j.PatternLayout"
     appender.'modelsLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'modelsLog.File'="logs/Models.log"

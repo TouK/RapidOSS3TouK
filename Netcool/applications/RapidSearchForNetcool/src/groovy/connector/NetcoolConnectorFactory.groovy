@@ -38,7 +38,7 @@ class NetcoolConnectorFactory {
             Logger logger = Logger.getLogger("connector."+datasource.name);
             logger.removeAllAppenders();
             def layout = new org.apache.log4j.PatternLayout("%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n");
-            def appender = new DailyRollingFileAppender(layout, "logs/${datasource.name}Connector.log",  "'.'yyyy-MM-dd-HH-mm");
+            def appender = new DailyRollingFileAppender(layout, "logs/${datasource.name}Connector.log",  "'.'yyyy-MM-dd");
             logger.addAppender (appender);
             connector = new NetcoolConnector(datasource, logger, conversionParams);
             connectorList[datasource.name] = connector;

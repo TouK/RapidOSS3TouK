@@ -49,13 +49,14 @@ class NetcoolConnector {
     {
         def deleteMarkerLocalName = deleteMarkerField?deleteMarkerField.localName:"severity"
         def deleteMarkerNetcoolName = deleteMarkerField?deleteMarkerField.netcoolName:"Severity"
+        def deleteMarkerConvertedValue = NetcoolConversionParameter.getConvertedValue(deleteMarkerNetcoolName, 0)
         def markedEvents = [:];
         int offset= 0 ;
         int batchSize = 1000;
         def lastUpdateTime = 0;
         while(true)
         {
-            def res = invokeMethod(NetcoolEvent, "search", ["connectorname:${connectorName} AND ${deleteMarkerLocalName}:{0 TO *}", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
+            def res = invokeMethod(NetcoolEvent, "search", ["connectorname:${connectorName} -(${deleteMarkerLocalName}:${deleteMarkerConvertedValue})", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
             if(res.results.isEmpty())
             {
                 break;
@@ -78,7 +79,7 @@ class NetcoolConnector {
         }
         logger.info("Following events are deleted before connector start ${markedEvents}");
         markedEvents.each{key, event->
-             event.setProperty(deleteMarkerLocalName, 0);
+             event.setProperty(deleteMarkerLocalName, deleteMarkerConvertedValue);
         }
     }
 

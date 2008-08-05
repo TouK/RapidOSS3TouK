@@ -161,6 +161,10 @@ public class SingleCompassSessionManager {
 
     public static void destroy()
     {
+        destroy(15000);
+    }
+    public static void destroy(long maxWaitTime)
+    {
         synchronized (sessionLock)
         {
             if(timer != null)
@@ -168,6 +172,32 @@ public class SingleCompassSessionManager {
                 timer.purge();
             }
             isDestroyed = true;
+            if(uncommittedTransactions.isEmpty())
+            {
+                SingleCompassSessionManager.forceCloseSession();                   
+            }
+        }
+        long numberOfIterations = maxWaitTime/10;
+        try
+        {
+            for(int i=0; i < numberOfIterations; i++)
+            {
+                if(!SingleCompassSessionManager.isClosedLastSession())
+                {
+                    Thread.sleep (10);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        catch(InterruptedException ex)
+        {
+        }
+        if(!SingleCompassSessionManager.isClosedLastSession())
+        {
+            SingleCompassSessionManager.forceCloseSession();
         }
     }
 
@@ -186,7 +216,8 @@ public class SingleCompassSessionManager {
     {
         synchronized (sessionLock)
         {
-            return compassSessionInstance.isClosed();
+
+            return compassSessionInstance == null || compassSessionInstance.isClosed();
         }
     }
 }

@@ -182,22 +182,6 @@ class BootStrap {
         ListeningAdapterManager.getInstance().destroy();
         ScriptManager.getInstance().destroy();
         SingleCompassSessionManager.destroy();
-        for(int i=0; i < 100; i++)
-        {
-            if(!SingleCompassSessionManager.isClosedLastSession())
-            {
-                Thread.sleep (100);
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        if(!SingleCompassSessionManager.isClosedLastSession())
-        {
-            SingleCompassSessionManager.forceCloseSession();
-        }
     }
 
 }

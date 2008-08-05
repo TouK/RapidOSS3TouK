@@ -22,7 +22,7 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
 
     protected void tearDown() {
         compass.close();
-        SingleCompassSessionManager.destroy();
+        SingleCompassSessionManager.destroy(10);
     }
     public void testBeginTransaction()
     {
@@ -152,6 +152,33 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
         assertTrue (tr3.transaction.wasCommitted());
     }
 
+    public void testTransactionWillBeCommittedAfterSpecifiedTime()
+    {
+        int maxNumberOfTransactions =1000000;
+        int maxWaitTime = 10000000;
+        SingleCompassSessionManager.initialize(compass, maxNumberOfTransactions, maxWaitTime);
+        RapidCompassTransaction tr1 = SingleCompassSessionManager.beginTransaction();
+        long t = System.nanoTime();
+        SingleCompassSessionManager.destroy(3000);
+        long interval = (long)((System.nanoTime() - t)/Math.pow(10, 6));
+        assertTrue (interval >= 3000);
+        assertTrue (SingleCompassSessionManager.isClosedLastSession());
+    }
+
+    public void testDestroyWillCloseSessionImmediatelyIfThereIsNoTransactionWaitingToBeCommitted()
+    {
+        int maxNumberOfTransactions =1000000;
+        int maxWaitTime = 10000000;
+        SingleCompassSessionManager.initialize(compass, maxNumberOfTransactions, maxWaitTime);
+        RapidCompassTransaction tr1 = SingleCompassSessionManager.beginTransaction();
+        tr1.commit();
+        long t = System.nanoTime();
+        SingleCompassSessionManager.destroy(3000);
+        long interval = (long)((System.nanoTime() - t)/Math.pow(10, 6));
+        assertTrue (interval < 3000);
+        assertTrue (SingleCompassSessionManager.isClosedLastSession());
+    }
+
     public void testBeginTransactionThrowsExceptionAfterDestroy()
     {
         int maxNumberOfTransactions = 200;
@@ -178,7 +205,13 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
         Thread.sleep (100);
         assertFalse (tr1.getSession().isClosed())
         assertFalse (tr2.getSession().isClosed())
-        SingleCompassSessionManager.destroy();
+        def isDestroyed = false;
+        def thread = new Thread({
+            SingleCompassSessionManager.destroy(4000000000);
+            isDestroyed = true;
+
+        });
+        thread.start();
         Thread.sleep (100);
         assertFalse (tr1.getSession().isClosed())
         assertFalse (tr2.getSession().isClosed())
@@ -188,6 +221,8 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
         tr2.commit();
         assertTrue (tr1.getSession().isClosed())
         assertTrue (tr2.getSession().isClosed())
+        Thread.sleep (100);        
+        assertTrue (isDestroyed);
     }
 
     public void testChangingLoadedObjectsPropertyDoesnotEffectIndexedObject()

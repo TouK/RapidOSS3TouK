@@ -29,7 +29,7 @@ class NetcoolConnection extends DatabaseConnection{
 
         })
         host(blank:false,nullable:false)
-        port(blank:false,nullable:false)
+        port(nullable:false)
     }
     public String getUrl()
     {

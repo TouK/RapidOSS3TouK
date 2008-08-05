@@ -17,7 +17,7 @@ class SnmpConnection extends Connection{
     static hasMany = [snmpDatasources:SnmpDatasource]
     
     static constraints={
-    port(blank:true,nullable:true)
+    port(nullable:true)
         
      host(blank:true,nullable:true)
         

@@ -70,11 +70,12 @@
 .rcmdb-search-cell-key {
     font-size: 11px;
     padding-right: 3px;
+    color: #000000;
 }
 
 .rcmdb-search-cell-value {
     display: inline;
-    color: #000000;
+    color:#999999;
 }
 
 

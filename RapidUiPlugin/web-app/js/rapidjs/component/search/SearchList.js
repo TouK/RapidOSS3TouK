@@ -164,8 +164,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             html:'<div><form action="javascript:void(0)"><table><tbody>' +
                  '<tr>' +
                  '<td  width="93%"><input type="textbox" style="width:100%;" name="search"/></td>' +
-                 '<td><div class="rcmdb-search-searchbutton"><a>&nbsp;</a></div></td>' +
-                 '<td  width="100%"><div class="rcmdb-search-savequery"><a>&nbsp;</a></div></td>' +
+                 '<td><div class="rcmdb-search-searchbutton"></div></td>' +
+                 '<td  width="100%"><div class="rcmdb-search-savequery"></div></td>' +
                  '<td  width="0%"><div class="rcmdb-search-count"></div></td>' +
                  '<td  width="0%"><select><option value="1">1</option><option value="2">2</option>' +
                  '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
@@ -183,9 +183,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask',
         	html:'<div class="rcmdb-search-mask-loadingwrp"><div class="rcmdb-search-mask-loading">Loading...</div></div>', style:'text-align:center;'}, true);
         this.hideMask();
-        YAHOO.util.Event.addListener(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-searchbutton', 'div', this.searchBox.dom)[0], 'click', this.handleSearchClick, this, true);
+        var searchButton = YAHOO.ext.Element.get(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-searchbutton', 'div', this.searchBox.dom)[0]);
+        searchButton.addClassOnOver('rcmdb-search-searchbutton-hover');
+        YAHOO.util.Event.addListener(searchButton.dom, 'click', this.handleSearchClick, this, true);
+        var saveQueryButton = YAHOO.ext.Element.get(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-savequery', 'div', this.searchBox.dom)[0]);
+        saveQueryButton.addClassOnOver('rcmdb-search-savequery-hover');
+        YAHOO.util.Event.addListener(saveQueryButton.dom, 'click', this.handleSaveQueryClick, this, true);
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleInputEnter, this, true);
-        YAHOO.util.Event.addListener(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-savequery', 'div', this.searchBox.dom)[0], 'click', this.handleSaveQueryClick, this, true);
         YAHOO.util.Event.addListener(this.lineSizeSelector, 'change', this.handleLineSizeChange, this, true);
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);

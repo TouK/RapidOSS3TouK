@@ -57,13 +57,13 @@ log4j {
     appender.'modelsLog.File'="logs/Models.log"
 
     appender.rapidServerLog = "org.apache.log4j.DailyRollingFileAppender"
-    appender.'rapidServerLog.datePattern'="'.'yyyy-MM-dd-HH-mm"
+    appender.'rapidServerLog.datePattern'="'.'yyyy-MM-dd"
     appender.'rapidServerLog.layout'="org.apache.log4j.PatternLayout"
     appender.'rapidServerLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'rapidServerLog.File'="logs/RapidServer.log"
 
     appender.errorLog = "org.apache.log4j.DailyRollingFileAppender"
-    appender.'errorLog.datePattern'="'.'yyyy-MM-dd-HH-mm"
+    appender.'errorLog.datePattern'="'.'yyyy-MM-dd"
     appender.'errorLog.layout'="org.apache.log4j.PatternLayout"
     appender.'errorLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'errorLog.File'="logs/RapidServerErr.log"

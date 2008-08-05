@@ -206,19 +206,28 @@ class ModelMetaData
                 }
                 federatedPropertyConfiguration["lazy"] = new Boolean(property.@lazy.text()).booleanValue();
                 propertyConfigurations[propertyName] = federatedPropertyConfiguration;
-                constraints[propertyName][ConstrainedProperty.BLANK_CONSTRAINT] = true;
+                if(generalPropConfig["type"] == String.name)
+                {
+                    constraints[propertyName][ConstrainedProperty.BLANK_CONSTRAINT] = true;
+                }
                 constraints[propertyName][ConstrainedProperty.NULLABLE_CONSTRAINT] = true;
             }
             else
             {
                 if(!masterDatasource || !masterDatasource.keys.containsKey(propertyName))
                 {
-                    constraints[propertyName][ConstrainedProperty.BLANK_CONSTRAINT] = true;
+                    if(generalPropConfig["type"] == String.name)
+                    {
+                        constraints[propertyName][ConstrainedProperty.BLANK_CONSTRAINT] = true;
+                    }
                     constraints[propertyName][ConstrainedProperty.NULLABLE_CONSTRAINT] = true;
                 }
                 else
                 {
-                    constraints[propertyName][ConstrainedProperty.BLANK_CONSTRAINT] = false;
+                    if(generalPropConfig["type"] == String.name)
+                    {
+                        constraints[propertyName][ConstrainedProperty.BLANK_CONSTRAINT] = false;
+                    }
                     constraints[propertyName][ConstrainedProperty.NULLABLE_CONSTRAINT] = false;
                     masterKeyPropName = propertyName;
                 }

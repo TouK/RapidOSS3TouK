@@ -210,16 +210,17 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop2"];
             assertTrue (prop.isNullable());
+            assertNull(prop.getAppliedConstraint(ConstrainedProperty.BLANK_CONSTRAINT));
             assertNull ( prop.getAppliedConstraint("key"));
             
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop3"];
             assertTrue (prop.isNullable());
-            assertTrue (prop.isBlank());
+            assertNull(prop.getAppliedConstraint(ConstrainedProperty.BLANK_CONSTRAINT));
             assertNull ( prop.getAppliedConstraint("key"));
 
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop4"];
             assertTrue(prop.isNullable());
-            assertTrue (prop.isBlank());
+            assertNull(prop.getAppliedConstraint(ConstrainedProperty.BLANK_CONSTRAINT));
             assertNull ( prop.getAppliedConstraint("key"));
 
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop5"];
@@ -234,6 +235,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop6"];
             assertTrue (prop.isNullable());
+            assertNull(prop.getAppliedConstraint(ConstrainedProperty.BLANK_CONSTRAINT));
             assertNull ( prop.getAppliedConstraint("key"));
 
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop7"];
@@ -242,10 +244,12 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop8"];
             assertTrue (prop.isNullable());
+            assertNull(prop.getAppliedConstraint(ConstrainedProperty.BLANK_CONSTRAINT));
             assertNull ( prop.getAppliedConstraint("key"));
 
             prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop9"];
             assertTrue (prop.isNullable());
+            assertNull(prop.getAppliedConstraint(ConstrainedProperty.BLANK_CONSTRAINT));
             assertNull ( prop.getAppliedConstraint("key"));
 
         }finally

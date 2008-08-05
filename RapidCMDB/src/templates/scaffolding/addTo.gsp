@@ -18,9 +18,14 @@
             <div class="message">\${flash.message}</div>
             </g:if>
             <g:hasErrors bean="\${${propertyName}}">
-            <div class="errors">
-                <g:renderErrors bean="\${${propertyName}}" as="list" />
-            </div>
+                <div class="errors">
+                    <g:renderErrors bean="\${${propertyName}}" as="list" />
+                </div>
+            </g:hasErrors>
+            <g:hasErrors bean="\${flash.errors}">
+               <div class="errors">
+                    <g:renderErrors bean="\${flash.errors}"/>
+                </div>
             </g:hasErrors>
             <g:form method="post" <%= multiPart ? ' enctype="multipart/form-data"' : '' %>>
                 <div class="dialog">

@@ -50,8 +50,8 @@ class ${className}Controller {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[${className}, ${propertyName}])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [${className}, ${propertyName}])
+                flash.errors = this.errors;
                 redirect(action:show, id:${propertyName}.id)
             }
 

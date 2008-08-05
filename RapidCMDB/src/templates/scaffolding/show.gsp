@@ -20,15 +20,11 @@
     <g:if test="\${flash.message}">
         <div class="message">\${flash.message}</div>
     </g:if>
-    <g:if test="\${flash.errors}">
-        <div class="errors">
-            <ul>
-                <g:each var="error" in="\${flash?.errors}">
-                    <li>\${error}</li>
-                </g:each>
-            </ul>
+    <g:hasErrors bean="\${flash.errors}">
+       <div class="errors">
+            <g:renderErrors bean="\${flash.errors}"/>
         </div>
-    </g:if>
+    </g:hasErrors>
     <div class="dialog">
         <table>
             <tbody>

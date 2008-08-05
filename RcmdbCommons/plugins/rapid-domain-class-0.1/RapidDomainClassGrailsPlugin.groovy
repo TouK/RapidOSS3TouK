@@ -17,12 +17,16 @@ import org.codehaus.groovy.grails.commons.metaclass.FunctionCallback
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import java.lang.reflect.Field
+import org.codehaus.groovy.grails.commons.GrailsClass
+import groovy.xml.MarkupBuilder
+import org.springframework.validation.FieldError
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def version = 0.1
     def loadAfter = ['searchable-extension']
+    def observe = ["controllers"]
     def domainClassMap;
     def doWithSpring = {
         ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
@@ -56,9 +60,15 @@ class RapidDomainClassGrailsPlugin {
             MetaClass mc = dc.metaClass
             registerDynamicMethods(dc, application, ctx);
         }
+        for (GrailsClass controller in application.controllerClasses) {
+            addErrorsSupportToControllers(controller, ctx);
+        }
     }
 
     def onChange = { event ->
+        if (application.isArtefactOfType(ControllerArtefactHandler.TYPE, event.source)) {
+            addErrorsSupportToControllers(event.source, event.ctx);   
+        }
     }
 
     def onApplicationChange = { event ->
@@ -68,6 +78,54 @@ class RapidDomainClassGrailsPlugin {
     {
         def metaProp = mc.getMetaProperty("searchable");
         return metaProp != null;
+    }
+
+    def addErrorsSupportToControllers(controller, ctx)
+    {
+        MetaClass mc = controller.metaClass
+        mc.addError = {String messageCode->
+
+            delegate.addError(messageCode, [])
+
+        }
+        mc.addError = {String messageCode, List params->
+
+            delegate.addError(messageCode, params, "")
+
+        }
+        mc.addError = {String messageCode, List params, String defaultMessage->
+            if(!delegate.hasErrors())
+            {
+                delegate.errors = new RapidBindException(delegate, delegate.class.name);
+            }
+            delegate.errors.reject(messageCode, params as Object[],defaultMessage)
+
+        }
+        def messageSource = ctx.getBean("messageSource");
+        mc.errorsToXml = {->
+            delegate.errorsToXml(delegate.errors);
+        }
+        mc.errorsToXml = {errors->
+            StringWriter writer = new StringWriter();
+            def builder = new MarkupBuilder(writer);
+            builder.Errors(){
+                errors.getAllErrors().each{error->
+                    def message = messageSource.getMessage( error,Locale.ENGLISH);
+                    if(error instanceof FieldError)
+                    {
+                        def field = error.getField();
+                        builder.Error(field:field, error:message)
+                    }
+                    else
+                    {
+                        builder.Error(error:message)
+                    }
+                }
+            }
+
+            return writer.toString();
+
+        }
     }
 
     def addErrorsSupport(GrailsDomainClass dc, application, ctx)

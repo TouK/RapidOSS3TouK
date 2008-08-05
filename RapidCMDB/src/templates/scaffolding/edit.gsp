@@ -25,6 +25,11 @@
             <g:renderErrors bean="\${${propertyName}}" as="list"/>
         </div>
     </g:hasErrors>
+    <g:hasErrors bean="\${flash.errors}">
+       <div class="errors">
+            <g:renderErrors bean="\${flash.errors}"/>
+        </div>
+    </g:hasErrors>
     <g:form method="post" <%= multiPart ? ' enctype="multipart/form-data"' : '' %>>
         <input type="hidden" name="id" value="\${${propertyName}?.id}"/>
         <div class="dialog">

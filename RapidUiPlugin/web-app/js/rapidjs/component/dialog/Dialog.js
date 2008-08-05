@@ -3,6 +3,11 @@ YAHOO.rapidjs.component.Dialog = function(config)
 {
     this.width = config.width;
     this.height = config.height;
+   	this.minHeight = config.minHeight;
+   	this.minWidth = config.minWidth;
+    this.buttons =config.buttons;
+    if(this.buttons)
+    	this.buttonNumber = config.buttons.length;
     this.render();
 };
 
@@ -13,17 +18,45 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         this.container = dh.append(document.body, {tag: 'div', cls:'resizable-panel'});
         YAHOO.util.Dom.generateId(this.container, 'r-dialog-')
         this.body = dh.append(document.body, {tag: 'div', cls:'resizable-panel-body'});
-        this.footer = dh.append(document.body, {tag: 'div', cls:'resizable-panel-footer'});
-            // Create a panel Instance, from the 'resizablepanel' DIV standard module markup
-        this.panel = new YAHOO.widget.Panel(this.container, {
+        this.footer = dh.append(document.body, {tag: 'div', cls: this.buttons ? 'resizable-panel-button-footer' : 'resizable-panel-footer'});
+
+		this.panelConfig = {
             draggable: true,
+            constraintoviewport: true,
             fixedcenter:true,
             visible:false,
             width:this.width + "px",
             height:this.height + "px"
-        });
+        };
+
+        this.panel = new YAHOO.widget.Panel(this.container,this.panelConfig);
         this.panel.setBody(this.body);
         this.panel.setFooter(this.footer);
+
+
+        if(this.buttons)
+		{
+			for(var i = 0; i < this.buttonNumber ; i++)
+	   		{
+		   		var oButton = new YAHOO.widget.Button(
+		   		{
+	                type: "button",
+	                label: this.buttons[i].text,
+	                container: this.footer
+	            });
+	            if(YAHOO.lang.isFunction(this.buttons[i].handler))
+	             	oButton.set("onclick", { fn: this.buttons[i].handler,
+                                obj: oButton, scope: this.buttons[i].scope || this });
+				if(i == 0)
+				{
+					oButton.get("element").setAttribute('style', 'background-position: 0pt -1400px; border-color: #304369');
+					oButton.get("element").getElementsByTagName('button')[0].setAttribute('style', 'color:#FFFFFF');
+				}
+			}
+	   		YAHOO.util.Dom.setStyle(this.body, 'background-color', '#F2F2F2');
+    		YAHOO.util.Dom.setStyle(this.footer.parentNode, 'border-top', 'medium none');
+
+		}
         this.panel.render();
         var IE_QUIRKS = (YAHOO.env.ua.ie && document.compatMode == "BackCompat");
 
@@ -34,13 +67,16 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             handles: ['br'],
             autoRatio: false,
             status: false,
-            minWidth: 300,
-            minHeight: 100
+            minHeight: this.minHeight ? this.minHeight : 300,
+            minWidth: this.minWidth ? this.minWidth : 300,
+            maxWidth: 900,
+            maxHeight: 600
+
         });
 
             // Setup resize handler to update the size of the Panel's body element
         // whenever the size of the 'resizablepanel' DIV changes
-        var func = function(args) {
+        this.func = function(args) {
 
             var panelHeight = args.height;
             var panelWidth = args.width;
@@ -48,7 +84,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             var headerHeight = this.header.offsetHeight; // Content + Padding + Border
             var footerHeight = this.footer.offsetHeight; // Content + Padding + Border
 
-            var bodyHeight = (panelHeight - headerHeight - footerHeight);
+            var bodyHeight = (panelHeight - headerHeight - footerHeight - 1);
             var bodyWidth = (panelWidth - 20);
             var bodyContentHeight = bodyHeight - 20;
 
@@ -61,12 +97,8 @@ YAHOO.rapidjs.component.Dialog.prototype = {
                 this.syncIframe();
             }
         }
-        this.resize.on('resize', func, this.panel, true);
-        var args = new Object();
-        args.width = this.width;
-        args.height = this.height;
-        func.createDelegate(this.panel, args, true).call(args);
-
+        this.resize.on('resize', this.func, this.panel, true);
+        this.func.createDelegate(this.panel, {width: this.width, height: this.height }, true).call({width: this.width, height: this.height});
     },
 
     show: function(url)
@@ -75,6 +107,6 @@ YAHOO.rapidjs.component.Dialog.prototype = {
     },
     hide: function()
     {
-        this.panel.hide();
+	   this.panel.hide();
     }
 };

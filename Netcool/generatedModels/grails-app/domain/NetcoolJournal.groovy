@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class NetcoolJournal 
-{
-    
+class NetcoolJournal {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -36,13 +35,13 @@ class NetcoolJournal
         }
     
     static constraints={
-    serverserial(blank:true,nullable:true)
+    serverserial(nullable:true)
         
      keyfield(blank:false,nullable:false)
         
      text(blank:true,nullable:true)
         
-     chrono(blank:true,nullable:true)
+     chrono(nullable:true)
         
      servername(blank:false,nullable:false,key:["keyfield"])
         
@@ -66,4 +65,5 @@ class NetcoolJournal
     }
     
     //AUTO_GENERATED_CODE
+    
 }

@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class NetcoolEvent 
-{
-    
+class NetcoolEvent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -132,7 +131,7 @@ class NetcoolEvent
     static constraints={
     identifier(blank:true,nullable:true)
         
-     serial(blank:true,nullable:true)
+     serial(nullable:true)
         
      node(blank:true,nullable:true)
         
@@ -150,23 +149,23 @@ class NetcoolEvent
         
      summary(blank:true,nullable:true)
         
-     statechange(blank:true,nullable:true)
+     statechange(nullable:true)
         
-     firstoccurrence(blank:true,nullable:true)
+     firstoccurrence(nullable:true)
         
-     lastoccurrence(blank:true,nullable:true)
+     lastoccurrence(nullable:true)
         
-     internallast(blank:true,nullable:true)
+     internallast(nullable:true)
         
-     poll(blank:true,nullable:true)
+     poll(nullable:true)
         
-     nctype(blank:true,nullable:true)
+     nctype(nullable:true)
         
-     tally(blank:true,nullable:true)
+     tally(nullable:true)
         
      ncclass(blank:true,nullable:true)
         
-     grade(blank:true,nullable:true)
+     grade(nullable:true)
         
      location(blank:true,nullable:true)
         
@@ -176,13 +175,13 @@ class NetcoolEvent
         
      acknowledged(blank:true,nullable:true)
         
-     flash(blank:true,nullable:true)
+     flash(nullable:true)
         
      eventid(blank:true,nullable:true)
         
-     expiretime(blank:true,nullable:true)
+     expiretime(nullable:true)
         
-     processreq(blank:true,nullable:true)
+     processreq(nullable:true)
         
      suppressescl(blank:true,nullable:true)
         
@@ -190,19 +189,19 @@ class NetcoolEvent
         
      service(blank:true,nullable:true)
         
-     physicalslot(blank:true,nullable:true)
+     physicalslot(nullable:true)
         
-     physicalport(blank:true,nullable:true)
+     physicalport(nullable:true)
         
      physicalcard(blank:true,nullable:true)
         
-     tasklist(blank:true,nullable:true)
+     tasklist(nullable:true)
         
      nmosserial(blank:true,nullable:true)
         
-     nmosobjinst(blank:true,nullable:true)
+     nmosobjinst(nullable:true)
         
-     nmoscausetype(blank:true,nullable:true)
+     nmoscausetype(nullable:true)
         
      localnodealias(blank:true,nullable:true)
         
@@ -220,9 +219,9 @@ class NetcoolEvent
         
      remoterootobj(blank:true,nullable:true)
         
-     x733eventtype(blank:true,nullable:true)
+     x733eventtype(nullable:true)
         
-     x733probablecause(blank:true,nullable:true)
+     x733probablecause(nullable:true)
         
      x733specificprob(blank:true,nullable:true)
         
@@ -230,7 +229,7 @@ class NetcoolEvent
         
      servername(blank:false,nullable:false)
         
-     serverserial(blank:false,nullable:false,key:["servername"])
+     serverserial(nullable:false,key:["servername"])
         
      url(blank:true,nullable:true)
         
@@ -254,4 +253,5 @@ class NetcoolEvent
     }
     
     //AUTO_GENERATED_CODE
+    
 }

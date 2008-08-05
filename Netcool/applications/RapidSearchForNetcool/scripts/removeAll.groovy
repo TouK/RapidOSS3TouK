@@ -20,4 +20,7 @@ NetcoolConnection.list().each{
     }
     it.remove();
 }
-CmdbScript.get(name:"getConversionParameters")?.remove();
+if(CmdbScript.get(name:"getConversionParameters") != null)
+{
+    CmdbScript.deleteScript("getConversionParameters");
+}

@@ -3,6 +3,10 @@ YAHOO.rapidjs.component.Dialog = function(config)
 {
     this.width = config.width;
     this.height = config.height;
+    this.buttons =config.buttons;
+    if(this.buttons)
+    	this.buttonNumber = config.buttons.length;
+
     this.render();
 };
 
@@ -12,8 +16,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         var dh = YAHOO.ext.DomHelper;
         this.container = dh.append(document.body, {tag: 'div', cls:'resizable-panel'});
         this.body = dh.append(document.body, {tag: 'div', cls:'resizable-panel-body'});
-        this.footer = dh.append(document.body, {tag: 'div', cls:'resizable-panel-footer'});
-            // Create a panel Instance, from the 'resizablepanel' DIV standard module markup
+        this.footer = dh.append(document.body, {tag: 'div', cls: this.buttons ? 'panel-footer' : 'resizable-panel-footer'});
         this.panel = new YAHOO.widget.Panel(this.container, {
             draggable: true,
             fixedcenter:true,
@@ -23,6 +26,31 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         });
         this.panel.setBody(this.body);
         this.panel.setFooter(this.footer);
+
+		if(this.buttons)
+		{
+			for(var i = 0; i < this.buttonNumber ; i++)
+	   		{
+		   		var oButton = new YAHOO.widget.Button(
+		   		{
+	                type: "button",
+	                label: this.buttons[i].text,
+	                container: this.footer
+	            });
+	            if(YAHOO.lang.isFunction(this.buttons[i].handler))
+	             	oButton.set("onclick", { fn: this.buttons[i].handler,
+                                obj: oButton, scope: this.buttons[i].scope || this });
+				if(i == 0)
+				{
+					oButton.get("element").setAttribute('style', 'background-position: 0pt -1400px; border-color: #304369');
+					oButton.get("element").getElementsByTagName('button')[0].setAttribute('style', 'color:#FFFFFF');
+				}
+
+			}
+	   		YAHOO.util.Dom.setStyle(this.body, 'background-color', '#F2F2F2');
+    		YAHOO.util.Dom.setStyle(this.footer.parentNode, 'border-top', 'medium none');
+
+		}
         this.panel.render();
         var IE_QUIRKS = (YAHOO.env.ua.ie && document.compatMode == "BackCompat");
 
@@ -47,12 +75,13 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             var headerHeight = this.header.offsetHeight; // Content + Padding + Border
             var footerHeight = this.footer.offsetHeight; // Content + Padding + Border
 
-            var bodyHeight = (panelHeight - headerHeight - footerHeight);
+            var bodyHeight = (panelHeight - headerHeight - footerHeight - 1);
             var bodyWidth = (panelWidth - 20);
             var bodyContentHeight = bodyHeight - 20;
 
+
             YAHOO.util.Dom.setStyle(this.body, 'height', bodyContentHeight + 'px');
-            YAHOO.util.Dom.setStyle(this.body.childNodes[0], 'height', bodyContentHeight + 'px');
+            YAHOO.util.Dom.setStyle(this.body.childNodes[0], 'height', bodyHeight + 'px');
             YAHOO.util.Dom.setStyle(this.body.childNodes[0], 'width', bodyWidth + 'px');
 
             if (IE_SYNC) {
@@ -67,7 +96,6 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         func.createDelegate(this.panel, args, true).call(args);
 
     },
-
     show: function(url)
     {
         this.panel.show();

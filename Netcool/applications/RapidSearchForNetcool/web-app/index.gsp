@@ -314,7 +314,7 @@
                             searchList.appendToQuery("severity:*");
 	 	  		}
  	  			else
-	            	searchList.appendToQuery(key + ":[" + value + " TO *]");
+	            	searchList.appendToQuery(key + ":{" + value + " TO *} OR "+ key + ":" + value);
 	        }
             else if (id == "lessThanOrEqualTo") {
 	        	if( key == "severity")
@@ -333,7 +333,7 @@
                         searchList.appendToQuery("severity: Clear");
                    }
  	  			else
-	            	searchList.appendToQuery(key + ":[* TO " + value + "]");
+	            	searchList.appendToQuery(key + ":{* TO " + value + "} OR "+ key + ":" + value);
 	        }
             else if (id == "lessThan") {
 	        	if( key == "severity")
@@ -460,6 +460,7 @@
         layoutLeft.on('resize', function(){
             YAHOO.util.Dom.setStyle(layoutLeft.body, 'top', '1px');
         });
+
         searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
         layout.on('resize', function() {
             searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);

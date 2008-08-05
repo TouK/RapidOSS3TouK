@@ -180,8 +180,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.bufferPos = dh.append(this.scrollPos.dom, {tag:'div'}, true);
         this.bufferView = dh.append(this.scrollPos.dom, {tag:'div'}, true);
         this.bufferView.rowEls = [];
-        this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask',
-        	html:'<div class="rcmdb-search-mask-loadingwrp"><div class="rcmdb-search-mask-loading">Loading...</div></div>', style:'text-align:center;'}, true);
+        this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask'}, true);
+        this.maskMessage = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask-loadingwrp', html:'<div class="rcmdb-search-mask-loading">Loading...</div>'}, true)
         this.hideMask();
         var searchButton = YAHOO.ext.Element.get(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-searchbutton', 'div', this.searchBox.dom)[0]);
         searchButton.addClassOnOver('rcmdb-search-searchbutton-hover');
@@ -542,9 +542,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.mask.setWidth(this.body.dom.clientWidth);
         this.mask.setHeight(this.body.dom.clientHeight);
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', '');
+        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', '');
+        this.maskMessage.center(this.mask.dom);
     },
     hideMask: function() {
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
+        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', 'none');
     },
 
 

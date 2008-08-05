@@ -10,7 +10,7 @@
     </jsec:isNotLoggedIn>
 </head>
 <body class="yui-skin-sam admin">
-<div style="padding-left:10px;padding-top:5px;"><img src="images/RapidInsight.png"></div>
+<div style="padding-left:10px;padding-top:5px;"><img src="images/RapidInsight-white.png"></div>
 <div class="nav"><h1 style="display:inline">RapidInsight For Netcool</h1><span class="menuButton"><a href="auth/logout?targetUri=/admin.gsp" class="logout">Logout</a></span></div>
 <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define your connections, create NetcoolEvent and NetcoolJournal models, import conversion parameters.</p>
 <br>

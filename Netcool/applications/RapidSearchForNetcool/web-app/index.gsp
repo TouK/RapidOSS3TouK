@@ -62,7 +62,7 @@
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
         <td width="0%" style="padding-left:10px;padding-top:5px;">
-            <img src="images/RapidInsight.png">
+            <img src="images/RapidInsight-blue.png">
         </td>
         <td width="100%"></td>
         <td id="serverDownEl" width="0%" style="display:none">

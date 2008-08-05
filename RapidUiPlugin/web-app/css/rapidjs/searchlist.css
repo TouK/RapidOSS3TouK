@@ -98,20 +98,25 @@
     position: absolute;
     top: 0;
     left: 0;
-    background: #eeeeee;
+    -moz-opacity: 0.5;
+    opacity: .50;
+    filter: alpha(opacity=50);
+    background-color: #CCC;
+    zoom: 1;
 }
 
 .rcmdb-search-mask-loadingwrp{
-	position:absolute;
-	left:45%;
-	top:40%;
+	z-index: 20001;
+    position: absolute;
+    top: 0;
+    left: 0;
 	border:3px solid #B2D0F7;
 	padding:10px;
 	font:bold 14px verdana,tahoma,helvetica;
 	color:#003366;
 	width:150px;
 	text-align:center;
-	z-index: 30000;
+	background-color:#ffffff;
 }
 .rcmdb-search-mask-loading{
 	background-image: url(../../images/rapidjs/component/tools/loading.gif );

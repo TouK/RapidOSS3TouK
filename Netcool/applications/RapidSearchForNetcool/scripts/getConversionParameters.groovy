@@ -10,7 +10,7 @@ import org.apache.log4j.Logger
  * To change this template use File | Settings | File Templates.
  */
 Logger logger = Logger.getLogger("getConversionParameters");
-def COLUMNS_WILL_BE_CONVERTED = ["Severity":"", "Class":"", "OwnerUID":"", "OwnerGID":"", "SuppressEscl":"", "Acknowledged":""];
+
 List netcoolDatasources = NetcoolDatasource.list();
 if(netcoolDatasources.isEmpty())
 {
@@ -19,7 +19,7 @@ if(netcoolDatasources.isEmpty())
 NetcoolDatasource netcoolDs = netcoolDatasources[0];
 def conversionParams = netcoolDs.getConversionParams();
 conversionParams.each{Map params->
-    if(COLUMNS_WILL_BE_CONVERTED.containsKey(params.colName))
+    if(NetcoolScriptConfigurationParams.COLUMNS_WILL_BE_CONVERTED.containsKey(params.colName))
     {
         NetcoolConversionParameter.add(keyField:params.keyfield, columnName:params.colName, value:params.value, conversion:params.conversion);
     }

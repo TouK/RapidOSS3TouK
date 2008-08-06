@@ -1,8 +1,6 @@
 import datasource.NetcoolDatasource
 import groovy.xml.MarkupBuilder
-import datasource.NetcoolConversionParameter
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import com.ifountain.comp.utils.CaseInsensitiveMap
 
 /**
 * Created by IntelliJ IDEA.
@@ -15,12 +13,6 @@ def defaultConversionColumnConfiguration = ["Class":"ncclass", "Type":"nctype"]
 def deleteColName = "isdeleted"
 def baseDir = System.getProperty ("base.dir");
 def netcoolConfigurationFile = new File("$baseDir/grails-app/conf/NetcoolFieldConfiguration.xml"); 
-
-def convertedColumnsArray = NetcoolConversionParameter.termFreqs("columnName");
-def convertedColumnsMap = new CaseInsensitiveMap();
-convertedColumnsArray.each{
-    convertedColumnsMap[it.getTerm()] = it;
-}
 List netcoolDatasources = NetcoolDatasource.list();
 if(netcoolDatasources.isEmpty())
 {
@@ -38,7 +30,7 @@ netcoolConf.NetcoolConfiguration()
         netcoolConf.Fields()
         {
             netcoolFields.each{String colName, String colType->
-                if(convertedColumnsMap.containsKey(colName))
+                if(NetcoolScriptConfigurationParams.COLUMNS_WILL_BE_CONVERTED.containsKey(colName))
                 {
                     colType = ModelGenerator.STRING_TYPE;
                 }

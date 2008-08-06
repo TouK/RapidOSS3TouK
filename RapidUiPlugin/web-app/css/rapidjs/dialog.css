@@ -12,8 +12,8 @@
 }
 
 .resizable-panel-footer {
-    height:15px;
-    padding:0;
+   border-top:medium none;
+   text-align:right;
 }
 
 .resizable-panel .yui-resize-handle-br {
@@ -22,9 +22,4 @@
     height: 8px;
     width: 8px;
     position:absolute;
-}
-.resizable-panel-button-footer{
-	border-top:medium none;
-	text-align:right;
-
 }

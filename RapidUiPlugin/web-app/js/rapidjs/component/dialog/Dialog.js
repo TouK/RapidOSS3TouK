@@ -5,6 +5,7 @@ YAHOO.rapidjs.component.Dialog = function(config)
     this.height = config.height;
    	this.minHeight = config.minHeight;
    	this.minWidth = config.minWidth;
+   	this.title = config.title;
     this.buttons =config.buttons;
     if(this.buttons)
     	this.buttonNumber = config.buttons.length;
@@ -18,7 +19,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         this.container = dh.append(document.body, {tag: 'div', cls:'resizable-panel'});
         YAHOO.util.Dom.generateId(this.container, 'r-dialog-')
         this.body = dh.append(document.body, {tag: 'div', cls:'resizable-panel-body'});
-        this.footer = dh.append(document.body, {tag: 'div', cls: this.buttons ? 'resizable-panel-button-footer' : 'resizable-panel-footer'});
+        this.footer = dh.append(document.body, {tag: 'div', cls: 'resizable-panel-footer'});
 
 		this.panelConfig = {
             draggable: true,
@@ -30,6 +31,8 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         };
 
         this.panel = new YAHOO.widget.Panel(this.container,this.panelConfig);
+        if(this.title)
+        	this.panel.setHeader(this.title);
         this.panel.setBody(this.body);
         this.panel.setFooter(this.footer);
 
@@ -67,8 +70,8 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             handles: ['br'],
             autoRatio: false,
             status: false,
-            minHeight: this.minHeight ? this.minHeight : 300,
-            minWidth: this.minWidth ? this.minWidth : 300,
+            minHeight:this.minHeight || 300,
+            minWidth: this.minWidth || 100,
             maxWidth: 900,
             maxHeight: 600
 

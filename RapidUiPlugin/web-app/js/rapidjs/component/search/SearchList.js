@@ -159,6 +159,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
         this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header.dom, {title:this.title});
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
+        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SearchListSettingsTool(document.body, this));
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
             html:'<div><form action="javascript:void(0)"><table><tbody>' +
@@ -167,13 +168,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                  '<td><div class="rcmdb-search-searchbutton"></div></td>' +
                  '<td  width="100%"><div class="rcmdb-search-savequery"></div></td>' +
                  '<td  width="0%"><div class="rcmdb-search-count"></div></td>' +
-                 '<td  width="0%"><select><option value="1">1</option><option value="2">2</option>' +
-                 '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
-                 '<option value="7">7</option><option value="8">8</option></select></td>' +
                  '</tr>' +
                  '</tbody></table></form></div>'}, true);
-        this.lineSizeSelector = this.searchBox.dom.getElementsByTagName('select')[0];
-        SelectUtils.selectTheValue(this.lineSizeSelector, this.lineSize, 0);
 
         this.body = dh.append(this.wrapper, {tag: 'div', cls:'rcmdb-search-body'}, true);
         this.scrollPos = dh.append(this.body.dom, {tag: 'div'}, true);
@@ -190,7 +186,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         saveQueryButton.addClassOnOver('rcmdb-search-savequery-hover');
         YAHOO.util.Event.addListener(saveQueryButton.dom, 'click', this.handleSaveQueryClick, this, true);
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleInputEnter, this, true);
-        YAHOO.util.Event.addListener(this.lineSizeSelector, 'change', this.handleLineSizeChange, this, true);
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
 
@@ -627,14 +622,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         return defaultValue;
     },
 
-    handleLineSizeChange: function(e) {
-        this.showMask();
-        this.lineSize = parseInt(this.lineSizeSelector.options[this.lineSizeSelector.selectedIndex].value, 10);
-        this.calculateRowHeight();
-        for (var rowIndex = 0; rowIndex < this.bufferView.rowEls.length; rowIndex++) {
-            this.bufferView.rowEls[rowIndex].setHeight(this.rowHeight);
-        }
-        this.updateBodyHeight();
+    handleLineSizeChange: function(value) {
+	    if( value != this.lineSize )
+		{
+	        this.showMask();
+	        this.lineSize = value;
+	        this.calculateRowHeight();
+	        for (var rowIndex = 0; rowIndex < this.bufferView.rowEls.length; rowIndex++) {
+	            this.bufferView.rowEls[rowIndex].setHeight(this.rowHeight);
+	        }
+	        this.updateBodyHeight();
+    	}
     },
 
     cellMenuItemClicked: function(eventType, key) {

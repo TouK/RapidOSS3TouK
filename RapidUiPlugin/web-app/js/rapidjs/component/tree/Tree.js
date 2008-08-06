@@ -9,6 +9,7 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     this.header = dh.append(this.container, {tag: 'div', cls:'r-yui-tree-header'});
     this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title:this.title});
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
+    this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SettingsTool(document.body, this));
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
     this.body = dh.append(this.container, {tag: 'div', cls:'r-yui-tree-body'});
     this.tree = new YAHOO.widget.TreeView(this.body);
@@ -268,4 +269,3 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeNode, YAHOO.rapidjs.component.Rapi
 
     }
 })
-

@@ -60,6 +60,10 @@
     background-image: url( ../../../images/rapidjs/component/tools/exclamation.png );
 }
 
+.r-tool-setting{
+	background-image: url( ../../../images/rapidjs/component/tools/configure.png );    	
+}
+
 .r-tooltip {
     position: absolute;
     color: #333;

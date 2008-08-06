@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>RapidCMDB Modeler Admin UI</title>
+    <title>Modeler Admin UI</title>
     <meta name="layout" content="main"/>
     <jsec:isNotLoggedIn>
 	  <g:javascript>window.location='auth/login?targetUri=/index.gsp'</g:javascript>
@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div class="nav"><h1 style="display:inline">RapidCMDB Modeler Admin UI</h1><span class="menuButton"><a href="auth/logout?targetUri=/index.gsp" class="logout">Logout</a></span></div>
+<div class="nav"><h1 style="display:inline">Modeler Admin UI</h1><span class="menuButton"><a href="auth/logout?targetUri=/index.gsp" class="logout">Logout</a></span></div>
 <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define model your classes and maintain them.</p>
 <br>
 <p/>

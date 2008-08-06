@@ -33,8 +33,8 @@ plugin {
     excludes = "hibernate"
 }
 
-rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/../RapidCMDB/generatedModels".toString();
-rapidCMDB.base.dir = "${System.getProperty("base.dir")}/../RapidCMDB".toString();
+rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/../RapidSuite/generatedModels".toString();
+rapidCMDB.base.dir = "${System.getProperty("base.dir")}/../RapidSuite".toString();
 rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss";
 rapidcmdb.invalid.names = [];
 def invalidNameFile = new File("invalidNames.txt");

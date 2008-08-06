@@ -88,6 +88,7 @@ class NetcoolConnectionController {
         if (netcoolConnection) {
             netcoolConnection.update(ControllerUtils.getClassProperties(params, NetcoolConnection));
             if (!netcoolConnection.hasErrors()) {
+                createConversionScript();
                 flash.message = "NetcoolConnection ${params.id} updated"
                 redirect(action: show, id: netcoolConnection.id)
             }
@@ -111,6 +112,7 @@ class NetcoolConnectionController {
         NetcoolConnection netcoolConnection = NetcoolConnection.add(ControllerUtils.getClassProperties(params, NetcoolConnection))
         if (!netcoolConnection.hasErrors()) {
             def datasource = datasource.NetcoolDatasource.add(name: netcoolConnection.name, connection: netcoolConnection);
+            createConversionScript();
             createConnectorScript(datasource);
             flash.message = "NetcoolConnection ${netcoolConnection.id} created"
             redirect(action: show, id: netcoolConnection.id)
@@ -162,8 +164,7 @@ class NetcoolConnectionController {
         }
     }
 
-
-    def createConnectorScript(NetcoolDatasource datasource)
+    def createConversionScript()
     {
         if (CmdbScript.get(name: "getConversionParameters") == null)
         {
@@ -171,11 +172,17 @@ class NetcoolConnectionController {
             try
             {
                 CmdbScript.runScript("getConversionParameters", [:])
+                CmdbScript.addScript(name: "getConversionParameters", enabled: true, type: CmdbScript.SCHEDULED, period: 3600);
             } catch (Throwable e)
             {
+                CmdbScript.deleteScript("getConversionParameters");
             }
-            CmdbScript.addScript(name: "getConversionParameters", enabled: true, type: CmdbScript.SCHEDULED, period: 3600);
+
         }
+    }
+    def createConnectorScript(NetcoolDatasource datasource)
+    {
+
         def scriptName = "${datasource.name}Connector";
         SimpleTemplateEngine engine = new SimpleTemplateEngine();
         def template = engine.createTemplate(new File("${System.getProperty("base.dir")}/grails-app/templates/groovy/NetcoolConnectorScriptTemplate.txt"))

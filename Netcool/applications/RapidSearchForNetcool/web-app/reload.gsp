@@ -27,7 +27,6 @@
     <div style="margin:20px 15px 10px;">
         <div class="nav">
             <span class="menuButton"><g:link class="refresh" action="reload" controller="application" params="['targetURI':'/reload.gsp']">Reload App.</g:link></span>
-            <span class="menuButton"><g:link class="refresh" action="reloadControllers" controller="application" params="['targetURI':'/reload.gsp']">Reload Controllers</g:link></span>
             <span class="menuButton"><g:link class="refresh" action="reloadViews" controller="application" params="['targetURI':'/reload.gsp']">Reload Views</g:link></span>
             <span class="menuButton"><g:link class="refresh" action="reloadOperations" controller="netcoolEvent" params="['targetURI':'/reload.gsp']">Reload NetcoolEvent Operations</g:link></span>
             <span class="menuButton"><g:link class="refresh" action="reloadOperations" controller="netcoolJournal" params="['targetURI':'/reload.gsp']">Reload NetcoolJournal Operations</g:link></span>

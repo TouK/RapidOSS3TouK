@@ -15,7 +15,6 @@ class NetcoolConversionParameter {
     static constraints = {
         keyField(key:[], nullable:false, blank:false);
         columnName(nullable:false, blank:false);
-        value(nullable:false);
         conversion(nullable:false, blank:true);
     }
 

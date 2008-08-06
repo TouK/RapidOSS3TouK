@@ -8,7 +8,6 @@
 <body>
 <div class="nav">
     <span class="menuButton"><a class="home" href="${createLinkTo(dir:'admin.gsp')}">Home</a></span>
-    <span class="menuButton"><g:link class="create" action="create">New NetcoolConversionParameter</g:link></span>
 </div>
 <div class="body">
     <h1>NetcoolConversionParameter List</h1>
@@ -36,7 +35,7 @@
                 <g:each in="${netcoolConversionParameterList}" status="i" var="netcoolConversionParameter">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                        <td><g:link action="show" id="${netcoolConversionParameter.id}">${netcoolConversionParameter.id?.encodeAsHTML()}</g:link></td>
+                        <td>${netcoolConversionParameter.id?.encodeAsHTML()}</td>
                         
                         <td>${netcoolConversionParameter.keyField?.encodeAsHTML()}</td>
                         

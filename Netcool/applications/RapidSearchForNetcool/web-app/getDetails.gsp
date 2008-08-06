@@ -1,4 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
+<%@ page import="com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
 <%
     def type = params.type;
     def id = params.id;
@@ -7,7 +7,12 @@
     GrailsDomainClass domainClass = ApplicationHolder.application.getDomainClass("NetcoolEvent");
     if (domainClass != null && id != null)
     {
-        allProperties = domainClass.getProperties();
+        domainClass.getProperties().each{
+            if(it.name != RapidCMDBConstants.ERRORS_PROPERTY_NAME && it.name != RapidCMDBConstants.OPERATION_PROPERTY_NAME)
+            {
+                allProperties += it;
+            }
+        }
         domainObject = NetcoolEvent.get(id: id);
     }
     if (domainObject != null) {

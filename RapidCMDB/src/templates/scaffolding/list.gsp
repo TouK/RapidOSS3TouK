@@ -30,7 +30,7 @@
             <thead>
                 <tr>
                     <%
-                        excludedProps = ['version',com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME, com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME,
+                        excludedProps = ['version','errors', '__operation_class__',
                                 Events.ONLOAD_EVENT,
                                 Events.BEFORE_DELETE_EVENT,
                                 Events.BEFORE_INSERT_EVENT,

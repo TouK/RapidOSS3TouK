@@ -38,21 +38,21 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOp
     public void setSeverity(newValue, userName){
 	    def ncds = NetcoolDatasource.get(name:connectorname);
         ncds.setSeverityAction(serverserial, NetcoolConversionParameter.getRealValue("Severity", newValue), userName);
-        severity = newValue;
-	    acknowledged = NetcoolConversionParameter.getConvertedValue("Acknowledged", 0);
+        update(severity : newValue);
+	    update(acknowledged:NetcoolConversionParameter.getConvertedValue("Acknowledged", 0));
 
     }
 
     public void setSuppressescl(newValue, userName){
 	    def ncds = NetcoolDatasource.get(name:connectorname);
 	    ncds.suppressAction(serverserial, NetcoolConversionParameter.getRealValue("SuppressEscl", newValue), userName);
-	    suppressescl = newValue;
+	    update(suppressescl : newValue);
     }
 
     public void addToTaskList(boolean action){
 	    def ncds = NetcoolDatasource.get(name:connectorname);
 	    ncds.taskListAction(serverserial,action);
-	    tasklist = action?1:0;
+	    update(tasklist : action?1:0);
     }
 
     public void acknowledge(boolean action, userName){
@@ -60,19 +60,19 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOp
 	    ncds.acknowledgeAction(serverserial, action, userName);
         if(action)
         {
-            acknowledged = NetcoolConversionParameter.getConvertedValue("Acknowledged", 1);
+            update(acknowledged : NetcoolConversionParameter.getConvertedValue("Acknowledged", 1));
         }
         else
         {
-            acknowledged = NetcoolConversionParameter.getConvertedValue("Acknowledged", 0);
+            update(acknowledged : NetcoolConversionParameter.getConvertedValue("Acknowledged", 0));
         }
     }
 
     public void assign(newValue){
 	 	def ncds = NetcoolDatasource.get(name:connectorname);
 	 	ncds.assignAction(serverserial, NetcoolConversionParameter.getRealValue("OwnerUID", newValue));
-	 	owneruid = newValue;
-	 	acknowledged = NetcoolConversionParameter.getConvertedValue("Acknowledged", 0);
+	 	update(owneruid : newValue);
+	 	update(acknowledged : NetcoolConversionParameter.getConvertedValue("Acknowledged", 0));
 
     }
 }

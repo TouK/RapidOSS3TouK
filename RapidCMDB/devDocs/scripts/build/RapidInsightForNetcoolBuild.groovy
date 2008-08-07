@@ -51,12 +51,12 @@ class RapidInsightForNetcoolBuild extends Build{
     }
 
     def buildWindows(){
-    	rapidCMDBBuild.buildWindows();
+    	rapidCMDBBuild.buildWindowsWithPlugins()();
     	buildPerOS("Windows");
     }
     
     def buildUnix(){
-    	rapidCMDBBuild.buildUnix();
+    	rapidCMDBBuild.buildUnixWithPlugins();
     	buildPerOS("Unix");
     }
 

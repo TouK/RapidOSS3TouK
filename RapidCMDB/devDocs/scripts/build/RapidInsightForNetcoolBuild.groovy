@@ -19,11 +19,6 @@ class RapidInsightForNetcoolBuild extends Build{
 	def versionInBuild = "$env.dist_rapid_suite/RI4NCVersion.txt";
 	def rapidCMDBBuild = new RapidCmdbBuild();
 
-	public RapidInsightForNetcoolBuild()
-    {
-        this(null);
-    }
-
     static void main(String[] args) {
         RapidInsightForNetcoolBuild rapidInsightForNetcoolBuilder = new RapidInsightForNetcoolBuild();
         rapidInsightForNetcoolBuilder.run(args);

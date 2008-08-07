@@ -293,10 +293,6 @@ class RapidDomainClassGrailsPlugin {
         def propConfigCache = new PropertyConfigurationCache(dc);
         def dsConfigCache = new DatasourceConfigurationCache(dc);
         def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
-        if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
-        {
-            mc.addMetaBeanProperty(new DatasourceProperty("isPropertiesLoaded", Object.class));
-        }
         mc.setProperty = {String name, Object value->
             delegate.setProperty(name, value, true);
         }
@@ -378,7 +374,6 @@ class RapidDomainClassGrailsPlugin {
             else if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
             {
                 def propertyConfig = propConfigCache.getPropertyConfigByName(name);
-                def isPropertiesLoaded = mc.getMetaProperty("isPropertiesLoaded").getProperty(domainObject);
                 if(!propertyConfig || propertyConfig.datasource == RapidCMDBConstants.RCMDB)
                 {
                     return currentValue;
@@ -388,8 +383,8 @@ class RapidDomainClassGrailsPlugin {
                     if(!propertyConfig.lazy)
                     {
 
-                        def isPropLoadedMap = mc.getMetaProperty("isPropertiesLoaded").getProperty(domainObject);
-                        if(isPropLoadedMap[propConfigCache.getDatasourceName(domainObject, name)] == true)
+                        def isPropLoadedMap = mc.getMetaProperty(RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED).getProperty(domainObject);
+                        if(isPropLoadedMap != null && isPropLoadedMap[propConfigCache.getDatasourceName(domainObject, name)] == true)
                         {
                             return currentValue
                         }
@@ -408,13 +403,19 @@ class RapidDomainClassGrailsPlugin {
 
     def getFederatedProperty(domainObjectMetaClass, currentDomainObject, propertyName, propCache, dsCache)
     {
+        def isPropsLoadedMap = currentDomainObject[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
+        if(isPropsLoadedMap == null)
+        {
+            isPropsLoadedMap = [:];
+            currentDomainObject.setProperty(RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, isPropsLoadedMap);
+        }
         def propertyDatasource = propCache.getDatasource(currentDomainObject, propertyName);
         if(propertyDatasource)
         {
             def keys = dsCache.getKeys(currentDomainObject, propertyDatasource.name);
             if(keys != null && keys.size() > 0)
             {
-                def isPropsLoaded = currentDomainObject.isPropertiesLoaded[propertyDatasource.name];
+                def isPropsLoaded = isPropsLoadedMap[propertyDatasource.name];
                 def requestedProperties = propCache.getDatasouceProperties(currentDomainObject, propertyName, isPropsLoaded);
                 try
                 {
@@ -429,7 +430,7 @@ class RapidDomainClassGrailsPlugin {
                                 currentDomainObject.__InternalSetProperty__(requestedPropConfig.name, value);
                             }
                         }
-                        currentDomainObject.isPropertiesLoaded[propertyDatasource.name] = true;
+                        isPropsLoadedMap[propertyDatasource.name] = true;
                     }
                     return returnedProps[propCache.getNameInDs(propCache.getPropertyConfigByName(propertyName))];
 
@@ -442,28 +443,5 @@ class RapidDomainClassGrailsPlugin {
         }
 
         return null;
-    }
-}
-
-
-
-class DatasourceProperty extends MetaBeanProperty implements FunctionCallback
-{
-    WeakGenericDynamicProperty dynamicProp;
-    public DatasourceProperty(String s, Class aClass) {
-        super(s, aClass, null, null); //To change body of overridden methods use File | Settings | File Templates.
-        dynamicProp = new WeakGenericDynamicProperty(s, aClass, this, false)
-    }
-
-    public Object getProperty(Object o) {
-        return dynamicProp.get(o)
-    }
-
-    public Object execute(Object object) {
-        return [:];  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-
-    public void setProperty(Object o, Object o1) {
     }
 }

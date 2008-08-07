@@ -247,10 +247,13 @@ class ModelMetaData
 
         propertyList += [type:Errors.name, name:com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME];
         propertyList += [type:Object.name, name:com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME];
+        propertyList += [type:Object.name, name:com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
         constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
+        constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
         constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
         transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME;
         transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME;
+        transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED;
     }
 
     private def processRelation(cardinality, oppositeCardinality, name, oppositeName, oppositeType, isOwner)

@@ -27,6 +27,7 @@ class RapidCMDBConstants {
     public static final String RCMDB = "RCMDB";
     public static final String ERRORS_PROPERTY_NAME = "errors";
     public static final String OPERATION_PROPERTY_NAME = "__operation_class__";
+    public static final String IS_FEDERATED_PROPERTIES_LOADED = "__is_federated_properties_loaded__";
 
 
 

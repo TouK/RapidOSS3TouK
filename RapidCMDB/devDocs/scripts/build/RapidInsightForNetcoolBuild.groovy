@@ -32,26 +32,26 @@ class RapidInsightForNetcoolBuild extends Build{
     }
     
     def build(){
-    	buildWindows();
-//    	 save the zip file
-    	ant.copy(todir: env.save) {
-	        ant.fileset(dir: env.distribution) {
-	            ant.include(name: "RapidCMDB*.zip")
-	            ant.include(name: "RapidInsight*.zip")
-	        }
-	    }    	
     	buildUnix();
-        //bring back windows zips to distribution
-		ant.copy(todir: env.distribution) {
-		    ant.fileset(dir: env.save) {
-		        ant.include(name: "RapidCMDB*.zip")
-		        ant.include(name: "RapidInsight*.zip")
-		    }
-		}
+    	addJreOnTopOfUnixAndZip();
     }
+    
+    def addJreOnTopOfUnixAndZip(){
+    	ant.copy(todir: "$env.dist_rapid_server/jre") {
+            ant.fileset(dir: "$env.jreDir")
+        }
+        def versionDate = getVersionWithDate();
+        def zipFileName = "$env.distribution/RapidInsightForNetcool_Windows$versionDate" + ".zip"
+        ant.zip(destfile: zipFileName) {
+            ant.zipfileset(dir: "$env.distribution"){
+            	ant.exclude(name:".project");
+            	ant.exclude(name:"*.zip");
+            }
+        }
+    }    
 
     def buildWindows(){
-    	rapidCMDBBuild.buildWindowsWithPlugins()();
+    	rapidCMDBBuild.buildWindowsWithPlugins();
     	buildPerOS("Windows");
     }
     
@@ -98,10 +98,4 @@ class RapidInsightForNetcoolBuild extends Build{
         return file;
     }
 
-
-
-    def clean() {
-        ant.delete(dir: env.distribution);
-        ant.delete(dir: "$env.basedir/build");
-    }
 }

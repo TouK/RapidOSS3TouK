@@ -229,20 +229,30 @@ class RapidCmdbBuild extends Build {
 
     def build(){
     	clean();
-    	buildPerOS(WINDOWS);
-        ant.delete(dir: env.distribution);
-        ant.delete(dir: "$env.basedir/build");
-        buildPerOS(UNIX);
+    	buildPerOS(UNIX);
+    	addJreOnTopOfUnixAndZip();
     }
     
     def buildWithPlugins(){
     	clean();
-    	buildPerOSWithPlugins(WINDOWS);
-        ant.delete(dir: env.distribution);
-        ant.delete(dir: "$env.basedir/build");
-        buildPerOSWithPlugins(UNIX);
+    	buildPerOSWithPlugins(UNIX);
+    	addJreOnTopOfUnixAndZip();
     }    
     
+    def addJreOnTopOfUnixAndZip(){
+    	ant.copy(todir: "$env.dist_rapid_server/jre") {
+            ant.fileset(dir: "$env.jreDir")
+        }
+        def versionDate = getVersionWithDate();
+        def zipFileName = "$env.distribution/RapidCMDB_Windows$versionDate" + ".zip"
+        ant.zip(destfile: zipFileName) {
+            ant.zipfileset(dir: "$env.distribution"){
+            	ant.exclude(name:".project");
+            	ant.exclude(name:"*.zip");
+            }
+        }
+    }
+        
     def buildUnix(){
     	clean();
     	buildPerOS(UNIX);

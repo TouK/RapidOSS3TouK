@@ -23,6 +23,17 @@ package build;
  * Time: 4:45:18 PM
  * To change this template use File | Settings | File Templates.
  */
+ 
+ 
+// SUPPORTED TARGETS:
+// ------------------	
+// build					: builds RapidCMDB for Unix AND Windows only, no plugins or modules included
+// buildWithPlugins			: builds RapidCMDB for Unix AND Windows WITH plugins and modules (samples included)
+// buildUnix				: builds RapidCMDB for Unix, no plugins or modules included
+// buildUnixWithPlugins		: builds RapidCMDB for Unix WITH plugins and modules (samples included)
+// buildWindows				: builds RapidCMDB for Windows, no plugins or modules included
+// buildWindowsWithPlugins	: builds RapidCMDB for Windows WITH plugins and modules (samples included)
+    
 class RapidCmdbBuild extends Build {
 	def UNIX = "Unix";
 	def WINDOWS = "Windows";
@@ -69,7 +80,7 @@ class RapidCmdbBuild extends Build {
 
     def testBuild() {
         TEST = true;
-        build();
+        buildWithPlugins();
         def versionDate = getVersionWithDate();
         ant.delete(dir: env.distribution + "/RapidServer");
         if (System.getProperty("os.name").indexOf("Windows") < 0){
@@ -219,33 +230,37 @@ class RapidCmdbBuild extends Build {
     def build(){
     	clean();
     	buildPerOS(WINDOWS);
-	    // save the zip file
-//    	ant.copy(todir: env.save) {
-//	        ant.fileset(dir: env.distribution) {
-//	            ant.include(name: "RapidCMDB*.zip")
-//	            ant.include(name: "RapidInsight*.zip")
-//	        }
-//	    }
         ant.delete(dir: env.distribution);
         ant.delete(dir: "$env.basedir/build");
         buildPerOS(UNIX);
-        // bring back windows zips to distribution
-//    	ant.copy(todir: env.distribution) {
-//	        ant.fileset(dir: env.save) {
-//	            ant.include(name: "RapidCMDB*.zip")
-//	            ant.include(name: "RapidInsight*.zip")
-//	        }
-//	    }
     }
+    
+    def buildWithPlugins(){
+    	clean();
+    	buildPerOSWithPlugins(WINDOWS);
+        ant.delete(dir: env.distribution);
+        ant.delete(dir: "$env.basedir/build");
+        buildPerOSWithPlugins(UNIX);
+    }    
     
     def buildUnix(){
     	clean();
     	buildPerOS(UNIX);
     }
     
+    def buildUnixWithPlugins(){
+    	clean();
+    	buildPerOSWithPlugins(UNIX);
+    }
+    
     def buildWindows(){
     	clean();
     	buildPerOS(WINDOWS);
+    }
+    
+    def buildWindowsWithPlugins(){
+    	clean();
+    	buildPerOSWithPlugins(WINDOWS);
     }
     
     def buildPerOS(type) {
@@ -278,13 +293,22 @@ class RapidCmdbBuild extends Build {
             	ant.exclude(name:".project");
             }
         }
-        netcoolBuild.run([]);
         rapidUiBuild.run([]);
-        smartsBuild.run([]);
-        buildSample("Sample1");
-        buildSample("Sample2");
         //rapidInsightForNetcoolBuild.run([]);
         return zipFileName;
+    }
+    
+    def buildPerOSWithPlugins(type){
+    	def zipFileName = buildPerOS(type);
+    	buildPlugins();
+    	return zipFileName;
+    }
+    
+    def buildPlugins(){
+    	netcoolBuild.run([]);
+    	smartsBuild.run([]);
+        buildSample("Sample1");
+        buildSample("Sample2");
     }
 
     def getVersionWithDate() {

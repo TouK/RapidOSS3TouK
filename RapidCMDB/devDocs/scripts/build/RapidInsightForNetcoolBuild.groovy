@@ -7,16 +7,19 @@ package build
  * Time: 1:44:17 PM
  * To change this template use File | Settings | File Templates.
  */
+ 
+//SUPPORTED TARGETS:
+//------------------	
+//build			: builds RI4NC for Unix AND Windows
+//buildUnix		: builds RapidCMDB for Unix
+//buildWindows	: builds RapidCMDB for Windows
+
 class RapidInsightForNetcoolBuild extends Build{
 	def version = "$env.rapid_netcool/RI4NCVersion.txt"; 
 	def versionInBuild = "$env.dist_rapid_suite/RI4NCVersion.txt";
 	def rapidCMDBBuild = new RapidCmdbBuild();
-//    def rapidCmdbBuild;
-//    public RapidInsightForNetcoolBuild(rapidCmdbBuildP)
-//    {
-//        this.rapidCmdbBuild = rapidCmdbBuildP;
-//    }
-    public RapidInsightForNetcoolBuild()
+
+	public RapidInsightForNetcoolBuild()
     {
         this(null);
     }

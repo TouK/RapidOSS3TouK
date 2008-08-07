@@ -28,7 +28,7 @@ class RapidCmdbBuild extends Build {
 	def WINDOWS = "Windows";
 	def osType; 
     def smartsBuild = new SmartsModuleBuild();
-    def rapidInsightForNetcoolBuild = new RapidInsightForNetcoolBuild(this);
+//    def rapidInsightForNetcoolBuild = new RapidInsightForNetcoolBuild(this);
     def netcoolBuild = new NetcoolModuleBuild();
     def rapidUiBuild = new RapidUiPluginBuild();
     static void main(String[] args) {
@@ -220,22 +220,32 @@ class RapidCmdbBuild extends Build {
     	clean();
     	buildPerOS(WINDOWS);
 	    // save the zip file
-    	ant.copy(todir: env.save) {
-	        ant.fileset(dir: env.distribution) {
-	            ant.include(name: "RapidCMDB*.zip")
-	            ant.include(name: "RapidInsight*.zip")
-	        }
-	    }
+//    	ant.copy(todir: env.save) {
+//	        ant.fileset(dir: env.distribution) {
+//	            ant.include(name: "RapidCMDB*.zip")
+//	            ant.include(name: "RapidInsight*.zip")
+//	        }
+//	    }
         ant.delete(dir: env.distribution);
         ant.delete(dir: "$env.basedir/build");
         buildPerOS(UNIX);
         // bring back windows zips to distribution
-    	ant.copy(todir: env.distribution) {
-	        ant.fileset(dir: env.save) {
-	            ant.include(name: "RapidCMDB*.zip")
-	            ant.include(name: "RapidInsight*.zip")
-	        }
-	    }
+//    	ant.copy(todir: env.distribution) {
+//	        ant.fileset(dir: env.save) {
+//	            ant.include(name: "RapidCMDB*.zip")
+//	            ant.include(name: "RapidInsight*.zip")
+//	        }
+//	    }
+    }
+    
+    def buildUnix(){
+    	clean();
+    	buildPerOS(UNIX);
+    }
+    
+    def buildWindows(){
+    	clean();
+    	buildPerOS(WINDOWS);
     }
     
     def buildPerOS(type) {
@@ -250,10 +260,8 @@ class RapidCmdbBuild extends Build {
         copyDependentJars();
         unzipGrails();
         
-        if(osType == UNIX){
-        	ant.copy(todir: "${env.dist_rapid_server}/bin", file: "${env.rapid_cmdb_commons_cvs}/rsbatch.sh")
-        }
-        if ((System.getProperty("os.name").indexOf("Windows") < 0) && (osType == UNIX))
+       	ant.copy(todir: "${env.dist_rapid_server}/bin", file: "${env.rapid_cmdb_commons_cvs}/rsbatch.sh")
+        if ((System.getProperty("os.name").indexOf("Windows") < 0))
         {
             def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
             process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
@@ -275,7 +283,7 @@ class RapidCmdbBuild extends Build {
         smartsBuild.run([]);
         buildSample("Sample1");
         buildSample("Sample2");
-        rapidInsightForNetcoolBuild.run([]);
+        //rapidInsightForNetcoolBuild.run([]);
         return zipFileName;
     }
 

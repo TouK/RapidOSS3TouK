@@ -10,11 +10,12 @@ package build
 class RapidInsightForNetcoolBuild extends Build{
 	def version = "$env.rapid_netcool/RI4NCVersion.txt"; 
 	def versionInBuild = "$env.dist_rapid_suite/RI4NCVersion.txt";
-    def rapidCmdbBuild;
-    public RapidInsightForNetcoolBuild(rapidCmdbBuildP)
-    {
-        this.rapidCmdbBuild = rapidCmdbBuildP;
-    }
+	def rapidCMDBBuild = new RapidCmdbBuild();
+//    def rapidCmdbBuild;
+//    public RapidInsightForNetcoolBuild(rapidCmdbBuildP)
+//    {
+//        this.rapidCmdbBuild = rapidCmdbBuildP;
+//    }
     public RapidInsightForNetcoolBuild()
     {
         this(null);
@@ -31,14 +32,37 @@ class RapidInsightForNetcoolBuild extends Build{
         }
         return "";
     }
+    
+    def build(){
+    	buildWindows();
+//    	 save the zip file
+    	ant.copy(todir: env.save) {
+	        ant.fileset(dir: env.distribution) {
+	            ant.include(name: "RapidCMDB*.zip")
+	            ant.include(name: "RapidInsight*.zip")
+	        }
+	    }    	
+    	buildUnix();
+        //bring back windows zips to distribution
+		ant.copy(todir: env.distribution) {
+		    ant.fileset(dir: env.save) {
+		        ant.include(name: "RapidCMDB*.zip")
+		        ant.include(name: "RapidInsight*.zip")
+		    }
+		}
+    }
 
+    def buildWindows(){
+    	rapidCMDBBuild.buildWindows();
+    	buildPerOS("Windows");
+    }
+    
+    def buildUnix(){
+    	rapidCMDBBuild.buildUnix();
+    	buildPerOS("Unix");
+    }
 
-    def build() {
-//        if(this.rapidCmdbBuild != null )
-//        {
-//            clean();
-//            rapidCmdbBuild.build();
-//        }
+    def buildPerOS(osType) {
         ant.delete(dir:env.dist_rapid_server);
 
         def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB");
@@ -55,8 +79,8 @@ class RapidInsightForNetcoolBuild extends Build{
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
         
-        def osType = "Unix";
-        if (rapidCmdb.getName().indexOf("Windows") > -1) osType = "Windows"
+//        def osType = "Unix";
+//        if (rapidCmdb.getName().indexOf("Windows") > -1) osType = "Windows"
         def zipFileName = "${env.distribution}/RapidInsightForNetcool_$osType$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
            ant.zipfileset(dir : "$env.distribution/RapidServer", prefix:"RapidServer")

@@ -27,12 +27,14 @@ package build;
  
 // SUPPORTED TARGETS:
 // ------------------	
-// build					: builds RapidCMDB for Unix AND Windows only, no plugins or modules included
-// buildWithPlugins			: builds RapidCMDB for Unix AND Windows WITH plugins and modules (samples included)
-// buildUnix				: builds RapidCMDB for Unix, no plugins or modules included
-// buildUnixWithPlugins		: builds RapidCMDB for Unix WITH plugins and modules (samples included)
-// buildWindows				: builds RapidCMDB for Windows, no plugins or modules included
-// buildWindowsWithPlugins	: builds RapidCMDB for Windows WITH plugins and modules (samples included)
+// build						: builds RapidCMDB for Unix AND Windows only, no plugins or modules included
+// buildWithPlugins				: builds RapidCMDB for Unix AND Windows WITH plugins
+// buildWithPluginsAndModules	: builds RapidCMDB for Unix AND Windows WITH plugins and modules (samples included)
+// buildUnix					: builds RapidCMDB for Unix, no plugins or modules included
+// buildUnixWithPlugins			: builds RapidCMDB for Unix WITH plugins
+// buildWindows					: builds RapidCMDB for Windows, no plugins or modules included
+// buildWindowsWithPlugins		: builds RapidCMDB for Windows WITH plugins
+// buildModules					: build Smarts Module and samples
     
 class RapidCmdbBuild extends Build {
 	def UNIX = "Unix";
@@ -56,6 +58,10 @@ class RapidCmdbBuild extends Build {
 
 
     def buildSample(sampleName) {
+    	if(versionNo == null) {
+    		ant.copy(todir: "$env.dist_rapid_server", file: env.version)
+    		setVersionAndBuildNumber(env.versionInBuild);
+    	}
         ant.delete(dir: env.distribution + "/RapidServer");
         ant.delete(file: "${env.distribution}/${sampleName}*.zip");
 
@@ -239,6 +245,13 @@ class RapidCmdbBuild extends Build {
     	addJreOnTopOfUnixAndZip();
     }    
     
+    def buildWithPluginsAndModules(){
+    	clean();
+    	buildPerOSWithPlugins(UNIX);
+    	addJreOnTopOfUnixAndZip();
+    	buildModules();
+    }     
+    
     def addJreOnTopOfUnixAndZip(){
     	ant.copy(todir: "$env.dist_rapid_server/jre") {
             ant.fileset(dir: "$env.jreDir")
@@ -304,21 +317,23 @@ class RapidCmdbBuild extends Build {
             }
         }
         rapidUiBuild.run([]);
-        //rapidInsightForNetcoolBuild.run([]);
         return zipFileName;
     }
     
     def buildPerOSWithPlugins(type){
     	def zipFileName = buildPerOS(type);
-    	buildPlugins();
+    	buildAdditionalPlugins();
     	return zipFileName;
     }
     
-    def buildPlugins(){
+    def buildAdditionalPlugins(){
     	netcoolBuild.run([]);
+    }
+    
+    def buildModules(){
     	smartsBuild.run([]);
         buildSample("Sample1");
-        buildSample("Sample2");
+        buildSample("Sample2");    	
     }
 
     def getVersionWithDate() {

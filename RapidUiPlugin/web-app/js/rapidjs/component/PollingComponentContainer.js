@@ -83,6 +83,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     handleAuthenticate: function(response)
     {
     },
+    handleServerDown: function(response)
+    {
+          YAHOO.rapidjs.ErrorManager.serverDown();
+    },
     processFailure : function(response)
     {
         if(!this.lastConnection|| YAHOO.util.Connect.isCallInProgress(this.lastConnection) == false){
@@ -97,7 +101,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 			this.handleUnknownUrl(response);
 		}
 		else if(st == 0){
-			YAHOO.rapidjs.ErrorManager.serverDown();
+               this.handleServerDown(response);
 		}
         if(this.pollingInterval > 0)
         {

@@ -1,0 +1,34 @@
+.rcmdb-form-mask {
+    z-index: 20000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -moz-opacity: 0.5;
+    opacity: .50;
+    filter: alpha(opacity=50);
+    background-color: #CCC;
+    zoom: 1;
+}
+
+.rcmdb-form-mask-loadingwrp{
+	z-index: 20001;
+    position: absolute;
+    top: 0;
+    left: 0;
+	border:1px solid #B2D0F7;
+	padding:1px;
+	font:bold 14px verdana,tahoma,helvetica;
+	color:#003366;
+	width:150px;
+	text-align:center;
+	background-color:#ffffff;
+}
+.rcmdb-form-mask-loading{
+	background-image: url(../../images/rapidjs/component/tools/loading.gif );
+	background-repeat: no-repeat;
+    background-position:top left;
+    padding-left:20px;
+	height:18px;
+	text-align:left;
+	font-size:8pt;
+}

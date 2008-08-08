@@ -41,6 +41,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     {
         var dh = YAHOO.ext.DomHelper;
         this.errors = dh.insertBefore(this.dialog.form.firstChild, {tag: 'ul', cls:'rapid-errors'}, true);
+        this.mask = dh.append(this.dialog.form, {tag:'div', cls:'rcmdb-form-mask'}, true);
+        this.maskMessage = dh.append(this.dialog.form, {tag:'div', cls:'rcmdb-form-mask-loadingwrp', html:'<div class="rcmdb-form-mask-loading">Loading...</div>'}, true)
+        this.hideMask();
         this.errors.setVisibilityMode(YAHOO.ext.Element.DISPLAY);
     },
     handleTimeout: function(response)
@@ -51,10 +54,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
 
         var listItem = dh.append(this.errors.dom, {tag:"li"});
         listItem.appendChild(document.createTextNode("Request timeout"));
+        this.hideMask();
         this.errors.show();
     },
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
+	    this.hideMask();
         if (this.isSubmitInProggress)
         {
             this.successful();
@@ -105,7 +110,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
             this.handleSubmit();
         }
     },
-
+    handleUnknownUrl: function(response)
+    {
+	  	this.hideMask();
+	    YAHOO.rapidjs.component.Form.superclass.handleUnknownUrl.call(this);
+    },
+    handleServerDown: function(response)
+    {
+        this.hideMask();
+        YAHOO.rapidjs.component.Form.superclass.handleServerDown.call(this);
+    },
     handleSubmit: function()
     {
         this.errors.dom.innerHTML = "";
@@ -127,10 +141,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
             var formElement = formElements[i];
             params[formElement.name] = this.getFormElementValue(formElement);
         }
+        this.showMask();
         this.doRequest(this.url, params);
     },
     handleCancel: function() {
-        this.hide();
+	    this.hide();
     },
     getFormElementValue : function(formElement){
          if (formElement.nodeName == 'SELECT') {
@@ -143,7 +158,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
 
     handleErrors: function(response)
     {
-        var dh = YAHOO.ext.DomHelper;
+	    var dh = YAHOO.ext.DomHelper;
         this.isSubmitInProggress = false;
         var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
         for (var i = 0; i < errors.length; i++)
@@ -151,21 +166,26 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
             var listItem = dh.append(this.errors.dom, {tag:"li"});
             listItem.appendChild(document.createTextNode(errors[i]));
         }
+        this.hideMask();
         this.errors.show();
+
     },
 
     show: function(mode, params)
     {
         this.errors.hide();
+        this.hideMask();
         this.clearAllFields();
         this.mode = mode;
         if (mode == this.EDIT_MODE && this.editUrl != null)
         {
+	        this.showMask();
             this.doRequest(this.editUrl, params);
 
         }
         else if (mode == this.CREATE_MODE && this.createUrl != null)
         {
+	        this.showMask();
             this.doRequest(this.createUrl, params);
         }
         this.dialog.show();
@@ -193,5 +213,37 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
                 formElement.value = '';
             }
         }
+    },
+    disableFormButtons: function()
+    {
+	    YAHOO.util.Dom.removeClass(this.dialog.buttonSpan.firstChild,'default');
+	    for(var i = 0; i <this.dialog.getButtons().length ; i++)
+	    {
+		    this.dialog.getButtons()[i].set('disabled',true);
+    	}
+
+    },
+    enableFormButtons: function()
+    {
+	    YAHOO.util.Dom.addClass(this.dialog.buttonSpan.firstChild,'default');
+	    for(var i = 0; i <this.dialog.getButtons().length ; i++)
+	    	this.dialog.getButtons()[i].set('disabled',false);
+    },
+
+    showMask: function() {
+        this.mask.setTop(this.dialog.body.offsetTop);
+        this.mask.setWidth(this.dialog.body.clientWidth);
+        this.mask.setHeight(this.dialog.body.clientHeight);
+        YAHOO.util.Dom.setStyle(this.mask.dom, 'display', '');
+        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', '');
+        this.maskMessage.center(this.mask.dom);
+        this.disableFormButtons();
+
+    },
+    hideMask: function() {
+	    this.enableFormButtons();
+        YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
+        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', 'none');
+
     }
 })

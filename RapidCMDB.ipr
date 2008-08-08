@@ -337,6 +337,7 @@
     <option name="myUrlCacheName" value="rec" />
   </component>
   <component name="ThePluginSettings">
+    <option name="activeToolWindowTab" value="JIRA" />
     <option name="bambooConfiguration">
       <BambooProjectConfiguration>
         <option name="tableConfiguration">
@@ -346,6 +347,9 @@
     </option>
     <option name="crucibleConfiguration">
       <CrucibleProjectConfiguration>
+        <option name="crucibleFilters">
+          <CrucibleFiltersBean />
+        </option>
         <option name="tableConfiguration">
           <ProjectToolWindowTableConfiguration />
         </option>
@@ -353,8 +357,111 @@
     </option>
     <option name="jiraConfiguration">
       <JiraProjectConfiguration>
+        <option name="query">
+          <map>
+            <entry key="1218122160812">
+              <value>
+                <JiraFiltersBean>
+                  <option name="manualFilter">
+                    <list>
+                      <JiraFilterEntryBean>
+                        <option name="filterEntry">
+                          <map>
+                            <entry key="description" value="" />
+                            <entry key="filterTypeClass" value="com.atlassian.theplugin.jira.api.JIRAProjectBean" />
+                            <entry key="id" value="10050" />
+                            <entry key="key" value="CMDB" />
+                            <entry key="lead" value="tugrul" />
+                            <entry key="name" value="RapidCMDB" />
+                            <entry key="url" value="http://www.ifountain.org:8080/jira/browse/CMDB" />
+                          </map>
+                        </option>
+                      </JiraFilterEntryBean>
+                      <JiraFilterEntryBean>
+                        <option name="filterEntry">
+                          <map>
+                            <entry key="filterTypeClass" value="com.atlassian.theplugin.jira.api.JIRAPriorityBean" />
+                            <entry key="id" value="-1000" />
+                            <entry key="name" value="Any" />
+                          </map>
+                        </option>
+                      </JiraFilterEntryBean>
+                      <JiraFilterEntryBean>
+                        <option name="filterEntry">
+                          <map>
+                            <entry key="filterTypeClass" value="com.atlassian.theplugin.jira.api.JIRAResolutionBean" />
+                            <entry key="id" value="-1000" />
+                            <entry key="name" value="Any" />
+                          </map>
+                        </option>
+                      </JiraFilterEntryBean>
+                      <JiraFilterEntryBean>
+                        <option name="filterEntry">
+                          <map>
+                            <entry key="filterTypeClass" value="com.atlassian.theplugin.jira.api.JIRAFixForVersionBean" />
+                            <entry key="id" value="10076" />
+                            <entry key="name" value="0.4.1" />
+                          </map>
+                        </option>
+                      </JiraFilterEntryBean>
+                      <JiraFilterEntryBean>
+                        <option name="filterEntry">
+                          <map>
+                            <entry key="filterTypeClass" value="com.atlassian.theplugin.jira.api.JIRAAssigneeBean" />
+                            <entry key="id" value="-1" />
+                            <entry key="name" value="Current User" />
+                            <entry key="value" value="mustafa" />
+                          </map>
+                        </option>
+                      </JiraFilterEntryBean>
+                      <JiraFilterEntryBean>
+                        <option name="filterEntry">
+                          <map>
+                            <entry key="filterTypeClass" value="com.atlassian.theplugin.jira.api.JIRAReporterBean" />
+                            <entry key="id" value="-1000" />
+                            <entry key="name" value="Any User" />
+                            <entry key="value" value="null" />
+                          </map>
+                        </option>
+                      </JiraFilterEntryBean>
+                    </list>
+                  </option>
+                  <option name="savedFilter">
+                    <JiraFilterEntryBean>
+                      <option name="filterEntry">
+                        <map>
+                          <entry key="author" value="null" />
+                          <entry key="filterTypeClass" value="com.atlassian.theplugin.jira.api.JIRASavedFilterBean" />
+                          <entry key="id" value="10052" />
+                          <entry key="name" value="RCMDB Overdue" />
+                          <entry key="project" value="null" />
+                        </map>
+                      </option>
+                    </JiraFilterEntryBean>
+                  </option>
+                </JiraFiltersBean>
+              </value>
+            </entry>
+          </map>
+        </option>
+        <option name="selectedServerId" value="1218122160812" />
         <option name="tableConfiguration">
-          <ProjectToolWindowTableConfiguration />
+          <ProjectToolWindowTableConfiguration>
+            <option name="properties">
+              <map>
+                <entry key="Order0" value="0" />
+                <entry key="Order1" value="1" />
+                <entry key="Order2" value="2" />
+                <entry key="Order3" value="3" />
+                <entry key="Order4" value="4" />
+                <entry key="Width0" value="158" />
+                <entry key="Width1" value="104" />
+                <entry key="Width2" value="93" />
+                <entry key="Width3" value="239" />
+                <entry key="Width4" value="500" />
+              </map>
+            </option>
+          </ProjectToolWindowTableConfiguration>
         </option>
       </JiraProjectConfiguration>
     </option>

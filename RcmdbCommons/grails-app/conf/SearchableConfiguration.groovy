@@ -17,15 +17,14 @@ class SearchableConfiguration {
      *
      * Examples: "/home/app/compassindex", "ram://app-index" or null to use the default
      */
-    String compassConnection = new StringBuffer(System.getProperty("base.dir")).
-            append(File.separator).
-            append("data").
-            append(File.separator).
-            append("index").
-            append(File.separator).
-            append(GrailsUtil.getEnvironment()).
-            toString();
-
+    String compassConnection = System.getProperty("base.dir") == null?"ram://app-index":new StringBuffer(System.getProperty("base.dir")).
+                append(File.separator).
+                append("data").
+                append(File.separator).
+                append("index").
+                append(File.separator).
+                append(GrailsUtil.getEnvironment()).
+                toString();
     int batchSize = 100;
     long maxTransactionWaitTime = 5000;
     /**

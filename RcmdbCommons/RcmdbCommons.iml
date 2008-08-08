@@ -32,9 +32,18 @@
       <sourceFolder url="file://$MODULE_DIR$/plugins/rapid-domain-class-0.1" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/rapid-domain-class-0.1/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/rapid-domain-class-0.1/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/conf" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/taglib" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/views" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/scripts" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/web-app" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app/domain" isTestSource="false" />
@@ -45,6 +54,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/views" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/src/test" />
     </content>
     <orderEntry type="library" name="GRAILS" level="application" />
     <orderEntry type="library" name="GROOVY" level="application" />

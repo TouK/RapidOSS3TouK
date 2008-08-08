@@ -1,3 +1,4 @@
+#! /bin/sh
 compileBuildFiles() {
     rm -rf $GROOVY_HOME/build
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Env.groovy

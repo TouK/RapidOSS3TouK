@@ -165,7 +165,15 @@
         titleAttribute:"serverserial",
         lineSize:3,
         title:'Netcool Events',
-        fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey'],
+        defaultFields:['node', 'owneruid', 'ownergid'],
+        fields: [
+        	{exp:'data["severity"] == "Critical"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey']},
+            {exp:'data["severity"] == "Major"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence']},
+            {exp:'data["severity"] == "Minor"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist']},
+            {exp:'data["severity"] == "Warning"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl']},
+            {exp:'data["severity"] == "Indeterminate"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity']},
+            {exp:'data["severity"] == "Clear"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally']}
+        ],
         menuItems:{
             item1 : { id : 'eventDetails', label : 'Event Details' },
             item2 : { id : 'acknowledge', label : 'Acknowledge', condition: searchListHeaderMenuConditionFunctionAcknowledge },

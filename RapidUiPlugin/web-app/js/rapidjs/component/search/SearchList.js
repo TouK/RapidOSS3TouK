@@ -10,11 +10,11 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.totalCountAttribute = null;
     this.offsetAttribute = null;
     this.fields = null;
+    this.defaultFields =  null;
     this.titleAttribute = null;
     this.maxRowsDisplayed = 200;
     this.lineSize = 4;
     this.sortOrderAttribute = null;
-    this.renderCellFunction = null;
     this.images = null;
     YAHOO.ext.util.Config.apply(this, config);
     this.rootNode = null;
@@ -28,6 +28,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.params = {'offset':this.lastOffset, 'sort':this.lastSortAtt, 'order':this.lastSortOrder, 'max':this.maxRowsDisplayed};
     this.rowHeaderMenu = null;
     this.cellMenu = null;
+    this.maxRowCellLength= 0;
     this.rowHeaderAttribute = config.rowHeaderAttribute;
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.scrollPollTask = new YAHOO.ext.util.DelayedTask(this.scrollPoll, this);
@@ -324,7 +325,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         }
         if (interval > this.bufferView.rowEls.length)
         {
-
             this.createEmptyRows(interval - this.bufferView.rowEls.length);
         }
         else if (interval < this.bufferView.rowEls.length)
@@ -374,7 +374,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     createEmptyRows : function(rowCount) {
         var innerHtml = '';
         if (this.fields) {
-            for (var fieldIndex = 0; fieldIndex < this.fields.length; fieldIndex++) {
+	        this.maxRowCellLength = 0;
+		    for (var i = 0; i < this.fields.length; i++)
+	            if(this.maxRowCellLength < this.fields[i]['fields'].length)
+	            	this.maxRowCellLength = this.fields[i]['fields'].length;
+
+            for (var fieldIndex = 0; fieldIndex < this.maxRowCellLength; fieldIndex++) {
                 innerHtml += '<div class="rcmdb-search-cell">' +
                              '<span class="rcmdb-search-cell-key"></span>' +
                              '<a href="#" class="rcmdb-search-cell-value"></a>' +
@@ -410,10 +415,20 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
     renderRow: function(rowEl) {
         if (this.fields) {
-            var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
+	        var insertedFields = null;
+	        var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
             var dataNode = searchNode.xmlData;
+            var data = dataNode.getAttributes();
+            for (var i = 0; i < this.fields.length; i++)
+            {
+	            var currentExpressionStr = this.fields[i]['exp'];
+			    var evaluationResult = eval(currentExpressionStr);
+			    if (evaluationResult == true)
+			    	insertedFields = this.fields[i]['fields'];
+			}
+			if(insertedFields == null)
+				insertedFields = this.defaultFields;
             if (this.images) {
-                var data = dataNode.getAttributes();
                 for (var i = 0; i < this.images.length; i++)
                 {
                     var currentExpressionStr = this.images[i]['exp'];
@@ -425,13 +440,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                     }
                 }
             }
-            var nOfFields = this.fields.length;
+            var nOfFields = insertedFields.length;
             if (this.rowHeaderAttribute != null)
             {
                 rowEl.header.innerHTML = dataNode.getAttribute(this.rowHeaderAttribute);
             }
             for (var fieldIndex = 0; fieldIndex < nOfFields; fieldIndex++) {
-                var att = this.fields[fieldIndex];
+                var att = insertedFields[fieldIndex];
                 var cell = rowEl.cells[fieldIndex];
                 var keyEl = cell.firstChild;
                 var valueEl = keyEl.nextSibling;
@@ -440,7 +455,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 keyEl.innerHTML = att + '=';
                 cell.propKey = att;
                 cell.propValue = value;
+                YAHOO.util.Dom.setStyle(cell, 'display', 'inline');
             }
+            for ( var fieldIndex = insertedFields.length; fieldIndex < this.maxRowCellLength; fieldIndex++)
+            {
+	            var cell = rowEl.cells[fieldIndex];
+	            YAHOO.util.Dom.setStyle(cell, 'display', 'none');
+            }
+
         }
 
     },

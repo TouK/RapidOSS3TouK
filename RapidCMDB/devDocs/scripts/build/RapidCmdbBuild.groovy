@@ -86,7 +86,7 @@ class RapidCmdbBuild extends Build {
 
     def testBuild() {
         TEST = true;
-        buildWithPlugins();
+        buildWithPluginsAndModules();
         def versionDate = getVersionWithDate();
         ant.delete(dir: env.distribution + "/RapidServer");
         if (System.getProperty("os.name").indexOf("Windows") < 0){

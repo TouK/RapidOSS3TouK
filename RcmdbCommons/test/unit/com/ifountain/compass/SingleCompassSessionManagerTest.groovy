@@ -5,6 +5,7 @@ import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.compass.core.CompassSession
 import org.compass.core.Compass
 import org.apache.commons.io.FileUtils
+import org.compass.core.CompassTransaction
 
 /**
  * Created by IntelliJ IDEA.
@@ -193,6 +194,23 @@ class SingleCompassSessionManagerTest extends AbstractSearchableCompassTests{
         catch(UnInitializedSessionManagerException exception)
         {
         }
+    }
+
+    public void testRollbackTransactionThrowsException()
+    {
+        int maxNumberOfTransactions = 1;
+        int maxWaitTime = 0;
+        SingleCompassSessionManager.initialize(compass, maxNumberOfTransactions, maxWaitTime);
+        CompassTransaction tr = SingleCompassSessionManager.beginTransaction();
+        try
+        {
+            tr.rollback();
+            fail("Should throw exception");
+        }
+        catch(UnsupportedOperationException exception)
+        {
+        }
+        assertTrue (SingleCompassSessionManager.isClosedLastSession());
     }
 
     public void testDestroyWillMarkSessionToBeClosed()

@@ -38,7 +38,8 @@ public class RapidCompassTransaction implements CompassTransaction{
     }
 
     public void rollback() throws CompassException {
-        throw new RuntimeException("Not supported");
+        this.listener.transactionRolledback(this);
+        throw new UnsupportedOperationException("Not supported");
     }
 
     public boolean wasCommitted() throws CompassException {

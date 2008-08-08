@@ -60,9 +60,9 @@ generateTestDomainClasses() {
 
     scriptFileName1="Sample3Setup"
     scriptFileName2="Sample1Setup"
-    cp $WORKSPACE/RapidCMDBModeler/scripts/$scriptFileName1.groovy $WORKSPACE/Distribution/RapidServer/Modeler/scripts
-    cp $WORKSPACE/RapidCMDBModeler/scripts/$scriptFileName2.groovy $WORKSPACE/Distribution/RapidServer/Modeler/scripts
-    cp $WORKSPACE/RapidCMDBModeler/scripts/ModelHelper.groovy $WORKSPACE/Distribution/RapidServer/Modeler/scripts
+    cp $WORKSPACE/RapidModules/RapidCMDBModeler/scripts/$scriptFileName1.groovy $WORKSPACE/Distribution/RapidServer/Modeler/scripts
+    cp $WORKSPACE/RapidModules/RapidCMDBModeler/scripts/$scriptFileName2.groovy $WORKSPACE/Distribution/RapidServer/Modeler/scripts
+    cp $WORKSPACE/RapidModules/RapidCMDBModeler/scripts/ModelHelper.groovy $WORKSPACE/Distribution/RapidServer/Modeler/scripts
 
     rsbatchInput=input.txt
     echo  "/Modeler/script/save?name=$scriptFileName1" >> $rsbatchInput

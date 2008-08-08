@@ -20,19 +20,21 @@ class SearchController {
         def query = params.query;
         if(query == "" || query == null)
         {
-            query = "id:*";
+            query = "id:[0 TO *]";
         }
         StringWriter sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         try
         {
-            def searchResults = NetcoolEvent.search(query, params);
+            GrailsDomainClass netcoolEventClass = grailsApplication.getDomainClass("NetcoolEvent");
+            def grailsObjectProps = netcoolEventClass.getProperties();
+            def searchResults = netcoolEventClass.clazz.metaClass.invokeStaticMethod(netcoolEventClass.clazz, "search", [query, params] as Object[]);
+
             builder.Objects(total:searchResults.total, offset:searchResults.offset)
             {
                 searchResults.results.each{result->
-                    GrailsDomainClass grailsDomainClass = grailsApplication.getDomainClass(result.class.name);
                     def props = [:];
-                    grailsDomainClass.getProperties().each{resultProperty->
+                    grailsObjectProps.each{resultProperty->
                         props[resultProperty.name] = result[resultProperty.name];
                     }
                     props.put("sortOrder", sortOrder++)

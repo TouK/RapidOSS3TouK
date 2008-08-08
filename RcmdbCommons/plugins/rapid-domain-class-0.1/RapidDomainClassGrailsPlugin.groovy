@@ -20,6 +20,7 @@ import java.lang.reflect.Field
 import org.codehaus.groovy.grails.commons.GrailsClass
 import groovy.xml.MarkupBuilder
 import org.springframework.validation.FieldError
+import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]

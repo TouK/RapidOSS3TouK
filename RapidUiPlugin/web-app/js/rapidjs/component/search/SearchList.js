@@ -186,7 +186,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         var saveQueryButton = YAHOO.ext.Element.get(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-savequery', 'div', this.searchBox.dom)[0]);
         saveQueryButton.addClassOnOver('rcmdb-search-savequery-hover');
         YAHOO.util.Event.addListener(saveQueryButton.dom, 'click', this.handleSaveQueryClick, this, true);
-        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0], 'keypress', this.handleInputEnter, this, true);
+        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0].form, 'keypress', this.handleInputEnter, this, true);
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
 

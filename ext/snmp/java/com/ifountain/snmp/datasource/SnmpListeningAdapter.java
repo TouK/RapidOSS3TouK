@@ -129,7 +129,6 @@ public class SnmpListeningAdapter implements CommandResponder {
     public void processPdu(CommandResponderEvent event) {
 
         PDU pdu = event.getPDU();
-         System.out.println("pdu received: " + pdu.getType());
         logger.debug(getLogPrefix() + "Pdu " + pdu + " received..");
         if (pdu.getType() == PDU.TRAP || pdu.getType() == PDU.V1TRAP) {
 

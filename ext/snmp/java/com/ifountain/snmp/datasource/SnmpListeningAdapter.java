@@ -3,9 +3,12 @@ package com.ifountain.snmp.datasource;
 import com.ifountain.snmp.util.RSnmpConstants;
 import org.apache.log4j.Logger;
 import org.snmp4j.*;
-import org.snmp4j.smi.Address;
-import org.snmp4j.smi.GenericAddress;
-import org.snmp4j.smi.IpAddress;
+import org.snmp4j.security.SecurityProtocols;
+import org.snmp4j.mp.MPv1;
+import org.snmp4j.mp.MPv2c;
+import org.snmp4j.util.ThreadPool;
+import org.snmp4j.util.MultiThreadedMessageDispatcher;
+import org.snmp4j.smi.*;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 import java.io.IOException;
@@ -36,6 +39,7 @@ import java.util.*;
  */
 public class SnmpListeningAdapter implements CommandResponder {
     private Snmp snmp;
+    private TransportMapping transport;
     private Address targetAddress;
     private String host;
     private int port;
@@ -45,6 +49,7 @@ public class SnmpListeningAdapter implements CommandResponder {
     private Logger logger;
     private Object trapWaitingLock = new Object();
     protected TrapProcessThread trapProcessorThread;
+    private int numDispatcherThreads = 2;
 
 
     public SnmpListeningAdapter(String host, int port, Logger logger) {
@@ -61,16 +66,23 @@ public class SnmpListeningAdapter implements CommandResponder {
             if (targetAddress == null || !targetAddress.isValid()) {
                 throw new Exception("Invalid address " + host + "/" + port);
             }
-            TransportMapping transport = new DefaultUdpTransportMapping();
+            transport = new DefaultUdpTransportMapping((UdpAddress) targetAddress);
+            ThreadPool threadPool = ThreadPool.create("DispatcherPool", numDispatcherThreads);
+            MessageDispatcher mtDispatcher = new MultiThreadedMessageDispatcher(threadPool, new MessageDispatcherImpl());
+            mtDispatcher.addMessageProcessingModel(new MPv1());
+            mtDispatcher.addMessageProcessingModel(new MPv2c());
+            SecurityProtocols.getInstance().addDefaultProtocols();
             logger.debug(getLogPrefix() + "Starting snmp session");
-            snmp = new Snmp(transport);
+            snmp = new Snmp(mtDispatcher, transport);
             logger.info(getLogPrefix() + "Successfully started snmp session");
-            snmp.listen();
-            logger.info(getLogPrefix() + "Snmp session is listening");
+            CommunityTarget target = new CommunityTarget();
+            target.setCommunity(new OctetString("public"));
+            snmp.addCommandResponder(this);
             logger.debug(getLogPrefix() + "Starting trap processor thread");
             trapProcessorThread = new TrapProcessThread();
             trapProcessorThread.start();
-            snmp.addNotificationListener(targetAddress, this);
+            transport.listen();
+            logger.info(getLogPrefix() + "Snmp session is listening");
             isOpen = true;
             logger.info(getLogPrefix() + "Started.");
         }
@@ -80,7 +92,10 @@ public class SnmpListeningAdapter implements CommandResponder {
         logger.debug(getLogPrefix() + "Closing snmp session");
         if (snmp != null) {
             try {
-                snmp.removeNotificationListener(targetAddress);
+                snmp.removeCommandResponder(this);
+                logger.debug(getLogPrefix() + "Closing transport mapping.");
+                transport.close();
+                logger.info(getLogPrefix() + "Transport mapping successfully closed.");
                 logger.debug(getLogPrefix() + "Closing snmp session.");
                 snmp.close();
                 logger.info(getLogPrefix() + "Snmp session successfully closed.");
@@ -119,18 +134,17 @@ public class SnmpListeningAdapter implements CommandResponder {
                 logger.debug(getLogPrefix() + "Pdu is version2 trap");
                 try {
                     logger.debug(getLogPrefix() + "Validating version2 trap");
-                    trap = new Trap(pdu, ((IpAddress)event.getPeerAddress()).getInetAddress());
+                    trap = new Trap(pdu, ((IpAddress) event.getPeerAddress()).getInetAddress());
                     logger.info(getLogPrefix() + "Version2 trap successfully constructed.");
                 } catch (Exception e) {
                     logger.warn(getLogPrefix() + "Could not process trap " + pdu + ". Reason: " + e.getMessage());
                 }
             }
-            if(trap != null){
+            if (trap != null) {
                 logger.debug(getLogPrefix() + "Adding trap to buffer.");
-                addTrapToBuffer(trap.toMap());    
+                addTrapToBuffer(trap.toMap());
             }
-        }
-        else{
+        } else {
             logger.info(getLogPrefix() + "Ignored non trap pdu: " + pdu);
         }
     }

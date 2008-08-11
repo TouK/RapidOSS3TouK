@@ -210,27 +210,6 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
             }
         });
     }
-     public void testVasdfp() throws Exception {
-        adapter = new SnmpListeningAdapter("localhost", 162, TestLogUtils.log);
-        final MockSnmpTrapProcessorImpl trapProcessor = new MockSnmpTrapProcessorImpl();
-        adapter.addTrapProcessor(trapProcessor);
-        adapter.open();
-         Thread.sleep(5000);
-        CommonTestUtils.waitFor(new WaitAction() {
-            public void check() throws Exception {
-                assertEquals(1, trapProcessor.traps.size());
-            }
-        });
-        Map trap = (Map)trapProcessor.traps.get(0);
-         for (Iterator iterator = trap.entrySet().iterator(); iterator.hasNext();) {
-             Map.Entry o =  (Map.Entry)iterator.next();
-             System.out.println(o.getKey());
-             System.out.println(o.getValue());
-
-        }
-
-     }
-
 
     private Map getVarbind(String oid, String value, String type) {
         Map varbind = new HashMap();

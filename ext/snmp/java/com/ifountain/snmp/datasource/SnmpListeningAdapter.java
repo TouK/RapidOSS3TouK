@@ -3,9 +3,10 @@ package com.ifountain.snmp.datasource;
 import com.ifountain.snmp.util.RSnmpConstants;
 import org.apache.log4j.Logger;
 import org.snmp4j.*;
-import org.snmp4j.security.SecurityProtocols;
+import org.snmp4j.security.*;
 import org.snmp4j.mp.MPv1;
 import org.snmp4j.mp.MPv2c;
+import org.snmp4j.mp.MPv3;
 import org.snmp4j.util.ThreadPool;
 import org.snmp4j.util.MultiThreadedMessageDispatcher;
 import org.snmp4j.smi.*;
@@ -68,15 +69,23 @@ public class SnmpListeningAdapter implements CommandResponder {
             }
             transport = new DefaultUdpTransportMapping((UdpAddress) targetAddress);
             ThreadPool threadPool = ThreadPool.create("DispatcherPool", numDispatcherThreads);
+            OctetString localEngineID = new OctetString(MPv3.createLocalEngineID());
             MessageDispatcher mtDispatcher = new MultiThreadedMessageDispatcher(threadPool, new MessageDispatcherImpl());
             mtDispatcher.addMessageProcessingModel(new MPv1());
             mtDispatcher.addMessageProcessingModel(new MPv2c());
+            mtDispatcher.addMessageProcessingModel(new MPv3(localEngineID.getValue()));
             SecurityProtocols.getInstance().addDefaultProtocols();
+            SecurityProtocols.getInstance().addPrivacyProtocol(new Priv3DES());
             logger.debug(getLogPrefix() + "Starting snmp session");
             snmp = new Snmp(mtDispatcher, transport);
             logger.info(getLogPrefix() + "Successfully started snmp session");
-            CommunityTarget target = new CommunityTarget();
-            target.setCommunity(new OctetString("public"));
+            USM usm = new USM(SecurityProtocols.getInstance(), localEngineID, 0);
+            SecurityModels.getInstance().addSecurityModel(usm);
+            snmp.getUSM().addUser(new OctetString(), new UsmUser(new OctetString(),
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null));
             snmp.addCommandResponder(this);
             logger.debug(getLogPrefix() + "Starting trap processor thread");
             trapProcessorThread = new TrapProcessThread();
@@ -93,9 +102,6 @@ public class SnmpListeningAdapter implements CommandResponder {
         if (snmp != null) {
             try {
                 snmp.removeCommandResponder(this);
-                logger.debug(getLogPrefix() + "Closing transport mapping.");
-                transport.close();
-                logger.info(getLogPrefix() + "Transport mapping successfully closed.");
                 logger.debug(getLogPrefix() + "Closing snmp session.");
                 snmp.close();
                 logger.info(getLogPrefix() + "Snmp session successfully closed.");
@@ -121,7 +127,9 @@ public class SnmpListeningAdapter implements CommandResponder {
     }
 
     public void processPdu(CommandResponderEvent event) {
+
         PDU pdu = event.getPDU();
+         System.out.println("pdu received: " + pdu.getType());
         logger.debug(getLogPrefix() + "Pdu " + pdu + " received..");
         if (pdu.getType() == PDU.TRAP || pdu.getType() == PDU.V1TRAP) {
 

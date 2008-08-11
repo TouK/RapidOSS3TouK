@@ -11,7 +11,7 @@ class SnmpConnection extends Connection{
     
     Long port =162;
     
-    String host ="localhost";
+    String host ="0.0.0.0";
     
 
     static hasMany = [snmpDatasources:SnmpDatasource]

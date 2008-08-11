@@ -1,23 +1,32 @@
 #! /bin/sh
-compileBuildFiles() {
-    rm -rf $GROOVY_HOME/build
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Env.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Parent.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Build.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Test.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleBuild.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/NetcoolModuleBuild.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCompBuild.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCoreBuild.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidExtBuild.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidUiPluginBuild.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCmdbBuild.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidInsightForNetcoolBuild.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleTest.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CoreModuleTest.groovy
-    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CompModuleTest.groovy
+
+tagSvn() {
+    tagname=$1
+    taglist=`svn list http://dev.ifountain.org/repos/os/tags`
+    if [ "$taglist" != "${taglist#*$tagname}" ]
+      then
+         svn delete -m "Deleting obsolete tag" http://dev.ifountain.org/repos/os/tags/$tagname
+    fi
+
+    svn mkdir -m "Creating tag $tagname" http://dev.ifountain.org/repos/os/tags/$tagname
+    svn copy http://dev.ifountain.org/repos/os/ThirdParty http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging ThirdParty"
+    svn copy http://dev.ifountain.org/repos/os/RapidModules http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging RapidModules"    
 }
 
+checkOutTag() {
+   LATEST_TAG_FILE="latesttag.txt"
+    if [ -f $LATEST_TAG_FILE ]
+     then
+        TAG_NAME=`cat $LATEST_TAG_FILE`
+     else
+        echo "$LATEST_TAG_FILE file could not be found !!!!!!!"
+        exit 1
+    fi
+    rm -rf RapidModules
+    rm -rf ThirdParty    
+    svn checkout file:///var/www/svn/os/tags/$TAG_NAME/RapidModules ./RapidModules
+    svn checkout file:///var/www/svn/os/tags/$TAG_NAME/ThirdParty ./ThirdParty
+}
 runTestBuildAndJavaTests() {
     rm -rf TestResults/
     mkdir TestResults
@@ -126,4 +135,23 @@ generateTestDomainClasses() {
 
     rm -rf $WORKSPACE/Distribution/RapidServer/Modeler/data
     cd $WORKSPACE
+}
+
+compileBuildFiles() {
+    rm -rf $GROOVY_HOME/build
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Env.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Parent.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Build.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Test.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/NetcoolModuleBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCompBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCoreBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidExtBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidUiPluginBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCmdbBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidInsightForNetcoolBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleTest.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CoreModuleTest.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CompModuleTest.groovy
 }

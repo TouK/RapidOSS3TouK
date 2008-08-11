@@ -15,6 +15,8 @@ import com.ifountain.rcmdb.test.util.grails.MockGrailsPluginManager
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.codehaus.groovy.grails.plugins.PluginMetaManager
+import org.springframework.context.ApplicationContext
+
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
@@ -34,7 +36,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     MockApplicationContext ctx;
 	def originalHandler
 	def springConfig
-	def appCtx
+	ApplicationContext appCtx
 	def pluginsToLoad = []
 	def resolver = new PathMatchingResourcePatternResolver()
 

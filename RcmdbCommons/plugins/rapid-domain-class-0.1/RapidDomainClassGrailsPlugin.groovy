@@ -21,6 +21,9 @@ import org.springframework.validation.FieldError
 import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
 import com.ifountain.rcmdb.domain.operation.DomainOperationManager
 import com.ifountain.rcmdb.domain.method.ReloadOperationsMethod
+import com.ifountain.rcmdb.domain.property.DomainClassPropertyInterceptorFactoryBean
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
@@ -31,6 +34,10 @@ class RapidDomainClassGrailsPlugin {
     def domainClassMap;
     def doWithSpring = {
         ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+        domainPropertyInterceptor(DomainClassPropertyInterceptorFactoryBean) { bean ->
+            propertyInterceptorClassName = ConfigurationHolder.getConfig().flatten().get("domain.property.interceptor.class");
+            classLoader = application.getClassLoader()
+        }
     }
 
     def doWithApplicationContext = { applicationContext ->

@@ -38,10 +38,6 @@ choices.each{
         {
             Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/conf/**");
         }
-        Ant.move(toDir:"${baseDir}/grails-app/views/script")
-        {
-            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/views/script/**");
-        }
         Ant.move(toDir:"${baseDir}/grails-app/i18n")
         {
             Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/i18n/**");

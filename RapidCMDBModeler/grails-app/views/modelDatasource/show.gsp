@@ -8,7 +8,6 @@
 <body>
 <div class="nav">
     <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelDatasource?.model?.id)}">${modelDatasource?.model}</a></span>
-    <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
 </div>
 <div class="body">
     <g:if test="${flash.message}">

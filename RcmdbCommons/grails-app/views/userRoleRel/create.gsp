@@ -9,7 +9,6 @@
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'rsUser/show/' + userRoleRel?.rsUser?.id)}">${userRoleRel?.rsUser?.username}</a></span>
-            <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
         </div>
         <div class="body">
             <h1>Assign Role</h1>

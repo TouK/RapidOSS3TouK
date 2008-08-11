@@ -11,7 +11,6 @@
     <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}">Home</a></span>
     <span class="menuButton"><g:link class="create" action="create">New Model</g:link></span>
     <span class="menuButton"><g:link class="generate" action="generate" onclick="return confirm('Are you sure?');">Generate</g:link></span>
-    <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
 </div>
 <div class="body">
     <h1>Model List</h1>

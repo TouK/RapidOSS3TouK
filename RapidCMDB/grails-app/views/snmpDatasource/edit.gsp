@@ -11,7 +11,6 @@
             <span class="menuButton"><a class="home" href="${createLinkTo(dir:'admin.gsp')}">Home</a></span>
             <span class="menuButton"><g:link class="list" action="list">SnmpDatasource List</g:link></span>
             <span class="menuButton"><g:link class="create" action="create">New SnmpDatasource</g:link></span>
-            <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
         </div>
         <div class="body">
             <h1>Edit SnmpDatasource</h1>

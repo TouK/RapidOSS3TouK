@@ -20,7 +20,6 @@
     <%
         }
     %>
-    <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
 
 </div>
 <div class="body">

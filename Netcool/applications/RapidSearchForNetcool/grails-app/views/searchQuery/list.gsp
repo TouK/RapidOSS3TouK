@@ -10,7 +10,6 @@
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
             <span class="menuButton"><g:link class="create" action="create">New SearchQuery</g:link></span>
-            <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
         </div>
         <div class="body">
             <h1>SearchQuery List</h1>

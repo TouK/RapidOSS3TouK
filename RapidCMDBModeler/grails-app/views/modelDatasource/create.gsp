@@ -11,7 +11,6 @@
         if (params["model.id"] != null) {
     %>
     <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + params["model.id"])}">${Model.get(id:params["model.id"])?.name}</a></span>
-    <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
     <%
         }
     %>

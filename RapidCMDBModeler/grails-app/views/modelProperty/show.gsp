@@ -9,7 +9,6 @@
 <body>
 <div class="nav">
     <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelProperty?.model?.id)}">${modelProperty?.model}</a></span>
-    <span class="menuButton"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></span>
 </div>
 <div class="body">
     <h1>Show ModelProperty</h1>

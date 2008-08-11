@@ -21,6 +21,7 @@
         <li><g:link action="list" controller="script"><em>Scripts</em></g:link></li>
         <li><g:link action="list" controller="netcoolConversionParameter"><em>Conversion Parameters</em></g:link></li>
         <li><a href="${createLinkTo(file: 'reload.gsp')}"><em>Reload</em></a></li>
+        <li><g:link action="list" controller="rsUser"><em>Users</em></g:link></li>
     </ul>
     <div style="margin:20px 15px 10px;">
         <g:layoutBody/>

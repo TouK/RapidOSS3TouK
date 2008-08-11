@@ -5,7 +5,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.scaffolding.DefaultGrailsTemplateGenerator
 import com.ifountain.rcmdb.domain.generation.ModelGenerationUtils
 import groovy.text.SimpleTemplateEngine
-import com.ifountain.rcmdb.domain.AbstractDomainOperation
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 
 /**
 * Created by IntelliJ IDEA.

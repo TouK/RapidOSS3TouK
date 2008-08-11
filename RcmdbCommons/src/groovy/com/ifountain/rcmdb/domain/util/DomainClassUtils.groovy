@@ -40,6 +40,15 @@ class DomainClassUtils
         }
     }
 
+    def static getSubClasses(GrailsDomainClass dc)
+    {
+        def classes = [];
+        dc.getSubClasses().each{ GrailsDomainClass subDomainClass->
+            classes += subDomainClass.clazz;
+        }
+        return classes;
+    }
+
     def static getPersistantProperties(GrailsDomainClass dc, boolean includeRelations)
     {
         def propMap = [:]

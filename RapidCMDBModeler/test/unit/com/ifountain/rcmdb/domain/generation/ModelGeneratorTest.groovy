@@ -12,7 +12,7 @@ import org.codehaus.groovy.grails.validation.ConstrainedPropertyBuilder
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.springframework.validation.Errors
-import com.ifountain.rcmdb.domain.AbstractDomainOperation
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.

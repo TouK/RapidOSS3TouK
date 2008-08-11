@@ -1,4 +1,4 @@
-package com.ifountain.rcmdb.domain
+package com.ifountain.rcmdb.domain.operation
 
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.codehaus.groovy.runtime.InvokerHelper

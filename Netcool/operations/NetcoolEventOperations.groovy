@@ -1,7 +1,7 @@
 import com.ifountain.core.domain.annotations.*;
-import datasource.*;
+import datasource.*
 
-class NetcoolEventOperations extends com.ifountain.rcmdb.domain.AbstractDomainOperation
+class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
 	def propsThatCantBeChanged = ["identifier","serverserial","serial"];
 

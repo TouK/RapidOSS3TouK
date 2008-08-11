@@ -1,4 +1,4 @@
-import com.ifountain.rcmdb.domain.AbstractDomainOperation
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
@@ -21,6 +21,9 @@ import org.codehaus.groovy.grails.commons.GrailsClass
 import groovy.xml.MarkupBuilder
 import org.springframework.validation.FieldError
 import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
+import com.ifountain.rcmdb.domain.operation.DomainOperationManager
+import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
+import com.ifountain.rcmdb.domain.method.ReloadOperationsMethod
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
@@ -163,19 +166,19 @@ class RapidDomainClassGrailsPlugin {
         try
         {
             mc.theClass.getDeclaredField(RapidCMDBConstants.OPERATION_PROPERTY_NAME);
-            def operationClassName = dc.name + "Operations";
-            Class operationClass = null;
-            def operationMethods = [:]
+            DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString());
+
+            ReloadOperationsMethod method = new ReloadOperationsMethod(dc.metaClass, DomainClassUtils.getSubClasses(dc), manager, logger);
             mc.methodMissing =  {String name, args ->
-                if(operationClass != null)
+                if(manager.operationClass != null)
                 {
-                    if(operationMethods.containsKey(name))
+                    if(manager.operationClassMethods.containsKey(name))
                     {
                         def oprInstance = delegate[RapidCMDBConstants.OPERATION_PROPERTY_NAME];
                         if(oprInstance == null)
                         {
-                            oprInstance = operationClass.newInstance() ;
-                            operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
+                            oprInstance = manager.operationClass.newInstance() ;
+                            manager.operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
                         }
                         try {
                             return oprInstance.invokeMethod(name, args)
@@ -193,43 +196,7 @@ class RapidDomainClassGrailsPlugin {
                 mc.invokeStaticMethod (dc.clazz, "reloadOperations", true);
             }
             mc.'static'.reloadOperations = {reloadSubclasses->
-                def opClassLoader = new GroovyClassLoader(dc.clazz.classLoader);
-                opClassLoader.addClasspath ("${System.getProperty("base.dir")}/operations");
-                try
-                {
-                    def oprClass = opClassLoader.loadClass (operationClassName);
-                    if(reloadSubclasses != false )
-                    {
-                        def lastObjectNeedsToBeReloaded = null;
-                        try
-                        {
-                            dc.getSubClasses().each{subDomainObject->
-                                lastObjectNeedsToBeReloaded = subDomainObject.name;
-                                subDomainObject.metaClass.invokeStaticMethod (subDomainObject.clazz, "reloadOperations", false);
-                            }
-                        }
-                        catch(t)
-                        {
-                            logger.info("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading.", t);
-                            throw new RuntimeException("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading. Reason:${t.toString()}", t)
-                        }
-                    }
-                    operationMethods.clear();
-                    operationClass = oprClass;
-                    operationClass.metaClass.methods.each{
-                        operationMethods[it.name] = it.name;
-                    };
-                }
-                catch(java.lang.ClassNotFoundException classNotFound)
-                {
-                    logger.info("${operationClassName} file does not exist.");
-                    throw new FileNotFoundException("${System.getProperty("base.dir")}/operations/${operationClassName}.groovy", null);
-                }
-                catch(t)
-                {
-                    logger.info("Error occurred while reloading operation ${operationClassName}", t);
-                    throw t;
-                }
+                method.invoke(mc.theClass, [reloadSubclasses] as Object[]);
             }
 
             try

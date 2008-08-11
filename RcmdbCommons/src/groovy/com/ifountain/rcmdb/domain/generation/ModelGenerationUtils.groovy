@@ -1,6 +1,6 @@
 package com.ifountain.rcmdb.domain.generation
 
-import com.ifountain.rcmdb.domain.AbstractDomainOperation
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 
 /**
 * Created by IntelliJ IDEA.

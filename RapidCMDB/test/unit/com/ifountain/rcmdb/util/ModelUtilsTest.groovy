@@ -1,7 +1,7 @@
 package com.ifountain.rcmdb.util
 
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
-import com.ifountain.rcmdb.domain.AbstractDomainOperation
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
 import org.codehaus.groovy.grails.compiler.injection.ClassInjector

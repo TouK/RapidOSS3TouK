@@ -12,8 +12,6 @@ import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
-import org.codehaus.groovy.grails.commons.metaclass.WeakGenericDynamicProperty
-import org.codehaus.groovy.grails.commons.metaclass.FunctionCallback
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import java.lang.reflect.Field
@@ -22,7 +20,6 @@ import groovy.xml.MarkupBuilder
 import org.springframework.validation.FieldError
 import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
 import com.ifountain.rcmdb.domain.operation.DomainOperationManager
-import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
 import com.ifountain.rcmdb.domain.method.ReloadOperationsMethod
 
 class RapidDomainClassGrailsPlugin {

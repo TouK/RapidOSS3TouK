@@ -562,7 +562,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         }
     },
 
-    rowMenuItemClicked: function() {
+    rowMenuItemClicked: function(eventType, params) {
         var id;
         var parentKey = params.parentKey;
         if (params.subKey != null)

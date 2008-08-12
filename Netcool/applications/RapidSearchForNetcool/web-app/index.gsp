@@ -424,7 +424,7 @@
         }
     }, this, true);
 
-    tree.events["rowMenuClick"].subscribe(function(id, data) {
+    tree.events["rowMenuClick"].subscribe(function(data, id, parentId) {
     	if (id == "delete")
         {
             if (data.getAttribute("nodeType") == "filter")

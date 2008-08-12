@@ -20,9 +20,7 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     this.nodeId = config.nodeId;
 
     this.nodeTag = config.nodeTag;
-    this.nodeTypeAttribute = config.nodeTypeAttribute;
     this.attributeToBeDisplayed = config.displayAttribute;
-    this.queryAttribute = config.queryAttribute;
     var events = {
         'treeClick' : new YAHOO.util.CustomEvent('treeClick'),
         'treeMenuItemClick' : new YAHOO.util.CustomEvent('treeMenuItemClick')

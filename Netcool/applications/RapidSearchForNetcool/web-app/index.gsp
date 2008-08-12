@@ -5,7 +5,7 @@
     <rui:javascript dir="ext" file="ext.js"></rui:javascript>
     <rui:javascript dir="rapidjs/component/form" file="Form.js"></rui:javascript>
     <rui:javascript dir="rapidjs/component/search" file="SearchList.js"></rui:javascript>
-    <rui:javascript dir="rapidjs/component/tree" file="Tree.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/treegrid" file="TreeGrid.js"></rui:javascript>
     <rui:javascript dir="rapidjs/component/action" file="Action.js"></rui:javascript>
     <rui:javascript dir="rapidjs/component/html" file="Html.js"></rui:javascript>
 
@@ -372,16 +372,30 @@
         }
     };
     var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
-
-    var config = {  id:"filterTree", "url":"script/run/queryList?format=xml", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
-        "displayAttribute":treeDisplayAttribute, "nodeTypeAttribute":"nodeType", "queryAttribute":"query", title:'Saved Queries',
+    var treeGridConfig = {
+         id:"filterTree",
+         url:"script/run/queryList?format=xml",
+         rootTag:"Filters",
+         nodeId:"id",
+         contentPath:"Filter",
+         title:'Saved Queries',
+         columns: [
+            {attributeName:'name', colLabel:'Name', width:250, sortBy:true}
+         ],
         menuItems:{
             Delete : { id: 'delete', label : 'Delete',  condition : treeNodesUpdateDeleteConditionFunction },
             Update : { id: 'update', label : 'Update',  condition : treeNodesUpdateDeleteConditionFunction },
-            CopyQuery : { id: 'copyQuery', label : 'Copy Query',  condition : treeNodesCopyConditionFunction },
-        }
-    };
-    var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
+            CopyQuery : { id: 'copyQuery', label : 'Copy Query',  condition : treeNodesCopyConditionFunction }
+        },
+        rootImages :[
+			{visible:'data["nodeType"] == "group"', expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'},
+			{visible:'data["nodeType"] == "filter"', expanded:'images/rapidjs/component/tools/filter.png', collapsed:'images/rapidjs/component/tools/filter.png'}
+		]
+      };
+
+
+
+    var tree = new YAHOO.rapidjs.component.TreeGrid(document.getElementById("treeDiv1"), treeGridConfig);
     tree.addToolbarButton({
         className:'r-filterTree-groupAdd',
         scope:this,
@@ -403,14 +417,14 @@
 
     deleteQueryGroupAction.events.success.subscribe(tree.poll, tree, true);
 
-    tree.events["treeClick"].subscribe(function(data) {
+    tree.events["selectionChange"].subscribe(function(data) {
         if (data.getAttribute("nodeType") == "filter")
         {
             searchList.setQuery(data.getAttribute("query"));
         }
     }, this, true);
 
-    tree.events["treeMenuItemClick"].subscribe(function(id, data) {
+    tree.events["rowMenuClick"].subscribe(function(id, data) {
     	if (id == "delete")
         {
             if (data.getAttribute("nodeType") == "filter")
@@ -452,7 +466,7 @@
             units: [
                 { position: 'top', body: 'top', resize: false, height:40},
                 { position: 'center', body: 'right', resize: false, gutter: '1px' },
-                { position: 'left', width: 200, resize: true, body: 'left', scroll: true}
+                { position: 'left', width: 250, resize: true, body: 'left', scroll: true}
             ]
         });
         layout.on('render', function(){
@@ -472,6 +486,10 @@
         searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
         layout.on('resize', function() {
             searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+        });
+        tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+        layout.on('resize', function() {
+            tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
         });
         window.layout = layout;
 

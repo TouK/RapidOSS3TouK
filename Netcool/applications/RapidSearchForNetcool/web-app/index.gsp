@@ -317,19 +317,19 @@
 
     }, true, true);
     searchList.events["propertyCtrl_Click"].subscribe(function(key, value, xmlData){
-    		if(this.currentlyExecutingQuery != "")
-                this.appendToQuery("NOT " + key + ": \""+ value + "\"");
+    		if(searchList.currentlyExecutingQuery != "")
+                searchList.appendToQuery("NOT " + key + ": \""+ value + "\"");
             else
-            	this.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
+            	searchList.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
 
     }, true, true);
 
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
 			if(	id == "not"){
-				 if(this.currentlyExecutingQuery != "")
-                	 this.appendToQuery("NOT " + key + ": \""+ value + "\"");
+				 if(searchList.currentlyExecutingQuery != "")
+                	searchList.appendToQuery("NOT " + key + ": \""+ value + "\"");
                  else
-                	 this.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
+                    searchList.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
 			}
 	        else if (id == "sortAsc") {
 	            searchList.setSortDirection(key, true);

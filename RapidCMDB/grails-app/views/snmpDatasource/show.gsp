@@ -7,9 +7,10 @@
 </head>
 <body>
 <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir:'admin.gsp')}">Home</a></span>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'admin.gsp')}">Home</a></span>
     <span class="menuButton"><g:link class="list" action="list">SnmpDatasource List</g:link></span>
     <span class="menuButton"><g:link class="create" action="create">New SnmpDatasource</g:link></span>
+</div>
 <div class="body">
     <h1>Show SnmpDatasource</h1>
     <g:if test="${flash.message}">
@@ -41,14 +42,6 @@
                     <td valign="top" class="value">${snmpDatasource.name}</td>
 
                 </tr>
-
-                <tr class="prop">
-                    <td valign="top" class="name">Script:</td>
-
-                    <td valign="top" class="value"><g:link controller="script" action="show" id="${script?.id}">${snmpDatasource?.scriptName}</g:link></td>
-
-                </tr>
-
                 <tr class="prop">
                     <td valign="top" class="name">Connection:</td>
 
@@ -64,12 +57,6 @@
             <input type="hidden" name="id" value="${snmpDatasource?.id}"/>
             <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
-            <g:if test="${snmpDatasource?.isOpen()}">
-                <span class="button"><g:actionSubmit class="close" value="Stop" /></span>
-            </g:if>
-            <g:else>
-                <span class="button"><g:actionSubmit class="run" value="Start" /></span>
-            </g:else>
         </g:form>
     </div>
 </div>

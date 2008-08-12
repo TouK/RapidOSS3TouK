@@ -25,8 +25,6 @@
                         
                    	        <g:sortableColumn property="name" title="Name" />
                         
-                   	        <th>Script</th>
-                   	    
                    	        <th>Connection</th>
                    	    
                         </tr>
@@ -39,8 +37,7 @@
                         
                             <td>${snmpDatasource.name?.encodeAsHTML()}</td>
                         
-                            <td>${snmpDatasource.scriptName?.encodeAsHTML()}</td>
-                        
+
                             <td>${snmpDatasource.connection?.encodeAsHTML()}</td>
                         
                         </tr>

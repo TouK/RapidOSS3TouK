@@ -1,6 +1,8 @@
 package com.ifountain.snmp.datasource;
 
 import com.ifountain.snmp.util.RSnmpConstants;
+import com.ifountain.snmp.connection.SnmpConnectionImpl;
+import com.ifountain.core.datasource.BaseListeningAdapter;
 import org.apache.log4j.Logger;
 import org.snmp4j.*;
 import org.snmp4j.security.*;
@@ -38,66 +40,61 @@ import java.util.*;
  * Date: Apr 11, 2008
  * Time: 9:58:10 AM
  */
-public class SnmpListeningAdapter implements CommandResponder {
+public class SnmpListeningAdapter extends BaseListeningAdapter implements CommandResponder {
     private Snmp snmp;
     private TransportMapping transport;
     private Address targetAddress;
-    private String host;
-    private int port;
-    private boolean isOpen = false;
-    private List trapProcessors = Collections.synchronizedList(new ArrayList());
     private List trapBuffer = Collections.synchronizedList(new ArrayList());
-    private Logger logger;
     private Object trapWaitingLock = new Object();
     protected TrapProcessThread trapProcessorThread;
     private int numDispatcherThreads = 2;
 
 
-    public SnmpListeningAdapter(String host, int port, Logger logger) {
-        this.host = host;
-        this.port = port;
-        this.logger = logger;
+    public SnmpListeningAdapter(String connectionName, long reconnectInterval, Logger logger) {
+        super(connectionName, reconnectInterval, logger);
     }
 
-    public void open() throws Exception {
-        if (!isOpen) {
-            logger.debug(getLogPrefix() + "Starting..");
-            logger.debug(getLogPrefix() + "parsing address udp:" + host + "/" + port);
-            targetAddress = GenericAddress.parse("udp:" + host + "/" + port);
-            if (targetAddress == null || !targetAddress.isValid()) {
-                throw new Exception("Invalid address " + host + "/" + port);
-            }
-            transport = new DefaultUdpTransportMapping((UdpAddress) targetAddress);
-            ThreadPool threadPool = ThreadPool.create("DispatcherPool", numDispatcherThreads);
-            OctetString localEngineID = new OctetString(MPv3.createLocalEngineID());
-            MessageDispatcher mtDispatcher = new MultiThreadedMessageDispatcher(threadPool, new MessageDispatcherImpl());
-            mtDispatcher.addMessageProcessingModel(new MPv1());
-            mtDispatcher.addMessageProcessingModel(new MPv2c());
-            mtDispatcher.addMessageProcessingModel(new MPv3(localEngineID.getValue()));
-            SecurityProtocols.getInstance().addDefaultProtocols();
-            SecurityProtocols.getInstance().addPrivacyProtocol(new Priv3DES());
-            logger.debug(getLogPrefix() + "Starting snmp session");
-            snmp = new Snmp(mtDispatcher, transport);
-            logger.info(getLogPrefix() + "Successfully started snmp session");
-            USM usm = new USM(SecurityProtocols.getInstance(), localEngineID, 0);
-            SecurityModels.getInstance().addSecurityModel(usm);
-            snmp.getUSM().addUser(new OctetString(), new UsmUser(new OctetString(),
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null));
-            snmp.addCommandResponder(this);
-            logger.debug(getLogPrefix() + "Starting trap processor thread");
-            trapProcessorThread = new TrapProcessThread();
-            trapProcessorThread.start();
-            transport.listen();
-            logger.info(getLogPrefix() + "Snmp session is listening");
-            isOpen = true;
-            logger.info(getLogPrefix() + "Started.");
+    public void _subscribe() throws Exception {
+
+        String host = ((SnmpConnectionImpl) getConnection()).getHost();
+        Long port = ((SnmpConnectionImpl) getConnection()).getPort();
+        logger.debug(getLogPrefix() + "Starting..");
+        logger.debug(getLogPrefix() + "parsing address udp:" + host + "/" + port);
+        targetAddress = GenericAddress.parse("udp:" + host + "/" + port);
+        if (targetAddress == null || !targetAddress.isValid()) {
+            throw new Exception("Invalid address " + host + "/" + port);
         }
+        transport = new DefaultUdpTransportMapping((UdpAddress) targetAddress);
+        ThreadPool threadPool = ThreadPool.create("DispatcherPool", numDispatcherThreads);
+        OctetString localEngineID = new OctetString(MPv3.createLocalEngineID());
+        MessageDispatcher mtDispatcher = new MultiThreadedMessageDispatcher(threadPool, new MessageDispatcherImpl());
+        mtDispatcher.addMessageProcessingModel(new MPv1());
+        mtDispatcher.addMessageProcessingModel(new MPv2c());
+        mtDispatcher.addMessageProcessingModel(new MPv3(localEngineID.getValue()));
+        SecurityProtocols.getInstance().addDefaultProtocols();
+        SecurityProtocols.getInstance().addPrivacyProtocol(new Priv3DES());
+        logger.debug(getLogPrefix() + "Starting snmp session");
+        snmp = new Snmp(mtDispatcher, transport);
+        logger.info(getLogPrefix() + "Successfully started snmp session");
+        USM usm = new USM(SecurityProtocols.getInstance(), localEngineID, 0);
+        SecurityModels.getInstance().addSecurityModel(usm);
+        snmp.getUSM().addUser(new OctetString(), new UsmUser(new OctetString(),
+                null,
+                null,
+                null,
+                null));
+        snmp.addCommandResponder(this);
+        logger.debug(getLogPrefix() + "Starting trap processor thread");
+        trapProcessorThread = new TrapProcessThread();
+        trapProcessorThread.start();
+        transport.listen();
+        logger.info(getLogPrefix() + "Snmp session is listening");
+
+        logger.info(getLogPrefix() + "Started.");
+
     }
 
-    public void close() {
+    public void _unsubscribe() {
         logger.debug(getLogPrefix() + "Closing snmp session");
         if (snmp != null) {
             try {
@@ -106,7 +103,7 @@ public class SnmpListeningAdapter implements CommandResponder {
                 snmp.close();
                 logger.info(getLogPrefix() + "Snmp session successfully closed.");
             } catch (IOException e) {
-                logger.warn(getLogPrefix() + "Error occured during snmp session close. Exception: " + e.getMessage());
+                logger.warn(getLogPrefix() + "Error occured during snmp session _unsubscribe. Exception: " + e.getMessage());
             }
         }
         if (trapProcessorThread != null) {
@@ -122,7 +119,6 @@ public class SnmpListeningAdapter implements CommandResponder {
                 logger.debug(getLogPrefix() + "Trap processor is not alive. No need to interrupt.");
             }
         }
-        isOpen = false;
         logger.info(getLogPrefix() + "Closed.");
     }
 
@@ -156,24 +152,8 @@ public class SnmpListeningAdapter implements CommandResponder {
         }
     }
 
-    public boolean isOpen() {
-        return isOpen;
-    }
-
-    public void addTrapProcessor(SnmpTrapProcessor processor) {
-        trapProcessors.add(processor);
-    }
-
-    public void removeTrapProcessor(SnmpTrapProcessor processor) {
-        trapProcessors.remove(processor);
-    }
-
-    public void removeAllTrapProcessors() {
-        trapProcessors.clear();
-    }
-
     public String getLogPrefix() {
-        return "[SnmpListeningAdapter " + host + ":" + port + "]: ";
+        return "[SnmpListeningAdapter]: ";
     }
 
     protected void addTrapToBuffer(Map trap) {
@@ -189,6 +169,11 @@ public class SnmpListeningAdapter implements CommandResponder {
         }
     }
 
+    public Object _update(Observable o, Object arg) {
+        return null;
+    }
+
+
     class TrapProcessThread extends Thread {
         public void run() {
             try {
@@ -202,10 +187,7 @@ public class SnmpListeningAdapter implements CommandResponder {
                         trap = (Map) trapBuffer.remove(0);
                         logger.debug(getLogPrefix() + "Processing trap from " + trap.get(RSnmpConstants.AGENT));
                     }
-                    for (Iterator iterator = trapProcessors.iterator(); iterator.hasNext();) {
-                        SnmpTrapProcessor snmpTrapProcessor = (SnmpTrapProcessor) iterator.next();
-                        snmpTrapProcessor.processTrap(trap);
-                    }
+                    sendDataToObservers(trap);
                 }
             }
             catch (InterruptedException e) {

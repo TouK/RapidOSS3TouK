@@ -37,15 +37,6 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="script">Script:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:snmpDatasource,field:'scriptName','errors')}">
-                                    <g:select class="inputtextfield" optionKey="name" from="${script.CmdbScript.list()}" name="scriptName" value="${snmpDatasource?.scriptName}" ></g:select>
-                                </td>
-                            </tr> 
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
                                     <label for="connection">Connection:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:snmpDatasource,field:'connection','errors')}">

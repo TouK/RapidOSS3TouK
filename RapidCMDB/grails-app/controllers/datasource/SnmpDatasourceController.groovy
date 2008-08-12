@@ -10,39 +10,6 @@ class SnmpDatasourceController {
 
     // the delete, save and update actions only accept POST requests
     def allowedMethods = [delete:'POST', save:'POST', update:'POST']
- 	def start = {
-        def snmpDatasource = SnmpDatasource.get( [id:params.id] )
-        if(snmpDatasource) {
-            try{
-                snmpDatasource.open()
-                flash.message = "SnmpDatasource ${params.id} started"
-                redirect(action:show, id:snmpDatasource.id)
-            }
-            catch(e){
-                def errors =[e.getMessage()]
-                flash.errors = errors;
-                redirect(action:show, id:snmpDatasource.id)
-            }
-
-        }
-        else {
-            flash.message = "SnmpDatasource not found with id ${params.id}"
-            redirect(action:list)
-        }
-    }
-
-    def stop = {
-         def snmpDatasource = SnmpDatasource.get( [id:params.id] )
-        if(snmpDatasource) {
-            snmpDatasource.close()
-            flash.message = "SnmpDatasource ${params.id} stopped"
-            redirect(action:show, id:snmpDatasource.id)
-        }
-        else {
-            flash.message = "SnmpDatasource not found with id ${params.id}"
-            redirect(action:list)
-        }
-    }
     def list = {
         if(!params.max) params.max = 10
         [ snmpDatasourceList: SnmpDatasource.list( params ) ]

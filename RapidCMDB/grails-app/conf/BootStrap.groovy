@@ -1,16 +1,18 @@
 import auth.Role
 import auth.RsUser
 import auth.UserRoleRel
+import com.ifountain.compass.SingleCompassSessionManager
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.DoubleConverter
 import com.ifountain.rcmdb.domain.converter.LongConverter
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.scripting.ScriptScheduler
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import datasource.RCMDBDatasource
-import datasource.SnmpDatasource
 import model.ModelAction
 import model.PropertyAction
 import org.codehaus.groovy.grails.commons.ApplicationHolder
@@ -18,9 +20,6 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import com.ifountain.rcmdb.datasource.ListeningAdapterManager
-import com.ifountain.compass.SingleCompassSessionManager
 
 class BootStrap {
     def quartzScheduler;
@@ -176,9 +175,6 @@ class BootStrap {
 
 
     def destroy = {
-        SnmpDatasource.list().each {
-            it.close();
-        }
         ListeningAdapterManager.getInstance().destroy();
         ScriptManager.getInstance().destroy();
         SingleCompassSessionManager.destroy();

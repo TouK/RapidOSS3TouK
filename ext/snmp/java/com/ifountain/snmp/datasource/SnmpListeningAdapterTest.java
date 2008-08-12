@@ -4,8 +4,11 @@ import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.comp.test.util.WaitAction;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.core.test.util.RapidCoreTestCase;
+import com.ifountain.core.test.util.DatasourceTestUtils;
+import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.snmp.test.util.SnmpTestUtils;
 import com.ifountain.snmp.util.RSnmpConstants;
+import com.ifountain.snmp.connection.SnmpConnectionImpl;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.TimeTicks;
@@ -37,24 +40,27 @@ import java.util.*;
  */
 public class SnmpListeningAdapterTest extends RapidCoreTestCase {
     SnmpListeningAdapter adapter;
+    public static final String SNMP_TEST_CONNECTION_NAME = "snmpConn";
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam("127.0.0.1", new Long(162)));
+        adapter = new SnmpListeningAdapter(SNMP_TEST_CONNECTION_NAME, 0, TestLogUtils.log);
     }
 
     @Override
     protected void tearDown() throws Exception {
-        if (adapter != null && adapter.isOpen()) {
-            adapter.close();
+        if (adapter != null) {
+            adapter.unsubscribe();
         }
         super.tearDown();
     }
 
     public void testOpenThrowsExceptionIfHostNameIsInvalid() throws Exception {
-        adapter = new SnmpListeningAdapter("invalidHost", 162, TestLogUtils.log);
+        DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam("invalidHost", new Long(162)));
         try {
-            adapter.open();
+            adapter.subscribe();
         }
         catch (Exception e) {
             assertEquals("Invalid address invalidHost/162", e.getMessage());
@@ -62,9 +68,9 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
     }
 
     public void testOpenThrowsExceptionIfPortIsInvalid() throws Exception {
-        adapter = new SnmpListeningAdapter("127.0.0.1", -1, TestLogUtils.log);
+        DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam("127.0.0.1", new Long(-1)));
         try {
-            adapter.open();
+            adapter.subscribe();
         }
         catch (Exception e) {
             assertEquals("Invalid address 127.0.0.1/-1", e.getMessage());
@@ -72,9 +78,9 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
     }
 
     public void testOpenThrowsExceptionCannotConnect() throws Exception {
-        adapter = new SnmpListeningAdapter("192.168.1.190", 162, TestLogUtils.log);
+        DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam("192.168.1.190", new Long(162)));
         try {
-            adapter.open();
+            adapter.subscribe();
         }
         catch (Exception e) {
             assertTrue(e.getMessage().indexOf("Cannot assign requested address") > -1);
@@ -82,31 +88,28 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
     }
 
     public void testSuccessfulOpen() throws Exception {
-        adapter = new SnmpListeningAdapter("localhost", 162, TestLogUtils.log);
-        adapter.open();
-        assertTrue(adapter.isOpen());
+        adapter.subscribe();
+        assertTrue(adapter.isSubscribed());
         assertTrue(adapter.trapProcessorThread.isAlive());
     }
 
     public void testClose() throws Exception {
-        adapter = new SnmpListeningAdapter("localhost", 162, TestLogUtils.log);
-        adapter.open();
-        assertTrue(adapter.isOpen());
+        adapter.subscribe();
+        assertTrue(adapter.isSubscribed());
         assertTrue(adapter.trapProcessorThread.isAlive());
-        adapter.close();
-        assertFalse(adapter.isOpen());
+        adapter.unsubscribe();
+        assertFalse(adapter.isSubscribed());
         assertFalse(adapter.trapProcessorThread.isAlive());
     }
 
     public void testAdapterSendsTrapsToAllSubscribers() throws Exception {
-        adapter = new SnmpListeningAdapter("localhost", 162, TestLogUtils.log);
-        final MockSnmpTrapProcessorImpl trapProcessor1 = new MockSnmpTrapProcessorImpl();
-        final MockSnmpTrapProcessorImpl trapProcessor2 = new MockSnmpTrapProcessorImpl();
-        final MockSnmpTrapProcessorImpl trapProcessor3 = new MockSnmpTrapProcessorImpl();
-        adapter.addTrapProcessor(trapProcessor1);
-        adapter.addTrapProcessor(trapProcessor2);
-        adapter.addTrapProcessor(trapProcessor3);
-        adapter.open();
+        final MockSnmpObserverImpl trapProcessor1 = new MockSnmpObserverImpl();
+        final MockSnmpObserverImpl trapProcessor2 = new MockSnmpObserverImpl();
+        final MockSnmpObserverImpl trapProcessor3 = new MockSnmpObserverImpl();
+        adapter.addObserver(trapProcessor1);
+        adapter.addObserver(trapProcessor2);
+        adapter.addObserver(trapProcessor3);
+        adapter.subscribe();
         Map trap = new HashMap();
         trap.put("name", "myTrap");
         adapter.addTrapToBuffer(trap);
@@ -123,30 +126,28 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
     }
 
     public void testAdapterWaitsIfBufferIsEmpty() throws Exception {
-        adapter = new SnmpListeningAdapter("localhost", 162, TestLogUtils.log);
-        final MockSnmpTrapProcessorImpl trapProcessor = new MockSnmpTrapProcessorImpl();
-        adapter.addTrapProcessor(trapProcessor);
-        adapter.open();
+        final MockSnmpObserverImpl observer = new MockSnmpObserverImpl();
+        adapter.addObserver(observer);
+        adapter.subscribe();
         adapter.addTrapToBuffer(new HashMap());
         CommonTestUtils.waitFor(new WaitAction() {
             public void check() throws Exception {
-                assertEquals(1, trapProcessor.traps.size());
+                assertEquals(1, observer.traps.size());
             }
         });
         Thread.sleep(300);
         adapter.addTrapToBuffer(new HashMap());
         CommonTestUtils.waitFor(new WaitAction() {
             public void check() throws Exception {
-                assertEquals(2, trapProcessor.traps.size());
+                assertEquals(2, observer.traps.size());
             }
         });
     }
 
     public void testVersion1Trap() throws Exception {
-        adapter = new SnmpListeningAdapter("localhost", 162, TestLogUtils.log);
-        final MockSnmpTrapProcessorImpl trapProcessor = new MockSnmpTrapProcessorImpl();
-        adapter.addTrapProcessor(trapProcessor);
-        adapter.open();
+        final MockSnmpObserverImpl observer = new MockSnmpObserverImpl();
+        adapter.addObserver(observer);
+        adapter.subscribe();
         final String enterpriseOid = "1.3.6.1.2.1.11";
         List varBinds = new ArrayList();
         varBinds.add(getVarbind("1.3.6.1.2.1.1.3.0", "0", "t"));
@@ -155,8 +156,8 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
         SnmpTestUtils.sendV1Trap(enterpriseOid, 1210767363, 1, 0, varBinds);
         CommonTestUtils.waitFor(new WaitAction() {
             public void check() throws Exception {
-                assertEquals(1, trapProcessor.traps.size());
-                Map trap = (Map) trapProcessor.traps.get(0);
+                assertEquals(1, observer.traps.size());
+                Map trap = (Map) observer.traps.get(0);
                 assertEquals("0.0.0.0", trap.get(RSnmpConstants.AGENT));
                 assertEquals("1210767363", trap.get(RSnmpConstants.TIMESTAMP));
                 assertEquals(enterpriseOid, trap.get(RSnmpConstants.ENTERPRISE));
@@ -178,10 +179,9 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
     }
 
     public void testVersion2Trap() throws Exception {
-        adapter = new SnmpListeningAdapter("localhost", 162, TestLogUtils.log);
-        final MockSnmpTrapProcessorImpl trapProcessor = new MockSnmpTrapProcessorImpl();
-        adapter.addTrapProcessor(trapProcessor);
-        adapter.open();
+        final MockSnmpObserverImpl observer = new MockSnmpObserverImpl();
+        adapter.addObserver(observer);
+        adapter.subscribe();
         List varBinds = new ArrayList();
         varBinds.add(getVarbind(SnmpConstants.sysUpTime.toString(), "1210767363", "t"));
         varBinds.add(getVarbind(SnmpConstants.snmpTrapOID.toString(), "1.3.6.1.6.3.1.1.5.2", "o"));
@@ -189,14 +189,14 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
         SnmpTestUtils.sendV2Trap(varBinds);
         CommonTestUtils.waitFor(new WaitAction() {
             public void check() throws Exception {
-                assertEquals(1, trapProcessor.traps.size());
-                Map trap = (Map) trapProcessor.traps.get(0);
+                assertEquals(1, observer.traps.size());
+                Map trap = (Map) observer.traps.get(0);
                 assertEquals("127.0.0.1", trap.get(RSnmpConstants.AGENT));
                 assertEquals("1210767363", trap.get(RSnmpConstants.TIMESTAMP));
                 assertEquals("1.3.6.1.6.3.1.1.5.2", trap.get(RSnmpConstants.ENTERPRISE));
                 assertEquals("1", trap.get(RSnmpConstants.GENERIC_TYPE));
                 assertEquals("0", trap.get(RSnmpConstants.SPECIFIC_TYPE));
-                List vars = (List)trap.get(RSnmpConstants.VARBINDS);
+                List vars = (List) trap.get(RSnmpConstants.VARBINDS);
                 assertEquals(3, vars.size());
                 Map varbind1 = (Map) vars.get(0);
                 assertEquals("1.3.6.1.2.1.1.3.0", varbind1.get(RSnmpConstants.OID));
@@ -223,10 +223,17 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
         return getVarbind(oid, value, "s");
     }
 
-    class MockSnmpTrapProcessorImpl implements SnmpTrapProcessor {
+    public static ConnectionParam getConnectionParam(String host, Long port){
+        Map<String, Object> otherParams = new HashMap<String, Object>();
+        otherParams.put(SnmpConnectionImpl.HOST, host);
+        otherParams.put(SnmpConnectionImpl.PORT, port);
+        return new ConnectionParam("SnmpConnection", SNMP_TEST_CONNECTION_NAME, SnmpConnectionImpl.class.getName(), otherParams, 10);
+    }
+
+    class MockSnmpObserverImpl implements Observer {
         public List traps = new ArrayList();
 
-        public void processTrap(Map trap) {
+        public void update(Observable o, Object trap) {
             traps.add(trap);
         }
     }

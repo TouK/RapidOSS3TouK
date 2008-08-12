@@ -60,7 +60,11 @@
         menuItems:{
             Delete : { id: 'delete', label : 'Delete',  condition : treeNodesConditionFunction },
             Update : { id: 'update', label : 'Update',  condition : treeNodesConditionFunction }
-        }
+        },
+        rootImages :[
+			{visible:'data["nodeType"] == "group"', expanded:'../images/rapidjs/component/tools/folder_open.gif', collapsed:'../images/rapidjs/component/tools/folder.gif'},
+			{visible:'data["nodeType"] == "filter"', expanded:'../images/rapidjs/component/tools/filter.png', collapsed:'../images/rapidjs/component/tools/filter.png'}
+		]
       };
 
       var treeGrid = new YAHOO.rapidjs.component.TreeGrid(document.getElementById("treeDiv1"), treeGridConfig);

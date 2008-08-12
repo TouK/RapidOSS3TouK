@@ -48,7 +48,7 @@ YAHOO.rapidjs.component.treegrid.TreeHeaderCell.prototype=
             this.sortAsc = spans[2];
  			this.splitElement = YAHOO.ext.DomHelper.append(this.wrapperElement, {tag:'div', cls:'r-tree-headersplit'});
 			this.splitBar = new YAHOO.rapidjs.component.Split(this.splitElement, this.htmlElement.dom, null, YAHOO.rapidjs.component.Split.LEFT);
-			YAHOO.util.Dom.addClass(this.splitBar.proxy, 'ygrid-column-sizer');
+			YAHOO.util.Dom.addClass(this.splitBar.proxy, 'r-tree-column-sizer');
             YAHOO.util.Dom.setStyle(this.splitBar.proxy, 'background-color', '');
             
             var bodyHeight = parentHtmlElement.parentNode.parentNode.parentNode.parentNode.parentNode.offsetHeight - parentHtmlElement.parentNode.parentNode.parentNode.parentNode.offsetHeight-130;

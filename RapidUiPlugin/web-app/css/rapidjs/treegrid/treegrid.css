@@ -78,6 +78,13 @@
     z-index: 1200;
 }
 
+.r-tree-column-sizer {
+    width: 1px;
+    border-right: 1px dashed #6593cf;
+    background: none;
+    cursor: col-resize;
+}
+
 .r-tree-body {
     position: relative;
     width: 100%;
@@ -95,6 +102,16 @@
 
 .r-tree-treerow {
     height: 25px;
+}
+
+.r-tree-row-headermenu {
+    background-image: url( ../../../images/rapidjs/component/tools/arrow_contextMenu_small.png );
+    background-repeat: no-repeat;
+    cursor: pointer;
+    height: 15px;
+    overflow: hidden;
+    width: 15px;
+    z-index: 1;
 }
 
 .r-tree-rootimage {

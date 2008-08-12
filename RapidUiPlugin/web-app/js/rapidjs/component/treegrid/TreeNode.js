@@ -12,7 +12,7 @@ YAHOO.rapidjs.component.treegrid.TreeNode = function(xmlData, contentPath,level)
 	this.loadData();
 };
 
-YAHOO.extendX(YAHOO.rapidjs.component.treegrid.TreeNode, YAHOO.rapidjs.component.RapidElement, {
+YAHOO.lang.extend(YAHOO.rapidjs.component.treegrid.TreeNode, YAHOO.rapidjs.component.RapidElement, {
 	
 	loadData: function(){
 		var childData = this.xmlData.childNodes();
@@ -62,7 +62,7 @@ YAHOO.rapidjs.component.treegrid.TreeRootNode = function(xmlData, contentPath){
 	 YAHOO.rapidjs.component.treegrid.TreeRootNode.superclass.constructor.call(this, xmlData, contentPath, -1);
 };
 
-YAHOO.extendX(YAHOO.rapidjs.component.treegrid.TreeRootNode, YAHOO.rapidjs.component.treegrid.TreeNode, {
+YAHOO.lang.extend(YAHOO.rapidjs.component.treegrid.TreeRootNode, YAHOO.rapidjs.component.treegrid.TreeNode, {
 	childAdded : function(newChild){
 		var childNode = new YAHOO.rapidjs.component.treegrid.TreeNode(newChild, this.contentPath, this.level + 1);
 		this.childNodes[this.childNodes.length] = childNode;

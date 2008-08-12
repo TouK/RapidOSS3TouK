@@ -1,0 +1,17 @@
+<Filters>
+    <Filter id='544' name='Default' nodeType='group'>
+        <Filter id='553' isDefault='true' name='In Maintenance' nodeType='filter'
+                query='manager: * - manager:*Watch suppressescl:Maintenance'/>
+        <Filter id='552' isDefault='true' name='All Events' nodeType='filter' query='id:*'/>
+        <Filter id='554' isDefault='true' name='Escalated' nodeType='filter'
+                query='manager: * - manager:*Watch (suppressescl:Normal OR suppressescl:Escalated OR suppressescl:Escalated-Level 2 OR suppressescl:Escalated-Level 3 OR suppressescl:Suppressed) '/>
+    </Filter>
+    <Filter id='545' name='By Severity' nodeType='group'>
+        <Filter id='549' isDefault='true' name='Warning Events' nodeType='filter' query='severity:Warning'/>
+        <Filter id='547' isDefault='true' name='Major Events' nodeType='filter' query='severity:Major'/>
+        <Filter id='551' isDefault='true' name='Clear Events' nodeType='filter' query='severity:Clear'/>
+        <Filter id='550' isDefault='true' name='Indeterminate Events' nodeType='filter' query='severity:Indeterminate'/>
+        <Filter id='548' isDefault='true' name='Minor Events' nodeType='filter' query='severity:Minor'/>
+        <Filter id='546' isDefault='true' name='Critical Events' nodeType='filter' query='severity:Critical'/>
+    </Filter>
+</Filters>

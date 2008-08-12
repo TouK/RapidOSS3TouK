@@ -1,6 +1,6 @@
-package com.ifountain.compass
+package com.ifountain.compass;
 
-import org.apache.lucene.index.Term
+import org.apache.lucene.index.Term;
 
 /**
  * Created by IntelliJ IDEA.

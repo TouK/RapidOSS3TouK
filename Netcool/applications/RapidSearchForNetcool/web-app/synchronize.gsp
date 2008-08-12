@@ -53,7 +53,9 @@
             <p></p>
             <li class="controller"><g:link controller="application" action="reload" params="['targetURI':'/synchronize.gsp']">Reload Application</g:link></li>
 			<p></p>
-			Restarts the RapidInsight for Netcool application to deploy the new model files. As the final step, reload the application for the model changes to take effect.
+			Restarts the RapidInsight for Netcool application to deploy the new model files. 
+			As the final step, reload the application for the model changes to take effect. 
+			Since the application will be compiling and deploying model files and associated views, this will take a few minutes. 
 			<p></p>
         </ol>
     </div>

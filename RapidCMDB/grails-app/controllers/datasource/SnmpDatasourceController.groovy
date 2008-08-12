@@ -34,7 +34,7 @@ class SnmpDatasourceController {
                 {
                     controllerName = controllerName.substring(0,1).toLowerCase()+controllerName.substring(1);
                 }
-                redirect(action:show, controller:controllerName, id:params.id, script:script)
+                redirect(action:show, controller:controllerName, id:params.id)
             }
             else
             {

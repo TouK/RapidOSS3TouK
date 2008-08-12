@@ -23,7 +23,6 @@ class SnmpDatasourceController {
             redirect(action:list)
         }
         else {
-            def script = CmdbScript.findByName(snmpDatasource.scriptName)
             if(snmpDatasource.class != SnmpDatasource)
             {
                 def controllerName = snmpDatasource.class.name;
@@ -39,7 +38,7 @@ class SnmpDatasourceController {
             }
             else
             {
-                return [ snmpDatasource : snmpDatasource, script:script ]
+                return [ snmpDatasource : snmpDatasource]
             }
         }
     }

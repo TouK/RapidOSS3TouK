@@ -18,9 +18,6 @@ class SnmpDatasource extends BaseListeningDatasource {
     
     static constraints={
     connection(nullable:true)
-        
-     scriptName(nullable:true, blank:true)
-        
      
     }
 

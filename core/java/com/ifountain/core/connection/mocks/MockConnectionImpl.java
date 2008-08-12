@@ -12,16 +12,11 @@ public class MockConnectionImpl extends BaseConnection
 {
     
     private boolean isConnected = false;
-    private ConnectionParam param;
     private Exception connectionException = null;
     
     public void init(ConnectionParam param)
     {
-        this.param = param;
-    }
-    public ConnectionParam getParameters()
-    {
-        return param;
+        this.params = param;
     }
     protected void connect() throws Exception
     {
@@ -41,7 +36,7 @@ public class MockConnectionImpl extends BaseConnection
     }
     public ConnectionParam getParam()
     {
-        return param;
+        return params;
     }
     public void setConnectionException(Exception connectionException)
     {

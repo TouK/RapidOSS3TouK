@@ -15,7 +15,6 @@ public class DatabaseConnectionImpl extends BaseConnection{
     private String url;
     private String username;
     private String password;
-    private ConnectionParam param;
     private java.sql.Connection connection;
 
     protected void connect() throws Exception {
@@ -29,11 +28,6 @@ public class DatabaseConnectionImpl extends BaseConnection{
         } catch (SQLException e) {
         }
     }
-
-    public ConnectionParam getParameters() {
-        return param;
-    }
-
     public void init(ConnectionParam param) throws Exception{
         this.param = param;
         this.driver = checkParam(DRIVER);

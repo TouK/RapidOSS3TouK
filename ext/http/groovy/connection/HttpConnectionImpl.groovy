@@ -9,7 +9,6 @@ public class HttpConnectionImpl extends BaseConnection{
 
     public static final String BASE_URL = "BaseUrl";
     private String baseUrl;
-    private ConnectionParam params;
     private HttpUtils httpUtils;
 
     protected void connect() throws Exception {
@@ -18,10 +17,7 @@ public class HttpConnectionImpl extends BaseConnection{
     protected void disconnect() {
     }
 
-    public ConnectionParam getParameters() {
-        return params;
-    }
-
+   
     public void init(ConnectionParam param) throws Exception {
         this.params = param;
         this.baseUrl = checkParam(BASE_URL);

@@ -32,7 +32,6 @@ public class SmartsConnectionImpl extends BaseConnection{
 
     public static long isConnectedCount = 0;
 
-    private ConnectionParam param;
 	private String broker;
 	private String domain;
 	private String username;
@@ -53,13 +52,8 @@ public class SmartsConnectionImpl extends BaseConnection{
             domainManager.detach();
         }
 	}
-
-	public ConnectionParam getParameters() {
-		return param;
-	}
-
 	public void init(ConnectionParam param) throws Exception {
-		this.param = param;
+		this.params = param;
 		this.broker = checkParam(BROKER);
         this.domain = checkParam(DOMAIN);
         this.username = checkParam(USERNAME);
@@ -93,10 +87,10 @@ public class SmartsConnectionImpl extends BaseConnection{
 	}
 	
 	private String checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if(!param.getOtherParams().containsKey(parameterName)){
+        if(!params.getOtherParams().containsKey(parameterName)){
             throw new UndefinedConnectionParameterException(parameterName);
         }
-        return (String) param.getOtherParams().get(parameterName);
+        return (String) params.getOtherParams().get(parameterName);
     }
 
 	public SmRemoteDomainManager getDomainManager() {

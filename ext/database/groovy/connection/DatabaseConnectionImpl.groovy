@@ -29,7 +29,7 @@ public class DatabaseConnectionImpl extends BaseConnection{
         }
     }
     public void init(ConnectionParam param) throws Exception{
-        this.param = param;
+        this.params = param;
         this.driver = checkParam(DRIVER);
         this.url = checkParam(URL);
         this.username = checkParam(USERNAME);
@@ -38,10 +38,10 @@ public class DatabaseConnectionImpl extends BaseConnection{
     }
 
     private String checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if(!param.getOtherParams().containsKey(parameterName)){
+        if(!params.getOtherParams().containsKey(parameterName)){
             throw new UndefinedConnectionParameterException(parameterName);
         }
-        return (String) param.getOtherParams().get(parameterName);
+        return (String) params.getOtherParams().get(parameterName);
     }
 
     public boolean isConnected() {

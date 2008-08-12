@@ -17,7 +17,7 @@ YAHOO.rapidjs.component.TreeGrid = function(container, config) {
     this.treeGridView = new YAHOO.rapidjs.component.treegrid.TreeGridView(this.body.dom, config);
 	this.treeGridView.render();
     this.treeGridView.events['selectionchanged'].subscribe(this.fireSelectionChange, this, true);
-	this.tree.events['rowMenuClick'].subscribe(this.fireRowMenuClick, this, true);
+	this.treeGridView.events['rowMenuClick'].subscribe(this.fireRowMenuClick, this, true);
 }
 YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.PollingComponentContainer, {
     handleSuccess: function(response, keepExisting, removeAttribute)

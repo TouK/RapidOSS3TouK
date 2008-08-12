@@ -1,5 +1,6 @@
 <html>
 <head>
+	<title>iFountain - RapidInsight for Netcool</title>
     <rui:javascript dir="yui/layout" file="layout-beta-min.js"/>
     <rui:javascript dir="ext" file="ext.js"></rui:javascript>
     <rui:javascript dir="rapidjs/component/form" file="Form.js"></rui:javascript>
@@ -92,11 +93,11 @@
 <script type="text/javascript">
     function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
     {
-    	return (key == "severity" && value != "Critical") || key == "lastoccurrence" || key=="statechange"
+    	return (key == "severity" && value != '5') || key == "lastoccurrence" || key=="statechange"
     }
     function searchListPropertyMenuConditionFunctionLessThan(key, value, data)
 	{
-    	return (key == "severity" && value != "Clear") || key == "lastoccurrence" || key=="statechange"
+    	return (key == "severity" && value != '0') || key == "lastoccurrence" || key=="statechange"
     }
 
     function searchListPropertyMenuConditionFunctionGreaterLessThanOrEqualTo(key, value, data)
@@ -123,17 +124,18 @@
     {
         return data.getAttribute("tasklist") == 1;
     }
-    function searchListHeaderMenuConditionFunctionSeveritySubmenu( data, label )
+    function searchListHeaderMenuConditionFunctionSeveritySubmenu( data, item )
     {
         var severity = data.getAttribute("severity");
-        return !(severity == label);
+        return !(severity == item.id);
     }
 
-    function searchListHeaderMenuConditionFunctionSuppressSubmenu (data, label)
+    function searchListHeaderMenuConditionFunctionSuppressSubmenu (data, item)
     {
         var suppress = data.getAttribute("suppressescl");
-        return !(suppress == label);
+        return !(suppress == item.id);
     }
+
     YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
         YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
     }, this, true);
@@ -167,12 +169,12 @@
         title:'Netcool Events',
         defaultFields:['node', 'owneruid', 'ownergid'],
         fields: [
-        	{exp:'data["severity"] == "Critical"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey']},
-            {exp:'data["severity"] == "Major"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence']},
-            {exp:'data["severity"] == "Minor"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist']},
-            {exp:'data["severity"] == "Warning"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl']},
-            {exp:'data["severity"] == "Indeterminate"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity']},
-            {exp:'data["severity"] == "Clear"', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally']}
+        	{exp:'data["severity"] == 5', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey']},
+            {exp:'data["severity"] == 4', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence']},
+            {exp:'data["severity"] == 3', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist']},
+            {exp:'data["severity"] == 2', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl']},
+            {exp:'data["severity"] == 1', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity']},
+            {exp:'data["severity"] == 0', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally']}
         ],
         menuItems:{
             item1 : { id : 'eventDetails', label : 'Event Details' },
@@ -182,32 +184,32 @@
             item5 : { id : 'addTaskToList', label : 'Add Task To List', condition: searchListHeaderMenuConditionFunctionAddTaskToList },
             item6 : { id : 'removeTaskFromList', label : 'Remove Task From List', condition: searchListHeaderMenuConditionFunctionRemoveTaskFromList },
             item7 : { id : 'suppressEscalate', label : 'Suppress/Escalate',  submenuItems : {
-                            subItem1 : { id: 'Normal', label : 'Normal', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu},
-                            subItem2 : { id: 'Escalated', label : 'Escalated', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu},
-                            subItem3 : { id: 'Escalated-Level 2', label : 'Escalated-Level 2', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem4 : { id: 'Escalated-Level 3', label : 'Escalated-Level 3',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem5 : { id: 'Suppressed', label : 'Suppressed',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem6 : { id: 'Hidden', label : 'Hidden',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem7 : { id: 'Maintenance', label : 'Maintenance',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu }
+                            subItem1 : { id: '0', label : 'Normal', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu},
+                            subItem2 : { id: '1', label : 'Escalated', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu},
+                            subItem3 : { id: '2', label : 'Escalated-Level 2', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
+                            subItem4 : { id: '3', label : 'Escalated-Level 3',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
+                            subItem5 : { id: '4', label : 'Suppressed',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
+                            subItem6 : { id: '5', label : 'Hidden',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
+                            subItem7 : { id: '6', label : 'Maintenance',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu }
                         }
                     },
             item8 : { id : 'severity', label : 'Change Severity', submenuItems : {
-                            subItem1 : { id: 'Critical', label : 'Critical', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
-                            subItem2 : { id: 'Major', label : 'Major', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
-                            subItem3 : { id: 'Minor', label : 'Minor', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
-                            subItem4 : { id: 'Warning', label : 'Warning',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
-                            subItem5 : { id: 'Indeterminate', label : 'Indeterminate',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
-                            subItem6 : { id: 'Clear', label : 'Clear',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu }
+                            subItem1 : { id: '5', label : 'Critical', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
+                            subItem2 : { id: '4', label : 'Major', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
+                            subItem3 : { id: '3', label : 'Minor', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
+                            subItem4 : { id: '2', label : 'Warning',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
+                            subItem5 : { id: '1', label : 'Indeterminate',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
+                            subItem6 : { id: '0', label : 'Clear',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu }
                         }
                     }
         } ,
         images:[
-            {exp:'data["severity"] == "Critical"', src:'images/rapidjs/component/searchlist/red.png'},
-            {exp:'data["severity"] == "Major"', src:'images/rapidjs/component/searchlist/orange.png'},
-            {exp:'data["severity"] == "Minor"', src:'images/rapidjs/component/searchlist/yellow.png'},
-            {exp:'data["severity"] == "Warning"', src:'images/rapidjs/component/searchlist/blue.png'},
-            {exp:'data["severity"] == "Indeterminate"', src:'images/rapidjs/component/searchlist/purple.png'},
-            {exp:'data["severity"] == "Clear"', src:'images/rapidjs/component/searchlist/green.png'}
+            {exp:'data["severity"] == 5', src:'images/rapidjs/component/searchlist/red.png'},
+            {exp:'data["severity"] == 4', src:'images/rapidjs/component/searchlist/orange.png'},
+            {exp:'data["severity"] == 3', src:'images/rapidjs/component/searchlist/yellow.png'},
+            {exp:'data["severity"] == 2', src:'images/rapidjs/component/searchlist/blue.png'},
+            {exp:'data["severity"] == 1', src:'images/rapidjs/component/searchlist/purple.png'},
+            {exp:'data["severity"] == 0', src:'images/rapidjs/component/searchlist/green.png'}
         ],
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
@@ -215,7 +217,8 @@
             item3 : { id : 'greaterThan', label : 'Greater than',  condition: searchListPropertyMenuConditionFunctionGreaterThan},
             item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunctionLessThan},
             item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: searchListPropertyMenuConditionFunctionGreaterLessThanOrEqualTo},
-            item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: searchListPropertyMenuConditionFunctionGreaterLessThanOrEqualTo}
+            item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: searchListPropertyMenuConditionFunctionGreaterLessThanOrEqualTo},
+            item7 : { id : 'not', label : 'Not' , condition: function(){return true;}}
         } ,
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE);
@@ -226,6 +229,34 @@
                 var d = new Date();
                 d.setTime(parseFloat(value)*1000)
                 return d.format("d/m/Y H:i:s");
+            }
+            else if(key == "severity")
+            {
+            		switch(value)
+            		{
+            			case '5' : return "Critical";
+            			case '4' : return "Major";
+            			case '3' : return "Minor";
+            			case '2' : return "Warning";
+            			case '1' : return "Indeterminate";
+            			case '0' : return "Clear";
+            			default  : return "";
+            		}
+
+            }
+            else if(key == "suppressescl")
+            {
+            		switch(value)
+            		{
+            			case '6' : return "Maintenance";
+            			case '5' : return "Hidden";
+            			case '4' : return "Suppressed";
+            			case '3' : return "Escalated-Level 3";
+            			case '2' : return "Escalated-Level 2";
+            			case '1' : return "Escalated";
+            			case '0' : return "Normal";
+            			default  : return "";
+            		}
             }
             return value;
         }
@@ -279,95 +310,59 @@
         	takeOwnershipAction.execute({servername:serverName, serverserial : serverSerial}, [searchList]);
 
     }, this, true);
+    searchList.events["rowDoubleClicked"].subscribe(function(xmlData){
+    		var eventId = xmlData.getAttribute("id");
+            var url = "getDetails.gsp?id="+eventId;
+            html.show(url);
+
+    }, true, true);
+    searchList.events["propertyCtrl_Click"].subscribe(function(key, value, xmlData){
+    		if(this.currentlyExecutingQuery != "")
+                this.appendToQuery("NOT " + key + ": \""+ value + "\"");
+            else
+            	this.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
+
+    }, true, true);
 
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
-
-	         if (id == "sortAsc") {
+			if(	id == "not"){
+				 if(this.currentlyExecutingQuery != "")
+                	 this.appendToQuery("NOT " + key + ": \""+ value + "\"");
+                 else
+                	 this.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
+			}
+	        else if (id == "sortAsc") {
 	            searchList.setSortDirection(key, true);
 	        }
 	        else if (id == "sortDesc") {
 	            searchList.setSortDirection(key, false);
 	        }
 	        else if (id == "greaterThan") {
-	        	if( key == "severity")
- 	  			{
-	 	  			if( value == 'Major' )
-			        	searchList.appendToQuery("severity: Critical");
-			        else if( value == 'Minor' )
-			        	searchList.appendToQuery("severity: Critical OR severity:Major");
-			        else if( value == 'Warning' )
-			        	searchList.appendToQuery("severity: Critical OR severity:Major OR severity:Minor");
-			        else if( value == 'Indeterminate' )
-			        	searchList.appendToQuery("severity: Critical OR severity:Major OR severity:Minor OR severity:Warning");
-			        else if( value == 'Clear' )
-			        	searchList.appendToQuery("severity: Critical OR severity:Major OR severity:Minor OR severity:Warning OR severity:Indeterminate");
-	 	  		}
- 	  			else
-	            	searchList.appendToQuery(key + ":{" + value + " TO *}");
+	           	searchList.appendToQuery(key + ":{" + value + " TO *}");
 	        }
             else if (id == "greaterThanOrEqualTo") {
-	        	if( key == "severity")
- 	  			{
-                    if(value == 'Critical')
-                         searchList.appendToQuery("severity: Critical");
-                    else if( value == 'Major' )
-                         searchList.appendToQuery("severity: Critical OR severity:Major");
-                    else if( value == 'Minor' )
-                        searchList.appendToQuery("severity: Critical OR severity:Major OR severity:Minor");
-                    else if( value == 'Warning' )
-                        searchList.appendToQuery("severity: Critical OR severity:Major OR severity:Minor OR severity:Warning");
-                    else if( value == 'Indeterminate' )
-                        searchList.appendToQuery("severity: * - severity:Clear" );
-                    else if( value == 'Clear' )
-                            searchList.appendToQuery("severity:*");
-	 	  		}
- 	  			else
-	            	searchList.appendToQuery(key + ":[" + value + " TO *]");
+	        	searchList.appendToQuery(key + ":[" + value + " TO *]");
 	        }
             else if (id == "lessThanOrEqualTo") {
-	        	if( key == "severity")
- 	  			{
-	 	  			if( value == 'Critical' )
-			        	searchList.appendToQuery("severity:*");
-			        else if( value == 'Major' )
-			        	searchList.appendToQuery("severity: * - severity: Critical");
-			        else if( value == 'Minor' )
-			        	searchList.appendToQuery("severity: Minor OR severity: Warning OR severity:Indeterminate OR severity:Clear");
-			        else if( value == 'Warning' )
-			        	searchList.appendToQuery("severity: Warning OR severity: Indeterminate OR severity:Clear ");
-			        else if( value == 'Indeterminate' )
-			        	searchList.appendToQuery("severity: Indeterminate OR severity: Clear");
-                    else if( value == 'Clear')
-                        searchList.appendToQuery("severity: Clear");
-                   }
- 	  			else
-	            	searchList.appendToQuery(key + ":[* TO " + value + "]");
+	        	searchList.appendToQuery(key + ":[* TO " + value + "]");
 	        }
             else if (id == "lessThan") {
-	        	if( key == "severity")
- 	  			{
-	 	  			if( value == 'Critical' )
-			        	searchList.appendToQuery("severity: Major OR severity:Minor OR severity:Warning OR severity:Indeterminate OR severity:Clear");
-			        else if( value == 'Major' )
-			        	searchList.appendToQuery("severity: Minor OR severity:Warning OR severity:Indeterminate OR severity:Clear");
-			        else if( value == 'Minor' )
-			        	searchList.appendToQuery("severity: Warning OR severity:Indeterminate OR severity:Clear");
-			        else if( value == 'Warning' )
-			        	searchList.appendToQuery("severity: Indeterminate OR severity:Clear ");
-			        else if( value == 'Indeterminate' )
-			        	searchList.appendToQuery("severity: Clear");
-	 	  		}
-	        	else
-	            	searchList.appendToQuery(key + ":{* TO " + value + "}");
+	        	searchList.appendToQuery(key + ":{* TO " + value + "}");
 	        }
 
     }, this, true);
 
     var treeDisplayAttribute = "name";
-    function treeNodesConditionFunction(data)
+    function treeNodesUpdateDeleteConditionFunction(data)
     {
-        return data.getAttribute(treeDisplayAttribute) != "Default";
+    	return data.getAttribute(treeDisplayAttribute) != "Default" && data.getAttribute(treeDisplayAttribute)!="By Severity" &&
+    			data.getAttribute("isDefault")!='true';
     }
+    function treeNodesCopyConditionFunction(data)
+    {
+    	return data.getAttribute("nodeType") == "filter";
+    }
+
     var groupDefinitionDialogConfig = {
         width:"30em",
         saveUrl:"searchQueryGroup/save.xml",
@@ -381,8 +376,9 @@
     var config = {  id:"filterTree", "url":"script/run/queryList?format=xml", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
         "displayAttribute":treeDisplayAttribute, "nodeTypeAttribute":"nodeType", "queryAttribute":"query", title:'Saved Queries',
         menuItems:{
-            Delete : { id: 'delete', label : 'Delete',  condition : treeNodesConditionFunction },
-            Update : { id: 'update', label : 'Update',  condition : treeNodesConditionFunction }
+            Delete : { id: 'delete', label : 'Delete',  condition : treeNodesUpdateDeleteConditionFunction },
+            Update : { id: 'update', label : 'Update',  condition : treeNodesUpdateDeleteConditionFunction },
+            CopyQuery : { id: 'copyQuery', label : 'Copy Query',  condition : treeNodesCopyConditionFunction },
         }
     };
     var tree = new YAHOO.rapidjs.component.Tree(document.getElementById("treeDiv1"), config);
@@ -415,7 +411,7 @@
     }, this, true);
 
     tree.events["treeMenuItemClick"].subscribe(function(id, data) {
-        if (id == "delete")
+    	if (id == "delete")
         {
             if (data.getAttribute("nodeType") == "filter")
                 deleteQueryAction.execute({id:data.getAttribute("id")});
@@ -430,8 +426,12 @@
                 groupDialog.dialog.form.name.value = data.getAttribute("name")
                 groupDialog.dialog.form.id.value = data.getAttribute("id")
             }
+       }
+       else if(id == "copyQuery"){
+        		dialog.show(dialog.CREATE_MODE,null,{name:'', group:data.parentNode().getAttribute('name'),
+        										query:data.getAttribute('query')});
 
-        }
+            }
     }, this, true);
 
     var filterDefinitionDialogConfig = {

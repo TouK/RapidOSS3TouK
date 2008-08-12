@@ -154,5 +154,9 @@
 	background: url(../../images/rapidjs/component/searchlist/SaveQuery-hover.png) no-repeat center;
 }
 .rcmdb-search-count{
+	width:60px;
+}
+.rcmdb-search-sortOrder{
 	width:100px;
+
 }

@@ -37,7 +37,7 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.Abstra
 
     public void setSeverity(newValue, userName){
 	    def ncds = NetcoolDatasource.get(name:connectorname);
-        ncds.setSeverityAction(serverserial, NetcoolConversionParameter.getRealValue("Severity", newValue), userName);
+        ncds.setSeverityAction(serverserial, newValue, userName);
         update(severity : newValue);
 	    update(acknowledged:NetcoolConversionParameter.getConvertedValue("Acknowledged", 0));
 
@@ -45,7 +45,7 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.Abstra
 
     public void setSuppressescl(newValue, userName){
 	    def ncds = NetcoolDatasource.get(name:connectorname);
-	    ncds.suppressAction(serverserial, NetcoolConversionParameter.getRealValue("SuppressEscl", newValue), userName);
+	    ncds.suppressAction(serverserial,  newValue, userName);
 	    update(suppressescl : newValue);
     }
 

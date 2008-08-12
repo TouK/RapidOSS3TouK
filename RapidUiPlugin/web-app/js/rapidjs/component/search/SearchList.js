@@ -36,7 +36,9 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
         'rowHeaderMenuClick' : new YAHOO.util.CustomEvent('rowHeaderMenuClick'),
         'cellMenuClick' : new YAHOO.util.CustomEvent('cellMenuClick'),
         'rowHeaderClick' : new YAHOO.util.CustomEvent('rowHeaderClick'),
-        'propertyClick' : new YAHOO.util.CustomEvent('propertyClick')
+        'propertyClick' : new YAHOO.util.CustomEvent('propertyClick'),
+        'rowDoubleClicked' : new YAHOO.util.CustomEvent('rowDoubleClicked'),
+        'propertyCtrl_Click' :new YAHOO.util.CustomEvent('propertyCtrl_Click')
     };
     YAHOO.ext.util.Config.apply(this.events, events);
     this.calculateRowHeight();
@@ -92,6 +94,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.showMask();
         this.lastSortAtt = sortAtt;
         this.lastSortOrder = sortOrder;
+        var sortTextbox = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-sortOrder', 'div', this.searchBox.dom)[0];
+        sortTextbox.innerHTML = "Sorted By: " + sortAtt + "-" + sortOrder;
         this.params['sort'] = this.lastSortAtt;
         this.params['order'] = this.lastSortOrder;
         this.poll(this.lastOffset, sortAtt, sortOrder);
@@ -157,18 +161,20 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     render : function() {
         var dh = YAHOO.ext.DomHelper;
         this.wrapper = dh.append(this.container, {tag: 'div', cls:'rcmdb-search'});
+
         this.header = dh.append(this.wrapper, {tag:'div'}, true);
         this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header.dom, {title:this.title});
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SearchListSettingsTool(document.body, this));
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
-            html:'<div><form action="javascript:void(0)"><table><tbody>' +
+            html:'<div><form action="javascript:void(0)" style="overflow:auto;"><table><tbody>' +
                  '<tr>' +
                  '<td  width="93%"><input type="textbox" style="width:100%;" name="search"/></td>' +
                  '<td><div class="rcmdb-search-searchbutton"></div></td>' +
                  '<td  width="100%"><div class="rcmdb-search-savequery"></div></td>' +
                  '<td  width="0%"><div class="rcmdb-search-count"></div></td>' +
+                 '<td  width="0%"><div class="rcmdb-search-sortOrder"></div></td>' +
                  '</tr>' +
                  '</tbody></table></form></div>'}, true);
 
@@ -189,6 +195,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0].form, 'keypress', this.handleInputEnter, this, true);
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
+        YAHOO.util.Event.addListener(this.scrollPos.dom, 'dblclick', this.handleDoubleClick, this, true);
 
         this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic"});
 
@@ -366,7 +373,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             YAHOO.util.Dom.setStyle(rowEl.dom, 'display', 'block');
             var realRowIndex = rowStartIndex + rowIndex;
             rowEl.dom.rowIndex = realRowIndex;
-            this.renderRow(rowEl);
+            this.renderRow(rowEl,rowIndex);
         }
         this.hideMask();
     },
@@ -466,8 +473,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         }
 
     },
+    handleDoubleClick: function(e)
+    {
+	    var target = YAHOO.util.Event.getTarget(e);
+	    var row = this.getRowFromChild(target);
+	    var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
+	    if (row) {
+		     	 this.fireRowDoubleClick(xmlData);
+	    }
+    },
     handleClick: function(e) {
-        var target = YAHOO.util.Event.getTarget(e);
+
+	    var target = YAHOO.util.Event.getTarget(e);
         var row = this.getRowFromChild(target);
         if (row) {
             if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-row-headermenu')) {
@@ -493,7 +510,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                         var submenuItem = this.rowHeaderMenu.getItem(index)._oSubmenu.getItem(subIndex);
                         if (this.menuItems[i].submenuItems[j].condition != null)
                         {
-                            var conSub = this.menuItems[i].submenuItems[j].condition(dataNode, this.menuItems[i].submenuItems[j].label)
+                            var conSub = this.menuItems[i].submenuItems[j].condition(dataNode, this.menuItems[i].submenuItems[j])
                             if (!conSub)
                                 submenuItem.element.style.display = "none";
                             else
@@ -534,8 +551,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                         this.cellMenu.show();
                     }
                     else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
-                        this.appendToQuery(cell.propKey + ":\"" + cell.propValue + "\"");
-                        this.firePropertyClick(cell.propKey, cell.propValue, xmlData);
+	                    if(e.ctrlKey)
+	                    {
+		                   this.firePropertyCtrl_Click(cell.propKey, cell.propValue, xmlData);
+	                    }
+	                    else
+	                    {
+	                        this.appendToQuery(cell.propKey + ":\"" + cell.propValue + "\"");
+	                        this.firePropertyClick(cell.propKey, cell.propValue, xmlData);
+
+                        }
                     }
                 }
             }
@@ -707,5 +732,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
     firePropertyClick: function(key, value, data) {
         this.events['propertyClick'].fireDirect(key, value, data);
+    },
+    fireRowDoubleClick: function(data) {
+        this.events['rowDoubleClicked'].fireDirect(data);
+    },
+    firePropertyCtrl_Click: function(key, value, data){
+        this.events['propertyCtrl_Click'].fireDirect(key, value, data);
     }
 });

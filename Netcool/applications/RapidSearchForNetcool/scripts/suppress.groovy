@@ -10,7 +10,7 @@ import auth.RsUser;
 def netcoolServerName = params.servername;
 def serverSerial = params.serverserial;
 def user = RsUser.findByUsername(web.session.username);
-def suppress = params.suppressescl;
+def suppress = Integer.parseInt(params.suppressescl);
 
 def netcoolEvent = NetcoolEvent.get(servername: netcoolServerName, serverserial: serverSerial);
 if (netcoolEvent) {

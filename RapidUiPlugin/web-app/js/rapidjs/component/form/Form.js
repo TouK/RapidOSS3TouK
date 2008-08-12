@@ -32,6 +32,7 @@ YAHOO.rapidjs.component.Form = function(container, config)
     this.updateUrl = config.updateUrl;
     this.mode = this.CREATE_MODE;
     this.isSubmitInProggress = false;
+    this.fieldParams = null;
     this.render();
 
 };
@@ -69,8 +70,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         var formElements = this.dialog.form.elements;
         for (var i = 0; i < formElements.length; i++)
         {
-            this.setFormElementValue(formElements[i], response.responseXML);
+	        this.setFormElementValue(formElements[i], response.responseXML);
+
+	        if(this.fieldParams != null && this.fieldParams[formElements[i].name] != null)
+	        {
+		        if(formElements[i].nodeName == 'SELECT')
+		        	SelectUtils.selectTheValue(formElements[i],this.fieldParams[formElements[i].name],'Default');
+		        else
+	        		formElements[i].value = this.fieldParams[formElements[i].name];
+	    	}
         }
+        this.fieldParams = null;
         this.isSubmitInProggress = false;
     },
 
@@ -115,11 +125,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
 	  	this.hideMask();
 	    YAHOO.rapidjs.component.Form.superclass.handleUnknownUrl.call(this);
     },
-    handleServerDown: function(response)
-    {
-        this.hideMask();
-        YAHOO.rapidjs.component.Form.superclass.handleServerDown.call(this);
-    },
+
     handleSubmit: function()
     {
         this.errors.dom.innerHTML = "";
@@ -171,16 +177,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
 
     },
 
-    show: function(mode, params)
+    show: function(mode, params, fieldParams)
     {
-        this.errors.hide();
+	    this.errors.hide();
         this.hideMask();
         this.clearAllFields();
         this.mode = mode;
+        if(fieldParams != null)
+       		this.fieldParams = fieldParams;
         if (mode == this.EDIT_MODE && this.editUrl != null)
         {
 	        this.showMask();
-            this.doRequest(this.editUrl, params);
+	        this.doRequest(this.editUrl, params);
 
         }
         else if (mode == this.CREATE_MODE && this.createUrl != null)
@@ -188,6 +196,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
 	        this.showMask();
             this.doRequest(this.createUrl, params);
         }
+
         this.dialog.show();
     },
     hide: function()

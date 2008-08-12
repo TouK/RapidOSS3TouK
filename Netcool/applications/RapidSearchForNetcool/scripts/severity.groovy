@@ -11,7 +11,7 @@ import auth.RsUser;
 def netcoolServerName = params.servername;
 def serverSerial = params.serverserial;
 def user = RsUser.findByUsername(web.session.username);
-def severity = params.severity;
+def severity = Integer.parseInt(params.severity);
 
 def netcoolEvent = NetcoolEvent.get(servername: netcoolServerName, serverserial: serverSerial);
 if (netcoolEvent) {
@@ -30,4 +30,3 @@ if (netcoolEvent) {
 else{
     throw new Exception("NetcoolEvent with servername: ${netcoolServerName} and serverserial: ${serverSerial} does not exist." );
 }
-

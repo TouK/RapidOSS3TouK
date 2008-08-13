@@ -52,6 +52,7 @@
     <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="RcmdbCommons" />
     <orderEntry type="library" name="compass" level="project" />
+    <orderEntry type="library" name="jsecurity" level="project" />
     <orderEntryProperties />
   </component>
 </module>

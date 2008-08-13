@@ -1,3 +1,3 @@
 class StartupScriptsConfig{
-    def scripts = ["CreateDefaultScripts"];
+    def scripts = ["CreateDefaults"];
 }

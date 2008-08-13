@@ -110,9 +110,12 @@ public class SingleCompassSessionManager {
             public void run() {
                 synchronized (sessionLock)
                 {
-                    timeout = true;
-                    SingleCompassSessionManager.closeSession(SingleCompassSessionManager.compassSessionInstance);
-                    timeout = false;
+                    if(!isDestroyed)
+                    {
+                        timeout = true;
+                        SingleCompassSessionManager.closeSession(SingleCompassSessionManager.compassSessionInstance);
+                        timeout = false;
+                    }
                 }
             }
         };
@@ -170,6 +173,7 @@ public class SingleCompassSessionManager {
             if(timer != null)
             {
                 timer.purge();
+
             }
             isDestroyed = true;
             if(uncommittedTransactions.isEmpty())

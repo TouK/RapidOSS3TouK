@@ -27,7 +27,7 @@ class NetcoolEvent {
     
     String alertkey ="";
     
-    String severity ="";
+    Long severity =0;
     
     String summary ="";
     
@@ -65,7 +65,7 @@ class NetcoolEvent {
     
     Long processreq =0;
     
-    String suppressescl ="";
+    Long suppressescl =0;
     
     String customer ="";
     

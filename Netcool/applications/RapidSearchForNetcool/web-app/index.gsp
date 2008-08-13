@@ -135,11 +135,13 @@
 <script type="text/javascript">
     function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
     {
-    	return (key == "severity" && value != '5') || (key == "suppressescl" && value != '6')
+    	return (key == "severity" && value != '5') || (key == "suppressescl" && value != '6') ||
+    		   (key != "severity" && key != "suppressescl" && searchListPropertyMenuConditionFunction(key, value, data));
     }
     function searchListPropertyMenuConditionFunctionLessThan(key, value, data)
 	{
-    	return (key == "severity" && value != '0') || (key == "suppressescl" && value != '0')
+    	return (key == "severity" && value != '0') || (key == "suppressescl" && value != '0')||
+    	 	   (key != "severity" && key != "suppressescl" && searchListPropertyMenuConditionFunction(key, value, data));
     }
 
     function searchListPropertyMenuConditionFunction(key, value, data)

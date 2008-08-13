@@ -1,23 +1,65 @@
 <html>
 <head>
 	<title>iFountain - RapidInsight for Netcool</title>
-    <rui:javascript dir="yui/layout" file="layout-beta-min.js"/>
-    <rui:javascript dir="ext" file="ext.js"></rui:javascript>
-    <rui:javascript dir="rapidjs/component/form" file="Form.js"></rui:javascript>
-    <rui:javascript dir="rapidjs/component/search" file="SearchList.js"></rui:javascript>
-    <rui:javascript dir="rapidjs/component/treegrid" file="TreeGrid.js"></rui:javascript>
-    <rui:javascript dir="rapidjs/component/action" file="Action.js"></rui:javascript>
-    <rui:javascript dir="rapidjs/component/html" file="Html.js"></rui:javascript>
+    <script type="text/javascript" src="/RapidSuite/js/yui/utilities/utilities.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/yui/resize/resize-beta-min.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/yui/layout/layout-beta-min.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/ext/ext.js"></script>
 
-    <rui:stylesheet dir="js/yui/treeview" includeType="recursive"></rui:stylesheet>
-    <rui:stylesheet dir="js/yui/resize" includeType="recursive"></rui:stylesheet>
-    <rui:stylesheet dir="js/yui/layout" includeType="recursive"></rui:stylesheet>
-    <rui:stylesheet dir="js/yui/assets/skins/sam" file="menu.css"></rui:stylesheet>
-    <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
-    <rui:stylesheet dir="css/rapidjs" includeType="recursive"></rui:stylesheet>
-    <rui:stylesheet dir="js/yui/button/assets/skins/sam" file="button.css"></rui:stylesheet>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/ComponentContainer.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/RapidUtil.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/data/NodeFactory.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/RapidElement.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/PollingComponentContainer.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/yui/container/container-min.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/yui/button/button-min.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/data/RapidXmlDocument.js"></script>
 
-    <rui:stylesheet dir="js/yui/container/assets/skins/sam" file="container.css"></rui:stylesheet>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/SelectUtils.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/form/Form.js"></script>
+
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/simplewidgets/Button.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/tools/BasicTool.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/yui/container/container_core-min.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/tools/SettingsTool.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/dialog/Dialog.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/yui/menu/menu-min.js"></script>
+
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/search/SearchNode.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/tools/ButtonToolBar.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/tools/SearchListSettingsTool.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/tools/LoadingTool.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/tools/ErrorTool.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/search/SearchList.js"></script>
+
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/treegrid/split.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/tools/Tooltip.js"></script>
+
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/treegrid/TreeNode.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/treegrid/TreeHeaderCell.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/treegrid/TreeGridView.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/treegrid/TreeGrid.js"></script>
+
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/action/Action.js"></script>
+    <script type="text/javascript" src="/RapidSuite/js/rapidjs/component/html/Html.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/RapidSuite/js/yui/assets/skins/sam/menu.css" />
+    <link rel="stylesheet" type="text/css" href="/RapidSuite/js/yui/assets/skins/sam/skin.css" />
+    <link rel="stylesheet" type="text/css" href="/RapidSuite/css/rapidjs/common.css" />
+	<link rel="stylesheet" type="text/css" href="/RapidSuite/css/rapidjs/dialog.css" />
+	<link rel="stylesheet" type="text/css" href="/RapidSuite/css/rapidjs/form.css" />
+	<link rel="stylesheet" type="text/css" href="/RapidSuite/css/rapidjs/mgrid.css" />
+	<link rel="stylesheet" type="text/css" href="/RapidSuite/css/rapidjs/overlay.css" />
+
+	<link rel="stylesheet" type="text/css" href="/RapidSuite/css/rapidjs/ryuitree.css" />
+	<link rel="stylesheet" type="text/css" href="/RapidSuite/css/rapidjs/searchlist.css" />
+	<link rel="stylesheet" type="text/css" href="/RapidSuite/css/rapidjs/simplewidgets/button.css" />
+	<link rel="stylesheet" type="text/css" href="/RapidSuite/css/rapidjs/tools/tools.css" />
+	<link rel="stylesheet" type="text/css" href="/RapidSuite/css/rapidjs/treegrid/treegrid.css" />
+
+    <link rel="stylesheet" type="text/css" href="/RapidSuite/js/yui/button/assets/skins/sam/button.css" />
+    <link rel="stylesheet" type="text/css" href="/RapidSuite/js/yui/container/assets/skins/sam/container.css" />
+
     <jsec:isNotLoggedIn>
 	  <g:javascript>window.location='auth/login?targetUri=/index.gsp'</g:javascript>
 	</jsec:isNotLoggedIn>

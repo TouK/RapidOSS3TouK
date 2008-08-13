@@ -16,3 +16,4 @@ CmdbScript.addScript(name:"severity");
 CmdbScript.addScript(name:"takeOwnership");
 CmdbScript.addScript(name:"taskList");
 CmdbScript.addScript(name:"suppress");
+CmdbScript.addScript(name:"removeAll");

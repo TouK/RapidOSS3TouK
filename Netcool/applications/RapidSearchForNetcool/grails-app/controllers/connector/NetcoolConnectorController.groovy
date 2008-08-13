@@ -173,7 +173,6 @@ class NetcoolConnectorController {
             def script = CmdbScript.get(name: scriptName);
             try
             {
-                CmdbScript.runScript(script.name);
                 CmdbScript.updateScript(script, [enabled: true], false);
                 flash.message = "Connector ${netcoolConnector.name} successfully started"
             }

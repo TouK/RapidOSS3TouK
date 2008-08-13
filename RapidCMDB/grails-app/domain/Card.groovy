@@ -13,7 +13,7 @@ class Card extends DeviceComponent
 
     
     String status ="";
-    
+    List realises = [];
 
     static hasMany = [realises:DeviceAdapter]
     

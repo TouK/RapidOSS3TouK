@@ -5,6 +5,7 @@ class DatasourceName {
      static hasMany = [modelDatasources: ModelDatasource];
      static mappedBy = [modelDatasources:'datasource']     
      String name;
+     List modelDatasources = [];
      static constraints = {
          name(blank:false, nullable:false, key:[]);
      };

@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.SearchableCompassConfigurator;
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.StringMapConverter;
+import org.codehaus.groovy.grails.commons.ApplicationHolder;
 import org.compass.core.Compass;
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassConfigurationFactory;
@@ -60,7 +61,7 @@ public class SearchableCompassFactoryBean implements FactoryBean {
         // TODO find a better place for this
         // register custom converters
         configuration.registerConverter(StringMapConverter.CONVERTER_NAME, new StringMapConverter());
-
+        configuration.setClassLoader(ApplicationHolder.getApplication().getClassLoader());
         searchableCompassConfigurator.configure(configuration, new HashMap());
 
         Compass compass = configuration.buildCompass();

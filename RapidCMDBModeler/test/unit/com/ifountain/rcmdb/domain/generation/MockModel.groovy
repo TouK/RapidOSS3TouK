@@ -12,16 +12,7 @@ import model.Model
 class MockModel extends Model
 {
     def static childModels;
-
-    Set datasources;
-    Set modelProperties
-    Set fromRelations;
-    Set toRelations;
     public MockModel()
     {
-        datasources = Collections.emptySet();
-        modelProperties = Collections.emptySet()
-        fromRelations = Collections.emptySet();
-        toRelations = Collections.emptySet();
     }
 }

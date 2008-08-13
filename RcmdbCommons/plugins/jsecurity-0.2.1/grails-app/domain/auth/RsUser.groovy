@@ -7,6 +7,8 @@ class RsUser {
     }
     String username
     String passwordHash
+    List roles = [];
+    List permissionRelations = [];
     static hasMany = [roles:UserRoleRel, permissionRelations:UserPermissionRel];
     static mappedBy=["roles":"rsUser", "permissionRelations":"rsUser"]
     static constraints = {

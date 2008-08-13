@@ -13,6 +13,7 @@ class SearchQueryGroup {
     static searchable = true;
     RsUser user;
     String name;
+    List queries = [];
     static hasMany = [queries:SearchQuery]
     static mappedBy = ["queries":"group"]
     static constraints = {

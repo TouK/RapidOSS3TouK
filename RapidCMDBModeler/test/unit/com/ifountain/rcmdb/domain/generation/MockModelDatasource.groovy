@@ -11,10 +11,8 @@ import model.ModelDatasource
 */
 class MockModelDatasource extends ModelDatasource
 {
-    Set keyMappings;
     public MockModelDatasource()
     {
-        keyMappings = Collections.emptySet();
     }
     def getModelFile()
     {

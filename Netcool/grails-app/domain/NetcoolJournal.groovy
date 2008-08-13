@@ -11,21 +11,21 @@ class NetcoolJournal {
     static datasources = ["RCMDB":["keys":["keyfield":["nameInDs":"keyfield"], "servername":["nameInDs":"servername"]]]]
 
     
-    java.lang.Long serverserial =0;
+    Long serverserial =0;
     
-    java.lang.String keyfield ="";
+    String keyfield ="";
     
-    java.lang.String text ="";
+    String text ="";
     
-    java.lang.Long chrono =0;
+    Long chrono =0;
     
-    java.lang.String servername ="";
+    String servername ="";
     
-    java.lang.String connectorname ="";
+    String connectorname ="";
     
     org.springframework.validation.Errors errors ;
     
-    java.lang.Object __operation_class__ ;
+    Object __operation_class__ ;
     
 
     static hasMany = [:]

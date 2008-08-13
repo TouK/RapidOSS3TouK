@@ -11,115 +11,115 @@ class NetcoolEvent {
     static datasources = ["RCMDB":["keys":["servername":["nameInDs":"servername"], "serverserial":["nameInDs":"serverserial"]]]]
 
     
-    java.lang.String identifier ="";
+    String identifier ="";
     
-    java.lang.Long serial =0;
+    Long serial =0;
     
-    java.lang.String node ="";
+    String node ="";
     
-    java.lang.String nodealias ="";
+    String nodealias ="";
     
-    java.lang.String manager ="";
+    String manager ="";
     
-    java.lang.String agent ="";
+    String agent ="";
     
-    java.lang.String alertgroup ="";
+    String alertgroup ="";
     
-    java.lang.String alertkey ="";
+    String alertkey ="";
     
-    java.lang.String severity ="";
+    String severity ="";
     
-    java.lang.String summary ="";
+    String summary ="";
     
-    java.lang.Long statechange =0;
+    Long statechange =0;
     
-    java.lang.Long firstoccurrence =0;
+    Long firstoccurrence =0;
     
-    java.lang.Long lastoccurrence =0;
+    Long lastoccurrence =0;
     
-    java.lang.Long internallast =0;
+    Long internallast =0;
     
-    java.lang.Long poll =0;
+    Long poll =0;
     
-    java.lang.Long nctype =0;
+    Long nctype =0;
     
-    java.lang.Long tally =0;
+    Long tally =0;
     
-    java.lang.String ncclass ="";
+    String ncclass ="";
     
-    java.lang.Long grade =0;
+    Long grade =0;
     
-    java.lang.String location ="";
+    String location ="";
     
-    java.lang.String owneruid ="";
+    String owneruid ="";
     
-    java.lang.String ownergid ="";
+    String ownergid ="";
     
-    java.lang.String acknowledged ="";
+    String acknowledged ="";
     
-    java.lang.Long flash =0;
+    Long flash =0;
     
-    java.lang.String eventid ="";
+    String eventid ="";
     
-    java.lang.Long expiretime =0;
+    Long expiretime =0;
     
-    java.lang.Long processreq =0;
+    Long processreq =0;
     
-    java.lang.String suppressescl ="";
+    String suppressescl ="";
     
-    java.lang.String customer ="";
+    String customer ="";
     
-    java.lang.String service ="";
+    String service ="";
     
-    java.lang.Long physicalslot =0;
+    Long physicalslot =0;
     
-    java.lang.Long physicalport =0;
+    Long physicalport =0;
     
-    java.lang.String physicalcard ="";
+    String physicalcard ="";
     
-    java.lang.Long tasklist =0;
+    Long tasklist =0;
     
-    java.lang.String nmosserial ="";
+    String nmosserial ="";
     
-    java.lang.Long nmosobjinst =0;
+    Long nmosobjinst =0;
     
-    java.lang.Long nmoscausetype =0;
+    Long nmoscausetype =0;
     
-    java.lang.String localnodealias ="";
+    String localnodealias ="";
     
-    java.lang.String localpriobj ="";
+    String localpriobj ="";
     
-    java.lang.String localsecobj ="";
+    String localsecobj ="";
     
-    java.lang.String localrootobj ="";
+    String localrootobj ="";
     
-    java.lang.String remotenodealias ="";
+    String remotenodealias ="";
     
-    java.lang.String remotepriobj ="";
+    String remotepriobj ="";
     
-    java.lang.String remotesecobj ="";
+    String remotesecobj ="";
     
-    java.lang.String remoterootobj ="";
+    String remoterootobj ="";
     
-    java.lang.Long x733eventtype =0;
+    Long x733eventtype =0;
     
-    java.lang.Long x733probablecause =0;
+    Long x733probablecause =0;
     
-    java.lang.String x733specificprob ="";
+    String x733specificprob ="";
     
-    java.lang.String x733corrnotif ="";
+    String x733corrnotif ="";
     
-    java.lang.String servername ="";
+    String servername ="";
     
-    java.lang.Long serverserial =0;
+    Long serverserial =0;
     
-    java.lang.String url ="";
+    String url ="";
     
-    java.lang.String connectorname ="";
+    String connectorname ="";
     
     org.springframework.validation.Errors errors ;
     
-    java.lang.Object __operation_class__ ;
+    Object __operation_class__ ;
     
 
     static hasMany = [:]

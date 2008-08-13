@@ -80,6 +80,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         Class cls = compileClass(model.name);
         def object = cls.newInstance();
         object.keyprop = "keypropvalue";
+        assertNull(object.id);
+        assertNull(object.version);
         checkExistanceOfMetaDataProperties(object);
         assertNull (object.errors);
         assertEquals (Errors.class, object.metaClass.getMetaProperty("errors").type);
@@ -382,7 +384,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         Class cls = compileClass(model1.name);
         def object = cls.newInstance();
-
+        assertEquals (0, object.relation3.size());
         assertEquals(model2.getName(), object.class.getDeclaredField("relation1").getType().getName());
         assertEquals(model2.getName(), object.class.getDeclaredField("reverseRelation2").getType().getName())
         assertEquals(model2.getName(), object.hasMany.relation3.getName())

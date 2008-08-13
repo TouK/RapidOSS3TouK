@@ -1,29 +1,24 @@
-import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 import com.ifountain.rcmdb.domain.method.AsMapMethod
-import com.ifountain.rcmdb.domain.util.DatasourceConfigurationCache
+import com.ifountain.rcmdb.domain.method.ReloadOperationsMethod
+import com.ifountain.rcmdb.domain.operation.DomainOperationManager
+import com.ifountain.rcmdb.domain.property.DomainClassPropertyInterceptor
+import com.ifountain.rcmdb.domain.property.DomainClassPropertyInterceptorFactoryBean
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
-import com.ifountain.rcmdb.domain.util.PropertyConfigurationCache
-import com.ifountain.rcmdb.domain.util.Relation
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import groovy.xml.MarkupBuilder
+import java.lang.reflect.Field
 import org.apache.log4j.Logger
-import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
+import org.codehaus.groovy.grails.commons.GrailsClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
-import java.lang.reflect.Field
-import org.codehaus.groovy.grails.commons.GrailsClass
-import groovy.xml.MarkupBuilder
 import org.springframework.validation.FieldError
-import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
-import com.ifountain.rcmdb.domain.operation.DomainOperationManager
-import com.ifountain.rcmdb.domain.method.ReloadOperationsMethod
-import com.ifountain.rcmdb.domain.property.DomainClassPropertyInterceptorFactoryBean
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
@@ -35,7 +30,7 @@ class RapidDomainClassGrailsPlugin {
     def doWithSpring = {
         ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
         domainPropertyInterceptor(DomainClassPropertyInterceptorFactoryBean) { bean ->
-            propertyInterceptorClassName = ConfigurationHolder.getConfig().flatten().get("domain.property.interceptor.class");
+            propertyInterceptorClassName = ConfigurationHolder.getConfig().flatten().get(RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME);
             classLoader = application.getClassLoader()
         }
     }
@@ -56,12 +51,9 @@ class RapidDomainClassGrailsPlugin {
         def domainClassesToBeCreated = [];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
-            if(isSearchable(mc))
+            if(!domainClassMap.containsKey(mc.getTheClass().getSuperclass().getName()))
             {
-                if(!domainClassMap.containsKey(mc.getTheClass().getSuperclass().getName()))
-                {
-                    domainClassesToBeCreated += dc;
-                }
+                domainClassesToBeCreated += dc;
             }
         }
         for (dc in domainClassesToBeCreated) {
@@ -240,13 +232,13 @@ class RapidDomainClassGrailsPlugin {
         }
     }
     
-    def registerDynamicMethods(dc, application, ctx)
+    def registerDynamicMethods(GrailsDomainClass dc, application, ctx)
     {
         def mc = dc.clazz.metaClass;
+        addPropertyInterceptors(dc, application, ctx);
         addErrorsSupport(dc, application, ctx)
         addOperationsSupport(dc, application, ctx)
         addUtilityMetods (dc, application, ctx)
-        addPropertyGetAndSetMethods(dc);
         for(subClass in dc.subClasses)
         {
             if(subClass.metaClass.getTheClass().getSuperclass().name == dc.metaClass.getTheClass().name)
@@ -256,164 +248,17 @@ class RapidDomainClassGrailsPlugin {
         }
     }
 
-    def addPropertyGetAndSetMethods(GrailsDomainClass dc)
+    def addPropertyInterceptors(GrailsDomainClass dc, application, ctx)
     {
-
-        def relations = DomainClassUtils.getRelations(dc);
-        MetaClass mc = dc.metaClass
-        def hasOperationProp = GrailsClassUtils.getProperty(mc.theClass, RapidCMDBConstants.OPERATION_PROPERTY_NAME, AbstractDomainOperation) != null
-        def propConfigCache = new PropertyConfigurationCache(dc);
-        def dsConfigCache = new DatasourceConfigurationCache(dc);
-        def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
-        mc.setProperty = {String name, Object value->
-            delegate.setProperty(name, value, true);
+        def props =dc.getProperties();
+        DomainClassPropertyInterceptor propertyInterceptor = ctx.getBean("domainPropertyInterceptor");
+        dc.metaClass.setProperty = {String name, Object value->
+            propertyInterceptor.setDomainClassProperty (delegate, name, value);
         }
 
-        mc.setProperty = {String name, Object value, boolean flush->
-            def operation = null
-            if(hasOperationProp)
-            {
-                operation = delegate.__InternalGetProperty__(RapidCMDBConstants.OPERATION_PROPERTY_NAME);
-            }
-            if(!operation)
-            {
-                delegate.__InternalSetProperty__(name, value);
-            }
-            else
-            {
-                try
-                {
-                    operation.invokeMethod (GrailsClassUtils.getSetterName(name), [value] as Object[]);
-                }
-                catch(groovy.lang.MissingMethodException m)
-                {
-                    operation.setProperty (name, value);
-                }
-            }
-            if(flush && !EXCLUDED_PROPERTIES.containsKey(name) && delegate.id != null && persistantProps.containsKey(name))
-            {
-                delegate.reindex();
-            }
+        dc.metaClass.getProperty = {String name->
+            propertyInterceptor.getDomainClassProperty (delegate, name);
         }
-        mc.getProperty = {String name->
-            def operation = null
-            if(hasOperationProp)
-            {
-                operation = delegate.__InternalGetProperty__(RapidCMDBConstants.OPERATION_PROPERTY_NAME);
-            }
-            if(!operation)
-            {
-                return delegate.__InternalGetProperty__(name);
-            }
-            else
-            {
-                try
-                {
-                    return operation.invokeMethod (GrailsClassUtils.getGetterName(name), [] as Object[]);
-                }
-                catch(groovy.lang.MissingMethodException m)
-                {
-                    return operation.getProperty (name);
-                }
-            }
-        }
-        mc.__InternalSetProperty__ = {String name, Object value->
-            def metaProp = mc.getMetaProperty(name);
-            if(!metaProp)
-            {
-                throw new MissingPropertyException(name, mc.theClass);
-            }
-            metaProp.setProperty(delegate, value);
-        }
-        mc.__InternalGetProperty__ = {String name->
-            def domainObject = delegate;
-            def currentValue;
-            def metaProp = mc.getMetaProperty(name);
-            if(metaProp)
-            {
-                currentValue = mc.getMetaProperty(name).getProperty(domainObject);
-            }
-            else
-            {
-                throw new MissingPropertyException(name, mc.getTheClass());
-            }
-            Relation relation = relations.get(name);
-            if(relation && (relation.isOneToMany() || relation.isManyToMany()) && currentValue == null)
-            {
-                currentValue = new HashSet();
-                domainObject.__InternalSetProperty__(name, currentValue);
-            }
-            else if(dsConfigCache.hasDatasources() && propConfigCache.hasPropertyConfiguration())
-            {
-                def propertyConfig = propConfigCache.getPropertyConfigByName(name);
-                if(!propertyConfig || propertyConfig.datasource == RapidCMDBConstants.RCMDB)
-                {
-                    return currentValue;
-                }
-                else
-                {
-                    if(!propertyConfig.lazy)
-                    {
-
-                        def isPropLoadedMap = mc.getMetaProperty(RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED).getProperty(domainObject);
-                        if(isPropLoadedMap != null && isPropLoadedMap[propConfigCache.getDatasourceName(domainObject, name)] == true)
-                        {
-                            return currentValue
-                        }
-                    }
-                    def federatedValue = getFederatedProperty(mc, domainObject, name, propConfigCache, dsConfigCache);
-                    if(federatedValue != null)
-                    {
-                        return federatedValue;
-                    }
-                }
-            }
-            return currentValue;
-        };
-    }
-
-
-    def getFederatedProperty(domainObjectMetaClass, currentDomainObject, propertyName, propCache, dsCache)
-    {
-        def isPropsLoadedMap = currentDomainObject[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
-        if(isPropsLoadedMap == null)
-        {
-            isPropsLoadedMap = [:];
-            currentDomainObject.setProperty(RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, isPropsLoadedMap);
-        }
-        def propertyDatasource = propCache.getDatasource(currentDomainObject, propertyName);
-        if(propertyDatasource)
-        {
-            def keys = dsCache.getKeys(currentDomainObject, propertyDatasource.name);
-            if(keys != null && keys.size() > 0)
-            {
-                def isPropsLoaded = isPropsLoadedMap[propertyDatasource.name];
-                def requestedProperties = propCache.getDatasouceProperties(currentDomainObject, propertyName, isPropsLoaded);
-                try
-                {
-                    def returnedProps = propertyDatasource.getProperties (keys, requestedProperties);
-                    if(isPropsLoaded != true)
-                    {
-
-                        returnedProps.each {key, value->
-                            def requestedPropConfig = propCache.getPropertyConfigByNameInDs(key);
-                            if(requestedPropConfig)
-                            {
-                                currentDomainObject.__InternalSetProperty__(requestedPropConfig.name, value);
-                            }
-                        }
-                        isPropsLoadedMap[propertyDatasource.name] = true;
-                    }
-                    return returnedProps[propCache.getNameInDs(propCache.getPropertyConfigByName(propertyName))];
-
-                }
-                catch(Throwable e)
-                {
-                    logger.warn("An exception occurred while getting federated properties ${requestedProperties} from ${propertyDatasource.name}", e);
-                }
-            }
-        }
-
-        return null;
+     
     }
 }

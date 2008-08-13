@@ -18,6 +18,7 @@ class ModelProperty {
     ModelProperty propertySpecifyingDatasource;
     String nameInDatasource;
     Model model;
+    List mappedKeys = [];
     boolean lazy = true;
 
     static belongsTo = Model;

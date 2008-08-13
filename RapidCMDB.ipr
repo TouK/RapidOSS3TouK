@@ -541,5 +541,8 @@
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/quartz-0.2/lib" recursive="false" />
     </library>
   </component>
+  <UsedPathMacros>
+    <macro name="GRAILS_HOME" />
+  </UsedPathMacros>
 </project>
 

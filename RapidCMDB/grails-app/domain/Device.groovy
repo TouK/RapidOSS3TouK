@@ -29,7 +29,9 @@ class Device extends SmartsObject
     Long discoveredLastAt =0;
     
     String vendor ="";
-    
+    List connectedVia = [];
+    List composedOf = [];
+    List hostsAccessPoints = [];
 
     static hasMany = [connectedVia:Link, composedOf:DeviceComponent, hostsAccessPoints:Ip]
     

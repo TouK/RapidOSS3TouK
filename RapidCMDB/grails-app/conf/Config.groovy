@@ -1,4 +1,4 @@
-
+import com.ifountain.rcmdb.domain.property.RapidCmdbDomainPropertyInterceptor
 
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
@@ -29,6 +29,7 @@ grails.views.gsp.encoding="UTF-8"
 grails.converters.encoding="UTF-8"
 grails.test.default.rollback = true
 
+domain.property.interceptor.class = RapidCmdbDomainPropertyInterceptor.class.name;
 
 plugin {
     excludes = "hibernate"

@@ -18,7 +18,7 @@ class Employee  extends Person {
     Employee prevEmp ;
     
     Employee nextEmp ;
-    
+    List manages = [];
 
     static hasMany = [manages:Team]
     

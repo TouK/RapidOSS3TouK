@@ -13,7 +13,7 @@ class NetcoolConnection extends DatabaseConnection{
     static cascaded = ["netcoolDatasources":true]
     static datasources = [:]
 
-
+    List netcoolDatasources = [];
      static hasMany = [netcoolDatasources:NetcoolDatasource]
 
     static constraints={

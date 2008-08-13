@@ -12,7 +12,7 @@ class Task {
 
     
     String name ="";
-    
+    List workedOnBy = [];
 
     static hasMany = [workedOnBy:Developer]
     

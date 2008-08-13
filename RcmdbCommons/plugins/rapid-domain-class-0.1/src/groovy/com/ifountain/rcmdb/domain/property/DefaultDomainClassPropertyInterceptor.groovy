@@ -10,11 +10,27 @@ class DefaultDomainClassPropertyInterceptor implements DomainClassPropertyInterc
 
     public void setDomainClassProperty(Object domainObject, String propertyName, Object value)
     {
-        domainObject.setProperty(propertyName, value);
+        def metaProp = domainObject.metaClass.getMetaProperty(propertyName);
+        if(metaProp != null)
+        {
+            metaProp.setProperty(domainObject, value);
+        }
+        else
+        {
+            throw new MissingPropertyException(propertyName, domainObject.class)
+        }
     }
 
     public Object getDomainClassProperty(Object domainObject, String propertyName) {
-        return domainObject.getProperty(propertyName);
+        def metaProp = domainObject.metaClass.getMetaProperty(propertyName);
+        if(metaProp != null)
+        {
+            return metaProp.getProperty(domainObject)
+        }
+        else
+        {
+            throw new MissingPropertyException(propertyName, domainObject.class)
+        }
     }
 
 }

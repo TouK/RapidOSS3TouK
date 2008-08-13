@@ -16,6 +16,10 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.codehaus.groovy.grails.plugins.PluginMetaManager
 import org.springframework.context.ApplicationContext
+import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
+import org.codehaus.groovy.grails.compiler.injection.ClassInjector
+import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,32 +33,30 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 	def webRequest
 	def request
 	def response
-	GroovyClassLoader gcl
-    def classesTobeLoaded;
+    def configParams;
+    GroovyClassLoader gcl
     GrailsApplication ga;
 	def mockManager
     MockApplicationContext ctx;
 	def originalHandler
 	def springConfig
 	ApplicationContext appCtx
-	def pluginsToLoad = []
 	def resolver = new PathMatchingResourcePatternResolver()
-
-	public void onBeforeSetup() {
-	}
-    public void onAfterSetup() {
-	}
-
-    final void setUp() {
-
+    void setUp() {
         super.setUp();
+        configParams = [:]
         gcl = new GroovyClassLoader();
-        classesTobeLoaded = new ArrayList(Arrays.asList(gcl.getLoadedClasses()));
+    }
+
+    def initialize(List classesToBeLoaded, List pluginsToLoad)
+    {
         ExpandoMetaClass.enableGlobally()
-        onBeforeSetup()
+//        classesToBeLoaded.addAll(Arrays.asList(gcl.getLoadedClasses()));
         ctx = new MockApplicationContext();
-        println gcl.getLoadedClasses();
-        ga = new DefaultGrailsApplication(classesTobeLoaded as Class[],gcl);
+        ga = new DefaultGrailsApplication(classesToBeLoaded as Class[],gcl);
+        configParams.each {key,value->
+            ga.getConfig().setProperty (key, value);
+        }
         mockManager = new MockGrailsPluginManager(ga)
         def dependentPlugins = pluginsToLoad.collect { new DefaultGrailsPlugin(it, ga)}
         dependentPlugins.each{ mockManager.registerMockPlugin(it); it.manager = mockManager }
@@ -75,6 +77,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         springConfig = new WebRuntimeSpringConfiguration(ctx)
         servletContext = new MockServletContext(new MockResourceLoader())
         springConfig.servletContext = servletContext
+        ServletContextHolder.setServletContext(servletContext);
 
         dependentPlugins*.doWithRuntimeConfiguration(springConfig)
 
@@ -84,11 +87,9 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 		servletContext.setAttribute( GrailsApplicationAttributes.APPLICATION_CONTEXT, appCtx)
 		dependentPlugins*.doWithDynamicMethods(appCtx)
 		dependentPlugins*.doWithApplicationContext(appCtx)
-        onAfterSetup();
-
     }
 
-	final void tearDown() {
+    final void tearDown() {
 		servletContext = null
 		webRequest = null
 		request = null
@@ -97,13 +98,10 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 		ga = null
 		mockManager = null
 		ctx = null
-		pluginsToLoad = []
 		appCtx = null
     	springConfig = null
     	resolver = null
-
 		ExpandoMetaClass.disableGlobally()
-
     	originalHandler = null
 
 	}

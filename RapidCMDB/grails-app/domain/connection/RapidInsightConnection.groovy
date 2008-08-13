@@ -20,7 +20,7 @@ class RapidInsightConnection extends Connection{
     
     String username ="";
     String connectionClass = "connection.RapidInsightConnectionImpl";
-    
+    List rapidInsightDatasources = [];
 
    static hasMany = [rapidInsightDatasources:RapidInsightDatasource]
     

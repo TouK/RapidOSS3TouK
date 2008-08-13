@@ -4,7 +4,8 @@ class BaseDatasource {
         except = [];
     };
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
-
+    Long id;
+    Long version;
     String name ="";
     
 

@@ -13,7 +13,7 @@ class HttpConnection extends Connection{
     
     String baseUrl ="";
     String connectionClass = "connection.HttpConnectionImpl";
-    
+    List httpDatasources = [];
 
     static hasMany = [httpDatasources:HttpDatasource]
     

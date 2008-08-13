@@ -12,7 +12,7 @@ class SnmpConnection extends Connection{
     Long port =162;
     String connectionClass = "com.ifountain.snmp.connection.SnmpConnectionImpl";
     String host ="0.0.0.0";
-    
+    List snmpDatasources = [];
 
     static hasMany = [snmpDatasources:SnmpDatasource]
     

@@ -6,6 +6,8 @@ class Permission {
     }
     String type
     String possibleActions
+    List userRelations = [];
+    List roleRelations = [];
     static hasMany = [userRelations:UserPermissionRel, roleRelations:RolePermissionRel]
     static mappedBy=["userRelations":"permission", "roleRelations":"permission"]
     static constraints = {

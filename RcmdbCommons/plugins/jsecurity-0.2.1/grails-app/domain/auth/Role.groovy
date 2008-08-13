@@ -5,6 +5,8 @@ class Role {
         permissionRelations cascade: "delete"
     }
     String name
+    List permissionRelations = [];
+    List users = [];
     static mappedBy=["permissionRelations":"role", "users":"role"]
     static hasMany = [permissionRelations:RolePermissionRel, users:UserRoleRel];
     static constraints = {

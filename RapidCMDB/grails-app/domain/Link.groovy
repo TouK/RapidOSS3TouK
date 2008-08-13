@@ -5,7 +5,8 @@ class Link extends SmartsObject
 {
     
     //AUTO_GENERATED_CODE
-
+    List connectedTo = [];
+    List connectedSystems = [];
     static searchable = {
         except = [];
     };

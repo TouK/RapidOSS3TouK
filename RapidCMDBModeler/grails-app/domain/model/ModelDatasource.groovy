@@ -4,6 +4,7 @@ class ModelDatasource {
     static searchable = true;
     DatasourceName datasource;
     Model model;
+    List keyMappings = [];
     static belongsTo = Model;
 
     static hasMany = [keyMappings: ModelDatasourceKeyMapping];

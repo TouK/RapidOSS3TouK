@@ -18,7 +18,8 @@ class DatabaseConnection extends Connection{
     String username ="";
     
     String driver ="";
-    
+    List singleTableDatabaseDatasources = [];
+    List databaseDatasources = [];
 
    static hasMany = [singleTableDatabaseDatasources:SingleTableDatabaseDatasource, databaseDatasources:DatabaseDatasource]
     

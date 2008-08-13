@@ -9,6 +9,10 @@ class Model {
     String name;
     Boolean resourcesWillBeGenerated = false;
     Model parentModel;
+    List modelProperties = [];
+    List datasources = [];
+    List fromRelations = [];
+    List toRelations = [];
     static hasMany = [modelProperties:ModelProperty, datasources:ModelDatasource, fromRelations:ModelRelation, toRelations:ModelRelation];
     static mappedBy = [fromRelations:'firstModel', toRelations:'secondModel', modelProperties:'model', datasources:'model']
     static cascaded = ["datasources":true, "fromRelations":true, "toRelations":true, modelProperties:true]

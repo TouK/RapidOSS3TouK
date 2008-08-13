@@ -10,19 +10,12 @@
         model.propertyList.each{
 
     %>
-    ${it.type} $it.name ${it.defaultValue?"="+it.defaultValue:""};
+    ${it.type} $it.name ${it.defaultValue != null?it.defaultValue instanceof List?"=[]":"="+it.defaultValue:""};
     <%
         }
     %>
 
     static hasMany = ${!model.hasMany.isEmpty()?model.hasMany.toString().replaceAll('\\{', '\\[').replaceAll('\\}', '\\]').replaceAll('=', ':'):'[:]'}
-    <%
-        if(model.parentModelName == null){
-    %>
-        static mapping = {
-            tablePerHierarchy false
-        }
-    <%}%>
     static constraints={
     <%
         model.constraints.each{key, value->

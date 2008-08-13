@@ -12,17 +12,14 @@ import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
  * To change this template use File | Settings | File Templates.
  */
 class RapidCmdbWithCompassTestCase extends RapidCmdbMockTestCase{
-
-	public void onBeforeSetup() {
-        super.onBeforeSetup();
+    def initialize(List classesToBeLoaded, List pluginsToLoad)
+    {
         IdGenerator.initialize(new MockIdGeneratorStrategy());
         pluginsToLoad +=  DomainClassGrailsPlugin;
         pluginsToLoad +=  gcl.loadClass("SearchableGrailsPlugin");
         pluginsToLoad +=  gcl.loadClass("SearchableExtensionGrailsPlugin");
         pluginsToLoad +=  gcl.loadClass("RapidDomainClassGrailsPlugin");
-    }
-    public void onAfterSetup() {
-        super.onAfterSetup();
+        super.initialize(classesToBeLoaded, pluginsToLoad);
     }
 
 }

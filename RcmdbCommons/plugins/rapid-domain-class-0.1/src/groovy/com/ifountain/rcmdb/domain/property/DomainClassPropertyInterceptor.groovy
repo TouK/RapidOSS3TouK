@@ -6,7 +6,8 @@ package com.ifountain.rcmdb.domain.property
  * Time: 9:52:13 AM
  * To change this template use File | Settings | File Templates.
  */
-interface DomainClassPropertyInterceptor {
+interface DomainClassPropertyInterceptor
+{
     public void setDomainClassProperty(Object domainObject, String propertyName, Object value);
     public Object getDomainClassProperty(Object domainObject, String propertyName);
 }

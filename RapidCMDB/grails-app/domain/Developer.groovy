@@ -13,7 +13,7 @@ class Developer extends Employee
 
     
     String language ="";
-    
+    List worksOn = [];
 
     static hasMany = [worksOn:Task]
     

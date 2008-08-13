@@ -37,8 +37,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
         'cellMenuClick' : new YAHOO.util.CustomEvent('cellMenuClick'),
         'rowHeaderClick' : new YAHOO.util.CustomEvent('rowHeaderClick'),
         'propertyClick' : new YAHOO.util.CustomEvent('propertyClick'),
-        'rowDoubleClicked' : new YAHOO.util.CustomEvent('rowDoubleClicked'),
-        'propertyCtrl_Click' :new YAHOO.util.CustomEvent('propertyCtrl_Click')
+        'rowDoubleClicked' : new YAHOO.util.CustomEvent('rowDoubleClicked')
     };
     YAHOO.ext.util.Config.apply(this.events, events);
     this.calculateRowHeight();
@@ -552,23 +551,20 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                     }
                     else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
 	                    if(e.ctrlKey)
-	                    {
-		                   this.firePropertyCtrl_Click(cell.propKey, cell.propValue, xmlData);
-	                    }
+                            if(this.currentlyExecutingQuery != "")
+                                this.appendToQuery("NOT " + cell.propKey + ": \""+ cell.propValue + "\"");
+                            else
+                                this.appendToQuery(cell.propKey + ":[0 TO *] NOT "+ cell.propKey + ": \""+ cell.propValue + "\"");
 	                    else
 	                    {
 	                        this.appendToQuery(cell.propKey + ":\"" + cell.propValue + "\"");
 	                        this.firePropertyClick(cell.propKey, cell.propValue, xmlData);
-
                         }
                     }
                 }
             }
         }
     },
-
-
-
     updateBodyHeight : function() {
         this.scrollPos.setHeight(this.totalRowCount * this.rowHeight);
         this._verticalScrollChanged();
@@ -577,7 +573,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     getRowHeight : function() {
         return this.rowHeight;
     },
-
 
     showMask: function() {
         this.mask.setTop(this.header.dom.offsetHeight);
@@ -591,7 +586,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
         YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', 'none');
     },
-
 
     _sort:function(arrayToBeSorted) {
         var dsc = false;
@@ -735,8 +729,5 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
     fireRowDoubleClick: function(data) {
         this.events['rowDoubleClicked'].fireDirect(data);
-    },
-    firePropertyCtrl_Click: function(key, value, data){
-        this.events['propertyCtrl_Click'].fireDirect(key, value, data);
     }
 });

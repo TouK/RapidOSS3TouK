@@ -93,16 +93,16 @@
 <script type="text/javascript">
     function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
     {
-    	return (key == "severity" && value != '5') || key == "lastoccurrence" || key=="statechange"
+    	return (key == "severity" && value != '5') || (key == "suppressescl" && value != '6')
     }
     function searchListPropertyMenuConditionFunctionLessThan(key, value, data)
 	{
-    	return (key == "severity" && value != '0') || key == "lastoccurrence" || key=="statechange"
+    	return (key == "severity" && value != '0') || (key == "suppressescl" && value != '0')
     }
 
-    function searchListPropertyMenuConditionFunctionGreaterLessThanOrEqualTo(key, value, data)
+    function searchListPropertyMenuConditionFunction(key, value, data)
     {
-           return key == "severity" || key == "lastoccurrence" || key=="statechange"
+           return YAHOO.lang.isNumber(parseInt(value));
     }
 
     function searchListHeaderMenuConditionFunctionAcknowledge(data)
@@ -216,8 +216,8 @@
             item2 : { id : 'sortDesc', label : 'Sort desc' },
             item3 : { id : 'greaterThan', label : 'Greater than',  condition: searchListPropertyMenuConditionFunctionGreaterThan},
             item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunctionLessThan},
-            item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: searchListPropertyMenuConditionFunctionGreaterLessThanOrEqualTo},
-            item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: searchListPropertyMenuConditionFunctionGreaterLessThanOrEqualTo},
+            item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: searchListPropertyMenuConditionFunction},
+            item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: searchListPropertyMenuConditionFunction},
             item7 : { id : 'not', label : 'Not' , condition: function(){return true;}}
         } ,
         saveQueryFunction: function(query) {
@@ -314,13 +314,6 @@
     		var eventId = xmlData.getAttribute("id");
             var url = "getDetails.gsp?id="+eventId;
             html.show(url);
-
-    }, true, true);
-    searchList.events["propertyCtrl_Click"].subscribe(function(key, value, xmlData){
-    		if(searchList.currentlyExecutingQuery != "")
-                searchList.appendToQuery("NOT " + key + ": \""+ value + "\"");
-            else
-            	searchList.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
 
     }, true, true);
 

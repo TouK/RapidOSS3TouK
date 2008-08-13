@@ -35,38 +35,32 @@ class AlertController
 
         def begin = params.getOne('begin')
 
-        xml.'RapidCMDB'('source':'Hyperic HQ', 'date':new Date()) {
-            xml.'Alerts'() {
-                def alerts = aMan.findAllAlerts()
+        xml.HypericEvents('timestamp':new Date().getTime()) {
+            def alerts = aMan.findAllAlerts()
 
-                if (alerts != null) {
-                    def i = 0
-                    while (i < (alerts.size() / 2)) {  //because findAllAlerts, unexpectedly, returns the alert set twice
-                        def myAlert2 = alerts.getAt(i)
-                    //for (myAlert2 in alerts) {
-                        def myAlert = aMan.findAlertById(myAlert2.id)
-                        if (begin != null) {
-                            if (myAlert.alertValue.ctime.toString() < begin.toString()) {
-                                i++
-                                continue;
-                            }
+            if (alerts != null) {
+                def i = 0
+                while (i < (alerts.size() / 2)) {  //because findAllAlerts, unexpectedly, returns the alert set twice
+                    def myAlert2 = alerts.getAt(i)
+                    def myAlert = aMan.findAlertById(myAlert2.id)
+                    if (begin != null) {
+                        if (myAlert.alertValue.ctime.toString() < begin.toString()) {
+                            i++
+                            continue;
                         }
-                        AlertDefinition alertDef = myAlert.getAlertDefinition()
-                        AppdefEntityID aeid = new AppdefEntityID(alertDef.getAppdefType(), alertDef.getAppdefId())
-                        AppdefEntityValue aev = new AppdefEntityValue(aeid, AuthzSubjectManagerEJBImpl.getOne().getOverlordPojo())
-
-                        xml.'alert'('id': myAlert.id,
-                                    'alert_name': myAlert.alertDefinition.alertDefinitionValue.name,
-                                    'owner_name': aev.getName(),
-    /*                                'aeid': aeid,
-                                    'aeid-type': aeid.authzTypeId,*/
-                                    'timestamp': myAlert.alertValue.ctime,
-                                    'fixed': myAlert.fixed,
-    //                                'reason': aMan.getShortReason(myAlert),
-                                    'long_reason': aMan.getLongReason(myAlert)
-                        )
-                        i++
                     }
+                    AlertDefinition alertDef = myAlert.getAlertDefinition()
+                    AppdefEntityID aeid = new AppdefEntityID(alertDef.getAppdefType(), alertDef.getAppdefId())
+                    AppdefEntityValue aev = new AppdefEntityValue(aeid, AuthzSubjectManagerEJBImpl.getOne().getOverlordPojo())
+
+                    xml.HypericEvent('id': myAlert.id,
+                                     'name': myAlert.alertDefinition.alertDefinitionValue.name,
+                                     'owner_name': aev.getName(),
+                                     'timestamp': myAlert.alertValue.ctime,
+                                     'fixed': myAlert.fixed,
+                                     'long_reason': aMan.getLongReason(myAlert)
+                    )
+                    i++
                 }
             }
         }

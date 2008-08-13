@@ -295,8 +295,8 @@
             			case '6' : return "Maintenance";
             			case '5' : return "Hidden";
             			case '4' : return "Suppressed";
-            			case '3' : return "Escalated-Level 3";
-            			case '2' : return "Escalated-Level 2";
+            			case '3' : return "Escalated-Level_3";
+            			case '2' : return "Escalated-Level_2";
             			case '1' : return "Escalated";
             			case '0' : return "Normal";
             			default  : return "";
@@ -363,7 +363,7 @@
 
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
 			if(	id == "not"){
-				 if(searchList.currentlyExecutingQuery != "")
+				 if(searchList.searchBox.dom.getElementsByTagName('input')[0].value!= "")
                 	searchList.appendToQuery("NOT " + key + ": \""+ value + "\"");
                  else
                     searchList.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");

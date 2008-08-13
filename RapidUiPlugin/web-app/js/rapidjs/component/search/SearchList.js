@@ -12,7 +12,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.fields = null;
     this.defaultFields =  null;
     this.titleAttribute = null;
-    this.maxRowsDisplayed = 100;
+    this.maxRowsDisplayed = 200;
     this.lineSize = 4;
     this.sortOrderAttribute = null;
     this.images = null;
@@ -551,7 +551,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                     }
                     else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
 	                    if(e.ctrlKey)
-                            if(this.currentlyExecutingQuery != "")
+                            if(this.searchBox.dom.getElementsByTagName('input')[0].value != "")
                                 this.appendToQuery("NOT " + cell.propKey + ": \""+ cell.propValue + "\"");
                             else
                                 this.appendToQuery(cell.propKey + ":[0 TO *] NOT "+ cell.propKey + ": \""+ cell.propValue + "\"");

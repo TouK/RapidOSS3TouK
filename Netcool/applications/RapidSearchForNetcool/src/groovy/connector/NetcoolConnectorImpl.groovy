@@ -15,7 +15,7 @@ import datasource.NetcoolConversionParameter
  * Time: 8:25:24 AM
  * To change this template use File | Settings | File Templates.
  */
-class NetcoolConnector {
+class NetcoolConnectorImpl {
     public static MAPPING_FOR_KNOWN_COLUMNS = ["class":"netcoolclass", "type":"nctype"]
     Map nameMappings;
     NetcoolDatasource datasource;
@@ -25,14 +25,18 @@ class NetcoolConnector {
     Class NetcoolJournal;
     Logger logger;
     Map columnConversionParameters;
-    public NetcoolConnector(NetcoolDatasource datasource, Logger logger, Map columnConversionParameters)
+    public NetcoolConnectorImpl(NetcoolConnector connector, Logger logger, Map columnConversionParameters)
     {
         this.logger = logger;
         this.columnConversionParameters = columnConversionParameters;
         NetcoolEvent = this.class.classLoader.loadClass("NetcoolEvent");
         NetcoolJournal = this.class.classLoader.loadClass("NetcoolJournal");
-        this.datasource = datasource;
-        this.connectorName = datasource.name;
+        def datasourceName = NetcoolConnector.getDatasourceName(connector.name)
+        this.datasource = NetcoolDatasource.get(name:datasourceName);
+        if(this.datasource == null){
+            throw new Exception("Datasource ${datasourceName} of Connector ${connector.name} could not be found.")
+        }
+        this.connectorName = connector.name;
         nameMappings = new CaseInsensitiveMap();
         NetcoolColumn.list().each{NetcoolColumn map->
             nameMappings[map.netcoolName] = map.localName;
@@ -93,10 +97,10 @@ class NetcoolConnector {
     def processEvents()
     {
 
-        NetcoolLastRecordIdentifier lastRecordIdentifier = NetcoolLastRecordIdentifier.get(datasourceName:datasource.name);
+        NetcoolLastRecordIdentifier lastRecordIdentifier = NetcoolLastRecordIdentifier.get(connectorName:connectorName);
         if(lastRecordIdentifier == null)
         {
-            lastRecordIdentifier = NetcoolLastRecordIdentifier.add(datasourceName:datasource.name, eventLastRecordIdentifier:0, journalLastRecordIdentifier:0);
+            lastRecordIdentifier = NetcoolLastRecordIdentifier.add(connectorName:connectorName, eventLastRecordIdentifier:0, journalLastRecordIdentifier:0);
         }
         def lastEventStateChange = lastRecordIdentifier.eventLastRecordIdentifier;
         logger.info("Processing journals. after ${lastEventStateChange}");
@@ -126,7 +130,7 @@ class NetcoolConnector {
 
     def processJournals()
     {
-        NetcoolLastRecordIdentifier lastRecordIdentifier = NetcoolLastRecordIdentifier.get(datasourceName:datasource.name);
+        NetcoolLastRecordIdentifier lastRecordIdentifier = NetcoolLastRecordIdentifier.get(connectorName:connectorName);
         def lastJournalStateChange = lastRecordIdentifier.journalLastRecordIdentifier;
         logger.info("Processing journals. after ${lastJournalStateChange}");
         if( lastJournalStateChange == null)

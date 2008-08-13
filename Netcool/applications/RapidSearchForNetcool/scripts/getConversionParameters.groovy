@@ -1,6 +1,7 @@
 import datasource.NetcoolDatasource
 import datasource.NetcoolConversionParameter
 import org.apache.log4j.Logger
+import connector.NetcoolConnectorFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,3 +25,4 @@ conversionParams.each{Map params->
         NetcoolConversionParameter.add(keyField:params.keyfield, columnName:params.colName, value:params.value, conversion:params.conversion);
     }
 }
+NetcoolConnectorFactory.clearConversionParams();

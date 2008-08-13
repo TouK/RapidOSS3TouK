@@ -1,4 +1,4 @@
-<%@ page import="script.CmdbScript; connection.NetcoolConnection" %><html>
+<%@ page import="connector.NetcoolConnector; script.CmdbScript; connection.NetcoolConnection" %><html>
 <head>
     <title>RapidInsight For Netcool Admin UI</title>
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
@@ -26,7 +26,7 @@
     </ul>
     <div style="margin:20px 15px 10px;">
         <div class="nav">
-            <span class="menuButton"><g:link class="create" action="create" controller="netcoolConnection">New Connector</g:link></span>
+            <span class="menuButton"><g:link class="create" action="create" controller="netcoolConnector">New Connector</g:link></span>
         </div>
         <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
@@ -45,30 +45,33 @@
 	                        <th>Name</th>
 	                        <th>Host</th>
 	                        <th>Port</th>
+	                        <th>Log Level</th>
 	                        <th></th>
 	                    </tr>
 	                </thead>
 	                <tbody>
 
-	                    <g:each in="${NetcoolConnection.list()}" status="i" var="netcoolConnection">
+	                    <g:each in="${NetcoolConnector.list()}" status="i" var="netcoolConnector">
 	                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                                 <%
+                                   def netcoolConnection = NetcoolConnection.get(name:NetcoolConnector.getConnectionName(netcoolConnector.name));  
+                                 %>
+	                            <td><g:link action="show" controller="netcoolConnector" id="${netcoolConnector.id}">${netcoolConnector.name?.encodeAsHTML()}</g:link></td>
 
-	                            <td><g:link action="show" controller="netcoolConnection" id="${netcoolConnection.id}">${netcoolConnection.name?.encodeAsHTML()}Connector</g:link></td>
+	                            <td>${netcoolConnection?.host?.encodeAsHTML()}</td>
 
-	                            <td>${netcoolConnection.host?.encodeAsHTML()}</td>
-
-	                            <td>${netcoolConnection.port?.encodeAsHTML()}</td>
+	                            <td>${netcoolConnection?.port?.encodeAsHTML()}</td>
+	                            <td>${netcoolConnector.logLevel?.encodeAsHTML()}</td>
 	                            <%
-	                                def connName = "${netcoolConnection.name}Connector";
-	                                def connScript = CmdbScript.get(name: connName);
+	                                def connScript = CmdbScript.get(name: NetcoolConnector.getScriptName(netcoolConnector.name));
 	                                if (connScript?.enabled) {
 	                            %>
-	                            <td><g:link action="stopConnector" controller="netcoolConnection" id="${netcoolConnection.id}" class="stop">Stop</g:link></td>
+	                            <td><g:link action="stopConnector" controller="netcoolConnector" id="${netcoolConnector.id}" class="stop">Stop</g:link></td>
 	                            <%
 	                                }
 	                                else {
 	                            %>
-	                            <td><g:link action="startConnector" controller="netcoolConnection" id="${netcoolConnection.id}" class="start">Start</g:link></td>
+	                            <td><g:link action="startConnector" controller="netcoolConnector" id="${netcoolConnector.id}" class="start">Start</g:link></td>
 	                            <%
 	                                }
 	                            %>

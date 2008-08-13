@@ -14,9 +14,9 @@ class NetcoolLastRecordIdentifier
     static searchable = true;
     Long eventLastRecordIdentifier;
     Long journalLastRecordIdentifier;
-    String datasourceName;
+    String connectorName;
     static constraints = {
-        datasourceName(nullable:false, blank:false, key:[]);
+        connectorName(nullable:false, blank:false, key:[]);
         eventLastRecordIdentifier(nullable:true);
         journalLastRecordIdentifier(nullable:true);
     }

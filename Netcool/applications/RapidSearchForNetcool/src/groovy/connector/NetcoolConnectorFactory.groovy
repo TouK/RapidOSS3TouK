@@ -1,10 +1,9 @@
 package connector
 
-import datasource.NetcoolDatasource
+import connector.NetcoolConnector
 import org.apache.log4j.Logger
 import datasource.NetcoolConversionParameter
 import com.ifountain.comp.utils.CaseInsensitiveMap
-import org.apache.log4j.RollingFileAppender
 import org.apache.log4j.DailyRollingFileAppender
 import org.apache.log4j.Level
 
@@ -18,7 +17,7 @@ import org.apache.log4j.Level
 class NetcoolConnectorFactory {
     private static Map connectorList = [:];
     private static Map conversionParams = new CaseInsensitiveMap();
-    public static createConnector(NetcoolDatasource datasource, String logLevel)
+    public static synchronized createConnector(NetcoolConnector connector)
     {
         if(conversionParams.isEmpty())
         {
@@ -32,28 +31,39 @@ class NetcoolConnectorFactory {
                 convParamMap[convParam.value]=convParam.conversion;
             }
         }
-        NetcoolConnector connector = connectorList.get(datasource.name);
-        if(connector == null)
+        NetcoolConnectorImpl connectorImpl = connectorList.get(connector.name);
+        if(connectorImpl == null)
         {
-            Logger logger = Logger.getLogger("connector."+datasource.name);
+            Logger logger = Logger.getLogger("connector."+connector.name);
             logger.removeAllAppenders();
             def layout = new org.apache.log4j.PatternLayout("%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n");
-            def appender = new DailyRollingFileAppender(layout, "logs/${datasource.name}Connector.log",  "'.'yyyy-MM-dd");
+            def appender = new DailyRollingFileAppender(layout, "logs/${connector.name}Connector.log",  "'.'yyyy-MM-dd");
             logger.addAppender (appender);
-            connector = new NetcoolConnector(datasource, logger, conversionParams);
-            connectorList[datasource.name] = connector;
+            connectorImpl = new NetcoolConnectorImpl(connector, logger, conversionParams);
+            connectorList[connector.name] = connectorImpl;
         }
-        connector.logger.setLevel (Level.toLevel(logLevel))
-        return connector;
+        connectorImpl.logger.setLevel (Level.toLevel(connector.logLevel))
+        return connectorImpl;
     }
     
-    public static clearConnectors()
+    public static synchronized clearConnectors()
     {
     	connectorList.clear();
     }
 
-    public static removeConnector(connectorName)
+    public static synchronized removeConnector(connectorName)
     {
     	connectorList.remove(connectorName);
+    }
+
+    public static synchronized clearConversionParams(){
+         conversionParams.clear();
+    }
+
+    public static setLogLevel(connectorName, logLevel){
+        NetcoolConnectorImpl connectorImpl = connectorList.get(connectorName);
+        if(connectorImpl != null){
+            connectorImpl.logger.setLevel (Level.toLevel(logLevel))
+        }
     }
 }

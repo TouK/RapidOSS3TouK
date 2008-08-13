@@ -75,12 +75,6 @@ class RapidDomainClassGrailsPlugin {
     def onApplicationChange = { event ->
     }
 
-    private boolean isSearchable(mc)
-    {
-        def metaProp = mc.getMetaProperty("searchable");
-        return metaProp != null;
-    }
-
     def addErrorsSupportToControllers(controller, ctx)
     {
         MetaClass mc = controller.metaClass

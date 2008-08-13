@@ -274,6 +274,12 @@ class ModelMetaData
         if(cardinality == ModelGenerator.RELATION_TYPE_ONE && oppositeCardinality == ModelGenerator.RELATION_TYPE_MANY)
         {
             hasMany[name] = oppositeType;
+            def generalPropConfig = [:];
+            generalPropConfig["type"] = List.simpleName;
+            generalPropConfig["name"] = name;
+            generalPropConfig["defaultValue"] = [];
+            propertyList += generalPropConfig;
+
         }
         else if(cardinality == ModelGenerator.RELATION_TYPE_MANY && oppositeCardinality == ModelGenerator.RELATION_TYPE_ONE || cardinality == ModelGenerator.RELATION_TYPE_ONE && oppositeCardinality == ModelGenerator.RELATION_TYPE_ONE)
         {

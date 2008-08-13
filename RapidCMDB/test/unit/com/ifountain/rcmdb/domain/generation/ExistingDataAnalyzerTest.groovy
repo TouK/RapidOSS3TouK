@@ -82,36 +82,6 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         assertEquals (modelName, modelAction.modelName);
     }
 
-
-    public void testAnyChangeInExcludedListPropsWillNotBeManaged()
-    {
-        String modelName = "Class1";
-
-        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
-        def propList = [prop1];
-        ExistingDataAnalyzer.excludedProps.each {String propName, String propValue->
-            propList += [name:propName, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
-        }
-
-        def keyPropList = [prop1];
-        generateModel (modelName, propList, keyPropList, []);
-        def oldDomainClass = loadGrailsDomainClass(modelName);
-        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass])
-
-        for(int i=1; i< propList.size(); i++)
-        {
-            propList[i].type = ModelGenerator.NUMBER_TYPE;
-        }
-        generateModel (modelName, propList, keyPropList, []);
-
-        def newDomainClass = loadGrailsDomainClass(modelName);
-        def newGrailsDomainClasses = generateDomainClasses([newDomainClass])
-
-        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
-        assertEquals (0, actions.size());
-    }
-
-
     public void testKeyPropertyTypeChange()
     {
         ConstrainedProperty.registerNewConstraint (KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
@@ -514,22 +484,6 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
                 boolean isVersionAdded = false;
                 modelProperties.each{Map propConfig->
                     modelbuilder.Property(propConfig)
-                    if(propConfig.name == "id")
-                    {
-                        isIdAdded = true;
-                    }
-                    if(propConfig.name == "version")
-                    {
-                        isVersionAdded = true;
-                    }
-                }
-                if(!isIdAdded)
-                {
-                    modelbuilder.Property(name:"id", type:ModelGenerator.NUMBER_TYPE, blank:false, defaultValue:"1");
-                }
-                if(!isVersionAdded)
-                {
-                    modelbuilder.Property(name:"version", type:ModelGenerator.NUMBER_TYPE, blank:false, defaultValue:"1");
                 }
             }
 
@@ -548,7 +502,6 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         GrailsAwareClassLoader gcl = new GrailsAwareClassLoader(Thread.currentThread().getContextClassLoader());
         gcl.setShouldRecompile(true);
         gcl.addClasspath(base_directory + ModelGenerator.MODEL_FILE_DIR);
-        gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
         return gcl.loadClass (className);
     }
 }

@@ -411,7 +411,9 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         Class cls2 = compileClass(model2.name);
         def object2 = cls2.newInstance();
-
+        assertEquals (0, object2.reverseRelation3.size());
+        assertEquals (0, object2.relation2.size());
+        assertEquals (0, object2.reverseRelation4.size());
         assertEquals(model1.getName(), object2.class.getDeclaredField("reverseRelation1").getType().getName());
         assertEquals(model1.getName(), object2.hasMany.relation2.getName())
         assertEquals(model1.getName(), object2.hasMany.reverseRelation3.getName())

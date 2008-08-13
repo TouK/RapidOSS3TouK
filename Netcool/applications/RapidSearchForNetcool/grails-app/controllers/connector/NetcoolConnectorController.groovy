@@ -102,7 +102,7 @@ class NetcoolConnectorController {
                 if(netcoolConnection.host == tempConnection.host && netcoolConnection.port == tempConnection.port){
                     NetcoolConnectorFactory.setLogLevel(netcoolConnector.name, netcoolConnector.logLevel);
                     flash.message = "NetcoolConnector ${params.id} updated"
-                    redirect(action: show, id: netcoolConnector.id)
+                    redirect(action: index)
                 }
                 else{
                     netcoolConnection.update(connectionParams);
@@ -110,7 +110,7 @@ class NetcoolConnectorController {
                         NetcoolConnectorFactory.removeConnector(netcoolConnector.name);
                         createConversionScript();
                         flash.message = "NetcoolConnector ${params.id} updated"
-                        redirect(action: show, id: netcoolConnector.id)
+                        redirect(action: index)
                     }
                     else{
                        render(view: 'edit', model: [netcoolConnector: netcoolConnector, netcoolConnection:netcoolConnection]) 
@@ -148,7 +148,7 @@ class NetcoolConnectorController {
                 createConversionScript();
                 createConnectorScript(netcoolConnector.name);
                 flash.message = "NetcoolConnector ${netcoolConnector.name} created"
-                redirect(action: show, id: netcoolConnector.id)
+                redirect(action: index)
             }
             else{
                 netcoolConnector.remove();

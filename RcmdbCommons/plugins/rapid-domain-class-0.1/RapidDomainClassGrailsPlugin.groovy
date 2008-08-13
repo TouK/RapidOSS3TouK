@@ -19,6 +19,7 @@ import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
@@ -175,6 +176,7 @@ class RapidDomainClassGrailsPlugin {
                         {
                             oprInstance = manager.operationClass.newInstance() ;
                             manager.operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
+                            delegate[RapidCMDBConstants.OPERATION_PROPERTY_NAME] = oprInstance;
                         }
                         try {
                             return oprInstance.invokeMethod(name, args)
@@ -253,11 +255,39 @@ class RapidDomainClassGrailsPlugin {
         def props =dc.getProperties();
         DomainClassPropertyInterceptor propertyInterceptor = ctx.getBean("domainPropertyInterceptor");
         dc.metaClass.setProperty = {String name, Object value->
-            propertyInterceptor.setDomainClassProperty (delegate, name, value);
+            try
+            {
+                propertyInterceptor.setDomainClassProperty (delegate, name, value);
+            }
+            catch(MissingPropertyException propEx)
+            {
+                try
+                {
+                    delegate.methodMissing(GrailsClassUtils.getSetterName(name), [value] as Object[]);
+                }
+                catch(Throwable ex)
+                {
+                    throw propEx
+                }
+            }
         }
 
         dc.metaClass.getProperty = {String name->
-            propertyInterceptor.getDomainClassProperty (delegate, name);
+            try
+            {
+                return propertyInterceptor.getDomainClassProperty (delegate, name);
+            }
+            catch(MissingPropertyException propEx)
+            {
+                try
+                {
+                    return delegate.methodMissing(GrailsClassUtils.getGetterName(name), null);
+                }
+                catch(Throwable ex)
+                {
+                    throw propEx
+                }
+            }
         }
      
     }

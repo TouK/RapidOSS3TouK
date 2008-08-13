@@ -1,29 +1,33 @@
 package connection;
 class Connection {
-       static searchable = {
+    def connectionService
+    static searchable = {
         except = [];
-    	};
-    static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
+    };
+    static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
 
-    String name ="";
-    
-    String connectionClass ="";
+    String name = "";
+
+    String connectionClass = "";
     int maxNumberOfConnections = 10;
-    
+
 
     static hasMany = [:]
 
-       static constraints = {
-             name(blank:false,nullable:false,key:[])
-        
-     connectionClass(blank:true,nullable:true)
-       };
-       
-       static mappedBy=[:]
-    static belongsTo = []
-    static transients = [];
+    static constraints = {
+        name(blank: false, nullable: false, key: [])
+        connectionClass(blank: true, nullable: true)
+    };
 
-       String toString(){
-           return "$name";
-       }
+    static mappedBy = [:]
+    static belongsTo = []
+    static transients = ["connectionService"];
+
+    String toString() {
+        return "$name";
+    }
+
+    def beforeDelete = {
+          connectionService.removeConnection(this.name);
+    }
 }

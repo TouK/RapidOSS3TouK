@@ -45,6 +45,10 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
         return null;
 
     }
+
+    public void removeConnection(String connectionName) throws Exception{
+        ConnectionManager.removeConnection(connectionName);
+    }
     public void afterPropertiesSet()
     {
         ConnectionManager.initialize (Logger.getRootLogger(), this, this.getClass().getClassLoader());

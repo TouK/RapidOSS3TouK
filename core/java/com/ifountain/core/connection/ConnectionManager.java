@@ -168,7 +168,7 @@ public class ConnectionManager
     public static void removeConnection(String connectionName) throws Exception {
         GenericObjectPool pool = (GenericObjectPool) pools.remove(connectionName);
         if(pool != null){
-            pool.clear();
+            pool.close();
         }
     }
 

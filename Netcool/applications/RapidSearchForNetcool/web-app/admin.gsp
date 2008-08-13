@@ -56,7 +56,7 @@
                                  <%
                                    def netcoolConnection = NetcoolConnection.get(name:NetcoolConnector.getConnectionName(netcoolConnector.name));  
                                  %>
-	                            <td><g:link action="show" controller="netcoolConnector" id="${netcoolConnector.id}">${netcoolConnector.name?.encodeAsHTML()}</g:link></td>
+	                            <td><g:link action="edit" controller="netcoolConnector" id="${netcoolConnector.id}">${netcoolConnector.name?.encodeAsHTML()}</g:link></td>
 
 	                            <td>${netcoolConnection?.host?.encodeAsHTML()}</td>
 

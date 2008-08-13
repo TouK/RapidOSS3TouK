@@ -262,7 +262,7 @@
             item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunctionLessThan},
             item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: searchListPropertyMenuConditionFunction},
             item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: searchListPropertyMenuConditionFunction},
-            item7 : { id : 'not', label : 'Not' , condition: function(){return true;}}
+            item7 : { id : 'except', label : 'Except' , condition: function(){return true;}}
         } ,
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE);
@@ -362,7 +362,7 @@
     }, true, true);
 
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
-			if(	id == "not"){
+			if(	id == "except"){
 				 if(searchList.searchBox.dom.getElementsByTagName('input')[0].value!= "")
                 	searchList.appendToQuery("NOT " + key + ": \""+ value + "\"");
                  else

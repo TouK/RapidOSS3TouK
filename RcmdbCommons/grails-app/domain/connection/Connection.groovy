@@ -1,6 +1,7 @@
-package connection;
+package connection
+
+import com.ifountain.core.connection.ConnectionManager;
 class Connection {
-    def connectionService
     static searchable = {
         except = [];
     };
@@ -21,13 +22,13 @@ class Connection {
 
     static mappedBy = [:]
     static belongsTo = []
-    static transients = ["connectionService"];
+    static transients = [];
 
     String toString() {
         return "$name";
     }
 
     def beforeDelete = {
-          connectionService.removeConnection(this.name);
+          ConnectionManager.removeConnection(this.name);
     }
 }

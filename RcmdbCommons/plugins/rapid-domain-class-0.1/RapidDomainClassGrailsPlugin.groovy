@@ -22,7 +22,7 @@ import org.springframework.validation.FieldError
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 
 class RapidDomainClassGrailsPlugin {
-    private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors"]
+    private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors", "__is_federated_properties_loaded__":RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, "__operation_class__":RapidCMDBConstants.OPERATION_PROPERTY_NAME]
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def version = 0.1
     def loadAfter = ['searchable-extension']
@@ -247,11 +247,23 @@ class RapidDomainClassGrailsPlugin {
     def addPropertyInterceptors(GrailsDomainClass dc, application, ctx)
     {
         def props =dc.getProperties();
+        def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
         DomainClassPropertyInterceptor propertyInterceptor = ctx.getBean("domainPropertyInterceptor");
         dc.metaClass.setProperty = {String name, Object value->
+            delegate.setProperty(name, value, true);
+        }
+        dc.metaClass.setProperty = {String name, Object value, boolean flush->
             try
             {
-                propertyInterceptor.setDomainClassProperty (delegate, name, value);
+
+                if(flush && !EXCLUDED_PROPERTIES.containsKey(name) && persistantProps.containsKey(name) && ((MetaClass)delegate.metaClass).getMetaMethod("update", Map) != null)
+                {
+                    delegate.update(["$name":value]);
+                }
+                else
+                {
+                    propertyInterceptor.setDomainClassProperty (delegate, name, value);
+                }
             }
             catch(MissingPropertyException propEx)
             {

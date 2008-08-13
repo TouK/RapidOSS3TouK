@@ -8,6 +8,8 @@ package application
  */
 class ObjectId {
     static searchable = true;
+    Long id;
+    Long version;
     String name;
     long nextId;
 }

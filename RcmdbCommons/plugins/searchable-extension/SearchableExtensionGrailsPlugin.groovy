@@ -115,11 +115,6 @@ class SearchableExtensionGrailsPlugin {
         def addRelationMethod = new AddRelationMethod(mc, relations);
         def removeRelationMethod = new RemoveRelationMethod(mc, relations);
 
-
-        mc.setProperty = {String name, Object value, boolean flush->
-              delegate.setProperty(name, value);
-        }
-
         mc.update = {Map props->
             return updateMethod.invoke(delegate,  [props] as Object[])
         }

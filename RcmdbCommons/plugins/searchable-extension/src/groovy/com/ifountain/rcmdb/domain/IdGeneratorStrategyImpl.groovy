@@ -23,8 +23,10 @@ class IdGeneratorStrategyImpl implements IdGeneratorStrategy
             def objectId = res.results[0];
             if(!objectId)
             {
-                objectId = new ObjectId(name:"generalObjectId", nextId:INCREMENT_AMOUNT);
-                objectId.id = 0;
+                objectId = new ObjectId();
+                objectId.setProperty("name", "generalObjectId", false);
+                objectId.setProperty("nextId", INCREMENT_AMOUNT, false);
+                objectId.setProperty("id", 0, false);
                 ObjectId.index(objectId);
                 nextId = 0;
             }

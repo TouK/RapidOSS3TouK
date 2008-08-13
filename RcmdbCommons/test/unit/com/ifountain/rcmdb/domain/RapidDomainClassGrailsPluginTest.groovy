@@ -8,6 +8,8 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.operation.DomainOperationManager
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import org.apache.commons.io.FileUtils
+import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
+import application.ObjectId
 
 /**
  * Created by IntelliJ IDEA.
@@ -125,6 +127,42 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         {
             assertEquals ("undefinedProperty2", ex.getProperty());
         }
+    }
+
+    public void testSaveInstanceForEachSetproperty()
+    {
+        loadedDomainClass = gcl.parseClass("""
+            class ${domainClassName}{
+                static searchable = {
+                    except = ["prop2"]
+                }
+                Long id;
+                Long version;
+                String prop1;
+                String prop2;
+                static transients = ["prop2"]
+                public Object methodMissing(String methodName, args)
+                {
+                    ${RapidDomainClassGrailsPluginTest.class.name}
+                }
+            }
+        """)
+        def classesTobeLoaded = [loadedDomainClass, ObjectId];
+        configParams[RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME] = DomainPropertyInterceptorDomainClassGrailsPluginImpl.name;
+        def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+        def instance = loadedDomainClass.metaClass.invokeStaticMethod(loadedDomainClass, "add", [[prop1:"prop1Value"]]  as Object[] )
+        instance.prop1 = "updatedValue"
+        def reloadedInstance = loadedDomainClass.metaClass.invokeStaticMethod(loadedDomainClass, "get", [[id:instance.id]] as Object[])
+        assertEquals ("updatedValue", reloadedInstance.prop1);
+        
+        def numberOfCalls = 0;
+        instance.metaClass.update = {Map props->
+            numberOfCalls ++;
+        }
+        instance.prop2 = "transientPropvalueShouldNotUpdate"
+        assertEquals (0, numberOfCalls);
     }
 
 }

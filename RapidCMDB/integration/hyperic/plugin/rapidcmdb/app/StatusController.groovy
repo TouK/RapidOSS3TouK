@@ -39,9 +39,9 @@ class StatusController
         def i = 0
 
         xml.HypericObjects('timestamp':new Date().getTime()) {
-            platforms.each { res ->
-                def plat = plats.getAt(i)
-                def p = pMan.findPlatformById(res.instanceId)
+            plats.each { plat -> //res ->
+                //def plat = plats.getAt(i)
+                def p = pMan.findPlatformById(plat.instanceId) //res
                 def last_timestamp = "0"
                 def status = null
                 for (metric in plat.enabledMetrics) {

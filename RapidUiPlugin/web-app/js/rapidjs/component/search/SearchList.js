@@ -732,5 +732,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
     fireRowDoubleClick: function(data) {
         this.events['rowDoubleClicked'].fireDirect(data);
+    },
+
+    getSortAttribute: function(){
+        return this.lastSortAtt;
+    },
+    getSortOrder: function(){
+        return this.lastSortOrder;
     }
 });

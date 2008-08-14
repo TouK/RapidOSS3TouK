@@ -111,8 +111,7 @@ class Build extends Parent{
         def netcoolPluginName = pluginFile.name.substring("grails-".length(), pluginFile.name.length()-".zip".length())
         ant.unzip(src: netcoolPluginFilePath, dest: env.dist_rapid_suite+"/plugins/${netcoolPluginName}");
         def classLoader = new GroovyClassLoader();
-        classLoader.addClasspath ("${destionationApplicationPath}/plugins/${netcoolPluginName}/scripts")
-        def installScriptClass = classLoader.loadClass("_Install");
+        def installScriptClass = classLoader.parseClass(new File("${destionationApplicationPath}/plugins/${netcoolPluginName}/scripts/_Install.groovy"))
 
         def prevSystemParams = [:]
         systemParams["base.dir"] = destionationApplicationPath;

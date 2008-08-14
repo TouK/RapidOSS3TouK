@@ -51,5 +51,7 @@ users.each{
    else{
        UserRoleRel.add(rsUser: user, role: userRole);
    }
-
 }
+
+web.flash.message = "Users imported successfully."
+web.redirect(uri:'/synchronize.gsp');

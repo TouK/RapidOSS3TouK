@@ -450,7 +450,7 @@
 
     deleteQueryGroupAction.events.success.subscribe(tree.poll, tree, true);
 
-    tree.events["selectionChange"].subscribe(function(data) {
+    tree.events["treeNodeClick"].subscribe(function(data) {
         if (data.getAttribute("nodeType") == "filter")
         {
             searchList.setQuery(data.getAttribute("query"), data.getAttribute('sortProperty'), data.getAttribute('sortOrder'));

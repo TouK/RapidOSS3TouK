@@ -482,8 +482,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 	    }
     },
     handleClick: function(e) {
-
-	    var target = YAHOO.util.Event.getTarget(e);
+		var target = YAHOO.util.Event.getTarget(e);
         var row = this.getRowFromChild(target);
         if (row) {
             if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-row-headermenu')) {
@@ -551,10 +550,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                     }
                     else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
 	                    if(e.ctrlKey)
+	                    {
+		                    YAHOO.util.Event.stopEvent(e);
                             if(this.searchBox.dom.getElementsByTagName('input')[0].value != "")
                                 this.appendToQuery("NOT " + cell.propKey + ": \""+ cell.propValue + "\"");
                             else
                                 this.appendToQuery(cell.propKey + ":[0 TO *] NOT "+ cell.propKey + ": \""+ cell.propValue + "\"");
+
+                        }
 	                    else
 	                    {
 	                        this.appendToQuery(cell.propKey + ":\"" + cell.propValue + "\"");

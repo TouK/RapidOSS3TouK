@@ -82,6 +82,10 @@
         <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select type="textbox" name="group" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
+        <tr><td width="50%"><label>Sort Property:</label></td><td width="50%"><input type="textbox" name="sortProperty" style="width:175px"/></td></tr>
+        <tr><td width="50%"><label>Sort Order:</label></td><td width="50%">
+            <select type="textbox" name="sortOrder" style="width:175px"><option value="asc">asc</option><option value="desc">desc</option></select>
+        </td></tr>
         </table>
         <input type="hidden" name="id">
     </form>
@@ -258,8 +262,7 @@
             item7 : { id : 'except', label : 'Except' , condition: function(){return true;}}
         } ,
         saveQueryFunction: function(query) {
-            dialog.show(dialog.CREATE_MODE);
-            dialog.dialog.form.query.value = query;
+            dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
         },
         renderCellFunction : function(key, value, data){
         	if(key == "lastoccurrence" || key == "statechange"){
@@ -450,7 +453,7 @@
     tree.events["selectionChange"].subscribe(function(data) {
         if (data.getAttribute("nodeType") == "filter")
         {
-            searchList.setQuery(data.getAttribute("query"));
+            searchList.setQuery(data.getAttribute("query"), data.getAttribute('sortProperty'), data.getAttribute('sortOrder'));
         }
     }, this, true);
 
@@ -467,7 +470,7 @@
                 dialog.show(dialog.EDIT_MODE, {id:data.getAttribute("id")})
             else if(data.getAttribute("nodeType") == "group"){
                 groupDialog.show(groupDialog.EDIT_MODE)
-                groupDialog.dialog.form.name.value = data.getAttribute("name")
+                groupDialog.dialog.form.name.value = data.getAttribute("name");
                 groupDialog.dialog.form.id.value = data.getAttribute("id")
             }
        }

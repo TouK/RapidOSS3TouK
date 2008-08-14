@@ -1,9 +1,8 @@
-package search;
-import com.ifountain.rcmdb.domain.util.ControllerUtils
-import grails.converters.XML
-import auth.RsUser
-import org.springframework.validation.BindException;
+package search
 
+import auth.RsUser
+import com.ifountain.rcmdb.domain.util.ControllerUtils
+import grails.converters.XML;
 class SearchQueryController {
     def final static PROPS_TO_BE_EXCLUDED = ["id": "id", "_action_Update": "_action_Update", "controller": "controller", "action": "action"]
     def index = {redirect(action: list, params: params)}
@@ -91,6 +90,11 @@ class SearchQueryController {
                             id(searchQuery.id)
                             name(searchQuery.name)
                             query(searchQuery.query)
+                            sortProperty(searchQuery.sortProperty)
+                            sortOrder{
+                                option(selected:searchQuery.sortOrder == 'desc', 'desc')
+                                option(selected:searchQuery.sortOrder == 'asc', 'asc')
+                            }
                             group {
                                 searchQueryGroups.each {
                                     if(it.name == searchQuery.group.name){

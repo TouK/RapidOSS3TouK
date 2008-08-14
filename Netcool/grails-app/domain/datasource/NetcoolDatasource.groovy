@@ -76,8 +76,8 @@ class NetcoolDatasource extends BaseDatasource{
 
         StringBuffer columns = new StringBuffer("(");
         StringBuffer values = new StringBuffer("(");
-        params1.each{String columnName, Object colValue->
-            if(columnName != "ServerSerial" && columnName != "Identifier" )
+        params.each{String columnName, Object colValue->
+            if(columnName != "ServerSerial" )
             {
                 columns.append(columnName);
                 if( colValue instanceof Number){
@@ -98,7 +98,7 @@ class NetcoolDatasource extends BaseDatasource{
         sb.append(columns.toString());
         sb.append(" values ");
         sb.append(values.toString());
-		statusTableAdapter.executeUpdate(sb.toString(), []);
+        statusTableAdapter.executeUpdate(sb.toString(), []);
     }
 
     def updateEvent(Map params ){

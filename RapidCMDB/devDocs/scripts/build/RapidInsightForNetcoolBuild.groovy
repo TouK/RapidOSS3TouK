@@ -72,6 +72,16 @@ class RapidInsightForNetcoolBuild extends Build{
 
         def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
         installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant:ant], [:]);
+
+        ant.java(fork : "true", classname : "com.ifountain.comp.utils.FileMerger"){
+			ant.arg(value : "${env.dist_rapid_suite}/web-app/index.gsp");
+			ant.arg(value : "${env.dist_rapid_suite}/web-app/");
+			ant.arg(value : "${env.dist_rapid_suite}/web-app");
+			ant.arg(value : "false");
+			ant.classpath(){
+				ant.pathelement(location : "${env.dist_rapid_suite_lib}/comp.jar");
+			}
+		}	
         
         ant.copy(file : version, tofile : versionInBuild );
         setVersionAndBuildNumber(versionInBuild);

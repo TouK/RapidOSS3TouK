@@ -356,4 +356,8 @@ class NetcoolDatasource extends BaseDatasource{
     def getConversionParams(){
         return conversionsTableAdapter.getRecords();
     }
+
+    def getUsers(){
+        return conversionsTableAdapter.getRecords("Colname = 'OwnerUID'", ["Conversion"]);
+    }
 }

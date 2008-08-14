@@ -47,15 +47,11 @@ for(int i=0; i < 1000000; i++)
             }
         }
     }
-    if(i  % 1000 == 0)
-    {
-        Thread.sleep (300);        
-    }
-
-    if(i  % 20000 == 0)
+    if(i  % 100 == 0)
     {
         totalTime = System.nanoTime() - t;
-        println "${totalInsertedEvents}, ${totalInsertedJournals},${totalEventInsertTime/Math.pow(10,12)},${totalJournalInsertTime/Math.pow(10,12)},${totalTime/Math.pow(10,12)}";
+        def usedMem = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/ Math.pow(2, 20);
+        new File("perf.log").append("${totalInsertedEvents}, ${totalInsertedJournals},${totalEventInsertTime/Math.pow(10,9)},${totalJournalInsertTime/Math.pow(10,9)},${totalTime/Math.pow(10,12)},${usedMem}\n");
         totalEventInsertTime = 0;
         totalJournalInsertTime = 0;
         totalInsertedEvents = 0;
@@ -63,7 +59,6 @@ for(int i=0; i < 1000000; i++)
         t = System.nanoTime();
     }
 }
-
 
 
 

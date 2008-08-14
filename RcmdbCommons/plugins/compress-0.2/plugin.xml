@@ -1,0 +1,10 @@
+<plugin name='compress' version='0.2'>
+  <author>Seymour Cakes</author>
+  <authorEmail>sey.mores(@)g_ma_il_com</authorEmail>
+  <title>Servlet filter to Compress content.</title>
+  <description>Generic filter to GZip compress GSP, CSS, Javascript or any GZip supported files.</description>
+  <documentation>http://grails.org/Compress+Plugin</documentation>
+  <resources>
+    <resource>CompressTagLib</resource>
+  </resources>
+</plugin>

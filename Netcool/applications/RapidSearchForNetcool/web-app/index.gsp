@@ -212,15 +212,7 @@
         titleAttribute:"serverserial",
         lineSize:3,
         title:'Netcool Events',
-        defaultFields:['node', 'owneruid', 'ownergid'],
-        fields: [
-        	{exp:'data["severity"] == 5', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey']},
-            {exp:'data["severity"] == 4', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence']},
-            {exp:'data["severity"] == 3', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist']},
-            {exp:'data["severity"] == 2', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl']},
-            {exp:'data["severity"] == 1', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity']},
-            {exp:'data["severity"] == 0', fields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally']}
-        ],
+        defaultFields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey'],
         menuItems:{
             item1 : { id : 'eventDetails', label : 'Event Details' },
             item2 : { id : 'acknowledge', label : 'Acknowledge', condition: searchListHeaderMenuConditionFunctionAcknowledge },

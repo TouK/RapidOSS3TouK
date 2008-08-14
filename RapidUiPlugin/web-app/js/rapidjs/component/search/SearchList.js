@@ -225,7 +225,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
         }
         this.cellMenu.render(document.body);
-
+        if (this.fields)
+        {
+	        for (var i = 0; i < this.fields.length; i++)
+	            if(this.maxRowCellLength < this.fields[i]['fields'].length)
+	            	this.maxRowCellLength = this.fields[i]['fields'].length;
+        }
+        else
+        {
+        	 this.fields = this.defaultFields;
+        	 this.defaultFields = null;
+        	 this.maxRowCellLength = this.fields.length;
+        }
 
     },
 
@@ -316,7 +327,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
 
     renderRows : function() {
-        var scrollTop = this.body.dom.scrollTop;
+	    var scrollTop = this.body.dom.scrollTop;
         var rowStartIndex = Math.floor(scrollTop / this.rowHeight);
         var interval = Math.floor(this.body.getHeight() / this.rowHeight);
         interval = interval + 2;
@@ -372,26 +383,19 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             YAHOO.util.Dom.setStyle(rowEl.dom, 'display', 'block');
             var realRowIndex = rowStartIndex + rowIndex;
             rowEl.dom.rowIndex = realRowIndex;
-            this.renderRow(rowEl,rowIndex);
+            this.renderRow(rowEl);
         }
         this.hideMask();
     },
 
     createEmptyRows : function(rowCount) {
         var innerHtml = '';
-        if (this.fields) {
-	        this.maxRowCellLength = 0;
-		    for (var i = 0; i < this.fields.length; i++)
-	            if(this.maxRowCellLength < this.fields[i]['fields'].length)
-	            	this.maxRowCellLength = this.fields[i]['fields'].length;
-
-            for (var fieldIndex = 0; fieldIndex < this.maxRowCellLength; fieldIndex++) {
-                innerHtml += '<div class="rcmdb-search-cell">' +
-                             '<span class="rcmdb-search-cell-key"></span>' +
-                             '<a href="#" class="rcmdb-search-cell-value"></a>' +
-                             '<a class="rcmdb-search-cell-menu">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> | ' +
-                             '</div>';
-            }
+        for (var fieldIndex = 0; fieldIndex < this.maxRowCellLength; fieldIndex++) {
+            innerHtml += '<div class="rcmdb-search-cell">' +
+                         '<span class="rcmdb-search-cell-key"></span>' +
+                         '<a href="#" class="rcmdb-search-cell-value"></a>' +
+                         '<a class="rcmdb-search-cell-menu">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> | ' +
+                         '</div>';
         }
         if (innerHtml.length > 0) {
             innerHtml = innerHtml.substring(0, innerHtml.length - 9) + '</div>';
@@ -420,20 +424,21 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
 
     renderRow: function(rowEl) {
-        if (this.fields) {
-	        var insertedFields = null;
+	    if (this.fields) {
+		    var insertedFields = null;
 	        var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
             var dataNode = searchNode.xmlData;
             var data = dataNode.getAttributes();
-            for (var i = 0; i < this.fields.length; i++)
-            {
-	            var currentExpressionStr = this.fields[i]['exp'];
-			    var evaluationResult = eval(currentExpressionStr);
-			    if (evaluationResult == true)
-			    	insertedFields = this.fields[i]['fields'];
-			}
-			if(insertedFields == null)
-				insertedFields = this.defaultFields;
+            if(this.defaultFields)
+	            for (var i = 0; i < this.fields.length; i++)
+	            {
+		            var currentExpressionStr = this.fields[i]['exp'];
+				    var evaluationResult = eval(currentExpressionStr);
+				    if (evaluationResult == true)
+				    	insertedFields = this.fields[i]['fields'];
+				}
+			else
+				insertedFields =this.fields;
             if (this.images) {
                 for (var i = 0; i < this.images.length; i++)
                 {
@@ -482,7 +487,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 	    }
     },
     handleClick: function(e) {
-		var target = YAHOO.util.Event.getTarget(e);
+	    YAHOO.util.Event.preventDefault(e);
+		YAHOO.util.Event.stopEvent(e);
+	    var target = YAHOO.util.Event.getTarget(e);
         var row = this.getRowFromChild(target);
         if (row) {
             if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-row-headermenu')) {
@@ -551,7 +558,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                     else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
 	                    if(e.ctrlKey)
 	                    {
-		                    YAHOO.util.Event.stopEvent(e);
                             if(this.searchBox.dom.getElementsByTagName('input')[0].value != "")
                                 this.appendToQuery("NOT " + cell.propKey + ": \""+ cell.propValue + "\"");
                             else

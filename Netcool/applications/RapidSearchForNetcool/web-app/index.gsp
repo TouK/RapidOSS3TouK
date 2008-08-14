@@ -71,6 +71,9 @@
 		.r-filterTree-queryAdd{
 			background-image: url( images/rapidjs/component/tools/filteradd.png);
 		}
+		.r-tree-firstCell{
+			cursor:pointer;
+		}
     </style>
 </head>
 <body class=" yui-skin-sam">

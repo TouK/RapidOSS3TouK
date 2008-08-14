@@ -44,7 +44,7 @@ public class FileMergerTest extends TestCase
 		FileMerger.FILE_PATH = "index.html";
 		FileMerger.APP_PATH = "RapidInsight/RapidInsight/clients/js/";
 		FileMerger.TARGET_PATH = TestFile.TESTOUTPUT_DIR;
-		FileMerger.RAS_PATH = "RapidApplicationServer/RapidApplicationServer/webapps/root";
+		FileMerger.ROOT_PATH = "RapidApplicationServer/RapidApplicationServer/webapps/root";
 		
 	}
 	
@@ -125,8 +125,7 @@ public class FileMergerTest extends TestCase
 		fileMerger.writeModifiedHTML(htmlWithNoScripts , file);
 		assertTrue(file.exists());		
 		
-		String expectedFileContent = "A <head>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/jslib/yui-ext.css\"/>\n" + 
-		 "\t<script src=\"/jslib/YAHOO.js\"></script>\n\t<script src=\"/jslib/RSHelp.js\"></script>\n\t<script src=\"test.js\"></script>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"/>\nABC\n";
+		String expectedFileContent = "A <head>\n\t<script src=\"test.js\"></script>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"/>\nABC\n";
 		StringBuffer actualContent = new StringBuffer();
 		fileMerger.getFileContentAsString(file, actualContent);
 		assertEquals(expectedFileContent, actualContent.toString());
@@ -143,8 +142,7 @@ public class FileMergerTest extends TestCase
 		fileMerger.createFile(htmlWithNoScripts, file.getPath());
 		fileMerger.writeModifiedHTML(htmlWithNoScripts , file);
 		assertTrue(file.exists());
-		String expectedFileContent = "A <head>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/jslib/yui-ext.css\"/>\n" + 
-		 "\t<script src=\"/jslib/YAHOO.js\"></script>\n\t<script src=\"/jslib/RSHelp.js\"></script>\n\t<script src=\"test.js\"></script>\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"/>\nABC\n";
+		String expectedFileContent = "A <head>\n\t<script src=\"test.js\"></script>\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"/>\nABC\n";
 		StringBuffer actualContent = new StringBuffer();
 		fileMerger.getFileContentAsString(file, actualContent);
 		assertEquals(expectedFileContent, actualContent.toString());
@@ -161,8 +159,7 @@ public class FileMergerTest extends TestCase
 		fileMerger.createFile(htmlWithNoScripts, file.getPath());
 		fileMerger.writeModifiedHTML(htmlWithNoScripts , file);
 		assertTrue(file.exists());
-		String expectedFileContent ="A <head>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/jslib/yui-ext.css\"/>\n" + 
-		 "\t<script src=\"/jslib/YAHOO.js\"></script>\n\t<script src=\"/jslib/RSHelp.js\"></script>\n\t<script src=\"test.js\"></script>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"/>\nABC\n";
+		String expectedFileContent ="A <head>\n\t<script src=\"test.js\"></script>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"test.css\"/>\nABC\n";
 		StringBuffer actualContent = new StringBuffer();
 		fileMerger.getFileContentAsString(file, actualContent);
 		assertEquals(expectedFileContent, actualContent.toString());

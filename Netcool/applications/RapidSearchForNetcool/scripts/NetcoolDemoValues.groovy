@@ -30,20 +30,13 @@ class NetcoolDemoValues {
         "Put in task list by rsadmin"
     ]
     def severityOptions = [
-            "Clear",
-            "Indeterminate",
-            "Warning",
-            "Minor",
-            "Major",
-            "Critical"];
-    def suppressesclOptions = [
-            "Normal",
-            "Escalated",
-            "Escalated-Level 2",
-            "Escalated-Level 3",
-            "Suppressed",
-            "Hidden",
-            "Maintenance"];
+            0,
+            1,
+            2,
+            3,
+            4,
+            5];
+    def suppressesclOptions = [0,1,2,3,4,5,6];
     def ncclassOptions = [
             "Siemens EWSD",
             "Vitria",
@@ -176,11 +169,11 @@ class NetcoolDemoValues {
             props["summary"] = summary;
             if(summary.indexOf("Down"))
             {
-                props["severity"] = "Critical";
+                props["severity"] = 5;
             }
             else if(summary.indexOf("Up"))
             {
-                props["severity"] = "Indeterminate";
+                props["severity"] = 1;
             }
         }
 

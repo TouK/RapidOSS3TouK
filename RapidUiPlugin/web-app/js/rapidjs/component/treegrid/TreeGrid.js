@@ -5,6 +5,7 @@ YAHOO.rapidjs.component.TreeGrid = function(container, config) {
 	this.rootTag = config.rootTag;
     var events = {
         'selectionChange' : new YAHOO.util.CustomEvent('selectionChange'),
+        'treeNodeClick' : new YAHOO.util.CustomEvent('treeNodeClick'),
         'rowMenuClick' : new YAHOO.util.CustomEvent('rowMenuClick')
     };
     YAHOO.ext.util.Config.apply(this.events, events);
@@ -18,6 +19,7 @@ YAHOO.rapidjs.component.TreeGrid = function(container, config) {
 	this.treeGridView.render();
     this.treeGridView.events['selectionchanged'].subscribe(this.fireSelectionChange, this, true);
 	this.treeGridView.events['rowMenuClick'].subscribe(this.fireRowMenuClick, this, true);
+	this.treeGridView.events['treenodeclicked'].subscribe(this.fireTreeNodeClick, this, true);
 }
 YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.PollingComponentContainer, {
     handleSuccess: function(response, keepExisting, removeAttribute)
@@ -54,5 +56,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.Poll
     },
     fireRowMenuClick: function(xmlData, id, parentId){
         this.events['rowMenuClick'].fireDirect(xmlData, id, parentId);
+    },
+    fireTreeNodeClick: function(treeNode){
+        this.events['treeNodeClick'].fireDirect(treeNode.xmlData);
     }
 });

@@ -9,6 +9,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView = function(container, config) {
     this.expandedNodes = [];
     this.events = {
         'selectionchanged' : new YAHOO.util.CustomEvent('selectionchanged'),
+        'treenodeclicked' : new YAHOO.util.CustomEvent('treenodeclicked'),
         'contextmenuclicked' : new YAHOO.util.CustomEvent('contextmenuclicked'),
         'rowMenuClick' : new YAHOO.util.CustomEvent('rowMenuClick')
     };
@@ -155,6 +156,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
     selectionChanged: function(row, triggerEvent)
     {
         var treeNode = this.expandedNodes[row.rowIndex];
+        this.events['treenodeclicked'].fireDirect(treeNode);
         if (this.selectedRow) {
             if (row != this.selectedRow) {
                 YAHOO.util.Dom.replaceClass(this.selectedRow, 'r-tree-rowselected', 'r-tree-rowunselected');

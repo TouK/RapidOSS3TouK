@@ -54,9 +54,9 @@
             Overwrites the default event model with the new one. This process uses the edited XML file (RS_HOME/RapidSuite/grails-app/conf/NetcoolFieldConfiguration.xm) 
             as the input. RapidInsight for Netcool will generate all necessary files to update the Event and Journal models.
             <p></p>
-            <li class="controller"><g:link controller="script" action="run" id="importUsers" style="text-decoration:underline">Import Netcool Users</g:link></li>
+            <li class="controller"><g:link controller="script" action="run" id="importUsers" style="text-decoration:underline">Import Netcool Users (OPTIONAL) </g:link></li>
             <p></p>
-            .......................
+            Imports users from Netcool into RapidInsight for Netcool. These users can be managed in the Users tab by the administrator, in the admin UI. All users will be assigned the initial password "changeme".  
             <p></p>
             <li class="controller"><g:link controller="application" style="text-decoration:underline" action="reload" params="['targetURI':'/synchronize.gsp']">Reload Application</g:link></li>
 			<p></p>

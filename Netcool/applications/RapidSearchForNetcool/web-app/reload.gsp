@@ -8,6 +8,9 @@
     <jsec:isNotLoggedIn>
         <g:javascript>window.location='auth/login?targetUri=/admin.gsp'</g:javascript>
     </jsec:isNotLoggedIn>
+    <jsec:lacksRole name="Administrator">
+    	<meta http-equiv="REFRESH" content="0;url=${createLinkTo(dir: 'auth/unauthorized')}">
+    </jsec:lacksRole>
 </head>
 <body class="yui-skin-sam admin">
 <div style="padding-left:10px;padding-top:5px;"><img src="images/RapidInsight-white.png"></div>

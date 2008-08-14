@@ -45,6 +45,8 @@
 
     <link rel="stylesheet" type="text/css" href="js/yui/assets/skins/sam/menu.css" />
     <link rel="stylesheet" type="text/css" href="js/yui/assets/skins/sam/skin.css" />
+    <link rel="stylesheet" type="text/css" href="js/yui/button/assets/skins/sam/button.css" />
+    <link rel="stylesheet" type="text/css" href="js/yui/container/assets/skins/sam/container.css" />
     <link rel="stylesheet" type="text/css" href="css/rapidjs/common.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/dialog.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/form.css" />
@@ -57,8 +59,7 @@
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/tools/tools.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/treegrid/treegrid.css" />
 
-    <link rel="stylesheet" type="text/css" href="js/yui/button/assets/skins/sam/button.css" />
-    <link rel="stylesheet" type="text/css" href="js/yui/container/assets/skins/sam/container.css" />
+
 
     <jsec:isNotLoggedIn>
 	  <g:javascript>window.location='auth/login?targetUri=/index.gsp'</g:javascript>

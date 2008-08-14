@@ -59,12 +59,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.poll();
     },
 
-    setQuery: function(queryString)
+    setQuery: function(queryString, sortAtt, sortOrder)
     {
         this.currentlyExecutingQuery = queryString;
         this.searchBox.dom.getElementsByTagName('input')[0].value = queryString;
         this.showMask();
         this.params[this.searchQueryParamName] = this.currentlyExecutingQuery;
+        this.lastSortAtt = sortAtt || this.keyAttribute;
+        this.lastSortOrder = sortOrder || 'asc';
+        this.params['sort'] = this.lastSortAtt;
+        this.params['order'] = this.lastSortOrder;
         this.poll();
     },
 
@@ -97,7 +101,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         sortTextbox.innerHTML = "Sorted By: " + sortAtt + "-" + sortOrder;
         this.params['sort'] = this.lastSortAtt;
         this.params['order'] = this.lastSortOrder;
-        this.poll(this.lastOffset, sortAtt, sortOrder);
+        this.poll();
     },
 
     handleSuccess: function(response, keepExisting, removeAttribute)
@@ -109,6 +113,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             if (rowCount != null) {
                 this.totalRowCount = parseInt(rowCount, 10)
                 YAHOO.util.Dom.getElementsByClassName('rcmdb-search-count', 'div', this.searchBox.dom)[0].innerHTML = "Count: " + this.totalRowCount;
+                 var sortTextbox = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-sortOrder', 'div', this.searchBox.dom)[0];
+                 sortTextbox.innerHTML = "Sorted By: " + this.lastSortAtt + "-" + this.lastSortOrder;
             }
             var offset = node.getAttribute(this.offsetAttribute);
             if (offset != null) {

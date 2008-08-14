@@ -95,6 +95,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         if (nodes.length > 0) {
             xmlNode = nodes[0];
             if (formElement.nodeName == 'SELECT') {
+                SelectUtils.clear(formElement);
                 var options = xmlNode.childNodes
                 for (var i = 0; i < options.length; i++)
                 {
@@ -102,7 +103,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
                     if(option.nodeType == 1){
                         var optionValue = option.firstChild.nodeValue;
                         SelectUtils.addOption(formElement, optionValue, optionValue);
-                        if(option.getAttribute('selected')){
+                        if(option.getAttribute('selected') == 'true'){
                             SelectUtils.selectTheValue(formElement, optionValue, 0);
                         }
                     }
@@ -215,10 +216,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         for (var i = 0; i < formElements.length; i++)
         {
             var formElement = formElements[i];
-            if(formElement.nodeName == 'SELECT'){
-                SelectUtils.clear(formElement);
-            }
-            else{
+            if(formElement.nodeName != 'SELECT'){
                 formElement.value = '';
             }
         }

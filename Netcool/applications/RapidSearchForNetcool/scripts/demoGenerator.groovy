@@ -15,6 +15,7 @@ def totalEventInsertTime = 0;
 def totalJournalInsertTime = 0;
 def totalInsertedEvents = 0;
 def totalInsertedJournals = 0;
+new File("perf.log").delete();
 println "Inserted number of events, Number of Journals, Event insertion time, journal insertion time, total  time";
 for(int i=0; i < 1000000; i++)
 {

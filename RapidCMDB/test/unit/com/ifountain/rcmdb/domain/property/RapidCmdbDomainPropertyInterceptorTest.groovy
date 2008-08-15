@@ -31,7 +31,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         getProperty = [];
         getProperties = [];
         exceptionWillBeThrown = null;
-        if(!new File(".").getAbsolutePath().endsWith("RcmdbCommons"))
+        if(new File(".").getAbsolutePath().endsWith("RapidModules"))
         {
             ModelGenerator.getInstance().initialize (base_directory, base_directory, "RcmdbCommons");
         }

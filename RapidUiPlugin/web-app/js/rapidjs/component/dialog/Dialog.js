@@ -50,10 +50,11 @@ YAHOO.rapidjs.component.Dialog.prototype = {
 	            if(YAHOO.lang.isFunction(this.buttons[i].handler))
 	             	oButton.set("onclick", { fn: this.buttons[i].handler,
                                 obj: oButton, scope: this.buttons[i].scope || this });
-				if(i == 0)
+				if(this.buttons[i].isDefault)
 				{
-					oButton.get("element").setAttribute('style', 'background-position: 0pt -1400px; border-color: #304369');
-					oButton.get("element").getElementsByTagName('button')[0].setAttribute('style', 'color:#FFFFFF');
+					YAHOO.util.Dom.setStyle(oButton.get("element"),'background-position','0pt -1400px');
+					YAHOO.util.Dom.setStyle(oButton.get("element"),'border-color:','#304369');
+					YAHOO.util.Dom.setStyle(oButton.get("element").getElementsByTagName('button')[0],'color','#FFFFFF');
 				}
 			}
 	   		YAHOO.util.Dom.setStyle(this.body, 'background-color', '#F2F2F2');

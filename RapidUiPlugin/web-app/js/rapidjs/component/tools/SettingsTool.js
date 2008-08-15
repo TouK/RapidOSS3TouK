@@ -15,7 +15,7 @@ YAHOO.rapidjs.component.tool.SettingsTool = function(container, component, confi
 
 	this.dialog = new YAHOO.rapidjs.component.Dialog({ width:this.width,height:this.height, minWidth: this.minWidth,
 													   minHeight: this.minHeight , title: this.title,
-													   buttons:[{text:"Apply", handler:this.handleApplyClick, scope:this },
+													   buttons:[{text:"Apply", handler:this.handleApplyClick, scope:this, isDefault:true },
 															    {text:"Cancel", handler:this.handleCancelClick, scope:this }]});
 	var dh = YAHOO.ext.DomHelper;
 

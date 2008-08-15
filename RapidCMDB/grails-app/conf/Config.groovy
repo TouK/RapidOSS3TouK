@@ -29,7 +29,7 @@ grails.views.gsp.encoding="UTF-8"
 grails.converters.encoding="UTF-8"
 grails.test.default.rollback = true
 
-domain.property.interceptor.class = RapidCmdbDomainPropertyInterceptor.class.name;
+domain.property.interceptorclass = RapidCmdbDomainPropertyInterceptor.class.name;
 
 plugin {
     excludes = "hibernate"

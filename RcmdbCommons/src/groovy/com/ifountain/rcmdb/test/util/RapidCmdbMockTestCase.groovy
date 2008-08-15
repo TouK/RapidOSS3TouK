@@ -45,10 +45,15 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 	ApplicationContext appCtx
     def loadedClasses;
     def resolver = new PathMatchingResourcePatternResolver()
+    def previousGrailsApp;
     void setUp() {
         super.setUp();
+        previousGrailsApp = ApplicationHolder.application;
         configParams = [:]
-        gcl = new GroovyClassLoader();
+        if(previousGrailsApp != null)
+        {
+            gcl = new GroovyClassLoader(previousGrailsApp.getClassLoader());
+        }
     }
 
     def initialize(List classesToBeLoaded, List pluginsToLoad)
@@ -107,7 +112,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     	resolver = null
 		ExpandoMetaClass.disableGlobally()
     	originalHandler = null
-        ApplicationHolder.application = null;
+        ApplicationHolder.application = previousGrailsApp;
         PluginManagerHolder.pluginManager = null;
         this.loadedClasses.each{
             GroovySystem.metaClassRegistry.removeMetaClass (it);    

@@ -26,7 +26,7 @@ class ControllerUtils {
     {
         StringWriter writer = new StringWriter();
         def builder = new MarkupBuilder(writer);
-        builder.Successfull(successMessage.toString());
+        builder.Successful(successMessage.toString());
 
         return writer.toString();
 

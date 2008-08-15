@@ -20,9 +20,11 @@ class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassPropertyInter
     }
 
     public Object getDomainClassProperty(Object domainObject, String propertyName) {
-        PropertyDatasourceManagerBean bean = ServletContextHolder.servletContext.getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("propertyDatasourceManager")
-        if (bean.isFederated(domainObject.class, propertyName)) {
-            return getFederatedProperty(domainObject, bean, propertyName);
+        if(ServletContextHolder.servletContext != null){
+            PropertyDatasourceManagerBean bean = ServletContextHolder.servletContext.getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("propertyDatasourceManager")
+            if (bean.isFederated(domainObject.class, propertyName)) {
+                return getFederatedProperty(domainObject, bean, propertyName);
+            }
         }
         else {
             return super.getDomainClassProperty(domainObject, propertyName);

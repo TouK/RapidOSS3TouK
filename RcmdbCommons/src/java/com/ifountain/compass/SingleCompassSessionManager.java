@@ -14,6 +14,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class SingleCompassSessionManager {
+    private static String lastOpenedSession;
     private static Compass compassInstance;
     private static int maxNumberOfTrs;
     private static long maxWaitTime;
@@ -94,6 +95,7 @@ public class SingleCompassSessionManager {
         if(isBatchInsertMode()){
             synchronized (sessionLock)
             {
+                lastOpenedSession = new Date().toString();
                 compassSessionInstance = compassInstance.openSession();
                 compassTransactionInstance = compassSessionInstance.beginTransaction();
             }
@@ -144,6 +146,7 @@ public class SingleCompassSessionManager {
             {
                 if(compassSessionInstance.isClosed())
                 {
+                    lastOpenedSession = new Date().toString();
                     compassSessionInstance =  compassInstance.openSession();
                     compassTransactionInstance = compassSessionInstance.beginTransaction();
                 }

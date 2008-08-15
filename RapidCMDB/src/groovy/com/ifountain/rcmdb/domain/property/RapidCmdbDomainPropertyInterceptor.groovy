@@ -15,10 +15,6 @@ import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
  */
 class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassPropertyInterceptor {
 
-    public void setDomainClassProperty(Object domainObject, String propertyName, Object value) {
-        super.setDomainClassProperty(domainObject, propertyName, value);
-    }
-
     public Object getDomainClassProperty(Object domainObject, String propertyName) {
         if(ServletContextHolder.servletContext != null){
             PropertyDatasourceManagerBean bean = ServletContextHolder.servletContext.getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("propertyDatasourceManager")

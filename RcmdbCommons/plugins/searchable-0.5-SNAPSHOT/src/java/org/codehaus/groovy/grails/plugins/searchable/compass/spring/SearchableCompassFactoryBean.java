@@ -61,7 +61,10 @@ public class SearchableCompassFactoryBean implements FactoryBean {
         // TODO find a better place for this
         // register custom converters
         configuration.registerConverter(StringMapConverter.CONVERTER_NAME, new StringMapConverter());
-        configuration.setClassLoader(ApplicationHolder.getApplication().getClassLoader());
+        if(ApplicationHolder.getApplication() != null)
+        {
+            configuration.setClassLoader(ApplicationHolder.getApplication().getClassLoader());
+        }
         searchableCompassConfigurator.configure(configuration, new HashMap());
 
         Compass compass = configuration.buildCompass();

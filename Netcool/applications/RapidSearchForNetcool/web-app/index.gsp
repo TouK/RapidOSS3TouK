@@ -74,6 +74,19 @@
 		.r-tree-firstCell{
 			cursor:pointer;
 		}
+		.yui-skin-sam .yui-resize .yui-resize-handle-r {
+			background-image: url(images/rapidjs/component/layout/e-handle.gif);
+			background-position: left center;
+			background-color:#C3DAF9;
+
+		}
+		.yui-skin-sam .yui-layout .yui-resize-proxy div{
+			background-color:#C3DAF9;
+		}
+		.yui-skin-sam .yui-layout-unit .yui-resize-handle-r .yui-layout-resize-knob{
+			background-image : none;
+
+		}
     </style>
 </head>
 <body class=" yui-skin-sam">
@@ -415,6 +428,7 @@
          nodeId:"id",
          contentPath:"Filter",
          title:'Saved Queries',
+         mouseOverCursor: 'pointer',
          columns: [
             {attributeName:'name', colLabel:'Name', width:250, sortBy:true}
          ],

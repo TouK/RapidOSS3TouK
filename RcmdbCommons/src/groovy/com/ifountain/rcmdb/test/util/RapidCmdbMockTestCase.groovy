@@ -54,6 +54,10 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         {
             gcl = new GroovyClassLoader(previousGrailsApp.getClassLoader());
         }
+        else
+        {
+            gcl = new GroovyClassLoader();    
+        }
     }
 
     def initialize(List classesToBeLoaded, List pluginsToLoad)

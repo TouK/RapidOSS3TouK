@@ -399,7 +399,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         for (var fieldIndex = 0; fieldIndex < this.maxRowCellLength; fieldIndex++) {
             innerHtml += '<div class="rcmdb-search-cell">' +
                          '<span class="rcmdb-search-cell-key"></span>' +
-                         '<a href="#" class="rcmdb-search-cell-value"></a>' +
+                         '<a href="" class="rcmdb-search-cell-value"></a>' +
                          '<a class="rcmdb-search-cell-menu">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> | ' +
                          '</div>';
         }

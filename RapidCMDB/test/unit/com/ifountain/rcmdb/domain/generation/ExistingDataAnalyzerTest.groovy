@@ -31,7 +31,7 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
     def metaClassCreationHandler;
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        if(ApplicationHolder.application == null)
+        if(!new File(".").absolutePath.endsWith("RcmdbCommons"))
         {
             ModelGenerator.getInstance().initialize (base_directory, base_directory, "RcmdbCommons");
         }

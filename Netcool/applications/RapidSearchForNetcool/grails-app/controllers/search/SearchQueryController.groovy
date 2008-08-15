@@ -2,7 +2,9 @@ package search
 
 import auth.RsUser
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-import grails.converters.XML;
+import grails.converters.XML
+import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
+
 class SearchQueryController {
     def final static PROPS_TO_BE_EXCLUDED = ["id": "id", "_action_Update": "_action_Update", "controller": "controller", "action": "action"]
     def index = {redirect(action: list, params: params)}
@@ -85,22 +87,34 @@ class SearchQueryController {
                     def searchQueryGroups = SearchQueryGroup.list().findAll {
                         it.user.username == userName
                     };
+                    def excludedProps = ['version',
+                            "errors", "__operation_class__",
+                            Events.ONLOAD_EVENT,
+                            Events.BEFORE_DELETE_EVENT,
+                            Events.BEFORE_INSERT_EVENT,
+                            Events.BEFORE_UPDATE_EVENT]
+                    def netcoolDomainClass = grailsApplication.getDomainClass("NetcoolEvent");
+                    def netcoolEventProps = netcoolDomainClass.properties.findAll {!excludedProps.contains(it.name)}
                     render(contentType: 'text/xml') {
                         Edit {
                             id(searchQuery.id)
                             name(searchQuery.name)
                             query(searchQuery.query)
-                            sortProperty(searchQuery.sortProperty)
-                            sortOrder{
-                                option(selected:searchQuery.sortOrder == 'desc', 'desc')
-                                option(selected:searchQuery.sortOrder == 'asc', 'asc')
+                            sortProperty {
+                                netcoolEventProps.each {
+                                    option(selected: it.name == searchQuery.sortProperty, it.name)
+                                }
+                            }
+                            sortOrder {
+                                option(selected: searchQuery.sortOrder == 'desc', 'desc')
+                                option(selected: searchQuery.sortOrder == 'asc', 'asc')
                             }
                             group {
                                 searchQueryGroups.each {
-                                    if(it.name == searchQuery.group.name){
-                                        option(selected:"true", it.name)    
+                                    if (it.name == searchQuery.group.name) {
+                                        option(selected: "true", it.name)
                                     }
-                                    else{
+                                    else {
                                         option(it.name)
                                     }
                                 }
@@ -174,10 +188,23 @@ class SearchQueryController {
                 def searchQueryGroups = SearchQueryGroup.list().findAll {
                     it.user.username == userName
                 };
+                def excludedProps = ['version',
+                        "errors", "__operation_class__",
+                        Events.ONLOAD_EVENT,
+                        Events.BEFORE_DELETE_EVENT,
+                        Events.BEFORE_INSERT_EVENT,
+                        Events.BEFORE_UPDATE_EVENT]
+                def netcoolDomainClass = grailsApplication.getDomainClass("NetcoolEvent");
+                def netcoolEventProps = netcoolDomainClass.properties.findAll {!excludedProps.contains(it.name)}
                 render(contentType: 'text/xml') {
                     Create {
                         group {
                             searchQueryGroups.each {
+                                option(it.name)
+                            }
+                        }
+                        sortProperty {
+                            netcoolEventProps.each {
                                 option(it.name)
                             }
                         }

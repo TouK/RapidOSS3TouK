@@ -95,12 +95,12 @@
     <div class="bd">
     <form method="POST" action="javascript://nothing">
         <table width="100%">
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select type="textbox" name="group" style="width:175px"/></td></tr>
+        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Sort Property:</label></td><td width="50%"><input type="textbox" name="sortProperty" style="width:175px"/></td></tr>
+        <tr><td width="50%"><label>Sort Property:</label></td><td width="50%"><select name="sortProperty" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Sort Order:</label></td><td width="50%">
-            <select type="textbox" name="sortOrder" style="width:175px"><option value="asc">asc</option><option value="desc">desc</option></select>
+            <select name="sortOrder" style="width:175px"><option value="asc">asc</option><option value="desc">desc</option></select>
         </td></tr>
         </table>
         <input type="hidden" name="id">
@@ -473,7 +473,7 @@
         scope:this,
         tooltip: 'Add query',
         click:function() {
-            dialog.show(dialog.CREATE_MODE, null, {sortProperty:"id"});
+            dialog.show(dialog.CREATE_MODE);
         }
     });
     tree.poll();

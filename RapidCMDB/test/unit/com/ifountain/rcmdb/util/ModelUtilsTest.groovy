@@ -194,7 +194,7 @@ class ModelUtilsTest extends RapidCmdbTestCase{
         try
         {
             def baseDir = ".";
-            if(!System.getProperty("base.dir", ".").endsWith("RapidCMDB"))
+            if(new File(System.getProperty("base.dir", ".")).getCanonicalPath().endsWith("RapidModules"))
             {
                 baseDir = "RapidCMDB"
             }

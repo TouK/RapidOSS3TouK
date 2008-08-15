@@ -16,7 +16,7 @@ class PropertyDatasourceManagerTest extends RapidCmdbMockTestCase
     public void setUp()
     {
         super.setUp();
-        if(new File(".").getAbsolutePath().endsWith("RapidModules"))
+        if(new File(".").getCanonicalPath().endsWith("RapidModules"))
         {
             ModelGenerator.getInstance().initialize (null, null, "RcmdbCommons");
         }

@@ -430,7 +430,7 @@
          title:'Saved Queries',
          mouseOverCursor: 'pointer',
          columns: [
-            {attributeName:'name', colLabel:'Name', width:250, sortBy:true}
+            {attributeName:'name', colLabel:'Name', width:248, sortBy:true}
          ],
         menuItems:{
             Delete : { id: 'delete', label : 'Delete',  condition : treeNodesUpdateDeleteConditionFunction },
@@ -516,7 +516,7 @@
             units: [
                 { position: 'top', body: 'top', resize: false, height:40},
                 { position: 'center', body: 'right', resize: false, gutter: '1px' },
-                { position: 'left', width: 250, resize: true, body: 'left', scroll: true}
+                { position: 'left', width: 250, resize: true, body: 'left', scroll: false}
             ]
         });
         layout.on('render', function(){

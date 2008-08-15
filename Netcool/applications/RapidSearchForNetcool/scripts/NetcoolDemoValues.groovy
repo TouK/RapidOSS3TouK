@@ -18,7 +18,7 @@ class NetcoolDemoValues {
     public journalProperties = ["text"]
     def servernameOptions = ["NCOMS", "NCOMS2"];
     def connectornameOptions = ["con1", "con2"];
-    def acknowledgeOptions = ["Yes", "No"];
+    def acknowledgedOptions = ["Yes", "No"];
     def tallyOptions = [1]
     def textOptions = [
         "Alert is unacknowledged by rsadmin",

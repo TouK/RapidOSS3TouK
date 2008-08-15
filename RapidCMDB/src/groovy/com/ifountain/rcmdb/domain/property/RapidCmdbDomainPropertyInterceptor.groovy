@@ -26,9 +26,7 @@ class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassPropertyInter
                 return getFederatedProperty(domainObject, bean, propertyName);
             }
         }
-        else {
-            return super.getDomainClassProperty(domainObject, propertyName);
-        }
+        return super.getDomainClassProperty(domainObject, propertyName);
     }
     
 

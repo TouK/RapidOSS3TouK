@@ -493,8 +493,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 	    }
     },
     handleClick: function(e) {
-	    YAHOO.util.Event.preventDefault(e);
-		YAHOO.util.Event.stopEvent(e);
+	    YAHOO.util.Event.stopEvent(e);
 	    var target = YAHOO.util.Event.getTarget(e);
         var row = this.getRowFromChild(target);
         if (row) {

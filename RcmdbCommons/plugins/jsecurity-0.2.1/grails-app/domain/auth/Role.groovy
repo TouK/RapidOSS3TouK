@@ -1,5 +1,8 @@
 package auth;
 class Role {
+    def static final String ADMINISTRATOR = "Administrator";
+    def static final String USER = "User";
+
     static searchable = {
         users cascade: "delete"
         permissionRelations cascade: "delete"

@@ -113,9 +113,23 @@
     <div class="bd">
     <form method="POST" action="javascript://nothing">
         <table width="100%">
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" /></td></tr>
+        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
         </table>
         <input type="hidden" name="id">
+    </form>
+
+    </div>
+</div>
+<div id="passwordDialog">
+    <div class="hd">Change Password</div>
+    <div class="bd">
+    <form method="POST" action="javascript://nothing">
+        <table width="100%">
+        <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
+        <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
+        <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
+        </table>
+        <input type="hidden" name="username">
     </form>
 
     </div>
@@ -134,7 +148,7 @@
         </td>
         <td width="0%">
            <div style="vertical-align:bottom">
-               <span style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;">${session.username}</span>
+               <span id="rsUser" style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;cursor:pointer">${session.username}</span>
                <a href="auth/logout" style="font-size:13px;font-weight:bold;color:#083772;text-align:right;text-decoration:none">Logout</a>
            </div>
         </td>
@@ -509,7 +523,17 @@
         }
     };
     var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
+     var changePassDialogConfig = {
+        width:"35em",
+        saveUrl:"rsUser/changePassword.xml",
+        successfulyExecuted: function () {}
+    };
+    var changePassDialog = new YAHOO.rapidjs.component.Form(document.getElementById("passwordDialog"), changePassDialogConfig);
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
+    Event.addListener(document.getElementById('rsUser'), 'click', function(){
+         changePassDialog.show(dialog.CREATE_MODE);
+         changePassDialog.dialog.form.username.value = "${session.username}";
+    },this, true)
 
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({

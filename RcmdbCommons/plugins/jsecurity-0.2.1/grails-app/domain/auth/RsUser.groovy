@@ -1,14 +1,12 @@
 package auth
 
 class RsUser {
-    static searchable = {
-        roles cascade: "delete"
-        permissionRelations cascade: "delete"
-    }
+    static searchable = true;
     String username
     String passwordHash
     List roles = [];
     List permissionRelations = [];
+    static cascaded = ["roles":true, "permissionRelations":true]
     static hasMany = [roles:UserRoleRel, permissionRelations:UserPermissionRel];
     static mappedBy=["roles":"rsUser", "permissionRelations":"rsUser"]
     static constraints = {

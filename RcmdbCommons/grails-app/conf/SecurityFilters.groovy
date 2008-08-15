@@ -1,3 +1,5 @@
+import auth.Role
+
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -32,22 +34,48 @@ class SecurityFilters {
 
                 // This just means that the user must be authenticated. He does
                 // not need any particular role or permission.
-                accessControl { 
-	                role("Administrator") || role("User")
-	            }
+                accessControl {
+                    role(Role.ADMINISTRATOR) || role(Role.USER)
+                }
             }
         }
-        def adminControllers = ["rsUser", "userRoleRel", 
-        						"application",
-        						 "model", "modelDatasource", "modelDatasourceKeyMapping", "modelRelation", "modelProperty"];
-        authorization(controller:"(" + adminControllers.join("|")+ ")", action:"*"){
-	        before = {
-		      accessControl { 
-	                role("Administrator")
-	            }  
-		        
-		    }
-	    	    
-	    }
+        def adminControllers = ["userRoleRel"];
+        adminAuthorization(controller: "(" + adminControllers.join("|") + ")", action: "*") {
+            before = {
+                accessControl {
+                    role(Role.ADMINISTRATOR)
+                }
+
+            }
+        }
+
+        scriptAuthorization(controller: "script", action: "*") {
+           before = {
+                if (actionName == "run") {
+                    accessControl {
+                        role(Role.ADMINISTRATOR) || role(Role.USER)
+                    }
+                }
+                else {
+                    accessControl {
+                        role(Role.ADMINISTRATOR)
+                    }
+                }
+            }
+        }
+        rsUserAuthorization(controller: "rsUser", action: "*") {
+            before = {
+                if (actionName == "changePassword") {
+                    accessControl {
+                        role(Role.ADMINISTRATOR) || role(Role.USER)
+                    }
+                }
+                else {
+                    accessControl {
+                        role(Role.ADMINISTRATOR)
+                    }
+                }
+            }
+        }
     }
 }

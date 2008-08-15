@@ -380,10 +380,13 @@
         	takeOwnershipAction.execute({servername:serverName, serverserial : serverSerial}, [searchList]);
 
     }, this, true);
-    searchList.events["rowDoubleClicked"].subscribe(function(xmlData){
+    searchList.events["rowDoubleClicked"].subscribe(function(xmlData, event){
+    	if(YAHOO.util.Event.getTarget(event).className != 'rcmdb-search-cell-key')
+    	{
     		var eventId = xmlData.getAttribute("id");
             var url = "getDetails.gsp?id="+eventId;
             html.show(url);
+        }
 
     }, true, true);
 

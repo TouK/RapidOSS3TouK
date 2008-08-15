@@ -489,8 +489,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 	    var row = this.getRowFromChild(target);
 	    var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
 	    if (row) {
-		    if(target.className != 'rcmdb-search-cell-key')
-		     	 this.fireRowDoubleClick(xmlData);
+		     	 this.fireRowDoubleClick(xmlData,e);
 	    }
     },
     handleClick: function(e) {
@@ -743,10 +742,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     firePropertyClick: function(key, value, data) {
         this.events['propertyClick'].fireDirect(key, value, data);
     },
-    fireRowDoubleClick: function(data) {
-        this.events['rowDoubleClicked'].fireDirect(data);
+    fireRowDoubleClick: function(data,event) {
+        this.events['rowDoubleClicked'].fireDirect(data,event);
     },
-
     getSortAttribute: function(){
         return this.lastSortAtt;
     },

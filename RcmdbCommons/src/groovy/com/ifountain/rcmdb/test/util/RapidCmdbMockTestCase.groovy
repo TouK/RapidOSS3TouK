@@ -43,7 +43,8 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 	def originalHandler
 	def springConfig
 	ApplicationContext appCtx
-	def resolver = new PathMatchingResourcePatternResolver()
+    def loadedClasses;
+    def resolver = new PathMatchingResourcePatternResolver()
     void setUp() {
         super.setUp();
         configParams = [:]
@@ -52,6 +53,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 
     def initialize(List classesToBeLoaded, List pluginsToLoad)
     {
+        this.loadedClasses = classesToBeLoaded;
         ExpandoMetaClass.enableGlobally()
 //        classesToBeLoaded.addAll(Arrays.asList(gcl.getLoadedClasses()));
         ctx = new MockApplicationContext();
@@ -92,7 +94,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     }
 
     final void tearDown() {
-		servletContext = null
+        servletContext = null
 		webRequest = null
 		request = null
 		response = null
@@ -107,6 +109,11 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     	originalHandler = null
         ApplicationHolder.application = null;
         PluginManagerHolder.pluginManager = null;
+        this.loadedClasses.each{
+            GroovySystem.metaClassRegistry.removeMetaClass (it);    
+        }
+        this.loadedClasses = null;
+
 
     }
 }

@@ -20,6 +20,8 @@ import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import org.codehaus.groovy.grails.compiler.injection.ClassInjector
 import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import org.apache.commons.digester.plugins.PluginManager
+import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 
 /**
  * Created by IntelliJ IDEA.
@@ -103,6 +105,8 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     	resolver = null
 		ExpandoMetaClass.disableGlobally()
     	originalHandler = null
+        ApplicationHolder.application = null;
+        PluginManagerHolder.pluginManager = null;
 
-	}
+    }
 }

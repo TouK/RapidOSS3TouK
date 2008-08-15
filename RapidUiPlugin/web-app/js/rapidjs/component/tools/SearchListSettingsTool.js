@@ -2,7 +2,7 @@ YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.tool');
 YAHOO.rapidjs.component.tool.SearchListSettingsTool = function(container, component) {
 
     YAHOO.rapidjs.component.tool.SearchListSettingsTool.superclass.constructor.call(this, container, component,
-    						{width:300,height:125}
+    						{width:300,height:130}
     );
 
 	this.panelFields = YAHOO.ext.DomHelper.append(this.dialog.body, {tag:'div', cls:'panel-body-fields',

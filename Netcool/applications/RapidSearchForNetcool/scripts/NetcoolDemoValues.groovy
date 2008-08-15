@@ -167,11 +167,11 @@ class NetcoolDemoValues {
         {
             summary = summary[nextNumber(summary.size())].make([summaryParam:nextNumber(10)]).toString();
             props["summary"] = summary;
-            if(summary.indexOf("Down"))
+            if(summary.indexOf("Down") > -1)
             {
                 props["severity"] = 5;
             }
-            else if(summary.indexOf("Up"))
+            else if(summary.indexOf("Up") > -1)
             {
                 props["severity"] = 1;
             }

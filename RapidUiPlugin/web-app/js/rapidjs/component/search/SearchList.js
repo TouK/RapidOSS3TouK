@@ -489,6 +489,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 	    var row = this.getRowFromChild(target);
 	    var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
 	    if (row) {
+		    if(target.className != 'rcmdb-search-cell-key')
 		     	 this.fireRowDoubleClick(xmlData);
 	    }
     },

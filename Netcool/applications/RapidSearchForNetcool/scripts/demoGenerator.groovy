@@ -8,7 +8,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
  * Time: 1:34:14 PM
  * To change this template use File | Settings | File Templates.
  */
-def static DemoValues = new NetcoolDemoValues();
+def DemoValues = new NetcoolDemoValues();
 def t = System.nanoTime();
 def totalTime = 0;
 def totalEventInsertTime = 0;

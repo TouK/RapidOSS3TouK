@@ -11,7 +11,8 @@ import groovy.text.SimpleTemplateEngine
  */
 class NetcoolDemoValues {
     def engine = new SimpleTemplateEngine();
-    public int numberOfEvents = 0;
+    public static int numberOfEvents = 0;
+
     public eventProperties = ["servername", "connectorname", "acknowledged", "severity", "suppressescl", "ncclass","tally", "owneruid", "ownergid",
             "tasklist","alertgroup","node","manager","agent"]
 

@@ -45,8 +45,9 @@ public class FileMergerTest extends TestCase
 		FileMerger.APP_PATH = "RapidInsight/RapidInsight/clients/js/";
 		FileMerger.TARGET_PATH = TestFile.TESTOUTPUT_DIR;
 		FileMerger.ROOT_PATH = "RapidApplicationServer/RapidApplicationServer/webapps/root";
-		
-	}
+        FileMerger.willCombineCss = true;
+
+    }
 	
 	public static void main(String[] args)
 	{

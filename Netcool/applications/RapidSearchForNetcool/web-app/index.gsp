@@ -473,7 +473,7 @@
         scope:this,
         tooltip: 'Add query',
         click:function() {
-            dialog.show(dialog.CREATE_MODE);
+            dialog.show(dialog.CREATE_MODE, null, {sortProperty:"id"});
         }
     });
     tree.poll();

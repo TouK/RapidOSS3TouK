@@ -226,16 +226,16 @@
     var conf = {width:500, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
     html.hide();
-    var actionConfig = {url:'searchQuery/delete.xml'}
+    var actionConfig = {url:'searchQuery/delete?format=xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
-    var actionGroupConfig = {url:'searchQueryGroup/delete.xml'}
+    var actionGroupConfig = {url:'searchQueryGroup/delete?format=xml'}
     var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
 
 
     var searchConfig = {
         id:'searchList',
-        url:'search.xml',
+        url:'search?format=xml',
         searchQueryParamName:'query',
         rootTag:'Objects',
         contentPath:'Object',
@@ -431,8 +431,8 @@
 
     var groupDefinitionDialogConfig = {
         width:"30em",
-        saveUrl:"searchQueryGroup/save.xml",
-        updateUrl:"searchQueryGroup/update.xml",
+        saveUrl:"searchQueryGroup/save?format=xml",
+        updateUrl:"searchQueryGroup/update?format=xml",
         successfulyExecuted: function () {
             tree.poll()
         }
@@ -517,10 +517,10 @@
 
     var filterDefinitionDialogConfig = {
         width:"35em",
-        createUrl:"searchQuery/create.xml",
-        editUrl:"searchQuery/edit.xml",
-        saveUrl:"searchQuery/save.xml",
-        updateUrl:"searchQuery/update.xml",
+        createUrl:"searchQuery/create?format=xml",
+        editUrl:"searchQuery/edit?format=xml",
+        saveUrl:"searchQuery/save?format=xml",
+        updateUrl:"searchQuery/update?format=xml",
         successfulyExecuted: function () {
             tree.poll()
         }
@@ -528,7 +528,7 @@
     var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
      var changePassDialogConfig = {
         width:"35em",
-        saveUrl:"rsUser/changePassword.xml",
+        saveUrl:"rsUser/changePassword?format=xml",
         successfulyExecuted: function () {}
     };
     var changePassDialog = new YAHOO.rapidjs.component.Form(document.getElementById("passwordDialog"), changePassDialogConfig);

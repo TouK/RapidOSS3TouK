@@ -79,6 +79,6 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.Abstra
 
     def getDatasource(connectorName){
         def datasourceName = NetcoolConnector.getDatasourceName(connectorName);
-        return NetcoolDatasource.get(name:connectorName);
+        return NetcoolDatasource.get(name:datasourceName);
     }
 }

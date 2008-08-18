@@ -45,7 +45,7 @@ SearchQuery.add(group:defaultGroup, name: "All Events", query: "id:[0 TO *]", us
 //SearchQuery.add(group:defaultGroup, name: "Last 10 Minutes", query: "statechange: [" +tenMinBeforeNow+ " TO NOW]", user: user);
 SearchQuery.add(group:defaultGroup, name: "In Maintenance", query: "suppressescl:6 NOT manager:*Watch ", user: user, sortProperty:"manager");
 SearchQuery.add(group:defaultGroup, name: "Escalated", query: "suppressescl:{0 TO 4} NOT manager:*Watch", user: user, sortProperty:"suppressescl");
-SearchQuery.add(group:defaultGroup, name: "Active Events", query: " id:[0 TO *] AND severity:[1 TO 5]", user: user, sortProperty:"statechange", sortOrder:"desc");
+SearchQuery.add(group:defaultGroup, name: "Active Events", query: "severity:[1 TO 5]", user: user, sortProperty:"statechange", sortOrder:"desc");
 
 previouslyAddedDefaultQueries["All Events"] = "All Events";
 previouslyAddedDefaultQueries["In Maintenance"] = "In Maintenance";

@@ -44,7 +44,7 @@ previouslyAddedSeverityQueries["Clear Events"] = "Clear Events";
 SearchQuery.add(group:defaultGroup, name: "All Events", query: "id:[0 TO *]", user: user, sortProperty:"id");
 //SearchQuery.add(group:defaultGroup, name: "Last 10 Minutes", query: "statechange: [" +tenMinBeforeNow+ " TO NOW]", user: user);
 SearchQuery.add(group:defaultGroup, name: "In Maintenance", query: "suppressescl:6 NOT manager:*Watch ", user: user, sortProperty:"manager");
-SearchQuery.add(group:defaultGroup, name: "Escalated", query: "suppressescl:[0 TO 4] NOT manager:*Watch", user: user, sortProperty:"suppressescl");
+SearchQuery.add(group:defaultGroup, name: "Escalated", query: "suppressescl:{0 TO 4} NOT manager:*Watch", user: user, sortProperty:"suppressescl");
 
 previouslyAddedDefaultQueries["All Events"] = "All Events";
 previouslyAddedDefaultQueries["In Maintenance"] = "In Maintenance";

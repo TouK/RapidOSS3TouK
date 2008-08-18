@@ -27,12 +27,12 @@ if(previouslyAddedSeverityQueries == null)
     map.put(bySevertyGroup, previouslyAddedSeverityQueries);
 }
 
-SearchQuery.add(group:bySevertyGroup, name: "Critical Events", query: "severity:5", user: user, sortProperty:"severity");
-SearchQuery.add(group:bySevertyGroup, name: "Major Events", query: "severity:4", user: user, sortProperty:"severity");
-SearchQuery.add(group:bySevertyGroup, name: "Minor Events", query: "severity:3", user: user, sortProperty:"severity");
-SearchQuery.add(group:bySevertyGroup, name: "Warning Events", query: "severity:2", user: user, sortProperty:"severity");
-SearchQuery.add(group:bySevertyGroup, name: "Indeterminate Events", query: "severity:1", user: user, sortProperty:"severity");
-SearchQuery.add(group:bySevertyGroup, name: "Clear Events", query: "severity:0", user: user, sortProperty:"severity");
+SearchQuery.add(group:bySevertyGroup, name: "Critical Events", query: "severity:5", user: user, sortProperty:"statechange", sortOrder:"desc");
+SearchQuery.add(group:bySevertyGroup, name: "Major Events", query: "severity:4", user: user, sortProperty:"statechange", sortOrder:"desc");
+SearchQuery.add(group:bySevertyGroup, name: "Minor Events", query: "severity:3", user: user, sortProperty:"statechange", sortOrder:"desc");
+SearchQuery.add(group:bySevertyGroup, name: "Warning Events", query: "severity:2", user: user, sortProperty:"statechange", sortOrder:"desc");
+SearchQuery.add(group:bySevertyGroup, name: "Indeterminate Events", query: "severity:1", user: user, sortProperty:"statechange", sortOrder:"desc");
+SearchQuery.add(group:bySevertyGroup, name: "Clear Events", query: "severity:0", user: user, sortProperty:"statechange", sortOrder:"desc");
 
 previouslyAddedSeverityQueries["Critical Events"] = "Critical Events";
 previouslyAddedSeverityQueries["Major Events"] = "Major Events";
@@ -41,14 +41,16 @@ previouslyAddedSeverityQueries["Warning Events"] = "Warning Events";
 previouslyAddedSeverityQueries["Indeterminate Events"] = "Indeterminate Events";
 previouslyAddedSeverityQueries["Clear Events"] = "Clear Events";
 
-SearchQuery.add(group:defaultGroup, name: "All Events", query: "id:[0 TO *]", user: user, sortProperty:"id");
+SearchQuery.add(group:defaultGroup, name: "All Events", query: "id:[0 TO *]", user: user, sortProperty:"statechange", sortOrder:"desc");
 //SearchQuery.add(group:defaultGroup, name: "Last 10 Minutes", query: "statechange: [" +tenMinBeforeNow+ " TO NOW]", user: user);
 SearchQuery.add(group:defaultGroup, name: "In Maintenance", query: "suppressescl:6 NOT manager:*Watch ", user: user, sortProperty:"manager");
 SearchQuery.add(group:defaultGroup, name: "Escalated", query: "suppressescl:{0 TO 4} NOT manager:*Watch", user: user, sortProperty:"suppressescl");
+SearchQuery.add(group:defaultGroup, name: "Active Events", query: " id:[0 TO *] AND severity:[1 TO 5]", user: user, sortProperty:"statechange", sortOrder:"desc");
 
 previouslyAddedDefaultQueries["All Events"] = "All Events";
 previouslyAddedDefaultQueries["In Maintenance"] = "In Maintenance";
 previouslyAddedDefaultQueries["Escalated"] = "Escalated";
+previouslyAddedDefaultQueries["Active Events"] = "Active Events";
 
 
 def queryGroups = SearchQueryGroup.list();

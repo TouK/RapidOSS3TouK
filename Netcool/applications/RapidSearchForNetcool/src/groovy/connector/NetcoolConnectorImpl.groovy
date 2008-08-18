@@ -103,7 +103,7 @@ class NetcoolConnectorImpl {
             lastRecordIdentifier = NetcoolLastRecordIdentifier.add(connectorName:connectorName, eventLastRecordIdentifier:0, journalLastRecordIdentifier:0);
         }
         def lastEventStateChange = lastRecordIdentifier.eventLastRecordIdentifier;
-        logger.info("Processing journals. after ${lastEventStateChange}");
+        logger.info("Processing events. after ${lastEventStateChange}");
         def whereClause = "StateChange > ${lastEventStateChange} AND StateChange <= getdate - 1";
         List records = datasource.getEvents(whereClause);
         logger.info("Got ${records.size()} number of records");

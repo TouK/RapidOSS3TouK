@@ -11,6 +11,7 @@ tagSvn() {
     svn mkdir -m "Creating tag $tagname" http://dev.ifountain.org/repos/os/tags/$tagname
     svn copy http://dev.ifountain.org/repos/os/ThirdParty http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging ThirdParty"
     svn copy http://dev.ifountain.org/repos/os/RapidModules http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging RapidModules"    
+    svn copy http://dev.ifountain.org/repos/os/LicencedJars http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging LicencedJars"    
 }
 
 checkOutTag() {
@@ -26,6 +27,7 @@ checkOutTag() {
     rm -rf ThirdParty    
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/RapidModules ./RapidModules
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/ThirdParty ./ThirdParty
+    svn checkout file:///var/www/svn/os/tags/$TAG_NAME/LicencedJars ./LicencedJars
 }
 runTestBuildAndJavaTests() {
     rm -rf TestResults/

@@ -50,7 +50,9 @@ class Test extends Parent{
 		Enumeration jarKeys = libJars.keys();
 		ant.path(id : "libJars"){
 			while(jarKeys.hasMoreElements()){
-				String jarName = (String) jarKeys.nextElement();
+                println "adding jar "
+                String jarName = (String) jarKeys.nextElement();
+                println "adding jar ${jarName} to classpath";
 				ant.pathelement(location : libJars.getProperty(jarName));
 			}
 		}

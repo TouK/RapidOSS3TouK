@@ -1,19 +1,9 @@
-<Filters>
-    <Filter id="1" name="Group1" nodeType="group">
-        <Filter id="5" name="filterabcabcabc" nodeType="filter" query = "aaa"/>
-        <Filter id="6" name="filter4" nodeType="filter" query = "bbb"/>
-
-    </Filter>
-    <Filter id="2" name="Group2" nodeType="group">
-        <Filter id="7" name="filter5" nodeType="filter" query = "ccc"/>
-        <Filter id="8" name="filterabcabcab" nodeType="filter" query = "ddd"/>
-
-    </Filter>
-    <Filter id="3" name="Group3" nodeType="group">
-        <Filter id="9" name="filter1" nodeType="filter" query = "eee"/>
-        <Filter id="19" name="filterab" nodeType="filter" query = "fff"/>
-    </Filter>
-    <Filter id="4" name="Group4" nodeType="group">
-    </Filter>
-
-</Filters>
+<Results>
+	<Name>Events</Name>
+	<Critical>46</Critical>
+	<Major>42</Major>
+	<Minor>12</Minor>
+	<Warning>82</Warning>
+	<Indeterminate>62</Indeterminate>
+	<Clear>31</Clear>
+</Results>

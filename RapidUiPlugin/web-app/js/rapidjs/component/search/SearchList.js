@@ -236,6 +236,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 	        for (var i = 0; i < this.fields.length; i++)
 	            if(this.maxRowCellLength < this.fields[i]['fields'].length)
 	            	this.maxRowCellLength = this.fields[i]['fields'].length;
+	        if(this.defaultFields && this.maxRowCellLength < this.defaultFields.length)
+	        	this.maxRowCellLength = this.defaultFields.length;
         }
         else
         {
@@ -440,8 +442,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 	            {
 		            var currentExpressionStr = this.fields[i]['exp'];
 				    var evaluationResult = eval(currentExpressionStr);
-				    if (evaluationResult == true)
+				    if (evaluationResult)
 				    	insertedFields = this.fields[i]['fields'];
+				    else
+				    	insertedFields = this.defaultFields;
 				}
 			else
 				insertedFields =this.fields;

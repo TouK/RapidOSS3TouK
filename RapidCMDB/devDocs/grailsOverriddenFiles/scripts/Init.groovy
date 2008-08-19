@@ -536,6 +536,9 @@ grailsClasspath = {pluginLibs, grailsDir ->
     if (new File("${basedir}/lib").exists()) {
         fileset(dir: "${basedir}/lib")
     }
+    if (new File("${grailsHome}/RapidSuite/lib").exists()) {
+        fileset(dir: "${grailsHome}/RapidSuite/lib")
+    }
     for (d in grailsDir) {
         pathelement(location: "${d.file.absolutePath}")
     }

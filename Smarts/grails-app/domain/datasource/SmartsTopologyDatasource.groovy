@@ -1,10 +1,11 @@
 package datasource
 
-import connection.SmartsConnection
-import datasource.TopologyAdapter
-import org.apache.log4j.Logger
+import com.ifountain.smarts.datasource.BaseTopologyAdapter
 import com.ifountain.smarts.datasource.SmartsTopologyListeningAdapter
-import com.ifountain.smarts.util.params.SmartsSubscribeParameters;
+import com.ifountain.smarts.util.params.SmartsSubscribeParameters
+import connection.SmartsConnection
+import org.apache.log4j.Logger
+
 
 class SmartsTopologyDatasource extends BaseListeningDatasource{
     static searchable = {
@@ -31,7 +32,7 @@ class SmartsTopologyDatasource extends BaseListeningDatasource{
     static transients =  ['adapter']
 
     def onLoad = {
-        this.adapter = new TopologyAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger());
+        this.adapter = new BaseTopologyAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger());
     }
 
     def getProperty(Map keys, String propName)

@@ -8,9 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/database/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/database/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/http/groovy" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/netcool/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/rapidinsight/groovy" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/smarts/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/smarts/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/snmp/java" isTestSource="false" />
     </content>

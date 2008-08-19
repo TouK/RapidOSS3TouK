@@ -1,9 +1,11 @@
 package datasource
 
+import com.ifountain.smarts.datasource.BaseNotificationAdapter
+import com.ifountain.smarts.datasource.SmartsNotificationListeningAdapter
 import connection.SmartsConnection
-import datasource.NotificationAdapter
 import org.apache.log4j.Logger
-import com.ifountain.smarts.datasource.SmartsNotificationListeningAdapter;
+
+
 class SmartsNotificationDatasource extends BaseListeningDatasource{
     static searchable = {
         except = [];
@@ -29,7 +31,7 @@ class SmartsNotificationDatasource extends BaseListeningDatasource{
     static transients =  ['adapter']
 
     def onLoad = {
-        this.adapter = new NotificationAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger());
+        this.adapter = new BaseNotificationAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger());
     }
 
     def getProperty(Map keys, String propName){

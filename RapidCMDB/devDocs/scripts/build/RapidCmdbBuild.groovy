@@ -34,7 +34,7 @@ package build;
 // buildUnixWithPlugins			: builds RapidCMDB for Unix WITH plugins
 // buildWindows					: builds RapidCMDB for Windows, no plugins or modules included
 // buildWindowsWithPlugins		: builds RapidCMDB for Windows WITH plugins
-// buildModules					: build Smarts Module and samples
+// buildModules					: build samples
     
 class RapidCmdbBuild extends Build {
 	def UNIX = "Unix";
@@ -95,8 +95,6 @@ class RapidCmdbBuild extends Build {
         else{
         	ant.unzip(src: "$env.distribution/RapidCMDB_Windows$versionDate" + ".zip", dest: env.distribution);
         }
-        ant.unzip(src: "$env.distribution/SmartsModule${smartsBuild.getVersionWithDate()}" + ".zip", dest: "$env.distribution/RapidServer");
-        //ant.unzip(src: "$env.distribution/NetcoolModule${netcoolBuild.getVersionWithDate()}" + ".zip", dest: "$env.distribution/RapidServer");
         ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {
                 ant.include(name: "*.groovy")
@@ -328,10 +326,10 @@ class RapidCmdbBuild extends Build {
     
     def buildAdditionalPlugins(){
     	netcoolBuild.run([]);
+    	smartsBuild.run([]);
     }
     
     def buildModules(){
-    	smartsBuild.run([]);
         buildSample("Sample1");
         buildSample("Sample2");    	
     }

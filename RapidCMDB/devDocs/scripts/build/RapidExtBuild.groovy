@@ -24,7 +24,6 @@ class RapidExtBuild extends Build {
         copyResourcesForJar();
         ant.jar(destfile: env.rapid_ext_jar, basedir: env.rapid_ext_build);
         ant.copy(file: env.rapid_ext_jar, toDir: env.dist_rapid_suite_lib);
-        ant.copy(file: env.rapid_ext_jar, toDir: env.dist_modeler_lib);
 
         copyDependentJars();
     }
@@ -41,6 +40,9 @@ class RapidExtBuild extends Build {
             ant.classpath(refid: "classpath");
         }
         ant.javac(srcdir: "$env.rapid_ext/snmp/java", destdir: env.rapid_ext_build, excludes: getExcludedClasses()) {
+            ant.classpath(refid: "classpath");
+        }
+        ant.javac(srcdir: "$env.rapid_ext/smarts/java", destdir: env.rapid_ext_build, excludes: getExcludedClasses()) {
             ant.classpath(refid: "classpath");
         }
     }

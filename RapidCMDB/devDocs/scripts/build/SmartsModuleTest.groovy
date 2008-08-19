@@ -2,7 +2,7 @@ package build;
 
 class SmartsModuleTest extends Test{
 	
- 	public static void main(args){
+ 	static void main(String[] args) {
 		SmartsModuleTest smartsTest = new SmartsModuleTest();
 		smartsTest.run(args);
 	}

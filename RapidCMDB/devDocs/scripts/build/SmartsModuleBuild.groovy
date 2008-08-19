@@ -28,25 +28,7 @@ class SmartsModuleBuild extends Build {
         SmartsModuleBuild smartsModuleBuild = new SmartsModuleBuild();
         smartsModuleBuild.run(args);
     }
-
-    def String getExcludedClasses() {
-        if (!TEST) {
-            return "**/*Test*, **/*Mock*, **/test/**";
-        }
-        return "";
-    }
-
-
     def build() {
-        ant.delete(dir: env.rapid_ext_build);
-        ant.mkdir(dir: env.rapid_ext_build);
-
-        ant.javac(srcdir: "$env.rapid_ext/smarts/java", destdir: env.rapid_ext_build, excludes: getExcludedClasses()) {
-            ant.classpath(refid: "classpath");
-        }
-        ant.jar(destfile: env.rapid_smarts_jar, basedir: env.rapid_ext_build);
-        ant.copy(file: env.rapid_smarts_jar, toDir: env.dist_rapid_suite_lib);
-
         ant.copy(file: (String) classpath.getProperty("skclient_jar"), toDir: "$env.dist_rapid_server_lib");
         ant.copy(file: (String) classpath.getProperty("net_jar"), toDir: "$env.dist_rapid_server_lib");
         createPlugin(env.rapid_smarts, ["applications/**", "operations/**", "generatedModels/**"]);

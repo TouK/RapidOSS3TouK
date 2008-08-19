@@ -50,7 +50,6 @@ class Env {
 	static def rapid_core_jar = "$rapid_core_build/core.jar";
 	static def rapid_comp_jar = "$rapid_comp_build/comp.jar";
 	static def rapid_ext_jar = "$rapid_ext_build/ext.jar";
-	static def rapid_smarts_jar = "$rapid_ext_build/rssmarts.jar";
 	static def rapid_cmdb_jar = "$rapid_cmdb_build/rcmdb.jar";
 
 	static def smarts_testreport = "$testresults/Smarts/test-reports";

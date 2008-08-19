@@ -1,6 +1,7 @@
 package auth
 
 class RsUser {
+    def static final String RSADMIN = "rsadmin";
     static searchable = true;
     String username
     String passwordHash

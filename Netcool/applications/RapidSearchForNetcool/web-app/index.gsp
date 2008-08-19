@@ -418,11 +418,9 @@
 
     }, this, true);
 
-    var treeDisplayAttribute = "name";
     function treeNodesUpdateDeleteConditionFunction(data)
     {
-    	return data.getAttribute(treeDisplayAttribute) != "Default" && data.getAttribute(treeDisplayAttribute)!="By Severity" &&
-    			data.getAttribute("isDefault")!='true';
+    	return data.getAttribute("isPublic") != "true" && !(data.getAttribute("nodeType") == "group" && data.getAttribute("name") == "Default");
     }
     function treeNodesCopyConditionFunction(data)
     {

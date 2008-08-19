@@ -149,17 +149,17 @@ class BootStrap {
 
     def registerDefaultUsers()
     {
-        def adminRole = Role.findByName("Administrator");
+        def adminRole = Role.findByName(Role.ADMINISTRATOR);
         if (!adminRole) {
-            adminRole = Role.add(name: "Administrator");
+            adminRole = Role.add(name: Role.ADMINISTRATOR);
         }
-        def userRole = Role.findByName("User");
+        def userRole = Role.findByName(Role.USER);
         if (!userRole) {
-            userRole = Role.add(name: "User");
+            userRole = Role.add(name: Role.USER);
         }
-        def adminUser = RsUser.findByUsername("rsadmin");
+        def adminUser = RsUser.findByUsername(RsUser.RSADMIN);
         if (!adminUser) {
-            adminUser = RsUser.add(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
+            adminUser = RsUser.add(username: RsUser.RSADMIN, passwordHash: new Sha1Hash("changeme").toHex());
         }
         UserRoleRel.add(rsUser: adminUser, role: adminRole)
         

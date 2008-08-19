@@ -1,9 +1,8 @@
 package search
 
-import auth.RsUser
+import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import grails.converters.XML
-import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
 
 class SearchQueryController {
     def final static PROPS_TO_BE_EXCLUDED = ["id": "id", "_action_Update": "_action_Update", "controller": "controller", "action": "action"]
@@ -85,7 +84,7 @@ class SearchQueryController {
                 xml {
                     def userName = session.username;
                     def searchQueryGroups = SearchQueryGroup.list().findAll {
-                        it.user.username == userName
+                        it.username == userName && it.isPublic == false
                     };
                     def excludedProps = ['version',
                             "errors", "__operation_class__",
@@ -131,16 +130,15 @@ class SearchQueryController {
 
     def update = {
         def searchQuery = SearchQuery.get([id: params.id])
-        def user = RsUser.get(username: session.username);
         if (searchQuery) {
             if (params.group == "")
             {
                 params.group = "Default";
             }
-            def group = SearchQueryGroup.get(name: params.group, user: user);
+            def group = SearchQueryGroup.get(name: params.group, username: session.username);
             if (group == null)
             {
-                group = SearchQueryGroup.add(name: params.group, user: user);
+                group = SearchQueryGroup.add(name: params.group, username: session.username);
             }
             params["group"] = ["id": group.id];
             searchQuery.update(ControllerUtils.getClassProperties(params, SearchQuery));
@@ -186,7 +184,7 @@ class SearchQueryController {
             xml {
                 def userName = session.username;
                 def searchQueryGroups = SearchQueryGroup.list().findAll {
-                    it.user.username == userName
+                    it.username == userName && it.isPublic == false
                 };
                 def excludedProps = ['version',
                         "errors", "__operation_class__",
@@ -216,16 +214,15 @@ class SearchQueryController {
     }
 
     def save = {
-        def user = RsUser.get(username: session.username);
-        params["user"] = ["id": user.id]
+        params["username"] = session.username
         if (params.group == "")
         {
             params.group = "Default";
         }
-        def group = SearchQueryGroup.get(name: params.group, user: user);
+        def group = SearchQueryGroup.get(name: params.group, username: session.username);
         if (group == null)
         {
-            group = SearchQueryGroup.add(name: params.group, user: user);
+            group = SearchQueryGroup.add(name: params.group, username: session.username);
         }
         params["group"] = ["id": group.id];
         def searchQuery = SearchQuery.add(ControllerUtils.getClassProperties(params, SearchQuery))

@@ -11,13 +11,14 @@ import auth.RsUser
  */
 class SearchQueryGroup {
     static searchable = true;
-    RsUser user;
+    String username;
     String name;
     List queries = [];
+    boolean isPublic = false;
     static hasMany = [queries:SearchQuery]
     static mappedBy = ["queries":"group"]
     static constraints = {
-        name(key:["user"]);
+        name(key:["username"]);
     }
 
 }

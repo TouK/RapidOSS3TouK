@@ -1,8 +1,7 @@
-package search;
-import com.ifountain.rcmdb.domain.util.ControllerUtils
-import grails.converters.XML
-import auth.RsUser;
+package search
 
+import com.ifountain.rcmdb.domain.util.ControllerUtils
+import grails.converters.XML;
 class SearchQueryGroupController {
     def final static PROPS_TO_BE_EXCLUDED = ["id": "id", "_action_Update": "_action_Update", "controller": "controller", "action": "action"]
     def index = {redirect(action: list, params: params)}
@@ -154,8 +153,7 @@ class SearchQueryGroupController {
     }
 
     def save = {
-        def user = RsUser.get(username: session.username);
-        params["user"] = ["id": user.id]
+        params["username"] = session.username;
         def searchQueryGroup = SearchQueryGroup.add(ControllerUtils.getClassProperties(params, SearchQueryGroup))
         if (!searchQueryGroup.hasErrors()) {
             withFormat {

@@ -10,15 +10,16 @@ import auth.RsUser;
 */
 class SearchQuery {
     static searchable = true;
-    RsUser user;
+    String username;
     SearchQueryGroup group;
     String name;
     String query;
     String sortProperty;
+    boolean isPublic = false;
     String sortOrder = "asc";
     static mappedBy = [group:"queries"]
     static constraints = {
-        name(key:["user"]);
+        name(key:["username"]);
         sortOrder(inList:["asc","desc"]);
     }
 }

@@ -24,7 +24,8 @@ checkOutTag() {
         exit 1
     fi
     rm -rf RapidModules
-    rm -rf ThirdParty    
+    rm -rf ThirdParty
+    rm -rf LicencedJars
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/RapidModules ./RapidModules
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/ThirdParty ./ThirdParty
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/LicencedJars ./LicencedJars

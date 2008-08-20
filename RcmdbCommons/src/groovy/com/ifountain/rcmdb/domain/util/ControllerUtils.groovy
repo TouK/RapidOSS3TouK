@@ -2,14 +2,8 @@ package com.ifountain.rcmdb.domain.util
 
 import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
-import java.text.SimpleDateFormat
-import org.springframework.validation.Errors
-import org.springframework.validation.FieldError
 import groovy.xml.MarkupBuilder
-import grails.converters.XML
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.springframework.context.MessageSource
-import java.text.MessageFormat
+import java.text.SimpleDateFormat
 
 /**
  * Created by IntelliJ IDEA.

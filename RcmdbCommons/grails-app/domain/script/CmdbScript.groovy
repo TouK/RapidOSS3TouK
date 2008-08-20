@@ -169,4 +169,42 @@ class CmdbScript {
     static def runScript(CmdbScript script, Map params) throws Exception {
         return ScriptManager.getInstance().runScript(script.name, params);
     }
+
+    static def startListening(scriptName) throws Exception{
+        def script = CmdbScript.get(name:scriptName);
+        if(script){
+             startListening(script);
+        }
+        else{
+            throw new Exception("Script ${scriptName} does not exist")
+        }
+    }
+    static def startListening(CmdbScript script) throws Exception{
+         if(script.listeningDatasource){
+             ListeningAdapterManager.getInstance().startAdapter(script.listeningDatasource);
+             script.listeningDatasource.update(isSubscribed:true);
+         }
+         else{
+             throw new Exception("No listening datasource defined");
+         }
+    }
+
+     static def stopListening(scriptName) throws Exception{
+        def script = CmdbScript.get(name:scriptName);
+        if(script){
+             stopListening(script);
+        }
+        else{
+            throw new Exception("Script ${scriptName} does not exist")
+        }
+    }
+    static def stopListening(CmdbScript script) throws Exception{
+         if(script.listeningDatasource){
+             ListeningAdapterManager.getInstance().stopAdapter(script.listeningDatasource);
+             script.listeningDatasource.update(isSubscribed:false);
+         }
+         else{
+             throw new Exception("No listening datasource defined");
+         }
+    }
 }

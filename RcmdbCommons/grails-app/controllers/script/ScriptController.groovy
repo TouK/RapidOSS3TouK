@@ -143,9 +143,9 @@ class ScriptController {
             try
             {
                 def controllerDelegateMetaClass = new DelegateMt(this);
-                def scriptParams = ["web":this, "params":params];
+                def scriptParams = ["web": this, "params": params];
                 def result = CmdbScript.runScript(script, scriptParams);
-                if(controllerDelegateMetaClass.isRendered) return;
+                if (controllerDelegateMetaClass.isRendered) return;
                 if (result == null) {
                     result = "";
                 }
@@ -175,26 +175,19 @@ class ScriptController {
     }
 
     def start = {
-        def script = CmdbScript.findByName(params.id);
+        CmdbScript script = CmdbScript.findByName(params.id);
         if (script)
         {
-            if (script.listeningDatasource) {
-                try {
-                    ListeningAdapterManager.getInstance().startAdapter(script.listeningDatasource);
-                    flash.message = "Script ${params.id} started to listen"
-                    redirect(action: show, id: script.id)
-                }
-                catch (e) {
-                    def errors = [e.getMessage()]
-                    flash.errors = errors;
-                    redirect(action: show, id: script.id)
-                }
+            try {
+                CmdbScript.startListening(script);
+                flash.message = "Script ${params.id} started to listen"
+                redirect(action: show, id: script.id)
             }
-            else{
-               flash.message = "No listening datasource defined";
-               redirect(action: show, id: script.id)
+            catch (e) {
+                def errors = [e.getMessage()]
+                flash.errors = errors;
+                redirect(action: show, id: script.id)
             }
-
         }
         else
         {
@@ -204,24 +197,18 @@ class ScriptController {
     }
 
     def stop = {
-        def script = CmdbScript.findByName(params.id);
+        CmdbScript script = CmdbScript.findByName(params.id);
         if (script)
         {
-            if (script.listeningDatasource) {
-                try {
-                    ListeningAdapterManager.getInstance().stopAdapter(script.listeningDatasource);
-                    flash.message = "Script ${params.id} stopped to listen"
-                    redirect(action: show, id: script.id)
-                }
-                catch (e) {
-                    def errors = [e.getMessage()]
-                    flash.errors = errors;
-                    redirect(action: show, id: script.id)
-                }
+            try {
+                CmdbScript.stopListening(script);
+                flash.message = "Script ${params.id} started to listen"
+                redirect(action: show, id: script.id)
             }
-            else{
-               flash.message = "No listening datasource defined";
-               redirect(action: show, id: script.id)
+            catch (e) {
+                def errors = [e.getMessage()]
+                flash.errors = errors;
+                redirect(action: show, id: script.id)
             }
         }
         else
@@ -230,7 +217,7 @@ class ScriptController {
             redirect(action: list, controller: 'script');
         }
     }
-         
+
     def test =
     {
         def testDir = "test/reports"
@@ -298,23 +285,23 @@ class DelegateMt extends DelegatingMetaClass
     public DelegateMt(ScriptController controller)
     {
         super(controller.metaClass);
-        controller.setMetaClass (this);
+        controller.setMetaClass(this);
     }
 
     public Object invokeMethod(Object o, String s, Object o1) {
-         if(s == "render" || s == "redirect")
+        if (s == "render" || s == "redirect")
         {
             metaClass.getMetaProperty("isRendered").setProperty(this, true);
         }
-        return super.invokeMethod(o, s, o1);    //To change body of overridden methods use File | Settings | File Templates.
+        return super.invokeMethod(o, s, o1); //To change body of overridden methods use File | Settings | File Templates.
     }
 
     public Object invokeMethod(Object o, String s, Object[] objects) {
-         if(s == "render" || s == "redirect")
+        if (s == "render" || s == "redirect")
         {
             metaClass.getMetaProperty("isRendered").setProperty(this, true);
         }
-        return super.invokeMethod(o, s, objects);    //To change body of overridden methods use File | Settings | File Templates.
+        return super.invokeMethod(o, s, objects); //To change body of overridden methods use File | Settings | File Templates.
     }
 
 }

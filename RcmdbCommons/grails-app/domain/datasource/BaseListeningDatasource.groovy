@@ -34,6 +34,7 @@ class BaseListeningDatasource extends BaseDatasource
     };
     static datasources = [:]
     CmdbScript listeningScript;
+    boolean isSubscribed = false;
 
     static hasMany = [:]
 

@@ -20,6 +20,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
+import datasource.BaseListeningDatasource
 
 class BootStrap {
     def quartzScheduler;
@@ -64,6 +65,18 @@ class BootStrap {
 
         }
         ListeningAdapterManager.getInstance().initialize();
+        BaseListeningDatasource.searchEvery("isSubscribed:true").each{BaseListeningDatasource ds ->
+            if(ds.listeningScript){
+                try{
+                    log.debug("Starting listening script ${ds.listeningScript}")
+                    CmdbScript.startListening(ds.listeningScript);
+                    log.info("Listening script ${ds.listeningScript} successfully started.")
+                }
+                catch(e){
+                    log.warn("Error starting listening script ${ds.listeningScript}. Reason: ${e.getMessage()}");
+                }
+            }
+        }
     }
 
     def corrrectModelData()

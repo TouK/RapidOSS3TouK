@@ -21,6 +21,8 @@ class SmartsConnection extends Connection{
     String userPassword ="";
     
     String broker ="";
+    List smartsTopologyDatasources = [];
+    List smartsNotificationDatasources = [];
     
 
     static hasMany = [smartsTopologyDatasources:SmartsTopologyDatasource, smartsNotificationDatasources:SmartsNotificationDatasource]

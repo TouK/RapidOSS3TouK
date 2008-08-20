@@ -6,7 +6,7 @@
       <principalLanguage id="en" customLocalizationFile="" />
     </languages>
   </application>
-  <executable name="rsmodeler" type="1" iconSet="true" iconFile="ifountain.ico" executableDir="." redirectStderr="true" stderrFile="logs/RapidServerErr.log" redirectStdout="true" stdoutFile="logs/RapidServerOut.log" failOnStderrOutput="false" executableMode="3" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="Starts iFountain Modeler" jreLocation="" executionLevel="asInvoker" amd64="false">
+  <executable name="rsmodeler" type="1" iconSet="true" iconFile="../RcmdbCommons/devDocs/ifountain.ico" executableDir="." redirectStderr="true" stderrFile="logs/RapidServerErr.log" redirectStdout="true" stdoutFile="logs/RapidServerOut.log" failOnStderrOutput="false" executableMode="3" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="Starts iFountain Modeler" jreLocation="" executionLevel="asInvoker" amd64="false">
     <messageSet />
     <versionInfo include="false" fileVersion="" fileDescription="ProcessManager Service Executable" legalCopyright="Ifountain" internalName="" companyName="IFountain" productVersion="" />
   </executable>
@@ -16,7 +16,7 @@
       <versionLine x="20" y="40" text="version %VERSION%" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
     </text>
   </splashScreen>
-  <java mainClass="org.codehaus.groovy.grails.cli.support.GrailsStarter" vmParameters="&quot;-Dgroovy.starter.conf=%EXE4J_EXEDIR%..\conf\groovy-starter.conf&quot; &quot;-Dgrails.home=%EXE4J_EXEDIR%..&quot; &quot;-Dgrails.work.dir=%EXE4J_EXEDIR%..\temp&quot; &quot;-Dbase.dir=.&quot; &quot;-Drs.modeler=true&quot;" arguments="--main com.ifountain.grails.RapidGrailsScriptRunner --classpath . --conf %EXE4J_EXEDIR%..\conf\groovy-starter.conf run-app" allowVMPassthroughParameters="true" preferredVM="" minVersion="1.5" maxVersion="" allowBetaVM="false" jdkOnly="false">
+  <java mainClass="org.codehaus.groovy.grails.cli.support.GrailsStarter" vmParameters="&quot;-Dgroovy.starter.conf=%EXE4J_EXEDIR%..\conf\groovy-starter.conf&quot; &quot;-Dgrails.home=%EXE4J_EXEDIR%..&quot; &quot;-Dgrails.work.dir=%EXE4J_EXEDIR%..\temp&quot; &quot;-Dbase.dir=.&quot; &quot;-Drs.modeler=true&quot;" arguments="--main com.ifountain.grails.RapidGrailsScriptRunner --classpath . --conf &quot;%EXE4J_EXEDIR%..\conf\groovy-starter.conf&quot; run-app" allowVMPassthroughParameters="true" preferredVM="" minVersion="1.5" maxVersion="" allowBetaVM="false" jdkOnly="false">
     <searchSequence>
       <directory location="../jre" />
       <envVar name="JAVA_HOME" />

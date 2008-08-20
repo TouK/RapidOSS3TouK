@@ -1,6 +1,7 @@
 import datasource.NetcoolDatasource
 import groovy.xml.MarkupBuilder
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import org.apache.log4j.Logger
 
 /**
 * Created by IntelliJ IDEA.
@@ -9,6 +10,7 @@ import com.ifountain.rcmdb.domain.generation.ModelGenerator
 * Time: 11:33:27 AM
 * To change this template use File | Settings | File Templates.
 */
+Logger logger = Logger.getLogger("getConversionParameters");
 def defaultConversionColumnConfiguration = ["Class":"ncclass", "Type":"nctype"]
 def deleteColName = "isdeleted"
 def baseDir = System.getProperty ("base.dir");

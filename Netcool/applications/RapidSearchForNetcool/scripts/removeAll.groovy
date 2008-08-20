@@ -32,3 +32,5 @@ if(CmdbScript.get(name:"getConversionParameters") != null)
 {
     CmdbScript.deleteScript("getConversionParameters");
 }
+web.flash.message = "Removed successfully."
+web.redirect(uri:'/script/list');

@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <<script type="text/javascript" src="../js/yui/utilities/utilities.js"></script>
+    <script type="text/javascript" src="../js/yui/resize/resize-beta-min.js"></script>
+    <script type="text/javascript" src="../js/yui/layout/layout-beta-min.js"></script>
+    <script type="text/javascript" src="../js/ext/ext.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/ComponentContainer.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/RapidUtil.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/data/NodeFactory.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/RapidElement.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/PollingComponentContainer.js"></script>
+    <script type="text/javascript" src="../js/yui/container/container-min.js"></script>
+    <script type="text/javascript" src="../js/yui/button/button-min.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/data/RapidXmlDocument.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/SelectUtils.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/form/Form.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/simplewidgets/Button.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/BasicTool.js"></script>
+    <script type="text/javascript" src="../js/yui/container/container_core-min.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/SettingsTool.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/dialog/Dialog.js"></script>
+    <script type="text/javascript" src="../js/yui/menu/menu-min.js"></script>
+
+	<script type="text/javascript" src="../js/yui/datasource/datasource-beta-min.js"></script>
+	<script type="text/javascript" src="../js/yui/json/json-min.js"></script>
+	<script type="text/javascript" src="../js/yui/charts/charts-experimental-min.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/barChart/BarChart.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/search/SearchNode.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/ButtonToolBar.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/SearchListSettingsTool.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/LoadingTool.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/ErrorTool.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/search/SearchList.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/treegrid/split.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/Tooltip.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeNode.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeHeaderCell.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeGridView.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeGrid.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/action/Action.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/html/Html.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../js/yui/assets/skins/sam/menu.css" />
+    <link rel="stylesheet" type="text/css" href="../js/yui/assets/skins/sam/skin.css" />
+    <link rel="stylesheet" type="text/css" href="../js/yui/button/assets/skins/sam/button.css" />
+    <link rel="stylesheet" type="text/css" href="../js/yui/container/assets/skins/sam/container.css" />
+    <link rel="stylesheet" type="text/css" href="../css/rapidjs/common.css" />
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/dialog.css" />
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/form.css" />
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/mgrid.css" />
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/overlay.css" />
+
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/ryuitree.css" />
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/searchlist.css" />
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/simplewidgets/button.css" />
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/tools/tools.css" />
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/treegrid/treegrid.css" />
+
+    <link rel="stylesheet" type="text/css" href="../js/rapidjs/component/timeline/timeline.css" />
+    <script type="text/javascript" src="../js/rapidjs/component/timeline/Timeline.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/timeline/Timelineext.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/timeline/TimelineComponent.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tree/Tree.js"></script>
+</head>
+<body>
+    <div id="myTimeline" style="height: 150px; border: 1px solid #aaa"/>s
+    <script type="text/javascript">
+        var timelineConfig = {
+	        url	  : "timelineXml.xml",
+            Bands : [
+                        {
+                            width:          "70%",
+                            intervalUnit:   Timeline.DateTime.MONTH,
+                            intervalPixels: 100
+                        },
+                        {
+                            width:          "30%",
+                            intervalUnit:   Timeline.DateTime.YEAR,
+                            intervalPixels: 200,
+                            syncWith : 		0,
+                            highlight :		true,
+                            showText :		false,
+                            trackHeight : 	0.5
+                        }
+                     ]
+        };
+        var timeline = new YAHOO.rapidjs.component.TimelineComponent(document.getElementById("myTimeline"),timelineConfig );
+        timeline.poll();
+    </script>
+
+</body>
+</html>

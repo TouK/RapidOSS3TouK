@@ -132,11 +132,10 @@ class StatusController
         def pMan = PlatMan.one
         def serMan = serverMan.one
         def servMan = serviceMan.one
-        def i = 0
 
         xml.HypericObjects('timestamp':new Date().getTime()) {
-            platforms.each { res ->
-                def plat = plats.getAt(i)
+            plats.each { plat -> //res ->
+                //def plat = plats.getAt(i)
 
                 def last_timestamp = "0"
                 for (metric in plat.enabledMetrics) {
@@ -148,18 +147,9 @@ class StatusController
                 }
 
                 if (begins <= last_timestamp || last_timestamp == "0") {
-                    def p = pMan.findPlatformById(res.instanceId)
-                    xml.HypericObject(type: "platform", name: p.name) {
-                        for (metric in plat.enabledMetrics) {
-                            def metricData = metric.lastDataPoint
-                            xml.'metric'('name': metric.template.name,
-                                         'value': metricData.value,
-                                         'units': metric.template.units,
-                                         'time': metricData.timestamp)
-                        }
-                    }
+                    def p = pMan.findPlatformById(plat.instanceId)
+                    xml.HypericObject(type: "platform", name: p.name)
                 }
-                i++
             }
 
             def servers
@@ -195,18 +185,7 @@ class StatusController
                             platName = ""
                         }
 
-                        xml.HypericObject(type: "server", name: ss.name, platform: platName) {
-                            for (metric in ss.enabledMetrics) {
-                                def metricData = metric.lastDataPoint
-                                if (metricData == null)
-                                    xml.metric(name: metric.template.name)
-                                else
-                                    xml.metric(name: metric.template.name,
-                                               value: metricData.value,
-                                               units: metric.template.units,
-                                               time: metricData.timestamp)
-                            }
-                        }
+                        xml.HypericObject(type: "server", name: ss.name, platform: platName)
                     }
                 }
             }
@@ -251,19 +230,7 @@ class StatusController
                         }
 
 
-                        xml.HypericObject(type: "service", name: svc.name, server: serverName, platform: platName) {
-                            for (metric in svc.enabledMetrics) {
-                                def metricData = metric.lastDataPoint
-                                if (metricData == null) {
-                                    xml.metric(name: metric.template.name)
-                                }
-                                else
-                                    xml.metric(name: metric.template.name,
-                                               value: metricData.value,
-                                               units: metric.template.units,
-                                               time: metricData.timestamp)
-                            }
-                        }
+                        xml.HypericObject(type: "service", name: svc.name, server: serverName, platform: platName)
                     }
                 }
             }

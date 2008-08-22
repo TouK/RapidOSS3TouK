@@ -6,12 +6,10 @@ YAHOO.rapidjs.component.TimelineComponent = function(container, config){
         'tooltipClick' : new YAHOO.util.CustomEvent('tooltipClick')
     };
 
-    this.container = container;
     this.eventSource = new Timeline.DefaultEventSource();
-    this.url = config.url;
     YAHOO.ext.util.Config.apply(this.events, events);
     this.header = YAHOO.ext.DomHelper.append(this.container, {tag:'div'});
-    this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title:"Event History"});
+    this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title:this.title});
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SettingsTool(document.body, this));
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
@@ -87,7 +85,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TimelineComponent, YAHOO.rapidjs.component.
         this.events['tooltipClick'].fireDirect(bubble, data);
     },
     resize : function(width, height) {
-	    this.body.setStyle("height", height - this.header.offsetHeight);
+	    this.body.setHeight( height - this.header.offsetHeight);
 	    if( !this.timeline ){
 
 		    this.timeline = Timeline.create(this.body.dom, this.bandInfos);

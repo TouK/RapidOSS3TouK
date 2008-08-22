@@ -54,7 +54,10 @@ class NetcoolConnectorFactory {
 
     public static synchronized removeConnector(connectorName)
     {
-    	connectorList.remove(connectorName);
+    	def connectorImpl = connectorList.remove(connectorName);
+    	if(connectorImpl){
+           connectorImpl.logger.removeAllAppenders(); 
+        }
     }
 
     public static synchronized clearConversionParams(){

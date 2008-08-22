@@ -149,8 +149,8 @@ def handleConnectionObjectCreate(topologyObject) {
             }
         }
         connObjFromSmarts.ConnectedTo.each {containmentObjectFromSmarts ->
-            if (CONTAINMENT_OBJECTS.contains(connObjFromSmarts.CreationClassName)) {
-                logger.debug("Creating device ${containmentObjectFromSmarts}");
+            if (CONTAINMENT_OBJECTS.contains(containmentObjectFromSmarts.CreationClassName)) {
+                logger.debug("Creating containment object ${containmentObjectFromSmarts}");
                 def containmentObject = addContainmentObject(containmentObjectFromSmarts);
                 if (!containmentObject.hasErrors()) {
                     logger.info("Containment object ${containmentObjectFromSmarts} successfully added.");
@@ -158,7 +158,7 @@ def handleConnectionObjectCreate(topologyObject) {
                     logger.info("Relation between ${topologyObject} and ${containmentObjectFromSmarts} is created.")
                 }
                 else {
-                    logger.warn("Error creating device ${containmentObjectFromSmarts}. Reason: ${containmentObject.errors}");
+                    logger.warn("Error creating containment object ${containmentObjectFromSmarts}. Reason: ${containmentObject.errors}");
                 }
             }
         }
@@ -199,6 +199,36 @@ def addSmartsDeviceToRepository(topologyObject) {
     def device = Device.add(getPropsWithLocalNames(deviceFromSmarts))
     if (!device.hasErrors()) {
         RCMDBDataStore.remove("Device_${device.name.toLowerCase()}");
+        deviceFromSmarts.ComposedOf.each{
+             def containmentObjectFromSmarts = getDatasource().getObject(it);
+             if (CONTAINMENT_OBJECTS.contains(containmentObjectFromSmarts.CreationClassName)) {
+                logger.debug("Creating containment object  ${containmentObjectFromSmarts}");
+                def containmentObject = addContainmentObject(containmentObjectFromSmarts);
+                if (!containmentObject.hasErrors()) {
+                    logger.info("Containment object ${containmentObjectFromSmarts} successfully added.");
+                    device.addRelation(composedOf: containmentObject);
+                    logger.info("Relation between ${topologyObject} and ${containmentObjectFromSmarts} is created.")
+                }
+                else {
+                    logger.warn("Error creating device ${containmentObjectFromSmarts}. Reason: ${containmentObject.errors}");
+                }
+            }                        
+        }
+        deviceFromSmarts.HostsAccessPoints.each{
+             def containmentObjectFromSmarts = getDatasource().getObject(it);
+             if (CONTAINMENT_OBJECTS.contains(containmentObjectFromSmarts.CreationClassName)) {
+                logger.debug("Creating containment object  ${containmentObjectFromSmarts}");
+                def containmentObject = addContainmentObject(containmentObjectFromSmarts);
+                if (!containmentObject.hasErrors()) {
+                    logger.info("Containment object ${containmentObjectFromSmarts} successfully added.");
+                    device.addRelation(hostsAccessPoints: containmentObject);
+                    logger.info("Relation between ${topologyObject} and ${containmentObjectFromSmarts} is created.")
+                }
+                else {
+                    logger.warn("Error creating device ${containmentObjectFromSmarts}. Reason: ${containmentObject.errors}");
+                }
+            }
+        }
     }
     else {
         getLogger().warn("Error creating device ${topologyObject["Name"]}. Reason: ${device.errors}")

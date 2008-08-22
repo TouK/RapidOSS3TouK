@@ -7,20 +7,31 @@ class DeviceInterface extends DeviceAdapter
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["interfaceKey"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 
     
-    String interfaceKey ="";
+    Long id ;
+    
+    Long version ;
+    
+    org.springframework.validation.Errors errors ;
+    
+    Object __operation_class__ ;
+    
+    Object __is_federated_properties_loaded__ ;
     
     Ip underlying ;
     
 
     static hasMany = [:]
-    
     static constraints={
-    interfaceKey(blank:true,nullable:true)
+    __operation_class__(nullable:true)
+        
+     __is_federated_properties_loaded__(nullable:true)
+        
+     errors(nullable:true)
         
      underlying(nullable:true)
         
@@ -29,8 +40,8 @@ class DeviceInterface extends DeviceAdapter
 
     static mappedBy=["underlying":"layeredOver"]
     static belongsTo = []
-    static propertyConfiguration= ["interfaceKey":["nameInDs":"InterfaceKey", "datasourceProperty":"smartDs", "lazy":true]]
-    static transients = ["interfaceKey"];
+    static propertyConfiguration= [:]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
 }

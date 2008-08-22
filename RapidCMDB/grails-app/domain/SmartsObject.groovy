@@ -7,9 +7,9 @@ class SmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["displayName"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
-    static datasources = ["eastRegionDs":["master":false, "keys":["name":["nameInDs":"Name"], "creationClassName":["nameInDs":"CreationClassName"]]], "westRegionDs":["master":false, "keys":["creationClassName":["nameInDs":"CreationClassName"], "name":["nameInDs":"Name"]]], "RCMDB":["master":true, "keys":["name":["nameInDs":"name"], "creationClassName":["nameInDs":"creationClassName"]]]]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
 
     
     String name ="";
@@ -20,33 +20,44 @@ class SmartsObject
     
     String displayName ="";
     
+    Long id ;
+    
+    Long version ;
+    
+    org.springframework.validation.Errors errors ;
+    
+    Object __operation_class__ ;
+    
+    Object __is_federated_properties_loaded__ ;
+    
 
     static hasMany = [:]
-    
-        static mapping = {
-            tablePerHierarchy false
-        }
-    
     static constraints={
-    name(blank:false,nullable:false)
+    name(blank:false,nullable:false,key:[])
         
-     creationClassName(blank:false,nullable:false,key:["name"])
+     creationClassName(blank:true,nullable:true)
         
      smartDs(blank:true,nullable:true)
         
      displayName(blank:true,nullable:true)
+        
+     __operation_class__(nullable:true)
+        
+     __is_federated_properties_loaded__(nullable:true)
+        
+     errors(nullable:true)
         
      
     }
 
     static mappedBy=[:]
     static belongsTo = []
-    static propertyConfiguration= ["displayName":["nameInDs":"DisplayName", "datasourceProperty":"smartDs", "lazy":true]]
-    static transients = ["displayName"];
+    static propertyConfiguration= [:]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     public String toString()
     {
-    	return "${getClass().getName()}[creationClassName:$creationClassName, name:$name]";
+    	return "${getClass().getName()}[name:$name]";
     }
     
     //AUTO_GENERATED_CODE

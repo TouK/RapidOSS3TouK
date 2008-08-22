@@ -7,18 +7,33 @@ class DeviceComponent extends SmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = [];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 
+    
+    Long id ;
+    
+    Long version ;
+    
+    org.springframework.validation.Errors errors ;
+    
+    Object __operation_class__ ;
+    
+    Object __is_federated_properties_loaded__ ;
     
     Device partOf ;
     
 
     static hasMany = [:]
-    
     static constraints={
-    partOf(nullable:true)
+    __operation_class__(nullable:true)
+        
+     __is_federated_properties_loaded__(nullable:true)
+        
+     errors(nullable:true)
+        
+     partOf(nullable:true)
         
      
     }
@@ -26,7 +41,7 @@ class DeviceComponent extends SmartsObject
     static mappedBy=["partOf":"composedOf"]
     static belongsTo = []
     static propertyConfiguration= [:]
-    static transients = [];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
 }

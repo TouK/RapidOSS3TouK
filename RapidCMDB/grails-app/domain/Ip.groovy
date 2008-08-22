@@ -7,54 +7,73 @@ class Ip extends DeviceComponent
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["interfaceOperStatus", "netMask", "interfaceAdminStatus", "ipStatus", "interfaceName"];
+        except = ["netMask", "interfaceAdminStatus", "interfaceName", "interfaceOperStatus", "ipStatus", "interfaceKey", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 
     
-    String interfaceOperStatus ="";
+    String ipAddress ="";
     
     String netMask ="";
     
-    String ipAddress ="";
-    
     String interfaceAdminStatus ="";
-    
-    String ipStatus ="";
     
     String interfaceName ="";
     
-    DeviceInterface layeredOver ;
+    String interfaceOperStatus ="";
+    
+    String ipStatus ="";
+    
+    String interfaceKey ="";
+    
+    Long id ;
+    
+    Long version ;
+    
+    org.springframework.validation.Errors errors ;
+    
+    Object __operation_class__ ;
+    
+    Object __is_federated_properties_loaded__ ;
     
     Device hostedBy ;
     
+    DeviceInterface layeredOver ;
+    
 
     static hasMany = [:]
-    
     static constraints={
-    interfaceOperStatus(blank:true,nullable:true)
+    ipAddress(blank:true,nullable:true)
         
      netMask(blank:true,nullable:true)
         
-     ipAddress(blank:true,nullable:true)
-        
      interfaceAdminStatus(blank:true,nullable:true)
-        
-     ipStatus(blank:true,nullable:true)
         
      interfaceName(blank:true,nullable:true)
         
-     layeredOver(nullable:true)
+     interfaceOperStatus(blank:true,nullable:true)
+        
+     ipStatus(blank:true,nullable:true)
+        
+     interfaceKey(blank:true,nullable:true)
+        
+     __operation_class__(nullable:true)
+        
+     __is_federated_properties_loaded__(nullable:true)
+        
+     errors(nullable:true)
         
      hostedBy(nullable:true)
+        
+     layeredOver(nullable:true)
         
      
     }
 
-    static mappedBy=["layeredOver":"underlying", "hostedBy":"hostsAccessPoints"]
+    static mappedBy=["hostedBy":"hostsAccessPoints", "layeredOver":"underlying"]
     static belongsTo = []
-    static propertyConfiguration= ["interfaceOperStatus":["nameInDs":"InterfaceOperStatus", "datasourceProperty":"smartDs", "lazy":true], "netMask":["nameInDs":"NetMask", "datasourceProperty":"smartDs", "lazy":true], "interfaceAdminStatus":["nameInDs":"InterfaceAdminStatus", "datasourceProperty":"smartDs", "lazy":true], "ipStatus":["nameInDs":"IPStatus", "datasourceProperty":"smartDs", "lazy":true], "interfaceName":["nameInDs":"InterfaceName", "datasourceProperty":"smartDs", "lazy":true]]
-    static transients = ["interfaceOperStatus", "netMask", "interfaceAdminStatus", "ipStatus", "interfaceName"];
+    static propertyConfiguration= ["netMask":["nameInDs":"NetMask", "datasourceProperty":"smartDs", "lazy":true], "interfaceAdminStatus":["nameInDs":"InterfaceAdminStatus", "datasourceProperty":"smartDs", "lazy":true], "interfaceName":["nameInDs":"InterfaceName", "datasourceProperty":"smartDs", "lazy":true], "interfaceOperStatus":["nameInDs":"InterfaceOperStatus", "datasourceProperty":"smartDs", "lazy":true], "ipStatus":["nameInDs":"IPStatus", "datasourceProperty":"smartDs", "lazy":true], "interfaceKey":["nameInDs":"InterfaceKey", "datasourceProperty":"smartDs", "lazy":true]]
+    static transients = ["netMask", "interfaceAdminStatus", "interfaceName", "interfaceOperStatus", "ipStatus", "interfaceKey", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
 }

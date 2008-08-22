@@ -7,60 +7,75 @@ class Device extends SmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["description", "discoveryErrorInfo", "discoveryTime", "discoveredLastAt"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 
     
     String location ="";
     
+    String model ="";
+    
     String snmpReadCommunity ="";
     
-    String description ="";
+    String vendor ="";
     
-    String ipAddress ="";
+    String discoveredLastAt ="0";
+    
+    String description ="";
     
     String discoveryErrorInfo ="";
     
     String discoveryTime ="";
     
-    String model ="";
+    Long id ;
     
-    Long discoveredLastAt =0;
+    Long version ;
     
-    String vendor ="";
-    List connectedVia = [];
-    List composedOf = [];
-    List hostsAccessPoints = [];
+    org.springframework.validation.Errors errors ;
+    
+    Object __operation_class__ ;
+    
+    Object __is_federated_properties_loaded__ ;
+    
+    List connectedVia =[];
+    
+    List hostsAccessPoints =[];
+    
+    List composedOf =[];
+    
 
-    static hasMany = [connectedVia:Link, composedOf:DeviceComponent, hostsAccessPoints:Ip]
-    
+    static hasMany = [connectedVia:Link, hostsAccessPoints:Ip, composedOf:DeviceComponent]
     static constraints={
     location(blank:true,nullable:true)
         
+     model(blank:true,nullable:true)
+        
      snmpReadCommunity(blank:true,nullable:true)
         
-     description(blank:true,nullable:true)
+     vendor(blank:true,nullable:true)
         
-     ipAddress(blank:true,nullable:true)
+     discoveredLastAt(blank:true,nullable:true)
+        
+     description(blank:true,nullable:true)
         
      discoveryErrorInfo(blank:true,nullable:true)
         
      discoveryTime(blank:true,nullable:true)
         
-     model(blank:true,nullable:true)
+     __operation_class__(nullable:true)
         
-     discoveredLastAt(blank:true,nullable:true)
+     __is_federated_properties_loaded__(nullable:true)
         
-     vendor(blank:true,nullable:true)
+     errors(nullable:true)
         
      
     }
 
-    static mappedBy=["connectedVia":"connectedSystems", "composedOf":"partOf", "hostsAccessPoints":"hostedBy"]
+    static mappedBy=["connectedVia":"connectedSystems", "hostsAccessPoints":"hostedBy", "composedOf":"partOf"]
     static belongsTo = []
-    static propertyConfiguration= ["description":["nameInDs":"Description", "datasourceProperty":"smartDs", "lazy":true], "discoveryErrorInfo":["nameInDs":"DiscoveryErrorInfo", "datasourceProperty":"smartDs", "lazy":true], "discoveryTime":["nameInDs":"DiscoveryTime", "datasourceProperty":"smartDs", "lazy":true], "discoveredLastAt":["nameInDs":"DiscoveredLastAt", "datasourceProperty":"smartDs", "lazy":true]]
-    static transients = ["description", "discoveryErrorInfo", "discoveryTime", "discoveredLastAt"];
+    static propertyConfiguration= [:]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
 }

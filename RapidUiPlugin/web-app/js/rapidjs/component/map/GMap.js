@@ -1,7 +1,12 @@
 YAHOO.rapidjs.component.GMap = function(container, config){
 	YAHOO.rapidjs.component.GMap.superclass.constructor.call(this,container, config);
 	YAHOO.ext.util.Config.apply(this, config);
-	this.configureTimeout(config);
+
+    var events = {
+        'markerClick' : new YAHOO.util.CustomEvent('markerClick')
+    };
+    YAHOO.ext.util.Config.apply(this.events, events);
+    this.configureTimeout(config);
 	this.markers = [];
 	this.locations = {};
 	this.renderingFinished = false;
@@ -88,17 +93,12 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
 	  var icon = new GIcon(this.baseIcon);
 	  icon.image = loc.marker;
 	  var marker = new GMarker(point, icon);
-	  var markerAction = this.markerAction;
 	  var component = this;
-	  GEvent.addListener(marker, "click", function() {
-	  	if(component.tooltipAttributeName){
-	  		marker.openInfoWindowHtml(loc.tooltip);
-	  	}
-		if(markerAction){
-			var node = loc.node;
-			markerAction.execute(component, null, node.getAttributes(), node);
-		}
-	  });
+      var node = loc.node;
+      var mapEvents = this.events;
+      GEvent.addListener(marker, "click", function(e) {
+            mapEvents['markerClick'].fireDirect( node);
+      });
 
 	  this.markers.push(marker);
 	  return marker;

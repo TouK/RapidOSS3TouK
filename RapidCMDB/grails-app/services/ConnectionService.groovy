@@ -19,6 +19,7 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
                                 'id',
                                 'maxNumberOfConnections',
                                 "errors", "__operation_class__",
+                                "__is_federated_properties_loaded__",
                                 Events.ONLOAD_EVENT,
                                 Events.BEFORE_DELETE_EVENT,
                                 Events.BEFORE_INSERT_EVENT,

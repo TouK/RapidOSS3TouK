@@ -54,12 +54,12 @@ class ListeningAdapterManager {
             adapter.unsubscribe();
             adapter.deleteObservers();
             ListeningAdapterObserver observer = observers.remove(adapter);
-            def scriptObject = ScriptManager.getInstance().getScriptObject(observer.scriptName);
+            def scriptObject = ScriptManager.getInstance().getScriptObject(observer.scriptInstance);
             try {
                 scriptObject.cleanUp();
             }
             catch (e) {
-                logger.warn("Error during script ${observer.scriptName} clean up . Reason: ${e.getMessage()}")
+                logger.warn("Error during script ${observer.scriptInstance} clean up . Reason: ${e.getMessage()}")
             }
         }
         logger.info("Destroyed listening adapter manager.");
@@ -71,34 +71,36 @@ class ListeningAdapterManager {
         if (script && script.type == CmdbScript.LISTENING) {
             stopAdapter(listeningDatasource);
             BaseListeningAdapter listeningAdapter = null;
-            try{
-                 def scriptObject = ScriptManager.getInstance().getScriptObject(script.name);
-                 def params = scriptObject.getParameters();
-                 if(params == null){
-                     throw new Exception("Subscription parameters cannot be null");
-                 }
-                 listeningAdapter = listeningDatasource.getListeningAdapter(params);
+            def scriptObject;
+            try {
+                scriptObject = ScriptManager.getInstance().getScriptObject(script.name);
+                scriptObject.setProperty("datasource", listeningDatasource);
+                scriptObject.run();
+                def params = scriptObject.getParameters();
+                if (params == null) {
+                    throw new Exception("Subscription parameters cannot be null");
+                }
+                listeningAdapter = listeningDatasource.getListeningAdapter(params);
             }
-            catch(e){
+            catch (e) {
                 throw new Exception("Error creating listening adapter. Reason: ${e.getMessage()}");
             }
 
-            try{
-               def scriptObject = ScriptManager.getInstance().getScriptObject(script.name);
-               scriptObject.init();
+            try {
+                scriptObject.init();
             }
-            catch(e){
-               throw new Exception("Error script initialization. Reason: ${e.getMessage()}"); 
+            catch (e) {
+                throw new Exception("Error script initialization. Reason: ${e.getMessage()}");
             }
 
-            try{
-                ListeningAdapterObserver adapterObserver = new ListeningAdapterObserver(script.name, logger);
+            try {
+                ListeningAdapterObserver adapterObserver = new ListeningAdapterObserver(scriptObject, logger);
                 listeningAdapter.addObserver(adapterObserver);
                 listeningAdapter.subscribe();
                 listeningAdapters.put(listeningDatasource.name, listeningAdapter);
                 observers.put(listeningAdapter, adapterObserver);
             }
-            catch(e){
+            catch (e) {
                 throw new Exception("Error during subscription. Reason: ${e.getMessage()}");
             }
 
@@ -115,9 +117,8 @@ class ListeningAdapterManager {
             adapter.unsubscribe();
             adapter.deleteObservers();
             ListeningAdapterObserver observer = observers.remove(adapter);
-            def scriptObject = ScriptManager.getInstance().getScriptObject(observer.scriptName);
             try {
-                scriptObject.cleanUp();
+                observer.getScriptInstance().cleanUp();
             }
             catch (e) {
                 throw new Exception("Error during script clean up. Reason: " + e.getMessage())
@@ -126,7 +127,7 @@ class ListeningAdapterManager {
         }
     }
 
-     public boolean isSubscribed(BaseListeningDatasource listeningDatasource){
-         return listeningAdapters.containsKey(listeningDatasource.name);
-     }
+    public boolean isSubscribed(BaseListeningDatasource listeningDatasource) {
+        return listeningAdapters.containsKey(listeningDatasource.name);
+    }
 }

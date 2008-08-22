@@ -1,7 +1,5 @@
 package com.ifountain.rcmdb.datasource
 
-import com.ifountain.rcmdb.scripting.ScriptManager
-
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -26,20 +24,23 @@ import com.ifountain.rcmdb.scripting.ScriptManager
  * Time: 3:39:45 PM
  */
 class ListeningAdapterObserver implements Observer{
-    def scriptName;
+    def scriptInstance;
     def logger;
-    public ListeningAdapterObserver(scriptName, logger){
-        this.scriptName = scriptName;
+    public ListeningAdapterObserver(scriptInstance, logger){
+        this.scriptInstance = scriptInstance;
         this.logger = logger;
     }
     public void update(Observable o, Object arg) {
         try{
-             def scriptObject = ScriptManager.getInstance().getScriptObject(scriptName);
-             scriptObject.update(arg);
+             scriptInstance.update(arg);
         }
         catch(e){
-            logger.warn("Cannot invoke update method of " + scriptName + ". Reason: " + e.getMessage())
+            logger.warn("Cannot invoke update method of " + scriptInstance + ". Reason: " + e.getMessage())
         }
+    }
+
+    def getScriptInstance(){
+        return scriptInstance;
     }
 
 }

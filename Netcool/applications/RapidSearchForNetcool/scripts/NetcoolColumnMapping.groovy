@@ -19,6 +19,7 @@ List netcoolDatasources = NetcoolDatasource.list();
 if(netcoolDatasources.isEmpty())
 {
     logger.warn("No netcool datasource is defined");
+    throw new Exception("No netcool datasource is defined");
 }
 NetcoolDatasource netcoolDs = netcoolDatasources[0];
 def netcoolFields = netcoolDs.getFieldMap();

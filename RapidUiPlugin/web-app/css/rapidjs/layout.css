@@ -1,0 +1,18 @@
+.yui-skin-sam .yui-resize .yui-resize-handle-r{
+	background-image: url(/../RapidSuite/images/rapidjs/component/layout/e-handle.gif);
+	background-position: left center;
+	background-color:#C3DAF9;
+}
+.yui-skin-sam .yui-resize .yui-resize-handle-t{
+	background-image: url(/../RapidSuite/images/rapidjs/component/layout/s-handle.gif);
+	background-position: center top;
+	background-color:#C3DAF9;
+}
+.yui-skin-sam .yui-layout .yui-resize-proxy div{
+	background-color:#C3DAF9;
+}
+.yui-skin-sam .yui-layout-unit .yui-resize-handle-r .yui-layout-resize-knob{
+	background-image : none;}
+.yui-skin-sam .yui-layout-unit .yui-resize-handle-t .yui-layout-resize-knob{
+	background-image : none;
+}

@@ -1,69 +1,26 @@
 <html>
 <head>
 	<title>iFountain - RapidInsight for Netcool</title>
-    <script type="text/javascript" src="js/yui/utilities/utilities.js"></script>
-    <script type="text/javascript" src="js/yui/resize/resize-beta-min.js"></script>
-    <script type="text/javascript" src="js/yui/layout/layout-beta-min.js"></script>
-    <script type="text/javascript" src="js/ext/ext.js"></script>
+     <rui:javascript dir="yui/layout" file="layout-beta-min.js"/>
+    <rui:javascript dir="ext" file="ext.js"></rui:javascript>
+    <rui:javascript dir="rapidjs" file="RapidUtil.js"></rui:javascript>
 
-    <script type="text/javascript" src="js/rapidjs/component/ComponentContainer.js"></script>
-    <script type="text/javascript" src="js/rapidjs/RapidUtil.js"></script>
-    <script type="text/javascript" src="js/rapidjs/data/NodeFactory.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/RapidElement.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/PollingComponentContainer.js"></script>
-    <script type="text/javascript" src="js/yui/container/container-min.js"></script>
-    <script type="text/javascript" src="js/yui/button/button-min.js"></script>
-    <script type="text/javascript" src="js/rapidjs/data/RapidXmlDocument.js"></script>
+    <rui:javascript dir="rapidjs/component/form" file="Form.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/search" file="SearchList.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/treegrid" file="TreeGrid.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/action" file="Action.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/html" file="Html.js"></rui:javascript>
+    <rui:javascript dir="rapidjs/component/barChart" file="BarChart.js"></rui:javascript>
 
-    <script type="text/javascript" src="js/rapidjs/SelectUtils.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/form/Form.js"></script>
+    <rui:stylesheet dir="js/yui/treeview" includeType="recursive"></rui:stylesheet>
+    <rui:stylesheet dir="js/yui/resize" includeType="recursive"></rui:stylesheet>
+    <rui:stylesheet dir="js/yui/layout" includeType="recursive"></rui:stylesheet>
+    <rui:stylesheet dir="js/yui/assets/skins/sam" file="menu.css"></rui:stylesheet>
+    <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
+    <rui:stylesheet dir="css/rapidjs" includeType="recursive"></rui:stylesheet>
+    <rui:stylesheet dir="js/yui/button/assets/skins/sam" file="button.css"></rui:stylesheet>
 
-    <script type="text/javascript" src="js/rapidjs/component/simplewidgets/Button.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/tools/BasicTool.js"></script>
-    <script type="text/javascript" src="js/yui/container/container_core-min.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/tools/SettingsTool.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/dialog/Dialog.js"></script>
-    <script type="text/javascript" src="js/yui/menu/menu-min.js"></script>
-
-	<script type="text/javascript" src="js/yui/datasource/datasource-beta-min.js"></script>
-	<script type="text/javascript" src="js/yui/json/json-min.js"></script>
-	<script type="text/javascript" src="js/yui/charts/charts-experimental-min.js"></script>
-
-    <script type="text/javascript" src="js/rapidjs/component/barChart/BarChart.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/search/SearchNode.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/tools/ButtonToolBar.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/tools/SearchListSettingsTool.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/tools/LoadingTool.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/tools/ErrorTool.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/search/SearchList.js"></script>
-
-    <script type="text/javascript" src="js/rapidjs/component/treegrid/split.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/tools/Tooltip.js"></script>
-
-    <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeNode.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeHeaderCell.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeGridView.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeGrid.js"></script>
-
-    <script type="text/javascript" src="js/rapidjs/component/action/Action.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/html/Html.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="js/yui/assets/skins/sam/menu.css" />
-    <link rel="stylesheet" type="text/css" href="js/yui/assets/skins/sam/skin.css" />
-    <link rel="stylesheet" type="text/css" href="js/yui/button/assets/skins/sam/button.css" />
-    <link rel="stylesheet" type="text/css" href="js/yui/container/assets/skins/sam/container.css" />
-    <link rel="stylesheet" type="text/css" href="css/rapidjs/common.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/dialog.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/form.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/mgrid.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/overlay.css" />
-
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/ryuitree.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/searchlist.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/simplewidgets/button.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/tools/tools.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/treegrid/treegrid.css" />
-
+    <rui:stylesheet dir="js/yui/container/assets/skins/sam" file="container.css"></rui:stylesheet>
 
 
     <jsec:isNotLoggedIn>
@@ -71,27 +28,15 @@
 	</jsec:isNotLoggedIn>
     <style>
 		.r-filterTree-groupAdd{
-			background-image: url( images/rapidjs/component/tools/filter_group.png);
+			background-image: url( /../RapidSuite/images/rapidjs/component/tools/filter_group.png);
 		}
 		.r-filterTree-queryAdd{
-			background-image: url( images/rapidjs/component/tools/filteradd.png);
+			background-image: url( /../RapidSuite/images/rapidjs/component/tools/filteradd.png);
 		}
 		.r-tree-firstCell{
 			cursor:pointer;
 		}
-		.yui-skin-sam .yui-resize .yui-resize-handle-r {
-			background-image: url(images/rapidjs/component/layout/e-handle.gif);
-			background-position: left center;
-			background-color:#C3DAF9;
 
-		}
-		.yui-skin-sam .yui-layout .yui-resize-proxy div{
-			background-color:#C3DAF9;
-		}
-		.yui-skin-sam .yui-layout-unit .yui-resize-handle-r .yui-layout-resize-knob{
-			background-image : none;
-
-		}
     </style>
 </head>
 <body class=" yui-skin-sam">
@@ -145,11 +90,11 @@
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
         <td width="0%" style="padding-left:10px;padding-top:5px;">
-            <img src="images/RapidInsight-blue.png">
+            <img src="/../RapidSuite/images/RapidInsight-blue.png">
         </td>
         <td width="100%"></td>
         <td id="serverDownEl" width="0%" style="display:none">
-            <img src="images/network-offline.png"/>
+            <img src="/../RapidSuite/images/network-offline.png"/>
         </td>
         <td width="0%">
            <div style="vertical-align:bottom">
@@ -243,10 +188,10 @@
 
     var searchConfig = {
         id:'searchList',
-        url:'search?format=xml',
+        url:'res.xml',
         searchQueryParamName:'query',
-        rootTag:'Objects',
-        contentPath:'Object',
+        rootTag:'Results',
+        contentPath:'Result',
         keyAttribute:'id',
         totalCountAttribute:'total',
         offsetAttribute:'offset',
@@ -283,12 +228,12 @@
                     }
         } ,
         images:[
-            {exp:'data["severity"] == 5', src:'images/rapidjs/component/searchlist/red.png'},
-            {exp:'data["severity"] == 4', src:'images/rapidjs/component/searchlist/orange.png'},
-            {exp:'data["severity"] == 3', src:'images/rapidjs/component/searchlist/yellow.png'},
-            {exp:'data["severity"] == 2', src:'images/rapidjs/component/searchlist/blue.png'},
-            {exp:'data["severity"] == 1', src:'images/rapidjs/component/searchlist/purple.png'},
-            {exp:'data["severity"] == 0', src:'images/rapidjs/component/searchlist/green.png'}
+            {exp:'data["severity"] == 5', src:'/../RapidSuite/images/rapidjs/component/searchlist/red.png'},
+            {exp:'data["severity"] == 4', src:'/../RapidSuite/images/rapidjs/component/searchlist/orange.png'},
+            {exp:'data["severity"] == 3', src:'/../RapidSuite/images/rapidjs/component/searchlist/yellow.png'},
+            {exp:'data["severity"] == 2', src:'/../RapidSuite/images/rapidjs/component/searchlist/blue.png'},
+            {exp:'data["severity"] == 1', src:'/../RapidSuite/images/rapidjs/component/searchlist/purple.png'},
+            {exp:'data["severity"] == 0', src:'/../RapidSuite/images/rapidjs/component/searchlist/green.png'}
         ],
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
@@ -439,8 +384,8 @@
 
     var groupDefinitionDialogConfig = {
         width:"30em",
-        saveUrl:"searchQueryGroup/save?format=xml",
-        updateUrl:"searchQueryGroup/update?format=xml",
+        saveUrl:"searchQueryGroup/save.xml",
+        updateUrl:"searchQueryGroup/update.xml",
         successfulyExecuted: function () {
             tree.poll()
         }
@@ -448,7 +393,7 @@
     var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
     var treeGridConfig = {
          id:"filterTree",
-         url:"script/run/queryList?format=xml",
+         url:"a3.xml",
          rootTag:"Filters",
          nodeId:"id",
          contentPath:"Filter",
@@ -463,8 +408,8 @@
             CopyQuery : { id: 'copyQuery', label : 'Copy Query',  condition : treeNodesCopyConditionFunction }
         },
         rootImages :[
-			{visible:'data["nodeType"] == "group"', expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'},
-			{visible:'data["nodeType"] == "filter"', expanded:'images/rapidjs/component/tools/filter.png', collapsed:'images/rapidjs/component/tools/filter.png'}
+			{visible:'data["nodeType"] == "group"', expanded:'/../RapidSuite/images/rapidjs/component/tools/folder_open.gif', collapsed:'/../RapidSuite/images/rapidjs/component/tools/folder.gif'},
+			{visible:'data["nodeType"] == "filter"', expanded:'/../RapidSuite/images/rapidjs/component/tools/filter.png', collapsed:'/../RapidSuite/images/rapidjs/component/tools/filter.png'}
 		]
       };
 
@@ -525,10 +470,10 @@
 
     var filterDefinitionDialogConfig = {
         width:"35em",
-        createUrl:"searchQuery/create?format=xml",
-        editUrl:"searchQuery/edit?format=xml",
-        saveUrl:"searchQuery/save?format=xml",
-        updateUrl:"searchQuery/update?format=xml",
+        createUrl:"searchQuery/create.xml",
+        editUrl:"searchQuery/edit.xml",
+        saveUrl:"searchQuery/save.xml",
+        updateUrl:"searchQuery/update.xml",
         successfulyExecuted: function () {
             tree.poll()
         }
@@ -536,7 +481,7 @@
     var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
      var changePassDialogConfig = {
         width:"35em",
-        saveUrl:"rsUser/changePassword?format=xml",
+        saveUrl:"rsUser/changePassword.xml",
         successfulyExecuted: function () {}
     };
     var changePassDialog = new YAHOO.rapidjs.component.Form(document.getElementById("passwordDialog"), changePassDialogConfig);
@@ -547,24 +492,28 @@
     },this, true)
 
     var chartConfig = {
-    	url : "a2.xml?",
+    	url : "a2.xml",
 	    dataType : "TYPE_XML",
+	    swfURL: "/../RapidSuite/js/yui/charts/assets/charts.swf",
+	    imageURL: "/../RapidSuite/images/rapidjs/component/chart/tube.png",
 	    resultNode : "Results",
+	    title:'Chart',
+	    rootTag:'Objects',
+        contentPath:'Object',
 	    xField : "Name",
 	    fields : ["Name","Critical","Major","Minor", "Warning", "Indeterminate", "Clear"],
 	    colors : { Critical : "0xd1241e", Major :"0xf68a24", Minor: "0xf7d403", Warning: "0x18acdc", Indeterminate: "0x8d4194", Clear: "0x55ab3b"  }
-
-
     };
     var chart = new YAHOO.rapidjs.component.BarChart(document.getElementById("chartsDiv"),chartConfig );
 
-    Event.onDOMReady(function() {
+	chart.poll();
+	Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'top', body: 'top', resize: false, height:40},
                 { position: 'center', body: 'right', resize: false, gutter: '1px' },
                 { position: 'left', width: 250, resize: true, body: 'left', scroll: false},
-                { position: 'bottom', header: 'Chart', height: 400, resize: true, body: 'bottom', gutter: '2px', collapse: true}
+                { position: 'bottom', height: 200, resize: true, body: 'bottom', gutter: '2px'}
             ]
         });
         layout.on('render', function(){
@@ -579,19 +528,22 @@
         });
 
         layout.render();
+
         var layoutLeft = layout.getUnitByPosition('left');
         layoutLeft.on('resize', function(){
             YAHOO.util.Dom.setStyle(layoutLeft.body, 'top', '1px');
         });
-
         searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
-        layout.on('resize', function() {
-            searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
-        });
+
         tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+
+        chart.resize(layout.getUnitByPosition('bottom').body.offsetWidth, layout.getUnitByPosition('bottom').body.offsetHeight);
         layout.on('resize', function() {
+        	searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
             tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+            chart.resize(layout.getUnitByPosition('bottom').body.offsetWidth, layout.getUnitByPosition('bottom').body.offsetHeight);
         });
+
         window.layout = layout;
 
     })

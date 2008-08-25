@@ -2,7 +2,7 @@
 <head>
 	<script src="../index.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="../js/rapidjs/component/timeline/timeline.css" />
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/timeline/timeline.css" />
     <script type="text/javascript" src="../js/rapidjs/component/timeline/Timeline.js"></script>
     <script type="text/javascript" src="../js/rapidjs/component/timeline/Timelineext.js"></script>
     <script type="text/javascript" src="../js/rapidjs/component/timeline/TimelineComponent.js"></script>
@@ -22,7 +22,7 @@
 	<link rel="stylesheet" type="text/css" href="../css/rapidjs/searchlist.css" />
 	<link rel="stylesheet" type="text/css" href="../css/rapidjs/simplewidgets/button.css" />
 	<link rel="stylesheet" type="text/css" href="../css/rapidjs/tools/tools.css" />
-	<link rel="stylesheet" type="text/css" href="../scss/rapidjs/treegrid/treegrid.css" />
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/treegrid/treegrid.css" />
 
 
 

@@ -1,0 +1,7 @@
+ <chart>
+	<set label='Critical' value='1'  color='0xff0000'/>
+	<set label='Major' value='4' color='0xff8c00'/>
+	<set label='Minor' value='1' color='0xffff00'/>
+	<set label='Unknown' value='2' color='0x00ffff'/>
+	<set label='Normal' value='2' color='0x00b200'/>
+</chart>

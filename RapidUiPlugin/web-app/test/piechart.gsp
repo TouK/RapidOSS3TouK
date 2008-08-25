@@ -3,15 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<script src="../index.js"></script>
-    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAVYwWfQBtngZaBjtVpaeODRS9REMBSo3ohXirTyNZx-Pct0k-pRR0iWc_B2ObuCFLxQMvuyuzE9hbPQ"
-      type="text/javascript"></script>
 
-    <link rel="stylesheet" type="text/css" href="../css/rapidjs/timeline/timeline.css" />
-    <script type="text/javascript" src="../js/rapidjs/component/timeline/Timeline.js"></script>
-    <script type="text/javascript" src="../js/rapidjs/component/timeline/Timelineext.js"></script>
-    <script type="text/javascript" src="../js/rapidjs/component/timeline/TimelineComponent.js"></script>
-    <script type="text/javascript" src="../js/rapidjs/component/tree/Tree.js"></script>
-
+	<script type="text/javascript" src="../js/rapidjs/component/flexPieChart/FlexPieChart.js"></script>
+	<script type="text/javascript" src="../js/rapidjs/component/flexPieChart/FABridge.js"></script>
 	<title>iFountain - RapidInsight for Netcool</title><link rel="stylesheet" type="text/css" href="../js/yui/assets/skins/sam/menu.css" />
     <link rel="stylesheet" type="text/css" href="../js/yui/assets/skins/sam/skin.css" />
     <link rel="stylesheet" type="text/css" href="../js/yui/button/assets/skins/sam/button.css" />
@@ -26,14 +20,12 @@
 	<link rel="stylesheet" type="text/css" href="../css/rapidjs/searchlist.css" />
 	<link rel="stylesheet" type="text/css" href="../css/rapidjs/simplewidgets/button.css" />
 	<link rel="stylesheet" type="text/css" href="../css/rapidjs/tools/tools.css" />
-	<link rel="stylesheet" type="text/css" href="../scss/rapidjs/treegrid/treegrid.css" />
-
-    <script type="text/javascript" src="../js/rapidjs/component/map/GMap.js"></script>
+	<link rel="stylesheet" type="text/css" href="../css/rapidjs/treegrid/treegrid.css" />
 
 
 
     <jsec:isNotLoggedIn>
-	  <g:javascript>window.location='../auth/login?targetUri=/index.gsp'</g:javascript>
+	  <g:javascript>window.location='auth/login?targetUri=/index.gsp'</g:javascript>
 	</jsec:isNotLoggedIn>
     <style>
 		.r-filterTree-groupAdd{
@@ -126,7 +118,7 @@
     </tr></tbody></table>
 </div>
 <div id="right">
-    <div id="myMap"></div>
+    <div id="flexPie"></div>
 </div>
   <style>
     .dragging, .drag-hint {
@@ -140,40 +132,17 @@
 
 <script type="text/javascript">
 
-	/*var timelineConfig = {
-        url	  : "test/timelineXml.xml",
-        Bands : [
-                    {
-                        width:          "70%",
-                        intervalUnit:   Timeline.DateTime.HOUR,
-                        intervalPixels: 100
-                    },
-                    {
-                        width:          "30%",
-                        intervalUnit:   Timeline.DateTime.DAY,
-                        intervalPixels: 200,
-                        syncWith : 		0,
-                        highlight :		true,
-                        showText :		false,
-                        trackHeight : 	0.5
-                    }
-                 ]
-    };
-    var timeline = new YAHOO.rapidjs.component.TimelineComponent(document.getElementById("timelineDiv"),timelineConfig );
-    timeline.poll();
-    */
-
-    var mapConfig = {
-	        url	  : "map.xml",
-	        title : "Device Locations",
-	        contentPath : "Location",
-	        latitudeAttributeName : "Lat",
-	        longitudeAttributeName : "Lng",
-	        addressAttributeName : "address",
-	        markerAttributeName : "Marker"
+	var flexPieConfig = {
+	        url	  	: "chart.xml",
+	        title 	: "Flex Pie Chart",
+	        id 		: "chartComponent",
+	        chartSWF : "images/rapidjs/component/flexPieChart/PieChart.swf",
+	        rootTag : "chart"
 
         };
-    var map = new YAHOO.rapidjs.component.GMap(document.getElementById("myMap"),mapConfig );
+
+    var flexPie = new YAHOO.rapidjs.component.FlexPieChart(document.getElementById("flexPie"),flexPieConfig );
+
 
     function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
     {
@@ -230,9 +199,12 @@
     }, this, true);
 
 
-    var conf = {width:500, height:400, iframe:false};
+   	var conf = {width:500, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
     html.hide();
+    html.dialog.panel.left = -175;
+
+
     var actionConfig = {url:'searchQuery/delete?format=xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
@@ -569,12 +541,14 @@
 
         //searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
         //timeline.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
-        map.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+        //map.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+		flexPie.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
 
         layout.on('resize', function() {
             //searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
             //timeline.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
-			map.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+			//map.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+			flexPie.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
 
         });
         tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);

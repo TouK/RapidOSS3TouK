@@ -1,3 +1,4 @@
+YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.GMap = function(container, config){
 	YAHOO.rapidjs.component.GMap.superclass.constructor.call(this,container, config);
 	YAHOO.ext.util.Config.apply(this, config);

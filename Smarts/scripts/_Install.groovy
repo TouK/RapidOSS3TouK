@@ -59,15 +59,15 @@ choices.each{
         {
             Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/conf");
         }
-        Ant.move(toDir:"${baseDir}/grails-app/views")
+        /*Ant.move(toDir:"${baseDir}/grails-app/views")
         {
             Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/views");
-        }
+        }*/
 
-        Ant.move(toDir:"${baseDir}/grails-app/controllers")
+       /* Ant.move(toDir:"${baseDir}/grails-app/controllers")
         {
             Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/controllers");
-        }
+        }*/
 
         Ant.move(toDir:"${baseDir}/grails-app/domain")
         {
@@ -98,10 +98,10 @@ choices.each{
             Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations");
         }
 
-        Ant.move(toDir:"${baseDir}/generatedModels")
+        /*Ant.move(toDir:"${baseDir}/generatedModels")
         {
             Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/generatedModels");
-        }
+        } */
     }
 }
 

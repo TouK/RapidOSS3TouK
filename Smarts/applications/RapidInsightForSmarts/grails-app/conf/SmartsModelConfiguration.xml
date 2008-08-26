@@ -1,9 +1,11 @@
 <Models>
-    <Model Name= "RsSmartsObject">
+    <Model Name="RsSmartsObject">
         <Fields>
           <Field SmartsName='Name' LocalName='name' IsDeleteMarker='false' Type='string' IsKey='true' />
           <Field SmartsName='CreationClassName' LocalName='creationClassName' IsDeleteMarker='false' Type='string' IsKey='false' />
-          <Field SmartsName='SmartsDs' LocalName='smartsDs' IsDeleteMarker='false' Type='string' IsKey='false' />
+          <Field SmartsName='Description' LocalName='description' IsDeleteMarker='false' Type='string' IsKey='false' />
+          <Field SmartsName='DisplayName' LocalName='displayName' IsDeleteMarker='false' Type='string' IsKey='false' />
+          <Field SmartsName='IsManaged' LocalName='isManaged' IsDeleteMarker='false' Type='boolean' IsKey='false' />
         </Fields>
     </Model>
     <Model Name="RsDevice" ParentName="RsSmartsObject">
@@ -13,7 +15,7 @@
 
     <Model Name="RsDeviceComponent" ParentName="RsSmartsObject">
         <Fields>
-            <Field SmartsName="DeviceName" LocalName="deviceName" Type="string" IsDeleteMarker="false" IsKey="true"/>   
+            <Field SmartsName="DeviceName" LocalName="deviceName" Type="string" IsDeleteMarker="false" IsKey="true"/>
         </Fields>
     </Model>
     <Model Name="RsNotification" ParentName="RsSmartsObject">
@@ -100,4 +102,178 @@
                 <Field SmartsName="UserDefined10" LocalName="userDefined10" Type="string" IsDeleteMarker="false" IsKey="false"/>
             </Fields>
         </Model>
+     <Model Name="RsManagementServer">
+         <Fields>
+             <Field SmartsName="Name" LocalName="name" Type="string"/>
+         </Fields>
+    </Model>
+    <Model Name="RsComputerSystem" ParentName="RsSmartsObject">
+        <Fields>
+            <Field SmartsName="AccessMode" LocalName="accessMode" Type="string"/>
+            <Field SmartsName="DiscoveredFirstAt" LocalName="discoveredFirstAt" Type="string"/>
+            <Field SmartsName="DiscoveredLastAt" LocalName="discoveredLastAt" Type="string"/>
+            <Field SmartsName="DiscoveryErrorInfo" LocalName="discoveryErrorInfo" Type="string"/>
+            <Field SmartsName="DiscoveryTime" LocalName="discoveryTime" Type="string"/>
+            <Field SmartsName="Location" LocalName="location" Type="string"/>
+            <Field SmartsName="Model" LocalName="model" Type="string"/>
+            <Field SmartsName="NumberOfIPs" LocalName="numberOfIPs" Type="number"/>
+            <Field SmartsName="NumberOfIPv6s" LocalName="numberOfIPv6s" Type="number"/>
+            <Field SmartsName="NumberOfInterfaces" LocalName="numberOfInterfaces" Type="number"/>
+            <Field SmartsName="NumberOfNetworkAdapters" LocalName="numberOfNetworkAdapters" Type="number"/>
+            <Field SmartsName="NumberOfPorts" LocalName="numberOfPorts" Type="number"/>
+            <Field SmartsName="OSVersion" LocalName="oSVersion" Type="string"/>
+            <Field SmartsName="PrimaryOwnerContact" LocalName="primaryOwnerContact" Type="string"/>
+            <Field SmartsName="PrimaryOwnerName" LocalName="primaryOwnerName" Type="string"/>
+            <Field SmartsName="ReadCommunity" LocalName="readCommunity" Type="string"/>
+            <Field SmartsName="SNMPAddress" LocalName="sNMPAddress" Type="string"/>
+            <Field SmartsName="SupportsSNMP" LocalName="supportsSNMP" Type="boolean"/>
+            <Field SmartsName="SystemName" LocalName="systemName" Type="string"/>
+            <Field SmartsName="SystemObjectID" LocalName="systemObjectID" Type="string"/>
+            <Field SmartsName="Vendor" LocalName="vendor" Type="string"/>
+            <Field SmartsName="ManagementServer" LocalName="managementServer" Type="string"/>
+        </Fields>
+    </Model>
+    <Model Name="RsComputerSystemComponent" ParentName="RsSmartsObject">
+        <Fields>
+            <Field SmartsName="ComputerSystemName" LocalName="computerSystemName" Type="string"/>
+            <Field SmartsName="Tag" LocalName="tag" Type="string"/>
+        </Fields>
+    </Model>
+    <Model Name="RsCard" ParentName="RsComputerSystemComponent">
+        <Fields>
+            <Field SmartsName="SerialNumber" LocalName="serialNumber" Type="string"/>
+            <Field SmartsName="StandbyStatus" LocalName="standbyStatus" Type="string"/>
+            <Field SmartsName="Status" LocalName="status" Type="string"/>
+            <Field SmartsName="Type" LocalName="type" Type="string"/>
+        </Fields>
+    </Model>
+    <Model Name="RsIp" ParentName="RsComputerSystemComponent">
+        <Fields>
+            <Field SmartsName="Address" LocalName="address" Type="string"/>
+            <Field SmartsName="CreationClassName" LocalName="creationClassName" Type="string"/>
+            <Field SmartsName="Description" LocalName="description" Type="string"/>
+            <Field SmartsName="IPStatus" LocalName="iPStatus" Type="string"/>
+            <Field SmartsName="InterfaceAdminStatus" LocalName="interfaceAdminStatus" Type="string"/>
+            <Field SmartsName="InterfaceMode" LocalName="interfaceMode" Type="string"/>
+            <Field SmartsName="InterfaceName" LocalName="interfaceName" Type="string"/>
+            <Field SmartsName="InterfaceOperStatus" LocalName="interfaceOperStatus" Type="string"/>
+            <Field SmartsName="InterfaceType" LocalName="interfaceType" Type="string"/>
+            <Field SmartsName="Netmask" LocalName="netmask" Type="string"/>
+            <Field SmartsName="NetworkNumber" LocalName="networkNumber" Type="string"/>
+            <Field SmartsName="Responsive" LocalName="responsive" Type="boolean"/>
+            <Field SmartsName="Status" LocalName="status" Type="string"/>
+        </Fields>
+    </Model>
+    <Model Name="RsNetworkAdapter" ParentName="RsComputerSystemComponent">
+        <Fields>
+            <Field SmartsName="AdminStatus" LocalName="adminStatus" Type="string"/>
+            <Field SmartsName="DeviceID" LocalName="deviceID" Type="string"/>
+            <Field SmartsName="DisplayClassName" LocalName="displayClassName" Type="string"/>
+            <Field SmartsName="DisplayName" LocalName="displayName" Type="string"/>
+            <Field SmartsName="DuplexMode" LocalName="duplexMode" Type="string"/>
+            <Field SmartsName="DuplexSource" LocalName="duplexSource" Type="string"/>
+            <Field SmartsName="InterfaceAlias" LocalName="interfaceAlias" Type="string"/>
+            <Field SmartsName="InterfaceCode" LocalName="interfaceCode" Type="string"/>
+            <Field SmartsName="InterfaceNumber" LocalName="interfaceNumber" Type="number"/>
+            <Field SmartsName="IsConnector" LocalName="isConnector" Type="boolean"/>
+            <Field SmartsName="IsFlapping" LocalName="isFlapping" Type="boolean"/>
+            <Field SmartsName="IsNetworkAdapterNotOperating" LocalName="isNetworkAdapterNotOperating" Type="boolean"/>
+            <Field SmartsName="LastChangedAt" LocalName="lastChangedAt" Type="string"/>
+            <Field SmartsName="MaxSpeed" LocalName="maxSpeed" Type="number"/>
+            <Field SmartsName="MaxTransferUnit" LocalName="maxTransferUnit" Type="number"/>
+            <Field SmartsName="MaximumUptime" LocalName="maximumUptime" Type="number"/>
+            <Field SmartsName="Mib2IfType" LocalName="mib2IfType" Type="number"/>
+            <Field SmartsName="Mode" LocalName="mode" Type="string"/>
+            <Field SmartsName="OperStatus" LocalName="operStatus" Type="string"/>
+            <Field SmartsName="PeerSystemName" LocalName="peerSystemName" Type="string"/>
+            <Field SmartsName="PeerSystemType" LocalName="peerSystemType" Type="string"/>
+            <Field SmartsName="Status" LocalName="status" Type="string"/>
+            <Field SmartsName="SystemModel" LocalName="systemModel" Type="string"/>
+            <Field SmartsName="SystemName" LocalName="systemName" Type="string"/>
+            <Field SmartsName="SystemObjectID" LocalName="systemObjectID" Type="string"/>
+            <Field SmartsName="SystemType" LocalName="systemType" Type="string"/>
+            <Field SmartsName="SystemVendor" LocalName="systemVendor" Type="string"/>
+            <Field SmartsName="Type" LocalName="type" Type="string"/>
+            <Field SmartsName="CardName" LocalName="cardName" Type="string"/>
+        </Fields>
+    </Model>
+    <Model Name="RsInterface" ParentName="RsNetworkAdapter">
+        <Fields>
+            <Field SmartsName="InterfaceKey" LocalName="interfaceKey" Type="string"/>
+            <Field SmartsName="HasIPAddresses" LocalName="hasIPAddresses" Type="boolean"/>
+            <Field SmartsName="HasIPv6Addresses" LocalName="hasIPv6Addresses" Type="boolean"/>            
+        </Fields>
+    </Model>
+    <Model Name="RsPort" ParentName="RsNetworkAdapter">
+        <Fields>
+            <Field SmartsName="DesignatedBridge" LocalName="designatedBridge" Type="string"/>
+            <Field SmartsName="DesignatedPort" LocalName="designatedPort" Type="number"/>
+            <Field SmartsName="IsConnectedToManagedSystem" LocalName="isConnectedToManagedSystem" Type="boolean"/>
+            <Field SmartsName="IsConnectedToSystem" LocalName="isConnectedToSystem" Type="boolean"/>
+            <Field SmartsName="ManagedState" LocalName="managedState" Type="string"/>
+            <Field SmartsName="PortKey" LocalName="portKey" Type="string"/>
+            <Field SmartsName="PortNumber" LocalName="portNumber" Type="number"/>
+            <Field SmartsName="PortType" LocalName="portType" Type="string"/>
+        </Fields>
+    </Model>
+    <Model Name="RsLink" ParentName="RsSmartsObject">
+        <Fields>
+            <Field SmartsName="A_ComputerSystemName" LocalName="a_ComputerSystemName" Type="string"/>
+            <Field SmartsName="A_Name" LocalName="a_Name" Type="string"/>
+            <Field SmartsName="A_AdminStatus" LocalName="a_AdminStatus" Type="string"/>
+            <Field SmartsName="A_DisplayName" LocalName="a_DisplayName" Type="string"/>
+            <Field SmartsName="A_DuplexMode" LocalName="a_DuplexMode" Type="string"/>
+            <Field SmartsName="A_IsFlapping" LocalName="a_IsFlapping" Type="boolean"/>
+            <Field SmartsName="A_MaxSpeed" LocalName="a_MaxSpeed" Type="number"/>
+            <Field SmartsName="A_Mode" LocalName="a_Mode" Type="string"/>
+            <Field SmartsName="A_OperStatus" LocalName="a_OperStatus" Type="string"/>
+            <Field SmartsName="ConnectedSystemsUnresponsive" LocalName="connectedSystemsUnresponsive" Type="boolean"/>
+            <Field SmartsName="Z_ComputerSystemName" LocalName="z_ComputerSystemName" Type="string"/>
+            <Field SmartsName="Z_Name" LocalName="z_Name" Type="string"/>
+            <Field SmartsName="Z_AdminStatus" LocalName="z_AdminStatus" Type="string"/>
+            <Field SmartsName="Z_DisplayName" LocalName="z_DisplayName" Type="string"/>
+            <Field SmartsName="Z_DuplexMode" LocalName="z_DuplexMode" Type="string"/>
+            <Field SmartsName="Z_IsFlapping" LocalName="z_IsFlapping" Type="boolean"/>
+            <Field SmartsName="Z_MaxSpeed" LocalName="z_MaxSpeed" Type="number"/>
+            <Field SmartsName="Z_Mode" LocalName="z_Mode" Type="string"/>
+            <Field SmartsName="Z_OperStatus" LocalName="z_OperStatus" Type="string"/>            
+        </Fields>
+    </Model>
+    <Model Name="RsGroup" ParentName="RsSmartsObject">
+        <Fields>
+        </Fields>
+    </Model>
+    <Model Name="RsIpNetwork" ParentName="RsSmartsObject">
+        <Fields>
+            <Field SmartsName="ConnectedSystems" LocalName="connectedSystems"/>
+            <Field SmartsName="ConnectedTo" LocalName="connectedTo"/>
+            <Field SmartsName="Netmask" LocalName="netmask" Type="string"/>
+            <Field SmartsName="NetworkNumber" LocalName="networkNumber" Type="string"/>
+        </Fields>
+    </Model>
+    <Model Name="RsVlan" ParentName="RsSmartsObject">
+        <Fields>
+            <Field SmartsName="VLANKey" LocalName="vLANKey" Type="string"/>
+            <Field SmartsName="VLANNumber" LocalName="vLANNumber" Type="number"/>
+        </Fields>
+    </Model>
+    <Model Name="RsHsrpGroup" ParentName="RsSmartsObject">
+        <Fields>
+            <Field SmartsName="ActiveInterfaceName" LocalName="activeInterfaceName" Type="string"/>
+            <Field SmartsName="ActiveSystemName" LocalName="activeSystemName" Type="string"/>
+            <Field SmartsName="AtRiskThreshold" LocalName="atRiskThreshold" Type="number"/>
+            <Field SmartsName="GroupNumber" LocalName="groupNumber" Type="string"/>
+            <Field SmartsName="HsrpEpStateChanged" LocalName="hsrpEpStateChanged" Type="boolean"/>
+            <Field SmartsName="IsAnyComponentDown" LocalName="isAnyComponentDown" Type="boolean"/>
+            <Field SmartsName="IsAnyHSRPEndpointActive" LocalName="isAnyHSRPEndpointActive" Type="boolean"/>
+            <Field SmartsName="IsEveryComponentDown" LocalName="isEveryComponentDown" Type="boolean"/>
+            <Field SmartsName="IsEveryHSRPEndpointReady" LocalName="isEveryHSRPEndpointReady" Type="boolean"/>
+            <Field SmartsName="IsGroupPartOfSingleUnresponsiveSystem" LocalName="isGroupPartOfSingleUnresponsiveSystem" Type="boolean"/>
+            <Field SmartsName="IsVirtualIPUnresponsive" LocalName="isVirtualIPUnresponsive" Type="boolean"/>
+            <Field SmartsName="NumberOfComponents" LocalName="numberOfComponents" Type="number"/>
+            <Field SmartsName="NumberOfFaultyComponents" LocalName="numberOfFaultyComponents" Type="number"/>
+            <Field SmartsName="VirtualIP" LocalName="virtualIP" Type="string"/>
+            <Field SmartsName="VirtualMAC" LocalName="virtualMAC" Type="string"/>            
+        </Fields>
+    </Model>
 </Models>

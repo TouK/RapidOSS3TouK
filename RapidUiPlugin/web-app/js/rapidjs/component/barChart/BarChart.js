@@ -56,17 +56,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.BarChart, YAHOO.rapidjs.component.Poll
 	    {
 	        series: this.seriesDef,
 	        xField: this.xField,
-	        yAxis: this.yAxis
-	    });
+	        yAxis: this.yAxis,
+            wmode: "transparent"
+        });
 	 	YAHOO.util.Dom.setStyle(this.body.dom,'width', this.width);
-	 	YAHOO.util.Dom.setStyle(this.body.dom,'overflow', 'hidden');
-	 	if(this.IE_SYNC)
-	 	{
-		 	this.body.dom.firstChild.childNodes[4].setAttribute('value','transparent')
-		 	this.body.dom.firstChild.childNodes[5].setAttribute('value','bridgeName=chartsDiv')
-		}
-	 	this.chart._swf.setAttribute('wmode','transparent');
-
 	},
 	defineSeries : function() {
 		this.seriesDef =

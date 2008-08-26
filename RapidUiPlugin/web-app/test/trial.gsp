@@ -1,7 +1,7 @@
 <html>
 <head>
 	<title>iFountain - RapidInsight for Netcool</title>
-     <rui:javascript dir="yui/layout" file="layout-beta-min.js"/>
+    <rui:javascript dir="yui/layout" file="layout-beta-min.js"/>
     <rui:javascript dir="ext" file="ext.js"></rui:javascript>
     <rui:javascript dir="rapidjs" file="RapidUtil.js"></rui:javascript>
 
@@ -28,10 +28,10 @@
 	</jsec:isNotLoggedIn>
     <style>
 		.r-filterTree-groupAdd{
-			background-image: url( /../RapidSuite/images/rapidjs/component/tools/filter_group.png);
+			background-image: url(../images/rapidjs/component/tools/filter_group.png);
 		}
 		.r-filterTree-queryAdd{
-			background-image: url( /../RapidSuite/images/rapidjs/component/tools/filteradd.png);
+			background-image: url(../images/rapidjs/component/tools/filteradd.png);
 		}
 		.r-tree-firstCell{
 			cursor:pointer;
@@ -90,11 +90,11 @@
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
         <td width="0%" style="padding-left:10px;padding-top:5px;">
-            <img src="/../RapidSuite/images/RapidInsight-blue.png">
+            <img src="../images/RapidInsight-blue.png">
         </td>
         <td width="100%"></td>
         <td id="serverDownEl" width="0%" style="display:none">
-            <img src="/../RapidSuite/images/network-offline.png"/>
+            <img src="../images/network-offline.png"/>
         </td>
         <td width="0%">
            <div style="vertical-align:bottom">
@@ -408,8 +408,8 @@
             CopyQuery : { id: 'copyQuery', label : 'Copy Query',  condition : treeNodesCopyConditionFunction }
         },
         rootImages :[
-			{visible:'data["nodeType"] == "group"', expanded:'/../RapidSuite/images/rapidjs/component/tools/folder_open.gif', collapsed:'/../RapidSuite/images/rapidjs/component/tools/folder.gif'},
-			{visible:'data["nodeType"] == "filter"', expanded:'/../RapidSuite/images/rapidjs/component/tools/filter.png', collapsed:'/../RapidSuite/images/rapidjs/component/tools/filter.png'}
+			{visible:'data["nodeType"] == "group"', expanded:'../images/rapidjs/component/tools/folder_open.gif', collapsed:'../images/rapidjs/component/tools/folder.gif'},
+			{visible:'data["nodeType"] == "filter"', expanded:'../images/rapidjs/component/tools/filter.png', collapsed:'../images/rapidjs/component/tools/filter.png'}
 		]
       };
 
@@ -494,8 +494,8 @@
     var chartConfig = {
     	url : "a2.xml",
 	    dataType : "TYPE_XML",
-	    swfURL: "/../RapidSuite/js/yui/charts/assets/charts.swf",
-	    imageURL: "/../RapidSuite/images/rapidjs/component/chart/tube.png",
+	    swfURL: "../js/yui/charts/assets/charts.swf",
+	    imageURL: "../images/rapidjs/component/chart/tube.png",
 	    resultNode : "Results",
 	    title:'Chart',
 	    rootTag:'Objects',

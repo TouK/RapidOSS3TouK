@@ -184,6 +184,7 @@ class ScriptController {
                 redirect(action: show, id: script.id)
             }
             catch (e) {
+                log.warn("Exception occurred while starting script", e);
                 def errors = [e.getMessage()]
                 flash.errors = errors;
                 redirect(action: show, id: script.id)
@@ -206,6 +207,7 @@ class ScriptController {
                 redirect(action: show, id: script.id)
             }
             catch (e) {
+                log.warn("Exception occurred while stopping script", e);
                 def errors = [e.getMessage()]
                 flash.errors = errors;
                 redirect(action: show, id: script.id)

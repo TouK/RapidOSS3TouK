@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Map;
 import java.util.List;
+import java.util.HashMap;
 
 public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
 
@@ -53,6 +54,7 @@ public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
     public static final String ARCHIVE = "ARCHIVE";
     public static final String CREATE = "CREATE";
     public static final String EVENT_TYPE_NAME = "ICEventType";
+    public static final String RECEIVE_EXISTING_FINISHED = "ReceiveExistingCompleted";
 
     public BaseSmartsListeningAdapter(String connectionName, long reconnectInterval, Logger logger, SmartsSubscribeParameters[] subscribeParams) {
         super(connectionName, reconnectInterval, logger);
@@ -203,6 +205,9 @@ public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
         {
             logger.debug(logPrefix + "Retrieving existing objects.");
             getExistingObjects(parameters);
+            Map data = new HashMap();
+            data.put(EVENT_TYPE_NAME, RECEIVE_EXISTING_FINISHED);
+            sendDataToObservers(data);
             existingObjectsRetrieved = true;
             logger.debug(logPrefix + "Existing objects retrieved.");
         }

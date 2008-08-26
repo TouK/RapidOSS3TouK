@@ -1,11 +1,11 @@
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
 
-import com.ifountain.rcmdb.util.RCMDBDataStore
 import com.ifountain.smarts.datasource.BaseSmartsListeningAdapter
 import org.apache.log4j.DailyRollingFileAppender
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.apache.log4j.Level
+import org.apache.commons.collections.map.CaseInsensitiveMap
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -39,7 +39,7 @@ smartsToRcmdbPropertyMapping = ["A_AdminStatus": "aa_AdminStatus", "A_DisplayNam
         "Z_DisplayName": "zz_DisplayName", "Z_OperStatus": "zz_OperStatus",
         "IPStatus": "ipStatus", "Netmask": "netMask"]
 logger = null;
-
+topologyMap = null;
 //    rcmdbToSmartsPropertyMapping = [:];
 //    smartsToRcmdbPropertyMapping.each {key, value ->
 //        rcmdbToSmartsPropertyMapping.put(value, key);
@@ -75,9 +75,10 @@ def init() {
     logger.setLevel(Level.toLevel("DEBUG"));
 
     logger.debug("Marking all devices as deleted.");
+    topologyMap = new CaseInsensitiveMap();
     def deviceNames = Device.termFreqs("name").term;
     deviceNames.each {
-        RCMDBDataStore.put("Device_${it}", "deleted");
+        topologyMap[it] = "deleted";
     }
 
 }
@@ -198,7 +199,7 @@ def addSmartsDeviceToRepository(topologyObject) {
     def deviceFromSmarts = getDatasource().getObject(topologyObject);
     def device = Device.add(getPropsWithLocalNames(deviceFromSmarts))
     if (!device.hasErrors()) {
-        RCMDBDataStore.remove("Device_${device.name.toLowerCase()}");
+        topologyMap.remove(device.name);
         deviceFromSmarts.ComposedOf.each{
              def containmentObjectFromSmarts = getDatasource().getObject(it);
              if (CONTAINMENT_OBJECTS.contains(containmentObjectFromSmarts.CreationClassName)) {

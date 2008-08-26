@@ -38,10 +38,7 @@ import com.smarts.repos.MR_Choice;
 import com.smarts.repos.MR_PropertyChoice;
 import com.smarts.repos.MR_PropertyNameValue;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Observable;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 
@@ -126,6 +123,21 @@ public class BaseSmartsListeningAdapterTest<E> extends SmartsTestCase {
         smartsAdapter.setObserverCreated(false);
         smartsAdapter.setSubscribed(false);
         ConnectionManager.releaseConnection(conn);
+    }
+
+    public void testRetrieveExistingObjectsCreateReceiveExistingCompletedEvent()throws Exception 
+    {
+        SmartsConnectionImpl conn = (SmartsConnectionImpl) ConnectionManager.getConnection(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
+        SmRemoteDomainManager domainManager = conn.getDomainManager();
+        smartsAdapter.addObserver(new Observer(){
+            public void update(Observable o, Object arg)
+            {
+                receivedObjects.add(arg);
+            }
+        });
+
+        smartsAdapter.retrieveExistingObjects(null);
+        assertEquals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED, ((Map)receivedObjects.get(0)).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
     }
 
     public void testGettingUpdatedPropertiesOfObjects() throws Exception {

@@ -29,7 +29,7 @@ def writer = new StringWriter();
 def builder = new MarkupBuilder(writer);
 
 def devices = Device.list();
-
+/*
 builder.Devices
 {
     devices.each {Device device ->
@@ -52,4 +52,5 @@ builder.Devices
         }
     }
 }
+*/
 return writer.toString();

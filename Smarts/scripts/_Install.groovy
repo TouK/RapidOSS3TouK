@@ -55,18 +55,25 @@ if(choices == null)
 choices.each{
     if(it == "1")
     {
-//        Ant.move(toDir:"${baseDir}/grails-app/templates")
-//        {
-//            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/templates/**");
-//        }
         Ant.move(toDir:"${baseDir}/grails-app/conf")
         {
-            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/conf/**");
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/conf");
         }
-//        Ant.move(toDir:"${baseDir}/grails-app/i18n")
-//        {
-//            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/i18n/**");
-//        }
+        Ant.move(toDir:"${baseDir}/grails-app/views")
+        {
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/views");
+        }
+
+        Ant.move(toDir:"${baseDir}/grails-app/controllers")
+        {
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/controllers");
+        }
+
+        Ant.move(toDir:"${baseDir}/grails-app/domain")
+        {
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/domain");
+        }
+
         Ant.move(toDir:"${baseDir}/plugins/${pluginName}/grails-app")
         {
             Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/**");
@@ -85,14 +92,19 @@ choices.each{
         {
             Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/web-app/**");
         }
+
+        Ant.move(toDir:"${baseDir}/operations")
+        {
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations");
+        }
+
+        Ant.move(toDir:"${baseDir}/generatedModels")
+        {
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/generatedModels");
+        }
     }
 }
 
-//Ant.move(toDir:"${baseDir}/generatedModels")
-//{
-//    Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/generatedModels");
-//}
-//
 //Ant.move(toDir:"${baseDir}/grails-app/controllers")
 //{
 //    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/controllers/NetcoolEventController.groovy");

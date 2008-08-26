@@ -15,7 +15,7 @@ if(!netcoolConfigurationFile.exists())
 {
     throw new Exception("Configuration file doesnot exist.");
 }
-NetcoolColumn*.remove();
+NetcoolColumn.list()*.remove();
 
 
 def slurper = new XmlSlurper()

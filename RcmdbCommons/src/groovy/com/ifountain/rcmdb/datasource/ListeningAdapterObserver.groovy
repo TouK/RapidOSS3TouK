@@ -35,7 +35,7 @@ class ListeningAdapterObserver implements Observer{
              scriptInstance.update(arg);
         }
         catch(e){
-            logger.warn("Cannot invoke update method of " + scriptInstance + ". Reason: " + e.getMessage())
+            logger.warn("Cannot invoke update method of " + scriptInstance + ". Reason: " + e.getMessage(), e)
         }
     }
 

@@ -59,7 +59,7 @@ class ListeningAdapterManager {
                 scriptObject.cleanUp();
             }
             catch (e) {
-                logger.warn("Error during script ${observer.scriptInstance} clean up . Reason: ${e.getMessage()}")
+                logger.warn("Error during script ${observer.scriptInstance} clean up . Reason: ${e.getMessage()}", e)
             }
         }
         logger.info("Destroyed listening adapter manager.");
@@ -83,14 +83,14 @@ class ListeningAdapterManager {
                 listeningAdapter = listeningDatasource.getListeningAdapter(params);
             }
             catch (e) {
-                throw new Exception("Error creating listening adapter. Reason: ${e.getMessage()}");
+                throw new Exception("Error creating listening adapter. Reason: ${e.getMessage()}", e);
             }
 
             try {
                 scriptObject.init();
             }
             catch (e) {
-                throw new Exception("Error script initialization. Reason: ${e.getMessage()}");
+                throw new Exception("Error script initialization. Reason: ${e.getMessage()}", e);
             }
 
             try {
@@ -101,7 +101,7 @@ class ListeningAdapterManager {
                 observers.put(listeningAdapter, adapterObserver);
             }
             catch (e) {
-                throw new Exception("Error during subscription. Reason: ${e.getMessage()}");
+                throw new Exception("Error during subscription. Reason: ${e.getMessage()}", e);
             }
 
         }
@@ -121,7 +121,7 @@ class ListeningAdapterManager {
                 observer.getScriptInstance().cleanUp();
             }
             catch (e) {
-                throw new Exception("Error during script clean up. Reason: " + e.getMessage())
+                throw new Exception("Error during script clean up. Reason: " + e.getMessage(), e)
             }
 
         }

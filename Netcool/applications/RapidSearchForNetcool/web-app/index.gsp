@@ -500,7 +500,7 @@
         }
         else if(id == "update"){
             if (data.getAttribute("nodeType") == "filter")
-                dialog.show(dialog.EDIT_MODE, {id:data.getAttribute("id")})
+                dialog.show(dialog.EDIT_MODE, {queryId:data.getAttribute("id")})
             else if(data.getAttribute("nodeType") == "group"){
                 groupDialog.show(groupDialog.EDIT_MODE)
                 groupDialog.dialog.form.name.value = data.getAttribute("name");

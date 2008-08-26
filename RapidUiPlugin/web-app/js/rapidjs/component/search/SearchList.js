@@ -6,6 +6,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.contentPath = null;
     this.currentlyExecutingQuery = null;
     this.keyAttribute = null;
+    this.defaultFilter = null;
     this.rootTag = null;
     this.totalCountAttribute = null;
     this.offsetAttribute = null;
@@ -52,33 +53,23 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.component.PollingComponentContainer, {
 
     scrollPoll : function(offset) {
-        this.showMask();
-        this.params['offset'] = offset;
-        this.params['sort'] = this.lastSortAtt;
-        this.params['order'] = this.lastSortOrder;
-        this.poll();
+        this.offset = offset;
+        this._poll();
     },
 
     setQuery: function(queryString, sortAtt, sortOrder)
     {
         this.currentlyExecutingQuery = queryString;
         this.searchBox.dom.getElementsByTagName('input')[0].value = queryString;
-        this.showMask();
-        this.params[this.searchQueryParamName] = this.currentlyExecutingQuery;
         this.lastSortAtt = sortAtt || this.keyAttribute;
         this.lastSortOrder = sortOrder || 'asc';
-        this.params['sort'] = this.lastSortAtt;
-        this.params['order'] = this.lastSortOrder;
-        this.poll();
+        this.handleSearchClick();
     },
 
     appendToQuery: function(query)
     {
-        this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value + " " + query;
-        this.searchBox.dom.getElementsByTagName('input')[0].value = this.currentlyExecutingQuery;
-        this.showMask();
-        this.params[this.searchQueryParamName] = this.currentlyExecutingQuery;
-        this.poll();
+        this.searchBox.dom.getElementsByTagName('input')[0].value = this.searchBox.dom.getElementsByTagName('input')[0].value + " " + query;
+        this.handleSearchClick();
     },
     handleInputEnter : function(e) {
         if ((e.type == "keypress" && e.keyCode == 13))
@@ -88,20 +79,37 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
 
     handleSearchClick: function(e) {
+        this.offset = 0;
+        this._poll();
+    },
+
+    _poll: function(){
         this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
+        if(this.defaultFilter != null)
+        {
+            if(this.currentlyExecutingQuery.trim() != "")
+            {
+                this.currentlyExecutingQuery = "("+this.currentlyExecutingQuery+") AND " + this.defaultFilter;
+            }
+            else
+            {
+                this.currentlyExecutingQuery = this.defaultFilter;
+            }
+        }
         this.showMask();
+        this.params['offset'] = this.offset;
         this.params[this.searchQueryParamName] = this.currentlyExecutingQuery;
+        this.params['sort'] = this.lastSortAtt;
+        this.params['order'] = this.lastSortOrder;
         this.poll();
     },
+
     sort:function(sortAtt, sortOrder) {
-        this.showMask();
         this.lastSortAtt = sortAtt;
         this.lastSortOrder = sortOrder;
         var sortTextbox = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-sortOrder', 'div', this.searchBox.dom)[0];
         sortTextbox.innerHTML = "Sorted By: " + sortAtt + "-" + sortOrder;
-        this.params['sort'] = this.lastSortAtt;
-        this.params['order'] = this.lastSortOrder;
-        this.poll();
+        this.handleSearchClick();
     },
 
     handleSuccess: function(response, keepExisting, removeAttribute)

@@ -9,8 +9,8 @@ import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringIn
  * To change this template use File | Settings | File Templates.
  */
 def userName = web.session.username;
-def searchQueryGroups = SearchQueryGroup.list().findAll {
-    it.username == userName && it.isPublic == false
+def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup->
+    queryGroup.username == userName && queryGroup.isPublic == false
 };
 def excludedProps = ['version',
         "errors", "__operation_class__",
@@ -18,7 +18,7 @@ def excludedProps = ['version',
         ClosureEventTriggeringInterceptor.BEFORE_DELETE_EVENT,
         ClosureEventTriggeringInterceptor.BEFORE_INSERT_EVENT,
         ClosureEventTriggeringInterceptor.BEFORE_UPDATE_EVENT]
-def netcoolEventProps = NetcoolEvent.properties.findAll {!excludedProps.contains(it.name)}
+def netcoolEventProps = web.grailsApplication.getDomainClass("NetcoolEvent").properties.findAll {!excludedProps.contains(it.name)}
 web.render(contentType: 'text/xml') {
     Create {
         group {

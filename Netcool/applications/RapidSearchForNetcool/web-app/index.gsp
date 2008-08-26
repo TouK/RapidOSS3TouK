@@ -237,6 +237,7 @@
         id:'searchList',
         url:'search?format=xml',
         searchQueryParamName:'query',
+        defaultFilter:"alias:NetcoolEvent",
         rootTag:'Objects',
         contentPath:'Object',
         keyAttribute:'id',
@@ -515,8 +516,8 @@
 
     var filterDefinitionDialogConfig = {
         width:"35em",
-        createUrl:"searchQuery/create?format=xml",
-        editUrl:"searchQuery/edit?format=xml",
+        createUrl:"script/run/createQuery",
+        editUrl:"script/run/editQuery",
         saveUrl:"searchQuery/save?format=xml",
         updateUrl:"searchQuery/update?format=xml",
         successfulyExecuted: function () {

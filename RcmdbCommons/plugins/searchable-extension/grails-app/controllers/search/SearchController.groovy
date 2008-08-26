@@ -1,7 +1,5 @@
 package search
 
-import org.compass.core.engine.SearchEngineQueryParseException
-import grails.converters.XML
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
@@ -26,13 +24,19 @@ class SearchController {
         def builder = new MarkupBuilder(sw);
         try
         {
-            GrailsDomainClass netcoolEventClass = grailsApplication.getDomainClass("NetcoolEvent");
-            def grailsObjectProps = netcoolEventClass.getProperties();
-            def searchResults = netcoolEventClass.clazz.metaClass.invokeStaticMethod(netcoolEventClass.clazz, "search", [query, params] as Object[]);
-
+            def searchResults = searchableService.search(query, params);
+            def grailsClassProperties = [:]
             builder.Objects(total:searchResults.total, offset:searchResults.offset)
             {
                 searchResults.results.each{result->
+                    def className = result.getClass().name;
+                    def grailsObjectProps = grailsClassProperties[className]
+                    if(grailsObjectProps == null)
+                    {
+                        GrailsDomainClass grailsClass = grailsApplication.getDomainClass(result.getClass().name);
+                        grailsObjectProps = grailsClass.getProperties();
+                        grailsClassProperties[result.getClass().name] =  grailsObjectProps;
+                    }
                     def props = [:];
                     grailsObjectProps.each{resultProperty->
                         props[resultProperty.name] = result[resultProperty.name];

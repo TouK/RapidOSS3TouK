@@ -46,7 +46,11 @@
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/web-app" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app/controllers" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app/domain" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app/views" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app/views/searchQuery" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app/views/searchQueryGroup" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/test" isTestSource="false" />

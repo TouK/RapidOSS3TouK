@@ -86,24 +86,12 @@ class SearchQueryController {
                     def searchQueryGroups = SearchQueryGroup.list().findAll {
                         it.username == userName && it.isPublic == false
                     };
-                    def excludedProps = ['version',
-                            "errors", "__operation_class__",
-                            Events.ONLOAD_EVENT,
-                            Events.BEFORE_DELETE_EVENT,
-                            Events.BEFORE_INSERT_EVENT,
-                            Events.BEFORE_UPDATE_EVENT]
-                    def netcoolDomainClass = grailsApplication.getDomainClass("NetcoolEvent");
-                    def netcoolEventProps = netcoolDomainClass.properties.findAll {!excludedProps.contains(it.name)}
                     render(contentType: 'text/xml') {
                         Edit {
                             id(searchQuery.id)
                             name(searchQuery.name)
                             query(searchQuery.query)
-                            sortProperty {
-                                netcoolEventProps.each {
-                                    option(selected: it.name == searchQuery.sortProperty, it.name)
-                                }
-                            }
+                            sortProperty(searchQuery.sortProperty);
                             sortOrder {
                                 option(selected: searchQuery.sortOrder == 'desc', 'desc')
                                 option(selected: searchQuery.sortOrder == 'asc', 'asc')
@@ -186,23 +174,10 @@ class SearchQueryController {
                 def searchQueryGroups = SearchQueryGroup.list().findAll {
                     it.username == userName && it.isPublic == false
                 };
-                def excludedProps = ['version',
-                        "errors", "__operation_class__",
-                        Events.ONLOAD_EVENT,
-                        Events.BEFORE_DELETE_EVENT,
-                        Events.BEFORE_INSERT_EVENT,
-                        Events.BEFORE_UPDATE_EVENT]
-                def netcoolDomainClass = grailsApplication.getDomainClass("NetcoolEvent");
-                def netcoolEventProps = netcoolDomainClass.properties.findAll {!excludedProps.contains(it.name)}
                 render(contentType: 'text/xml') {
                     Create {
                         group {
                             searchQueryGroups.each {
-                                option(it.name)
-                            }
-                        }
-                        sortProperty {
-                            netcoolEventProps.each {
                                 option(it.name)
                             }
                         }

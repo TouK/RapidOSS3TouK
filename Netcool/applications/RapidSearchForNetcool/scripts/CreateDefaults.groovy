@@ -18,6 +18,8 @@ CmdbScript.addScript(name: "NetcoolColumnMapping");
 CmdbScript.addScript(name: "NetcoolConfigurationLoader");
 CmdbScript.addScript(name: "importUsers");
 CmdbScript.addScript(name: "queryList");
+CmdbScript.addScript(name: "editQuery");
+CmdbScript.addScript(name: "createQuery");
 CmdbScript.addScript(name: "acknowledge");
 CmdbScript.addScript(name: "severity");
 CmdbScript.addScript(name: "takeOwnership");

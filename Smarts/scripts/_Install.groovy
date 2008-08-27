@@ -85,7 +85,7 @@ Ant.move(toDir:"${baseDir}/grails-app/controllers")
     Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/controllers/Rs*.groovy");
 }
 
-Ant.move(toDir:"${baseDir}/grails-app/generatedModels")
+Ant.move(toDir:"${baseDir}/generatedModels")
 {
     Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/generatedModels");
 }

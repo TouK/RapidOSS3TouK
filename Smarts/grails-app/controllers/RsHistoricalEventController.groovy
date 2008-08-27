@@ -1,7 +1,7 @@
 import com.ifountain.rcmdb.domain.util.ControllerUtils;
 
 
-class RsNotificationController {
+class RsHistoricalEventController {
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
 
@@ -10,20 +10,20 @@ class RsNotificationController {
 
     def list = {
         if(!params.max) params.max = 10
-        [ rsNotificationList: RsNotification.list( params ) ]
+        [ rsHistoricalNotificationList: RsHistoricalEvent.list( params ) ]
     }
 
     def show = {
-        def rsNotification = RsNotification.get([id:params.id])
+        def rsHistoricalNotification = RsHistoricalEvent.get([id:params.id])
 
-        if(!rsNotification) {
-            flash.message = "RsNotification not found with id ${params.id}"
+        if(!rsHistoricalNotification) {
+            flash.message = "RsHistoricalEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
-            if(rsNotification.class != RsNotification)
+            if(rsHistoricalNotification.class != RsHistoricalEvent)
             {
-                def controllerName = rsNotification.class.name;
+                def controllerName = rsHistoricalNotification.class.name;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();
@@ -36,125 +36,125 @@ class RsNotificationController {
             }
             else
             {
-                return [ rsNotification : rsNotification ]
+                return [ rsHistoricalNotification : rsHistoricalNotification ]
             }
         }
     }
 
     def delete = {
-        def rsNotification = RsNotification.get( [id:params.id])
-        if(rsNotification) {
+        def rsHistoricalNotification = RsHistoricalEvent.get( [id:params.id])
+        if(rsHistoricalNotification) {
             try{
-                rsNotification.remove()
-                flash.message = "RsNotification ${params.id} deleted"
+                rsHistoricalNotification.remove()
+                flash.message = "RsHistoricalEvent ${params.id} deleted"
                 redirect(action:list)
             }
             catch(e){
-                addError("default.couldnot.delete", [RsNotification, rsNotification])
+                addError("default.couldnot.delete", [RsHistoricalEvent, rsHistoricalNotification])
                 flash.errors = this.errors;
-                redirect(action:show, id:rsNotification.id)
+                redirect(action:show, id:rsHistoricalNotification.id)
             }
 
         }
         else {
-            flash.message = "RsNotification not found with id ${params.id}"
+            flash.message = "RsHistoricalEvent not found with id ${params.id}"
             redirect(action:list)
         }
     }
 
     def edit = {
-        def rsNotification = RsNotification.get( [id:params.id] )
+        def rsHistoricalNotification = RsHistoricalEvent.get( [id:params.id] )
 
-        if(!rsNotification) {
-            flash.message = "RsNotification not found with id ${params.id}"
+        if(!rsHistoricalNotification) {
+            flash.message = "RsHistoricalEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
-            return [ rsNotification : rsNotification ]
+            return [ rsHistoricalNotification : rsHistoricalNotification ]
         }
     }
 
 
     def update = {
-        def rsNotification = RsNotification.get( [id:params.id] )
-        if(rsNotification) {
-            rsNotification.update(ControllerUtils.getClassProperties(params, RsNotification));
-            if(!rsNotification.hasErrors()) {
-                flash.message = "RsNotification ${params.id} updated"
-                redirect(action:show,id:rsNotification.id)
+        def rsHistoricalNotification = RsHistoricalEvent.get( [id:params.id] )
+        if(rsHistoricalNotification) {
+            rsHistoricalNotification.update(ControllerUtils.getClassProperties(params, RsHistoricalEvent));
+            if(!rsHistoricalNotification.hasErrors()) {
+                flash.message = "RsHistoricalEvent ${params.id} updated"
+                redirect(action:show,id:rsHistoricalNotification.id)
             }
             else {
-                render(view:'edit',model:[rsNotification:rsNotification])
+                render(view:'edit',model:[rsHistoricalNotification:rsHistoricalNotification])
             }
         }
         else {
-            flash.message = "RsNotification not found with id ${params.id}"
+            flash.message = "RsHistoricalEvent not found with id ${params.id}"
             redirect(action:edit,id:params.id)
         }
     }
 
     def create = {
-        def rsNotification = new RsNotification()
-        rsNotification.properties = params
-        return ['rsNotification':rsNotification]
+        def rsHistoricalNotification = new RsHistoricalEvent()
+        rsHistoricalNotification.properties = params
+        return ['rsHistoricalNotification':rsHistoricalNotification]
     }
 
     def save = {
-        def rsNotification = RsNotification.add(ControllerUtils.getClassProperties(params, RsNotification))
-        if(!rsNotification.hasErrors()) {
-            flash.message = "RsNotification ${rsNotification.id} created"
-            redirect(action:show,id:rsNotification.id)
+        def rsHistoricalNotification = RsHistoricalEvent.add(ControllerUtils.getClassProperties(params, RsHistoricalEvent))
+        if(!rsHistoricalNotification.hasErrors()) {
+            flash.message = "RsHistoricalEvent ${rsHistoricalNotification.id} created"
+            redirect(action:show,id:rsHistoricalNotification.id)
         }
         else {
-            render(view:'create',model:[rsNotification:rsNotification])
+            render(view:'create',model:[rsHistoricalNotification:rsHistoricalNotification])
         }
     }
 
     def addTo = {
-        def rsNotification = RsNotification.get( [id:params.id] )
-        if(!rsNotification){
-            flash.message = "RsNotification not found with id ${params.id}"
+        def rsHistoricalNotification = RsHistoricalEvent.get( [id:params.id] )
+        if(!rsHistoricalNotification){
+            flash.message = "RsHistoricalEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
             if(relationName){
-                def otherClass = rsNotification.hasMany[relationName];
+                def otherClass = rsHistoricalNotification.hasMany[relationName];
                 def relatedObjectList = [];
                 if(otherClass){
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
                 }
-                return [rsNotification:rsNotification, relationName:relationName, relatedObjectList:relatedObjectList]
+                return [rsHistoricalNotification:rsHistoricalNotification, relationName:relationName, relatedObjectList:relatedObjectList]
             }
             else{
                flash.message = "No relation name specified for add relation action"
-               redirect(action:edit,id:rsNotification.id)
+               redirect(action:edit,id:rsHistoricalNotification.id)
             }
         }
     }
 
     def addRelation = {
-        def rsNotification = RsNotification.get( [id:params.id] )
-        if(!rsNotification) {
-            flash.message = "RsNotification not found with id ${params.id}"
+        def rsHistoricalNotification = RsHistoricalEvent.get( [id:params.id] )
+        if(!rsHistoricalNotification) {
+            flash.message = "RsHistoricalEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
-            def otherClass = rsNotification.hasMany[relationName];
+            def otherClass = rsHistoricalNotification.hasMany[relationName];
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
                       def relationMap = [:];
                       relationMap[relationName] = res;
-                      rsNotification.addRelation(relationMap);
-                      if(rsNotification.hasErrors()){
+                      rsHistoricalNotification.addRelation(relationMap);
+                      if(rsHistoricalNotification.hasErrors()){
                           def relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
-                          render(view:'addTo',model:[rsNotification:rsNotification, relationName:relationName, relatedObjectList:relatedObjectList])
+                          render(view:'addTo',model:[rsHistoricalNotification:rsHistoricalNotification, relationName:relationName, relatedObjectList:relatedObjectList])
                       }
                       else{
-                          flash.message = "RsNotification ${params.id} updated"
-                          redirect(action:edit,id:rsNotification.id)
+                          flash.message = "RsHistoricalEvent ${params.id} updated"
+                          redirect(action:edit,id:rsHistoricalNotification.id)
                       }
 
                 }
@@ -171,42 +171,42 @@ class RsNotificationController {
     }
 
     def removeRelation = {
-        def rsNotification = RsNotification.get( [id:params.id] )
-        if(!rsNotification) {
-            flash.message = "RsNotification not found with id ${params.id}"
+        def rsHistoricalNotification = RsHistoricalEvent.get( [id:params.id] )
+        if(!rsHistoricalNotification) {
+            flash.message = "RsHistoricalEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
-            def otherClass = rsNotification.hasMany[relationName];
+            def otherClass = rsHistoricalNotification.hasMany[relationName];
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
                       def relationMap = [:];
                       relationMap[relationName] = res;
-                      rsNotification.removeRelation(relationMap);
-                      if(rsNotification.hasErrors()){
-                          render(view:'edit',model:[rsNotification:rsNotification])
+                      rsHistoricalNotification.removeRelation(relationMap);
+                      if(rsHistoricalNotification.hasErrors()){
+                          render(view:'edit',model:[rsHistoricalNotification:rsHistoricalNotification])
                       }
                       else{
-                          flash.message = "RsNotification ${params.id} updated"
-                          redirect(action:edit,id:rsNotification.id)
+                          flash.message = "RsHistoricalEvent ${params.id} updated"
+                          redirect(action:edit,id:rsHistoricalNotification.id)
                       }
                 }
                 else{
                     flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
-                    redirect(action:edit,id:rsNotification.id)
+                    redirect(action:edit,id:rsHistoricalNotification.id)
                 }
             }
             else{
                 flash.message = "No relation exist with name ${relationName}"
-                redirect(action:edit,id:rsNotification.id)
+                redirect(action:edit,id:rsHistoricalNotification.id)
             }
         }
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("RsNotification")
+        def modelClass = grailsApplication.getClassForName("RsHistoricalEvent")
         if (modelClass)
         {
             try

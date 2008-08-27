@@ -32,8 +32,7 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
  */
 DEVICES = ["Host", "Switch", "Router", "Node", "Probe", "TerminalServer", "Bridge", "Hub"]
 CONNECTION_OBJECTS = ["NetworkConnection", "Cable", "TrunkCable"]
-CONTAINMENT_OBJECTS = ["IP", "MAC", "Card", "Interface", "Port", "SNMPAgent", "VoltageSensor", "PowerSupply",
-        "Fan", "TemperatureSensor", "Processor", "Memory", "LogicalDisk", "FileSystem"]
+CONTAINMENT_OBJECTS = ["IP", "Card", "Interface", "Port"]
 smartsToRcmdbPropertyMapping = ["A_AdminStatus": "aa_AdminStatus", "A_DisplayName": "aa_DisplayName",
         "A_OperStatus": "aa_OperStatus", "Z_AdminStatus": "zz_AdminStatus",
         "Z_DisplayName": "zz_DisplayName", "Z_OperStatus": "zz_OperStatus",
@@ -133,12 +132,11 @@ def handleDeviceChange(topologyObject) {
 
 def handleConnectionObjectCreate(topologyObject) {
     getLogger().debug("Create event received for connection object ${topologyObject}")
-    def connObjFromSmarts = getDatasource().getObject(topologyObject);
     def connObject = Link.add(getPropsWithLocalNames(topologyObject));
     if (!connObject.hasErrors()) {
+        def connObjFromSmarts = getDatasource().getObject(topologyObject);
         logger.info("Connection object ${topologyObject} successfully added.")
         connObjFromSmarts.ConnectedSystems.each {deviceFromSmarts ->
-            logger.debug("Creating device ${deviceFromSmarts}");
             def device = Device.add(name: deviceFromSmarts.Name, creationClassName: deviceFromSmarts.CreationClassName);
             if (!device.hasErrors()) {
                 logger.info("Device ${deviceFromSmarts} successfully added.");
@@ -207,8 +205,8 @@ def addSmartsDeviceToRepository(topologyObject) {
                 def containmentObject = addContainmentObject(containmentObjectFromSmarts);
                 if (!containmentObject.hasErrors()) {
                     logger.info("Containment object ${containmentObjectFromSmarts} successfully added.");
-                    device.addRelation(composedOf: containmentObject);
-                    logger.info("Relation between ${topologyObject} and ${containmentObjectFromSmarts} is created.")
+                    //device.addRelation(composedOf: containmentObject);
+                    //logger.info("Relation between ${topologyObject} and ${containmentObjectFromSmarts} is created.")
                 }
                 else {
                     logger.warn("Error creating device ${containmentObjectFromSmarts}. Reason: ${containmentObject.errors}");
@@ -222,8 +220,8 @@ def addSmartsDeviceToRepository(topologyObject) {
                 def containmentObject = addContainmentObject(containmentObjectFromSmarts);
                 if (!containmentObject.hasErrors()) {
                     logger.info("Containment object ${containmentObjectFromSmarts} successfully added.");
-                    device.addRelation(hostsAccessPoints: containmentObject);
-                    logger.info("Relation between ${topologyObject} and ${containmentObjectFromSmarts} is created.")
+                    //device.addRelation(hostsAccessPoints: containmentObject);
+                    //logger.info("Relation between ${topologyObject} and ${containmentObjectFromSmarts} is created.")
                 }
                 else {
                     logger.warn("Error creating device ${containmentObjectFromSmarts}. Reason: ${containmentObject.errors}");

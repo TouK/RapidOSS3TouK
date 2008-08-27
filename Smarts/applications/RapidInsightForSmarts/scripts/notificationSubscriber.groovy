@@ -24,14 +24,14 @@ existingObjectsRetrieved = false;
 def init(){
     logger = Logger.getLogger("topologySubscriber");
     logger.debug("Getting column mapping information.");
-    SmartsModel.get(name:"RsNotification").columns.each{SmartsModelColumn col->
+    SmartsModel.get(name:"RsEvent").columns.each{SmartsModelColumn col->
         columnLocalNameMappings[col.localName] = col.smartsName;
         columnSmartsNameMappings[col.smartsName] = col.localName;        
     }
 
     logger.debug("Marking all notifications as deleted.");
     notificationsMap = new CaseInsensitiveMap()
-    def notificationNames = RsNotification.termFreqs("name").term;
+    def notificationNames = RsEvent.termFreqs("name").term;
     notificationNames.each {
         notificationsMap[it] = "deleted";
     }
@@ -56,22 +56,22 @@ def update(notificationObject){
         existingObjectsRetrieved = true;
         logger.info("Existing objects retrieved and ${notificationsMap.size()} number of events will be moved to HistoricalNotification.");
         notificationsMap.each{String notificationName, String value->
-            def notification = RsNotification.search("name:${notificationName}").results[0];
+            def notification = RsEvent.search("name:${notificationName}").results[0];
             archiveNotification(notification);
         }
     }
     else if(eventType == BaseSmartsListeningAdapter.NOTIFY || eventType == BaseSmartsListeningAdapter.CHANGE)
     {
-        RsNotification.add(notificationProps);
+        RsEvent.add(notificationProps);
         logger.info("Added ${notificationProps.name} to repository");
     }
     else if(eventType == BaseSmartsListeningAdapter.CLEAR)
     {
-        archiveNotification(RsNotification.get(notificationProps));
+        archiveNotification(RsEvent.get(notificationProps));
     }
     else if(eventType == BaseSmartsListeningAdapter.ARCHIVE)
     {
-        archiveNotification(RsNotification.get(notificationProps));
+        archiveNotification(RsEvent.get(notificationProps));
     }
 }
 
@@ -82,7 +82,7 @@ def archiveNotification(notification)
     def historicalNotificationProps = [:];
     columnLocalNameMappings.each{String localName, String smartsName->
         historicalNotificationProps[localName] = notification[localName];
-        RsHistoricalNotification.add(historicalNotificationProps);
+        RsHistoricalEvent.add(historicalNotificationProps);
     }
     logger.info("${notification.name} is moved  to HistoricalNotification");
 }

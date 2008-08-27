@@ -8,7 +8,7 @@
           <Field SmartsName='IsManaged' LocalName='isManaged' IsDeleteMarker='false' Type='boolean' IsKey='false' />
         </Fields>
     </Model>
-    <Model Name="RsNotification">
+    <Model Name="RsEvent">
         <Fields>
             <Field SmartsName='Name' LocalName='name' IsDeleteMarker='false' Type='string' IsKey='false' />
             <Field SmartsName='CreationClassName' LocalName='creationClassName' IsDeleteMarker='false' Type='string' IsKey='false' />
@@ -54,7 +54,7 @@
             <Field SmartsName="UserDefined10" LocalName="userDefined10" Type="string" IsDeleteMarker="false" IsKey="false"/>
         </Fields>
         </Model>
-        <Model Name="RsHistoricalNotification" ParentName="RsSmartsObject">
+        <Model Name="RsHistoricalEvent">
             <Fields>
                 <Field SmartsName='Name' LocalName='name' IsDeleteMarker='false' Type='string' IsKey='false' />
                 <Field SmartsName='CreationClassName' LocalName='creationClassName' IsDeleteMarker='false' Type='string' IsKey='false' />

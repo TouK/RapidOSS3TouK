@@ -7,7 +7,7 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class HypericBuild {
-    def version = "$env.hyperic/HypVersion.txt";
+    def version = "$env.rapid_hyperic/HypVersion.txt";
     def versionInBuild = "$env.dist_rapid_suite/HypVersion.txt";
     def rapidCMDBBuild = new RapidCmdbBuild();
 

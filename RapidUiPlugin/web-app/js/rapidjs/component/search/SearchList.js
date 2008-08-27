@@ -446,15 +446,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             var dataNode = searchNode.xmlData;
             var data = dataNode.getAttributes();
             if(this.defaultFields)
+            {
 	            for (var i = 0; i < this.fields.length; i++)
 	            {
 		            var currentExpressionStr = this.fields[i]['exp'];
 				    var evaluationResult = eval(currentExpressionStr);
 				    if (evaluationResult)
 				    	insertedFields = this.fields[i]['fields'];
-				    else
-				    	insertedFields = this.defaultFields;
 				}
+				if(!insertedFields)
+					insertedFields = this.defaultFields;
+			}
 			else
 				insertedFields =this.fields;
             if (this.images) {

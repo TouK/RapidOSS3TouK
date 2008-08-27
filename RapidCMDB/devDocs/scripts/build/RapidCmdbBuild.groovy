@@ -44,6 +44,7 @@ class RapidCmdbBuild extends Build {
 //    def rapidInsightForNetcoolBuild = new RapidInsightForNetcoolBuild(this);
     def netcoolBuild = new NetcoolModuleBuild();
     def rapidUiBuild = new RapidUiPluginBuild();
+    def hypericBuild = new HypericBuild();
     static void main(String[] args) {
         RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();
         rapidCmdbBuilder.run(args);
@@ -327,6 +328,7 @@ class RapidCmdbBuild extends Build {
     def buildAdditionalPlugins(){
     	netcoolBuild.run([]);
     	smartsBuild.run([]);
+    	hypericBuild.run([]);
     }
     
     def buildModules(){

@@ -85,6 +85,15 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="scriptFile">Script File:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'scriptFile', 'errors')}">
+                            <input type="text" class="inputtextfield" id="scriptFile" name="scriptFile" value="${fieldValue(bean: cmdbScript, field: 'scriptFile')}"/>
+                        </td>
+                    </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="type">Type:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'type', 'errors')}">

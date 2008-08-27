@@ -43,6 +43,13 @@
                 </tr>
 
                 <tr class="prop">
+                    <td valign="top" class="name">Script File:</td>
+
+                    <td valign="top" class="value">${cmdbScript.scriptFile}</td>
+
+                </tr>
+
+                <tr class="prop">
                     <td valign="top" class="name">Type:</td>
 
                     <td valign="top" class="value">${cmdbScript.type}</td>

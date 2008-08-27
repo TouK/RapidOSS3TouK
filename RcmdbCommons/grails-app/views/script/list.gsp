@@ -21,6 +21,7 @@
 
                     <g:sortableColumn property="id" title="Id"/>
                     <g:sortableColumn property="name" title="Name"/>
+                    <g:sortableColumn property="scriptFile" title="File"/>
                     <g:sortableColumn property="type" title="Type"/>
                     <th></th>
                 </tr>
@@ -30,6 +31,7 @@
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <td><g:link action="show" id="${cmdbScript.id}">${cmdbScript.id?.encodeAsHTML()}</g:link></td>
                         <td>${cmdbScript.name?.encodeAsHTML()}</td>
+                        <td>${cmdbScript.scriptFile?.encodeAsHTML()}</td>
                         <td>${cmdbScript.type?.encodeAsHTML()}</td>
                         <td>
                             <%

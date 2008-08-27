@@ -28,28 +28,34 @@ class ScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
         ScriptManager.getInstance().destroy();
         deleteSimpleScript(scriptName);
     }
+
     public void testSimpleScriptAdd()
     {
-        createSimpleScript (scriptName);
-        def script = CmdbScript.add(name:scriptName)
+        def scriptFile = scriptName + "File"
+        createSimpleScript (scriptFile);
+        def script = CmdbScript.add(name:scriptName, scriptFile:scriptFile)
         assertNotNull(script)
         assertFalse(script.hasErrors())
     }
     public void testValidatesScriptBeforeAddAndIfScriptIsInvalidRetunsError()
     {
-        createErrornousScript(scriptName);
-        def script = CmdbScript.add(name:scriptName)
+        def scriptFile = scriptName + "File"
+        createErrornousScript(scriptFile);
+        def script = CmdbScript.add(name:scriptName, scriptFile:scriptFile)
         assertNotNull(script)
         assertTrue(script.hasErrors())
         assertEquals("script.compilation.error", script.errors.allErrors[0].code);
     }
     public void testNameisUnique()
     {
-        createSimpleScript(scriptName);
-        def script = CmdbScript.add(name:scriptName)
+        def scriptFile = scriptName + "File"
+        createSimpleScript(scriptFile);
+        def script = CmdbScript.add(name:scriptName, scriptFile:scriptFile)
         assertFalse(script.hasErrors())
 
-        script = new CmdbScript(name:scriptName)
+        def scriptFile2 = scriptName + "File2"
+        createSimpleScript(scriptFile2);
+        script = new CmdbScript(name:scriptName, scriptFile:scriptFile2)
         script.validate();
         assertTrue(script.hasErrors())
         println script.errors;

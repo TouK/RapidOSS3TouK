@@ -61,8 +61,32 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             scriptController.params["name"] = scriptName;
             scriptController.save();
 
-            def script = CmdbScript.findByName(scriptName);
+            CmdbScript script = CmdbScript.findByName(scriptName);
             assertNotNull (script);
+            assertEquals (scriptName, script.scriptFile);
+            assertEquals("/script/show/" + script.id, scriptController.response.redirectedUrl);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
+
+    public void testSaveWithScriptFileName()
+    {
+        String scriptFileName = "script1File"
+        String scriptName = "script1"
+        createSimpleScript(scriptFileName);
+        try
+        {
+            def scriptController = new ScriptController();
+            scriptController.params["name"] = scriptName;
+            scriptController.params["scriptFile"] = scriptFileName;
+            scriptController.save();
+
+            CmdbScript script = CmdbScript.findByName(scriptName);
+            assertNotNull (script);
+            assertEquals (scriptFileName, script.scriptFile);
             assertEquals("/script/show/" + script.id, scriptController.response.redirectedUrl);
         }
         finally
@@ -72,12 +96,14 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     }
     public void testSaveReturndErrorIfSyntaxExceptionExistInScript()
     {
+        String scriptFileName = "script1File"
         String scriptName = "script1"
-        createErrornousScript(scriptName);
+        createErrornousScript(scriptFileName);
         try
         {
             def scriptController = new ScriptController();
             scriptController.params["name"] = scriptName;
+            scriptController.params["scriptFile"] = scriptFileName;
             scriptController.save();
 
             def script = CmdbScript.findByName(scriptName);

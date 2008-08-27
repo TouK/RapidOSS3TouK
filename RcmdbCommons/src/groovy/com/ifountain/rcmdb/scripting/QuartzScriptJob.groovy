@@ -3,6 +3,7 @@ package com.ifountain.rcmdb.scripting
 import org.apache.log4j.Logger
 import org.quartz.JobExecutionContext
 import org.quartz.StatefulJob
+import script.CmdbScript
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -32,15 +33,23 @@ class QuartzScriptJob implements StatefulJob {
     public void execute(JobExecutionContext jobExecutionContext) {
         Logger logger = Logger.getRootLogger();
         String scriptName = jobExecutionContext.getJobDetail().getName();
-        try
+        CmdbScript script = CmdbScript.get(name:scriptName);
+        if(script == null)
         {
-            logger.debug("Running periodic script " + scriptName);
-            def result = ScriptManager.getInstance().runScript(scriptName, [:]);
-            logger.info("Periodic script ${scriptName} successfuly executed.")
+            logger.warn("Periodic script ${scriptName} does not exist");            
         }
-        catch (t)
+        else
         {
-            logger.warn("Exception in periodic script ${scriptName}", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+            try
+            {
+                logger.debug("Running periodic script " + scriptName);
+                def result = ScriptManager.getInstance().runScript(script.scriptFile, [:]);
+                logger.info("Periodic script ${scriptName} successfuly executed.")
+            }
+            catch (t)
+            {
+                logger.warn("Exception in periodic script ${scriptName}", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+            }
         }
     }
 

@@ -21,6 +21,7 @@ class CmdbScript {
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
     Long startDelay = 0;
     String name = "";
+    String scriptFile = "";
     String type = ONDEMAND;
     boolean enabled = false;
     String scheduleType = PERIODIC;
@@ -32,10 +33,11 @@ class CmdbScript {
     static transients = ["messageService"];
 
     static constraints = {
-        name(blank: false, key: [], validator: {val, obj ->
+        name(blank: false, key: []);
+        scriptFile(blank: false, validator: {val, obj ->
             try
             {
-                ScriptManager.getInstance().checkScript(obj.name);
+                ScriptManager.getInstance().checkScript(val);
             }
             catch (Throwable t)
             {
@@ -77,7 +79,7 @@ class CmdbScript {
 
     def reload() throws ScriptingException
     {
-        ScriptManager.getInstance().reloadScript(name);
+        ScriptManager.getInstance().reloadScript(scriptFile);
     }
 
     String toString()
@@ -86,9 +88,16 @@ class CmdbScript {
     }
 
     static def addScript(Map params, boolean fromController) throws Exception {
+        if(!params.get("scriptFile") || params.get("scriptFile").trim() == "")
+        {
+            params["scriptFile"] = params.name;    
+        }
         def script = CmdbScript.add(params)
         if (!script.hasErrors()) {
-            ScriptManager.getInstance().addScript(script.name);
+            if(ScriptManager.getInstance().getScript(script.scriptFile) == null)
+            {
+                ScriptManager.getInstance().addScript(script.scriptFile);
+            }
             if (script.type == SCHEDULED && script.enabled) {
                 if (script.scheduleType == CmdbScript.CRON) {
                     ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
@@ -110,6 +119,10 @@ class CmdbScript {
     static def deleteScript(CmdbScript script) throws Exception {
         def scriptName = script.name;
         script.remove()
+        if(CmdbScript.countHits("scriptFile:"+script.scriptFile) == 0)
+        {
+            ScriptManager.getInstance().removeScript(script.scriptFile);
+        }
         ScriptScheduler.getInstance().unscheduleScript(scriptName)
     }
 
@@ -124,8 +137,19 @@ class CmdbScript {
     }
 
     static def updateScript(CmdbScript script, Map params, boolean fromController) throws Exception {
+        def scriptFileBeforeUpdate = script.scriptFile;
         script.update(params);
+
         if (!script.hasErrors()) {
+
+            if(scriptFileBeforeUpdate != script.scriptFile && ScriptManager.getInstance().getScript(script.scriptFile) == null)
+            {
+                if(CmdbScript.countHits("scriptFile:"+scriptFileBeforeUpdate) == 0)
+                {
+                    ScriptManager.getInstance().removeScript(scriptFileBeforeUpdate);
+                }
+                ScriptManager.getInstance().addScript(script.scriptFile);
+            }
             ScriptScheduler.getInstance().unscheduleScript(script.name)
             if (script.type == SCHEDULED && script.enabled) {
                 if (script.scheduleType == CmdbScript.CRON) {
@@ -167,7 +191,7 @@ class CmdbScript {
     }
 
     static def runScript(CmdbScript script, Map params) throws Exception {
-        return ScriptManager.getInstance().runScript(script.name, params);
+        return ScriptManager.getInstance().runScript(script.scriptFile, params);
     }
 
     static def startListening(scriptName) throws Exception{

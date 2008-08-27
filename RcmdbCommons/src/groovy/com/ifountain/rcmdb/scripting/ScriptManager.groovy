@@ -80,6 +80,11 @@ class ScriptManager {
         scripts[scriptPath] = getScriptClass(scriptPath);
     }
 
+    def removeScript(String scriptPath)
+    {
+        scripts.remove(scriptPath)
+    }
+
 
     def getScript(String scriptPath)
     {

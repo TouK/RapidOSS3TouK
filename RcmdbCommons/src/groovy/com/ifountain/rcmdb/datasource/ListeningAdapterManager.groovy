@@ -54,9 +54,8 @@ class ListeningAdapterManager {
             adapter.unsubscribe();
             adapter.deleteObservers();
             ListeningAdapterObserver observer = observers.remove(adapter);
-            def scriptObject = ScriptManager.getInstance().getScriptObject(observer.scriptInstance);
             try {
-                scriptObject.cleanUp();
+                observer.scriptInstance.cleanUp();
             }
             catch (e) {
                 logger.warn("Error during script ${observer.scriptInstance} clean up . Reason: ${e.getMessage()}", e)
@@ -73,7 +72,7 @@ class ListeningAdapterManager {
             BaseListeningAdapter listeningAdapter = null;
             def scriptObject;
             try {
-                scriptObject = ScriptManager.getInstance().getScriptObject(script.name);
+                scriptObject = ScriptManager.getInstance().getScriptObject(script.scriptFile);
                 scriptObject.setProperty("datasource", listeningDatasource);
                 scriptObject.run();
                 def params = scriptObject.getParameters();

@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import org.springframework.validation.Validator
+import com.ifountain.rcmdb.domain.converter.BooleanConverter
 
 /**
 * Created by IntelliJ IDEA.
@@ -128,14 +129,16 @@ class AddMethodTest extends RapidCmdbTestCase{
             RapidConvertUtils.getInstance().register (new DateConverter(dateFormatString), Date.class)
             RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
             RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
+            RapidConvertUtils.getInstance().register (new BooleanConverter(), Boolean.class)
             AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
             AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, [:], ["prop1"]);
-            def props = [prop1:expectedDomainObject1.prop1,  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0"];
+            def props = [prop1:expectedDomainObject1.prop1,  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0", booleanProp:"TrUe"];
             def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
             assertEquals (100, addedObject.prop4);
             assertEquals (new Double(5.0), addedObject.doubleProp);
             SimpleDateFormat formater = new SimpleDateFormat(dateFormatString)  ;
             assertEquals (formater.parse("2000-01-01"), addedObject.prop5);
+            assertEquals (new Boolean(true), addedObject.booleanProp);
 
             props = [prop1:expectedDomainObject1.prop1,  prop4:"", prop5:"", doubleProp:""];
             addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
@@ -306,6 +309,7 @@ class AddMethodDomainObject1  extends GroovyObjectSupport
     Long prop4;
     Date prop5;
     Double doubleProp;
+    Boolean booleanProp;
     long id;
     def static searchWithoutTriggering(queryClosure)
     {

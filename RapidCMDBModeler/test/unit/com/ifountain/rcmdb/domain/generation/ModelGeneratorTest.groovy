@@ -13,6 +13,7 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.springframework.validation.Errors
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -152,6 +153,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             model.modelProperties += new ModelProperty(name:"prop7", type:ModelProperty.stringType, propertyDatasource:modelDatasource1, model:model);
             model.modelProperties += new ModelProperty(name:"prop8", type:ModelProperty.numberType, propertyDatasource:modelDatasource1, model:model);
             model.modelProperties += new ModelProperty(name:"prop9", type:ModelProperty.floatType, propertyDatasource:modelDatasource1, model:model);
+            model.modelProperties += new ModelProperty(name:"prop10", type:ModelProperty.booleanType, propertyDatasource:modelDatasource1, model:model);
+            model.modelProperties += new ModelProperty(name:"prop11", type:ModelProperty.booleanType, propertyDatasource:modelDatasource1, model:model, defaultValue:"True");
 
             modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp1, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
             modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:keyProp2, datasource:modelDatasource1, nameInDatasource:"KeyPropNameInDs");
@@ -177,6 +180,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             assertEquals(String, object.class.getDeclaredField("prop7").type);
             assertEquals(Long, object.class.getDeclaredField("prop8").type);
             assertEquals(Double, object.class.getDeclaredField("prop9").type);
+            assertEquals(Boolean, object.class.getDeclaredField("prop10").type);
+            assertEquals(Boolean, object.class.getDeclaredField("prop11").type);
 
             Closure searchable = object.searchable;
             ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
@@ -200,6 +205,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             assertEquals("", object.prop7);
             assertEquals(new Long(0), object.prop8);
             assertEquals(new Double(0), object.prop9);
+            assertEquals(new Boolean(false), object.prop10);
+            assertEquals(new Boolean(true), object.prop11);
 
             Closure contraintsClosure = object.constraints;
             ConstrainedPropertyBuilder contraintsClosurePropertyBuilder = new ConstrainedPropertyBuilder(object);
@@ -257,6 +264,15 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             assertTrue (prop.isNullable());
             assertNull(prop.getAppliedConstraint(ConstrainedProperty.BLANK_CONSTRAINT));
             assertNull ( prop.getAppliedConstraint("key"));
+
+            prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop10"];
+            assertTrue (prop.isNullable());
+            assertNull ( prop.getAppliedConstraint("key"));
+
+            prop = contraintsClosurePropertyBuilder.getConstrainedProperties()["prop11"];
+            assertTrue (prop.isNullable());
+            assertNull ( prop.getAppliedConstraint("key"));
+
 
         }finally
         {
@@ -589,6 +605,69 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         ModelGeneratorAdapter.generateModels([model1]);
         Class cls = compileClass(model1.name);
         assertTrue(cls.newInstance().datasources.RCMDB.keys.containsKey("id"));
+
+
+        def parentModel = new MockModel(name:"Parent");
+        def childModel = new MockModel(name:"Child", parentModel:parentModel);
+        def datasourceParent = new DatasourceName(name:"RCMDB");
+        def modelDatasourceParent = new MockModelDatasource(datasource:datasourceParent, model:parentModel);
+        parentModel.datasources += modelDatasourceParent;
+
+        ModelGeneratorAdapter.generateModels([parentModel, childModel]);
+
+        Class childClass = compileClass(childModel.name);
+
+        assertTrue(GrailsClassUtils.getStaticPropertyValue(childClass, "datasources").isEmpty());
+
+    }
+
+
+    public void testThrowsExceptionIfSameDatasourceDefinedForParentAndChild()
+    {
+
+
+        def parentModel = new MockModel(name:"Parent");
+        def subParentModel = new MockModel(name:"SubParent",parentModel:parentModel);
+        def childModel = new MockModel(name:"Child", parentModel:subParentModel);
+        def datasourceParent = new DatasourceName(name:"RCMDB");
+        def datasourceChild = new DatasourceName(name:"RCMDB");
+        def modelDatasourceParent = new MockModelDatasource(datasource:datasourceParent, model:parentModel);
+        def modelDatasourceChild = new MockModelDatasource(datasource:datasourceChild, model:childModel);
+        parentModel.datasources += modelDatasourceParent;
+        childModel.datasources += modelDatasourceChild;
+
+        try
+        {
+            ModelGeneratorAdapter.generateModels([parentModel, childModel, subParentModel]);
+            fail("Should throw exception");
+        }
+        catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.duplicateParentDatasource(datasourceChild.name, childModel.name, parentModel.name).getMessage(), e.getMessage());
+        }
+    }
+
+    public void testThrowsExceptionIfSameDatasourceDefined()
+    {
+
+
+        def childModel = new MockModel(name:"Child");
+        def datasourceChild1 = new DatasourceName(name:"RCMDB");
+        def datasourceChild2 = new DatasourceName(name:"RCMDB");
+        def modelDatasourceChild1 = new MockModelDatasource(datasource:datasourceChild1, model:childModel);
+        def modelDatasourceChild2 = new MockModelDatasource(datasource:datasourceChild2, model:childModel);
+        childModel.datasources += modelDatasourceChild1;
+        childModel.datasources += modelDatasourceChild2;
+
+        try
+        {
+            ModelGeneratorAdapter.generateModels([childModel]);
+            fail("Should throw exception");
+        }
+        catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.duplicateDatasource(datasourceChild1.name, childModel.name).getMessage(), e.getMessage());
+        }
     }
 
 

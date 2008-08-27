@@ -1,0 +1,6 @@
+
+    
+    class RsHsrpGroupOperations extends RsSmartsObjectOperations
+    {
+    }
+    

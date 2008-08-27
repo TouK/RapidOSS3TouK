@@ -43,7 +43,7 @@ def getModelXmls()
         def parentName = modelXml.@ParentName.text();
         def modelMetaProps = [name:modelName];
         logger.info ("Creating model ${modelName} with ${fields.size()} number of properties and ${relations.size()} number of relations");
-        if(parentName != null)
+        if(parentName != null && parentName != "")
         {
             logger.info ("Model ${modelName} is a child of ${parentName}");
             modelMetaProps["parentModel"] = parentName;
@@ -82,10 +82,13 @@ def getModelXmls()
                 }
                 modelBuilder.Datasources()
                 {
-                    modelBuilder.Datasource(name:"RCMDB")
+                    if(parentName == null  || parentName == "")
                     {
-                        keys.each{
-                            modelBuilder.Key(propertyName:it, nameInDatasource:it);
+                        modelBuilder.Datasource(name:"RCMDB")
+                        {
+                            keys.each{
+                                modelBuilder.Key(propertyName:it, nameInDatasource:it);
+                            }
                         }
                     }
                 }

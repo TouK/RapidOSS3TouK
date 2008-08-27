@@ -1,0 +1,6 @@
+
+    
+    class RsLinkOperations extends RsSmartsObjectOperations
+    {
+    }
+    

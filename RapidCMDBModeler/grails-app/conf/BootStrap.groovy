@@ -16,6 +16,7 @@ import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import com.ifountain.compass.SingleCompassSessionManager
+import com.ifountain.rcmdb.domain.converter.BooleanConverter
 
 class BootStrap {
     def quartzScheduler;
@@ -72,6 +73,7 @@ class BootStrap {
         RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
         RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
         RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
+        RapidConvertUtils.getInstance().register(new BooleanConverter(), Boolean.class)
     }
 
     def registerDefaultUsers()

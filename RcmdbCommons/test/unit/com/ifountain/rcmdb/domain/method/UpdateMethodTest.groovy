@@ -9,6 +9,7 @@ import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import com.ifountain.rcmdb.domain.util.Relation
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import java.text.SimpleDateFormat
+import com.ifountain.rcmdb.domain.converter.BooleanConverter
 
 /**
 * Created by IntelliJ IDEA.
@@ -181,10 +182,11 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             RapidConvertUtils.getInstance().register (new DateConverter(dateFormatString), Date.class)
             RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
             RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
+            RapidConvertUtils.getInstance().register (new BooleanConverter(), Boolean.class)
 
             AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
             AddMethodDomainObject1.reindexList.clear();
-            def props = [prop1:object.prop1, prop2:"newProp2Value",  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0"];
+            def props = [prop1:object.prop1, prop2:"newProp2Value",  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0", booleanProp:"FAlse"];
             UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:]);
             def updatedObject = update.invoke (object, [props] as Object[]);
             assertEquals (100, updatedObject.id);
@@ -192,12 +194,13 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             assertEquals ("object1Prop3Value", updatedObject.prop3);
             assertEquals (100, updatedObject.prop4);
             assertEquals (new Double(5.0), updatedObject.doubleProp);
+            assertEquals (new Boolean(false), updatedObject.booleanProp);
             SimpleDateFormat formater = new SimpleDateFormat(dateFormatString)  ;
             assertEquals (formater.parse("2000-01-01"), updatedObject.prop5);
             assertSame (updatedObject, AddMethodDomainObject1.reindexList[0]);
 
             AddMethodDomainObject1.reindexList.clear();
-            props = [prop1:object.prop1, prop2:"",  prop4:"", prop5:"", doubleProp:""];
+            props = [prop1:object.prop1, prop2:"",  prop4:"", prop5:"", doubleProp:"", booleanProp:""];
             update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:]);
             updatedObject = update.invoke (object, [props] as Object[]);
 
@@ -206,10 +209,12 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             assertEquals (null, updatedObject.prop4);
             assertEquals (null, updatedObject.doubleProp);
             assertEquals (null, updatedObject.prop5);
+            assertEquals (null, updatedObject.booleanProp);
+            println updatedObject.booleanProp;
             assertSame (updatedObject, AddMethodDomainObject1.reindexList[0]);
 
             AddMethodDomainObject1.reindexList.clear();
-            props = [prop1:object.prop1, prop2:null,  prop4:null, prop5:null, doubleProp:null];
+            props = [prop1:object.prop1, prop2:null,  prop4:null, prop5:null, doubleProp:null, booleanProp:null];
             update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), [:]);
             updatedObject = update.invoke (object, [props] as Object[]);
 
@@ -218,6 +223,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
             assertEquals (null, updatedObject.prop4);
             assertEquals (null, updatedObject.doubleProp);
             assertEquals (null, updatedObject.prop5);
+            assertEquals (null, updatedObject.booleanProp);
             assertSame (updatedObject, AddMethodDomainObject1.reindexList[0]);
             
 

@@ -20,7 +20,7 @@ import org.compass.core.converter.basic.FormatConverter
 * Time: 1:21:35 PM
 * To change this template use File | Settings | File Templates.
 */
-abstract class AbstractCompassConverterWrapper  implements FormatConverter, CompassConfigurable, ResourcePropertyConverter{
+abstract class AbstractCompassConverterWrapper  implements ResourcePropertyConverter{
     public boolean marshall(Resource resource, Object o, Mapping mapping, MarshallingContext marshallingContext) {
         return getConverter().marshall(resource, o, mapping, marshallingContext);
     }
@@ -67,14 +67,7 @@ abstract class AbstractCompassConverterWrapper  implements FormatConverter, Comp
         return ((ResourcePropertyConverter)getConverter()).suggestOmitNorms ();
     }
 
-    public void setFormat(String s) {
-        getConverter().setFormat (s);
-    }
 
-    public FormatConverter copy() {
-        return getConverter().copy();
-    }
-
-    protected abstract FormatConverter getConverter();
+    protected abstract Converter getConverter();
     protected abstract Object getDefaultValue();
 }

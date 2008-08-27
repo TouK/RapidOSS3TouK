@@ -1,0 +1,6 @@
+
+    
+    class RsPortOperations extends RsNetworkAdapterOperations
+    {
+    }
+    

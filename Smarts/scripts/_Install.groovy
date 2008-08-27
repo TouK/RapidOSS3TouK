@@ -59,30 +59,10 @@ choices.each{
         {
             Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/conf");
         }
-        /*Ant.move(toDir:"${baseDir}/grails-app/views")
-        {
-            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/views");
-        }*/
-
-       /* Ant.move(toDir:"${baseDir}/grails-app/controllers")
-        {
-            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/controllers");
-        }*/
-
-        /*Ant.move(toDir:"${baseDir}/grails-app/domain")
-        {
-            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/domain");
-        } */
-
         Ant.move(toDir:"${baseDir}/plugins/${pluginName}/grails-app")
         {
             Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/**");
         }
-
-//        Ant.move(toDir:"${baseDir}/plugins/${pluginName}/src")
-//        {
-//            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidInsightForSmarts/src/**");
-//        }
 
         Ant.move(toDir:"${baseDir}/scripts")
         {
@@ -97,37 +77,23 @@ choices.each{
         {
             Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations");
         }
-
-        /*Ant.move(toDir:"${baseDir}/generatedModels")
-        {
-            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/generatedModels");
-        } */
     }
 }
 
-//Ant.move(toDir:"${baseDir}/grails-app/controllers")
-//{
-//    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/controllers/NetcoolEventController.groovy");
-//    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/controllers/NetcoolJournalController.groovy");
-//}
-//Ant.move(toDir:"${baseDir}/grails-app/views/netcoolEvent")
-//{
-//    Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/grails-app/views/netcoolEvent");
-//}
-//
-//Ant.move(toDir:"${baseDir}/grails-app/views/netcoolJournal")
-//{
-//    Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/grails-app/views/netcoolJournal");
-//}
-//
-//Ant.move(toDir:"${baseDir}/grails-app/domain")
-//{
-//    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/domain/NetcoolEvent.groovy");
-//    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/domain/NetcoolJournal.groovy");
-//}
-//
-//Ant.move(toDir:"${baseDir}/operations")
-//{
-//    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/operations/NetcoolEventOperations.groovy");
-//}
+Ant.move(toDir:"${baseDir}/grails-app/controllers")
+{
+    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/controllers/Rs*.groovy");
+}
+Ant.move(toDir:"${baseDir}/grails-app/views")
+{
+    Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/grails-app/views/rs*");
+}
+Ant.move(toDir:"${baseDir}/grails-app/domain")
+{
+    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/domain/Rs*.groovy");
+}
+Ant.move(toDir:"${baseDir}/operations")
+{
+    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/operations/**");
+}
 

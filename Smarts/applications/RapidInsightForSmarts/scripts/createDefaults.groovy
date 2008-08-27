@@ -12,7 +12,7 @@ import datasource.SmartsModel
 CmdbScript.addScript(name: "modelCreator");
 CmdbScript.addScript(name: "getDevices");
 CmdbScript.addScript(name: "removeAll");
-if(SmartsModel.get(name:"Notification") == null)
+if(SmartsModel.get(name:"RsNotification") == null)
 {
     CmdbScript.runScript("modelCreator", [web:[:]]);   
 }

@@ -16,6 +16,7 @@ class ModelGenerator
     public static final String FLOAT_TYPE = "float"
     public static final String STRING_TYPE = "string"
     public static final String DATE_TYPE = "date"
+    public static final String BOOLEAN_TYPE = "boolean"
     public static final String RELATION_TYPE_ONE = "One"
     public static final String RELATION_TYPE_MANY = "Many"
     public static final String MODEL_FILE_DIR = "grails-app/domain";
@@ -105,7 +106,23 @@ class ModelGenerator
                 {
                     throw ModelGenerationException.noKeySpecifiedForDatasource(dsName, modelName);
                 }
+                checkDatasourceExistInParent(modelMetaData, modelMetaDatas, modelMetaData.modelName, dsName);
             }
+        }
+    }
+
+    def checkDatasourceExistInParent(ModelMetaData modelMetaData, modelMetaDatas, modelName, datasourceName)
+    {
+        if(modelMetaData.parentModelName)
+        {
+            ModelMetaData parentModel = modelMetaDatas[modelMetaData.parentModelName];
+            parentModel.datasourceConfiguration.each{dsName,dsConf->
+                if(dsName == datasourceName)
+                {
+                    throw ModelGenerationException.duplicateParentDatasource(datasourceName, modelName, parentModel.modelName);
+                }
+            }
+            checkDatasourceExistInParent(parentModel, modelMetaDatas, modelName, datasourceName);
         }
     }
 
@@ -186,6 +203,10 @@ class ModelMetaData
                 {
                     keys["id"] = ["nameInDs":"id"];
                 }
+            }
+            if(datasourceConfiguration.containsKey(dsName))
+            {
+                throw ModelGenerationException.duplicateDatasource(dsName, modelName);
             }
             datasourceConfiguration[dsName] = dsConf;
         }
@@ -334,6 +355,10 @@ class ModelMetaData
         {
             return Date.simpleName;
         }
+        else if(type == ModelGenerator.BOOLEAN_TYPE)
+        {
+            return Boolean.simpleName;
+        }
         else
         {
             return Object.simpleName;
@@ -357,6 +382,10 @@ class ModelMetaData
             DateConverter converter = RapidConvertUtils.getInstance().lookup (Date.class);
             Date date = defaultValue?converter.formater.parse (defaultValue):new Date(0);
             return "new Date(${date.getTime()})";
+        }
+        else if(type == "boolean")
+        {
+            return defaultValue?"${new Boolean(defaultValue).booleanValue()}":"false";
         }
         else
         {

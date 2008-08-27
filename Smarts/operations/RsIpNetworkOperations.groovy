@@ -1,0 +1,6 @@
+
+    
+    class RsIpNetworkOperations extends RsSmartsObjectOperations
+    {
+    }
+    

@@ -8,18 +8,12 @@
           <Field SmartsName='IsManaged' LocalName='isManaged' IsDeleteMarker='false' Type='boolean' IsKey='false' />
         </Fields>
     </Model>
-    <Model Name="RsDevice" ParentName="RsSmartsObject">
+    <Model Name="RsNotification">
         <Fields>
-        </Fields>
-    </Model>
-
-    <Model Name="RsDeviceComponent" ParentName="RsSmartsObject">
-        <Fields>
-            <Field SmartsName="DeviceName" LocalName="deviceName" Type="string" IsDeleteMarker="false" IsKey="true"/>
-        </Fields>
-    </Model>
-    <Model Name="RsNotification" ParentName="RsSmartsObject">
-        <Fields>
+            <Field SmartsName='Name' LocalName='name' IsDeleteMarker='false' Type='string' IsKey='false' />
+            <Field SmartsName='CreationClassName' LocalName='creationClassName' IsDeleteMarker='false' Type='string' IsKey='false' />
+            <Field SmartsName='Description' LocalName='description' IsDeleteMarker='false' Type='string' IsKey='false' />
+            <Field SmartsName='DisplayName' LocalName='displayName' IsDeleteMarker='false' Type='string' IsKey='false' />
             <Field SmartsName="ClassName" LocalName="className" Type="string" IsDeleteMarker="false" IsKey="true"/>
             <Field SmartsName="InstanceName" LocalName="instanceName" Type="string" IsDeleteMarker="false" IsKey="true"/>
             <Field SmartsName="EventName" LocalName="eventName" Type="string" IsDeleteMarker="false" IsKey="true"/>
@@ -62,6 +56,10 @@
         </Model>
         <Model Name="RsHistoricalNotification" ParentName="RsSmartsObject">
             <Fields>
+                <Field SmartsName='Name' LocalName='name' IsDeleteMarker='false' Type='string' IsKey='false' />
+                <Field SmartsName='CreationClassName' LocalName='creationClassName' IsDeleteMarker='false' Type='string' IsKey='false' />
+                <Field SmartsName='Description' LocalName='description' IsDeleteMarker='false' Type='string' IsKey='false' />
+                <Field SmartsName='DisplayName' LocalName='displayName' IsDeleteMarker='false' Type='string' IsKey='false' />
                 <Field SmartsName="ClassName" LocalName="className" Type="string" IsDeleteMarker="false" IsKey="false"/>
                 <Field SmartsName="InstanceName" LocalName="instanceName" Type="string" IsDeleteMarker="false" IsKey="false"/>
                 <Field SmartsName="EventName" LocalName="eventName" Type="string" IsDeleteMarker="false" IsKey="false"/>
@@ -121,11 +119,11 @@
             <Field SmartsName="NumberOfInterfaces" LocalName="numberOfInterfaces" Type="number"/>
             <Field SmartsName="NumberOfNetworkAdapters" LocalName="numberOfNetworkAdapters" Type="number"/>
             <Field SmartsName="NumberOfPorts" LocalName="numberOfPorts" Type="number"/>
-            <Field SmartsName="OSVersion" LocalName="oSVersion" Type="string"/>
+            <Field SmartsName="OSVersion" LocalName="osVersion" Type="string"/>
             <Field SmartsName="PrimaryOwnerContact" LocalName="primaryOwnerContact" Type="string"/>
             <Field SmartsName="PrimaryOwnerName" LocalName="primaryOwnerName" Type="string"/>
             <Field SmartsName="ReadCommunity" LocalName="readCommunity" Type="string"/>
-            <Field SmartsName="SNMPAddress" LocalName="sNMPAddress" Type="string"/>
+            <Field SmartsName="SNMPAddress" LocalName="snmpAddress" Type="string"/>
             <Field SmartsName="SupportsSNMP" LocalName="supportsSNMP" Type="boolean"/>
             <Field SmartsName="SystemName" LocalName="systemName" Type="string"/>
             <Field SmartsName="SystemObjectID" LocalName="systemObjectID" Type="string"/>
@@ -152,7 +150,7 @@
             <Field SmartsName="Address" LocalName="address" Type="string"/>
             <Field SmartsName="CreationClassName" LocalName="creationClassName" Type="string"/>
             <Field SmartsName="Description" LocalName="description" Type="string"/>
-            <Field SmartsName="IPStatus" LocalName="iPStatus" Type="string"/>
+            <Field SmartsName="IPStatus" LocalName="ipStatus" Type="string"/>
             <Field SmartsName="InterfaceAdminStatus" LocalName="interfaceAdminStatus" Type="string"/>
             <Field SmartsName="InterfaceMode" LocalName="interfaceMode" Type="string"/>
             <Field SmartsName="InterfaceName" LocalName="interfaceName" Type="string"/>
@@ -253,8 +251,8 @@
     </Model>
     <Model Name="RsVlan" ParentName="RsSmartsObject">
         <Fields>
-            <Field SmartsName="VLANKey" LocalName="vLANKey" Type="string"/>
-            <Field SmartsName="VLANNumber" LocalName="vLANNumber" Type="number"/>
+            <Field SmartsName="VLANKey" LocalName="vlanKey" Type="string"/>
+            <Field SmartsName="VLANNumber" LocalName="vlanNumber" Type="number"/>
         </Fields>
     </Model>
     <Model Name="RsHsrpGroup" ParentName="RsSmartsObject">

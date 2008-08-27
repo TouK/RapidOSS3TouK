@@ -21,6 +21,7 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
 import datasource.BaseListeningDatasource
+import com.ifountain.rcmdb.domain.converter.BooleanConverter
 
 class BootStrap {
     def quartzScheduler;
@@ -184,6 +185,7 @@ class BootStrap {
         RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
         RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
         RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
+        RapidConvertUtils.getInstance().register(new BooleanConverter(), Boolean.class)
     }
 
 

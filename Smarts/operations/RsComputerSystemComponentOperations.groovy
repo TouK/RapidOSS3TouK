@@ -1,0 +1,6 @@
+
+    
+    class RsComputerSystemComponentOperations extends RsSmartsObjectOperations
+    {
+    }
+    

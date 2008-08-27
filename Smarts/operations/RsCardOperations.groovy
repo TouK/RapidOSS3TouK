@@ -1,0 +1,6 @@
+
+    
+    class RsCardOperations extends RsComputerSystemComponentOperations
+    {
+    }
+    

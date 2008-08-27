@@ -4,6 +4,7 @@ import com.ifountain.rcmdb.domain.converter.CompassLongConverter
 import grails.util.GrailsUtil
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.compass.analyzer.WhiteSpaceLowerCaseAnalyzer
+import com.ifountain.rcmdb.domain.converter.CompassBooleanConverter
 
 /**
 * Grails Searchable Plugin configuration
@@ -52,6 +53,7 @@ class SearchableConfiguration {
     "compass.converter.date.format":"${dateFormat}||yyyy-dd-MM||yyyy-dd-MM HH||yyyy-dd-MM HH:mm||yyyy-dd-MM HH:mm:ss||MM-dd-yyyy||MM-dd-yyyy HH||MM-dd-yyyy HH:mm||MM-dd-yyyy HH:mm:ss".toString(),
     "compass.converter.long.type":CompassLongConverter.class.name,
     "compass.converter.long.format":"#000000000000000000000000000000",
+    "compass.converter.boolean.type":CompassBooleanConverter.class.name,
     "compass.converter.double.type":CompassDoubleConverter.class.name,
     "compass.converter.double.format":"#000000000000000000000000000000",
     "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name,

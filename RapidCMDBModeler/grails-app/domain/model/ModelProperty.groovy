@@ -10,6 +10,7 @@ class ModelProperty {
     def static final String numberType = "number";
     def static final String dateType = "date";
     def static final String floatType = "float";
+    def static final String booleanType = "boolean";
     String name;
     String type;
     boolean blank = true;
@@ -75,12 +76,24 @@ class ModelProperty {
                     {
                         return ['modelproperty.defaultvalue.invaliddate', converter.format]
                     }
-                } 
+                }
+                else if(obj.type == booleanType)
+                {
+                    def converter = RapidConvertUtils.getInstance().lookup (Boolean.class);
+                    try
+                    {
+                        converter.convert(Boolean.class, val);
+                    }
+                    catch(org.apache.commons.beanutils.ConversionException e)
+                    {
+                        return ['modelproperty.defaultvalue.invalidboolean']
+                    }
+                }
             }
 
         });
         propertySpecifyingDatasource(nullable:true);
-        type(inList:[stringType, numberType, dateType, floatType]);
+        type(inList:[stringType, numberType, dateType, floatType, booleanType]);
         lazy(validator:{val, obj ->
             if(val && obj.propertyDatasource != null && obj.propertyDatasource.datasource.name == RapidCMDBConstants.RCMDB){
                 return ["model.invalid.lazy"]       
@@ -113,33 +126,6 @@ class ModelProperty {
              }
         })
     }
-
-
-    def convertToRealType()
-    {
-        if(type == stringType)
-        {
-            return "String";
-        }
-        else if(type == numberType)
-        {
-            return "Long"
-        }
-        else if(type == dateType)
-        {
-            return "Date";
-        }
-        else if(type == floatType)
-        {
-            return "Double";
-        }
-        else
-        {
-            return "Object";
-        }
-    }
-
-    
     String toString(){
         return "$name";
     }

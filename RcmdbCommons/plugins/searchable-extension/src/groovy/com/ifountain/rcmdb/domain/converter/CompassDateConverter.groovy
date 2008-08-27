@@ -1,7 +1,6 @@
 package com.ifountain.rcmdb.domain.converter
 
 import org.compass.core.converter.Converter
-import org.compass.core.converter.basic.FormatConverter
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,11 +9,11 @@ import org.compass.core.converter.basic.FormatConverter
  * Time: 5:59:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CompassDateConverter extends AbstractCompassConverterWrapper
+public class CompassDateConverter extends AbstractCompassFormattedConverterWrapper
 {
     org.compass.core.converter.basic.DateConverter dateConverter = new org.compass.core.converter.basic.DateConverter();
 
-    protected FormatConverter getConverter() {
+    protected Converter getConverter() {
         return dateConverter; //To change body of implemented methods use File | Settings | File Templates.
     }
 

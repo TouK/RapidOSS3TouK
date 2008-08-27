@@ -170,7 +170,7 @@
     <ul>
         <li><b>name:</b>&nbsp; Name of the property.</li>
 
-        <li><b>type:</b> Supported types are string, number, date</li>
+        <li><b>type:</b> Supported types are string, number, date, boolean, float</li>
         <li><b>nameInDatasource:</b> Required if the modeled name and the name of the property in the datasource that is used to retrieve the property are not the same.</li>
         <li><b>blank:</b> true/false. Default value is <b>true</b>. When false, a value must be supplied while adding an instance of this modeled class unless a default value is supplied for the property. CRUD operations are performed on the master datasource therefore this property applies to properties defined for the master datasource.</li>
         <li><b>default:</b> Default value for a property. When defined for a property with blank=false, this property will no longer be mandatory during an add operation but can be supplied optionally.</li>

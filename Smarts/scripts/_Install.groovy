@@ -86,7 +86,9 @@ Ant.move(toDir:"${baseDir}/grails-app/controllers")
 }
 Ant.move(toDir:"${baseDir}/grails-app/views")
 {
-    Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/grails-app/views/rs*");
+    Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/grails-app/views"){
+        Ant.filename(expression:"rs*/**")
+    }
 }
 Ant.move(toDir:"${baseDir}/grails-app/domain")
 {
@@ -94,6 +96,6 @@ Ant.move(toDir:"${baseDir}/grails-app/domain")
 }
 Ant.move(toDir:"${baseDir}/operations")
 {
-    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/operations/**");
+    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/operations/**");
 }
 

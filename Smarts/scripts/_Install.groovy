@@ -87,7 +87,7 @@ Ant.move(toDir:"${baseDir}/grails-app/controllers")
 Ant.move(toDir:"${baseDir}/grails-app/views")
 {
     Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/grails-app/views"){
-        Ant.filename(expression:"rs*/**")
+        Ant.filename(name:"rs*/**")
     }
 }
 Ant.move(toDir:"${baseDir}/grails-app/domain")

@@ -58,9 +58,10 @@ public class SmartsTopologyListeningAdapter extends BaseSmartsListeningAdapter {
         SmRemoteDomainManager domainManager = ((SmartsConnectionImpl) getConnection()).getDomainManager();
         domainManager.topologySubscribe();
         logger.info(logPrefix + "Subscribed to topology objects.");
-        try {
-            for (int i = 0; i < subscribeParams.length; i++) {
-                String className = subscribeParams[i].getClassName();
+
+        for (int i = 0; i < subscribeParams.length; i++) {
+            String className = subscribeParams[i].getClassName();
+            try {
                 if (domainManager.isInstrumented(className)) {
                     logger.warn(logPrefix + "Instrumented class \"" + className + "\" cannot be monitored");
                     continue;
@@ -91,10 +92,11 @@ public class SmartsTopologyListeningAdapter extends BaseSmartsListeningAdapter {
                     }
                 }
             }
+            catch (Exception ex) {
+                throw new Exception("Could not registered to properties of "+className+". Reason : " + ex.toString());
+            }
         }
-        catch (Exception ex) {
-            throw new Exception("Could not registered to properties. Reason : " + ex.toString());
-        }
+
     }
 
     protected void unsubscribeFrom() throws Exception {

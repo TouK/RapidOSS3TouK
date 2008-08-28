@@ -13,7 +13,7 @@ class HypericBuild extends Build{
 	}
 
     def build(){
-        createPlugin(env.rapid_hyperic,[]);
+        createPlugin(env.rapid_hyperic,["generatedModels/**"]);
     }
 
 }

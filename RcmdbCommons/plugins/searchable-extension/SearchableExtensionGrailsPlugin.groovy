@@ -70,7 +70,7 @@ class SearchableExtensionGrailsPlugin {
         }
         catch(t)
         {
-            logger.debug("Delete method injection didnot performed by hibernate plugin.", t);
+            logger.debug("Delete method injection didnot performed for ${dc.name} by hibernate plugin.");
         }
         addBasicPersistenceMethods(dc, application, ctx)
         addQueryMethods(dc, application, ctx)

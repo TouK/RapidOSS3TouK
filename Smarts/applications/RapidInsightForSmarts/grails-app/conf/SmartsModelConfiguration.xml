@@ -241,7 +241,7 @@
         <Fields>
         </Fields>
     </Model>
-    <Model Name="RsIpNetwork" ParentName="RsSmartsObject">
+    <Model Name="RsIpNetwork" ParentName="RsGroup">
         <Fields>
             <Field SmartsName="ConnectedSystems" LocalName="connectedSystems"/>
             <Field SmartsName="ConnectedTo" LocalName="connectedTo"/>

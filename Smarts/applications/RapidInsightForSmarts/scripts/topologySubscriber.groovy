@@ -133,6 +133,7 @@ CLASSES_TO_BE_SUBSCRIBED = ["RsComputerSystem", "RsComputerSystemComponent", "Rs
 COLUMN_MAPPING_DATA = null;
 logger = null;
 Map topologyMap = null;
+existingObjectsRetrieved = false;
 
 def getParameters() {
     COLUMN_MAPPING_DATA = [:];
@@ -178,11 +179,12 @@ def init() {
 
     logger.debug("Marking all devices as deleted.");
     topologyMap = new CaseInsensitiveMap();
-    def deviceNames = RsSmartsObject.termFreqs("name").term;
+    def deviceNames = RsSmartsObject.termFreqs("name", [size:10000000000]);
     deviceNames.each {
-        topologyMap[it] = "deleted";
+        topologyMap[it.getTerm()] = "deleted";
     }
     logger.debug("Marked all devices as deleted.");
+    existingObjectsRetrieved = false;
 
 }
 
@@ -209,8 +211,21 @@ def update(topologyObject) {
 
     String eventType = topologyObject[BaseSmartsListeningAdapter.EVENT_TYPE_NAME];
     String className = topologyObject["CreationClassName"];
-
-    if (eventType == BaseSmartsListeningAdapter.CREATE) {
+    if(!existingObjectsRetrieved)
+    {
+        topologyMap.remove(topologyObject.Name);
+    }
+    if(eventType == BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED)
+    {
+        existingObjectsRetrieved = true;
+        logger.info("Existing objects retrieved and ${topologyMap.size()} number of objects will be deleted.");
+        topologyMap.each{String objectName, String value->
+            logger.debug("Deleting non existing object ${objectName}.");
+            RsSmartsObject.get(name:objectName)?.remove();
+        }
+        topologyMap.clear();
+    }
+    else if (eventType == BaseSmartsListeningAdapter.CREATE) {
         if (isComputerSystem(className)) {
             handleComputerSystemCreate(topologyObject);
         }
@@ -346,7 +361,6 @@ def addComputerSystemToRepository(topologyObject) {
     Map deviceFromSmarts = getDatasource().getObject(topologyObject);
     RsComputerSystem computerSystem = RsComputerSystem.add(getPropsWithLocalNames("RsComputerSystem", deviceFromSmarts))
     if (!computerSystem.hasErrors()) {
-        topologyMap.remove(computerSystem.name);
         def existingCompSystems = getExistingCompouterSystems(computerSystem.name);
         def existingConnections = getExistingConnections(computerSystem.name);
         def computerSystemComponents = [];
@@ -378,7 +392,6 @@ def addComputerSystemToRepository(topologyObject) {
         deviceFromSmarts.ConnectedVia.each{
             existingConnections.remove(it.Name);
             Map connectionObjectFromSmarts = getDatasource().getObject(it);
-            println connectionObjectFromSmarts
             if (isConnection(connectionObjectFromSmarts.CreationClassName)) {
                 logger.debug("Creating connection object  ${connectionObjectFromSmarts.Name} of class ${connectionObjectFromSmarts.CreationClassName}");
                 addConnectionObject(connectionObjectFromSmarts);

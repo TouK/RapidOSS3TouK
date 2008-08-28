@@ -31,7 +31,7 @@ def init(){
 
     logger.debug("Marking all notifications as deleted.");
     notificationsMap = new CaseInsensitiveMap()
-    def notificationNames = RsEvent.termFreqs("name").term;
+    def notificationNames = RsEvent.termFreqs("name", [size:10000000000]).term;
     notificationNames.each {
         notificationsMap[it] = "deleted";
     }
@@ -59,6 +59,7 @@ def update(notificationObject){
             def notification = RsEvent.search("name:${notificationName}").results[0];
             archiveNotification(notification);
         }
+        notificationsMap.clear();
     }
     else if(eventType == BaseSmartsListeningAdapter.NOTIFY || eventType == BaseSmartsListeningAdapter.CHANGE)
     {

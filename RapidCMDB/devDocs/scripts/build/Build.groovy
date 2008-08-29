@@ -225,10 +225,10 @@ class Build extends Parent{
         else
         {
             def command = "${rootDir.getAbsolutePath()}/rsconsole.sh";
-            def process = "sudo chmod +x ${command}".execute();
+            def process = "chmod +x ${command}".execute();
             process.consumeProcessOutput(System.out, System.err);
             process.waitFor();
-            process = "sudo dos2unix ${command}".execute();
+            process = "dos2unix ${command}".execute();
             process.consumeProcessOutput(System.out, System.err);
             process.waitFor();
             return command;

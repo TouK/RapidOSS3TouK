@@ -34,12 +34,17 @@ class RecursiveController
         def serMan = serverMan.one
         def servMan = serviceMan.one
         def i = 0
+        assert plats.size() == platforms.size()
 
         xml.'RapidCMDB'('source':'Hyperic HQ', 'date':new Date()) {
             xml.Platforms() {
-                platforms.each { res ->
+                for(res in platforms) {
                     def plat = plats.getAt(i)
                     def p = pMan.findPlatformById(res.instanceId)
+                    if (p == null) {
+	                    i++
+                    	break;
+                	}
                     def last_timestamp = 0
                     for (metric in plat.enabledMetrics) {
                         if (metric.template.name == "Availability") {
@@ -64,7 +69,15 @@ class RecursiveController
                         xml.Servers() {
                             for (s in servers) {
                                 def ss = rhelp.find('server': s.id)
-                                xml.server(name: ss.name, id: ss.id, platform: p.name, last_timestamp: last_timestamp) {
+                                def server_last_timestamp = 0
+			                    for (metric in ss.enabledMetrics) {
+			                        if (metric.template.name == "Availability") {
+			                            if (metric.lastDataPoint != null)
+			                                server_last_timestamp = metric.lastDataPoint.timestamp
+			                            break;
+			                        }
+			                    }
+                                xml.server(name: ss.name, id: ss.id, platform: p.name, last_timestamp: server_last_timestamp) {
                                     for (metric in ss.enabledMetrics) {
                                         def metricData = metric.lastDataPoint
                                         if (metricData == null)
@@ -81,7 +94,15 @@ class RecursiveController
                                     xml.Services() {
                                         for (svc2 in services) {
                                             def svc = rhelp.find('service': svc2.getId())
-                                            xml.service(name: svc.name, id: svc.id, server: s.name, platform: p.name, last_timestamp: last_timestamp) {
+                                            def service_last_timestamp = 0
+						                    for (metric in svc.enabledMetrics) {
+						                        if (metric.template.name == "Availability") {
+						                            if (metric.lastDataPoint != null)
+						                                service_last_timestamp = metric.lastDataPoint.timestamp
+						                            break;
+						                        }
+						                    }
+                                            xml.service(name: svc.name, id: svc.id, server: s.name, platform: p.name, last_timestamp: service_last_timestamp) {
                                                 for (metric in svc.enabledMetrics) {
                                                     def metricData = metric.lastDataPoint
                                                     if (metricData == null) {

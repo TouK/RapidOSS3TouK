@@ -27,11 +27,9 @@ class AlertController
         def pageInfo = new PageInfo(AlertSortField.DATE, true)
         def overlord     = HQUtil.overlord
         def rhelp        = new ResourceHelper(overlord)
-        //def plats        = rhelp.findAllPlatforms()
         def pMan = PlatMan.one
         def ahelp = new AlertHelper(overlord)
         def aMan = AlertMan.one
-        def plats = pMan.getAllPlatforms(overlord.authzSubjectValue, PageControl.PAGE_ALL)
 
         def begin = params.getOne('begin')
 
@@ -51,14 +49,13 @@ class AlertController
                     }
                     AlertDefinition alertDef = myAlert.getAlertDefinition()
                     AppdefEntityID aeid = new AppdefEntityID(alertDef.getAppdefType(), alertDef.getAppdefId())
-                    AppdefEntityValue aev = new AppdefEntityValue(aeid, AuthzSubjectManagerEJBImpl.getOne().getOverlordPojo())
+                    AppdefEntityValue aev = new AppdefEntityValue(aeid, AuthzSubjectManagerEJBImpl.getOne().getOverlordPojo()) // this returns the owner of the alert
 
                     xml.HypericEvent('id': myAlert.id,
                                      'name': myAlert.alertDefinition.alertDefinitionValue.name,
                                      'owner_name': aev.getName(),
                                      'timestamp': myAlert.alertValue.ctime,
-                                     'fixed': myAlert.fixed,
-                                     'long_reason': aMan.getLongReason(myAlert)
+                                     'fixed': myAlert.fixed
                     )
                     i++
                 }
@@ -69,7 +66,6 @@ class AlertController
     
 
     def get(xml, params) {
-        //def pageInfo = new PageInfo(ResourceSortField.NAME, true)
         def overlord     = HQUtil.overlord
         def rhelp        = new ResourceHelper(overlord)
         def ahelp = new AlertHelper(overlord)
@@ -112,7 +108,6 @@ class AlertController
                     sers = null
                 }
                 for(svr2 in sers) {
-                    //def svr = rhelp.find('server': svr2.id)
                     source.add(svr2)
                 }
                 alerts = new PageList()
@@ -132,7 +127,6 @@ class AlertController
                     servs = null
                 }
                 for(svc2 in servs) {
-                    //def svc = rhelp.find('service': svc2.id)
                     def svc = svcMan.findServiceById(svc2.id)
                     source.add(svc)
                 }
@@ -144,7 +138,6 @@ class AlertController
         }
 
         xml.'RapidCMDB'('source':'Hyperic HQ', 'date':new Date()) {
-            //def alerts = aMan.findAllAlerts()
             xml.'Alerts'() {
                 if (alerts != null) {
                     for (myAlert2 in alerts) {
@@ -162,13 +155,12 @@ class AlertController
                                     'alert_name': myAlert.alertDefinition.alertDefinitionValue.name,
                                     'owner_name': aev.getName(),
                                     'timestamp': myAlert.alertValue.ctime,
-                                    'fixed': myAlert.fixed,
-                                    'long_reason': aMan.getLongReason(myAlert)
+                                    'fixed': myAlert.fixed
                         )
                     }
                 }
             }
         }
-       xml
+        xml
     }
 }

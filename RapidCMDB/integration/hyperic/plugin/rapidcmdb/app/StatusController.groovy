@@ -25,25 +25,21 @@ class StatusController
         def rhelp        = new ResourceHelper(overlord)
 
         def begins = params.getOne('begin')
-        def platforms
         def plats
         try {
-            plats  = rhelp.findAllPlatforms()
-            platforms = resourceHelper.findPlatforms(pageInfo)
+            plats  = rhelp.findAllPlatforms() // returns list of type Resource
         }
         catch (PlatformNotFoundException e) {
-            platforms = null
+            plats = null
         }
         def pMan = PlatMan.one
         def servMan = serviceMan.one
-        def i = 0
 
         xml.HypericObjects('timestamp':new Date().getTime()) {
-            plats.each { plat -> //res ->
-                //def plat = plats.getAt(i)
-                def p = pMan.findPlatformById(plat.instanceId) //res
-                def last_timestamp = "0"
+            plats.each { plat ->
+                def p = pMan.findPlatformById(plat.instanceId) // returns type Platform
                 def status = null
+                def last_timestamp = "0"
                 for (metric in plat.enabledMetrics) {
                     if (metric.template.name == "Availability") {
                         if (metric.lastDataPoint != null) {
@@ -54,12 +50,12 @@ class StatusController
                     }
                 }
                 if (begins <= last_timestamp)
-                    xml.HypericObject(type: "platform", name: p.name, Availability: status)
+                    xml.HypericObject(type: "platform", name: p.name, Availability: status) // listing the platforms
             }
 
             def servers
             try {
-                servers = rhelp.findAllServers()
+                servers = rhelp.findAllServers() // returns list of type Resource
             }
             catch (ServerNotFoundException e) {
                 servers = null
@@ -67,7 +63,7 @@ class StatusController
 
             if (servers != null) {
                 for (s in servers) {
-                    def ss = rhelp.find('server': s.toServer().id)
+                    def ss = rhelp.find('server': s.toServer().id) // returns type Server
                     def last_timestamp = "0"
                     def status = null
                     for (metric in ss.enabledMetrics) {
@@ -79,13 +75,13 @@ class StatusController
                         }
                     }
                     if (begins <= last_timestamp)
-                        xml.HypericObject(type: "server", name: ss.name, Availability: status)
+                        xml.HypericObject(type: "server", name: ss.name, Availability: status) // listing the servers
                 }
             }
 
             def services
             try {
-                services = servMan.getAllServices(overlord.authzSubjectValue, PageControl.PAGE_ALL)
+                services = servMan.getAllServices(overlord.authzSubjectValue, PageControl.PAGE_ALL) // returns list of type Resource
             }
             catch (ServiceNotFoundException e) {
                 services = null
@@ -93,7 +89,7 @@ class StatusController
 
             if (services != null) {
                 for (svc2 in services) {
-                    def svc = rhelp.find('service': svc2.getId())
+                    def svc = rhelp.find('service': svc2.getId()) // returns type Service
 
                     def last_timestamp = "0"
                     def status = null
@@ -106,7 +102,7 @@ class StatusController
                         }
                     }
                     if (begins <= last_timestamp)
-                        xml.HypericObject(type: "service", name: svc.name, Availability: status)
+                        xml.HypericObject(type: "service", name: svc.name, Availability: status) // listing the services
                 }
             }
         }
@@ -120,22 +116,19 @@ class StatusController
         def rhelp        = new ResourceHelper(overlord)
 
         def begins = params.getOne('begin')
-        def platforms
         def plats
         try {
-            plats = rhelp.findAllPlatforms()
-            platforms = resourceHelper.findPlatforms(pageInfo)
+            plats = rhelp.findAllPlatforms() // returns list of type Resource
         }
         catch (PlatformNotFoundException e) {
-            platforms = null
+            plats = null
         }
         def pMan = PlatMan.one
         def serMan = serverMan.one
         def servMan = serviceMan.one
 
         xml.HypericObjects('timestamp':new Date().getTime()) {
-            plats.each { plat -> //res ->
-                //def plat = plats.getAt(i)
+            plats.each { plat ->
 
                 def last_timestamp = "0"
                 for (metric in plat.enabledMetrics) {
@@ -147,14 +140,14 @@ class StatusController
                 }
 
                 if (begins <= last_timestamp || last_timestamp == "0") {
-                    def p = pMan.findPlatformById(plat.instanceId)
-                    xml.HypericObject(type: "platform", name: p.name)
+                    def p = pMan.findPlatformById(plat.instanceId)  // returns type Platform
+                    xml.HypericObject(type: "platform", name: p.name) // listing the platforms
                 }
             }
 
             def servers
             try {
-                servers = rhelp.findAllServers()
+                servers = rhelp.findAllServers() // returns list of type Resource
             }
             catch (ServerNotFoundException e) {
                 servers = null
@@ -162,7 +155,7 @@ class StatusController
 
             if (servers != null) {
                 for (s in servers) {
-                    def ss = rhelp.find('server': s.toServer().id)
+                    def ss = rhelp.find('server': s.toServer().id) // returns list of type Server
                     def last_timestamp = "0"
                     for (metric in ss.enabledMetrics) {
                         if (metric.template.name == "Availability") {
@@ -176,7 +169,7 @@ class StatusController
                         def platName
                         def plat
                         try {
-                            plat = pMan.getPlatformByServer(overlord.authzSubjectValue, s.toServer().id)
+                            plat = pMan.getPlatformByServer(overlord.authzSubjectValue, s.toServer().id) // returns type PlatformValue
                             if (plat != null)
                                 platName = plat.getName()
                             else platName = ""
@@ -185,7 +178,7 @@ class StatusController
                             platName = ""
                         }
 
-                        xml.HypericObject(type: "server", name: ss.name, platform: platName)
+                        xml.HypericObject(type: "server", name: ss.name, platform: platName) // listing the servers
                     }
                 }
             }
@@ -193,8 +186,7 @@ class StatusController
 
             def services
             try {
-                //services = rhelp.findAllServices()
-                services = servMan.getAllServices(overlord.authzSubjectValue, PageControl.PAGE_ALL)
+                services = servMan.getAllServices(overlord.authzSubjectValue, PageControl.PAGE_ALL) // returns list of type Resource
             }
             catch (ServiceNotFoundException e) {
                 services = null
@@ -202,7 +194,7 @@ class StatusController
 
             if (services != null) {
                 for (svc2 in services) {
-                    def svc = rhelp.find('service': svc2.getId())
+                    def svc = rhelp.find('service': svc2.getId()) // returns list of type Service
                     def last_timestamp = "0"
                     for (metric in svc.enabledMetrics) {
                         if (metric.template.name == "Availability") {
@@ -217,9 +209,9 @@ class StatusController
                         def serverName
                         def platName
                         try {
-                            server = serMan.getServerByService(overlord.authzSubjectValue, svc2.id)
+                            server = serMan.getServerByService(overlord.authzSubjectValue, svc2.id) // returns type ServerValue
                             serverName = server.getName()
-                            platName = pMan.getPlatformByServer(overlord.authzSubjectValue, server.id).getName()
+                            platName = pMan.getPlatformByServer(overlord.authzSubjectValue, server.id).getName() // returns type PlatformValue
                         }
                         catch (ServerNotFoundException se) {
                             serverName = ""
@@ -230,7 +222,7 @@ class StatusController
                         }
 
 
-                        xml.HypericObject(type: "service", name: svc.name, server: serverName, platform: platName)
+                        xml.HypericObject(type: "service", name: svc.name, server: serverName, platform: platName) // listing the services
                     }
                 }
             }

@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsEvent 
-{
-    
+class RsEvent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -26,23 +25,23 @@ class RsEvent
     
     String eventName ="";
     
-    String severity ="";
+    Long severity =0;
     
-    String lastNotifiedAt ="";
+    Long lastNotifiedAt =0;
     
-    String lastCreatedAt ="";
+    Long lastCreatedAt =0;
     
-    String active ="";
+    Boolean active =false;
     
-    String firstNotifiedAt ="";
+    Long firstNotifiedAt =0;
     
-    String lastClearedAt ="";
+    Long lastClearedAt =0;
     
-    String lastChangedAt ="";
+    Long lastChangedAt =0;
     
-    String isRoot ="";
+    Boolean isRoot =false;
     
-    String acknowledged ="";
+    Boolean acknowledged =false;
     
     String eventType ="";
     
@@ -50,11 +49,11 @@ class RsEvent
     
     String eventText ="";
     
-    String impact ="";
+    Long impact =0;
     
-    String certainty ="";
+    Long certainty =0;
     
-    String inMaintenance ="";
+    Boolean inMaintenance =false;
     
     String troubleTicketID ="";
     
@@ -62,7 +61,7 @@ class RsEvent
     
     String category ="";
     
-    String occurrenceCount ="";
+    Long occurrenceCount =0;
     
     String classDisplayName ="";
     
@@ -123,23 +122,23 @@ class RsEvent
         
      eventName(blank:false,nullable:false,key:["className", "instanceName"])
         
-     severity(blank:true,nullable:true)
+     severity(nullable:true)
         
-     lastNotifiedAt(blank:true,nullable:true)
+     lastNotifiedAt(nullable:true)
         
-     lastCreatedAt(blank:true,nullable:true)
+     lastCreatedAt(nullable:true)
         
-     active(blank:true,nullable:true)
+     active(nullable:true)
         
-     firstNotifiedAt(blank:true,nullable:true)
+     firstNotifiedAt(nullable:true)
         
-     lastClearedAt(blank:true,nullable:true)
+     lastClearedAt(nullable:true)
         
-     lastChangedAt(blank:true,nullable:true)
+     lastChangedAt(nullable:true)
         
-     isRoot(blank:true,nullable:true)
+     isRoot(nullable:true)
         
-     acknowledged(blank:true,nullable:true)
+     acknowledged(nullable:true)
         
      eventType(blank:true,nullable:true)
         
@@ -147,11 +146,11 @@ class RsEvent
         
      eventText(blank:true,nullable:true)
         
-     impact(blank:true,nullable:true)
+     impact(nullable:true)
         
-     certainty(blank:true,nullable:true)
+     certainty(nullable:true)
         
-     inMaintenance(blank:true,nullable:true)
+     inMaintenance(nullable:true)
         
      troubleTicketID(blank:true,nullable:true)
         
@@ -159,7 +158,7 @@ class RsEvent
         
      category(blank:true,nullable:true)
         
-     occurrenceCount(blank:true,nullable:true)
+     occurrenceCount(nullable:true)
         
      classDisplayName(blank:true,nullable:true)
         
@@ -213,4 +212,5 @@ class RsEvent
     }
     
     //AUTO_GENERATED_CODE
+    
 }

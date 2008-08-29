@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsSmartsObject 
-{
-    
+class RsSmartsObject {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -65,4 +64,5 @@ class RsSmartsObject
     }
     
     //AUTO_GENERATED_CODE
+    
 }

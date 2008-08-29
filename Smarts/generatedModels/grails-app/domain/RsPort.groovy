@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsPort extends RsNetworkAdapter
-{
-    
+class RsPort  extends RsNetworkAdapter {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -72,4 +71,5 @@ class RsPort extends RsNetworkAdapter
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
+    
 }

@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsHsrpGroup extends RsSmartsObject
-{
-    
+class RsHsrpGroup  extends RsSmartsObject {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -100,4 +99,5 @@ class RsHsrpGroup extends RsSmartsObject
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
+    
 }

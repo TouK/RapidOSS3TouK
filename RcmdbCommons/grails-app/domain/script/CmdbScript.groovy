@@ -48,12 +48,15 @@ class CmdbScript {
         scheduleType(inList: [PERIODIC, CRON])
         listeningDatasource(nullable:true)
         cronExpression(validator: {val, obj ->
-            try {
-                def trigger = new CronTrigger(obj.name, null, val);
-                trigger.getFireTimeAfter(new Date());
-            }
-            catch (Throwable t) {
-                return ['script.cron.doesnt.match', t.toString()];
+            if(obj.type == SCHEDULED)
+            {
+                try {
+                    def trigger = new CronTrigger(obj.name, null, val);
+                    trigger.getFireTimeAfter(new Date());
+                }
+                catch (Throwable t) {
+                    return ['script.cron.doesnt.match', t.toString()];
+                }
             }
         })
     }

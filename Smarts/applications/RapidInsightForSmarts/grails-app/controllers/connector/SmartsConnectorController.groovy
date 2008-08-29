@@ -181,7 +181,7 @@ class SmartsConnectorController {
                 else
                 {
                     CmdbScript script = CmdbScript.addScript(name:scriptName, scriptFile:"notificationSubscriber",type:CmdbScript.LISTENING)
-                    datasource = SmartsNotificationDatasource.add(name: datasourceName, connection: smartsConnection, ds:datasource, listeningScript:script);
+                    datasource = SmartsNotificationDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script);
                 }
                 smartsConnector.addRelation(ds:datasource);
                 redirect(uri: "/admin.gsp")

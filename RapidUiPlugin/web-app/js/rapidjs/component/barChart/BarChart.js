@@ -12,7 +12,7 @@ YAHOO.rapidjs.component.BarChart = function(container, config) {
     this.container = container;
     this.swfURL = config.swfURL;
     this.imageURL = config.imageURL;
-
+    this.chartTitle = config.chartTitle;
     this.yAxis = new YAHOO.widget.NumericAxis();
     this.yAxis.minimum = config.yAxisMin || 0;
     this.yAxis.maximum = config.yAxisMax || 100;
@@ -123,7 +123,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.BarChart, YAHOO.rapidjs.component.Poll
 			this.render();
 
 		var respond =  this.dataSource.parseXMLData(null,response.responseXML);
-		this.chart._loadDataHandler("", respond, false);
+        respond.results[0][this.xField] = this.chartTitle;
+        this.chart._loadDataHandler("", respond, false);
 	},
     resize: function(width, height){
 	    var bodyHeight =  height - this.header.offsetHeight - 10;

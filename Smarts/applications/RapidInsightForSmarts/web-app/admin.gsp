@@ -1,4 +1,4 @@
-<%@ page import="connector.SmartsListeningTopologyConnector" %><html>
+<%@ page import="com.ifountain.rcmdb.datasource.ListeningAdapterManager; connector.SmartsListeningTopologyConnector" %><html>
 <head>
     <title>RapidInsight For Smarts Admin UI</title>
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
@@ -88,10 +88,23 @@
                                     <tbody>
                                         <g:each in="${connector.SmartsConnector.list()}" status="i" var="smartsConnector">
                                             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                                <td><g:link action="edit" controller="smartsConnector" id="${smartsConnector.id}">${smartsConnector.name?.encodeAsHTML()}</g:link></td>
-                                                <td>${smartsConnector?.domain?.encodeAsHTML()}</td>
+                                                <td><g:link action="show" controller="smartsConnector" id="${smartsConnector.id}">${smartsConnector.name?.encodeAsHTML()}</g:link></td>
+                                                <td>${smartsConnector?.ds?.connection?.domain?.encodeAsHTML()}</td>
                                                 <td><g:link action="show" controller="smartsConnectionTemplate" id="${smartsConnector.connectionTemplate.id}">${smartsConnector.connectionTemplate.name?.encodeAsHTML()}</g:link></td>
                                                 <td>${smartsConnector instanceof SmartsListeningTopologyConnector?"Topology":"Notification"}</td>
+                                                <%
+                                                    def isSubscribed = ListeningAdapterManager.getInstance().isSubscribed(smartsConnector.ds);
+                                                    if (isSubscribed) {
+                                                %>
+                                                <td><g:link action="stopConnector" controller="smartsConnector" id="${smartsConnector.id}" class="stop">Stop</g:link></td>
+                                                <%
+                                                    }
+                                                    else {
+                                                %>
+                                                <td><g:link action="startConnector" controller="smartsConnector" id="${smartsConnector.id}" class="start">Start</g:link></td>
+                                                <%
+                                                    }
+                                                %>
                                             </tr>
                                         </g:each>
                                     </tbody>

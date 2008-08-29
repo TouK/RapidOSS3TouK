@@ -27,4 +27,15 @@ class SmartsListeningNotificationConnector extends SmartsConnector{
     {
     	return name;
     }
+
+    static def getConnectionName(connectorName){
+        return "${connectorName}NotificationConn";
+    }
+
+    static def getDatasourceName(connectorName){
+        return "${connectorName}NotificationDs";
+    }
+    static def getScriptName(connectorName){
+        return "${connectorName}NotificationListeningScript";
+    }
 }

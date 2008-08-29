@@ -25,4 +25,15 @@ class SmartsListeningTopologyConnector extends SmartsConnector{
     {
     	return name;
     }
+
+    static def getConnectionName(connectorName){
+        return "${connectorName}TopologyConn";
+    }
+
+    static def getDatasourceName(connectorName){
+        return "${connectorName}TopologyDs";
+    }
+    static def getScriptName(connectorName){
+        return "${connectorName}TopologyListeningScript";
+    }
 }

@@ -59,6 +59,10 @@ choices.each{
         {
             Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/conf");
         }
+        Ant.move(toDir:"${baseDir}/grails-app/views/layouts")
+        {
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/views/layouts");
+        }
         Ant.move(toDir:"${baseDir}/plugins/${pluginName}/grails-app")
         {
             Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/**");

@@ -408,8 +408,8 @@
                         <option name="filterEntry">
                           <map>
                             <entry key="filterTypeClass" value="com.atlassian.theplugin.jira.api.JIRAFixForVersionBean" />
-                            <entry key="id" value="10076" />
-                            <entry key="name" value="0.4.1" />
+                            <entry key="id" value="10077" />
+                            <entry key="name" value="0.4.2" />
                           </map>
                         </option>
                       </JiraFilterEntryBean>
@@ -417,9 +417,9 @@
                         <option name="filterEntry">
                           <map>
                             <entry key="filterTypeClass" value="com.atlassian.theplugin.jira.api.JIRAAssigneeBean" />
-                            <entry key="id" value="-1" />
-                            <entry key="name" value="Current User" />
-                            <entry key="value" value="mustafa" />
+                            <entry key="id" value="-1000" />
+                            <entry key="name" value="Any User" />
+                            <entry key="value" value="" />
                           </map>
                         </option>
                       </JiraFilterEntryBean>
@@ -458,16 +458,16 @@
           <ProjectToolWindowTableConfiguration>
             <option name="properties">
               <map>
-                <entry key="Order0" value="0" />
-                <entry key="Order1" value="1" />
-                <entry key="Order2" value="2" />
-                <entry key="Order3" value="3" />
-                <entry key="Order4" value="4" />
-                <entry key="Width0" value="158" />
-                <entry key="Width1" value="104" />
-                <entry key="Width2" value="93" />
-                <entry key="Width3" value="239" />
-                <entry key="Width4" value="500" />
+                <entry key="Order0" value="3" />
+                <entry key="Order1" value="4" />
+                <entry key="Order2" value="0" />
+                <entry key="Order3" value="1" />
+                <entry key="Order4" value="2" />
+                <entry key="Width0" value="239" />
+                <entry key="Width1" value="500" />
+                <entry key="Width2" value="158" />
+                <entry key="Width3" value="104" />
+                <entry key="Width4" value="93" />
               </map>
             </option>
           </ProjectToolWindowTableConfiguration>

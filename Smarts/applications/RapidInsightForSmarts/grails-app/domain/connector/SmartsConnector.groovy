@@ -29,6 +29,8 @@ class SmartsConnector {
       name(blank:false,nullable:false,key:[])
       logLevel(inList:[Level.ALL.toString(),Level.DEBUG.toString(),Level.INFO.toString(),
               Level.WARN.toString(), Level.ERROR.toString(), Level.FATAL.toString(), Level.OFF.toString()])
+      ds(nullable:true)
+      connectionTemplate(nullable:true)
     }
     static mappedBy=[:]
     static belongsTo = []
@@ -38,16 +40,5 @@ class SmartsConnector {
     public String toString()
     {
     	return name;
-    }
-
-    static def getConnectionName(connectorName){
-        return "${connectorName}Conn";
-    }
-
-    static def getDatasourceName(connectorName){
-        return "${connectorName}Ds";
-    }
-    static def getScriptName(connectorName){
-        return "${connectorName}ListeningScript";
     }
 }

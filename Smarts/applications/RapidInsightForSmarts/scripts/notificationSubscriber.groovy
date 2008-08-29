@@ -22,7 +22,7 @@ columnSmartsNameMappings = [:]
 existingObjectsRetrieved = false;
 
 def init(){
-    logger = Logger.getLogger("topologySubscriber");
+    logger = Logger.getLogger("notificationSubscriber");
     logger.debug("Getting column mapping information.");
     SmartsModel.get(name:"RsEvent").columns.each{SmartsModelColumn col->
         columnLocalNameMappings[col.localName] = col.smartsName;
@@ -98,6 +98,5 @@ def getNotificationProperties(notificationObject)
             notficationProps[localName] = propValue;
         }
     }
-    println localName
     return notficationProps;
 }

@@ -7,12 +7,13 @@ YAHOO.rapidjs.component.BarChart = function(container, config) {
     this.fields = config.fields;
     this.xField = config.xField;
     this.yField = config.yField;
-    this.width = config.width || 400;
+    this.width = config.width || 500;
     this.resultNode = config.resultNode;
     this.container = container;
     this.swfURL = config.swfURL;
     this.imageURL = config.imageURL;
-    this.chartTitle = config.chartTitle;
+	this.chartTitle = config.chartTitle;
+	this.padding = config.padding || 2;
     this.yAxis = new YAHOO.widget.NumericAxis();
     this.yAxis.minimum = config.yAxisMin || 0;
     this.yAxis.maximum = config.yAxisMax || 100;
@@ -62,69 +63,37 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.BarChart, YAHOO.rapidjs.component.Poll
 	 	YAHOO.util.Dom.setStyle(this.body.dom,'width', this.width);
 	},
 	defineSeries : function() {
-		this.seriesDef =
-		[
-			{
-				yField: this.fields[1],
-				displayName: this.fields[1],
-				style:
-				{
-					image: this.imageURL,
-					color: this.colors[this.fields[1]],
-					size: 40
-				}
-			},
-			{	yField: this.fields[2],
-				displayName: this.fields[2],
-				style:
-				{
-					image: this.imageURL,
-					color: this.colors[this.fields[2]],
-					size: 40
-				}},
-			{	yField: this.fields[3],
-				displayName: this.fields[3],
-				style:
-				{
-					image: this.imageURL,
-					color: this.colors[this.fields[3]],
-					size: 40
-				}},
-			{	yField: this.fields[4],
-				displayName: this.fields[4],
-				style:
-				{
-					image: this.imageURL,
-					color: this.colors[this.fields[4]],
-					size: 40
-				}},
-			{	yField: this.fields[5],
-				displayName: this.fields[5],
-				style:
-				{
-					image: this.imageURL,
-					color: this.colors[this.fields[5]],
-					size: 40
-				}},
-			{	yField: this.fields[6],
-				displayName: this.fields[6],
-				style:
-				{
-					image: this.imageURL,
-					color: this.colors[this.fields[6]],
-					size: 40
-				}}
-		];
-	},
+		this.seriesDef = [];
+		for(var i = 0; i < this.fields.length; i++)
+		{
+			this.seriesDef.push(
+					{
+						yField: this.fields[i],
+						displayName: this.fields[i],
+						style:
+						{
+							image: this.imageURL,
+							color: this.colors[this.fields[i]],
+							size: 40
+						}
+					}
+			);
+			this.seriesDef.push({style:{size: this.padding}}
 
+			);
+		}
+		this.seriesDef.pop();
+
+	},
 	handleSuccess: function (response)
 	{
 		if(this.IE_SYNC && !this.chart)
 			this.render();
 
 		var respond =  this.dataSource.parseXMLData(null,response.responseXML);
-        respond.results[0][this.xField] = this.chartTitle;
-        this.chart._loadDataHandler("", respond, false);
+		respond.results[0][this.xField] = new Object();
+		respond.results[0][this.xField] = this.chartTitle;
+		this.chart._loadDataHandler("", respond, false);
 	},
     resize: function(width, height){
 	    var bodyHeight =  height - this.header.offsetHeight - 10;

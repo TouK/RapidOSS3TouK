@@ -501,8 +501,8 @@
 	    rootTag:'Objects',
         contentPath:'Object',
 	    xField : "Name",
-        chartTitle: "Events",
-        fields : ["Name","Critical","Major","Minor", "Warning", "Indeterminate", "Clear"],
+	    chartTitle: "Events",
+	    fields : ["Critical","Major","Minor", "Warning", "Indeterminate", "Clear"],
 	    colors : { Critical : "0xd1241e", Major :"0xf68a24", Minor: "0xf7d403", Warning: "0x18acdc", Indeterminate: "0x8d4194", Clear: "0x55ab3b"  }
     };
     var chart = new YAHOO.rapidjs.component.BarChart(document.getElementById("chartsDiv"),chartConfig );

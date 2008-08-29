@@ -24,6 +24,15 @@
  * To change this template use File | Settings | File Templates.
  */
 
-SmartsObject.list().each{
+RsSmartsObject.list().each{
+    it.remove();
+}
+RsEvent.list().each{
+    it.remove();
+}
+RsHistoricalEvent.list().each{
+    it.remove();
+}
+RsManagementServer.list().each{
     it.remove();
 }

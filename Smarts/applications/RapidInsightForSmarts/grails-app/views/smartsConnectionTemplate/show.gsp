@@ -48,23 +48,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">Broker Password:</td>
-                    
-                    <td valign="top" class="value">${smartsConnectionTemplate.brokerPassword}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">Broker Username:</td>
 
                     <td valign="top" class="value">${smartsConnectionTemplate.brokerUsername}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">Password:</td>
-                    
-                    <td valign="top" class="value">${smartsConnectionTemplate.password}</td>
                     
                 </tr>
                 

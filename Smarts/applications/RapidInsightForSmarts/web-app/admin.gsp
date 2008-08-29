@@ -72,7 +72,7 @@
                 <table style="width:900;">
                     <tr>
                         <td>
-                            <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Property List</span>
+                            <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Smarts Connector List</span>
                             <span class="menuButton"><g:link class="create" controller="smartsConnector" action="create">New Connector</g:link></span>
                             <div class="list">
                                 <table>

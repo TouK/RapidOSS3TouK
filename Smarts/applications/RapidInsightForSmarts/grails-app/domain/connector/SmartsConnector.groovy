@@ -1,0 +1,53 @@
+package connector
+
+import script.CmdbScript
+import datasource.BaseDatasource
+import org.apache.log4j.Level
+import datasource.BaseListeningDatasource
+import connection.SmartsConnectionTemplate
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: mustafa sener
+ * Date: Aug 27, 2008
+ * Time: 3:06:21 PM
+ * To change this template use File | Settings | File Templates.
+ */
+class SmartsConnector {
+    static searchable = {
+        except = [];
+    };
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
+    String name ="";
+    String logLevel = Level.WARN.toString();
+    BaseListeningDatasource ds;
+    SmartsConnectionTemplate connectionTemplate;
+
+    static hasMany = [:]
+
+    static constraints={
+      name(blank:false,nullable:false,key:[])
+      logLevel(inList:[Level.ALL.toString(),Level.DEBUG.toString(),Level.INFO.toString(),
+              Level.WARN.toString(), Level.ERROR.toString(), Level.FATAL.toString(), Level.OFF.toString()])
+    }
+    static mappedBy=[:]
+    static belongsTo = []
+    static propertyConfiguration= [:]
+    static transients = [];
+
+    public String toString()
+    {
+    	return name;
+    }
+
+    static def getConnectionName(connectorName){
+        return "${connectorName}Conn";
+    }
+
+    static def getDatasourceName(connectorName){
+        return "${connectorName}Ds";
+    }
+    static def getScriptName(connectorName){
+        return "${connectorName}ListeningScript";
+    }
+}

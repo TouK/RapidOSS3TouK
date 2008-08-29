@@ -170,9 +170,9 @@ class SmartsConnectorController {
             SmartsConnection smartsConnection = SmartsConnection.add(connectionParams)
 
             if (!smartsConnection.hasErrors()) {
-                def datasourceName = SmartsConnector.getDatasourceName(smartsConnector.name);
+                def datasourceName = smartsConnector.getDatasourceName(smartsConnector.name);
                 def datasource = null;
-                def scriptName = SmartsConnector.getScriptName(smartsConnector.name);
+                def scriptName = smartsConnector.getScriptName(smartsConnector.name);
                 if(params.type == "Topology")
                 {
                     CmdbScript script = CmdbScript.addScript(name:scriptName, scriptFile:"topologySubscriber",type:CmdbScript.LISTENING)

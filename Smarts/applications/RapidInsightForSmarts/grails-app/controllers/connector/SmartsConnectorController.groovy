@@ -161,7 +161,7 @@ class SmartsConnectorController {
             smartsConnector = SmartsListeningNotificationConnector.add(connectorParams)            
         }
         if (!smartsConnector.hasErrors()) {
-            def connectionName = SmartsConnector.getConnectionName(smartsConnector.name);
+            def connectionName = smartsConnector.getConnectionName(smartsConnector.name);
             def connectionParams = [name:connectionName];
             connectionParams.broker = smartsConnector.connectionTemplate.broker
             connectionParams.username = smartsConnector.connectionTemplate.username

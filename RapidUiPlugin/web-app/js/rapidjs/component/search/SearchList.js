@@ -153,6 +153,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             }
         }
         this.refreshData();
+        this.hideMask();
     },
     handleSaveQueryClick: function(e)
     {

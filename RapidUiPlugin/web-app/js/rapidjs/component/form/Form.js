@@ -208,6 +208,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         this.dialog.hide();
         this.errors.dom.innerHTML = "";
         this.errors.hide();
+        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", -15000);
     },
 
     clearAllFields: function()
@@ -251,6 +252,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
 	    this.enableFormButtons();
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
         YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', 'none');
+        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", -15000);
 
     }
 })

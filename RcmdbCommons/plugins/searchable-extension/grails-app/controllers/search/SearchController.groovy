@@ -46,11 +46,14 @@ class SearchController {
                 }
 
             }
+
+            render(text:sw.toString(), contentType:"text/xml");
         }
         catch(Throwable t)
         {
-             builder.Objects(total:0, offset:0);
+             addError("invalid.search.query", [query, t.getMessage()]);
+             render(text: errorsToXml(errors), contentType: "text/xml")
         }
-        render(text:sw.toString(), contentType:"text/xml");
+
     }
 }

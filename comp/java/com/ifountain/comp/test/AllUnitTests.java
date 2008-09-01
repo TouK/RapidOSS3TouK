@@ -22,25 +22,13 @@
  */
 package com.ifountain.comp.test;
 
+import com.ifountain.comp.cli.CommandLineUtilityTest;
+import com.ifountain.comp.exception.ExceptionMessagesMapTest;
+import com.ifountain.comp.test.util.*;
+import com.ifountain.comp.test.util.testcase.RapidTestCaseTest;
+import com.ifountain.comp.utils.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-      
-import com.ifountain.comp.exception.ExceptionMessagesMapTest;
-import com.ifountain.comp.test.util.CreateStatementBuilderFactoryTest;
-import com.ifountain.comp.test.util.CreateStatementBuilderTest;
-import com.ifountain.comp.test.util.MYSQLCreateStatementBuilderTest;
-import com.ifountain.comp.test.util.OracleCreateStatementBuilderTest;
-import com.ifountain.comp.test.util.RCompTestCase;
-import com.ifountain.comp.test.util.XmlTestUtilsTest;
-import com.ifountain.comp.test.util.testcase.RapidTestCaseTest;
-import com.ifountain.comp.utils.CaseInsensitiveMapTest;
-import com.ifountain.comp.utils.FileMergerTest;
-import com.ifountain.comp.utils.FileUtilsTest;
-import com.ifountain.comp.utils.HttpUtilsTest;
-import com.ifountain.comp.utils.RapidConfigTest;
-import com.ifountain.comp.utils.StringUtilsTest;
-import com.ifountain.comp.cli.CommandLineUtilityTest;
 
 public class AllUnitTests extends RCompTestCase{
     public static void main(String[] args) {
@@ -60,7 +48,7 @@ public class AllUnitTests extends RCompTestCase{
         suite.addTestSuite(MYSQLCreateStatementBuilderTest.class);
         suite.addTestSuite(OracleCreateStatementBuilderTest.class);
         suite.addTestSuite(ExceptionMessagesMapTest.class);
-        suite.addTestSuite(FileMergerTest.class);
+        suite.addTestSuite(JsCssCombinerTest.class);
         suite.addTestSuite(RapidConfigTest.class);
         suite.addTestSuite(RapidTestCaseTest.class);
         suite.addTestSuite(CommandLineUtilityTest.class);

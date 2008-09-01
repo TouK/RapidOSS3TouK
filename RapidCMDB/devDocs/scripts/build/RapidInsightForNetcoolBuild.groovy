@@ -73,20 +73,26 @@ class RapidInsightForNetcoolBuild extends Build{
         def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
         installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant:ant], [:]);
 
-        ant.java(fork : "true", classname : "com.ifountain.comp.utils.FileMerger"){
-			ant.arg(value : "${env.dist_rapid_suite}/web-app/index.gsp");
-			ant.arg(value : "${env.dist_rapid_suite}/web-app/");
-			ant.arg(value : "${env.dist_rapid_suite}/web-app");
-			ant.arg(value : "false");
-			ant.classpath(){
-				ant.pathelement(location : "${env.dist_rapid_suite_lib}/comp.jar");
-			}
-		}	
-        
         ant.copy(file : version, tofile : versionInBuild );
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
-        
+
+        ant.java(fork : "true", classname : "com.ifountain.comp.utils.JsCssCombiner"){
+			ant.arg(value : "-file");
+			ant.arg(value : "${env.dist_rapid_suite}/web-app/index.gsp");
+			ant.arg(value : "-applicationPath");
+			ant.arg(value : "${env.dist_rapid_suite}/web-app");
+			ant.arg(value : "-target");
+			ant.arg(value : "${env.dist_rapid_suite}/web-app");
+			ant.arg(value : "-suffix");
+			ant.arg(value : "${versionDate}");
+			ant.classpath(){
+				ant.pathelement(location : "${env.dist_rapid_suite_lib}/comp.jar");
+				ant.pathelement(location : "${env.dist_rapid_server_lib}/commons-cli-1.0.jar");
+				ant.pathelement(location : "${env.dist_rapid_server_lib}/commons-io-1.4.jar");
+				ant.pathelement(location : "${env.dist_rapid_server_lib}/log4j-1.2.15.jar");
+			}
+		}	
 //        def osType = "Unix";
 //        if (rapidCmdb.getName().indexOf("Windows") > -1) osType = "Windows"
         def zipFileName = "${env.distribution}/RapidInsightForNetcool_$osType$versionDate" + ".zip"

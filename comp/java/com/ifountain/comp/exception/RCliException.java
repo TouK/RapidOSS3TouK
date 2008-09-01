@@ -32,6 +32,7 @@ public class RCliException extends RapidException{
     public static final String MISSING_ARGUMENT_FOR_COMMAND_LINE_OPTION = CLI_ERROR_CODE_PREFIX +"-0003";
     public static final String INVALID_COMMAND_LINE_OPTIONS = CLI_ERROR_CODE_PREFIX +"-0004";
     public static final String INVALID_COMMAND_LINE_OPTION_VALUE = CLI_ERROR_CODE_PREFIX +"-0005";
+    public static final String FILE_NOT_FOUND = CLI_ERROR_CODE_PREFIX +"-0006";
 
 
     static
@@ -41,6 +42,7 @@ public class RCliException extends RapidException{
         messagesMap.addExceptionMessage(MISSING_ARGUMENT_FOR_COMMAND_LINE_OPTION, "{0}.");
         messagesMap.addExceptionMessage(EMPTY_ARGUMENT_FOR_COMMAND_LINE_OPTION, "Empty argument value for option {0}.");
         messagesMap.addExceptionMessage(INVALID_COMMAND_LINE_OPTION_VALUE, "Invalid value {0} entered for option {1}.");
+        messagesMap.addExceptionMessage(FILE_NOT_FOUND, "File {0} does not exist.");
     }
 
     public RCliException(String errorId, Object[] customMessages) {

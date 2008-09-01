@@ -143,7 +143,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
     clearData: function() {
         this.totalRowCount = 0;
-        this.searchBox.dom.getElementsByTagName('label')[0].innerHTML = "Count: " + this.totalRowCount;
+        YAHOO.util.Dom.getElementsByClassName('rcmdb-search-count', 'div', this.searchBox.dom)[0].innerHTML = "Count: " + this.totalRowCount;
         this.lastOffset = 0;
         if (this.rootNode && this.rootNode.xmlData) {
             var currentChildren = this.rootNode.xmlData.childNodes();

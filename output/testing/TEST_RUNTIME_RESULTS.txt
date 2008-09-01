@@ -1,2 +1,0 @@
-com.ifountain.rcmdb.domain.generation.ModelGeneratorTest.testThrowsExceptionIfSameDatasourceDefined: 1875
-

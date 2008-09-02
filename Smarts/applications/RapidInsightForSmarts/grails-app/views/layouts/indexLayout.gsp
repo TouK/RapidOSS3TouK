@@ -12,6 +12,7 @@
     <script type="text/javascript" src="js/yui/utilities/utilities.js"></script>
     <script type="text/javascript" src="js/yui/resize/resize-beta-min.js"></script>
     <script type="text/javascript" src="js/yui/layout/layout-beta-min.js"></script>
+    <script type="text/javascript" src="js/yui/history/history-min.js"></script>
     <script type="text/javascript" src="js/ext/ext.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/ComponentContainer.js"></script>

@@ -1,12 +1,13 @@
-.rapid-context-menu{
-	position: absolute;
-	display: block;
-	z-index: 20000;	
-	border-left:1px solid #D4D0C8; 
-	border-top: 1px solid #D4D0C8; 
-	border-right: 2px solid #000000;
-	border-bottom: 2px solid #000000;
+.rapid-context-menu {
+    position: absolute;
+    display: block;
+    z-index: 20000;
+    border-left: 1px solid #D4D0C8;
+    border-top: 1px solid #D4D0C8;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
 }
+
 .rapid-errors {
     background: #fff3f3;
     border: 1px solid red;
@@ -14,98 +15,122 @@
     margin: 10px 0 5px 0;
     padding: 5px 0 5px 15px;
 }
-.rapid-context-menu-table{
-	background-color: #ffffff
-}
-.rapid-context-menu-item-selected{
-	height: 20px;
-	background-color: #ddddff;	
-	color: black;
+
+.rapid-context-menu-table {
+    background-color: #ffffff
 }
 
-.rapid-context-menu-item-unselected{
-	height: 20px;
-	background-color: #FFFFFF;	
-	
-}
-.rapid-context-menu-text{
-	text-align: justify;
-	font-family: Arial, Tahoma, Verdana, Helvetica;
-	font-size: 11px;
-	line-height: 20px;
-	text-indent: 30px;
-	padding-right: 20px;
-	height: 20px;
+.rapid-context-menu-item-selected {
+    height: 20px;
+    background-color: #ddddff;
+    color: black;
 }
 
-.rapid-submenu-arrow{
-	background-image: url( '../images/menuarorght8_nrm_1.gif' );
-	background-repeat: no-repeat;
-	background-position: center;
-	height: 20px;
-	width : 20px;
-	background-color: inherit;
-}
-
-.rapid-textarea
-{
-	width: 100%;
-	height: 98%;
-	overflow: auto;
-}
-.rapid-btnwrp{
-	background-color: #D8E7FB;
-	border: 1px solid #cbc7b8;
-	display: block;
-	padding:2px;
-}
-
-.ri-comp-conf-formelement{
-	padding-left:5px;
-	padding-top:10px;
-}
-
-.ri-comp-conf-input-small{
-	width: 60px; 
-}
-
-.ri-comp-conf-input-large{
+.rapid-context-menu-item-unselected {
+    height: 20px;
+    background-color: #FFFFFF;
 
 }
-.rapid-formtext{
-	display:block;
-	width: 150px;
-}
-.rapid-inputwrp{	
-	height: 22px;
-}
-.rapid-input{
-	height: 100%;
-	width: 200px;
-}
-.rapid-checkbox{
-	height: 100%;
-}
-.rapid-userdlg-detailwrp{
-	padding-top: 10px;
-	padding-left: 20px;
-}
-.rapid-logout-wrp{
-}
-.rapid-usertool-wrp{
-	text-align: right;
-	font-size: 13px;
-	font-family: sans-serif;
-	color: #7C5034;
-	cursor: pointer;
-	font-weight: bold; 
-}
-.rapid-usertool-visited{
-	color: #424973;
-}
-td,textarea,input,div,span,a,a:visited,a:hover,a:active,select{
-	font-family: Arial, Tahoma, Verdana, Helvetica;
-	font-size: 11px;
+
+.rapid-context-menu-text {
+    text-align: justify;
+    font-family: Arial, Tahoma, Verdana, Helvetica;
+    font-size: 11px;
+    line-height: 20px;
+    text-indent: 30px;
+    padding-right: 20px;
+    height: 20px;
 }
 
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}
+.rapid-submenu-arrow {
+    background-image: url( '../images/menuarorght8_nrm_1.gif' );
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 20px;
+    width: 20px;
+    background-color: inherit;
+}
+
+.rapid-textarea {
+    width: 100%;
+    height: 98%;
+    overflow: auto;
+}
+
+.rapid-btnwrp {
+    background-color: #D8E7FB;
+    border: 1px solid #cbc7b8;
+    display: block;
+    padding: 2px;
+}
+
+.ri-comp-conf-formelement {
+    padding-left: 5px;
+    padding-top: 10px;
+}
+
+.ri-comp-conf-input-small {
+    width: 60px;
+}
+
+.ri-comp-conf-input-large {
+
+}
+
+.rapid-formtext {
+    display: block;
+    width: 150px;
+}
+
+.rapid-inputwrp {
+    height: 22px;
+}
+
+.rapid-input {
+    height: 100%;
+    width: 200px;
+}
+
+.rapid-checkbox {
+    height: 100%;
+}
+
+.rapid-userdlg-detailwrp {
+    padding-top: 10px;
+    padding-left: 20px;
+}
+
+.rapid-logout-wrp {
+}
+
+.rapid-usertool-wrp {
+    text-align: right;
+    font-size: 13px;
+    font-family: sans-serif;
+    color: #7C5034;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.rapid-usertool-visited {
+    color: #424973;
+}
+
+#yui-history-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    visibility: hidden;
+}
+
+td, textarea, input, div, span, a, a:visited, a:hover, a:active, select {
+    font-family: Arial, Tahoma, Verdana, Helvetica;
+    font-size: 11px;
+}
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+}

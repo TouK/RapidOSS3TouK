@@ -11,7 +11,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.totalCountAttribute = null;
     this.offsetAttribute = null;
     this.fields = null;
-    this.defaultFields =  null;
+    this.defaultFields = null;
     this.titleAttribute = null;
     this.maxRowsDisplayed = 100;
     this.lineSize = 4;
@@ -29,7 +29,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.params = {'offset':this.lastOffset, 'sort':this.lastSortAtt, 'order':this.lastSortOrder, 'max':this.maxRowsDisplayed};
     this.rowHeaderMenu = null;
     this.cellMenu = null;
-    this.maxRowCellLength= 0;
+    this.maxRowCellLength = 0;
     this.rowHeaderAttribute = config.rowHeaderAttribute;
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.scrollPollTask = new YAHOO.ext.util.DelayedTask(this.scrollPoll, this);
@@ -47,6 +47,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.menuItems = config.menuItems;
     this.menuItemUrlParamName = "id";
     this.propertyMenuItems = config.propertyMenuItems;
+
 };
 
 
@@ -59,16 +60,21 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
     setQuery: function(queryString, sortAtt, sortOrder)
     {
+        this._setQuery(queryString, sortAtt, sortOrder)
+        this.handleSearchClick();
+    },
+
+    _setQuery: function(queryString, sortAtt, sortOrder)
+    {
         this.currentlyExecutingQuery = queryString;
-        this.searchBox.dom.getElementsByTagName('input')[0].value = queryString;
+        this.searchInput.value = queryString;
         this.lastSortAtt = sortAtt || this.keyAttribute;
         this.lastSortOrder = sortOrder || 'asc';
-        this.handleSearchClick();
     },
 
     appendToQuery: function(query)
     {
-        this.searchBox.dom.getElementsByTagName('input')[0].value = this.searchBox.dom.getElementsByTagName('input')[0].value + " " + query;
+        this.searchInput.value = this.searchInput.value + " " + query;
         this.handleSearchClick();
     },
     handleInputEnter : function(e) {
@@ -80,16 +86,33 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
     handleSearchClick: function(e) {
         this.offset = 0;
+        var newHistoryState = [];
         this._poll();
+        newHistoryState[newHistoryState.length] = this.searchInput.value;
+        newHistoryState[newHistoryState.length] = this.lastSortAtt;
+        newHistoryState[newHistoryState.length] = this.lastSortOrder;
+        this.saveHistoryChange(newHistoryState.join("!::!"));
     },
 
-    _poll: function(){
-        this.currentlyExecutingQuery = this.searchBox.dom.getElementsByTagName('input')[0].value;
-        if(this.defaultFilter != null)
+    historyChanged: function(state) {
+        if (state != "noAction") {
+            var params = state.split("!::!");                           
+            var queryString = params[0]
+            var sort = params[1]
+            var order = params[2]
+            this._setQuery(queryString, sort, order);
+            this._poll();
+        }
+
+    },
+
+    _poll: function() {
+        this.currentlyExecutingQuery = this.searchInput.value;
+        if (this.defaultFilter != null)
         {
-            if(this.currentlyExecutingQuery.trim() != "")
+            if (this.currentlyExecutingQuery.trim() != "")
             {
-                this.currentlyExecutingQuery = "("+this.currentlyExecutingQuery+") AND " + this.defaultFilter;
+                this.currentlyExecutingQuery = "(" + this.currentlyExecutingQuery + ") AND " + this.defaultFilter;
             }
             else
             {
@@ -121,8 +144,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             if (rowCount != null) {
                 this.totalRowCount = parseInt(rowCount, 10)
                 YAHOO.util.Dom.getElementsByClassName('rcmdb-search-count', 'div', this.searchBox.dom)[0].innerHTML = "Count: " + this.totalRowCount;
-                 var sortTextbox = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-sortOrder', 'div', this.searchBox.dom)[0];
-                 sortTextbox.innerHTML = "Sorted By: " + this.lastSortAtt + "-" + this.lastSortOrder;
+                var sortTextbox = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-sortOrder', 'div', this.searchBox.dom)[0];
+                sortTextbox.innerHTML = "Sorted By: " + this.lastSortAtt + "-" + this.lastSortOrder;
             }
             var offset = node.getAttribute(this.offsetAttribute);
             if (offset != null) {
@@ -157,9 +180,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
     handleSaveQueryClick: function(e)
     {
-        if (this.searchBox.dom.getElementsByTagName('input')[0].value != "")
+        if (this.searchInput.value != "")
         {
-            this.saveQueryFunction(this.searchBox.dom.getElementsByTagName('input')[0].value);
+            this.saveQueryFunction(this.searchInput.value);
         }
     },
 
@@ -192,6 +215,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                  '</tr>' +
                  '</tbody></table></form></div>'}, true);
 
+        this.searchInput = this.searchBox.dom.getElementsByTagName('input')[0];
         this.body = dh.append(this.wrapper, {tag: 'div', cls:'rcmdb-search-body'}, true);
         this.scrollPos = dh.append(this.body.dom, {tag: 'div'}, true);
         this.bufferPos = dh.append(this.scrollPos.dom, {tag:'div'}, true);
@@ -206,7 +230,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         var saveQueryButton = YAHOO.ext.Element.get(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-savequery', 'div', this.searchBox.dom)[0]);
         saveQueryButton.addClassOnOver('rcmdb-search-savequery-hover');
         YAHOO.util.Event.addListener(saveQueryButton.dom, 'click', this.handleSaveQueryClick, this, true);
-        YAHOO.util.Event.addListener(this.searchBox.dom.getElementsByTagName('input')[0].form, 'keypress', this.handleInputEnter, this, true);
+        YAHOO.util.Event.addListener(this.searchInput.form, 'keypress', this.handleInputEnter, this, true);
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'dblclick', this.handleDoubleClick, this, true);
@@ -242,17 +266,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.cellMenu.render(document.body);
         if (this.fields)
         {
-	        for (var i = 0; i < this.fields.length; i++)
-	            if(this.maxRowCellLength < this.fields[i]['fields'].length)
-	            	this.maxRowCellLength = this.fields[i]['fields'].length;
-	        if(this.defaultFields && this.maxRowCellLength < this.defaultFields.length)
-	        	this.maxRowCellLength = this.defaultFields.length;
+            for (var i = 0; i < this.fields.length; i++)
+                if (this.maxRowCellLength < this.fields[i]['fields'].length)
+                    this.maxRowCellLength = this.fields[i]['fields'].length;
+            if (this.defaultFields && this.maxRowCellLength < this.defaultFields.length)
+                this.maxRowCellLength = this.defaultFields.length;
         }
         else
         {
-        	 this.fields = this.defaultFields;
-        	 this.defaultFields = null;
-        	 this.maxRowCellLength = this.fields.length;
+            this.fields = this.defaultFields;
+            this.defaultFields = null;
+            this.maxRowCellLength = this.fields.length;
         }
 
     },
@@ -344,7 +368,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
 
     renderRows : function() {
-	    var scrollTop = this.body.dom.scrollTop;
+        var scrollTop = this.body.dom.scrollTop;
         var rowStartIndex = Math.floor(scrollTop / this.rowHeight);
         var interval = Math.floor(this.body.getHeight() / this.rowHeight);
         interval = interval + 2;
@@ -418,7 +442,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             innerHtml = innerHtml.substring(0, innerHtml.length - 9) + '</div>';
         }
         for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-            var rowHtml = '<table style="height:100%"><tr>'+
+            var rowHtml = '<table style="height:100%"><tr>' +
                           '<td width="0%"><div class="rcmdb-search-row-headermenu"><span class="rcmdb-search-row-menupos">&nbsp;</span></div></td>' +
                           '<td width="100%">';
             if (this.rowHeaderAttribute != null)
@@ -441,25 +465,25 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
 
     renderRow: function(rowEl) {
-	    if (this.fields) {
-		    var insertedFields = null;
-	        var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
+        if (this.fields) {
+            var insertedFields = null;
+            var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
             var dataNode = searchNode.xmlData;
             var data = dataNode.getAttributes();
-            if(this.defaultFields)
+            if (this.defaultFields)
             {
-	            for (var i = 0; i < this.fields.length; i++)
-	            {
-		            var currentExpressionStr = this.fields[i]['exp'];
-				    var evaluationResult = eval(currentExpressionStr);
-				    if (evaluationResult)
-				    	insertedFields = this.fields[i]['fields'];
-				}
-				if(!insertedFields)
-					insertedFields = this.defaultFields;
-			}
-			else
-				insertedFields =this.fields;
+                for (var i = 0; i < this.fields.length; i++)
+                {
+                    var currentExpressionStr = this.fields[i]['exp'];
+                    var evaluationResult = eval(currentExpressionStr);
+                    if (evaluationResult)
+                        insertedFields = this.fields[i]['fields'];
+                }
+                if (!insertedFields)
+                    insertedFields = this.defaultFields;
+            }
+            else
+                insertedFields = this.fields;
             if (this.images) {
                 for (var i = 0; i < this.images.length; i++)
                 {
@@ -489,10 +513,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 cell.propValue = value;
                 YAHOO.util.Dom.setStyle(cell, 'display', 'inline');
             }
-            for ( var fieldIndex = insertedFields.length; fieldIndex < this.maxRowCellLength; fieldIndex++)
+            for (var fieldIndex = insertedFields.length; fieldIndex < this.maxRowCellLength; fieldIndex++)
             {
-	            var cell = rowEl.cells[fieldIndex];
-	            YAHOO.util.Dom.setStyle(cell, 'display', 'none');
+                var cell = rowEl.cells[fieldIndex];
+                YAHOO.util.Dom.setStyle(cell, 'display', 'none');
             }
 
         }
@@ -500,16 +524,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
     handleDoubleClick: function(e)
     {
-	    var target = YAHOO.util.Event.getTarget(e);
-	    var row = this.getRowFromChild(target);
-	    var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
-	    if (row) {
-		     	 this.fireRowDoubleClick(xmlData,e);
-	    }
+        var target = YAHOO.util.Event.getTarget(e);
+        var row = this.getRowFromChild(target);
+        var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
+        if (row) {
+            this.fireRowDoubleClick(xmlData, e);
+        }
     },
     handleClick: function(e) {
-	    YAHOO.util.Event.stopEvent(e);
-	    var target = YAHOO.util.Event.getTarget(e);
+        YAHOO.util.Event.stopEvent(e);
+        var target = YAHOO.util.Event.getTarget(e);
         var row = this.getRowFromChild(target);
         if (row) {
             if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-row-headermenu')) {
@@ -576,18 +600,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                         this.cellMenu.show();
                     }
                     else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
-	                    if(e.ctrlKey)
-	                    {
-                            if(this.searchBox.dom.getElementsByTagName('input')[0].value != "")
-                                this.appendToQuery("NOT " + cell.propKey + ": \""+ cell.propValue + "\"");
+                        if (e.ctrlKey)
+                        {
+                            if (this.searchInput.value != "")
+                                this.appendToQuery("NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
                             else
-                                this.appendToQuery(cell.propKey + ":[0 TO *] NOT "+ cell.propKey + ": \""+ cell.propValue + "\"");
+                                this.appendToQuery(cell.propKey + ":[0 TO *] NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
 
                         }
-	                    else
-	                    {
-	                        this.appendToQuery(cell.propKey + ":\"" + cell.propValue + "\"");
-	                        this.firePropertyClick(cell.propKey, cell.propValue, xmlData);
+                        else
+                        {
+                            this.appendToQuery(cell.propKey + ":\"" + cell.propValue + "\"");
+                            this.firePropertyClick(cell.propKey, cell.propValue, xmlData);
                         }
                     }
                 }
@@ -693,16 +717,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
 
     handleLineSizeChange: function(value) {
-	    if( value != this.lineSize )
-		{
-	        this.showMask();
-	        this.lineSize = value;
-	        this.calculateRowHeight();
-	        for (var rowIndex = 0; rowIndex < this.bufferView.rowEls.length; rowIndex++) {
-	            this.bufferView.rowEls[rowIndex].setHeight(this.rowHeight);
-	        }
-	        this.updateBodyHeight();
-    	}
+        if (value != this.lineSize)
+        {
+            this.showMask();
+            this.lineSize = value;
+            this.calculateRowHeight();
+            for (var rowIndex = 0; rowIndex < this.bufferView.rowEls.length; rowIndex++) {
+                this.bufferView.rowEls[rowIndex].setHeight(this.rowHeight);
+            }
+            this.updateBodyHeight();
+        }
     },
 
     cellMenuItemClicked: function(eventType, key) {
@@ -756,13 +780,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     firePropertyClick: function(key, value, data) {
         this.events['propertyClick'].fireDirect(key, value, data);
     },
-    fireRowDoubleClick: function(data,event) {
-        this.events['rowDoubleClicked'].fireDirect(data,event);
+    fireRowDoubleClick: function(data, event) {
+        this.events['rowDoubleClicked'].fireDirect(data, event);
     },
-    getSortAttribute: function(){
+    getSortAttribute: function() {
         return this.lastSortAtt;
     },
-    getSortOrder: function(){
+    getSortOrder: function() {
         return this.lastSortOrder;
     }
 });

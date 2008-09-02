@@ -112,7 +112,7 @@
     }, this, true);
 
 
-    var conf = {width:500, height:400, iframe:false};
+    var conf = {id:'objectDetails', width:500, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
     html.hide();
     var actionConfig = {url:'searchQuery/delete?format=xml'}
@@ -146,8 +146,7 @@
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
             item2 : { id : 'sortDesc', label : 'Sort desc' },
-            item3 : { id : 'except', label : 'Except' },
-
+            item3 : { id : 'except', label : 'Except' }
         },
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
@@ -181,6 +180,7 @@
     }
 
     var groupDefinitionDialogConfig = {
+        id:"filterGroupDialog",
         width:"30em",
         saveUrl:"searchQueryGroup/save?format=xml",
         updateUrl:"searchQueryGroup/update?format=xml",
@@ -264,6 +264,7 @@
     }, this, true);
 
     var filterDefinitionDialogConfig = {
+        id:"filterDialog",
         width:"35em",
         createUrl:"script/run/createQuery",
         editUrl:"script/run/editQuery",
@@ -275,6 +276,7 @@
     };
     var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
      var changePassDialogConfig = {
+        id:"changePassDialog",
         width:"35em",
         saveUrl:"rsUser/changePassword?format=xml",
         successfulyExecuted: function () {}

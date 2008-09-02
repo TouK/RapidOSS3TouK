@@ -121,6 +121,8 @@
     var actionGroupConfig = {url:'searchQueryGroup/delete?format=xml'}
     var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
 
+    var computerSystemFields = ["creationClassName", "name", "vendor", "model", "managementServer", "location", "snmpAddress"];
+    var computerSystemComponentFields = ["creationClassName", "name", "adminStatus", "operStatus", "description", "type", "mode", "isManaged", "systemName", "maxSpeed", "interfaceAlias"];
 
     var searchConfig = {
         id:'searchList',
@@ -138,10 +140,11 @@
         title:'Smarts Objects',
         defaultFields:['name', 'creationClassName', 'description', 'displayName','isManaged'],
         fields:[
-        	{exp:'data["creationClassName"] == "RsPort"', fields:['name', 'creationClassName', 'description', 'displayName','isManaged', 'isConnectedToManagedSystem','portNumber']},
-        	{exp:'data["creationClassName"] == "RsLink"', fields:['name', 'creationClassName', 'description', 'displayName','isManaged', 'a_IsFlapping','a_MaxSpeed']},
-        	{exp:'data["creationClassName"] == "RsComputerSystem"', fields:['name', 'creationClassName', 'description', 'displayName','isManaged','numberOfIPs','numberOfPorts']},
-        	{exp:'data["creationClassName"] == "RsComputerSystemComponent"', fields:['name', 'creationClassName', 'description', 'displayName','isManaged','computerSystemName','tag']}
+            {exp:'data["rsAlias"] == "RsComputerSystem"', fields:computerSystemFields},
+            {exp:'data["rsAlias"] == "RsPort"', fields:computerSystemComponentFields},
+            {exp:'data["rsAlias"] == "RsInterface"', fields:computerSystemComponentFields},
+        	{exp:'data["rsAlias"] == "RsLink"', fields:['name', 'creationClassName', 'description', 'displayName','isManaged', 'a_IsFlapping','a_MaxSpeed']},
+        	{exp:'data["rsAlias"] == "RsComputerSystemComponent"', fields:['name', 'creationClassName', 'description', 'displayName','isManaged','computerSystemName','tag']}
        	],
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },

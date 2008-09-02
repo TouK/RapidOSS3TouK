@@ -2,7 +2,7 @@ YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.Html = function(config)
 {
     YAHOO.rapidjs.component.Html.superclass.constructor.call(this, null, config);
-	this.width = config.width;
+    this.width = config.width;
     this.height = config.height;
     this.dialog = new YAHOO.rapidjs.component.Dialog({width:this.width,height:this.height});
 
@@ -16,9 +16,9 @@ YAHOO.rapidjs.component.Html = function(config)
 YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingComponentContainer, {
     render: function()
     {
-	    if (this.iframe == true)
+        if (this.iframe == true)
         {
-	        var dh = YAHOO.ext.DomHelper;
+            var dh = YAHOO.ext.DomHelper;
             this.body = dh.append(this.dialog.body, {tag: 'iframe', frameborder:0, scrolling:"no", height:this.height, width:this.width });
         }
         else
@@ -48,12 +48,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         {
             this.doRequest(this.url);
         }
+        this.saveHistoryChange(this.url);
         this.dialog.show();
     },
     hide: function()
     {
         this.abort();
         this.dialog.hide();
+    },
+    historyChanged: function(state) {
+        if (state != "noAction") {
+            this.show(state);
+        }
     }
 })
 

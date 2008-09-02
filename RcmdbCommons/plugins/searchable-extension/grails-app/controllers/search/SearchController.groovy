@@ -2,6 +2,7 @@ package search
 
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -26,6 +27,8 @@ class SearchController {
         {
             def searchResults = searchableService.search(query, params);
             def grailsClassProperties = [:]
+            def excludedProps = ["version", "errors", RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED,
+                    RapidCMDBConstants.OPERATION_PROPERTY_NAME]
             builder.Objects(total:searchResults.total, offset:searchResults.offset)
             {
                 searchResults.results.each{result->
@@ -39,9 +42,12 @@ class SearchController {
                     }
                     def props = [:];
                     grailsObjectProps.each{resultProperty->
-                        props[resultProperty.name] = result[resultProperty.name];
+                        if(!excludedProps.contains(resultProperty.name)){
+                            props[resultProperty.name] = result[resultProperty.name];
+                        }
                     }
                     props.put("sortOrder", sortOrder++)
+                    props.put("rsAlias",result.getClass().name)
                     builder.Object(props);
                 }
 

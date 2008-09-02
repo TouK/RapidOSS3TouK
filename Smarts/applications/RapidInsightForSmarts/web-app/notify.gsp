@@ -158,10 +158,8 @@
         titleAttribute:"serverserial",
         lineSize:3,
         title:'Events',
-        defaultFields:['name', 'creationClassName', 'description', 'displayName','className','instanceName','eventName','severity',
-        			   'lastNotifiedAt','lastChangedAt','active', 'acknowledged','certainty','inMaintenance','eventDisplayName',
-        			   'elementClassName','elementName'
-        			   ],
+        defaultFields:['className', 'instanceName', 'eventName', 'sourceDomainName','acknowledged','owner',
+                        'lastChangedAt','elementClassName', 'elementName','isRoot'],
 
         menuItems:{
             item1 : { id : 'acknowledge', label : 'Acknowledge', condition: searchListHeaderMenuConditionFunctionAcknowledge },

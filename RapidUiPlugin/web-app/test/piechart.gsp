@@ -2,7 +2,51 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<script src="../index.js"></script>
+
+    <script type="text/javascript" src="../js/yui/utilities/utilities.js"></script>
+    <script type="text/javascript" src="../js/yui/resize/resize-beta-min.js"></script>
+    <script type="text/javascript" src="../js/yui/layout/layout-beta-min.js"></script>
+    <script type="text/javascript" src="../js/ext/ext.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/ComponentContainer.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/RapidUtil.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/data/NodeFactory.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/RapidElement.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/PollingComponentContainer.js"></script>
+    <script type="text/javascript" src="../js/yui/container/container-min.js"></script>
+    <script type="text/javascript" src="../js/yui/button/button-min.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/data/RapidXmlDocument.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/SelectUtils.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/form/Form.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/simplewidgets/Button.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/BasicTool.js"></script>
+    <script type="text/javascript" src="../js/yui/container/container_core-min.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/SettingsTool.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/dialog/Dialog.js"></script>
+    <script type="text/javascript" src="../js/yui/menu/menu-min.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/search/SearchNode.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/ButtonToolBar.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/SearchListSettingsTool.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/LoadingTool.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/ErrorTool.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/search/SearchList.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/treegrid/split.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/tools/Tooltip.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeNode.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeHeaderCell.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeGridView.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeGrid.js"></script>
+
+    <script type="text/javascript" src="../js/yui/charts/charts-experimental-min.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/topologyMap/TopologyMap.js"></script>
+
+    <script type="text/javascript" src="../js/rapidjs/component/action/Action.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/html/Html.js"></script>
 
 	<script type="text/javascript" src="../js/rapidjs/component/flexPieChart/FlexPieChart.js"></script>
 	<script type="text/javascript" src="../js/rapidjs/component/flexPieChart/FABridge.js"></script>
@@ -103,11 +147,11 @@
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
         <td width="0%" style="padding-left:10px;padding-top:5px;">
-            <img src="images/RapidInsight-blue.png">
+            <img src="../images/RapidInsight-blue.png">
         </td>
         <td width="100%"></td>
         <td id="serverDownEl" width="0%" style="display:none">
-            <img src="images/network-offline.png"/>
+            <img src="../images/network-offline.png"/>
         </td>
         <td width="0%">
            <div style="vertical-align:bottom">
@@ -136,7 +180,7 @@
 	        url	  	: "chart.xml",
 	        title 	: "Flex Pie Chart",
 	        id 		: "chartComponent",
-	        chartSWF : "images/rapidjs/component/flexPieChart/PieChart.swf",
+	        chartSWF : "../images/rapidjs/component/flexPieChart/PieChart.swf",
 	        rootTag : "chart"
 
         };

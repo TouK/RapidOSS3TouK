@@ -16,6 +16,7 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.id = config.id || YAHOO.util.Dom.generateId(null, "yuigen");
     this.mapURL = config.mapURL;
     this.dataURL = config.dataURL;
+    this.params = {};
 
     this.configureTimeout(config);
     this.attributes = {};
@@ -142,6 +143,13 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
     layout: function(){
 		this.timeline.layout();
-	}
+	},
+
+    getMap : function( mapName)
+    {
+        this.params["mapName"] = mapName;
+        this.url = this.mapURL;
+        this.poll();
+    }
 });
 

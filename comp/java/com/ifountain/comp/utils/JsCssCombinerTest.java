@@ -110,7 +110,7 @@ public class JsCssCombinerTest extends TestCase {
         wholeHTML.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"ricomp/css/allCSS5.css\" ></ link>");
         wholeHTML.append("xyz\n");
         List CSSPaths = new ArrayList();
-        combiner.setPathsAndRemoveFromWholeHTML(wholeHTML.toString(), FileMerger.CSSPATTERN, CSSPaths);
+        combiner.setPathsAndRemoveFromWholeHTML(wholeHTML.toString(), JsCssCombiner.CSSPATTERN, CSSPaths);
         assertEquals(appPath + "/ricomp/css/allCSS1.css", CSSPaths.get(0).toString());
         assertEquals(appPath + "/ricomp/css/allCSS3.css", CSSPaths.get(1).toString());
         assertEquals(appPath + "/ricomp/css/allCSS5.css", CSSPaths.get(2).toString());

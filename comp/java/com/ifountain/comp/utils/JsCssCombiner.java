@@ -251,7 +251,6 @@ public class JsCssCombiner extends CommandLineUtility {
                         String targetFileName = targetPath + "/" + targetUrl;
                         File targetFile = new File(targetFileName);
                         if(!targetFile.exists()){
-                            System.out.println("Copying " + mediaFile.getAbsolutePath() + " to " + targetFile.getAbsolutePath());
                             org.apache.commons.io.FileUtils.copyFile(mediaFile, targetFile);    
                         }
                         matcher.appendReplacement(currentBuffer, wholeUrl.replaceAll(url, targetUrl));

@@ -223,7 +223,7 @@
     }, this, true);
 
 
-    var conf = {width:500, height:400, iframe:false};
+    var conf = {id:"eventDetails", width:500, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
     html.hide();
     var actionConfig = {url:'searchQuery/delete?format=xml'}
@@ -429,6 +429,7 @@
     }
 
     var groupDefinitionDialogConfig = {
+        id:"filterGroupDialog",
         width:"30em",
         saveUrl:"searchQueryGroup/save?format=xml",
         updateUrl:"searchQueryGroup/update?format=xml",
@@ -515,6 +516,7 @@
     }, this, true);
 
     var filterDefinitionDialogConfig = {
+        id:"filterDialog",
         width:"35em",
         createUrl:"script/run/createQuery",
         editUrl:"script/run/editQuery",
@@ -526,6 +528,7 @@
     };
     var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
      var changePassDialogConfig = {
+        id:"changePassDialog",
         width:"35em",
         saveUrl:"rsUser/changePassword?format=xml",
         successfulyExecuted: function () {}

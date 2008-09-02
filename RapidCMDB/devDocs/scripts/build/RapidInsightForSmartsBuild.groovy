@@ -92,8 +92,23 @@ class RapidInsightForSmartsBuild extends Build{
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
 
-//        def osType = "Unix";
-//        if (rapidCmdb.getName().indexOf("Windows") > -1) osType = "Windows"
+         ant.java(fork : "true", classname : "com.ifountain.comp.utils.JsCssCombiner"){
+			ant.arg(value : "-file");
+			ant.arg(value : "${env.dist_rapid_suite}/grails-app/views/layouts/indexLayout.gsp");
+			ant.arg(value : "-applicationPath");
+			ant.arg(value : "${env.dist_rapid_suite}/web-app");
+			ant.arg(value : "-target");
+			ant.arg(value : "${env.dist_rapid_suite}/web-app");
+			ant.arg(value : "-suffix");
+			ant.arg(value : "${versionDate}");
+			ant.classpath(){
+				ant.pathelement(location : "${env.dist_rapid_suite_lib}/comp.jar");
+				ant.pathelement(location : "${env.dist_rapid_server_lib}/commons-cli-1.0.jar");
+				ant.pathelement(location : "${env.dist_rapid_server_lib}/commons-io-1.4.jar");
+				ant.pathelement(location : "${env.dist_rapid_server_lib}/log4j-1.2.15.jar");
+			}
+		}	
+        ant.copy(file : "${env.dist_rapid_suite}/web-app/indexLayout.gsp", todir : "${env.dist_rapid_suite}/grails-app/views/layouts" );
         def zipFileName = "${env.distribution}/RapidInsightForSmarts_$osType$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
            ant.zipfileset(dir : "$env.distribution/RapidServer", prefix:"RapidServer")

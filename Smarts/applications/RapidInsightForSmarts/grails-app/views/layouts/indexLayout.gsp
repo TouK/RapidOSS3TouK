@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>iFountain - RapidInsight for Netcool</title>
+    <title>iFountain - RapidInsight for Smarts</title>
     <script type="text/javascript" src="js/yui/utilities/utilities.js"></script>
     <script type="text/javascript" src="js/yui/resize/resize-beta-min.js"></script>
     <script type="text/javascript" src="js/yui/layout/layout-beta-min.js"></script>

@@ -52,6 +52,13 @@
                     <td valign="top" class="value">${smartsConnector?.ds?.connection?.domain}</td>
                     
                 </tr>
+
+                <tr class="prop">
+                    <td valign="top" class="name">Domain Type:</td>
+
+                    <td valign="top" class="value">${smartsConnector?.ds?.connection?.domainType}</td>
+
+                </tr>
                 
                 <tr class="prop">
                     <td valign="top" class="name">Log Level:</td>

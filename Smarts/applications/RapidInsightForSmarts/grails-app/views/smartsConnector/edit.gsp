@@ -71,6 +71,15 @@
                             <input type="text" id="name" name="domain" value="${smartsConnector?.ds?.connection?.domain}"/>
                         </td>
                     </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="domainType">Domain Type:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:smartsConnector?.ds?.connection,field:'domainType','errors')}">
+                            <g:select id="domainType" name="domainType" from="${smartsConnector?.ds?.connection?.constraints.domainType.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:smartsConnector?.ds?.connection,field:'domainType')}" ></g:select>
+                        </td>
+                    </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">

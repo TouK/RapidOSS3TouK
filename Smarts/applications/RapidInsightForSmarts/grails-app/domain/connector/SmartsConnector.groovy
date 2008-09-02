@@ -1,10 +1,8 @@
 package connector
 
-import script.CmdbScript
-import datasource.BaseDatasource
-import org.apache.log4j.Level
-import datasource.BaseListeningDatasource
 import connection.SmartsConnectionTemplate
+import datasource.BaseListeningDatasource
+import org.apache.log4j.Level
 
 /**
  * Created by IntelliJ IDEA.

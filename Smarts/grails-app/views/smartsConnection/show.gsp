@@ -37,13 +37,6 @@
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Connection Class:</td>
-
-                    <td valign="top" class="value">${smartsConnection.connectionClass}</td>
-
-                </tr>
-
-                <tr class="prop">
                     <td valign="top" class="name">Max. Active:</td>
 
                     <td valign="top" class="value">${smartsConnection.maxNumberOfConnections}</td>
@@ -62,6 +55,13 @@
                     <td valign="top" class="name">Domain:</td>
 
                     <td valign="top" class="value">${smartsConnection.domain}</td>
+
+                </tr>
+
+                 <tr class="prop">
+                    <td valign="top" class="name">Domain Type:</td>
+
+                    <td valign="top" class="value">${smartsConnection.domainType}</td>
 
                 </tr>
 

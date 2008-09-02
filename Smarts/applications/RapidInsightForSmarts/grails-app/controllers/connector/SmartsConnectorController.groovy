@@ -99,18 +99,23 @@ class SmartsConnectorController {
             }
             if (!smartsConnector.hasErrors()) {
                 def domain = params.domain;
+                def domainType = params.domainType;
                 SmartsConnection smartsConnection = smartsConnector.ds.connection
                 connection.SmartsConnectionTemplate template = smartsConnector.connectionTemplate;
-                def isConnectionParamsChanged = smartsConnection.broker != template.broker || smartsConnection.domain != domain || smartsConnection.username != template.username || smartsConnection.userPassword != template.password
+                def isConnectionParamsChanged = smartsConnection.broker != template.broker || smartsConnection.domain != domain || smartsConnection.domainType != domainType || smartsConnection.username != template.username || smartsConnection.userPassword != template.password
                 if(isConnectionParamsChanged)
                 {
-                    def connectionParams = [domain:domain, broker:template.broker, username:template.username, userPassword:template.password]
+                    def connectionParams = [domain:domain, domainType:domainType, broker:template.broker, username:template.username, userPassword:template.password]
                     smartsConnection.update(connectionParams);
                     if (!smartsConnection.hasErrors()) {
                         if(isConnectionParamsChanged)
                         {
+                            def wasAdapterSubscribed = smartsConnector.ds.isSubscribed;
                             CmdbScript.stopListening(smartsConnector.getScriptName(smartsConnector.name));
-                            CmdbScript.startListening(smartsConnector.getScriptName(smartsConnector.name));
+                            if(wasAdapterSubscribed){
+                                CmdbScript.startListening(smartsConnector.getScriptName(smartsConnector.name));    
+                            }
+
                         }
                         redirect(uri: "/admin.gsp")
                     }
@@ -167,6 +172,7 @@ class SmartsConnectorController {
             connectionParams.username = smartsConnector.connectionTemplate.username
             connectionParams.userPassword = smartsConnector.connectionTemplate.password
             connectionParams.domain = params.domain
+            connectionParams.domainType = params.domainType
             SmartsConnection smartsConnection = SmartsConnection.add(connectionParams)
 
             if (!smartsConnection.hasErrors()) {

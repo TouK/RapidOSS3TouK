@@ -23,7 +23,7 @@
                         <%
                             if(propertyName == "instanceName"){
                             %>
-                               <td><a onclick="YAHOO.rapidjs.Components['objectDetails'].show('getDeviceDetails.gsp?name=${domainObject[propertyName]}');">${domainObject[propertyName]}</a></td>
+                               <td><a onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${domainObject[propertyName]}');">${domainObject[propertyName]}</a></td>
                             <%
                             }
                             else{

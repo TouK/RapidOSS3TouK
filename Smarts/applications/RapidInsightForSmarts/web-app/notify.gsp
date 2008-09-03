@@ -135,9 +135,9 @@
     }, this, true);
 
     var eventDetailsDialog = new YAHOO.rapidjs.component.Html({id:'eventDetails', width:500, height:400, iframe:false});
-    var deviceDetailsDialog = new YAHOO.rapidjs.component.Html({id:'deviceDetails', width:500, height:400, iframe:false});
+    var objectDetailsDialog = new YAHOO.rapidjs.component.Html({id:'objectDetails', width:500, height:400, iframe:false});
     eventDetailsDialog.hide();
-    deviceDetailsDialog.hide();
+    objectDetailsDialog.hide();
     var actionConfig = {url:'searchQuery/delete?format=xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
@@ -167,8 +167,7 @@
             item2 : { id : 'unacknowledge', label : 'Unacknowledge', condition: searchListHeaderMenuConditionFunctionUnacknowledge },
             item3 : { id : 'takeOwnership', label : 'Take Ownership'},
             item4 : { id : 'releaseOwnership', label : 'Release Ownership'},
-            item5 : { id : 'eventDetails', label : 'Event Details' },
-            item6 : { id : 'deviceDetails', label : 'Device Details' }
+            item5 : { id : 'eventDetails', label : 'Event Details' }
         },
         images:[
             {exp:'data["severity"] == 1', src:'images/rapidjs/component/searchlist/red.png'},
@@ -184,7 +183,8 @@
             item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunctionLessThan},
             item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: searchListPropertyMenuConditionFunction},
             item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: searchListPropertyMenuConditionFunction},
-            item7 : { id : 'except', label : 'Except'}
+            item7 : { id : 'except', label : 'Except'},
+            item8 : { id : 'browse', label : 'Browse', condition:function(key, value, data){return key == "instanceName"}}
         } ,
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
@@ -195,12 +195,16 @@
 
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
 			if(	id == "except"){
-				 if(searchList.searchBox.dom.getElementsByTagName('input')[0].value!= "")
+				 if(searchList.searchInput.value!= "")
                 	searchList.appendToQuery("NOT " + key + ": \""+ value + "\"");
                  else
                     searchList.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
 			}
-	        else if (id == "sortAsc") {
+            else if(id == "browse"){
+                var url = "getObjectDetails.gsp?name="+value;
+                objectDetailsDialog.show(url);
+            }
+            else if (id == "sortAsc") {
 	            searchList.setSortDirection(key, true);
 	        }
 	        else if (id == "sortDesc") {
@@ -222,10 +226,6 @@
 
             var url = "getEventDetails.gsp?eventName="+eventName+"&instanceName="+instanceName+"&className="+className;
             eventDetailsDialog.show(url);
-        }
-        else if( id == "deviceDetails"){
-    	   var url = "getDeviceDetails.gsp?name="+instanceName;
-           deviceDetailsDialog.show(url);
         }
         else if( id == 'acknowledge' )
             acknowledgeAction.execute({eventName:eventName, instanceName : instanceName,className : className, acknowledged:true}, [searchList]);

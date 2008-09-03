@@ -7,8 +7,8 @@
 %>
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
-        <li><a href="#" onclick="window.html.show('getDetails.gsp?type=NetcoolEvent&id=${netcoolEvent?.id}');"><em>Event</em></a></li>
-        <li class="selected"><a href="#"><em>Journal</em></a></li>
+        <li><a onclick="window.html.show('getDetails.gsp?type=NetcoolEvent&id=${netcoolEvent?.id}');"><em>Event</em></a></li>
+        <li class="selected"><a><em>Journal</em></a></li>
     </ul>
     <div style="display:block;padding-top:5px;padding-left:5px">
         <%

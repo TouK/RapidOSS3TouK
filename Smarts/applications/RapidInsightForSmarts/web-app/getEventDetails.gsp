@@ -10,8 +10,8 @@
          %>
            <div class="yui-navset yui-navset-top">
                 <ul class="yui-nav">
-                    <li class="selected"><a href="#"><em>Properties</em></a></li>
-                    <li><a href="#" onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=${domainObject?.id}');"><em>Audit Log</em></a></li>
+                    <li class="selected"><a><em>Properties</em></a></li>
+                    <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=${domainObject?.id}');"><em>Audit Log</em></a></li>
                 </ul>
                 <div style="display:block;margin-top:10px;">
                     <%

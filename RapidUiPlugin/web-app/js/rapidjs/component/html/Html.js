@@ -34,8 +34,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.body.innerHTML = "<div>" + response.responseText + "</div>";
     },
 
-    show: function(url)
+    show: function(url, title)
     {
+        if(title != null){
+            this.dialog.setTitle(title)
+        }
         if (url)
         {
             this.url = url;
@@ -48,7 +51,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         {
             this.doRequest(this.url);
         }
-        this.saveHistoryChange(this.url);
+        this.saveHistoryChange(this.url + "!::!" + this.dialog.getTitle());
         this.dialog.show();
     },
     hide: function()
@@ -58,7 +61,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
     },
     historyChanged: function(state) {
         if (state != "noAction") {
-            this.show(state);
+            var params = state.split("!::!");
+            this.show(params[0], params[1]);
         }
     }
 })

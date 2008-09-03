@@ -202,7 +202,7 @@
 			}
             else if(id == "browse"){
                 var url = "getObjectDetails.gsp?name="+value;
-                objectDetailsDialog.show(url);
+                objectDetailsDialog.show(url, "Details of " + xmlData.getAttribute("className") + " " + value);
             }
             else if (id == "sortAsc") {
 	            searchList.setSortDirection(key, true);
@@ -225,7 +225,7 @@
         if( id == "eventDetails"){
 
             var url = "getEventDetails.gsp?eventName="+eventName+"&instanceName="+instanceName+"&className="+className;
-            eventDetailsDialog.show(url);
+            eventDetailsDialog.show(url, "Details of " + className + " " + instanceName + " " + eventName);
         }
         else if( id == 'acknowledge' )
             acknowledgeAction.execute({eventName:eventName, instanceName : instanceName,className : className, acknowledged:true}, [searchList]);
@@ -245,7 +245,7 @@
     		var instanceName = xmlData.getAttribute("instanceName");
     		var className = xmlData.getAttribute("className");
             var url = "getEventDetails.gsp?eventName="+eventName+"&instanceName="+instanceName+"&className="+className;
-            eventDetailsDialog.show(url);
+            eventDetailsDialog.show(url, "Details of " + className + " " + instanceName + " " + eventName);
         }
 
     }, true, true);

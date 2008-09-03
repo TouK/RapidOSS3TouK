@@ -179,7 +179,7 @@
          var objectName = xmlData.getAttribute("name");
          if( id == "browse"){
             var url = "getObjectDetails.gsp?name="+objectName;
-            objectDetailsDialog.show(url);
+            objectDetailsDialog.show(url, "Details of " + xmlData.getAttribute('creationClassName') + " " + objectName);
          }
                                  
     }, this, true);

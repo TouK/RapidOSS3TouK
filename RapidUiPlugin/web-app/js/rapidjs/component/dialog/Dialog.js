@@ -5,7 +5,7 @@ YAHOO.rapidjs.component.Dialog = function(config)
     this.height = config.height;
    	this.minHeight = config.minHeight;
    	this.minWidth = config.minWidth;
-   	this.title = config.title;
+   	this.title = config.title || "&#160;";
     this.buttons =config.buttons;
     if(this.buttons)
     	this.buttonNumber = config.buttons.length;
@@ -31,8 +31,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         };
 
         this.panel = new YAHOO.widget.Panel(this.container,this.panelConfig);
-        if(this.title)
-        	this.panel.setHeader(this.title);
+        this.panel.setHeader(this.title);
         this.panel.setBody(this.body);
         this.panel.setFooter(this.footer);
 
@@ -118,5 +117,13 @@ YAHOO.rapidjs.component.Dialog.prototype = {
     handleHide : function()
     {
        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", -15000);
+    },
+
+    setTitle: function(title){
+        this.title = title;
+        this.panel.setHeader(this.title);
+    },
+    getTitle: function(){
+        return this.title;
     }
 };

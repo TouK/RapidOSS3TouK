@@ -134,9 +134,10 @@
         YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
     }, this, true);
 
-    var conf = {id:'objectDetails', width:500, height:400, iframe:false};
-    var html = new YAHOO.rapidjs.component.Html(conf);
-    html.hide();
+    var eventDetailsDialog = new YAHOO.rapidjs.component.Html({id:'eventDetails', width:500, height:400, iframe:false});
+    var deviceDetailsDialog = new YAHOO.rapidjs.component.Html({id:'deviceDetails', width:500, height:400, iframe:false});
+    eventDetailsDialog.hide();
+    deviceDetailsDialog.hide();
     var actionConfig = {url:'searchQuery/delete?format=xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
@@ -167,7 +168,7 @@
             item3 : { id : 'takeOwnership', label : 'Take Ownership'},
             item4 : { id : 'releaseOwnership', label : 'Release Ownership'},
             item5 : { id : 'eventDetails', label : 'Event Details' },
-            item6 : { id : 'deviceDetails', label : 'Device Details' },
+            item6 : { id : 'deviceDetails', label : 'Device Details' }
         },
         images:[
             {exp:'data["severity"] == 1', src:'images/rapidjs/component/searchlist/red.png'},
@@ -219,13 +220,12 @@
 
         if( id == "eventDetails"){
 
-            var url = "getDetails.gsp?eventName="+eventName+"&instanceName="+instanceName+"&className="+className;
-            html.show(url);
+            var url = "getEventDetails.gsp?eventName="+eventName+"&instanceName="+instanceName+"&className="+className;
+            eventDetailsDialog.show(url);
         }
         else if( id == "deviceDetails"){
-           var elementName = xmlData.getAttribute("elementName");
-    	   var url = "getDeviceDetails.gsp?elementName="+elementName;
-           html.show(url);
+    	   var url = "getDeviceDetails.gsp?name="+instanceName;
+           deviceDetailsDialog.show(url);
         }
         else if( id == 'acknowledge' )
             acknowledgeAction.execute({eventName:eventName, instanceName : instanceName,className : className, acknowledged:true}, [searchList]);
@@ -244,8 +244,8 @@
     		var eventName = xmlData.getAttribute("eventName");
     		var instanceName = xmlData.getAttribute("instanceName");
     		var className = xmlData.getAttribute("className");
-            var url = "getDetails.gsp?eventName="+eventName+"&instanceName="+instanceName+"&className="+className;
-            html.show(url);
+            var url = "getEventDetails.gsp?eventName="+eventName+"&instanceName="+instanceName+"&className="+className;
+            eventDetailsDialog.show(url);
         }
 
     }, true, true);

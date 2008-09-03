@@ -321,6 +321,7 @@ def getPropsWithLocalNames(String className, topologyObject) {
         def value = topologyObject[col.smartsName];
         props.put(col.localName, value);
     }
+    props.put("rsDatasource",getDatasource().name)
     return props;
 }
 

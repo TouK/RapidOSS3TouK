@@ -98,5 +98,10 @@ def getNotificationProperties(notificationObject)
             notficationProps[localName] = propValue;
         }
     }
+    notficationProps.put("rsDatasource",getDatasource().name)
     return notficationProps;
+}
+
+def getDatasource(){
+    return datasource;
 }

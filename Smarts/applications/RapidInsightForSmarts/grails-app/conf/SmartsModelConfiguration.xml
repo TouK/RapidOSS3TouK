@@ -6,6 +6,7 @@
           <Field SmartsName='Description' LocalName='description' IsDeleteMarker='false' Type='string' IsKey='false' />
           <Field SmartsName='DisplayName' LocalName='displayName' IsDeleteMarker='false' Type='string' IsKey='false' />
           <Field SmartsName='IsManaged' LocalName='isManaged' IsDeleteMarker='false' Type='boolean' IsKey='false' />
+          <Field SmartsName='rsDatasource' LocalName='rsDatasource' IsDeleteMarker='false' Type='string' IsKey='false' />
         </Fields>
     </Model>
     <Model Name="RsEvent">
@@ -25,6 +26,7 @@
             <Field SmartsName="LastClearedAt" LocalName="lastClearedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
             <Field SmartsName="LastChangedAt" LocalName="lastChangedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
             <Field SmartsName="IsRoot" LocalName="isRoot" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="IsProblem" LocalName="isProblem" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
             <Field SmartsName="Acknowledged" LocalName="acknowledged" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
             <Field SmartsName="EventType" LocalName="eventType" Type="string" IsDeleteMarker="false" IsKey="false"/>
             <Field SmartsName="EventState" LocalName="eventState" Type="string" IsDeleteMarker="false" IsKey="false"/>
@@ -52,6 +54,7 @@
             <Field SmartsName="UserDefined8" LocalName="userDefined8" Type="string" IsDeleteMarker="false" IsKey="false"/>
             <Field SmartsName="UserDefined9" LocalName="userDefined9" Type="string" IsDeleteMarker="false" IsKey="false"/>
             <Field SmartsName="UserDefined10" LocalName="userDefined10" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName='rsDatasource' LocalName='rsDatasource' IsDeleteMarker='false' Type='string' IsKey='false' />
         </Fields>
         </Model>
         <Model Name="RsHistoricalEvent">
@@ -98,6 +101,7 @@
                 <Field SmartsName="UserDefined8" LocalName="userDefined8" Type="string" IsDeleteMarker="false" IsKey="false"/>
                 <Field SmartsName="UserDefined9" LocalName="userDefined9" Type="string" IsDeleteMarker="false" IsKey="false"/>
                 <Field SmartsName="UserDefined10" LocalName="userDefined10" Type="string" IsDeleteMarker="false" IsKey="false"/>
+                <Field SmartsName='rsDatasource' LocalName='rsDatasource' IsDeleteMarker='false' Type='string' IsKey='false' />
             </Fields>
         </Model>
      <Model Name="RsManagementServer">

@@ -113,8 +113,8 @@
 
 
     var conf = {id:'objectDetails', width:500, height:400, iframe:false};
-    var html = new YAHOO.rapidjs.component.Html(conf);
-    html.hide();
+    var objectDetailsDialog = new YAHOO.rapidjs.component.Html(conf);
+    objectDetailsDialog.hide();
     var actionConfig = {url:'searchQuery/delete?format=xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
@@ -146,6 +146,9 @@
         	{exp:'data["rsAlias"] == "RsLink"', fields:['name', 'creationClassName', 'description', 'displayName','isManaged', 'a_IsFlapping','a_MaxSpeed']},
         	{exp:'data["rsAlias"] == "RsComputerSystemComponent"', fields:['name', 'creationClassName', 'description', 'displayName','isManaged','computerSystemName','tag']}
        	],
+        menuItems:{
+            item1 : { id : 'browse', label : 'Browse' }
+        },
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
             item2 : { id : 'sortDesc', label : 'Sort desc' },
@@ -171,6 +174,14 @@
 	        else if (id == "sortDesc") {
 	            searchList.setSortDirection(key, false);
 	        }
+    }, this, true);
+    searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
+         var objectName = xmlData.getAttribute("name");
+         if( id == "browse"){
+            var url = "getObjectDetails.gsp?name="+objectName;
+            objectDetailsDialog.show(url);
+         }
+                                 
     }, this, true);
 
     function treeNodesUpdateDeleteConditionFunction(data)

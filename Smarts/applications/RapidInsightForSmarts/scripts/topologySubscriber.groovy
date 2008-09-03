@@ -421,19 +421,19 @@ RsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts
         getLogger().debug("Creating RsInterface with ${props}")
         return RsInterface.add(props);
     }
-    else if (CLASS_MAPPINGS.RsInterface.classes.containsKey("Card")) {
+    else if (CLASS_MAPPINGS.RsCard.classes.containsKey("Card")) {
 
         def props = getPropsWithLocalNames("RsCard", containmentObjectFromSmarts);
         getLogger().debug("Creating RsCard with ${props}")
         return RsCard.add(props);
     }
-    else if (CLASS_MAPPINGS.RsInterface.classes.containsKey("Ip")) {
+    else if (CLASS_MAPPINGS.RsIp.classes.containsKey("Ip")) {
 
         def props = getPropsWithLocalNames("RsIp", containmentObjectFromSmarts);
         getLogger().debug("Creating RsIp with ${props}")
         return RsIp.add(props);
     }
-    else if (CLASS_MAPPINGS.RsInterface.classes.containsKey("Port")) {
+    else if (CLASS_MAPPINGS.RsPort.classes.containsKey("Port")) {
 
         def props = getPropsWithLocalNames("RsPort", containmentObjectFromSmarts);
         getLogger().debug("Creating RsPort with ${props}")

@@ -425,6 +425,21 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue (relProp.isNullable());
 
 
+
+        Closure searchable = object.searchable;
+        ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
+        searchable.setDelegate (closureGetter);
+        searchable.call();
+        assertEquals(7, closureGetter.propertiesSetByClosure["except"].size());
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(relation1.firstName));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(relation2.secondName));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(relation3.firstName));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(relation4.firstName));
+
+
         Class cls2 = compileClass(model2.name);
         def object2 = cls2.newInstance();
         assertEquals (0, object2.reverseRelation3.size());
@@ -455,6 +470,20 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
         assertEquals(1, object2.belongsTo.size())
         assertEquals(model1.getName(), object2.belongsTo[0].getName())
+
+
+        Closure searchable2 = object2.searchable;
+        ClosurePropertyGetter closureGetter2 = new ClosurePropertyGetter();
+        searchable2.setDelegate (closureGetter2);
+        searchable2.call();
+        assertEquals(7, closureGetter2.propertiesSetByClosure["except"].size());
+        assertTrue(closureGetter2.propertiesSetByClosure["except"].contains("errors"));
+        assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
+        assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+        assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(relation1.secondName));
+        assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(relation2.firstName));
+        assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(relation3.secondName));
+        assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(relation4.secondName));
     }
 
     public void testIfModelAlreadyExistsChangesParentKeepsOtherCode()

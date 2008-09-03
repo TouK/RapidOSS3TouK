@@ -292,6 +292,7 @@ class ModelMetaData
 
     private def processRelation(cardinality, oppositeCardinality, name, oppositeName, oppositeType, isOwner)
     {
+        transientProps += name;
         if(cardinality == ModelGenerator.RELATION_TYPE_ONE && oppositeCardinality == ModelGenerator.RELATION_TYPE_MANY)
         {
             hasMany[name] = oppositeType;

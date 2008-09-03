@@ -25,16 +25,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         {
             this.body = this.dialog.body;
         }
-        this.dialog.show();
-
-
     },
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
         this.body.innerHTML = "<div>" + response.responseText + "</div>";
     },
 
-    show: function(url, title)
+    _show: function(url, title)
     {
         if(title != null){
             this.dialog.setTitle(title)
@@ -51,8 +48,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         {
             this.doRequest(this.url);
         }
-        this.saveHistoryChange(this.url + "!::!" + this.dialog.getTitle());
         this.dialog.show();
+    },
+
+    show: function(url, title){
+      this._show(url,title);
+      this.saveHistoryChange(this.url + "!::!" + this.dialog.getTitle());  
     },
     hide: function()
     {
@@ -62,7 +63,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
     historyChanged: function(state) {
         if (state != "noAction") {
             var params = state.split("!::!");
-            this.show(params[0], params[1]);
+            this._show(params[0], params[1]);
         }
     }
 })

@@ -12,7 +12,7 @@
         %>
         <div class="yui-navset yui-navset-top">
             <div style="display:block">
-                <table>
+                <table cellspacing="2" cellpadding="2">
                     <tbody>
 
                         <g:each var="property" in="${allProperties}">

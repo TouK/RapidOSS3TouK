@@ -14,7 +14,7 @@
         <li><a href="#" onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=${domainObject?.id}');"><em>Audit Log</em></a></li>
     </ul>
     <div style="display:block">
-        <table>
+        <table cellspacing="2" cellpadding="2">
             <tbody>
 
                 <g:each var="propertyName" in="${allProperties}">
@@ -23,7 +23,7 @@
                         <%
                             if(propertyName == "instanceName"){
                             %>
-                               <td><a onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${domainObject[propertyName]}');">${domainObject[propertyName]}</a></td>
+                               <td><a style="color:#006DBA;text-decoration:underline;cursor:pointer" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${domainObject[propertyName]}');">${domainObject[propertyName]}</a></td>
                             <%
                             }
                             else{

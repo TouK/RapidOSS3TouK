@@ -3,6 +3,7 @@ package com.ifountain.rcmdb.test.util
 import com.ifountain.rcmdb.domain.MockIdGeneratorStrategy
 import com.ifountain.rcmdb.domain.IdGenerator
 import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
+import relation.Relation
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +20,7 @@ class RapidCmdbWithCompassTestCase extends RapidCmdbMockTestCase{
         pluginsToLoad +=  gcl.loadClass("SearchableGrailsPlugin");
         pluginsToLoad +=  gcl.loadClass("SearchableExtensionGrailsPlugin");
         pluginsToLoad +=  gcl.loadClass("RapidDomainClassGrailsPlugin");
+        classesToBeLoaded += Relation;
         super.initialize(classesToBeLoaded, pluginsToLoad);
     }
 

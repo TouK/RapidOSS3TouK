@@ -1,8 +1,10 @@
 package com.ifountain.rcmdb.domain.method
 
-import com.ifountain.rcmdb.domain.util.Relation
+import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.springframework.validation.BeanPropertyBindingResult
+import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 
 /**
 * Created by IntelliJ IDEA.
@@ -11,19 +13,17 @@ import org.springframework.validation.BeanPropertyBindingResult
 * Time: 2:27:48 PM
 * To change this template use File | Settings | File Templates.
 */
-class RemoveMethodTest extends RapidCmdbTestCase{
+class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
 
-    protected void setUp() {
+    public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         RemoveMethodDomainObject.unIndexList = [];
         RemoveMethodDomainObject.existingInstanceCount = 0;
         RemoveMethodDomainObject.countQuery = null;
         RemoveMethodDomainObject.relatedInstancesShouldBeReturnedFromRemoveRelationMethod = [:]
-        RelationMethodDomainObject1.reIndexList = [];
-        RelationMethodDomainObject2.reIndexList = [];
     }
 
-    protected void tearDown() {
+    public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
 
@@ -65,34 +65,27 @@ class RemoveMethodTest extends RapidCmdbTestCase{
 
     public void testRemoveObjectWithRelations()
     {
-        RemoveMethodDomainObject.existingInstanceCount = 1;
-        RelationMethodDomainObject2 relatedObj1 = new RelationMethodDomainObject2(id:1, );
-        RelationMethodDomainObject2 relatedObj2 = new RelationMethodDomainObject2(id:2, );
-        RemoveMethodDomainObject.relatedInstancesShouldBeReturnedFromRemoveRelationMethod = [:]
-        RemoveMethodDomainObject.relatedInstancesShouldBeReturnedFromRemoveRelationMethod[RelationMethodDomainObject2.class]= [relatedObj1, relatedObj2];
-        RemoveMethodDomainObject.relatedInstancesShouldBeReturnedFromRemoveRelationMethod[RelationMethodDomainObject1.class] =[]
-        RemoveMethodDomainObject objectToBeRemoved = new RemoveMethodDomainObject(id:3, prop1:"prop1Value1");
-        objectToBeRemoved.rel1 = relatedObj1;
-        objectToBeRemoved.rel2 += relatedObj2;
-        def rel2 = new Relation("rel2", "revRel2", RemoveMethodDomainObject.class, RelationMethodDomainObject2.class, Relation.ONE_TO_MANY);
-        rel2.isCascade = true;
-        def relationsForObjectToBeRemoved = ["rel1":new Relation("rel1", "revRel1", RemoveMethodDomainObject.class, RelationMethodDomainObject2.class, Relation.ONE_TO_ONE),
-        "rel2":rel2,
-        "rel3":new Relation("rel3", "revRel3", RemoveMethodDomainObject.class, RelationMethodDomainObject2.class, Relation.ONE_TO_ONE)]
-        RemoveMethod removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, relationsForObjectToBeRemoved);
-        removeMethod.invoke (objectToBeRemoved, null);
-        assertEquals (2, objectToBeRemoved.relationsToBeRemoved.size());
-        assertFalse(objectToBeRemoved.isRemoveRelationFlushed);
-        assertTrue (objectToBeRemoved.relationsToBeRemoved["rel1"].contains(relatedObj1));
-        assertTrue (objectToBeRemoved.relationsToBeRemoved["rel2"].contains(relatedObj2));
-        assertSame(objectToBeRemoved, RemoveMethodDomainObject.unIndexList[0][0]);
-        assertTrue(relatedObj2.isRemoved);
-        assertFalse(relatedObj1.isRemoved);
-        assertEquals (1, relatedObj1.reIndexList.size())
-        assertEquals (0, RelationMethodDomainObject1.reIndexList.size())
-        assertEquals (2, relatedObj1.reIndexList[0].size())
-        assertTrue (relatedObj1.reIndexList[0].contains(relatedObj1))
-        assertTrue (relatedObj1.reIndexList[0].contains(relatedObj2))
+
+        initialize([RelationMethodDomainObject1, RelationMethodDomainObject2], []);
+        RelationMethodDomainObject1 objectToBeRemoved = RelationMethodDomainObject1.add([:]);
+        RelationMethodDomainObject2 relatedObj1 = RelationMethodDomainObject2.add([:]);
+        RelationMethodDomainObject2 relatedObj2 = RelationMethodDomainObject2.add([:]);
+        RelationMethodDomainObject2 relatedObj3 = RelationMethodDomainObject2.add([:]);
+
+        objectToBeRemoved.addRelation(rel1:relatedObj1, rel2:relatedObj2, rel3:relatedObj3);
+        assertEquals (objectToBeRemoved, relatedObj1.revRel1);
+        assertEquals (objectToBeRemoved, relatedObj2.revRel2);
+        assertTrue (relatedObj3.revRel3.contains(objectToBeRemoved));
+        objectToBeRemoved.remove();
+        
+        assertNull (RelationMethodDomainObject1.get(id:objectToBeRemoved.id))
+        assertNull (RelationMethodDomainObject2.get(id:relatedObj2.id))
+        assertEquals (relatedObj1, RelationMethodDomainObject2.get(id:relatedObj1.id))
+        assertNull (relatedObj1.revRel1);
+        assertNull (relatedObj2.revRel2);
+        assertFalse (relatedObj3.revRel3.contains(objectToBeRemoved));
+        assertNull (objectToBeRemoved.rel1);
+        assertTrue (objectToBeRemoved.rel2.isEmpty());
     }
     
 }

@@ -2,13 +2,14 @@ package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
-import com.ifountain.rcmdb.domain.util.Relation
+import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.util.ValidationUtils
 import org.apache.commons.beanutils.ConversionException
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.domain.util.RelationMetaData
 
 class AddMethod extends AbstractRapidDomainStaticMethod
 {
@@ -16,12 +17,11 @@ class AddMethod extends AbstractRapidDomainStaticMethod
     GetMethod getMethod
     def fieldTypes = [:]
     Validator validator;
-    public AddMethod(MetaClass mc, Validator validator, Map relations, List keys) {
+    public AddMethod(MetaClass mc, Validator validator, Map allFields, Map relations, List keys) {
         super(mc);
         this.validator = validator;
-        def fields = mc.getProperties();
-        fields.each{field->
-            fieldTypes[field.name] = field.type;            
+        allFields.each{String fieldName, field->
+            fieldTypes[fieldName] = field.type;
         }
         this.relations = relations
         getMethod = new GetMethod(mc, keys, relations);
@@ -35,23 +35,20 @@ class AddMethod extends AbstractRapidDomainStaticMethod
 
     protected Object _invoke(Class clazz, Object[] arguments) {
         def props = arguments[0];
-        def sampleBean;
         props.remove("id");
         def existingInstance = getMethod.invoke(clazz, [props, false] as Object[])
         if(existingInstance != null)
         {
-            sampleBean = existingInstance;
+            return existingInstance.update(props);
         }
-        else
-        {
-             sampleBean = clazz.newInstance()
-        }
+        def sampleBean = clazz.newInstance()
+
 
         Errors errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
         def relatedInstances = [:];
 
         props.each{key,value->
-            Relation relation = relations.get(key);
+            RelationMetaData relation = relations.get(key);
             if(!relation)
             {
                 def fieldType = fieldTypes[key];
@@ -82,15 +79,11 @@ class AddMethod extends AbstractRapidDomainStaticMethod
                 relatedInstances[key] = value;
             }
         }
-        if(relatedInstances.size() > 0)
-        {
-            relatedInstances = sampleBean.addRelation(relatedInstances, false);
-        }
         if(errors.hasErrors()){
             sampleBean.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
             return sampleBean;
         }
-        validator.validate (sampleBean, errors)
+        validator.validate (ValidationUtils.createValidationBean(sampleBean, props, relations, fieldTypes), errors)
 
         if(errors. hasErrors())
         {
@@ -98,23 +91,13 @@ class AddMethod extends AbstractRapidDomainStaticMethod
         }
         else
         {
-            if(existingInstance == null)
-            {
-                sampleBean.setProperty("id", IdGenerator.getInstance().getNextId(), false);
-                EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
-            }
-            else
-            {
-                EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
-            }
+            sampleBean.setProperty("id", IdGenerator.getInstance().getNextId(), false);
+            EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
             CompassMethodInvoker.index (mc, sampleBean);
-            relatedInstances.each{instanceClass, instances->
-                if(!instances.isEmpty())
-                {
-                    CompassMethodInvoker.index (instanceClass.metaClass, instances);
-                }
+            if(!relatedInstances.isEmpty())
+            {
+                sampleBean.addRelation(relatedInstances);
             }
-
             EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.ONLOAD_EVENT);
         }
         return sampleBean;

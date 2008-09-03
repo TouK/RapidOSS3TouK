@@ -8,7 +8,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
-import com.ifountain.rcmdb.domain.util.Relation
+import com.ifountain.rcmdb.domain.util.RelationMetaData
 
 /**
 * Created by IntelliJ IDEA.
@@ -71,8 +71,8 @@ class ExistingDataAnalyzer
         {
             willResourcesBeRegenerated = true;    
         }
-        newRelations.each{String relationName, Relation newRelation->
-            Relation oldRelation = oldRelations.remove(relationName)
+        newRelations.each{String relationName, RelationMetaData newRelation->
+            RelationMetaData oldRelation = oldRelations.remove(relationName)
             if(oldRelation)
             {
 

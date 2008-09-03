@@ -20,6 +20,7 @@ import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import com.ifountain.rcmdb.domain.property.RelationUtils
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors", "__is_federated_properties_loaded__":RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, "__operation_class__":RapidCMDBConstants.OPERATION_PROPERTY_NAME]
@@ -248,6 +249,7 @@ class RapidDomainClassGrailsPlugin {
     {
         def props =dc.getProperties();
         def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
+        def relations = DomainClassUtils.getRelations(dc);
         DomainClassPropertyInterceptor propertyInterceptor = ctx.getBean("domainPropertyInterceptor");
         dc.metaClass.setProperty = {String name, Object value->
             delegate.setProperty(name, value, true);
@@ -255,7 +257,6 @@ class RapidDomainClassGrailsPlugin {
         dc.metaClass.setProperty = {String name, Object value, boolean flush->
             try
             {
-
                 if(flush && !EXCLUDED_PROPERTIES.containsKey(name) && persistantProps.containsKey(name) && ((MetaClass)delegate.metaClass).getMetaMethod("update", Map) != null)
                 {
                     delegate.update(["$name":value]);
@@ -281,7 +282,16 @@ class RapidDomainClassGrailsPlugin {
         dc.metaClass.getProperty = {String name->
             try
             {
-                return propertyInterceptor.getDomainClassProperty (delegate, name);
+                def propValue = propertyInterceptor.getDomainClassProperty (delegate, name);
+                if(!propValue)
+                {
+                    def relation = relations[name];
+                    if(relation)
+                    {
+                        return RelationUtils.getRelatedObjects(delegate, relation);
+                    }
+                }
+                return propValue;
             }
             catch(MissingPropertyException propEx)
             {

@@ -108,10 +108,11 @@ class SearchableExtensionGrailsPlugin {
         def relations = DomainClassUtils.getRelations(dc);
         dc.refreshConstraints();
         def keys = DomainClassUtils.getKeys(dc);
-        def addMethod = new AddMethod(mc, dc.validator, relations, keys);
+        def persProps = DomainClassUtils.getPersistantProperties(dc, true);
+        def addMethod = new AddMethod(mc, dc.validator, persProps, relations, keys);
         def removeAllMethod = new RemoveAllMethod(mc);
         def removeMethod = new RemoveMethod(mc, relations);
-        def updateMethod = new UpdateMethod(mc, dc.validator, relations);
+        def updateMethod = new UpdateMethod(mc, dc.validator, persProps, relations);
         def addRelationMethod = new AddRelationMethod(mc, relations);
         def removeRelationMethod = new RemoveRelationMethod(mc, relations);
 

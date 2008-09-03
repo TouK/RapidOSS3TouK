@@ -70,13 +70,7 @@ class RemoveMethod extends AbstractRapidDomainMethod{
             }
             if(!relsToBeRemoved.isEmpty())
             {
-                def relationsToBeRemoved = domainObject.removeRelation(relsToBeRemoved, false);
-                relationsToBeRemoved.each{Class instanceClass, instances->
-                    if(!instances.isEmpty())
-                    {
-                        CompassMethodInvoker.reindex (instanceClass.metaClass, instances);
-                    }
-                }
+                domainObject.removeRelation(relsToBeRemoved);
             }
             cascadedObjectsToBeRemoved.each{
                 it.remove();

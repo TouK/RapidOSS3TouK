@@ -46,7 +46,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     def loadedClasses;
     def resolver = new PathMatchingResourcePatternResolver()
     def previousGrailsApp;
-    void setUp() {
+    public void setUp() {
         super.setUp();
         previousGrailsApp = ApplicationHolder.application;
         configParams = [:]
@@ -102,7 +102,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 		dependentPlugins*.doWithApplicationContext(appCtx)
     }
 
-    final void tearDown() {
+    void tearDown() {
         servletContext = null
 		webRequest = null
 		request = null

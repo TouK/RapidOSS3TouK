@@ -1,6 +1,8 @@
 package com.ifountain.rcmdb.domain.method
 
-import com.ifountain.rcmdb.domain.util.Relation
+import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.domain.property.RelationUtils
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -51,122 +53,17 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
         def changedInstances = [:]
         boolean isChanged = false;
         props.each{key,value->
-            Relation relation = relations.get(key);
+            RelationMetaData relation = relations.get(key);
             def storage = [];
             if(relation)
             {
-                if(relation.isOneToOne())
+                if(value)
                 {
-                    if(value instanceof Collection)
-                    {
-                        value = value[0];
-                    }
-                    if(domainObject[relation.name] && domainObject[relation.name].id == value.id)
-                    {
-                        domainObject.setProperty(relation.name, null, false);
-                        if(relation.hasOtherSide())
-                        {
-                            storage+= value;
-                            value.setProperty(relation.otherSideName, null, false);
-                        }
-                    }
+                    value = value instanceof Collection?value:[value]
+                    RelationUtils.getRelationObjects(domainObject, relation,value)*.remove();
                 }
-                else if(relation.isManyToOne())
-                {
-                    if(value instanceof Collection)
-                    {
-                        value = value[0];
-                    }
-                    if(domainObject[relation.name] && domainObject[relation.name].id == value.id)
-                    {
-
-                        domainObject.setProperty(relation.name, null, false);
-                        if(relation.hasOtherSide())
-                        {
-                            storage+= value;
-                            def otherSideRelatedClasses = value[relation.otherSideName];
-                            for(Iterator i = otherSideRelatedClasses.iterator(); i.hasNext(); )
-                            {
-                                def otherSideClass = i.next();
-                                if(otherSideClass.id == domainObject.id)
-                                {
-                                    i.remove();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                else if(relation.isOneToMany())
-                {
-                    def relatedObjects = [:];
-                    domainObject[relation.name].each{
-                        relatedObjects[it.id] = it;
-                    }
-
-                    value.each
-                    {
-
-                        relatedObjects.remove(it.id);
-                        if(relation.hasOtherSide())
-                        {
-                            storage += it;
-                            it.setProperty(relation.otherSideName, null, false);
-                        }
-                    }
-                    domainObject.setProperty(relation.name, new ArrayList(relatedObjects.values()), false);
-                }
-                else                        
-                {
-                    def relatedObjects = [:];
-                    domainObject[relation.name].each{
-                        relatedObjects[it.id] = it;
-                    }
-
-                    value.each{relatedClassToBeRemoved->
-                        relatedObjects.remove(relatedClassToBeRemoved.id);
-                        if(relation.hasOtherSide())
-                        {
-                            storage += relatedClassToBeRemoved;
-                            def otherClassRelations = relatedClassToBeRemoved[relation.otherSideName];
-                            for(Iterator i = otherClassRelations.iterator(); i.hasNext(); )
-                            {
-                                def otherClassRelation = i.next();
-                                if(otherClassRelation.id == domainObject.id)
-                                {
-                                    i.remove();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    domainObject.setProperty(relation.name, new ArrayList(relatedObjects.values()), false);
-                }
-                if(storage.size() > 0)
-                {
-                    def oldStorage = changedInstances[relation.otherSideCls]
-                    if(!oldStorage)
-                    {
-                        changedInstances[relation.otherSideCls] = storage;
-                    }
-                    else
-                    {
-                        oldStorage.addAll(storage);
-                    }
-                }
-            }
-        }
-        if(flush)
-        {
-            CompassMethodInvoker.index (mc, domainObject);
-            changedInstances.each{instanceClass, instances->
-                CompassMethodInvoker.index (instanceClass.metaClass, instances);
             }
             return domainObject;
-        }
-        else
-        {
-            return changedInstances;
         }
 
     }

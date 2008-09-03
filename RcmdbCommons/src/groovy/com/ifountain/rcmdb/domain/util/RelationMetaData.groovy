@@ -23,7 +23,7 @@ package com.ifountain.rcmdb.domain.util
  * Time: 1:20:57 PM
  * To change this template use File | Settings | File Templates.
  */
-class Relation
+class RelationMetaData
 {
     public static int ONE_TO_ONE = 0;
     public static int ONE_TO_MANY = 1;
@@ -37,7 +37,7 @@ class Relation
     Class cls;
     boolean isCascade = false;
     int type;
-    public Relation(String name, String otherSideName, Class cls, Class otherClass, int relType)
+    public RelationMetaData(String name, String otherSideName, Class cls, Class otherClass, int relType)
     {
         this.name = name;
         this.otherSideName = otherSideName;

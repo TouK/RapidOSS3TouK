@@ -53,13 +53,59 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         configParams[RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME] = DomainPropertyInterceptorDomainClassGrailsPluginImpl.name;
         def pluginsToLoad = [gcl.loadClass("RapidDomainClassGrailsPlugin")];
         initialize(classesTobeLoaded, pluginsToLoad)
-        
+
         def instance = loadedDomainClass.newInstance();
         instance.prop1 = "prop1Value";
         assertEquals ("prop1Value", instance.prop1);
         DomainPropertyInterceptorDomainClassGrailsPluginImpl interceptor = appCtx.getBean("domainPropertyInterceptor");
         assertEquals(1, interceptor.getPropertyList.size());
         assertEquals(1, interceptor.setPropertyList.size());
+    }
+
+    public void testPropertyInterceptingWithRelations()
+    {
+        String domainClassName2 = "DomainClass2"
+        loadedDomainClass = gcl.parseClass("""
+            class ${domainClassName}{
+                static searchable = {
+                    except:["rel1"]
+                }
+                Long id;
+                Long version;
+                String prop1;
+                List rel1 = [];
+                static hasMany = [rel1:${domainClassName2}]
+                static mappedBy = [rel1:"revRel1"]
+            }
+            class ${domainClassName2}{
+                static searchable = {
+                    except:["revRel1"]
+                }
+                Long id;
+                Long version;
+                String prop1;
+                List revRel1 = [];
+                static hasMany = [revRel1:${domainClassName}]
+                static mappedBy = [revRel1:"rel1"]
+                static belongsTo = [${domainClassName}]
+            }
+        """)
+        Class loadedDomainClass2 = gcl.loadClass(domainClassName2);
+        def classesTobeLoaded = [loadedDomainClass, loadedDomainClass2, relation.Relation, application.ObjectId];
+        configParams[RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME] = DomainPropertyInterceptorDomainClassGrailsPluginImpl.name;
+        def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+
+        def domainClass2Instance1 = loadedDomainClass2.metaClass.invokeStaticMethod(loadedDomainClass2, "add", [[prop1:"obj1Prop1Value"]] as Object[]);
+        def domainClass1Instance1 = loadedDomainClass.metaClass.invokeStaticMethod(loadedDomainClass, "add", [[prop1:"prop1Value", rel1:domainClass2Instance1]] as Object[]);
+        assertEquals ("prop1Value", domainClass1Instance1.prop1);
+        assertEquals (domainClass2Instance1.id, domainClass1Instance1.rel1[0].id);
+        assertEquals (domainClass1Instance1.id, domainClass2Instance1.revRel1[0].id);
+        assertNotSame (domainClass1Instance1.rel1, domainClass1Instance1.rel1);
+
+        domainClass1Instance1.setProperty("rel1", ["nonemptyulist"], false);
+        assertSame (domainClass1Instance1.rel1, domainClass1Instance1.rel1);
     }
 
     public void testPropertyInterceptingThrowsMissingPropertyExceptionInvokesGetterAndSetterMethods()
@@ -156,7 +202,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         instance.prop1 = "updatedValue"
         def reloadedInstance = loadedDomainClass.metaClass.invokeStaticMethod(loadedDomainClass, "get", [[id:instance.id]] as Object[])
         assertEquals ("updatedValue", reloadedInstance.prop1);
-        
+
         def numberOfCalls = 0;
         instance.metaClass.update = {Map props->
             numberOfCalls ++;

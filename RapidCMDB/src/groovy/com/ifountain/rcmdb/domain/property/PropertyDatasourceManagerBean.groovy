@@ -12,6 +12,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils
  */
 class PropertyDatasourceManagerBean implements InitializingBean
 {
+    public static BEAN_ID = "propertyDatasourceManager";
     private Map datasourceProperties;
     private Map datasourceKeys;
     private Map propertyConfiguration;

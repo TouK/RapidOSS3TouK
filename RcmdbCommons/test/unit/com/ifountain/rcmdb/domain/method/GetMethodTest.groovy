@@ -1,7 +1,7 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import com.ifountain.rcmdb.domain.util.Relation
+import com.ifountain.rcmdb.domain.util.RelationMetaData
 
 /**
 * Created by IntelliJ IDEA.
@@ -48,6 +48,14 @@ class GetMethodTest extends RapidCmdbTestCase{
         assertEquals ("id:\"1000\"", GetMethodDomainObject.query);
     }
 
+    public void testGetMethodNoKeyAndId()
+    {
+        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, [], [:]);
+        def result = get.invoke (GetMethodDomainObject, [[prop1:"prop1Value", prop3:"prop3Value"]] as Object[]);
+        assertNull (result);
+        assertNull (GetMethodDomainObject.query);
+    }
+
     public void testGetMethodWithNumber()
     {
         def keys = ["prop1",  "prop2"]
@@ -66,7 +74,7 @@ class GetMethodTest extends RapidCmdbTestCase{
     public void testGetMethodWithRelationAndAPropertyAsKey()
     {
         def keys = ["prop1",  "rel1"]
-        def relations = ["rel1":new Relation("rel1", "revRel1", GetMethodDomainObject, RelationMethodDomainObject2, Relation.ONE_TO_ONE)]
+        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", GetMethodDomainObject, RelationMethodDomainObject2, RelationMetaData.ONE_TO_ONE)]
         RelationMethodDomainObject2 relatedObject1 = new RelationMethodDomainObject2(id:1);
         RelationMethodDomainObject2 relatedObject2 = new RelationMethodDomainObject2(id:2);
         GetMethodDomainObject objectWillBeReturned1 = new GetMethodDomainObject(id:3, prop1:"prop1Value", prop2:"prop2Value", rel1:relatedObject1)
@@ -89,8 +97,8 @@ class GetMethodTest extends RapidCmdbTestCase{
     public void testGetMethodWithTwoRelationsAsKey()
     {
         def keys = ["rel2",  "rel1"]
-        def relations = ["rel1":new Relation("rel1", "revRel1", GetMethodDomainObject, RelationMethodDomainObject2, Relation.ONE_TO_ONE),
-        "rel2":new Relation("rel2", "revRel2", GetMethodDomainObject, RelationMethodDomainObject2, Relation.ONE_TO_ONE)]
+        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", GetMethodDomainObject, RelationMethodDomainObject2, RelationMetaData.ONE_TO_ONE),
+        "rel2":new RelationMetaData("rel2", "revRel2", GetMethodDomainObject, RelationMethodDomainObject2, RelationMetaData.ONE_TO_ONE)]
         RelationMethodDomainObject2 relatedObject1 = new RelationMethodDomainObject2(id:1);
         RelationMethodDomainObject2 relatedObject2 = new RelationMethodDomainObject2(id:2);
         RelationMethodDomainObject2 relatedObject3 = new RelationMethodDomainObject2(id:5);

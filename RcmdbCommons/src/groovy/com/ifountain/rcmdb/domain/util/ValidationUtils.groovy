@@ -31,4 +31,41 @@ class ValidationUtils {
         ObjectError error = new ObjectError( errors.getObjectName(),[messageCode] as String[], params as Object[], "");
         (( BindingResult ) errors).addError( error );
     }
+
+    public static Object createValidationBean(Object domainObject, Map props, Map relationMetData, Map fields, boolean clearOldValues = false)
+    {
+        def emptyBean = domainObject.class.newInstance()
+        fields.each{String propName, type->
+            def propValue = domainObject[propName];
+            if(relationMetData.containsKey(propName) && props.containsKey(propName))
+            {
+                def newValue = props[propName];
+                def metaData = relationMetData[propName]
+                def value = domainObject[propName];
+                if(metaData.isOneToOne() || metaData.isManyToOne())
+                {
+                    value = newValue instanceof Collection?newValue[0]:newValue;
+                }
+                else
+                {
+                    value = !clearOldValues && value instanceof Collection?value:[];
+                    def isCollection = newValue instanceof Collection;
+                    if(newValue != null && !isCollection)
+                    {
+                        value.add(newValue)
+                    }
+                    else if(isCollection)
+                    {
+                        value.addAll(newValue);
+                    }
+                }
+                emptyBean.setProperty(propName, value, false);
+            }
+            else
+            {
+                emptyBean.setProperty(propName, propValue, false);
+            }
+        }
+        return emptyBean;
+    }
 }

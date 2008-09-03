@@ -71,7 +71,11 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
                     keyMap[it] = searchParams[it];
                 }
                 def result = null;
-                if(keyMap.isEmpty())
+                if(propKeys.isEmpty() && relationKeys.isEmpty())
+                {
+                    return null;    
+                }
+                else if(keyMap.isEmpty())
                 {
                     result = CompassMethodInvoker.search (mc, "id:[0 TO *]", willTriggerOnLoad);
                 }

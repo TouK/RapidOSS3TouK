@@ -83,21 +83,21 @@ class DomainClassUtils
                 def relType;
                 if(prop.isManyToMany())
                 {
-                    relType = Relation.MANY_TO_MANY
+                    relType = RelationMetaData.MANY_TO_MANY
                 }
                 else if(prop.isOneToMany())
                 {
-                    relType = Relation.ONE_TO_MANY
+                    relType = RelationMetaData.ONE_TO_MANY
                 }
                 else if(prop.isManyToOne())
                 {
-                    relType = Relation.MANY_TO_ONE
+                    relType = RelationMetaData.MANY_TO_ONE
                 }
                 else
                 {
-                    relType = Relation.ONE_TO_ONE;
+                    relType = RelationMetaData.ONE_TO_ONE;
                 }
-                def rel = new Relation(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
+                def rel = new RelationMetaData(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
                 rel.isCascade = isCascaded;
                 allRelations[relationName] = rel;
             }

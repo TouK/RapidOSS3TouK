@@ -37,12 +37,11 @@ class UpdateMethod extends AbstractRapidDomainMethod{
     def relations;
     def fieldTypes = [:]
     Validator validator;
-    public UpdateMethod(MetaClass mc, Validator validator, Map relations) {
+    public UpdateMethod(MetaClass mc, Validator validator, Map allFields, Map relations) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
         this.validator = validator;
-        def fields = mc.getProperties();
-        fields.each{field->
-            fieldTypes[field.name] = field.type;
+        allFields.each{fieldName, field->
+            fieldTypes[fieldName] = field.type;
         }
         this.relations = relations;
     }
@@ -98,25 +97,16 @@ class UpdateMethod extends AbstractRapidDomainMethod{
             }
         }
 
-        def relatedInstancesFromAdd = domainObject.addRelation(relationToBeAddedMap, false);
-        def relatedInstancesFromRemove = domainObject.removeRelation(relationToBeRemovedMap, false);
         if(!errors.hasErrors())
         {
-            validator.validate (domainObject, errors);
+            validator.validate (ValidationUtils.createValidationBean(domainObject, props, relations, fieldTypes, true), errors)
         }
         if(!errors.hasErrors())
         {
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
             domainObject.reindex(domainObject);
-            relatedInstancesFromAdd.each{instanceClass, instances->
-                if(!instances.isEmpty())
-                CompassMethodInvoker.reindex (instanceClass.metaClass,  instances);
-            }
-            relatedInstancesFromRemove.each{instanceClass, instances->
-                if(!instances.isEmpty())
-                CompassMethodInvoker.reindex (instanceClass.metaClass,  instances);
-            }
-
+            domainObject.removeRelation(relationToBeRemovedMap);
+            domainObject.addRelation(relationToBeAddedMap);
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.ONLOAD_EVENT);
         }
         else

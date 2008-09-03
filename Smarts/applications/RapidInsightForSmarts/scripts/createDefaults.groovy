@@ -18,6 +18,8 @@ import search.SearchQuery
 CmdbScript.addScript(name: "modelCreator");
 CmdbScript.addScript(name: "getDevices");
 CmdbScript.addScript(name: "removeAll");
+CmdbScript.addScript(name: "acknowledge");
+CmdbScript.addScript(name: "setOwnership");
 if(SmartsModel.get(name:"RsNotification") == null)
 {
     CmdbScript.runScript("modelCreator", [web:[:]]);

@@ -4,7 +4,7 @@
 
     def allProperties = [];
     def domainObject = RsSmartsObject.get(name: name);
-    def excludedProps = ["id", "version", RapidCMDBConstants.ERRORS_PROPERTY_NAME,
+    def excludedProps = ["id", "version", RapidCMDBConstants.ERRORS_PROPERTY_NAME, "rsDatasource",
             RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, RapidCMDBConstants.OPERATION_PROPERTY_NAME]
     if (domainObject != null) {
         GrailsDomainClass domainClass = ApplicationHolder.application.getDomainClass(domainObject.getClass().getName());

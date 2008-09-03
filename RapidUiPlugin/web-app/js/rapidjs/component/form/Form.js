@@ -46,6 +46,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         this.maskMessage = dh.append(this.dialog.form, {tag:'div', cls:'rcmdb-form-mask-loadingwrp', html:'<div class="rcmdb-form-mask-loading">Loading...</div>'}, true)
         this.hideMask();
         this.errors.setVisibilityMode(YAHOO.ext.Element.DISPLAY);
+        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
+
     },
     handleTimeout: function(response)
     {
@@ -208,7 +210,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         this.dialog.hide();
         this.errors.dom.innerHTML = "";
         this.errors.hide();
-        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", -15000);
+        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
     },
 
     clearAllFields: function()
@@ -252,7 +254,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
 	    this.enableFormButtons();
         YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
         YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', 'none');
-        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", -15000);
 
     }
 })

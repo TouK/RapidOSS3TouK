@@ -103,7 +103,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         this.resize.on('resize', this.func, this.panel, true);
         this.func.createDelegate(this.panel, {width: this.width, height: this.height }, true).call({width: this.width, height: this.height});
         this.panel.hideEvent.subscribe(this.handleHide, this, true);
-        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", -15000);
+        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
     },
 
     show: function(url)
@@ -116,7 +116,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
     },
     handleHide : function()
     {
-       YAHOO.util.Dom.setStyle(this.container.parentNode, "top", -15000);
+       YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
     },
 
     setTitle: function(title){

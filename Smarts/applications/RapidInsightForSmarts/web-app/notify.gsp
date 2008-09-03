@@ -83,7 +83,8 @@
 		    <ul class="yui-nav" style="border-style: none">
 		        <li><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
 		        <li class="selected"><a href="${createLinkTo(file: 'notify.gsp')}"><em>Notifications</em></a></li>
-		    </ul>
+                <li><a href="${createLinkTo(file: 'topology.gsp')}"><em>Map</em></a></li>
+            </ul>
 		    </div>
 		</td>
 	</tr>

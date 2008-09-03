@@ -7,7 +7,7 @@ class TopoMapController {
 
     // the delete, save and update actions only accept POST requests
     def allowedMethods = [delete: ['POST', 'GET'], save: ['POST', 'GET'], update: ['POST', 'GET']]
-        
+
     def list = {
         if(!params.max) params.max = 10
         def topoMaps = TopoMap.list(params);
@@ -41,7 +41,19 @@ class TopoMapController {
     def delete = {
         def topoMap = TopoMap.get( [id:params.id])
         if(topoMap) {
+            def username =  session.username;
+            def mapName = topoMap.mapName;
+            def edges = EdgeNode.list().findAll {
+                it.mapName == mapName && it.username == username;
+            };
+            edges.each(){
+                it.remove();
+            }
+            def devices = topoMap.consistOfDevices;
             topoMap.remove();
+            devices.each {
+                it.remove();
+            }
             withFormat {
                 html {
                     flash.message = "TopoMap ${params.id} deleted"

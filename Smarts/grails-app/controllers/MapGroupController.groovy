@@ -1,5 +1,8 @@
 import com.ifountain.rcmdb.domain.util.ControllerUtils;
 import grails.converters.XML;
+import MapNode;
+import EdgeNode;
+import TopoMap;
 
 class MapGroupController {
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
@@ -44,8 +47,25 @@ class MapGroupController {
         def mapGroup = MapGroup.get( [id:params.id])
         if(mapGroup) {
             try {
-                mapGroup.remove()
-                withFormat {
+                def maps = mapGroup.maps;
+                mapGroup.remove();
+                def username =  session.username;
+                maps.each{
+                    def mapName = it.mapName;
+                    def edges = EdgeNode.list().findAll {
+                        it.mapName == mapName && it.username == username;
+                    };
+                    edges.each(){
+                        it.remove();
+                    }
+                    def devices = it.consistOfDevices;
+                    it.remove();
+                    devices.each {
+                        it.remove();
+                    }
+                }
+
+                withFormat { 
                     html {
                         flash.message = "MapGroup ${params.id} deleted"
                         redirect(action: list)

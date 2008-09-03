@@ -50,6 +50,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         this.body.dom.getElementsByTagName("embed")[0].loadData(data);
     },
 
+    getMapData : function () {
+        return this.body.dom.getElementsByTagName("embed")[0].getMapData();
+    },
+
     loadHandler : function()
     {
         this.url = this.mapURL;
@@ -112,9 +116,18 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 var deviceType = deviceNodes[index].getAttribute("type");
                 var isGauged = deviceNodes[index].getAttribute("gauged");
                 var doesExpand = deviceNodes[index].getAttribute("expands");
-                devices.push( {
+                var x = deviceNodes[index].getAttribute("x");
+                var y = deviceNodes[index].getAttribute("y");
+                var device = {
                     id : deviceID, model : deviceModel, type : deviceType, gauged : isGauged, expands : doesExpand
-                })
+                };
+                if( x && y)
+                {
+                    device["x"] = x;
+                    device["y"] = y;
+                }
+
+                devices.push( device);
             }
 
             for (var index = 0; index < edgeNodes.length; index++) {

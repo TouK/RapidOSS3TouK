@@ -21,7 +21,7 @@ def excludedProps = ['version',
 def netcoolEventProps = web.grailsApplication.getDomainClass("RsSmartsObject").properties.findAll {!excludedProps.contains(it.name)}
 web.render(contentType: 'text/xml') {
     Create {
-        group {
+        groupName {
             mapGroups.each {
                 option(it.groupName)
             }

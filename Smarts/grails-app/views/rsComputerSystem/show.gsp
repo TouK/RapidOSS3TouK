@@ -100,7 +100,13 @@
                 <tr class="prop">
                     <td valign="top" class="name">ipNetworks:</td>
                     
-                    <td valign="top" class="value">${rsComputerSystem.ipNetworks}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="i" in="${rsComputerSystem.ipNetworks}">
+                                <li><g:link controller="rsIpNetwork" action="show" id="${i.id}">${i}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 
@@ -128,7 +134,13 @@
                 <tr class="prop">
                     <td valign="top" class="name">memberOfGroup:</td>
                     
-                    <td valign="top" class="value">${rsComputerSystem.memberOfGroup}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${rsComputerSystem.memberOfGroup}">
+                                <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

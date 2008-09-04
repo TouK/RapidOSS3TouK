@@ -44,7 +44,13 @@
                 <tr class="prop">
                     <td valign="top" class="name">consistsOf:</td>
                     
-                    <td valign="top" class="value">${rsIpNetwork.consistsOf}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${rsIpNetwork.consistsOf}">
+                                <li><g:link controller="rsSmartsObject" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 
@@ -79,14 +85,26 @@
                 <tr class="prop">
                     <td valign="top" class="name">memberOfGroup:</td>
                     
-                    <td valign="top" class="value">${rsIpNetwork.memberOfGroup}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${rsIpNetwork.memberOfGroup}">
+                                <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 
                 <tr class="prop">
                     <td valign="top" class="name">memberSystems:</td>
                     
-                    <td valign="top" class="value">${rsIpNetwork.memberSystems}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${rsIpNetwork.memberSystems}">
+                                <li><g:link controller="rsComputerSystem" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

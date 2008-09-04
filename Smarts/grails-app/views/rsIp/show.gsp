@@ -128,7 +128,13 @@
                 <tr class="prop">
                     <td valign="top" class="name">memberOfGroup:</td>
                     
-                    <td valign="top" class="value">${rsIp.memberOfGroup}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${rsIp.memberOfGroup}">
+                                <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

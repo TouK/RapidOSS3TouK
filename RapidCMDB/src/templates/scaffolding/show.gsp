@@ -95,12 +95,12 @@
                     <td valign="top" style="text-align:left;" class="value">
                         <ul>
                             <g:each var="${p.name[0]}" in="\${${propertyName}.${p.name}}">
-                                <li><g:link controller="${p.referencedDomainClass?.propertyName}" action="show" id="\${${p.name[0]}.id}">\${${p.name[0]}}</g:link></li>
+                                <li><g:link controller="${relation.otherSideCls.name.substring(0,1).toLowerCase()+relation.otherSideCls.name.substring(1)}" action="show" id="\${${p.name[0]}.id}">\${${p.name[0]}}</g:link></li>
                             </g:each>
                         </ul>
                     </td>
                     <% } else if (relation && (relation.isManyToOne() || relation.isOneToOne())) { %>
-                    <td valign="top" class="value"><g:link controller="${p.referencedDomainClass?.propertyName}" action="show" id="\${${propertyName}?.${p.name}?.id}">\${${propertyName}?.${p.name}}</g:link></td>
+                    <td valign="top" class="value"><g:link controller="${relation.otherSideCls.name.substring(0,1).toLowerCase()+relation.otherSideCls.name.substring(1)}" action="show" id="\${${propertyName}?.${p.name}?.id}">\${${propertyName}?.${p.name}}</g:link></td>
                     <% } else { %>
                     <td valign="top" class="value">\${${propertyName}.${p.name}}</td>
                     <% } %>

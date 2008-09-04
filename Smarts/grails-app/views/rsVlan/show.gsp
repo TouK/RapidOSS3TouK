@@ -72,7 +72,13 @@
                 <tr class="prop">
                     <td valign="top" class="name">memberOfGroup:</td>
                     
-                    <td valign="top" class="value">${rsVlan.memberOfGroup}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${rsVlan.memberOfGroup}">
+                                <li><g:link controller="null" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

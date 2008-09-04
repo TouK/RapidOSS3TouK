@@ -191,7 +191,13 @@
                 <tr class="prop">
                     <td valign="top" class="name">layeredOver:</td>
                     
-                    <td valign="top" class="value">${rsInterface.layeredOver}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="l" in="${rsInterface.layeredOver}">
+                                <li><g:link controller="rsInterface" action="show" id="${l.id}">${l}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 
@@ -219,7 +225,13 @@
                 <tr class="prop">
                     <td valign="top" class="name">memberOfGroup:</td>
                     
-                    <td valign="top" class="value">${rsInterface.memberOfGroup}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${rsInterface.memberOfGroup}">
+                                <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 
@@ -324,7 +336,13 @@
                 <tr class="prop">
                     <td valign="top" class="name">underlying:</td>
                     
-                    <td valign="top" class="value">${rsInterface.underlying}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="u" in="${rsInterface.underlying}">
+                                <li><g:link controller="rsInterface" action="show" id="${u.id}">${u}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

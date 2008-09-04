@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat; datasource.SmartsNotificationDatasource" contentType="text/html;charset=UTF-8" %>
+<%@ page import="datasource.SmartsNotificationDatasource" contentType="text/html;charset=UTF-8" %>
 <%
 
     def domainObject = RsEvent.get(id: params.id);
@@ -22,32 +22,39 @@
                                 <em>Properties</em>
                             </a>
                         </li>
-                        <li class="selected"><a href="#"><em>Audit Log</em></a></li>
+                        <li class="selected"><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=${domainObject?.id}');"><em>Audit Log</em></a></li>
+                        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=${domainObject?.id}');"><em>Causes</em></a></li>
+                        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=${domainObject?.id}');"><em>Caused By</em></a></li>
                     </ul>
                     <div style="display:block">
-                        <table cellspacing="2" cellpadding="2">
-                            <thead>
-                                <td>Time</td><td>Userid</td><td>Type</td><td>Description</td>
-                            </thead>
-                            <tbody>
-                                <g:each var="audit" in="${auditTrail}">
-                                    <%
-                                        def userid = audit.element2;
-                                        def time = audit.element1;
-                                        def type = audit.element3;
-                                        def description = audit.element4;
-                                        SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss")
-                                        def date = format.format(new Timestamp(time));
-                                    %>
-                                    <tr>
-                                        <td>${date}</td><td>${userid}</td><td>${type}</td><td>${description}</td>
-                                    </tr>
-                                </g:each>
+                        <div id="auditLogTable"></div>
 
-                            </tbody>
-                        </table>
                     </div>
                 </div>
+                <script>
+                     Event.onDOMReady(function() {
+                        var mydata =   [];
+                        <g:each var="audit" in="${auditTrail}">
+                              var auditDate = new Date();
+                              auditDate.setTime(${audit.element1})
+                              mydata[mydata.length] = {date:auditDate, userid:"${audit.element2}", type:"${audit.element3}", description:"${audit.element4}"}
+                        </g:each>
+                        var myColumnDefs = [
+                            {key:"date", formatter:YAHOO.widget.DataTable.formatDate, sortable:true,resizeable:true, width:100},
+                            {key:"userid", sortable:true, resizeable:true, width:100},
+                            {key:"type", sortable:true, resizeable:true, width:100},
+                            {key:"description", sortable:true, resizeable:true, width:200}
+                        ];
+
+                       var myDataSource = new YAHOO.util.DataSource(mydata);
+                        myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
+                        myDataSource.responseSchema = {
+                            fields: ["date","userid","type","description"]
+                        };
+
+                        new YAHOO.widget.DataTable("auditLogTable",myColumnDefs, myDataSource, {});
+                    });
+                </script>
             <%
         }
         else{

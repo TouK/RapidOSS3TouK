@@ -13,6 +13,8 @@
     <script type="text/javascript" src="js/yui/resize/resize-beta-min.js"></script>
     <script type="text/javascript" src="js/yui/layout/layout-beta-min.js"></script>
     <script type="text/javascript" src="js/yui/history/history-min.js"></script>
+    <script type="text/javascript" src="js/yui/datasource/datasource-beta-min.js"></script>
+    <script type="text/javascript" src="js/yui/datatable/datatable-beta-min.js"></script>
     <script type="text/javascript" src="js/ext/ext.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/ComponentContainer.js"></script>
@@ -57,6 +59,7 @@
     <link rel="stylesheet" type="text/css" href="js/yui/assets/skins/sam/skin.css"/>
     <link rel="stylesheet" type="text/css" href="js/yui/button/assets/skins/sam/button.css"/>
     <link rel="stylesheet" type="text/css" href="js/yui/container/assets/skins/sam/container.css"/>
+    <link rel="stylesheet" type="text/css" href="js/yui/datatable/assets/skins/sam/datatable.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/common.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/dialog.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/form.css"/>

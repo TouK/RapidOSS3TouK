@@ -20,6 +20,7 @@ grails.mime.types = [ html: ['text/html','application/xhtml+xml','application/x-
                       atom: 'application/atom+xml',
                       css: 'text/css',
                       csv: 'text/csv',
+                      htc: 'text/x-component',
                       all: '*/*',
                       json: ['application/json','text/json']
                     ]

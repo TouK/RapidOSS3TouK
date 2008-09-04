@@ -135,7 +135,7 @@
         YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
     }, this, true);
 
-    var eventDetailsDialog = new YAHOO.rapidjs.component.Html({id:'eventDetails', width:500, height:400, iframe:false});
+    var eventDetailsDialog = new YAHOO.rapidjs.component.Html({id:'eventDetails', width:700, height:400, iframe:false});
     var objectDetailsDialog = new YAHOO.rapidjs.component.Html({id:'objectDetails', width:500, height:400, iframe:false});
     eventDetailsDialog.hide();
     objectDetailsDialog.hide();

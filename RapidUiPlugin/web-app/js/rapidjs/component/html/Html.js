@@ -19,16 +19,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         if (this.iframe == true)
         {
             var dh = YAHOO.ext.DomHelper;
-            this.body = dh.append(this.dialog.body, {tag: 'iframe', frameborder:0, scrolling:"no", height:this.height, width:this.width });
+            this.body = dh.append(this.dialog.body, {tag: 'iframe', frameborder:0, scrolling:"no", height:this.height, width:this.width }, true);
         }
         else
         {
-            this.body = this.dialog.body;
+            this.body = YAHOO.ext.DomHelper.append(this.dialog.body, {tag:'div'}, true);
         }
     },
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
-        this.body.innerHTML = "<div>" + response.responseText + "</div>";
+        this.body.update("<div>" + response.responseText + "</div>", true);
     },
 
     _show: function(url, title)
@@ -42,7 +42,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         }
         if (this.iframe == true)
         {
-            this.body.src = this.url;
+            this.body.dom.src = this.url;
         }
         else
         {

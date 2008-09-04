@@ -6,7 +6,7 @@ class MapGroup {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["maps","errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = ["RCMDB":["keys":["groupName":["nameInDs":"groupName"], "username":["nameInDs":"username"]]]]
 
@@ -27,8 +27,7 @@ class MapGroup {
     
     List maps =[];
     
-
-    static hasMany = [maps:TopoMap]
+    static relations = [maps:[reverseName:"group", isMany:true, type:TopoMap]]
     static constraints={
     username(blank:false,nullable:false)
         
@@ -43,8 +42,6 @@ class MapGroup {
      
     }
 
-    static mappedBy=["maps":"group"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

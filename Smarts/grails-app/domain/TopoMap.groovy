@@ -7,7 +7,7 @@ class TopoMap
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "consistOfDevices", "group"];
     };
     static datasources = ["RCMDB":["keys":["mapName":["nameInDs":"mapName"], "username":["nameInDs":"username"]]]]
 
@@ -30,8 +30,10 @@ class TopoMap
     
     MapGroup group ;
     
-
-    static hasMany = [consistOfDevices:MapNode]
+    static relations = [
+            consistOfDevices:[reverseName:"belongsToMap", isMany:true, type:MapNode],
+            group:[reverseName:"maps", isMany:false, type:MapGroup]
+    ]
     static constraints={
     mapName(blank:false,nullable:false)
         
@@ -48,8 +50,6 @@ class TopoMap
      
     }
 
-    static mappedBy=["consistOfDevices":"belongsToMap", "group":"maps"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

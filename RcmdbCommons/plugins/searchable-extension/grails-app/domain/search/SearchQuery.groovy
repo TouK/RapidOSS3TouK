@@ -15,6 +15,7 @@ class SearchQuery {
     String name;
     String query;
     String sortProperty;
+    String type="";
     boolean isPublic = false;
     String sortOrder = "asc";
     static mappedBy = [group:"queries"]

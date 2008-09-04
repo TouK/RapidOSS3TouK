@@ -15,10 +15,10 @@ class SearchQueryGroup {
     String name;
     List queries = [];
     boolean isPublic = false;
+    String type = "";
     static hasMany = [queries:SearchQuery]
     static mappedBy = ["queries":"group"]
     static constraints = {
         name(key:["username"]);
     }
-
 }

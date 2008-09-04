@@ -3,6 +3,7 @@ package search
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -17,7 +18,7 @@ class SearchController {
     def index = {
         def sortOrder = 0;
         def query = params.query;
-        if(query == "" || query == null)
+        if (query == "" || query == null)
         {
             query = "id:[0 TO *]";
         }
@@ -25,40 +26,40 @@ class SearchController {
         def builder = new MarkupBuilder(sw);
         try
         {
-            def searchResults = searchableService.search(query, params);
+            def searchResults;
+            if(params.searchIn != null){
+                 GrailsDomainClass grailsClass = grailsApplication.getDomainClass(params.searchIn);
+                 def mc = grailsClass.metaClass;
+                 searchResults =  mc.invokeStaticMethod(mc.theClass, "search", [query, params] as Object[])
+            }
+            else{
+                searchResults = searchableService.search(query, params);
+            }
             def grailsClassProperties = [:]
-            def excludedProps = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME,
-                    RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, RapidCMDBConstants.OPERATION_PROPERTY_NAME]
-            builder.Objects(total:searchResults.total, offset:searchResults.offset)
-            {
-                searchResults.results.each{result->
+            builder.Objects(total: searchResults.total, offset: searchResults.offset){
+                searchResults.results.each {result ->
                     def className = result.getClass().name;
                     def grailsObjectProps = grailsClassProperties[className]
-                    if(grailsObjectProps == null)
+                    if (grailsObjectProps == null)
                     {
-                        GrailsDomainClass grailsClass = grailsApplication.getDomainClass(result.getClass().name);
-                        grailsObjectProps = grailsClass.getProperties();
-                        grailsClassProperties[result.getClass().name] =  grailsObjectProps;
+                        grailsObjectProps = DomainClassUtils.getFilteredProperties(className);
+                        grailsClassProperties[result.getClass().name] = grailsObjectProps;
                     }
                     def props = [:];
-                    grailsObjectProps.each{resultProperty->
-                        if(!excludedProps.contains(resultProperty.name)){
-                            props[resultProperty.name] = result[resultProperty.name];
-                        }
+                    grailsObjectProps.each {resultProperty ->
+                        props[resultProperty.name] = result[resultProperty.name];
                     }
                     props.put("sortOrder", sortOrder++)
-                    props.put("rsAlias",result.getClass().name)
+                    props.put("rsAlias", result.getClass().name)
                     builder.Object(props);
                 }
-
             }
-
-            render(text:sw.toString(), contentType:"text/xml");
+            render(text: sw.toString(), contentType: "text/xml");
         }
-        catch(Throwable t)
+        catch (Throwable t)
         {
-             addError("invalid.search.query", [query, t.getMessage()]);
-             render(text: errorsToXml(errors), contentType: "text/xml")
+            addError("invalid.search.query", [query, t.getMessage()]);
+            render(text: errorsToXml(errors), contentType: "text/xml")
         }
 
     }

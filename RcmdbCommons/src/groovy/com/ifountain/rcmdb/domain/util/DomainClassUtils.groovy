@@ -8,6 +8,8 @@ import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.ObjectError
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -30,20 +32,20 @@ class DomainClassUtils
 {
     def static getUppercasedPropertyName(String propName)
     {
-        if(propName.length() == 1)
+        if (propName.length() == 1)
         {
             return propName.toUpperCase();
         }
         else
         {
-            return propName.substring(0,1).toUpperCase()+propName.substring(1);
+            return propName.substring(0, 1).toUpperCase() + propName.substring(1);
         }
     }
 
     def static getSubClasses(GrailsDomainClass dc)
     {
         def classes = [];
-        dc.getSubClasses().each{ GrailsDomainClass subDomainClass->
+        dc.getSubClasses().each {GrailsDomainClass subDomainClass ->
             classes += subDomainClass.clazz;
         }
         return classes;
@@ -53,10 +55,10 @@ class DomainClassUtils
     {
         def propMap = [:]
         def domainObjectProperties = dc.getProperties();
-        domainObjectProperties.each{GrailsDomainClassProperty prop->
-            if(includeRelations || !prop.isAssociation())
+        domainObjectProperties.each {GrailsDomainClassProperty prop ->
+            if (includeRelations || !prop.isAssociation())
             {
-                if(prop.isPersistent())
+                if (prop.isPersistent())
                 {
                     propMap[prop.name] = prop;
                 }
@@ -72,24 +74,24 @@ class DomainClassUtils
         def domainObjectProperties = dc.getProperties();
         def hasMany = getStaticMapVariable(dc, "hasMany");
         def cascadedObjects = getStaticMapVariable(dc, "cascaded");
-        domainObjectProperties.each{GrailsDomainClassProperty prop->
+        domainObjectProperties.each {GrailsDomainClassProperty prop ->
             boolean isRel = prop.isAssociation() || hasMany.containsKey(prop.name);
-            if(isRel && prop.isPersistent())
+            if (isRel && prop.isPersistent())
             {
                 def relationName = prop.name;
-                def otherSideName = prop.getOtherSide()?prop.getOtherSide().name:null;
+                def otherSideName = prop.getOtherSide() ? prop.getOtherSide().name : null;
                 def isCascaded = cascadedObjects[relationName] == true;
                 def otherSideClass = prop.getReferencedPropertyType();
                 def relType;
-                if(prop.isManyToMany())
+                if (prop.isManyToMany())
                 {
                     relType = RelationMetaData.MANY_TO_MANY
                 }
-                else if(prop.isOneToMany())
+                else if (prop.isOneToMany())
                 {
                     relType = RelationMetaData.ONE_TO_MANY
                 }
-                else if(prop.isManyToOne())
+                else if (prop.isManyToOne())
                 {
                     relType = RelationMetaData.MANY_TO_ONE
                 }
@@ -110,9 +112,9 @@ class DomainClassUtils
     {
         def keys = [];
         def constrainedPropertiesMap = dc.getConstrainedProperties();
-        constrainedPropertiesMap.each{String propName, ConstrainedProperty  prop->
-            def keyConst = prop.getAppliedConstraint (KeyConstraint.KEY_CONSTRAINT);
-            if(keyConst && keyConst.isKey())
+        constrainedPropertiesMap.each {String propName, ConstrainedProperty prop ->
+            def keyConst = prop.getAppliedConstraint(KeyConstraint.KEY_CONSTRAINT);
+            if (keyConst && keyConst.isKey())
             {
                 keys = keyConst.getKeys();
                 return;
@@ -125,30 +127,30 @@ class DomainClassUtils
     {
         def variableMap = [:];
         def tempObj = dc.metaClass.getTheClass();
-        while(tempObj && tempObj != java.lang.Object.class)
+        while (tempObj && tempObj != java.lang.Object.class)
         {
-            def tmpVariableMap = GrailsClassUtils.getStaticPropertyValue (tempObj, variableName);
-            if(tmpVariableMap)
+            def tmpVariableMap = GrailsClassUtils.getStaticPropertyValue(tempObj, variableName);
+            if (tmpVariableMap)
             {
                 variableMap.putAll(tmpVariableMap);
             }
-            tempObj =  tempObj.getSuperclass();
+            tempObj = tempObj.getSuperclass();
         }
         return variableMap;
     }
 
     def static getPropertyRealValue(propType, value)
     {
-        if(propType.isInstance(value))
+        if (propType.isInstance(value))
         {
             return value;
         }
-        else  if(value instanceof String)
+        else if (value instanceof String)
         {
-            String propTypeName =  propType.name;
-            if(propTypeName.indexOf(".") > 0)
+            String propTypeName = propType.name;
+            if (propTypeName.indexOf(".") > 0)
             {
-                propTypeName = propTypeName.substring(propTypeName.lastIndexOf(".")+1)
+                propTypeName = propTypeName.substring(propTypeName.lastIndexOf(".") + 1)
             }
             return value."to${propTypeName}"();
         }
@@ -160,11 +162,34 @@ class DomainClassUtils
 
 
     public static void addErrorsOnInstance(Object target, ObjectError objectError) {
-        BeanPropertyBindingResult errors = target.errors; 
-        if(!errors){
+        BeanPropertyBindingResult errors = target.errors;
+        if (!errors) {
             errors = new BeanPropertyBindingResult(target, target.getClass().getName());
-            target.metaClass.setProperty(target, RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors);    
+            target.metaClass.setProperty(target, RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors);
         }
         errors.addError(objectError);
+    }
+
+    def static getFilteredProperties(String domainClassName, List extraFilters) {
+        def excludedProps = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME,
+                RapidCMDBConstants.OPERATION_PROPERTY_NAME,
+                RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED,
+                ClosureEventTriggeringInterceptor.ONLOAD_EVENT,
+                ClosureEventTriggeringInterceptor.BEFORE_DELETE_EVENT,
+                ClosureEventTriggeringInterceptor.BEFORE_INSERT_EVENT,
+                ClosureEventTriggeringInterceptor.BEFORE_UPDATE_EVENT];
+
+       def domainClass = ApplicationHolder.getApplication().getDomainClass(domainClassName);
+       if(domainClass){
+           excludedProps.addAll(extraFilters);
+           return domainClass.properties.findAll {!excludedProps.contains(it.name)}
+       }
+       else{
+           throw new Exception("DomainClass ${domainClassName} does not exist.");
+       }
+    }    
+
+    def static getFilteredProperties(String domainClassName){
+        return getFilteredProperties(domainClassName, []);
     }
 }

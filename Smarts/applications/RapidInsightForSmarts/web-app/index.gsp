@@ -172,7 +172,7 @@
             item4 : { id : 'greaterThan', label : 'Greater than',  condition: propertyMenuIsNumberCondition},
             item5 : { id : 'lessThan', label : 'Less than' , condition: propertyMenuIsNumberCondition},
             item6 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: propertyMenuIsNumberCondition},
-            item7 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: propertyMenuIsNumberCondition},
+            item7 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: propertyMenuIsNumberCondition}
         },
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});

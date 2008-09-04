@@ -28,7 +28,13 @@ YAHOO.rapidjs.component.Form = function(container, config)
     this.mapping = config.mapping;
     this.editUrl = config.editUrl;
     this.createUrl = config.createUrl;
+    this.saveObject = config.saveObject;
     this.saveUrl = config.saveUrl;
+    this.requestType = null;
+    if( this.saveObject) {
+        this.saveUrl = this.saveObject.url;
+        this.requestType = this.saveObject.requestType;
+    }
     this.updateUrl = config.updateUrl;
     this.mode = this.CREATE_MODE;
     this.isSubmitInProggress = false;
@@ -151,7 +157,19 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
             params[formElement.name] = this.getFormElementValue(formElement);
         }
         this.showMask();
-        this.doRequest(this.url, params);
+        if( this.saveObject)
+        {
+            if( this.requestType == "GET")
+            {
+                this.doGetRequest(this.url, params);
+            }
+            else
+            {
+                this.doPostRequest(this.url, params);
+            }
+        }
+        else
+            this.doRequest(this.url, params);
     },
     handleCancel: function() {
 	    this.hide();

@@ -9,7 +9,7 @@ def mapName = params.mapName;
 def nodes = params.nodes.tokenize(";");
 def edges = params.edges.tokenize(";");
 
-    
+
 def user = RsUser.findByUsername(web.session.username);
 
 def group = MapGroup.add( groupName : groupName, username : user );

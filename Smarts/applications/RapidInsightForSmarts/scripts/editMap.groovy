@@ -30,8 +30,8 @@ else {
     web.render(contentType: 'text/xml') {
         Edit {
             id(topoMap.id)
-            name(topoMap.mapName)           
-            group {
+            mapName(topoMap.mapName)
+            groupName {
                 mapGroups.each {
                     if (it.groupName == topoMap.group.groupName) {
                         option(selected: "true", it.groupName)

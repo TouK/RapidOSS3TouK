@@ -123,14 +123,14 @@ class TopoMapController {
     def update = {
         def topoMap = TopoMap.get( [id:params.id] )
         if(topoMap) {
-            if (params.group == "")
+            if (params.groupName == "")
             {
-                params.group = "Default";
+                params.groupName = "Default";
             }
-            def group = MapGroup.get(groupName: params.group, username: session.username);
+            def group = MapGroup.get(groupName: params.groupName, username: session.username);
             if (group == null)
             {
-                group = MapGroup.add(name: params.group, username: session.username);
+                group = MapGroup.add(name: params.groupName, username: session.username);
             }
             params["group"] = ["id": group.id];
             topoMap.update(ControllerUtils.getClassProperties(params, TopoMap));
@@ -192,14 +192,14 @@ class TopoMapController {
 
     def save = {
         params["username"] = session.username
-        if (params.group == "")
+        if (params.groupName == "")
         {
-            params.group = "Default";
+            params.groupName = "Default";
         }
-        def group = MapGroup.get(groupName: params.group, username: session.username);
+        def group = MapGroup.get(groupName: params.groupName, username: session.username);
         if (group == null)
         {
-            group = MapGroup.add(groupName: params.group, username: session.username);
+            group = MapGroup.add(groupName: params.groupName, username: session.username);
         }
         params["group"] = ["id": group.id];
         def topoMap = TopoMap.add(ControllerUtils.getClassProperties(params, TopoMap))

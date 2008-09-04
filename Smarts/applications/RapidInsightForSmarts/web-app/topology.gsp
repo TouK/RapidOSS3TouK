@@ -37,6 +37,7 @@
         </table>
         <input type="hidden" name="nodes">
         <input type="hidden" name="edges">
+        <input type="hidden" name="id">
     </form>
 
     </div>
@@ -360,7 +361,7 @@
                 dialog.show(dialog.EDIT_MODE, {mapId:data.getAttribute("id")})
             else if(data.getAttribute("nodeType") == "group"){
                 groupDialog.show(groupDialog.EDIT_MODE)
-                groupDialog.dialog.form.name.value = data.getAttribute("name");
+                groupDialog.dialog.form.groupName.value = data.getAttribute("name");
                 groupDialog.dialog.form.id.value = data.getAttribute("id")
             }
        }
@@ -370,7 +371,7 @@
         width:"35em",
         createUrl:"script/run/createMap",
         editUrl:"script/run/editMap",
-        saveUrl:"script/run/saveMap",
+        saveObject: { url : "script/run/saveMap", requestType : "POST" },
         updateUrl:"topoMap/update?format=xml",
         successfulyExecuted: function () {
             tree.poll()

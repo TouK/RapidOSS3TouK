@@ -65,6 +65,8 @@
                     def masterDatasourceKeyPropertyNames = [];
                     def masterKeyProperties = [];
                     def otherProperties = [];
+                    def domainUtilsClass = org.codehaus.groovy.grails.commons.ApplicationHolder.application.getClassLoader().loadClass("com.ifountain.rcmdb.domain.util.DomainClassUtils");
+                    def relations = domainUtilsClass.metaClass.invokeStaticMethod(domainUtilsClass, "getRelations", [domainClass] as Object[]);
                     def props = [];
                     datasourceMap[masterDsName].keys.each{key, value ->
                         masterDatasourceKeyPropertyNames.add(key);
@@ -84,10 +86,12 @@
                     otherProperties.sort{it.name};
                     props.addAll(masterKeyProperties);
                     props.addAll(otherProperties);
-                    props.each {p -> %>
+                    props.each {p ->
+                        def relation = relations[p.name]
+                %>
                 <tr class="prop">
                     <td valign="top" class="name">${p.name}:</td>
-                    <% if (p.oneToMany || p.manyToMany) { %>
+                    <% if (relation && (relation.isOneToMany() || relation.isManyToMany())) {%>
                     <td valign="top" style="text-align:left;" class="value">
                         <ul>
                             <g:each var="${p.name[0]}" in="\${${propertyName}.${p.name}}">
@@ -95,7 +99,7 @@
                             </g:each>
                         </ul>
                     </td>
-                    <% } else if (p.manyToOne || p.oneToOne) { %>
+                    <% } else if (relation && (relation.isManyToOne() || relation.isOneToOne())) { %>
                     <td valign="top" class="value"><g:link controller="${p.referencedDomainClass?.propertyName}" action="show" id="\${${propertyName}?.${p.name}?.id}">\${${propertyName}?.${p.name}}</g:link></td>
                     <% } else { %>
                     <td valign="top" class="value">\${${propertyName}.${p.name}}</td>

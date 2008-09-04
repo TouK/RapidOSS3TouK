@@ -31,7 +31,7 @@ import org.apache.log4j.Logger
 class AsMapMethod extends AbstractRapidDomainMethod{
     def allProperties = [];
     Logger logger;
-    public AsMapMethod(MetaClass mc, GrailsDomainClass domainClass, Logger logger) {
+    public AsMapMethod(MetaClass mc, GrailsDomainClass domainClass, Logger logger, Map relations) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
         this.logger = logger;
          def excludedProps = ['version',
@@ -42,7 +42,7 @@ class AsMapMethod extends AbstractRapidDomainMethod{
                                        ClosureEventTriggeringInterceptor.BEFORE_UPDATE_EVENT]
         def props = domainClass.getProperties().findAll { !excludedProps.contains(it.name) }
         for(prop in props){
-            if(!prop.oneToMany && !prop.manyToMany && !prop.oneToOne && !prop.manyToOne){
+            if(!relations.containsKey(prop.name)){
                 allProperties += prop.name;
             }
         }

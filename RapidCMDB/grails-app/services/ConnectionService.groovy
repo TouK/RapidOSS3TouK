@@ -8,6 +8,7 @@ import connection.Connection
 import org.apache.log4j.Logger
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 class ConnectionService implements InitializingBean, DisposableBean, ConnectionParameterSupplier{
     boolean transactional = false
@@ -25,10 +26,11 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
                                 Events.BEFORE_INSERT_EVENT,
                                 Events.BEFORE_UPDATE_EVENT]
             def domainClass = grailsApplication.getDomainClass(connection.getClass().getName());
-			def props = domainClass.properties.findAll { !excludedProps.contains(it.name) }
+            def rels = DomainClassUtils.getRelations(domainClass);
+            def props = domainClass.properties.findAll { !excludedProps.contains(it.name) }
             def optProps = new CaseInsensitiveMap();
             props.each{
-	            if(!(it.manyToOne || it.oneToOne || it.oneToMany || it.manyToMany)){
+	            if(!rels.containsKey(it.name)){
 		        	def propName = it.name
 	        		optProps.put(propName, connection."$propName")
 		        }

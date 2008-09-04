@@ -119,7 +119,7 @@ class SmartsConnectionTemplateController {
         else {
             def relationName = params.relationName;
             if(relationName){
-                def otherClass = smartsConnectionTemplate.relations[relationName].type;
+                def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(smartsConnectionTemplate.class, "relations")[relationName].type;
                 def relatedObjectList = [];
                 if(otherClass){
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
@@ -141,7 +141,7 @@ class SmartsConnectionTemplateController {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = smartsConnectionTemplate.relations[relationName].type;
+            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(smartsConnectionTemplate.class, "relations")[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
@@ -178,7 +178,7 @@ class SmartsConnectionTemplateController {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = smartsConnectionTemplate.relations[relationName].type;
+            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(smartsConnectionTemplate.class, "relations")[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){

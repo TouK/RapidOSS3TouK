@@ -1,4 +1,5 @@
-import com.ifountain.rcmdb.domain.util.ControllerUtils;
+import com.ifountain.rcmdb.domain.util.ControllerUtils
+import com.ifountain.rcmdb.domain.util.DomainClassUtils;
 
 
 class RsCardController {
@@ -119,7 +120,7 @@ class RsCardController {
         else {
             def relationName = params.relationName;
             if(relationName){
-                def otherClass = rsCard.relations[relationName].type;
+                def otherClass = DomainClassUtils.getStaticMapVariable(RsCard, "relations")[relationName].type;
                 def relatedObjectList = [];
                 if(otherClass){
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
@@ -133,6 +134,8 @@ class RsCardController {
         }
     }
 
+
+
     def addRelation = {
         def rsCard = RsCard.get( [id:params.id] )
         if(!rsCard) {
@@ -141,7 +144,7 @@ class RsCardController {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = rsCard.relations[relationName].type;
+            def otherClass = DomainClassUtils.getStaticMapVariable(RsCard, "relations")[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
@@ -178,7 +181,8 @@ class RsCardController {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = rsCard.relations[relationName].type;
+
+            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(RsCard, "relations")[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){

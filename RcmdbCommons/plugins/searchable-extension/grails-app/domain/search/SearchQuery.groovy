@@ -9,7 +9,9 @@ import auth.RsUser;
 * To change this template use File | Settings | File Templates.
 */
 class SearchQuery {
-    static searchable = true;
+    static searchable = {
+        except:["group"]
+     };
     String username;
     SearchQueryGroup group;
     String name;
@@ -18,7 +20,10 @@ class SearchQuery {
     String type="";
     boolean isPublic = false;
     String sortOrder = "asc";
-    static mappedBy = [group:"queries"]
+
+    static relations = [
+            group:[type:SearchQueryGroup, reverseName:"queries", isMany:false]
+    ]
     static constraints = {
         name(key:["username"]);
         sortOrder(inList:["asc","desc"]);

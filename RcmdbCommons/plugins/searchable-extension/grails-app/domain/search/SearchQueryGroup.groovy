@@ -10,15 +10,19 @@ import auth.RsUser
  * To change this template use File | Settings | File Templates.
  */
 class SearchQueryGroup {
-    static searchable = true;
+    static searchable = {
+        except:["queries"]
+     };
     String username;
     String name;
     List queries = [];
     boolean isPublic = false;
     String type = "";
-    static hasMany = [queries:SearchQuery]
-    static mappedBy = ["queries":"group"]
+    static relations = [
+            queries:[type:SearchQuery, reverseName:"group", isMany:true]
+    ]
     static constraints = {
         name(key:["username"]);
     }
+
 }

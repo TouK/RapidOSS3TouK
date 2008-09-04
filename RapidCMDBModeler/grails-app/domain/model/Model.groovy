@@ -4,7 +4,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class Model {
     static searchable = {
-        except = [];
+        except = ["fromRelations", "toRelations", "modelProperties", "datasources", "parentModel"];
     };
     String name;
     Boolean resourcesWillBeGenerated = false;
@@ -13,8 +13,13 @@ class Model {
     List datasources = [];
     List fromRelations = [];
     List toRelations = [];
-    static hasMany = [modelProperties:ModelProperty, datasources:ModelDatasource, fromRelations:ModelRelation, toRelations:ModelRelation];
-    static mappedBy = [fromRelations:'firstModel', toRelations:'secondModel', modelProperties:'model', datasources:'model']
+    static relations = [
+            parentModel:[type:Model, isMany:false],
+            modelProperties:[type:ModelProperty, reverseName:"model", isMany:true],
+            datasources:[type:ModelDatasource, reverseName:"model", isMany:true],
+            fromRelations:[type:ModelRelation, reverseName:"firstModel", isMany:true],
+            toRelations:[type:ModelRelation, reverseName:"secondModel", isMany:true],
+    ]
     static cascaded = ["datasources":true, "fromRelations":true, "toRelations":true, modelProperties:true]
     static constraints = {
         name(blank:false, key:[], validator:{val, obj ->

@@ -1,4 +1,8 @@
-<%  if(property.type == Boolean.class || property.type == boolean.class)
+<%
+    def domainUtilsClass = org.codehaus.groovy.grails.commons.ApplicationHolder.application.getClassLoader().loadClass("com.ifountain.rcmdb.domain.util.DomainClassUtils");
+    def relations = domainUtilsClass.metaClass.invokeStaticMethod(domainUtilsClass, "getRelations", [domainClass] as Object[]);
+    def relation = relations[property.name]
+    if(property.type == Boolean.class || property.type == boolean.class)
         out << renderBooleanEditor(domainClass,property)	
     else if(Number.class.isAssignableFrom(property.type) || (property.type.isPrimitive() && property.type != boolean.class))
         out << renderNumberEditor(domainClass,property)
@@ -20,10 +24,10 @@
         out << renderByteArrayEditor(domainClass,property)
     else if(property.type==([] as byte[]).class) //TODO: Bug in groovy means i have to do this :(
         out << renderByteArrayEditor(domainClass,property)                
-    else if(property.manyToOne || property.oneToOne)
-        out << renderManyToOne(domainClass,property)
-    else if(property.oneToMany || property.manyToMany)
-        out << renderOneToMany(domainClass,property)
+    else if(relation && (relation.isManyToOne() || relation.isOneToOne()))
+        out << renderManyToOne(domainClass,property, relation)
+    else if(relation && (relation.isOneToMany() || relation.isManyToMany()))
+        out << renderOneToMany(domainClass,property, relation)
 
     private renderStringEditor(domainClass, property) {
         if(!cp) {
@@ -36,7 +40,7 @@
              else {
                 if(cp.inList) {
                     def sb = new StringBuffer('<g:select ')
-                    sb << "id=\"${property.name}\" name=\"${property.name}\" from=\"\${${domainClass.propertyName}.constraints.${property.name}.inList.collect{it.encodeAsHTML()}}\" value=\"\${fieldValue(bean:${domainClass.propertyName},field:'${property.name}')}\" ${renderNoSelection(property)}>"
+                    sb << "id=\"${property.name}\" name=\"${property.name}\" from=\"\${${domainClass.propertyName}.constraints.${property.name}.inList.collect{it.encodeAsHTML()}}\" value=\"\${fieldValue(bean:${domainClass.propertyName},field:'${property.name}')}\" ${renderNoSelection(property, relation)}>"
                     sb << '</g:select>'
                     return sb.toString()
                 }
@@ -56,25 +60,25 @@
         return "<input type=\"file\" id=\"${property.name}\" name=\"${property.name}\" />"
     }
 
-    private renderManyToOne(domainClass,property) {
-        if(property.association) {            
-            return "<g:select optionKey=\"id\" from=\"\${${property.type.name}.list()}\" name=\"${property.name}.id\" value=\"\${${domainClass.propertyName}?.${property.name}?.id}\" ${renderNoSelection(property)}></g:select>"
+    private renderManyToOne(domainClass,property, relation) {
+        if(relation != null) {
+            return "<g:select optionKey=\"id\" from=\"\${${property.type.name}.list()}\" name=\"${property.name}.id\" value=\"\${${domainClass.propertyName}?.${property.name}?.id}\" ${renderNoSelection(property, relation)}></g:select>"
         }
     }
 
-    private renderOneToMany(domainClass,property) {
+    private renderOneToMany(domainClass,property, relation) {
         def sw = new StringWriter()
         def pw = new PrintWriter(sw)
         pw.println()
         pw.println "<ul>"
         pw.println "<g:each var=\"${property.name[0]}\" in=\"\${${domainClass.propertyName}?.${property.name}?}\">"
         pw.println "    <li style=\"margin-bottom:3px;\">"
-        pw.println "        <g:link controller=\"${property.referencedDomainClass.propertyName}\" action=\"show\" id=\"\${${property.name[0]}.id}\">\${${property.name[0]}}</g:link>"
+        pw.println "        <g:link controller=\"${relation.otherSideCls.name.substring(0,1).toLowerCase()+relation.otherSideCls.name.substring(1)}\" action=\"show\" id=\"\${${property.name[0]}.id}\">\${${property.name[0]}}</g:link>"
         pw.println "        <g:link class=\"delete\" action=\"removeRelation\" params=\"['id':${domainClass.propertyName}?.id, 'relationName':'${property.name}', 'relatedObjectId':${property.name[0]}.id]\"></g:link>"
         pw.println "    </li>"
         pw.println "</g:each>"
         pw.println "</ul>"
-        pw.println "<g:link params=\"['id':${domainClass.propertyName}?.id, 'relationName':'${property.name}']\" action=\"addTo\">Add ${property.referencedDomainClass.shortName}</g:link>"
+        pw.println "<g:link params=\"['id':${domainClass.propertyName}?.id, 'relationName':'${property.name}']\" action=\"addTo\">Add ${relation.otherSideCls.simpleName}</g:link>"
         return sw.toString()
     }
 
@@ -89,7 +93,7 @@
         }
         else {
             if(cp.range) {
-                return "<g:select from=\"\${${cp.range.from}..${cp.range.to}}\" id=\"${property.name}\" name=\"${property.name}\" value=\"\${${domainClass.propertyName}?.${property.name}}\" ${renderNoSelection(property)}></g:select>"
+                return "<g:select from=\"\${${cp.range.from}..${cp.range.to}}\" id=\"${property.name}\" name=\"${property.name}\" value=\"\${${domainClass.propertyName}?.${property.name}}\" ${renderNoSelection(property, null)}></g:select>"
             }
             else {
                 return "<input type=\"text\" id=\"${property.name}\" name=\"${property.name}\" value=\"\${fieldValue(bean:${domainClass.propertyName},field:'${property.name}')}\" />"
@@ -129,7 +133,7 @@
                 cp.attributes.each { k,v ->
                     buf << "${k}=\"${v}\" "
                 }
-                buf << "name=\"${property.name}\" value=\"\${${domainClass.propertyName}?.${property.name}}\" ${renderNoSelection(property)}></g:datePicker>"
+                buf << "name=\"${property.name}\" value=\"\${${domainClass.propertyName}?.${property.name}}\" ${renderNoSelection(property, null)}></g:datePicker>"
                 return buf.toString()
             }
         }
@@ -145,14 +149,14 @@
             cp.attributes.each { k,v ->
                 buf << "${k}=\"${v}\" "
             }
-            buf << "name=\"${property.name}\" value=\"\${${domainClass.propertyName}?.${property.name}}\" ${renderNoSelection(property)}></g:${type}Select>"
+            buf << "name=\"${property.name}\" value=\"\${${domainClass.propertyName}?.${property.name}}\" ${renderNoSelection(property, null)}></g:${type}Select>"
             return buf.toString()
         }
     }
 
-    private renderNoSelection(property) {
+    private renderNoSelection(property, relation) {
         if(property.optional) {
-            if(property.manyToOne || property.oneToOne) {
+            if(relation && (relation.isManyToOne() || relation.isOneToOne())) {
                 return "noSelection=\"['null':'']\""				
             }
             else {

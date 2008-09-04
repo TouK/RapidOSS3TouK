@@ -5,7 +5,7 @@ class HttpConnection extends Connection{
      
 
     static searchable = {
-        except = [];
+        except = ["httpDatasources"];
     };
     static cascaded = ["httpDatasources":true]
     static datasources = [:]
@@ -15,16 +15,14 @@ class HttpConnection extends Connection{
     String connectionClass = "connection.HttpConnectionImpl";
     List httpDatasources = [];
 
-    static hasMany = [httpDatasources:HttpDatasource]
-    
+    static relations = [
+            httpDatasources:[isMany:true, reverseName:"connection", type:HttpDatasource]
+    ]
     static constraints={
     baseUrl(blank:true,nullable:true)
         
      
     }
-
-    static mappedBy=["httpDatasources":"connection"]
-    static belongsTo = []
     static transients = [];
 
 }

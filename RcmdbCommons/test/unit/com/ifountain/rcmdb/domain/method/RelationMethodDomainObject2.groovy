@@ -22,7 +22,6 @@ class RelationMethodDomainObject2 {
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;
-    static hasMany = [revRel4:RelationMethodDomainObject1, revRel3:RelationMethodDomainObject1]
     static constraints={
     prop1(blank:true,nullable:true)
      __operation_class__(nullable:true)
@@ -33,8 +32,12 @@ class RelationMethodDomainObject2 {
      revRel3(nullable:true)
      revRel4(nullable:true)
     }
-    static mappedBy=[revRel1:"rel1", revRel2:"rel2", revRel3:"rel3", revRel4:"rel4"]
-    static belongsTo = [RelationMethodDomainObject1]
+
+    static relations = [revRel1:[type:RelationMethodDomainObject1, reverseName:"rel1", isMany:false],
+            revRel2:[isMany:false, reverseName:"rel2", type:RelationMethodDomainObject1],
+            revRel3:[isMany:true, reverseName:"rel3", type:RelationMethodDomainObject1],
+            revRel4:[isMany:true, reverseName:"rel4", type:RelationMethodDomainObject1]
+    ];
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
 

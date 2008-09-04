@@ -6,7 +6,7 @@ class Resource {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__"];
+        except = ["errors", "__operation_class__", "hypericEvents"];
     };
     static datasources = ["RCMDB":["keys":["resource_name":["nameInDs":"resource_name"]]]]
 
@@ -18,14 +18,7 @@ class Resource {
     org.springframework.validation.Errors errors ;
     
     java.lang.Object __operation_class__ ;
-    
-
-    static hasMany = [hypericEvents:HypericEvent]
-    
-        static mapping = {
-            tablePerHierarchy false
-        }
-    
+    static relations = [hypericEvents:[isMany:true, reverseName:"owner", type:HypericEvent]]
     static constraints={
     resource_name(blank:false,nullable:false,key:[])
         
@@ -37,9 +30,6 @@ class Resource {
         
      
     }
-
-    static mappedBy=["hypericEvents":"owner"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__"];
     

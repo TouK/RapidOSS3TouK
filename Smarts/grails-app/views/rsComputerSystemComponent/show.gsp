@@ -77,6 +77,20 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsComputerSystemComponent.memberOfGroup}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsComputerSystemComponent.rsDatasource}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">tag:</td>
                     
                     <td valign="top" class="value">${rsComputerSystemComponent.tag}</td>

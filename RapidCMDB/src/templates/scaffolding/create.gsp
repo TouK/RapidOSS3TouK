@@ -88,7 +88,7 @@
                         props.addAll(masterKeyProperties);
                         props.addAll(otherProperties);
                         props.each {p ->
-                            if (p.type != Set.class) {
+                            if (p.type != List.class) {
                                 cp = domainClass.constrainedProperties[p.name]
                                 display = (cp ? cp.display : true)
                                 if (display) { %>

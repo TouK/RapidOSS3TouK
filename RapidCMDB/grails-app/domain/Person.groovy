@@ -15,13 +15,7 @@ class Person {
     
     String name ="";
     
-
-    static hasMany = [:]
-    
-        static mapping = {
-            tablePerHierarchy false
-        }
-    
+    static relations  =[:]
     static constraints={
     bday(blank:true,nullable:true)
         
@@ -30,8 +24,6 @@ class Person {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];
     

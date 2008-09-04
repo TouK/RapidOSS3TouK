@@ -5,7 +5,7 @@ import datasource.SingleTableDatabaseDatasource;
 class DatabaseConnection extends Connection{
 
     static searchable = {
-        except = [];
+        except = ["singleTableDatabaseDatasources", "databaseDatasources"];
     };
     static cascaded = ["singleTableDatabaseDatasources":true, "databaseDatasources":true]
     static datasources = [:]
@@ -20,9 +20,10 @@ class DatabaseConnection extends Connection{
     String driver ="";
     List singleTableDatabaseDatasources = [];
     List databaseDatasources = [];
-
-   static hasMany = [singleTableDatabaseDatasources:SingleTableDatabaseDatasource, databaseDatasources:DatabaseDatasource]
-    
+    static relations = [
+            singleTableDatabaseDatasources:[isMany:true, reverseName:"connection", type:SingleTableDatabaseDatasource],
+            databaseDatasources:[isMany:true, reverseName:"connection", type:DatabaseDatasource]
+    ]
     static constraints={
         url(blank:false)
         userPassword(blank:true,  nullable:true)
@@ -30,7 +31,5 @@ class DatabaseConnection extends Connection{
         driver(blank:false)
     }
 
-    static mappedBy=["singleTableDatabaseDatasources":"connection", "databaseDatasources":"connection"]
-    static belongsTo = []
     static transients = [];
 }

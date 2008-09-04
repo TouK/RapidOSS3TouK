@@ -9,7 +9,7 @@
 <body>
 <div class="nav">
     <%
-        if (params["reverse"] != null || isReverse) {
+        if (params["reverse"] != null || isOwner) {
     %>
     <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelRelation?.secondModel?.id)}">${modelRelation?.secondModel}</a></span>
     <%
@@ -47,7 +47,7 @@
                         def reverseName;
                         def reverseNameField
                         if (modelRelation != null) {
-                            if (params["reverse"] == null && !isReverse) {
+                            if (params["reverse"] == null && !isOwner) {
                                 relationName = modelRelation?.firstName;
                                 relationNameField = "firstName";
                                 to = modelRelation?.secondModel;
@@ -107,7 +107,7 @@
         </div>
         <div class="buttons">
             <%
-               if(params["reverse"] != null || isReverse){
+               if(params["reverse"] != null || isOwner){
                    %>
                  <input type="hidden" name="reverse" value="true"/>
             <%

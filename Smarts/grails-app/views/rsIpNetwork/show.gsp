@@ -42,16 +42,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">connectedSystems:</td>
+                    <td valign="top" class="name">consistsOf:</td>
                     
-                    <td valign="top" class="value">${rsIpNetwork.connectedSystems}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">connectedTo:</td>
-                    
-                    <td valign="top" class="value">${rsIpNetwork.connectedTo}</td>
+                    <td valign="top" class="value">${rsIpNetwork.consistsOf}</td>
                     
                 </tr>
                 
@@ -84,6 +77,20 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsIpNetwork.memberOfGroup}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">memberSystems:</td>
+                    
+                    <td valign="top" class="value">${rsIpNetwork.memberSystems}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">netmask:</td>
                     
                     <td valign="top" class="value">${rsIpNetwork.netmask}</td>
@@ -94,6 +101,13 @@
                     <td valign="top" class="name">networkNumber:</td>
                     
                     <td valign="top" class="value">${rsIpNetwork.networkNumber}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsIpNetwork.rsDatasource}</td>
                     
                 </tr>
                 

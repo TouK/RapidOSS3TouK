@@ -28,8 +28,7 @@ class Port extends DeviceAdapter
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    static relations  =[:]
     static constraints={
     portType(blank:true,nullable:true)
         
@@ -46,8 +45,6 @@ class Port extends DeviceAdapter
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= ["portNumber":["nameInDs":"PortNumber", "datasourceProperty":"smartDs", "lazy":false], "portKey":["nameInDs":"PortKey", "datasourceProperty":"smartDs", "lazy":true]]
     static transients = ["portNumber", "portKey", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

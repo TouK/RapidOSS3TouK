@@ -33,7 +33,7 @@
                         <tbody>
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="${relationName}">${rsSmartsObject.hasMany[relationName]?.getName()}:</label>
+                                    <label for="${relationName}">${rsSmartsObject.relations[relationName]?.type.getName()}:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: rsSmartsObject, field: relationName, 'errors')}">
                                     <g:select optionKey="id" from="${relatedObjectList}" name="relatedObjectId"></g:select>

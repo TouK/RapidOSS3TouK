@@ -147,6 +147,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsHsrpGroup.memberOfGroup}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">numberOfComponents:</td>
                     
                     <td valign="top" class="value">${rsHsrpGroup.numberOfComponents}</td>
@@ -157,6 +164,13 @@
                     <td valign="top" class="name">numberOfFaultyComponents:</td>
                     
                     <td valign="top" class="value">${rsHsrpGroup.numberOfFaultyComponents}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsHsrpGroup.rsDatasource}</td>
                     
                 </tr>
                 

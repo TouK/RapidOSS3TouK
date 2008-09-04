@@ -27,13 +27,7 @@ class NetcoolJournal {
     
     Object __operation_class__ ;
     
-
-    static hasMany = [:]
-    
-        static mapping = {
-            tablePerHierarchy false
-        }
-    
+    static relations = [:]
     static constraints={
     serverserial(nullable:true)
         
@@ -54,8 +48,6 @@ class NetcoolJournal {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__"];
     

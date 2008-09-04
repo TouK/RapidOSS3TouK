@@ -5,7 +5,9 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 class ModelProperty {
-    static searchable = true;
+    static searchable = {
+        except:["model", "mappedKeys", "propertyDatasource", "propertySpecifyingDatasource"]
+    };
     def static final String stringType = "string";
     def static final String numberType = "number";
     def static final String dateType = "date";
@@ -22,9 +24,12 @@ class ModelProperty {
     List mappedKeys = [];
     boolean lazy = true;
 
-    static belongsTo = Model;
-    static hasMany = [mappedKeys:ModelDatasourceKeyMapping]
-    static mappedBy = [model:'modelProperties', mappedKeys:"property"]
+    static relations = [
+            propertySpecifyingDatasource:[type:DatasourceName,  isMany:false],
+            propertyDatasource:[type:DatasourceName, isMany:false],
+            model:[type:Model, reverseName:"modelProperties", isMany:false],
+            mappedKeys:[type:ModelDatasourceKeyMapping, reverseName:"property", isMany:true],
+    ]
     static constraints = {
         name(blank:false, key:['model'], validator:{val, obj ->
             if(!val.matches(ConfigurationHolder.config.toProperties()["rapidcmdb.property.validname"])){

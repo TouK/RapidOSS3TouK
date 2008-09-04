@@ -18,17 +18,12 @@ class NetcoolConnector
 
     String name ="ncoms";
     String logLevel = Level.WARN.toString();
-
-
-    static hasMany = [:]
-
+    static relations = [:]
     static constraints={
       name(blank:false,nullable:false,key:[])
       logLevel(inList:[Level.ALL.toString(),Level.DEBUG.toString(),Level.INFO.toString(),
               Level.WARN.toString(), Level.ERROR.toString(), Level.FATAL.toString(), Level.OFF.toString()])
     }
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];
 

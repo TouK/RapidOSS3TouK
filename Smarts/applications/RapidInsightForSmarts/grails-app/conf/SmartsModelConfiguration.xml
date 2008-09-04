@@ -8,6 +8,9 @@
           <Field SmartsName='IsManaged' LocalName='isManaged' IsDeleteMarker='false' Type='boolean' IsKey='false' />
           <Field SmartsName='rsDatasource' LocalName='rsDatasource' IsDeleteMarker='false' Type='string' IsKey='false' />
         </Fields>
+        <Relations>
+            <Relation Name="memberOfGroup" ReverseName="consistsOf" Cardinality="Many" ReverseCardinality="Many" ToModel="RsGroup" IsOwner="false"></Relation>
+        </Relations>
     </Model>
     <Model Name="RsEvent">
         <Fields>
@@ -134,6 +137,9 @@
             <Field SmartsName="Vendor" LocalName="vendor" Type="string"/>
             <Field SmartsName="ManagementServer" LocalName="managementServer" Type="string"/>
         </Fields>
+        <Relations>
+            <Relation Name="ipNetworks" ReverseName="memberSystems" Cardinality="Many" ReverseCardinality="Many" ToModel="RsIpNetwork" IsOwner="true"></Relation>
+        </Relations>
     </Model>
     <Model Name="RsComputerSystemComponent" ParentName="RsSmartsObject">
         <Fields>
@@ -205,6 +211,10 @@
             <Field SmartsName="HasIPAddresses" LocalName="hasIPAddresses" Type="boolean"/>
             <Field SmartsName="HasIPv6Addresses" LocalName="hasIPv6Addresses" Type="boolean"/>            
         </Fields>
+        <Relations>
+            <Relation Name="underlying" ReverseName="layeredOver" Cardinality="Many" ReverseCardinality="Many" ToModel="RsInterface" IsOwner="false"></Relation>
+            <Relation Name="layeredOver" ReverseName="underlying" Cardinality="Many" ReverseCardinality="Many" ToModel="RsInterface" IsOwner="true"></Relation>
+        </Relations>
     </Model>
     <Model Name="RsPort" ParentName="RsNetworkAdapter">
         <Fields>
@@ -244,14 +254,18 @@
     <Model Name="RsGroup" ParentName="RsSmartsObject">
         <Fields>
         </Fields>
+        <Relations>
+            <Relation Name="consistsOf" ReverseName="memberOfGroup" Cardinality="Many" ReverseCardinality="Many" ToModel="RsSmartsObject" IsOwner="true"></Relation>
+        </Relations>
     </Model>
     <Model Name="RsIpNetwork" ParentName="RsGroup">
         <Fields>
-            <Field SmartsName="ConnectedSystems" LocalName="connectedSystems"/>
-            <Field SmartsName="ConnectedTo" LocalName="connectedTo"/>
             <Field SmartsName="Netmask" LocalName="netmask" Type="string"/>
             <Field SmartsName="NetworkNumber" LocalName="networkNumber" Type="string"/>
         </Fields>
+        <Relations>
+            <Relation Name="memberSystems" ReverseName="ipNetworks" Cardinality="Many" ReverseCardinality="Many" ToModel="RsComputerSystem" IsOwner="false"></Relation>
+        </Relations>
     </Model>
     <Model Name="RsVlan" ParentName="RsSmartsObject">
         <Fields>

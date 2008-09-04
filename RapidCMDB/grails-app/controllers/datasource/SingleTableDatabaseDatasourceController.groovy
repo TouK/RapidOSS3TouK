@@ -121,7 +121,7 @@ class SingleTableDatabaseDatasourceController {
         else {
             def relationName = params.relationName;
             if(relationName){
-                def otherClass = singleTableDatabaseDatasource.hasMany[relationName];
+                def otherClass = singleTableDatabaseDatasource.relations[relationName].type;
                 def relatedObjectList = [];
                 if(otherClass){
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
@@ -143,7 +143,7 @@ class SingleTableDatabaseDatasourceController {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = singleTableDatabaseDatasource.hasMany[relationName];
+            def otherClass = singleTableDatabaseDatasource.relations[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
@@ -180,7 +180,7 @@ class SingleTableDatabaseDatasourceController {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = singleTableDatabaseDatasource.hasMany[relationName];
+            def otherClass = singleTableDatabaseDatasource.relations[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){

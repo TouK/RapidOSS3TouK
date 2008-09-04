@@ -30,8 +30,7 @@ class SmartsObject
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    static relations  =[:]
     static constraints={
     name(blank:false,nullable:false,key:[])
         
@@ -50,8 +49,6 @@ class SmartsObject
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

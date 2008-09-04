@@ -76,6 +76,15 @@
                         </td>
                     </tr>
                     
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsSmartsObject,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsSmartsObject,field:'rsDatasource')}"/>
+                        </td>
+                    </tr>
+                    
                 </tbody>
             </table>
         </div>

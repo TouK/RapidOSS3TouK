@@ -152,6 +152,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="memberOfGroup">memberOfGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsIp,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${rsIp?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsIp?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsIp?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="netmask">netmask:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsIp,field:'netmask','errors')}">
@@ -174,6 +193,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsIp,field:'responsive','errors')}">
                             <g:checkBox name="responsive" value="${rsIp?.responsive}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsIp,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsIp,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

@@ -44,6 +44,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="consistsOf">consistsOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsGroup,field:'consistsOf','errors')}">
+                            
+<ul>
+<g:each var="c" in="${rsGroup?.consistsOf?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsSmartsObject" action="show" id="${c.id}">${c}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsGroup?.id, 'relationName':'consistsOf', 'relatedObjectId':c.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsGroup?.id, 'relationName':'consistsOf']" action="addTo">Add RsSmartsObject</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="creationClassName">creationClassName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsGroup,field:'creationClassName','errors')}">
@@ -75,6 +94,34 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsGroup,field:'isManaged','errors')}">
                             <g:checkBox name="isManaged" value="${rsGroup?.isManaged}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="memberOfGroup">memberOfGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsGroup,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${rsGroup?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsGroup?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsGroup?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsGroup,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsGroup,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

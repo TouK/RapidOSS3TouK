@@ -168,6 +168,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsLink,field:'rsDatasource')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="z_AdminStatus">z_AdminStatus:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsLink,field:'z_AdminStatus','errors')}">

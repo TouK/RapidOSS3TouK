@@ -7,22 +7,11 @@ class BaseDatasource {
     Long id;
     Long version;
     String name ="";
-    
-
-    static hasMany = [:]
-    
-        static mapping = {
-            tablePerHierarchy false
-        }
-    
     static constraints={
     name(blank:false,nullable:false,key:[])
         
      
     }
-
-    static mappedBy=[:]
-    static belongsTo = []
     static transients = [];
 
      String toString(){

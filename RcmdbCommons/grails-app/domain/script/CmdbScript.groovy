@@ -16,7 +16,7 @@ class CmdbScript {
     public static String SCHEDULED = "Scheduled";
     public static String LISTENING = "Listening";
     static searchable = {
-        except = [];
+        except = ["listeningDatasource"];
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
     Long startDelay = 0;
@@ -28,8 +28,11 @@ class CmdbScript {
     String cronExpression = "* * * * * ?";
     Long period = 1;
     BaseListeningDatasource listeningDatasource;
-    static mappedBy = ["listeningDatasource":"listeningScript"]
-    static belongsTo = []
+
+    static relations = [
+            listeningDatasource:[type:BaseListeningDatasource, reverseName:"listeningScript", isMany:false]
+    ]
+
     static transients = ["messageService"];
 
     static constraints = {

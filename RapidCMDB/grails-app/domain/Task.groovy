@@ -6,7 +6,7 @@ class Task {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = [];
+        except = ["workedOnBy"];
     };
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 

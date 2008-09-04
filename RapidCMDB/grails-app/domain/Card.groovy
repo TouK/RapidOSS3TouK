@@ -7,7 +7,7 @@ class Card extends DeviceComponent
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["status", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["realises", "status", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 

@@ -126,6 +126,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsIp.memberOfGroup}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">netmask:</td>
                     
                     <td valign="top" class="value">${rsIp.netmask}</td>
@@ -143,6 +150,13 @@
                     <td valign="top" class="name">responsive:</td>
                     
                     <td valign="top" class="value">${rsIp.responsive}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsIp.rsDatasource}</td>
                     
                 </tr>
                 

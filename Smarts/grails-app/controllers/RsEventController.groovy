@@ -10,20 +10,20 @@ class RsEventController {
 
     def list = {
         if(!params.max) params.max = 10
-        [ rsNotificationList: RsEvent.list( params ) ]
+        [ rsEventList: RsEvent.list( params ) ]
     }
 
     def show = {
-        def rsNotification = RsEvent.get([id:params.id])
+        def rsEvent = RsEvent.get([id:params.id])
 
-        if(!rsNotification) {
+        if(!rsEvent) {
             flash.message = "RsEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
-            if(rsNotification.class != RsEvent)
+            if(rsEvent.class != RsEvent)
             {
-                def controllerName = rsNotification.class.name;
+                def controllerName = rsEvent.class.name;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();
@@ -36,23 +36,23 @@ class RsEventController {
             }
             else
             {
-                return [ rsNotification : rsNotification ]
+                return [ rsEvent : rsEvent ]
             }
         }
     }
 
     def delete = {
-        def rsNotification = RsEvent.get( [id:params.id])
-        if(rsNotification) {
+        def rsEvent = RsEvent.get( [id:params.id])
+        if(rsEvent) {
             try{
-                rsNotification.remove()
+                rsEvent.remove()
                 flash.message = "RsEvent ${params.id} deleted"
                 redirect(action:list)
             }
             catch(e){
-                addError("default.couldnot.delete", [RsEvent, rsNotification])
+                addError("default.couldnot.delete", [RsEvent, rsEvent])
                 flash.errors = this.errors;
-                redirect(action:show, id:rsNotification.id)
+                redirect(action:show, id:rsEvent.id)
             }
 
         }
@@ -63,28 +63,28 @@ class RsEventController {
     }
 
     def edit = {
-        def rsNotification = RsEvent.get( [id:params.id] )
+        def rsEvent = RsEvent.get( [id:params.id] )
 
-        if(!rsNotification) {
+        if(!rsEvent) {
             flash.message = "RsEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
-            return [ rsNotification : rsNotification ]
+            return [ rsEvent : rsEvent ]
         }
     }
 
 
     def update = {
-        def rsNotification = RsEvent.get( [id:params.id] )
-        if(rsNotification) {
-            rsNotification.update(ControllerUtils.getClassProperties(params, RsEvent));
-            if(!rsNotification.hasErrors()) {
+        def rsEvent = RsEvent.get( [id:params.id] )
+        if(rsEvent) {
+            rsEvent.update(ControllerUtils.getClassProperties(params, RsEvent));
+            if(!rsEvent.hasErrors()) {
                 flash.message = "RsEvent ${params.id} updated"
-                redirect(action:show,id:rsNotification.id)
+                redirect(action:show,id:rsEvent.id)
             }
             else {
-                render(view:'edit',model:[rsNotification:rsNotification])
+                render(view:'edit',model:[rsEvent:rsEvent])
             }
         }
         else {
@@ -94,67 +94,67 @@ class RsEventController {
     }
 
     def create = {
-        def rsNotification = new RsEvent()
-        rsNotification.properties = params
-        return ['rsNotification':rsNotification]
+        def rsEvent = new RsEvent()
+        rsEvent.properties = params
+        return ['rsEvent':rsEvent]
     }
 
     def save = {
-        def rsNotification = RsEvent.add(ControllerUtils.getClassProperties(params, RsEvent))
-        if(!rsNotification.hasErrors()) {
-            flash.message = "RsEvent ${rsNotification.id} created"
-            redirect(action:show,id:rsNotification.id)
+        def rsEvent = RsEvent.add(ControllerUtils.getClassProperties(params, RsEvent))
+        if(!rsEvent.hasErrors()) {
+            flash.message = "RsEvent ${rsEvent.id} created"
+            redirect(action:show,id:rsEvent.id)
         }
         else {
-            render(view:'create',model:[rsNotification:rsNotification])
+            render(view:'create',model:[rsEvent:rsEvent])
         }
     }
 
     def addTo = {
-        def rsNotification = RsEvent.get( [id:params.id] )
-        if(!rsNotification){
+        def rsEvent = RsEvent.get( [id:params.id] )
+        if(!rsEvent){
             flash.message = "RsEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
             if(relationName){
-                def otherClass = rsNotification.hasMany[relationName];
+                def otherClass = rsEvent.relations[relationName].type;
                 def relatedObjectList = [];
                 if(otherClass){
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
                 }
-                return [rsNotification:rsNotification, relationName:relationName, relatedObjectList:relatedObjectList]
+                return [rsEvent:rsEvent, relationName:relationName, relatedObjectList:relatedObjectList]
             }
             else{
                flash.message = "No relation name specified for add relation action"
-               redirect(action:edit,id:rsNotification.id)
+               redirect(action:edit,id:rsEvent.id)
             }
         }
     }
 
     def addRelation = {
-        def rsNotification = RsEvent.get( [id:params.id] )
-        if(!rsNotification) {
+        def rsEvent = RsEvent.get( [id:params.id] )
+        if(!rsEvent) {
             flash.message = "RsEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
-            def otherClass = rsNotification.hasMany[relationName];
+            def otherClass = rsEvent.relations[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
                       def relationMap = [:];
                       relationMap[relationName] = res;
-                      rsNotification.addRelation(relationMap);
-                      if(rsNotification.hasErrors()){
+                      rsEvent.addRelation(relationMap);
+                      if(rsEvent.hasErrors()){
                           def relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
-                          render(view:'addTo',model:[rsNotification:rsNotification, relationName:relationName, relatedObjectList:relatedObjectList])
+                          render(view:'addTo',model:[rsEvent:rsEvent, relationName:relationName, relatedObjectList:relatedObjectList])
                       }
                       else{
                           flash.message = "RsEvent ${params.id} updated"
-                          redirect(action:edit,id:rsNotification.id)
+                          redirect(action:edit,id:rsEvent.id)
                       }
 
                 }
@@ -171,36 +171,36 @@ class RsEventController {
     }
 
     def removeRelation = {
-        def rsNotification = RsEvent.get( [id:params.id] )
-        if(!rsNotification) {
+        def rsEvent = RsEvent.get( [id:params.id] )
+        if(!rsEvent) {
             flash.message = "RsEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
-            def otherClass = rsNotification.hasMany[relationName];
+            def otherClass = rsEvent.relations[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
                       def relationMap = [:];
                       relationMap[relationName] = res;
-                      rsNotification.removeRelation(relationMap);
-                      if(rsNotification.hasErrors()){
-                          render(view:'edit',model:[rsNotification:rsNotification])
+                      rsEvent.removeRelation(relationMap);
+                      if(rsEvent.hasErrors()){
+                          render(view:'edit',model:[rsEvent:rsEvent])
                       }
                       else{
                           flash.message = "RsEvent ${params.id} updated"
-                          redirect(action:edit,id:rsNotification.id)
+                          redirect(action:edit,id:rsEvent.id)
                       }
                 }
                 else{
                     flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
-                    redirect(action:edit,id:rsNotification.id)
+                    redirect(action:edit,id:rsEvent.id)
                 }
             }
             else{
                 flash.message = "No relation exist with name ${relationName}"
-                redirect(action:edit,id:rsNotification.id)
+                redirect(action:edit,id:rsEvent.id)
             }
         }
     }

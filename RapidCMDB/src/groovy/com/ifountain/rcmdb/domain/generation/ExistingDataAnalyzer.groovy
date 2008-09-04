@@ -112,8 +112,9 @@ class ExistingDataAnalyzer
     {
 
         def newClassProperties = [:];
+        def relations = DomainClassUtils.getRelations(domainObject);
         domainObject.getProperties().each{GrailsDomainClassProperty prop->
-           if(!prop.isAssociation() && !excludedProps.containsKey(prop.name))
+           if(!relations.containsKey(prop.name) && !excludedProps.containsKey(prop.name))
            {
                 newClassProperties[prop.name] = prop;    
            }

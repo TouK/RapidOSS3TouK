@@ -7,7 +7,7 @@ class Link extends SmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["aa_AdminStatus", "aa_OperStatus", "aa_DisplayName", "zz_AdminStatus", "zz_OperStatus", "zz_DisplayName", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["connectedTo", "connectedSystems", "aa_AdminStatus", "aa_OperStatus", "aa_DisplayName", "zz_AdminStatus", "zz_OperStatus", "zz_DisplayName", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 

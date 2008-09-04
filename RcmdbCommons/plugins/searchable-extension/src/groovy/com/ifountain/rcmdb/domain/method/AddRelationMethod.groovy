@@ -2,7 +2,6 @@ package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.property.RelationUtils
-import com.ifountain.rcmdb.domain.util.RelationMetaData
 import relation.Relation
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -40,6 +39,22 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
         return true;
     }
 
+    def removeExistingRelations(domainObject, Relation relationObject,  relOtherSideName, relOtherSideClass)
+    {
+        if(relationObject && !relationObject.relatedObjectIds.isEmpty())
+        {
+            relationObject.relatedObjectIds.clear()
+            relationObject.reindex();
+        }
+        else
+        {
+            def relationsToBeRemoved = RelationUtils.getReverseRelationObjects(domainObject, relOtherSideName, relOtherSideClass);
+            relationsToBeRemoved.each{Relation previousRelation->
+                previousRelation.relatedObjectIds.remove(Relation.getRelKey(domainObject.id))
+                previousRelation.reindex();
+            }
+        }
+    }
     protected Object _invoke(Object domainObject, Object[] arguments) {
 
         def props = arguments[0];
@@ -51,6 +66,8 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                 flush = false;
             }
         }
+
+
         def relatedInstances = [:]
         props.each{key,value->
             if(value)
@@ -58,43 +75,40 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                 RelationMetaData relation = relations.get(key);
                 if(relation)
                 {
+                    Relation domainObjectRelations = Relation.get(objectId:domainObject.id, name:relation.name);
+                    def allRefRelationObjs = [:];
+                    def referencingRelations = RelationUtils.getReverseRelationObjects(domainObject, relation.otherSideName, relation.getOtherSideCls());
+                    if(domainObjectRelations == null)
+                    {
+                        domainObjectRelations = Relation.add(objectId:domainObject.id, name:relation.name, className:domainObject.class.name);
+                    }
+                    allRefRelationObjs.putAll (domainObjectRelations.relatedObjectIds);
+                    referencingRelations.each{
+                        allRefRelationObjs[Relation.getRelKey(it.objectId)] = it.objectId;
+                    }
+                    
                     value = value instanceof Collection?value:[value];
-                    def isReverse = RelationUtils.isReverse(domainObject, relation);
+                    value = value.findAll {!allRefRelationObjs.containsKey(Relation.getRelKey(it.id))}
                     if(value.size() >0){
                         if(relation.type == RelationMetaData.ONE_TO_ONE || relation.type == RelationMetaData.MANY_TO_ONE)
                         {
-                            def relationObjects = RelationUtils.getRelationObjects(domainObject, relation);
-                            relationObjects.each{relationObject->
-                                relationObject.remove();
-                            }
+                            removeExistingRelations(domainObject, domainObjectRelations, relation.otherSideName, relation.otherSideCls);
+                            value = [value[0]];
+
                         }
                         else if(relation.type == RelationMetaData.ONE_TO_MANY)
                         {
-                            if(relation.hasOtherSide())
-                            {
-
-                                value.each{newRelatedObject->
-                                    if(isReverse)
-                                    {
-                                        Relation.searchEvery("objectId:${newRelatedObject.id} AND name:${relation.otherSideName}")*.remove();
-                                    }
-                                    else
-                                    {
-                                        Relation.searchEvery("reverseObjectId:${newRelatedObject.id} AND reverseName:${relation.otherSideName}")*.remove();
-                                    }
-                                }
+                            value.each{newRelatedObject->
+                                Relation newRelatedObjectRelations = Relation.get(objectId:newRelatedObject.id, name:relation.otherSideName);
+                                removeExistingRelations(newRelatedObject, newRelatedObjectRelations, relation.name, relation.cls);
                             }
+
+
                         }
                         value.each{newRelatedObject->
-                            if(!isReverse)
-                            {
-                                Relation.add(objectId:domainObject.id, reverseObjectId:newRelatedObject.id, name:relation.name, reverseName:relation.otherSideName);
-                            }
-                            else
-                            {
-                                Relation.add(objectId:newRelatedObject.id, reverseObjectId:domainObject.id, name:relation.otherSideName, reverseName:relation.name);
-                            }
+                            domainObjectRelations.relatedObjectIds.put(Relation.getRelKey(newRelatedObject.id), newRelatedObject.id);
                         }
+                        domainObjectRelations.reindex();
                     }
                 }
             }

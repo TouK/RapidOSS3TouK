@@ -233,6 +233,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="layeredOver">layeredOver:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'layeredOver','errors')}">
+                            
+<ul>
+<g:each var="l" in="${rsInterface?.layeredOver?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsInterface" action="show" id="${l.id}">${l}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsInterface?.id, 'relationName':'layeredOver', 'relatedObjectId':l.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsInterface?.id, 'relationName':'layeredOver']" action="addTo">Add RsInterface</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="maxSpeed">maxSpeed:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'maxSpeed','errors')}">
@@ -255,6 +274,25 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'maximumUptime','errors')}">
                             <input type="text" id="maximumUptime" name="maximumUptime" value="${fieldValue(bean:rsInterface,field:'maximumUptime')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="memberOfGroup">memberOfGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${rsInterface?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsInterface?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsInterface?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
                         </td>
                     </tr>
                     
@@ -300,6 +338,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'peerSystemType','errors')}">
                             <input type="text" id="peerSystemType" name="peerSystemType" value="${fieldValue(bean:rsInterface,field:'peerSystemType')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsInterface,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     
@@ -372,6 +419,25 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'type','errors')}">
                             <input type="text" id="type" name="type" value="${fieldValue(bean:rsInterface,field:'type')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="underlying">underlying:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'underlying','errors')}">
+                            
+<ul>
+<g:each var="u" in="${rsInterface?.underlying?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsInterface" action="show" id="${u.id}">${u}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsInterface?.id, 'relationName':'underlying', 'relatedObjectId':u.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsInterface?.id, 'relationName':'underlying']" action="addTo">Add RsInterface</g:link>
+
                         </td>
                     </tr>
                     

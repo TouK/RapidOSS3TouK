@@ -42,6 +42,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">consistsOf:</td>
+                    
+                    <td valign="top" class="value">${rsGroup.consistsOf}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">creationClassName:</td>
                     
                     <td valign="top" class="value">${rsGroup.creationClassName}</td>
@@ -66,6 +73,20 @@
                     <td valign="top" class="name">isManaged:</td>
                     
                     <td valign="top" class="value">${rsGroup.isManaged}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsGroup.memberOfGroup}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsGroup.rsDatasource}</td>
                     
                 </tr>
                 

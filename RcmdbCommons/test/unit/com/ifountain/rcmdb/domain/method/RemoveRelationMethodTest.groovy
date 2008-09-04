@@ -88,6 +88,10 @@ class RemoveRelationMethodTest extends RapidCmdbWithCompassTestCase{
         assertFalse (expectedDomainObject1.rel4.contains(expectedDomainObject7));
         assertEquals (0, expectedDomainObject7.revRel4.size());
 
+        expectedDomainObject6.removeRelation(revRel4:[expectedDomainObject1]);
+        assertFalse (expectedDomainObject1.rel4.contains(expectedDomainObject6));
+        assertFalse (expectedDomainObject6.revRel4.contains(expectedDomainObject1));
+
 
 
     }

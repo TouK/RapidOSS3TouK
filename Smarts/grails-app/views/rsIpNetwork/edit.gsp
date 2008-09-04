@@ -44,19 +44,20 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="connectedSystems">connectedSystems:</label>
+                            <label for="consistsOf">consistsOf:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsIpNetwork,field:'connectedSystems','errors')}">
+                        <td valign="top" class="value ${hasErrors(bean:rsIpNetwork,field:'consistsOf','errors')}">
                             
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="connectedTo">connectedTo:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsIpNetwork,field:'connectedTo','errors')}">
-                            
+<ul>
+<g:each var="c" in="${rsIpNetwork?.consistsOf?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsSmartsObject" action="show" id="${c.id}">${c}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsIpNetwork?.id, 'relationName':'consistsOf', 'relatedObjectId':c.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsIpNetwork?.id, 'relationName':'consistsOf']" action="addTo">Add RsSmartsObject</g:link>
+
                         </td>
                     </tr>
                     
@@ -98,6 +99,44 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="memberOfGroup">memberOfGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsIpNetwork,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${rsIpNetwork?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsIpNetwork?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsIpNetwork?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="memberSystems">memberSystems:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsIpNetwork,field:'memberSystems','errors')}">
+                            
+<ul>
+<g:each var="m" in="${rsIpNetwork?.memberSystems?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsComputerSystem" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsIpNetwork?.id, 'relationName':'memberSystems', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsIpNetwork?.id, 'relationName':'memberSystems']" action="addTo">Add RsComputerSystem</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="netmask">netmask:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsIpNetwork,field:'netmask','errors')}">
@@ -111,6 +150,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsIpNetwork,field:'networkNumber','errors')}">
                             <input type="text" id="networkNumber" name="networkNumber" value="${fieldValue(bean:rsIpNetwork,field:'networkNumber')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsIpNetwork,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsIpNetwork,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

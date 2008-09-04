@@ -6,14 +6,10 @@ class RsIpNetwork  extends RsGroup {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "memberSystems"];
     };
     static datasources = [:]
 
-    
-    Object connectedSystems ="null";
-    
-    Object connectedTo ="null";
     
     String netmask ="";
     
@@ -29,14 +25,17 @@ class RsIpNetwork  extends RsGroup {
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    List memberSystems =[];
+    
+    
+    static relations = [
+    
+        memberSystems:[type:RsComputerSystem, reverseName:"ipNetworks", isMany:true]
+    
+    ]
+    
     static constraints={
-    connectedSystems(nullable:true)
-        
-     connectedTo(nullable:true)
-        
-     netmask(blank:true,nullable:true)
+    netmask(blank:true,nullable:true)
         
      networkNumber(blank:true,nullable:true)
         
@@ -49,10 +48,8 @@ class RsIpNetwork  extends RsGroup {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "memberSystems"];
     
     //AUTO_GENERATED_CODE
     

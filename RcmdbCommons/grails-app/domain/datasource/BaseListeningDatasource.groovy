@@ -30,20 +30,18 @@ class BaseListeningDatasource extends BaseDatasource
 {
 
     static searchable = {
-        except = [];
+        except = ["listeningScript"];
     };
     static datasources = [:]
     CmdbScript listeningScript;
     boolean isSubscribed = false;
 
-    static hasMany = [:]
-
+    static relations = [
+            listeningScript:[type:CmdbScript, reverseName:"listeningDatasource", isMany:false]
+    ]
     static constraints={
         listeningScript(nullable:true)
     }
-
-    static mappedBy=["listeningScript":"listeningDatasource"]
-    static belongsTo = []
     static transients = [];
 
     def beforeDelete = {

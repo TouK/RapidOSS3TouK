@@ -120,7 +120,7 @@ class HttpDatasourceController {
         else {
             def relationName = params.relationName;
             if(relationName){
-                def otherClass = httpDatasource.hasMany[relationName];
+                def otherClass = httpDatasource.relations[relationName].type;
                 def relatedObjectList = [];
                 if(otherClass){
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
@@ -142,7 +142,7 @@ class HttpDatasourceController {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = httpDatasource.hasMany[relationName];
+            def otherClass = httpDatasource.relations[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
@@ -179,7 +179,7 @@ class HttpDatasourceController {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = httpDatasource.hasMany[relationName];
+            def otherClass = httpDatasource.relations[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){

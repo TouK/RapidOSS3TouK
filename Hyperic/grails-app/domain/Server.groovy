@@ -6,7 +6,7 @@ class Server  extends Resource {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__"];
+        except = ["errors", "__operation_class__", "hasServices", "serverOf"];
     };
     static datasources = [:]
 
@@ -17,9 +17,9 @@ class Server  extends Resource {
     
     Platform serverOf ;
     
-
-    static hasMany = [hasServices:Service]
-    
+    static relations = [hasServices:[isMany:true, reverseName:"serviceOf", type:Service]
+            ,serverOf:[isMany:false, type:Platform, reverseName:"hasServers"]
+    ]
     static constraints={
     __operation_class__(nullable:true)
         
@@ -30,8 +30,6 @@ class Server  extends Resource {
      
     }
 
-    static mappedBy=["hasServices":"serviceOf", "serverOf":"hasServers"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__"];
     

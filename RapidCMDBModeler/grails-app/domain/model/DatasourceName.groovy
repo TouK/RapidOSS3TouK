@@ -1,9 +1,10 @@
 package model;
 class DatasourceName {
-     static searchable = true;
+     static searchable = {
+         except:["modelDatasources"]
+     };
      static cascaded = [modelDatasources:true]
-     static hasMany = [modelDatasources: ModelDatasource];
-     static mappedBy = [modelDatasources:'datasource']     
+     static relations = [modelDatasources:[type:ModelDatasource, reverseName:"datasource", isMany:true]]
      String name;
      List modelDatasources = [];
      static constraints = {

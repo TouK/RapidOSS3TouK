@@ -140,6 +140,20 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsLink.memberOfGroup}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsLink.rsDatasource}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">z_AdminStatus:</td>
                     
                     <td valign="top" class="value">${rsLink.z_AdminStatus}</td>

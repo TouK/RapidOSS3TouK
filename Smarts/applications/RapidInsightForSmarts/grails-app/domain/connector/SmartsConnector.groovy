@@ -21,8 +21,10 @@ class SmartsConnector {
     BaseListeningDatasource ds;
     SmartsConnectionTemplate connectionTemplate;
 
-    static hasMany = [:]
-
+    static relations  =[
+            connectionTemplate:[type:SmartsConnectionTemplate, isMany:false],
+            ds:[type:BaseListeningDatasource, isMany:false]
+    ]
     static constraints={
       name(blank:false,nullable:false,key:[])
       logLevel(inList:[Level.ALL.toString(),Level.DEBUG.toString(),Level.INFO.toString(),
@@ -30,8 +32,6 @@ class SmartsConnector {
       ds(nullable:true)
       connectionTemplate(nullable:true)
     }
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];
 

@@ -37,8 +37,9 @@ class RsPort  extends RsNetworkAdapter {
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    
+    static relations = [:]    
+    
     static constraints={
     designatedBridge(blank:true,nullable:true)
         
@@ -65,8 +66,6 @@ class RsPort  extends RsNetworkAdapter {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

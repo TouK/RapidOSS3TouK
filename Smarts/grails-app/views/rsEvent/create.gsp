@@ -222,6 +222,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="isProblem">isProblem:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'isProblem','errors')}">
+                            <g:checkBox name="isProblem" value="${rsEvent?.isProblem}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="isRoot">isRoot:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'isRoot','errors')}">
@@ -289,6 +298,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'owner','errors')}">
                             <input type="text" id="owner" name="owner" value="${fieldValue(bean:rsEvent,field:'owner')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsEvent,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

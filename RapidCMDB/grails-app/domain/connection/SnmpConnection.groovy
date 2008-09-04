@@ -3,7 +3,7 @@ package connection
 import datasource.SnmpDatasource;
 class SnmpConnection extends Connection{
     static searchable = {
-        except = [];
+        except = ["snmpDatasources"];
     };
     static cascaded = ["snmpDatasources":true]
     static datasources = [:]
@@ -14,8 +14,9 @@ class SnmpConnection extends Connection{
     String host ="0.0.0.0";
     List snmpDatasources = [];
 
-    static hasMany = [snmpDatasources:SnmpDatasource]
-    
+    static relations = [
+            snmpDatasources:[isMany:true, reverseName:"connection", type:SnmpDatasource]
+    ]
     static constraints={
     port(nullable:true)
         
@@ -24,7 +25,5 @@ class SnmpConnection extends Connection{
      
     }
 
-    static mappedBy=["snmpDatasources":"connection"]
-    static belongsTo = []
     static transients = [];
 }

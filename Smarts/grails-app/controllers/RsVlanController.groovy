@@ -119,7 +119,7 @@ class RsVlanController {
         else {
             def relationName = params.relationName;
             if(relationName){
-                def otherClass = rsVlan.hasMany[relationName];
+                def otherClass = rsVlan.relations[relationName].type;
                 def relatedObjectList = [];
                 if(otherClass){
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
@@ -141,7 +141,7 @@ class RsVlanController {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = rsVlan.hasMany[relationName];
+            def otherClass = rsVlan.relations[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
@@ -178,7 +178,7 @@ class RsVlanController {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = rsVlan.hasMany[relationName];
+            def otherClass = rsVlan.relations[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){

@@ -3,6 +3,7 @@ package com.ifountain.rcmdb.domain.method
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.property.RelationUtils
+import relation.Relation
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -60,7 +61,27 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                 if(value)
                 {
                     value = value instanceof Collection?value:[value]
-                    RelationUtils.getRelationObjects(domainObject, relation,value)*.remove();
+                    Relation relationObject = Relation.get(objectId:domainObject.id, name:relation.name);
+                    def notRemovedRelations = [];
+                    if(relationObject)
+                    {
+                        value.each{
+                            def res = relationObject.relatedObjectIds.remove(Relation.getRelKey(it.id));
+                            if(!res)
+                            {
+                                notRemovedRelations.add(it);    
+                            }
+                        }
+                    }
+                    if(relationObject && notRemovedRelations.size() != value.size())
+                    {
+                        relationObject.reindex();                        
+                    }
+                    def reverseObjects = RelationUtils.getReverseRelationObjects(domainObject, relation.otherSideName, relation.otherSideCls, notRemovedRelations)
+                    reverseObjects.each{
+                        it.relatedObjectIds.remove(Relation.getRelKey(domainObject.id));
+                        it.reindex();
+                    }
                 }
             }
             return domainObject;

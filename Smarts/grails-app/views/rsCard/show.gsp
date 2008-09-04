@@ -77,6 +77,20 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsCard.memberOfGroup}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsCard.rsDatasource}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">serialNumber:</td>
                     
                     <td valign="top" class="value">${rsCard.serialNumber}</td>

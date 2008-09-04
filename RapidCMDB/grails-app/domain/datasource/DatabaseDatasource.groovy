@@ -5,7 +5,7 @@ import datasource.DatabaseAdapter
 import org.apache.log4j.Logger;
 class DatabaseDatasource extends BaseDatasource{
     static searchable = {
-        except = [];
+        except = ["connection"];
     };
     static datasources = [:]
 
@@ -14,16 +14,15 @@ class DatabaseDatasource extends BaseDatasource{
     int reconnectInterval = 0;
     
 
-    static hasMany = [:]
-    
+    static relations = [
+            connection:[isMany:false, reverseName:"databaseDatasources", type:DatabaseConnection]
+    ]
     static constraints={
     connection(nullable:true)
         
      
     }
 
-    static mappedBy=["connection":"databaseDatasources"]
-    static belongsTo = []
     def adapter;
     static transients =  ['adapter']
 

@@ -7,7 +7,7 @@ class Device extends SmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["connectedVia",  "hostsAccessPoints", "composedOf", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 
@@ -71,7 +71,7 @@ class Device extends SmartsObject
         
      
     }
-
+    
     static mappedBy=["connectedVia":"connectedSystems", "hostsAccessPoints":"hostedBy", "composedOf":"partOf"]
     static belongsTo = []
     static propertyConfiguration= [:]

@@ -7,7 +7,7 @@ class DeviceComponent extends SmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["partOf", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 

@@ -6,7 +6,7 @@ class Team {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = [];
+        except = ["managedBy"];
     };
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 

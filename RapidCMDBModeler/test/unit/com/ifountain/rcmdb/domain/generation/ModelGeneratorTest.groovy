@@ -163,12 +163,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model.name).exists());
             Class cls = compileClass(model.name);
             def object = cls.newInstance();
-            assertTrue(object.hasMany instanceof Map);
-            assertTrue(object.hasMany.isEmpty());
-            assertTrue(object.belongsTo instanceof List);
-            assertTrue(object.belongsTo.isEmpty());
-            assertTrue(object.mappedBy instanceof Map);
-            assertTrue(object.mappedBy.isEmpty());
+            assertTrue(object.relations instanceof Map);
+            assertTrue(object.relations.isEmpty());
             assertTrue(object.transients instanceof List);
 
             assertEquals(String, object.class.getDeclaredField("prop1").type);
@@ -403,13 +399,23 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals (0, object.relation3.size());
         assertEquals(model2.getName(), object.class.getDeclaredField("relation1").getType().getName());
         assertEquals(model2.getName(), object.class.getDeclaredField("reverseRelation2").getType().getName())
-        assertEquals(model2.getName(), object.hasMany.relation3.getName())
+        assertEquals(model2.getName(), object.relations.relation3.type.name)
         assertEquals(model2.getName(), object.class.getDeclaredField("relation4").getType().getName())
 
-        assertEquals("reverseRelation1", object.mappedBy.relation1)
-        assertEquals("relation2", object.mappedBy.reverseRelation2)
-        assertEquals("reverseRelation3", object.mappedBy.relation3)
-        assertEquals("reverseRelation4", object.mappedBy.relation4)
+        assertFalse (object.relations.relation1.isMany);
+        assertFalse (object.relations.reverseRelation2.isMany);
+        assertTrue (object.relations.relation3.isMany);
+        assertFalse (object.relations.relation4.isMany);
+
+        assertEquals (model2.name, object.relations.relation1.type.name);
+        assertEquals (model2.name, object.relations.reverseRelation2.type.name);
+        assertEquals (model2.name, object.relations.relation3.type.name);
+        assertEquals (model2.name, object.relations.relation4.type.name);
+        
+        assertEquals("reverseRelation1", object.relations.relation1.reverseName)
+        assertEquals("relation2", object.relations.reverseRelation2.reverseName)
+        assertEquals("reverseRelation3", object.relations.relation3.reverseName)
+        assertEquals("reverseRelation4", object.relations.relation4.reverseName)
 
         Closure contraintsClosure = object.constraints;
         ConstrainedPropertyBuilder contraintsClosurePropertyBuilder = new ConstrainedPropertyBuilder(object);
@@ -446,14 +452,25 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals (0, object2.relation2.size());
         assertEquals (0, object2.reverseRelation4.size());
         assertEquals(model1.getName(), object2.class.getDeclaredField("reverseRelation1").getType().getName());
-        assertEquals(model1.getName(), object2.hasMany.relation2.getName())
-        assertEquals(model1.getName(), object2.hasMany.reverseRelation3.getName())
-        assertEquals(model1.getName(), object2.hasMany.reverseRelation4.getName())
+        assertEquals(model1.getName(), object2.relations.relation2.type.name)
+        assertEquals(model1.getName(), object2.relations.reverseRelation3.type.name)
+        assertEquals(model1.getName(), object2.relations.reverseRelation4.type.name)
 
-        assertEquals("relation1", object2.mappedBy.reverseRelation1)
-        assertEquals("reverseRelation2", object2.mappedBy.relation2)
-        assertEquals("relation3", object2.mappedBy.reverseRelation3)
-        assertEquals("relation4", object2.mappedBy.reverseRelation4)
+
+        assertFalse (object2.relations.reverseRelation1.isMany);
+        assertTrue (object2.relations.relation2.isMany);
+        assertTrue (object2.relations.reverseRelation3.isMany);
+        assertTrue (object2.relations.reverseRelation4.isMany);
+
+        assertEquals (model1.name, object2.relations.reverseRelation1.type.name);
+        assertEquals (model1.name, object2.relations.relation2.type.name);
+        assertEquals (model1.name, object2.relations.reverseRelation3.type.name);
+        assertEquals (model1.name, object2.relations.reverseRelation4.type.name);
+
+        assertEquals("relation1", object2.relations.reverseRelation1.reverseName)
+        assertEquals("reverseRelation2", object2.relations.relation2.reverseName)
+        assertEquals("relation3", object2.relations.reverseRelation3.reverseName)
+        assertEquals("relation4", object2.relations.reverseRelation4.reverseName)
 
         contraintsClosure = object2.constraints;
         contraintsClosurePropertyBuilder = new ConstrainedPropertyBuilder(object2);
@@ -467,9 +484,6 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertNull(relProp);
         relProp = contraintsClosurePropertyBuilder.getConstrainedProperties()["reverseRelation4"];
         assertNull (relProp);
-
-        assertEquals(1, object2.belongsTo.size())
-        assertEquals(model1.getName(), object2.belongsTo[0].getName())
 
 
         Closure searchable2 = object2.searchable;
@@ -514,6 +528,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
 
         model1.parentModel = model2;
+        model1.datasources = [];
         ModelGeneratorAdapter.generateModels([model1, model2]);
         assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(model1.name).exists());
 
@@ -710,12 +725,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue(object.transients.contains("errors"));
         assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
         assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
-        assertTrue(object.hasMany instanceof Map);
-        assertTrue(object.hasMany.isEmpty());
-        assertTrue(object.belongsTo instanceof List);
-        assertTrue(object.belongsTo.isEmpty());
-        assertTrue(object.mappedBy instanceof Map);
-        assertTrue(object.mappedBy.isEmpty());
+        assertTrue(object.relations instanceof Map);
+        assertTrue(object.relations.isEmpty());
     }
 
     def compileClass(String name)

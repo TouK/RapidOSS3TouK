@@ -189,6 +189,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">layeredOver:</td>
+                    
+                    <td valign="top" class="value">${rsInterface.layeredOver}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">maxSpeed:</td>
                     
                     <td valign="top" class="value">${rsInterface.maxSpeed}</td>
@@ -206,6 +213,13 @@
                     <td valign="top" class="name">maximumUptime:</td>
                     
                     <td valign="top" class="value">${rsInterface.maximumUptime}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsInterface.memberOfGroup}</td>
                     
                 </tr>
                 
@@ -241,6 +255,13 @@
                     <td valign="top" class="name">peerSystemType:</td>
                     
                     <td valign="top" class="value">${rsInterface.peerSystemType}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsInterface.rsDatasource}</td>
                     
                 </tr>
                 
@@ -297,6 +318,13 @@
                     <td valign="top" class="name">type:</td>
                     
                     <td valign="top" class="value">${rsInterface.type}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">underlying:</td>
+                    
+                    <td valign="top" class="value">${rsInterface.underlying}</td>
                     
                 </tr>
                 

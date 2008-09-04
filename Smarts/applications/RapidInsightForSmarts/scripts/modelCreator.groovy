@@ -51,6 +51,7 @@ def getModelXmls()
         modelBuilder.Model(modelMetaProps)
         {
             def smartsModel = SmartsModel.add(name:modelName, parentName:parentName);
+            def cols = [];
             if(!smartsModel.hasErrors())
             {
                 def keys = [];
@@ -63,7 +64,7 @@ def getModelXmls()
                         def isDelMarker = new Boolean(field.@IsDeleteMarker.text()).booleanValue();
                         def isKey = new Boolean(field.@IsKey.text()).booleanValue();
                         logger.info ("Creating property ${localName} corresponding smarts property ${smartsName}");
-                        SmartsModelColumn.add(smartsName:smartsName, localName:localName, isDeleteMarker:isDelMarker, type:type, model:smartsModel);
+                        cols.add(SmartsModelColumn.add(smartsName:smartsName, localName:localName, isDeleteMarker:isDelMarker, type:type));
 
                         if(type == "number")
                         {
@@ -100,10 +101,13 @@ def getModelXmls()
                         def reverseName = relation.@ReverseName.text() ;
                         def toModel = relation.@ToModel.text() ;
                         def type = relation.@Cardinality.text() ;
+                        def isOwner = relation.@IsOwner.text() ;
                         def reverseType = relation.@ReverseCardinality.text() ;
-                        modelBuilder.Relation(name:relName, reverseName:reverseName, toModel:toModel, cardinality:type, reverseCardinality:reverseType, isOwner:true);
+                        modelBuilder.Relation(name:relName, reverseName:reverseName, toModel:toModel, cardinality:type, reverseCardinality:reverseType, isOwner:isOwner);
                     }
                 }
+
+                smartsModel.addRelation(columns:cols);
             }
             else
             {
@@ -121,12 +125,13 @@ def getModelXmls()
     allSmartsModelObjects.each{key, obj->
         def parents = [];
         getParentObjects(allSmartsModelObjects, parents, obj);
+        def cols = [];
         parents.each{parent->
             parent.columns.each{column->
-                SmartsModelColumn.add(smartsName:column.smartsName, localName:column.localName, isDeleteMarker:column.isDeleteMarker, type:column.type, model:obj);
+                cols.add(SmartsModelColumn.add(smartsName:column.smartsName, localName:column.localName, isDeleteMarker:column.isDeleteMarker, type:column.type));
             }
         }
-
+        obj.addRelation(columns:cols);
     }
     return modelXmlStrings;
 }

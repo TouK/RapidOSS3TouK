@@ -8,7 +8,7 @@ import org.apache.log4j.Logger
 
 class SmartsNotificationDatasource extends BaseListeningDatasource{
     static searchable = {
-        except = [];
+        except = ["connection"];
     };
     static datasources = [:]
 
@@ -17,16 +17,15 @@ class SmartsNotificationDatasource extends BaseListeningDatasource{
     int reconnectInterval = 0;
     
 
-    static hasMany = [:]
-    
+    static relations = [
+            connection:[isMany:false, reverseName:"smartsNotificationDatasources", type:SmartsConnection]
+    ]
     static constraints={
     connection(nullable:true)
         
      
     }
 
-    static mappedBy=["connection":"smartsNotificationDatasources"]
-    static belongsTo = []
     def adapter;
     static transients =  ['adapter']
 

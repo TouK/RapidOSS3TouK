@@ -6,7 +6,7 @@ class RsInterface  extends RsNetworkAdapter {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "underlying", "layeredOver"];
     };
     static datasources = [:]
 
@@ -27,8 +27,19 @@ class RsInterface  extends RsNetworkAdapter {
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    List underlying =[];
+    
+    List layeredOver =[];
+    
+    
+    static relations = [
+    
+        underlying:[type:RsInterface, reverseName:"layeredOver", isMany:true]
+    
+        ,layeredOver:[type:RsInterface, reverseName:"underlying", isMany:true]
+    
+    ]
+    
     static constraints={
     interfaceKey(blank:true,nullable:true)
         
@@ -45,11 +56,10 @@ class RsInterface  extends RsNetworkAdapter {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "underlying", "layeredOver"];
     
     //AUTO_GENERATED_CODE
+
     
 }

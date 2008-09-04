@@ -7,7 +7,7 @@ class Developer extends Employee
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = [];
+        except = ["worksOn"];
     };
     static datasources = [:]
 

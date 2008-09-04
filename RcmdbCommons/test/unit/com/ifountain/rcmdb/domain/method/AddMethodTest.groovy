@@ -14,7 +14,6 @@ import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import org.springframework.validation.Validator
 import com.ifountain.rcmdb.domain.converter.BooleanConverter
-import com.ifountain.rcmdb.domain.util.RelationMetaData
 
 /**
 * Created by IntelliJ IDEA.

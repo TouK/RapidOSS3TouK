@@ -25,8 +25,9 @@ class RsComputerSystemComponent  extends RsSmartsObject {
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    
+    static relations = [:]    
+    
     static constraints={
     computerSystemName(blank:true,nullable:true)
         
@@ -41,8 +42,6 @@ class RsComputerSystemComponent  extends RsSmartsObject {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

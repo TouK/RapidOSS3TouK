@@ -8,7 +8,7 @@ package datasource
  */
 class SmartsModelColumn {
     static searchable = {
-        except = [];
+        except = ["model"];
     };
     static datasources = [:]
     String smartsName;
@@ -16,11 +16,12 @@ class SmartsModelColumn {
     String type;
     boolean isDeleteMarker;
     SmartsModel model;
-    static hasMany = [:]
     static constraints={
         smartsName(nullable:false, key:["model"])
         model(nullable:true)
     }
-    static mappedBy=["model":"columns"]
+    static relations = [
+            model:[type:SmartsModel, reverseName:"columns", isMany:false]
+    ]
     static transients =  []
 }

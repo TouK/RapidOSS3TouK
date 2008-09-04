@@ -98,6 +98,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">ipNetworks:</td>
+                    
+                    <td valign="top" class="value">${rsComputerSystem.ipNetworks}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">isManaged:</td>
                     
                     <td valign="top" class="value">${rsComputerSystem.isManaged}</td>
@@ -115,6 +122,13 @@
                     <td valign="top" class="name">managementServer:</td>
                     
                     <td valign="top" class="value">${rsComputerSystem.managementServer}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsComputerSystem.memberOfGroup}</td>
                     
                 </tr>
                 
@@ -185,6 +199,13 @@
                     <td valign="top" class="name">readCommunity:</td>
                     
                     <td valign="top" class="value">${rsComputerSystem.readCommunity}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsComputerSystem.rsDatasource}</td>
                     
                 </tr>
                 

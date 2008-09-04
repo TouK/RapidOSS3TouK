@@ -14,8 +14,31 @@
     <%
         }
     %>
+    <%
 
-    static hasMany = ${!model.hasMany.isEmpty()?model.hasMany.toString().replaceAll('\\{', '\\[').replaceAll('\\}', '\\]').replaceAll('=', ':'):'[:]'}
+        if(model.relations.isEmpty())
+        {
+    %>
+    static relations = [:]    
+    <%
+        }
+        else
+        {
+    %>
+    static relations = [
+    <%
+            def started = false;
+            model.relations.each{relName, relConfig->
+    %>
+        ${started?",":""}${relName}:[type:${relConfig.type}, reverseName:"${relConfig.reverseName}", isMany:${relConfig.isMany?"true":"false"}]
+    <%
+                started = true;
+            }
+    %>
+    ]
+    <%
+        }
+    %>
     static constraints={
     <%
         model.constraints.each{key, value->
@@ -50,8 +73,6 @@
     %>
     }
 
-    static mappedBy=${model.mappedBy}
-    static belongsTo = ${model.belongsTo.toString().replaceAll('"','')}
     static propertyConfiguration= ${model.propertyConfigurations}
     static transients = ${model.transientProps};
     <%

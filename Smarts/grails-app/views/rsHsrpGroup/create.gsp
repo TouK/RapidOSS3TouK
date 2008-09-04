@@ -195,6 +195,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsHsrpGroup,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsHsrpGroup,field:'rsDatasource')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="virtualIP">virtualIP:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsHsrpGroup,field:'virtualIP','errors')}">

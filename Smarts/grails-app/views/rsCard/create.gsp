@@ -87,6 +87,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsCard,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsCard,field:'rsDatasource')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="serialNumber">serialNumber:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsCard,field:'serialNumber','errors')}">

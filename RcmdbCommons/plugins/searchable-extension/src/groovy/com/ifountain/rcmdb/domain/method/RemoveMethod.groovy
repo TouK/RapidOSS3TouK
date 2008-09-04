@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.util.ValidationUtils
+import relation.Relation
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -77,6 +78,10 @@ class RemoveMethod extends AbstractRapidDomainMethod{
             }
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
             CompassMethodInvoker.unindex(mc, domainObject);
+            if(!relsToBeRemoved.isEmpty())
+            {
+                Relation.searchEvery("objectId:${domainObject.id}")*.remove();
+            }
         }
     }
 

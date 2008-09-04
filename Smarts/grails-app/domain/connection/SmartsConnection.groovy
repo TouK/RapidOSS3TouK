@@ -14,7 +14,7 @@ class SmartsConnection extends Connection{
     public static String SDH = "SDH";
 
      static searchable = {
-        except = [];
+        except = ["smartsTopologyDatasources", "smartsNotificationDatasources"];
     };
     static cascaded = ["smartsTopologyDatasources":true, "smartsNotificationDatasources":true]
     static datasources = [:]
@@ -32,8 +32,10 @@ class SmartsConnection extends Connection{
     List smartsNotificationDatasources = [];
     
 
-    static hasMany = [smartsTopologyDatasources:SmartsTopologyDatasource, smartsNotificationDatasources:SmartsNotificationDatasource]
-    
+    static relations = [
+            smartsTopologyDatasources:[isMany:true, reverseName:"connection", type:SmartsTopologyDatasource],
+            smartsNotificationDatasources:[isMany:true, reverseName:"connection", type:SmartsNotificationDatasource]
+    ]
     static constraints={
     username(blank:true,nullable:true)
         
@@ -45,8 +47,5 @@ class SmartsConnection extends Connection{
         
      domainType(inList: [AM, OI, SAM, MPLS, BGP,OSPF, SDH])
     }
-
-    static mappedBy=["smartsTopologyDatasources":"connection", "smartsNotificationDatasources":"connection"]
-    static belongsTo = []
     static transients = [];
 }

@@ -1,8 +1,6 @@
 package com.ifountain.rcmdb.domain.method
 
-import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import relation.Relation
 
 /**
 * Created by IntelliJ IDEA.

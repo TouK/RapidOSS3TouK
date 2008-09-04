@@ -1,14 +1,17 @@
 package model
 
 class ModelDatasource {
-    static searchable = true;
+    static searchable = {
+        except:["model","keyMappings","datasource"]
+    };
     DatasourceName datasource;
     Model model;
     List keyMappings = [];
-    static belongsTo = Model;
-
-    static hasMany = [keyMappings: ModelDatasourceKeyMapping];
-    static mappedBy = [model:'datasources',keyMappings:'datasource',datasource:"modelDatasources"]
+    static relations = [
+            datasource:[type:DatasourceName, reverseName:"modelDatasources", isMany:false],
+            model:[type:Model, reverseName:"datasources", isMany:false],
+            keyMappings:[type:ModelDatasourceKeyMapping, reverseName:"datasource", isMany:true],
+    ]
     static cascaded = ["keyMappings":true]
     static constraints = {
         model(key:["datasource"], validator: {val, obj ->

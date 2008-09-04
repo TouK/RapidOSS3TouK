@@ -6,7 +6,7 @@ class Platform  extends Resource {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__"];
+        except = ["errors", "__operation_class__", "hasServers"];
     };
     static datasources = [:]
 
@@ -15,9 +15,7 @@ class Platform  extends Resource {
     
     java.lang.Object __operation_class__ ;
     
-
-    static hasMany = [hasServers:Server]
-    
+    static relations = [hasServers:[isMany:true, reverseName:"serverOf", type:Server]]
     static constraints={
     __operation_class__(nullable:true)
         
@@ -25,9 +23,6 @@ class Platform  extends Resource {
         
      
     }
-
-    static mappedBy=["hasServers":"serverOf"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__"];
     

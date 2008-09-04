@@ -12,12 +12,10 @@ class SmartsListeningTopologyConnector extends SmartsConnector{
     };
     static datasources = [:]
 
-    static hasMany = [:]
+    static relations = [:]
 
     static constraints={
     }
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];
 

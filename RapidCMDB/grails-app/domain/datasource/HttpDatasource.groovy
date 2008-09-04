@@ -5,7 +5,7 @@ import datasource.HttpAdapter
 import org.apache.log4j.Logger;
 class HttpDatasource extends BaseDatasource{
     static searchable = {
-        except = [];
+        except = ["connection"];
     };
     static datasources = [:]
 
@@ -14,16 +14,15 @@ class HttpDatasource extends BaseDatasource{
     int reconnectInterval = 0;
     def adapter;
 
-    static hasMany = [:]
-    
+    static relations = [
+            connection:[isMany:false, reverseName:"httpDatasources", type:HttpConnection]
+    ]
     static constraints={
     connection(nullable:true)
         
      
     }
 
-    static mappedBy=["connection":"httpDatasources"]
-    static belongsTo = []
     static transients = ["adapter"];
     
      

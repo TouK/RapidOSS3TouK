@@ -79,8 +79,9 @@ class RsNetworkAdapter  extends RsComputerSystemComponent {
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    
+    static relations = [:]    
+    
     static constraints={
     adminStatus(blank:true,nullable:true)
         
@@ -149,11 +150,10 @@ class RsNetworkAdapter  extends RsComputerSystemComponent {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
+
     
 }

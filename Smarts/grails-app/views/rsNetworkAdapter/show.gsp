@@ -189,6 +189,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsNetworkAdapter.memberOfGroup}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">mib2IfType:</td>
                     
                     <td valign="top" class="value">${rsNetworkAdapter.mib2IfType}</td>
@@ -220,6 +227,13 @@
                     <td valign="top" class="name">peerSystemType:</td>
                     
                     <td valign="top" class="value">${rsNetworkAdapter.peerSystemType}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsNetworkAdapter.rsDatasource}</td>
                     
                 </tr>
                 

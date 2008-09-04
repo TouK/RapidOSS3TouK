@@ -168,9 +168,7 @@ class ModelMetaData
     def parentModelName;
     def datasourceConfiguration = [:];
     def masterDatasource = null;
-    def hasMany = [:];
-    def belongsTo = [];
-    def mappedBy = [:];
+    def relations = [:];
     def propertyConfigurations = [:];
     def transientProps = [];
     def constraints = [:];
@@ -293,9 +291,10 @@ class ModelMetaData
     private def processRelation(cardinality, oppositeCardinality, name, oppositeName, oppositeType, isOwner)
     {
         transientProps += name;
+        def relationConfig = [:]
         if(cardinality == ModelGenerator.RELATION_TYPE_ONE && oppositeCardinality == ModelGenerator.RELATION_TYPE_MANY)
         {
-            hasMany[name] = oppositeType;
+            relationConfig["isMany"] = true;
             def generalPropConfig = [:];
             generalPropConfig["type"] = List.simpleName;
             generalPropConfig["name"] = name;
@@ -314,21 +313,16 @@ class ModelMetaData
         }
         else if(cardinality == ModelGenerator.RELATION_TYPE_MANY && oppositeCardinality == ModelGenerator.RELATION_TYPE_MANY)
         {
-            if(!isOwner)
-            {
-                if(!belongsTo.contains(oppositeType))
-                {
-                    belongsTo += oppositeType;
-                }
-            }
-            hasMany[name] = oppositeType;
+            relationConfig["isMany"] = true;
             def generalPropConfig = [:];
             generalPropConfig["type"] = List.simpleName;
             generalPropConfig["name"] = name;
             generalPropConfig["defaultValue"] = [];
             propertyList += generalPropConfig;
         }
-        mappedBy[name] = oppositeName;
+        relationConfig["reverseName"] = oppositeName;
+        relationConfig["type"] = oppositeType;
+        relations[name] = relationConfig;
     }
     
     def processRelations(xmlModel)

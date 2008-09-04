@@ -7,7 +7,7 @@ class RapidInsightConnection extends Connection{
     
     
     static searchable = {
-        except = [];
+        except = ["rapidInsightDatasources"];
         
     };
     static cascaded = ["rapidInsightDatasources":true]
@@ -22,8 +22,9 @@ class RapidInsightConnection extends Connection{
     String connectionClass = "connection.RapidInsightConnectionImpl";
     List rapidInsightDatasources = [];
 
-   static hasMany = [rapidInsightDatasources:RapidInsightDatasource]
-    
+    static relations = [
+            rapidInsightDatasources:[isMany:true, reverseName:"connection", type:RapidInsightDatasource]
+    ]
     static constraints={
     baseUrl(blank:true,nullable:true)
         
@@ -34,7 +35,5 @@ class RapidInsightConnection extends Connection{
      
     }
 
-    static mappedBy=["rapidInsightDatasources":"connection"]
-    static belongsTo = []
     static transients = [];
 }

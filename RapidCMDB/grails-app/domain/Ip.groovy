@@ -7,7 +7,7 @@ class Ip extends DeviceComponent
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["netMask", "interfaceAdminStatus", "interfaceName", "interfaceOperStatus", "ipStatus", "interfaceKey", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["hostedBy", "layeredOver", "netMask", "interfaceAdminStatus", "interfaceName", "interfaceOperStatus", "ipStatus", "interfaceKey", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 

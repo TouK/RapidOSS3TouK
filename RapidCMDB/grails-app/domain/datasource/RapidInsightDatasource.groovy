@@ -5,7 +5,7 @@ import datasource.RapidInsightAdapter
 import org.apache.log4j.Logger;
 class RapidInsightDatasource extends BaseDatasource{
     static searchable = {
-        except = [];
+        except = ["connection"];
     };
     static datasources = [:]
 
@@ -13,17 +13,15 @@ class RapidInsightDatasource extends BaseDatasource{
     RapidInsightConnection connection ;
     int reconnectInterval = 0;
     
-
-    static hasMany = [:]
-    
+    static relations = [
+            connection:[isMany:false, reverseName:"rapidInsightDatasources", type:RapidInsightConnection]
+    ]
     static constraints={
     connection(nullable:true)
         
      
     }
 
-    static mappedBy=["connection":"rapidInsightDatasources"]
-    static belongsTo = []
     def adapter;
     static transients = ["adapter"];
     def onLoad = {

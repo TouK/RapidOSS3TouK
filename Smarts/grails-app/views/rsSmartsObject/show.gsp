@@ -69,6 +69,20 @@
                     
                 </tr>
                 
+                <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsObject.memberOfGroup}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsObject.rsDatasource}</td>
+                    
+                </tr>
+                
             </tbody>
         </table>
     </div>

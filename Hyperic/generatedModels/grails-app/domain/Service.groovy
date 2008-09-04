@@ -6,7 +6,7 @@ class Service  extends Resource {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__"];
+        except = ["errors", "__operation_class__", "serviceOf"];
     };
     static datasources = [:]
 
@@ -16,10 +16,10 @@ class Service  extends Resource {
     java.lang.Object __operation_class__ ;
     
     Server serviceOf ;
-    
+    static relations = [
+            serviceOf:[isMany:false, reverseName:"hasServices", type:Server]
+    ]
 
-    static hasMany = [:]
-    
     static constraints={
     __operation_class__(nullable:true)
         
@@ -30,8 +30,6 @@ class Service  extends Resource {
      
     }
 
-    static mappedBy=["serviceOf":"hasServices"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__"];
     

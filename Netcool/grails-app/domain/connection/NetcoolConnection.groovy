@@ -8,14 +8,15 @@ class NetcoolConnection extends DatabaseConnection{
     Long port;
     String connectionClass = NetcoolConnectionImpl.class.name;
     static searchable = {
-        except = [];
+        except = ["netcoolDatasources"];
     };
     static cascaded = ["netcoolDatasources":true]
     static datasources = [:]
 
     List netcoolDatasources = [];
-     static hasMany = [netcoolDatasources:NetcoolDatasource]
-
+    static relations = [
+            netcoolDatasources:[isMany:true, reverseName:"connection", type:NetcoolDatasource]
+    ]
     static constraints={
         driver(blank:true,nullable:true, validator:{val, obj ->
             try
@@ -35,7 +36,5 @@ class NetcoolConnection extends DatabaseConnection{
     {
         return "jdbc:sybase:Tds:${host}:${port}/?LITERAL_PARAMS=true".toString()
     }
-    static mappedBy=["netcoolDatasources":"connection"]
-    static belongsTo = []
     static transients = [];
 }

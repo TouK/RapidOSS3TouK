@@ -224,6 +224,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" class="value">${rsPort.memberOfGroup}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">mib2IfType:</td>
                     
                     <td valign="top" class="value">${rsPort.mib2IfType}</td>
@@ -276,6 +283,13 @@
                     <td valign="top" class="name">portType:</td>
                     
                     <td valign="top" class="value">${rsPort.portType}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsPort.rsDatasource}</td>
                     
                 </tr>
                 

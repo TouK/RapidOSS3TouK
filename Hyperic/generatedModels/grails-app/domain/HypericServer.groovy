@@ -26,12 +26,7 @@ class HypericServer {
     java.lang.Object __operation_class__ ;
     
 
-    static hasMany = [:]
-    
-        static mapping = {
-            tablePerHierarchy false
-        }
-    
+    static relations = [:]
     static constraints={
     event_timestamp(blank:true,nullable:true)
         
@@ -49,9 +44,6 @@ class HypericServer {
         
      
     }
-
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__"];
     

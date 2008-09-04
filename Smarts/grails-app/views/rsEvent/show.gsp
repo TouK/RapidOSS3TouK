@@ -182,6 +182,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">isProblem:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.isProblem}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">isRoot:</td>
                     
                     <td valign="top" class="value">${rsEvent.isRoot}</td>
@@ -234,6 +241,13 @@
                     <td valign="top" class="name">owner:</td>
                     
                     <td valign="top" class="value">${rsEvent.owner}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.rsDatasource}</td>
                     
                 </tr>
                 

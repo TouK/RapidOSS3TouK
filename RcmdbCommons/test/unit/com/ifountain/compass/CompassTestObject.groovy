@@ -8,7 +8,7 @@ package com.ifountain.compass
  */
 class CompassTestObject {
     static searchable = true // modified by tests
-    static hasMany = [:]
+    static relations = [:]
     Long id
     Long version
     String prop1;

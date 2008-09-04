@@ -6,23 +6,20 @@ import org.apache.log4j.Logger
 
 class SnmpDatasource extends BaseListeningDatasource {
      static searchable = {
-        except = [];
+        except = ["connection"];
     };
     static datasources = [:]
 
     
     SnmpConnection connection ;
       
-
-    static hasMany = [:]
-    
+    static relations = [
+            connection:[isMany:false, reverseName:"snmpDatasources", type:SnmpConnection]
+    ]
     static constraints={
     connection(nullable:true)
      
     }
-
-    static mappedBy=["connection":"snmpDatasources"]
-    static belongsTo = []
 
     def getListeningAdapter(Map params){
          return new SnmpListeningAdapter(connection.name, 0, Logger.getRootLogger());

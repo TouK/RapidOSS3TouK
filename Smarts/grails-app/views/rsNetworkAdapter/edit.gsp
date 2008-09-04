@@ -233,6 +233,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="memberOfGroup">memberOfGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${rsNetworkAdapter?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsNetworkAdapter?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsNetworkAdapter?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="mib2IfType">mib2IfType:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'mib2IfType','errors')}">
@@ -273,6 +292,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'peerSystemType','errors')}">
                             <input type="text" id="peerSystemType" name="peerSystemType" value="${fieldValue(bean:rsNetworkAdapter,field:'peerSystemType')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsNetworkAdapter,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

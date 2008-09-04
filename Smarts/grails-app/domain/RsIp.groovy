@@ -47,8 +47,9 @@ class RsIp  extends RsComputerSystemComponent {
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    
+    static relations = [:]    
+    
     static constraints={
     address(blank:true,nullable:true)
         
@@ -85,8 +86,6 @@ class RsIp  extends RsComputerSystemComponent {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

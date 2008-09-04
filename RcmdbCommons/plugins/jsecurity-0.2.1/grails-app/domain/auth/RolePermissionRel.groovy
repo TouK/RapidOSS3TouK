@@ -1,11 +1,16 @@
 package auth;
 class RolePermissionRel {
-   static searchable = true;
+   static searchable = {
+        except:["permission", "role"]
+     };
     Role role
     Permission permission
     String target
     String actions
-    static mappedBy=["permission":"roleRelations", "role":"permissionRelations"]
+    static relations = [
+            permission:[type:Permission, reverseName:"roleRelations", isMany:false],
+            role:[isMany:false, reverseName:"permissionRelations", type:Role]
+    ]
     static constraints = {
         actions(nullable: false, blank: false)
         role(nullable: true, key:["permission"])

@@ -6,7 +6,7 @@ class HypericEvent {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__"];
+        except = ["errors", "__operation_class__", "owner"];
     };
     static datasources = ["RCMDB":["keys":["aid":["nameInDs":"aid"]]]]
 
@@ -24,14 +24,10 @@ class HypericEvent {
     java.lang.Object __operation_class__ ;
     
     Resource owner ;
-    
 
-    static hasMany = [:]
-    
-        static mapping = {
-            tablePerHierarchy false
-        }
-    
+    static relations = [owner:[isMany:false, reverseName:"hypericEvents", type:Resource]]
+
+
     static constraints={
     fixed(blank:true,nullable:true)
         
@@ -50,8 +46,6 @@ class HypericEvent {
      
     }
 
-    static mappedBy=["owner":"hypericEvents"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__"];
     

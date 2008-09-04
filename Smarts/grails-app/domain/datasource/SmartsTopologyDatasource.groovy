@@ -9,7 +9,7 @@ import org.apache.log4j.Logger
 
 class SmartsTopologyDatasource extends BaseListeningDatasource{
     static searchable = {
-        except = [];
+        except = ["connection"];
     };
     static datasources = [:]
 
@@ -18,16 +18,15 @@ class SmartsTopologyDatasource extends BaseListeningDatasource{
     int reconnectInterval = 0;
     
 
-    static hasMany = [:]
-    
+    static relations = [
+            connection:[isMany:false, reverseName:"smartsTopologyDatasources", type:SmartsConnection]
+    ]
     static constraints={
     connection(nullable:true)
         
      
     }
 
-    static mappedBy=["connection":"smartsTopologyDatasources"]
-    static belongsTo = []
     def adapter;
     static transients =  ['adapter']
 

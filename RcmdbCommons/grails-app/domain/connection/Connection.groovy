@@ -12,16 +12,11 @@ class Connection {
     String connectionClass = "";
     int maxNumberOfConnections = 10;
 
-
-    static hasMany = [:]
-
     static constraints = {
         name(blank: false, nullable: false, key: [])
         connectionClass(blank: true, nullable: true)
     };
 
-    static mappedBy = [:]
-    static belongsTo = []
     static transients = [];
 
     String toString() {

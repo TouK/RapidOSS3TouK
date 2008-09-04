@@ -116,6 +116,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="ipNetworks">ipNetworks:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'ipNetworks','errors')}">
+                            
+<ul>
+<g:each var="i" in="${rsComputerSystem?.ipNetworks?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsIpNetwork" action="show" id="${i.id}">${i}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsComputerSystem?.id, 'relationName':'ipNetworks', 'relatedObjectId':i.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsComputerSystem?.id, 'relationName':'ipNetworks']" action="addTo">Add RsIpNetwork</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="isManaged">isManaged:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'isManaged','errors')}">
@@ -138,6 +157,25 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'managementServer','errors')}">
                             <input type="text" id="managementServer" name="managementServer" value="${fieldValue(bean:rsComputerSystem,field:'managementServer')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="memberOfGroup">memberOfGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${rsComputerSystem?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsComputerSystem?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsComputerSystem?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
                         </td>
                     </tr>
                     
@@ -228,6 +266,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'readCommunity','errors')}">
                             <input type="text" id="readCommunity" name="readCommunity" value="${fieldValue(bean:rsComputerSystem,field:'readCommunity')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsComputerSystem,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

@@ -23,8 +23,9 @@ class RsManagementServer {
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    
+    static relations = [:]    
+    
     static constraints={
     name(blank:true,nullable:true)
         
@@ -37,8 +38,6 @@ class RsManagementServer {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

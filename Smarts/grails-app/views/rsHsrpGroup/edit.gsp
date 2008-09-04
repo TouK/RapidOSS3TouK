@@ -179,6 +179,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="memberOfGroup">memberOfGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsHsrpGroup,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${rsHsrpGroup?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsHsrpGroup?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsHsrpGroup?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="numberOfComponents">numberOfComponents:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsHsrpGroup,field:'numberOfComponents','errors')}">
@@ -192,6 +211,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsHsrpGroup,field:'numberOfFaultyComponents','errors')}">
                             <input type="text" id="numberOfFaultyComponents" name="numberOfFaultyComponents" value="${fieldValue(bean:rsHsrpGroup,field:'numberOfFaultyComponents')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsHsrpGroup,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsHsrpGroup,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

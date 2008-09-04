@@ -29,8 +29,9 @@ class RsCard  extends RsComputerSystemComponent {
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    
+    static relations = [:]    
+    
     static constraints={
     serialNumber(blank:true,nullable:true)
         
@@ -49,11 +50,10 @@ class RsCard  extends RsComputerSystemComponent {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
+
     
 }

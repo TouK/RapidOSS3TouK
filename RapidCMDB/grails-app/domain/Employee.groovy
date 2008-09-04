@@ -6,7 +6,7 @@ class Employee  extends Person {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = [];
+        except = ["manages", "prevEmp", "nextEmp"];
     };
     static datasources = [:]
 

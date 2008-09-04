@@ -1,6 +1,6 @@
 <%
-   import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events;
-   import org.codehaus.groovy.grails.commons.GrailsClassUtils
+    import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
+    import org.codehaus.groovy.grails.commons.GrailsClassUtils;
 %>
 <%=packageName%>
 <html>
@@ -35,7 +35,8 @@
                                 Events.BEFORE_DELETE_EVENT,
                                 Events.BEFORE_INSERT_EVENT,
                                 Events.BEFORE_UPDATE_EVENT]
-
+                        def domainUtilsClass = org.codehaus.groovy.grails.commons.ApplicationHolder.application.getClassLoader().loadClass("com.ifountain.rcmdb.domain.util.DomainClassUtils");
+                        def relations = domainUtilsClass.metaClass.invokeStaticMethod(domainUtilsClass, "getRelations", [domainClass] as Object[]);
                         def classHierarchy = [];
                         def datasourceMap = [:];
                         def masterDsName;
@@ -83,13 +84,13 @@
                         }
                         masterKeyProperties.sort {it.name};
                         props.addAll(masterKeyProperties);
-                        def propertiesWhichCanBeListed = otherProperties.findAll{!it.oneToMany && !it.manyToMany};
+                        def propertiesWhichCanBeListed = otherProperties.findAll{!relations.containsKey(it.name) || !relations[it.name].isOneToMany()&& !relations[it.name].isManyToMany()};
                         if (masterKeyProperties.size() + propertiesWhichCanBeListed.size() < 5) {
                             propertiesWhichCanBeListed.sort {it.name};
                             props.addAll(propertiesWhichCanBeListed);
                         }
                         props.eachWithIndex {p, i ->
-                                if (p.isAssociation()) { %>
+                                if (relations.containsKey(p.name)) { %>
                     <th>${p.name}</th>
                     <% } else { %>
                     <g:sortableColumn property="${p.name}" title="${p.name}"/>
@@ -100,12 +101,13 @@
                 <g:each in="\${${propertyName}List}" status="i" var="${propertyName}">
                     <tr class="\${(i % 2) == 0 ? 'odd' : 'even'}">
                         <% props.eachWithIndex {p, i ->
+                            def relation = relations[p.name];
                             if (i == 0) { %>
                         <td><g:link action="show" id="\${${propertyName}.id}">\${${propertyName}.${p.name}?.encodeAsHTML()}</g:link></td>
                         <% } else {
-                            if (p.oneToOne || p.manyToOne) {
+                            if (relation && (relation.isOneToOne() || relation.isManyToOne())) {
                         %>
-                        <td><g:link action="show" controller="${p.referencedDomainClass.propertyName}" id="\${${propertyName}.${p.name}?.id}">\${${propertyName}.${p.name}?.encodeAsHTML()}</g:link></td>
+                        <td><g:link action="show" controller="${relation.otherSideCls.name.substring(0,1).toLowerCase()+relation.otherSideCls.name.substring(1)}" id="\${${propertyName}.${p.name}?.id}">\${${propertyName}.${p.name}?.encodeAsHTML()}</g:link></td>
                         <%
                             }
                             else {

@@ -3,7 +3,9 @@ package model
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class ModelRelation {
-     static searchable = true;
+     static searchable = {
+         except:["firstModel", "secondModel"]
+     };
      public static String ONE = "One";
      public static String MANY = "Many";
      Model firstModel;
@@ -12,8 +14,11 @@ class ModelRelation {
      String secondName;
      String firstCardinality;
      String secondCardinality;
-     static belongsTo=[firstModel:Model, secondModel:Model];
-    static mappedBy = [firstModel:'fromRelations', secondModel:'toRelations']
+     static relations = [
+            secondModel:[type:Model, reverseName:"toRelations", isMany:true],
+            firstModel:[type:Model, reverseName:"fromRelations", isMany:true],
+     ]
+
      static constraints = {
          firstCardinality(inList:[ONE, MANY]);
          secondCardinality(inList:[ONE, MANY]);

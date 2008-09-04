@@ -8,7 +8,7 @@ package datasource
  */
 class SmartsModel {
      static searchable = {
-        except = [];
+        except = ["columns"];
     };
     static cascaded = ["columns":true]
     static datasources = [:]
@@ -17,11 +17,12 @@ class SmartsModel {
     String name;
     String parentName;
     List columns = [];
-    static hasMany = [columns:SmartsModelColumn]
     static constraints={
         name(nullable:false, key:[])
         columns(nullable:true)
     }
-    static mappedBy=["columns":"model"]
+    static relations = [
+            columns:[type:SmartsModelColumn, reverseName:"model", isMany:true]
+    ]
     static transients =  []
 }

@@ -8,7 +8,7 @@ import groovy.text.SimpleTemplateEngine
 
 class NetcoolDatasource extends BaseDatasource{
     static searchable = {
-        except = ['realvalue', 'convertedValue', 'conversionParams', "fieldMap",'statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter'];
+        except = ['realvalue', "connection", 'convertedValue', 'conversionParams', "fieldMap",'statusTableAdapter','detailsTableAdapter','journalTableAdapter','conversionsTableAdapter','masterTableAdapter'];
     };
     static datasources = [:]
 
@@ -16,16 +16,14 @@ class NetcoolDatasource extends BaseDatasource{
     NetcoolConnection connection ;
 
 
-    static hasMany = [:]
-
+    static relations = [
+            connection:[isMany:false, reverseName:"netcoolDatasources", type:NetcoolConnection]
+    ]
     static constraints={
     connection(nullable:true)
 
 
     }
-
-    static mappedBy=["connection":"netcoolDatasources"]
-    static belongsTo = []
 
     def statusTableAdapter;
     def detailsTableAdapter;

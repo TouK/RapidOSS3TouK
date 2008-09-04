@@ -7,7 +7,7 @@ class DeviceAdapter extends DeviceComponent
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["maxSpeed", "adminStatus", "maxTransferUnit", "mode", "status", "duplexMode", "currentUtilization", "operStatus", "isFlapping", "deviceID", "peerSystemName", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["realizedBy", "connectedVia", "maxSpeed", "adminStatus", "maxTransferUnit", "mode", "status", "duplexMode", "currentUtilization", "operStatus", "isFlapping", "deviceID", "peerSystemName", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 

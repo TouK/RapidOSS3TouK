@@ -18,8 +18,7 @@ class SmartsConnectionTemplate {
     String  brokerUsername="";
     String brokerPassword ="";
 
-    static hasMany = [:]
-
+    static relations  =[:]
     static constraints={
       name(blank:false,nullable:false,key:[])
       broker(blank:false,nullable:false)
@@ -28,8 +27,6 @@ class SmartsConnectionTemplate {
       password(blank:true,nullable:true)
       brokerPassword(blank:true,nullable:true)
     }
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];
 

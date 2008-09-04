@@ -121,13 +121,8 @@ class NetcoolEvent {
     
     Object __operation_class__ ;
     
+    static relations=[:]
 
-    static hasMany = [:]
-    
-        static mapping = {
-            tablePerHierarchy false
-        }
-    
     static constraints={
     identifier(blank:true,nullable:true)
         
@@ -242,8 +237,6 @@ class NetcoolEvent {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__"];
     

@@ -2,12 +2,16 @@ package model
 
 import com.ifountain.rcmdb.util.RapidCMDBConstants;
 class ModelDatasourceKeyMapping {
-    static searchable = true;
+    static searchable = {
+        except:["datasource", "property"]
+    };
     ModelProperty property;
     ModelDatasource datasource;
-    static belongsTo = [datasource:ModelDatasource, property:ModelProperty];
     String nameInDatasource;
-    static mappedBy = [datasource:'keyMappings', property:"mappedKeys"]
+    static relations = [
+            datasource:[type:ModelDatasource, reverseName:"keyMappings", isMany:false],
+            property:[type:ModelProperty, reverseName:"mappedKeys", isMany:false]
+    ]
     static constraints = {
         property(key:['datasource'], nullable:true, validator:{val, obj ->
             if(val.propertyDatasource && val.propertyDatasource.datasource.name != RapidCMDBConstants.RCMDB){

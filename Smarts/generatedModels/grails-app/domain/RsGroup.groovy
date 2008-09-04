@@ -6,7 +6,7 @@ class RsGroup  extends RsSmartsObject {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "consistsOf"];
     };
     static datasources = [:]
 
@@ -21,8 +21,15 @@ class RsGroup  extends RsSmartsObject {
     
     Object __is_federated_properties_loaded__ ;
     
-
-    static hasMany = [:]
+    List consistsOf =[];
+    
+    
+    static relations = [
+    
+        consistsOf:[type:RsSmartsObject, reverseName:"memberOfGroup", isMany:true]
+    
+    ]
+    
     static constraints={
     __operation_class__(nullable:true)
         
@@ -33,11 +40,10 @@ class RsGroup  extends RsSmartsObject {
      
     }
 
-    static mappedBy=[:]
-    static belongsTo = []
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "consistsOf"];
     
     //AUTO_GENERATED_CODE
+
     
 }

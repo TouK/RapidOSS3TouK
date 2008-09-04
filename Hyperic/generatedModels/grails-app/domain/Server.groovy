@@ -1,12 +1,12 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class Platform  extends Resource {
+class Server  extends Resource {
 
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__"];
+        except = ["errors", "__operation_class__", "hasServices", "serverOf"];
     };
     static datasources = [:]
 
@@ -15,19 +15,21 @@ class Platform  extends Resource {
     
     java.lang.Object __operation_class__ ;
     
-
-    static hasMany = [hasServers:Server]
+    Platform serverOf ;
     
+    static relations = [hasServices:[isMany:true, reverseName:"serviceOf", type:Service]
+            ,serverOf:[isMany:false, type:Platform, reverseName:"hasServers"]
+    ]
     static constraints={
     __operation_class__(nullable:true)
         
      errors(nullable:true)
         
+     serverOf(nullable:true)
+        
      
     }
 
-    static mappedBy=["hasServers":"serverOf"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__"];
     

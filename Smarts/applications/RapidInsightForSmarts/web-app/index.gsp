@@ -123,7 +123,14 @@
     var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
 
     var computerSystemFields = ["creationClassName", "name", "vendor", "model", "managementServer", "location", "snmpAddress"];
-    var computerSystemComponentFields = ["creationClassName", "name", "adminStatus", "operStatus", "description", "type", "mode", "isManaged", "systemName", "maxSpeed", "interfaceAlias"];
+    var computerSystemComponentFields = ['creationClassName', 'name', 'description', 'displayName','isManaged','computerSystemName','tag']
+    var networkAdapterFields = ["creationClassName", "name", "computerSystemName", "adminStatus", "operStatus", "description", "type", "mode", "isManaged","maxSpeed", "interfaceAlias"];
+    var ipFields = ["creationClassName", "name", "computerSystemName", "address", "ipStatus", "interfaceOperStatus", "netmask", "networkNumber", "responsive", "status"];
+    var cardFields = ["creationClassName", "name", "computerSystemName", "serialNumber", "standbyStatus", "status", "type"];
+    var linkFields = ["creationClassName", "name", "a_ComputerSystemName", "a_Name", "a_AdminStatus", "a_OperStatus", "connectedSystemsUnresponsive", "z_ComputerSystemName",
+                    "z_Name", "z_AdminStatus", "z_OperStatus"];
+    var ipNetworkFields = ["creationClassName", "name", "netmask", "networkNumber"];
+    var hsrGroupFields = ["creationClassName", "name", "activeInterfaceName", "activeSystemName", "numberOfFaultyComponents", "virtualIP", "virtualMAC"];
 
     var searchConfig = {
         id:'searchList',
@@ -138,13 +145,17 @@
         titleAttribute:"serverserial",
         lineSize:3,
         title:'Smarts Objects',
-        defaultFields:['name', 'creationClassName', 'description', 'displayName','isManaged'],
+        defaultFields:['creationClassName', 'name', 'description', 'displayName','isManaged'],
         fields:[
             {exp:'data["rsAlias"] == "RsComputerSystem"', fields:computerSystemFields},
-            {exp:'data["rsAlias"] == "RsPort"', fields:computerSystemComponentFields},
-            {exp:'data["rsAlias"] == "RsInterface"', fields:computerSystemComponentFields},
-        	{exp:'data["rsAlias"] == "RsLink"', fields:['name', 'creationClassName', 'description', 'displayName','isManaged', 'a_IsFlapping','a_MaxSpeed']},
-        	{exp:'data["rsAlias"] == "RsComputerSystemComponent"', fields:['name', 'creationClassName', 'description', 'displayName','isManaged','computerSystemName','tag']}
+            {exp:'data["rsAlias"] == "RsComputerSystemComponent"', fields:computerSystemComponentFields},
+            {exp:'data["rsAlias"] == "RsPort"', fields:networkAdapterFields},
+            {exp:'data["rsAlias"] == "RsInterface"', fields:networkAdapterFields},
+        	{exp:'data["rsAlias"] == "RsIp"', fields:ipFields},
+        	{exp:'data["rsAlias"] == "RsCard"', fields:cardFields},
+        	{exp:'data["rsAlias"] == "RsLink"', fields:linkFields},
+        	{exp:'data["rsAlias"] == "RsIpNetwork"', fields:ipNetworkFields},
+        	{exp:'data["rsAlias"] == "RsHsrGroup"', fields:hsrGroupFields}
        	],
         menuItems:{
             item1 : { id : 'browse', label : 'Browse' }

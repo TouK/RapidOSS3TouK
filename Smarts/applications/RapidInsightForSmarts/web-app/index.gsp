@@ -105,7 +105,12 @@
 
 <script type="text/javascript">
 
-	YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
+    function propertyMenuIsNumberCondition(key, value, data)
+    {
+           return YAHOO.lang.isNumber(parseInt(value));
+    }
+
+    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
 	    YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
     }, this, true);
     YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
@@ -163,7 +168,11 @@
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
             item2 : { id : 'sortDesc', label : 'Sort desc' },
-            item3 : { id : 'except', label : 'Except' }
+            item3 : { id : 'except', label : 'Except' },
+            item4 : { id : 'greaterThan', label : 'Greater than',  condition: propertyMenuIsNumberCondition},
+            item5 : { id : 'lessThan', label : 'Less than' , condition: propertyMenuIsNumberCondition},
+            item6 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: propertyMenuIsNumberCondition},
+            item7 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: propertyMenuIsNumberCondition},
         },
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
@@ -174,7 +183,7 @@
 
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
 			if(	id == "except"){
-				 if(searchList.searchBox.dom.getElementsByTagName('input')[0].value!= "")
+				 if(searchList.searchInput.value!= "")
                 	searchList.appendToQuery("NOT " + key + ": \""+ value + "\"");
                  else
                     searchList.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
@@ -184,6 +193,18 @@
 	        }
 	        else if (id == "sortDesc") {
 	            searchList.setSortDirection(key, false);
+	        }
+            else if (id == "greaterThan") {
+	           	searchList.appendToQuery(key + ":{" + value + " TO *}");
+	        }
+            else if (id == "greaterThanOrEqualTo") {
+	        	searchList.appendToQuery(key + ":[" + value + " TO *]");
+	        }
+            else if (id == "lessThanOrEqualTo") {
+	        	searchList.appendToQuery(key + ":[* TO " + value + "]");
+	        }
+            else if (id == "lessThan") {
+	        	searchList.appendToQuery(key + ":{* TO " + value + "}");
 	        }
     }, this, true);
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {

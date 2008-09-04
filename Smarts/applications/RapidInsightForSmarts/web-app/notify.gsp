@@ -217,6 +217,18 @@
 	        else if (id == "sortDesc") {
 	            searchList.setSortDirection(key, false);
 	        }
+            else if (id == "greaterThan") {
+	           	searchList.appendToQuery(key + ":{" + value + " TO *}");
+	        }
+            else if (id == "greaterThanOrEqualTo") {
+	        	searchList.appendToQuery(key + ":[" + value + " TO *]");
+	        }
+            else if (id == "lessThanOrEqualTo") {
+	        	searchList.appendToQuery(key + ":[* TO " + value + "]");
+	        }
+            else if (id == "lessThan") {
+	        	searchList.appendToQuery(key + ":{* TO " + value + "}");
+	        }
     }, this, true);
     var acknowledgeConfig = { url: 'script/run/acknowledge?format=xml' };
 	var acknowledgeAction = new YAHOO.rapidjs.component.action.MergeAction(acknowledgeConfig);

@@ -1,4 +1,5 @@
-import com.ifountain.rcmdb.domain.util.ControllerUtils;
+import com.ifountain.rcmdb.domain.util.ControllerUtils
+import com.ifountain.rcmdb.domain.util.DomainClassUtils;
 
 <%=packageName ? "import ${packageName}.${className}" : ''%>
 class ${className}Controller {
@@ -119,7 +120,7 @@ class ${className}Controller {
         else {
             def relationName = params.relationName;
             if(relationName){
-                def otherClass = ${propertyName}.relations[relationName].type;
+                def otherClass = DomainClassUtils.getStaticMapVariable(${className}, "relations")[relationName].type;
                 def relatedObjectList = [];
                 if(otherClass){
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
@@ -133,6 +134,8 @@ class ${className}Controller {
         }
     }
 
+
+
     def addRelation = {
         def ${propertyName} = ${className}.get( [id:params.id] )
         if(!${propertyName}) {
@@ -141,7 +144,7 @@ class ${className}Controller {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = ${propertyName}.relations[relationName].type;
+            def otherClass = DomainClassUtils.getStaticMapVariable(${className}, "relations")[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
@@ -178,7 +181,8 @@ class ${className}Controller {
         }
         else {
             def relationName = params.relationName;
-            def otherClass = ${propertyName}.relations[relationName].type;
+
+            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(${className}, "relations")[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){

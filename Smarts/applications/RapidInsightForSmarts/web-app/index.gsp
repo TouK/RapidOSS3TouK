@@ -127,9 +127,8 @@
 
     var searchConfig = {
         id:'searchList',
-        url:'search?format=xml',
+        url:'search?format=xml&searchIn=RsSmartsObject',
         searchQueryParamName:'query',
-        defaultFilter:"alias:RsSmartsObject",
         rootTag:'Objects',
         contentPath:'Object',
         keyAttribute:'id',
@@ -197,8 +196,8 @@
     var groupDefinitionDialogConfig = {
         id:"filterGroupDialog",
         width:"30em",
-        saveUrl:"searchQueryGroup/save?format=xml",
-        updateUrl:"searchQueryGroup/update?format=xml",
+        saveUrl:"searchQueryGroup/save?format=xml&type=topology",
+        updateUrl:"searchQueryGroup/update?format=xml&type=topology",
         successfulyExecuted: function () {
             tree.poll()
         }
@@ -206,7 +205,7 @@
     var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
     var treeGridConfig = {
          id:"filterTree",
-         url:"script/run/queryList?format=xml",
+         url:"script/run/queryList?format=xml&type=topology",
          rootTag:"Filters",
          nodeId:"id",
          contentPath:"Filter",
@@ -281,10 +280,10 @@
     var filterDefinitionDialogConfig = {
         id:"filterDialog",
         width:"35em",
-        createUrl:"script/run/createQuery",
-        editUrl:"script/run/editQuery",
-        saveUrl:"searchQuery/save?format=xml",
-        updateUrl:"searchQuery/update?format=xml",
+        createUrl:"script/run/createQuery?queryType=topology",
+        editUrl:"script/run/editQuery?queryType=topology",
+        saveUrl:"searchQuery/save?format=xml&type=topology",
+        updateUrl:"searchQuery/update?format=xml&type=topology",
         successfulyExecuted: function () {
             tree.poll()
         }

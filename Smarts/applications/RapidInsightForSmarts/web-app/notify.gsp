@@ -106,14 +106,14 @@
 <script type="text/javascript">
 	function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
     {
-    	return (key == "severity" && value != '1') || (key != "severity" && searchListPropertyMenuConditionFunction(key, value, data));
+    	return (key == "severity" && value != '1') || (key != "severity" && propertyMenuIsNumberCondition(key, value, data));
     }
     function searchListPropertyMenuConditionFunctionLessThan(key, value, data)
 	{
-    	return (key == "severity" && value != '5') || (key != "severity" && searchListPropertyMenuConditionFunction(key, value, data));
+    	return (key == "severity" && value != '5') || (key != "severity" && propertyMenuIsNumberCondition(key, value, data));
     }
 
-    function searchListPropertyMenuConditionFunction(key, value, data)
+    function propertyMenuIsNumberCondition(key, value, data)
     {
            return YAHOO.lang.isNumber(parseInt(value));
     }
@@ -145,12 +145,10 @@
     var actionGroupConfig = {url:'searchQueryGroup/delete?format=xml'}
     var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
 
-
     var searchConfig = {
         id:'searchList',
-        url:'search?format=xml',
+        url:'search?format=xml&searchIn=RsEvent',
         searchQueryParamName:'query',
-        defaultFilter:"alias:RsEvent",
         rootTag:'Objects',
         contentPath:'Object',
         keyAttribute:'id',
@@ -182,13 +180,21 @@
             item2 : { id : 'sortDesc', label : 'Sort desc' },
             item3 : { id : 'greaterThan', label : 'Greater than',  condition: searchListPropertyMenuConditionFunctionGreaterThan},
             item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunctionLessThan},
-            item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: searchListPropertyMenuConditionFunction},
-            item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: searchListPropertyMenuConditionFunction},
+            item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: propertyMenuIsNumberCondition},
+            item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: propertyMenuIsNumberCondition},
             item7 : { id : 'except', label : 'Except'},
             item8 : { id : 'browse', label : 'Browse', condition:function(key, value, data){return key == "instanceName"}}
         } ,
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
+        },
+        renderCellFunction : function(key, value, data){
+        	if(key == "lastChangedAt"){
+                var d = new Date();
+                d.setTime(parseFloat(value)*1000)
+                return d.format("d/m/Y H:i:s");
+            }
+            return value;
         }
     }
 
@@ -263,8 +269,8 @@
     var groupDefinitionDialogConfig = {
         id:"filterGroupDialog",
         width:"30em",
-        saveUrl:"searchQueryGroup/save?format=xml",
-        updateUrl:"searchQueryGroup/update?format=xml",
+        saveUrl:"searchQueryGroup/save?format=xml&type=notification",
+        updateUrl:"searchQueryGroup/update?format=xml&type=notification",
         successfulyExecuted: function () {
             tree.poll()
         }
@@ -272,7 +278,7 @@
     var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
     var treeGridConfig = {
          id:"filterTree",
-         url:"script/run/queryList?format=xml",
+         url:"script/run/queryList?format=xml&type=notification",
          rootTag:"Filters",
          nodeId:"id",
          contentPath:"Filter",
@@ -347,10 +353,10 @@
     var filterDefinitionDialogConfig = {
         id:"filterDialog",
         width:"35em",
-        createUrl:"script/run/createQuery",
-        editUrl:"script/run/editQuery",
-        saveUrl:"searchQuery/save?format=xml",
-        updateUrl:"searchQuery/update?format=xml",
+        createUrl:"script/run/createQuery?queryType=notification",
+        editUrl:"script/run/editQuery?queryType=notification",
+        saveUrl:"searchQuery/save?format=xml&type=notification",
+        updateUrl:"searchQuery/update?format=xml&type=notification",
         successfulyExecuted: function () {
             tree.poll()
         }

@@ -72,7 +72,17 @@ class DomainClassUtils
     {
         def allRelations = [:];
         def domainObjectProperties = dc.getProperties();
-        def relations = getStaticMapVariable(dc.metaClass.getTheClass(), "relations");
+        def relations = [:];
+        def tmpCls = dc.clazz;
+        while(tmpCls && tmpCls != java.lang.Object.class)
+        {
+            def tmpVariableMap = GrailsClassUtils.getStaticPropertyValue (tmpCls, "relations");
+            tmpVariableMap.each{key, value->
+                value["cls"] = tmpCls;
+                relations[key] = value;
+            }
+            tmpCls =  tmpCls.getSuperclass();
+        }
         def cascadedObjects = getStaticMapVariable(dc.metaClass.getTheClass(), "cascaded");
         domainObjectProperties.each{GrailsDomainClassProperty prop->
             Map relationConfig = relations[prop.name];
@@ -83,6 +93,7 @@ class DomainClassUtils
                 def otherSideName = relationConfig.reverseName;
                 def isCascaded = cascadedObjects[relationName] == true;
                 def otherSideClass = relationConfig.type;
+                def cls = relationConfig.cls;
                 def otherSideRelationConfiguration = getStaticMapVariable(otherSideClass, "relations");
                 def isOtherSideMany = otherSideName?otherSideRelationConfiguration[otherSideName].isMany:false;
                 def relType;
@@ -102,7 +113,7 @@ class DomainClassUtils
                 {
                     relType = RelationMetaData.ONE_TO_ONE;
                 }
-                def rel = new RelationMetaData(relationName, otherSideName, dc.getClazz(), otherSideClass, relType);
+                def rel = new RelationMetaData(relationName, otherSideName, cls, otherSideClass, relType);
                 rel.isCascade = isCascaded;
                 allRelations[relationName] = rel;
             }

@@ -80,7 +80,7 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                     def referencingRelations = RelationUtils.getReverseRelationObjects(domainObject, relation.otherSideName, relation.getOtherSideCls());
                     if(domainObjectRelations == null)
                     {
-                        domainObjectRelations = Relation.add(objectId:domainObject.id, name:relation.name, className:domainObject.class.name);
+                        domainObjectRelations = Relation.add(objectId:domainObject.id, name:relation.name, className:relation.cls.name);
                     }
                     allRefRelationObjs.putAll (domainObjectRelations.relatedObjectIds);
                     referencingRelations.each{

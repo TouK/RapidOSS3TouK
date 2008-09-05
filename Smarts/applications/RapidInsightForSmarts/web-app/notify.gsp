@@ -192,7 +192,7 @@
         	if(key == "lastChangedAt"){
                 var d = new Date();
                 d.setTime(parseFloat(value)*1000)
-                return d.format("d/m/Y H:i:s");
+                return d.format("d M H:i:s");
             }
             return value;
         }

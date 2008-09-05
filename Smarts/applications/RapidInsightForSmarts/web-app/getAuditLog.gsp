@@ -46,11 +46,14 @@
                         var mydata =   [];
                         <g:each var="audit" in="${auditTrail}">
                               var auditDate = new Date();
-                              auditDate.setTime(${audit.element1})
+                              auditDate.setTime(${audit.element1}*1000)
                               mydata[mydata.length] = {date:auditDate, userid:"${audit.element2}", type:"${audit.element3}", description:"${audit.element4}"}
                         </g:each>
+                        var formatDate = function(el, oRecord, oColumn, oData){
+                            el.innerHTML = oData.format("d M H:i:s");
+                        }
                         var myColumnDefs = [
-                            {key:"date", formatter:YAHOO.widget.DataTable.formatDate, sortable:true,resizeable:true, width:100},
+                            {key:"date", formatter:formatDate, sortable:true,resizeable:true, width:100},
                             {key:"userid", sortable:true, resizeable:true, width:100},
                             {key:"type", sortable:true, resizeable:true, width:100},
                             {key:"description", sortable:true, resizeable:true, width:200}

@@ -39,11 +39,11 @@
     Event.onDOMReady(function() {
         var mydata = [];
          <g:each var="causeEvent" in="${domainObject.causes}">
-              mydata[mydata.length] = {class:"${causeEvent.className}", name:"${causeEvent.instanceName}", event:"${causeEvent.eventName}"}
+              mydata[mydata.length] = {className:"${causeEvent.className}", name:"${causeEvent.instanceName}", event:"${causeEvent.eventName}"}
         </g:each>
         
         var myColumnDefs = [
-            {key:"class", sortable:true, resizeable:true, width:200},
+            {key:"className", sortable:true, resizeable:true, width:200},
             {key:"name", sortable:true, resizeable:true, width:200},
             {key:"event", sortable:true, resizeable:true, width:200}
         ];
@@ -51,10 +51,18 @@
        var myDataSource = new YAHOO.util.DataSource(mydata);
         myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
         myDataSource.responseSchema = {
-            fields: ["class","name","event"]
+            fields: ["className","name","event"]
         };
 
-        new YAHOO.widget.DataTable("causesTable",myColumnDefs, myDataSource, {});
+        var dataTable = new YAHOO.widget.DataTable("causesTable",myColumnDefs, myDataSource, {});
+        dataTable.subscribe("rowDblclickEvent", function(args){
+            var divs = args.target.getElementsByTagName('div')
+            var className = divs[0].innerHTML;
+            var instanceName = divs[1].innerHTML;
+            var eventName = divs[2].innerHTML;
+            var url = 'getEventDetails.gsp?className=' + className + '&instanceName=' + instanceName + '&eventName=' + eventName;
+            YAHOO.rapidjs.Components['eventDetails'].show(url, 'Details of ' + className + ' ' + instanceName + ' ' + eventName);
+        });
     });
 
 </script>

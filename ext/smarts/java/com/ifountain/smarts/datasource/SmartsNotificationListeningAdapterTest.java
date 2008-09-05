@@ -991,6 +991,7 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
     }
 
     public void update(Observable o, Object arg) {
+        if(((Map)arg).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME).equals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED)) return;
         Map notification = (Map) arg;
         String notificationName = (String) notification.get(SmartsConstants.INSTANCENAME);
         String eventType = (String) notification.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME);

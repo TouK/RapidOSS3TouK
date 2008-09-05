@@ -1,25 +1,68 @@
-<%@ page import="com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
+<%@ page import="com.ifountain.rcmdb.domain.util.DomainClassUtils" %>
 <%
     def name = params.name;
 
-    def allProperties = [];
     def domainObject = RsSmartsObject.get(name: name);
-    def excludedProps = ["id", "version", RapidCMDBConstants.ERRORS_PROPERTY_NAME, "rsDatasource",
-            RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, RapidCMDBConstants.OPERATION_PROPERTY_NAME]
     if (domainObject != null) {
-        GrailsDomainClass domainClass = ApplicationHolder.application.getDomainClass(domainObject.getClass().getName());
-        allProperties = domainClass.getProperties().findAll {!excludedProps.contains(it.name)};
+        String className = domainObject.getClass().getName();
+        def allProperties = DomainClassUtils.getFilteredProperties(className, ["id", "rsDatasource"])
+        def relations = DomainClassUtils.getRelations(className);
         %>
+        <style>
+            .yui-navset a{
+                display:block;
+                color:#006DBA;
+                text-decoration:underline;
+                cursor:pointer;
+            }
+        </style>
         <div class="yui-navset yui-navset-top">
             <div style="display:block">
                 <table cellspacing="2" cellpadding="2">
                     <tbody>
 
                         <g:each var="property" in="${allProperties}">
-                            <tr>
+                             <tr>
                                 <td>${property.name}</td>
-                                <td>${domainObject[property.name]}</td>
-                            </tr>
+                                <%
+                                   if(!relations.containsKey(property.name)){
+                                       %>
+                                            <td>${domainObject[property.name]}</td>
+                                       <%
+                                   }
+                                   else{
+                                       def relation = relations[property.name];
+                                       if(relation.isOneToOne() || relation.isManyToOne()){
+                                           def sObj = domainObject[property.name]
+                                           if(sObj != null){
+                                                %>
+                                                    <td>
+                                                        <a onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${sObj.name}', 'Details of ${sObj.creationClassName} ${sObj.name}');">${sObj.creationClassName} ${sObj.name}<a>
+                                                    </td>
+                                               <%
+                                            }
+                                            else{
+                                                %>
+                                                    <td></td>
+                                                <%
+                                            }
+                                       }
+                                       else{
+                                           %>
+                                                <td>
+                                            <%
+                                            domainObject[property.name].each{
+                                              %>
+                                                   <a onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${it.name}', 'Details of ${it.creationClassName} ${it.name}');">${it.creationClassName} ${it.name}<a>
+                                               <%
+                                            }
+                                            %>
+                                              </td>
+                                            <%
+                                       }
+                                   }
+                                %>           
+                             </tr>
                         </g:each>
 
                     </tbody>

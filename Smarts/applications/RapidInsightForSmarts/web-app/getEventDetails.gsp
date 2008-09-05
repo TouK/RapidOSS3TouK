@@ -16,8 +16,19 @@
             </a>
         </li>
         <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=${domainObject?.id}');"><em>Audit Log</em></a></li>
-        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=${domainObject?.id}');"><em>Causes</em></a></li>
-        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=${domainObject?.id}');"><em>Caused By</em></a></li>
+        <%
+            if(domainObject.causes.size() > 0){
+                %>
+                    <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=${domainObject?.id}');"><em>Impact</em></a></li>
+                <%
+            }
+            if(domainObject.causedBy.size() > 0){
+                %>
+                     <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=${domainObject?.id}');"><em>Caused By</em></a></li>
+                <%
+            }
+        %>
+
     </ul>
     <div style="display:block;margin-top:10px;">
         <%

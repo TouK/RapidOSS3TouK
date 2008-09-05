@@ -107,7 +107,7 @@ public class InvokeOperationActionTest extends SmartsTestCase {
         opName = "isInstanceOf";
         action = new InvokeOperationAction(Logger.getRootLogger(), "Router", "router1", opName, parameters);
         action.execute(datasource);
-        assertEquals("true", ((HashMap)(action.getInvokeResult())).get("element0"));
+        assertEquals("true", ((HashMap)(action.getInvokeResult())).get("element0").toString());
 
 
 

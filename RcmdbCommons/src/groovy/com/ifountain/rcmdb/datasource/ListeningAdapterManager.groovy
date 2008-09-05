@@ -74,6 +74,7 @@ class ListeningAdapterManager {
             try {
                 scriptObject = ScriptManager.getInstance().getScriptObject(script.scriptFile);
                 scriptObject.setProperty("datasource", listeningDatasource);
+                scriptObject.setProperty("staticParam", script.staticParam);
                 scriptObject.run();
                 def params = scriptObject.getParameters();
                 if (params == null) {

@@ -43,7 +43,7 @@ class QuartzScriptJob implements StatefulJob {
             try
             {
                 logger.debug("Running periodic script " + scriptName);
-                def result = ScriptManager.getInstance().runScript(script.scriptFile, [:]);
+                def result = ScriptManager.getInstance().runScript(script.scriptFile, ["staticParam":script.staticParam]);
                 logger.info("Periodic script ${scriptName} successfuly executed.")
             }
             catch (t)

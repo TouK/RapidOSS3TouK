@@ -27,6 +27,7 @@ class CmdbScript {
     String scheduleType = PERIODIC;
     String cronExpression = "* * * * * ?";
     Long period = 1;
+    String staticParam = "";
     BaseListeningDatasource listeningDatasource;
 
     static relations = [

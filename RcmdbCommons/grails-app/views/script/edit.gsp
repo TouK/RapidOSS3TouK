@@ -13,6 +13,7 @@
         var periodRow = document.getElementById('periodRow');
         var cronRow = document.getElementById('cronExpressionRow');
         var enabledRow = document.getElementById('enabledRow');
+        var staticParamRow = document.getElementById('staticParamRow');
         var datasourceRow = document.getElementById('datasourceRow');
         var typeSelect = document.getElementById("type");
         var scriptType = typeSelect.options[typeSelect.selectedIndex].value;
@@ -22,6 +23,7 @@
         periodRow.style.display = (scriptType == "Scheduled"? "":"none");
         cronRow.style.display = (scriptType == "Scheduled"? "":"none");
         enabledRow.style.display = (scriptType == "Scheduled"? "":"none");
+        staticParamRow.style.display = (scriptType != "OnDemand"? "":"none");
         scheduleTypeChanged();
     }
 
@@ -155,6 +157,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:cmdbScript,field:'listeningDatasource','errors')}">
                             <g:select optionKey="id" from="${BaseListeningDatasource.list()}" name="listeningDatasource.id" value="${cmdbScript?.listeningDatasource?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+
+                    <tr class="prop" id="staticParamRow">
+                        <td valign="top" class="name">
+                            <label for="staticParam">Static Parameter:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'staticParam', 'errors')}">
+                            <input type="text" id="staticParam" name="staticParam" value="${fieldValue(bean: cmdbScript, field: 'staticParam')}"/>
                         </td>
                     </tr>
 

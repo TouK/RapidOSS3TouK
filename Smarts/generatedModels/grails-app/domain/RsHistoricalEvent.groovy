@@ -97,6 +97,10 @@ class RsHistoricalEvent {
     
     String rsDatasource ="";
     
+    String causedBy ="";
+    
+    String causes ="";
+    
     Long id ;
     
     Long version ;
@@ -196,6 +200,10 @@ class RsHistoricalEvent {
      userDefined10(blank:true,nullable:true)
         
      rsDatasource(blank:true,nullable:true)
+        
+     causedBy(blank:true,nullable:true)
+        
+     causes(blank:true,nullable:true)
         
      __operation_class__(nullable:true)
         

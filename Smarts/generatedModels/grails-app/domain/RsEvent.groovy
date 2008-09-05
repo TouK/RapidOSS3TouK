@@ -6,7 +6,7 @@ class RsEvent {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "causedBy", "causes"];
     };
     static datasources = ["RCMDB":["keys":["className":["nameInDs":"className"], "instanceName":["nameInDs":"instanceName"], "eventName":["nameInDs":"eventName"]]]]
 
@@ -109,8 +109,18 @@ class RsEvent {
     
     Object __is_federated_properties_loaded__ ;
     
+    List causedBy =[];
     
-    static relations = [:]    
+    List causes =[];
+    
+    
+    static relations = [
+    
+        causedBy:[type:RsEvent, reverseName:"causes", isMany:true]
+    
+        ,causes:[type:RsEvent, reverseName:"causedBy", isMany:true]
+    
+    ]
     
     static constraints={
     name(blank:true,nullable:true)
@@ -211,7 +221,7 @@ class RsEvent {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "causedBy", "causes"];
     
     public String toString()
     {

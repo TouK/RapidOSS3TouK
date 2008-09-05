@@ -198,7 +198,7 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
         while (rset.hasNext()) {
             Map<String, Object> rec = rset.next();
             count++;
-            assertEquals("3", rec.get("Severity"));
+            assertEquals(3l, rec.get("Severity"));
             assertEquals(null, rec.get(unknownNotificationProperty));
             assertEquals(1, rec.size());
         }
@@ -597,7 +597,7 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
         idsMap.put("EventName", eventName);
 
         Map<String, Object> rec = notificationAdapter.getObject(idsMap, requestedAtts);
-        assertEquals("3", rec.get("Severity"));
+        assertEquals(3l, rec.get("Severity"));
         assertEquals("eventText", rec.get("EventText"));
 
         idsMap.remove("ClassName");

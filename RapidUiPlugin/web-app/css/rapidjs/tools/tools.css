@@ -53,15 +53,15 @@
 }
 
 .r-tool-refresh {
-    background-image: url( ../../../images/rapidjs/component/tools/arrow_refresh_small.png );
+    background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll 0px 1px;
 }
 
 .r-tool-error {
-    background-image: url( ../../../images/rapidjs/component/tools/exclamation.png );
+    background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll 0px -20px;
 }
 
 .r-tool-setting{
-	background-image: url( ../../../images/rapidjs/component/tools/configure.png );    	
+	background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll 0px -100px;   	
 }
 
 .r-tooltip {

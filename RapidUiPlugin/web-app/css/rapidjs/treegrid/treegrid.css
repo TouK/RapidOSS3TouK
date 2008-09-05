@@ -105,7 +105,7 @@
 }
 
 .r-tree-row-headermenu {
-    background:transparent url( ../../../images/rapidjs/component/tools/arrow_contextMenu_small.png ) no-repeat scroll center;
+    background:transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll -1px -175px;
     cursor: pointer;
     height: 15px;
     overflow: hidden;

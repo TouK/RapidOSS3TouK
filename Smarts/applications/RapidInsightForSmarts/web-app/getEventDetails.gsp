@@ -36,28 +36,28 @@
                 def firstNotifiedAt = format.format(new Timestamp(domainObject.firstNotifiedAt*1000));
                 def lastNotifiedAt = format.format(new Timestamp(domainObject.lastNotifiedAt*1000));
                 def lastChangedAt = format.format(new Timestamp(domainObject.lastChangedAt*1000));
-                def severityStyle;
+                def severityClass;
                 def severity = domainObject.severity;
                 if (severity == 1) {
-                    severityStyle = "url(images/rapidjs/component/states/red.png) center";
+                    severityClass = "event-details-severity-critical";
                 }
                 else if (severity == 2) {
-                    severityStyle = "url(images/rapidjs/component/states/orange.png) center";
+                    severityClass = "event-details-severity-major";
                 }
                 else if (severity == 3) {
-                    severityStyle = "url(images/rapidjs/component/states/yellow.png) center";
+                    severityClass = "event-details-severity-minor";
                 }
                 else if (severity == 4) {
-                    severityStyle = "url(images/rapidjs/component/states/blue.png) center";
+                    severityClass = "event-details-severity-unknown";
                 }
                 else {
-                    severityStyle = "url(images/rapidjs/component/states/green.png) center";
+                    severityClass = "event-details-severity-normal";
                 }
 
         %>
         <div style="padding:10px;float:right">
             <div style="border:1px solid;padding:3px;">
-                <div style="background:${severityStyle};width:16px;height:16px;"></div>
+                <div class="event-details-severity ${severityClass}"></div>
                 <div style="padding:3px 20px 20px 20px;">
                     First Notified At: ${firstNotifiedAt}<br>
                     Last Notified At: ${lastNotifiedAt}<br>

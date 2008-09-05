@@ -80,8 +80,7 @@
 
 
 .rcmdb-search-cell-menu {
-    background-image: url(../../images/rapidjs/component/tools/arrow_contextMenu_small.png);
-    background-repeat:no-repeat;
+    background:transparent url( ../../images/rapidjs/sprite-png.png ) no-repeat scroll -1px -175px;
     display: inline;
     margin-bottom: 0px;
     margin-left: 0px;

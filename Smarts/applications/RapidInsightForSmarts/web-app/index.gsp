@@ -2,15 +2,7 @@
 <head>
     <meta name="layout" content="indexLayout" />
     <style>
-		.r-filterTree-groupAdd{
-			background-image: url( images/rapidjs/component/tools/filter_group.png);
-		}
-		.r-filterTree-queryAdd{
-			background-image: url( images/rapidjs/component/tools/filteradd.png);
-		}
-		.r-tree-firstCell{
-			cursor:pointer;
-		}
+		
     </style>
 </head>
 <body>
@@ -93,16 +85,6 @@
 <div id="right">
     <div id="searchDiv"></div>
 </div>
-  <style>
-    .dragging, .drag-hint {
-      border: 1px solid gray;
-      background-color: blue;
-      color: white;
-      opacity: 0.76;
-      filter: "alpha(opacity=76)";
-    }
-    </style>
-
 <script type="text/javascript">
 
     function propertyMenuIsNumberCondition(key, value, data)

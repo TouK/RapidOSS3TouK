@@ -1,30 +1,6 @@
 <html>
 <head>
     <meta name="layout" content="indexLayout" />
-    <style>
-		.r-filterTree-groupAdd{
-			background-image: url( images/rapidjs/component/tools/filter_group.png);
-		}
-		.r-filterTree-queryAdd{
-			background-image: url( images/rapidjs/component/tools/filteradd.png);
-		}
-		.r-tree-firstCell{
-			cursor:pointer;
-		}
-		.yui-skin-sam .yui-resize .yui-resize-handle-r {
-			background-image: url(images/rapidjs/component/layout/e-handle.gif);
-			background-position: left center;
-			background-color:#C3DAF9;
-
-		}
-		.yui-skin-sam .yui-layout .yui-resize-proxy div{
-			background-color:#C3DAF9;
-		}
-		.yui-skin-sam .yui-layout-unit .yui-resize-handle-r .yui-layout-resize-knob{
-			background-image : none;
-
-		}
-    </style>
 </head>
 <body>
 <div id="filterDialog">
@@ -103,15 +79,6 @@
 <div id="right">
 	<div id="mapDiv"></div>
 </div>
-  <style>
-    .dragging, .drag-hint {
-      border: 1px solid gray;
-      background-color: blue;
-      color: white;
-      opacity: 0.76;
-      filter: "alpha(opacity=76)";
-    }
-    </style>
 
 <script type="text/javascript">
 	YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){

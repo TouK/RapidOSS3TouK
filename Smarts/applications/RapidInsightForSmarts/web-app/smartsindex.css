@@ -1,0 +1,55 @@
+.r-filterTree-groupAdd {
+     background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0pt -79px;
+}
+
+.r-filterTree-queryAdd {
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0pt -59px;
+}
+
+.r-tree-firstCell {
+    cursor: pointer;
+}
+
+.yui-skin-sam .yui-resize .yui-resize-handle-r {
+    background-image: url( images/rapidjs/component/layout/e-handle.gif );
+    background-position: left center;
+    background-color: #C3DAF9;
+
+}
+
+.yui-skin-sam .yui-layout .yui-resize-proxy div {
+    background-color: #C3DAF9;
+}
+
+.yui-skin-sam .yui-layout-unit .yui-resize-handle-r .yui-layout-resize-knob {
+    background-image: none;
+
+}
+
+.dragging, .drag-hint {
+    border: 1px solid gray;
+    background-color: blue;
+    color: white;
+    opacity: 0.76;
+    filter: "alpha(opacity=76)";
+}
+
+.event-details-severity{
+    width:18px;
+    height:18px;
+}
+.event-details-severity-critical{
+   background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -200px;
+}
+.event-details-severity-major{
+   background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -220px;
+}
+.event-details-severity-minor{
+   background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -280px;
+}
+.event-details-severity-unknown{
+   background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -260px;
+}
+.event-details-severity-normal{
+   background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -240px;
+}

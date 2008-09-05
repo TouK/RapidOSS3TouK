@@ -57,6 +57,8 @@ public class MRToEntryFactory {
             return new MRPrimitiveSetToEntry(name, value);
         else if(value.getType() == MR_ValType.MR_UNSIGNEDSHORT_SET)
             return new MRPrimitiveSetToEntry(name, value);
+        else if(value.getType() == MR_ValType.MR_VOID)
+            throw new RuntimeException("Can not convert MR_VOID property \""+name+"\"");
         else
           return new MROthersToEntry(name, value);
     }

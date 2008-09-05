@@ -139,7 +139,7 @@ public class SmartsTopologyListeningAdapter extends BaseSmartsListeningAdapter {
                 try {
                     SmRemoteDomainManager domainManager = ((SmartsConnectionImpl) getConnection()).getDomainManager();
                     MR_AnyVal[] values = domainManager.getProperties(data.getClassName(), data.getInstanceName(), new String[]{data.getPropertyName()});
-                    if (values != null && values.length != 0) {
+                    if (values != null && values.length != 0 && !(values[0] instanceof MR_AnyValVoid)) {
                         data.setValue(values[0]);
                     }
                 }

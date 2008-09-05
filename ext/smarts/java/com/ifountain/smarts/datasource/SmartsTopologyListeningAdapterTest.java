@@ -2,13 +2,20 @@ package com.ifountain.smarts.datasource;
 
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.ifountain.smarts.test.util.SmartsTestUtils;
+import com.ifountain.smarts.test.util.SmartsTestConstants;
 import com.ifountain.smarts.util.params.SmartsSubscribeParameters;
 import com.ifountain.smarts.util.SmartsConstants;
+import com.ifountain.smarts.connection.SmartsConnectionImpl;
+import com.ifountain.smarts.datasource.actions.InvokeOperationAction;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.comp.test.util.WaitAction;
+import com.ifountain.core.connection.ConnectionParam;
+import com.ifountain.core.test.util.DatasourceTestUtils;
 
 import java.util.*;
+
+import org.apache.log4j.Logger;
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -261,16 +268,27 @@ public class SmartsTopologyListeningAdapterTest extends SmartsTestCase implement
 
     public void testCanReadReadOnlyAttributes() throws Exception {
         //SystemName in ip network is read only attribute
-        SmartsSubscribeParameters param = new SmartsSubscribeParameters("IPNetwork", "trial.*", new String[]{"SystemName"});
+        DatasourceTestUtils.getParamSupplier().setParam(SmartsTestUtils.getConnectionParam(SmartsTestConstants.SMARTS_AM_CONNECTION_TYPE));
+        ConnectionParam param = SmartsTestUtils.getConnectionParam(SmartsTestConstants.SMARTS_AM_CONNECTION_TYPE);
+        SmartsConnectionImpl datasource = new SmartsConnectionImpl();
+        datasource.init(param);
+        datasource._connect();
+
+        SmartsSubscribeParameters subscriptionParam = new SmartsSubscribeParameters("Router", "Router1", new String[]{"SystemName"});
         topologyAdapter = new SmartsTopologyListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0, TestLogUtils.log,
-                new SmartsSubscribeParameters[]{param});
+                new SmartsSubscribeParameters[]{subscriptionParam});
         topologyAdapter.addObserver(this);
         topologyAdapter.subscribe();
-        SmartsTestUtils.createTopologyInstancesWithPrefixes("IPNetwork", "trial", new HashMap(), 0, 1);
 
-        BaseSmartsListeningAdapterTest.checkObjectListForObjects(receivedObjects, "IPNetwork", "trial", 0, 1);
+        List opParams = new ArrayList();
+        opParams.add("Router1");
+        InvokeOperationAction action = new InvokeOperationAction(Logger.getRootLogger(), "ICIM_ObjectFactory", "ICIM-ObjectFactory", "makeRouter", opParams);
+        action.execute(datasource);
+
+
+        BaseSmartsListeningAdapterTest.checkObjectListForObjects(receivedObjects, "Router", "Router1", 0, 1);
         Map object = (Map) receivedObjects.get(0);
-        assertTrue(object.containsKey("SystemName"));
+        assertEquals("Router1", object.get("SystemName"));
     }
 
     public void testCanReadRelationalAttributes() throws Exception {

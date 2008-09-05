@@ -57,7 +57,7 @@ public class InvokeOperationAction implements Action {
     public void execute(IConnection conn) throws Exception {
     	MR_AnyVal[] args = getArgsAsMRAnyValArray(conn, className, opName, opParams);
     	MR_AnyVal result = ((SmartsConnectionImpl)conn).getDomainManager().invokeOperation(className, instanceName, opName, args);
-
+        if(result instanceof MR_AnyValVoid) return;
     	MRToEntry entry = MRToEntryFactory.getMRToEntry("returnVal", result);
         if(entry == null) return;
         Object val = entry.getValue();

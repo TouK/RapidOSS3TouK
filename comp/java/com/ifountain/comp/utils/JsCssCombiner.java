@@ -241,21 +241,22 @@ public class JsCssCombiner extends CommandLineUtility {
             while (matcher.find()) {
                 String wholeUrl = matcher.group();
                 String url = matcher.group(1);
+                String targetUrl = url;
                 if(!url.startsWith("/") && !url.startsWith("http") && !url.startsWith("ftp")){
                     File mediaFile = new File(cssDir + "/" + url);
                     if(mediaFile.exists()){
                         String mediaFileName = mediaFile.getName();
                         int indexOfLastDot = mediaFileName.lastIndexOf(".");
-                        String targetUrl = mediaPath + "/" + mediaFileName.substring(0, indexOfLastDot) +
+                        targetUrl = mediaPath + "/" + mediaFileName.substring(0, indexOfLastDot) +
                                 suffix + "." + mediaFileName.substring(indexOfLastDot + 1, mediaFileName.length());
                         String targetFileName = targetPath + "/" + targetUrl;
                         File targetFile = new File(targetFileName);
                         if(!targetFile.exists()){
                             org.apache.commons.io.FileUtils.copyFile(mediaFile, targetFile);    
                         }
-                        matcher.appendReplacement(currentBuffer, wholeUrl.replaceAll(url, targetUrl));
                     }
                 }
+                matcher.appendReplacement(currentBuffer, wholeUrl.replaceAll(url, targetUrl));
                 end = matcher.end();
             }
             currentBuffer.append(currentCss.substring(end, currentCss.length()));

@@ -31,7 +31,7 @@ class SmartsTopologyDatasource extends BaseListeningDatasource{
     static transients =  ['adapter']
 
     def onLoad = {
-        this.adapter = new BaseTopologyAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger());
+        this.adapter = new BaseTopologyAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
     }
 
     def getProperty(Map keys, String propName)
@@ -54,7 +54,7 @@ class SmartsTopologyDatasource extends BaseListeningDatasource{
         paramsList.each{
             smartsSubscribeParamsList.add(new SmartsSubscribeParameters(it.CreationClassName, it.Name, it.Attributes as String[]));
         }
-        return new SmartsTopologyListeningAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger(), smartsSubscribeParamsList as SmartsSubscribeParameters[]);
+        return new SmartsTopologyListeningAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger(), smartsSubscribeParamsList as SmartsSubscribeParameters[]);
     }
 
     def addObject(Map params){

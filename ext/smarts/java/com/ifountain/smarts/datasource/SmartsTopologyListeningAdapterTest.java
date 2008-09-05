@@ -151,8 +151,8 @@ public class SmartsTopologyListeningAdapterTest extends SmartsTestCase implement
                 new SmartsSubscribeParameters[]{param});
         topologyAdapter.addObserver(this);
         topologyAdapter.subscribe();
-        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "trial", new HashMap(), 2, 1);
         BaseSmartsListeningAdapterTest.checkObjectListForObjects(receivedObjects, "Router", "trial", 0, 2);
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "trial", new HashMap(), 2, 1);
         Thread.sleep(500);
         assertEquals(3, receivedObjects.size());
     }
@@ -447,6 +447,7 @@ public class SmartsTopologyListeningAdapterTest extends SmartsTestCase implement
 
 
     public void update(Observable o, Object arg) {
+        if(((Map)arg).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME).equals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED)) return;
         receivedObjects.add(arg);
     }
 }

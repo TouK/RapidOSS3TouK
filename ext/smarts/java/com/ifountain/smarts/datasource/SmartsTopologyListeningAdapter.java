@@ -62,10 +62,6 @@ public class SmartsTopologyListeningAdapter extends BaseSmartsListeningAdapter {
         for (int i = 0; i < subscribeParams.length; i++) {
             String className = subscribeParams[i].getClassName();
             try {
-                if (domainManager.isInstrumented(className)) {
-                    logger.warn(logPrefix + "Instrumented class \"" + className + "\" cannot be monitored");
-                    continue;
-                }
                 Map filteredProps = getFilteredPropertiesAsMap(className, subscribeParams[i].getParameters());
                 List classHierarchyList = new ArrayList();
                 getClassHierarchyList(classHierarchyList, className);

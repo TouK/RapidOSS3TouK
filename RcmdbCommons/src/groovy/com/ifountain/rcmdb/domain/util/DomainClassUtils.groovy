@@ -67,7 +67,15 @@ class DomainClassUtils
         return propMap;
     }
 
-
+    def static getRelations(String domainClassName){
+       GrailsDomainClass domainClass = ApplicationHolder.getApplication().getDomainClass(domainClassName);
+       if(domainClass){
+          return getRelations(domainClass);
+       }
+       else{
+           throw new Exception("DomainClass ${domainClassName} does not exist.");
+       }
+    }
     def static getRelations(GrailsDomainClass dc)
     {
         def allRelations = [:];

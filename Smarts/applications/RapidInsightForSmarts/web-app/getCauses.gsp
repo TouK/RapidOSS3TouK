@@ -14,6 +14,10 @@
 
 
 %>
+<style>
+    .yui-skin-sam .yui-dt-liner { cursor:pointer; }  
+
+</style>
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
         <li>

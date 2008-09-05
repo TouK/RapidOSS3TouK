@@ -60,5 +60,6 @@ class RsInterface  extends RsNetworkAdapter {
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "underlying", "layeredOver"];
     
     //AUTO_GENERATED_CODE
+
     
 }

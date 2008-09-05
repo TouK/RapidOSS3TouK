@@ -52,5 +52,6 @@ class RsIpNetwork  extends RsGroup {
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "memberSystems"];
     
     //AUTO_GENERATED_CODE
+
     
 }

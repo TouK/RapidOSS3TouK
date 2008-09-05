@@ -97,6 +97,10 @@ class RsHistoricalEvent {
     
     String rsDatasource ="";
     
+    String causedBy ="";
+    
+    String causes ="";
+    
     Long id ;
     
     Long version ;
@@ -197,6 +201,10 @@ class RsHistoricalEvent {
         
      rsDatasource(blank:true,nullable:true)
         
+     causedBy(blank:true,nullable:true)
+        
+     causes(blank:true,nullable:true)
+        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
@@ -215,5 +223,6 @@ class RsHistoricalEvent {
     }
     
     //AUTO_GENERATED_CODE
+
     
 }

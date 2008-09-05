@@ -63,7 +63,7 @@ class CmdbScript {
                 }
             }
         })
-        scriptParam(blank:true, nullable:true)
+        staticParam(blank:true, nullable:true)
     }
 
     def beforeDelete = {

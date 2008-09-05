@@ -59,54 +59,60 @@
             <Field SmartsName="UserDefined10" LocalName="userDefined10" Type="string" IsDeleteMarker="false" IsKey="false"/>
             <Field SmartsName='rsDatasource' LocalName='rsDatasource' IsDeleteMarker='false' Type='string' IsKey='false' />
         </Fields>
-        </Model>
-        <Model Name="RsHistoricalEvent">
-            <Fields>
-                <Field SmartsName='Name' LocalName='name' IsDeleteMarker='false' Type='string' IsKey='false' />
-                <Field SmartsName='CreationClassName' LocalName='creationClassName' IsDeleteMarker='false' Type='string' IsKey='false' />
-                <Field SmartsName='Description' LocalName='description' IsDeleteMarker='false' Type='string' IsKey='false' />
-                <Field SmartsName='DisplayName' LocalName='displayName' IsDeleteMarker='false' Type='string' IsKey='false' />
-                <Field SmartsName="ClassName" LocalName="className" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="InstanceName" LocalName="instanceName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="EventName" LocalName="eventName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="Severity" LocalName="severity" Type="number" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="LastNotifiedAt" LocalName="lastNotifiedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="LastCreatedAt" LocalName="lastCreatedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="Active" LocalName="active" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="FirstNotifiedAt" LocalName="firstNotifiedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="LastClearedAt" LocalName="lastClearedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="LastChangedAt" LocalName="lastChangedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="IsRoot" LocalName="isRoot" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="Acknowledged" LocalName="acknowledged" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="EventType" LocalName="eventType" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="EventState" LocalName="eventState" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="EventText" LocalName="eventText" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="Impact" LocalName="impact" Type="number" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="Certainty" LocalName="certainty" Type="number" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="InMaintenance" LocalName="inMaintenance" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="TroubleTicketID" LocalName="troubleTicketID" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="Owner" LocalName="owner" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="Category" LocalName="category" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="OccurrenceCount" LocalName="occurrenceCount" Type="number" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="ClassDisplayName" LocalName="classDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="InstanceDisplayName" LocalName="instanceDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="EventDisplayName" LocalName="eventDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="ElementClassName" LocalName="elementClassName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="ElementName" LocalName="elementName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="SourceDomainName" LocalName="sourceDomainName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="UserDefined1" LocalName="userDefined1" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="UserDefined2" LocalName="userDefined2" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="UserDefined3" LocalName="userDefined3" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="UserDefined4" LocalName="userDefined4" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="UserDefined5" LocalName="userDefined5" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="UserDefined6" LocalName="userDefined6" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="UserDefined7" LocalName="userDefined7" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="UserDefined8" LocalName="userDefined8" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="UserDefined9" LocalName="userDefined9" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName="UserDefined10" LocalName="userDefined10" Type="string" IsDeleteMarker="false" IsKey="false"/>
-                <Field SmartsName='rsDatasource' LocalName='rsDatasource' IsDeleteMarker='false' Type='string' IsKey='false' />
-            </Fields>
-        </Model>
+        <Relations>
+            <Relation Name="causedBy" ReverseName="causes" Cardinality="Many" ReverseCardinality="Many" ToModel="RsEvent" IsOwner="true"></Relation>
+            <Relation Name="causes" ReverseName="causedBy" Cardinality="Many" ReverseCardinality="Many" ToModel="RsEvent" IsOwner="false"></Relation>
+        </Relations>
+    </Model>
+    <Model Name="RsHistoricalEvent">
+        <Fields>
+            <Field SmartsName='Name' LocalName='name' IsDeleteMarker='false' Type='string' IsKey='false' />
+            <Field SmartsName='CreationClassName' LocalName='creationClassName' IsDeleteMarker='false' Type='string' IsKey='false' />
+            <Field SmartsName='Description' LocalName='description' IsDeleteMarker='false' Type='string' IsKey='false' />
+            <Field SmartsName='DisplayName' LocalName='displayName' IsDeleteMarker='false' Type='string' IsKey='false' />
+            <Field SmartsName="ClassName" LocalName="className" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="InstanceName" LocalName="instanceName" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="EventName" LocalName="eventName" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="Severity" LocalName="severity" Type="number" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="LastNotifiedAt" LocalName="lastNotifiedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="LastCreatedAt" LocalName="lastCreatedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="Active" LocalName="active" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="FirstNotifiedAt" LocalName="firstNotifiedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="LastClearedAt" LocalName="lastClearedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="LastChangedAt" LocalName="lastChangedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="IsRoot" LocalName="isRoot" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="Acknowledged" LocalName="acknowledged" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="EventType" LocalName="eventType" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="EventState" LocalName="eventState" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="EventText" LocalName="eventText" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="Impact" LocalName="impact" Type="number" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="Certainty" LocalName="certainty" Type="number" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="InMaintenance" LocalName="inMaintenance" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="TroubleTicketID" LocalName="troubleTicketID" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="Owner" LocalName="owner" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="Category" LocalName="category" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="OccurrenceCount" LocalName="occurrenceCount" Type="number" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="ClassDisplayName" LocalName="classDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="InstanceDisplayName" LocalName="instanceDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="EventDisplayName" LocalName="eventDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="ElementClassName" LocalName="elementClassName" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="ElementName" LocalName="elementName" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="SourceDomainName" LocalName="sourceDomainName" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="UserDefined1" LocalName="userDefined1" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="UserDefined2" LocalName="userDefined2" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="UserDefined3" LocalName="userDefined3" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="UserDefined4" LocalName="userDefined4" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="UserDefined5" LocalName="userDefined5" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="UserDefined6" LocalName="userDefined6" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="UserDefined7" LocalName="userDefined7" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="UserDefined8" LocalName="userDefined8" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="UserDefined9" LocalName="userDefined9" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName="UserDefined10" LocalName="userDefined10" Type="string" IsDeleteMarker="false" IsKey="false"/>
+            <Field SmartsName='rsDatasource' LocalName='rsDatasource' IsDeleteMarker='false' Type='string' IsKey='false' />
+            <Field SmartsName='causedBy' LocalName='causedBy' IsDeleteMarker='false' Type='string' IsKey='false' />
+            <Field SmartsName='causes' LocalName='causes' IsDeleteMarker='false' Type='string' IsKey='false' />
+        </Fields>
+    </Model>
      <Model Name="RsManagementServer">
          <Fields>
              <Field SmartsName="Name" LocalName="name" Type="string"/>

@@ -20,7 +20,7 @@ class SearchController {
         def query = params.query;
         if (query == "" || query == null)
         {
-            query = "id:[0 TO *]";
+            query = "alias:*";
         }
         StringWriter sw = new StringWriter();
         def builder = new MarkupBuilder(sw);

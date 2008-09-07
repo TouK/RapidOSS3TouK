@@ -19,7 +19,7 @@ class RemoveAllMethod extends AbstractRapidDomainStaticMethod{
     protected Object _invoke(Class clazz, Object[] arguments) {
         while(true)
         {
-            def searchRes = CompassMethodInvoker.search(mc, "id:[0 TO *]", false);
+            def searchRes = CompassMethodInvoker.search(mc, "alias:*", false);
             if(searchRes.results.isEmpty())
             {
                 break;

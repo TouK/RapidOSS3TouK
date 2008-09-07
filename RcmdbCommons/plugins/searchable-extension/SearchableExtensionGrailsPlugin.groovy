@@ -158,15 +158,15 @@ class SearchableExtensionGrailsPlugin {
 
 
         mc.'static'.list = {->
-            return CompassMethodInvoker.searchEvery(mc, "id:[0 TO *]");
+            return CompassMethodInvoker.searchEvery(mc, "alias:*");
         }
 
         mc.'static'.list = {Map options->
-            return CompassMethodInvoker.search(mc, "id:[0 TO *]", options).results;
+            return CompassMethodInvoker.search(mc, "alias:*", options).results;
         }
 
         mc.'static'.count = {->
-            return mc.invokeStaticMethod(mc.theClass, "countHits", ["id:[0 TO *]"] as Object[]);
+            return mc.invokeStaticMethod(mc.theClass, "countHits", ["alias:*"] as Object[]);
         }
     }
 

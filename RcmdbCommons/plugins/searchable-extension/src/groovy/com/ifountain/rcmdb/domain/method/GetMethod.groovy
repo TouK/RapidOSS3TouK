@@ -77,7 +77,7 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
                 }
                 else if(keyMap.isEmpty())
                 {
-                    result = CompassMethodInvoker.search (mc, "id:[0 TO *]", willTriggerOnLoad);
+                    result = CompassMethodInvoker.search (mc, "alias:*", willTriggerOnLoad);
                 }
                 else
                 {

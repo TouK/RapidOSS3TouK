@@ -2,6 +2,7 @@ package connection
 
 import datasource.SmartsNotificationDatasource
 import datasource.SmartsTopologyDatasource
+import com.ifountain.smarts.connection.SmartsConnectionImpl
 
 class SmartsConnection extends Connection{
     
@@ -21,12 +22,11 @@ class SmartsConnection extends Connection{
 
     String connectionClass = "com.ifountain.smarts.connection.SmartsConnectionImpl";
     String username ="";
-    
     String domain ="";
-    
     String userPassword ="";
     String domainType = SAM;
-    
+    String brokerPassword = SmartsConnectionImpl.NON_SECURE_BROKER_PASSWORD;
+    String brokerUsername = SmartsConnectionImpl.NON_SECURE_BROKER_USERNAME;
     String broker ="";
     List smartsTopologyDatasources = [];
     List smartsNotificationDatasources = [];
@@ -38,13 +38,11 @@ class SmartsConnection extends Connection{
     ]
     static constraints={
     username(blank:true,nullable:true)
-        
      domain(blank:true,nullable:true)
-        
      userPassword(blank:true,nullable:true)
-        
+     brokerUsername(blank:true,nullable:true)
+     brokerPassword(blank:true,nullable:true)
      broker(blank:true,nullable:true)
-        
      domainType(inList: [AM, OI, SAM, MPLS, BGP,OSPF, SDH])
     }
     static transients = [];

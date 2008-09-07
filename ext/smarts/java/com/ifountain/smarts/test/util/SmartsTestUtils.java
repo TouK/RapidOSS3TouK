@@ -99,6 +99,8 @@ public class SmartsTestUtils {
         otherParams.put(SmartsConnectionImpl.DOMAIN, connectionParams.getDomain());
         otherParams.put(SmartsConnectionImpl.USERNAME, connectionParams.getUsername());
         otherParams.put(SmartsConnectionImpl.PASSWORD, connectionParams.getPassword());
+         otherParams.put(SmartsConnectionImpl.BROKER_USERNAME, connectionParams.getBrokerUsername());
+         otherParams.put(SmartsConnectionImpl.BROKER_PASSWORD, connectionParams.getBrokerPassword());
         return new ConnectionParam("SmartsConnection", SMARTS_TEST_CONNECTION_NAME, SmartsConnectionImpl.class.getName(), otherParams, 10);
     }
 	 

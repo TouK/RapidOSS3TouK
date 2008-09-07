@@ -23,6 +23,7 @@
                     <g:sortableColumn property="name" title="Name"/>
 
                     <g:sortableColumn property="broker" title="Broker"/>
+                    <g:sortableColumn property="brokerUsername" title="Broker Username"/>
 
                     <g:sortableColumn property="domain" title="Domain"/>
 
@@ -37,13 +38,10 @@
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
                         <td><g:link action="show" id="${smartsConnection.id}">${smartsConnection.name?.encodeAsHTML()}</g:link></td>
-
                         <td>${smartsConnection.broker?.encodeAsHTML()}</td>
-
+                        <td>${smartsConnection.brokerUsername?.encodeAsHTML()}</td>
                         <td>${smartsConnection.domain?.encodeAsHTML()}</td>
-                        
                         <td>${smartsConnection.domainType?.encodeAsHTML()}</td>
-
                         <td>${smartsConnection.username?.encodeAsHTML()}</td>
 
                     </tr>

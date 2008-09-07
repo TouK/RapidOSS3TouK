@@ -52,6 +52,20 @@
                 </tr>
 
                 <tr class="prop">
+                    <td valign="top" class="name">Broker Username:</td>
+
+                    <td valign="top" class="value">${smartsConnection.brokerUsername}</td>
+
+                </tr>
+
+                <tr class="prop">
+                    <td valign="top" class="name">Broker Password:</td>
+
+                    <td valign="top" class="value">${smartsConnection.brokerPassword}</td>
+
+                </tr>
+
+                <tr class="prop">
                     <td valign="top" class="name">Domain:</td>
 
                     <td valign="top" class="value">${smartsConnection.domain}</td>

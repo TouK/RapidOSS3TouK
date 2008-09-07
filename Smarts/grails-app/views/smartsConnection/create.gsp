@@ -54,6 +54,24 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="brokerUsername">Broker Username:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: smartsConnection, field: 'brokerUsername', 'errors')}">
+                            <input type="text" class="inputtextfield" id="brokerUsername" name="brokerUsername" value="${fieldValue(bean: smartsConnection, field: 'brokerUsername')}"/>
+                        </td>
+                    </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="brokerPassword">Broker Password:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: smartsConnection, field: 'brokerPassword', 'errors')}">
+                            <input type="password" class="inputtextfield" id="brokerPassword" name="brokerPassword" value="${fieldValue(bean: smartsConnection, field: 'brokerPassword')}"/>
+                        </td>
+                    </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="domain">Domain:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: smartsConnection, field: 'domain', 'errors')}">

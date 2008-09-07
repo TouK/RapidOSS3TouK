@@ -119,7 +119,7 @@ class BootStrap {
                 int index = 0;
                 while (true)
                 {
-                    def res = currentModelClass.metaClass.invokeStaticMethod(currentModelClass, "search", ["id:[0 TO *]", [max: batch, offset: index]] as Object[]);
+                    def res = currentModelClass.metaClass.invokeStaticMethod(currentModelClass, "search", ["alias:*", [max: batch, offset: index]] as Object[]);
                     res.results.each {modelInstance ->
                         modelProps.each {propName, PropertyAction action ->
                             def propVal = modelInstance[propName];

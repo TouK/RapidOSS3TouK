@@ -59,7 +59,7 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <g:paginate total="${EdgeNode.countHits('id:[0 TO *]')}"/>
+        <g:paginate total="${EdgeNode.count()}"/>
     </div>
 </div>
 </body>

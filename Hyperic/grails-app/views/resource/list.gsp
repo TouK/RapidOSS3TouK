@@ -51,7 +51,7 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <g:paginate total="${Resource.countHits('id:[0 TO *]')}"/>
+        <g:paginate total="${Resource.count()}"/>
     </div>
 </div>
 </body>

@@ -35,7 +35,7 @@ class RemoveAllMethodTest extends RapidCmdbTestCase{
         method.invoke(RemoveAllMethodDomainObject, null);
         assertEquals (4, RemoveAllMethodDomainObject.queries.size());
         RemoveAllMethodDomainObject.queries.each{
-            assertEquals ("id:[0 TO *]", it);    
+            assertEquals ("alias:*", it);    
         }
         assertSame (obj1, RemoveAllMethodDomainObject.unIndexList[0]);
         assertSame (obj2, RemoveAllMethodDomainObject.unIndexList[1]);

@@ -47,7 +47,7 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <g:paginate total="${RsVlan.countHits('id:[0 TO *]')}"/>
+        <g:paginate total="${RsVlan.count()}"/>
     </div>
 </div>
 </body>

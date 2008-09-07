@@ -40,7 +40,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethod()
     {
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
         assertTrue (add.isWriteOperation());
 
         def props = [prop1:expectedDomainObject1.prop1, id:-5000];
@@ -66,7 +66,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethodForAChildClass()
     {
         ChildAddMethodDomainObject expectedDomainObject1 = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop6:"object1Prop6Value");
-        AddMethod add = new AddMethod(ChildAddMethodDomainObject.metaClass, validator, ChildAddMethodDomainObject.allFields, [:], ["prop1"]);
+        AddMethod add = new AddMethod(ChildAddMethodDomainObject.metaClass, AddMethodDomainObject1.class, validator, ChildAddMethodDomainObject.allFields, [:], ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1, prop6:expectedDomainObject1.prop6];
         def addedObject = add.invoke (ChildAddMethodDomainObject.class, [props] as Object[]);
         assertEquals (expectedDomainObject1, addedObject);
@@ -80,7 +80,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethodWithEvents()
     {
         AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value");
-        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, validator, AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1];
         def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
         assertTrue (addedObject.isOnLoadCalled);
@@ -105,7 +105,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testIfKeyIsNullReturnsError()
     {
         fail("Implement later");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
         def props = [:];
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertTrue (addedObject.hasErrors());
@@ -128,7 +128,7 @@ class AddMethodTest extends RapidCmdbTestCase{
             RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
             RapidConvertUtils.getInstance().register (new BooleanConverter(), Boolean.class)
             AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
             def props = [prop1:expectedDomainObject1.prop1,  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0", booleanProp:"TrUe"];
             def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
             assertEquals (100, addedObject.prop4);
@@ -173,7 +173,7 @@ class AddMethodTest extends RapidCmdbTestCase{
             RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
             RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
             AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+            AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
             def props = [prop1:expectedDomainObject1.prop1,  prop4:"invalidData", prop5:"invalidData", doubleProp:"invalidData"];
             def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
             assertEquals (null, addedObject.prop4);
@@ -201,7 +201,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         validator.error = new FieldError( AddMethodDomainObject1.class.name, "prop1","value1",false,[] as String[], [] as Object[], "");
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
         
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1];
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertTrue (addedObject.hasErrors());
@@ -212,7 +212,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethodWithUndefinedProperties()
     {
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1, undefinedProperty:"undefinedProp"];
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals (expectedDomainObject1, addedObject);
@@ -233,7 +233,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         "rel3":new RelationMetaData("rel3", "revRel3", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.MANY_TO_ONE),
         "rel4":new RelationMetaData("rel4", "revRel4", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.MANY_TO_MANY)];
 
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, AddMethodDomainObject1.allFields, relations, ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, relations, ["prop1"]);
         def props = [prop1:expectedDomainObject1.prop1, rel1:[expectedDomainObject2, expectedDomainObject3], rel2:expectedDomainObject4, rel3:expectedDomainObject5, rel4:[expectedDomainObject6]];
 
         AddMethodDomainObject1 addedObject1 = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
@@ -262,7 +262,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testIfObjectAlreadyExistsUpdatesObjects()
     {
         AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
         def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         def objectId = addedObject.id;

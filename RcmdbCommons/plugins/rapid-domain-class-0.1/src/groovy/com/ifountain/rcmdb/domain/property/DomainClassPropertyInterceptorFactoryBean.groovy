@@ -12,9 +12,14 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
  * To change this template use File | Settings | File Templates.
  */
 class DomainClassPropertyInterceptorFactoryBean implements FactoryBean, InitializingBean{
+
+
     String propertyInterceptorClassName;
     ClassLoader classLoader;
     DomainClassPropertyInterceptor propertyInterceptor;
+
+    public DomainClassPropertyInterceptorFactoryBean() {
+    }
     public void afterPropertiesSet() {
 
         def propertyInterceptorClass = DefaultDomainClassPropertyInterceptor;

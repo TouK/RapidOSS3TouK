@@ -55,7 +55,7 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <g:paginate total="${TopoMap.countHits('id:[0 TO *]')}"/>
+        <g:paginate total="${TopoMap.count()}"/>
     </div>
 </div>
 </body>

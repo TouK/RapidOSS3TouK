@@ -51,7 +51,7 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <g:paginate total="${MapGroup.countHits('id:[0 TO *]')}"/>
+        <g:paginate total="${MapGroup.count()}"/>
     </div>
 </div>
 </body>

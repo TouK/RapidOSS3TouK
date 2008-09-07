@@ -46,7 +46,7 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <g:paginate total="${NetcoolEvent.countHits('id:[0 TO *]')}"/>
+        <g:paginate total="${NetcoolEvent.count()}"/>
     </div>
 </div>
 </body>

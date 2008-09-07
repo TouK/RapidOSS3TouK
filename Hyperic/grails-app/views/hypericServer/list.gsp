@@ -47,7 +47,7 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <g:paginate total="${HypericServer.countHits('id:[0 TO *]')}"/>
+        <g:paginate total="${HypericServer.count()}"/>
     </div>
 </div>
 </body>

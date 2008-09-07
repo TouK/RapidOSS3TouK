@@ -47,7 +47,7 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <g:paginate total="${RsPort.countHits('id:[0 TO *]')}"/>
+        <g:paginate total="${RsPort.count()}"/>
     </div>
 </div>
 </body>

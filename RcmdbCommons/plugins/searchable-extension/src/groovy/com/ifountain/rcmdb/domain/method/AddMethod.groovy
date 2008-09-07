@@ -17,14 +17,14 @@ class AddMethod extends AbstractRapidDomainStaticMethod
     GetMethod getMethod
     def fieldTypes = [:]
     Validator validator;
-    public AddMethod(MetaClass mc, Validator validator, Map allFields, Map relations, List keys) {
+    public AddMethod(MetaClass mc, Class rootDomainClass, Validator validator, Map allFields, Map relations, List keys) {
         super(mc);
         this.validator = validator;
         allFields.each{String fieldName, field->
             fieldTypes[fieldName] = field.type;
         }
         this.relations = relations
-        getMethod = new GetMethod(mc, keys, relations);
+        getMethod = new GetMethod(mc, rootDomainClass, keys, relations);
     }
 
     public boolean isWriteOperation() {

@@ -25,7 +25,7 @@ class GetMethodTest extends RapidCmdbTestCase{
     public void testGetMethodWithMap()
     {
         def keys = ["prop1",  "prop2"]
-        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, [:]);
+        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, GetMethodDomainObject, keys, [:]);
         assertFalse (get.isWriteOperation());
         def result = get.invoke (GetMethodDomainObject, [[prop1:"prop1Value", prop3:"prop3Value"]] as Object[]);
         assertNull (result);
@@ -42,7 +42,7 @@ class GetMethodTest extends RapidCmdbTestCase{
     public void testGetMethodWithMapContainingId()
     {
         def keys = ["prop1",  "prop2"]
-        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, [:]);
+        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, GetMethodDomainObject, keys, [:]);
         def result = get.invoke (GetMethodDomainObject, [[prop1:"prop1Value", prop3:"prop3Value", id:1000]] as Object[]);
         assertNull (result);
         assertEquals ("id:\"1000\"", GetMethodDomainObject.query);
@@ -50,7 +50,7 @@ class GetMethodTest extends RapidCmdbTestCase{
 
     public void testGetMethodNoKeyAndId()
     {
-        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, [], [:]);
+        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, GetMethodDomainObject, [], [:]);
         def result = get.invoke (GetMethodDomainObject, [[prop1:"prop1Value", prop3:"prop3Value"]] as Object[]);
         assertNull (result);
         assertNull (GetMethodDomainObject.query);
@@ -59,7 +59,7 @@ class GetMethodTest extends RapidCmdbTestCase{
     public void testGetMethodWithNumber()
     {
         def keys = ["prop1",  "prop2"]
-        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, [:]);
+        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, GetMethodDomainObject, keys, [:]);
         def result = get.invoke (GetMethodDomainObject, [1000] as Object[]);
         assertNull (result);
         assertNotNull (GetMethodDomainObject.query);
@@ -81,7 +81,7 @@ class GetMethodTest extends RapidCmdbTestCase{
         GetMethodDomainObject objectWillBeReturned2 = new GetMethodDomainObject(id:4, prop1:"prop1Value", prop2:"prop2Value", rel1:relatedObject2)
         GetMethodDomainObject.searchResult = [total:2, results:[objectWillBeReturned2, objectWillBeReturned1]];
         def params = [prop1:objectWillBeReturned1.prop1, rel1:new RelationMethodDomainObject2(id:1)]
-        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, relations);
+        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, GetMethodDomainObject, keys, relations);
         def result = get.invoke (GetMethodDomainObject, [params] as Object[]);
         assertEquals (objectWillBeReturned1.id, result.id);
         assertEquals ("prop1:\"${objectWillBeReturned1.prop1}\"", GetMethodDomainObject.query);
@@ -107,24 +107,24 @@ class GetMethodTest extends RapidCmdbTestCase{
         GetMethodDomainObject objectWillBeReturned2 = new GetMethodDomainObject(id:4, prop1:"prop1Value", prop2:"prop2Value", rel1:relatedObject2, rel2:relatedObject4)
         GetMethodDomainObject.searchResult = [total:2, results:[objectWillBeReturned2, objectWillBeReturned1]];
         def params = [rel2:new RelationMethodDomainObject2(id:5), rel1:new RelationMethodDomainObject2(id:1)]
-        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, relations);
+        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, GetMethodDomainObject, keys, relations);
         def result = get.invoke (GetMethodDomainObject, [params] as Object[]);
         assertEquals (objectWillBeReturned1.id, result.id);
-        assertEquals ("id:[0 TO *]", GetMethodDomainObject.query);
+        assertEquals ("alias:*", GetMethodDomainObject.query);
 
         objectWillBeReturned1.rel1 = null;
         GetMethodDomainObject.searchResult = [total:2, results:[objectWillBeReturned2, objectWillBeReturned1]];
         params = [prop1:objectWillBeReturned1.prop1, rel1:new RelationMethodDomainObject2(id:1)]
         result = get.invoke (GetMethodDomainObject, [params] as Object[]);
         assertNull (result);
-        assertEquals ("id:[0 TO *]", GetMethodDomainObject.query);
+        assertEquals ("alias:*", GetMethodDomainObject.query);
     }
 
 
     public void testGetMethodWithString()
     {
         def keys = ["prop1",  "prop2"]
-        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, [:]);
+        GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, GetMethodDomainObject, keys, [:]);
         String query = "string query";
         def result = get.invoke (GetMethodDomainObject, [query] as Object[]);
         assertNull (result.results[0]);
@@ -135,6 +135,22 @@ class GetMethodTest extends RapidCmdbTestCase{
         result = get.invoke (GetMethodDomainObject, [query] as Object[]);
         assertEquals (objectWillBeReturned, result.results[0]);
         assertEquals (query, GetMethodDomainObject.query);
+    }
+
+    public void testGetMethodWithParentClass()
+    {
+        def keys = ["prop1",  "prop2"]
+        GetMethod get = new GetMethod(GetMethodChildDomainObject.metaClass, GetMethodDomainObject, keys, [:]);
+        assertFalse (get.isWriteOperation());
+        def result = get.invoke (GetMethodChildDomainObject, [[prop1:"prop1Value", prop3:"prop3Value"]] as Object[]);
+        assertNull (result);
+        assertEquals ("prop1:\"prop1Value\" AND prop2:\"null\"", GetMethodDomainObject.query);
+
+        GetMethodChildDomainObject objectWillBeReturned = new GetMethodChildDomainObject(prop1:"prop1Value", prop2:"prop2Value")
+        GetMethodDomainObject.searchResult = [total:1, results:[objectWillBeReturned]];
+        result = get.invoke (GetMethodChildDomainObject, [[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
+        assertEquals (objectWillBeReturned, result);
+        assertEquals ("prop1:\"prop1Value\" AND prop2:\"prop2Value\"", GetMethodDomainObject.query);
     }
 
 }
@@ -167,4 +183,20 @@ class GetMethodDomainObject
         return false;
     }
 
+}
+
+class GetMethodChildDomainObject extends GetMethodDomainObject
+{
+    def static searchResult = [total:0, results:[]];
+    def static query;
+    def static search(Closure queryClosure)
+    {
+        GetMethodChildDomainObject.query = queryClosure;
+        return searchResult;
+    }
+    def static search(String query)
+    {
+        GetMethodChildDomainObject.query = query;
+        return searchResult;
+    }
 }

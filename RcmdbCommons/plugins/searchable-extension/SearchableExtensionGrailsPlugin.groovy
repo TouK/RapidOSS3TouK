@@ -6,6 +6,8 @@ import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
 import org.springframework.validation.BindException
 import org.springframework.validation.Errors
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsApplication
 
 /**
 * Created by IntelliJ IDEA.
@@ -102,14 +104,24 @@ class SearchableExtensionGrailsPlugin {
         }
     }
 
-    def addBasicPersistenceMethods(dc, application, ctx)
+    def getParentDomainClass(GrailsDomainClass dc, GrailsApplication application)
+    {
+        def parentDomainClass = dc.clazz;
+        while(application.getDomainClass(parentDomainClass.superclass.name) != null)
+        {
+            parentDomainClass = parentDomainClass.superclass;
+        }
+        return parentDomainClass;
+    }
+    def addBasicPersistenceMethods(GrailsDomainClass dc, application, ctx)
     {
         def mc = dc.metaClass;
+        def parentDomainClass = getParentDomainClass(dc, application)
         def relations = DomainClassUtils.getRelations(dc);
         dc.refreshConstraints();
         def keys = DomainClassUtils.getKeys(dc);
         def persProps = DomainClassUtils.getPersistantProperties(dc, true);
-        def addMethod = new AddMethod(mc, dc.validator, persProps, relations, keys);
+        def addMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
         def removeAllMethod = new RemoveAllMethod(mc);
         def removeMethod = new RemoveMethod(mc, relations);
         def updateMethod = new UpdateMethod(mc, dc.validator, persProps, relations);
@@ -147,8 +159,9 @@ class SearchableExtensionGrailsPlugin {
     {
         def mc = dc.metaClass;
         def keys = DomainClassUtils.getKeys(dc);
+        def parentDomainClass = getParentDomainClass(dc, application)
         def relations = DomainClassUtils.getRelations(dc);
-        def getMethod = new GetMethod(mc, keys, relations);
+        def getMethod = new GetMethod(mc, parentDomainClass, keys, relations);
         mc.'static'.get = {Map searchParams->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])
         }

@@ -28,8 +28,10 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
     List propKeys;
     List relationKeys;
     Map relations
-    public GetMethod(MetaClass mc, List keys, Map relations) {
+    Class rootDomainClass;
+    public GetMethod(MetaClass mc, Class rootDomainClass, List keys, Map relations) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
+        this.rootDomainClass = rootDomainClass;
         propKeys = [];
         relationKeys = [];
         keys.each{
@@ -62,7 +64,7 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
             if(searchParams.containsKey("id"))
             {
                 keyMap["id"] = searchParams["id"];
-                def result = CompassMethodInvoker.search (mc, keyMap, willTriggerOnLoad)
+                def result = CompassMethodInvoker.search (rootDomainClass.metaClass, keyMap, willTriggerOnLoad)
                 return result.results[0];
             }
             else
@@ -77,11 +79,11 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
                 }
                 else if(keyMap.isEmpty())
                 {
-                    result = CompassMethodInvoker.search (mc, "alias:*", willTriggerOnLoad);
+                    result = CompassMethodInvoker.search (rootDomainClass.metaClass, "alias:*", willTriggerOnLoad);
                 }
                 else
                 {
-                    result = CompassMethodInvoker.search (mc, keyMap, willTriggerOnLoad)
+                    result = CompassMethodInvoker.search (rootDomainClass.metaClass, keyMap, willTriggerOnLoad)
                 }
                 if(relationKeys.isEmpty())
                 {
@@ -112,13 +114,13 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
         else if(searchParams instanceof String || searchParams  instanceof GString)
         {
             searchParams = searchParams.toString();
-            def result = CompassMethodInvoker.search (mc, searchParams, willTriggerOnLoad)
+            def result = CompassMethodInvoker.search (rootDomainClass.metaClass, searchParams, willTriggerOnLoad)
             return result;
         }
         else if(searchParams instanceof Number)
         {
             searchParams = "id:${searchParams}".toString();
-            def result = CompassMethodInvoker.search (mc, searchParams, willTriggerOnLoad)
+            def result = CompassMethodInvoker.search (rootDomainClass.metaClass, searchParams, willTriggerOnLoad)
             return result.results[0];
         }
     }

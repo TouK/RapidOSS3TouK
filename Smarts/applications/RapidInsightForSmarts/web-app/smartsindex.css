@@ -50,6 +50,7 @@
 .event-details-severity-unknown{
    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -260px;
 }
-.event-details-severity-normal{
+.event-details-severity-normal*
    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -240px;
 }
+-+

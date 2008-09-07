@@ -61,6 +61,31 @@ public class SmartsTestUtils {
                         CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_AM_USER),
                         CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_AM_PASSWORD)
                 );
+            case SmartsTestConstants.SMARTS_SECURE_AM_CONNECTION_TYPE:
+            {
+                SmartsConnectionParams  conParams = new SmartsConnectionParams(
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_AM_BROKER),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_AM_DOMAIN),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_AM_USER),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_AM_PASSWORD)
+                );
+                conParams.setBrokerUsername(SmartsTestConstants.SMARTS_SECURE_AM_BROKER_USERNAME);
+                conParams.setBrokerPassword(SmartsTestConstants.SMARTS_SECURE_AM_BROKER_PASSWORD);
+                return conParams;
+            }
+            case SmartsTestConstants.SMARTS_SECURE_SAM_CONNECTION_TYPE:
+            {
+                SmartsConnectionParams  conParams = new SmartsConnectionParams(
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_SECURE_SAM_BROKER),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_SECURE_SAM_DOMAIN),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_SECURE_SAM_USER),
+                        CommonTestUtils.getTestProperty(SmartsTestConstants.SMARTS_SECURE_SAM_PASSWORD)
+
+                );
+                conParams.setBrokerUsername(SmartsTestConstants.SMARTS_SECURE_SAM_BROKER_USERNAME);
+                conParams.setBrokerPassword(SmartsTestConstants.SMARTS_SECURE_SAM_BROKER_PASSWORD);
+                return conParams;
+            }
             default:
                 return null;
         }

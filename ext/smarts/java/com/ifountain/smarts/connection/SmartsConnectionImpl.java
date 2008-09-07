@@ -29,6 +29,10 @@ public class SmartsConnectionImpl extends BaseConnection{
 	public static final String DOMAIN = "Domain";
 	public static final String USERNAME = "Username";
 	public static final String PASSWORD = "Password";
+	public static final String BROKER_USERNAME = "BrokerUsername";
+	public static final String BROKER_PASSWORD = "BrokerPassword";
+	public static final String NON_SECURE_BROKER_USERNAME = "BrokerNonsecure";
+	public static final String NON_SECURE_BROKER_PASSWORD = "Nonsecure";
 
     public static long isConnectedCount = 0;
 
@@ -36,12 +40,14 @@ public class SmartsConnectionImpl extends BaseConnection{
 	private String domain;
 	private String username;
 	private String password;
+	private String brokerUsername;
+	private String brokerPassword;
 	private SmRemoteDomainManager domainManager;
 	
 
 	protected void connect() throws Exception {
 	    SmRemoteBroker smBroker = new SmRemoteBroker(broker);
-	    smBroker.attach("BrokerNonsecure", "Nonsecure"); 
+	    smBroker.attach(brokerUsername, brokerPassword); 
         domainManager.attach(smBroker, domain, username, password);
         smBroker.detach();
 	}
@@ -58,6 +64,13 @@ public class SmartsConnectionImpl extends BaseConnection{
         this.domain = checkParam(DOMAIN);
         this.username = checkParam(USERNAME);
         this.password = checkParam(PASSWORD);
+        this.brokerUsername =  (String)params.getOtherParams().get(BROKER_USERNAME);
+        this.brokerPassword =  (String)params.getOtherParams().get(BROKER_PASSWORD);
+        if(brokerUsername == null || brokerPassword == null)
+        {
+            brokerUsername = NON_SECURE_BROKER_USERNAME;
+            brokerPassword = NON_SECURE_BROKER_PASSWORD;
+        }
         this.domainManager = new SmRemoteDomainManager();
 	}
 

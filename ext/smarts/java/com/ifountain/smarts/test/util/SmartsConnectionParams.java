@@ -20,7 +20,26 @@ package com.ifountain.smarts.test.util;
 public class SmartsConnectionParams {
 
 	private String broker, domain, username, password;
-	public String getBroker() {
+    private String brokerUsername = "BrokerNonsecure";
+    private String brokerPassword = "Nonsecure";
+
+    public String getBrokerUsername() {
+        return brokerUsername;
+    }
+
+    public void setBrokerUsername(String brokerUsername) {
+        this.brokerUsername = brokerUsername;
+    }
+
+    public String getBrokerPassword() {
+        return brokerPassword;
+    }
+
+    public void setBrokerPassword(String brokerPassword) {
+        this.brokerPassword = brokerPassword;
+    }
+
+    public String getBroker() {
 		return broker;
 	}
 	public void setBroker(String broker) {

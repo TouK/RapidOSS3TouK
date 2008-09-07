@@ -112,8 +112,34 @@ public class SmartsConnectionTest extends SmartsTestCase {
             fail("should not throw exception");
         }
     }
+
+    public void testConnectWithSecureBroker() throws Exception {
+        assertFalse(datasource.isConnected());
+        DatasourceTestUtils.getParamSupplier().setParam(SmartsTestUtils.getConnectionParam(SmartsTestConstants.SMARTS_SECURE_SAM_CONNECTION_TYPE));
+        ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
+        datasource.init(param);
+        assertFalse(datasource.isConnected());
+
+        datasource.connect();
+        assertTrue(datasource.isConnected());
+
+        try
+        {
+            datasource.getDomainManager().noop();
+        }
+        catch (Exception e1)
+        {
+            fail("Should not throw exception because it is already connected");
+        }
+
+        try {
+            datasource.connect();
+        } catch (Exception e) {
+            fail("should not throw exception");
+        }
+    }
 	
-	public void testConnectThrowsExceptionWithInvalidParams() throws Exception {
+    public void testConnectThrowsExceptionWithInvalidParams() throws Exception {
 	    ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
 	    param.getOtherParams().put(SmartsConnectionImpl.BROKER, "InvalidBroker");
         datasource.init(param);

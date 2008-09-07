@@ -15,8 +15,8 @@ class SmartsConnectionTemplate {
     String broker ="";
     String username ="";
     String password ="";
-    String  brokerUsername="";
-    String brokerPassword ="";
+    String brokerPassword = SmartsConnectionImpl.NON_SECURE_BROKER_PASSWORD;
+    String brokerUsername = SmartsConnectionImpl.NON_SECURE_BROKER_USERNAME;
 
     static relations  =[:]
     static constraints={

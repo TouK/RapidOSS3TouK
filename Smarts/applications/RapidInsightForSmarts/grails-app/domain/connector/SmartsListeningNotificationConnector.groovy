@@ -7,8 +7,8 @@ package connector
  * To change this template use File | Settings | File Templates.
  */
 class SmartsListeningNotificationConnector extends SmartsConnector{
-    String notificationList;
-    boolean tailMode;
+    String notificationList = "ALL_NOTIFICATIONS";
+    boolean tailMode = false;
     static searchable = {
         except = [];
     };

@@ -102,10 +102,10 @@ class SmartsConnectorController {
                 def domainType = params.domainType;
                 SmartsConnection smartsConnection = smartsConnector.ds.connection
                 connection.SmartsConnectionTemplate template = smartsConnector.connectionTemplate;
-                def isConnectionParamsChanged = smartsConnection.broker != template.broker || smartsConnection.domain != domain || smartsConnection.domainType != domainType || smartsConnection.username != template.username || smartsConnection.userPassword != template.password
+                def isConnectionParamsChanged = smartsConnection.brokerUsername != template.brokerUsername || smartsConnection.brokerPassword != template.brokerPassword || smartsConnection.broker != template.broker || smartsConnection.domain != domain || smartsConnection.domainType != domainType || smartsConnection.username != template.username || smartsConnection.userPassword != template.password
                 if(isConnectionParamsChanged)
                 {
-                    def connectionParams = [domain:domain, domainType:domainType, broker:template.broker, username:template.username, userPassword:template.password]
+                    def connectionParams = [domain:domain, domainType:domainType, broker:template.broker, username:template.username, userPassword:template.password, brokerUsername:template.brokerUsername, brokerPassword:template.brokerPassword]
                     smartsConnection.update(connectionParams);
                     if (!smartsConnection.hasErrors()) {
                         if(isConnectionParamsChanged)
@@ -171,6 +171,8 @@ class SmartsConnectorController {
             connectionParams.broker = smartsConnector.connectionTemplate.broker
             connectionParams.username = smartsConnector.connectionTemplate.username
             connectionParams.userPassword = smartsConnector.connectionTemplate.password
+            connectionParams.brokerUsername = smartsConnector.connectionTemplate.brokerUsername
+            connectionParams.brokerPassword = smartsConnector.connectionTemplate.brokerPassword
             connectionParams.domain = params.domain
             connectionParams.domainType = params.domainType
             SmartsConnection smartsConnection = SmartsConnection.add(connectionParams)

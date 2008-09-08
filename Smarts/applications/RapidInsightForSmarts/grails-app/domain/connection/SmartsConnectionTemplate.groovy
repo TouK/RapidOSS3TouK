@@ -1,11 +1,14 @@
 package connection
+
+import com.ifountain.smarts.connection.SmartsConnectionImpl
+
 /**
- * Created by IntelliJ IDEA.
- * User: mustafa sener
- * Date: Aug 29, 2008
- * Time: 8:38:43 AM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: mustafa sener
+* Date: Aug 29, 2008
+* Time: 8:38:43 AM
+* To change this template use File | Settings | File Templates.
+*/
 class SmartsConnectionTemplate {
     static searchable = {
         except = [];

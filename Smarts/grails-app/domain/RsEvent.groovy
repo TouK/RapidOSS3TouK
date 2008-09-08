@@ -1,8 +1,9 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsEvent {
-
+class RsEvent 
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -229,7 +230,4 @@ class RsEvent {
     }
     
     //AUTO_GENERATED_CODE
-
-
-    
 }

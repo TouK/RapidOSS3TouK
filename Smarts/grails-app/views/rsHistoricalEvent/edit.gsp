@@ -71,6 +71,24 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="causedBy">causedBy:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'causedBy','errors')}">
+                            <input type="text" id="causedBy" name="causedBy" value="${fieldValue(bean:rsHistoricalEvent,field:'causedBy')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="causes">causes:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'causes','errors')}">
+                            <input type="text" id="causes" name="causes" value="${fieldValue(bean:rsHistoricalEvent,field:'causes')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="certainty">certainty:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'certainty','errors')}">

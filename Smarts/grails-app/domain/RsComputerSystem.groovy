@@ -1,8 +1,9 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsComputerSystem  extends RsSmartsObject {
-
+class RsComputerSystem extends RsSmartsObject
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -144,7 +145,4 @@ class RsComputerSystem  extends RsSmartsObject {
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ipNetworks", "composedOf", "connectedVia", "hostsAccessPoints"];
     
     //AUTO_GENERATED_CODE
-
-
-    
 }

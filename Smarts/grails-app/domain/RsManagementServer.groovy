@@ -1,8 +1,9 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsManagementServer {
-
+class RsManagementServer 
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -47,7 +48,4 @@ class RsManagementServer {
     }
     
     //AUTO_GENERATED_CODE
-
-
-    
 }

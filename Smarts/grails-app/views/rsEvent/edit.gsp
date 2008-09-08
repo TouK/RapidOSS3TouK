@@ -89,6 +89,44 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="causedBy">causedBy:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'causedBy','errors')}">
+                            
+<ul>
+<g:each var="c" in="${rsEvent?.causedBy?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsEvent" action="show" id="${c.id}">${c}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsEvent?.id, 'relationName':'causedBy', 'relatedObjectId':c.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsEvent?.id, 'relationName':'causedBy']" action="addTo">Add RsEvent</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="causes">causes:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'causes','errors')}">
+                            
+<ul>
+<g:each var="c" in="${rsEvent?.causes?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsEvent" action="show" id="${c.id}">${c}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsEvent?.id, 'relationName':'causes', 'relatedObjectId':c.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsEvent?.id, 'relationName':'causes']" action="addTo">Add RsEvent</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="certainty">certainty:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'certainty','errors')}">

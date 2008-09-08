@@ -77,6 +77,32 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">causedBy:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${rsEvent.causedBy}">
+                                <li><g:link controller="rsEvent" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">causes:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${rsEvent.causes}">
+                                <li><g:link controller="rsEvent" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">certainty:</td>
                     
                     <td valign="top" class="value">${rsEvent.certainty}</td>

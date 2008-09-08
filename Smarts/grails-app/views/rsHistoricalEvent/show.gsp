@@ -56,6 +56,20 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">causedBy:</td>
+                    
+                    <td valign="top" class="value">${rsHistoricalEvent.causedBy}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">causes:</td>
+                    
+                    <td valign="top" class="value">${rsHistoricalEvent.causes}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">certainty:</td>
                     
                     <td valign="top" class="value">${rsHistoricalEvent.certainty}</td>

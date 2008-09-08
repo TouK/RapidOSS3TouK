@@ -159,6 +159,21 @@ class DomainClassUtils
         }
         return variableMap;
     }
+    
+    def static getStaticListVariable(Class tempObj, String variableName)
+    {
+        def variableList = [:];
+        while(tempObj && tempObj != java.lang.Object.class)
+        {
+            def tmpVariableList = GrailsClassUtils.getStaticPropertyValue (tempObj, variableName);
+            if(tmpVariableList)
+            {
+                variableList.addAll(tmpVariableList);
+            }
+            tempObj =  tempObj.getSuperclass();
+        }
+        return variableList;
+    }
 
     def static getPropertyRealValue(propType, value)
     {
@@ -183,15 +198,15 @@ class DomainClassUtils
 
 
     public static void addErrorsOnInstance(Object target, ObjectError objectError) {
-        BeanPropertyBindingResult errors = target.errors; 
+        BeanPropertyBindingResult errors = target.errors;
         if(!errors){
             errors = new BeanPropertyBindingResult(target, target.getClass().getName());
-            target.metaClass.setProperty(target, RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors);    
+            target.metaClass.setProperty(target, RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors);
         }
         errors.addError(objectError);
     }
 
-    def static getFilteredProperties(String domainClassName, List extraFilters) {
+    def static getFilteredProperties(String domainClassName, List extraFilters, boolean excludeTransients) {
         def excludedProps = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME,
                 RapidCMDBConstants.OPERATION_PROPERTY_NAME,
                 RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED,
@@ -203,11 +218,18 @@ class DomainClassUtils
        def domainClass = ApplicationHolder.getApplication().getDomainClass(domainClassName);
        if(domainClass){
            excludedProps.addAll(extraFilters);
+           if(excludeTransients){
+               excludedProps.addAll(getStaticListVariable(domainClass.clazz, "transients"));
+           }
            return domainClass.properties.findAll {!excludedProps.contains(it.name)}
        }
        else{
            throw new Exception("DomainClass ${domainClassName} does not exist.");
        }
+    }
+
+    def static getFilteredProperties(String domainClassName, List extraFilters) {
+        return getFilteredProperties(domainClassName, extraFilters, true)
     }
 
     def static getFilteredProperties(String domainClassName){

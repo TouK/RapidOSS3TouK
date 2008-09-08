@@ -196,7 +196,6 @@ class SmartsConnectorController {
             }
             else {
                 smartsConnector.remove();
-                println "CONNECTION EXCEPTIOn:"+smartsConnection.errors
                 render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection])
             }
 
@@ -216,6 +215,10 @@ class SmartsConnectorController {
             def script = smartsConnector.ds.listeningScript
             try
             {
+                def connTemplate = smartsConnector.connectionTemplate;
+                def connectionParams = ["broker":connTemplate.broker, "username":connTemplate.username, "userPassword":connTemplate.password,
+                    "brokerUsername":connTemplate.brokerUsername, "brokerPassword":connTemplate.brokerPassword];
+                smartsConnector.ds.connection.update(connectionParams);
                 if (checkConnection(smartsConnector.ds.connection.name)) {
                     CmdbScript.startListening(script.name);
                     flash.message = "Connector ${smartsConnector.name} successfully started"

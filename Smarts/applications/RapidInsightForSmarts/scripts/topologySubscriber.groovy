@@ -424,6 +424,7 @@ def addComputerSystemToRepository(topologyObject) {
                     logger.debug("${connectionObjectFromSmarts.Name} of class ${connectionObjectFromSmarts.CreationClassName} is not a RsLink object discarding");
                 }
             }
+            return connectionObjects;
         }
         def addedConnectionObjects = connectionProcessor(deviceFromSmarts.ConnectedVia);
         computerSystem.addRelation("connectedVia":addedConnectionObjects);

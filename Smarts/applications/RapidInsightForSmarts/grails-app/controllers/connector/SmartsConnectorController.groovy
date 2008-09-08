@@ -4,7 +4,8 @@ import script.CmdbScript
 import com.ifountain.core.connection.ConnectionManager
 import datasource.SmartsTopologyDatasource
 import connection.SmartsConnection
-import datasource.SmartsNotificationDatasource;
+import datasource.SmartsNotificationDatasource
+import com.ifountain.smarts.connection.SmartsConnectionImpl;
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
@@ -256,7 +257,7 @@ class SmartsConnectorController {
 
     def checkConnection(connectionName) {
         try {
-            def conn = ConnectionManager.getConnection(connectionName);
+            SmartsConnectionImpl conn = ConnectionManager.getConnection(connectionName);
             if (conn.isConnected()) {
                 return true;
             }

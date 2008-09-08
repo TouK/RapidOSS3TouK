@@ -481,13 +481,46 @@ RsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts
         addedRsComputerSystemObject = RsComputerSystemComponent.add(props);
     }
 
-    def connectedComputerSystemObjects = [];
+    def layeredOverObjects = [];
     containmentObjectFromSmarts.LayeredOver.each{connectedComputerSystemObject->
-        def rsConnectedComputerSystemObject = RsNetworkAdapter.get(name:connectedComputerSystemObject.Name);
+        def rsConnectedComputerSystemObject = RsComputerSystemComponent.get(name:connectedComputerSystemObject.Name);
         if(rsConnectedComputerSystemObject)
         {
-            connectedComputerSystemObjects.add(rsConnectedComputerSystemObject);
+            layeredOverObjects.add(rsConnectedComputerSystemObject);
         }
     }
+    def underlyingObjects = [];
+    containmentObjectFromSmarts.Underlying.each{connectedComputerSystemObject->
+        def rsConnectedComputerSystemObject = RsComputerSystemComponent.get(name:connectedComputerSystemObject.Name);
+        if(rsConnectedComputerSystemObject)
+        {
+            underlyingObjects.add(rsConnectedComputerSystemObject);
+        }
+    }
+
     addedRsComputerSystemObject.addRelation(layeredOver:connectedComputerSystemObjects);
+    addedRsComputerSystemObject.addRelation(underlying:underlyingObjects);
+
+    if(addedRsComputerSystemObject instanceof RsNetworkAdapter)
+    {
+        def realizedByObjects = [];
+        containmentObjectFromSmarts.RealizedBy.each{connectedComputerSystemObject->
+            def rsConnectedComputerSystemObject = RsCard.get(name:connectedComputerSystemObject.Name);
+            if(rsConnectedComputerSystemObject)
+            {
+                realizedByObjects.add(rsConnectedComputerSystemObject);
+            }
+        }
+        def connectedViaObjects = [];
+        containmentObjectFromSmarts.ConnectedVia.each{connectedComputerSystemObject->
+            def rsConnectedComputerSystemObject = RsLink.get(name:connectedComputerSystemObject.Name);
+            if(rsConnectedComputerSystemObject)
+            {
+                connectedViaObjects.add(rsConnectedComputerSystemObject);
+            }
+        }
+
+        addedRsComputerSystemObject.addRelation(realizedBy:realizedByObjects);
+        addedRsComputerSystemObject.addRelation(connectedVia:connectedViaObjects);
+    }
 }

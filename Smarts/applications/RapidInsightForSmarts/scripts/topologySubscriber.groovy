@@ -531,6 +531,6 @@ RsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts
 
         addedRsComputerSystemObject.addRelation(realizedBy:realizedByObjects);
         addedRsComputerSystemObject.addRelation(connectedVia:connectedViaObjects);
-        return addedRsComputerSystemObject;
     }
+    return addedRsComputerSystemObject;
 }

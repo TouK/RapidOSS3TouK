@@ -34,8 +34,6 @@ public class SmartsConnectionImpl extends BaseConnection{
 	public static final String NON_SECURE_BROKER_USERNAME = "BrokerNonsecure";
 	public static final String NON_SECURE_BROKER_PASSWORD = "Nonsecure";
 
-    public static long isConnectedCount = 0;
-
 	private String broker;
 	private String domain;
 	private String username;
@@ -75,7 +73,6 @@ public class SmartsConnectionImpl extends BaseConnection{
 	}
 
 	public boolean isConnected() {
-        isConnectedCount ++;
         if(domainManager != null)
         {
             try

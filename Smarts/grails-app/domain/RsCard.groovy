@@ -6,7 +6,7 @@ class RsCard  extends RsComputerSystemComponent {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "realizes"];
     };
     static datasources = [:]
 
@@ -29,8 +29,14 @@ class RsCard  extends RsComputerSystemComponent {
     
     Object __is_federated_properties_loaded__ ;
     
+    List realizes =[];
     
-    static relations = [:]    
+    
+    static relations = [
+    
+        realizes:[type:RsNetworkAdapter, reverseName:"realizedBy", isMany:true]
+    
+    ]
     
     static constraints={
     serialNumber(blank:true,nullable:true)
@@ -51,9 +57,10 @@ class RsCard  extends RsComputerSystemComponent {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "realizes"];
     
     //AUTO_GENERATED_CODE
+
 
     
 }

@@ -440,19 +440,28 @@ def addComputerSystemToRepository(topologyObject) {
 RsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts, computerSystemName) {
     containmentObjectFromSmarts.ComputerSystemName =computerSystemName;
     def addedRsComputerSystemObject = null;
-    if (CLASS_MAPPINGS.RsInterface.classes.containsKey("Interface")) {
+    if (CLASS_MAPPINGS.RsInterface.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
 
         def props = getPropsWithLocalNames("RsInterface", containmentObjectFromSmarts);
         getLogger().debug("Creating RsInterface with ${props}")
         addedRsComputerSystemObject = RsInterface.add(props);
     }
-    else if (CLASS_MAPPINGS.RsCard.classes.containsKey("Card")) {
+    else if (CLASS_MAPPINGS.RsCard.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
 
         def props = getPropsWithLocalNames("RsCard", containmentObjectFromSmarts);
         getLogger().debug("Creating RsCard with ${props}")
         addedRsComputerSystemObject = RsCard.add(props);
+        def connectedAdapters = [];
+        containmentObjectFromSmarts.Realizes.each{networkAdapter->
+            def rsNetworkAdapterObjects = RsNetworkAdapter.get(name:networkAdapter.Name);
+            if(rsNetworkAdapterObjects)
+            {
+                connectedAdapters.add(rsNetworkAdapterObjects);
+            }
+        }
+        addedRsComputerSystemObject.addRelation(realizes:connectedAdapters);
     }
-    else if (CLASS_MAPPINGS.RsIp.classes.containsKey("Ip")) {
+    else if (CLASS_MAPPINGS.RsIp.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
 
         def props = getPropsWithLocalNames("RsIp", containmentObjectFromSmarts);
         getLogger().debug("Creating RsIp with ${props}")
@@ -467,7 +476,7 @@ RsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts
         }
         addedRsComputerSystemObject.addRelation(realizes:connectedAdapters);
     }
-    else if (CLASS_MAPPINGS.RsPort.classes.containsKey("Port")) {
+    else if (CLASS_MAPPINGS.RsPort.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
 
         def props = getPropsWithLocalNames("RsPort", containmentObjectFromSmarts);
         getLogger().debug("Creating RsPort with ${props}")
@@ -498,7 +507,7 @@ RsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts
         }
     }
 
-    addedRsComputerSystemObject.addRelation(layeredOver:connectedComputerSystemObjects);
+    addedRsComputerSystemObject.addRelation(layeredOver:layeredOverObjects);
     addedRsComputerSystemObject.addRelation(underlying:underlyingObjects);
 
     if(addedRsComputerSystemObject instanceof RsNetworkAdapter)
@@ -522,5 +531,6 @@ RsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts
 
         addedRsComputerSystemObject.addRelation(realizedBy:realizedByObjects);
         addedRsComputerSystemObject.addRelation(connectedVia:connectedViaObjects);
+        return addedRsComputerSystemObject;
     }
 }

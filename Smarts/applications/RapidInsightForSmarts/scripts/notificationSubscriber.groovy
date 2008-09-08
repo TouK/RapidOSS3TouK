@@ -63,7 +63,26 @@ def update(notificationObject){
     }
     else if(eventType == BaseSmartsListeningAdapter.NOTIFY || eventType == BaseSmartsListeningAdapter.CHANGE)
     {
-        RsEvent.add(notificationProps);
+        def addedEvent = RsEvent.add(notificationProps);
+        def notificationRelationPropValues = datasource.getNotification([ClassName:notificationObject.ClassName, InstanceName:notificationObject.InstanceName, EventName:notificationObject.EventName], ["CausedBy", "Causes"]);
+        def causedByObjects = [];
+        notificationRelationPropValues.CausedBy.each{notificationRelationProp->
+            def rsEvent = RsEvent.search("name:${notificationRelationProp.Name}").results[0];
+            if(rsEvent)
+            {
+                causedByObjects.add(rsEvent);
+            }
+        }
+        def causesObjects = [];
+        notificationRelationPropValues.Causeds.each{notificationRelationProp->
+            def rsEvent = RsEvent.search("name:${notificationRelationProp.Name}").results[0];
+            if(rsEvent)
+            {
+                causesObjects.add(rsEvent);
+            }
+        }
+        addedEvent.addRelation(causedBy:causedByObjects);
+        addedEvent.addRelation(causes:causesObjects);
         logger.info("Added ${notificationProps.name} to repository");
     }
     else if(eventType == BaseSmartsListeningAdapter.CLEAR)
@@ -83,6 +102,8 @@ def archiveNotification(notification)
     def historicalNotificationProps = [:];
     columnLocalNameMappings.each{String localName, String smartsName->
         historicalNotificationProps[localName] = notification[localName];
+        historicalNotificationProps["causedBy"] = notification.causedby.toString();
+        historicalNotificationProps["causes"] = notification.causes.toString();
         RsHistoricalEvent.add(historicalNotificationProps);
     }
     logger.info("${notification.name} is moved  to HistoricalNotification");

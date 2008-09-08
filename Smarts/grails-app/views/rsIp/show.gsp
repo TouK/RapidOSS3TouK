@@ -77,6 +77,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">hostedBy:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsComputerSystem" action="show" id="${rsIp?.hostedBy?.id}">${rsIp?.hostedBy}</g:link></td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">interfaceAdminStatus:</td>
                     
                     <td valign="top" class="value">${rsIp.interfaceAdminStatus}</td>
@@ -126,6 +133,19 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">layeredOver:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="l" in="${rsIp.layeredOver}">
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${l.id}">${l}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">memberOfGroup:</td>
                     
                     <td valign="top" style="text-align:left;" class="value">
@@ -149,6 +169,13 @@
                     <td valign="top" class="name">networkNumber:</td>
                     
                     <td valign="top" class="value">${rsIp.networkNumber}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">partOf:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsComputerSystem" action="show" id="${rsIp?.partOf?.id}">${rsIp?.partOf}</g:link></td>
                     
                 </tr>
                 
@@ -177,6 +204,19 @@
                     <td valign="top" class="name">tag:</td>
                     
                     <td valign="top" class="value">${rsIp.tag}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">underlying:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="u" in="${rsIp.underlying}">
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${u.id}">${u}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

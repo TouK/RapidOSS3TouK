@@ -105,9 +105,35 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">connectedSystem:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${rsLink.connectedSystem}">
+                                <li><g:link controller="rsComputerSystem" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">connectedSystemsUnresponsive:</td>
                     
                     <td valign="top" class="value">${rsLink.connectedSystemsUnresponsive}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">connectedTo:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${rsLink.connectedTo}">
+                                <li><g:link controller="rsNetworkAdapter" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

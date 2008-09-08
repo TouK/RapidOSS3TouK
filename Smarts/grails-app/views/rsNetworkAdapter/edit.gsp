@@ -71,6 +71,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="connectedVia">connectedVia:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'connectedVia','errors')}">
+                            <g:select optionKey="id" from="${RsLink.list()}" name="connectedVia.id" value="${rsNetworkAdapter?.connectedVia?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="creationClassName">creationClassName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'creationClassName','errors')}">
@@ -206,6 +215,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="layeredOver">layeredOver:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'layeredOver','errors')}">
+                            
+<ul>
+<g:each var="l" in="${rsNetworkAdapter?.layeredOver?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsComputerSystemComponent" action="show" id="${l.id}">${l}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsNetworkAdapter?.id, 'relationName':'layeredOver', 'relatedObjectId':l.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsNetworkAdapter?.id, 'relationName':'layeredOver']" action="addTo">Add RsComputerSystemComponent</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="maxSpeed">maxSpeed:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'maxSpeed','errors')}">
@@ -279,6 +307,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="partOf">partOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'partOf','errors')}">
+                            <g:select optionKey="id" from="${RsComputerSystem.list()}" name="partOf.id" value="${rsNetworkAdapter?.partOf?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="peerSystemName">peerSystemName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'peerSystemName','errors')}">
@@ -292,6 +329,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'peerSystemType','errors')}">
                             <input type="text" id="peerSystemType" name="peerSystemType" value="${fieldValue(bean:rsNetworkAdapter,field:'peerSystemType')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="realizedBy">realizedBy:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'realizedBy','errors')}">
+                            <g:select optionKey="id" from="${RsCard.list()}" name="realizedBy.id" value="${rsNetworkAdapter?.realizedBy?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
                     
@@ -373,6 +419,25 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'type','errors')}">
                             <input type="text" id="type" name="type" value="${fieldValue(bean:rsNetworkAdapter,field:'type')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="underlying">underlying:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsNetworkAdapter,field:'underlying','errors')}">
+                            
+<ul>
+<g:each var="u" in="${rsNetworkAdapter?.underlying?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsComputerSystemComponent" action="show" id="${u.id}">${u}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsNetworkAdapter?.id, 'relationName':'underlying', 'relatedObjectId':u.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsNetworkAdapter?.id, 'relationName':'underlying']" action="addTo">Add RsComputerSystemComponent</g:link>
+
                         </td>
                     </tr>
                     

@@ -125,10 +125,48 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="connectedSystem">connectedSystem:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'connectedSystem','errors')}">
+                            
+<ul>
+<g:each var="c" in="${rsLink?.connectedSystem?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsComputerSystem" action="show" id="${c.id}">${c}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsLink?.id, 'relationName':'connectedSystem', 'relatedObjectId':c.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsLink?.id, 'relationName':'connectedSystem']" action="addTo">Add RsComputerSystem</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="connectedSystemsUnresponsive">connectedSystemsUnresponsive:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsLink,field:'connectedSystemsUnresponsive','errors')}">
                             <g:checkBox name="connectedSystemsUnresponsive" value="${rsLink?.connectedSystemsUnresponsive}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="connectedTo">connectedTo:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'connectedTo','errors')}">
+                            
+<ul>
+<g:each var="c" in="${rsLink?.connectedTo?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsNetworkAdapter" action="show" id="${c.id}">${c}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsLink?.id, 'relationName':'connectedTo', 'relatedObjectId':c.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsLink?.id, 'relationName':'connectedTo']" action="addTo">Add RsNetworkAdapter</g:link>
+
                         </td>
                     </tr>
                     

@@ -69,6 +69,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="connectedVia">connectedVia:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'connectedVia','errors')}">
+                            <g:select optionKey="id" from="${RsLink.list()}" name="connectedVia.id" value="${rsInterface?.connectedVia?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="creationClassName">creationClassName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'creationClassName','errors')}">
@@ -285,6 +294,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="partOf">partOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'partOf','errors')}">
+                            <g:select optionKey="id" from="${RsComputerSystem.list()}" name="partOf.id" value="${rsInterface?.partOf?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="peerSystemName">peerSystemName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'peerSystemName','errors')}">
@@ -298,6 +316,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'peerSystemType','errors')}">
                             <input type="text" id="peerSystemType" name="peerSystemType" value="${fieldValue(bean:rsInterface,field:'peerSystemType')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="realizedBy">realizedBy:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'realizedBy','errors')}">
+                            <g:select optionKey="id" from="${RsCard.list()}" name="realizedBy.id" value="${rsInterface?.realizedBy?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
                     

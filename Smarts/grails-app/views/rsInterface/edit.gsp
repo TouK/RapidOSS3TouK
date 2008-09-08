@@ -71,6 +71,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="connectedVia">connectedVia:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'connectedVia','errors')}">
+                            <g:select optionKey="id" from="${RsLink.list()}" name="connectedVia.id" value="${rsInterface?.connectedVia?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="creationClassName">creationClassName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'creationClassName','errors')}">
@@ -240,12 +249,12 @@
 <ul>
 <g:each var="l" in="${rsInterface?.layeredOver?}">
     <li style="margin-bottom:3px;">
-        <g:link controller="rsInterface" action="show" id="${l.id}">${l}</g:link>
+        <g:link controller="rsComputerSystemComponent" action="show" id="${l.id}">${l}</g:link>
         <g:link class="delete" action="removeRelation" params="['id':rsInterface?.id, 'relationName':'layeredOver', 'relatedObjectId':l.id]"></g:link>
     </li>
 </g:each>
 </ul>
-<g:link params="['id':rsInterface?.id, 'relationName':'layeredOver']" action="addTo">Add RsInterface</g:link>
+<g:link params="['id':rsInterface?.id, 'relationName':'layeredOver']" action="addTo">Add RsComputerSystemComponent</g:link>
 
                         </td>
                     </tr>
@@ -325,6 +334,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="partOf">partOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'partOf','errors')}">
+                            <g:select optionKey="id" from="${RsComputerSystem.list()}" name="partOf.id" value="${rsInterface?.partOf?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="peerSystemName">peerSystemName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'peerSystemName','errors')}">
@@ -338,6 +356,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'peerSystemType','errors')}">
                             <input type="text" id="peerSystemType" name="peerSystemType" value="${fieldValue(bean:rsInterface,field:'peerSystemType')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="realizedBy">realizedBy:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsInterface,field:'realizedBy','errors')}">
+                            <g:select optionKey="id" from="${RsCard.list()}" name="realizedBy.id" value="${rsInterface?.realizedBy?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
                     
@@ -431,12 +458,12 @@
 <ul>
 <g:each var="u" in="${rsInterface?.underlying?}">
     <li style="margin-bottom:3px;">
-        <g:link controller="rsInterface" action="show" id="${u.id}">${u}</g:link>
+        <g:link controller="rsComputerSystemComponent" action="show" id="${u.id}">${u}</g:link>
         <g:link class="delete" action="removeRelation" params="['id':rsInterface?.id, 'relationName':'underlying', 'relatedObjectId':u.id]"></g:link>
     </li>
 </g:each>
 </ul>
-<g:link params="['id':rsInterface?.id, 'relationName':'underlying']" action="addTo">Add RsInterface</g:link>
+<g:link params="['id':rsInterface?.id, 'relationName':'underlying']" action="addTo">Add RsComputerSystemComponent</g:link>
 
                         </td>
                     </tr>

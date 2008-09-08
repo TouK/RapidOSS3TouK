@@ -87,6 +87,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="partOf">partOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsCard,field:'partOf','errors')}">
+                            <g:select optionKey="id" from="${RsComputerSystem.list()}" name="partOf.id" value="${rsCard?.partOf?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="rsDatasource">rsDatasource:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsCard,field:'rsDatasource','errors')}">

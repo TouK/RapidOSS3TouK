@@ -77,6 +77,19 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">layeredOver:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="l" in="${rsComputerSystemComponent.layeredOver}">
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${l.id}">${l}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">memberOfGroup:</td>
                     
                     <td valign="top" style="text-align:left;" class="value">
@@ -86,6 +99,13 @@
                             </g:each>
                         </ul>
                     </td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">partOf:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsComputerSystem" action="show" id="${rsComputerSystemComponent?.partOf?.id}">${rsComputerSystemComponent?.partOf}</g:link></td>
                     
                 </tr>
                 
@@ -100,6 +120,19 @@
                     <td valign="top" class="name">tag:</td>
                     
                     <td valign="top" class="value">${rsComputerSystemComponent.tag}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">underlying:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="u" in="${rsComputerSystemComponent.underlying}">
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${u.id}">${u}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

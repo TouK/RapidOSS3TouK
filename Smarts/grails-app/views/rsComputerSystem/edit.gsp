@@ -53,6 +53,44 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="composedOf">composedOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'composedOf','errors')}">
+                            
+<ul>
+<g:each var="c" in="${rsComputerSystem?.composedOf?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsComputerSystemComponent" action="show" id="${c.id}">${c}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsComputerSystem?.id, 'relationName':'composedOf', 'relatedObjectId':c.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsComputerSystem?.id, 'relationName':'composedOf']" action="addTo">Add RsComputerSystemComponent</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="connectedVia">connectedVia:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'connectedVia','errors')}">
+                            
+<ul>
+<g:each var="c" in="${rsComputerSystem?.connectedVia?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsLink" action="show" id="${c.id}">${c}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsComputerSystem?.id, 'relationName':'connectedVia', 'relatedObjectId':c.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsComputerSystem?.id, 'relationName':'connectedVia']" action="addTo">Add RsLink</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="creationClassName">creationClassName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'creationClassName','errors')}">
@@ -111,6 +149,25 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'displayName','errors')}">
                             <input type="text" id="displayName" name="displayName" value="${fieldValue(bean:rsComputerSystem,field:'displayName')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="hostsAccessPoints">hostsAccessPoints:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'hostsAccessPoints','errors')}">
+                            
+<ul>
+<g:each var="h" in="${rsComputerSystem?.hostsAccessPoints?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsIp" action="show" id="${h.id}">${h}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsComputerSystem?.id, 'relationName':'hostsAccessPoints', 'relatedObjectId':h.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsComputerSystem?.id, 'relationName':'hostsAccessPoints']" action="addTo">Add RsIp</g:link>
+
                         </td>
                     </tr>
                     

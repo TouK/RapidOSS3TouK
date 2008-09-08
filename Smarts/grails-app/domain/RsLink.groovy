@@ -6,7 +6,7 @@ class RsLink  extends RsSmartsObject {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connectedSystem", "connectedTo"];
     };
     static datasources = [:]
 
@@ -59,8 +59,18 @@ class RsLink  extends RsSmartsObject {
     
     Object __is_federated_properties_loaded__ ;
     
+    List connectedSystem =[];
     
-    static relations = [:]    
+    List connectedTo =[];
+    
+    
+    static relations = [
+    
+        connectedSystem:[type:RsComputerSystem, reverseName:"connectedVia", isMany:true]
+    
+        ,connectedTo:[type:RsNetworkAdapter, reverseName:"connectedVia", isMany:true]
+    
+    ]
     
     static constraints={
     a_ComputerSystemName(blank:true,nullable:true)
@@ -111,9 +121,10 @@ class RsLink  extends RsSmartsObject {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connectedSystem", "connectedTo"];
     
     //AUTO_GENERATED_CODE
+
 
     
 }

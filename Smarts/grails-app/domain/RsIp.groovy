@@ -6,7 +6,7 @@ class RsIp  extends RsComputerSystemComponent {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "hostedBy"];
     };
     static datasources = [:]
 
@@ -47,8 +47,14 @@ class RsIp  extends RsComputerSystemComponent {
     
     Object __is_federated_properties_loaded__ ;
     
+    RsComputerSystem hostedBy ;
     
-    static relations = [:]    
+    
+    static relations = [
+    
+        hostedBy:[type:RsComputerSystem, reverseName:"hostsAccessPoints", isMany:false]
+    
+    ]
     
     static constraints={
     address(blank:true,nullable:true)
@@ -83,13 +89,16 @@ class RsIp  extends RsComputerSystemComponent {
         
      errors(nullable:true)
         
+     hostedBy(nullable:true)
+        
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "hostedBy"];
     
     //AUTO_GENERATED_CODE
+
 
     
 }

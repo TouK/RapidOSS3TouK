@@ -87,6 +87,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="hostedBy">hostedBy:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsIp,field:'hostedBy','errors')}">
+                            <g:select optionKey="id" from="${RsComputerSystem.list()}" name="hostedBy.id" value="${rsIp?.hostedBy?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="interfaceAdminStatus">interfaceAdminStatus:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsIp,field:'interfaceAdminStatus','errors')}">
@@ -163,6 +172,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsIp,field:'networkNumber','errors')}">
                             <input type="text" id="networkNumber" name="networkNumber" value="${fieldValue(bean:rsIp,field:'networkNumber')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="partOf">partOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsIp,field:'partOf','errors')}">
+                            <g:select optionKey="id" from="${RsComputerSystem.list()}" name="partOf.id" value="${rsIp?.partOf?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
                     

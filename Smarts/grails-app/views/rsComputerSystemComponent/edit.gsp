@@ -89,6 +89,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="layeredOver">layeredOver:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystemComponent,field:'layeredOver','errors')}">
+                            
+<ul>
+<g:each var="l" in="${rsComputerSystemComponent?.layeredOver?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsComputerSystemComponent" action="show" id="${l.id}">${l}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsComputerSystemComponent?.id, 'relationName':'layeredOver', 'relatedObjectId':l.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsComputerSystemComponent?.id, 'relationName':'layeredOver']" action="addTo">Add RsComputerSystemComponent</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="memberOfGroup">memberOfGroup:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystemComponent,field:'memberOfGroup','errors')}">
@@ -108,6 +127,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="partOf">partOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystemComponent,field:'partOf','errors')}">
+                            <g:select optionKey="id" from="${RsComputerSystem.list()}" name="partOf.id" value="${rsComputerSystemComponent?.partOf?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="rsDatasource">rsDatasource:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystemComponent,field:'rsDatasource','errors')}">
@@ -121,6 +149,25 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystemComponent,field:'tag','errors')}">
                             <input type="text" id="tag" name="tag" value="${fieldValue(bean:rsComputerSystemComponent,field:'tag')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="underlying">underlying:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystemComponent,field:'underlying','errors')}">
+                            
+<ul>
+<g:each var="u" in="${rsComputerSystemComponent?.underlying?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsComputerSystemComponent" action="show" id="${u.id}">${u}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsComputerSystemComponent?.id, 'relationName':'underlying', 'relatedObjectId':u.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsComputerSystemComponent?.id, 'relationName':'underlying']" action="addTo">Add RsComputerSystemComponent</g:link>
+
                         </td>
                     </tr>
                     

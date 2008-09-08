@@ -63,6 +63,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">connectedVia:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsLink" action="show" id="${rsInterface?.connectedVia?.id}">${rsInterface?.connectedVia}</g:link></td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">creationClassName:</td>
                     
                     <td valign="top" class="value">${rsInterface.creationClassName}</td>
@@ -194,7 +201,7 @@
                     <td valign="top" style="text-align:left;" class="value">
                         <ul>
                             <g:each var="l" in="${rsInterface.layeredOver}">
-                                <li><g:link controller="rsInterface" action="show" id="${l.id}">${l}</g:link></li>
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${l.id}">${l}</g:link></li>
                             </g:each>
                         </ul>
                     </td>
@@ -257,6 +264,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">partOf:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsComputerSystem" action="show" id="${rsInterface?.partOf?.id}">${rsInterface?.partOf}</g:link></td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">peerSystemName:</td>
                     
                     <td valign="top" class="value">${rsInterface.peerSystemName}</td>
@@ -267,6 +281,13 @@
                     <td valign="top" class="name">peerSystemType:</td>
                     
                     <td valign="top" class="value">${rsInterface.peerSystemType}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">realizedBy:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsCard" action="show" id="${rsInterface?.realizedBy?.id}">${rsInterface?.realizedBy}</g:link></td>
                     
                 </tr>
                 
@@ -339,7 +360,7 @@
                     <td valign="top" style="text-align:left;" class="value">
                         <ul>
                             <g:each var="u" in="${rsInterface.underlying}">
-                                <li><g:link controller="rsInterface" action="show" id="${u.id}">${u}</g:link></li>
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${u.id}">${u}</g:link></li>
                             </g:each>
                         </ul>
                     </td>

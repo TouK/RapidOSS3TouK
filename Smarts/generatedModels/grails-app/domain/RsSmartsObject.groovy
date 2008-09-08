@@ -74,5 +74,7 @@ class RsSmartsObject {
     
     //AUTO_GENERATED_CODE
 
+
+
     
 }

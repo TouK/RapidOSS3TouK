@@ -89,6 +89,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="layeredOver">layeredOver:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsCard,field:'layeredOver','errors')}">
+                            
+<ul>
+<g:each var="l" in="${rsCard?.layeredOver?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsComputerSystemComponent" action="show" id="${l.id}">${l}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsCard?.id, 'relationName':'layeredOver', 'relatedObjectId':l.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsCard?.id, 'relationName':'layeredOver']" action="addTo">Add RsComputerSystemComponent</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="memberOfGroup">memberOfGroup:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsCard,field:'memberOfGroup','errors')}">
@@ -102,6 +121,34 @@
 </g:each>
 </ul>
 <g:link params="['id':rsCard?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="partOf">partOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsCard,field:'partOf','errors')}">
+                            <g:select optionKey="id" from="${RsComputerSystem.list()}" name="partOf.id" value="${rsCard?.partOf?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="realizes">realizes:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsCard,field:'realizes','errors')}">
+                            
+<ul>
+<g:each var="r" in="${rsCard?.realizes?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsNetworkAdapter" action="show" id="${r.id}">${r}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsCard?.id, 'relationName':'realizes', 'relatedObjectId':r.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsCard?.id, 'relationName':'realizes']" action="addTo">Add RsNetworkAdapter</g:link>
 
                         </td>
                     </tr>
@@ -157,6 +204,25 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsCard,field:'type','errors')}">
                             <input type="text" id="type" name="type" value="${fieldValue(bean:rsCard,field:'type')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="underlying">underlying:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsCard,field:'underlying','errors')}">
+                            
+<ul>
+<g:each var="u" in="${rsCard?.underlying?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsComputerSystemComponent" action="show" id="${u.id}">${u}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsCard?.id, 'relationName':'underlying', 'relatedObjectId':u.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsCard?.id, 'relationName':'underlying']" action="addTo">Add RsComputerSystemComponent</g:link>
+
                         </td>
                     </tr>
                     

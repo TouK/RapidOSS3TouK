@@ -47,5 +47,7 @@ class RsVlan  extends RsSmartsObject {
     
     //AUTO_GENERATED_CODE
 
+
+
     
 }

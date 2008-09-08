@@ -63,6 +63,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">connectedVia:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsLink" action="show" id="${rsPort?.connectedVia?.id}">${rsPort?.connectedVia}</g:link></td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">creationClassName:</td>
                     
                     <td valign="top" class="value">${rsPort.creationClassName}</td>
@@ -196,6 +203,19 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">layeredOver:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="l" in="${rsPort.layeredOver}">
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${l.id}">${l}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">managedState:</td>
                     
                     <td valign="top" class="value">${rsPort.managedState}</td>
@@ -258,6 +278,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">partOf:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsComputerSystem" action="show" id="${rsPort?.partOf?.id}">${rsPort?.partOf}</g:link></td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">peerSystemName:</td>
                     
                     <td valign="top" class="value">${rsPort.peerSystemName}</td>
@@ -289,6 +316,13 @@
                     <td valign="top" class="name">portType:</td>
                     
                     <td valign="top" class="value">${rsPort.portType}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">realizedBy:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsCard" action="show" id="${rsPort?.realizedBy?.id}">${rsPort?.realizedBy}</g:link></td>
                     
                 </tr>
                 
@@ -352,6 +386,19 @@
                     <td valign="top" class="name">type:</td>
                     
                     <td valign="top" class="value">${rsPort.type}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">underlying:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="u" in="${rsPort.underlying}">
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${u.id}">${u}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

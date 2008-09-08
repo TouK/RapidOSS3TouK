@@ -6,7 +6,7 @@ class RsComputerSystem  extends RsSmartsObject {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ipNetworks"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ipNetworks", "composedOf", "connectedVia", "hostsAccessPoints"];
     };
     static datasources = [:]
 
@@ -67,10 +67,22 @@ class RsComputerSystem  extends RsSmartsObject {
     
     List ipNetworks =[];
     
+    List composedOf =[];
+    
+    List connectedVia =[];
+    
+    List hostsAccessPoints =[];
+    
     
     static relations = [
     
         ipNetworks:[type:RsIpNetwork, reverseName:"memberSystems", isMany:true]
+    
+        ,composedOf:[type:RsComputerSystemComponent, reverseName:"partOf", isMany:true]
+    
+        ,connectedVia:[type:RsLink, reverseName:"connectedSystem", isMany:true]
+    
+        ,hostsAccessPoints:[type:RsIp, reverseName:"hostedBy", isMany:true]
     
     ]
     
@@ -129,9 +141,10 @@ class RsComputerSystem  extends RsSmartsObject {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ipNetworks"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ipNetworks", "composedOf", "connectedVia", "hostsAccessPoints"];
     
     //AUTO_GENERATED_CODE
+
 
     
 }

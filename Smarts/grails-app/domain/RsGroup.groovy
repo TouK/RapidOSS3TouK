@@ -45,5 +45,6 @@ class RsGroup  extends RsSmartsObject {
     
     //AUTO_GENERATED_CODE
 
+
     
 }

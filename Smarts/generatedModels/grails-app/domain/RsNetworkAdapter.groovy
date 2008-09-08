@@ -6,7 +6,7 @@ class RsNetworkAdapter  extends RsComputerSystemComponent {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connectedVia", "realizedBy"];
     };
     static datasources = [:]
 
@@ -79,8 +79,18 @@ class RsNetworkAdapter  extends RsComputerSystemComponent {
     
     Object __is_federated_properties_loaded__ ;
     
+    RsLink connectedVia ;
     
-    static relations = [:]    
+    RsCard realizedBy ;
+    
+    
+    static relations = [
+    
+        connectedVia:[type:RsLink, reverseName:"connectedTo", isMany:false]
+    
+        ,realizedBy:[type:RsCard, reverseName:"realizes", isMany:false]
+    
+    ]
     
     static constraints={
     adminStatus(blank:true,nullable:true)
@@ -147,13 +157,19 @@ class RsNetworkAdapter  extends RsComputerSystemComponent {
         
      errors(nullable:true)
         
+     connectedVia(nullable:true)
+        
+     realizedBy(nullable:true)
+        
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connectedVia", "realizedBy"];
     
     //AUTO_GENERATED_CODE
+
+
 
     
 }

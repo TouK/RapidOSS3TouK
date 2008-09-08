@@ -63,6 +63,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">connectedVia:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsLink" action="show" id="${rsNetworkAdapter?.connectedVia?.id}">${rsNetworkAdapter?.connectedVia}</g:link></td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">creationClassName:</td>
                     
                     <td valign="top" class="value">${rsNetworkAdapter.creationClassName}</td>
@@ -168,6 +175,19 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">layeredOver:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="l" in="${rsNetworkAdapter.layeredOver}">
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${l.id}">${l}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">maxSpeed:</td>
                     
                     <td valign="top" class="value">${rsNetworkAdapter.maxSpeed}</td>
@@ -223,6 +243,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">partOf:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsComputerSystem" action="show" id="${rsNetworkAdapter?.partOf?.id}">${rsNetworkAdapter?.partOf}</g:link></td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">peerSystemName:</td>
                     
                     <td valign="top" class="value">${rsNetworkAdapter.peerSystemName}</td>
@@ -233,6 +260,13 @@
                     <td valign="top" class="name">peerSystemType:</td>
                     
                     <td valign="top" class="value">${rsNetworkAdapter.peerSystemType}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">realizedBy:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="rsCard" action="show" id="${rsNetworkAdapter?.realizedBy?.id}">${rsNetworkAdapter?.realizedBy}</g:link></td>
                     
                 </tr>
                 
@@ -296,6 +330,19 @@
                     <td valign="top" class="name">type:</td>
                     
                     <td valign="top" class="value">${rsNetworkAdapter.type}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">underlying:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="u" in="${rsNetworkAdapter.underlying}">
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${u.id}">${u}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

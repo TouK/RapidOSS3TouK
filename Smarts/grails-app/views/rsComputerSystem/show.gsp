@@ -49,6 +49,32 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">composedOf:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${rsComputerSystem.composedOf}">
+                                <li><g:link controller="rsComputerSystemComponent" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">connectedVia:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${rsComputerSystem.connectedVia}">
+                                <li><g:link controller="rsLink" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">creationClassName:</td>
                     
                     <td valign="top" class="value">${rsComputerSystem.creationClassName}</td>
@@ -94,6 +120,19 @@
                     <td valign="top" class="name">displayName:</td>
                     
                     <td valign="top" class="value">${rsComputerSystem.displayName}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">hostsAccessPoints:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="h" in="${rsComputerSystem.hostsAccessPoints}">
+                                <li><g:link controller="rsIp" action="show" id="${h.id}">${h}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

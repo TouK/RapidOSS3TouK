@@ -2,7 +2,6 @@ package connection
 
 import datasource.SmartsNotificationDatasource
 import datasource.SmartsTopologyDatasource
-import com.ifountain.smarts.connection.SmartsConnectionImpl
 
 class SmartsConnection extends Connection {
 
@@ -25,8 +24,8 @@ class SmartsConnection extends Connection {
     String domain = "";
     String userPassword = "";
     String domainType = SAM;
-    String brokerPassword = SmartsConnectionImpl.NON_SECURE_BROKER_PASSWORD;
-    String brokerUsername = SmartsConnectionImpl.NON_SECURE_BROKER_USERNAME;
+    String brokerPassword = "Nonsecure";
+    String brokerUsername = "BrokerNonsecure";
     String broker = "";
     List smartsTopologyDatasources = [];
     List smartsNotificationDatasources = [];

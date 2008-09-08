@@ -1,7 +1,5 @@
 package connection
 
-import com.ifountain.smarts.connection.SmartsConnectionImpl
-
 /**
 * Created by IntelliJ IDEA.
 * User: mustafa sener
@@ -18,8 +16,8 @@ class SmartsConnectionTemplate {
     String broker ="";
     String username ="";
     String password ="";
-    String brokerPassword = SmartsConnectionImpl.NON_SECURE_BROKER_PASSWORD;
-    String brokerUsername = SmartsConnectionImpl.NON_SECURE_BROKER_USERNAME;
+    String brokerPassword = "Nonsecure";
+    String brokerUsername = "BrokerNonsecure";
 
     static relations  =[:]
     static constraints={

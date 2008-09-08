@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import relation.Relation
 
 /**
 * Created by IntelliJ IDEA.
@@ -35,6 +36,26 @@ class AddRelationMethodTest extends RapidCmdbWithCompassTestCase{
         assertEquals(expectedDomainObject3, expectedDomainObject1.rel1);
         assertEquals(expectedDomainObject1, expectedDomainObject3.revRel1);
         assertNull(expectedDomainObject2.revRel1);
+    }
+
+    public void testAddMethodDiscardsObjectsWithUnknownObjectType()
+    {
+        initialize([RelationMethodDomainObject1, RelationMethodDomainObject2, RelationMethodDomainObject3, RelationMethodDomainObject4], []);
+        RelationMethodDomainObject1 expectedDomainObject1 = RelationMethodDomainObject1.add([:]);
+        RelationMethodDomainObject2 expectedDomainObject2 = RelationMethodDomainObject2.add([:]);
+        RelationMethodDomainObject3 expectedDomainObject3 = RelationMethodDomainObject3.add([:]);
+        RelationMethodDomainObject3 expectedDomainObject4 = new RelationMethodDomainObject3();
+        RelationMethodDomainObject4 expectedDomainObject5 = RelationMethodDomainObject4.add([:]);
+
+        expectedDomainObject1.addRelation(rel2:[expectedDomainObject2, expectedDomainObject3, expectedDomainObject4, expectedDomainObject5]);
+        assertEquals(expectedDomainObject1, expectedDomainObject2.revRel2);
+        assertEquals(expectedDomainObject1, expectedDomainObject3.revRel2);
+        assertTrue(expectedDomainObject1.rel2.contains(expectedDomainObject2));
+        assertTrue(expectedDomainObject1.rel2.contains(expectedDomainObject3));
+        assertTrue (expectedDomainObject1.hasErrors());
+        assertEquals (2, Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.size());
+        assertTrue (Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.containsKey(Relation.getRelKey(expectedDomainObject2.id)));
+        assertTrue (Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.containsKey(Relation.getRelKey(expectedDomainObject3.id)));
     }
 
 
@@ -168,4 +189,39 @@ class AddRelationMethodTest extends RapidCmdbWithCompassTestCase{
         assertTrue(relatedDomainObject1.noOtherSideRel4.contains(relatedDomainObject5));
     }
 
+}
+
+class RelationMethodDomainObject3 extends RelationMethodDomainObject2{
+     //AUTO_GENERATED_CODE
+    static searchable = {
+        except = [];
+    };
+    static datasources = [:]
+    static constraints={
+    }
+    static propertyConfiguration= [:]
+    static transients = [];
+
+    //AUTO_GENERATED_CODE
+}
+
+class RelationMethodDomainObject4{
+     static searchable = {
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    };
+    static datasources = [:]
+    Long id ;
+    Long version ;
+    org.springframework.validation.Errors errors ;
+    Object __operation_class__ ;
+    Object __is_federated_properties_loaded__ ;
+    static constraints={
+     __operation_class__(nullable:true)
+     __is_federated_properties_loaded__(nullable:true)
+     errors(nullable:true)
+    }
+
+    static relations = [:];
+    static propertyConfiguration= [:]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
 }

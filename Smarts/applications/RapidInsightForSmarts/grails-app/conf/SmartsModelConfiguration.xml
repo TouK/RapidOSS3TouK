@@ -234,7 +234,7 @@
         <Fields>
             <Field SmartsName="InterfaceKey" LocalName="interfaceKey" Type="string"/>
             <Field SmartsName="HasIPAddresses" LocalName="hasIPAddresses" Type="boolean"/>
-            <Field SmartsName="HasIPv6Addresses" LocalName="hasIPv6Addresses" Type="boolean"/>            
+            <Field SmartsName="HasIPv6Addresses" LocalName="hasIPv6Addresses" Type="boolean"/>
         </Fields>
     </Model>
     <Model Name="RsPort" ParentName="RsNetworkAdapter">
@@ -269,7 +269,7 @@
             <Field SmartsName="Z_IsFlapping" LocalName="z_IsFlapping" Type="boolean"/>
             <Field SmartsName="Z_MaxSpeed" LocalName="z_MaxSpeed" Type="number"/>
             <Field SmartsName="Z_Mode" LocalName="z_Mode" Type="string"/>
-            <Field SmartsName="Z_OperStatus" LocalName="z_OperStatus" Type="string"/>            
+            <Field SmartsName="Z_OperStatus" LocalName="z_OperStatus" Type="string"/>
         </Fields>
         <Relations>
             <Relation Name="connectedSystem" ReverseName="connectedVia" Cardinality="Many" ReverseCardinality="Many" ToModel="RsComputerSystem" IsOwner="false"></Relation>
@@ -314,7 +314,7 @@
             <Field SmartsName="NumberOfComponents" LocalName="numberOfComponents" Type="number"/>
             <Field SmartsName="NumberOfFaultyComponents" LocalName="numberOfFaultyComponents" Type="number"/>
             <Field SmartsName="VirtualIP" LocalName="virtualIP" Type="string"/>
-            <Field SmartsName="VirtualMAC" LocalName="virtualMAC" Type="string"/>            
+            <Field SmartsName="VirtualMAC" LocalName="virtualMAC" Type="string"/>
         </Fields>
     </Model>
 </Models>

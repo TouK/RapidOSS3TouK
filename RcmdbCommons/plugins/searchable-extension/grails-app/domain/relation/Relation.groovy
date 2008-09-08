@@ -23,11 +23,6 @@ class Relation {
         return "objId:${objectId} name:${name}"
     }
 
-    def removeRelation(domainObject)
-    {
-        relatedObjectIds.remove(getRelKey(domainObject));
-    }
-
     public static String getRelKey(id)
     {
         return "relatedObjId${id}".toString();   

@@ -22,6 +22,9 @@ import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInj
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.apache.commons.digester.plugins.PluginManager
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
+import com.ifountain.rcmdb.domain.property.DefaultDomainClassPropertyInterceptor
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
  * Created by IntelliJ IDEA.
@@ -91,7 +94,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         servletContext = new MockServletContext(new MockResourceLoader())
         springConfig.servletContext = servletContext
         ServletContextHolder.setServletContext(servletContext);
-
+        ConfigurationHolder.config.setProperty (RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME, DefaultDomainClassPropertyInterceptor.class.name);
         dependentPlugins*.doWithRuntimeConfiguration(springConfig)
 
 

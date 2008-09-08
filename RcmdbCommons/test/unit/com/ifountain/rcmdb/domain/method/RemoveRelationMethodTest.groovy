@@ -96,6 +96,28 @@ class RemoveRelationMethodTest extends RapidCmdbWithCompassTestCase{
 
     }
 
+    public void testRemoveRelationDiscardsObjectsWithUnknownObjectType()
+    {
+        initialize([RelationMethodDomainObject1, RelationMethodDomainObject2, RelationMethodDomainObject3, RelationMethodDomainObject4], []);
+        RelationMethodDomainObject1 expectedDomainObject1 = RelationMethodDomainObject1.add([:]);
+        RelationMethodDomainObject2 expectedDomainObject2 = RelationMethodDomainObject2.add([:]);
+        RelationMethodDomainObject3 expectedDomainObject3 = RelationMethodDomainObject3.add([:]);
+        RelationMethodDomainObject3 expectedDomainObject4 = new RelationMethodDomainObject3();
+        RelationMethodDomainObject4 expectedDomainObject5 = RelationMethodDomainObject4.add([:]);
+
+        expectedDomainObject1.addRelation(rel2:[expectedDomainObject2, expectedDomainObject3]);
+        expectedDomainObject1.removeRelation(rel2:[expectedDomainObject3, expectedDomainObject4, expectedDomainObject5]);
+        assertEquals(expectedDomainObject1, expectedDomainObject2.revRel2);
+        assertNull(expectedDomainObject3.revRel2);
+        assertTrue(expectedDomainObject1.rel2.contains(expectedDomainObject2));
+        assertFalse(expectedDomainObject1.rel2.contains(expectedDomainObject3));
+        assertTrue (expectedDomainObject1.hasErrors());
+
+        assertEquals (1, relation.Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.size());
+        assertTrue (relation.Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.containsKey(relation.Relation.getRelKey(expectedDomainObject2.id)));
+        assertFalse (relation.Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.containsKey(relation.Relation.getRelKey(expectedDomainObject3.id)));
+    }
+
 
     public void testRemoveRelationWithNoOtherside()
     {

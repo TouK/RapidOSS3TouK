@@ -5,7 +5,7 @@
     def domainObject = RsSmartsObject.get(name: name);
     if (domainObject != null) {
         String className = domainObject.getClass().getName();
-        def allProperties = DomainClassUtils.getFilteredProperties(className, ["id", "rsDatasource"])
+        def allProperties = DomainClassUtils.getFilteredProperties(className, ["id", "rsDatasource"], false)
         def relations = DomainClassUtils.getRelations(className);
         %>
         <style>

@@ -75,8 +75,9 @@
                             <td>${propertyName}</td>
                             <%
                                     if (propertyName == "instanceName" || propertyName == "elementName") {
+                                        def title = propertyName == "instanceName"? "Details of ${domainObject.className} ${domainObject.instanceName}" : "Details of ${domainObject.elementClassName} ${domainObject.elementName}" 
                             %>
-                            <td><a style="color:#006DBA;text-decoration:underline;cursor:pointer" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${domainObject[propertyName]}');">${domainObject[propertyName]}</a></td>
+                            <td><a style="color:#006DBA;text-decoration:underline;cursor:pointer" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${domainObject[propertyName]}', '${title}');">${domainObject[propertyName]}</a></td>
                             <%
                                 }
                                 else {

@@ -17,6 +17,7 @@ if (queryType == "notification") {
     def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
         queryGroup.username == userName && queryGroup.isPublic == false
     };
+    def sortProps = sortProperties.sort{it.name} 
     web.render(contentType: 'text/xml') {
         Create {
             group {
@@ -25,7 +26,7 @@ if (queryType == "notification") {
                 }
             }
             sortProperty {
-                sortProperties.each {
+                sortProps.each {
                     option(it.name)
                 }
             }
@@ -43,6 +44,7 @@ else if (queryType == "topology") {
     def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
         queryGroup.username == userName && queryGroup.isPublic == false
     };
+    def sortProps = sortProperties.sort{it.name}
     def propertyMap = [:]
     web.render(contentType: 'text/xml') {
         Create {
@@ -52,7 +54,7 @@ else if (queryType == "topology") {
                 }
             }
             sortProperty {
-                sortProperties.each {
+                sortProps.each {
                     def propertyName = it.name;
                     if(!propertyMap.containsKey(propertyName)){
                         option(propertyName)

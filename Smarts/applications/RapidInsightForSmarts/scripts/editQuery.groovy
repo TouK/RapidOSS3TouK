@@ -25,13 +25,14 @@ else {
         def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
             queryGroup.username == userName && queryGroup.isPublic == false
         };
+        def sortProps = sortProperties.sort{it.name}
         web.render(contentType: 'text/xml') {
             Edit {
                 id(searchQuery.id)
                 name(searchQuery.name)
                 query(searchQuery.query)
                 sortProperty {
-                    sortProperties.each {
+                    sortProps.each {
                         option(selected: it.name == searchQuery.sortProperty, it.name)
                     }
                 }
@@ -65,13 +66,14 @@ else {
             queryGroup.username == userName && queryGroup.isPublic == false
         };
         def propertyMap = [:]
+        def sortProps = sortProperties.sort{it.name}
         web.render(contentType: 'text/xml') {
             Edit {
                 id(searchQuery.id)
                 name(searchQuery.name)
                 query(searchQuery.query)
                 sortProperty {
-                    sortProperties.each {
+                    sortProps.each {
                         def propertyName = it.name;
                         if(!propertyMap.containsKey(propertyName)){
                             option(selected: propertyName == searchQuery.sortProperty, propertyName)    

@@ -163,7 +163,7 @@
             item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: propertyMenuIsNumberCondition},
             item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: propertyMenuIsNumberCondition},
             item7 : { id : 'except', label : 'Except'},
-            item8 : { id : 'browse', label : 'Browse', condition:function(key, value, data){return key == "instanceName"}}
+            item8 : { id : 'browse', label : 'Browse', condition:function(key, value, data){return (key == "instanceName" || key == "elementName")}}
         } ,
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
@@ -189,7 +189,8 @@
 			}
             else if(id == "browse"){
                 var url = "getObjectDetails.gsp?name="+value;
-                objectDetailsDialog.show(url, "Details of " + xmlData.getAttribute("className") + " " + value);
+                var title = key == "instanceName"? "Details of " + xmlData.getAttribute("className") + " " + value : "Details of " + xmlData.getAttribute("elementClassName") + " " + value
+                objectDetailsDialog.show(url, title);
             }
             else if (id == "sortAsc") {
 	            searchList.setSortDirection(key, true);

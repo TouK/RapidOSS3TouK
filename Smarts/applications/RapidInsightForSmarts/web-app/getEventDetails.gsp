@@ -74,7 +74,7 @@
                         <tr>
                             <td>${propertyName}</td>
                             <%
-                                    if (propertyName == "instanceName") {
+                                    if (propertyName == "instanceName" || propertyName == "elementName") {
                             %>
                             <td><a style="color:#006DBA;text-decoration:underline;cursor:pointer" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${domainObject[propertyName]}');">${domainObject[propertyName]}</a></td>
                             <%

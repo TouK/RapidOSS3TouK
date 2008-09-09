@@ -228,6 +228,7 @@ public class JsCssCombiner extends CommandLineUtility {
     private void writeCombinedCSS(List cssPaths, File file) throws Exception {
         StringBuffer combinedFile = new StringBuffer();
         for (int i = 0; i < cssPaths.size(); i++) {
+            System.out.println("Processing css file " + (String)cssPaths.get(i));
             StringBuffer currentBuffer = new StringBuffer();
             File cssFile = new File((String) cssPaths.get(i)).getAbsoluteFile();
             String cssDir = cssFile.getParent();
@@ -252,11 +253,14 @@ public class JsCssCombiner extends CommandLineUtility {
                         String targetFileName = targetPath + "/" + targetUrl;
                         File targetFile = new File(targetFileName);
                         if(!targetFile.exists()){
+                            System.out.println("Copying image file " + mediaFile.getPath() + " to " + targetFile.getPath());
                             org.apache.commons.io.FileUtils.copyFile(mediaFile, targetFile);    
                         }
                     }
                 }
-                matcher.appendReplacement(currentBuffer, wholeUrl.replaceAll(url, targetUrl));
+                String newUrl = wholeUrl.replaceAll(url, targetUrl);
+                System.out.println("New image url is " + newUrl);
+                matcher.appendReplacement(currentBuffer, newUrl);
                 end = matcher.end();
             }
             currentBuffer.append(currentCss.substring(end, currentCss.length()));

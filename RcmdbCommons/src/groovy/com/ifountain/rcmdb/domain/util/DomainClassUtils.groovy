@@ -162,7 +162,7 @@ class DomainClassUtils
     
     def static getStaticListVariable(Class tempObj, String variableName)
     {
-        def variableList = [:];
+        def variableList = [];
         while(tempObj && tempObj != java.lang.Object.class)
         {
             def tmpVariableList = GrailsClassUtils.getStaticPropertyValue (tempObj, variableName);

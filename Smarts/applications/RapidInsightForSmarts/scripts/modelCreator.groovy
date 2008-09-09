@@ -12,7 +12,7 @@ import org.apache.log4j.Logger
 logger = Logger.getLogger(getClass().name);
 logger.info ("Model creator started");
 def baseDir = System.getProperty ("base.dir");
-smartsModelConfigurationFile = new File("$baseDir/grails-app/conf/SmartsModelConfiguration.xml");
+smartsModelConfigurationFile = new File("$baseDir/grails-app/conf/ModelConfiguration.xml");
 if(!smartsModelConfigurationFile.exists())
 {
     logger.info ("Configuration file ${smartsModelConfigurationFile.absolutePath} doesnot exist.");

@@ -242,6 +242,7 @@ public class JsCssCombiner extends CommandLineUtility {
             while (matcher.find()) {
                 String wholeUrl = matcher.group();
                 String url = matcher.group(1);
+                System.out.println("Found image url " + url);
                 String targetUrl = url;
                 if(!url.startsWith("/") && !url.startsWith("http") && !url.startsWith("ftp")){
                     File mediaFile = new File(cssDir + "/" + url);

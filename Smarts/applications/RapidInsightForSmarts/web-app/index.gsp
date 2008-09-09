@@ -89,6 +89,11 @@
            return YAHOO.lang.isNumber(parseInt(value));
     }
 
+    function itemIsRsComputerSystemCondition(xmlData)
+    {
+           return ( xmlData.getAttribute("rsAlias") == "RsComputerSystem" )
+    }
+
     YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
 	    YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
     }, this, true);
@@ -142,7 +147,8 @@
         	{exp:'data["rsAlias"] == "RsHsrGroup"', fields:hsrGroupFields}
        	],
         menuItems:{
-            item1 : { id : 'browse', label : 'Browse' }
+            item1 : { id : 'browse', label : 'Browse' },
+            item2 : { id : 'topMap', label : "Topology Map", condition: itemIsRsComputerSystemCondition }
         },
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
@@ -191,6 +197,11 @@
          if( id == "browse"){
             var url = "getObjectDetails.gsp?name="+objectName;
             objectDetailsDialog.show(url, "Details of " + xmlData.getAttribute('creationClassName') + " " + objectName);
+         }
+        else if( id == "topMap" )
+         {
+            var url = "topology.gsp?name="+objectName;
+            window.location = url;
          }
                                  
     }, this, true);

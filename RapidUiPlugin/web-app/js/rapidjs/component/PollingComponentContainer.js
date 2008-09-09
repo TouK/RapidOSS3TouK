@@ -175,15 +175,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         {
             params["format"] = this.format;
         }
-        var postData = "";
+        var postData = "<postData><data>";
         for(var paramName in params) {
-            postData = postData + paramName + "=" + escape(params[paramName])+"&";
+            postData = postData + paramName + "=" + params[paramName]+"|";
         }
         if(postData != "")
         {
             postData = postData.substring(0, postData.length-1);
         }
 
+        postData += "</data></postData>";
         var callback = {
             success: this.processSuccess,
             failure: this.processFailure,
@@ -191,8 +192,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
             scope: this,
             argument : [callback]
         };
-
-        this.lastConnection = YAHOO.util.Connect.asyncRequest('POST',url , callback, params);
+        this.lastConnection = YAHOO.util.Connect.asyncRequest('POST',url , callback, postData);
         this.events["loadstatechanged"].fireDirect(this, true);
     },
 

@@ -1,6 +1,7 @@
 <html>
 <head>
     <meta name="layout" content="indexLayout" />
+    <script type="text/javascript" src="js/yui/charts/charts-experimental-min.js"></script>
 </head>
 <body>
 <div id="filterDialog">
@@ -67,9 +68,9 @@
     	<td width="100%">
 		    <div class="yui-navset">
 		    <ul class="yui-nav" style="border-style: none">
-		        <li><a href="${createLinkTo(file: 'index.gsp')}"><em>Devices</em></a></li>
+		        <li><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
 		        <li><a href="${createLinkTo(file: 'notify.gsp')}"><em>Notifications</em></a></li>
-                <li class="selected"><a href="${createLinkTo(file: 'map.gsp')}"><em>Map</em></a></li>
+                <li class="selected"><a href="${createLinkTo(file: 'topology.gsp')}"><em>Map</em></a></li>
             </ul>
 		    </div>
 		</td>
@@ -81,17 +82,39 @@
 </div>
 
 <script type="text/javascript">
-	YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
+
+    function getURLParam(strParamName){
+		var strReturn = "";
+		var strHref = window.location.href;
+		if ( strHref.indexOf("?") > -1 ){
+			var strQueryString = strHref.substr(strHref.indexOf("?")).toLowerCase();
+			var aQueryString = strQueryString.split("&");
+			for ( var iParam = 0; iParam < aQueryString.length; iParam++ ){
+				if (
+					aQueryString[iParam].indexOf(strParamName.toLowerCase() + "=") > -1 ){
+					var aParam = aQueryString[iParam].split("=");
+					strReturn = aParam[1];
+					break;
+				}
+			}
+		}
+		return unescape(strReturn);
+	}
+
+
+
+    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
         YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
     }, this, true);
     YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
         YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
     }, this, true);
 
-
-    var conf = {width:500, height:400, iframe:false};
+	/*
+    var conf = {id:"htmlComp", width:500, height:400, iframe:false};
     var html = new YAHOO.rapidjs.component.Html(conf);
     html.hide();
+    */
 
 
     function configFunction()
@@ -161,12 +184,12 @@
         return config;
       }
 
-        function saveMapFunction( data )
-        {
-            var nodes = data["nodes"];
-            var edges = data["edges"];
-            dialog.show(dialog.CREATE_MODE, null, { nodes : nodes, edges : edges} );
-        }
+	function saveMapFunction( data )
+	{
+	    var nodes = data["nodes"];
+	    var edges = data["edges"];
+	    dialog.show(dialog.CREATE_MODE, null, { nodes : nodes, edges : edges} );
+	}
 
       function toolbarMenuFcn( id )
       {
@@ -190,6 +213,11 @@
 
           if( functionName == "mapContentReady" )
           {
+            var deviceName = getURLParam( "name");
+            if( deviceName )
+            {
+                topMap.getInitialMap( deviceName);
+            }
           }
           else if(functionName == "refreshTopology" )
           {
@@ -211,7 +239,7 @@
 
     function expandRequestFunction( data)
     {
-        alert( data.id + " " + data.model + ' ' + data.type );
+        topMap.expandMap( data.id );
     }
 
     var topMapConfig = {
@@ -222,6 +250,8 @@
         dataTag : "device",
         dataKeys : { id : "id", status : "status", load : "load" },
         mapURL : "script/run/getMap",
+        expandURL : "script/run/expandMap",
+        initialMapURL : "script/run/getDeviceTopoMap",
         dataURL : "d2.xml",
         pollingInterval : 0,
         wMode : "Transparent"
@@ -249,6 +279,7 @@
     }
 
     var groupDefinitionDialogConfig = {
+    	id: "groupDef",
         width:"30em",
         saveUrl:"mapGroup/save?format=xml",
         updateUrl:"mapGroup/update?format=xml",
@@ -296,7 +327,8 @@
             if( data ) {
                 var nodes = data["nodes"];
                 var edges = data["edges"];
-                dialog.show(dialog.CREATE_MODE, null, { nodes : nodes, edges : edges} );
+                var postData = { nodes : nodes, edges : edges };
+                dialog.show(dialog.CREATE_MODE, null, postData );
             }
         }
     });
@@ -335,6 +367,7 @@
     }, this, true);
 
     var filterDefinitionDialogConfig = {
+    	id : "filterDef",
         width:"35em",
         createUrl:"script/run/createMap",
         editUrl:"script/run/editMap",
@@ -346,6 +379,7 @@
     };
     var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
      var changePassDialogConfig = {
+     	id : "changePass",
         width:"35em",
         saveUrl:"rsUser/changePassword?format=xml",
         successfulyExecuted: function () {}
@@ -356,6 +390,7 @@
          changePassDialog.show(dialog.CREATE_MODE);
          changePassDialog.dialog.form.username.value = "${session.username}";
     },this, true)
+
 
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
@@ -389,8 +424,10 @@
         });
         window.layout = layout;
 
+
+
     })
 </script>
 
 </body>
-</html>
+</html>

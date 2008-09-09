@@ -4,10 +4,18 @@ import EdgeNode;
 import TopoMap;
 import MapGroup;
 
-def groupName = params.groupName;
-def mapName = params.mapName;
-def nodes = params.nodes.tokenize(";");
-def edges = params.edges.tokenize(";");
+
+def postData = params.postData.data;
+def data = postData.tokenize("|");
+
+
+
+def groupName = data[0].tokenize("=")[1];
+def mapName = data[1].tokenize("=")[1];
+def nodes = data[2].tokenize("=")[1].tokenize(";");
+def edges = data[3].tokenize("=")[1].tokenize(";");
+
+
 
 
 def user = RsUser.findByUsername(web.session.username);

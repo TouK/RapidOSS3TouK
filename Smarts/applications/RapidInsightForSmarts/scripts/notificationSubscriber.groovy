@@ -1,8 +1,10 @@
 import org.apache.log4j.Logger
 import com.ifountain.smarts.datasource.BaseSmartsListeningAdapter
-import datasource.SmartsModel
-import datasource.SmartsModelColumn
 import com.ifountain.comp.utils.CaseInsensitiveMap
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 def getParameters(){
    return [
@@ -24,11 +26,19 @@ existingObjectsRetrieved = false;
 def init(){
     logger = Logger.getLogger("notificationSubscriber");
     logger.debug("Getting column mapping information.");
-    SmartsModel.get(name:"RsEvent").columns.each{SmartsModelColumn col->
-        columnLocalNameMappings[col.localName] = col.smartsName;
-        columnSmartsNameMappings[col.smartsName] = col.localName;        
-    }
 
+    GrailsDomainClass gdc = ApplicationHolder.getApplication().getDomainClass(RsEvent.name);
+    def dcProperties = gdc.getProperties();
+    def relations = DomainClassUtils.getRelations(gdc);
+    dcProperties.each{GrailsDomainClassProperty prop->
+        if(prop.isPersistent() && !relations.containsKey(prop.name))
+        {
+            def propName = prop.getName();
+            def smartsName = propName.substring(0,1).toUpperCase()+propName.substring(1);
+            columnLocalNameMappings[propName] = smartsName;
+            columnSmartsNameMappings[smartsName] = propName;
+        }
+    }
     logger.debug("Marking all notifications as deleted.");
     notificationsMap = new CaseInsensitiveMap()
     def notificationNames = RsEvent.termFreqs("name", [size:10000000000]).term;

@@ -6,9 +6,10 @@ import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.apache.log4j.Level
 import org.apache.commons.collections.map.CaseInsensitiveMap
-import datasource.SmartsModel
-import datasource.SmartsModelColumn
 import org.apache.commons.lang.StringUtils
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -85,39 +86,48 @@ import org.apache.commons.lang.StringUtils
 CLASS_MAPPINGS = [
     RsComputerSystem : [
             classes:[Bridge:[:], Hub:[:], Host:[:], Node:[:], Switch:[:], Router:[:], Firewall:[:], RelayDevice:[:], TerminalServer:[:]],
-            defaultColumnsToBeSubscribed: ["Name", "DiscoveredLastAt", "DiscoveryErrorInfo"]
+            defaultColumnsToBeSubscribed: ["Name", "DiscoveredLastAt", "DiscoveryErrorInfo"],
+            columnsMapping:[:]
     ],
     RsComputerSystemComponent :[
             classes:[PowerSupply:[:], Processor:[:], Memory:[:], TemperatureSensor:[:], VoltageSensor:[:], Fan:[:], Disk:[:], FileSystem:[:], LogicalDisk:[:], NumericSensor:[:]],
-            defaultColumnsToBeSubscribed: ["Name"]
+            defaultColumnsToBeSubscribed: ["Name"],
+            columnsMapping:[:]
     ],
     RsGroup:[
             classes:[CardRedundancyGroup:[:], RedundancyGroup:[:], SystemRedundancyGroup:[:]],
-            defaultColumnsToBeSubscribed: ["Name"]
+            defaultColumnsToBeSubscribed: ["Name"],
+            columnsMapping:[:]
     ],
     RsLink: [
             classes:[NetworkConnection:[:], Cable:[:], TrunkCable:[:]],
-            defaultColumnsToBeSubscribed: ["Name"]
+            defaultColumnsToBeSubscribed: ["Name"],
+            columnsMapping:[:]
     ],
     RsCard: [
             classes:[Card:[:]],
-            defaultColumnsToBeSubscribed: ["Name"]
+            defaultColumnsToBeSubscribed: ["Name"],
+            columnsMapping:[:]
     ],
     RsIp: [
             classes:[IP:[:]],
-            defaultColumnsToBeSubscribed: ["Name"]
+            defaultColumnsToBeSubscribed: ["Name"],
+            columnsMapping:[:]
     ],
     RsInterface: [
             classes:[Interface:[:]],
-            defaultColumnsToBeSubscribed: ["Name"]
+            defaultColumnsToBeSubscribed: ["Name"],
+            columnsMapping:[:]
     ],
     RsPort: [
             classes:[Port:[:]],
-            defaultColumnsToBeSubscribed: ["Name"]
+            defaultColumnsToBeSubscribed: ["Name"],
+            columnsMapping:[:]
     ],
     RsManagementServer: [
             classes:[ManagementServer:[:]],
-            defaultColumnsToBeSubscribed: ["Name"]
+            defaultColumnsToBeSubscribed: ["Name"],
+            columnsMapping:[:]
     ]
 ]
 
@@ -140,25 +150,20 @@ def getParameters() {
     def params = [];
 
     CLASSES_TO_BE_SUBSCRIBED.each{String rsClassName->
-
-        SmartsModel model = SmartsModel.get(name:rsClassName);
         def columnMap = [:];
         COLUMN_MAPPING_DATA[rsClassName] = columnMap;
-        while(model != null)
-        {
-            model.columns.each{SmartsModelColumn col->
-                columnMap[col.smartsName] = col;
-            }
-            if(model.parentName != null)
+        GrailsDomainClass gdc = ApplicationHolder.getApplication().getDomainClass(rsClassName);
+        def dcProperties = gdc.getProperties();
+        def relations = DomainClassUtils.getRelations(gdc);
+        dcProperties.each{GrailsDomainClassProperty prop->
+            if(prop.isPersistent() && !relations.containsKey(prop.name))
             {
-                model = SmartsModel.get(name:model.parentName);
-            }
-            else
-            {
-                model = null;
+                def propName = prop.getName();
+                def smartsName = propName.substring(0,1).toUpperCase()+propName.substring(1);
+                columnMap[smartsName] = propName;
             }
         }
-
+        columnMap.putAll (CLASS_MAPPINGS[rsClassName].columnsMapping);
         def colsToBeSubscribed = CLASS_MAPPINGS[rsClassName].defaultColumnsToBeSubscribed;
         
         CLASS_MAPPINGS[rsClassName].classes.each{String smartsClassName, Map classConfig->
@@ -283,7 +288,7 @@ def handleChange(updateParams)
         def colMapping = COLUMN_MAPPING_DATA[smartsObject.class.simpleName];
         if(colMapping && colMapping.containsKey(monitoredAttribute))
         {
-            monitoredAttribute = colMapping[monitoredAttribute].localName
+            monitoredAttribute = colMapping[monitoredAttribute]
             smartsObject.setProperty(monitoredAttribute, attributeValue);
         }
 
@@ -327,9 +332,9 @@ def getDatasource() {
 def getPropsWithLocalNames(String className, topologyObject) {
     def cols = COLUMN_MAPPING_DATA[className]
     def props = [:]
-    cols.each {String colName, SmartsModelColumn col->
-        def value = topologyObject[col.smartsName];
-        props.put(col.localName, value);
+    cols.each {String smartsName, String localName->
+        def value = topologyObject[smartsName];
+        props.put(localName, value);
     }
     props.put("rsDatasource",getDatasource().name)
     return props;

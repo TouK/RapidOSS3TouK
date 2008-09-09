@@ -24,8 +24,8 @@ class SmartsConnection extends Connection {
     String domain = "";
     String userPassword = "";
     String domainType = SAM;
-    String brokerPassword = "Nonsecure";
-    String brokerUsername = "BrokerNonsecure";
+    String brokerPassword = "";
+    String brokerUsername = "";
     String broker = "";
     List smartsTopologyDatasources = [];
     List smartsNotificationDatasources = [];

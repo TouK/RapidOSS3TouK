@@ -9,7 +9,7 @@
 
 .admin th {
     background: transparent url( js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -1300px;
-
+    color: #2647A0;
 }
 
 .admin .list th, .admin .list td {

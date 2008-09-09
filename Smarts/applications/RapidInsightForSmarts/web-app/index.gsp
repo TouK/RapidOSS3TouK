@@ -1,9 +1,6 @@
 <html>
 <head>
     <meta name="layout" content="indexLayout" />
-    <style>
-		
-    </style>
 </head>
 <body>
 <div id="filterDialog">

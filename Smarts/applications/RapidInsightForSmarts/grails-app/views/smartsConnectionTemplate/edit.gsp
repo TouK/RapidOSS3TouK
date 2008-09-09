@@ -64,7 +64,7 @@
                             <label for="brokerPassword">Broker Password:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:smartsConnectionTemplate,field:'brokerPassword','errors')}">
-                            <input type="password" id="brokerPassword" name="brokerPassword" value="${fieldValue(bean:smartsConnectionTemplate,field:'brokerPassword')}"/>
+                            <input type="text" id="brokerPassword" name="brokerPassword" value="${fieldValue(bean:smartsConnectionTemplate,field:'brokerPassword')}"/>
                         </td>
                     </tr>
                     
@@ -82,7 +82,7 @@
                             <label for="password">Password:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:smartsConnectionTemplate,field:'password','errors')}">
-                            <input type="password" id="password" name="password" value="${fieldValue(bean:smartsConnectionTemplate,field:'password')}"/>
+                            <input type="text" id="password" name="password" value="${fieldValue(bean:smartsConnectionTemplate,field:'password')}"/>
                         </td>
                     </tr>
                     

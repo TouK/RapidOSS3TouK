@@ -64,7 +64,7 @@ public class SmartsConnectionImpl extends BaseConnection{
         this.password = checkParam(PASSWORD);
         this.brokerUsername =  (String)params.getOtherParams().get(BROKER_USERNAME);
         this.brokerPassword =  (String)params.getOtherParams().get(BROKER_PASSWORD);
-        if(brokerUsername == null || brokerPassword == null)
+        if(brokerUsername == null || brokerUsername.trim().equals("") || brokerPassword == null)
         {
             brokerUsername = NON_SECURE_BROKER_USERNAME;
             brokerPassword = NON_SECURE_BROKER_PASSWORD;

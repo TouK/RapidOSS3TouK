@@ -13,18 +13,18 @@ class SmartsConnectionTemplate {
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
     String name ="";
-    String broker ="";
+    String broker ="localhost:426";
     String username ="";
     String password ="";
-    String brokerPassword = "Nonsecure";
-    String brokerUsername = "BrokerNonsecure";
+    String brokerPassword = "";
+    String brokerUsername = "";
 
     static relations  =[:]
     static constraints={
       name(blank:false,nullable:false,key:[])
       broker(blank:false,nullable:false)
       username(blank:false,nullable:false)
-      brokerUsername(blank:false,nullable:false)
+      brokerUsername(blank:true,nullable:true)
       password(blank:true,nullable:true)
       brokerPassword(blank:true,nullable:true)
     }

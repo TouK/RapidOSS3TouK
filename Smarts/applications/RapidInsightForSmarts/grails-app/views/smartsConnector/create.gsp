@@ -69,10 +69,10 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="ds">Domain Name:</label>
+                            <label for="domain">Domain Name:</label>
                         </td>
                         <td valign="top" class="value">
-                            <input type="text" id="name" name="domain" value="${smartsConnector?.ds?.connection?.domain}"/>
+                            <input type="text" id="domain" name="domain" value="${smartsConnector?.ds?.connection?.domain}"/>
                         </td>
                     </tr>
 

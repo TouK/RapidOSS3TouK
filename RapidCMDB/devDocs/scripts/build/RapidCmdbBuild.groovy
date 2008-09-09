@@ -165,6 +165,13 @@ class RapidCmdbBuild extends Build {
         }
 
         copyCommons(env.dist_rapid_suite, true);
+        def viewsDir = new File("${env.dist_rapid_suite}/grails-app/views");
+        viewsDir.eachDir{
+            def dirName = it.getName();
+            if(dirName != "layouts"){
+                ant.copy(file:"${env.dist_rapid_suite}/grails-app/views/layouts/main.gsp", toFile:"${env.dist_rapid_suite}/grails-app/views/layouts/${dirName}.gsp")
+            }
+        }
         
         if(osType == WINDOWS){
 	        ant.copy(todir: "$env.dist_rapid_server/jre") {

@@ -1,7 +1,5 @@
-import datasource.SmartsModel
 import groovy.xml.MarkupBuilder
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import datasource.SmartsModelColumn
 import org.apache.log4j.Logger
 
 /**
@@ -20,29 +18,53 @@ if(!smartsModelConfigurationFile.exists())
     logger.info ("Configuration file ${smartsModelConfigurationFile.absolutePath} doesnot exist.");
     throw new Exception("Configuration file doesnot exist.");
 }
-SmartsModel.list()*.remove();
-
 def modelXmls = getModelXmls();
-
-
 ModelGenerator.getInstance().generateModels (modelXmls);
 web.flash?.message = "Models generated successfully."
 def getModelXmls()
 {
     def slurper = new XmlSlurper()
     def res = slurper.parseText(smartsModelConfigurationFile.getText());
-    def modelsXml = res.Model;
+    def modelsXml = res.Models.Model;
+    def relations = res.Relations.Relation;
+
+    def relationConfiguration = [:]
+    relations.each{relation->
+        def fromClass = relation.@From.text()
+        def toClass = relation.@To.text()
+        def name = relation.@Name.text()
+        def reverseName = relation.@ReverseName.text()
+        String type = relation.@Type.text()
+        def cardinalities = type.toLowerCase().split("to", -1)
+        def fromCardinality = getCardinality(cardinalities[0])
+        def toCardinality = getCardinality(cardinalities[1])
+        def tmpRelConfigs = []
+        tmpRelConfigs += [fromClass:fromClass, name:name, reverseName:reverseName, toModel:toClass,cardinality:fromCardinality, reverseCardinality:toCardinality, isOwner:true]
+        tmpRelConfigs +=  [fromClass:toClass, name:reverseName, reverseName:name, toModel:fromClass,cardinality:toCardinality, reverseCardinality:fromCardinality, isOwner:false]
+        tmpRelConfigs.each{Map relConfig->
+            def relConfigs = relationConfiguration[relConfig.fromClass];
+            if(relConfigs == null)
+            {
+                relConfigs = [:]
+                relationConfiguration[relConfig.fromClass] = relConfigs;
+            }
+            relConfig.remove("fromClass")
+            relConfigs[relConfig.name] = relConfig;
+        }
+    }
+
+
     def modelXmlStrings = [];
     logger.info ("Will create ${modelsXml.size()} number of models.");
     modelsXml.each{modelXml->
         def modelString = new StringWriter();
         def modelBuilder = new MarkupBuilder(modelString);
-        def fields = modelXml.Fields.Field;
-        def relations = modelXml.Relations.Relation;
+        def modelProperties = modelXml.Properties.Property;
+        def modelDatasources = modelXml.Datasources.Datasource;
         def modelName = modelXml.@Name.text();
-        def parentName = modelXml.@ParentName.text();
+        def parentName = modelXml.@Parent.text();
         def modelMetaProps = [name:modelName];
-        logger.info ("Creating model ${modelName} with ${fields.size()} number of properties and ${relations.size()} number of relations");
+        logger.info ("Creating model ${modelName} with ${modelProperties.size()} number of properties");
         if(parentName != null && parentName != "")
         {
             logger.info ("Model ${modelName} is a child of ${parentName}");
@@ -50,92 +72,112 @@ def getModelXmls()
         }
         modelBuilder.Model(modelMetaProps)
         {
-            def smartsModel = SmartsModel.add(name:modelName, parentName:parentName);
-            def cols = [];
-            if(!smartsModel.hasErrors())
+            def keys = [];
+            modelBuilder.Properties()
             {
-                def keys = [];
-                modelBuilder.Properties()
-                {
-                    fields.each{field->
-                        def smartsName = field.@SmartsName.text();
-                        def localName = field.@LocalName.text();
-                        def type = field.@Type.text();
-                        def isDelMarker = new Boolean(field.@IsDeleteMarker.text()).booleanValue();
-                        def isKey = new Boolean(field.@IsKey.text()).booleanValue();
-                        logger.info ("Creating property ${localName} corresponding smarts property ${smartsName}");
-                        cols.add(SmartsModelColumn.add(smartsName:smartsName, localName:localName, isDeleteMarker:isDelMarker, type:type));
+                modelProperties.each{field->
 
-                        if(type == "number")
-                        {
-                            modelBuilder.Property(name:localName, type:type, datasource:"RCMDB", defaultValue:"0", nameInDatasource:localName, lazy:false);
-                        }
-                        else
-                        {
-                            modelBuilder.Property(name:localName, type:type, datasource:"RCMDB", defaultValue:"", nameInDatasource:localName, lazy:false);
-                        }
-                        if(isKey)
-                        {
-                            keys += localName;
-                        }
+                    def localName = field.@Name.text();
+                    def datasource = field.@Datasource.text();
+                    def nameInDatasource = field.@NameInDatasource.text();
+                    def datasourceProperty = field.@DatasourceProperty.text();
+                    def type = field.@Type.text();
+                    def defaultValue = field.@Default.text();
+                    def isKey = field.@IsKey.text();
+                    isKey = isKey == "true";
 
-                    }
-                }
-                modelBuilder.Datasources()
-                {
-                    if(parentName == null  || parentName == "")
+                    def modelPropertyConfig = [name:localName, type:type, defaultValue:defaultValue, lazy:false]
+                    if(datasourceProperty != null && datasourceProperty != "")
                     {
-                        modelBuilder.Datasource(name:"RCMDB")
-                        {
-                            keys.each{
-                                modelBuilder.Key(propertyName:it, nameInDatasource:it);
-                            }
+                        modelPropertyConfig["datasourceProperty"] = datasourceProperty;
+                    }
+                    else if(datasource != null && datasource != "")
+                    {
+                        modelPropertyConfig["datasource"] = datasource;
+                    }
+                    else
+                    {
+                        modelPropertyConfig["datasource"] = "RCMDB";
+                    }
+
+                    if(nameInDatasource != null && nameInDatasource != "")
+                    {
+                        modelPropertyConfig["nameInDatasource"] = nameInDatasource;
+                    }
+                    else
+                    {
+                        modelPropertyConfig["nameInDatasource"] = localName;
+                    }
+                    logger.info ("Creating property ${localName}");
+                    if(type == "number")
+                    {
+                        modelPropertyConfig["defaultvalue"] = "0";
+                    }
+                    else
+                    {
+                        modelPropertyConfig["defaultvalue"] = "";
+                    }
+                    
+                    modelBuilder.Property(modelPropertyConfig);
+                    if(isKey)
+                    {
+                        keys += localName;
+                    }
+
+                }
+            }
+            modelBuilder.Datasources()
+            {
+                if(parentName == null  || parentName == "")
+                {
+                    modelBuilder.Datasource(name:"RCMDB")
+                    {
+                        keys.each{
+                            modelBuilder.Key(propertyName:it, nameInDatasource:it);
                         }
                     }
                 }
-
-                modelBuilder.Relations()
-                {
-                    relations.each{relation->
-                        def relName = relation.@Name.text() ;
-                        def reverseName = relation.@ReverseName.text() ;
-                        def toModel = relation.@ToModel.text() ;
-                        def type = relation.@Cardinality.text() ;
-                        def isOwner = relation.@IsOwner.text() ;
-                        def reverseType = relation.@ReverseCardinality.text() ;
-                        modelBuilder.Relation(name:relName, reverseName:reverseName, toModel:toModel, cardinality:type, reverseCardinality:reverseType, isOwner:isOwner);
-                    }
+                modelDatasources.each{modelDatasource->
+                    def dsName = modelDatasource.@Name.text();
+                    def datasourceKeys = modelDatasource.Keys.Key;
+                    modelBuilder.Datasource(name:dsName)
+                    {
+                        datasourceKeys.each{modelDatasourceKey->
+                            def keyPropName = modelDatasourceKey.@Name.text();
+                            def keyPropNameInDatasource = modelDatasourceKey.@NameinDatasource.text();
+                            if(keyPropNameInDatasource == null || keyPropNameInDatasource == "")
+                            {
+                                keyPropNameInDatasource = keyPropName;
+                            }
+                            modelBuilder.Key(propertyName:keyPropName, nameInDatasource:keyPropNameInDatasource);
+                        }
+                    }    
                 }
-
-                smartsModel.addRelation(columns:cols);
+                
             }
-            else
+
+            modelBuilder.Relations()
             {
-                logger.info ("Could not created SmartsModel. Reason: ${smartsModel.errors}");
+                relationConfiguration[modelName].each{String relName, Map relationconfig->
+                    modelBuilder.Relation(relationconfig);
+                }
             }
-
         }
         modelXmlStrings += modelString.toString();
     }
-
-    def allSmartsModelObjects = [:]
-    SmartsModel.list().each{
-        allSmartsModelObjects[it.name] = it;
-    }
-    allSmartsModelObjects.each{key, obj->
-        def parents = [];
-        getParentObjects(allSmartsModelObjects, parents, obj);
-        def cols = [];
-        parents.each{parent->
-            parent.columns.each{column->
-                cols.add(SmartsModelColumn.add(smartsName:column.smartsName, localName:column.localName, isDeleteMarker:column.isDeleteMarker, type:column.type));
-            }
-        }
-        obj.addRelation(columns:cols);
-    }
     return modelXmlStrings;
 }
-
+def getCardinality(cardinalityString)
+{
+    if(cardinalityString == ModelGenerator.RELATION_TYPE_ONE.toLowerCase())
+    {
+        return  ModelGenerator.RELATION_TYPE_ONE;
+    }
+    else
+    {
+        return ModelGenerator.RELATION_TYPE_MANY;
+    }
+}
 def getParentObjects(allSmartsModelObjects, parents, obj)
 {
     if(obj.parentName != null)

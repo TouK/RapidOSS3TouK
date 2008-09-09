@@ -1,5 +1,4 @@
 import auth.RsUser
-import datasource.SmartsModel
 import script.CmdbScript
 import search.SearchQuery
 import search.SearchQueryGroup
@@ -20,11 +19,6 @@ CmdbScript.addScript(name: "setOwnership");
 CmdbScript.addScript(name: "queryList");
 CmdbScript.addScript(name: "createQuery");
 CmdbScript.addScript(name: "editQuery");
-if(SmartsModel.get(name:"RsNotification") == null)
-{
-    CmdbScript.runScript("modelCreator", [web:[:]]);
-}
-
 
 def adminUser = RsUser.RSADMIN;
 def bySevertyGroup = SearchQueryGroup.add(name: "By Severity", username:adminUser, isPublic:true, type:"notification");

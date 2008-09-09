@@ -245,7 +245,7 @@ public class JsCssCombiner extends CommandLineUtility {
                 System.out.println("Found image url " + url);
                 String targetUrl = url;
                 if(!url.startsWith("/") && !url.startsWith("http") && !url.startsWith("ftp")){
-                    File mediaFile = new File(cssDir + "/" + url);
+                    File mediaFile = new File(cssDir + "/" + url).getAbsoluteFile();
                     System.out.println("Image file: " + mediaFile.getPath());
                     if(mediaFile.exists()){
                         System.out.println("Image file exists.");

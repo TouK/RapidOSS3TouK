@@ -1,320 +1,294 @@
-<Models>
-    <Model Name="RsSmartsObject">
-        <Fields>
-          <Field SmartsName='Name' LocalName='name' IsDeleteMarker='false' Type='string' IsKey='true' />
-          <Field SmartsName='CreationClassName' LocalName='creationClassName' IsDeleteMarker='false' Type='string' IsKey='false' />
-          <Field SmartsName='Description' LocalName='description' IsDeleteMarker='false' Type='string' IsKey='false' />
-          <Field SmartsName='DisplayName' LocalName='displayName' IsDeleteMarker='false' Type='string' IsKey='false' />
-          <Field SmartsName='IsManaged' LocalName='isManaged' IsDeleteMarker='false' Type='boolean' IsKey='false' />
-          <Field SmartsName='rsDatasource' LocalName='rsDatasource' IsDeleteMarker='false' Type='string' IsKey='false' />
-        </Fields>
-        <Relations>
-            <Relation Name="memberOfGroup" ReverseName="consistsOf" Cardinality="Many" ReverseCardinality="Many" ToModel="RsGroup" IsOwner="false"></Relation>
-        </Relations>
-    </Model>
-    <Model Name="RsEvent">
-        <Fields>
-            <Field SmartsName='Name' LocalName='name' IsDeleteMarker='false' Type='string' IsKey='false' />
-            <Field SmartsName='CreationClassName' LocalName='creationClassName' IsDeleteMarker='false' Type='string' IsKey='false' />
-            <Field SmartsName='Description' LocalName='description' IsDeleteMarker='false' Type='string' IsKey='false' />
-            <Field SmartsName='DisplayName' LocalName='displayName' IsDeleteMarker='false' Type='string' IsKey='false' />
-            <Field SmartsName="ClassName" LocalName="className" Type="string" IsDeleteMarker="false" IsKey="true"/>
-            <Field SmartsName="InstanceName" LocalName="instanceName" Type="string" IsDeleteMarker="false" IsKey="true"/>
-            <Field SmartsName="EventName" LocalName="eventName" Type="string" IsDeleteMarker="false" IsKey="true"/>
-            <Field SmartsName="Severity" LocalName="severity" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="LastNotifiedAt" LocalName="lastNotifiedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="LastCreatedAt" LocalName="lastCreatedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Active" LocalName="active" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="FirstNotifiedAt" LocalName="firstNotifiedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="LastClearedAt" LocalName="lastClearedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="LastChangedAt" LocalName="lastChangedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="IsRoot" LocalName="isRoot" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="IsProblem" LocalName="isProblem" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Acknowledged" LocalName="acknowledged" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="EventType" LocalName="eventType" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="EventState" LocalName="eventState" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="EventText" LocalName="eventText" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Impact" LocalName="impact" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Certainty" LocalName="certainty" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="InMaintenance" LocalName="inMaintenance" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="TroubleTicketID" LocalName="troubleTicketID" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Owner" LocalName="owner" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Category" LocalName="category" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="OccurrenceCount" LocalName="occurrenceCount" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="ClassDisplayName" LocalName="classDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="InstanceDisplayName" LocalName="instanceDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="EventDisplayName" LocalName="eventDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="ElementClassName" LocalName="elementClassName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="ElementName" LocalName="elementName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="SourceDomainName" LocalName="sourceDomainName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined1" LocalName="userDefined1" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined2" LocalName="userDefined2" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined3" LocalName="userDefined3" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined4" LocalName="userDefined4" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined5" LocalName="userDefined5" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined6" LocalName="userDefined6" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined7" LocalName="userDefined7" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined8" LocalName="userDefined8" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined9" LocalName="userDefined9" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined10" LocalName="userDefined10" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName='rsDatasource' LocalName='rsDatasource' IsDeleteMarker='false' Type='string' IsKey='false' />
-        </Fields>
-        <Relations>
-            <Relation Name="causedBy" ReverseName="causes" Cardinality="Many" ReverseCardinality="Many" ToModel="RsEvent" IsOwner="true"></Relation>
-            <Relation Name="causes" ReverseName="causedBy" Cardinality="Many" ReverseCardinality="Many" ToModel="RsEvent" IsOwner="false"></Relation>
-        </Relations>
-    </Model>
-    <Model Name="RsHistoricalEvent">
-        <Fields>
-            <Field SmartsName='Name' LocalName='name' IsDeleteMarker='false' Type='string' IsKey='false' />
-            <Field SmartsName='CreationClassName' LocalName='creationClassName' IsDeleteMarker='false' Type='string' IsKey='false' />
-            <Field SmartsName='Description' LocalName='description' IsDeleteMarker='false' Type='string' IsKey='false' />
-            <Field SmartsName='DisplayName' LocalName='displayName' IsDeleteMarker='false' Type='string' IsKey='false' />
-            <Field SmartsName="ClassName" LocalName="className" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="InstanceName" LocalName="instanceName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="EventName" LocalName="eventName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Severity" LocalName="severity" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="LastNotifiedAt" LocalName="lastNotifiedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="LastCreatedAt" LocalName="lastCreatedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Active" LocalName="active" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="FirstNotifiedAt" LocalName="firstNotifiedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="LastClearedAt" LocalName="lastClearedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="LastChangedAt" LocalName="lastChangedAt" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="IsRoot" LocalName="isRoot" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Acknowledged" LocalName="acknowledged" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="EventType" LocalName="eventType" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="EventState" LocalName="eventState" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="EventText" LocalName="eventText" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Impact" LocalName="impact" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Certainty" LocalName="certainty" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="InMaintenance" LocalName="inMaintenance" Type="boolean" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="TroubleTicketID" LocalName="troubleTicketID" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Owner" LocalName="owner" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="Category" LocalName="category" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="OccurrenceCount" LocalName="occurrenceCount" Type="number" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="ClassDisplayName" LocalName="classDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="InstanceDisplayName" LocalName="instanceDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="EventDisplayName" LocalName="eventDisplayName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="ElementClassName" LocalName="elementClassName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="ElementName" LocalName="elementName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="SourceDomainName" LocalName="sourceDomainName" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined1" LocalName="userDefined1" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined2" LocalName="userDefined2" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined3" LocalName="userDefined3" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined4" LocalName="userDefined4" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined5" LocalName="userDefined5" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined6" LocalName="userDefined6" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined7" LocalName="userDefined7" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined8" LocalName="userDefined8" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined9" LocalName="userDefined9" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName="UserDefined10" LocalName="userDefined10" Type="string" IsDeleteMarker="false" IsKey="false"/>
-            <Field SmartsName='rsDatasource' LocalName='rsDatasource' IsDeleteMarker='false' Type='string' IsKey='false' />
-            <Field SmartsName='causedBy' LocalName='causedBy' IsDeleteMarker='false' Type='string' IsKey='false' />
-            <Field SmartsName='causes' LocalName='causes' IsDeleteMarker='false' Type='string' IsKey='false' />
-        </Fields>
-    </Model>
-     <Model Name="RsManagementServer">
-         <Fields>
-             <Field SmartsName="Name" LocalName="name" Type="string"/>
-         </Fields>
-    </Model>
-    <Model Name="RsComputerSystem" ParentName="RsSmartsObject">
-        <Fields>
-            <Field SmartsName="AccessMode" LocalName="accessMode" Type="string"/>
-            <Field SmartsName="DiscoveredFirstAt" LocalName="discoveredFirstAt" Type="string"/>
-            <Field SmartsName="DiscoveredLastAt" LocalName="discoveredLastAt" Type="string"/>
-            <Field SmartsName="DiscoveryErrorInfo" LocalName="discoveryErrorInfo" Type="string"/>
-            <Field SmartsName="DiscoveryTime" LocalName="discoveryTime" Type="string"/>
-            <Field SmartsName="Location" LocalName="location" Type="string"/>
-            <Field SmartsName="Model" LocalName="model" Type="string"/>
-            <Field SmartsName="NumberOfIPs" LocalName="numberOfIPs" Type="number"/>
-            <Field SmartsName="NumberOfIPv6s" LocalName="numberOfIPv6s" Type="number"/>
-            <Field SmartsName="NumberOfInterfaces" LocalName="numberOfInterfaces" Type="number"/>
-            <Field SmartsName="NumberOfNetworkAdapters" LocalName="numberOfNetworkAdapters" Type="number"/>
-            <Field SmartsName="NumberOfPorts" LocalName="numberOfPorts" Type="number"/>
-            <Field SmartsName="OSVersion" LocalName="osVersion" Type="string"/>
-            <Field SmartsName="PrimaryOwnerContact" LocalName="primaryOwnerContact" Type="string"/>
-            <Field SmartsName="PrimaryOwnerName" LocalName="primaryOwnerName" Type="string"/>
-            <Field SmartsName="ReadCommunity" LocalName="readCommunity" Type="string"/>
-            <Field SmartsName="SNMPAddress" LocalName="snmpAddress" Type="string"/>
-            <Field SmartsName="SupportsSNMP" LocalName="supportsSNMP" Type="boolean"/>
-            <Field SmartsName="SystemName" LocalName="systemName" Type="string"/>
-            <Field SmartsName="SystemObjectID" LocalName="systemObjectID" Type="string"/>
-            <Field SmartsName="Vendor" LocalName="vendor" Type="string"/>
-            <Field SmartsName="ManagementServer" LocalName="managementServer" Type="string"/>
-        </Fields>
-        <Relations>
-            <Relation Name="ipNetworks" ReverseName="memberSystems" Cardinality="Many" ReverseCardinality="Many" ToModel="RsIpNetwork" IsOwner="true"></Relation>
-            <Relation Name="composedOf" ReverseName="partOf" Cardinality="One" ReverseCardinality="Many" ToModel="RsComputerSystemComponent" IsOwner="true"></Relation>
-            <Relation Name="connectedVia" ReverseName="connectedSystem" Cardinality="Many" ReverseCardinality="Many" ToModel="RsLink" IsOwner="true"></Relation>
-            <Relation Name="hostsAccessPoints" ReverseName="hostedBy" Cardinality="One" ReverseCardinality="Many" ToModel="RsIp" IsOwner="true"></Relation>
-        </Relations>
-    </Model>
-    <Model Name="RsComputerSystemComponent" ParentName="RsSmartsObject">
-        <Fields>
-            <Field SmartsName="ComputerSystemName" LocalName="computerSystemName" Type="string"/>
-            <Field SmartsName="Tag" LocalName="tag" Type="string"/>
-        </Fields>
-
-        <Relations>
-            <Relation Name="partOf" ReverseName="composedOf" Cardinality="Many" ReverseCardinality="One" ToModel="RsComputerSystem" IsOwner="false"></Relation>
-            <Relation Name="underlying" ReverseName="layeredOver" Cardinality="Many" ReverseCardinality="Many" ToModel="RsComputerSystemComponent" IsOwner="false"></Relation>
-            <Relation Name="layeredOver" ReverseName="underlying" Cardinality="Many" ReverseCardinality="Many" ToModel="RsComputerSystemComponent" IsOwner="true"></Relation>
-        </Relations>
-    </Model>
-    <Model Name="RsCard" ParentName="RsComputerSystemComponent">
-        <Fields>
-            <Field SmartsName="SerialNumber" LocalName="serialNumber" Type="string"/>
-            <Field SmartsName="StandbyStatus" LocalName="standbyStatus" Type="string"/>
-            <Field SmartsName="Status" LocalName="status" Type="string"/>
-            <Field SmartsName="Type" LocalName="type" Type="string"/>
-        </Fields>
-        <Relations>
-            <Relation Name="realizes" ReverseName="realizedBy" Cardinality="One" ReverseCardinality="Many" ToModel="RsNetworkAdapter" IsOwner="true"></Relation>
-        </Relations>
-    </Model>
-    <Model Name="RsIp" ParentName="RsComputerSystemComponent">
-        <Fields>
-            <Field SmartsName="Address" LocalName="address" Type="string"/>
-            <Field SmartsName="CreationClassName" LocalName="creationClassName" Type="string"/>
-            <Field SmartsName="Description" LocalName="description" Type="string"/>
-            <Field SmartsName="IPStatus" LocalName="ipStatus" Type="string"/>
-            <Field SmartsName="InterfaceAdminStatus" LocalName="interfaceAdminStatus" Type="string"/>
-            <Field SmartsName="InterfaceMode" LocalName="interfaceMode" Type="string"/>
-            <Field SmartsName="InterfaceName" LocalName="interfaceName" Type="string"/>
-            <Field SmartsName="InterfaceOperStatus" LocalName="interfaceOperStatus" Type="string"/>
-            <Field SmartsName="InterfaceType" LocalName="interfaceType" Type="string"/>
-            <Field SmartsName="Netmask" LocalName="netmask" Type="string"/>
-            <Field SmartsName="NetworkNumber" LocalName="networkNumber" Type="string"/>
-            <Field SmartsName="Responsive" LocalName="responsive" Type="boolean"/>
-            <Field SmartsName="Status" LocalName="status" Type="string"/>
-        </Fields>
-        <Relations>
-            <Relation Name="hostedBy" ReverseName="hostsAccessPoints" Cardinality="Many" ReverseCardinality="One" ToModel="RsComputerSystem" IsOwner="false"></Relation>
-        </Relations>
-    </Model>
-    <Model Name="RsNetworkAdapter" ParentName="RsComputerSystemComponent">
-        <Fields>
-            <Field SmartsName="AdminStatus" LocalName="adminStatus" Type="string"/>
-            <Field SmartsName="DeviceID" LocalName="deviceID" Type="string"/>
-            <Field SmartsName="DisplayClassName" LocalName="displayClassName" Type="string"/>
-            <Field SmartsName="DisplayName" LocalName="displayName" Type="string"/>
-            <Field SmartsName="DuplexMode" LocalName="duplexMode" Type="string"/>
-            <Field SmartsName="DuplexSource" LocalName="duplexSource" Type="string"/>
-            <Field SmartsName="InterfaceAlias" LocalName="interfaceAlias" Type="string"/>
-            <Field SmartsName="InterfaceCode" LocalName="interfaceCode" Type="string"/>
-            <Field SmartsName="InterfaceNumber" LocalName="interfaceNumber" Type="number"/>
-            <Field SmartsName="IsConnector" LocalName="isConnector" Type="boolean"/>
-            <Field SmartsName="IsFlapping" LocalName="isFlapping" Type="boolean"/>
-            <Field SmartsName="IsNetworkAdapterNotOperating" LocalName="isNetworkAdapterNotOperating" Type="boolean"/>
-            <Field SmartsName="LastChangedAt" LocalName="lastChangedAt" Type="string"/>
-            <Field SmartsName="MaxSpeed" LocalName="maxSpeed" Type="number"/>
-            <Field SmartsName="MaxTransferUnit" LocalName="maxTransferUnit" Type="number"/>
-            <Field SmartsName="MaximumUptime" LocalName="maximumUptime" Type="number"/>
-            <Field SmartsName="Mib2IfType" LocalName="mib2IfType" Type="number"/>
-            <Field SmartsName="Mode" LocalName="mode" Type="string"/>
-            <Field SmartsName="OperStatus" LocalName="operStatus" Type="string"/>
-            <Field SmartsName="PeerSystemName" LocalName="peerSystemName" Type="string"/>
-            <Field SmartsName="PeerSystemType" LocalName="peerSystemType" Type="string"/>
-            <Field SmartsName="Status" LocalName="status" Type="string"/>
-            <Field SmartsName="SystemModel" LocalName="systemModel" Type="string"/>
-            <Field SmartsName="SystemName" LocalName="systemName" Type="string"/>
-            <Field SmartsName="SystemObjectID" LocalName="systemObjectID" Type="string"/>
-            <Field SmartsName="SystemType" LocalName="systemType" Type="string"/>
-            <Field SmartsName="SystemVendor" LocalName="systemVendor" Type="string"/>
-            <Field SmartsName="Type" LocalName="type" Type="string"/>
-            <Field SmartsName="CardName" LocalName="cardName" Type="string"/>
-        </Fields>
-        <Relations>
-            <Relation Name="connectedVia" ReverseName="connectedTo" Cardinality="Many" ReverseCardinality="One" ToModel="RsLink" IsOwner="false"></Relation>
-            <Relation Name="realizedBy" ReverseName="realizes" Cardinality="Many" ReverseCardinality="One" ToModel="RsCard" IsOwner="false"></Relation>
-        </Relations>
-    </Model>
-    <Model Name="RsInterface" ParentName="RsNetworkAdapter">
-        <Fields>
-            <Field SmartsName="InterfaceKey" LocalName="interfaceKey" Type="string"/>
-            <Field SmartsName="HasIPAddresses" LocalName="hasIPAddresses" Type="boolean"/>
-            <Field SmartsName="HasIPv6Addresses" LocalName="hasIPv6Addresses" Type="boolean"/>
-        </Fields>
-    </Model>
-    <Model Name="RsPort" ParentName="RsNetworkAdapter">
-        <Fields>
-            <Field SmartsName="DesignatedBridge" LocalName="designatedBridge" Type="string"/>
-            <Field SmartsName="DesignatedPort" LocalName="designatedPort" Type="number"/>
-            <Field SmartsName="IsConnectedToManagedSystem" LocalName="isConnectedToManagedSystem" Type="boolean"/>
-            <Field SmartsName="IsConnectedToSystem" LocalName="isConnectedToSystem" Type="boolean"/>
-            <Field SmartsName="ManagedState" LocalName="managedState" Type="string"/>
-            <Field SmartsName="PortKey" LocalName="portKey" Type="string"/>
-            <Field SmartsName="PortNumber" LocalName="portNumber" Type="number"/>
-            <Field SmartsName="PortType" LocalName="portType" Type="string"/>
-        </Fields>
-    </Model>
-    <Model Name="RsLink" ParentName="RsSmartsObject">
-        <Fields>
-            <Field SmartsName="A_ComputerSystemName" LocalName="a_ComputerSystemName" Type="string"/>
-            <Field SmartsName="A_Name" LocalName="a_Name" Type="string"/>
-            <Field SmartsName="A_AdminStatus" LocalName="a_AdminStatus" Type="string"/>
-            <Field SmartsName="A_DisplayName" LocalName="a_DisplayName" Type="string"/>
-            <Field SmartsName="A_DuplexMode" LocalName="a_DuplexMode" Type="string"/>
-            <Field SmartsName="A_IsFlapping" LocalName="a_IsFlapping" Type="boolean"/>
-            <Field SmartsName="A_MaxSpeed" LocalName="a_MaxSpeed" Type="number"/>
-            <Field SmartsName="A_Mode" LocalName="a_Mode" Type="string"/>
-            <Field SmartsName="A_OperStatus" LocalName="a_OperStatus" Type="string"/>
-            <Field SmartsName="ConnectedSystemsUnresponsive" LocalName="connectedSystemsUnresponsive" Type="boolean"/>
-            <Field SmartsName="Z_ComputerSystemName" LocalName="z_ComputerSystemName" Type="string"/>
-            <Field SmartsName="Z_Name" LocalName="z_Name" Type="string"/>
-            <Field SmartsName="Z_AdminStatus" LocalName="z_AdminStatus" Type="string"/>
-            <Field SmartsName="Z_DisplayName" LocalName="z_DisplayName" Type="string"/>
-            <Field SmartsName="Z_DuplexMode" LocalName="z_DuplexMode" Type="string"/>
-            <Field SmartsName="Z_IsFlapping" LocalName="z_IsFlapping" Type="boolean"/>
-            <Field SmartsName="Z_MaxSpeed" LocalName="z_MaxSpeed" Type="number"/>
-            <Field SmartsName="Z_Mode" LocalName="z_Mode" Type="string"/>
-            <Field SmartsName="Z_OperStatus" LocalName="z_OperStatus" Type="string"/>
-        </Fields>
-        <Relations>
-            <Relation Name="connectedSystem" ReverseName="connectedVia" Cardinality="Many" ReverseCardinality="Many" ToModel="RsComputerSystem" IsOwner="false"></Relation>
-            <Relation Name="connectedTo" ReverseName="connectedVia" Cardinality="One" ReverseCardinality="Many" ToModel="RsNetworkAdapter" IsOwner="true"></Relation>
-        </Relations>
-    </Model>
-    <Model Name="RsGroup" ParentName="RsSmartsObject">
-        <Fields>
-        </Fields>
-        <Relations>
-            <Relation Name="consistsOf" ReverseName="memberOfGroup" Cardinality="Many" ReverseCardinality="Many" ToModel="RsSmartsObject" IsOwner="true"></Relation>
-        </Relations>
-    </Model>
-    <Model Name="RsIpNetwork" ParentName="RsGroup">
-        <Fields>
-            <Field SmartsName="Netmask" LocalName="netmask" Type="string"/>
-            <Field SmartsName="NetworkNumber" LocalName="networkNumber" Type="string"/>
-        </Fields>
-        <Relations>
-            <Relation Name="memberSystems" ReverseName="ipNetworks" Cardinality="Many" ReverseCardinality="Many" ToModel="RsComputerSystem" IsOwner="false"></Relation>
-        </Relations>
-    </Model>
-    <Model Name="RsVlan" ParentName="RsSmartsObject">
-        <Fields>
-            <Field SmartsName="VLANKey" LocalName="vlanKey" Type="string"/>
-            <Field SmartsName="VLANNumber" LocalName="vlanNumber" Type="number"/>
-        </Fields>
-    </Model>
-    <Model Name="RsHsrpGroup" ParentName="RsSmartsObject">
-        <Fields>
-            <Field SmartsName="ActiveInterfaceName" LocalName="activeInterfaceName" Type="string"/>
-            <Field SmartsName="ActiveSystemName" LocalName="activeSystemName" Type="string"/>
-            <Field SmartsName="AtRiskThreshold" LocalName="atRiskThreshold" Type="number"/>
-            <Field SmartsName="GroupNumber" LocalName="groupNumber" Type="string"/>
-            <Field SmartsName="HsrpEpStateChanged" LocalName="hsrpEpStateChanged" Type="boolean"/>
-            <Field SmartsName="IsAnyComponentDown" LocalName="isAnyComponentDown" Type="boolean"/>
-            <Field SmartsName="IsAnyHSRPEndpointActive" LocalName="isAnyHSRPEndpointActive" Type="boolean"/>
-            <Field SmartsName="IsEveryComponentDown" LocalName="isEveryComponentDown" Type="boolean"/>
-            <Field SmartsName="IsEveryHSRPEndpointReady" LocalName="isEveryHSRPEndpointReady" Type="boolean"/>
-            <Field SmartsName="IsGroupPartOfSingleUnresponsiveSystem" LocalName="isGroupPartOfSingleUnresponsiveSystem" Type="boolean"/>
-            <Field SmartsName="IsVirtualIPUnresponsive" LocalName="isVirtualIPUnresponsive" Type="boolean"/>
-            <Field SmartsName="NumberOfComponents" LocalName="numberOfComponents" Type="number"/>
-            <Field SmartsName="NumberOfFaultyComponents" LocalName="numberOfFaultyComponents" Type="number"/>
-            <Field SmartsName="VirtualIP" LocalName="virtualIP" Type="string"/>
-            <Field SmartsName="VirtualMAC" LocalName="virtualMAC" Type="string"/>
-        </Fields>
-    </Model>
-</Models>
+<Rsmodel>
+    <Models>
+        <Model Name="RsSmartsObject">
+            <Properties>
+                <Property Name='name' Type='string' IsKey='true'/>
+                <Property Name='creationClassName' Type='string'/>
+                <Property Name='description' Type='string'/>
+                <Property Name='displayName' Type='string'/>
+                <Property Name='isManaged' Type='boolean'/>
+                <Property Name='rsDatasource' Type='string'/>
+            </Properties>
+        </Model>
+        <Model Name="RsEvent">
+            <Properties>
+                <Property Name='name' Type='string'/>
+                <Property Name='creationClassName' Type='string'/>
+                <Property Name='description' Type='string'/>
+                <Property Name='displayName' Type='string'/>
+                <Property Name="className" Type="string" IsKey="true"/>
+                <Property Name="instanceName" Type="string" IsKey="true"/>
+                <Property Name="eventName" Type="string" IsKey="true"/>
+                <Property Name="severity" Type="number"/>
+                <Property Name="lastNotifiedAt" Type="number"/>
+                <Property Name="lastCreatedAt" Type="number"/>
+                <Property Name="active" Type="boolean"/>
+                <Property Name="firstNotifiedAt" Type="number"/>
+                <Property Name="lastClearedAt" Type="number"/>
+                <Property Name="lastChangedAt" Type="number"/>
+                <Property Name="isRoot" Type="boolean"/>
+                <Property Name="isProblem" Type="boolean"/>
+                <Property Name="acknowledged" Type="boolean"/>
+                <Property Name="eventType" Type="string"/>
+                <Property Name="eventState" Type="string"/>
+                <Property Name="eventText" Type="string"/>
+                <Property Name="impact" Type="number"/>
+                <Property Name="certainty" Type="number"/>
+                <Property Name="inMaintenance" Type="boolean"/>
+                <Property Name="troubleTicketID" Type="string"/>
+                <Property Name="owner" Type="string"/>
+                <Property Name="category" Type="string"/>
+                <Property Name="occurrenceCount" Type="number"/>
+                <Property Name="classDisplayName" Type="string"/>
+                <Property Name="instanceDisplayName" Type="string"/>
+                <Property Name="eventDisplayName" Type="string"/>
+                <Property Name="elementClassName" Type="string"/>
+                <Property Name="elementName" Type="string"/>
+                <Property Name="sourceDomainName" Type="string"/>
+                <Property Name="userDefined1" Type="string"/>
+                <Property Name="userDefined2" Type="string"/>
+                <Property Name="userDefined3" Type="string"/>
+                <Property Name="userDefined4" Type="string"/>
+                <Property Name="userDefined5" Type="string"/>
+                <Property Name="userDefined6" Type="string"/>
+                <Property Name="userDefined7" Type="string"/>
+                <Property Name="userDefined8" Type="string"/>
+                <Property Name="userDefined9" Type="string"/>
+                <Property Name="userDefined10" Type="string"/>
+                <Property Name='rsDatasource' Type='string'/>
+            </Properties>
+        </Model>
+        <Model Name="RsHistoricalEvent">
+            <Properties>
+                <Property Name='name' Type='string'/>
+                <Property Name='creationClassName' Type='string'/>
+                <Property Name='description' Type='string'/>
+                <Property Name='displayName' Type='string'/>
+                <Property Name="className" Type="string"/>
+                <Property Name="instanceName" Type="string"/>
+                <Property Name="eventName" Type="string"/>
+                <Property Name="severity" Type="number"/>
+                <Property Name="lastNotifiedAt" Type="number"/>
+                <Property Name="lastCreatedAt" Type="number"/>
+                <Property Name="active" Type="boolean"/>
+                <Property Name="firstNotifiedAt" Type="number"/>
+                <Property Name="lastClearedAt" Type="number"/>
+                <Property Name="lastChangedAt" Type="number"/>
+                <Property Name="isRoot" Type="boolean"/>
+                <Property Name="acknowledged" Type="boolean"/>
+                <Property Name="eventType" Type="string"/>
+                <Property Name="eventState" Type="string"/>
+                <Property Name="eventText" Type="string"/>
+                <Property Name="impact" Type="number"/>
+                <Property Name="certainty" Type="number"/>
+                <Property Name="inMaintenance" Type="boolean"/>
+                <Property Name="troubleTicketID" Type="string"/>
+                <Property Name="owner" Type="string"/>
+                <Property Name="category" Type="string"/>
+                <Property Name="occurrenceCount" Type="number"/>
+                <Property Name="classDisplayName" Type="string"/>
+                <Property Name="instanceDisplayName" Type="string"/>
+                <Property Name="eventDisplayName" Type="string"/>
+                <Property Name="elementClassName" Type="string"/>
+                <Property Name="elementName" Type="string"/>
+                <Property Name="sourceDomainName" Type="string"/>
+                <Property Name="userDefined1" Type="string"/>
+                <Property Name="userDefined2" Type="string"/>
+                <Property Name="userDefined3" Type="string"/>
+                <Property Name="userDefined4" Type="string"/>
+                <Property Name="userDefined5" Type="string"/>
+                <Property Name="userDefined6" Type="string"/>
+                <Property Name="userDefined7" Type="string"/>
+                <Property Name="userDefined8" Type="string"/>
+                <Property Name="userDefined9" Type="string"/>
+                <Property Name="userDefined10" Type="string"/>
+                <Property Name='rsDatasource' Type='string'/>
+                <Property Name='causedBy' Type='string'/>
+                <Property Name='causes' Type='string'/>
+            </Properties>
+        </Model>
+        <Model Name="RsManagementServer">
+            <Properties>
+                <Property Name="name" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsComputerSystem" Parent="RsSmartsObject">
+            <Properties>
+                <Property Name="accessMode" Type="string"/>
+                <Property Name="discoveredFirstAt" Type="string"/>
+                <Property Name="discoveredLastAt" Type="string"/>
+                <Property Name="discoveryErrorInfo" Type="string"/>
+                <Property Name="discoveryTime" Type="string"/>
+                <Property Name="location" Type="string"/>
+                <Property Name="model" Type="string"/>
+                <Property Name="numberOfIPs" Type="number"/>
+                <Property Name="numberOfIPv6s" Type="number"/>
+                <Property Name="numberOfInterfaces" Type="number"/>
+                <Property Name="numberOfNetworkAdapters" Type="number"/>
+                <Property Name="numberOfPorts" Type="number"/>
+                <Property Name="osVersion" Type="string"/>
+                <Property Name="primaryOwnerContact" Type="string"/>
+                <Property Name="primaryOwnerName" Type="string"/>
+                <Property Name="readCommunity" Type="string"/>
+                <Property Name="snmpAddress" Type="string"/>
+                <Property Name="supportsSNMP" Type="boolean"/>
+                <Property Name="systemName" Type="string"/>
+                <Property Name="systemObjectID" Type="string"/>
+                <Property Name="vendor" Type="string"/>
+                <Property Name="managementServer" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsComputerSystemComponent" Parent="RsSmartsObject">
+            <Properties>
+                <Property Name="computerSystemName" Type="string"/>
+                <Property Name="tag" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsCard" Parent="RsComputerSystemComponent">
+            <Properties>
+                <Property Name="serialNumber" Type="string"/>
+                <Property Name="standbyStatus" Type="string"/>
+                <Property Name="status" Type="string"/>
+                <Property Name="type" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsIp" Parent="RsComputerSystemComponent">
+            <Properties>
+                <Property Name="address" Type="string"/>
+                <Property Name="creationClassName" Type="string"/>
+                <Property Name="description" Type="string"/>
+                <Property Name="ipStatus" Type="string"/>
+                <Property Name="interfaceAdminStatus" Type="string"/>
+                <Property Name="interfaceMode" Type="string"/>
+                <Property Name="interfaceName" Type="string"/>
+                <Property Name="interfaceOperStatus" Type="string"/>
+                <Property Name="interfaceType" Type="string"/>
+                <Property Name="netmask" Type="string"/>
+                <Property Name="networkNumber" Type="string"/>
+                <Property Name="responsive" Type="boolean"/>
+                <Property Name="status" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsNetworkAdapter" Parent="RsComputerSystemComponent">
+            <Properties>
+                <Property Name="adminStatus" Type="string"/>
+                <Property Name="deviceID" Type="string"/>
+                <Property Name="displayClassName" Type="string"/>
+                <Property Name="displayName" Type="string"/>
+                <Property Name="duplexMode" Type="string"/>
+                <Property Name="duplexSource" Type="string"/>
+                <Property Name="interfaceAlias" Type="string"/>
+                <Property Name="interfaceCode" Type="string"/>
+                <Property Name="interfaceNumber" Type="number"/>
+                <Property Name="isConnector" Type="boolean"/>
+                <Property Name="isFlapping" Type="boolean"/>
+                <Property Name="isNetworkAdapterNotOperating" Type="boolean"/>
+                <Property Name="lastChangedAt" Type="string"/>
+                <Property Name="maxSpeed" Type="number"/>
+                <Property Name="maxTransferUnit" Type="number"/>
+                <Property Name="maximumUptime" Type="number"/>
+                <Property Name="mib2IfType" Type="number"/>
+                <Property Name="mode" Type="string"/>
+                <Property Name="operStatus" Type="string"/>
+                <Property Name="peerSystemName" Type="string"/>
+                <Property Name="peerSystemType" Type="string"/>
+                <Property Name="status" Type="string"/>
+                <Property Name="systemModel" Type="string"/>
+                <Property Name="systemName" Type="string"/>
+                <Property Name="systemObjectID" Type="string"/>
+                <Property Name="systemType" Type="string"/>
+                <Property Name="systemVendor" Type="string"/>
+                <Property Name="type" Type="string"/>
+                <Property Name="cardName" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsInterface" Parent="RsNetworkAdapter">
+            <Properties>
+                <Property Name="interfaceKey" Type="string"/>
+                <Property Name="hasIPAddresses" Type="boolean"/>
+                <Property Name="hasIPv6Addresses" Type="boolean"/>
+            </Properties>
+        </Model>
+        <Model Name="RsPort" Parent="RsNetworkAdapter">
+            <Properties>
+                <Property Name="designatedBridge" Type="string"/>
+                <Property Name="designatedPort" Type="number"/>
+                <Property Name="isConnectedToManagedSystem" Type="boolean"/>
+                <Property Name="isConnectedToSystem" Type="boolean"/>
+                <Property Name="managedState" Type="string"/>
+                <Property Name="portKey" Type="string"/>
+                <Property Name="portNumber" Type="number"/>
+                <Property Name="portType" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsLink" Parent="RsSmartsObject">
+            <Properties>
+                <Property Name="a_ComputerSystemName" Type="string"/>
+                <Property Name="a_Name" Type="string"/>
+                <Property Name="a_AdminStatus" Type="string"/>
+                <Property Name="a_DisplayName" Type="string"/>
+                <Property Name="a_DuplexMode" Type="string"/>
+                <Property Name="a_IsFlapping" Type="boolean"/>
+                <Property Name="a_MaxSpeed" Type="number"/>
+                <Property Name="a_Mode" Type="string"/>
+                <Property Name="a_OperStatus" Type="string"/>
+                <Property Name="connectedSystemsUnresponsive" Type="boolean"/>
+                <Property Name="z_ComputerSystemName" Type="string"/>
+                <Property Name="z_Name" Type="string"/>
+                <Property Name="z_AdminStatus" Type="string"/>
+                <Property Name="z_DisplayName" Type="string"/>
+                <Property Name="z_DuplexMode" Type="string"/>
+                <Property Name="z_IsFlapping" Type="boolean"/>
+                <Property Name="z_MaxSpeed" Type="number"/>
+                <Property Name="z_Mode" Type="string"/>
+                <Property Name="z_OperStatus" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsGroup" Parent="RsSmartsObject">
+            <Properties>
+            </Properties>
+        </Model>
+        <Model Name="RsIpNetwork" Parent="RsGroup">
+            <Properties>
+                <Property Name="netmask" Type="string"/>
+                <Property Name="networkNumber" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsVlan" Parent="RsSmartsObject">
+            <Properties>
+                <Property Name="vlanKey" Type="string"/>
+                <Property Name="vlanNumber" Type="number"/>
+            </Properties>
+        </Model>
+        <Model Name="RsHsrpGroup" Parent="RsSmartsObject">
+            <Properties>
+                <Property Name="activeInterfaceName" Type="string"/>
+                <Property Name="activeSystemName" Type="string"/>
+                <Property Name="atRiskThreshold" Type="number"/>
+                <Property Name="groupNumber" Type="string"/>
+                <Property Name="hsrpEpStateChanged" Type="boolean"/>
+                <Property Name="isAnyComponentDown" Type="boolean"/>
+                <Property Name="isAnyHSRPEndpointActive" Type="boolean"/>
+                <Property Name="isEveryComponentDown" Type="boolean"/>
+                <Property Name="isEveryHSRPEndpointReady" Type="boolean"/>
+                <Property Name="isGroupPartOfSingleUnresponsiveSystem" Type="boolean"/>
+                <Property Name="isVirtualIPUnresponsive" Type="boolean"/>
+                <Property Name="numberOfComponents" Type="number"/>
+                <Property Name="numberOfFaultyComponents" Type="number"/>
+                <Property Name="virtualIP" Type="string"/>
+                <Property Name="virtualMAC" Type="string"/>
+            </Properties>
+        </Model>
+    </Models>
+    <Relations>
+        <Relation From="RsEvent" To="RsEvent" Name="causedBy" ReverseName="causes" Type="ManyToMany"></Relation>
+        <Relation From="RsComputerSystem" To="RsIpNetwork" Name="ipNetworks" ReverseName="memberSystems" Type="ManyToMany"></Relation>
+        <Relation From="RsComputerSystem" To="RsComputerSystemComponent" Name="composedOf" ReverseName="partOf" Type="OneToMany"></Relation>
+        <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystem" Type="ManyToMany"></Relation>
+        <Relation From="RsComputerSystem" To="RsIp" Name="hostsAccessPoints" ReverseName="hostedBy" Type="OneToMany"></Relation>
+        <Relation From="RsComputerSystemComponent" To="RsComputerSystemComponent" Name="layeredOver" ReverseName="underlying" Type="ManyToMany"></Relation>
+        <Relation From="RsCard" To="RsNetworkAdapter" Name="realizes" ReverseName="realizedBy" Type="OneToMany"></Relation>
+        <Relation From="RsLink" To="RsNetworkAdapter" Name="connectedTo" ReverseName="connectedVia" Type="OneToMany"></Relation>
+        <Relation From="RsGroup" To="RsSmartsObject" Name="consistsOf" ReverseName="memberOfGroup" Type="ManyToMany"></Relation>
+    </Relations>
+</Rsmodel>

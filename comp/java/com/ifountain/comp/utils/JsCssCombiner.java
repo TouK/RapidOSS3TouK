@@ -246,12 +246,15 @@ public class JsCssCombiner extends CommandLineUtility {
                 String targetUrl = url;
                 if(!url.startsWith("/") && !url.startsWith("http") && !url.startsWith("ftp")){
                     File mediaFile = new File(cssDir + "/" + url);
+                    System.out.println("Image file: " + mediaFile.getPath());
                     if(mediaFile.exists()){
+                        System.out.println("Image file exists.");
                         String mediaFileName = mediaFile.getName();
                         int indexOfLastDot = mediaFileName.lastIndexOf(".");
                         targetUrl = mediaPath + "/" + mediaFileName.substring(0, indexOfLastDot) +
                                 suffix + "." + mediaFileName.substring(indexOfLastDot + 1, mediaFileName.length());
                         String targetFileName = targetPath + "/" + targetUrl;
+                        System.out.println("Target file: " + targetFileName);
                         File targetFile = new File(targetFileName);
                         if(!targetFile.exists()){
                             System.out.println("Copying image file " + mediaFile.getPath() + " to " + targetFile.getPath());

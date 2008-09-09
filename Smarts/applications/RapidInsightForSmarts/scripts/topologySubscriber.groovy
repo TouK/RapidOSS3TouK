@@ -375,7 +375,9 @@ def getExistingConnections(String objectName)
 def addComputerSystemToRepository(topologyObject) {
     logger.debug("creating ComputertSystem object ${topologyObject.Name} of class ${topologyObject.CreationClassName}")
     Map deviceFromSmarts = getDatasource().getObject(topologyObject);
-    RsComputerSystem computerSystem = RsComputerSystem.add(getPropsWithLocalNames("RsComputerSystem", deviceFromSmarts))
+    def deviceProps = getPropsWithLocalNames("RsComputerSystem", deviceFromSmarts);
+    deviceProps["managementServer"] = datasource.connection.domain;
+    RsComputerSystem computerSystem = RsComputerSystem.add(deviceProps)
     if (!computerSystem.hasErrors()) {
         def existingCompSystems = getExistingCompouterSystems(computerSystem.name);
         def existingConnections = getExistingConnections(computerSystem.name);

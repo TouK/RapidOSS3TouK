@@ -228,7 +228,7 @@ public class JsCssCombiner extends CommandLineUtility {
     private void writeCombinedCSS(List cssPaths, File file) throws Exception {
         StringBuffer combinedFile = new StringBuffer();
         for (int i = 0; i < cssPaths.size(); i++) {
-            System.out.println("Processing css file " + (String)cssPaths.get(i));
+            System.out.println("Processing css file " + cssPaths.get(i));
             StringBuffer currentBuffer = new StringBuffer();
             File cssFile = new File((String) cssPaths.get(i)).getAbsoluteFile();
             String cssDir = cssFile.getParent();
@@ -245,8 +245,7 @@ public class JsCssCombiner extends CommandLineUtility {
                 System.out.println("Found image url " + url);
                 String targetUrl = url;
                 if(!url.startsWith("/") && !url.startsWith("http") && !url.startsWith("ftp")){
-                    String mediaFilePath = new File(cssDir + "/" + url).getCanonicalPath();
-                    File mediaFile = new File(mediaFilePath);
+                    File mediaFile = new File(cssDir.trim() + "/" + url.trim()).getAbsoluteFile();
                     System.out.println("Image file: " + mediaFile.getPath());
                     if(mediaFile.exists()){
                         System.out.println("Image file exists.");

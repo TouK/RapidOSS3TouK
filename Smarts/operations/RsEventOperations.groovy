@@ -1,18 +1,34 @@
+import datasource.SmartsNotificationDatasource
 
-    
-    class RsEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+class RsEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
     {
         public void acknowledge(boolean action, userName){
-		    if(action)
-	            update(acknowledged : true);
-	        else
-	            update(acknowledged : false);
-	    }
+            SmartsNotificationDatasource ds = SmartsNotificationDatasource.get(name:rsDatasource);
+            if(ds == null) throw new Exception("Datasource with name ${rsDatasource} is not defined")
+            if(action)
+            {
+                ds.acknowledge([ClassName:className, InstanceName:instanceName, EventName:eventName, User:userName, AuditTrailText:" Acknowledged by "+ userName])
+                update(acknowledged : true);
+            }
+            else
+            {
+                ds.unacknowledge([ClassName:className, InstanceName:instanceName, EventName:eventName, User:userName, AuditTrailText:" Acknowledged by "+ userName])
+                update(acknowledged : false);
+            }
+        }
 	    public void setOwnership(boolean action, userName){
-		    if(action)
-	            update(owner : userName);
-	        else
-	            update(owner : "root");
-	    }    
+            SmartsNotificationDatasource ds = SmartsNotificationDatasource.get(name:rsDatasource);
+            if(ds == null) throw new Exception("Datasource with name ${rsDatasource} is not defined")
+            if(action)
+            {
+                ds.takeOwnership([ClassName:className, InstanceName:instanceName, EventName:eventName, User:userName, AuditTrailText:" TakeOwnerwhip with user "+ userName])
+                update(owner : userName);
+            }
+            else
+            {
+                ds.releaseOwnership([ClassName:className, InstanceName:instanceName, EventName:eventName, User:userName, AuditTrailText:" TakeOwnerwhip with user "+ userName])
+                update(owner : "root");
+            }
+        }
     }
     

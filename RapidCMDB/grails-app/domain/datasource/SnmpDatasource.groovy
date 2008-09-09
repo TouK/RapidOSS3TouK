@@ -22,6 +22,6 @@ class SnmpDatasource extends BaseListeningDatasource {
     }
 
     def getListeningAdapter(Map params){
-         return new SnmpListeningAdapter(connection.name, 0, Logger.getRootLogger());
+         return new SnmpListeningAdapter(getProperty("connection").name, 0, Logger.getRootLogger());
     }
 }

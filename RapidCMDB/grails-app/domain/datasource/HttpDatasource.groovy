@@ -28,7 +28,7 @@ class HttpDatasource extends BaseDatasource{
      
    
     def onLoad = {
-       this.adapter = new HttpAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger());
+       this.adapter = new HttpAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
     }
 
     def doRequest(String url, Map params, int type){

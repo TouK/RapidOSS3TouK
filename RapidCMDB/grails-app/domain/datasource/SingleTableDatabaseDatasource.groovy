@@ -36,7 +36,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
      
 
     def onLoad = {
-       this.adapter = new SingleTableDatabaseAdapter(connection.name, tableName, tableKeys, reconnectInterval*1000, Logger.getRootLogger());
+       this.adapter = new SingleTableDatabaseAdapter(getProperty("connection").name, tableName, tableKeys, reconnectInterval*1000, Logger.getRootLogger());
     }
 
     def getProperty(Map keys, String propName){

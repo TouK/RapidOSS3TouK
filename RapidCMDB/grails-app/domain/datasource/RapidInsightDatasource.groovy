@@ -25,6 +25,6 @@ class RapidInsightDatasource extends BaseDatasource{
     def adapter;
     static transients = ["adapter"];
     def onLoad = {
-       this.adapter = new RapidInsightAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger());
+       this.adapter = new RapidInsightAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
     }
 }

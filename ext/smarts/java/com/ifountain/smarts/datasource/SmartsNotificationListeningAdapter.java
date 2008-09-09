@@ -196,6 +196,7 @@ public class SmartsNotificationListeningAdapter extends BaseSmartsListeningAdapt
                 }
             }
         }
+        sendRetrieveExistingObjectsFinished();
     }
 
     private void waitForSubscriptionState(int seconds, String className, String instanceName, String attributeName, int subscriptionState) throws SmRemoteException, IOException {

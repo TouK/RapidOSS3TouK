@@ -125,21 +125,6 @@ public class BaseSmartsListeningAdapterTest<E> extends SmartsTestCase {
         ConnectionManager.releaseConnection(conn);
     }
 
-    public void testRetrieveExistingObjectsCreateReceiveExistingCompletedEvent()throws Exception 
-    {
-        SmartsConnectionImpl conn = (SmartsConnectionImpl) ConnectionManager.getConnection(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
-        SmRemoteDomainManager domainManager = conn.getDomainManager();
-        smartsAdapter.addObserver(new Observer(){
-            public void update(Observable o, Object arg)
-            {
-                receivedObjects.add(arg);
-            }
-        });
-
-        smartsAdapter.retrieveExistingObjects(null);
-        assertEquals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED, ((Map)receivedObjects.get(0)).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
-    }
-
     public void testGettingUpdatedPropertiesOfObjects() throws Exception {
         SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "routertrial", new HashMap<String, String>(), 0, 1);
         subcribeToPropertyChanges("Router", "routertrial.*", "Location");
@@ -185,8 +170,8 @@ public class BaseSmartsListeningAdapterTest<E> extends SmartsTestCase {
                     Map properties = (Map) recievedObjects.get(i);
                     boolean classNameFound = false;
                     boolean instanceNameFound = false;
-                    String receivedClassName = properties.get(SmartsConstants.CLASSNAME).toString();
-                    String receivedInstanceName = properties.get(SmartsConstants.INSTANCENAME).toString();
+                    String receivedClassName = String.valueOf(properties.get(SmartsConstants.CLASSNAME));
+                    String receivedInstanceName = String.valueOf(properties.get(SmartsConstants.INSTANCENAME));
                     if (className.equals(receivedClassName)) {
                         classNameFound = true;
                     }

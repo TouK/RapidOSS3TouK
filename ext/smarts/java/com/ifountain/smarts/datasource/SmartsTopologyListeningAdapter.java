@@ -392,6 +392,7 @@ public class SmartsTopologyListeningAdapter extends BaseSmartsListeningAdapter {
                 }
             }
         }
+        sendRetrieveExistingObjectsFinished();
     }
 
     class PreviouslyCreatedInstance {

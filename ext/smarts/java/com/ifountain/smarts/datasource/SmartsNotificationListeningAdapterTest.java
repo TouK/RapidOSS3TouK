@@ -46,10 +46,11 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
     Map receivedObjects;
     List monitoredAtts;
     String nlList = "nlDeveloper";
-
+    boolean allowExistingObjectReceivedMessage = false;
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        allowExistingObjectReceivedMessage = false;
         receivedObjects = new HashMap();
         monitoredAtts = new ArrayList();
         monitoredAtts.add(SmartsConstants.INSTANCENAME);
@@ -64,7 +65,39 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
         }
         super.tearDown();
     }
+     //assertEquals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED, ((Map)receivedObjects.get(1)).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
 
+    public void testReceiveExistigFinishedWillBeSentAfterAllExistingNotificationsProcessed() throws Exception {
+        allowExistingObjectReceivedMessage = true;
+        SmartsTestUtils.createNotification("Switch", "ercaswnyc2", "Down", new HashMap());
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+        checkObjectListSize(receivedObjects, 2);
+        String notificationName = "NOTIFICATION-Switch_ercaswnyc2_Down";
+        Map notification = (Map) receivedObjects.get(notificationName + "1NOTIFY");
+        assertTrue(notification.containsKey("Severity"));
+        assertEquals(BaseSmartsListeningAdapter.NOTIFY, notification.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
+
+        notificationName = "null";
+        notification = (Map) receivedObjects.get(notificationName + "2"+BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED);
+        assertFalse(notification.containsKey("Severity"));
+        assertEquals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED, notification.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
+    }
+
+    public void testReceiveExistigFinishedWillBeSentIfNoExistignNotificationExists() throws Exception {
+        allowExistingObjectReceivedMessage = true;
+        notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
+                TestLogUtils.log, monitoredAtts, nlList);
+        notificationAdapter.addObserver(this);
+        notificationAdapter.subscribe();
+        checkObjectListSize(receivedObjects, 1);
+        String notificationName = "null";
+        Map notification = (Map) receivedObjects.get(notificationName + "1"+BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED);
+        assertFalse(notification.containsKey("Severity"));
+        assertEquals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED, notification.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
+    }
     public void testDetermineEventType() throws Exception {
         notificationAdapter = new SmartsNotificationListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0,
                 TestLogUtils.log, monitoredAtts, nlList);
@@ -991,10 +1024,10 @@ public class SmartsNotificationListeningAdapterTest extends SmartsTestCase imple
     }
 
     public void update(Observable o, Object arg) {
-        if(((Map)arg).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME).equals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED)) return;
+        if(!allowExistingObjectReceivedMessage && ((Map)arg).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME).equals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED)) return;
         Map notification = (Map) arg;
-        String notificationName = (String) notification.get(SmartsConstants.INSTANCENAME);
-        String eventType = (String) notification.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME);
+        String notificationName = String.valueOf(notification.get(SmartsConstants.INSTANCENAME));
+        String eventType = String.valueOf(notification.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
         String incrementedNotificationName = notificationName + (receivedObjects.size() + 1) + eventType;
         receivedObjects.put(incrementedNotificationName, arg);
     }

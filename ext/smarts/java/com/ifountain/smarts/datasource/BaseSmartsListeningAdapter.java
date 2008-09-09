@@ -205,12 +205,16 @@ public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
         {
             logger.debug(logPrefix + "Retrieving existing objects.");
             getExistingObjects(parameters);
-            Map data = new HashMap();
-            data.put(EVENT_TYPE_NAME, RECEIVE_EXISTING_FINISHED);
-            sendDataToObservers(data);
             existingObjectsRetrieved = true;
             logger.debug(logPrefix + "Existing objects retrieved.");
         }
+    }
+
+    public void sendRetrieveExistingObjectsFinished()
+    {
+        Map data = new HashMap();
+        data.put(EVENT_TYPE_NAME, RECEIVE_EXISTING_FINISHED);
+        sendDataToObservers(data);
     }
 
 }

@@ -44,10 +44,11 @@ public class SmartsTopologyListeningAdapterTest extends SmartsTestCase implement
 
     private SmartsTopologyListeningAdapter topologyAdapter;
     LinkedList receivedObjects;
-
+    boolean allowExistingObjectReceivedMessage = false;
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        allowExistingObjectReceivedMessage = false;
         SmartsTestUtils.deleteAllTopologyInstances("Router", ".*");
         SmartsTestUtils.deleteAllTopologyInstances("Host", ".*");
         SmartsTestUtils.deleteAllTopologyInstances("IPNetwork", ".*");
@@ -210,8 +211,22 @@ public class SmartsTopologyListeningAdapterTest extends SmartsTestCase implement
         assertTrue(object.containsKey("Model"));
     }
 
+    public void testSendsReceiveExistingObjectsEventIfnoobjectExists() throws Exception {
+        allowExistingObjectReceivedMessage = true;
+        SmartsSubscribeParameters param = new SmartsSubscribeParameters("Router", "trial.*", new String[]{"Location", "Model"});
+        topologyAdapter = new SmartsTopologyListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0, TestLogUtils.log,
+                new SmartsSubscribeParameters[]{param});
+        topologyAdapter.addObserver(this);
+        topologyAdapter.subscribe();
+        SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "trial", new HashMap(), 0, 1);
+        BaseSmartsListeningAdapterTest.checkObjectListForObjects(receivedObjects, "Router", "trial", 0, 1);
+        assertEquals(2, receivedObjects.size());
+        assertEquals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED, ((Map)receivedObjects.get(0)).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
+    }
+
 
     public void testSubscribeToPropertiesOfObjectsExistingBeforeSubscription() throws Exception {
+        allowExistingObjectReceivedMessage = true;
         SmartsTestUtils.createTopologyInstancesWithPrefixes("Router", "trial", new HashMap(), 0, 1);
         SmartsSubscribeParameters param = new SmartsSubscribeParameters("Router", "trial.*", new String[]{"Location", "Model"});
         topologyAdapter = new SmartsTopologyListeningAdapter(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME, 0, TestLogUtils.log,
@@ -223,6 +238,7 @@ public class SmartsTopologyListeningAdapterTest extends SmartsTestCase implement
         assertEquals(BaseSmartsListeningAdapter.CREATE, notification.get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
         assertTrue(notification.containsKey("Location"));
         assertTrue(notification.containsKey("Model"));
+        assertEquals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED, ((Map)receivedObjects.get(1)).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME));
     }
 
     public void testChangeEventsOccurredOnExistingObjects() throws Exception {
@@ -465,7 +481,7 @@ public class SmartsTopologyListeningAdapterTest extends SmartsTestCase implement
 
 
     public void update(Observable o, Object arg) {
-        if(((Map)arg).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME).equals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED)) return;
+        if(!allowExistingObjectReceivedMessage && ((Map)arg).get(BaseSmartsListeningAdapter.EVENT_TYPE_NAME).equals(BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED)) return;
         receivedObjects.add(arg);
     }
 }

@@ -1,5 +1,3 @@
-
-    
-class RsCardOperations  extends RsComputerSystemComponentOperations {
-    }
+class RsCardOperations extends RsComputerSystemComponentOperations {
+}
     

@@ -1,6 +1,3 @@
-
-    
-    class RsHistoricalEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
-    {
-    }
+class RsHistoricalEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+}
     

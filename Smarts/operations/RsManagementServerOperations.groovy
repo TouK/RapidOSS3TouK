@@ -1,5 +1,3 @@
-
-    
-class RsManagementServerOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
-    }
+class RsManagementServerOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+}
     

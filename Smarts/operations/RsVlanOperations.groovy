@@ -1,5 +1,3 @@
-
-    
-class RsVlanOperations  extends RsSmartsObjectOperations {
-    }
+class RsVlanOperations extends RsSmartsObjectOperations {
+}
     

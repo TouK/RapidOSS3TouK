@@ -1,6 +1,3 @@
-
-    
-    class RsSmartsHistoricalNotificationOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
-    {
-    }
+class RsSmartsHistoricalNotificationOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+}
     

@@ -1,5 +1,3 @@
-
-    
-class RsNetworkAdapterOperations  extends RsComputerSystemComponentOperations {
-    }
+class RsNetworkAdapterOperations extends RsComputerSystemComponentOperations {
+}
     

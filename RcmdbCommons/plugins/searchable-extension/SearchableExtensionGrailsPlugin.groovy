@@ -159,6 +159,7 @@ class SearchableExtensionGrailsPlugin {
     {
         def mc = dc.metaClass;
         def keys = DomainClassUtils.getKeys(dc);
+        def propSummaryMethod = new PropertySummaryMethod(mc);
         def parentDomainClass = getParentDomainClass(dc, application)
         def relations = DomainClassUtils.getRelations(dc);
         def getMethod = new GetMethod(mc, parentDomainClass, keys, relations);
@@ -172,6 +173,9 @@ class SearchableExtensionGrailsPlugin {
 
         mc.'static'.list = {->
             return CompassMethodInvoker.searchEvery(mc, "alias:*");
+        }
+        mc.'static'.propertySummary = {query, propNames->
+            return propSummaryMethod.invoke(mc.theClass, [query, propNames] as Object[])
         }
 
         mc.'static'.list = {Map options->

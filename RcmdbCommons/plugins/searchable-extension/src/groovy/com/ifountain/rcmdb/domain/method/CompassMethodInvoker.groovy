@@ -90,7 +90,12 @@ class CompassMethodInvoker {
 
     public static Object searchEvery(MetaClass mc, query)
     {
-        return mc.invokeStaticMethod(mc.theClass, "searchEvery", [query] as Object[]);
+        return searchEvery(mc, query, [:]);
+    }
+
+    public static Object searchEvery(MetaClass mc, query, Map options)
+    {
+        return mc.invokeStaticMethod(mc.theClass, "searchEvery", [query, options] as Object[]);
     }
 
     public static Object search(MetaClass mc, String query, Map options)

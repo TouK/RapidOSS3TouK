@@ -53,11 +53,19 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
 
         assertEquals (1, res.prop2.p2val1);
         assertEquals (2, res.prop2.p2val2);
-        assertEquals (2, res.prop2["null"]);
+        assertEquals (2, res.prop2[null]);
         assertEquals (1, res.prop2[""]);
-        
-        assertEquals (1, res.prop3.get(1l));
-        assertEquals (1, res.prop3.get("1"));
+
+        assertEquals (1, res.prop3[1l]);
+        assertEquals (1, res.prop3["1"]);
+        assertEquals (5, res.prop3[null]);
+
+        res.prop3.each{key, value->
+            if(key != null)
+            {
+                assertTrue (key instanceof Long)
+            }
+        }
     }
 
     public void testPropertySummaryWithNoProperty()

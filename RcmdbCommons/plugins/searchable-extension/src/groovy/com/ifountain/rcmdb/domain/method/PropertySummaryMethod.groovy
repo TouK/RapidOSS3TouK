@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.domain.method
 
 import org.compass.core.CompassHit
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,21 +34,24 @@ class PropertySummaryMethod extends AbstractRapidDomainStaticMethod{
             hits.each{CompassHit hit->
                 propertyList.each{String propName->
                     def prop = hit.getResource().getProperty(propName);
-                    def stringValue ;
+                    def value ;
                     if(prop == null)
                     {
-                        stringValue = "null"
+                        value = null;
+                    }
+                    else if(prop.getObjectValue() == null)
+                    {
+                        value = "";
                     }
                     else
                     {
-                        def value = prop.getObjectValue();
-                        stringValue = value?String.valueOf(value):""
+                        value = prop.getObjectValue();
                     }
-                    if(summary[propName][stringValue] == null)
+                    if(summary[propName][value] == null)
                     {
-                        summary[propName][stringValue] = 0;
+                        summary[propName][value] = 0;
                     }
-                    summary[propName][stringValue]++;
+                    summary[propName][value]++;
                 }
             }
         }
@@ -59,9 +63,21 @@ class PropertySummaryMethod extends AbstractRapidDomainStaticMethod{
 }
 
 class PropertySummaryMapWrapper extends LinkedHashMap{
-
+    Class propType;
     public Object get(Object key) {
-        return super.get(String.valueOf(key));    //To change body of overridden methods use File | Settings | File Templates.
+        if(key != null && propType != String.class && propType != null)
+        {
+            return super.get(RapidConvertUtils.getInstance().lookup(propType).convert(propType, key));
+        }
+        return super.get(key);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    public Object put(Object key, Object value) {
+        if(propType == null && key != null)
+        {
+            propType = key.class;
+        }
+        return super.put(key, value);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
 

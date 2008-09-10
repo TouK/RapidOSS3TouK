@@ -29,6 +29,8 @@
                     
                     <g:sortableColumn property="id" title="id"/>
                     
+                    <g:sortableColumn property="name" title="name"/>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -36,6 +38,8 @@
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
                         <td><g:link action="show" id="${rsSmartsNotification.id}">${rsSmartsNotification.id?.encodeAsHTML()}</g:link></td>
+                        
+                        <td>${rsSmartsNotification.name?.encodeAsHTML()}</td>
                         
                     </tr>
                 </g:each>

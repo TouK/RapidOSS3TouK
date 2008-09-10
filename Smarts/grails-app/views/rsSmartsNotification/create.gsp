@@ -33,10 +33,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="id">id:</label>
+                            <label for="name">name:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'id','errors')}">
-                            <input type="text" id="id" name="id" value="${fieldValue(bean:rsSmartsNotification,field:'id')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'name','errors')}">
+                            <input type="text" id="name" name="name" value="${fieldValue(bean:rsSmartsNotification,field:'name')}"/>
                         </td>
                     </tr>
                     

@@ -35,6 +35,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">name:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsNotification.name}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">acknowledged:</td>
                     
                     <td valign="top" class="value">${rsSmartsNotification.acknowledged}</td>

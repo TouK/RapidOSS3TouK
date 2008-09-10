@@ -9,8 +9,10 @@ class RsEvent
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
-    static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
 
+    
+    String name ="";
     
     Long id ;
     
@@ -26,7 +28,9 @@ class RsEvent
     static relations = [:]    
     
     static constraints={
-    __operation_class__(nullable:true)
+    name(blank:false,nullable:false,key:[])
+        
+     __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
         
@@ -40,7 +44,7 @@ class RsEvent
     
     public String toString()
     {
-    	return "${getClass().getName()}[id:$id]";
+    	return "${getClass().getName()}[name:$name]";
     }
     
     //AUTO_GENERATED_CODE

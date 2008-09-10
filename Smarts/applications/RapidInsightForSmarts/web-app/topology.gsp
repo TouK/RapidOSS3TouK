@@ -122,14 +122,14 @@
         var config = new Object();
         config.id = "mapDiv";
         config.icons = {
-          "host":{ "url":"images/rapidjs/component/topologyMap/alert_critical_icon.png"},
-          "router":{ "url":"images/rapidjs/component/topologyMap/alert_informational_icon.png"},
-          "other":{ "url":"images/rapidjs/component/topologyMap/alert_warning_icon.png"}
+          "Host":{ "url":"images/rapidjs/component/topologyMap/server_icon.png"},
+          "Router":{ "url":"images/rapidjs/component/topologyMap/router_icon.png"},
+          "Switch":{ "url":"images/rapidjs/component/topologyMap/switch_icon.png"}
         };
         config.infoFunction = "showInfo";
-        config.menuItems = { "item1": { "text": "Item text 1" },
-                             "item2": { "text": "Item text 2" },
-                             "item3": { "text": "Item text 3" }
+        config.menuItems = { "item1": { "text": "Browse" }//,
+                             //"item2": { "text": "Item text 2" },
+                             //"item3": { "text": "Item text 3" }
                            };
         config.menuItemFilter = "menuItemFilter";
         config.expandRequestFunction = "expandRequestFunction";
@@ -179,7 +179,7 @@
 
         config.contentReadyFunction = "contentReady";
         config.toolbarMenuFunction = "toolbarMenuFcn";
-        config.nodeMenuFunction = "nodeMenuFcn";
+        config.menuItemClickedFunction = "menuItemClickedFunction"
         config.saveMapFunction = "saveMapFunction";
         return config;
       }
@@ -197,11 +197,15 @@
 
       }
 
-      function nodeMenuFcn( data )
+      function menuItemClickedFunction( data )
       {
           var id = data["id"];
-          var nodeData = data["data"];
-          alert( id + ' ' + nodeData["id"] );
+          if( id == "item1" )
+          {
+            var url = "getObjectDetails.gsp?name="+data["deviceID"];
+            objectDetailsDialog.show(url, "Details of " + data["deviceType"] + " " + data["deviceID"]);
+          }
+
       }
 
       function topologyMapComponentAdapter ( params )
@@ -226,13 +230,17 @@
       }
 
     function menuItemFilter(id) {
-        var items = []
+        var items = [];
+        /*
         if(id == 'device1')
             items = ["item2"];
         else if(id == 'device2')
             items = ["item1", "item2", "item3"];
         else
             items = ["item1", "item2"];
+        */
+
+        items = ["item1"];
 
         return items;
     }
@@ -259,7 +267,9 @@
 
     var topMap = new YAHOO.rapidjs.component.TopologyMap(document.getElementById("mapDiv"),topMapConfig );
 
-
+    var conf = {id:'objectDetails', width:500, height:400, iframe:false};
+    var objectDetailsDialog = new YAHOO.rapidjs.component.Html(conf);
+    objectDetailsDialog.hide();
     var actionConfig = {url:'topoMap/delete?format=xml'}
     var deleteMapAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
@@ -352,7 +362,7 @@
         {
             if (data.getAttribute("nodeType") == "filter")
                 deleteMapAction.execute({id:data.getAttribute("id")});
-            else if (data.getAttribute("nodeType") == "group")
+            else if (data.getAttribute("noinitialdeType") == "group")
                 deleteMapGroupAction.execute({id:data.getAttribute("id")});
         }
         else if(id == "update"){

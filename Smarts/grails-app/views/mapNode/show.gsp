@@ -75,6 +75,13 @@
                     <td valign="top" class="value">${mapNode.ylocation}</td>
                     
                 </tr>
+
+                <tr class="prop">
+                    <td valign="top" class="name">expanded:</td>
+
+                    <td valign="top" class="value">${mapNode.expanded}</td>
+
+                </tr>
                 
             </tbody>
         </table>

@@ -148,7 +148,7 @@
        	],
         menuItems:{
             item1 : { id : 'browse', label : 'Browse' },
-            item2 : { id : 'topMap', label : "Topology Map", condition: itemIsRsComputerSystemCondition }
+            item2 : { id : 'topMap', label : "Show Map" }
         },
         propertyMenuItems:{
             item1 : { id : 'sortAsc', label : 'Sort asc' },
@@ -200,7 +200,21 @@
          }
         else if( id == "topMap" )
          {
-            var url = "topology.gsp?name="+objectName;
+            var deviceName;
+            if( xmlData.getAttribute("computerSystemName") )
+            {
+               deviceName = xmlData.getAttribute("computerSystemName");
+            }
+            else if( xmlData.getAttribute("a_ComputerSystemName") )
+            {
+                deviceName = xmlData.getAttribute("a_ComputerSystemName");
+            }
+            else
+            {
+               deviceName = objectName;
+            }
+
+            var url = "topology.gsp?name="+deviceName;
             window.location = url;
          }
                                  

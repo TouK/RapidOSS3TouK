@@ -16,6 +16,8 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.id = config.id || YAHOO.util.Dom.generateId(null, "yuigen");
     this.mapURL = config.mapURL;
     this.dataURL = config.dataURL;
+    this.initialMapURL = config.initialMapURL;
+    this.expandURL = config.expandURL;
     this.params = {};
 
     this.configureTimeout(config);
@@ -45,6 +47,9 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     loadGraph : function( nodes, edges) {
         this.body.dom.getElementsByTagName("embed")[0].loadGraph(nodes, edges);
     },
+    loadGraphWithUserLayout : function( nodes, edges) {
+        this.body.dom.getElementsByTagName("embed")[0].loadUserLayout(nodes, edges);
+    },
     loadData : function( data) {
 
         this.body.dom.getElementsByTagName("embed")[0].loadData(data);
@@ -66,7 +71,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         {
             this.handleLoadData(response);
         }
-        else
+        else // mapURL || initialMapURL || expandURL
         {
             this.handleLoadMap( response);
         }
@@ -138,7 +143,14 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 })
             }
 
-            this.loadGraph(devices, edges);
+            if( this.url == this.expandURL)
+            {
+                this.loadGraph(devices, edges);
+            }
+            else
+            {
+                this.loadGraphWithUserLayout(devices, edges);
+            }
         }
         this.url = this.dataURL;
         this.poll();
@@ -163,6 +175,28 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         this.params["mapName"] = mapName;
         this.url = this.mapURL;
         this.poll();
+        this.params = {};
+    },
+
+    getInitialMap : function( deviceName)
+    {
+        this.params =  { expandedDeviceName : deviceName, nodes : deviceName, edges : "" };
+        this.url = this.expandURL;
+        this.doPostRequest(this.url, this.params);
+        this.params = {};
+    },
+    expandMap : function( expandedDeviceName)
+    {
+        var data = this.getMapData();
+        if( data ) {
+            var nodes = data["nodes"];
+        var edges = data["edges"];
+        this.params = { expandedDeviceName : expandedDeviceName, nodes : nodes, edges : edges };
+        this.url = this.expandURL;
+        this.doPostRequest(this.url, this.params);
+       }
     }
+
+
 });
 

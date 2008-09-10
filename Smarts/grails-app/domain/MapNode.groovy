@@ -20,6 +20,8 @@ class MapNode {
     String username ="";
     
     String mapName ="";
+
+    String expanded = "";
     
     Long id ;
     
@@ -40,6 +42,8 @@ class MapNode {
      xlocation(nullable:true)
         
      ylocation(nullable:true)
+
+     expanded(nullable:true)
         
      username(blank:false,nullable:false)
         

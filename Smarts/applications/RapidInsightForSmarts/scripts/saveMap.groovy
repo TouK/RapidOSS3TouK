@@ -31,7 +31,8 @@ for( def i = 0; i < nodes.size(); i++)
     def deviceId = deviceData[0];
     def x = deviceData[1];
     def y = deviceData[2];
-    def device = MapNode.add( nodeIdentifier : deviceId, username : user, mapName : mapName, xlocation : x, ylocation : y);
+    def expands = deviceData[3];    
+    def device = MapNode.add( nodeIdentifier : deviceId, username : user, mapName : mapName, xlocation : x, ylocation : y, expands : expands);
     map.addRelation( consistOfDevices : device);
 }
 

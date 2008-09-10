@@ -1,18 +1,16 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsHistoricalEvent 
+class RsSmartsNotification 
 {
     
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "causedBy", "causes"];
     };
     static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
 
-    
-    String name ="";
     
     String creationClassName ="";
     
@@ -41,6 +39,8 @@ class RsHistoricalEvent
     Long lastChangedAt =0;
     
     Boolean isRoot =false;
+    
+    Boolean isProblem =false;
     
     Boolean acknowledged =false;
     
@@ -98,10 +98,6 @@ class RsHistoricalEvent
     
     String rsDatasource ="";
     
-    String causedBy ="";
-    
-    String causes ="";
-    
     Long id ;
     
     Long version ;
@@ -112,13 +108,21 @@ class RsHistoricalEvent
     
     Object __is_federated_properties_loaded__ ;
     
+    List causedBy =[];
     
-    static relations = [:]    
+    List causes =[];
+    
+    
+    static relations = [
+    
+        causedBy:[type:RsSmartsNotification, reverseName:"causes", isMany:true]
+    
+        ,causes:[type:RsSmartsNotification, reverseName:"causedBy", isMany:true]
+    
+    ]
     
     static constraints={
-    name(blank:true,nullable:true)
-        
-     creationClassName(blank:true,nullable:true)
+    creationClassName(blank:true,nullable:true)
         
      description(blank:true,nullable:true)
         
@@ -145,6 +149,8 @@ class RsHistoricalEvent
      lastChangedAt(nullable:true)
         
      isRoot(nullable:true)
+        
+     isProblem(nullable:true)
         
      acknowledged(nullable:true)
         
@@ -202,10 +208,6 @@ class RsHistoricalEvent
         
      rsDatasource(blank:true,nullable:true)
         
-     causedBy(blank:true,nullable:true)
-        
-     causes(blank:true,nullable:true)
-        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
@@ -216,7 +218,7 @@ class RsHistoricalEvent
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "causedBy", "causes"];
     
     public String toString()
     {

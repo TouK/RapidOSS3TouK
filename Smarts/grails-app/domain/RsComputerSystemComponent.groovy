@@ -7,7 +7,7 @@ class RsComputerSystemComponent extends RsSmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "partOf", "underlying", "layeredOver"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "partOf", "layeredOver", "underlying"];
     };
     static datasources = [:]
 
@@ -28,18 +28,18 @@ class RsComputerSystemComponent extends RsSmartsObject
     
     RsComputerSystem partOf ;
     
-    List underlying =[];
-    
     List layeredOver =[];
+    
+    List underlying =[];
     
     
     static relations = [
     
         partOf:[type:RsComputerSystem, reverseName:"composedOf", isMany:false]
     
-        ,underlying:[type:RsComputerSystemComponent, reverseName:"layeredOver", isMany:true]
-    
         ,layeredOver:[type:RsComputerSystemComponent, reverseName:"underlying", isMany:true]
+    
+        ,underlying:[type:RsComputerSystemComponent, reverseName:"layeredOver", isMany:true]
     
     ]
     
@@ -60,7 +60,7 @@ class RsComputerSystemComponent extends RsSmartsObject
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "partOf", "underlying", "layeredOver"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "partOf", "layeredOver", "underlying"];
     
     //AUTO_GENERATED_CODE
 }

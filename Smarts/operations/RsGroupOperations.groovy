@@ -1,6 +1,5 @@
 
     
-    class RsGroupOperations extends RsSmartsObjectOperations
-    {
+class RsGroupOperations  extends RsSmartsObjectOperations {
     }
     

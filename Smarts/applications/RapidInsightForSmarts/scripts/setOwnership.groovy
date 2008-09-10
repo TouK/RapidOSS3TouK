@@ -5,7 +5,7 @@ def instanceName = params.instanceName;
 def className = params.className;
 def user = RsUser.findByUsername(web.session.username);
 def act = params.act;
-def rsEvent = RsEvent.get(eventName:eventName, instanceName:instanceName, className:className);
+def rsEvent = RsSmartsNotification.get(eventName:eventName, instanceName:instanceName, className:className);
 if (rsEvent) {
     /*def userId = RsNotification.search("$user.username").results[0];
     println(userId);
@@ -31,5 +31,5 @@ if (rsEvent) {
     }
 }
 else {
-    throw new Exception("RsEvent with eventname: ${eventName}, instancename: ${instanceName} and classname: ${className} does not exist." );
+    throw new Exception("RsSmartsNotification with eventname: ${eventName}, instancename: ${instanceName} and classname: ${className} does not exist." );
 }

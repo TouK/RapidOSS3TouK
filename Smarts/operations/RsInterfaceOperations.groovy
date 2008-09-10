@@ -1,6 +1,5 @@
 
     
-    class RsInterfaceOperations extends RsNetworkAdapterOperations
-    {
+class RsInterfaceOperations  extends RsNetworkAdapterOperations {
     }
     

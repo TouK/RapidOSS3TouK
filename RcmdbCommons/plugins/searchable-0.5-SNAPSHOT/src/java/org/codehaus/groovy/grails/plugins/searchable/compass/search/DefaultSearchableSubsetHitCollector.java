@@ -37,7 +37,7 @@ public class DefaultSearchableSubsetHitCollector extends AbstractSearchableHitCo
      * @param options
      * @return
      */
-    public Object collect(CompassHits hits, boolean reload, Map options) {
+    public Object collect(CompassHits hits, boolean reload, boolean rawData, Map options) {
         if (hits.length() == 0) {
             return Collections.EMPTY_LIST;
         }
@@ -48,7 +48,14 @@ public class DefaultSearchableSubsetHitCollector extends AbstractSearchableHitCo
         int low = offset;
         int high = Math.min(low + max, hits.length());
         while (low < high) {
-            collectedHits.add(getObject(hits.data(low++), reload));
+            if(rawData)
+            {
+                collectedHits.add(hits.hit(low++));    
+            }
+            else
+            {
+                collectedHits.add(getObject(hits.data(low++), reload));
+            }
         }
 
         return collectedHits;

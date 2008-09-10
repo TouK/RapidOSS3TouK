@@ -34,10 +34,11 @@ public abstract class AbstractSearchableHitCollector implements SearchableHitCol
      */
     public Object collect(CompassHits hits, Map options) {
         boolean reload = MapUtils.getBooleanValue(options, "reload");
-        return collect(hits, reload, options);
+        boolean rawData = MapUtils.getBooleanValue(options, "raw");
+        return collect(hits, reload, rawData, options);
     }
 
-    abstract Object collect(CompassHits hits, boolean reload, Map options);
+    abstract Object collect(CompassHits hits, boolean reload, boolean rawData, Map options);
 
     protected Object getObject(Object data, boolean reload) {
         if (!reload) return data;

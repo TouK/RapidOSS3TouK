@@ -26,8 +26,15 @@ import java.util.Map;
  */
 public class DefaultSearchableTopHitCollector extends AbstractSearchableHitCollector {
 
-    public Object collect(CompassHits hits, boolean reload, Map options) {
+    public Object collect(CompassHits hits, boolean reload, boolean rawData, Map options) {
         if (hits.length() == 0) return null;
-        return getObject(hits.data(0), reload);
+        if(rawData)
+        {
+            return hits.hit(0);            
+        }
+        else
+        {
+            return getObject(hits.data(0), reload);
+        }
     }
 }

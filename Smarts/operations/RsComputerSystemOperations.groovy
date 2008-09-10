@@ -1,6 +1,5 @@
 
     
-    class RsComputerSystemOperations extends RsSmartsObjectOperations
-    {
+class RsComputerSystemOperations  extends RsSmartsObjectOperations {
     }
     

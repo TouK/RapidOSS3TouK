@@ -1,6 +1,5 @@
 
     
-    class RsIpOperations extends RsComputerSystemComponentOperations
-    {
+class RsIpOperations  extends RsComputerSystemComponentOperations {
     }
     

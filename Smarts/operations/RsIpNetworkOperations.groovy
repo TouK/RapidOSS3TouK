@@ -1,6 +1,5 @@
 
     
-    class RsIpNetworkOperations extends RsSmartsObjectOperations
-    {
+class RsIpNetworkOperations  extends RsGroupOperations {
     }
     

@@ -28,10 +28,17 @@ import java.util.Map;
  */
 public class DefaultSearchableEveryHitCollector extends AbstractSearchableHitCollector implements SearchableHitCollector {
 
-    public Object collect(CompassHits hits, boolean reload, Map options) {
+    public Object collect(CompassHits hits, boolean reload, boolean rawData, Map options) {
         List collectedHits = new ArrayList();
         for (int i = 0, max = hits.length(); i < max; i++) {
-            collectedHits.add(getObject(hits.data(i), reload));
+            if(rawData)
+            {
+                collectedHits.add(hits.hit(i));                
+            }
+            else
+            {
+                collectedHits.add(getObject(hits.data(i), reload));
+            }
         }
         return collectedHits;
     }

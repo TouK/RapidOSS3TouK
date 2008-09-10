@@ -1,6 +1,5 @@
 
     
-    class RsLinkOperations extends RsSmartsObjectOperations
-    {
+class RsLinkOperations  extends RsSmartsObjectOperations {
     }
     

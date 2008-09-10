@@ -11,14 +11,16 @@
             </Properties>
         </Model>
         <Model Name="RsEvent">
+            <Property Name='name' Type='string' IsKey="true"/>            
+        </Model>
+        <Model Name="RsSmartsNotification">
             <Properties>
-                <Property Name='name' Type='string'/>
                 <Property Name='creationClassName' Type='string'/>
                 <Property Name='description' Type='string'/>
                 <Property Name='displayName' Type='string'/>
-                <Property Name="className" Type="string" IsKey="true"/>
-                <Property Name="instanceName" Type="string" IsKey="true"/>
-                <Property Name="eventName" Type="string" IsKey="true"/>
+                <Property Name="className" Type="string"/>
+                <Property Name="instanceName" Type="string"/>
+                <Property Name="eventName" Type="string"/>
                 <Property Name="severity" Type="number"/>
                 <Property Name="lastNotifiedAt" Type="number"/>
                 <Property Name="lastCreatedAt" Type="number"/>
@@ -58,7 +60,7 @@
                 <Property Name='rsDatasource' Type='string'/>
             </Properties>
         </Model>
-        <Model Name="RsHistoricalEvent">
+        <Model Name="RsSmartsHistoricalNotification">
             <Properties>
                 <Property Name='name' Type='string'/>
                 <Property Name='creationClassName' Type='string'/>
@@ -281,7 +283,7 @@
         </Model>
     </Models>
     <Relations>
-        <Relation From="RsEvent" To="RsEvent" Name="causedBy" ReverseName="causes" Type="ManyToMany"></Relation>
+        <Relation From="RsSmartsNotification" To="RsSmartsNotification" Name="causedBy" ReverseName="causes" Type="ManyToMany"></Relation>
         <Relation From="RsComputerSystem" To="RsIpNetwork" Name="ipNetworks" ReverseName="memberSystems" Type="ManyToMany"></Relation>
         <Relation From="RsComputerSystem" To="RsComputerSystemComponent" Name="composedOf" ReverseName="partOf" Type="OneToMany"></Relation>
         <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystem" Type="ManyToMany"></Relation>

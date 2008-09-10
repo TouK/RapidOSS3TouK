@@ -9,7 +9,7 @@
 <%@ page import="datasource.SmartsNotificationDatasource" contentType="text/html;charset=UTF-8" %>
 <%
 
-    def domainObject = RsEvent.get(id: params.id);
+    def domainObject = RsSmartsNotification.get(id: params.id);
     if (domainObject != null) {
         def datasource = SmartsNotificationDatasource.get(name:domainObject.rsDatasource)
         if(datasource != null){
@@ -72,7 +72,7 @@
         }
         else{
             %>
-                Could not find RsEvent's datasource;
+                Could not find RsSmartsNotification's datasource;
             <%
         }
     }

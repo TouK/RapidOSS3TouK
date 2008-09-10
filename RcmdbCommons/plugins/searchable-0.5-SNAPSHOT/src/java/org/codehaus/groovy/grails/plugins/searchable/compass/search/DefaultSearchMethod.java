@@ -107,6 +107,8 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
         }
 
         public Object doInCompass(CompassSession session) throws CompassException {
+            Closure rawProcessor = (Closure) options.get("raw");
+            options.put("raw", rawProcessor != null);
             CompassQuery compassQuery = compassQueryBuilder.buildQuery(grailsApplication, session, options, query);
             long start = System.currentTimeMillis();
             CompassHits hits = compassQuery.hits();
@@ -118,10 +120,14 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
 //                System.out.println("query: [" + compassQuery + "], [" + hits.length() + "] hits, took [" + time + "] millis");
             Object collectedHits = hitCollector.collect(hits, options);
             Object searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, options);
-
-            doWithHighlighter(collectedHits, hits, searchResult);
-
-            return searchResult;
+            if(rawProcessor != null)
+            {
+                return doWithRawDataProcessor(rawProcessor, searchResult);
+            }
+            else
+            {
+                return searchResult;
+            }
         }
 
         public void doWithHighlighter(Object collectedHits, CompassHits hits, Object searchResult) {
@@ -139,6 +145,14 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
                     hits.highlighter(offset + i), new Integer(i), searchResult
                 });
             }
+        }
+
+        public Object doWithRawDataProcessor(Closure rawProcessor, Object searchResult) {
+            if (!(searchResult instanceof Collection)) {
+                return null;
+            }
+            rawProcessor = (Closure) rawProcessor.clone();
+            return rawProcessor.call(searchResult);
         }
 
         public void setGrailsApplication(GrailsApplication grailsApplication) {

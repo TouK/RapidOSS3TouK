@@ -1,7 +1,6 @@
 import datasource.SmartsNotificationDatasource
 
-class RsEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
-    {
+class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
         public void acknowledge(boolean action, userName){
             SmartsNotificationDatasource ds = SmartsNotificationDatasource.get(name:rsDatasource);
             if(ds == null) throw new Exception("Datasource with name ${rsDatasource} is not defined")

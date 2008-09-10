@@ -13,7 +13,7 @@ def userName = web.session.username;
 def queryType = params.queryType;
 def extraFilteredProps = ["rsDatasource"];
 if (queryType == "notification") {
-    def sortProperties = DomainClassUtils.getFilteredProperties("RsEvent", extraFilteredProps);
+    def sortProperties = DomainClassUtils.getFilteredProperties("RsSmartsNotification", extraFilteredProps);
     def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
         queryGroup.username == userName && queryGroup.isPublic == false
     };

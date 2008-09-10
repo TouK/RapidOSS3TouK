@@ -51,7 +51,14 @@ def init(){
 def cleanUp(){
 
 }
-
+def updateComputerSystemState(computerSystemName, severity)
+{
+    def compSystemObject = RsSmartsObject.get(name:computerSystemName);
+    if(compSystemObject)
+    {
+        compSystemObject.setState(severity);
+    }
+}
 def update(notificationObject){
     logger.info("Received ${notificationObject}");
     def notificationName = getNotificationName(notificationObject);
@@ -73,7 +80,8 @@ def update(notificationObject){
     }
     else if(eventType == BaseSmartsListeningAdapter.NOTIFY || eventType == BaseSmartsListeningAdapter.CHANGE)
     {
-        def addedEvent = RsSmartsNotification.add(notificationProps);
+        RsSmartsNotification addedEvent = RsSmartsNotification.add(notificationProps);
+        updateComputerSystemState(addedEvent.instanceName, addedEvent.severity)
         def notificationRelationPropValues = datasource.getNotification([ClassName:notificationObject.ClassName, InstanceName:notificationObject.InstanceName, EventName:notificationObject.EventName], ["CausedBy", "Causes"]);
         def causedByObjects = [];
         notificationRelationPropValues.CausedBy.each{notificationRelationProp->
@@ -129,6 +137,7 @@ def archiveNotification(notification)
         historicalNotificationProps["causes"] = serializeRelations(notification, causes);
         RsHistoricalEvent.add(historicalNotificationProps);
     }
+    updateComputerSystemState(notification.instanceName, -1)
     logger.info("${notification.name} is moved  to HistoricalNotification");
 }
 

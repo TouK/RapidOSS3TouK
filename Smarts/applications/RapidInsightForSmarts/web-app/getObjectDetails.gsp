@@ -16,18 +16,18 @@
                 cursor:pointer;
             }
         </style>
-        <div class="yui-navset yui-navset-top">
+        <div class="yui-navset yui-navset-top smarts-object-details" >
             <div style="display:block">
-                <table cellspacing="2" cellpadding="2">
+                <table width="100%" cellspacing="1" cellpadding="1">
                     <tbody>
 
-                        <g:each var="property" in="${allProperties}">
-                             <tr>
-                                <td>${property.name}</td>
+                        <g:each var="property"  status="i" in="${allProperties}">
+                             <tr  class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                                <td width="0%" style="font-weight:bold">${property.name}</td>
                                 <%
                                    if(!relations.containsKey(property.name)){
                                        %>
-                                            <td>${domainObject[property.name]}</td>
+                                            <td >${domainObject[property.name]}&nbsp;</td>
                                        <%
                                    }
                                    else{

@@ -38,6 +38,7 @@
     <orderEntry type="library" name="GROOVY" level="application" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="ThirdParty" level="project" />
     <orderEntry type="module" module-name="comp" />
     <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="ext" />
@@ -45,6 +46,16 @@
     <orderEntry type="module" module-name="RapidCMDB" />
     <orderEntry type="library" name="compass" level="project" />
     <orderEntry type="library" name="LicencedJars" level="project" />
+    <orderEntry type="module-library">
+      <library name="smartsplugin">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>

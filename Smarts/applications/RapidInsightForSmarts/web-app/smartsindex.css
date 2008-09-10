@@ -1,5 +1,5 @@
 .r-filterTree-groupAdd {
-     background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0pt -79px;
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0pt -79px;
 }
 
 .r-filterTree-queryAdd {
@@ -34,23 +34,40 @@
     filter: "alpha(opacity=76)";
 }
 
-.event-details-severity{
-    width:18px;
-    height:18px;
+.event-details-severity {
+    width: 18px;
+    height: 18px;
 }
-.event-details-severity-critical{
-   background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -200px;
+
+.event-details-severity-critical {
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -200px;
 }
-.event-details-severity-major{
-   background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -220px;
+
+.event-details-severity-major {
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -220px;
 }
-.event-details-severity-minor{
-   background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -280px;
+
+.event-details-severity-minor {
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -280px;
 }
-.event-details-severity-unknown{
-   background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -260px;
+
+.event-details-severity-unknown {
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -260px;
 }
-.event-details-severity-normal*
-   background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -240px;
+
+.event-details-severity-normal {
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -240px;
 }
--+
+
+.smarts-object-details td {
+    padding: 0.1em 0.5em;
+    vertical-align: top;
+}
+
+.smarts-object-details .even td {
+    background: #DBEAFF;
+}
+
+.smarts-object-details .odd td {
+    background: #EDF5FF;
+}

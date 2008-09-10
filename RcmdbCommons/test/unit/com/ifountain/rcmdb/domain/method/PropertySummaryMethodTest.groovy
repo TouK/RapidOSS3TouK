@@ -39,20 +39,25 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
         initialize([PropertySummaryMethodDomainObject1], []);
         PropertySummaryMethodDomainObject1.add(prop1:"p1val1", prop2:"p2val1");
         PropertySummaryMethodDomainObject1.add(prop1:"p1val1");
+        PropertySummaryMethodDomainObject1.add(prop1:"p1val1");
         PropertySummaryMethodDomainObject1.add(prop1:"p1val1", prop2:"");
         PropertySummaryMethodDomainObject1.add(prop1:"p1val2", prop2:"p2val2");
-        PropertySummaryMethodDomainObject1.add(prop1:"p1val3", prop2:"p2val2");
+        PropertySummaryMethodDomainObject1.add(prop1:"p1val3", prop2:"p2val2", prop3:1l);
 
         PropertySummaryMethod method = new PropertySummaryMethod(PropertySummaryMethodDomainObject1.metaClass);
-        def res = method.invoke(PropertySummaryMethodDomainObject1, ["alias:*", ["prop1", "prop2"]] as Object[])
-        assertEquals (2, res.size());
-        assertEquals (3, res.prop1.p1val1);
+        def res = method.invoke(PropertySummaryMethodDomainObject1, ["alias:*", ["prop1", "prop2", "prop3"]] as Object[])
+        assertEquals (3, res.size());
+        assertEquals (4, res.prop1.p1val1);
         assertEquals (1, res.prop1.p1val2);
         assertEquals (1, res.prop1.p1val3);
+
         assertEquals (1, res.prop2.p2val1);
         assertEquals (2, res.prop2.p2val2);
-        assertEquals (1, res.prop2["null"]);
+        assertEquals (2, res.prop2["null"]);
         assertEquals (1, res.prop2[""]);
+        
+        assertEquals (1, res.prop3.get(1l));
+        assertEquals (1, res.prop3.get("1"));
     }
 
     public void testPropertySummaryWithNoProperty()
@@ -93,6 +98,7 @@ class PropertySummaryMethodDomainObject1 {
     Long version ;
     String prop1;
     String prop2;
+    Long prop3;
 
 
     org.springframework.validation.Errors errors ;
@@ -104,6 +110,7 @@ class PropertySummaryMethodDomainObject1 {
      errors(nullable:true)
      prop1(nullable:true)
      prop2(nullable:true)
+     prop3(nullable:true)
     }
     static relations = [:]
     static propertyConfiguration= [:]

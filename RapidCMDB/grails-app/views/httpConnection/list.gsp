@@ -22,8 +22,6 @@
                         
                    	        <g:sortableColumn property="name" title="Name" />
                         
-                   	        <g:sortableColumn property="connectionClass" title="Connection Class" />
-                        
                    	        <g:sortableColumn property="baseUrl" title="Base Url" />
                         
                         </tr>
@@ -33,8 +31,6 @@
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
                             <td><g:link action="show" id="${httpConnection.id}">${httpConnection.name?.encodeAsHTML()}</g:link></td>
-                        
-                            <td>${httpConnection.connectionClass?.encodeAsHTML()}</td>
                         
                             <td>${httpConnection.baseUrl?.encodeAsHTML()}</td>
                         

@@ -21,9 +21,7 @@
                         <tr>
                         
                    	        <g:sortableColumn property="name" title="Name" />
-                        
-                   	        <g:sortableColumn property="connectionClass" title="Connection Class" />
-                        
+
                    	        <g:sortableColumn property="wsdlBaseUrl" title="Wsdl Base Url" />
                         
                         </tr>
@@ -33,8 +31,6 @@
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
                             <td><g:link action="show" id="${apgConnection.id}">${apgConnection.name?.encodeAsHTML()}</g:link></td>
-                        
-                            <td>${apgConnection.connectionClass?.encodeAsHTML()}</td>
                         
                             <td>${apgConnection.wsdlBaseUrl?.encodeAsHTML()}</td>
                         

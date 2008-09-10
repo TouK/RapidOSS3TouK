@@ -22,8 +22,6 @@
                         
                    	        <g:sortableColumn property="name" title="Name" />
                         
-                   	        <g:sortableColumn property="connectionClass" title="Connection Class" />
-                        
                    	        <g:sortableColumn property="baseUrl" title="Base Url" />
                         
                    	        <g:sortableColumn property="username" title="Username" />
@@ -36,8 +34,6 @@
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
                             <td><g:link action="show" id="${rapidInsightConnection.id}">${rapidInsightConnection.name?.encodeAsHTML()}</g:link></td>
-                        
-                            <td>${rapidInsightConnection.connectionClass?.encodeAsHTML()}</td>
                         
                             <td>${rapidInsightConnection.baseUrl?.encodeAsHTML()}</td>
                         

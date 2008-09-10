@@ -36,15 +36,6 @@
                                 </td>
                             </tr> 
                         
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="connectionClass">Connection Class:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:apgConnection,field:'connectionClass','errors')}">
-                                    <input type="text" class="inputtextfieldl" id="connectionClass" name="connectionClass" value="${fieldValue(bean:apgConnection,field:'connectionClass')}"/>
-                                </td>
-                            </tr>
-
                               <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="maxNumberOfConnections">Max. Active:</label>

@@ -22,7 +22,6 @@
                         
                    	        <g:sortableColumn property="name" title="Name" />
                         
-                   	        <g:sortableColumn property="connectionClass" title="Connection Class" />
                         
                    	        <g:sortableColumn property="driver" title="Driver" />
                         
@@ -37,8 +36,6 @@
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
                             <td><g:link action="show" id="${databaseConnection.id}">${databaseConnection.name?.encodeAsHTML()}</g:link></td>
-
-                            <td>${databaseConnection.connectionClass?.encodeAsHTML()}</td>
                         
                             <td>${databaseConnection.driver?.encodeAsHTML()}</td>
                         

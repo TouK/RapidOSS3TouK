@@ -65,8 +65,8 @@ def update(notificationObject){
     {
         existingObjectsRetrieved = true;
         logger.info("Existing objects retrieved and ${notificationsMap.size()} number of events will be moved to HistoricalNotification.");
-        notificationsMap.each{String notificationName, String value->
-            def notification = RsSmartsNotification.search("name:${notificationName}").results[0];
+        notificationsMap.each{String archivedNotificationName, String value->
+            def notification = RsSmartsNotification.search("name:${archivedNotificationName}").results[0];
             archiveNotification(notification);
         }
         notificationsMap.clear();

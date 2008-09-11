@@ -6,7 +6,8 @@ import com.watch4net.apg.v2.remote.sample.jaxws.db.*;
 
 import java.util.List;
 import java.util.Map;
-import java.lang.Exception;
+import java.lang.Exception
+import org.apache.log4j.Logger;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -33,6 +34,11 @@ import java.lang.Exception;
  * To change this template use File | Settings | File Templates.
  */
 class ApgDatabaseAdapter extends BaseAdapter {
+
+    public ApgDatabaseAdapter(String connConfigName, long reconnectInterval, Logger logger)
+    {
+        super(connConfigName, reconnectInterval, logger);
+    }
 
     public DatabaseAccessorService authenticate(String username, String password) throws Exception {
         DatabaseAuthenticateAction authAction = new DatabaseAuthenticateAction(username, password);
@@ -127,7 +133,7 @@ class ApgDatabaseAdapter extends BaseAdapter {
         return action.getAvailableProperties();
     }
 
-    public List<Suggestion> getSuggestions(String username, String password, String filter,String pattern,List<String> properties,int limit)throws Exception{
+    public List<Suggestion> getSuggestions(String username, String password, String filter, String pattern, List<String> properties, int limit) throws Exception {
         DatabaseAccessorService dbService = authenticate(username, password);
         GetSuggestionsAction action = new GetSuggestionsAction(dbService, filter, pattern, properties, limit);
         executeAction(action);

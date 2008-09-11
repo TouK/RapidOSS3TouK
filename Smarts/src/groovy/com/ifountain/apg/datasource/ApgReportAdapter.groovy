@@ -8,7 +8,8 @@ import com.watch4net.apg.v2.remote.sample.jaxws.report.*;
 import javax.xml.ws.Holder;
 import java.util.Map;
 import java.util.List;
-import java.lang.Exception;
+import java.lang.Exception
+import org.apache.log4j.Logger;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -35,15 +36,20 @@ import java.lang.Exception;
  * To change this template use File | Settings | File Templates.
  */
 class ApgReportAdapter extends BaseAdapter {
+
+    public ApgReportAdapter(String connConfigName, long reconnectInterval, Logger logger)
+    {
+        super(connConfigName, reconnectInterval, logger);
+    }
     public ReportManagerService authenticate(String username, String password) throws Exception {
         ReportAuthenticateAction authAction = new ReportAuthenticateAction(username, password);
         executeAction(authAction);
         return authAction.getReportService();
     }
 
-    public void getReport(String username, String password, ReportProperties properties,RealNode node,Holder<CompoundElement> compoundElement,Holder<GraphElement> graphElement,Holder<ErrorElement> errorElement,Holder<ImageElement> imageElement,Holder<TableElement> tableElement)throws Exception {
+    public void getReport(String username, String password, ReportProperties properties, RealNode node, Holder<CompoundElement> compoundElement, Holder<GraphElement> graphElement, Holder<ErrorElement> errorElement, Holder<ImageElement> imageElement, Holder<TableElement> tableElement) throws Exception {
         ReportManagerService reportService = authenticate(username, password);
-        GetReportAction action = new GetReportAction(reportService, properties, node,compoundElement, graphElement, errorElement, imageElement, tableElement);
+        GetReportAction action = new GetReportAction(reportService, properties, node, compoundElement, graphElement, errorElement, imageElement, tableElement);
         executeAction(action);
     }
 

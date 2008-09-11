@@ -30,7 +30,7 @@ RsSmartsObject.list().each{
 RsEvent.list().each{
     it.remove();
 }
-RsHistoricalEvent.list().each{
+RsSmartsHistoricalNotification.list().each{
     it.remove();
 }
 RsManagementServer.list().each{

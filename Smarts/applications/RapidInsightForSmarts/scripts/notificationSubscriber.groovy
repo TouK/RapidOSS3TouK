@@ -51,8 +51,9 @@ def init(){
 def cleanUp(){
 
 }
-def updateComputerSystemState(computerSystemName, severity)
+def updateComputerSystemState(elementName, instanceName, severity)
 {
+    def computerSystemName = elementName != null && elementName != ""?elementName:instanceName;
     def compSystemObject = RsSmartsObject.get(name:computerSystemName);
     if(compSystemObject instanceof RsComputerSystem)
     {
@@ -61,13 +62,7 @@ def updateComputerSystemState(computerSystemName, severity)
 }
 def update(notificationObject){
     logger.info("Received ${notificationObject}");
-    def notificationName = getNotificationName(notificationObject);
     def eventType = notificationObject[BaseSmartsListeningAdapter.EVENT_TYPE_NAME];
-    def notificationProps = getNotificationProperties(notificationObject);
-    if(!existingObjectsRetrieved)
-    {
-        notificationsMap.remove(notificationName);    
-    }
     if(eventType == BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED)
     {
         existingObjectsRetrieved = true;
@@ -78,38 +73,47 @@ def update(notificationObject){
         }
         notificationsMap.clear();
     }
-    else if(eventType == BaseSmartsListeningAdapter.NOTIFY || eventType == BaseSmartsListeningAdapter.CHANGE)
+    else
     {
-        RsSmartsNotification addedEvent = RsSmartsNotification.add(notificationProps);
-        updateComputerSystemState(addedEvent.elementName, addedEvent.severity)
-        def notificationRelationPropValues = datasource.getNotification([ClassName:notificationObject.ClassName, InstanceName:notificationObject.InstanceName, EventName:notificationObject.EventName], ["CausedBy", "Causes"]);
-        def causedByObjects = [];
-        notificationRelationPropValues.CausedBy.each{notificationRelationProp->
-            def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
-            if(rsEvent)
-            {
-                causedByObjects.add(rsEvent);
-            }
+        def notificationName = getNotificationName(notificationObject);
+        def notificationProps = getNotificationProperties(notificationObject);
+        if(!existingObjectsRetrieved)
+        {
+            notificationsMap.remove(notificationName);
         }
-        def causesObjects = [];
-        notificationRelationPropValues.Causeds.each{notificationRelationProp->
-            def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
-            if(rsEvent)
-            {
-                causesObjects.add(rsEvent);
+        if(eventType == BaseSmartsListeningAdapter.NOTIFY || eventType == BaseSmartsListeningAdapter.CHANGE)
+        {
+            RsSmartsNotification addedEvent = RsSmartsNotification.add(notificationProps);
+            updateComputerSystemState(addedEvent.elementName, addedEvent.instanceName, addedEvent.severity)
+            def notificationRelationPropValues = datasource.getNotification([ClassName:notificationObject.ClassName, InstanceName:notificationObject.InstanceName, EventName:notificationObject.EventName], ["CausedBy", "Causes"]);
+            def causedByObjects = [];
+            notificationRelationPropValues.CausedBy.each{notificationRelationProp->
+                def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
+                if(rsEvent)
+                {
+                    causedByObjects.add(rsEvent);
+                }
             }
+            def causesObjects = [];
+            notificationRelationPropValues.Causeds.each{notificationRelationProp->
+                def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
+                if(rsEvent)
+                {
+                    causesObjects.add(rsEvent);
+                }
+            }
+            addedEvent.addRelation(causedBy:causedByObjects);
+            addedEvent.addRelation(causes:causesObjects);
+            logger.info("Added ${notificationName} to repository");
         }
-        addedEvent.addRelation(causedBy:causedByObjects);
-        addedEvent.addRelation(causes:causesObjects);
-        logger.info("Added ${notificationName} to repository");
-    }
-    else if(eventType == BaseSmartsListeningAdapter.CLEAR)
-    {
-        archiveNotification(RsSmartsNotification.get(name:notificationName));
-    }
-    else if(eventType == BaseSmartsListeningAdapter.ARCHIVE)
-    {
-        archiveNotification(RsSmartsNotification.get(name:notificationName));
+        else if(eventType == BaseSmartsListeningAdapter.CLEAR)
+        {
+            archiveNotification(RsSmartsNotification.get(name:notificationName));
+        }
+        else if(eventType == BaseSmartsListeningAdapter.ARCHIVE)
+        {
+            archiveNotification(RsSmartsNotification.get(name:notificationName));
+        }
     }
 }
 
@@ -135,9 +139,9 @@ def archiveNotification(notification)
         historicalNotificationProps[localName] = notification[localName];
         historicalNotificationProps["causedBy"] = serializeRelations(notification, "causedBy");
         historicalNotificationProps["causes"] = serializeRelations(notification, "causes");
-        RsHistoricalEvent.add(historicalNotificationProps);
+        RsSmartsHistoricalNotification.add(historicalNotificationProps);
     }
-    updateComputerSystemState(notification.elementName, -1)
+    updateComputerSystemState(notification.elementName, notification.instanceName, -1)
     logger.info("${notification.name} is moved  to HistoricalNotification");
 }
 

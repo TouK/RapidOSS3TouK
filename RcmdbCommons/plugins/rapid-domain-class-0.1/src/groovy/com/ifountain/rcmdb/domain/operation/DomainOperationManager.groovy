@@ -59,6 +59,8 @@ class DomainOperationManager {
 
     public File getOperationFile()
     {
-        return new File("$operationsDirectory/${getOperationClassName()}.groovy")
+        def className = getOperationClassName();
+        def fileName = className.replaceAll("\\.", "/")
+        return new File("$operationsDirectory/${fileName}.groovy")
     }
 }

@@ -30,10 +30,13 @@ class BaseListeningDatasource extends BaseDatasource
 {
 
     static searchable = {
-        except = ["listeningScript"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "listeningScript"];
     };
     static datasources = [:]
     CmdbScript listeningScript;
+    org.springframework.validation.Errors errors ;
+    Object __operation_class__ ;
+    Object __is_federated_properties_loaded__ ;
     boolean isSubscribed = false;
 
     static relations = [
@@ -41,18 +44,9 @@ class BaseListeningDatasource extends BaseDatasource
     ]
     static constraints={
         listeningScript(nullable:true)
+        __operation_class__(nullable:true)
+        __is_federated_properties_loaded__(nullable:true)
+        errors(nullable:true)
     }
-    static transients = [];
-
-    def beforeDelete = {
-        if(this.listeningScript && this.listeningScript.type == CmdbScript.LISTENING){
-            ListeningAdapterManager.getInstance().stopAdapter(this);
-        }
-    }
-
-
-    def getListeningAdapter(Map params){
-        return null;
-    }
-
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
 }

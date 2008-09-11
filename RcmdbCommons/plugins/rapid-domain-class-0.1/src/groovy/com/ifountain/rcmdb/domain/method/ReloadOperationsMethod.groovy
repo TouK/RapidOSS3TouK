@@ -46,6 +46,7 @@ class ReloadOperationsMethod extends AbstractRapidDomainStaticMethod{
                     throw new RuntimeException("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading. Reason:${exception.toString()}", exception)
                 }
             }
+            logger.warn("Operation for class ${mc.theClass.name} loaded successfully.");
         }
         catch(DomainOperationLoadException exception)
         {

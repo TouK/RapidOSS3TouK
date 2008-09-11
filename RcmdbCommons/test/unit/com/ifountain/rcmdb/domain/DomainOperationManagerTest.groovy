@@ -69,6 +69,39 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
         assertTrue (manager.operationClassMethods.containsKey("method2"));
     }
 
+    public void testLoadOperationWithAClassWithPackagename()
+    {
+        GroovyClassLoader classLoader = new GroovyClassLoader();
+        Class domainClass = classLoader.parseClass("""
+            package packagename1.packagename2.packagename3;
+            class TrialDomainClass
+            {
+
+            }
+        """);
+        def stringWillBeReturned = "method1"
+        def oprFile = new File("$operationsDirectory/packagename1/packagename2/packagename3/${domainClass.simpleName}${DomainOperationManager.OPERATION_SUFFIX}.groovy");
+        oprFile.parentFile.mkdirs();
+        oprFile.setText (
+                """
+                    package packagename1.packagename2.packagename3;
+                    class  ${domainClass.simpleName}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}
+                    {
+                        def method1()
+                        {
+                            return "${stringWillBeReturned}";
+                        }
+                    }
+                """
+        )
+        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory);
+        Class operationClass = manager.loadOperation();
+        AbstractDomainOperation operInstance = operationClass.newInstance();
+        assertEquals (stringWillBeReturned, operInstance.method1());
+        assertSame (operationClass, manager.getOperationClass())
+        assertTrue (manager.operationClassMethods.containsKey("method1"));
+    }
+
     public void testLoadOperationThrowsExceptionIfOperationFileDoesnotExist()
     {
         Class domainClass = createSimpleDomainClass();

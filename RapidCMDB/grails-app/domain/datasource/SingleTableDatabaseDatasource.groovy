@@ -5,7 +5,7 @@ import datasource.SingleTableDatabaseAdapter
 import org.apache.log4j.Logger;
 class SingleTableDatabaseDatasource extends BaseDatasource{
     static searchable = {
-        except = ["connection"];
+        except = ["connection", 'records'];
     };
     static datasources = [:]
 
@@ -32,7 +32,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
      
     }
     def adapter;
-    static transients =  ['adapter']
+    static transients =  ['adapter', 'records']
      
 
     def onLoad = {

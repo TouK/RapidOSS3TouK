@@ -133,16 +133,23 @@ def serializeRelations(domainObject, relationName)
 def archiveNotification(notification)
 {
     if(notification == null) return;
-    notification.remove();
     def historicalNotificationProps = [:];
     columnLocalNameMappings.each{String localName, String smartsName->
         historicalNotificationProps[localName] = notification[localName];
-        historicalNotificationProps["causedBy"] = serializeRelations(notification, "causedBy");
-        historicalNotificationProps["causes"] = serializeRelations(notification, "causes");
-        RsSmartsHistoricalNotification.add(historicalNotificationProps);
     }
-    updateComputerSystemState(notification.elementName, notification.instanceName, -1)
-    logger.info("${notification.name} is moved  to HistoricalNotification");
+    historicalNotificationProps["causedBy"] = serializeRelations(notification, "causedBy");
+    historicalNotificationProps["causes"] = serializeRelations(notification, "causes");
+    notification.remove();
+    if(!notification.hasErrors())
+    {
+        RsSmartsHistoricalNotification.add(historicalNotificationProps);
+        updateComputerSystemState(notification.elementName, notification.instanceName, -1)
+        logger.info("${notification.name} is moved  to HistoricalNotification");
+    }
+    else
+    {
+        logger.info("${notification.name} can not be archived");        
+    }
 }
 
 def getNotificationName(notificationObject)

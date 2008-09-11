@@ -139,7 +139,7 @@
         lineSize:3,
         title:'Events',
         defaultFields:['className', 'instanceName', 'eventName', 'sourceDomainName','acknowledged','owner',
-                        'lastChangedAt','elementClassName', 'elementName','isRoot'],
+                        'lastChangedAt','elementClassName', 'elementName','isRoot', 'severity'],
 
         menuItems:{
             item1 : { id : 'acknowledge', label : 'Acknowledge', condition: searchListHeaderMenuConditionFunctionAcknowledge },

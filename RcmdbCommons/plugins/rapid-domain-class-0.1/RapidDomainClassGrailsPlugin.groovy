@@ -26,7 +26,7 @@ class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors", "__is_federated_properties_loaded__":RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, "__operation_class__":RapidCMDBConstants.OPERATION_PROPERTY_NAME]
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def version = 0.1
-    def loadAfter = ['searchable-extension']
+    def loadAfter = ['searchableExtension']
     def observe = ["controllers"]
     def domainClassMap;
     def doWithSpring = {
@@ -184,6 +184,24 @@ class RapidDomainClassGrailsPlugin {
                     }
                 }
                 throw new MissingMethodException (name,  delegate.class, args);
+            }
+            mc.'static'._methodMissing = {String methodName, args ->
+                if(manager.operationClass != null)
+                {
+                    if(manager.operationClassMethods.containsKey(methodName))
+                    {
+                        try {
+                            return manager.operationClass.metaClass.invokeStaticMethod(manager.operationClass, methodName, args);
+                        } catch (MissingMethodException e) {
+                            if(e.getType().name != oprInstance.class.name)
+                            {
+                                throw e;
+                            }
+                        }
+
+                    }
+                }
+                throw new MissingMethodException (methodName,  mc.theClass, args);
             }
             mc.'static'.reloadOperations = {
                 mc.invokeStaticMethod (dc.clazz, "reloadOperations", true);

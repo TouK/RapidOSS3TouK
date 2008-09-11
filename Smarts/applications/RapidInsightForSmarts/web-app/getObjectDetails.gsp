@@ -50,7 +50,7 @@
                                        else{
                                            %>
                                                 <td>
-                                                <ul>
+                                                <ul style="margin-left: 10px;">
                                             <%
                                             domainObject[property.name].each{
                                               %>

@@ -154,10 +154,9 @@ class RapidDomainClassGrailsPlugin {
     }
     def addOperationsSupport(GrailsDomainClass dc, application, ctx)
     {
-        def mc = dc.metaClass;
-        try
+        MetaClass mc = dc.metaClass;
+        if(mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)
         {
-            mc.theClass.getDeclaredField(RapidCMDBConstants.OPERATION_PROPERTY_NAME);
             DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString());
 
             ReloadOperationsMethod method = new ReloadOperationsMethod(dc.metaClass, DomainClassUtils.getSubClasses(dc), manager, logger);
@@ -218,10 +217,7 @@ class RapidDomainClassGrailsPlugin {
             {
             }
         }
-        catch(NoSuchFieldException  ex)
-        {
 
-        }
     }
 
     

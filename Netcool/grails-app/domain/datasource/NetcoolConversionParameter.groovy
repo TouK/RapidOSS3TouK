@@ -12,29 +12,15 @@ class NetcoolConversionParameter {
     String columnName;
     int value;
     String conversion;
+    org.springframework.validation.Errors errors ;
+    Object __operation_class__ ;
+    Object __is_federated_properties_loaded__ ;
     static constraints = {
         keyField(key:[], nullable:false, blank:false);
         columnName(nullable:false, blank:false);
         conversion(nullable:false, blank:true);
-    }
-
-    def static getRealValue(String colName, String val)
-    {
-        NetcoolConversionParameter conversion = NetcoolConversionParameter.search("columnName:$colName AND conversion:$val").results[0];
-        if(conversion)
-        {
-            return conversion.value;
-        }
-        return val;
-    }
-
-    def static getConvertedValue(String colName, Object val)
-    {
-        NetcoolConversionParameter conversion = NetcoolConversionParameter.get(keyField:"$colName$val".toString());
-        if(conversion)
-        {
-            return conversion.conversion;
-        }
-        return val;
+        __operation_class__(nullable:true)
+        __is_federated_properties_loaded__(nullable:true)
+        errors(nullable:true)
     }
 }

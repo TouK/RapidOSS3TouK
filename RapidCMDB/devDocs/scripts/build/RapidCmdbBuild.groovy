@@ -208,7 +208,7 @@ class RapidCmdbBuild extends Build {
                 }
             }
         }
-         ant.copy(todir: "$env.dist_modeler/web-app") {
+        ant.copy(todir: "$env.dist_modeler/web-app") {
             ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/web-app") 
         }
         if (TEST) {
@@ -235,6 +235,7 @@ class RapidCmdbBuild extends Build {
                 ant.include(name: "**/grails-app/**");
                 ant.include(name: "**/plugins/**");
                 ant.include(name: "**/src/**");
+                ant.include(name: "**/operations/**");
                 ant.include(name: "**/web-app/**");
             }
         }

@@ -31,7 +31,7 @@ class SmartsModuleBuild extends Build {
     def build() {
         ant.copy(file: (String) classpath.getProperty("skclient_jar"), toDir: "$env.dist_rapid_server_lib");
         ant.copy(file: (String) classpath.getProperty("net_jar"), toDir: "$env.dist_rapid_server_lib");
-        createPlugin(env.rapid_smarts, ["applications/**", "operations/**", "generatedModels/**"]);
+        createPlugin(env.rapid_smarts, ["applications/**", "operations/**", "generatedModels/**", "operations/**"]);
         ant.delete(file: env.dist_rapid_server_lib + "/skclient_jar");
         ant.delete(file: env.dist_rapid_server_lib + "/net_jar");
     }

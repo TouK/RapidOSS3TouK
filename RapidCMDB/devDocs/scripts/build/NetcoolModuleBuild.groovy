@@ -30,7 +30,7 @@ class NetcoolModuleBuild extends Build{
 	}
 
     def build(){
-        createPlugin(env.rapid_netcool,["applications/**","operations/**","generatedModels/**"]);
+        createPlugin(env.rapid_netcool,["applications/**","operations/**","generatedModels/**","operations/**"]);
     }
 
 }

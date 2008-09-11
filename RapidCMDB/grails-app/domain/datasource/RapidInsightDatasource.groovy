@@ -1,8 +1,7 @@
 package datasource
 
 import connection.RapidInsightConnection
-import datasource.RapidInsightAdapter
-import org.apache.log4j.Logger;
+
 class RapidInsightDatasource extends BaseDatasource{
     static searchable = {
         except = ["connection"];
@@ -21,10 +20,5 @@ class RapidInsightDatasource extends BaseDatasource{
         
      
     }
-
-    def adapter;
-    static transients = ["adapter"];
-    def onLoad = {
-       this.adapter = new RapidInsightAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
-    }
+    static transients = [];
 }

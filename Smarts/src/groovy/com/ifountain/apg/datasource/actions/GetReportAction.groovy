@@ -3,7 +3,7 @@ package com.ifountain.apg.datasource.actions
 import com.ifountain.core.connection.IConnection
 import com.ifountain.core.datasource.Action
 import com.watch4net.apg.v2.remote.sample.jaxws.report.*
-import javax.xml.ws.Holder;
+import javax.xml.ws.Holder
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -52,7 +52,7 @@ public class GetReportAction implements Action {
         this.tableElement = tableElement;
     }
 
-    public void execute(IConnection conn) throws Exception {
+    public void execute(IConnection conn){
         reportService.getReportManagerPort().getReport(properties, node, compoundElement, graphElement, errorElement, imageElement, tableElement);
     }
 }

@@ -1,8 +1,6 @@
 package datasource
 
 import connection.ApgConnection
-import com.ifountain.apg.datasource.ApgDatabaseAdapter
-import org.apache.log4j.Logger
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -32,7 +30,6 @@ class ApgDatabaseDatasource extends BaseDatasource{
     static searchable = {
         except = ["connection"];
     };
-    def adapter;
     static datasources = [:]
     ApgConnection connection;
     int reconnectInterval = 0;
@@ -42,10 +39,5 @@ class ApgDatabaseDatasource extends BaseDatasource{
     static constraints = {
         connection(nullable: true)
     }
-    static transients = ['adapter']
-
-    def onLoad = {
-        this.adapter = new ApgDatabaseAdapter(getProperty("connection").name, reconnectInterval * 1000, Logger.getRootLogger());
-    }
-
+    static transients = []
 }

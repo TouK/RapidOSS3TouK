@@ -1,12 +1,10 @@
 import auth.RsUser;
 
-def eventName = params.eventName;
-def instanceName = params.instanceName;
-def className = params.className;
+def notificationName = params.name;
 def user = RsUser.findByUsername(web.session.username);
 def acknowledged = params.acknowledged;
 
-def rsEvent = RsSmartsNotification.get(eventName:eventName, instanceName:instanceName, className:className);
+def rsEvent = RsSmartsNotification.get(name:notificationName);
 if (rsEvent) {
 	    if (acknowledged == "true")
         	rsEvent.acknowledge(true, user.username);
@@ -25,5 +23,5 @@ if (rsEvent) {
     }
 }
 else{
-    throw new Exception("RsSmartsNotification with eventname: ${eventName}, instancename: ${instanceName} and classname: ${className} does not exist." );
+    throw new Exception("RsSmartsNotification with name: ${notificationName} does not exist." );
 }

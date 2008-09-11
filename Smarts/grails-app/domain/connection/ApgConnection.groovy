@@ -36,7 +36,7 @@ class ApgConnection extends Connection {
     static datasources = [:]
 
     String connectionClass = "com.ifountain.apg.connection.ApgConnectionImpl";
-    String wsdlBaseUrl = "";
+    String wsdlBaseUrl = "http://localhost:58080/APG-WS/";
     List apgDatabaseDatasources = [];
     List apgReportDatasources = [];
 

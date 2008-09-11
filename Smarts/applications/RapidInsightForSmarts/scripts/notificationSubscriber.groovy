@@ -54,7 +54,7 @@ def cleanUp(){
 def updateComputerSystemState(computerSystemName, severity)
 {
     def compSystemObject = RsSmartsObject.get(name:computerSystemName);
-    if(compSystemObject)
+    if(compSystemObject instanceof RsComputerSystem)
     {
         compSystemObject.setState(severity);
     }

@@ -9,7 +9,8 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 def getParameters(){
    return [
            "Attributes":["ClassName", "InstanceName", "EventName", "Severity", "Acknowledged", "Name",
-                   "EventText", "OccurrenceCount", "TroubleTicketID", "LastNotifiedAt", "LastChangedAt", "LastClearedAt"],
+                   "EventText", "OccurrenceCount", "TroubleTicketID", "LastNotifiedAt", "LastChangedAt", "LastClearedAt",
+           "ElementName", "ElementClassName", "SourceDomainName", "Category", "EventType", "Owner"],
            "NotificationList":"ALL_NOTIFICATIONS",
            "TransientInterval":300,
            "TailMode":false

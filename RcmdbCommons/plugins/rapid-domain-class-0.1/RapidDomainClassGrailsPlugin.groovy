@@ -176,14 +176,14 @@ class RapidDomainClassGrailsPlugin {
                         try {
                             return oprInstance.invokeMethod(name, args)
                         } catch (MissingMethodException e) {
-                            if(e.getType().name != oprInstance.class.name)
+                            if(e.getType().name != oprInstance.class.name || e.getMethod() != name)
                             {
                                 throw e;
                             }
                         }
                     }
                 }
-                throw new MissingMethodException (name,  delegate.class, args);
+                new MissingMethodException (name,  mc.theClass, args);
             }
             mc.'static'._methodMissing = {String methodName, args ->
                 if(manager.operationClass != null)
@@ -193,7 +193,7 @@ class RapidDomainClassGrailsPlugin {
                         try {
                             return manager.operationClass.metaClass.invokeStaticMethod(manager.operationClass, methodName, args);
                         } catch (MissingMethodException e) {
-                            if(e.getType().name != oprInstance.class.name)
+                            if(e.getType().name != oprInstance.class.name || e.getMethod() != methodName)
                             {
                                 throw e;
                             }

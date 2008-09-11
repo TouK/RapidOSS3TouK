@@ -12,10 +12,16 @@ class EventTriggeringUtils {
     static final String BEFORE_UPDATE_EVENT = 'beforeUpdate'
     static final String BEFORE_DELETE_EVENT = 'beforeDelete'
     public static void triggerEvent(entity, event) {
-        if(entity.metaClass.hasProperty(entity, event)) {
-             def callable = entity."$event"
-             callable.delegate = entity
-             callable.call()
-         }
+        try
+        {
+            entity."${event}"();
+        }
+        catch(MissingMethodException exception)
+        {
+            if(exception.getMethod() != event || exception.getType().name != entity.class.name)
+            {
+                throw exception;                
+            }
+        }
     }
 }

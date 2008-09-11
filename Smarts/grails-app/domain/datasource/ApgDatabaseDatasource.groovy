@@ -1,7 +1,7 @@
 package datasource
 
 import connection.ApgConnection
-import com.ifountain.apg.datasource.actions.ApgDatabaseAdapter
+import com.ifountain.apg.datasource.ApgDatabaseAdapter
 import org.apache.log4j.Logger
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be

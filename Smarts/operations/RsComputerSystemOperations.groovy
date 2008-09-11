@@ -38,7 +38,7 @@ class RsComputerSystemOperations extends RsSmartsObjectOperations
         return stateInformation[name];
     }
 
-    int setState(int state)
+    int setState(state)
     {
         def stateInformation = getStateInformation();
         if(stateInformation == null || state < stateInformation)

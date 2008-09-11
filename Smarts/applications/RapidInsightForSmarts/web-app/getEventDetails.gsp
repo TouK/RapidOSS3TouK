@@ -9,7 +9,7 @@
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
         <li class="selected">
-            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?className=${domainObject.className}&instanceName=${domainObject.instanceName}&eventName=${domainObject.eventName}');">
+            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=${domainObject.name}');">
                 <em>Properties</em>
             </a>
         </li>

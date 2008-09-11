@@ -133,8 +133,8 @@ def archiveNotification(notification)
     def historicalNotificationProps = [:];
     columnLocalNameMappings.each{String localName, String smartsName->
         historicalNotificationProps[localName] = notification[localName];
-        historicalNotificationProps["causedBy"] = serializeRelations(notification, causedby);
-        historicalNotificationProps["causes"] = serializeRelations(notification, causes);
+        historicalNotificationProps["causedBy"] = serializeRelations(notification, "causedBy");
+        historicalNotificationProps["causes"] = serializeRelations(notification, "causes");
         RsHistoricalEvent.add(historicalNotificationProps);
     }
     updateComputerSystemState(notification.elementName, -1)

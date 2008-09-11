@@ -170,9 +170,16 @@
         },
         renderCellFunction : function(key, value, data){
         	if(key == "lastChangedAt"){
-                var d = new Date();
-                d.setTime(parseFloat(value)*1000)
-                return d.format("d M H:i:s");
+                if(value == "0" || value == "")
+                {
+                    return "never"    
+                }
+                else
+                {
+                    var d = new Date();
+                    d.setTime(parseFloat(value)*1000)
+                    return d.format("d M H:i:s");
+                }
             }
             return value;
         }

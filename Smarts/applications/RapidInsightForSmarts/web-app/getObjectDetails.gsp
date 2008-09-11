@@ -37,7 +37,7 @@
                                            if(sObj != null){
                                                 %>
                                                     <td>
-                                                        <a onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${sObj.name}', 'Details of ${sObj.creationClassName} ${sObj.name}');">${sObj.creationClassName} ${sObj.name}<a>
+                                                        <a class="yui-navset" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${sObj.name}', 'Details of ${sObj.creationClassName} ${sObj.name}');">${sObj.creationClassName} ${sObj.name}<a>
                                                     </td>
                                                <%
                                             }
@@ -54,7 +54,7 @@
                                             <%
                                             domainObject[property.name].each{
                                               %>
-                                                   <li><a onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${it.name}', 'Details of ${it.creationClassName} ${it.name}');">${it.creationClassName} ${it.name}<a></li>
+                                                   <li><a class="yui-navset" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${it.name}', 'Details of ${it.creationClassName} ${it.name}');">${it.creationClassName} ${it.name}<a></li>
                                                <%
                                             }
                                             %>

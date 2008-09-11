@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 class SingleTableDatabaseDatasourceOperations extends BaseDatasourceOperations{
 
     def adapter;
-    def onLoad = {
+    def onLoad(){
        this.adapter = new SingleTableDatabaseAdapter(getProperty("connection").name, tableName, tableKeys, reconnectInterval*1000, Logger.getRootLogger());
     }
 

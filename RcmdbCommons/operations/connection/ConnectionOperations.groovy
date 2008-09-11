@@ -10,7 +10,7 @@ import com.ifountain.core.connection.ConnectionManager
  * To change this template use File | Settings | File Templates.
  */
 class ConnectionOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
-    def beforeDelete = {
+    def beforeDelete(){
           ConnectionManager.removeConnection(this.name);
     }
 }

@@ -12,7 +12,7 @@ import org.apache.log4j.Logger
  */
 class ApgDatabaseDatasourceOperations extends BaseDatasourceOperations{
     def adapter;
-    def onLoad = {
+    def onLoad(){
         this.adapter = new ApgDatabaseAdapter(getProperty("connection").name, reconnectInterval * 1000, Logger.getRootLogger());
     }
 }

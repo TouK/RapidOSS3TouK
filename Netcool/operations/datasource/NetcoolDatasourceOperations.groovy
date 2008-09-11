@@ -18,7 +18,7 @@ class NetcoolDatasourceOperations extends BaseDatasourceOperations{
     def journalTableAdapter;
     def conversionsTableAdapter;
     def masterTableAdapter;
-    def onLoad = {
+    def onLoad(){
         def statusTable = "alerts.status";
         def detailsTable = "alerts.details";
         def journalTable = "alerts.journal";

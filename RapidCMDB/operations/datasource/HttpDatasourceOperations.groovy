@@ -12,7 +12,7 @@ class HttpDatasourceOperations extends BaseDatasourceOperations{
 
 
     def adapter;
-    def onLoad = {
+    def onLoad(){
        this.adapter = new HttpAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
     }
 

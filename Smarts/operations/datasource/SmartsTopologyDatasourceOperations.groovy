@@ -15,7 +15,7 @@ import org.apache.log4j.Logger
 class SmartsTopologyDatasourceOperations extends BaseListeningDatasourceOperations{
 
     def adapter;
-    def onLoad = {
+    def onLoad(){
         this.adapter = new BaseTopologyAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger());
     }
 

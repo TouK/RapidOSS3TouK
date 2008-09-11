@@ -15,7 +15,7 @@ import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
 
-    def beforeDelete = {
+    def beforeDelete(){
         if(this.type == LISTENING ){
             def scriptInCompass = CmdbScript.get(this.id);
             if(scriptInCompass.listeningDatasource){
@@ -25,7 +25,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         }
     }
 
-     def beforeUpdate = {
+     def beforeUpdate(){
         if(this.type == LISTENING ){
             def scriptInCompass = CmdbScript.get(this.id);
             if(scriptInCompass.listeningDatasource){

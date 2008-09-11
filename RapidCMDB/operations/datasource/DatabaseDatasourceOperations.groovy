@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
  */
 class DatabaseDatasourceOperations extends BaseDatasourceOperations{
     def adapter;
-    def onLoad = {
+    def onLoad(){
        this.adapter = new DatabaseAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
     }
     def runUpdate(sql){

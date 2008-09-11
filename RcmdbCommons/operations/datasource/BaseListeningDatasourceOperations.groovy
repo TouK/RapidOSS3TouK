@@ -12,7 +12,7 @@ import script.CmdbScript
  */
 class BaseListeningDatasourceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-    def beforeDelete = {
+    def beforeDelete(){
         if(this.listeningScript && this.listeningScript.type == CmdbScript.LISTENING){
             ListeningAdapterManager.getInstance().stopAdapter(this);
         }

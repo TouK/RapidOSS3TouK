@@ -93,7 +93,11 @@ class SearchableExtensionGrailsPlugin {
                 searchKeyMap[propName] = args[0];
                 return CompassMethodInvoker.search(mc, searchKeyMap).results;
             }
-            return null;
+            return mc.invokeStaticMethod(mc.theClass, "_methodMissing", [methodName, args] as Object[]);
+        }
+
+        mc.'static'._methodMissing = {String methodName, args ->
+            throw new MissingMethodException(methodName, mc.theClass, args);
         }
         for (subClass in dc.subClasses)
         {

@@ -50,13 +50,15 @@
                                        else{
                                            %>
                                                 <td>
+                                                <ul>
                                             <%
                                             domainObject[property.name].each{
                                               %>
-                                                   <a onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${it.name}', 'Details of ${it.creationClassName} ${it.name}');">${it.creationClassName} ${it.name}<a>
+                                                   <li><a onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${it.name}', 'Details of ${it.creationClassName} ${it.name}');">${it.creationClassName} ${it.name}<a></li>
                                                <%
                                             }
                                             %>
+                                                </ul>
                                               </td>
                                             <%
                                        }

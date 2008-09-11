@@ -218,34 +218,30 @@
 	var setOwnershipAction = new YAHOO.rapidjs.component.action.MergeAction(setOwnershipConfig);
 
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
-    	var eventName = xmlData.getAttribute("eventName");
-		var instanceName = xmlData.getAttribute("instanceName");
-		var className = xmlData.getAttribute("className");
+    	var notificationName = xmlData.getAttribute("name");
 
         if( id == "eventDetails"){
 
-            var url = "getEventDetails.gsp?eventName="+eventName+"&instanceName="+instanceName+"&className="+className;
-            eventDetailsDialog.show(url, "Details of " + className + " " + instanceName + " " + eventName);
+            var url = "getEventDetails.gsp?name="+notificationName;
+            eventDetailsDialog.show(url, "Details of " + notificationName);
         }
         else if( id == 'acknowledge' )
-            acknowledgeAction.execute({eventName:eventName, instanceName : instanceName,className : className, acknowledged:true}, [searchList]);
+            acknowledgeAction.execute({name:notificationName, acknowledged:true}, [searchList]);
 
         else if( id == 'unacknowledge' )
-        	acknowledgeAction.execute({eventName:eventName, instanceName : instanceName,className : className, acknowledged:false}, [searchList]);
+        	acknowledgeAction.execute({name:notificationName, acknowledged:false}, [searchList]);
         else if(id == 'takeOwnership')
-        	setOwnershipAction.execute({eventName:eventName, instanceName : instanceName,className : className, act:true}, [searchList]);
+        	setOwnershipAction.execute({name:notificationName, act:true}, [searchList]);
         else if(id == 'releaseOwnership')
-        	setOwnershipAction.execute({eventName:eventName, instanceName : instanceName,className : className, act:false}, [searchList]);
+        	setOwnershipAction.execute({name:notificationName, act:false}, [searchList]);
 
     }, this, true);
     searchList.events["rowDoubleClicked"].subscribe(function(xmlData, event){
     	if(YAHOO.util.Event.getTarget(event).className != 'rcmdb-search-cell-key')
     	{
-    		var eventName = xmlData.getAttribute("eventName");
-    		var instanceName = xmlData.getAttribute("instanceName");
-    		var className = xmlData.getAttribute("className");
-            var url = "getEventDetails.gsp?eventName="+eventName+"&instanceName="+instanceName+"&className="+className;
-            eventDetailsDialog.show(url, "Details of " + className + " " + instanceName + " " + eventName);
+    		var notificationName = xmlData.getAttribute("name");
+            var url = "getEventDetails.gsp?name="+notificationName;
+            eventDetailsDialog.show(url, "Details of " + notificationName);
         }
 
     }, true, true);

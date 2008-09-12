@@ -21,6 +21,7 @@ import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import com.ifountain.rcmdb.domain.property.RelationUtils
+import com.ifountain.rcmdb.domain.method.GetPropertiesMethod
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors", "__is_federated_properties_loaded__":RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, "__operation_class__":RapidCMDBConstants.OPERATION_PROPERTY_NAME]
@@ -154,7 +155,11 @@ class RapidDomainClassGrailsPlugin {
     }
     def addOperationsSupport(GrailsDomainClass dc, application, ctx)
     {
+        GetPropertiesMethod getPropertiesMethod = new GetPropertiesMethod(dc);
         MetaClass mc = dc.metaClass;
+        mc.static.getModelProperties = {->
+            return getPropertiesMethod.getDomainObjectProperties();
+        }
         if(mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)
         {
             DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString());
@@ -207,6 +212,7 @@ class RapidDomainClassGrailsPlugin {
             }
             mc.'static'.reloadOperations = {reloadSubclasses->
                 method.invoke(mc.theClass, [reloadSubclasses] as Object[]);
+                getPropertiesMethod.setOperationClass (manager.operationClass);
             }
 
             try

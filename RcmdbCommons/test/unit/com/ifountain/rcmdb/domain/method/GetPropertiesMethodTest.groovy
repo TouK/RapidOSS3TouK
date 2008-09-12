@@ -1,0 +1,150 @@
+package com.ifountain.rcmdb.domain.method
+
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.core.domain.annotations.HideProperty
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: mustafa sener
+ * Date: Sep 12, 2008
+ * Time: 1:27:43 PM
+ * To change this template use File | Settings | File Templates.
+ */
+class GetPropertiesMethodTest extends RapidCmdbTestCase{
+
+    protected void setUp() {
+        super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
+        ExpandoMetaClass.enableGlobally()
+    }
+
+    protected void tearDown() {
+        super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
+        ExpandoMetaClass.disableGlobally()
+    }
+
+
+    public void testGetProperties()
+    {
+        GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodDomainObject);
+        GetPropertiesMethod method = new GetPropertiesMethod(cls);
+        method.operationClass = GetPropertiesMethodDomainObjectOperations;
+
+        def allProperties = method.getDomainObjectProperties();
+        println allProperties.name
+        assertEquals (8, allProperties.size())
+        def propsMap = [:]
+        allProperties.each{
+            propsMap[it.name] = it;
+        }
+        RapidDomainClassProperty prop = propsMap["id"];
+        assertFalse (prop.isRelation);
+        assertFalse (prop.isOperationProperty);
+
+        prop = propsMap["prop1"];
+        assertFalse (prop.isRelation);
+        assertFalse (prop.isOperationProperty);
+
+        prop = propsMap["rel1"];
+        assertTrue (prop.isRelation);
+        assertFalse (prop.isOperationProperty);
+
+        prop = propsMap["declaredProp1"];
+        assertFalse(prop.isRelation);
+        assertTrue(prop.isOperationProperty);
+
+        prop = propsMap["declaredProp2"];
+        assertFalse(prop.isRelation);
+        assertTrue(prop.isOperationProperty);
+
+        prop = propsMap["oprProp2"];
+        assertFalse(prop.isRelation);
+        assertTrue(prop.isOperationProperty);
+
+        prop = propsMap["oprProp3"];
+        assertFalse(prop.isRelation);
+        assertTrue(prop.isOperationProperty);
+
+        try
+        {
+            allProperties.remove(0)
+            fail("Should throw exception beacuse this list cannot be modified");
+        }
+        catch(UnsupportedOperationException e)
+        {
+        }
+        method.setOperationClass (null);
+        allProperties = method.getDomainObjectProperties();
+        assertEquals (4, allProperties.size())
+    }
+
+    public void testGetPropertiesWithHidepropertyAnnotation()
+    {
+        fail("Should be implemented later");
+    }
+
+}
+
+class GetPropertiesMethodDomainObject
+{
+    static searchable = {
+        except = ["rel1", "rel2", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    };
+    static cascaded = ["rel2":true]
+    static datasources = [:]
+    Long id ;
+    Long version ;
+    String prop1;
+    RelationMethodDomainObject2 rel1;
+    List rel2 = [];
+
+    org.springframework.validation.Errors errors ;
+    Object __operation_class__ ;
+    Object __is_federated_properties_loaded__ ;
+    static constraints={
+     __operation_class__(nullable:true)
+     __is_federated_properties_loaded__(nullable:true)
+     errors(nullable:true)
+     rel1(nullable:true)
+     rel2(nullable:true)
+    }
+    static relations = [
+            rel1:[type:RelationMethodDomainObject2, reverseName:"revRel1", isMany:false],
+            rel2:[isMany:true, reverseName:"revRel2", type:RelationMethodDomainObject2],
+    ]
+    static propertyConfiguration= [:]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    //AUTO_GENERATED_CODE
+}
+
+class GetPropertiesMethodParentDomainObjectOperations extends AbstractDomainOperation
+{
+    private String privateProperty;
+    def declaredProp1;
+    def getOprProp2()
+    {
+    }
+}
+class GetPropertiesMethodDomainObjectOperations extends GetPropertiesMethodParentDomainObjectOperations
+{
+    private String privateProperty2;
+
+//    @HideProperty
+//    String privateProperty4;
+    def declaredProp2;
+
+    def getOprProp3()
+    {
+    }
+
+    def getOprProp4(thisIsNotAProp)
+    {
+    }
+//    @HideProperty
+//    private String getPrivateProperty3()
+//    {
+//        return "";
+//    }
+}

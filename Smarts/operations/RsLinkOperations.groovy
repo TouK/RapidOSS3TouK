@@ -4,7 +4,7 @@ class RsLinkOperations extends RsSmartsObjectOperations
     public static STATEINFORMATION_KEY = "stateInformationforlink"
     int getState()
     {
-        def stateInformation = getStateInformation();
+        def stateInformation = stateInformation();
         if(stateInformation == null)
         {
             stateInformation = calculateStateInformation();
@@ -26,7 +26,7 @@ class RsLinkOperations extends RsSmartsObjectOperations
         return minValue;
     }
 
-    def getStateInformation()
+    def stateInformation()
     {
         def stateInformation = RCMDBDataStore.get(STATEINFORMATION_KEY)
         if(stateInformation == null)
@@ -39,7 +39,7 @@ class RsLinkOperations extends RsSmartsObjectOperations
 
     int setState(state)
     {
-        def stateInformation = getStateInformation();
+        def stateInformation = stateInformation();
         if(stateInformation == null || state < stateInformation)
         {
             stateInformation = calculateStateInformation();

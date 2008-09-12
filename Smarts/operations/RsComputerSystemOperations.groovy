@@ -5,7 +5,7 @@ class RsComputerSystemOperations extends RsSmartsObjectOperations
     public static STATEINFORMATION_KEY = "stateInformationforcompsystem"
     int getState()
     {
-        def stateInformation = getStateInformation();
+        def stateInformation = stateInformation();
         if(stateInformation == null)
         {
             stateInformation = calculateStateInformation();
@@ -27,7 +27,7 @@ class RsComputerSystemOperations extends RsSmartsObjectOperations
         return minValue;
     }
 
-    def getStateInformation()
+    def stateInformation()
     {
         def stateInformation = RCMDBDataStore.get(STATEINFORMATION_KEY)
         if(stateInformation == null)
@@ -40,7 +40,7 @@ class RsComputerSystemOperations extends RsSmartsObjectOperations
 
     int setState(state)
     {
-        def stateInformation = getStateInformation();
+        def stateInformation = stateInformation();
         if(stateInformation == null || state < stateInformation)
         {
             stateInformation = calculateStateInformation();

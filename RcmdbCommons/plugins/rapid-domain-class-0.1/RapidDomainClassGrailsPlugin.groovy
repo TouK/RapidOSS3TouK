@@ -197,7 +197,7 @@ class RapidDomainClassGrailsPlugin {
                         try {
                             return manager.operationClass.metaClass.invokeStaticMethod(manager.operationClass, methodName, args);
                         } catch (MissingMethodException e) {
-                            if(e.getType().name != oprInstance.class.name || e.getMethod() != methodName)
+                            if(e.getType().name != manager.operationClass.name || e.getMethod() != methodName)
                             {
                                 throw e;
                             }

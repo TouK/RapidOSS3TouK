@@ -47,5 +47,10 @@ class RsComputerSystemOperations extends RsSmartsObjectOperations
         }
         return stateInformation;
     }
+
+    int getCpuUsage()
+    {
+        return 80;
+    }
 }
 

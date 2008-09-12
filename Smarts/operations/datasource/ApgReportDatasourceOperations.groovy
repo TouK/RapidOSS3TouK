@@ -72,8 +72,8 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
             // we got the graph
             def image = (BufferedImage) hg.value.getGraph();
             def id = hg.value.getId();
-            def url = "web-app/reports/${id}.png"
-            ImageIO.write(image, "png", new File(url))
+            def url = "reports/${id}.png"
+            ImageIO.write(image, "png", new File("web-app/${url}"))
             return url;
         } else {
             // wow, this is pretty unexpected...

@@ -22,7 +22,6 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
 
     protected void tearDown() {
         super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
-        ExpandoMetaClass.disableGlobally()
     }
 
 

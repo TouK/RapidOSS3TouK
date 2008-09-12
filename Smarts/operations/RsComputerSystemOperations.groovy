@@ -2,7 +2,7 @@ import com.ifountain.rcmdb.util.RCMDBDataStore
 
 class RsComputerSystemOperations extends RsSmartsObjectOperations
 {
-    public static STATEINFORMATION_KEY = "stateInformation"
+    public static STATEINFORMATION_KEY = "stateInformationforcompsystem"
     int getState()
     {
         def stateInformation = getStateInformation();

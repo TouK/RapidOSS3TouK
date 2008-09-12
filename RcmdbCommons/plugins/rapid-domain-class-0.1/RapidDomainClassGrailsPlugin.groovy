@@ -187,7 +187,7 @@ class RapidDomainClassGrailsPlugin {
                         }
                     }
                 }
-                new MissingMethodException (name,  mc.theClass, args);
+                throw new MissingMethodException (name,  mc.theClass, args);
             }
             mc.'static'._methodMissing = {String methodName, args ->
                 if(manager.operationClass != null)

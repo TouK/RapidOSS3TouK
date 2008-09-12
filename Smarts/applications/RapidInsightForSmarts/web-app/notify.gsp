@@ -52,10 +52,19 @@
 </div>
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
-        <td width="0%" style="padding-left:10px;padding-top:5px;">
+        <td width="0%" style="padding-left:10px;padding-top:5px;padding-right:60px;">
             <img src="images/RapidInsight-blue.png">
         </td>
-        <td width="100%"></td>
+        <td width="100%" style="vertical-align: bottom;;">
+      <div class="yui-navset">
+      <ul class="yui-nav" style="border-style: none">
+          <li><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
+          <li class="selected"><a href="${createLinkTo(file: 'notify.gsp')}"><em>Notifications</em></a></li>
+                <li><a href="${createLinkTo(file: 'topology.gsp')}"><em>Map</em></a></li>
+            </ul>
+      </div>
+  </td>
+        <td width="0%"></td>
         <td id="serverDownEl" width="0%" style="display:none">
             <img src="images/network-offline.png"/>
         </td>
@@ -66,19 +75,8 @@
            </div>
         </td>
     </tr>
-    <tr>
-    	<td width="100%" style="padding-bottom:5px;">
-		    <div class="yui-navset">
-		    <ul class="yui-nav" style="border-style: none">
-		        <li><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
-		        <li class="selected"><a href="${createLinkTo(file: 'notify.gsp')}"><em>Notifications</em></a></li>
-                <li><a href="${createLinkTo(file: 'topology.gsp')}"><em>Map</em></a></li>
-            </ul>
-		    </div>
-		</td>
-	</tr>
     </tbody></table>
-</div>
+   </div>
 <div id="right">
     <div id="searchDiv"></div>
 </div>

@@ -33,7 +33,7 @@ class BootStrap {
     {
         RapidStringUtilities.registerStringUtils();
         Date.metaClass.'static'.now = {
-            return System.currentTimeMillis()/1000;
+            return (long)(System.currentTimeMillis()/1000);
         }
     }
 

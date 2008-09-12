@@ -174,9 +174,15 @@
                 }
                 else
                 {
-                    var d = new Date();
-                    d.setTime(parseFloat(value)*1000)
-                    return d.format("d M H:i:s");
+                    try
+                    {
+                        var d = new Date();
+                        d.setTime(parseFloat(value)*1000)
+                        return d.format("d M H:i:s");
+                    }
+                    catch(e)
+                    {    
+                    }
                 }
             }
             return value;

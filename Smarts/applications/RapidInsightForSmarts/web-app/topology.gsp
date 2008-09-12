@@ -180,6 +180,8 @@
         config.toolbarMenuFunction = "toolbarMenuFcn";
         config.menuItemClickedFunction = "menuItemClickedFunction"
         config.saveMapFunction = "saveMapFunction";
+        config.statusColors = { "1" : 0xde2c26, "2" : 0x7b4a1a, "3": 0xfae500, "4" : 0x20b4e0, "5":0x0d4702, "default" : 0x0d4702 };
+		config.edgeColors = { "1" : 0xffde2c26,"2" :  0xfff79229,"3":  0xfffae500, "4" :  0xff20b4e0,"5": 0xff62b446, "default" : 0xff62b446 };
         return config;
       }
 
@@ -311,7 +313,7 @@
          ],
         menuItems:{
             Delete : { id: 'delete', label : 'Delete',  condition : treeNodesUpdateDeleteConditionFunction },
-            Update : { id: 'update', label : 'Update',  condition : treeNodesUpdateDeleteConditionFunction },
+            Update : { id: 'update', label : 'Update',  condition : treeNodesUpdateDeleteConditionFunction }
         },
         rootImages :[
 			{visible:'data["nodeType"] == "group"', expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'},

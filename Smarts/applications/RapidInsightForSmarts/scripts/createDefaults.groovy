@@ -20,6 +20,15 @@ CmdbScript.addScript(name: "queryList");
 CmdbScript.addScript(name: "createQuery");
 CmdbScript.addScript(name: "editQuery");
 
+// topology scripts
+CmdbScript.addScript(name: "createMap");
+CmdbScript.addScript(name: "editMap");
+CmdbScript.addScript(name: "expandMap");
+CmdbScript.addScript(name: "getMap");
+CmdbScript.addScript(name: "mapList");
+CmdbScript.addScript(name: "saveMap");
+CmdbScript.addScript(name: "getMapData");
+
 def adminUser = RsUser.RSADMIN;
 def bySevertyGroup = SearchQueryGroup.add(name: "By Severity", username:adminUser, isPublic:true, type:"notification");
 

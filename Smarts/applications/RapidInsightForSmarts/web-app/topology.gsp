@@ -9,6 +9,7 @@
     <div class="bd">
     <form method="POST" action="javascript://nothing">
         <table width="100%">
+        <table width="100%">
         <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="groupName" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Map Name:</label></td><td width="50%"><input type="textbox" name="mapName" style="width:175px"/></td></tr>
         </table>
@@ -258,7 +259,7 @@
         mapURL : "script/run/getMap",
         expandURL : "script/run/expandMap",
         initialMapURL : "script/run/getDeviceTopoMap",
-        dataURL : "d2.xml",
+        dataURL : "script/run/getMapData",
         pollingInterval : 0,
         wMode : "Transparent"
     };

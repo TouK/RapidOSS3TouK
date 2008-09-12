@@ -77,9 +77,9 @@
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">expanded:</td>
+                    <td valign="top" class="name">expands:</td>
 
-                    <td valign="top" class="value">${mapNode.expanded}</td>
+                    <td valign="top" class="value">${mapNode.expands}</td>
 
                 </tr>
                 

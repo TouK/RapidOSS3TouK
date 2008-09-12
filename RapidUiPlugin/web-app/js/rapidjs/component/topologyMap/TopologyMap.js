@@ -59,6 +59,14 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         return this.body.dom.getElementsByTagName("embed")[0].getMapData();
     },
 
+    getDevices : function () {
+        return this.body.dom.getElementsByTagName("embed")[0].getDevices();
+    },
+
+    getEdges : function() {
+        return this.body.dom.getElementsByTagName("embed")[0].getEdges();
+    },
+
     loadHandler : function()
     {
         this.url = this.mapURL;
@@ -82,14 +90,24 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response);
         var node = newData.rootNode;
         if (node) {
-            var dataNodes = node.getElementsByTagName(this.dataTag);
-            var data = [];
+            var deviceNodes = node.getElementsByTagName("device");
+            var edgeNodes = node.getElementsByTagName("edge");
+            var devices = [];
+            var edges = [];
+            
 
-            for (var index = 0; index < dataNodes.length; index++) {
-                var deviceID = dataNodes[index].getAttribute("id");
-                var deviceStatus = dataNodes[index].getAttribute("status");
-                var deviceLoad = dataNodes[index].getAttribute("load");
-                data.push( { id : deviceID, status : deviceStatus, load : deviceLoad } );
+            for (var index = 0; index < deviceNodes.length; index++) {
+                var deviceID = deviceNodes[index].getAttribute("id");
+                var deviceStatus = deviceNodes[index].getAttribute("state");
+                //var deviceLoad = dataNodes[index].getAttribute("load");
+                devices.push( { id : deviceID, state : deviceStatus } );
+            }
+
+            for (var index = 0; index < edgeNodes.length; index++) {
+                var source = edgeNodes[index].getAttribute("source");
+                var target = edgeNodes[index].getAttribute("target");
+                var edgeStatus =  edgeNodes[index].getAttribute("state");
+                edges.push( { source : source, target : target, state : edgeStatus } );
             }
 
             /*
@@ -102,6 +120,8 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 data.push( newDataObject);
             }
              */
+
+            var data = { devices : devices, edges : edges };
             this.loadData(data);
         }
     },
@@ -152,8 +172,9 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 this.loadGraphWithUserLayout(devices, edges);
             }
         }
+
         this.url = this.dataURL;
-        this.poll();
+        this.getData();
     },
 
 	clearData: function(){
@@ -172,10 +193,9 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
     getMap : function( mapName)
     {
-        this.params["mapName"] = mapName;
+        this.params = { mapName : mapName};
         this.url = this.mapURL;
         this.poll();
-        this.params = {};
     },
 
     getInitialMap : function( deviceName)
@@ -190,12 +210,33 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         var data = this.getMapData();
         if( data ) {
             var nodes = data["nodes"];
-        var edges = data["edges"];
-        this.params = { expandedDeviceName : expandedDeviceName, nodes : nodes, edges : edges };
-        this.url = this.expandURL;
-        this.doPostRequest(this.url, this.params);
+            var edges = data["edges"];
+            this.params = { expandedDeviceName : expandedDeviceName, nodes : nodes, edges : edges };
+            this.url = this.expandURL;
+            this.doPostRequest(this.url, this.params);
        }
+    },
+
+    getData : function()
+    {
+        var devices = this.getDevices();
+        var edges = this.getEdges();
+        this.params = { devices : devices, edges : edges };
+        this.url = this.dataURL;
+        this.doPostRequest(this.url, this.params);
+    },
+    poll : function()
+    {
+        if( this.url == this.mapURL)
+        {
+            this.doRequest(this.url, this.params);
+        }
+        else
+        {
+            this.getData();
+        }
     }
+
 
 
 });

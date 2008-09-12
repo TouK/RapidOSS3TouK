@@ -21,7 +21,7 @@ class MapNode {
     
     String mapName ="";
 
-    String expanded = "";
+    String expands = "";
     
     Long id ;
     
@@ -43,7 +43,7 @@ class MapNode {
         
      ylocation(nullable:true)
 
-     expanded(nullable:true)
+     expands(nullable:true)
         
      username(blank:false,nullable:false)
         

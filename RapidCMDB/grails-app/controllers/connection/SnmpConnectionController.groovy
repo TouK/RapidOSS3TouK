@@ -208,7 +208,7 @@ class SnmpConnectionController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("SnmpConnection")
+        def modelClass = grailsApplication.getClassForName("connection.SnmpConnection")
         if (modelClass)
         {
             try

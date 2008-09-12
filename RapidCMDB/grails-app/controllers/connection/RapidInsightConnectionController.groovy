@@ -208,7 +208,7 @@ class RapidInsightConnectionController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("RapidInsightConnection")
+        def modelClass = grailsApplication.getClassForName("connection.RapidInsightConnection")
         if (modelClass)
         {
             try

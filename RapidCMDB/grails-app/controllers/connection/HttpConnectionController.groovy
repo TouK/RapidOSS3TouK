@@ -207,7 +207,7 @@ class HttpConnectionController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("HttpConnection")
+        def modelClass = grailsApplication.getClassForName("connection.HttpConnection")
         if (modelClass)
         {
             try

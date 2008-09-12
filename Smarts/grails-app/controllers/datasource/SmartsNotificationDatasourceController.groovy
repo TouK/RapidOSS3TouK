@@ -208,7 +208,7 @@ class SmartsNotificationDatasourceController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("SmartsNotificationDatasource")
+        def modelClass = grailsApplication.getClassForName("datasource.SmartsNotificationDatasource")
         if (modelClass)
         {
             try

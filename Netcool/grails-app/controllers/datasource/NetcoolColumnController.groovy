@@ -2,7 +2,7 @@ package datasource;
 import com.ifountain.rcmdb.domain.util.ControllerUtils;
 
 
-class NetcoolColumnController {
+reclass NetcoolColumnController {
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
 
@@ -207,7 +207,7 @@ class NetcoolColumnController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("NetcoolColumn")
+        def modelClass = grailsApplication.getClassForName("datasource.NetcoolColumn")
         if (modelClass)
         {
             try

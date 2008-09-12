@@ -208,7 +208,7 @@ class SmartsTopologyDatasourceController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("SmartsTopologyDatasource")
+        def modelClass = grailsApplication.getClassForName("datasource.SmartsTopologyDatasource")
         if (modelClass)
         {
             try

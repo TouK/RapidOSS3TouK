@@ -208,7 +208,7 @@ class DatabaseDatasourceController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("DatabaseDatasource")
+        def modelClass = grailsApplication.getClassForName("datasource.DatabaseDatasource")
         if (modelClass)
         {
             try

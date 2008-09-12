@@ -207,7 +207,7 @@ class HttpDatasourceController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("HttpDatasource")
+        def modelClass = grailsApplication.getClassForName("datasource.HttpDatasource")
         if (modelClass)
         {
             try

@@ -208,7 +208,7 @@ class SnmpDatasourceController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("SnmpDatasource")
+        def modelClass = grailsApplication.getClassForName("datasource.SnmpDatasource")
         if (modelClass)
         {
             try

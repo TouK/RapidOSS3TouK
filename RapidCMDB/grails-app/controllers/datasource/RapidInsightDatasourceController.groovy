@@ -208,7 +208,7 @@ class RapidInsightDatasourceController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("RapidInsightDatasource")
+        def modelClass = grailsApplication.getClassForName("datasource.RapidInsightDatasource")
         if (modelClass)
         {
             try

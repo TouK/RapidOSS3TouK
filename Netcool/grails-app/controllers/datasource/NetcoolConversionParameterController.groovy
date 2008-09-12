@@ -206,7 +206,7 @@ class NetcoolConversionParameterController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("NetcoolConversionParameter")
+        def modelClass = grailsApplication.getClassForName("datasource.NetcoolConversionParameter")
         if (modelClass)
         {
             try

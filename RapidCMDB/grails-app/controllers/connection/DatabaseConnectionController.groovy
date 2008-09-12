@@ -208,7 +208,7 @@ class DatabaseConnectionController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("DatabaseConnection")
+        def modelClass = grailsApplication.getClassForName("connection.DatabaseConnection")
         if (modelClass)
         {
             try

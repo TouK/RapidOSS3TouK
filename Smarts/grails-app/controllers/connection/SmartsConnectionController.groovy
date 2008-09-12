@@ -208,7 +208,7 @@ class SmartsConnectionController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("SmartsConnection")
+        def modelClass = grailsApplication.getClassForName("connection.SmartsConnection")
         if (modelClass)
         {
             try

@@ -51,7 +51,6 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         this.body.dom.getElementsByTagName("embed")[0].loadUserLayout(nodes, edges);
     },
     loadData : function( data) {
-
         this.body.dom.getElementsByTagName("embed")[0].loadData(data);
     },
 
@@ -94,20 +93,21 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             var edgeNodes = node.getElementsByTagName("edge");
             var devices = [];
             var edges = [];
-            
+
 
             for (var index = 0; index < deviceNodes.length; index++) {
                 var deviceID = deviceNodes[index].getAttribute("id");
                 var deviceStatus = deviceNodes[index].getAttribute("state");
-                //var deviceLoad = dataNodes[index].getAttribute("load");
-                devices.push( { id : deviceID, state : deviceStatus } );
+                var load = deviceNodes[index].getAttribute("load");
+                devices.push( { id : deviceID, state : deviceStatus, load: load } );
             }
 
             for (var index = 0; index < edgeNodes.length; index++) {
                 var source = edgeNodes[index].getAttribute("source");
                 var target = edgeNodes[index].getAttribute("target");
                 var edgeStatus =  edgeNodes[index].getAttribute("state");
-                edges.push( { source : source, target : target, state : edgeStatus } );
+
+                edges.push( { source : source, target : target, state : edgeStatus} );
             }
 
             /*
@@ -236,8 +236,5 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             this.getData();
         }
     }
-
-
-
 });
 

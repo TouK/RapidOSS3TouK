@@ -29,13 +29,11 @@ devices.each{
     								"gauged" : "true", "expands" : it.expands, x : it.xlocation, y : it.ylocation ];
 }
 
-
 devices.each{
     if( it.expands == "false") {
         def deviceName = it.nodeIdentifier;
         def expandable = "false";
         def device = RsComputerSystem.get( name : deviceName);
-
 
         device.connectedVia.each {
             it.connectedSystem.each {
@@ -44,6 +42,7 @@ devices.each{
                 {
                     if( isInMap(it.name, devices))
                     {
+
                         if( !edgeMap.containsKey(deviceName + it.name)
                                 && !edgeMap.containsKey(it.name + deviceName) )
                         {
@@ -51,6 +50,8 @@ devices.each{
                         }
 
                     }
+                    // device's connected system is not in map
+                    // it's expandable is true
                     else
                     {
                         expandable = "true";
@@ -102,35 +103,6 @@ def isInMap( deviceName, devices)
     return inMap;
 }
 
-def doesExpand( deviceName, deviceMap, edgeMap)
-{
-    def device = RsComputerSystem.get( name : deviceName);
-    def expandable = "false";
-    def connectedVias = device.connectedVia;
-    connectedVias.each{
-        def connectedSystems = it.connectedSystem;
-        if( expandable == "false" ){
-		    connectedSystems.each {
-		        if( devName != it.name
-		                &&!edgeMap.containsKey(devName + it.name)
-		                && !edgeMap.containsKey(it.name + devName) )
-		        {
-                    /*
-                    println "devName ${devName}"
-                    println "it.name ${it.name}"
-                    println "edgeMap.containsKey(devName + it.name) ${edgeMap.containsKey(devName + it.name)}"
-                    println "edgeMap.containsKey(it.name + devName) ${edgeMap.containsKey(it.name + devName))}"
-                     */
-                    expandable = "true";
-		            return;
-		        }
-		    }
-		}
-		else
-			return;
-    }
-    return expandable;
-}
 
 
 return writer.toString();

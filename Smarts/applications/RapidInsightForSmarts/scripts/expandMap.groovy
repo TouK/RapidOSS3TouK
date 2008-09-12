@@ -45,33 +45,29 @@ nodes.each{
     deviceMap[deviceName] = [ "id" : deviceName, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expands" : expandable ];
 }
 
-//println "time 2: ${System.nanoTime() - startTime}"
-startTime = System.nanoTime();
 def expandedDevice = RsComputerSystem.get( name : expandedDeviceName);
 deviceMap[expandedDevice.name] =
     [ "id" : expandedDevice.name, "model" : expandedDevice.model, "type": expandedDevice.creationClassName, "gauged" : "true", "expands" : "false" ];
 
 def links = expandedDevice.connectedVia;
 
-
-
 links.each {
     def newDevices = it.connectedSystem;
-    //println "device size " + newDevices.size();
     newDevices.each {
-	    if( it.name != expandedDevice.name
+        // if there is no edge between expanded and new device
+        if( it.name != expandedDevice.name
                 && !edgeMap.containsKey(expandedDevice.name + it.name)
                 && !edgeMap.containsKey(it.name + expandedDevice.name) )
         {
 	        edgeMap[expandedDevice.name + it.name] = [ "source" : expandedDevice.name, "target" : it.name];
             def expandable = isExpandable(it, edgeMap);
         	deviceMap[it.name] = [ "id" : it.name, "model" : it.model, "type": it.creationClassName, "gauged" : "true", "expands" : expandable ];
-
-
         }
     }
 }
 
+// if device has a link with another device that is not in map
+// returns true
 def isExpandable( device, edgeMap)
 {
     def devName = device.name;
@@ -85,12 +81,6 @@ def isExpandable( device, edgeMap)
 		                &&!edgeMap.containsKey(devName + it.name)
 		                && !edgeMap.containsKey(it.name + devName) )
 		        {
-                    /*
-                    println "devName ${devName}"
-                    println "it.name ${it.name}"
-                    println "edgeMap.containsKey(devName + it.name) ${edgeMap.containsKey(devName + it.name)}"
-                    println "edgeMap.containsKey(it.name + devName) ${edgeMap.containsKey(it.name + devName))}"
-                     */
                     expandable = "true";
 		            return;
 		        }
@@ -102,8 +92,6 @@ def isExpandable( device, edgeMap)
     return expandable;
 }
 
-//println "time 3: ${System.nanoTime() - startTime}"
-startTime = System.nanoTime();
 def writer = new StringWriter();
 def mapBuilder = new MarkupBuilder(writer);
 
@@ -119,5 +107,4 @@ mapBuilder.graph()
 }
 
 def endTime = System.nanoTime();
-//println "time 4: ${endTime - startTime}"
 return writer.toString();

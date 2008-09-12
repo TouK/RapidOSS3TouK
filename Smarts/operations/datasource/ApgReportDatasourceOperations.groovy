@@ -63,7 +63,7 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
         RealNode root = __addNode(node, null);
         Holder<GraphElement> hg = new Holder<GraphElement>();
         Holder<ErrorElement> he = new Holder<ErrorElement>();
-        port.getReport(properties, root, null, hg, he, null, null);
+        this.adapter.getReport(username, password, reportProperties, root, null, hg, he, null, null);
 
         if (he.value != null) {
             // the report generated an error !
@@ -73,7 +73,9 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
             def image = (BufferedImage) hg.value.getGraph();
             def id = hg.value.getId();
             def url = "reports/${id}.png"
-            ImageIO.write(image, "png", new File("web-app/${url}"))
+            def file = new File("web-app/${url}");
+            file.getParentFile().mkdirs();
+            ImageIO.write(image, "png", file)
             return url;
         } else {
             // wow, this is pretty unexpected...
@@ -247,7 +249,7 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
                 def value = param["value"]
                 ConstantFormulaParameterDefinition cDef = new ConstantFormulaParameterDefinition();
                 cDef.setName(paramName)
-                cDef.setValue(value)
+                cDef.setValue(value?.floatValue())
                 paramList.add(cDef);
                 break;
             case "Property":
@@ -278,29 +280,29 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
         }
     }
 
-    def __getReportPreferences(propertyMap) {
+    def __getReportPreferences(pMap) {
         ReportPreferences rp = new ReportPreferences();
-        def displayMode = propertyMap["displayMode"];
-        def duration = propertyMap["duration"];
-        def timeZoneId = propertyMap["timeZoneId"];
-        def preferredPeriod = propertyMap["preferredPeriod"];
-        def timeFilterExpression = propertyMap["timeFilterExpression"];
-        def displayedProperties = propertyMap["displayedProperties"];
-        def description = propertyMap["description"];
-        def legendProperties = propertyMap["legendProperties"];
-        def displayUnselectedVariables = propertyMap["displayUnselectedVariables"];
-        def criticalThreshold = propertyMap["criticalThreshold"];
-        def majorThreshold = propertyMap["majorThreshold"];
-        def maxValue = propertyMap["maxValue"];
-        def minValue = propertyMap["minValue"];
-        def graphScaleFactor = propertyMap["graphScaleFactor"];
-        def paging = propertyMap["paging"];
-        def treePaging = propertyMap["treePaging"];
-        def propertyLimit = propertyMap["propertyLimit"];
-        def dataLifeTime = propertyMap["dataLifeTime"];
-        def defaultMode = propertMap["defaultMode"]
-        def preferredAggregate = propertMap["preferredAggregate"]
-        def graphInfoDisplayMode = propertMap["graphInfoDisplayMode"]
+        def displayMode = pMap["displayMode"];
+        def duration = pMap["duration"];
+        def timeZoneId = pMap["timeZoneId"];
+        def preferredPeriod = pMap["preferredPeriod"];
+        def timeFilterExpression = pMap["timeFilterExpression"];
+        def displayedProperties = pMap["displayedProperties"];
+        def description = pMap["description"];
+        def legendProperties = pMap["legendProperties"];
+        def displayUnselectedVariables = pMap["displayUnselectedVariables"];
+        def criticalThreshold = pMap["criticalThreshold"];
+        def majorThreshold = pMap["majorThreshold"];
+        def maxValue = pMap["maxValue"];
+        def minValue = pMap["minValue"];
+        def graphScaleFactor = pMap["graphScaleFactor"];
+        def paging = pMap["paging"];
+        def treePaging = pMap["treePaging"];
+        def propertyLimit = pMap["propertyLimit"];
+        def dataLifeTime = pMap["dataLifeTime"];
+        def defaultMode = pMap["defaultMode"]
+        def preferredAggregate = pMap["preferredAggregate"]
+        def graphInfoDisplayMode = pMap["graphInfoDisplayMode"]
         rp.setDisplayMode(displayMode);
         rp.setDuration(duration)
         rp.setTimeZoneId(timeZoneId);
@@ -310,11 +312,11 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
         rp.setDescription(description)
         rp.setLegendProperties(legendProperties)
         rp.setDisplayUnselectedVariables(displayUnselectedVariables)
-        rp.setCriticalThreshold(criticalThreshold)
-        rp.setMajorThreshold(majorThreshold)
-        rp.setMaxValue(maxValue)
-        rp.setMinValue(minValue)
-        rp.setGraphScaleFactor(graphScaleFactor)
+        rp.setCriticalThreshold(criticalThreshold?.floatValue())
+        rp.setMajorThreshold(majorThreshold?.floatValue())
+        rp.setMaxValue(maxValue?.floatValue())
+        rp.setMinValue(minValue?.floatValue())
+        rp.setGraphScaleFactor(graphScaleFactor?.floatValue())
         rp.setPaging(paging)
         rp.setTreePaging(treePaging)
         rp.setPropertyLimit(propertyLimit)
@@ -360,8 +362,8 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
 
         vnc.setName(name);
         vnc.setColumnFilterCondition(columnFilterCondition)
-        vnc.setMajorLevel(majorLevel)
-        vnc.setCriticalLevel(criticalLevel)
+        vnc.setMajorLevel(majorLevel?.floatValue())
+        vnc.setCriticalLevel(criticalLevel?.floatValue())
         vnc.setNonCriticalHidden(nonCriticalHidden)
         vnc.setNonMajorHidden(nonMajorHidden)
         vnc.setResultName(resultName)
@@ -376,7 +378,7 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
         vnc.setTimeThreshold(timeThreshold)
         vnc.setRoundingAccuracy(roundingAccuracy)
         vnc.setFilterExpression(filterExpression)
-        vnc.setScaleFactor(scaleFactor)
+        vnc.setScaleFactor(scaleFactor?.floatValue())
         if (sortMode != null) {
             vnc.setSortMode(SortMode.fromValue(sortMode))
         }

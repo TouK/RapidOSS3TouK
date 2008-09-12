@@ -120,7 +120,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 		appCtx = null
     	springConfig = null
     	resolver = null
-		ExpandoMetaClass.disableGlobally()
+//		ExpandoMetaClass.disableGlobally()
     	originalHandler = null
         ApplicationHolder.application = previousGrailsApp;
         PluginManagerHolder.pluginManager = null;

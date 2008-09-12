@@ -102,7 +102,7 @@
     }, this, true);
 
 
-    var conf = {id:'objectDetails', width:500, height:400, iframe:false};
+    var conf = {id:'objectDetails', width:850, height:700, iframe:false};
     var objectDetailsDialog = new YAHOO.rapidjs.component.Html(conf);
     objectDetailsDialog.hide();
     var actionConfig = {url:'searchQuery/delete?format=xml'}

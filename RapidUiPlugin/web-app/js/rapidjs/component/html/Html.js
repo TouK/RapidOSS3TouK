@@ -23,12 +23,21 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         }
         else
         {
-            this.body = YAHOO.ext.DomHelper.append(this.dialog.body, {tag:'div'}, true);
+            var dh = YAHOO.ext.DomHelper;
+            this.mask = dh.append(this.dialog.body, {tag:'div', cls:'rcmdb-form-mask'}, true);
+            this.maskMessage = dh.append(this.dialog.body, {tag:'div', cls:'rcmdb-form-mask-loadingwrp', html:'<div class="rcmdb-form-mask-loading">Loading...</div>'}, true)
+            this.hideMask();
+            this.body = dh.append(this.dialog.body, {tag:'div'}, true);
         }
     },
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
         this.body.update("<div>" + response.responseText + "</div>", true);
+        this.hideMask();
+    },
+
+    clearData: function(){
+        this.hideMask();
     },
 
     _show: function(url, title)
@@ -48,7 +57,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         {
             this.doRequest(this.url);
         }
+        this.body.update("");
         this.dialog.show();
+        this.showMask();
     },
 
     show: function(url, title){
@@ -65,6 +76,20 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
             var params = state.split("!::!");
             this._show(params[0], params[1]);
         }
+    },
+    showMask: function() {
+        this.mask.setTop(this.dialog.body.offsetTop);
+        this.mask.setWidth(this.dialog.body.clientWidth);
+        this.mask.setHeight(this.dialog.body.clientHeight);
+        YAHOO.util.Dom.setStyle(this.mask.dom, 'display', '');
+        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', '');
+        this.maskMessage.center(this.mask.dom);
+
+    },
+    hideMask: function() {
+        YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
+        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', 'none');
+
     }
 })
 

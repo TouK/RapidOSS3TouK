@@ -12,7 +12,6 @@ import search.SearchQueryGroup
 */
 
 CmdbScript.addScript(name: "modelCreator");
-CmdbScript.addScript(name: "getDevices");
 CmdbScript.addScript(name: "removeAll");
 CmdbScript.addScript(name: "acknowledge");
 CmdbScript.addScript(name: "setOwnership");

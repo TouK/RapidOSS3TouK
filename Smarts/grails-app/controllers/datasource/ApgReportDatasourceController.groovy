@@ -229,7 +229,7 @@ class ApgReportDatasourceController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("ApgReportDatasource")
+        def modelClass = grailsApplication.getClassForName(ApgReportDatasource.class.getName())
         if (modelClass)
         {
             try

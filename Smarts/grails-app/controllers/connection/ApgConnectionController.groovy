@@ -228,7 +228,7 @@ class ApgConnectionController {
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("ApgConnection")
+        def modelClass = grailsApplication.getClassForName(ApgConnection.class.getName())
         if (modelClass)
         {
             try

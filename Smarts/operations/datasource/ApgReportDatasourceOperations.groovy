@@ -33,6 +33,11 @@ import com.watch4net.apg.v2.remote.sample.jaxws.report.SortMode
 import com.watch4net.apg.v2.remote.sample.jaxws.report.ValueNodeColumn
 import com.watch4net.apg.v2.remote.sample.jaxws.report.ValueFormatter
 import com.watch4net.apg.v2.remote.sample.jaxws.report.ScaleOperation
+import com.watch4net.apg.v2.remote.sample.jaxws.report.GraphElement
+import com.watch4net.apg.v2.remote.sample.jaxws.report.ErrorElement
+import javax.xml.ws.Holder
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,6 +61,24 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
             reportProperties.getProperty().add(p);
         }
         RealNode root = __addNode(node, null);
+        Holder<GraphElement> hg = new Holder<GraphElement>();
+        Holder<ErrorElement> he = new Holder<ErrorElement>();
+        port.getReport(properties, root, null, hg, he, null, null);
+
+        if (he.value != null) {
+            // the report generated an error !
+            throw new Exception(he.value.getMessage());
+        } else if (hg.value != null) {
+            // we got the graph
+            def image = (BufferedImage) hg.value.getGraph();
+            def id = hg.value.getId();
+            def url = "web-app/reports/${id}.png"
+            ImageIO.write(image, "png", new File(url))
+            return url;
+        } else {
+            // wow, this is pretty unexpected...
+            throw new Exception("There's no graph in the response !");
+        }
 
     }
 
@@ -354,19 +377,19 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
         vnc.setRoundingAccuracy(roundingAccuracy)
         vnc.setFilterExpression(filterExpression)
         vnc.setScaleFactor(scaleFactor)
-        if(sortMode != null){
+        if (sortMode != null) {
             vnc.setSortMode(SortMode.fromValue(sortMode))
         }
-        if(formatter != null){
+        if (formatter != null) {
             vnc.setFormatter(ValueFormatter.fromValue(formatter))
         }
-        if(aggregationFunc != null){
+        if (aggregationFunc != null) {
             vnc.setAggregationFunc(AggregationFunction.fromValue(aggregationFunc))
         }
-        if(valuesAggregationFunc != null){
+        if (valuesAggregationFunc != null) {
             vnc.setValuesAggregationFunc(AggregationFunction.fromValue(valuesAggregationFunc))
         }
-        if(scaleOperation != null){
+        if (scaleOperation != null) {
             vnc.setScaleOperation(ScaleOperation.fromValue(scaleOperation))
         }
         return vnc;

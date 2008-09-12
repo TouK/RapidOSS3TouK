@@ -54,7 +54,9 @@
 
     <script type="text/javascript" src="js/rapidjs/component/action/Action.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/html/Html.js"></script>
+    <script type="text/javascript" src="js/yui/charts/charts-experimental-min.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/topologyMap/TopologyMap.js"></script>
+
 
     <link rel="stylesheet" type="text/css" href="js/yui/assets/skins/sam/menu.css"/>
     <link rel="stylesheet" type="text/css" href="js/yui/assets/skins/sam/skin.css"/>

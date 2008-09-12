@@ -74,8 +74,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 Long version;
                 String prop1;
                 List rel1 = [];
-                static hasMany = [rel1:${domainClassName2}]
-                static mappedBy = [rel1:"revRel1"]
+                static relations = [rel1:[type:${domainClassName2}, reverseName:"revRel1", isMany:true]]
             }
             class ${domainClassName2}{
                 static searchable = {
@@ -85,9 +84,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 Long version;
                 String prop1;
                 List revRel1 = [];
-                static hasMany = [revRel1:${domainClassName}]
-                static mappedBy = [revRel1:"rel1"]
-                static belongsTo = [${domainClassName}]
+                static relations = [revRel1:[type:${domainClassName}, reverseName:"rel1", isMany:true]]
             }
         """)
         Class loadedDomainClass2 = gcl.loadClass(domainClassName2);
@@ -151,6 +148,26 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 {
                     throw new Exception("${undefinedProp3ExceptionMessage}");
                 }
+
+                def getUndefinedProperty4()
+                {
+                    throw new MissingMethodException("anotherMethod", this.class, null);
+                }
+
+                def setUndefinedProperty4(Object value)
+                {
+                    throw new MissingMethodException("anotherMethod", this.class, null);
+                }
+
+                def getUndefinedProperty5()
+                {
+                    throw new MissingMethodException("getUndefinedProperty5", Object.class, null);
+                }
+
+                def setUndefinedProperty5(Object value)
+                {
+                    throw new MissingMethodException("setUndefinedProperty5", Object.class, null);
+                }
             }
         """);
         def classesTobeLoaded = [loadedDomainClass];
@@ -202,6 +219,46 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         catch(Exception ex)
         {
             assertEquals (undefinedProp3ExceptionMessage, ex.getMessage());
+        }
+
+        try
+        {
+            instance["undefinedProperty4"]
+            fail("Should throw exception real missingmethodexception exception since thios exception throwed from another method");
+        }
+        catch(MissingMethodException ex)
+        {
+            assertEquals ("anotherMethod", ex.getMethod());
+        }
+
+        try
+        {
+            instance["undefinedProperty4"] = 5;
+            fail("Should throw exception real missingmethodexception exception since thios exception throwed from another method");
+        }
+        catch(MissingMethodException ex)
+        {
+            assertEquals ("anotherMethod", ex.getMethod());
+        }
+
+        try
+        {
+            instance["undefinedProperty5"]
+            fail("Should throw exception real missingmethodexception exception since thios exception throwed from another method");
+        }
+        catch(MissingMethodException ex)
+        {
+            assertEquals ("getUndefinedProperty5", ex.getMethod());
+        }
+
+        try
+        {
+            instance["undefinedProperty5"] = 5;
+            fail("Should throw exception real missingmethodexception exception since thios exception throwed from another method");
+        }
+        catch(MissingMethodException ex)
+        {
+            assertEquals ("setUndefinedProperty5", ex.getMethod());
         }
     }
 

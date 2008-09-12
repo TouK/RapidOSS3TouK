@@ -47,9 +47,7 @@ runGrailsTests() {
 
     cd $WORKSPACE/Distribution/RapidServer/Modeler/
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
-    chmod +x rsmodeler.sh
-    chmod +x rsconsole.sh
-    ./rsconsole.sh test-app -unit
+    ./rsmodeler.sh -test
     rm -r test/reports/TESTS-TestSuites.xml
     if [ ! -d $WORKSPACE/TestResults/Modeler ]
       then
@@ -60,8 +58,7 @@ runGrailsTests() {
     cd ../RapidSuite
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
     chmod +x rs.sh
-    chmod +x rsconsole.sh
-    ./rsconsole.sh test-app -unit
+    ./rs.sh -test
     rm -r test/reports/TESTS-TestSuites.xml
     if [ ! -d $WORKSPACE/TestResults/RapidSuite ]
       then

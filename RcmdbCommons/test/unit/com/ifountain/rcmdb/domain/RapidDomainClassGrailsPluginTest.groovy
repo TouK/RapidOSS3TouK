@@ -128,6 +128,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             }
         """)
         def undefinedPropValue = "undefinedPropValue"
+        def undefinedProp3ExceptionMessage = "Undefined property 3 exception"
         def operationFile = new File(baseDir +"/operations/${domainClassName}${DomainOperationManager.OPERATION_SUFFIX}.groovy");
         operationFile.parentFile.mkdirs();
         operationFile.setText ("""
@@ -140,6 +141,15 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 def setUndefinedProperty(Object value)
                 {
                     undefinedProp = value;
+                }
+                def getUndefinedProperty3()
+                {
+                    throw new Exception("${undefinedProp3ExceptionMessage}");
+                }
+
+                def setUndefinedProperty3(Object value)
+                {
+                    throw new Exception("${undefinedProp3ExceptionMessage}");
                 }
             }
         """);
@@ -172,6 +182,26 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         catch(MissingPropertyException ex)
         {
             assertEquals ("undefinedProperty2", ex.getProperty());
+        }
+
+        try
+        {
+            instance["undefinedProperty3"]
+            fail("Should throw exception real exception since property found but an exception occurreed in it");
+        }
+        catch(Exception ex)
+        {
+            assertEquals (undefinedProp3ExceptionMessage, ex.getMessage());
+        }
+
+        try
+        {
+            instance["undefinedProperty3"] = 5;
+            fail("Should throw exception real exception since property found but an exception occurreed in it");
+        }
+        catch(Exception ex)
+        {
+            assertEquals (undefinedProp3ExceptionMessage, ex.getMessage());
         }
     }
 

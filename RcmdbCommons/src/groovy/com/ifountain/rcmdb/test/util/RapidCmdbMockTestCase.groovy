@@ -94,7 +94,10 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         servletContext = new MockServletContext(new MockResourceLoader())
         springConfig.servletContext = servletContext
         ServletContextHolder.setServletContext(servletContext);
-        ConfigurationHolder.config.setProperty (RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME, DefaultDomainClassPropertyInterceptor.class.name);
+        if(!configParams.containsKey(RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME))
+        {
+            ConfigurationHolder.config.setProperty (RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME, DefaultDomainClassPropertyInterceptor.class.name);
+        }
         dependentPlugins*.doWithRuntimeConfiguration(springConfig)
 
 

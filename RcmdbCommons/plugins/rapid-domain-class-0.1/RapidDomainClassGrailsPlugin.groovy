@@ -288,13 +288,21 @@ class RapidDomainClassGrailsPlugin {
             }
             catch(MissingPropertyException propEx)
             {
+                def setterName = GrailsClassUtils.getSetterName(name);
                 try
                 {
                     delegate.methodMissing(GrailsClassUtils.getSetterName(name), [value] as Object[]);
                 }
-                catch(Throwable ex)
+                catch(MissingMethodException ex)
                 {
-                    throw propEx
+                    if(ex.getType().name == delegate.class.name && ex.getMethod() == setterName)
+                    {
+                        throw propEx
+                    }
+                    else
+                    {
+                        throw ex;
+                    }
                 }
             }
         }
@@ -315,13 +323,21 @@ class RapidDomainClassGrailsPlugin {
             }
             catch(MissingPropertyException propEx)
             {
+                def getterName = GrailsClassUtils.getGetterName(name);
                 try
                 {
-                    return delegate.methodMissing(GrailsClassUtils.getGetterName(name), null);
+                    return delegate.methodMissing(getterName, null);
                 }
-                catch(Throwable ex)
+                catch(MissingMethodException ex)
                 {
-                    throw propEx
+                    if(ex.getType().name == delegate.class.name && ex.getMethod() == getterName)
+                    {
+                        throw propEx
+                    }
+                    else
+                    {
+                        throw ex;
+                    }
                 }
             }
         }

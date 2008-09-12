@@ -32,6 +32,9 @@ class BootStrap {
     def registerUtilities()
     {
         RapidStringUtilities.registerStringUtils();
+        Date.metaClass.'static'.now = {
+            return System.currentTimeMillis()/1000;
+        }
     }
 
     def initializeModelGenerator()

@@ -89,25 +89,25 @@ class ApgDatabaseDatasourceOperations extends BaseDatasourceOperations {
     }
 
     def getObjectProperties(username, password, filter, subFilters, properties) {
-        def props = [];
-        def objectProps = this.adapter.getObjectProperties(username, password, filter, subFilters, properties);
-        objectProps.each {ObjectPropertyValues objectPropValues ->
-            def pValuesList = [];
-            def propValuesList = objectPropValues.getProperties();
-            propValuesList.each {PropertyValues propValues ->
+        def oPropertyValuesList = [];
+        def objectPropertyValuesList = this.adapter.getObjectProperties(username, password, filter, subFilters, properties);
+        objectPropertyValuesList.each {ObjectPropertyValues objectPropValues ->
+            def pList = [];
+            def propertiesList = objectPropValues.getProperties();
+            propertiesList.each {PropertyValues propertyValues ->
                 def pValues = [:]
-                def id = propValues.getId();
+                def id = propertyValues.getId();
                 pValues.put("Id", id);
-                def propertyValueList = propValues.getValue();
+                def propertyValueList = propertyValues.getValue();
                 def pValueList = [];
                 propertyValueList.each {PropertyValue propValue ->
                     pValueList.add(["Name": propValue.getProperty(), "Value": propValue.getValue()]);
                 }
                 pValues.put("Values", pValueList);
-                pValueList.add(pValues);
+                pList.add(pValues);
             }
-            props.add(pValuesList);
+            oPropertyValuesList.add(pList);
         }
-        return props;
+        return oPropertyValuesList;
     }
 }

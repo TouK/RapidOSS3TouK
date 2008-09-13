@@ -1,14 +1,8 @@
 package datasource
 
 import com.ifountain.apg.datasource.ApgDatabaseAdapter
+import com.watch4net.apg.v2.remote.sample.jaxws.db.*
 import org.apache.log4j.Logger
-import com.watch4net.apg.v2.remote.sample.jaxws.db.Suggestion
-import com.watch4net.apg.v2.remote.sample.jaxws.db.Property
-import com.watch4net.apg.v2.remote.sample.jaxws.db.PropertyRecord
-import com.watch4net.apg.v2.remote.sample.jaxws.db.DistinctPropertyValues
-import com.watch4net.apg.v2.remote.sample.jaxws.db.ObjectPropertyValues
-import com.watch4net.apg.v2.remote.sample.jaxws.db.PropertyValues
-import com.watch4net.apg.v2.remote.sample.jaxws.db.PropertyValue
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,7 +21,7 @@ class ApgDatabaseDatasourceOperations extends BaseDatasourceOperations {
         def suggests = [];
         def suggestions = this.adapter.getSuggestions(username, password, filter, pattern, properties, limit);
         suggestions.each {Suggestion suggestion ->
-            suggests.add(["Accessor": suggestion.getAccessor(), "Name": suggestion.getProperty(), "Value": suggestion.getValue()])
+            suggests.add(["accessor": suggestion.getAccessor(), "name": suggestion.getProperty(), "value": suggestion.getValue()])
         }
         return suggests;
     }
@@ -36,7 +30,7 @@ class ApgDatabaseDatasourceOperations extends BaseDatasourceOperations {
         def props = [];
         def properties = this.adapter.getAvailableProperties(username, password, filter);
         properties.each {Property prop ->
-            props.add(["Accessor": prop.getAccessor(), "Name": prop.getName(), "Value": prop.getValue()])
+            props.add(["accessor": prop.getAccessor(), "name": prop.getName(), "value": prop.getValue()])
         }
         return props;
     }
@@ -97,17 +91,80 @@ class ApgDatabaseDatasourceOperations extends BaseDatasourceOperations {
             propertiesList.each {PropertyValues propertyValues ->
                 def pValues = [:]
                 def id = propertyValues.getId();
-                pValues.put("Id", id);
+                pValues.put("id", id);
                 def propertyValueList = propertyValues.getValue();
                 def pValueList = [];
                 propertyValueList.each {PropertyValue propValue ->
-                    pValueList.add(["Name": propValue.getProperty(), "Value": propValue.getValue()]);
+                    pValueList.add(["name": propValue.getProperty(), "value": propValue.getValue()]);
                 }
-                pValues.put("Values", pValueList);
+                pValues.put("values", pValueList);
                 pList.add(pValues);
             }
             oPropertyValuesList.add(pList);
         }
         return oPropertyValuesList;
+    }
+
+    def getObjectData(username, password, filter, subFilters, startTimestamp, endTimestamp, timeFilter, period, fields, selectedVariables, limit) {
+        def fieldsList = [];
+        fields.each {
+            fieldsList.add(Aggregation.fromValue(it));
+        }
+        def objectData = this.adapter.getObjectData(username, password, filter, subFilters, startTimestamp, endTimestamp, timeFilter, period, fieldsList, selectedVariables, limit)
+        def oData = [];
+        objectData.each {TimeSeries timeSeries ->
+            def tSeries = [];
+            timeSeries.getTimeserie().each {TimeSerie timeSerie ->
+                def tSerie = [:]
+                tSerie.put("id", timeSerie.getId())
+                tSerie.put("fields", timeSerie.getFields())
+                tSerie.put("length", timeSerie.getLength())
+                def tv = [];
+                timeSerie.getTv().each {TimeSerieValue timeSerieValue ->
+                    def tSerieValue = [:]
+                    tSerieValue.put("t", timeSerieValue.getT());
+                    def v = [];
+                    v.addAll(timeSerieValue.getV())
+                    tSerieValue.put("v", v);
+                    tv.add(tSerieValue);
+                }
+                tSerie.put("tv", tv);
+                tSeries.add(tSerie);
+            }
+            oData.add(tSeries);
+        }
+        return oData;
+    }
+
+    def getAggregatedData(username, password, filter, subFilter, startTimestamp, endTimestamp, timeFilter, period, aggregations) {
+
+        def aggs = new Aggregations();
+        aggs.setSpacial(Aggregation.fromValue(aggregations["spacial"]))
+        if (aggregations["count"] != null) {
+            aggs.setCount(Aggregation.fromValue(aggregations["count"]))
+        }
+        if (aggregations["temporal"] != null) {
+            aggs.setTemporal(Aggregation.fromValue(aggregations["temporal"]))
+        }
+        def aggData = [];
+        def aggregatedData = this.adapter.getAggregatedData(username, password, filter, subFilter, startTimestamp, endTimestamp, timeFilter, period, aggs);
+        aggregatedData.each {TimeSerie timeSerie ->
+            def tSerie = [:]
+            tSerie.put("id", timeSerie.getId())
+            tSerie.put("fields", timeSerie.getFields())
+            tSerie.put("length", timeSerie.getLength())
+            def tv = [];
+            timeSerie.getTv().each {TimeSerieValue timeSerieValue ->
+                def tSerieValue = [:]
+                tSerieValue.put("t", timeSerieValue.getT());
+                def v = [];
+                v.addAll(timeSerieValue.getV())
+                tSerieValue.put("v", v);
+                tv.add(tSerieValue);
+            }
+            tSerie.put("tv", tv);
+            aggData.add(tSerie);
+        }
+        return aggData;
     }
 }

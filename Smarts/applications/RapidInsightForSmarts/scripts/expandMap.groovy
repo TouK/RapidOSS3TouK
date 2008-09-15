@@ -42,7 +42,7 @@ nodes.each{
     def device = RsComputerSystem.get( name : deviceName);
     def expandable = isExpandable(device, edgeMap);
 
-    deviceMap[deviceName] = [ "id" : deviceName, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expands" : expandable ];
+    deviceMap[device.name] = [ "id" : deviceName, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expands" : expandable ];
 }
 
 def expandedDevice = RsComputerSystem.get( name : expandedDeviceName);

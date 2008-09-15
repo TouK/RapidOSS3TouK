@@ -10,11 +10,17 @@
                 <Property Name='rsDatasource' Type='string'/>
             </Properties>
         </Model>
+	    <Model Name="RsHistoricalEvent">
+            <Properties>
+            </Properties>
+        </Model>
+
         <Model Name="RsEvent">
             <Properties>
                 <Property Name='name' Type='string' IsKey="true"/>
             </Properties>
         </Model>
+        
         <Model Name="RsSmartsNotification" Parent="RsEvent">
             <Properties>
                 <Property Name='creationClassName' Type='string'/>
@@ -62,7 +68,7 @@
                 <Property Name='rsDatasource' Type='string'/>
             </Properties>
         </Model>
-        <Model Name="RsSmartsHistoricalNotification">
+        <Model Name="RsSmartsHistoricalNotification" Parent="RsHistoricalEvent">
             <Properties>
                 <Property Name='name' Type='string'/>
                 <Property Name='creationClassName' Type='string'/>

@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsSmartsHistoricalNotification 
+class RsSmartsHistoricalNotification extends RsHistoricalEvent
 {
     
     //AUTO_GENERATED_CODE
@@ -9,7 +9,7 @@ class RsSmartsHistoricalNotification
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
-    static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
+    static datasources = [:]
 
     
     String name ="";
@@ -217,11 +217,6 @@ class RsSmartsHistoricalNotification
 
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
-    
-    public String toString()
-    {
-    	return "${getClass().getName()}[id:$id]";
-    }
     
     //AUTO_GENERATED_CODE
 }

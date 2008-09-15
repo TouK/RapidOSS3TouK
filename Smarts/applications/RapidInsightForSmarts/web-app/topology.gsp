@@ -407,7 +407,7 @@
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
             units: [
-                { position: 'top', body: 'top', resize: false, height:60},
+                { position: 'top', body: 'top', resize: false, height:45},
                 { position: 'center', body: 'right', resize: false, gutter: '1px' },
                 { position: 'left', width: 250, resize: true, body: 'left', scroll: false}
             ]

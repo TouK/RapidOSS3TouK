@@ -138,14 +138,18 @@ class ApgDatabaseDatasourceOperations extends BaseDatasourceOperations {
 
     def getAggregatedData(username, password, filter, subFilter, startTimestamp, endTimestamp, timeFilter, period, aggregations) {
 
-        def aggs = new Aggregations();
-        aggs.setSpacial(Aggregation.fromValue(aggregations["spacial"]))
-        if (aggregations["count"] != null) {
-            aggs.setCount(Aggregation.fromValue(aggregations["count"]))
+        def aggs;
+        if (aggregations != null) {
+            aggs = new Aggregations();
+            aggs.setSpacial(Aggregation.fromValue(aggregations["spacial"]))
+            if (aggregations["count"] != null) {
+                aggs.setCount(Aggregation.fromValue(aggregations["count"]))
+            }
+            if (aggregations["temporal"] != null) {
+                aggs.setTemporal(Aggregation.fromValue(aggregations["temporal"]))
+            }
         }
-        if (aggregations["temporal"] != null) {
-            aggs.setTemporal(Aggregation.fromValue(aggregations["temporal"]))
-        }
+
         def aggData = [];
         def aggregatedData = this.adapter.getAggregatedData(username, password, filter, subFilter, startTimestamp, endTimestamp, timeFilter, period, aggs);
         aggregatedData.each {TimeSerie timeSerie ->

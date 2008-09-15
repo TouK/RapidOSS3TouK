@@ -57,11 +57,12 @@
         </td>
         <td width="100%" style="vertical-align: bottom;;">
       <div class="yui-navset">
-      <ul class="yui-nav" style="border-style: none">
-          <li class="selected"><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
-          <li><a href="${createLinkTo(file: 'notify.gsp')}"><em>Notifications</em></a></li>
-                <li><a href="${createLinkTo(file: 'topology.gsp')}"><em>Map</em></a></li>
-            </ul>
+        <ul class="yui-nav" style="border-style: none">
+            <li  class="selected"><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
+            <li><a href="${createLinkTo(file: 'notify.gsp')}"><em>Notifications</em></a></li>
+            <li><a href="${createLinkTo(file: 'topology.gsp')}"><em>Map</em></a></li>
+            <li><a href="${createLinkTo(file: 'historicalEvents.gsp')}"><em>Historical Notifications</em></a></li>
+        </ul>
       </div>
   </td>
         <td width="0%"></td>

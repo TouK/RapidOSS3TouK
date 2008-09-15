@@ -30,7 +30,10 @@ class GetPropertiesMethod
                 allDomainClassProperties.add(new RapidDomainClassProperty(name:prop.name, isRelation:relations.containsKey(prop.name), isOperationProperty:false))
             }
         }
-        allProperties = Collections.unmodifiableList(allDomainClassProperties);
+        allProperties = [];
+        allProperties.addAll(allDomainClassProperties);
+        Collections.sort (allProperties);
+        allProperties = Collections.unmodifiableList(allProperties);
     }
 
     public void setOperationClass(Class operationClass)
@@ -59,6 +62,7 @@ class GetPropertiesMethod
                     }
                 }
             }
+            Collections.sort (allProperties);
             allProperties = Collections.unmodifiableList(allProperties);
         }
     }
@@ -68,9 +72,15 @@ class GetPropertiesMethod
     }
 }
 
-class RapidDomainClassProperty
+class RapidDomainClassProperty  implements Comparable
 {
     String name;
     boolean isRelation;
     boolean isOperationProperty;
+
+    public int compareTo(Object o) {
+        RapidDomainClassProperty other = o;
+        return name.compareTo(other.name);
+    }
+
 }

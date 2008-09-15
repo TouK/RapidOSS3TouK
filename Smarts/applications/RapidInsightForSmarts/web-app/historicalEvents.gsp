@@ -1,49 +1,49 @@
 <html>
 <head>
-    <meta name="layout" content="indexLayout" />
+    <meta name="layout" content="indexLayout"/>
 </head>
 <body>
 <div id="filterDialog">
     <div class="hd">Save query</div>
     <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table width="100%">
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Sort Property:</label></td><td width="50%"><select name="sortProperty" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Sort Order:</label></td><td width="50%">
-            <select name="sortOrder" style="width:175px"><option value="asc">asc</option><option value="desc">desc</option></select>
-        </td></tr>
-        </table>
-        <input type="hidden" name="id">
-    </form>
+        <form method="POST" action="javascript://nothing">
+            <table width="100%">
+                <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px"/></td></tr>
+                <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
+                <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
+                <tr><td width="50%"><label>Sort Property:</label></td><td width="50%"><select name="sortProperty" style="width:175px"/></td></tr>
+                <tr><td width="50%"><label>Sort Order:</label></td><td width="50%">
+                    <select name="sortOrder" style="width:175px"><option value="asc">asc</option><option value="desc">desc</option></select>
+                </td></tr>
+            </table>
+            <input type="hidden" name="id">
+        </form>
 
     </div>
 </div>
 <div id="filterGroup">
     <div class="hd">Save group</div>
     <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table width="100%">
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
-        </table>
-        <input type="hidden" name="id">
-    </form>
+        <form method="POST" action="javascript://nothing">
+            <table width="100%">
+                <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
+            </table>
+            <input type="hidden" name="id">
+        </form>
 
     </div>
 </div>
 <div id="passwordDialog">
     <div class="hd">Change Password</div>
     <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table width="100%">
-        <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
-        </table>
-        <input type="hidden" name="username">
-    </form>
+        <form method="POST" action="javascript://nothing">
+            <table width="100%">
+                <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
+                <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
+                <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
+            </table>
+            <input type="hidden" name="username">
+        </form>
 
     </div>
 </div>
@@ -56,61 +56,52 @@
             <img src="images/RapidInsight-blue.png">
         </td>
         <td width="100%" style="vertical-align: bottom;;">
-      <div class="yui-navset">
-        <ul class="yui-nav" style="border-style: none">
-            <li><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
-            <li  class="selected"><a href="${createLinkTo(file: 'notify.gsp')}"><em>Notifications</em></a></li>
-            <li><a href="${createLinkTo(file: 'topology.gsp')}"><em>Map</em></a></li>
-            <li><a href="${createLinkTo(file: 'historicalEvents.gsp')}"><em>Historical Notifications</em></a></li>
-        </ul>
-      </div>
-  </td>
+            <div class="yui-navset">
+                <ul class="yui-nav" style="border-style: none">
+                    <li><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
+                    <li><a href="${createLinkTo(file: 'notify.gsp')}"><em>Notifications</em></a></li>
+                    <li><a href="${createLinkTo(file: 'topology.gsp')}"><em>Map</em></a></li>
+                    <li  class="selected"><a href="${createLinkTo(file: 'historicalEvents.gsp')}"><em>Historical Notifications</em></a></li>
+                </ul>
+            </div>
+        </td>
         <td width="0%"></td>
         <td id="serverDownEl" width="0%" style="display:none">
             <img src="images/network-offline.png"/>
         </td>
         <td width="0%">
-           <div style="vertical-align:bottom">
-               <span id="rsUser" style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;cursor:pointer">${session.username}</span>
-               <a href="auth/logout" style="font-size:13px;font-weight:bold;color:#083772;text-align:right;text-decoration:none">Logout</a>
-           </div>
+            <div style="vertical-align:bottom">
+                <span id="rsUser" style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;cursor:pointer">${session.username}</span>
+                <a href="auth/logout" style="font-size:13px;font-weight:bold;color:#083772;text-align:right;text-decoration:none">Logout</a>
+            </div>
         </td>
     </tr>
     </tbody></table>
-   </div>
+</div>
 <div id="right">
     <div id="searchDiv"></div>
 </div>
 
 <script type="text/javascript">
-	function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
+    function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
     {
-    	return (key == "severity" && value != '1') || (key != "severity" && propertyMenuIsNumberCondition(key, value, data));
+        return (key == "severity" && value != '1') || (key != "severity" && propertyMenuIsNumberCondition(key, value, data));
     }
     function searchListPropertyMenuConditionFunctionLessThan(key, value, data)
-	{
-    	return (key == "severity" && value != '5') || (key != "severity" && propertyMenuIsNumberCondition(key, value, data));
+    {
+        return (key == "severity" && value != '5') || (key != "severity" && propertyMenuIsNumberCondition(key, value, data));
     }
 
     function propertyMenuIsNumberCondition(key, value, data)
     {
-           return YAHOO.lang.isNumber(parseInt(value));
+        return YAHOO.lang.isNumber(parseInt(value));
     }
 
-	function searchListHeaderMenuConditionFunctionAcknowledge(data)
-    {
-        return data.getAttribute("acknowledged") != "true";
-    }
 
-    function searchListHeaderMenuConditionFunctionUnacknowledge(data)
-    {
-        return data.getAttribute("acknowledged") == "true";
-    }
-
-    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
+    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function() {
         YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
     }, this, true);
-    YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
+    YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function() {
         YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
     }, this, true);
 
@@ -118,16 +109,20 @@
     var objectDetailsDialog = new YAHOO.rapidjs.component.Html({id:'objectDetails', width:850, height:700, iframe:false});
     eventDetailsDialog.hide();
     objectDetailsDialog.hide();
+
+    var reportDialog = new YAHOO.rapidjs.component.Html({id:'reportDialog', width:900, height:500, iframe:false});
+    reportDialog.hide();
     var actionConfig = {url:'searchQuery/delete?format=xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
     var actionGroupConfig = {url:'searchQueryGroup/delete?format=xml'}
     var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
     var smartsEventFields = ['className', 'instanceName', 'eventName', 'sourceDomainName','acknowledged','owner', 'lastChangedAt','elementClassName', 'elementName','isRoot', 'severity'];
-    var apgEventFields = ["elementName", "className", "instanceName", "eventName", "lastNotifiedAt", "metric", "overFlow", "underFlow", "severity"];
+    var apgEventFields = ["elementName", "className", "instanceName", "eventName",'acknowledged','owner',  "lastNotifiedAt", "metric", "overFlow",
+        "underFlow", "severity"];
     var searchConfig = {
         id:'searchList',
-        url:'search?format=xml&searchIn=RsEvent',
+        url:'search?format=xml&searchIn=RsHistoricalEvent',
         searchQueryParamName:'query',
         rootTag:'Objects',
         contentPath:'Object',
@@ -139,16 +134,12 @@
         lineSize:3,
         title:'Events',
         defaultFields:['name'],
-         fields:[
-            {exp:'data["rsAlias"] == "RsSmartsNotification"', fields:smartsEventFields},
-            {exp:'data["rsAlias"] == "RsApgEvent"', fields:apgEventFields}
-       	],
+        fields:[
+            {exp:'data["rsAlias"] == "RsHistoricalSmartsNotification"', fields:smartsEventFields},
+            {exp:'data["rsAlias"] == "RsHistoricalApgEvent"', fields:apgEventFields}
+        ],
         menuItems:{
-            item1 : { id : 'acknowledge', label : 'Acknowledge', condition: searchListHeaderMenuConditionFunctionAcknowledge },
-            item2 : { id : 'unacknowledge', label : 'Unacknowledge', condition: searchListHeaderMenuConditionFunctionUnacknowledge },
-            item3 : { id : 'takeOwnership', label : 'Take Ownership'},
-            item4 : { id : 'releaseOwnership', label : 'Release Ownership'},
-            item5 : { id : 'eventDetails', label : 'Event Details' }
+            item1 : { id : 'eventDetails', label : 'Event Details' }
         },
         images:[
             {exp:'data["severity"] == 1', src:'images/rapidjs/component/searchlist/red.png'},
@@ -165,27 +156,29 @@
             item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: propertyMenuIsNumberCondition},
             item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: propertyMenuIsNumberCondition},
             item7 : { id : 'except', label : 'Except'},
-            item8 : { id : 'browse', label : 'Browse', condition:function(key, value, data){return (key == "instanceName" || key == "elementName")}}
+            item8 : { id : 'browse', label : 'Browse', condition:function(key, value, data) {
+                return (key == "instanceName" || key == "elementName")
+            }}
         } ,
         saveQueryFunction: function(query) {
             dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
         },
-        renderCellFunction : function(key, value, data){
-        	if(key == "lastChangedAt"){
-                if(value == "0" || value == "")
+        renderCellFunction : function(key, value, data) {
+            if (key == "lastChangedAt") {
+                if (value == "0" || value == "")
                 {
-                    return "never"    
+                    return "never"
                 }
                 else
                 {
                     try
                     {
                         var d = new Date();
-                        d.setTime(parseFloat(value)*1000)
+                        d.setTime(parseFloat(value) * 1000)
                         return d.format("d M H:i:s");
                     }
                     catch(e)
-                    {    
+                    {
                     }
                 }
             }
@@ -196,66 +189,57 @@
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
 
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
-			if(	id == "except"){
-				 if(searchList.searchInput.value!= "")
-                	searchList.appendToQuery("NOT " + key + ": \""+ value + "\"");
-                 else
-                    searchList.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
-			}
-            else if(id == "browse"){
-                var url = "getObjectDetails.gsp?name="+value;
-                var title = key == "instanceName"? "Details of " + xmlData.getAttribute("className") + " " + value : "Details of " + xmlData.getAttribute("elementClassName") + " " + value
-                objectDetailsDialog.show(url, title);
-            }
-            else if (id == "sortAsc") {
-	            searchList.setSortDirection(key, true);
-	        }
-	        else if (id == "sortDesc") {
-	            searchList.setSortDirection(key, false);
-	        }
-            else if (id == "greaterThan") {
-	           	searchList.appendToQuery(key + ":{" + value + " TO *}");
-	        }
-            else if (id == "greaterThanOrEqualTo") {
-	        	searchList.appendToQuery(key + ":[" + value + " TO *]");
-	        }
-            else if (id == "lessThanOrEqualTo") {
-	        	searchList.appendToQuery(key + ":[* TO " + value + "]");
-	        }
-            else if (id == "lessThan") {
-	        	searchList.appendToQuery(key + ":{* TO " + value + "}");
-	        }
+        if (id == "except") {
+            if (searchList.searchInput.value != "")
+                searchList.appendToQuery("NOT " + key + ": \"" + value + "\"");
+            else
+                searchList.appendToQuery(key + ":[0 TO *] NOT " + key + ": \"" + value + "\"");
+        }
+        else if (id == "browse") {
+            var url = "getObjectDetails.gsp?name=" + value;
+            var title = key == "instanceName" ? "Details of " + xmlData.getAttribute("className") + " " + value : "Details of " + xmlData.getAttribute("elementClassName") + " " + value
+            objectDetailsDialog.show(url, title);
+        }
+        else if (id == "sortAsc") {
+            searchList.setSortDirection(key, true);
+        }
+        else if (id == "sortDesc") {
+            searchList.setSortDirection(key, false);
+        }
+        else if (id == "greaterThan") {
+            searchList.appendToQuery(key + ":{" + value + " TO *}");
+        }
+        else if (id == "greaterThanOrEqualTo") {
+            searchList.appendToQuery(key + ":[" + value + " TO *]");
+        }
+        else if (id == "lessThanOrEqualTo") {
+            searchList.appendToQuery(key + ":[* TO " + value + "]");
+        }
+        else if (id == "lessThan") {
+            searchList.appendToQuery(key + ":{* TO " + value + "}");
+        }
     }, this, true);
-    var acknowledgeConfig = { url: 'script/run/acknowledge?format=xml' };
-	var acknowledgeAction = new YAHOO.rapidjs.component.action.MergeAction(acknowledgeConfig);
 
-	var setOwnershipConfig = { url: 'script/run/setOwnership?format=xml' };
-	var setOwnershipAction = new YAHOO.rapidjs.component.action.MergeAction(setOwnershipConfig);
 
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
-    	var notificationName = xmlData.getAttribute("name");
+        var notificationName = xmlData.getAttribute("name");
 
-        if( id == "eventDetails"){
-
-            var url = "getEventDetails.gsp?name="+notificationName;
+        if (id == "eventDetails") {
+            var url = "";
+            if (xmlData.getAttribute("rsAlias") ==
+                "RsSmartsNotification") {
+                url = "getEventDetails.gsp?name=" + notificationName;
+            } else {
+                url = "getApgEventDetails.gsp?name=" + notificationName;
+            }
             eventDetailsDialog.show(url, "Details of " + notificationName);
         }
-        else if( id == 'acknowledge' )
-            acknowledgeAction.execute({name:notificationName, acknowledged:true}, [searchList]);
-
-        else if( id == 'unacknowledge' )
-        	acknowledgeAction.execute({name:notificationName, acknowledged:false}, [searchList]);
-        else if(id == 'takeOwnership')
-        	setOwnershipAction.execute({name:notificationName, act:true}, [searchList]);
-        else if(id == 'releaseOwnership')
-        	setOwnershipAction.execute({name:notificationName, act:false}, [searchList]);
-
     }, this, true);
-    searchList.events["rowDoubleClicked"].subscribe(function(xmlData, event){
-    	if(YAHOO.util.Event.getTarget(event).className != 'rcmdb-search-cell-key')
-    	{
-    		var notificationName = xmlData.getAttribute("name");
-            var url = "getEventDetails.gsp?name="+notificationName;
+    searchList.events["rowDoubleClicked"].subscribe(function(xmlData, event) {
+        if (YAHOO.util.Event.getTarget(event).className != 'rcmdb-search-cell-key')
+        {
+            var notificationName = xmlData.getAttribute("name");
+            var url = "getEventDetails.gsp?name=" + notificationName;
             eventDetailsDialog.show(url, "Details of " + notificationName);
         }
 
@@ -263,44 +247,44 @@
 
     function treeNodesUpdateDeleteConditionFunction(data)
     {
-    	return data.getAttribute("isPublic") != "true" && !(data.getAttribute("nodeType") == "group" && data.getAttribute("name") == "Default");
+        return data.getAttribute("isPublic") != "true" && !(data.getAttribute("nodeType") == "group" && data.getAttribute("name") == "Default");
     }
     function treeNodesCopyConditionFunction(data)
     {
-    	return data.getAttribute("nodeType") == "filter";
+        return data.getAttribute("nodeType") == "filter";
     }
 
     var groupDefinitionDialogConfig = {
         id:"filterGroupDialog",
         width:"30em",
-        saveUrl:"searchQueryGroup/save?format=xml&type=notification",
-        updateUrl:"searchQueryGroup/update?format=xml&type=notification",
+        saveUrl:"searchQueryGroup/save?format=xml&type=historicalnotification",
+        updateUrl:"searchQueryGroup/update?format=xml&type=historicalnotification",
         successfulyExecuted: function () {
             tree.poll()
         }
     };
     var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
     var treeGridConfig = {
-         id:"filterTree",
-         url:"script/run/queryList?format=xml&type=notification",
-         rootTag:"Filters",
-         nodeId:"id",
-         contentPath:"Filter",
-         title:'Saved Queries',
-         mouseOverCursor: 'pointer',
-         columns: [
+        id:"filterTree",
+        url:"script/run/queryList?format=xml&type=historicalnotification",
+        rootTag:"Filters",
+        nodeId:"id",
+        contentPath:"Filter",
+        title:'Saved Queries',
+        mouseOverCursor: 'pointer',
+        columns: [
             {attributeName:'name', colLabel:'Name', width:248, sortBy:true}
-         ],
+        ],
         menuItems:{
             Delete : { id: 'delete', label : 'Delete',  condition : treeNodesUpdateDeleteConditionFunction },
             Update : { id: 'update', label : 'Update',  condition : treeNodesUpdateDeleteConditionFunction },
             CopyQuery : { id: 'copyQuery', label : 'Copy Query',  condition : treeNodesCopyConditionFunction }
         },
         rootImages :[
-			{visible:'data["nodeType"] == "group"', expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'},
-			{visible:'data["nodeType"] == "filter"', expanded:'images/rapidjs/component/tools/filter.png', collapsed:'images/rapidjs/component/tools/filter.png'}
-		]
-      };
+            {visible:'data["nodeType"] == "group"', expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'},
+            {visible:'data["nodeType"] == "filter"', expanded:'images/rapidjs/component/tools/filter.png', collapsed:'images/rapidjs/component/tools/filter.png'}
+        ]
+    };
     var tree = new YAHOO.rapidjs.component.TreeGrid(document.getElementById("treeDiv1"), treeGridConfig);
     tree.addToolbarButton({
         className:'r-filterTree-groupAdd',
@@ -331,53 +315,54 @@
     }, this, true);
 
     tree.events["rowMenuClick"].subscribe(function(data, id, parentId) {
-    	if (id == "delete")
+        if (id == "delete")
         {
             if (data.getAttribute("nodeType") == "filter")
                 deleteQueryAction.execute({id:data.getAttribute("id")});
             else if (data.getAttribute("nodeType") == "group")
                 deleteQueryGroupAction.execute({id:data.getAttribute("id")});
         }
-        else if(id == "update"){
+        else if (id == "update") {
             if (data.getAttribute("nodeType") == "filter")
                 dialog.show(dialog.EDIT_MODE, {queryId:data.getAttribute("id")})
-            else if(data.getAttribute("nodeType") == "group"){
+            else if (data.getAttribute("nodeType") == "group") {
                 groupDialog.show(groupDialog.EDIT_MODE)
                 groupDialog.dialog.form.name.value = data.getAttribute("name");
                 groupDialog.dialog.form.id.value = data.getAttribute("id")
             }
-       }
-       else if(id == "copyQuery"){
-        		dialog.show(dialog.CREATE_MODE,null,{name:'', group:data.parentNode().getAttribute('name'),
-        										query:data.getAttribute('query')});
+        }
+        else if (id == "copyQuery") {
+            dialog.show(dialog.CREATE_MODE, null, {name:'', group:data.parentNode().getAttribute('name'),
+                query:data.getAttribute('query')});
 
-            }
+        }
     }, this, true);
 
     var filterDefinitionDialogConfig = {
         id:"filterDialog",
         width:"35em",
-        createUrl:"script/run/createQuery?queryType=notification",
-        editUrl:"script/run/editQuery?queryType=notification",
-        saveUrl:"searchQuery/save?format=xml&type=notification",
-        updateUrl:"searchQuery/update?format=xml&type=notification",
+        createUrl:"script/run/createQuery?queryType=historicalnotification",
+        editUrl:"script/run/editQuery?queryType=historicalnotification",
+        saveUrl:"searchQuery/save?format=xml&type=historicalnotification",
+        updateUrl:"searchQuery/update?format=xml&type=historicalnotification",
         successfulyExecuted: function () {
             tree.poll()
         }
     };
     var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
-     var changePassDialogConfig = {
+    var changePassDialogConfig = {
         id:"changePassDialog",
         width:"35em",
         saveUrl:"rsUser/changePassword?format=xml",
-        successfulyExecuted: function () {}
+        successfulyExecuted: function () {
+        }
     };
     var changePassDialog = new YAHOO.rapidjs.component.Form(document.getElementById("passwordDialog"), changePassDialogConfig);
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
-    Event.addListener(document.getElementById('rsUser'), 'click', function(){
-         changePassDialog.show(dialog.CREATE_MODE);
-         changePassDialog.dialog.form.username.value = "${session.username}";
-    },this, true)
+    Event.addListener(document.getElementById('rsUser'), 'click', function() {
+        changePassDialog.show(dialog.CREATE_MODE);
+        changePassDialog.dialog.form.username.value = "${session.username}";
+    }, this, true)
 
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
@@ -387,9 +372,9 @@
                 { position: 'left', width: 250, resize: true, body: 'left', scroll: false}
             ]
         });
-        layout.on('render', function(){
-        	var topUnit = layout.getUnitByPosition('top');
-        	YAHOO.util.Dom.setStyle(topUnit.get('wrap'), 'background-color', '#BBD4F6')
+        layout.on('render', function() {
+            var topUnit = layout.getUnitByPosition('top');
+            YAHOO.util.Dom.setStyle(topUnit.get('wrap'), 'background-color', '#BBD4F6')
             var header = topUnit.body;
             YAHOO.util.Dom.setStyle(header, 'border', 'none');
             var left = layout.getUnitByPosition('left').body;
@@ -397,7 +382,7 @@
         });
         layout.render();
         var layoutLeft = layout.getUnitByPosition('left');
-        layoutLeft.on('resize', function(){
+        layoutLeft.on('resize', function() {
             YAHOO.util.Dom.setStyle(layoutLeft.body, 'top', '1px');
         });
 

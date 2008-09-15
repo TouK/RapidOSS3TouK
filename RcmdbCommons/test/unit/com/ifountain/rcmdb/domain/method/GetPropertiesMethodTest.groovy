@@ -34,37 +34,47 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         def allProperties = method.getDomainObjectProperties();
         println allProperties.name
         assertEquals (8, allProperties.size())
-        def propsMap = [:]
-        allProperties.each{
-            propsMap[it.name] = it;
-        }
-        RapidDomainClassProperty prop = propsMap["id"];
+
+        RapidDomainClassProperty prop = allProperties[0]//propsMap["declaredProp1"];
+        assertEquals("declaredProp1", prop.name);
+        assertFalse(prop.isRelation);
+        assertTrue(prop.isOperationProperty);
+
+        prop = allProperties[1]//propsMap["declaredProp2"];
+        assertEquals("declaredProp2", prop.name);
+        assertFalse(prop.isRelation);
+        assertTrue(prop.isOperationProperty);
+
+        prop = allProperties[2];
+        assertEquals("id", prop.name);
         assertFalse (prop.isRelation);
         assertFalse (prop.isOperationProperty);
 
-        prop = propsMap["prop1"];
+        prop = allProperties[3]//propsMap["oprProp2"];
+        assertEquals("oprProp2", prop.name);
+        assertFalse(prop.isRelation);
+        assertTrue(prop.isOperationProperty);
+
+        prop = allProperties[4]//propsMap["oprProp3"];
+        assertEquals("oprProp3", prop.name);
+        assertFalse(prop.isRelation);
+        assertTrue(prop.isOperationProperty);
+
+        prop = allProperties[5]//propsMap["prop1"];
+        assertEquals("prop1", prop.name);
         assertFalse (prop.isRelation);
         assertFalse (prop.isOperationProperty);
 
-        prop = propsMap["rel1"];
+        prop = allProperties[6]//propsMap["rel1"];
+        assertEquals("rel1", prop.name);
         assertTrue (prop.isRelation);
         assertFalse (prop.isOperationProperty);
 
-        prop = propsMap["declaredProp1"];
-        assertFalse(prop.isRelation);
-        assertTrue(prop.isOperationProperty);
+        prop = allProperties[7]//propsMap["rel1"];
+        assertEquals("rel2", prop.name);
+        assertTrue (prop.isRelation);
+        assertFalse (prop.isOperationProperty);
 
-        prop = propsMap["declaredProp2"];
-        assertFalse(prop.isRelation);
-        assertTrue(prop.isOperationProperty);
-
-        prop = propsMap["oprProp2"];
-        assertFalse(prop.isRelation);
-        assertTrue(prop.isOperationProperty);
-
-        prop = propsMap["oprProp3"];
-        assertFalse(prop.isRelation);
-        assertTrue(prop.isOperationProperty);
 
         try
         {

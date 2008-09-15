@@ -52,7 +52,7 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
         this.adapter = new ApgReportAdapter(getProperty("connection").name, reconnectInterval * 1000, Logger.getRootLogger());
     }
 
-    def getReport(username, password, properties, node) {
+    def getReport(properties, node) {
         ReportProperties reportProperties = new ReportProperties();
         properties.each {key, value ->
             ReportProperty p = new ReportProperty();
@@ -63,7 +63,7 @@ class ApgReportDatasourceOperations extends BaseDatasourceOperations {
         RealNode root = __addNode(node, null);
         Holder<GraphElement> hg = new Holder<GraphElement>();
         Holder<ErrorElement> he = new Holder<ErrorElement>();
-        this.adapter.getReport(username, password, reportProperties, root, null, hg, he, null, null);
+        this.adapter.getReport(connection.username, connection.userPassword, reportProperties, root, null, hg, he, null, null);
 
         if (he.value != null) {
             // the report generated an error !

@@ -17,74 +17,74 @@ class ApgDatabaseDatasourceOperations extends BaseDatasourceOperations {
         this.adapter = new ApgDatabaseAdapter(getProperty("connection").name, reconnectInterval * 1000, Logger.getRootLogger());
     }
 
-    def getSuggestions(username, password, filter, pattern, properties, limit) {
+    def getSuggestions(filter, pattern, properties, limit) {
         def suggests = [];
-        def suggestions = this.adapter.getSuggestions(username, password, filter, pattern, properties, limit);
+        def suggestions = this.adapter.getSuggestions(connection.username, connection.userPassword, filter, pattern, properties, limit);
         suggestions.each {Suggestion suggestion ->
             suggests.add(["accessor": suggestion.getAccessor(), "name": suggestion.getProperty(), "value": suggestion.getValue()])
         }
         return suggests;
     }
 
-    def getAvailableProperties(username, password, filter) {
+    def getAvailableProperties(filter) {
         def props = [];
-        def properties = this.adapter.getAvailableProperties(username, password, filter);
+        def properties = this.adapter.getAvailableProperties(connection.username, connection.userPassword, filter);
         properties.each {Property prop ->
             props.add(["accessor": prop.getAccessor(), "name": prop.getName(), "value": prop.getValue()])
         }
         return props;
     }
 
-    def getAvailableAggregatePeriods(username, password, filter) {
+    def getAvailableAggregatePeriods(filter) {
         def periods = [];
-        def availablePeriods = this.adapter.getAvailableAggregatePeriods(username, password, filter);
+        def availablePeriods = this.adapter.getAvailableAggregatePeriods(connection.username, connection.userPassword, filter);
         availablePeriods.each {Integer period ->
             periods.add(period.intValue());
         }
         return periods;
     }
 
-    def getAvailableAccessors(username, password, filter) {
-        return this.adapter.getAvailableAccessors(username, password, filter);
+    def getAvailableAccessors(filter) {
+        return this.adapter.getAvailableAccessors(connection.username, connection.userPassword, filter);
     }
 
-    def getStaticObjectCount(username, password, filter) {
-        return this.adapter.getStaticObjectCount(username, password, filter)
+    def getStaticObjectCount(filter) {
+        return this.adapter.getStaticObjectCount(connection.username, connection.userPassword, filter)
     }
 
-    def getStaticObjectFilters(username, password, filter) {
-        return this.adapter.getStaticObjectFilters(username, password, filter)
+    def getStaticObjectFilters(filter) {
+        return this.adapter.getStaticObjectFilters(connection.username, connection.userPassword, filter)
     }
 
-    def getObjectCount(username, password, filter, startTimestamp, endTimestamp, timeFilter, limit) {
-        return this.adapter.getObjectCount(username, password, filter, startTimestamp, endTimestamp, timeFilter, limit)
+    def getObjectCount(filter, startTimestamp, endTimestamp, timeFilter, limit) {
+        return this.adapter.getObjectCount(connection.username, connection.userPassword, filter, startTimestamp, endTimestamp, timeFilter, limit)
     }
 
-    def getObjectFilters(username, password, filter, startTimestamp, endTimestamp, timeFilter, limit) {
-        return this.adapter.getObjectFilters(username, password, filter, startTimestamp, endTimestamp, timeFilter, limit)
+    def getObjectFilters(filter, startTimestamp, endTimestamp, timeFilter, limit) {
+        return this.adapter.getObjectFilters(connection.username, connection.userPassword, filter, startTimestamp, endTimestamp, timeFilter, limit)
     }
 
-    def getDistinctPropertyRecords(username, password, filter, properties) {
+    def getDistinctPropertyRecords(filter, properties) {
         def propRecords = [];
-        def propertyRecords = this.adapter.getDistinctPropertyRecords(username, password, filter, properties)
+        def propertyRecords = this.adapter.getDistinctPropertyRecords(connection.username, connection.userPassword, filter, properties)
         propertyRecords.each {PropertyRecord propRecord ->
             propRecords.add(propRecord.getValue());
         }
         return propRecords;
     }
 
-    def getDistinctPropertyValues(username, password, filter, subFilters, properties, limit) {
+    def getDistinctPropertyValues(filter, subFilters, properties, limit) {
         def dPropValues = [];
-        def distinctPropertyValues = this.adapter.getDistinctPropertyValues(username, password, filter, subFilters, properties, limit);
+        def distinctPropertyValues = this.adapter.getDistinctPropertyValues(connection.username, connection.userPassword, filter, subFilters, properties, limit);
         distinctPropertyValues.each {DistinctPropertyValues propValues ->
             dPropValues.add(propValues.getValue());
         }
         return dPropValues;
     }
 
-    def getObjectProperties(username, password, filter, subFilters, properties) {
+    def getObjectProperties(filter, subFilters, properties) {
         def oPropertyValuesList = [];
-        def objectPropertyValuesList = this.adapter.getObjectProperties(username, password, filter, subFilters, properties);
+        def objectPropertyValuesList = this.adapter.getObjectProperties(connection.username, connection.userPassword, filter, subFilters, properties);
         objectPropertyValuesList.each {ObjectPropertyValues objectPropValues ->
             def pList = [];
             def propertiesList = objectPropValues.getProperties();
@@ -105,12 +105,12 @@ class ApgDatabaseDatasourceOperations extends BaseDatasourceOperations {
         return oPropertyValuesList;
     }
 
-    def getObjectData(username, password, filter, subFilters, startTimestamp, endTimestamp, timeFilter, period, fields, selectedVariables, limit) {
+    def getObjectData(filter, subFilters, startTimestamp, endTimestamp, timeFilter, period, fields, selectedVariables, limit) {
         def fieldsList = [];
         fields.each {
             fieldsList.add(Aggregation.fromValue(it));
         }
-        def objectData = this.adapter.getObjectData(username, password, filter, subFilters, startTimestamp, endTimestamp, timeFilter, period, fieldsList, selectedVariables, limit)
+        def objectData = this.adapter.getObjectData(connection.username, connection.userPassword, filter, subFilters, startTimestamp, endTimestamp, timeFilter, period, fieldsList, selectedVariables, limit)
         def oData = [];
         objectData.each {TimeSeries timeSeries ->
             def tSeries = [];
@@ -136,7 +136,7 @@ class ApgDatabaseDatasourceOperations extends BaseDatasourceOperations {
         return oData;
     }
 
-    def getAggregatedData(username, password, filter, subFilter, startTimestamp, endTimestamp, timeFilter, period, aggregations) {
+    def getAggregatedData(filter, subFilter, startTimestamp, endTimestamp, timeFilter, period, aggregations) {
 
         def aggs;
         if (aggregations != null) {
@@ -151,7 +151,7 @@ class ApgDatabaseDatasourceOperations extends BaseDatasourceOperations {
         }
 
         def aggData = [];
-        def aggregatedData = this.adapter.getAggregatedData(username, password, filter, subFilter, startTimestamp, endTimestamp, timeFilter, period, aggs);
+        def aggregatedData = this.adapter.getAggregatedData(connection.username, connection.userPassword, filter, subFilter, startTimestamp, endTimestamp, timeFilter, period, aggs);
         aggregatedData.each {TimeSerie timeSerie ->
             def tSerie = [:]
             tSerie.put("id", timeSerie.getId())

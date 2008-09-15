@@ -118,8 +118,6 @@
     var actionGroupConfig = {url:'searchQueryGroup/delete?format=xml'}
     var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
     var smartsEventFields = ['className', 'instanceName', 'eventName', 'sourceDomainName','acknowledged','owner', 'lastChangedAt','elementClassName', 'elementName','isRoot', 'severity'];
-    var apgEventFields = ["elementName", "className", "instanceName", "eventName",'acknowledged','owner',  "lastNotifiedAt", "metric", "overFlow",
-        "underFlow", "severity"];
     var searchConfig = {
         id:'searchList',
         url:'search?format=xml&searchIn=RsHistoricalEvent',
@@ -135,8 +133,7 @@
         title:'Events',
         defaultFields:['name'],
         fields:[
-            {exp:'data["rsAlias"] == "RsHistoricalSmartsNotification"', fields:smartsEventFields},
-            {exp:'data["rsAlias"] == "RsHistoricalApgEvent"', fields:apgEventFields}
+            {exp:'data["rsAlias"] == "RsSmartsHistoricalNotification"', fields:smartsEventFields}
         ],
         menuItems:{
             item1 : { id : 'eventDetails', label : 'Event Details' }

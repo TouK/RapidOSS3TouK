@@ -8,7 +8,7 @@
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
         <li class="selected">
-            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getHistoricalEventDetails.gsp?name=${domainObject.name}');">
+            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getHistoricalEventDetails.gsp?id=${domainObject.id}');">
                 <em>Properties</em>
             </a>
         </li>

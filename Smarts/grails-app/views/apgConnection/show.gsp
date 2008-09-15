@@ -49,6 +49,13 @@
 
                 </tr>
 
+                <tr class="prop">
+                    <td valign="top" class="name">Username:</td>
+
+                    <td valign="top" class="value">${apgConnection.username}</td>
+
+                </tr>
+
             </tbody>
         </table>
     </div>

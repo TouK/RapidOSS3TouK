@@ -23,6 +23,8 @@
                    	        <g:sortableColumn property="name" title="Name" />
 
                    	        <g:sortableColumn property="wsdlBaseUrl" title="Wsdl Base Url" />
+
+                            <g:sortableColumn property="username" title="Username"/>
                         
                         </tr>
                     </thead>
@@ -33,6 +35,7 @@
                             <td><g:link action="show" id="${apgConnection.id}">${apgConnection.name?.encodeAsHTML()}</g:link></td>
                         
                             <td>${apgConnection.wsdlBaseUrl?.encodeAsHTML()}</td>
+                            <td>${apgConnection.username?.encodeAsHTML()}</td>
                         
                         </tr>
                     </g:each>

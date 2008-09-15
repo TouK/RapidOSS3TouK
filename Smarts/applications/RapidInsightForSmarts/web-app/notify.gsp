@@ -124,7 +124,6 @@
     var actionGroupConfig = {url:'searchQueryGroup/delete?format=xml'}
     var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
     var smartsEventFields = ['className', 'instanceName', 'eventName', 'sourceDomainName','acknowledged','owner', 'lastChangedAt','elementClassName', 'elementName','isRoot', 'severity'];
-    var apgEventFields = ["elementName", "className", "instanceName", "eventName", "lastNotifiedAt", "metric", "overFlow", "underFlow", "severity"];
     var searchConfig = {
         id:'searchList',
         url:'search?format=xml&searchIn=RsEvent',
@@ -140,8 +139,7 @@
         title:'Events',
         defaultFields:['name'],
          fields:[
-            {exp:'data["rsAlias"] == "RsSmartsNotification"', fields:smartsEventFields},
-            {exp:'data["rsAlias"] == "RsApgEvent"', fields:apgEventFields}
+            {exp:'data["rsAlias"] == "RsSmartsNotification"', fields:smartsEventFields}
        	],
         menuItems:{
             item1 : { id : 'acknowledge', label : 'Acknowledge', condition: searchListHeaderMenuConditionFunctionAcknowledge },

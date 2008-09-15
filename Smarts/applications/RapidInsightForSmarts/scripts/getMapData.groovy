@@ -26,7 +26,7 @@ mapDataBuilder.graphData {
 
     nodes.each {
         def device = RsComputerSystem.get( name : it);
-        mapDataBuilder.device( id : it, state : device.getState(), load : device.getCpuUsage());
+        mapDataBuilder.device( id : it, state : device.getState());
     }
 
     edges.each {

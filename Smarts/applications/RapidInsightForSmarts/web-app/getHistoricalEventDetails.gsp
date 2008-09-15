@@ -16,9 +16,9 @@
     <div style="display:block;margin-top:10px;">
         <%
                 SimpleDateFormat format = new SimpleDateFormat("dd MMM HH:mm:ss")
-                def firstNotifiedAt = format.format(new Timestamp(domainObject.firstNotifiedAt*1000));
-                def lastNotifiedAt = format.format(new Timestamp(domainObject.lastNotifiedAt*1000));
-                def lastChangedAt = format.format(new Timestamp(domainObject.lastChangedAt*1000));
+                def firstNotifiedAt = format.format(new Timestamp(domainObject.firstNotifiedAt * 1000));
+                def lastNotifiedAt = format.format(new Timestamp(domainObject.lastNotifiedAt * 1000));
+                def lastChangedAt = format.format(new Timestamp(domainObject.lastChangedAt * 1000));
                 def severityClass;
                 def severity = domainObject.severity;
                 if (severity == 1) {
@@ -38,48 +38,56 @@
                 }
 
         %>
-        <div style="padding:10px;float:right">
-            <div style="border:1px solid;padding:3px;">
-                <div class="event-details-severity ${severityClass}"></div>
-                <div style="padding:3px 20px 20px 20px;">
-                    First Notified At: ${firstNotifiedAt}<br>
-                    Last Notified At: ${lastNotifiedAt}<br>
-                    Last Changed At: ${lastChangedAt}<br>
-                    Count: ${domainObject.occurrenceCount}<br>
-                </div>
-            </div>
-        </div>
-        <div>
-            <table cellspacing="2" cellpadding="2">
-                <tbody>
+        <table>
+            <tr>
+                <td width="100%">
+                    <div class="smarts-object-details" style="width:100%">
+                        <table cellspacing="2" cellpadding="2" width="100%">
+                            <tbody>
 
-                    <g:each var="property" in="${allProperties}">
-                        <%
-                            def propertyName = property.name;
-                        %>
-                        <tr>
-                            <td>${propertyName}</td>
-                            <%
-                                    if (propertyName == "instanceName" || propertyName == "elementName") {
-                                        def title = propertyName == "instanceName"? "Details of ${domainObject.className} ${domainObject.instanceName}" : "Details of ${domainObject.elementClassName} ${domainObject.elementName}"
-                            %>
-                            <td><a style="color:#006DBA;text-decoration:underline;cursor:pointer" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${domainObject[propertyName]}', '${title}');">${domainObject[propertyName]}</a></td>
-                            <%
-                                }
-                                else {
-                            %>
-                            <td>${domainObject[propertyName]}</td>
-                            <%
-                                    }
-                            %>
+                                <g:each var="property" status="i" in="${allProperties}">
+                                    <%
+                                            def propertyName = property.name;
+                                    %>
+                                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                                        <td style="font-weight:bold">${propertyName}</td>
+                                        <%
+                                                if (propertyName == "instanceName" || propertyName == "elementName") {
+                                                    def title = propertyName == "instanceName" ? "Details of ${domainObject.className} ${domainObject.instanceName}" : "Details of ${domainObject.elementClassName} ${domainObject.elementName}"
+                                        %>
+                                        <td><a style="color:#006DBA;text-decoration:underline;cursor:pointer" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${domainObject[propertyName]}', '${title}');">${domainObject[propertyName]}</a></td>
+                                        <%
+                                            }
+                                            else {
+                                        %>
+                                        <td>${domainObject[propertyName]}</td>
+                                        <%
+                                                }
+                                        %>
 
-                        </tr>
-                    </g:each>
+                                    </tr>
+                                </g:each>
 
-                </tbody>
-            </table>
+                            </tbody>
+                        </table>
 
-        </div>
+                    </div>
+                </td>
+                <td width="0%" style="vertical-align:top;">
+                    <div style="padding:0px 10px;">
+                        <div style="background-color:#EDF5FF;padding:3px;border:#2647A0 1px solid">
+                            <div class="event-details-severity ${severityClass}"></div>
+                            <div style="padding:3px 20px 20px 20px;width:190px;">
+                                <b>First Notified At:</b> ${firstNotifiedAt}<br>
+                                <b>Last Notified At:</b> ${lastNotifiedAt}<br>
+                                <b>Last Changed At:</b> ${lastChangedAt}<br>
+                                <b>Count:</b> ${domainObject.occurrenceCount}<br>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
 <%

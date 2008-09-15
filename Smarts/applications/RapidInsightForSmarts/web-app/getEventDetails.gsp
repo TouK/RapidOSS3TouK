@@ -56,8 +56,8 @@
         <table>
             <tr>
                 <td width="100%">
-                    <div class="smarts-object-details">
-                        <table cellspacing="2" cellpadding="2">
+                    <div class="smarts-object-details" style="width:100%">
+                        <table cellspacing="2" cellpadding="2" width="100%">
                             <tbody>
 
                                 <g:each var="propertyName" status="i" in="${allProperties}">

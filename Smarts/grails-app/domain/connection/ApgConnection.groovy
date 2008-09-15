@@ -49,7 +49,7 @@ class ApgConnection extends Connection {
     static constraints = {
         wsdlBaseUrl(blank: true, nullable: true)
         username(blank: true, nullable: true)
-        password(blank: true, nullable: true)
+        userPassword(blank: true, nullable: true)
     }
     static transients = [];
 }

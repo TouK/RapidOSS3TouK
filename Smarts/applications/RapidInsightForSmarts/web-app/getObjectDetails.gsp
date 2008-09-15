@@ -58,7 +58,9 @@ cursor:pointer;
                                 <td width="100%">
                                     <ul style="margin-left: 10px;">
                                         <%
-                                                domainObject[property.name].each {
+                                                def relatedObjects = domainObject[property.name];
+                                                def sortedRelatedObjects = relatedObjects.sort{"${it.creationClassName}${it.name}"};
+                                                sortedRelatedObjects.each {
                                         %>
                                         <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${it.name}', 'Details of ${it.creationClassName} ${it.name}');">${it.creationClassName} ${it.name}<a></li>
                                         <%

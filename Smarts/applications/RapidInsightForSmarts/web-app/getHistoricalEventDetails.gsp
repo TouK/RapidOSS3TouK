@@ -1,7 +1,7 @@
 <%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
 <%
-    def notificationName = params.name;
-    def domainObject = RsEvent.get(name: notificationName);
+    def notificationId = params.id;
+    def domainObject = RsHistoricalEvent.get(name: notificationId);
     if (domainObject != null) {
         def allProperties = domainObject.getModelProperties();
 %>

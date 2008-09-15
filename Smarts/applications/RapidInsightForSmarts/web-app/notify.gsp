@@ -98,7 +98,7 @@
 
 	function searchListHeaderMenuConditionFunctionAcknowledge(data)
     {
-        return data.getAttribute("acknowledged") == "false";
+        return data.getAttribute("acknowledged") != "true";
     }
 
     function searchListHeaderMenuConditionFunctionUnacknowledge(data)

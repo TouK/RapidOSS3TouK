@@ -22,19 +22,20 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
 
     this.configureTimeout(config);
     this.attributes = {};
-
-    this.header = YAHOO.ext.DomHelper.append(this.container, {tag:'div'});
+    var divs = this.container.getElementsByTagName("div");
+    this.header = divs[0];
+    this.body = YAHOO.ext.Element.get(divs[1]);
+    this.body.setHeight(this.height);
+	this.body.setWidth(this.width);
     this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title: this.title});
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SettingsTool(document.body, this));
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
-    this.body = YAHOO.ext.DomHelper.append(this.container, {tag:'div'}, true);
-    this.body.setHeight(this.height);
-	this.body.setWidth(this.width);
+
 
     this._initAttributes();
 
-    this.fa = new YAHOO.widget.FlashAdapter( this.swfURL, this.body.dom.id, this.attributes );
+//    this.fa = new YAHOO.widget.FlashAdapter( this.swfURL, this.body.dom.id, this.attributes );
     if(YAHOO.util.Event.isIE)
     {
         this.flashObject  = this.body.dom.getElementsByTagName("object")[0];
@@ -48,9 +49,9 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
 YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.PollingComponentContainer, {
 
     _initAttributes : function() {
-        this.attributes["backgroundColor"] = this.bgColor || "#ffffff";
-        this.attributes["wmode"] = this.wMode;
-        this.attributes["id"] = this.id;
+//        this.attributes["backgroundColor"] = this.bgColor || "#ffffff";
+//        this.attributes["wmode"] = this.wMode;
+//        this.attributes["id"] = this.id;
     },
     loadGraph : function( nodes, edges) {
         this.flashObject.loadGraph(nodes, edges);

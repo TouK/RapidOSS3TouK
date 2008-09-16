@@ -78,7 +78,29 @@
     </tbody></table>
    </div>
 <div id="right">
-	<div id="mapDiv"></div>
+	<div id="mapDiv">
+        <div/>
+        <div>
+            <%
+                if(request.getHeader("user-agent").indexOf("MSIE") >= 0)
+                {
+            %>
+            <OBJECT id="mapDivflashObject" name="mapDivflashObject" height="100%" width="100%" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">
+                <PARAM value="images/rapidjs/component/topologyMap/TopologyMapping.swf?configFunction=configFunction" name="movie"/>
+                <PARAM value="#eeeeee" name="bgcolor"/>
+                <PARAM value="high" name="quality"/>
+                <PARAM value="always" name="allowScriptAccess"/>
+                <PARAM value="Transparent" name="wmode"/>
+            </OBJECT>
+            <%
+                }else{
+            %>
+            <embed id="mapDivflashObject" height="100%" width="100%" wmode="Transparent" allowscriptaccess="always" quality="high" bgcolor="#eeeeee" name="mapDivflashObject" style="" src="images/rapidjs/component/topologyMap/TopologyMapping.swf?configFunction=configFunction" type="application/x-shockwave-flash"/>
+            <%
+                }
+            %>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">

@@ -35,6 +35,14 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this._initAttributes();
 
     this.fa = new YAHOO.widget.FlashAdapter( this.swfURL, this.body.dom.id, this.attributes );
+    if(YAHOO.util.Event.isIE)
+    {
+        this.flashObject  = this.body.dom.getElementsByTagName("object")[0];
+    }
+    else
+    {
+        this.flashObject  = this.body.dom.getElementsByTagName("embed")[0];    
+    }
 };
 
 YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.PollingComponentContainer, {
@@ -45,25 +53,25 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         this.attributes["id"] = this.id;
     },
     loadGraph : function( nodes, edges) {
-        this.body.dom.getElementsByTagName("embed")[0].loadGraph(nodes, edges);
+        this.flashObject.loadGraph(nodes, edges);
     },
     loadGraphWithUserLayout : function( nodes, edges) {
-        this.body.dom.getElementsByTagName("embed")[0].loadUserLayout(nodes, edges);
+        this.flashObject.loadUserLayout(nodes, edges);
     },
     loadData : function( data) {
-        this.body.dom.getElementsByTagName("embed")[0].loadData(data);
+        this.flashObject.loadData(data);
     },
 
     getMapData : function () {
-        return this.body.dom.getElementsByTagName("embed")[0].getMapData();
+        return this.flashObject.getMapData();
     },
 
     getDevices : function () {
-        return this.body.dom.getElementsByTagName("embed")[0].getDevices();
+        return this.flashObject.getDevices();
     },
 
     getEdges : function() {
-        return this.body.dom.getElementsByTagName("embed")[0].getEdges();
+        return this.flashObject.getEdges();
     },
 
     loadHandler : function()

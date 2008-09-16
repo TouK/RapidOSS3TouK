@@ -175,16 +175,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         {
             params["format"] = this.format;
         }
-        var postData = "<postData><data>";
+        var postData = "<postParams>";
         for(var paramName in params) {
-            postData = postData + paramName + "=" + params[paramName]+"|";
+            postData = postData + "<"+paramName+">" + params[paramName]+"</"+paramName+">";
         }
-        if(postData != "")
-        {
-            postData = postData.substring(0, postData.length-1);
-        }
-
-        postData += "</data></postData>";
+        postData += "</postParams>";
         var callback = {
             success: this.processSuccess,
             failure: this.processFailure,

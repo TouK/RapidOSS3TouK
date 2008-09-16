@@ -1,30 +1,26 @@
 import groovy.xml.MarkupBuilder;
 
 def startTime = System.nanoTime();
-
-def postData = params.postData.data;
-def data = postData.tokenize("|");
-
-def expandedDeviceName = data[0].tokenize("=")[1];
-def nodeTokens = data[1].tokenize("=");
+def expandedDeviceName = params.postParams.expandedDeviceName;
+def nodeString = params.postParams.nodes;
 def nodes = [];
-if( nodeTokens.size()==2)
+if( nodeString !=  null)
 {
-   nodes = nodeTokens[1].tokenize(";");
+   nodes = nodeString.splitPreserveAllTokens(";");
 }
 
-def edgeTokens = data[2].tokenize("=");
+def edgeString = params.postParams.edges;
 def edges = [];
-if( edgeTokens.size()==2)
+if( edgeString != null)
 {
-    edges = data[2].tokenize("=")[1].tokenize(";");
+    edges = edgeString.splitPreserveAllTokens(";");
 }
 
 
 
 def edgeMap = [:]
 edges.each{
-    def edgeData = it.tokenize(",")
+    def edgeData = it.splitPreserveAllTokens(",")
     def source = edgeData[0]
     def target = edgeData[1]
 
@@ -34,10 +30,8 @@ edges.each{
 
 def deviceMap = [:];
 nodes.each{
-    def deviceData = it.tokenize(",");
+    def deviceData = it.splitPreserveAllTokens(",");
     def deviceName = deviceData[0];
-    def x = deviceData[1];
-    def y = deviceData[2];
 
     def device = RsComputerSystem.get( name : deviceName);
     def expandable = isExpandable(device, edgeMap);

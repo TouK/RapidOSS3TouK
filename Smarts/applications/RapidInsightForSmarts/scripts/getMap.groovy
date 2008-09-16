@@ -1,10 +1,6 @@
 import auth.RsUser
 import groovy.xml.MarkupBuilder
 
-import TopoMap
-import MapNode
-import EdgeNode
-
 def user = RsUser.findByUsername(web.session.username);
 if(user == null){
     throw new Exception("User ${web.session.username} does not exist");
@@ -16,7 +12,8 @@ def mapName2 = params.mapName;
 def map = TopoMap.get( mapName : mapName2, username : username2)
 
 def edges = EdgeNode.list().findAll {edgeNode ->
-    edgeNode.username == username2 && edgeNode.mapName == mapName2 };
+    edgeNode.username == username2 && edgeNode.mapName == mapName2 
+};
 
 def edgeMap = [:];
 def deviceMap = [:];

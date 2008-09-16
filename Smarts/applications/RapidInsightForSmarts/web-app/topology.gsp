@@ -78,29 +78,7 @@
     </tbody></table>
    </div>
 <div id="right">
-	<div id="mapDiv">
-        <div/>
-        <div>
-            <%
-                if(request.getHeader("user-agent").indexOf("MSIE") >= 0)
-                {
-            %>
-            <OBJECT id="mapDivflashObject" name="mapDivflashObject" height="100%" width="100%" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">
-                <PARAM value="images/rapidjs/component/topologyMap/TopologyMapping.swf?configFunction=configFunction" name="movie"/>
-                <PARAM value="#eeeeee" name="bgcolor"/>
-                <PARAM value="high" name="quality"/>
-                <PARAM value="always" name="allowScriptAccess"/>
-                <PARAM value="Transparent" name="wmode"/>
-            </OBJECT>
-            <%
-                }else{
-            %>
-            <embed id="mapDivflashObject" height="100%" width="100%" wmode="Transparent" allowscriptaccess="always" quality="high" bgcolor="#eeeeee" name="mapDivflashObject" style="" src="images/rapidjs/component/topologyMap/TopologyMapping.swf?configFunction=configFunction" type="application/x-shockwave-flash"/>
-            <%
-                }
-            %>
-        </div>
-    </div>
+	<div id="mapDiv"></div>
 </div>
 
 <script type="text/javascript">
@@ -232,26 +210,26 @@
 
       }
 
-      function topologyMapComponentAdapter ( params )
+    function topologyMapComponentAdapter ( params )
+    {
+      var id = params["id"];
+      var functionName = params["functionName"];
+
+      var component = YAHOO.rapidjs.Components[id];
+
+      if( functionName == "mapContentReady" )
       {
-          var id = params["id"];
-          var functionName = params["functionName"];
-
-          var component = YAHOO.rapidjs.Components[id];
-
-          if( functionName == "mapContentReady" )
-          {
-            var deviceName = getURLParam( "name");
-            if( deviceName )
-            {
-                topMap.getInitialMap( deviceName);
-            }
-          }
-          else if(functionName == "refreshTopology" )
-          {
-              component.loadHandler();
-          }
+        var deviceName = getURLParam( "name");
+        if( deviceName )
+        {
+            component.getInitialMap( deviceName);
+        }
       }
+      else if(functionName == "refreshTopology" )
+      {
+          component.refresh();
+      }
+    }
 
     function menuItemFilter(id) {
         var items = [];
@@ -283,7 +261,6 @@
         dataKeys : { id : "id", status : "status", load : "load" },
         mapURL : "script/run/getMap",
         expandURL : "script/run/expandMap",
-        initialMapURL : "script/run/getDeviceTopoMap",
         dataURL : "script/run/getMapData",
         pollingInterval : 0,
         wMode : "Transparent"

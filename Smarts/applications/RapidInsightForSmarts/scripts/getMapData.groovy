@@ -1,22 +1,18 @@
 import groovy.xml.MarkupBuilder
 
 
-def postData = params.postData.data;
-def data = postData.tokenize("|");
 
-
-def nodes;
-try {
-    nodes= data[0].tokenize("=")[1].tokenize(",");
+def nodeString = params.postParams.devices;
+def edgeString = params.postParams.edges;
+def nodes = [];
+def edges = [];
+if(nodeString != null)
+{
+    nodes = nodeString.splitPreserveAllTokens(",").findAll {it != ""};
 }
-catch(e){
-    return;
-}
-def edges;
-try {
-    edges= data[1].tokenize("=")[1].tokenize(";");
-}
-catch(e){
+if(edgeString != null)
+{
+    edges = edgeString.splitPreserveAllTokens(";").findAll {it != ""};
 }
 
 def writer = new StringWriter();
@@ -30,7 +26,7 @@ mapDataBuilder.graphData {
     }
 
     edges.each {
-        def edgeTokens = it.tokenize(",");
+        def edgeTokens = it.splitPreserveAllTokens(",");
         def source = edgeTokens[0];
         def target = edgeTokens[1];
         def links = RsLink.search( "a_ComputerSystemName:${source} z_ComputerSystemName: ${target}").results;

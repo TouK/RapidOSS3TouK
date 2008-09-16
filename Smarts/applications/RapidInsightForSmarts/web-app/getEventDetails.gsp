@@ -1,9 +1,21 @@
 <%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
 <%
     def notificationName = params.name;
+    def className = params.className;
+    def instanceName = params.instanceName;
+    def eventName = params.eventName;
     def allProperties = ["className", "instanceName", "eventName", "sourceDomainName", "acknowledged", "owner", "elementClassName", "elementName",
             "severity", "eventText", "isRoot", "isProblem", "certainty", "eventType", "category", "impact", "inMaintenance"];
-    def domainObject = RsEvent.get(name: notificationName);
+    def domainObject;
+    if(notificationName != null){
+       domainObject = RsEvent.get(name: notificationName);
+    }
+    else{
+       def objects = RsSmartsNotification.search("className:\"${className}\" AND instanceName:\"${instanceName}\" AND eventName:\"${eventName}\"").results;
+       if(objects.size() > 0){
+           domainObject = objects[0];
+       }
+    }
     if (domainObject != null) {
 %>
 <div class="yui-navset yui-navset-top">

@@ -21,7 +21,7 @@
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
         <li>
-            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=${domainObject.className}');">
+            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=${domainObject.name}');">
                 <em>Properties</em>
             </a>
         </li>

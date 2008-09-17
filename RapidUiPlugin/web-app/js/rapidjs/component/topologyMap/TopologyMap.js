@@ -1,10 +1,20 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component');
+function topologyMapComponentAdapter ( params )
+{
+  var id = params["id"];
+  var functionName = params["functionName"];
+
+  var component = YAHOO.rapidjs.Components[id];
+  if(functionName == "refreshTopology" )
+  {
+      component.refresh();
+  }
+}
 YAHOO.rapidjs.component.TopologyMap = function(container, config){
 	YAHOO.rapidjs.component.TopologyMap.superclass.constructor.call(this,container, config);
 	YAHOO.ext.util.Config.apply(this, config);
 
     this.configFunctionName = config.configFunctionName;
-    this.swfURL = config.swfURL + "?configFunction=" + this.configFunctionName;
 
     this.height = config.height || 540;
     this.width = config.width || 680;
@@ -31,47 +41,58 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.body = YAHOO.ext.DomHelper.append(this.container, {tag:'div'}, true);
     this.body.setHeight(this.height);
 	this.body.setWidth(this.width);
+    this.body.dom.innerHTML = "<iframe src=\"images/rapidjs/component/topologyMap/topologymap.gsp?configFunction="+this.configFunctionName+"\" frameborder=\"0\" width=\"%100\" height=\"%100\" style=\"margin: 0px;width:100%;height:100%\">" +
+                              "</iframe>"
+    this.iframe = this.body.dom.getElementsByTagName("iframe")[0]
 
     this._initAttributes();
-
-    this.fa = new YAHOO.widget.FlashAdapter( this.swfURL, this.body.dom.id, this.attributes );
-    if(YAHOO.util.Event.isIE)
-    {
-        this.flashObject  = this.body.dom.getElementsByTagName("object")[0];
-    }
-    else
-    {
-        this.flashObject  = this.body.dom.getElementsByTagName("embed")[0];    
-    }
 };
 
 YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.PollingComponentContainer, {
 
+    getFlashObject: function(){
+        while(this.flashObject == null)
+        {
+            if(YAHOO.util.Event.isIE)
+            {
+                this.flashObject  = this.iframe.contentWindow.document.body.getElementsByTagName("object")[0];
+            }
+            else
+            {
+                this.flashObject  = this.iframe.contentDocument.body.getElementsByTagName("embed")[0];
+            }
+        }
+        return this.flashObject;
+    },
+
+    callFlashFunction: function(functionName, params){
+        return this.iframe.contentWindow.callFlashFunction(functionName, params);
+    },
     _initAttributes : function() {
         this.attributes["backgroundColor"] = this.bgColor || "#ffffff";
         this.attributes["wmode"] = this.wMode;
         this.attributes["id"] = this.id;
     },
     loadGraph : function( nodes, edges) {
-        this.flashObject.loadGraph(nodes, edges);
+        this.callFlashFunction("loadGraph", [nodes, edges]);
     },
     loadGraphWithUserLayout : function( nodes, edges) {
-        this.flashObject.loadUserLayout(nodes, edges);
+        this.callFlashFunction("loadUserLayout", [nodes, edges]);
     },
     loadData : function( data) {
-        this.flashObject.loadData(data);
+        this.callFlashFunction("loadData", [data]);
     },
 
     getMapData : function () {
-        return this.flashObject.getMapData();
+        return this.callFlashFunction("getMapData", null);
     },
 
     getDevices : function () {
-        return this.flashObject.getDevices();
+        return this.callFlashFunction("getDevices", null);
     },
 
     getEdges : function() {
-        return this.flashObject.getEdges();
+        return this.callFlashFunction("getEdges", null);
     },
 
     loadHandler : function()
@@ -82,7 +103,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
     refresh : function()
     {
-        this.flashObject.loadGraph(this.getDevices(), this.getEdges());
+        return this.callFlashFunction("loadGraph", [this.getDevices(), this.getEdges()]);
     },
 
     handleSuccess: function(response){

@@ -210,27 +210,7 @@
 
       }
 
-    function topologyMapComponentAdapter ( params )
-    {
-      var id = params["id"];
-      var functionName = params["functionName"];
-
-      var component = YAHOO.rapidjs.Components[id];
-
-      if( functionName == "mapContentReady" )
-      {
-        var deviceName = getURLParam( "name");
-        if( deviceName )
-        {
-            component.getInitialMap( deviceName);
-        }
-      }
-      else if(functionName == "refreshTopology" )
-      {
-          component.refresh();
-      }
-    }
-
+    
     function menuItemFilter(id) {
         var items = [];
         /*
@@ -253,7 +233,6 @@
     }
 
     var topMapConfig = {
-        swfURL 	: "images/rapidjs/component/topologyMap/TopologyMapping.swf",
         id 		: "mapDiv",
         configFunctionName : "configFunction",
         bgColor : "#eeeeee",
@@ -434,7 +413,11 @@
             tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
         });
         window.layout = layout;
-
+        var deviceName = getURLParam( "name");
+        if( deviceName )
+        {
+            topMap.getInitialMap( deviceName);
+        }
 
 
     })

@@ -24,53 +24,35 @@ class SearchController {
         }
         StringWriter sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        int trialCount = 0;
-        while(true)
-        {
-            try
-            {
-                def searchResults;
-                if(params.searchIn != null){
-                     GrailsDomainClass grailsClass = grailsApplication.getDomainClass(params.searchIn);
-                     def mc = grailsClass.metaClass;
-                     searchResults =  mc.invokeStaticMethod(mc.theClass, "search", [query, params] as Object[])
-                }
-                else{
-                    searchResults = searchableService.search(query, params);
-                }
-                def grailsClassProperties = [:]
-                builder.Objects(total: searchResults.total, offset: searchResults.offset){
-                    searchResults.results.each {result ->
-                        def className = result.getClass().name;
-                        def grailsObjectProps = grailsClassProperties[className]
-                        if (grailsObjectProps == null)
-                        {
-                            grailsObjectProps = DomainClassUtils.getFilteredProperties(className);
-                            grailsClassProperties[result.getClass().name] = grailsObjectProps;
-                        }
-                        def props = [:];
-                        grailsObjectProps.each {resultProperty ->
-                            props[resultProperty.name] = result[resultProperty.name];
-                        }
-                        props.put("sortOrder", sortOrder++)
-                        props.put("rsAlias", result.getClass().name)
-                        builder.Object(props);
-                    }
-                }
-                render(text: sw.toString(), contentType: "text/xml");
-                return;
-            }
-            catch (Throwable t)
-            {
-                if(trialCount >= 10 || String.valueOf(t.getMessage()).indexOf("does not appear to be indexed") < 0)
+        def searchResults;
+        if(params.searchIn != null){
+             GrailsDomainClass grailsClass = grailsApplication.getDomainClass(params.searchIn);
+             def mc = grailsClass.metaClass;
+             searchResults =  mc.invokeStaticMethod(mc.theClass, "search", [query, params] as Object[])
+        }
+        else{
+            searchResults = searchableService.search(query, params);
+        }
+        def grailsClassProperties = [:]
+        builder.Objects(total: searchResults.total, offset: searchResults.offset){
+            searchResults.results.each {result ->
+                def className = result.getClass().name;
+                def grailsObjectProps = grailsClassProperties[className]
+                if (grailsObjectProps == null)
                 {
-                    addError("invalid.search.query", [query, t.getMessage()]);
-                    render(text: errorsToXml(errors), contentType: "text/xml")
-                    return;
+                    grailsObjectProps = DomainClassUtils.getFilteredProperties(className);
+                    grailsClassProperties[result.getClass().name] = grailsObjectProps;
                 }
-                trialCount++;
+                def props = [:];
+                grailsObjectProps.each {resultProperty ->
+                    props[resultProperty.name] = result[resultProperty.name];
+                }
+                props.put("sortOrder", sortOrder++)
+                props.put("rsAlias", result.getClass().name)
+                builder.Object(props);
             }
         }
+        render(text: sw.toString(), contentType: "text/xml");
 
     }
 }

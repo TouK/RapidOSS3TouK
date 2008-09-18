@@ -28,6 +28,7 @@ import org.springframework.util.Assert;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * The default search method implementation
@@ -106,10 +107,12 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
             this.query = query;
         }
 
-        public Object doInCompass(CompassSession session) throws CompassException {
-            Closure rawProcessor = (Closure) options.get("raw");
-            options.put("raw", rawProcessor != null);
-            CompassQuery compassQuery = compassQueryBuilder.buildQuery(grailsApplication, session, options, query);
+        public Object _doInCompass(CompassSession session) throws CompassException {
+            Map tempOptions = new HashMap();
+            tempOptions.putAll(options);
+            Closure rawProcessor = (Closure) tempOptions.get("raw");
+            tempOptions.put("raw", rawProcessor != null);
+            CompassQuery compassQuery = compassQueryBuilder.buildQuery(grailsApplication, session, tempOptions, query);
             long start = System.currentTimeMillis();
             CompassHits hits = compassQuery.hits();
             if (LOG.isDebugEnabled()) {
@@ -118,28 +121,45 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
             }
 //                long time = System.currentTimeMillis() - start;
 //                System.out.println("query: [" + compassQuery + "], [" + hits.length() + "] hits, took [" + time + "] millis");
-            Object collectedHits = hitCollector.collect(hits, options);
-            Object searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, options);
+            Object collectedHits = hitCollector.collect(hits, tempOptions);
+            Object searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, tempOptions);
             if(rawProcessor != null)
             {
                 return doWithRawDataProcessor(rawProcessor, searchResult);
             }
             else
             {
+                doWithHighlighter(collectedHits, hits, searchResult, tempOptions);
                 return searchResult;
             }
         }
+        public Object doInCompass(CompassSession session) throws CompassException {
 
-        public void doWithHighlighter(Object collectedHits, CompassHits hits, Object searchResult) {
+            try
+            {
+                return _doInCompass(session);
+            }
+            catch(RuntimeException t)
+            {
+                if(options.get("sortType") == null && t.toString().indexOf("does not appear to be indexed") >= 0)
+                {
+                    options.put("sortType", "string");
+                    return _doInCompass(session);
+                }
+                throw t;
+            }
+        }
+
+        public void doWithHighlighter(Object collectedHits, CompassHits hits, Object searchResult, Map searchOptions) {
             if (!(collectedHits instanceof Collection)) {
                 return;
             }
-            Closure withHighlighter = (Closure) options.get("withHighlighter");
+            Closure withHighlighter = (Closure) searchOptions.get("withHighlighter");
             if (withHighlighter == null) {
                 return;
             }
             withHighlighter = (Closure) withHighlighter.clone();
-            int offset = org.apache.commons.collections.MapUtils.getIntValue(options, "offset");
+            int offset = org.apache.commons.collections.MapUtils.getIntValue(searchOptions, "offset");
             for (int i = 0, length = ((Collection) collectedHits).size(); i < length; i++) {
                 withHighlighter.call(new Object[] {
                     hits.highlighter(offset + i), new Integer(i), searchResult

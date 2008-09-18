@@ -24,7 +24,7 @@ import org.springframework.util.Assert;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
+//MODIFIED
 /**
  * Post-processes a query to add sort
  *
@@ -51,7 +51,8 @@ public class SearchableCompassQueryBuilderSortOptionHelper implements Searchable
             compassQuery = compassQuery.addSort((CompassQuery.SortImplicitType) sortProperty, direction);
         } else {
             Assert.isInstanceOf(String.class, sortProperty, "Expected string");
-            compassQuery = compassQuery.addSort((String) sortProperty, direction);
+            CompassQuery.SortPropertyType sortType = getSortType((String)options.get("sortType"));
+            compassQuery = compassQuery.addSort((String) sortProperty, sortType, direction);
         }
         return compassQuery;
     }
@@ -62,6 +63,30 @@ public class SearchableCompassQueryBuilderSortOptionHelper implements Searchable
             return CompassQuery.SortImplicitType.SCORE;
         }
         return sort;
+    }
+
+    private CompassQuery.SortPropertyType getSortType(String sortType) {
+        if(sortType == null)
+        {
+            return CompassQuery.SortPropertyType.AUTO;    
+        }
+        else if(sortType.equalsIgnoreCase("string"))
+        {
+            return CompassQuery.SortPropertyType.STRING;
+        }
+        else if(sortType.equalsIgnoreCase("int") || sortType.equalsIgnoreCase("int"))
+        {
+            return CompassQuery.SortPropertyType.INT;
+        }
+
+        else if(sortType.equalsIgnoreCase("float"))
+        {
+            return CompassQuery.SortPropertyType.FLOAT;
+        }
+        else
+        {
+            return CompassQuery.SortPropertyType.AUTO;
+        }
     }
 
     /**

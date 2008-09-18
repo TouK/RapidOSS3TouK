@@ -3,7 +3,7 @@
     def notificationId = params.id;
     def domainObject = RsHistoricalEvent.get(id: notificationId);
     if (domainObject != null) {
-        def allProperties = domainObject.getModelProperties();
+        def allProperties = domainObject.getPropertiesList();
 %>
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">

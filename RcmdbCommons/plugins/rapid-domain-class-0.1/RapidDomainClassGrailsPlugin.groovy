@@ -157,7 +157,7 @@ class RapidDomainClassGrailsPlugin {
     {
         GetPropertiesMethod getPropertiesMethod = new GetPropertiesMethod(dc);
         MetaClass mc = dc.metaClass;
-        mc.static.getModelProperties = {->
+        mc.static.getPropertiesList = {->
             return getPropertiesMethod.getDomainObjectProperties();
         }
         if(mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)

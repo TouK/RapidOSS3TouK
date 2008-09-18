@@ -1,19 +1,19 @@
 import groovy.xml.MarkupBuilder;
 
 def startTime = System.nanoTime();
-def expandedDeviceName = params.postParams.expandedDeviceName;
-def nodeString = params.postParams.nodes;
+def expandedDeviceName = params.expandedDeviceName;
+def nodeString = params.nodes;
 def nodes = [];
 if( nodeString !=  null)
 {
-   nodes = nodeString.splitPreserveAllTokens(";");
+   nodes = nodeString.splitPreserveAllTokens(";").findAll {it != ""};
 }
 
-def edgeString = params.postParams.edges;
+def edgeString = params.edges;
 def edges = [];
 if( edgeString != null)
 {
-    edges = edgeString.splitPreserveAllTokens(";");
+    edges = edgeString.splitPreserveAllTokens(";").findAll {it != ""};
 }
 
 

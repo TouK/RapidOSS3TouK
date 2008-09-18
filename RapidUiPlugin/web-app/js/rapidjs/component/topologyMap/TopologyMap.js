@@ -41,17 +41,16 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.body = YAHOO.ext.DomHelper.append(this.container, {tag:'div'}, true);
     this.body.setHeight(this.height);
 	this.body.setWidth(this.width);
-    this.body.dom.innerHTML = "<iframe src=\"images/rapidjs/component/topologyMap/topologymap.gsp?configFunction="+this.configFunctionName+"\" frameborder=\"0\" width=\"%100\" height=\"%100\" style=\"margin: 0px;width:100%;height:100%\">" +
-                              "</iframe>"
-    this.iframe = this.body.dom.getElementsByTagName("iframe")[0]
-
-    this._initAttributes();
+    this.body = YAHOO.ext.DomHelper.append(this.body.dom, {tag:'div'}, true);
+    
+    this.events.mapInitialized = new YAHOO.util.CustomEvent("mapInitialized");
+    YAHOO.util.Event.addListener(window, "load", this.initializeFlash, this, true);
 };
 
 YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.PollingComponentContainer, {
 
     getFlashObject: function(){
-        while(this.flashObject == null)
+        if(this.flashObject == null)
         {
             if(YAHOO.util.Event.isIE)
             {
@@ -64,35 +63,52 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         }
         return this.flashObject;
     },
-
-    callFlashFunction: function(functionName, params){
-        return this.iframe.contentWindow.callFlashFunction(functionName, params);
+    isFlashLoaded: function()
+    {
+        try
+        {
+            if(this.getFlashObject() != null)
+            {
+                this.getFlashObject().getDevices();
+                this.events.mapInitialized.fireDirect();
+            }
+            else
+            {
+                this.flashTimer.delay(100);
+            }
+        }catch(e)
+        {
+            this.flashTimer.delay(100);
+        }
     },
-    _initAttributes : function() {
-        this.attributes["backgroundColor"] = this.bgColor || "#ffffff";
-        this.attributes["wmode"] = this.wMode;
-        this.attributes["id"] = this.id;
+    initializeFlash: function()
+    {
+        this.body.dom.innerHTML = "<iframe src=\"images/rapidjs/component/topologyMap/topologymap.gsp?configFunction="+this.configFunctionName+"\" frameborder=\"0\" width=\"%100\" height=\"%100\" style=\"margin: 0px;width:100%;height:100%\">" +
+                              "</iframe>"
+        this.iframe = this.body.dom.getElementsByTagName("iframe")[0];
+        this.flashTimer = new YAHOO.ext.util.DelayedTask(this.isFlashLoaded, this);
+        this.flashTimer.delay(100);
     },
     loadGraph : function( nodes, edges) {
-        this.callFlashFunction("loadGraph", [nodes, edges]);
+        this.getFlashObject().loadGraph(nodes, edges);
     },
     loadGraphWithUserLayout : function( nodes, edges) {
-        this.callFlashFunction("loadUserLayout", [nodes, edges]);
+        this.getFlashObject().loadUserLayout(nodes, edges);
     },
     loadData : function( data) {
-        this.callFlashFunction("loadData", [data]);
+        this.getFlashObject().loadData(data);
     },
 
     getMapData : function () {
-        return this.callFlashFunction("getMapData", null);
+        return this.getFlashObject().getMapData();
     },
 
     getDevices : function () {
-        return this.callFlashFunction("getDevices", null);
+        return this.getFlashObject().getDevices();
     },
 
     getEdges : function() {
-        return this.callFlashFunction("getEdges", null);
+        return this.getFlashObject().getEdges();
     },
 
     loadHandler : function()
@@ -103,7 +119,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
     refresh : function()
     {
-        return this.callFlashFunction("loadGraph", [this.getDevices(), this.getEdges()]);
+        return this.getFlashObject().loadGraph(this.getDevices(), this.getEdges());
     },
 
     handleSuccess: function(response){
@@ -270,5 +286,6 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             this.getData();
         }
     }
+    
 });
 

@@ -175,19 +175,36 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         {
             params["format"] = this.format;
         }
-        var postData = "<postParams>";
+        var postData = "";
         for(var paramName in params) {
-            postData = postData + "<"+paramName+">" + params[paramName]+"</"+paramName+">";
+            postData = postData + paramName + "=" + escape(params[paramName])+"&";
         }
-        postData += "</postParams>";
+        if(postData != "")
+        {
+            postData = postData.substring(0, postData.length-1);
+        }
+        if(postData && postData != "")
+        {
+            if(url.indexOf("?") >= 0)
+            {
+                url = url + "&" + postData;
+            }
+            else
+            {
+                url = url + "?" + postData;
+            }
+        }
+
         var callback = {
             success: this.processSuccess,
             failure: this.processFailure,
             timeout: this.timeout,
             scope: this,
+            cache:false,
             argument : [callback]
         };
-        this.lastConnection = YAHOO.util.Connect.asyncRequest('POST',url , callback, postData);
+
+        this.lastConnection = YAHOO.util.Connect.asyncRequest('POST',url , callback, null);
         this.events["loadstatechanged"].fireDirect(this, true);
     },
 

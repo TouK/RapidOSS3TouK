@@ -1,17 +1,14 @@
 <html>
+<head>
 <script type="text/javascript">
     function callFunction(functionName, params)
     {
         return window.parent[functionName](params)
     }
-    function callFlashFunction(functionName, params)
-    {
-        return document.getElementById("mapDivflashObject")[functionName].apply(document.getElementById("mapDivflashObject"), params);
-    }
 </script>
+</head>
 <body style="margin:0px;overflow:hidden;">
     <%
-    	System.out.println(request.getHeader("user-agent"));
         if(request.getHeader("user-agent").indexOf("MSIE") < 0)
         {
     %>

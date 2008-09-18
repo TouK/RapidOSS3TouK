@@ -2,8 +2,8 @@ import groovy.xml.MarkupBuilder
 
 
 
-def nodeString = params.postParams.devices;
-def edgeString = params.postParams.edges;
+def nodeString = params.devices;
+def edgeString = params.edges;
 def nodes = [];
 def edges = [];
 if(nodeString != null)

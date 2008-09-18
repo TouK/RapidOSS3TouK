@@ -1,9 +1,9 @@
 import auth.RsUser;
 
-def groupName =  params.postParams.groupName
-def mapName =  params.postParams.mapName
-def nodes =  params.postParams.nodes.splitPreserveAllTokens(";").findAll {it != ""};
-def edges =  params.postParams.edges.splitPreserveAllTokens(";").findAll {it != ""};
+def groupName =  params.groupName
+def mapName =  params.mapName
+def nodes =  params.nodes.splitPreserveAllTokens(";").findAll {it != ""};
+def edges =  params.edges.splitPreserveAllTokens(";").findAll {it != ""};
 
 
 

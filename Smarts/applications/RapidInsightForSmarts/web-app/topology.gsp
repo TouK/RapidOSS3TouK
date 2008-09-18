@@ -210,7 +210,7 @@
 
       }
 
-    
+
     function menuItemFilter(id) {
         var items = [];
         /*
@@ -246,6 +246,14 @@
     };
 
     var topMap = new YAHOO.rapidjs.component.TopologyMap(document.getElementById("mapDiv"),topMapConfig );
+
+    topMap.events.mapInitialized.subscribe(function(){
+        var deviceName = this.getURLParam( "name");
+        if( deviceName )
+        {
+            this.topMap.getInitialMap( deviceName);
+        }
+    }, this, true);
 
     var conf = {id:'objectDetails', width:500, height:400, iframe:false};
     var objectDetailsDialog = new YAHOO.rapidjs.component.Html(conf);
@@ -413,15 +421,11 @@
             tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
         });
         window.layout = layout;
-        var deviceName = getURLParam( "name");
-        if( deviceName )
-        {
-            topMap.getInitialMap( deviceName);
-        }
+
 
 
     })
 </script>
 
 </body>
-</html>
+</html>

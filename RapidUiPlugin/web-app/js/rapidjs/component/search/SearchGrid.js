@@ -1,198 +1,278 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.search');
 YAHOO.rapidjs.component.search.SearchGrid = function(container, config) {
-    YAHOO.rapidjs.component.search.SearchList.superclass.constructor.call(this, container, config);
+    this.columns = null;
+    this.minColumnWidth = 30;
+    YAHOO.rapidjs.component.search.SearchGrid.superclass.constructor.call(this, container, config);
 };
 
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.component.search.AbstractSearchList, {
+    init: function() {
+        this.totalColumnWidth = null;
+        this.sortState = {header:null, direction:null};
+        this.bodyId = this.id + "_body";
+        this.addMenuColumn();
+        for (var index = 0; index < this.columns.length; index++) {
+            var colCssName = "#" + this.bodyId + " .rcmdb-searchgrid-col-" + index;
+            this.addColCss(colCssName);
+        }
 
-
-
-    render : function() {
+        var colCssName = "#" + this.bodyId + " .rcmdb-searchgrid-col-last";
+        this.addColCss(colCssName);
+        YAHOO.ext.util.CSS.getRules(true);
+    },
+    addColCss: function(cssName)
+    {
+        var ds = document.styleSheets;
+        if (ds.length > 0)
+        {
+            if (ds[0].insertRule)
+                ds[0].insertRule(cssName + " {padding:0px;} ", 0);
+            else if (ds[0].addRule)
+                ds[0].addRule(cssName, " {padding:0px;} ");
+        }
+    },
+    _render : function() {
         var dh = YAHOO.ext.DomHelper;
-        this.wrapper = dh.append(this.container, {tag: 'div', cls:'rcmdb-search'});
-
-        this.header = dh.append(this.wrapper, {tag:'div'}, true);
-        this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header.dom, {title:this.title});
-        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
-        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SearchListSettingsTool(document.body, this));
-        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
-        this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-search-box',
-            html:'<div><form action="javascript:void(0)" style="overflow:auto;"><table><tbody>' +
-                 '<tr>' +
-                 '<td  width="93%"><input type="textbox" style="width:100%;" name="search"/></td>' +
-                 '<td><div class="rcmdb-search-searchbutton"></div></td>' +
-                 '<td  width="100%"><div class="rcmdb-search-savequery"></div></td>' +
-                 '<td  width="0%"><div class="rcmdb-search-count"></div></td>' +
-                 '<td  width="0%"><div class="rcmdb-search-sortOrder"></div></td>' +
-                 '</tr>' +
-                 '</tbody></table></form></div>'}, true);
-
-        this.searchInput = this.searchBox.dom.getElementsByTagName('input')[0];
-        this.body = dh.append(this.wrapper, {tag: 'div', cls:'rcmdb-search-body'}, true);
-        this.scrollPos = dh.append(this.body.dom, {tag: 'div'}, true);
+        var searchInputWrp = dh.append(this.toolbar.el, {tag:'div', cls:'rcmdb-searchgrid-tools',
+            html:'<div class="rcmdb-searchgrid-count wrp">&nbsp;</div>' +
+                 '<div class="wrp"></div><div class="wrp"></div>' +
+                 '<div class="wrp"><form action="javascript:void(0)" style="overflow:auto;"><input class="rcmdb-searchgrid-searchinput"></input></form></div>'});
+        var wrps = YAHOO.util.Dom.getElementsByClassName('wrp', 'div', searchInputWrp);
+        this.searchCountEl = wrps[0];
+        new YAHOO.rapidjs.component.Button(wrps[1], {className:'rcmdb-searchgrid-saveButton', scope:this, click:this.handleSaveQueryClick, tooltip: 'Save Query'});
+        new YAHOO.rapidjs.component.Button(wrps[2], {className:'rcmdb-searchgrid-searchButton', scope:this, click:this.handleSearch, tooltip: 'Search'});
+        this.searchInput = searchInputWrp.getElementsByTagName('input')[0];
+        YAHOO.util.Event.addListener(this.searchInput.form, 'keypress', this.handleInputEnter, this, true);
+        this.body.dom.id = this.bodyId;
+        this.pwrap = dh.append(this.body.dom, {tag: 'div', cls: 'rcmdb-searchgrid-positioner'});
+        this.hwrap = dh.append(this.pwrap, {tag: 'div', cls: 'rcmdb-searchgrid-wrap-headers'}, true);
+        this.hrow = dh.append(this.hwrap.dom, {tag: 'span', cls: 'rcmdb-searchgrid-hrow'});
+        if (!YAHOO.ext.util.Browser.isGecko) {
+            var iframe = document.createElement('iframe');
+            iframe.className = 'rcmdb-searchgrid-hrow-frame';
+            iframe.frameBorder = 0;
+            iframe.src = YAHOO.ext.SSL_SECURE_URL;
+            this.hwrap.dom.appendChild(iframe);
+        }
+        this.bwrap = dh.append(this.pwrap, {tag: 'div', cls:'rcmdb-searchgrid-bwrap'}, true);
+        this.scrollPos = dh.append(this.bwrap.dom, {tag: 'div'}, true);
         this.bufferPos = dh.append(this.scrollPos.dom, {tag:'div'}, true);
         this.bufferView = dh.append(this.scrollPos.dom, {tag:'div'}, true);
         this.bufferView.rowEls = [];
-        this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask'}, true);
-        this.maskMessage = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask-loadingwrp', html:'<div class="rcmdb-search-mask-loading">Loading...</div>'}, true)
-        this.hideMask();
-        var searchButton = YAHOO.ext.Element.get(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-searchbutton', 'div', this.searchBox.dom)[0]);
-        searchButton.addClassOnOver('rcmdb-search-searchbutton-hover');
-        YAHOO.util.Event.addListener(searchButton.dom, 'click', this.handleSearch, this, true);
-        var saveQueryButton = YAHOO.ext.Element.get(YAHOO.util.Dom.getElementsByClassName('rcmdb-search-savequery', 'div', this.searchBox.dom)[0]);
-        saveQueryButton.addClassOnOver('rcmdb-search-savequery-hover');
-        YAHOO.util.Event.addListener(saveQueryButton.dom, 'click', this.handleSaveQueryClick, this, true);
-        YAHOO.util.Event.addListener(this.searchInput.form, 'keypress', this.handleInputEnter, this, true);
-        YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);
+        this.headers = [];
+        var htemplate = dh.createTemplate({
+            tag: 'span', cls: 'rcmdb-searchgrid-hd rcmdb-searchgrid-header-{0}', children: [{
+            tag: 'span',
+            cls: 'rcmdb-searchgrid-hd-body',
+            html: '<table border="0" cellpadding="0" cellspacing="0" title="{1}">' +
+                  '<tbody><tr><td><span>{1}</span></td>' +
+                  '<td><span class="sort-desc"></span><span class="sort-asc"></span></td>' +
+                  '</tr></tbody></table>'
+        }]
+        });
+        htemplate.compile();
+        for (var i = 0; i < this.columns.length; i++) {
+            var hd = htemplate.append(this.hrow, [i, this.columns[i].colLabel]);
+
+            var spans = hd.getElementsByTagName('span');
+            hd.textNode = spans[1];
+            hd.sortDesc = spans[2];
+            hd.sortAsc = spans[3];
+            hd.columnIndex = i;
+            this.headers.push(hd);
+            var split = dh.append(this.hrow, {tag: 'span', cls: 'rcmdb-searchgrid-hd-split', style:i == 0?'cursor:default':''});
+            hd.split = split;
+            if (i > 0) {
+                //            YAHOO.util.Event.on(split, 'dblclick', autoSizeDelegate.createCallback(i + 0, true));
+                getEl(hd).addClassOnOver('rcmdb-searchgrid-hd-over');
+                YAHOO.util.Event.addListener(hd, 'click', this.headerClicked, this, true);
+                var sb = new YAHOO.rapidjs.component.Split(split, hd, null, YAHOO.rapidjs.component.Split.LEFT);
+                sb.columnIndex = i;
+                sb.minSize = this.minColumnWidth;
+                sb.onMoved.subscribe(this.onColumnSplitterMoved, this, true);
+                YAHOO.util.Dom.addClass(sb.proxy, 'rcmdb-searchgrid-column-sizer');
+                YAHOO.util.Dom.setStyle(sb.proxy, 'background-color', '');
+                var hwrap = this.hwrap;
+                var bwrap = this.bwrap;
+                sb.dd._resizeProxy = function() {
+                    var el = this.getDragEl();
+                    YAHOO.util.Dom.setStyle(el, 'height', (hwrap.dom.clientHeight + bwrap.dom.clientHeight - 2) + 'px');
+                };
+                hd.sb = sb;
+            }
+        }
+        YAHOO.util.Event.addListener(this.bwrap.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'dblclick', this.handleDoubleClick, this, true);
-
-        this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic"});
-
-        for (var i in this.menuItems) {
-            if (this.menuItems[i].submenuItems)
-            {
-                var subMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderSubmenu_' + i, {position: "dynamic"});
-                for (var j in this.menuItems[i].submenuItems)
-                {
-
-                    var subItem = subMenu.addItem({text:this.menuItems[i].submenuItems[j].label });
-                    YAHOO.util.Event.addListener(subItem.element, "click", this.rowHeaderMenuItemClicked, { parentKey:i, subKey:j}, this);
-                }
-            }
-            var item = this.rowHeaderMenu.addItem({text:this.menuItems[i].label, submenu : subMenu });
-            if (!(this.menuItems[i].submenuItems))
-                YAHOO.util.Event.addListener(item.element, "click", this.rowHeaderMenuItemClicked, { parentKey:i }, this);
-        }
-
-
-        this.rowHeaderMenu.render(document.body);
-
-        this.cellMenu = new YAHOO.widget.Menu(this.id + '_cellMenu', {position: "dynamic"});
-
-        for (var i in this.propertyMenuItems) {
-            var item = this.cellMenu.addItem({text:this.propertyMenuItems[i].label });
-            YAHOO.util.Event.addListener(item.element, "click", this.cellMenuItemClicked, i, this);
-
-        }
-        this.cellMenu.render(document.body);
-        if (this.fields)
-        {
-            for (var i = 0; i < this.fields.length; i++)
-                if (this.maxRowCellLength < this.fields[i]['fields'].length)
-                    this.maxRowCellLength = this.fields[i]['fields'].length;
-            if (this.defaultFields && this.maxRowCellLength < this.defaultFields.length)
-                this.maxRowCellLength = this.defaultFields.length;
-        }
-        else
-        {
-            this.fields = this.defaultFields;
-            this.defaultFields = null;
-            this.maxRowCellLength = this.fields.length;
-        }
+        this.updateColumns();
 
     },
 
     createEmptyRows : function(rowCount) {
-        var innerHtml = '';
-        for (var fieldIndex = 0; fieldIndex < this.maxRowCellLength; fieldIndex++) {
-            innerHtml += '<div class="rcmdb-search-cell">' +
-                         '<span class="rcmdb-search-cell-key"></span>' +
-                         '<a href="" class="rcmdb-search-cell-value"></a>' +
-                         '<a class="rcmdb-search-cell-menu">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> | ' +
-                         '</div>';
-        }
-        if (innerHtml.length > 0) {
-            innerHtml = innerHtml.substring(0, innerHtml.length - 9) + '</div>';
-        }
         for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-            var rowHtml = '<table style="height:100%"><tr>' +
-                          '<td width="0%"><div class="rcmdb-search-row-headermenu"><span class="rcmdb-search-row-menupos">&nbsp;</span></div></td>' +
-                          '<td width="100%">';
-            if (this.rowHeaderAttribute != null)
-            {
-                rowHtml += '<div class="rcmdb-search-rowheader"><a class="rcmdb-search-rowheader-value"></a></div>';
+            var colCount = this.columns.length;
+            var innerHtml = '<span class="rcmdb-search-cell rcmdb-searchgrid-col-0"><div class="rcmdb-search-row-headermenu"></div></span>';
+            for (var colIndex = 1; colIndex < colCount; colIndex++) {
+                innerHtml += '<span class="rcmdb-search-cell rcmdb-searchgrid-col-' + colIndex + (colIndex == colCount - 1 ? ' rcmdb-searchgrid-col-last' : '') + '">' +
+                             '<span class="rcmdb-search-cell-value"></span></span>';
             }
-            rowHtml += '<div class="rcmdb-search-rowdata">' + innerHtml + '</div>' +
-                       '</td></tr></table>';
-            var rowEl = YAHOO.ext.DomHelper.append(this.bufferView.dom, {tag:'div', cls:'rcmdb-search-row',
-                html:rowHtml}, true);
+            var rowEl = YAHOO.ext.DomHelper.append(this.bufferView.dom, {tag:'div', cls:'rcmdb-search-row', html:innerHtml}, true);
             this.bufferView.rowEls[this.bufferView.rowEls.length] = rowEl;
             YAHOO.util.Dom.setStyle(rowEl.dom, 'display', 'none');
             rowEl.setHeight(this.rowHeight);
-            var cells = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-cell', 'div', rowEl.dom)
-            var header = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-rowheader-value', 'a', rowEl.dom)
+            var cells = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-cell', 'span', rowEl.dom)
             rowEl.cells = cells;
-            rowEl.header = header[0];
         }
 
     },
 
     renderRow: function(rowEl) {
-        if (this.fields) {
-            var insertedFields = null;
-            var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
-            var dataNode = searchNode.xmlData;
-            var data = dataNode.getAttributes();
-            if (this.defaultFields)
-            {
-                for (var i = 0; i < this.fields.length; i++)
-                {
-                    var currentExpressionStr = this.fields[i]['exp'];
-                    var evaluationResult = eval(currentExpressionStr);
-                    if (evaluationResult)
-                        insertedFields = this.fields[i]['fields'];
-                }
-                if (!insertedFields)
-                    insertedFields = this.defaultFields;
-            }
-            else
-                insertedFields = this.fields;
-            if (this.images) {
-                for (var i = 0; i < this.images.length; i++)
-                {
-                    var currentExpressionStr = this.images[i]['exp'];
-                    var evaluationResult = eval(currentExpressionStr);
-                    if (evaluationResult == true)
-                    {
-                        var imageSrc = this.images[i]['src'];
-                        YAHOO.util.Dom.getElementsByClassName('rcmdb-search-row-headermenu', 'div', rowEl.dom)[0].style.backgroundImage = 'url("' + imageSrc + '")';
-                    }
-                }
-            }
-            var nOfFields = insertedFields.length;
-            if (this.rowHeaderAttribute != null)
-            {
-                rowEl.header.innerHTML = dataNode.getAttribute(this.rowHeaderAttribute);
-            }
-            for (var fieldIndex = 0; fieldIndex < nOfFields; fieldIndex++) {
-                var att = insertedFields[fieldIndex];
-                var cell = rowEl.cells[fieldIndex];
-                var keyEl = cell.firstChild;
-                var valueEl = keyEl.nextSibling;
-                var value = dataNode.getAttribute(att);
-                valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) : value);
-                keyEl.innerHTML = att + '=';
-                cell.propKey = att;
-                cell.propValue = value;
-                YAHOO.util.Dom.setStyle(cell, 'display', 'inline');
-            }
-            for (var fieldIndex = insertedFields.length; fieldIndex < this.maxRowCellLength; fieldIndex++)
-            {
-                var cell = rowEl.cells[fieldIndex];
-                YAHOO.util.Dom.setStyle(cell, 'display', 'none');
-            }
-
+        var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
+        var dataNode = searchNode.xmlData;
+        var nOfColumns = this.columns.length;
+        for (var colIndex = 1; colIndex < nOfColumns; colIndex++) {
+            var colConfig = this.columns[colIndex];
+            var att = colConfig.attributeName;
+            var cell = rowEl.cells[colIndex];
+            var valueEl = cell.firstChild;
+            var value = dataNode.getAttribute(att);
+            valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) : value);
+            cell.propKey = att;
+            cell.propValue = value;
         }
+    },
 
+    createMask: function() {
+        var dh = YAHOO.ext.DomHelper;
+        this.mask = dh.append(this.pwrap, {tag:'div', cls:'rcmdb-search-mask'}, true);
+        this.maskMessage = dh.append(this.pwrap, {tag:'div', cls:'rcmdb-search-mask-loadingwrp', html:'<div class="rcmdb-search-mask-loading">Loading...</div>'}, true)
+        this.hideMask();
+    },
+    showMask: function(){
+       this._showMask(this.hwrap.dom.offsetHeight, this.bwrap.dom.clientWidth, this.bwrap.dom.clientHeight);
+    },
+
+    addTools: function() {
+        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
+        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SettingsTool(document.body, this));
+        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
     },
 
     showCurrentState: function() {
+         this.searchCountEl.innerHTML = "Count: " + this.totalRowCount;
     },
 
 
     calculateRowHeight: function() {
-    }
+        this.rowHeight = 21;
+    },
+    onColumnSplitterMoved : function(splitter, newSize) {
+        this.columns[splitter.columnIndex].width = newSize;
+        this.totalColumnWidth = null;
+        this.updateColumns();
+    },
 
+    updateColumns : function() {
+        var hcols = this.headers;
+        var colCount = this.columns.length;
+        var pos = 0;
+        var totalWidth = this.getTotalColumnWidth();
+        for (var i = 0; i < colCount; i++) {
+            var width = this.columns[i].width;
+            hcols[i].style.width = width + 'px';
+            hcols[i].style.left = pos + 'px';
+            hcols[i].split.style.left = (pos + width - 3) + 'px';
+            this.setCSSWidth(i, width, pos);
+            pos += width;
+        }
+        var widthToBeSet = Math.max(totalWidth, this.bwrap.dom.clientWidth);
+        this.scrollPos.setWidth(totalWidth);
+        this.syncScroll();
+    },
+
+    handleScroll: function() {
+        this.syncScroll();
+        var scrollLeft = this.bwrap.dom.scrollLeft;
+        if (this.prevScrollLeft == scrollLeft)
+        {
+            this._verticalScrollChanged();
+        }
+        this.prevScrollLeft = scrollLeft;
+    },
+
+    setCSSWidth : function(colIndex, width, pos) {
+        var selector = ["#" + this.bodyId + " .rcmdb-searchgrid-col-" + colIndex, ".rcmdb-searchgrid-col-" + colIndex];
+        YAHOO.ext.util.CSS.updateRule(selector, 'width', width + 'px');
+        if (typeof pos == 'number') {
+            YAHOO.ext.util.CSS.updateRule(selector, 'left', pos + 'px');
+        }
+    },
+    getClassName: function() {
+        return "rcmdb-searchgrid";
+    },
+    resize : function(width, height) {
+        this.body.setStyle("height", height - this.header.dom.offsetHeight);
+        this.bwrap.setStyle("height", height - (this.header.dom.offsetHeight + this.hwrap.getHeight()));
+        var totalWidth = this.getTotalColumnWidth();
+        var widthToBeSet = Math.max(totalWidth, this.bwrap.dom.clientWidth);
+        this.scrollPos.setWidth(totalWidth);
+        this._verticalScrollChanged();
+    },
+    updateBodyHeight : function() {
+        this.scrollPos.setHeight(this.totalRowCount * this.rowHeight);
+        var totalWidth = this.getTotalColumnWidth();
+        var widthToBeSet = Math.max(totalWidth, this.bwrap.dom.clientWidth);
+        this.scrollPos.setWidth(totalWidth);
+        this._verticalScrollChanged();
+    },
+    syncScroll : function() {
+        this.hwrap.dom.scrollLeft = this.bwrap.dom.scrollLeft;
+    },
+    getTotalColumnWidth: function() {
+        if (!this.totalColumnWidth) {
+            this.totalColumnWidth = 0;
+            for (var i = 0; i < this.columns.length; i++) {
+                this.totalColumnWidth += this.columns[i].width;
+            }
+        }
+        return this.totalColumnWidth;
+    },
+    getScrolledEl: function() {
+        return this.bwrap;
+    },
+    getHeaderFromChild : function(childEl) {
+        return YAHOO.rapidjs.DomUtils.getElementFromChild(childEl, 'rcmdb-searchgrid-hd');
+    },
+    headerClicked: function(e) {
+        var target = YAHOO.util.Event.getTarget(e)
+        var header = this.getHeaderFromChild(target);
+        var direction = header.sortDir == 'asc' ? 'desc' : 'asc';
+        var lastClicked = this.sortState['header'];
+        this.sortState['header'] = header;
+        this.sortState['direction'] = direction;
+        if (lastClicked && lastClicked != header) {
+            lastClicked.sortDir = null;
+            this.updateHeaderSortState(lastClicked);
+        }
+        header.sortDir = direction;
+        this.updateHeaderSortState(header);
+        this.sort(this.columns[header.columnIndex]['attributeName'], header.sortDir);
+    },
+    updateHeaderSortState: function(hd) {
+        var sortAscDisplay = hd.sortDir == 'asc' ? 'block' : 'none';
+        var sortDescDisplay = hd.sortDir == 'desc' ? 'block' : 'none';
+        YAHOO.util.Dom.setStyle(hd.sortDesc, 'display', sortDescDisplay)
+        YAHOO.util.Dom.setStyle(hd.sortAsc, 'display', sortAscDisplay)
+    },
+    getCellFromChild : function(childEl) {
+        var cell = YAHOO.rapidjs.DomUtils.getElementFromChild(childEl, 'rcmdb-search-cell');
+        if(!YAHOO.util.Dom.hasClass(cell, 'rcmdb-searchgrid-col-0')){
+            return cell;
+        }
+        return null;
+    },
+    addMenuColumn: function() {
+        this.columns.splice(0, 0, {colLabel:"&#160;", width:19});
+    }
 });

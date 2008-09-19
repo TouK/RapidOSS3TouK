@@ -154,9 +154,6 @@
             item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: propertyMenuIsNumberCondition},
             item7 : { id : 'except', label : 'Except'}
         } ,
-        saveQueryFunction: function(query) {
-            dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
-        },
         renderCellFunction : function(key, value, data) {
             if (key == "lastChangedAt") {
                 if (value == "0" || value == "")
@@ -181,7 +178,9 @@
     }
 
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
-
+    searchList.events["saveQueryClicked"].subscribe(function(query) {
+        dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
+    });
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
         if (id == "except") {
             if (searchList.searchInput.value != "")
@@ -190,10 +189,10 @@
                 searchList.appendToQuery(key + ":[0 TO *] NOT " + key + ": \"" + value + "\"");
         }
         else if (id == "sortAsc") {
-            searchList.setSortDirection(key, true);
+            searchList.sort(key, 'asc');
         }
         else if (id == "sortDesc") {
-            searchList.setSortDirection(key, false);
+            searchList.sort(key, 'desc');
         }
         else if (id == "greaterThan") {
             searchList.appendToQuery(key + ":{" + value + " TO *}");

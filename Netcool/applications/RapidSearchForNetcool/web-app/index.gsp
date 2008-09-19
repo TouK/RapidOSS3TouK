@@ -33,7 +33,7 @@
     <script type="text/javascript" src="js/rapidjs/component/tools/ErrorTool.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/search/SearchList.js"></script>
 
-    <script type="text/javascript" src="js/rapidjs/component/treegrid/split.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/simplewidgets/split.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/Tooltip.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeNode.js"></script>
@@ -55,7 +55,8 @@
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/overlay.css" />
 
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/ryuitree.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/searchlist.css" />
+    <link rel="stylesheet" type="text/css" href="css/rapidjs/search/search.css" />
+    <link rel="stylesheet" type="text/css" href="css/rapidjs/search/searchlist.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/simplewidgets/button.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/tools/tools.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/treegrid/treegrid.css" />
@@ -293,9 +294,6 @@
             item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: searchListPropertyMenuConditionFunction},
             item7 : { id : 'except', label : 'Except' , condition: function(){return true;}}
         } ,
-        saveQueryFunction: function(query) {
-            dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
-        },
         renderCellFunction : function(key, value, data){
         	if(key == "lastoccurrence" || key == "statechange"){
                 var d = new Date();
@@ -335,7 +333,9 @@
     }
 
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
-
+    searchList.events["saveQueryClicked"].subscribe(function(query) {
+        dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
+    });
 
     var acknowledgeConfig = { url: 'script/run/acknowledge?format=xml' };
 	var acknowledgeAction = new YAHOO.rapidjs.component.action.MergeAction(acknowledgeConfig);
@@ -400,10 +400,10 @@
                     searchList.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
 			}
 	        else if (id == "sortAsc") {
-	            searchList.setSortDirection(key, true);
+	            searchList.sort(key, 'asc');
 	        }
 	        else if (id == "sortDesc") {
-	            searchList.setSortDirection(key, false);
+	            searchList.sord(key, 'desc');
 	        }
 	        else if (id == "greaterThan") {
 	           	searchList.appendToQuery(key + ":{" + value + " TO *}");

@@ -130,7 +130,6 @@
         totalCountAttribute:'total',
         offsetAttribute:'offset',
         sortOrderAttribute:'sortOrder',
-        titleAttribute:"serverserial",
         lineSize:3,
         title:'Smarts Objects',
         defaultFields:['creationClassName', 'name', 'description', 'displayName','isManaged'],
@@ -157,14 +156,13 @@
             item5 : { id : 'lessThan', label : 'Less than' , condition: propertyMenuIsNumberCondition},
             item6 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: propertyMenuIsNumberCondition},
             item7 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: propertyMenuIsNumberCondition}
-        },
-        saveQueryFunction: function(query) {
-            dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
         }
     }
 
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
-
+    searchList.events["saveQueryClicked"].subscribe(function(query) {
+        dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
+    });
     searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
 			if(	id == "except"){
 				 if(searchList.searchInput.value!= "")
@@ -173,10 +171,10 @@
                     searchList.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
 			}
 	        else if (id == "sortAsc") {
-	            searchList.setSortDirection(key, true);
+	            searchList.sort(key, 'asc');
 	        }
 	        else if (id == "sortDesc") {
-	            searchList.setSortDirection(key, false);
+	            searchList.sort(key, 'desc');
 	        }
             else if (id == "greaterThan") {
 	           	searchList.appendToQuery(key + ":{" + value + " TO *}");

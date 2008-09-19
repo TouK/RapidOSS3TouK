@@ -1,0 +1,210 @@
+.rcmdb-searchgrid-positioner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+}
+
+.rcmdb-searchgrid-wrap-headers {
+    left: 0pt;
+    top: 0pt;
+    overflow: auto;
+    z-index: 12;
+}
+
+.rcmdb-searchgrid-hrow {
+    background-color: #EBEADB;
+    display: block;
+    height: 22px;
+    left: 0pt;
+    overflow: hidden;
+    position: relative;
+    top: 0pt;
+    z-index: 2;
+}
+
+.rcmdb-searchgrid-hrow-frame {
+    height: 22px;
+    left: 0;
+    display: block;
+    position: absolute;
+    top: 0;
+    width: 10000px;
+    z-index: 1;
+}
+
+.rcmdb-searchgrid-hd {
+    -moz-box-sizing: border-box;
+    background-color: #EBEADB;
+    border-bottom: 1px solid #CBC7B8;
+    display: block;
+    font-size: 8pt;
+    overflow: hidden;
+    position: absolute;
+}
+
+.rcmdb-searchgrid-hd-body {
+    border-bottom: 2px solid #D6D2C2;
+    cursor: inherit;
+    display: block;
+    font-size: 8pt;
+    left: 0pt;
+    overflow: hidden;
+    padding: 3px 5px;
+    position: relative;
+    top: 0pt;
+    white-space: nowrap;
+}
+
+.rcmdb-searchgrid-hd .sort-desc {
+    background-image: url( ../../../images/rapidjs/component/treegrid/sort_desc.gif );
+    background-position: right center;
+    background-repeat: no-repeat;
+    display: none;
+    height: 14px;
+    width: 16px;
+}
+
+.rcmdb-searchgrid-hd .sort-asc {
+    background-image: url( ../../../images/rapidjs/component/treegrid/sort_asc.gif );
+    background-position: right center;
+    background-repeat: no-repeat;
+    display: none;
+    height: 14px;
+    width: 16px;
+}
+
+.rcmdb-searchgrid-hd-body span {
+    font-size: 8pt;
+    white-space: nowrap;
+}
+
+.grcmdb-searchgrid-hd-over {
+    border-bottom: 2px solid #FCC247;
+}
+
+.rcmdb-searchgrid-hd-over .rcmdb-searchgrid-hd-body {
+    background-color: #FAF9F4;
+    border-bottom: 1px solid #F9A900;
+}
+
+.rcmdb-searchgrid-hd-split {
+    background-image: url( ../../../images/rapidjs/component/treegrid/grid-split.gif );
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: e-resize;
+    display: block;
+    font-size: 1px;
+    height: 16px;
+    overflow: hidden;
+    position: absolute;
+    top: 2px;
+    width: 6px;
+    z-index: 3;
+}
+
+.rcmdb-searchgrid-column-sizer {
+    width: 1px;
+    border-right: 1px dashed #6593cf;
+    background: none;
+    cursor: e-resize;
+}
+
+.rcmdb-searchgrid-bwrap {
+    position: relative;
+    width: 100%;
+    overflow: auto;
+    height: 100%;
+}
+
+.rcmdb-searchgrid .rcmdb-search-row {
+    font: normal 8pt arial;
+    border-bottom: 1px solid #f1efe2;
+    overflow: visible;
+    white-space: nowrap;
+    height: 21px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    display: block;
+    position: relative;
+}
+.rcmdb-searchgrid .rcmdb-search-rowselected{
+    background-color:#DDDDFF;
+}
+
+
+.rcmdb-searchgrid .rcmdb-search-cell {
+    -moz-box-sizing: border-box;
+    -moz-user-focus: normal;
+    border-left: 1px solid #F1EFE2;
+    cursor: inherit;
+    display: block;
+    height: 21px !important;
+    outline-color: invert;
+    outline-style: none;
+    outline-width: medium;
+    overflow: hidden;
+    position: absolute;
+}
+
+.rcmdb-searchgrid .rcmdb-search-cell-value  {
+    display: block;
+    overflow: hidden;
+    padding: 3px 5px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.rcmdb-searchgrid-col-last {
+    border-right: 1px solid #F1EFE2;
+}
+
+.rcmdb-searchgrid-searchinput {
+    height: 18px;
+    width: 350px;
+    font-size:10px;
+}
+
+.rcmdb-searchgrid-tools {
+    padding-right: 2px;
+    padding-top: 2px;
+    position: absolute;
+    right: 80px;
+    text-align: right;
+    top: 0px;
+}
+
+.rcmdb-searchgrid-tools .wrp {
+    float: right;
+    padding: 0px 1px;
+
+}
+
+.rcmdb-searchgrid-tools .r-button {
+    padding: 2px;
+}
+
+.rcmdb-searchgrid-tools .r-button-over {
+    background-color: white;
+    border: 1px solid #98C0F4;
+    padding: 1px;
+}
+
+.rcmdb-searchgrid-tools .r-button-inner {
+    width: 16px;
+    height: 16px;
+}
+
+.rcmdb-searchgrid-saveButton {
+    background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll 1px -78px;
+}
+
+.rcmdb-searchgrid-searchButton {
+    background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll 1px -58px;
+}
+.rcmdb-searchgrid-count{
+	width:60px;
+	margin-top: 3px;
+}

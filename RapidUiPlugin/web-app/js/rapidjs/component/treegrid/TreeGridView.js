@@ -4,7 +4,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView = function(container, config) {
     this.columns = null;
     this.headers = [];
     this.rootNode = null;
-    this.rootImages - null;
+    this.rootImages = null;
     this.contentPath = null;
     this.expandedNodes = [];
     this.events = {

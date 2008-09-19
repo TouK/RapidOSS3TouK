@@ -8,9 +8,8 @@
 }
 
 .rcmdb-searchgrid-wrap-headers {
-    left: 0pt;
-    top: 0pt;
-    overflow: auto;
+    width:100%;
+    overflow: hidden;
     z-index: 12;
 }
 
@@ -19,9 +18,10 @@
     display: block;
     height: 22px;
     left: 0pt;
-    overflow: hidden;
+    overflow: auto;
     position: relative;
     top: 0pt;
+    width: 10000px;
     z-index: 2;
 }
 
@@ -147,10 +147,10 @@
     outline-width: medium;
     overflow: hidden;
     position: absolute;
+    padding: 3px 0px;
 }
 
 .rcmdb-searchgrid .rcmdb-search-cell-value  {
-    display: block;
     overflow: hidden;
     padding: 3px 5px;
     white-space: nowrap;

@@ -161,7 +161,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 for (var i = 0; i < this.images.length; i++)
                 {
                     var currentExpressionStr = this.images[i]['exp'];
-                    var evaluationResult = eval(currentExpressionStr);
+                    var evaluationResult = false;
+                    try {
+                        evaluationResult = eval(currentExpressionStr);
+                    }
+                    catch(e) {
+                    }
                     if (evaluationResult == true)
                     {
                         var imageSrc = this.images[i]['src'];

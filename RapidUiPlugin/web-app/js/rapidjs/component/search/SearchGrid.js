@@ -27,9 +27,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         if (ds.length > 0)
         {
             if (ds[0].insertRule)
-                ds[0].insertRule(cssName + " {padding:0px;} ", 0);
+                ds[0].insertRule(cssName + " {margin:0px;} ", 0);
             else if (ds[0].addRule)
-                ds[0].addRule(cssName, " {padding:0px;} ");
+                ds[0].addRule(cssName, " {margin:0px;} ");
         }
     },
     _render : function() {
@@ -81,7 +81,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             hd.sortAsc = spans[3];
             hd.columnIndex = i;
             this.headers.push(hd);
-            var split = dh.append(this.hrow, {tag: 'span', cls: 'rcmdb-searchgrid-hd-split', style:i == 0?'cursor:default':''});
+            var split = dh.append(this.hrow, {tag: 'span', cls: 'rcmdb-searchgrid-hd-split', style:i == 0 ? 'cursor:default' : ''});
             hd.split = split;
             if (i > 0) {
                 //            YAHOO.util.Event.on(split, 'dblclick', autoSizeDelegate.createCallback(i + 0, true));
@@ -130,6 +130,24 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     renderRow: function(rowEl) {
         var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
         var dataNode = searchNode.xmlData;
+        var data = dataNode.getAttributes();
+        if (this.images) {
+            for (var i = 0; i < this.images.length; i++)
+            {
+                var currentExpressionStr = this.images[i]['exp'];
+                var evaluationResult = false;
+                try {
+                    evaluationResult = eval(currentExpressionStr);
+                }
+                catch(e) {
+                }
+                if (evaluationResult == true)
+                {
+                    var imageSrc = this.images[i]['src'];
+                    YAHOO.util.Dom.getElementsByClassName('rcmdb-search-row-headermenu', 'div', rowEl.dom)[0].style.backgroundImage = 'url("' + imageSrc + '")';
+                }
+            }
+        }
         var nOfColumns = this.columns.length;
         for (var colIndex = 1; colIndex < nOfColumns; colIndex++) {
             var colConfig = this.columns[colIndex];
@@ -149,8 +167,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.maskMessage = dh.append(this.pwrap, {tag:'div', cls:'rcmdb-search-mask-loadingwrp', html:'<div class="rcmdb-search-mask-loading">Loading...</div>'}, true)
         this.hideMask();
     },
-    showMask: function(){
-       this._showMask(this.hwrap.dom.offsetHeight, this.bwrap.dom.clientWidth, this.bwrap.dom.clientHeight);
+    showMask: function() {
+        this._showMask(this.hwrap.dom.offsetHeight, this.bwrap.dom.clientWidth, this.bwrap.dom.clientHeight);
     },
 
     addTools: function() {
@@ -160,7 +178,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     },
 
     showCurrentState: function() {
-         this.searchCountEl.innerHTML = "Count: " + this.totalRowCount;
+        this.searchCountEl.innerHTML = "Count: " + this.totalRowCount;
     },
 
 
@@ -186,7 +204,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.setCSSWidth(i, width, pos);
             pos += width;
         }
-        var widthToBeSet = Math.max(totalWidth, this.bwrap.dom.clientWidth);
         this.scrollPos.setWidth(totalWidth);
         this.syncScroll();
     },
@@ -215,14 +232,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.body.setStyle("height", height - this.header.dom.offsetHeight);
         this.bwrap.setStyle("height", height - (this.header.dom.offsetHeight + this.hwrap.getHeight()));
         var totalWidth = this.getTotalColumnWidth();
-        var widthToBeSet = Math.max(totalWidth, this.bwrap.dom.clientWidth);
-        this.scrollPos.setWidth(totalWidth);
-        this._verticalScrollChanged();
-    },
-    updateBodyHeight : function() {
-        this.scrollPos.setHeight(this.totalRowCount * this.rowHeight);
-        var totalWidth = this.getTotalColumnWidth();
-        var widthToBeSet = Math.max(totalWidth, this.bwrap.dom.clientWidth);
         this.scrollPos.setWidth(totalWidth);
         this._verticalScrollChanged();
     },
@@ -267,7 +276,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     },
     getCellFromChild : function(childEl) {
         var cell = YAHOO.rapidjs.DomUtils.getElementFromChild(childEl, 'rcmdb-search-cell');
-        if(!YAHOO.util.Dom.hasClass(cell, 'rcmdb-searchgrid-col-0')){
+        if (!YAHOO.util.Dom.hasClass(cell, 'rcmdb-searchgrid-col-0')) {
             return cell;
         }
         return null;

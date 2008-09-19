@@ -185,8 +185,8 @@
 
 	function saveMapFunction( data )
 	{
-	    var nodes = data["nodes"];
-	    var edges = data["edges"];
+	    var nodes = topMap.getPropertiesString(topMap.getNodes(), ["id", "x", "y", "expand"]) ;
+	    var edges = topMap.getPropertiesString(topMap.getEdges(), ["source", "target"]) ;
 	    dialog.show(dialog.CREATE_MODE, null, { nodes : nodes, edges : edges} );
 	}
 

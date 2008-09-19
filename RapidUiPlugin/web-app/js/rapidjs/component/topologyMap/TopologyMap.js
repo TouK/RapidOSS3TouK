@@ -268,7 +268,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         this.url = this.mapURL;
         this.lastLoadMapRequestData = {isMap:true, params:params}
         this.firstLoadMapRequestData = {isMap:true, params:params};
-        this.doRequest(this.url, this.params);
+        this.doRequest(this.url, params);
     },
     
     loadMapForNode : function( nodeName)

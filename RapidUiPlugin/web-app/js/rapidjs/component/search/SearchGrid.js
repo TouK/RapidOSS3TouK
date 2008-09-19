@@ -112,7 +112,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     createEmptyRows : function(rowCount) {
         for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
             var colCount = this.columns.length;
-            var innerHtml = '<span class="rcmdb-search-cell rcmdb-searchgrid-col-0"><div class="rcmdb-search-row-headermenu"></div></span>';
+            var innerHtml = '<span class="rcmdb-search-cell rcmdb-searchgrid-col-0" style="padding:0px"><div class="rcmdb-search-row-headermenu"></div></span>';
             for (var colIndex = 1; colIndex < colCount; colIndex++) {
                 innerHtml += '<span class="rcmdb-search-cell rcmdb-searchgrid-col-' + colIndex + (colIndex == colCount - 1 ? ' rcmdb-searchgrid-col-last' : '') + '">' +
                              '<span class="rcmdb-search-cell-value"></span></span>';

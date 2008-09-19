@@ -2,13 +2,13 @@ import groovy.xml.MarkupBuilder
 
 
 
-def nodeString = params.devices;
+def nodeString = params.nodes;
 def edgeString = params.edges;
 def nodes = [];
 def edges = [];
 if(nodeString != null)
 {
-    nodes = nodeString.splitPreserveAllTokens(",").findAll {it != ""};
+    nodes = nodeString.splitPreserveAllTokens(";").findAll {it != ""};
 }
 if(edgeString != null)
 {
@@ -22,7 +22,7 @@ mapDataBuilder.graphData {
 
     nodes.each {
         def device = RsComputerSystem.get( name : it);
-        mapDataBuilder.device( id : it, state : device.getState());
+        mapDataBuilder.node( id : it, state : device.getState());
     }
 
     edges.each {

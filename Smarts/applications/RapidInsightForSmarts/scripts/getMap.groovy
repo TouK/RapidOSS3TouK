@@ -67,7 +67,7 @@ def mapBuilder = new MarkupBuilder(writer);
 mapBuilder.graph
 {
     deviceMap.each {
-        mapBuilder.device( id: it.value.id, model : it.value.model, type : it.value.type, gauged : it.value.gauged, expands : it.value.expands, x: it.value.x, y: it.value.y);
+        mapBuilder.node( id: it.value.id, model : it.value.model, type : it.value.type, gauged : it.value.gauged, expands : it.value.expands, x: it.value.x, y: it.value.y);
     }
 
     edges.each {
@@ -88,7 +88,6 @@ mapBuilder.graph
 def isInMap( deviceName, devices)
 {
     def inMap = false;
-    println "device name : ${ deviceName}"
     devices.each {
 	    println "it name : ${ it.nodeIdentifier}"
         if( it.nodeIdentifier == deviceName)

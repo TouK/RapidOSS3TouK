@@ -132,7 +132,6 @@
                              //"item3": { "text": "Item text 3" }
                            };
         config.menuItemFilter = "menuItemFilter";
-        config.expandRequestFunction = "expandRequestFunction";
         config.toolbarItems = [
                                     {
                                         "id" : "customMenuItem1",
@@ -176,9 +175,7 @@
                                                            ]
                                     }
                               ];
-
-        config.contentReadyFunction = "contentReady";
-        config.toolbarMenuFunction = "toolbarMenuFcn";
+        config.toolbarMenuFunction = "toolbarMenu";
         config.menuItemClickedFunction = "menuItemClickedFunction"
         config.saveMapFunction = "saveMapFunction";
         config.statusColors = { "1" : 0xde2c26, "2" : 0x7b4a1a, "3": 0xfae500, "4" : 0x20b4e0, "5":0x0d4702, "default" : 0x0d4702 };
@@ -204,8 +201,8 @@
           var id = data["id"];
           if( id == "item1" )
           {
-            var url = "getObjectDetails.gsp?name="+data["deviceID"];
-            objectDetailsDialog.show(url, "Details of " + data["deviceType"] + " " + data["deviceID"]);
+            var url = "getObjectDetails.gsp?name="+data["nodeID"];
+            objectDetailsDialog.show(url, "Details of " + data["nodeType"] + " " + data["nodeID"]);
           }
 
       }
@@ -226,12 +223,6 @@
 
         return items;
     }
-
-    function expandRequestFunction( data)
-    {
-        topMap.expandMap( data.id );
-    }
-
     var topMapConfig = {
         id 		: "mapDiv",
         configFunctionName : "configFunction",
@@ -251,7 +242,7 @@
         var deviceName = this.getURLParam( "name");
         if( deviceName )
         {
-            this.topMap.getInitialMap( deviceName);
+            this.topMap.loadMapForNode( deviceName);
         }
     }, this, true);
 
@@ -341,7 +332,7 @@
     tree.events["treeNodeClick"].subscribe(function(data) {
         if (data.getAttribute("nodeType") == "filter")
         {
-           topMap.getMap( data.getAttribute("name") );
+           topMap.loadMap( data.getAttribute("name") );
         }
     }, this, true);
 

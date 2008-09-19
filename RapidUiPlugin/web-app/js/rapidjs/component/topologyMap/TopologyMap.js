@@ -9,6 +9,14 @@ function topologyMapComponentAdapter ( params )
   {
       component.refresh();
   }
+  else if(functionName == "resetMap" )
+  {
+      component.resetMap();
+  }
+  else if(functionName == "expandNode" )
+  {
+      component.expandNode(params.data.id);
+  }
 }
 YAHOO.rapidjs.component.TopologyMap = function(container, config){
 	YAHOO.rapidjs.component.TopologyMap.superclass.constructor.call(this,container, config);
@@ -28,7 +36,6 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.dataURL = config.dataURL;
     this.initialMapURL = config.initialMapURL;
     this.expandURL = config.expandURL;
-    this.params = {};
 
     this.configureTimeout(config);
     this.attributes = {};
@@ -42,7 +49,8 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.body.setHeight(this.height);
 	this.body.setWidth(this.width);
     this.body = YAHOO.ext.DomHelper.append(this.body.dom, {tag:'div'}, true);
-    
+    this.lastLoadMapRequestData = null;
+    this.firstLoadMapRequestData = null;
     this.events.mapInitialized = new YAHOO.util.CustomEvent("mapInitialized");
     YAHOO.util.Event.addListener(window, "load", this.initializeFlash, this, true);
 };
@@ -69,7 +77,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         {
             if(this.getFlashObject() != null)
             {
-                this.getFlashObject().getDevices();
+                this.getFlashObject().getNodes();
                 this.events.mapInitialized.fireDirect();
             }
             else
@@ -100,26 +108,53 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
 
     getMapData : function () {
-        return this.getFlashObject().getMapData();
+        var nodes = this.getPropertiesString(this.getNodes(), ["id", "x", "y"]);
+        var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
+        return {nodes:nodes, edges:edges};
     },
 
-    getDevices : function () {
-        return this.getFlashObject().getDevices();
+    getNodes : function () {
+        return this.getFlashObject().getNodes();
     },
 
     getEdges : function() {
         return this.getFlashObject().getEdges();
     },
 
-    loadHandler : function()
+    resetMap : function()
     {
-        this.url = this.mapURL;
-        this.poll();
+        if(this.firstLoadMapRequestData != null)
+        {
+            if(this.firstLoadMapRequestData.isMap)
+            {
+                this.url = this.mapURL;
+                this.doRequest(this.url, this.firstLoadMapRequestData.params);
+            }
+            else
+            {
+                this.url = this.expandURL;
+                this.doPostRequest(this.url, this.firstLoadMapRequestData.params);
+            }
+
+        }
     },
 
     refresh : function()
     {
-        return this.getFlashObject().loadGraph(this.getDevices(), this.getEdges());
+        if(this.lastLoadMapRequestData != null)
+        {
+            if(this.lastLoadMapRequestData.isMap)
+            {
+                this.url = this.mapURL;
+                this.doRequest(this.url, this.lastLoadMapRequestData.params);
+            }
+            else
+            {
+                this.url = this.expandURL;
+                this.doPostRequest(this.url, this.lastLoadMapRequestData.params);
+            }
+
+        }
     },
 
     handleSuccess: function(response){
@@ -139,39 +174,28 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response);
         var node = newData.rootNode;
         if (node) {
-            var deviceNodes = node.getElementsByTagName("device");
-            var edgeNodes = node.getElementsByTagName("edge");
-            var devices = [];
+            var nodeXmlData = node.getElementsByTagName("node");
+            var edgeXmlData = node.getElementsByTagName("edge");
+            var nodes = [];
             var edges = [];
 
 
-            for (var index = 0; index < deviceNodes.length; index++) {
-                var deviceID = deviceNodes[index].getAttribute("id");
-                var deviceStatus = deviceNodes[index].getAttribute("state");
-                var load = deviceNodes[index].getAttribute("load");
-                devices.push( { id : deviceID, state : deviceStatus, load: load } );
+            for (var index = 0; index < nodeXmlData.length; index++) {
+                var nodeID = nodeXmlData[index].getAttribute("id");
+                var nodeStatus = nodeXmlData[index].getAttribute("state");
+                var load = nodeXmlData[index].getAttribute("load");
+                nodes.push( { id : nodeID, state : nodeStatus, load: load } );
             }
 
-            for (var index = 0; index < edgeNodes.length; index++) {
-                var source = edgeNodes[index].getAttribute("source");
-                var target = edgeNodes[index].getAttribute("target");
-                var edgeStatus =  edgeNodes[index].getAttribute("state");
+            for (var index = 0; index < edgeXmlData.length; index++) {
+                var source = edgeXmlData[index].getAttribute("source");
+                var target = edgeXmlData[index].getAttribute("target");
+                var edgeStatus =  edgeXmlData[index].getAttribute("state");
 
                 edges.push( { source : source, target : target, state : edgeStatus} );
             }
 
-            /*
-            for (var index = 0; index < dataNodes.length; index++) {
-                var newDataObject = new Object();
-                for( var item in this.dataKeys)
-                {
-                    newDataObject[item] = dataNodes[index].getAttribute(item);
-                }
-                data.push( newDataObject);
-            }
-             */
-
-            var data = { devices : devices, edges : edges };
+            var data = { nodes : nodes, edges : edges };
             this.loadData(data);
         }
     },
@@ -180,34 +204,34 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response);
         var node = newData.rootNode;
         if (node) {
-            var deviceNodes = node.getElementsByTagName("device");
-            var edgeNodes = node.getElementsByTagName("edge");
-            var devices = [];
+            var nodeXmlData = node.getElementsByTagName("node");
+            var edgeXmlData = node.getElementsByTagName("edge");
+            var nodes = [];
             var edges = [];
 
-            for (var index = 0; index < deviceNodes.length; index++) {
-                var deviceID = deviceNodes[index].getAttribute("id");
-                var deviceModel = deviceNodes[index].getAttribute("model");
-                var deviceType = deviceNodes[index].getAttribute("type");
-                var isGauged = deviceNodes[index].getAttribute("gauged");
-                var doesExpand = deviceNodes[index].getAttribute("expands");
-                var x = deviceNodes[index].getAttribute("x");
-                var y = deviceNodes[index].getAttribute("y");
-                var device = {
-                    id : deviceID, model : deviceModel, type : deviceType, gauged : isGauged, expands : doesExpand
+            for (var index = 0; index < nodeXmlData.length; index++) {
+                var nodeID = nodeXmlData[index].getAttribute("id");
+                var nodeModel = nodeXmlData[index].getAttribute("model");
+                var nodeType = nodeXmlData[index].getAttribute("type");
+                var isGauged = nodeXmlData[index].getAttribute("gauged");
+                var doesExpand = nodeXmlData[index].getAttribute("expands");
+                var x = nodeXmlData[index].getAttribute("x");
+                var y = nodeXmlData[index].getAttribute("y");
+                var node = {
+                    id : nodeID, model : nodeModel, type : nodeType, gauged : isGauged, expands : doesExpand
                 };
                 if( x && y)
                 {
-                    device["x"] = x;
-                    device["y"] = y;
+                    node["x"] = x;
+                    node["y"] = y;
                 }
 
-                devices.push( device);
+                nodes.push( node);
             }
 
-            for (var index = 0; index < edgeNodes.length; index++) {
-                var edgeSource = edgeNodes[index].getAttribute("target");
-                var edgeTarget = edgeNodes[index].getAttribute("source");
+            for (var index = 0; index < edgeXmlData.length; index++) {
+                var edgeSource = edgeXmlData[index].getAttribute("target");
+                var edgeTarget = edgeXmlData[index].getAttribute("source");
                 edges.push( {
                     source : edgeSource, target : edgeTarget
                 })
@@ -215,11 +239,11 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
             if( this.url == this.expandURL)
             {
-                this.loadGraph(devices, edges);
+                this.loadGraph(nodes, edges);
             }
             else
             {
-                this.loadGraphWithUserLayout(devices, edges);
+                this.loadGraphWithUserLayout(nodes, edges);
             }
         }
 
@@ -237,55 +261,66 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         this.body.setWidth( width);
 
     },
-    layout: function(){
-		this.timeline.layout();
-	},
 
-    getMap : function( mapName)
+    loadMap : function( mapName)
     {
-        this.params = { mapName : mapName};
+        var params = { mapName : mapName};
         this.url = this.mapURL;
-        this.poll();
+        this.lastLoadMapRequestData = {isMap:true, params:params}
+        this.firstLoadMapRequestData = {isMap:true, params:params};
+        this.doRequest(this.url, this.params);
+    },
+    
+    loadMapForNode : function( nodeName)
+    {
+        var params =  { expandedNodeName : nodeName, nodes : nodeName, edges : "" };
+        this.url = this.expandURL;
+        this.lastLoadMapRequestData = {isMap:false, params:params}
+        this.firstLoadMapRequestData = {isMap:false, params:params};
+        this.doPostRequest(this.url, params);
     },
 
-    getInitialMap : function( deviceName)
+
+    getPropertiesString: function(edges, propertyList)
     {
-        this.params =  { expandedDeviceName : deviceName, nodes : deviceName, edges : "" };
-        this.url = this.expandURL;
-        this.doPostRequest(this.url, this.params);
-        this.params = {};
+        var propList = [];
+        for(var i=0; i < edges.length; i++)
+        {
+            var props =[]; 
+            for(var j=0; j < propertyList.length; j++)
+            {
+                props[j] =  edges[i][propertyList[j]];
+            }
+            propList[propList.length] = props.join(",") ;
+        }
+        return propList.join(";");
     },
-    expandMap : function( expandedDeviceName)
+
+    expandNode : function( expandedNodeName)
     {
         var data = this.getMapData();
         if( data ) {
-            var nodes = data["nodes"];
-            var edges = data["edges"];
-            this.params = { expandedDeviceName : expandedDeviceName, nodes : nodes, edges : edges };
+            var nodes = this.getPropertiesString(this.getNodes(), ["id"]);
+            var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
+            var params = { expandedNodeName : expandedNodeName, nodes : nodes, edges : edges };
+            this.lastLoadMapRequestData = {isMap:false, params:params}
             this.url = this.expandURL;
-            this.doPostRequest(this.url, this.params);
+            this.doPostRequest(this.url, params);
        }
     },
 
     getData : function()
     {
-        var devices = this.getDevices();
-        var edges = this.getEdges();
-        this.params = { devices : devices, edges : edges };
+       var nodes = this.getPropertiesString(this.getNodes(), ["id"]);
+       var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
+        var params = {  nodes : nodes, edges : edges };
         this.url = this.dataURL;
-        this.doPostRequest(this.url, this.params);
+        this.doPostRequest(this.url, params);
     },
     poll : function()
     {
-        if( this.url == this.mapURL)
-        {
-            this.doRequest(this.url, this.params);
-        }
-        else
-        {
-            this.getData();
-        }
+        this.getData();
     }
-    
+
 });
 

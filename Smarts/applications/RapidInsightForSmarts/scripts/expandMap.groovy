@@ -30,15 +30,14 @@ nodes.each{
     {
         def expandable = isExpandable(device, edgeMap);
 
-        deviceMap[device.name] = [ "id" : deviceName, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expands" : expandable ];
+        deviceMap[device.name] = [ "id" : deviceName, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expandable" : expandable];
     }
 }
 
 def expandedDevice = RsComputerSystem.get( name : expandedDeviceName);
 if(expandedDevice != null)
 {
-    deviceMap[expandedDevice.name] =
-        [ "id" : expandedDevice.name, "model" : expandedDevice.model, "type": expandedDevice.creationClassName, "gauged" : "true", "expands" : "false" ];
+    deviceMap[expandedDevice.name].expanded = "true"
     def links = expandedDevice.connectedVia;
 
     links.each {

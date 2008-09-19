@@ -11,10 +11,6 @@ def mapName2 = params.mapName;
 
 def map = TopoMap.get( mapName : mapName2, username : username2)
 
-def edges = EdgeNode.list().findAll {edgeNode ->
-    edgeNode.username == username2 && edgeNode.mapName == mapName2 
-};
-
 def edgeMap = [:];
 def deviceMap = [:];
 
@@ -22,43 +18,42 @@ def devices =  map.consistOfDevices;
 
 devices.each{
     def device = RsComputerSystem.get( name : it.nodeIdentifier);
-    deviceMap[it.nodeIdentifier] = [ "id" : it.nodeIdentifier, "model" : device.model, "type": device.creationClassName,
-    								"gauged" : "true", "expands" : it.expands, x : it.xlocation, y : it.ylocation ];
+    if(device != null)
+    {
+    	deviceMap[it.nodeIdentifier] = [ "id" : it.nodeIdentifier, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expands" : it.expands, x : it.xlocation, y : it.ylocation ];
+   	}
 }
 
-devices.each{
-    if( it.expands == "false") {
-        def deviceName = it.nodeIdentifier;
-        def expandable = "false";
-        def device = RsComputerSystem.get( name : deviceName);
+deviceMap.each{deviceName,  nodeData->
+    def expandable = "false";
+    def device = RsComputerSystem.get( name : deviceName);
+    def edgesToBeAdded = [:];
+    device.connectedVia.each {link->
+        link.connectedSystem.each {connectedSystem->
 
-        device.connectedVia.each {
-            it.connectedSystem.each {
-
-                if( deviceName != it.name)
+            if( deviceName != connectedSystem.name)
+            {
+                if(nodeData.expands == "true")
                 {
-                    if( isInMap(it.name, devices))
+                    if(!edgeMap.containsKey(connectedSystem.name+deviceName ))
                     {
-
-                        if( !edgeMap.containsKey(deviceName + it.name)
-                                && !edgeMap.containsKey(it.name + deviceName) )
-                        {
-                            edgeMap[deviceName + it.name ] = [ source : deviceName, target : it.name];
-                        }
-
+                        edgesToBeAdded[deviceName + connectedSystem.name] =  [ source : deviceName, target : connectedSystem.name];
                     }
-                    // device's connected system is not in map
-                    // it's expandable is true
-                    else
-                    {
-                        expandable = "true";
-                    }
+                }
+                else
+                {
+                    expandable = "true";
+                    return;
                 }
             }
         }
-
-        deviceMap[it.nodeIdentifier].expands = expandable;
+        if(expandable == "true")
+        {
+            return;
+        }
     }
+    if(nodeData.expands )
+
 }
 
 def writer = new StringWriter();

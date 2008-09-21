@@ -214,11 +214,12 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 var nodeModel = nodeXmlData[index].getAttribute("model");
                 var nodeType = nodeXmlData[index].getAttribute("type");
                 var isGauged = nodeXmlData[index].getAttribute("gauged");
-                var doesExpand = nodeXmlData[index].getAttribute("expands");
+                var doesExpand = nodeXmlData[index].getAttribute("expandable");
+                var expanded = nodeXmlData[index].getAttribute("expanded");
                 var x = nodeXmlData[index].getAttribute("x");
                 var y = nodeXmlData[index].getAttribute("y");
                 var node = {
-                    id : nodeID, model : nodeModel, type : nodeType, gauged : isGauged, expands : doesExpand
+                    id : nodeID, model : nodeModel, type : nodeType, gauged : isGauged, expandable : doesExpand, expanded:expanded
                 };
                 if( x && y)
                 {

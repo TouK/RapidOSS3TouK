@@ -9,76 +9,88 @@ if( nodeString !=  null)
    nodes = nodeString.splitPreserveAllTokens(";").findAll {it != ""};
 }
 
-def edgeString = params.edges;
-def edges = [];
-if( edgeString != null)
-{
-    edges = edgeString.splitPreserveAllTokens(";").findAll {it != ""};
-}
-
-
-
 def edgeMap = [:]
 
 
 def deviceMap = [:];
-nodes.each{
-    def deviceName = it;
+nodes.each{node->
+    def nodeData = node.splitPreserveAllTokens(",")
+    def deviceName = nodeData[0];
+    def isExpanded = nodeData[1];
+    if(deviceName == expandedDeviceName)
+    {
+        isExpanded = "true";    
+    }
+    deviceMap[device.name] = [ "id" : deviceName, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expanded" : isExpanded];
+}
 
+def deviceSet = [:]
+deviceMap.each{deviceName, deviceConfigMap->
     def device = RsComputerSystem.get( name : deviceName);
     if(device != null)
     {
-        def expandable = isExpandable(device, edgeMap);
+        deviceSet[deviceName] = deviceConfigMap;
+        if(deviceConfigMap.expanded == "true")
+        {
+            deviceConfigMap.expandable = "true"
+            def links = device.connectedVia;
+            links.each {link->
+                def otherSide = getOtherSideName(link, deviceName);
+                if(otherSide != null && !edgeMap.containsKey(deviceName + otherSide)
+                            && !edgeMap.containsKey(otherSide + deviceName))
+                {
+                    edgeMap[deviceName + otherSide] = [ "source" : deviceName, "target" : otherSide];
+                    if(!deviceMap.containsKey(otherSide) && !deviceSet.containsKey(otherSide))
+                    {
+                        def expandable = isExpandable(otherSide, edgeMap);
+                        deviceSet[connectedSystem.name] = [ "id" : connectedSystem.name, "model" : connectedSystem.model, "type": connectedSystem.creationClassName, "gauged" : "true", "expandable" : expandable, "expanded":"false" ];
+                    }
+                }
 
-        deviceMap[device.name] = [ "id" : deviceName, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expandable" : expandable];
-    }
-}
-
-def expandedDevice = RsComputerSystem.get( name : expandedDeviceName);
-if(expandedDevice != null)
-{
-    deviceMap[expandedDevice.name].expanded = "true"
-    def links = expandedDevice.connectedVia;
-
-    links.each {
-        def newDevices = it.connectedSystem;
-        newDevices.each {
-            // if there is no edge between expanded and new device
-            if( it.name != expandedDevice.name
-                    && !edgeMap.containsKey(expandedDevice.name + it.name)
-                    && !edgeMap.containsKey(it.name + expandedDevice.name) )
-            {
-                edgeMap[expandedDevice.name + it.name] = [ "source" : expandedDevice.name, "target" : it.name];
-                def expandable = isExpandable(it, edgeMap);
-                deviceMap[it.name] = [ "id" : it.name, "model" : it.model, "type": it.creationClassName, "gauged" : "true", "expands" : expandable ];
             }
         }
+        else
+        {
+            deviceConfigMap.expandable = isExpandable(deviceName, edgeMap);
+        }
+
     }
 }
+
+def getOtherSideName(link, deviceName)
+{
+    def otherSide = null;
+    if(link.a_ComputerSystem != deviceName)
+    {
+        otherSide = link.a_ComputerSystem;
+    }
+    else if(link.z_ComputerSystem != deviceName)
+    {
+        otherSide = link.z_ComputerSystem;
+    }
+
+    return otherSide;
+}
+
+
 
 
 // if device has a link with another device that is not in map
 // returns true
-def isExpandable( device, edgeMap)
+def isExpandable( devName, edgeMap)
 {
-    def devName = device.name;
     def expandable = "false";
-    def connectedVias = device.connectedVia;
-    connectedVias.each{
-        def connectedSystems = it.connectedSystem;
-        if( expandable == "false" ){
-		    connectedSystems.each {
-		        if( devName != it.name
-		                &&!edgeMap.containsKey(devName + it.name)
-		                && !edgeMap.containsKey(it.name + devName) )
-		        {
-                    expandable = "true";
-		            return;
-		        }
-		    }
+    def links = RsLink.search("a_ComputerSystemName=\"${devName}\" || z_ComputerSystemName=\"${devName}\"");
+    links.each{link->
+        def otherSide = getOtherSideName(link, devName);
+        if( otherSide != null ){
+            if( !edgeMap.containsKey(devName + otherSide)
+                    && !edgeMap.containsKey(otherSide + devName) )
+            {
+                expandable = "true";
+                return;
+            }
 		}
-		else
-			return;
     }
     return expandable;
 }
@@ -88,12 +100,12 @@ def mapBuilder = new MarkupBuilder(writer);
 
 mapBuilder.graph()
 {
-    deviceMap.each {
-        mapBuilder.node( id: it.value.id, model : it.value.model, type : it.value.type, gauged : it.value.gauged, expands : it.value.expands);
+    deviceSet.each {
+        mapBuilder.node( it);
     }
 
     edgeMap.each {
-        mapBuilder.edge( source : it.value.source, target : it.value.target);
+        mapBuilder.edge( it);
     }
 }
 

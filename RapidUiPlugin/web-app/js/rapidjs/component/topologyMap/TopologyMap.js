@@ -273,7 +273,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     
     loadMapForNode : function( nodeName)
     {
-        var params =  { expandedNodeName : nodeName, nodes : nodeName, edges : "" };
+        var params =  { expandedNodeName : nodeName, nodes : nodeName+",true;"};
         this.url = this.expandURL;
         this.lastLoadMapRequestData = {isMap:false, params:params}
         this.firstLoadMapRequestData = {isMap:false, params:params};
@@ -300,7 +300,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     {
         var data = this.getMapData();
         if( data ) {
-            var nodes = this.getPropertiesString(this.getNodes(), ["id"]);
+            var nodes = this.getPropertiesString(this.getNodes(), ["id", "expanded"]);
             var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
             var params = { expandedNodeName : expandedNodeName, nodes : nodes, edges : edges };
             this.lastLoadMapRequestData = {isMap:false, params:params}

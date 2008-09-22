@@ -20,7 +20,15 @@ for( def i = 0; i < nodes.size(); i++)
     def deviceData = nodes[i].splitPreserveAllTokens(",");
     def deviceId = deviceData[0];
     def x = deviceData[1];
+    if(x != null && x != "")
+    {
+        x = (int)x.toDouble();
+    }
     def y = deviceData[2];
+    if(y != null && y != "")
+    {
+        y = (int)y.toDouble();
+    }
     def expanded = deviceData[3];
     def expandable = deviceData[4];
     def device = MapNode.add( nodeIdentifier : deviceId, username : user, mapName : mapName, xlocation : x, ylocation : y, expandable : expandable, expanded:expanded);

@@ -19,7 +19,7 @@ def devicesMap = [:];
 def devicesToBeExpanded = "";
 devices.each{
     devicesMap[it.nodeIdentifier] = it;
-    devicesToBeExpanded += "${it.nodeIdentifier},${it.expanded};"
+    devicesToBeExpanded += "${it.nodeIdentifier},${it.expanded},${it.xlocation},${it.ylocation};"
 }
 def res = CmdbScript.runScript("expandMap", [params:[nodes:devicesToBeExpanded]]);
 def slurper = new XmlSlurper().parseText(res);
@@ -32,8 +32,7 @@ def mapBuilder = new MarkupBuilder(writer);
 mapBuilder.graph
 {
     nodeXmls.each {
-        def devConfig = devicesMap[it.@id.text()];
-        mapBuilder.node( id: it.@id.text(), model : it.@model.text(), type : it.@type.text(), gauged : it.@gauged.text(), expanded : it.@expanded.text(), expandable : it.@expandable.text(), x: devConfig.xlocation, y: devConfig.ylocation);
+        mapBuilder.node( id: it.@id.text(), model : it.@model.text(), type : it.@type.text(), gauged : it.@gauged.text(), expanded : it.@expanded.text(), expandable : it.@expandable.text(), x: it.@x.text(), y: it.@y.text());
     }
 
     edgeXmls.each {

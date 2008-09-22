@@ -17,6 +17,8 @@ nodes.each{node->
     def nodeData = node.splitPreserveAllTokens(",")
     def deviceName = nodeData[0];
     def isExpanded = nodeData[1];
+    def x = nodeData[2];
+    def y = nodeData[3];
     def device = RsComputerSystem.get( name : deviceName);
     if(device != null)
     {
@@ -24,7 +26,7 @@ nodes.each{node->
         {
             isExpanded = "true";
         }
-        deviceMap[device.name] = [ "id" : deviceName, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expanded" : isExpanded];
+        deviceMap[device.name] = [ "id" : deviceName, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expanded" : isExpanded, x:x, y:y];
     }
 
 }

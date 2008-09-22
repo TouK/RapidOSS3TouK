@@ -1,15 +1,10 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component');
 function topologyMapComponentAdapter ( params )
 {
-  var id = params["id"];
+  var componentId = params["componentId"];
   var functionName = params["functionName"];
-
-  var component = YAHOO.rapidjs.Components[id];
-  if(functionName == "refreshTopology" )
-  {
-      component.refresh();
-  }
-  else if(functionName == "resetMap" )
+  var component = YAHOO.rapidjs.Components[componentId];
+  if(functionName == "resetMap" )
   {
       component.resetMap();
   }
@@ -18,12 +13,34 @@ function topologyMapComponentAdapter ( params )
       component.expandNode(params.data.id);
   }
 }
+
+function topologyToolbarMapManuHandler ( params )
+{
+    var componentId = params["componentId"];
+    var menuId = params["menuId"];
+    var component = YAHOO.rapidjs.Components[componentId];
+    if(menuId == "refreshTopology" )
+    {
+        component.refresh();
+    }
+    component.events.toolbarMenuItemClicked.fireDirect(params);
+}
+
+function topologyNodeManuHandler ( params )
+{
+    var componentId = params["componentId"];
+    var menuId = params["menuId"];
+    var data = params.data;
+    var component = YAHOO.rapidjs.Components[componentId];
+    component.events.nodeMenuItemClicked.fireDirect(params);
+}
 YAHOO.rapidjs.component.TopologyMap = function(container, config){
 	YAHOO.rapidjs.component.TopologyMap.superclass.constructor.call(this,container, config);
-	YAHOO.ext.util.Config.apply(this, config);
-
-    this.configFunctionName = config.configFunctionName;
-
+    this.addDefaultToolbarMenuItems(config);
+    config.toolbarMapMenuHandler = "topologyToolbarMapManuHandler";
+    config.nodeMenuHandler = "topologyNodeManuHandler"
+    config.defaultMapAdapterFunction = "topologyMapComponentAdapter"
+    YAHOO.ext.util.Config.apply(this, config);
     this.height = config.height || 540;
     this.width = config.width || 680;
     this.wMode = config.wMode;
@@ -52,11 +69,47 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.lastLoadMapRequestData = null;
     this.firstLoadMapRequestData = null;
     this.events.mapInitialized = new YAHOO.util.CustomEvent("mapInitialized");
+    this.events.toolbarMenuItemClicked = new YAHOO.util.CustomEvent("toolbarMenuItemClicked");
+    this.events.nodeMenuItemClicked = new YAHOO.util.CustomEvent("nodeMenuItemClicked");
     YAHOO.util.Event.addListener(window, "load", this.initializeFlash, this, true);
 };
 
 YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.PollingComponentContainer, {
+    addDefaultToolbarMenuItems: function(config){
+        if(config.toolbarMenuItems == null) config.toolbarMenuItems = [];
+        var mapMenu = null;
+        for(var i=0; i < config.toolbarMenuItems.length; i++)
+        {
+            var menuConfig = config.toolbarMenuItems[i];
+            if(menuConfig.id == "mapMenu")
+            {
+                mapMenu = menuConfig;
+                break;
+            }
+        }
+        if(mapMenu == null)
+        {
+            mapMenu =
+            {
+                "id" : "mapMenu",
+                "label" : "Map",
+                "submenuItems":[]
+            }
+            config.toolbarMenuItems[config.toolbarMenuItems.length] =mapMenu;
 
+        }
+        var newMapSubMenus = [
+                                  {
+                                    "id" 	: "refreshTopology",
+                                    "submenuItem" : {
+                                                        "label"	: "Refresh Topology",
+                                                        "groupName" : "mapMenu",
+                                                        "toggled"	: "true"
+                                                    }
+                                  }
+                              ]
+        mapMenu.submenuItems = mapMenu.submenuItems.concat(newMapSubMenus);
+    },
     getFlashObject: function(){
         if(this.flashObject == null)
         {
@@ -78,6 +131,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             if(this.getFlashObject() != null)
             {
                 this.getFlashObject().getNodes();
+                this.getFlashObject().initializeMap(this.config)
                 this.events.mapInitialized.fireDirect();
             }
             else
@@ -96,6 +150,12 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         this.iframe = this.body.dom.getElementsByTagName("iframe")[0];
         this.flashTimer = new YAHOO.ext.util.DelayedTask(this.isFlashLoaded, this);
         this.flashTimer.delay(100);
+    },
+    getLayout : function( ) {
+        return this.getFlashObject().getLayout();
+    },
+    setLayout : function( layout) {
+        this.getFlashObject().setLayout(layout);
     },
     loadGraph : function( nodes, edges) {
         this.getFlashObject().loadGraph(nodes, edges);
@@ -156,6 +216,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
         }
     },
+
 
     handleSuccess: function(response){
 
@@ -238,7 +299,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 })
             }
 
-            if( this.url == this.expandURL)
+            if( this.getLayout() != 2)
             {
                 this.loadGraph(nodes, edges);
             }
@@ -261,15 +322,6 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         this.body.setHeight( height - this.header.offsetHeight);
         this.body.setWidth( width);
 
-    },
-
-    loadMap : function( mapName)
-    {
-        var params = { mapName : mapName};
-        this.url = this.mapURL;
-        this.lastLoadMapRequestData = {isMap:true, params:params}
-        this.firstLoadMapRequestData = {isMap:true, params:params};
-        this.doRequest(this.url, params);
     },
     
     loadMapForNode : function( nodeName)

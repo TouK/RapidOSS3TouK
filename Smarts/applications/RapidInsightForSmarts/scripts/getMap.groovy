@@ -1,5 +1,6 @@
 import auth.RsUser
 import groovy.xml.MarkupBuilder
+import script.CmdbScript
 
 def user = RsUser.findByUsername(web.session.username);
 if(user == null){
@@ -14,8 +15,30 @@ def map = TopoMap.get( mapName : mapName2, username : username2)
 def deviceMap = [:];
 
 def devices =  map.consistOfDevices;
+def devicesMap = [:];
 def devicesToBeExpanded = "";
 devices.each{
-    devicesToBeExpanded += "${it.nodeIdentifier},${it.expanded}"
+    devicesMap[it.nodeIdentifier] = it;
+    devicesToBeExpanded += "${it.nodeIdentifier},${it.expanded};"
 }
-web.redirect(action:"run", params:[id:"expandMap", nodes:devicesToBeExpanded]);
+def res = CmdbScript.runScript("expandMap", [params:[nodes:devicesToBeExpanded]]);
+def slurper = new XmlSlurper().parseText(res);
+def nodeXmls = slurper.node;
+def edgeXmls = slurper.edge;
+
+def writer = new StringWriter();
+def mapBuilder = new MarkupBuilder(writer);
+
+mapBuilder.graph
+{
+    nodeXmls.each {
+        def devConfig = devicesMap[it.@id.text()];
+        mapBuilder.node( id: it.@id.text(), model : it.@model.text(), type : it.@type.text(), gauged : it.@gauged.text(), expanded : it.@expanded.text(), expandable : it.@expandable.text(), x: devConfig.xlocation, y: devConfig.ylocation);
+    }
+
+    edgeXmls.each {
+        mapBuilder.edge( source : it.@source.text(), target : it.@target.text());
+    }
+
+}
+return writer.toString();

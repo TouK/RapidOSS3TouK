@@ -9,13 +9,13 @@
     <div class="bd">
     <form method="POST" action="javascript://nothing">
         <table width="100%">
-        <table width="100%">
         <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="groupName" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Map Name:</label></td><td width="50%"><input type="textbox" name="mapName" style="width:175px"/></td></tr>
         </table>
-        <input type="hidden" name="nodes">
-        <input type="hidden" name="edges">
-        <input type="hidden" name="id">
+        <input type="hidden" name="nodes"/>
+        <input type="hidden" name="edges"/>
+        <input type="hidden" name="id"/>
+        <input type="hidden" name="layout"/>
     </form>
 
     </div>
@@ -117,77 +117,10 @@
     */
 
 
-    function configFunction()
-    {
-        var config = new Object();
-        config.id = "mapDiv";
-        config.icons = {
-          "Host":{ "url":"images/rapidjs/component/topologyMap/server_icon.png"},
-          "Router":{ "url":"images/rapidjs/component/topologyMap/router_icon.png"},
-          "Switch":{ "url":"images/rapidjs/component/topologyMap/switch_icon.png"}
-        };
-        config.infoFunction = "showInfo";
-        config.menuItems = { "item1": { "text": "Browse" }//,
-                             //"item2": { "text": "Item text 2" },
-                             //"item3": { "text": "Item text 3" }
-                           };
-        config.menuItemFilter = "menuItemFilter";
-        config.toolbarItems = [
-                                    {
-                                        "id" : "customMenuItem1",
-                                        "label" : "Menu1",
-                                        "submenuItems"  : [
-                                                              {
-                                                                "id" 	: "submenuItem1",
-                                                                "submenuItem" : {
-                                                                                    "label"	: "Submenu 1",
-                                                                                    "type"	: "radio",
-                                                                                    "groupName" : "menu1",
-                                                                                    "toggled"	: "true"
-                                                                                }
-                                                              },
-                                                              {
-                                                                "id" 	: "submenuItem2",
-                                                                "submenuItem" : {
-                                                                                    "label"	: "Submenu 2",
-                                                                                    "type"	: "radio",
-                                                                                    "groupName" : "menu1"
-                                                                                }
-                                                              }
-                                                          ]
-                                    },
-                                    {
-                                        "id" : "customMenuItem2",
-                                        "label" : "Menu2",
-                                        "submenuItems"  : [
-                                                              {
-                                                                "id" 	: "submenuItem3",
-                                                                "submenuItem" : {
-                                                                                    "label"	: "Submenu 3"
-                                                                                }
-                                                              },
-                                                              {
-                                                                "id" 	: "submenuItem4",
-                                                                "submenuItem" : {
-                                                                                    "label"	: "Submenu 4"
-                                                                                }
-                                                              }
-                                                           ]
-                                    }
-                              ];
-        config.toolbarMenuFunction = "toolbarMenu";
-        config.menuItemClickedFunction = "menuItemClickedFunction"
-        config.saveMapFunction = "saveMapFunction";
-        config.statusColors = { "1" : 0xde2c26, "2" : 0x7b4a1a, "3": 0xfae500, "4" : 0x20b4e0, "5":0x0d4702, "default" : 0x0d4702 };
-		config.edgeColors = { "1" : 0xffde2c26,"2" :  0xfff79229,"3":  0xfffae500, "4" :  0xff20b4e0,"5": 0xff62b446, "default" : 0xff62b446 };
-        return config;
-      }
-
 	function saveMapFunction( data )
 	{
-	    var nodes = topMap.getPropertiesString(topMap.getNodes(), ["id", "x", "y", "expand"]) ;
-	    var edges = topMap.getPropertiesString(topMap.getEdges(), ["source", "target"]) ;
-	    dialog.show(dialog.CREATE_MODE, null, { nodes : nodes, edges : edges} );
+	    var nodes = topMap.getPropertiesString(topMap.getNodes(), ["id", "x", "y", "expanded", "expandable"]) ;
+        dialog.show(dialog.CREATE_MODE, null, { nodes : nodes, layout:topMap.getLayout()} );
 	}
 
       function toolbarMenuFcn( id )
@@ -225,15 +158,34 @@
     }
     var topMapConfig = {
         id 		: "mapDiv",
-        configFunctionName : "configFunction",
-        bgColor : "#eeeeee",
         dataTag : "device",
         dataKeys : { id : "id", status : "status", load : "load" },
-        mapURL : "script/run/getMap",
         expandURL : "script/run/expandMap",
         dataURL : "script/run/getMapData",
         pollingInterval : 0,
-        wMode : "Transparent"
+        icons : {
+          "Host":{ "url":"images/rapidjs/component/topologyMap/server_icon.png"},
+          "Router":{ "url":"images/rapidjs/component/topologyMap/router_icon.png"},
+          "Switch":{ "url":"images/rapidjs/component/topologyMap/switch_icon.png"}
+        },
+        menuItems : { "item1": { "text": "Browse" }},
+        menuItemFilterFunction : "menuItemFilter",
+        statusColors : { "1" : 0xde2c26, "2" : 0x7b4a1a, "3": 0xfae500, "4" : 0x20b4e0, "5":0x0d4702, "default" : 0x0d4702 },
+		edgeColors : { "1" : 0xffde2c26,"2" :  0xfff79229,"3":  0xfffae500, "4" :  0xff20b4e0,"5": 0xff62b446, "default" : 0xff62b446 },
+        toolbarMenuItems : [{
+            "id" : "mapMenu",
+            "label" : "Map",
+            "submenuItems"  : [
+                                  {
+                                    "id" 	: "saveMap",
+                                    "submenuItem" : {
+                                                        "label"	: "Save Map",
+                                                        "groupName" : "mapMenu",
+                                                        "toggled"	: "true"
+                                                    }
+                                  }
+                              ]
+        }]
     };
 
     var topMap = new YAHOO.rapidjs.component.TopologyMap(document.getElementById("mapDiv"),topMapConfig );
@@ -243,6 +195,21 @@
         if( deviceName )
         {
             this.topMap.loadMapForNode( deviceName);
+        }
+    }, this, true);
+
+    topMap.events.nodeMenuItemClicked.subscribe(function(params){
+        var componentId = params["componentId"];
+        var menuId = params["menuId"];
+        var data = params.data;
+    }, this, true);
+
+    topMap.events.toolbarMenuItemClicked.subscribe(function(params){
+        var componentId = params["componentId"];
+        var menuId = params["menuId"];
+        if(menuId == "saveMap")
+        {
+            saveMapFunction();
         }
     }, this, true);
 
@@ -257,6 +224,8 @@
 
     var actionSaveMapConfig = {url:'script/run/saveMap'}
     var saveMapAction = new YAHOO.rapidjs.component.action.RequestAction(actionSaveMapConfig);
+    var actionLoadMapConfig = {url:'script/run/getMap'}
+    var loadMapAction = new YAHOO.rapidjs.component.action.RequestAction(actionLoadMapConfig);
 
     function treeNodesUpdateDeleteConditionFunction(data)
     {
@@ -328,11 +297,16 @@
     deleteMapGroupAction.events.success.subscribe(tree.poll, tree, true);
 
     saveMapAction.events.success.subscribe(tree.poll, tree, true);
+    loadMapAction.events.success.subscribe(function(response, responseArgs){
+        topMap.setLayout(responseArgs.mapLayout*1);
+        topMap.handleLoadMap(response);
+    }, this, true);
 
     tree.events["treeNodeClick"].subscribe(function(data) {
         if (data.getAttribute("nodeType") == "filter")
         {
-           topMap.loadMap( data.getAttribute("name") );
+           loadMapAction.execute( {"mapName":data.getAttribute("name")}, {"mapLayout":data.getAttribute("layout")} );
+            
         }
     }, this, true);
 

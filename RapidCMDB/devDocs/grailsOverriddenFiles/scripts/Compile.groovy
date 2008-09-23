@@ -81,8 +81,8 @@ compilerClasspath = { testSources ->
     src(path:"${basedir}/src/java")
     javac(classpathref:"grails.classpath", debug:"yes")
 	if(testSources) {
-        new File("${basedir}/plugins").listFiles().each{File f->
-            f.listFiles().each {File f->
+        new File("${basedir}/plugins").listFiles().each{File dirs->
+            dirs.listFiles().each {File f->
                 if(f.name.endsWith(".groovy"))
                 {
                     src(path:f.absolutePath);    

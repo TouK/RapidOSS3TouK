@@ -292,7 +292,7 @@ target(runUnitTests: "Run Grails' unit tests under the test/unit directory") {
         }
 
         def suite = new TestSuite()
-		classLoader.addURL(new File("test/unit").toURI().toURL())
+		appCtx.grailsApplication.classLoader.addURL(new File("test/unit").toURI().toURL())
         populateTestSuite(suite, testFiles, classLoader, appCtx, "test/unit/")
         if (suite.testCount() > 0) {
 

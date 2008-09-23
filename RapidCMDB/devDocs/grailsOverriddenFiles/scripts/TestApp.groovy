@@ -129,10 +129,10 @@ target(testApp: "The test app implementation target") {
     }
 }
 target(packageTests:"Puts some useful things on the classpath") {
-    Ant.copy(todir:testDirPath) {
+    Ant.copy(todir:classesDirPath) {
 		fileset(dir:"${basedir}", includes:"application.properties")
 	}					
-	Ant.copy(todir:testDirPath, failonerror:false) {
+	Ant.copy(todir:classesDirPath, failonerror:false) {
 		fileset(dir:"${basedir}/grails-app/conf", includes:"**", excludes:"*.groovy, log4j*, hibernate, spring")
 		fileset(dir:"${basedir}/grails-app/conf/hibernate", includes:"**/**")
 		fileset(dir:"${basedir}/src/java") {
@@ -155,7 +155,7 @@ target(packageTests:"Puts some useful things on the classpath") {
 target(compileTests: "Compiles the test cases") {
     event("CompileStart", ['tests'])
 
-    def destDir = testDirPath
+    def destDir = classesDirPath
     Ant.mkdir(dir: destDir)
     try {
         Ant.groovyc(destdir: destDir,

@@ -31,7 +31,7 @@ class Task {
     }
 
     public boolean equals(Object obj) {
-        return obj.id == this.id;
+        return obj.id.equals(this.id);
     }
     
     //AUTO_GENERATED_CODE

@@ -7,7 +7,7 @@ class DeviceInterface extends DeviceAdapter
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "underlying"];
     };
     static datasources = [:]
 
@@ -25,7 +25,7 @@ class DeviceInterface extends DeviceAdapter
     Ip underlying ;
     
 
-    static hasMany = [:]
+    static relations = [underlying:[isMany:false, type:Ip, reverseName:"layeredOver"]]
     static constraints={
     __operation_class__(nullable:true)
         
@@ -38,8 +38,6 @@ class DeviceInterface extends DeviceAdapter
      
     }
 
-    static mappedBy=["underlying":"layeredOver"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

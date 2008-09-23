@@ -14,20 +14,14 @@ class Task {
     String name ="";
     List workedOnBy = [];
 
-    static hasMany = [workedOnBy:Developer]
-    
-        static mapping = {
-            tablePerHierarchy false
-        }
-    
+    static relations = [workedOnBy:[isMany:true, type:Developer, reverseName:"worksOn"]
+    ]
     static constraints={
     name(blank:false,nullable:false,key:[])
         
      
     }
 
-    static mappedBy=["workedOnBy":"worksOn"]
-    static belongsTo = [Developer]
     static propertyConfiguration= [:]
     static transients = [];
     

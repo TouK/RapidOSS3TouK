@@ -41,7 +41,7 @@ class Ip extends DeviceComponent
     DeviceInterface layeredOver ;
     
 
-    static hasMany = [:]
+
     static constraints={
     ipAddress(blank:true,nullable:true)
         
@@ -69,9 +69,10 @@ class Ip extends DeviceComponent
         
      
     }
+    static relations = [hostedBy:[isMany:false, type:Device, reverseName:"hostsAccessPoints"],
+            layeredOver:[isMany:false, type:DeviceInterface, reverseName:"underlying"]
 
-    static mappedBy=["hostedBy":"hostsAccessPoints", "layeredOver":"underlying"]
-    static belongsTo = []
+    ]
     static propertyConfiguration= ["netMask":["nameInDs":"NetMask", "datasourceProperty":"smartDs", "lazy":true], "interfaceAdminStatus":["nameInDs":"InterfaceAdminStatus", "datasourceProperty":"smartDs", "lazy":true], "interfaceName":["nameInDs":"InterfaceName", "datasourceProperty":"smartDs", "lazy":true], "interfaceOperStatus":["nameInDs":"InterfaceOperStatus", "datasourceProperty":"smartDs", "lazy":true], "ipStatus":["nameInDs":"IPStatus", "datasourceProperty":"smartDs", "lazy":true], "interfaceKey":["nameInDs":"InterfaceKey", "datasourceProperty":"smartDs", "lazy":true]]
     static transients = ["netMask", "interfaceAdminStatus", "interfaceName", "interfaceOperStatus", "ipStatus", "interfaceKey", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

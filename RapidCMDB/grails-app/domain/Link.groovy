@@ -39,7 +39,6 @@ class Link extends SmartsObject
     List connectedSystems =[];
     
 
-    static hasMany = [connectedTo:DeviceAdapter, connectedSystems:Device]
     static constraints={
     aa_AdminStatus(blank:true,nullable:true)
         
@@ -61,9 +60,10 @@ class Link extends SmartsObject
         
      
     }
+    static relations = [connectedTo:[isMany:true, type:DeviceAdapter, reverseName:"connectedVia"],
+            connectedSystems:[isMany:true, type:Device, reverseName:"connectedVia"]
 
-    static mappedBy=["connectedTo":"connectedVia", "connectedSystems":"connectedVia"]
-    static belongsTo = [Device]
+    ]
     static propertyConfiguration= ["aa_AdminStatus":["nameInDs":"A_AdminStatus", "datasourceProperty":"smartDs", "lazy":true], "aa_OperStatus":["nameInDs":"A_OperStatus", "datasourceProperty":"smartDs", "lazy":true], "aa_DisplayName":["nameInDs":"A_DisplayName", "datasourceProperty":"smartDs", "lazy":true], "zz_AdminStatus":["nameInDs":"Z_AdminStatus", "datasourceProperty":"smartDs", "lazy":true], "zz_OperStatus":["nameInDs":"Z_OperStatus", "datasourceProperty":"smartDs", "lazy":true], "zz_DisplayName":["nameInDs":"Z_DisplayName", "datasourceProperty":"smartDs", "lazy":true]]
     static transients = ["aa_AdminStatus", "aa_OperStatus", "aa_DisplayName", "zz_AdminStatus", "zz_OperStatus", "zz_DisplayName", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

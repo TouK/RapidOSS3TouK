@@ -15,16 +15,13 @@ class Developer extends Employee
     String language ="";
     List worksOn = [];
 
-    static hasMany = [worksOn:Task]
-    
+    static relations = [worksOn:[isMany:true, type:Task, reverseName:"workedOnBy"]]    
     static constraints={
     language(blank:true,nullable:true)
         
      
     }
 
-    static mappedBy=["worksOn":"workedOnBy"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];
     

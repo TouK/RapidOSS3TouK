@@ -7,7 +7,7 @@ class Card extends DeviceComponent
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["realises", "status", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["realises", "status", "errors", "__operation_class__", "__is_federated_properties_loaded__", "realises"];
     };
     static datasources = [:]
 
@@ -27,7 +27,7 @@ class Card extends DeviceComponent
     List realises =[];
     
 
-    static hasMany = [realises:DeviceAdapter]
+    static relations = [realises:[isMany:true, type:DeviceAdapter, reverseName:"realizedBy"]]
     static constraints={
     status(blank:true,nullable:true)
         
@@ -40,8 +40,6 @@ class Card extends DeviceComponent
      
     }
 
-    static mappedBy=["realises":"realizedBy"]
-    static belongsTo = []
     static propertyConfiguration= ["status":["nameInDs":"Status", "datasourceProperty":"smartDs", "lazy":true]]
     static transients = ["status", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

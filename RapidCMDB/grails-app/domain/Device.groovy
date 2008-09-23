@@ -43,9 +43,11 @@ class Device extends SmartsObject
     List hostsAccessPoints =[];
     
     List composedOf =[];
-    
+    static relations = [connectedVia:[isMany:true, type:Link, reverseName:"connectedSystems"],
+        hostsAccessPoints:[isMany:true, type:Ip, reverseName:"hostedBy"],
+        composedOf:[isMany:true, type:DeviceComponent, reverseName:"partOf"]
 
-    static hasMany = [connectedVia:Link, hostsAccessPoints:Ip, composedOf:DeviceComponent]
+    ]
     static constraints={
     location(blank:true,nullable:true)
         
@@ -72,8 +74,6 @@ class Device extends SmartsObject
      
     }
     
-    static mappedBy=["connectedVia":"connectedSystems", "hostsAccessPoints":"hostedBy", "composedOf":"partOf"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

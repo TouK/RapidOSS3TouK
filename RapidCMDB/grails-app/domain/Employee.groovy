@@ -20,8 +20,11 @@ class Employee  extends Person {
     Employee nextEmp ;
     List manages = [];
 
-    static hasMany = [manages:Team]
-    
+    static relations = [manages:[isMany:true, type:Team, reverseName:"managedBy"],
+            prevEmp:[isMany:false, type:Employee, reverseName:"nextEmp"],
+            nextEmp:[isMany:false, type:Employee, reverseName:"prevEmp"],
+
+    ]
     static constraints={
     dept(blank:true,nullable:true)
         
@@ -34,8 +37,6 @@ class Employee  extends Person {
      
     }
 
-    static mappedBy=["manages":"managedBy", "prevEmp":"nextEmp", "nextEmp":"prevEmp"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];
     

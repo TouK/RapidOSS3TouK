@@ -17,13 +17,8 @@ class Team {
     
     Employee managedBy ;
     
-
-    static hasMany = [:]
-    
-        static mapping = {
-            tablePerHierarchy false
-        }
-    
+    static relations = [managedBy:[isMany:false, type:Employee, reverseName:"manages"]
+    ]
     static constraints={
     maskot(blank:true,nullable:true)
         
@@ -34,8 +29,6 @@ class Team {
      
     }
 
-    static mappedBy=["managedBy":"manages"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = [];
     

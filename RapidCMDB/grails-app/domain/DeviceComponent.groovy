@@ -24,8 +24,8 @@ class DeviceComponent extends SmartsObject
     
     Device partOf ;
     
-
-    static hasMany = [:]
+    static relations = [partOf:[isMany:false, type:Device, reverseName:"composedOf"]
+    ]
     static constraints={
     __operation_class__(nullable:true)
         
@@ -38,8 +38,6 @@ class DeviceComponent extends SmartsObject
      
     }
 
-    static mappedBy=["partOf":"composedOf"]
-    static belongsTo = []
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     

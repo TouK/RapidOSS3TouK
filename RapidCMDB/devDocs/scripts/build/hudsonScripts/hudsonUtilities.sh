@@ -77,10 +77,10 @@ generateTestDomainClasses() {
     cp $WORKSPACE/RapidModules/RapidCMDBModeler/scripts/ModelHelper.groovy $WORKSPACE/Distribution/RapidServer/Modeler/scripts
 
     rsbatchInput=input.txt
-    echo  "/Modeler/script/save?name=$scriptFileName1" >> $rsbatchInput
-    echo  "/Modeler/script/save?name=$scriptFileName2" >> $rsbatchInput
-    echo  "/Modeler/script/run/$scriptFileName1" >> $rsbatchInput
-    echo  "/Modeler/script/run/$scriptFileName2" >> $rsbatchInput
+    echo  "/script/save?name=$scriptFileName1" >> $rsbatchInput
+    echo  "/script/save?name=$scriptFileName2" >> $rsbatchInput
+    echo  "/script/run/$scriptFileName1" >> $rsbatchInput
+    echo  "/script/run/$scriptFileName2" >> $rsbatchInput
 
     #for file in $(find RapidCMDB/scripts -name *Test.groovy)
     #do
@@ -116,7 +116,7 @@ generateTestDomainClasses() {
 
     cd ../bin
     chmod +x rsbatch.sh
-    ./rsbatch.sh -commandfile Modeler/$rsbatchInput -host localhost -port 9999 -username rsadmin -password changeme
+    ./rsbatch.sh -commandfile Modeler/$rsbatchInput -host localhost -port 9999 -username rsadmin -password changeme -application Modeler
     cd ../Modeler
 
     sleep 2

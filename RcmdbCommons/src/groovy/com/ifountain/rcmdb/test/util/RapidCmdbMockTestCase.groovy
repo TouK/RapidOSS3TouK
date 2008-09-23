@@ -59,7 +59,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         }
         else
         {
-            gcl = new GroovyClassLoader(this.class.classLoader);    
+            gcl = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());    
         }
     }
 

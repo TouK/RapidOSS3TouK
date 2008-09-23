@@ -60,11 +60,6 @@ compilerClasspath = { testSources ->
 	def pluginResources = resolveResources("file:${basedir}/plugins/*/grails-app/*").toList() +
 						  resolveResources("file:${basedir}/plugins/*/src/java").toList() +
 						  resolveResources("file:${basedir}/plugins/*/src/groovy").toList()
-    if(testSources)
-    {
-        pluginResources += resolveResources("file:${basedir}/plugins/*").toList();
-    }
-
     for(dir in new File("${basedir}/grails-app").listFiles()) {
         if(!excludedPaths.contains(dir.name) && dir.isDirectory())
             src(path:"${dir}")
@@ -86,6 +81,15 @@ compilerClasspath = { testSources ->
     src(path:"${basedir}/src/java")
     javac(classpathref:"grails.classpath", debug:"yes")
 	if(testSources) {
+        new File("${basedir}/plugins").listFiles().each{File f->
+            f.listFiles().each {File f->
+                if(f.name.endsWith(".groovy"))
+                {
+                    src(path:f.absolutePath);    
+                }
+            }
+        }
+
          src(path:"${basedir}/test/unit")
          src(path:"${basedir}/test/integration")
 	}

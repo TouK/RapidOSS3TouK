@@ -218,7 +218,10 @@ public class RsBatch extends CommandLineUtility {
              params.put("login", login);
              params.put("password", pass);
              params.put("format", "xml");
-             response = httpUtils.doPostRequest("http://" + host + ":" + port + "/RapidCMDB/auth/signIn", params);
+             String absPath = new File(".").getCanonicalPath();
+             absPath = absPath.replaceAll("\\\\", "/");
+             String applicationName = absPath.substring(absPath.lastIndexOf("/")+1);
+             response = httpUtils.doPostRequest("http://" + host + ":" + port + "/"+applicationName+"/auth/signIn", params);
          } catch (Exception e) {
              e.printStackTrace();
              logger.fatal("Could not connect to RapidCMDB");

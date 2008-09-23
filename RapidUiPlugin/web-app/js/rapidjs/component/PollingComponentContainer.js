@@ -50,7 +50,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         this.events["loadstatechanged"].fireDirect(this, false);
         var callback = response.argument[0];
         if(typeof callback =='function'){
-				callback();
+				callback(response);
 	    }
         if(this.pollingInterval > 0)
         {

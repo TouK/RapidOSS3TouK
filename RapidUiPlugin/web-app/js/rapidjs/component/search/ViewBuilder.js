@@ -1,0 +1,488 @@
+YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.search');
+YAHOO.rapidjs.component.search.ViewBuilder = function(searchGrid) {
+    YAHOO.rapidjs.component.search.ViewBuilder.superclass.constructor.call(this, null, {id:searchGrid.id + '_viewBuilder', format:'xml'});
+    this.searchGrid = searchGrid;
+    this.viewData = null;
+    var config = {
+        width:617,
+        height:480,
+        minWidth:100,
+        minHeight:100,
+        resizable: false,
+        title: 'View Builder',
+        buttons:[
+            {text:"Save", handler:this.handleSave, scope:this, isDefault:true },
+            {text:"Cancel", handler:this.hide, scope:this }]
+    }
+    this.availableFields = null;
+    this.columnsConfig = {};
+    this.dialog = new YAHOO.rapidjs.component.Dialog(config);
+    this.render();
+    this.getViews(this.loadViews.createDelegate(this));
+}
+YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.component.PollingComponentContainer, {
+    render: function() {
+        var dh = YAHOO.ext.DomHelper;
+        var wrp = dh.append(this.dialog.body, {tag:'div', cls:'rcmdb-searchgrid-view-wrp'});
+        var nameView = dh.append(wrp, {tag:'div',
+            html:'<table><tbody><tr><td><div class="rcmdb-searchgrid-view-text">View Name:</div></td>' +
+                 '<td><div class="rcmdb-searchgrid-view-inputwrp"><input class="rcmdb-searchgrid-view-input"></input></div></td></tr></tbody></table>'});
+        this.nameInput = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-input', 'input', nameView)[0];
+        this.dialog.defaultInput = this.nameInput;
+
+        var columnView = dh.append(wrp, {tag:'div',
+            html:'<table><tbody>' +
+                 '<tr><td><div class="rcmdb-searchgrid-view-text">Available Fields:</div></td><td></td><td><div class="rcmdb-searchgrid-view-text">Grid Columns:</div></td><td></td></tr>' +
+                 '<tr>' +
+                 '<td><div class="rcmdb-searchgrid-view-fields"><select class="rcmdb-searchgrid-view-fieldlist" size="23"></select></div></td>' +
+                 '<td valign="top"><div class="rcmdb-searchgrid-view-buttons"><div class="rcmdb-searchgrid-view-btnwrp"></div><div class="rcmdb-searchgrid-view-btnwrp"></div>' +
+                 '<div class="rcmdb-searchgrid-view-btnwrp"></div><div class="rcmdb-searchgrid-view-btnwrp"></div></div>' +
+                 '</td>' +
+                 '<td><div class="rcmdb-searchgrid-view-gridcols"><select class="rcmdb-searchgrid-view-collist" size="10"></select></div>' +
+                 '<div class="rcmdb-searchgrid-view-text">Field Name:</div>' +
+                 '<div class="rcmdb-searchgrid-view-inputwrp"><input class="rcmdb-searchgrid-view-input"></input></div>' +
+                 '<div class="rcmdb-searchgrid-view-text">Column Title:</div>' +
+                 '<div class="rcmdb-searchgrid-view-inputwrp"><input class="rcmdb-searchgrid-view-input"></input></div>' +
+                 '<div class="rcmdb-searchgrid-view-text">Column Width:</div>' +
+                 '<div class="rcmdb-searchgrid-view-inputwrp"><input class="rcmdb-searchgrid-view-input"></input></div>' +
+                 '<div class="rcmdb-searchgrid-view-text">Default Sort Column:</div>' +
+                 '<div class="rcmdb-searchgrid-view-inputwrp"><select class="rcmdb-searchgrid-view-input"><option value=""></option></select></div>' +
+                 '</td>' +
+                 '<td valign="top"><div class="rcmdb-searchgrid-view-buttons"><div class="rcmdb-searchgrid-view-btnwrp"></div><div class="rcmdb-searchgrid-view-btnwrp"></div>' +
+                 '<div class="rcmdb-searchgrid-view-btnwrp"></div><div class="rcmdb-searchgrid-view-btnwrp"></div></div>' +
+                 '</td>' +
+                 '</tr>' +
+                 '</tbody></table>'});
+        this.allFields = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-fieldlist', 'select', columnView)[0];
+        this.allFields.multiple = true;
+        YAHOO.util.Event.addListener(this.allFields, 'change', this.handleButtons, this, true);
+        YAHOO.util.Event.addListener(this.allFields, 'dblclick', this.handleFieldDblClick, this, true);
+        this.colList = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-collist', 'select', columnView)[0];
+        this.colList.multiple = true;
+        YAHOO.util.Event.addListener(this.colList, 'change', this.handleColumnSelect, this, true);
+        YAHOO.util.Event.addListener(this.colList, 'dblclick', this.handleColumnDblClick, this, true);
+        var inputs = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-input', 'input', columnView);
+        this.attInput = inputs[0];
+        this.attInput.readOnly = true;
+        this.headerInput = inputs[1];
+        YAHOO.util.Event.addListener(this.headerInput, 'keyup', this.headerChanged, this, true);
+        this.colWidthInput = inputs[2];
+        YAHOO.util.Event.addListener(this.colWidthInput, 'keyup', this.widthChanged, this, true);
+        this.defaultSortInput = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-input', 'select', columnView)[0];
+        var buttonWrappers = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-btnwrp', 'div', columnView);
+        this.addButton = new YAHOO.widget.Button(buttonWrappers[0], {onclick:{fn:this.handleAdd, scope:this},label: 'Add >>', disabled:true});
+        this.addAllButton = new YAHOO.widget.Button(buttonWrappers[1], {onclick:{fn:this.handleAddAll, scope:this},label: 'Add All >>', disabled:true});
+        this.removeButton = new YAHOO.widget.Button(buttonWrappers[2], {onclick:{fn:this.handleRemove, scope:this},label: '<< Remove', disabled:true});
+        this.removeAllButton = new YAHOO.widget.Button(buttonWrappers[3], {onclick:{fn:this.handleRemoveAll, scope:this},label: '<< Remove All', disabled:true});
+        this.topButton = new YAHOO.widget.Button(buttonWrappers[4], {onclick:{fn:this.handleTop, scope:this},label: 'Top', disabled:true});
+        this.upButton = new YAHOO.widget.Button(buttonWrappers[5], {onclick:{fn:this.handleUp, scope:this},label: 'Up', disabled:true});
+        this.downButton = new YAHOO.widget.Button(buttonWrappers[6], {onclick:{fn:this.handleDown, scope:this},label: 'Down', disabled:true});
+        this.bottomButton = new YAHOO.widget.Button(buttonWrappers[7], {onclick:{fn:this.handleBottom, scope:this},label: 'Bottom', disabled:true});
+    },
+    getViews: function(callback) {
+        this.doRequest('gridView/list', {}, callback);
+    },
+    hide: function() {
+        this.dialog.hide();
+    },
+    handleSave: function() {
+        var parameters = {};
+        var url = 'gridView/add';
+        parameters['name'] = this.nameInput.value;
+        var defaultSortColumn = this.defaultSortInput.options[this.defaultSortInput.selectedIndex].value;
+        parameters['defaultSortColumn'] = defaultSortColumn;
+        var colList = this.colList;
+        var nOfColumns = colList.options.length;
+        for (var index = 0; index < nOfColumns; index++) {
+            var fieldName = colList.options[index].value;
+            var colConfig = this.columnsConfig[fieldName];
+            var colName = 'column' + (index + 1);
+            parameters[colName + 'attributeName'] = fieldName;
+            parameters[colName + 'header'] = colConfig['header'];
+            parameters[colName + 'width'] = colConfig['width'];
+        }
+        this.doPostRequest(url, parameters, this.saveSuccess.createDelegate(this));
+    },
+    saveSuccess: function(response) {
+        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+            var currentView = this.nameInput.value;
+            this.dialog.hide();
+            if (!this.currentNode) {
+                this.getViews(this.viewAdded.createDelegate(this, [currentView], true));
+            }
+            else {
+                this.getViews(this.viewUpdated.createDelegate(this, [currentView], true));
+            }
+        }
+    },
+    removeView : function(view) {
+        var viewId = this.viewData.findChildNode('name', view, 'View')[0].getAttribute('id')
+        var url = 'gridView/delete';
+        this.doPostRequest(url, {id:encodeURIComponent(viewId)}, this.removeSuccess.createDelegate(this, [view], true))
+    },
+    removeSuccess : function(response, view) {
+        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+            this.getViews(this.viewRemoved.createDelegate(this, [view], true));
+        }
+    },
+    loadViews: function(response) {
+        this._getViewData(response);
+        this.searchGrid.loadViews(response);
+    },
+    viewAdded: function(response, view) {
+        this._getViewData(response);
+        var viewNode = this.viewData.findChildNode('name', view, 'View')[0];
+        if (viewNode) {
+            this.searchGrid.viewAdded(viewNode);
+        }
+    },
+    viewUpdated: function(response, view) {
+        this._getViewData(response);
+        var viewNode = this.viewData.findChildNode('name', view, 'View')[0];
+        if (viewNode) {
+            this.searchGrid.viewUpdated(viewNode);
+        }
+    },
+    viewRemoved : function(response, view) {
+        this._getViewData(response);
+        this.searchGrid.viewRemoved(view);
+    },
+    _getViewData: function(response) {
+        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+            var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, ['name']);
+            var rootNode = data.getRootNode('Views');
+            if (rootNode) {
+                this.viewData = rootNode;
+            }
+        }
+    },
+    clear: function() {
+        SelectUtils.clear(this.allFields);
+        SelectUtils.clear(this.colList);
+        SelectUtils.clear(this.defaultSortInput);
+        SelectUtils.addOption(this.defaultSortInput, '', '');
+        this.nameInput.value = '';
+        this.nameInput.readOnly = false;
+        this.attInput.readOnly = false;
+        this.headerInput.readOnly = false;
+        this.colWidthInput.readOnly = false;
+        this.attInput.value = '';
+        this.headerInput.value = '';
+        this.colWidthInput.value = '100';
+        this.disableAll();
+        this.columnsConfig = {};
+    },
+    show: function(currentView) {
+        this.clear();
+        if (currentView) {
+            this.currentNode = this.viewData.findChildNode('name', currentView, 'View')[0];
+        }
+        else {
+            this.currentNode = null;
+        }
+        this.dialog.show();
+        if (!this.availableFields) {
+            this.doRequest(this.searchGrid.fieldsUrl, {}, this.getFieldsSuccess.createDelegate(this))
+        }
+        else {
+            if (this.currentNode) {
+                this.populateFieldsForUpdate();
+            }
+            this.loadAvailableFields();
+        }
+    },
+    getFieldsSuccess: function(response) {
+        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+            this.availableFields = response.responseXML.getElementsByTagName('Field');
+            if (this.currentNode) {
+                this.populateFieldsForUpdate();
+            }
+            this.loadAvailableFields();
+        }
+    },
+    populateFieldsForUpdate: function() {
+        var viewName = this.currentNode.getAttribute('name');
+        this.nameInput.value = viewName;
+        this.nameInput.readOnly = true;
+        var defaultSortColumn = this.currentNode.getAttribute('defaultSortColumn');
+        var colNodes = this.currentNode.getElementsByTagName('Column');
+        var nOfColumns = colNodes.length;
+        var orderedArray = new Array(nOfColumns);
+        for (var index = 0; index < nOfColumns; index++) {
+            var colNode = colNodes[index];
+            var colOrder = parseInt(colNode.getAttribute('columnIndex'), 10);
+            var att = colNode.getAttribute('attributeName');
+            var header = colNode.getAttribute('header');
+            var width = colNode.getAttribute('width');
+            this.columnsConfig[att] = {header:header, width:width};
+            orderedArray[colOrder - 1] = att;
+        }
+        for (var index = 0; index < nOfColumns; index++) {
+            var attName = orderedArray[index];
+            SelectUtils.addOption(this.colList, attName, attName);
+            SelectUtils.addOption(this.defaultSortInput, attName, attName);
+        }
+        SelectUtils.selectTheValue(this.defaultSortInput, defaultSortColumn, 0);
+    },
+    loadAvailableFields : function() {
+        var nOfAvailableFields = this.availableFields.length;
+        for (var index = 0; index < nOfAvailableFields; index++) {
+            var field = this.availableFields[index];
+            var fieldName = field.getAttribute('Name');
+            if (!this.currentNode || !this.columnsConfig[fieldName]) {
+                SelectUtils.addOption(this.allFields, fieldName, fieldName);
+            }
+        }
+        this.handleButtons();
+    },
+    handleColumnSelect: function() {
+        if (this.checkMultipleSelection(this.colList)) {
+            this.disableColumnInputs();
+            this.handleButtons(true);
+        }
+        else {
+            this.fillColumnInputs();
+            this.handleButtons();
+        }
+    },
+    checkMultipleSelection : function(select) {
+        var selectedCount = 0;
+        var options = select.options;
+        for (var index = 0; index < options.length; index++) {
+            var option = options[index];
+            if (option.selected == true) {
+                selectedCount ++;
+                if (selectedCount > 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
+
+    fillColumnInputs : function() {
+        var selectedIndex = this.colList.selectedIndex;
+        if (selectedIndex == -1) {
+            this.attInput.value = '';
+            this.headerInput.value = '';
+            this.colWidthInput.value = '100';
+        }
+        else {
+            var fieldName = this.colList.options[selectedIndex].value;
+            var colConfig = this.columnsConfig[fieldName];
+            this.attInput.value = fieldName;
+            this.headerInput.value = colConfig['header'];
+            this.colWidthInput.value = colConfig['width'];
+        }
+        this.attInput.readOnly = false;
+        this.headerInput.readOnly = false;
+        this.colWidthInput.readOnly = false;
+    },
+
+    disableColumnInputs : function() {
+        this.attInput.value = '';
+        this.attInput.readOnly = true;
+        this.headerInput.value = '';
+        this.headerInput.readOnly = true;
+        this.colWidthInput.value = '100';
+        this.colWidthInput.readOnly = true;
+    },
+    headerChanged: function() {
+        if (this.colList.selectedIndex != -1) {
+            var header = this.headerInput.value;
+            var fieldName = this.colList.options[this.colList.selectedIndex].value;
+            this.columnsConfig[fieldName]['header'] = header;
+        }
+    },
+    widthChanged: function() {
+        if (this.colList.selectedIndex != -1) {
+            var width = this.colWidthInput.value;
+            var fieldName = this.colList.options[this.colList.selectedIndex].value;
+            this.columnsConfig[fieldName]['width'] = width;
+        }
+    },
+    handleAdd: function() {
+        var selectedIndexes = SelectUtils.collectSelectedIndicesFromSelect(this.allFields);
+        for (var index = selectedIndexes.length - 1; index >= 0; index--) {
+            var selectedIndex = selectedIndexes[index];
+            var fieldName = this.allFields.options[selectedIndex].value;
+            SelectUtils.moveFromSelectToSelect(selectedIndex, this.allFields, this.colList);
+            SelectUtils.addOption(this.defaultSortInput, fieldName, fieldName);
+            this.columnsConfig[fieldName] = {header:fieldName, width:'100'};
+        }
+        this.handleColumnSelect();
+    },
+    handleFieldDblClick: function(event) {
+        var selectedIndex = this.allFields.selectedIndex;
+        var fieldName = this.allFields.options[selectedIndex].value;
+        SelectUtils.moveFromSelectToSelect(selectedIndex, this.allFields, this.colList);
+        SelectUtils.addOption(this.defaultSortInput, fieldName, fieldName);
+        this.columnsConfig[fieldName] = {header:fieldName, width:'100'};
+        this.handleColumnSelect();
+    },
+    handleAddAll: function() {
+        var allFields = this.allFields;
+        var nOfFields = allFields.options.length;
+        for (var index = nOfFields - 1; index >= 0; index--) {
+            var fieldName = allFields[index].value;
+            SelectUtils.moveFromSelectToSelect(index, this.allFields, this.colList);
+            SelectUtils.addOption(this.defaultSortInput, fieldName, fieldName);
+            this.columnsConfig[fieldName] = {header:fieldName, width:'100'};
+        }
+        this.handleColumnSelect();
+    },
+    handleRemove: function() {
+        var selectedIndexes = SelectUtils.collectSelectedIndicesFromSelect(this.colList);
+        for (var index = selectedIndexes.length - 1; index >= 0; index--) {
+            var selectedIndex = selectedIndexes[index];
+            var fieldName = this.colList.options[selectedIndex].value;
+            SelectUtils.moveFromSelectToSelect(selectedIndex, this.colList, this.allFields);
+            SelectUtils.remove(this.defaultSortInput, fieldName);
+            delete this.columnsConfig[fieldName];
+        }
+        this.handleColumnSelect();
+    },
+    handleColumnDblClick: function(event) {
+        var selectedIndex = this.colList.selectedIndex;
+        var fieldName = this.colList.options[selectedIndex].value;
+        SelectUtils.moveFromSelectToSelect(selectedIndex, this.colList, this.allFields);
+        SelectUtils.remove(this.defaultSortInput, fieldName);
+        delete this.columnsConfig[fieldName];
+        this.handleColumnSelect();
+    },
+    handleRemoveAll: function() {
+        var colList = this.colList;
+        var nOfFields = colList.options.length;
+        for (var index = nOfFields - 1; index >= 0; index--) {
+            var fieldName = colList[index].value;
+            SelectUtils.moveFromSelectToSelect(index, this.colList, this.allFields);
+            SelectUtils.remove(this.defaultSortInput, fieldName);
+            delete this.columnsConfig[fieldName];
+        }
+        this.handleColumnSelect();
+    },
+    handleTop: function() {
+        var colList = this.colList
+        var selectedIndex = colList.selectedIndex;
+        var fieldName = colList.options[selectedIndex].value;
+        colList.remove(selectedIndex);
+        SelectUtils.addOptionBefore(colList, fieldName, fieldName, 0);
+        SelectUtils.selectTheValue(colList, fieldName, 0);
+        this.handleColumnSelect();
+    },
+    handleUp: function() {
+        var colList = this.colList
+        var selectedIndex = colList.selectedIndex;
+        var fieldName = colList.options[selectedIndex].value;
+        colList.remove(selectedIndex);
+        SelectUtils.addOptionBefore(colList, fieldName, fieldName, selectedIndex - 1);
+        SelectUtils.selectTheValue(colList, fieldName, selectedIndex - 1);
+        this.handleColumnSelect();
+    },
+    handleDown: function() {
+        var colList = this.colList
+        var selectedIndex = colList.selectedIndex;
+        var fieldName = colList.options[selectedIndex].value;
+        if (selectedIndex == colList.options.length - 2) {
+            colList.remove(selectedIndex);
+            SelectUtils.addOption(colList, fieldName, fieldName);
+            SelectUtils.selectTheValue(colList, fieldName, colList.options.length - 1);
+        }
+        else {
+            colList.remove(selectedIndex);
+            SelectUtils.addOptionBefore(colList, fieldName, fieldName, selectedIndex + 1);
+            SelectUtils.selectTheValue(colList, fieldName, selectedIndex + 1);
+        }
+        this.handleColumnSelect();
+    },
+    handleBottom: function() {
+        var colList = this.colList
+        var selectedIndex = colList.selectedIndex;
+        var fieldName = colList.options[selectedIndex].value;
+        colList.remove(selectedIndex);
+        SelectUtils.addOption(colList, fieldName, fieldName);
+        SelectUtils.selectTheValue(colList, fieldName, colList.options.length - 1);
+        this.handleColumnSelect();
+    },
+    disableAll : function() {
+        this.addButton.set('disabled', true);
+        this.addAllButton.set('disabled', true);
+        this.removeButton.set('disabled', true);
+        this.removeAllButton.set('disabled', true);
+        this.topButton.set('disabled', true);
+        this.upButton.set('disabled', true);
+        this.downButton.set('disabled', true);
+        this.bottomButton.set('disabled', true);
+    },
+    handleButtons: function(colListMultipleSelected) {
+        if (this.availableFields.length > 0) {
+            this.addAllButton.set('disabled', false);
+            if (this.allFields.selectedIndex != -1) {
+                this.addButton.set('disabled', false);
+            }
+            else {
+                this.addButton.set('disabled', true);
+            }
+        }
+        else {
+            this.addAllButton.set('disabled', true);
+            this.addButton.set('disabled', true);
+        }
+        if (this.colList.options.length > 0) {
+            this.removeAllButton.set('disabled', false);
+            if (this.colList.selectedIndex != -1) {
+                this.removeButton.set('disabled', false);
+                if (this.colList.options.length > 1) {
+                    if (colListMultipleSelected) {
+                        this.topButton.set('disabled', true);
+                        this.upButton.set('disabled', true);
+                        this.downButton.set('disabled', true);
+                        this.bottomButton.set('disabled', true);
+                    }
+                    else {
+                        if (this.colList.selectedIndex == 0) {
+                            this.topButton.set('disabled', true);
+                            this.upButton.set('disabled', true);
+                            this.downButton.set('disabled', false);
+                            this.bottomButton.set('disabled', false);
+                        }
+                        else if (this.colList.selectedIndex == this.colList.options.length - 1) {
+                            this.topButton.set('disabled', false);
+                            this.upButton.set('disabled', false);
+                            this.downButton.set('disabled', true);
+                            this.bottomButton.set('disabled', true);
+                        }
+                        else {
+                            this.topButton.set('disabled', false);
+                            this.upButton.set('disabled', false);
+                            this.downButton.set('disabled', false);
+                            this.bottomButton.set('disabled', false);
+                        }
+                    }
+
+                }
+                else {
+                    this.topButton.set('disabled', true);
+                    this.upButton.set('disabled', true);
+                    this.downButton.set('disabled', true);
+                    this.bottomButton.set('disabled', true);
+                }
+            }
+            else {
+                this.removeButton.set('disabled', true);
+                this.topButton.set('disabled', true);
+                this.upButton.set('disabled', true);
+                this.downButton.set('disabled', true);
+                this.bottomButton.set('disabled', true);
+            }
+        }
+        else {
+            this.removeAllButton.set('disabled', true);
+            this.removeButton.set('disabled', true);
+            this.topButton.set('disabled', true);
+            this.upButton.set('disabled', true);
+            this.downButton.set('disabled', true);
+            this.bottomButton.set('disabled', true);
+        }
+    }
+});

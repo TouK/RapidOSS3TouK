@@ -8,7 +8,7 @@
 }
 
 .rcmdb-searchgrid-wrap-headers {
-    width:100%;
+    width: 100%;
     overflow: hidden;
     z-index: 12;
 }
@@ -130,10 +130,10 @@
     display: block;
     position: relative;
 }
-.rcmdb-searchgrid .rcmdb-search-rowselected{
-    background-color:#DDDDFF;
-}
 
+.rcmdb-searchgrid .rcmdb-search-rowselected {
+    background-color: #DDDDFF;
+}
 
 .rcmdb-searchgrid .rcmdb-search-cell {
     -moz-box-sizing: border-box;
@@ -150,7 +150,7 @@
     padding: 3px 0px;
 }
 
-.rcmdb-searchgrid .rcmdb-search-cell-value  {
+.rcmdb-searchgrid .rcmdb-search-cell-value {
     overflow: hidden;
     padding: 3px 5px;
     white-space: nowrap;
@@ -164,7 +164,7 @@
 .rcmdb-searchgrid-searchinput {
     height: 18px;
     width: 350px;
-    font-size:10px;
+    font-size: 10px;
 }
 
 .rcmdb-searchgrid-tools {
@@ -198,13 +198,74 @@
 }
 
 .rcmdb-searchgrid-saveButton {
-    background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll 1px -78px;
+    background: transparent url( ../../../images/rapidjs/component/tools/save.gif ) no-repeat scroll center;
 }
 
 .rcmdb-searchgrid-searchButton {
-    background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll 1px -58px;
+    background: transparent url( ../../../images/rapidjs/component/tools/search.png) no-repeat scroll center;
 }
-.rcmdb-searchgrid-count{
-	width:60px;
-	margin-top: 3px;
+
+.rcmdb-searchgrid-removeview {
+    background: transparent url( ../../../images/rapidjs/component/tools/cross.png ) no-repeat scroll center;
+}
+
+.rcmdb-searchgrid-editview {
+    background: transparent url( ../../../images/rapidjs/component/tools/edit.png ) no-repeat scroll center;
+}
+
+.rcmdb-searchgrid-addview {
+    background: transparent url( ../../../images/rapidjs/component/tools/viewadd.png ) no-repeat scroll center;
+}
+
+.rcmdb-searchgrid-viewselect-wrp {
+    padding-left: 40px;
+}
+
+.rcmdb-searchgrid-viewselect {
+    width: 100px;
+}
+
+.rcmdb-searchgrid-count {
+    width: 60px;
+    margin-top: 3px;
+    text-align: center;
+}
+
+.rcmdb-searchgrid-view-wrp{
+	padding: 10px;
+}
+.rcmdb-searchgrid-view-text{
+	height: 20px;
+	padding-top: 2px;
+	width: 150px;
+}
+.rcmdb-searchgrid-view-inputwrp{
+	height: 22px;
+}
+.rcmdb-searchgrid-view-input{
+	width: 150px;
+	height: 20px;
+	border: 1px solid #6593CF;
+}
+.rcmdb-searchgrid-view-fields{
+
+}
+.rcmdb-searchgrid-view-fieldlist{
+	width: 150px;
+}
+.rcmdb-searchgrid-view-buttons{
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.rcmdb-searchgrid-view-btnwrp{
+	margin-bottom: 1px;
+}
+.rcmdb-searchgrid-view-wrp .yui-button button{
+    width:100px;
+    text-align:center;
+}
+.rcmdb-searchgrid-view-gridcols{
+}
+.rcmdb-searchgrid-view-collist{
+	width: 150px;
 }

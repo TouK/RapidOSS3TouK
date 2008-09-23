@@ -43,6 +43,8 @@
     <script type="text/javascript" src="js/rapidjs/component/tools/ErrorTool.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/search/AbstractSearchList.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/search/SearchList.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/search/ViewBuilder.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/search/SearchGrid.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/simplewidgets/split.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/Tooltip.js"></script>
@@ -72,6 +74,7 @@
     <link rel="stylesheet" type="text/css" href="css/rapidjs/ryuitree.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/search/search.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/search/searchlist.css"/>
+    <link rel="stylesheet" type="text/css" href="css/rapidjs/search/searchgrid.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/simplewidgets/button.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/tools/tools.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/treegrid/treegrid.css"/>

@@ -130,12 +130,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         return hd;
     },
 
-    addColumn: function(columnIndex){
+    addCellsToCurrentRows: function(nOfColumns){
         var nOfRows = this.bufferView.rowEls.length
         for (var rowIndex = 0; rowIndex < nOfRows; rowIndex++) {
             var rowEl = this.bufferView.rowEls[rowIndex];
-            YAHOO.ext.DomHelper.append(rowEl.dom, {tag:'span', cls:'rcmdb-search-cell rcmdb-searchgrid-col-' + columnIndex,
-                        html:'<span class="rcmdb-search-cell-value"></span>'});
+            var currentCellLength = rowEl.cells.length;
+            var nOfCellsToAdd = nOfColumns - currentCellLength;
+            for(var colIndex = 0; colIndex < nOfCellsToAdd; colIndex++){
+                var columnIndex = currentCellLength + colIndex;
+                YAHOO.ext.DomHelper.append(rowEl.dom, {tag:'span', cls:'rcmdb-search-cell rcmdb-searchgrid-col-' + columnIndex,
+                        html:'<span class="rcmdb-search-cell-value"></span>'});    
+            }
             rowEl.cells = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-cell', 'span', rowEl.dom);
         }
     },
@@ -387,13 +392,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
                 for (var index = 0; index < columnsToBeAdded; index++) {
                     var columnIndex = this.numberOfColumnsDrawn + index - 1;
                     this.addHeader(columnIndex, "&#160;")
-                    this.addColumn(columnIndex);
                 }
                 this.numberOfColumnsDrawn = columns.length;
             }
             for (var index = 0; index < columnsToUnhide; index++) {
                 this.unhideColumn(this.columns.length + index);
             }
+            this.addCellsToCurrentRows(columns.length);
         }
         else if (columns.length < this.columns.length) {
             var columnsToHide = this.columns.length - columns.length;
@@ -404,7 +409,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.totalColumnWidth = null;
         var rowCount = this.bufferView.rowEls.length;
         for (var index = 0; index < rowCount; index++) {
-            var cells = this.bufferView.rowEls[index].cells;
+            var rowEl = this.bufferView.rowEls[index]
+
+            var cells = rowEl.cells;
             YAHOO.util.Dom.removeClass(cells[this.columns.length -1], 'rcmdb-searchgrid-col-last');
             YAHOO.util.Dom.addClass(cells[columns.length -1], 'rcmdb-searchgrid-col-last');
         }
@@ -438,7 +445,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         var selector = ["#" + this.bodyId + " .rcmdb-searchgrid-col-" + colIndex, ".rcmdb-searchgrid-col-" + colIndex];
         YAHOO.ext.util.CSS.updateRule(selector, 'position', 'absolute');
         YAHOO.ext.util.CSS.updateRule(selector, 'display', 'none');
-
         this.headers[colIndex].style.display = 'none';
         this.headers[colIndex].split.style.display = 'none';
     },
@@ -447,7 +453,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         var selector = ["#" + this.bodyId + " .rcmdb-searchgrid-col-" + colIndex, ".rcmdb-searchgrid-col-" + colIndex];
         YAHOO.ext.util.CSS.updateRule(selector, 'position', '');
         YAHOO.ext.util.CSS.updateRule(selector, 'display', '');
-
         this.headers[colIndex].style.display = '';
         this.headers[colIndex].split.style.display = '';
     },

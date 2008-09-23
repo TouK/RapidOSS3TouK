@@ -42,6 +42,7 @@ public class RsBatchTest extends RCMDBTestCase{
     private String hostName;
     private String port;
     private String username = "rsadmin";
+    private String applicationName = "RapidSuite";
     private String password = "changeme";
     String testCommandFile = "testFile.txt";
     File file = new TestFile(testCommandFile);
@@ -63,13 +64,12 @@ public class RsBatchTest extends RCMDBTestCase{
 
 		RsBatch tool = new RsBatch();
 		Options options = tool.getOptions();
-		assertEquals(6, options.getOptions().size());
+		assertEquals(7, options.getOptions().size());
 		for (Iterator iter = options.getOptions().iterator(); iter.hasNext();) {
 			Option element = (Option) iter.next();
 			if (element.getArgName().equals(RsBatch.USERNAME_OPTION)) {
 				assertTrue(element.hasArg());
                 assertTrue(element.isRequired());
-                assertTrue(element.getDescription().indexOf("User name required to authenticate to ") >= 0);
 			}
 			else if (element.getArgName().equals(RsBatch.COMMANDFILE_OPTION)) {
 				assertTrue(element.hasArg());
@@ -79,19 +79,21 @@ public class RsBatchTest extends RCMDBTestCase{
 			else if (element.getArgName().equals(RsBatch.PASSWORD_OPTION)) {
 				assertTrue(element.hasArg());
                 assertTrue(element.isRequired());
-				assertTrue(element.getDescription().indexOf("Password required to authenticate to") >= 0);
 			}
 			else if (element.getArgName().equals(RsBatch.HOST_OPTION)) {
 			    assertTrue(element.hasArg());
 			    assertTrue(element.isRequired());
-                assertTrue(element.getDescription().indexOf("Host address of") >= 0);
 			}
 			else if (element.getArgName().equals(RsBatch.PORT_OPTION)) {
 			    assertTrue(element.hasArg());
                 assertTrue(element.isRequired());
-			    assertTrue(element.getDescription().indexOf("Port required to connect to") >= 0);
 			}
-			else if (element.getArgName().equals(RsBatch.LOGLEVEL_OPTION)) {
+            else if (element.getArgName().equals(RsBatch.APPLICATION_OPTIONS)) {
+			    assertTrue(element.hasArg());
+                assertTrue(element.isRequired());
+			    assertEquals("Application name [Modeler, RapidSuite]", element.getDescription());
+			}
+            else if (element.getArgName().equals(RsBatch.LOGLEVEL_OPTION)) {
 				assertTrue(element.hasArg());
                 assertFalse(element.isRequired());
 				assertEquals("Log level of " + tool.getToolName() + ". Valid log levels: " + Level.ALL.toString()+ ", " + Level.DEBUG.toString() + ", " + Level.INFO.toString() + ", " + Level.WARN.toString()
@@ -145,11 +147,13 @@ public class RsBatchTest extends RCMDBTestCase{
                                       "-" + RsBatch.COMMANDFILE_OPTION, testCommandFile,
                                       "-" + RsBatch.LOGLEVEL_OPTION, Level.DEBUG.toString(),
                                       "-" + RsBatch.USERNAME_OPTION, username,
+                                      "-" + RsBatch.APPLICATION_OPTIONS, applicationName,
                                       "-" + RsBatch.PASSWORD_OPTION, password};
 		RsBatch tool = new RsBatch();
 		tool.parseArgs(args);
 		assertEquals(username, tool.getUsername());
 		assertEquals(password, tool.getPassword());
+		assertEquals(applicationName, tool.getApplicationName());
 		assertEquals(testCommandFile, tool.getCommandFile());
 		assertEquals(Level.DEBUG.toString(), tool.getLoglevel());
 	}
@@ -160,6 +164,7 @@ public class RsBatchTest extends RCMDBTestCase{
                                       "-" + RsBatch.COMMANDFILE_OPTION, testCommandFile,
                                       "-" + RsBatch.LOGLEVEL_OPTION, "invalid",
                                       "-" + RsBatch.USERNAME_OPTION, username,
+                                      "-" + RsBatch.APPLICATION_OPTIONS, applicationName,
                                       "-" + RsBatch.PASSWORD_OPTION, password};
 		RsBatch tool = new RsBatch();
 		tool.createOptions();
@@ -176,6 +181,7 @@ public class RsBatchTest extends RCMDBTestCase{
                                       "-" + RsBatch.PORT_OPTION, port,
                                       "-" + RsBatch.COMMANDFILE_OPTION, testCommandFile,
                                       "-" + RsBatch.USERNAME_OPTION, "",
+                                     "-" + RsBatch.APPLICATION_OPTIONS, applicationName,
                                       "-" + RsBatch.PASSWORD_OPTION, password};
 		RsBatch console = new RsBatch();
 		try {
@@ -187,6 +193,24 @@ public class RsBatchTest extends RCMDBTestCase{
 		}
 	}
 
+    public void testEmptyApplicationPrintsUsage() throws Exception {
+
+		String[] args = new String[] {"-" + RsBatch.HOST_OPTION, hostName,
+                                      "-" + RsBatch.PORT_OPTION, port,
+                                      "-" + RsBatch.COMMANDFILE_OPTION, testCommandFile,
+                                      "-" + RsBatch.USERNAME_OPTION, username,
+                                     "-" + RsBatch.APPLICATION_OPTIONS, "",
+                                      "-" + RsBatch.PASSWORD_OPTION, password};
+		RsBatch console = new RsBatch();
+		try {
+            console.parseArgs(args);
+			fail("Should throw exception because username cannot be empty");
+		}
+		catch(RCliException e){
+			assertEquals(new RCliException(RCliException.EMPTY_ARGUMENT_FOR_COMMAND_LINE_OPTION, new Object[] { RsBatch.APPLICATION_OPTIONS }).getMessage(), e.getMessage());
+		}
+	}
+
 
     public void testEmptyHostPrintsUsage() throws Exception {
 
@@ -194,6 +218,7 @@ public class RsBatchTest extends RCMDBTestCase{
                                       "-" + RsBatch.PORT_OPTION, port,
                                       "-" + RsBatch.COMMANDFILE_OPTION, testCommandFile,
                                       "-" + RsBatch.USERNAME_OPTION, username,
+                                      "-" + RsBatch.APPLICATION_OPTIONS, applicationName,
                                       "-" + RsBatch.PASSWORD_OPTION, password};
         RsBatch console = new RsBatch();
         try {
@@ -212,6 +237,7 @@ public class RsBatchTest extends RCMDBTestCase{
                                       "-" + RsBatch.PORT_OPTION, "  ",
                                       "-" + RsBatch.COMMANDFILE_OPTION, testCommandFile,
                                       "-" + RsBatch.USERNAME_OPTION, username,
+                                      "-" + RsBatch.APPLICATION_OPTIONS, applicationName,
                                       "-" + RsBatch.PASSWORD_OPTION, password};
         RsBatch console = new RsBatch();
         try {
@@ -229,6 +255,7 @@ public class RsBatchTest extends RCMDBTestCase{
                                       "-" + RsBatch.PORT_OPTION, port,
                                       "-" + RsBatch.COMMANDFILE_OPTION, testCommandFile,
                                       "-" + RsBatch.USERNAME_OPTION, username,
+                                      "-" + RsBatch.APPLICATION_OPTIONS, applicationName,
                                       "-" + RsBatch.PASSWORD_OPTION, password};
         RsBatch console = new RsBatch();
         try {
@@ -247,6 +274,7 @@ public class RsBatchTest extends RCMDBTestCase{
                                       "-" + RsBatch.PORT_OPTION, port,
                                       "-" + RsBatch.COMMANDFILE_OPTION, testCommandFile,
                                       "-" + RsBatch.USERNAME_OPTION, username,
+                                      "-" + RsBatch.APPLICATION_OPTIONS, applicationName,
                                       "-" + RsBatch.PASSWORD_OPTION, " "};
 		RsBatch console = new RsBatch();
 		try {
@@ -263,6 +291,7 @@ public class RsBatchTest extends RCMDBTestCase{
                                       "-" + RsBatch.PORT_OPTION, port,
                                       "-" + RsBatch.COMMANDFILE_OPTION, " ",
                                       "-" + RsBatch.USERNAME_OPTION, username,
+                                      "-" + RsBatch.APPLICATION_OPTIONS, applicationName,
                                       "-" + RsBatch.PASSWORD_OPTION, password};
 		RsBatch console = new RsBatch();
 		try {
@@ -279,6 +308,7 @@ public class RsBatchTest extends RCMDBTestCase{
                                       "-" + RsBatch.PORT_OPTION, port,
                                       "-" + RsBatch.COMMANDFILE_OPTION, "invalid",
                                       "-" + RsBatch.USERNAME_OPTION, username,
+                                      "-" + RsBatch.APPLICATION_OPTIONS, applicationName,
                                       "-" + RsBatch.PASSWORD_OPTION, password};
 		RsBatch console = new RsBatch();
 		try {

@@ -51,6 +51,7 @@ public class RsBatch extends CommandLineUtility {
     public static final String COMMANDFILE_OPTION = "commandfile";
     public static final String HOST_OPTION = "host";
     public static final String PORT_OPTION = "port";
+    public static final String APPLICATION_OPTIONS = "application";
 
 
     private String username;
@@ -87,16 +88,6 @@ public class RsBatch extends CommandLineUtility {
     }
 
     public Options createOptions() {
-        try
-        {
-            String absPath = new File(".").getCanonicalPath();
-            absPath = absPath.replaceAll("\\\\", "/");
-            applicationName = absPath.substring(absPath.lastIndexOf("/")+1);
-        }
-        catch(Throwable t)
-        {
-            t.printStackTrace();
-        }
         OptionBuilder.withArgName(COMMANDFILE_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
@@ -106,26 +97,28 @@ public class RsBatch extends CommandLineUtility {
         OptionBuilder.withArgName(USERNAME_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("User name required to authenticate to "+applicationName);
         Option username = OptionBuilder.create(USERNAME_OPTION);
 
         OptionBuilder.withArgName(PASSWORD_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("Password required to authenticate to "+applicationName);
         Option password = OptionBuilder.create(PASSWORD_OPTION);
 
         OptionBuilder.withArgName(HOST_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("Host address of "+applicationName);
         Option host = OptionBuilder.create(HOST_OPTION);
 
         OptionBuilder.withArgName(PORT_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("Port required to connect to "+applicationName);
         Option port = OptionBuilder.create(PORT_OPTION);
+
+        OptionBuilder.withArgName(APPLICATION_OPTIONS);
+        OptionBuilder.hasArg();
+        OptionBuilder.isRequired();
+        OptionBuilder.withDescription("Application name [Modeler, RapidSuite]");
+        Option application = OptionBuilder.create(APPLICATION_OPTIONS);
 
         OptionBuilder.withArgName(LOGLEVEL_OPTION);
         OptionBuilder.hasArg();
@@ -151,6 +144,7 @@ public class RsBatch extends CommandLineUtility {
         options.addOption(username);
         options.addOption(password);
         options.addOption(loglevel);
+        options.addOption(application);
 
         return options;
     }
@@ -197,6 +191,9 @@ public class RsBatch extends CommandLineUtility {
 
         else if (option.getOpt().equals(PASSWORD_OPTION)) {
             this.password = getRequiredOptionValue(option);
+        }
+        else if (option.getOpt().equals(APPLICATION_OPTIONS)) {
+            this.applicationName = getRequiredOptionValue(option);
         }
 
         else if (option.getOpt().equals(LOGLEVEL_OPTION)) {
@@ -377,5 +374,9 @@ public class RsBatch extends CommandLineUtility {
     }
 
     protected void validateArgs() throws RCliException {
+    }
+
+    public String getApplicationName() {
+        return applicationName;
     }
 }

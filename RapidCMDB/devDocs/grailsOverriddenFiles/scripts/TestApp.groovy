@@ -282,7 +282,6 @@ def runTests = {suite, TestResult result, Closure callback ->
 }
 target(runUnitTests: "Run Grails' unit tests under the test/unit directory") {
     try {
-        loadPlugins();
         loadApp()
         def testFiles = resolveTestResources {"test/unit/${it}.groovy"}
         testFiles.addAll(resolveTestResources {"test/unit/${it}.java"})
@@ -293,7 +292,7 @@ target(runUnitTests: "Run Grails' unit tests under the test/unit directory") {
         }
 
         def suite = new TestSuite()
-		classLoader.rootLoader.addURL(new File("test/unit").toURI().toURL())
+		classLoader.addURL(new File("test/unit").toURI().toURL())
         populateTestSuite(suite, testFiles, classLoader, appCtx, "test/unit/")
         if (suite.testCount() > 0) {
 

@@ -53,16 +53,16 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         super.setUp();
         previousGrailsApp = ApplicationHolder.application;
         configParams = [:]
-        if(previousGrailsApp != null)
-        {
-            println "WITH GRAILS APPLICATION"
-            gcl = new GroovyClassLoader(previousGrailsApp.getClassLoader());
-        }
-        else
-        {
+//        if(previousGrailsApp != null)
+//        {
+//            println "WITH GRAILS APPLICATION"
+//            gcl = new GroovyClassLoader(previousGrailsApp.getClassLoader());
+//        }
+//        else
+//        {
             println "NO GRAILS APPLICATION"
             gcl = new GroovyClassLoader(this.class.classLoader);
-        }
+//        }
     }
 
     def initialize(List classesToBeLoaded, List pluginsToLoad)

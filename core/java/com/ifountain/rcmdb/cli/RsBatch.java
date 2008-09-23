@@ -60,6 +60,7 @@ public class RsBatch extends CommandLineUtility {
     private int port;
     private String host;
     private HttpUtils httpUtils;
+    private String applicationName;
 
     public static final String DELIMETER = "|";
 
@@ -86,34 +87,44 @@ public class RsBatch extends CommandLineUtility {
     }
 
     public Options createOptions() {
+        try
+        {
+            String absPath = new File(".").getCanonicalPath();
+            absPath = absPath.replaceAll("\\\\", "/");
+            applicationName = absPath.substring(absPath.lastIndexOf("/")+1);
+        }
+        catch(Throwable t)
+        {
+            t.printStackTrace();
+        }
         OptionBuilder.withArgName(COMMANDFILE_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("File that contains batch REST API commands. Command file must be specified relative to RapidServer insallation directory. Entries in command file must be in '|' delimeted format.");
+        OptionBuilder.withDescription("File that contains batch REST API commands. Command file must be specified relative to RapidServer installation directory. Entries in command file must be in '|' delimeted format.");
         Option commandfile = OptionBuilder.create(COMMANDFILE_OPTION);
 
         OptionBuilder.withArgName(USERNAME_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("User name required to authenticate to Rapid Server");
+        OptionBuilder.withDescription("User name required to authenticate to "+applicationName);
         Option username = OptionBuilder.create(USERNAME_OPTION);
 
         OptionBuilder.withArgName(PASSWORD_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("Password required to authenticate to Rapid Server");
+        OptionBuilder.withDescription("Password required to authenticate to "+applicationName);
         Option password = OptionBuilder.create(PASSWORD_OPTION);
 
         OptionBuilder.withArgName(HOST_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("Host address of Rapid Server");
+        OptionBuilder.withDescription("Host address of "+applicationName);
         Option host = OptionBuilder.create(HOST_OPTION);
 
         OptionBuilder.withArgName(PORT_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired();
-        OptionBuilder.withDescription("Port required to connect to Rapid Server");
+        OptionBuilder.withDescription("Port required to connect to "+applicationName);
         Option port = OptionBuilder.create(PORT_OPTION);
 
         OptionBuilder.withArgName(LOGLEVEL_OPTION);
@@ -211,24 +222,22 @@ public class RsBatch extends CommandLineUtility {
     }
 
     protected void authenticate(String login, String pass)throws RCMDBException {
-        logger.debug("Authenticating to RapidCMDB with username <" + login + ">");
+        logger.debug("Authenticating to "+applicationName+" with username <" + login + ">");
         String response = "";
          try {
              Map params = new HashMap();
              params.put("login", login);
              params.put("password", pass);
              params.put("format", "xml");
-             String absPath = new File(".").getCanonicalPath();
-             absPath = absPath.replaceAll("\\\\", "/");
-             String applicationName = absPath.substring(absPath.lastIndexOf("/")+1);
+
              response = httpUtils.doPostRequest("http://" + host + ":" + port + "/"+applicationName+"/auth/signIn", params);
          } catch (Exception e) {
              e.printStackTrace();
-             logger.fatal("Could not connect to RapidCMDB");
+             logger.fatal("Could not connect to "+applicationName);
              throw new RCMDBException(RCMDBException.ERROR_CONNECT_SERVER, new Object[0]);
          }
         if (!(response.indexOf("Successful") > -1)) {
-            logger.fatal("Could not authenticate to RapidCMDB with username <" + login + ">");
+            logger.fatal("Could not authenticate to "+applicationName+" with username <" + login + ">");
             throw new RCMDBException(RCMDBException.CANNOT_AUTHENTICATE, new Object[]{login});
         }
         logger.info("Successfully authenticated.");
@@ -289,6 +298,10 @@ public class RsBatch extends CommandLineUtility {
 
     protected void processAction(String actionParameters) throws Exception {
         String callPrefix = "http://" + host + ":" + port;
+        if(!actionParameters.startsWith("/"))
+        {
+            actionParameters = "/"+actionParameters;    
+        }
         String call = callPrefix + actionParameters;
 
         String response = makeCall(call);

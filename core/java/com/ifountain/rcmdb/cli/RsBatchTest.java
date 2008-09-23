@@ -69,27 +69,27 @@ public class RsBatchTest extends RCMDBTestCase{
 			if (element.getArgName().equals(RsBatch.USERNAME_OPTION)) {
 				assertTrue(element.hasArg());
                 assertTrue(element.isRequired());
-				assertEquals("User name required to authenticate to Rapid Suite", element.getDescription());
+                assertTrue(element.getDescription().indexOf("User name required to authenticate to ") >= 0);
 			}
 			else if (element.getArgName().equals(RsBatch.COMMANDFILE_OPTION)) {
 				assertTrue(element.hasArg());
                 assertTrue(element.isRequired());
-				assertEquals("File that contains batch REST API commands. Command file must be specified relative to RapidSuite insallation directory. Entries in command file must be in '|' delimeted format.", element.getDescription());
+				assertEquals("File that contains batch REST API commands. Command file must be specified relative to RapidServer installation directory. Entries in command file must be in '|' delimeted format.", element.getDescription());
 			}
 			else if (element.getArgName().equals(RsBatch.PASSWORD_OPTION)) {
 				assertTrue(element.hasArg());
                 assertTrue(element.isRequired());
-				assertEquals("Password required to authenticate to Rapid Suite", element.getDescription());
+				assertTrue(element.getDescription().indexOf("Password required to authenticate to") >= 0);
 			}
 			else if (element.getArgName().equals(RsBatch.HOST_OPTION)) {
 			    assertTrue(element.hasArg());
 			    assertTrue(element.isRequired());
-			    assertEquals("Host address of Rapid Suite", element.getDescription());
+                assertTrue(element.getDescription().indexOf("Host address of") >= 0);
 			}
 			else if (element.getArgName().equals(RsBatch.PORT_OPTION)) {
 			    assertTrue(element.hasArg());
                 assertTrue(element.isRequired());
-			    assertEquals("Port required to connect to Rapid Suite", element.getDescription());
+			    assertTrue(element.getDescription().indexOf("Port required to connect to") >= 0);
 			}
 			else if (element.getArgName().equals(RsBatch.LOGLEVEL_OPTION)) {
 				assertTrue(element.hasArg());

@@ -19,6 +19,7 @@ CmdbScript.addScript(name: "queryList");
 CmdbScript.addScript(name: "createQuery");
 CmdbScript.addScript(name: "editQuery");
 CmdbScript.addScript(name: "reloadOperations");
+CmdbScript.addScript(name: "getViewFields");
 
 // topology scripts
 CmdbScript.addScript(name: "createMap");

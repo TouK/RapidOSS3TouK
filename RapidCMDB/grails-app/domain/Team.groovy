@@ -38,7 +38,7 @@ class Team {
     }
 
     public boolean equals(Object obj) {
-        return obj.id.longValue() == this.id.longValue();
+        return obj.getProperty("id").longValue() == this.getProperty("id").longValue();
     }
     
     //AUTO_GENERATED_CODE

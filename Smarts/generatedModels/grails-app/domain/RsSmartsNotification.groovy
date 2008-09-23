@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsSmartsNotification extends RsEvent
-{
-    
+class RsSmartsNotification  extends RsAbstractEvent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -221,4 +220,5 @@ class RsSmartsNotification extends RsEvent
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "causedBy", "causes"];
     
     //AUTO_GENERATED_CODE
+    
 }

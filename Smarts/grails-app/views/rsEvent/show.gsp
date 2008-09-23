@@ -41,6 +41,83 @@
                     
                 </tr>
                 
+                <tr class="prop">
+                    <td valign="top" class="name">acknowledged:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.acknowledged}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">active:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.active}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">count:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.count}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">eventName:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.eventName}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">firstNotifiedAt:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.firstNotifiedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">lastChangedAt:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.lastChangedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">lastClearedAt:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.lastClearedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">lastNotifiedAt:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.lastNotifiedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">owner:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.owner}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">severity:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.severity}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">source:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.source}</td>
+                    
+                </tr>
+                
             </tbody>
         </table>
     </div>

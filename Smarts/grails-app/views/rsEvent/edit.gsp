@@ -42,6 +42,105 @@
                         </td>
                     </tr>
                     
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="acknowledged">acknowledged:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'acknowledged','errors')}">
+                            <g:checkBox name="acknowledged" value="${rsEvent?.acknowledged}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="active">active:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'active','errors')}">
+                            <g:checkBox name="active" value="${rsEvent?.active}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="count">count:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'count','errors')}">
+                            <input type="text" id="count" name="count" value="${fieldValue(bean:rsEvent,field:'count')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="eventName">eventName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'eventName','errors')}">
+                            <input type="text" id="eventName" name="eventName" value="${fieldValue(bean:rsEvent,field:'eventName')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="firstNotifiedAt">firstNotifiedAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'firstNotifiedAt','errors')}">
+                            <g:datePicker name="firstNotifiedAt" value="${rsEvent?.firstNotifiedAt}" noSelection="['':'']"></g:datePicker>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="lastChangedAt">lastChangedAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'lastChangedAt','errors')}">
+                            <g:datePicker name="lastChangedAt" value="${rsEvent?.lastChangedAt}" noSelection="['':'']"></g:datePicker>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="lastClearedAt">lastClearedAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'lastClearedAt','errors')}">
+                            <g:datePicker name="lastClearedAt" value="${rsEvent?.lastClearedAt}" noSelection="['':'']"></g:datePicker>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="lastNotifiedAt">lastNotifiedAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'lastNotifiedAt','errors')}">
+                            <g:datePicker name="lastNotifiedAt" value="${rsEvent?.lastNotifiedAt}" noSelection="['':'']"></g:datePicker>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="owner">owner:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'owner','errors')}">
+                            <input type="text" id="owner" name="owner" value="${fieldValue(bean:rsEvent,field:'owner')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="severity">severity:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'severity','errors')}">
+                            <input type="text" id="severity" name="severity" value="${fieldValue(bean:rsEvent,field:'severity')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="source">source:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'source','errors')}">
+                            <input type="text" id="source" name="source" value="${fieldValue(bean:rsEvent,field:'source')}"/>
+                        </td>
+                    </tr>
+                    
                 </tbody>
             </table>
         </div>

@@ -10,18 +10,66 @@
                 <Property Name='rsDatasource' Type='string'/>
             </Properties>
         </Model>
-	    <Model Name="RsHistoricalEvent">
+        
+	  	<Model Name="RsHistoricalEvent">
+      		<Properties>
+          		<Property Name='name' Type='string'/>
+          		<Property Name='eventName' Type='string'/>
+          		<Property Name='active' Type='boolean' Default="true" />
+                <Property Name='source' Type='string' />
+                <Property Name='owner' Type='string' />
+                <Property Name='acknowledged' Type='boolean' Default="false" />
+                <Property Name='severity' Type='number' Default="0"/>
+                <Property Name='firstNotifiedAt' Type='date' />
+                <Property Name='lastNotifiedAt' Type='date' />
+                <Property Name='lastChangedAt' Type='date' />
+                <Property Name='lastClearedAt' Type='date' />
+                <Property Name='count' Type='number' Default="1" />
+         	</Properties>
+  		</Model>    
+  		
+  		<Model Name="RsEventJournal">
             <Properties>
+                <Property Name='eventId' Type='string' />
+    			<Property Name='rsTime' Type='date' />
+    			<Property Name='eventName' Type='string' />
+    			<Property Name='details' Type='string' />
             </Properties>
         </Model>
 
-        <Model Name="RsEvent">
-            <Properties>
-                <Property Name='name' Type='string' IsKey="true"/>
-            </Properties>
-        </Model>
+   		<Model Name="RsAbstractEvent">
+      		<Properties>
+       			<Property Name='name' Type='string' IsKey="true"/>
+          		<Property Name='active' Type='boolean' Default="true" />
+                <Property Name='source' Type='string' />
+                <Property Name='owner' Type='string' />
+                <Property Name='acknowledged' Type='boolean' Default="false" />
+                <Property Name='severity' Type='number' Default="0"/>
+                <Property Name='firstNotifiedAt' Type='date' />
+                <Property Name='lastNotifiedAt' Type='date' />
+                <Property Name='lastChangedAt' Type='date' />
+                <Property Name='lastClearedAt' Type='date' />
+                <Property Name='count' Type='number' Default="1" />
+         	</Properties>
+  		</Model>
+  		<Model Name="RsEvent" Parent="RsAbstractEvent">
+      		<Properties>
+       			<Property Name='name' Type='string' IsKey="true"/>
+          		<Property Name='eventName' Type='string'/>
+          		<Property Name='active' Type='boolean' Default="true" />
+                <Property Name='source' Type='string' />
+                <Property Name='owner' Type='string' />
+                <Property Name='acknowledged' Type='boolean' Default="false" />
+                <Property Name='severity' Type='number' Default="0"/>
+                <Property Name='firstNotifiedAt' Type='date' />
+                <Property Name='lastNotifiedAt' Type='date' />
+                <Property Name='lastChangedAt' Type='date' />
+                <Property Name='lastClearedAt' Type='date' />
+                <Property Name='count' Type='number' Default="1" />
+         	</Properties>
+  		</Model>     
         
-        <Model Name="RsSmartsNotification" Parent="RsEvent">
+        <Model Name="RsSmartsNotification" Parent="RsAbstractEvent">
             <Properties>
                 <Property Name='creationClassName' Type='string'/>
                 <Property Name='description' Type='string'/>

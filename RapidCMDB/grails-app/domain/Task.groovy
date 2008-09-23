@@ -29,6 +29,10 @@ class Task {
     {
     	return "${getClass().getName()}[name:$name]";
     }
+
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     
     //AUTO_GENERATED_CODE
     

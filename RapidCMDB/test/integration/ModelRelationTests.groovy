@@ -205,7 +205,7 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
 
         link.addRelation(connectedTo: devAdapter1);
         assertEquals(1, link.connectedTo.size());
-        assertTrue(link.connectedTo.contains(devAdapter1))
+        assertTrue(link.connectedTo.toString(), link.connectedTo.contains(devAdapter1))
         def linkInCompass = Link.get(name: "myLink", creationClassName: "Link")
         assertEquals(1, linkInCompass.connectedTo.size());
 

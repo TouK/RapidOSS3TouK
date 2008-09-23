@@ -215,10 +215,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
             var header = colNode.getAttribute('header');
             var width = colNode.getAttribute('width');
             this.columnsConfig[att] = {header:header, width:width};
-            orderedArray[colOrder - 1] = att;
+            orderedArray.push({attribute:att, order:colOrder});
         }
+        orderedArray.sort(function(col1, col2){
+            return col1.order - col2.order;
+        })
         for (var index = 0; index < nOfColumns; index++) {
-            var attName = orderedArray[index];
+            var attName = orderedArray[index]['attribute'];
             SelectUtils.addOption(this.colList, attName, attName);
             SelectUtils.addOption(this.defaultSortInput, attName, attName);
         }

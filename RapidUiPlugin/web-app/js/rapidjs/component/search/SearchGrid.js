@@ -94,7 +94,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'dblclick', this.handleDoubleClick, this, true);
         this.updateColumns();
         this.viewBuilder = new YAHOO.rapidjs.component.search.ViewBuilder(this);
-
+        this.viewBuilder.events['success'].subscribe(this.viewBuilderSuccess, this, true);
+        this.viewBuilder.events['error'].subscribe(this.viewBuilderError, this, true);
     },
 
     addHeader: function(columnIndex, label) {
@@ -449,5 +450,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
 
         this.headers[colIndex].style.display = '';
         this.headers[colIndex].split.style.display = '';
+    },
+
+    viewBuilderError:function(component, errors){
+         this.events["error"].fireDirect(this, errors, true);
+    },
+    viewBuilderSuccess: function(){
+         this.events["success"].fireDirect(this);
     }
 });

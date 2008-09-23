@@ -22,13 +22,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.tool.ErrorTool, YAHOO.rapidjs.componen
     success: function(){
        YAHOO.util.Dom.setStyle(this.button.el.dom.parentNode, 'display', 'none');
     },
-    error: function(component, errors){
+    error: function(component, errors, willShow){
         YAHOO.util.Dom.setStyle(this.button.el.dom.parentNode, 'display', '');
         if(this.dialog){
             this.appendErrors(errors);
         }
         else{
             this.errorsToBeAppended = errors;
+        }
+        if(willShow){
+            this.performAction();
         }
     },
     appendErrors : function(errors){

@@ -13,6 +13,7 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
     public void testPropertySummary()
     {
         initialize([PropertySummaryMethodDomainObject1], []);
+        PropertySummaryMethodDomainObject1.list()*.remove();
         PropertySummaryMethodDomainObject1.add(prop1:"prop1Value1");
         PropertySummaryMethodDomainObject1.add(prop1:"prop1Value2");
         PropertySummaryMethodDomainObject1.add(prop1:"prop1Value1");
@@ -37,6 +38,7 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
     public void testPropertySummaryWithMultipleProperty()
     {
         initialize([PropertySummaryMethodDomainObject1], []);
+        PropertySummaryMethodDomainObject1.list()*.remove();
         PropertySummaryMethodDomainObject1.add(prop1:"p1val1", prop2:"p2val1");
         PropertySummaryMethodDomainObject1.add(prop1:"p1val1");
         PropertySummaryMethodDomainObject1.add(prop1:"p1val1");
@@ -71,6 +73,7 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
     public void testPropertySummaryWithNoProperty()
     {
         initialize([PropertySummaryMethodDomainObject1], []);
+        PropertySummaryMethodDomainObject1.list()*.remove();
         PropertySummaryMethodDomainObject1.add(prop1:"p1val1", prop2:"p2val1");
 
         PropertySummaryMethod method = new PropertySummaryMethod(PropertySummaryMethodDomainObject1.metaClass);

@@ -7,6 +7,7 @@ YAHOO.rapidjs.component.Dialog = function(config)
     this.minWidth = 100;
     this.maxWidth = 900;
     this.maxHeight = 600;
+    this.close = false;
     this.title = "&#160;";
     this.buttons = null;
     this.resizable = true;
@@ -18,16 +19,17 @@ YAHOO.rapidjs.component.Dialog.prototype = {
     render: function()
     {
         var dh = YAHOO.ext.DomHelper;
-        this.container = dh.append(document.body, {tag: 'div', cls:'resizable-panel'});
+        this.container = dh.append(document.body, {tag: 'div'});
         YAHOO.util.Dom.generateId(this.container, 'r-dialog-')
-        this.body = dh.append(document.body, {tag: 'div', cls:'resizable-panel-body'});
-        this.footer = dh.append(document.body, {tag: 'div', cls: 'resizable-panel-footer'});
+        this.body = dh.append(document.body, {tag: 'div'});
+        this.footer = dh.append(document.body, {tag: 'div', style:'text-align:right;'});
 
         this.panelConfig = {
             draggable: true,
             constraintoviewport: true,
             fixedcenter:true,
             visible:false,
+            close:this.close,
             width:this.width + "px",
             height:this.height + "px"
         };
@@ -64,12 +66,16 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         }
         this.panel.render();
 
-        var IE_QUIRKS = (YAHOO.env.ua.ie && document.compatMode == "BackCompat");
+
+        if (this.resizable) {
+            YAHOO.util.Dom.addClass(this.container, 'resizable-panel');
+            YAHOO.util.Dom.addClass(this.body, 'resizable-panel-body');
+            YAHOO.util.Dom.addClass(this.footer, 'resizable-panel-footer');
+            var IE_QUIRKS = (YAHOO.env.ua.ie && document.compatMode == "BackCompat");
 
             // UNDERLAY/IFRAME SYNC REQUIRED
-        var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie == 7 && IE_QUIRKS));
+            var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie == 7 && IE_QUIRKS));
             // Create Resize instance, binding it to the 'resizablepanel' DIV
-        if (this.resizable) {
             this.resize = new YAHOO.util.Resize(this.container, {
                 handles: ['br'],
                 autoRatio: false,

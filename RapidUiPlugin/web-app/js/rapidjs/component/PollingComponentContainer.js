@@ -131,7 +131,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         }
         var postData = "";
         for(var paramName in params) {
-            postData = postData + paramName + "=" + escape(params[paramName])+"&";
+            postData = postData + paramName + "=" + encodeURIComponent(params[paramName])+"&";
         }
         if(postData != "")
         {
@@ -177,7 +177,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         }
         var postData = "";
         for(var paramName in params) {
-            postData = postData + paramName + "=" + escape(params[paramName])+"&";
+            postData = postData + paramName + "=" + encodeURIComponent(params[paramName])+"&";
         }
         if(postData != "")
         {

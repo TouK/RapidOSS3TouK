@@ -145,11 +145,25 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
     initializeFlash: function()
     {
-        this.body.dom.innerHTML = "<iframe src=\"images/rapidjs/component/topologyMap/topologymap.gsp?configFunction="+this.configFunctionName+"\" frameborder=\"0\" width=\"%100\" height=\"%100\" style=\"margin: 0px;width:100%;height:100%\">" +
-                              "</iframe>"
-        this.iframe = this.body.dom.getElementsByTagName("iframe")[0];
-        this.flashTimer = new YAHOO.ext.util.DelayedTask(this.isFlashLoaded, this);
-        this.flashTimer.delay(100);
+        var requiredMajorVersion = 9;
+        var requiredMinorVersion = 0;
+        var requiredRevision = 115;
+
+        var hasProductInstall = YAHOO.rapidjs.FlashUtils.DetectFlashVer(6, 0, 65);
+        var hasRequestedVersion = YAHOO.rapidjs.FlashUtils.DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
+        var containerElement = this.body.dom;
+        if (!hasProductInstall || !hasRequestedVersion)
+        {
+            containerElement.innerHTML = "This application requires Flash player version " + requiredMajorVersion + ". Click <a href='http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash'>here</a> to download";
+        }
+        else
+        {
+            this.body.dom.innerHTML = "<iframe src=\"images/rapidjs/component/topologyMap/topologymap.gsp?configFunction="+this.configFunctionName+"\" frameborder=\"0\" width=\"%100\" height=\"%100\" style=\"margin: 0px;width:100%;height:100%\">" +
+                                  "</iframe>"
+            this.iframe = this.body.dom.getElementsByTagName("iframe")[0];
+            this.flashTimer = new YAHOO.ext.util.DelayedTask(this.isFlashLoaded, this);
+            this.flashTimer.delay(100);
+        }
     },
     getLayout : function( ) {
         return this.getFlashObject().getLayout();

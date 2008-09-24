@@ -416,9 +416,21 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             YAHOO.util.Dom.addClass(cells[columns.length - 1], 'rcmdb-searchgrid-col-last');
 
         }
+        if (this.lastSortedHeader) {
+            this.lastSortedHeader.sortDir = null;
+            this.updateHeaderSortState(this.lastSortedHeader);
+            this.lastSortedHeader = null;
+        }
         this.columns = columns;
         for (var index = 0; index < this.columns.length; index++) {
-            this.headers[index].textNode.innerHTML = this.columns[index].colLabel;
+            var header = this.headers[index];
+            var attribute = this.columns[index]['attributeName'];
+            if (attribute == this.lastSortAtt) {
+                header.sortDir = this.lastSortOrder;
+                this.updateHeaderSortState(header);
+                this.lastSortedHeader = header;
+            }
+            header.textNode.innerHTML = this.columns[index].colLabel;
         }
         this.updateColumns();
         for (var index = 0; index < rowCount; index++) {
@@ -480,11 +492,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         var sortedHeaderIndex = -1;
         for (var i = 0; i < this.columns.length; i++) {
             if (this.columns[i]['attributeName'] == this.lastSortAtt) {
-                sortedHeaderIndex =  i;
+                sortedHeaderIndex = i;
                 break;
             }
         }
-        if(sortedHeaderIndex > -1){
+        if (sortedHeaderIndex > -1) {
             this.lastSortedHeader = this.headers[sortedHeaderIndex];
             this.lastSortedHeader.sortDir = this.lastSortOrder;
             this.updateHeaderSortState(this.lastSortedHeader);

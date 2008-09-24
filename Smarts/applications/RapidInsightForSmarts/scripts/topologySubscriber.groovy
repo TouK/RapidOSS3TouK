@@ -73,7 +73,7 @@ CLASS_MAPPINGS = [
     RsComputerSystem : [
             classes:[Bridge:[:], Hub:[:], Host:[:], Node:[:], Switch:[:], Router:[:], Firewall:[:], RelayDevice:[:], TerminalServer:[:]],
             defaultColumnsToBeSubscribed: ["Name", "DiscoveredLastAt", "DiscoveryErrorInfo"],
-            columnsMapping:[:]
+            columnsMapping:[SNMPAddress:"snmpAddress"]
     ],
     RsComputerSystemComponent :[
             classes:[PowerSupply:[:], Processor:[:], Memory:[:], TemperatureSensor:[:], VoltageSensor:[:], Fan:[:], Disk:[:], FileSystem:[:], LogicalDisk:[:], NumericSensor:[:]],

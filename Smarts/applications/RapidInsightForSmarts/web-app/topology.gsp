@@ -237,15 +237,9 @@
     tree.addToolbarButton({
         className:'r-filterTree-queryAdd',
         scope:this,
-        tooltip: 'Add query',
+        tooltip: 'Save Map',
         click:function() {
-            var data = topMap.getMapData();
-            if( data ) {
-                var nodes = data["nodes"];
-                var edges = data["edges"];
-                var postData = { nodes : nodes, edges : edges };
-                dialog.show(dialog.CREATE_MODE, null, postData );
-            }
+            saveMapFunction();
         }
     });
     tree.poll();

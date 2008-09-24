@@ -238,7 +238,7 @@ public class JsCssCombinerTest extends TestCase {
                          "<div>sezgin</div>\n\t" +
                          "</body>\n\t</html>";
 
-        String cssContent = ".r-tree{background: transparent url( '../../images/sprite.png' ) repeat-x scroll 0pt -1300px;}.r-tree-header{background: transparent url( ../../images/rapidjs/filter.png) repeat-x scroll 0pt -1300px;}\n" +
+        String cssContent = ".r-tree{background: transparent url( '../../images/sprite.png' ) repeat-x scroll 0pt -1300px;}.r-tree-header{background: transparent url( ../../images/rapidjs/filter.png ) repeat-x scroll 0pt -1300px;}\n" +
                 "r-tree-body{background: transparent url( \"../../images/rapidjs/components/folder.png\" ) repeat-x scroll 0pt -1300px;}";
         FileTestUtils.generateFile("webapp/jslib/rapidjs/TreeGrid.js", "");
         FileTestUtils.generateFile("webapp/css/rapidjs/treegrid.css", cssContent);
@@ -258,7 +258,7 @@ public class JsCssCombinerTest extends TestCase {
        File cssFile = new TestFile("test_v0-3-1.css");
        assertTrue(cssFile.exists());
 
-       String newCssContent =  ".r-tree{background: transparent url( 'newImages/sprite_v0-3-1.png' ) repeat-x scroll 0pt -1300px;}.r-tree-header{background: transparent url( newImages/filter_v0-3-1.png ) repeat-x scroll 0pt -1300px;}\n" +
+       String newCssContent =  ".r-tree{background: transparent url( 'newImages/sprite_v0-3-1.png' ) repeat-x scroll 0pt -1300px;}.r-tree-header{background: transparent url( newImages/filter_v0-3-1.png) repeat-x scroll 0pt -1300px;}\n" +
                 "r-tree-body{background: transparent url( \"newImages/folder_v0-3-1.png\" ) repeat-x scroll 0pt -1300px;}\n";
 
        assertEquals(newCssContent, FileUtils.readFileToString(cssFile));

@@ -15,17 +15,7 @@ class TopoMapController {
         if(topoMap) {
             def username =  session.username;
             def mapName = topoMap.mapName;
-            def edges = EdgeNode.list().findAll {
-                it.mapName == mapName && it.username == username;
-            };
-            edges.each(){
-                it.remove();
-            }
-            def devices = topoMap.consistOfDevices;
             topoMap.remove();
-            devices.each {
-                it.remove();
-            }
             withFormat {
                 html {
                     flash.message = "TopoMap ${params.id} deleted"

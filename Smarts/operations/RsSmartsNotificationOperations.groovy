@@ -23,7 +23,7 @@ class RsSmartsNotificationOperations extends RsAbstractEventOperations {
         }
         else {
             ds.releaseOwnership([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: " ReleaseOwnership from user " + userName])
-            update(owner: "root");
+            update(owner: "");
         }
     }
 }

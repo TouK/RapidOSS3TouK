@@ -4,7 +4,7 @@ YAHOO.rapidjs.component.search.ViewBuilder = function(searchGrid) {
     this.searchGrid = searchGrid;
     this.viewData = null;
     var config = {
-        width:617,
+        width:640,
         height:480,
         minWidth:100,
         minHeight:100,
@@ -28,7 +28,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
             html:'<table><tbody><tr><td><div class="rcmdb-searchgrid-view-text">View Name:</div></td>' +
                  '<td><div class="rcmdb-searchgrid-view-inputwrp"><input class="rcmdb-searchgrid-view-input"></input></div></td></tr></tbody></table>'});
         this.nameInput = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-input', 'input', nameView)[0];
-        this.dialog.defaultInput = this.nameInput;
 
         var columnView = dh.append(wrp, {tag:'div',
             html:'<table><tbody>' +

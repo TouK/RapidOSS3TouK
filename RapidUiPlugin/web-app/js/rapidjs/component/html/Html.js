@@ -4,7 +4,7 @@ YAHOO.rapidjs.component.Html = function(config)
     YAHOO.rapidjs.component.Html.superclass.constructor.call(this, null, config);
     this.width = config.width;
     this.height = config.height;
-    this.dialog = new YAHOO.rapidjs.component.Dialog({width:this.width,height:this.height});
+    this.dialog = new YAHOO.rapidjs.component.Dialog({width:this.width,height:this.height, close:true});
 
     this.iframe = config.iframe;
     this.format = "html";

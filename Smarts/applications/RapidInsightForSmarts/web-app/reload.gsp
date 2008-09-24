@@ -29,7 +29,7 @@
     <div style="margin:20px 15px 10px;">
         <div class="nav">
             <span class="menuButton"><g:link class="refresh" action="reload" controller="application" params="['targetURI':'/reload.gsp']">Reload App.</g:link></span>
-            <span class="menuButton"><g:link class="refresh" action="reloadViews" controller="application" params="['targetURI':'/reload.gsp']">Reload Web UI</g:link></span>
+            <span class="menuButton"><g:link class="refresh" action="reloadViewsAndControllers" controller="application" params="['targetURI':'/reload.gsp']">Reload Web UI</g:link></span>
         </div>
         <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>

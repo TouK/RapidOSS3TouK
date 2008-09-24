@@ -11,7 +11,7 @@ class TopoMap
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "consistOfDevices", "group"];
     };
     static datasources = ["RCMDB":["keys":["mapName":["nameInDs":"mapName"], "username":["nameInDs":"username"]]]]
-
+    static cascaded =[consistOfDevices:true]
     
     String mapName ="";
     

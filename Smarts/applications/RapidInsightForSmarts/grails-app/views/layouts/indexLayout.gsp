@@ -86,6 +86,52 @@
     <g:layoutHead/>
 </head>
 <body class=" yui-skin-sam">
-    <g:layoutBody/>
+<div id="passwordDialog">
+    <div class="hd">Change Password</div>
+    <div class="bd">
+        <form method="POST" action="javascript://nothing">
+            <table width="100%">
+                <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
+                <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
+                <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
+            </table>
+            <input type="hidden" name="username">
+        </form>
+
+    </div>
+</div>
+<div id="top" style="background-color:#BBD4F6;">
+    <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
+        <td width="0%" style="padding-left:10px;padding-top:5px;padding-right:60px;">
+            <img src="images/RapidInsight-blue.png">
+        </td>
+        <td width="100%" style="vertical-align: bottom;;">
+            <div class="yui-navset">
+                <ul class="yui-nav" style="border-style: none">
+                    <%
+                        def currentUrl = request.uri.toString();
+                    %>
+                    <li class="${currentUrl.indexOf('index.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
+                    <li class="${currentUrl.indexOf('notificationSearch.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'notificationSearch.gsp')}"><em>Notification Search</em></a></li>
+                    <li class="${currentUrl.indexOf('notifications.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'notifications.gsp')}"><em>Notifications</em></a></li>
+                    <li class="${currentUrl.indexOf('topology.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'topology.gsp')}"><em>Map</em></a></li>
+                    <li class="${currentUrl.indexOf('historicalEvents.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'historicalEvents.gsp')}"><em>Historical Notifications</em></a></li>
+                </ul>
+            </div>
+        </td>
+        <td width="0%"></td>
+        <td id="serverDownEl" width="0%" style="display:none">
+            <img src="images/network-offline.png"/>
+        </td>
+        <td width="0%">
+            <div style="vertical-align:bottom">
+                <span id="rsUser" style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;cursor:pointer">${session.username}</span>
+                <a href="auth/logout" style="font-size:13px;font-weight:bold;color:#083772;text-align:right;text-decoration:none">Logout</a>
+            </div>
+        </td>
+    </tr>
+    </tbody></table>
+</div>
+<g:layoutBody/>
 </body>
 </html>

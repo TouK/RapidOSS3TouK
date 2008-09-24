@@ -134,7 +134,6 @@ class ModelGenerator
             def modelFileToBeGenerated =  getGeneratedModelFile(modelMetaData.modelName);
             def modelText =  getModelText(modelMetaData);
             modelFileToBeGenerated.setText(modelText);
-            println "GENERATED MODEL:" + modelFileToBeGenerated.absolutePath
         }
     }
 

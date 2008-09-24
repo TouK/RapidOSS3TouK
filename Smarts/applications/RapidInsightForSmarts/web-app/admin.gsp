@@ -52,7 +52,6 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Broker</th>
-                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>

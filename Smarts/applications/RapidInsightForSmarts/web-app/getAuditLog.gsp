@@ -13,25 +13,31 @@
     if (domainObject != null) {
         def datasource = SmartsNotificationDatasource.get(name:domainObject.rsDatasource)
         if(datasource != null){
-            def auditTrail =  datasource.getNotification(["ClassName":domainObject.className, "InstanceName":domainObject.instanceName, "EventName":domainObject.eventName], ["AuditTrail"]).AuditTrail;
+            def auditTrail
+            try{
+                auditTrail =  datasource.getNotification(["ClassName":domainObject.className, "InstanceName":domainObject.instanceName, "EventName":domainObject.eventName], ["AuditTrail"]).AuditTrail;
+            }
+            catch(e){
+
+            }
             %>
                 <div class="yui-navset yui-navset-top">
                     <ul class="yui-nav">
                         <li>
-                            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=${domainObject.name}');">
+                            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
                                 <em>Properties</em>
                             </a>
                         </li>
-                        <li class="selected"><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=${domainObject?.id}');"><em>Audit Log</em></a></li>
+                        <li class="selected"><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Audit Log</em></a></li>
                          <%
                             if(domainObject.causes.size() > 0){
                                 %>
-                                    <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=${domainObject?.id}');"><em>Impact</em></a></li>
+                                    <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Impact</em></a></li>
                                 <%
                             }
                             if(domainObject.causedBy.size() > 0){
                                 %>
-                                     <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=${domainObject?.id}');"><em>Caused By</em></a></li>
+                                     <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Caused By</em></a></li>
                                 <%
                             }
                         %>
@@ -41,34 +47,48 @@
 
                     </div>
                 </div>
-                <script>
-                     Event.onDOMReady(function() {
-                        var mydata =   [];
-                        <g:each var="audit" in="${auditTrail}">
-                              var auditDate = new Date();
-                              auditDate.setTime(${audit.element1}*1000)
-                              mydata[mydata.length] = {date:auditDate, userid:"${audit.element2}", type:"${audit.element3}", description:"${audit.element4}"}
-                        </g:each>
-                        var formatDate = function(el, oRecord, oColumn, oData){
-                            el.innerHTML = oData.format("d M H:i:s");
-                        }
-                        var myColumnDefs = [
-                            {key:"date", formatter:formatDate, sortable:true,resizeable:true, width:100},
-                            {key:"userid", sortable:true, resizeable:true, width:100},
-                            {key:"type", sortable:true, resizeable:true, width:100},
-                            {key:"description", sortable:true, resizeable:true, width:200}
-                        ];
+                <%
+                   if(auditTrail != null){
+                      %>
+                        <script>
+                             Event.onDOMReady(function() {
+                                var mydata =   [];
+                                <g:each var="audit" in="${auditTrail}">
+                                      var auditDate = new Date();
+                                      auditDate.setTime(${audit.element1}*1000)
+                                      mydata[mydata.length] = {date:auditDate, userid:"${audit.element2}", type:"${audit.element3}", description:"${audit.element4}"}
+                                </g:each>
+                                var formatDate = function(el, oRecord, oColumn, oData){
+                                    el.innerHTML = oData.format("d M H:i:s");
+                                }
+                                var myColumnDefs = [
+                                    {key:"date", formatter:formatDate, sortable:true,resizeable:true, width:100},
+                                    {key:"userid", sortable:true, resizeable:true, width:100},
+                                    {key:"type", sortable:true, resizeable:true, width:100},
+                                    {key:"description", sortable:true, resizeable:true, width:200}
+                                ];
 
-                       var myDataSource = new YAHOO.util.DataSource(mydata);
-                        myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-                        myDataSource.responseSchema = {
-                            fields: ["date","userid","type","description"]
-                        };
+                               var myDataSource = new YAHOO.util.DataSource(mydata);
+                                myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
+                                myDataSource.responseSchema = {
+                                    fields: ["date","userid","type","description"]
+                                };
 
-                        new YAHOO.widget.DataTable("auditLogTable",myColumnDefs, myDataSource, {});
-                    });
-                </script>
-            <%
+                                new YAHOO.widget.DataTable("auditLogTable",myColumnDefs, myDataSource, {});
+                            });
+                        </script>
+                      <%
+                   }
+                   else{
+                       %>
+                        <script>
+                           Event.onDOMReady(function() {
+                              document.getElementById('auditLogTable').innerHTML = 'Cannot connect to smarts datasource ${datasource}'; 
+                           })
+
+                        </script>
+                    <%
+                   }
         }
         else{
             %>

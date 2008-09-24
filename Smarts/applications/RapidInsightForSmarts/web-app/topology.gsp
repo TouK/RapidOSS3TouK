@@ -267,7 +267,7 @@
         {
             if (data.getAttribute("nodeType") == "filter")
                 deleteMapAction.execute({id:data.getAttribute("id")});
-            else if (data.getAttribute("noinitialdeType") == "group")
+            else if (data.getAttribute("nodeType") == "group")
                 deleteMapGroupAction.execute({id:data.getAttribute("id")});
         }
         else if(id == "update"){

@@ -156,7 +156,7 @@
 
         if( id == "eventDetails"){
 
-            var url = "getEventDetails.gsp?name="+notificationName;
+            var url = "getEventDetails.gsp?name="+ encodeURIComponent(notificationName);
             eventDetailsDialog.show(url, "Details of " + notificationName);
         }
         else if(id == "browse"){
@@ -166,7 +166,7 @@
                     key = 'instanceName'
                     value = xmlData.getAttribute(key)
                 }
-                var url = "getObjectDetails.gsp?name="+value;
+                var url = "getObjectDetails.gsp?name="+ encodeURIComponent(value);
                 var title = key == "instanceName"? "Details of " + xmlData.getAttribute("className") + " " + value : "Details of " + xmlData.getAttribute("elementClassName") + " " + value
                 objectDetailsDialog.show(url, title);
             }
@@ -185,7 +185,7 @@
     	if(YAHOO.util.Event.getTarget(event).className != 'rcmdb-search-cell-key')
     	{
     		var notificationName = xmlData.getAttribute("name");
-            var url = "getEventDetails.gsp?name="+notificationName;
+            var url = "getEventDetails.gsp?name="+ encodeURIComponent(notificationName);
             eventDetailsDialog.show(url, "Details of " + notificationName);
         }
 

@@ -172,7 +172,7 @@
         var notificationId = xmlData.getAttribute("id");
 
         if (id == "eventDetails") {
-            var url = "getHistoricalEventDetails.gsp?id=" + notificationId;
+            var url = "getHistoricalEventDetails.gsp?id=" + encodeURIComponent(notificationId);
             eventDetailsDialog.show(url, "Details of " + notificationName);
         }
     }, this, true);
@@ -181,7 +181,7 @@
         {
             var notificationName = xmlData.getAttribute("name");
             var notificationId = xmlData.getAttribute("id");
-            var url = "getHistoricalEventDetails.gsp?id=" + notificationId;
+            var url = "getHistoricalEventDetails.gsp?id=" + encodeURIComponent(notificationId);
             eventDetailsDialog.show(url, "Details of " + notificationName);
         }
 

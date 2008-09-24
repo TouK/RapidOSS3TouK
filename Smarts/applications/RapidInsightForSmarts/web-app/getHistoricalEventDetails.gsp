@@ -8,7 +8,7 @@
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
         <li class="selected">
-            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getHistoricalEventDetails.gsp?id=${domainObject.id}');">
+            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getHistoricalEventDetails.gsp?id=' + encodeURIComponent('${domainObject.id}'));">
                 <em>Properties</em>
             </a>
         </li>
@@ -94,7 +94,7 @@
     }
     else {
 %>
-Event ${className} ${instanceName} ${eventName} does not exist.
+Event with id ${notificationId} does not exist.
 <%
     }
 %>

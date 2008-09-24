@@ -20,19 +20,19 @@
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
         <li>
-            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=${domainObject.name}');">
+            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
                 <em>Properties</em>
             </a>
         </li>
-        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=${domainObject?.id}');"><em>Audit Log</em></a></li>
+        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Audit Log</em></a></li>
         <%
             if(domainObject.causes.size() > 0){
                 %>
-                     <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=${domainObject?.id}');"><em>Impact</em></a></li>
+                     <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Impact</em></a></li>
                 <%
             }
         %>
-        <li class="selected"><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=${domainObject?.id}');"><em>Caused By</em></a></li>
+        <li class="selected"><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Caused By</em></a></li>
     </ul>
     <div style="display:block">
         <div id="causedByTable"></div>
@@ -59,11 +59,11 @@
 
         var dataTable = new YAHOO.widget.DataTable("causedByTable",myColumnDefs, myDataSource, {});
         dataTable.subscribe("rowDblclickEvent", function(args){
-            var divs = args.target.getElementsByTagName('div')
-            var className = divs[0].innerHTML;
-            var instanceName = divs[1].innerHTML;
-            var eventName = divs[2].innerHTML;
-            var url = 'getEventDetails.gsp?className=' + className + '&instanceName=' + instanceName + '&eventName=' + eventName;
+            var record = dataTable.getRecord(args.target);
+            var className = record.getData('className')
+            var instanceName = record.getData('name');
+            var eventName = record.getData('event');
+            var url = 'getEventDetails.gsp?className=' + encodeURIComponent(className) + '&instanceName=' + encodeURIComponent(instanceName) + '&eventName=' + encodeURIComponent(eventName);
             YAHOO.rapidjs.Components['eventDetails'].show(url, 'Details of ' + className + ' ' + instanceName + ' ' + eventName);
         });
     });

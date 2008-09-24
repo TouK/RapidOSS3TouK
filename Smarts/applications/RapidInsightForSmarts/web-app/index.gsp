@@ -150,7 +150,7 @@
     searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
          var objectName = xmlData.getAttribute("name");
          if( id == "browse"){
-            var url = "getObjectDetails.gsp?name="+objectName;
+            var url = "getObjectDetails.gsp?name="+ encodeURIComponent(objectName);
             objectDetailsDialog.show(url, "Details of " + xmlData.getAttribute('creationClassName') + " " + objectName);
          }
         else if( id == "topMap" )

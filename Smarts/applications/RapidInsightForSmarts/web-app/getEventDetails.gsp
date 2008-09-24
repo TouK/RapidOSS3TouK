@@ -22,20 +22,20 @@
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
         <li class="selected">
-            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=${domainObject.name}');">
+            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
                 <em>Properties</em>
             </a>
         </li>
-        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=${domainObject?.id}');"><em>Audit Log</em></a></li>
+        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Audit Log</em></a></li>
         <%
                 if (domainObject.causes.size() > 0) {
         %>
-        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=${domainObject?.id}');"><em>Impact</em></a></li>
+        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Impact</em></a></li>
         <%
                 }
                 if (domainObject.causedBy.size() > 0) {
         %>
-        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=${domainObject?.id}');"><em>Caused By</em></a></li>
+        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Caused By</em></a></li>
         <%
                 }
         %>
@@ -80,7 +80,7 @@
                                                 if (propertyName == "instanceName" || propertyName == "elementName") {
                                                     def title = propertyName == "instanceName" ? "Details of ${domainObject.className} ${domainObject.instanceName}" : "Details of ${domainObject.elementClassName} ${domainObject.elementName}"
                                         %>
-                                        <td><a style="color:#006DBA;text-decoration:underline;cursor:pointer" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=${domainObject[propertyName]}', '${title}');">${domainObject[propertyName]}</a></td>
+                                        <td><a style="color:#006DBA;text-decoration:underline;cursor:pointer" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${domainObject[propertyName]}'), '${title}');">${domainObject[propertyName]}</a></td>
                                         <%
                                             }
                                             else {

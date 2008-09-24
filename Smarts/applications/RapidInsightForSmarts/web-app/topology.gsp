@@ -92,7 +92,7 @@
           var id = data["id"];
           if( id == "item1" )
           {
-            var url = "getObjectDetails.gsp?name="+data["nodeID"];
+            var url = "getObjectDetails.gsp?name="+ encodeURIComponent(data["nodeID"]);
             objectDetailsDialog.show(url, "Details of " + data["nodeType"] + " " + data["nodeID"]);
           }
 

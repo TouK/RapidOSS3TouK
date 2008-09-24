@@ -160,6 +160,12 @@
             eventDetailsDialog.show(url, "Details of " + notificationName);
         }
         else if(id == "browse"){
+                var key = 'elementName'
+                var value = xmlData.getAttribute(key);
+                if(!value || value == ''){
+                    key = 'instanceName'
+                    value = xmlData.getAttribute(key)
+                }
                 var url = "getObjectDetails.gsp?name="+value;
                 var title = key == "instanceName"? "Details of " + xmlData.getAttribute("className") + " " + value : "Details of " + xmlData.getAttribute("elementClassName") + " " + value
                 objectDetailsDialog.show(url, title);

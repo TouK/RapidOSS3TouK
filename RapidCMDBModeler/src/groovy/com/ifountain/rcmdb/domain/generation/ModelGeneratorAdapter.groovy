@@ -63,6 +63,7 @@ class ModelGeneratorAdapter {
                 }
 
             }
+            println "GENERATING MODEL " + writer.toString();
             modelXmls += writer.toString()
         }
 

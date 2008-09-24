@@ -266,6 +266,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">source:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsHistoricalNotification.source}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">sourceDomainName:</td>
                     
                     <td valign="top" class="value">${rsSmartsHistoricalNotification.sourceDomainName}</td>

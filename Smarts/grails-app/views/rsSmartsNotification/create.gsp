@@ -96,15 +96,6 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="count">count:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'count','errors')}">
-                            <input type="text" id="count" name="count" value="${fieldValue(bean:rsSmartsNotification,field:'count')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="creationClassName">creationClassName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'creationClassName','errors')}">

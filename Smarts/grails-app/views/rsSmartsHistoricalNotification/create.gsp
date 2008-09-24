@@ -339,6 +339,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="source">source:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsSmartsHistoricalNotification,field:'source','errors')}">
+                            <input type="text" id="source" name="source" value="${fieldValue(bean:rsSmartsHistoricalNotification,field:'source')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="sourceDomainName">sourceDomainName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsSmartsHistoricalNotification,field:'sourceDomainName','errors')}">

@@ -110,13 +110,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">count:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsNotification.count}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">creationClassName:</td>
                     
                     <td valign="top" class="value">${rsSmartsNotification.creationClassName}</td>

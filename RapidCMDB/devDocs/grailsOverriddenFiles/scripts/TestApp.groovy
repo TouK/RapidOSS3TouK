@@ -346,9 +346,9 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
             return
         }
 
-        if(integrationOnly) {
+        //if(integrationOnly) {
             loadApp()
-        }
+        //}
         configureApp()
         def app = appCtx.getBean(GrailsApplication.APPLICATION_ID)
         if (app.parentContext == null) {

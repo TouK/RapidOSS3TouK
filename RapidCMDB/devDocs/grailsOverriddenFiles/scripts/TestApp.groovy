@@ -112,8 +112,15 @@ target(testApp: "The test app implementation target") {
 
     try {
     	event("AllTestsStart", ["Starting test-app"])
+        def defaultSystemProps = [:]
+        System.getProperties().each{propName, propValue->
+            defaultSystemProps[propName] = propValue;
+        }
         if(!integrationOnly) {
             runUnitTests()
+        }
+        defaultSystemProps.each{propName, propValue->
+            System.setProperty(propName, propValue);    
         }
         if(!unitOnly) {
             runIntegrationTests()

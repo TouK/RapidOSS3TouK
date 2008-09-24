@@ -76,8 +76,8 @@ class UserRoleRelController {
     }
 
     def create = {
-        def userRoleRel = new UserRoleRel()
-        userRoleRel.properties = params
+        def rsUser = RsUser.get([id:params["rsUser.id"]])
+        def userRoleRel = new UserRoleRel(rsUser:rsUser)
         return ['userRoleRel':userRoleRel, 'userId':params["rsUser.id"]]
     }
 

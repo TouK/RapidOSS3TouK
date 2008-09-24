@@ -2,7 +2,7 @@ import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.domain.util.DomainClassUtils;
 
 
-class RsAbstractEventController {
+class RsRcmdbEventController {
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
 
@@ -11,20 +11,20 @@ class RsAbstractEventController {
 
     def list = {
         if(!params.max) params.max = 10
-        [ rsAbstractEventList: RsAbstractEvent.list( params ) ]
+        [ rsRcmdbEventList: RsRcmdbEvent.list( params ) ]
     }
 
     def show = {
-        def rsAbstractEvent = RsAbstractEvent.get([id:params.id])
+        def rsRcmdbEvent = RsRcmdbEvent.get([id:params.id])
 
-        if(!rsAbstractEvent) {
-            flash.message = "RsAbstractEvent not found with id ${params.id}"
+        if(!rsRcmdbEvent) {
+            flash.message = "RsRcmdbEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
-            if(rsAbstractEvent.class != RsAbstractEvent)
+            if(rsRcmdbEvent.class != RsRcmdbEvent)
             {
-                def controllerName = rsAbstractEvent.class.name;
+                def controllerName = rsRcmdbEvent.class.name;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();
@@ -37,99 +37,99 @@ class RsAbstractEventController {
             }
             else
             {
-                return [ rsAbstractEvent : rsAbstractEvent ]
+                return [ rsRcmdbEvent : rsRcmdbEvent ]
             }
         }
     }
 
     def delete = {
-        def rsAbstractEvent = RsAbstractEvent.get( [id:params.id])
-        if(rsAbstractEvent) {
+        def rsRcmdbEvent = RsRcmdbEvent.get( [id:params.id])
+        if(rsRcmdbEvent) {
             try{
-                rsAbstractEvent.remove()
-                flash.message = "RsAbstractEvent ${params.id} deleted"
+                rsRcmdbEvent.remove()
+                flash.message = "RsRcmdbEvent ${params.id} deleted"
                 redirect(action:list)
             }
             catch(e){
-                addError("default.couldnot.delete", [RsAbstractEvent, rsAbstractEvent])
+                addError("default.couldnot.delete", [RsRcmdbEvent, rsRcmdbEvent])
                 flash.errors = this.errors;
-                redirect(action:show, id:rsAbstractEvent.id)
+                redirect(action:show, id:rsRcmdbEvent.id)
             }
 
         }
         else {
-            flash.message = "RsAbstractEvent not found with id ${params.id}"
+            flash.message = "RsRcmdbEvent not found with id ${params.id}"
             redirect(action:list)
         }
     }
 
     def edit = {
-        def rsAbstractEvent = RsAbstractEvent.get( [id:params.id] )
+        def rsRcmdbEvent = RsRcmdbEvent.get( [id:params.id] )
 
-        if(!rsAbstractEvent) {
-            flash.message = "RsAbstractEvent not found with id ${params.id}"
+        if(!rsRcmdbEvent) {
+            flash.message = "RsRcmdbEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
-            return [ rsAbstractEvent : rsAbstractEvent ]
+            return [ rsRcmdbEvent : rsRcmdbEvent ]
         }
     }
 
 
     def update = {
-        def rsAbstractEvent = RsAbstractEvent.get( [id:params.id] )
-        if(rsAbstractEvent) {
-            rsAbstractEvent.update(ControllerUtils.getClassProperties(params, RsAbstractEvent));
-            if(!rsAbstractEvent.hasErrors()) {
-                flash.message = "RsAbstractEvent ${params.id} updated"
-                redirect(action:show,id:rsAbstractEvent.id)
+        def rsRcmdbEvent = RsRcmdbEvent.get( [id:params.id] )
+        if(rsRcmdbEvent) {
+            rsRcmdbEvent.update(ControllerUtils.getClassProperties(params, RsRcmdbEvent));
+            if(!rsRcmdbEvent.hasErrors()) {
+                flash.message = "RsRcmdbEvent ${params.id} updated"
+                redirect(action:show,id:rsRcmdbEvent.id)
             }
             else {
-                render(view:'edit',model:[rsAbstractEvent:rsAbstractEvent])
+                render(view:'edit',model:[rsRcmdbEvent:rsRcmdbEvent])
             }
         }
         else {
-            flash.message = "RsAbstractEvent not found with id ${params.id}"
+            flash.message = "RsRcmdbEvent not found with id ${params.id}"
             redirect(action:edit,id:params.id)
         }
     }
 
     def create = {
-        def rsAbstractEvent = new RsAbstractEvent()
-        rsAbstractEvent.properties = params
-        return ['rsAbstractEvent':rsAbstractEvent]
+        def rsRcmdbEvent = new RsRcmdbEvent()
+        rsRcmdbEvent.properties = params
+        return ['rsRcmdbEvent':rsRcmdbEvent]
     }
 
     def save = {
-        def rsAbstractEvent = RsAbstractEvent.add(ControllerUtils.getClassProperties(params, RsAbstractEvent))
-        if(!rsAbstractEvent.hasErrors()) {
-            flash.message = "RsAbstractEvent ${rsAbstractEvent.id} created"
-            redirect(action:show,id:rsAbstractEvent.id)
+        def rsRcmdbEvent = RsRcmdbEvent.add(ControllerUtils.getClassProperties(params, RsRcmdbEvent))
+        if(!rsRcmdbEvent.hasErrors()) {
+            flash.message = "RsRcmdbEvent ${rsRcmdbEvent.id} created"
+            redirect(action:show,id:rsRcmdbEvent.id)
         }
         else {
-            render(view:'create',model:[rsAbstractEvent:rsAbstractEvent])
+            render(view:'create',model:[rsRcmdbEvent:rsRcmdbEvent])
         }
     }
 
     def addTo = {
-        def rsAbstractEvent = RsAbstractEvent.get( [id:params.id] )
-        if(!rsAbstractEvent){
-            flash.message = "RsAbstractEvent not found with id ${params.id}"
+        def rsRcmdbEvent = RsRcmdbEvent.get( [id:params.id] )
+        if(!rsRcmdbEvent){
+            flash.message = "RsRcmdbEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
             if(relationName){
-                def otherClass = DomainClassUtils.getStaticMapVariable(RsAbstractEvent, "relations")[relationName].type;
+                def otherClass = DomainClassUtils.getStaticMapVariable(RsRcmdbEvent, "relations")[relationName].type;
                 def relatedObjectList = [];
                 if(otherClass){
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
                 }
-                return [rsAbstractEvent:rsAbstractEvent, relationName:relationName, relatedObjectList:relatedObjectList]
+                return [rsRcmdbEvent:rsRcmdbEvent, relationName:relationName, relatedObjectList:relatedObjectList]
             }
             else{
                flash.message = "No relation name specified for add relation action"
-               redirect(action:edit,id:rsAbstractEvent.id)
+               redirect(action:edit,id:rsRcmdbEvent.id)
             }
         }
     }
@@ -137,27 +137,27 @@ class RsAbstractEventController {
 
 
     def addRelation = {
-        def rsAbstractEvent = RsAbstractEvent.get( [id:params.id] )
-        if(!rsAbstractEvent) {
-            flash.message = "RsAbstractEvent not found with id ${params.id}"
+        def rsRcmdbEvent = RsRcmdbEvent.get( [id:params.id] )
+        if(!rsRcmdbEvent) {
+            flash.message = "RsRcmdbEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
-            def otherClass = DomainClassUtils.getStaticMapVariable(RsAbstractEvent, "relations")[relationName].type;
+            def otherClass = DomainClassUtils.getStaticMapVariable(RsRcmdbEvent, "relations")[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
                       def relationMap = [:];
                       relationMap[relationName] = res;
-                      rsAbstractEvent.addRelation(relationMap);
-                      if(rsAbstractEvent.hasErrors()){
+                      rsRcmdbEvent.addRelation(relationMap);
+                      if(rsRcmdbEvent.hasErrors()){
                           def relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
-                          render(view:'addTo',model:[rsAbstractEvent:rsAbstractEvent, relationName:relationName, relatedObjectList:relatedObjectList])
+                          render(view:'addTo',model:[rsRcmdbEvent:rsRcmdbEvent, relationName:relationName, relatedObjectList:relatedObjectList])
                       }
                       else{
-                          flash.message = "RsAbstractEvent ${params.id} updated"
-                          redirect(action:edit,id:rsAbstractEvent.id)
+                          flash.message = "RsRcmdbEvent ${params.id} updated"
+                          redirect(action:edit,id:rsRcmdbEvent.id)
                       }
 
                 }
@@ -174,43 +174,43 @@ class RsAbstractEventController {
     }
 
     def removeRelation = {
-        def rsAbstractEvent = RsAbstractEvent.get( [id:params.id] )
-        if(!rsAbstractEvent) {
-            flash.message = "RsAbstractEvent not found with id ${params.id}"
+        def rsRcmdbEvent = RsRcmdbEvent.get( [id:params.id] )
+        if(!rsRcmdbEvent) {
+            flash.message = "RsRcmdbEvent not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
 
-            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(RsAbstractEvent, "relations")[relationName].type;
+            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(RsRcmdbEvent, "relations")[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
                       def relationMap = [:];
                       relationMap[relationName] = res;
-                      rsAbstractEvent.removeRelation(relationMap);
-                      if(rsAbstractEvent.hasErrors()){
-                          render(view:'edit',model:[rsAbstractEvent:rsAbstractEvent])
+                      rsRcmdbEvent.removeRelation(relationMap);
+                      if(rsRcmdbEvent.hasErrors()){
+                          render(view:'edit',model:[rsRcmdbEvent:rsRcmdbEvent])
                       }
                       else{
-                          flash.message = "RsAbstractEvent ${params.id} updated"
-                          redirect(action:edit,id:rsAbstractEvent.id)
+                          flash.message = "RsRcmdbEvent ${params.id} updated"
+                          redirect(action:edit,id:rsRcmdbEvent.id)
                       }
                 }
                 else{
                     flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
-                    redirect(action:edit,id:rsAbstractEvent.id)
+                    redirect(action:edit,id:rsRcmdbEvent.id)
                 }
             }
             else{
                 flash.message = "No relation exist with name ${relationName}"
-                redirect(action:edit,id:rsAbstractEvent.id)
+                redirect(action:edit,id:rsRcmdbEvent.id)
             }
         }
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("RsAbstractEvent")
+        def modelClass = grailsApplication.getClassForName("RsRcmdbEvent")
         if (modelClass)
         {
             try

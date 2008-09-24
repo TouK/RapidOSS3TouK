@@ -12,6 +12,18 @@ class RsHistoricalEvent
     static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
 
     
+    String name ="";
+    
+    Boolean active =true;
+    
+    String source ="";
+    
+    String owner ="";
+    
+    Boolean acknowledged =false;
+    
+    Long severity =0;
+    
     Long id ;
     
     Long version ;
@@ -26,7 +38,19 @@ class RsHistoricalEvent
     static relations = [:]    
     
     static constraints={
-    __operation_class__(nullable:true)
+    name(blank:true,nullable:true)
+        
+     active(nullable:true)
+        
+     source(blank:true,nullable:true)
+        
+     owner(blank:true,nullable:true)
+        
+     acknowledged(nullable:true)
+        
+     severity(nullable:true)
+        
+     __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
         

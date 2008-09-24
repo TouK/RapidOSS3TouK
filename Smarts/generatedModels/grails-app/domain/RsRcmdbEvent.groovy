@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsAbstractEvent 
+class RsRcmdbEvent extends RsEvent
 {
     
     //AUTO_GENERATED_CODE
@@ -9,20 +9,12 @@ class RsAbstractEvent
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
-    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
+    static datasources = [:]
 
     
-    String name ="";
+    Long count =1;
     
-    Boolean active =true;
-    
-    String source ="";
-    
-    String owner ="";
-    
-    Boolean acknowledged =false;
-    
-    Long severity =0;
+    String eventName ="";
     
     Date firstNotifiedAt =new Date(0);
     
@@ -31,8 +23,6 @@ class RsAbstractEvent
     Date lastChangedAt =new Date(0);
     
     Date lastClearedAt =new Date(0);
-    
-    Long count =1;
     
     Long id ;
     
@@ -48,17 +38,9 @@ class RsAbstractEvent
     static relations = [:]    
     
     static constraints={
-    name(blank:false,nullable:false,key:[])
+    count(nullable:true)
         
-     active(nullable:true)
-        
-     source(blank:true,nullable:true)
-        
-     owner(blank:true,nullable:true)
-        
-     acknowledged(nullable:true)
-        
-     severity(nullable:true)
+     eventName(blank:true,nullable:true)
         
      firstNotifiedAt(nullable:true)
         
@@ -67,8 +49,6 @@ class RsAbstractEvent
      lastChangedAt(nullable:true)
         
      lastClearedAt(nullable:true)
-        
-     count(nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -81,11 +61,6 @@ class RsAbstractEvent
 
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
-    
-    public String toString()
-    {
-    	return "${getClass().getName()}[name:$name]";
-    }
     
     //AUTO_GENERATED_CODE
 }

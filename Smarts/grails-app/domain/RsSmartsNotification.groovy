@@ -1,8 +1,9 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsSmartsNotification  extends RsAbstractEvent {
-
+class RsSmartsNotification extends RsEvent
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -23,13 +24,9 @@ class RsSmartsNotification  extends RsAbstractEvent {
     
     String eventName ="";
     
-    Long severity =0;
-    
     Long lastNotifiedAt =0;
     
     Long lastCreatedAt =0;
-    
-    Boolean active =false;
     
     Long firstNotifiedAt =0;
     
@@ -40,8 +37,6 @@ class RsSmartsNotification  extends RsAbstractEvent {
     Boolean isRoot =false;
     
     Boolean isProblem =false;
-    
-    Boolean acknowledged =false;
     
     String eventType ="";
     
@@ -56,8 +51,6 @@ class RsSmartsNotification  extends RsAbstractEvent {
     Boolean inMaintenance =false;
     
     String troubleTicketID ="";
-    
-    String owner ="";
     
     String category ="";
     
@@ -133,13 +126,9 @@ class RsSmartsNotification  extends RsAbstractEvent {
         
      eventName(blank:true,nullable:true)
         
-     severity(nullable:true)
-        
      lastNotifiedAt(nullable:true)
         
      lastCreatedAt(nullable:true)
-        
-     active(nullable:true)
         
      firstNotifiedAt(nullable:true)
         
@@ -150,8 +139,6 @@ class RsSmartsNotification  extends RsAbstractEvent {
      isRoot(nullable:true)
         
      isProblem(nullable:true)
-        
-     acknowledged(nullable:true)
         
      eventType(blank:true,nullable:true)
         
@@ -166,8 +153,6 @@ class RsSmartsNotification  extends RsAbstractEvent {
      inMaintenance(nullable:true)
         
      troubleTicketID(blank:true,nullable:true)
-        
-     owner(blank:true,nullable:true)
         
      category(blank:true,nullable:true)
         
@@ -220,5 +205,4 @@ class RsSmartsNotification  extends RsAbstractEvent {
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "causedBy", "causes"];
     
     //AUTO_GENERATED_CODE
-    
 }

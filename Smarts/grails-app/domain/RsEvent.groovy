@@ -1,23 +1,20 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsEvent  extends RsAbstractEvent {
-
+class RsEvent 
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
-    static datasources = [:]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
 
     
     String name ="";
     
-    String eventName ="";
-    
     Boolean active =true;
-    
-    String source ="";
     
     String owner ="";
     
@@ -25,15 +22,7 @@ class RsEvent  extends RsAbstractEvent {
     
     Long severity =0;
     
-    Date firstNotifiedAt =new Date(0);
-    
-    Date lastNotifiedAt =new Date(0);
-    
-    Date lastChangedAt =new Date(0);
-    
-    Date lastClearedAt =new Date(0);
-    
-    Long count =1;
+    String source ="";
     
     Long id ;
     
@@ -49,13 +38,9 @@ class RsEvent  extends RsAbstractEvent {
     static relations = [:]    
     
     static constraints={
-    name(blank:true,nullable:true)
-        
-     eventName(blank:true,nullable:true)
+    name(blank:false,nullable:false,key:[])
         
      active(nullable:true)
-        
-     source(blank:true,nullable:true)
         
      owner(blank:true,nullable:true)
         
@@ -63,15 +48,7 @@ class RsEvent  extends RsAbstractEvent {
         
      severity(nullable:true)
         
-     firstNotifiedAt(nullable:true)
-        
-     lastNotifiedAt(nullable:true)
-        
-     lastChangedAt(nullable:true)
-        
-     lastClearedAt(nullable:true)
-        
-     count(nullable:true)
+     source(blank:true,nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -85,6 +62,10 @@ class RsEvent  extends RsAbstractEvent {
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
-    //AUTO_GENERATED_CODE
+    public String toString()
+    {
+    	return "${getClass().getName()}[name:$name]";
+    }
     
+    //AUTO_GENERATED_CODE
 }

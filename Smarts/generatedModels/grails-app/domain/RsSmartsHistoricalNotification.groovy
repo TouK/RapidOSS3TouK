@@ -12,8 +12,6 @@ class RsSmartsHistoricalNotification extends RsHistoricalEvent
     static datasources = [:]
 
     
-    String name ="";
-    
     String creationClassName ="";
     
     String description ="";
@@ -26,13 +24,9 @@ class RsSmartsHistoricalNotification extends RsHistoricalEvent
     
     String eventName ="";
     
-    Long severity =0;
-    
     Long lastNotifiedAt =0;
     
     Long lastCreatedAt =0;
-    
-    Boolean active =false;
     
     Long firstNotifiedAt =0;
     
@@ -41,8 +35,6 @@ class RsSmartsHistoricalNotification extends RsHistoricalEvent
     Long lastChangedAt =0;
     
     Boolean isRoot =false;
-    
-    Boolean acknowledged =false;
     
     String eventType ="";
     
@@ -57,8 +49,6 @@ class RsSmartsHistoricalNotification extends RsHistoricalEvent
     Boolean inMaintenance =false;
     
     String troubleTicketID ="";
-    
-    String owner ="";
     
     String category ="";
     
@@ -116,9 +106,7 @@ class RsSmartsHistoricalNotification extends RsHistoricalEvent
     static relations = [:]    
     
     static constraints={
-    name(blank:true,nullable:true)
-        
-     creationClassName(blank:true,nullable:true)
+    creationClassName(blank:true,nullable:true)
         
      description(blank:true,nullable:true)
         
@@ -130,13 +118,9 @@ class RsSmartsHistoricalNotification extends RsHistoricalEvent
         
      eventName(blank:true,nullable:true)
         
-     severity(nullable:true)
-        
      lastNotifiedAt(nullable:true)
         
      lastCreatedAt(nullable:true)
-        
-     active(nullable:true)
         
      firstNotifiedAt(nullable:true)
         
@@ -145,8 +129,6 @@ class RsSmartsHistoricalNotification extends RsHistoricalEvent
      lastChangedAt(nullable:true)
         
      isRoot(nullable:true)
-        
-     acknowledged(nullable:true)
         
      eventType(blank:true,nullable:true)
         
@@ -161,8 +143,6 @@ class RsSmartsHistoricalNotification extends RsHistoricalEvent
      inMaintenance(nullable:true)
         
      troubleTicketID(blank:true,nullable:true)
-        
-     owner(blank:true,nullable:true)
         
      category(blank:true,nullable:true)
         

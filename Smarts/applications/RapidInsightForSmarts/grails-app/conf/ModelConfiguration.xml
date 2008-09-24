@@ -14,17 +14,11 @@
 	  	<Model Name="RsHistoricalEvent">
       		<Properties>
           		<Property Name='name' Type='string'/>
-          		<Property Name='eventName' Type='string'/>
           		<Property Name='active' Type='boolean' Default="true" />
                 <Property Name='source' Type='string' />
                 <Property Name='owner' Type='string' />
                 <Property Name='acknowledged' Type='boolean' Default="false" />
                 <Property Name='severity' Type='number' Default="0"/>
-                <Property Name='firstNotifiedAt' Type='date' />
-                <Property Name='lastNotifiedAt' Type='date' />
-                <Property Name='lastChangedAt' Type='date' />
-                <Property Name='lastClearedAt' Type='date' />
-                <Property Name='count' Type='number' Default="1" />
          	</Properties>
   		</Model>    
   		
@@ -37,39 +31,28 @@
             </Properties>
         </Model>
 
-   		<Model Name="RsAbstractEvent">
+   		<Model Name="RsEvent">
       		<Properties>
        			<Property Name='name' Type='string' IsKey="true"/>
           		<Property Name='active' Type='boolean' Default="true" />
-                <Property Name='source' Type='string' />
                 <Property Name='owner' Type='string' />
                 <Property Name='acknowledged' Type='boolean' Default="false" />
                 <Property Name='severity' Type='number' Default="0"/>
-                <Property Name='firstNotifiedAt' Type='date' />
-                <Property Name='lastNotifiedAt' Type='date' />
-                <Property Name='lastChangedAt' Type='date' />
-                <Property Name='lastClearedAt' Type='date' />
-                <Property Name='count' Type='number' Default="1" />
-         	</Properties>
+                <Property Name='source' Type='string' />
+             </Properties>
   		</Model>
-  		<Model Name="RsEvent" Parent="RsAbstractEvent">
+  		<Model Name="RsRcmdbEvent" Parent="RsEvent">
       		<Properties>
-       			<Property Name='name' Type='string' IsKey="true"/>
+                <Property Name='count' Type='number' Default="1" />
           		<Property Name='eventName' Type='string'/>
-          		<Property Name='active' Type='boolean' Default="true" />
-                <Property Name='source' Type='string' />
-                <Property Name='owner' Type='string' />
-                <Property Name='acknowledged' Type='boolean' Default="false" />
-                <Property Name='severity' Type='number' Default="0"/>
                 <Property Name='firstNotifiedAt' Type='date' />
                 <Property Name='lastNotifiedAt' Type='date' />
                 <Property Name='lastChangedAt' Type='date' />
                 <Property Name='lastClearedAt' Type='date' />
-                <Property Name='count' Type='number' Default="1" />
          	</Properties>
-  		</Model>     
+  		</Model>    
         
-        <Model Name="RsSmartsNotification" Parent="RsAbstractEvent">
+        <Model Name="RsSmartsNotification" Parent="RsEvent">
             <Properties>
                 <Property Name='creationClassName' Type='string'/>
                 <Property Name='description' Type='string'/>
@@ -77,16 +60,13 @@
                 <Property Name="className" Type="string"/>
                 <Property Name="instanceName" Type="string"/>
                 <Property Name="eventName" Type="string"/>
-                <Property Name="severity" Type="number"/>
                 <Property Name="lastNotifiedAt" Type="number"/>
                 <Property Name="lastCreatedAt" Type="number"/>
-                <Property Name="active" Type="boolean"/>
                 <Property Name="firstNotifiedAt" Type="number"/>
                 <Property Name="lastClearedAt" Type="number"/>
                 <Property Name="lastChangedAt" Type="number"/>
                 <Property Name="isRoot" Type="boolean"/>
                 <Property Name="isProblem" Type="boolean"/>
-                <Property Name="acknowledged" Type="boolean"/>
                 <Property Name="eventType" Type="string"/>
                 <Property Name="eventState" Type="string"/>
                 <Property Name="eventText" Type="string"/>
@@ -94,7 +74,6 @@
                 <Property Name="certainty" Type="number"/>
                 <Property Name="inMaintenance" Type="boolean"/>
                 <Property Name="troubleTicketID" Type="string"/>
-                <Property Name="owner" Type="string"/>
                 <Property Name="category" Type="string"/>
                 <Property Name="occurrenceCount" Type="number"/>
                 <Property Name="classDisplayName" Type="string"/>
@@ -118,22 +97,18 @@
         </Model>
         <Model Name="RsSmartsHistoricalNotification" Parent="RsHistoricalEvent">
             <Properties>
-                <Property Name='name' Type='string'/>
                 <Property Name='creationClassName' Type='string'/>
                 <Property Name='description' Type='string'/>
                 <Property Name='displayName' Type='string'/>
                 <Property Name="className" Type="string"/>
                 <Property Name="instanceName" Type="string"/>
                 <Property Name="eventName" Type="string"/>
-                <Property Name="severity" Type="number"/>
                 <Property Name="lastNotifiedAt" Type="number"/>
                 <Property Name="lastCreatedAt" Type="number"/>
-                <Property Name="active" Type="boolean"/>
                 <Property Name="firstNotifiedAt" Type="number"/>
                 <Property Name="lastClearedAt" Type="number"/>
                 <Property Name="lastChangedAt" Type="number"/>
                 <Property Name="isRoot" Type="boolean"/>
-                <Property Name="acknowledged" Type="boolean"/>
                 <Property Name="eventType" Type="string"/>
                 <Property Name="eventState" Type="string"/>
                 <Property Name="eventText" Type="string"/>
@@ -141,7 +116,6 @@
                 <Property Name="certainty" Type="number"/>
                 <Property Name="inMaintenance" Type="boolean"/>
                 <Property Name="troubleTicketID" Type="string"/>
-                <Property Name="owner" Type="string"/>
                 <Property Name="category" Type="string"/>
                 <Property Name="occurrenceCount" Type="number"/>
                 <Property Name="classDisplayName" Type="string"/>

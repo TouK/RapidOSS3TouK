@@ -122,6 +122,7 @@ target(testApp: "The test app implementation target") {
         defaultSystemProps.each{propName, propValue->
             System.setProperty(propName, propValue);    
         }
+        shutdownApp();
         if(!unitOnly) {
             runIntegrationTests()
         }   

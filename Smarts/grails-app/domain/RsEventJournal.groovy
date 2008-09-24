@@ -1,19 +1,24 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class MapGroup {
-
+class RsEventJournal 
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["maps","errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
-    static datasources = ["RCMDB":["keys":["groupName":["nameInDs":"groupName"], "username":["nameInDs":"username"]]]]
+    static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
 
     
-    String username ="";
+    String eventId ="";
     
-    String groupName ="";
+    Date rsTime =new Date(0);
+    
+    String eventName ="";
+    
+    String details ="";
     
     Long id ;
     
@@ -25,13 +30,17 @@ class MapGroup {
     
     Object __is_federated_properties_loaded__ ;
     
-    List maps =[];
     
-    static relations = [maps:[reverseName:"group", isMany:true, type:TopoMap]]
+    static relations = [:]    
+    
     static constraints={
-    username(blank:false,nullable:false)
+    eventId(blank:true,nullable:true)
         
-     groupName(blank:false,nullable:false,key:["username"])
+     rsTime(nullable:true)
+        
+     eventName(blank:true,nullable:true)
+        
+     details(blank:true,nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -47,11 +56,8 @@ class MapGroup {
     
     public String toString()
     {
-    	return "${getClass().getName()}[groupName:$groupName, username:$username]";
+    	return "${getClass().getName()}[id:$id]";
     }
     
     //AUTO_GENERATED_CODE
-
-
-    
 }

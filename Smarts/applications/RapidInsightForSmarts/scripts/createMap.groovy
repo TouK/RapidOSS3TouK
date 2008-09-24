@@ -1,5 +1,6 @@
-import MapGroup
+import map.MapGroup
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor
+import map.MapGroup
 
 /**
  * Created by IntelliJ IDEA.

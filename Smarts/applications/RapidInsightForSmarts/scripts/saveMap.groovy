@@ -1,4 +1,7 @@
-import auth.RsUser;
+import auth.RsUser
+import map.MapNode
+import map.TopoMap
+import map.MapGroup;
 
 def groupName =  params.groupName
 def mapName =  params.mapName

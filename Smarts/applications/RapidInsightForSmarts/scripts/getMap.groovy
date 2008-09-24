@@ -1,6 +1,7 @@
 import auth.RsUser
 import groovy.xml.MarkupBuilder
 import script.CmdbScript
+import map.TopoMap
 
 def user = RsUser.findByUsername(web.session.username);
 if(user == null){

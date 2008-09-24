@@ -1,21 +1,20 @@
+package map
 
 import com.ifountain.core.domain.annotations.*;
 
-class TopoMap 
-{
-    
+class MapGroup {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "consistOfDevices", "group"];
+        except = ["maps","errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
-    static datasources = ["RCMDB":["keys":["mapName":["nameInDs":"mapName"], "username":["nameInDs":"username"]]]]
+    static datasources = ["RCMDB":["keys":["groupName":["nameInDs":"groupName"], "username":["nameInDs":"username"]]]]
 
     
-    String mapName ="";
-    
     String username ="";
-    int layout;
+    
+    String groupName ="";
     
     Long id ;
     
@@ -27,26 +26,19 @@ class TopoMap
     
     Object __is_federated_properties_loaded__ ;
     
-    List consistOfDevices =[];
+    List maps =[];
     
-    MapGroup group ;
-    
-    static relations = [
-            consistOfDevices:[reverseName:"belongsToMap", isMany:true, type:MapNode],
-            group:[reverseName:"maps", isMany:false, type:MapGroup]
-    ]
+    static relations = [maps:[reverseName:"group", isMany:true, type:TopoMap]]
     static constraints={
-    mapName(blank:false,nullable:false)
+    username(blank:false,nullable:false)
         
-     username(blank:false,nullable:false,key:["mapName"])
+     groupName(blank:false,nullable:false,key:["username"])
         
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
         
      errors(nullable:true)
-        
-     group(nullable:true)
         
      
     }
@@ -56,8 +48,11 @@ class TopoMap
     
     public String toString()
     {
-    	return "${getClass().getName()}[mapName:$mapName, username:$username]";
+    	return "${getClass().getName()}[groupName:$groupName, username:$username]";
     }
     
     //AUTO_GENERATED_CODE
+
+
+    
 }

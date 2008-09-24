@@ -1,3 +1,4 @@
+package map
 
 import com.ifountain.core.domain.annotations.*;
 

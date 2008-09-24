@@ -1,19 +1,18 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsEvent  extends RsAbstractEvent {
-
+class RsAbstractEvent 
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
-    static datasources = [:]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
 
     
     String name ="";
-    
-    String eventName ="";
     
     Boolean active =true;
     
@@ -49,9 +48,7 @@ class RsEvent  extends RsAbstractEvent {
     static relations = [:]    
     
     static constraints={
-    name(blank:true,nullable:true)
-        
-     eventName(blank:true,nullable:true)
+    name(blank:false,nullable:false,key:[])
         
      active(nullable:true)
         
@@ -85,6 +82,10 @@ class RsEvent  extends RsAbstractEvent {
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
-    //AUTO_GENERATED_CODE
+    public String toString()
+    {
+    	return "${getClass().getName()}[name:$name]";
+    }
     
+    //AUTO_GENERATED_CODE
 }

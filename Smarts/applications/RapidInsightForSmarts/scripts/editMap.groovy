@@ -1,6 +1,8 @@
-import TopoMap
-import MapGroup
+import map.TopoMap
+import map.MapGroup
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor
+import map.MapGroup
+import map.TopoMap
 
 /**
  * Created by IntelliJ IDEA.

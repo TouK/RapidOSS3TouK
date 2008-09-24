@@ -17,6 +17,7 @@ class RapidCmdbTestCase extends RapidTestCase{
     }
 
     protected void tearDown() {
+        System.setProperty("base.dir", defaultBaseDir);
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         System.setProperty("base.dir", defaultBaseDir);
     }

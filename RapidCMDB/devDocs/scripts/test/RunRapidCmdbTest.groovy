@@ -79,7 +79,7 @@ if(!rootDir.exists())
     {
         ANT.fileset(dir: "$workspaceDir/Distribution/RapidServer/scripts")
     }
-    ANT.unzip(src: "$workspaceDir/Distribution/SmartsModule${cmdbBuild.smartsBuild.getVersionWithDate()}" + ".zip", dest: "${rootDir.path}");
+//    ANT.unzip(src: "$workspaceDir/Distribution/SmartsModule${cmdbBuild.smartsBuild.getVersionWithDate()}" + ".zip", dest: "${rootDir.path}");
 //    ANT.unzip(src: "$workspaceDir/Distribution/NetcoolModule${cmdbBuild.netcoolBuild.getVersionWithDate()}" + ".zip", dest: "${rootDir.path}");
 
 

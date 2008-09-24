@@ -11,6 +11,7 @@
        domainObject = RsEvent.get(name: notificationName);
     }
     else{
+       notificationName = "${className} ${instanceName} ${eventName}";
        def objects = RsSmartsNotification.search("className:\"${className}\" AND instanceName:\"${instanceName}\" AND eventName:\"${eventName}\"").results;
        if(objects.size() > 0){
            domainObject = objects[0];
@@ -118,7 +119,7 @@
     }
     else {
 %>
-Event ${className} ${instanceName} ${eventName} does not exist.
+Event ${notificationName} does not exist.
 <%
     }
 %>

@@ -138,6 +138,7 @@ def archiveNotification(notification)
     columnLocalNameMappings.each{String localName, String smartsName->
         historicalNotificationProps[localName] = notification[localName];
     }
+    historicalNotificationProps["active"] = false;
     historicalNotificationProps["causedBy"] = serializeRelations(notification, "causedBy");
     historicalNotificationProps["causes"] = serializeRelations(notification, "causes");
     notification.remove();

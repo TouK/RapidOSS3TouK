@@ -17,6 +17,7 @@ class SearchQuery {
     String name;
     String query;
     String sortProperty;
+    String viewName = "default";
     String type="";
     boolean isPublic = false;
     String sortOrder = "asc";
@@ -27,5 +28,7 @@ class SearchQuery {
     static constraints = {
         name(key:["username"]);
         sortOrder(inList:["asc","desc"]);
+        viewName(blank:true, nullable:true);
+        sortProperty(blank:true, nullable:true);
     }
 }

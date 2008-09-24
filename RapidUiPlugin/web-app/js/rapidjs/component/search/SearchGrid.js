@@ -12,7 +12,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.totalColumnWidth = null;
         this.viewBuilder = null;
         this.defaultColumns = YAHOO.rapidjs.ObjectUtils.clone(this.columns, true);
-        this.sortState = {header:null, direction:null};
+        this.lastSortedHeader = null;
         this.bodyId = this.id + "_body";
         this.addMenuColumn(this.columns);
         for (var index = 0; index < this.columns.length; index++) {
@@ -86,8 +86,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         });
         htemplate.compile();
         this.htemplate = htemplate;
+        var sortColIndex = null;
         for (var i = 0; i < this.columns.length; i++) {
+            if (this.columns[i]['sortBy'] == true) {
+                sortColIndex = i;
+            }
             this.addHeader(i, this.columns[i].colLabel);
+        }
+        if (sortColIndex != null) {
+            this.lastSortedHeader = this.headers[sortColIndex];
+            this.lastSortAtt = this.columns[sortColIndex]['attributeName'];
         }
         YAHOO.util.Event.addListener(this.bwrap.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
@@ -130,16 +138,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         return hd;
     },
 
-    addCellsToCurrentRows: function(nOfColumns){
+    addCellsToCurrentRows: function(nOfColumns) {
         var nOfRows = this.bufferView.rowEls.length
         for (var rowIndex = 0; rowIndex < nOfRows; rowIndex++) {
             var rowEl = this.bufferView.rowEls[rowIndex];
             var currentCellLength = rowEl.cells.length;
             var nOfCellsToAdd = nOfColumns - currentCellLength;
-            for(var colIndex = 0; colIndex < nOfCellsToAdd; colIndex++){
+            for (var colIndex = 0; colIndex < nOfCellsToAdd; colIndex++) {
                 var columnIndex = currentCellLength + colIndex;
                 YAHOO.ext.DomHelper.append(rowEl.dom, {tag:'span', cls:'rcmdb-search-cell rcmdb-searchgrid-col-' + columnIndex,
-                        html:'<span class="rcmdb-search-cell-value"></span>'});    
+                    html:'<span class="rcmdb-search-cell-value"></span>'});
             }
             rowEl.cells = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-cell', 'span', rowEl.dom);
         }
@@ -293,17 +301,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         var target = YAHOO.util.Event.getTarget(e)
         var header = this.getHeaderFromChild(target);
         var direction = header.sortDir == 'asc' ? 'desc' : 'asc';
-        var lastClicked = this.sortState['header'];
-        this.sortState['header'] = header;
-        this.sortState['direction'] = direction;
-        if (lastClicked && lastClicked != header) {
-            lastClicked.sortDir = null;
-            this.updateHeaderSortState(lastClicked);
-        }
         header.sortDir = direction;
-        this.updateHeaderSortState(header);
         this.sort(this.columns[header.columnIndex]['attributeName'], header.sortDir);
     },
+
     updateHeaderSortState: function(hd) {
         var sortAscDisplay = hd.sortDir == 'asc' ? 'block' : 'none';
         var sortDescDisplay = hd.sortDir == 'desc' ? 'block' : 'none';
@@ -370,7 +371,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         }
         this.activateView(view);
     },
-    activateView : function(view) {
+    activateView : function(view, willKeepMask) {
         this.showMask();
         var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
         var columns;
@@ -410,17 +411,23 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         var rowCount = this.bufferView.rowEls.length;
         for (var index = 0; index < rowCount; index++) {
             var rowEl = this.bufferView.rowEls[index]
-
             var cells = rowEl.cells;
-            YAHOO.util.Dom.removeClass(cells[this.columns.length -1], 'rcmdb-searchgrid-col-last');
-            YAHOO.util.Dom.addClass(cells[columns.length -1], 'rcmdb-searchgrid-col-last');
+            YAHOO.util.Dom.removeClass(cells[this.columns.length - 1], 'rcmdb-searchgrid-col-last');
+            YAHOO.util.Dom.addClass(cells[columns.length - 1], 'rcmdb-searchgrid-col-last');
+
         }
         this.columns = columns;
         for (var index = 0; index < this.columns.length; index++) {
             this.headers[index].textNode.innerHTML = this.columns[index].colLabel;
         }
         this.updateColumns();
-        this._verticalScrollChanged();
+        for (var index = 0; index < rowCount; index++) {
+            var rowEl = this.bufferView.rowEls[index];
+            this.renderRow(rowEl);
+        }
+        if (!willKeepMask) {
+            this.hideMask();
+        }
     },
     getColumnConfigFromViewNode: function(viewNode) {
         var sortColumn = viewNode.getAttribute('defaultSortColumn');
@@ -457,10 +464,58 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.headers[colIndex].split.style.display = '';
     },
 
-    viewBuilderError:function(component, errors){
-         this.events["error"].fireDirect(this, errors, true);
+    viewBuilderError:function(component, errors) {
+        this.events["error"].fireDirect(this, errors, true);
     },
-    viewBuilderSuccess: function(){
-         this.events["success"].fireDirect(this);
+    viewBuilderSuccess: function() {
+        this.events["success"].fireDirect(this);
+    },
+    _poll : function() {
+        var lastClicked = this.lastSortedHeader;
+        if (lastClicked) {
+            lastClicked.sortDir = null;
+            this.updateHeaderSortState(lastClicked);
+            this.lastSortedHeader = null;
+        }
+        var sortedHeaderIndex = -1;
+        for (var i = 0; i < this.columns.length; i++) {
+            if (this.columns[i]['attributeName'] == this.lastSortAtt) {
+                sortedHeaderIndex =  i;
+                break;
+            }
+        }
+        if(sortedHeaderIndex > -1){
+            this.lastSortedHeader = this.headers[sortedHeaderIndex];
+            this.lastSortedHeader.sortDir = this.lastSortOrder;
+            this.updateHeaderSortState(this.lastSortedHeader);
+        }
+        YAHOO.rapidjs.component.search.SearchGrid.superclass._poll.call(this);
+    },
+    setQueryWithView: function(queryString, view)
+    {
+        var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
+        var sortAtt = this.lastSortAtt;
+        var sortOrder = this.lastSortOrder;
+        if (currentView != view) {
+            SelectUtils.selectTheValue(this.viewInput, view, 0);
+            this.viewChanged();
+            var sortedColumnIndex = this.getSortedColumnIndex();
+            if (sortedColumnIndex > -1) {
+                var column = this.columns[sortedColumnIndex];
+                sortAtt = column['attributeName'];
+                sortOrder = 'asc';
+            }
+        }
+        this._setQuery(queryString, sortAtt, sortOrder);
+        this.handleSearch();
+    },
+
+    getSortedColumnIndex: function() {
+        for (var i = 0; i < this.columns.length; i++) {
+            if (this.columns[i]['sortBy'] == true) {
+                return i;
+            }
+        }
+        return -1;
     }
 });

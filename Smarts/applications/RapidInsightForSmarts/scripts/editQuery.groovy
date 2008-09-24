@@ -2,6 +2,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import search.SearchQuery
 import search.SearchQueryGroup
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import ui.GridView;
 
 /**
 * Created by IntelliJ IDEA.
@@ -20,6 +21,7 @@ else {
     def userName = web.session.username;
     def queryType = params.queryType;
     def extraFilteredProps = ["rsDatasource"];
+    def gridViews = GridView.search("username:\"${userName}\"", [sort:"name"]).results;
     if (queryType == "notification") {
         def sortProperties = DomainClassUtils.getFilteredProperties("RsSmartsNotification", extraFilteredProps);
         def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
@@ -48,6 +50,12 @@ else {
                         else {
                             option(it.name)
                         }
+                    }
+                }
+                viewName {
+                    option(selected: searchQuery.viewName == 'default', 'default')
+                    gridViews.each {
+                        option(selected: searchQuery.viewName == it.name, it.name)
                     }
                 }
             }
@@ -93,6 +101,12 @@ else {
                         else {
                             option(it.name)
                         }
+                    }
+                }
+                viewName {
+                    option(selected: searchQuery.viewName == 'default', 'default')
+                    gridViews.each {
+                        option(selected: searchQuery.viewName == it.name, it.name)
                     }
                 }
             }

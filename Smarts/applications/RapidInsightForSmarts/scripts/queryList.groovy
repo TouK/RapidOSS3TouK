@@ -22,7 +22,8 @@ queryBuilder.Filters
            queryBuilder.Filter(id: group.id, name: group.name, nodeType: "group",  isPublic:group.isPublic) {
               group.queries.each {SearchQuery query ->
                   if(query.type == filterType || query.type == ""){
-                        queryBuilder.Filter(id: query.id, name: query.name, nodeType: "filter", query: query.query, sortProperty: query.sortProperty, sortOrder: query.sortOrder, isPublic:query.isPublic)    
+                        queryBuilder.Filter(id: query.id, name: query.name, nodeType: "filter", viewName:query.viewName,
+                                query: query.query, sortProperty: query.sortProperty, sortOrder: query.sortOrder, isPublic:query.isPublic)
                   }
 
               }

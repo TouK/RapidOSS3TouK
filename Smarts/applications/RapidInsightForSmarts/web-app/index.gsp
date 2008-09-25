@@ -72,7 +72,7 @@
     var computerSystemComponentFields = ['creationClassName', 'name', 'description', 'displayName','isManaged','computerSystemName','tag']
     var networkAdapterFields = ["creationClassName", "name", "computerSystemName", "adminStatus", "operStatus", "description", "type", "mode", "isManaged","maxSpeed", "interfaceAlias"];
     var ipFields = ["creationClassName", "name", "computerSystemName", "address", "ipStatus", "interfaceOperStatus", "netmask", "networkNumber", "responsive", "status"];
-    var cardFields = ["creationClassName", "name", "computerSystemName", "serialNumber", "standbyStatus", "status", "type"];
+    var cardFields = ["creationClassName", "name", "computerSystemName", "standbyStatus", "status"];
     var linkFields = ["creationClassName", "name", "a_ComputerSystemName", "a_Name", "a_AdminStatus", "a_OperStatus", "connectedSystemsUnresponsive", "z_ComputerSystemName",
                     "z_Name", "z_AdminStatus", "z_OperStatus"];
     var ipNetworkFields = ["creationClassName", "name", "netmask", "networkNumber"];

@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsSmartsObject 
-{
-    
+class RsSmartsObject {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -73,5 +72,9 @@ class RsSmartsObject
     	return "${getClass().getName()}[name:$name]";
     }
     
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     //AUTO_GENERATED_CODE
+    
 }

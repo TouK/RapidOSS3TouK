@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsIpNetwork extends RsGroup
-{
-    
+class RsIpNetwork  extends RsGroup {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -52,5 +51,9 @@ class RsIpNetwork extends RsGroup
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "memberSystems"];
     
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     //AUTO_GENERATED_CODE
+    
 }

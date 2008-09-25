@@ -4,22 +4,22 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
-        <title>Add To RsRcmdbEvent</title>
+        <title>Add To RsRiEvent</title>
     </head>
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-            <span class="menuButton"><g:link class="list" action="list">RsRcmdbEvent List</g:link></span>
-            <span class="menuButton"><g:link class="create" action="create">New RsRcmdbEvent</g:link></span>
+            <span class="menuButton"><g:link class="list" action="list">RsRiEvent List</g:link></span>
+            <span class="menuButton"><g:link class="create" action="create">New RsRiEvent</g:link></span>
         </div>
         <div class="body">
-            <h1>Add To RsRcmdbEvent</h1>
+            <h1>Add To RsRiEvent</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <g:hasErrors bean="${rsRcmdbEvent}">
+            <g:hasErrors bean="${rsRiEvent}">
                 <div class="errors">
-                    <g:renderErrors bean="${rsRcmdbEvent}" as="list" />
+                    <g:renderErrors bean="${rsRiEvent}" as="list" />
                 </div>
             </g:hasErrors>
             <g:hasErrors bean="${flash.errors}">
@@ -34,9 +34,9 @@
                             <tr class="prop">
                                 <td valign="top" class="name">
 
-                                    <label for="${relationName}">${com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(rsRcmdbEvent.class, "relations")[relationName]?.type.getName()}:</label>
+                                    <label for="${relationName}">${com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(rsRiEvent.class, "relations")[relationName]?.type.getName()}:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: rsRcmdbEvent, field: relationName, 'errors')}">
+                                <td valign="top" class="value ${hasErrors(bean: rsRiEvent, field: relationName, 'errors')}">
                                     <g:select optionKey="id" from="${relatedObjectList}" name="relatedObjectId"></g:select>
                                 </td>
                             </tr>
@@ -44,7 +44,7 @@
                     </table>
                 </div>
                 <div class="buttons">
-                    <input type="hidden" name="id" value="${rsRcmdbEvent?.id}"/>
+                    <input type="hidden" name="id" value="${rsRiEvent?.id}"/>
                     <input type="hidden" name="relationName" value="${relationName}"/>
                     <span class="button"><g:actionSubmit class="edit" value="AddRelation"/></span>
                 </div>

@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsVlan extends RsSmartsObject
-{
-    
+class RsVlan  extends RsSmartsObject {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -46,5 +45,9 @@ class RsVlan extends RsSmartsObject
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     //AUTO_GENERATED_CODE
+    
 }

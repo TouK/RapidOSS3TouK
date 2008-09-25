@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsHistoricalEvent 
-{
-    
+class RsHistoricalEvent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -67,5 +66,9 @@ class RsHistoricalEvent
     	return "${getClass().getName()}[id:$id]";
     }
     
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     //AUTO_GENERATED_CODE
+    
 }

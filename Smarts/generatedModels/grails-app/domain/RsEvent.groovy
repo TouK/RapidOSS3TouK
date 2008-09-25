@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsEvent 
-{
-    
+class RsEvent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -23,6 +22,16 @@ class RsEvent
     Long severity =0;
     
     String source ="";
+    
+    Long firstNotifiedAt =0;
+    
+    Long lastNotifiedAt =0;
+    
+    Long lastChangedAt =0;
+    
+    Long lastClearedAt =0;
+    
+    Long lastCreatedAt =0;
     
     Long id ;
     
@@ -50,6 +59,16 @@ class RsEvent
         
      source(blank:true,nullable:true)
         
+     firstNotifiedAt(nullable:true)
+        
+     lastNotifiedAt(nullable:true)
+        
+     lastChangedAt(nullable:true)
+        
+     lastClearedAt(nullable:true)
+        
+     lastCreatedAt(nullable:true)
+        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
@@ -67,5 +86,9 @@ class RsEvent
     	return "${getClass().getName()}[name:$name]";
     }
     
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     //AUTO_GENERATED_CODE
+    
 }

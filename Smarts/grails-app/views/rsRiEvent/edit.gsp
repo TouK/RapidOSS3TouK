@@ -4,22 +4,22 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="main"/>
-    <title>Edit RsRcmdbEvent</title>
+    <title>Edit RsRiEvent</title>
 </head>
 <body>
 <div class="nav">
     <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-    <span class="menuButton"><g:link class="list" action="list">RsRcmdbEvent List</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create">New RsRcmdbEvent</g:link></span>
+    <span class="menuButton"><g:link class="list" action="list">RsRiEvent List</g:link></span>
+    <span class="menuButton"><g:link class="create" action="create">New RsRiEvent</g:link></span>
 </div>
 <div class="body">
-    <h1>Edit RsRcmdbEvent</h1>
+    <h1>Edit RsRiEvent</h1>
     <g:if test="${flash.message}">
         <div class="message">${flash.message}</div>
     </g:if>
-    <g:hasErrors bean="${rsRcmdbEvent}">
+    <g:hasErrors bean="${rsRiEvent}">
         <div class="errors">
-            <g:renderErrors bean="${rsRcmdbEvent}" as="list"/>
+            <g:renderErrors bean="${rsRiEvent}" as="list"/>
         </div>
     </g:hasErrors>
     <g:hasErrors bean="${flash.errors}">
@@ -28,7 +28,7 @@
         </div>
     </g:hasErrors>
     <g:form method="post" >
-        <input type="hidden" name="id" value="${rsRcmdbEvent?.id}"/>
+        <input type="hidden" name="id" value="${rsRiEvent?.id}"/>
         <div class="dialog">
             <table>
                 <tbody>
@@ -37,8 +37,8 @@
                         <td valign="top" class="name">
                             <label for="name">name:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'name','errors')}">
-                            <input type="text" id="name" name="name" value="${fieldValue(bean:rsRcmdbEvent,field:'name')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'name','errors')}">
+                            <input type="text" id="name" name="name" value="${fieldValue(bean:rsRiEvent,field:'name')}"/>
                         </td>
                     </tr>
                     
@@ -46,8 +46,8 @@
                         <td valign="top" class="name">
                             <label for="acknowledged">acknowledged:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'acknowledged','errors')}">
-                            <g:checkBox name="acknowledged" value="${rsRcmdbEvent?.acknowledged}" ></g:checkBox>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'acknowledged','errors')}">
+                            <g:checkBox name="acknowledged" value="${rsRiEvent?.acknowledged}" ></g:checkBox>
                         </td>
                     </tr>
                     
@@ -55,8 +55,8 @@
                         <td valign="top" class="name">
                             <label for="active">active:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'active','errors')}">
-                            <g:checkBox name="active" value="${rsRcmdbEvent?.active}" ></g:checkBox>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'active','errors')}">
+                            <g:checkBox name="active" value="${rsRiEvent?.active}" ></g:checkBox>
                         </td>
                     </tr>
                     
@@ -64,8 +64,8 @@
                         <td valign="top" class="name">
                             <label for="count">count:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'count','errors')}">
-                            <input type="text" id="count" name="count" value="${fieldValue(bean:rsRcmdbEvent,field:'count')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'count','errors')}">
+                            <input type="text" id="count" name="count" value="${fieldValue(bean:rsRiEvent,field:'count')}" />
                         </td>
                     </tr>
                     
@@ -73,8 +73,8 @@
                         <td valign="top" class="name">
                             <label for="eventName">eventName:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'eventName','errors')}">
-                            <input type="text" id="eventName" name="eventName" value="${fieldValue(bean:rsRcmdbEvent,field:'eventName')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'eventName','errors')}">
+                            <input type="text" id="eventName" name="eventName" value="${fieldValue(bean:rsRiEvent,field:'eventName')}"/>
                         </td>
                     </tr>
                     
@@ -82,8 +82,8 @@
                         <td valign="top" class="name">
                             <label for="firstNotifiedAt">firstNotifiedAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'firstNotifiedAt','errors')}">
-                            <g:datePicker name="firstNotifiedAt" value="${rsRcmdbEvent?.firstNotifiedAt}" noSelection="['':'']"></g:datePicker>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'firstNotifiedAt','errors')}">
+                            <input type="text" id="firstNotifiedAt" name="firstNotifiedAt" value="${fieldValue(bean:rsRiEvent,field:'firstNotifiedAt')}" />
                         </td>
                     </tr>
                     
@@ -91,8 +91,8 @@
                         <td valign="top" class="name">
                             <label for="lastChangedAt">lastChangedAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'lastChangedAt','errors')}">
-                            <g:datePicker name="lastChangedAt" value="${rsRcmdbEvent?.lastChangedAt}" noSelection="['':'']"></g:datePicker>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'lastChangedAt','errors')}">
+                            <input type="text" id="lastChangedAt" name="lastChangedAt" value="${fieldValue(bean:rsRiEvent,field:'lastChangedAt')}" />
                         </td>
                     </tr>
                     
@@ -100,8 +100,17 @@
                         <td valign="top" class="name">
                             <label for="lastClearedAt">lastClearedAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'lastClearedAt','errors')}">
-                            <g:datePicker name="lastClearedAt" value="${rsRcmdbEvent?.lastClearedAt}" noSelection="['':'']"></g:datePicker>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'lastClearedAt','errors')}">
+                            <input type="text" id="lastClearedAt" name="lastClearedAt" value="${fieldValue(bean:rsRiEvent,field:'lastClearedAt')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="lastCreatedAt">lastCreatedAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'lastCreatedAt','errors')}">
+                            <input type="text" id="lastCreatedAt" name="lastCreatedAt" value="${fieldValue(bean:rsRiEvent,field:'lastCreatedAt')}" />
                         </td>
                     </tr>
                     
@@ -109,8 +118,8 @@
                         <td valign="top" class="name">
                             <label for="lastNotifiedAt">lastNotifiedAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'lastNotifiedAt','errors')}">
-                            <g:datePicker name="lastNotifiedAt" value="${rsRcmdbEvent?.lastNotifiedAt}" noSelection="['':'']"></g:datePicker>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'lastNotifiedAt','errors')}">
+                            <input type="text" id="lastNotifiedAt" name="lastNotifiedAt" value="${fieldValue(bean:rsRiEvent,field:'lastNotifiedAt')}" />
                         </td>
                     </tr>
                     
@@ -118,8 +127,8 @@
                         <td valign="top" class="name">
                             <label for="owner">owner:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'owner','errors')}">
-                            <input type="text" id="owner" name="owner" value="${fieldValue(bean:rsRcmdbEvent,field:'owner')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'owner','errors')}">
+                            <input type="text" id="owner" name="owner" value="${fieldValue(bean:rsRiEvent,field:'owner')}"/>
                         </td>
                     </tr>
                     
@@ -127,8 +136,8 @@
                         <td valign="top" class="name">
                             <label for="severity">severity:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'severity','errors')}">
-                            <input type="text" id="severity" name="severity" value="${fieldValue(bean:rsRcmdbEvent,field:'severity')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'severity','errors')}">
+                            <input type="text" id="severity" name="severity" value="${fieldValue(bean:rsRiEvent,field:'severity')}" />
                         </td>
                     </tr>
                     
@@ -136,8 +145,8 @@
                         <td valign="top" class="name">
                             <label for="source">source:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRcmdbEvent,field:'source','errors')}">
-                            <input type="text" id="source" name="source" value="${fieldValue(bean:rsRcmdbEvent,field:'source')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'source','errors')}">
+                            <input type="text" id="source" name="source" value="${fieldValue(bean:rsRiEvent,field:'source')}"/>
                         </td>
                     </tr>
                     

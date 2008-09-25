@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsEventJournal 
-{
-    
+class RsEventJournal {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -59,5 +58,9 @@ class RsEventJournal
     	return "${getClass().getName()}[id:$id]";
     }
     
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     //AUTO_GENERATED_CODE
+    
 }

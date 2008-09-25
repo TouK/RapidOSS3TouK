@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsRcmdbEvent extends RsEvent
+class RsRiEvent extends RsEvent
 {
     
     //AUTO_GENERATED_CODE
@@ -15,14 +15,6 @@ class RsRcmdbEvent extends RsEvent
     Long count =1;
     
     String eventName ="";
-    
-    Date firstNotifiedAt =new Date(0);
-    
-    Date lastNotifiedAt =new Date(0);
-    
-    Date lastChangedAt =new Date(0);
-    
-    Date lastClearedAt =new Date(0);
     
     Long id ;
     
@@ -42,14 +34,6 @@ class RsRcmdbEvent extends RsEvent
         
      eventName(blank:true,nullable:true)
         
-     firstNotifiedAt(nullable:true)
-        
-     lastNotifiedAt(nullable:true)
-        
-     lastChangedAt(nullable:true)
-        
-     lastClearedAt(nullable:true)
-        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
@@ -62,5 +46,8 @@ class RsRcmdbEvent extends RsEvent
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     //AUTO_GENERATED_CODE
 }

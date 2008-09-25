@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsSmartsNotification extends RsEvent
-{
-    
+class RsSmartsNotification  extends RsEvent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -23,16 +22,6 @@ class RsSmartsNotification extends RsEvent
     String instanceName ="";
     
     String eventName ="";
-    
-    Long lastNotifiedAt =0;
-    
-    Long lastCreatedAt =0;
-    
-    Long firstNotifiedAt =0;
-    
-    Long lastClearedAt =0;
-    
-    Long lastChangedAt =0;
     
     Boolean isRoot =false;
     
@@ -126,16 +115,6 @@ class RsSmartsNotification extends RsEvent
         
      eventName(blank:true,nullable:true)
         
-     lastNotifiedAt(nullable:true)
-        
-     lastCreatedAt(nullable:true)
-        
-     firstNotifiedAt(nullable:true)
-        
-     lastClearedAt(nullable:true)
-        
-     lastChangedAt(nullable:true)
-        
      isRoot(nullable:true)
         
      isProblem(nullable:true)
@@ -204,5 +183,9 @@ class RsSmartsNotification extends RsEvent
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "causedBy", "causes"];
     
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     //AUTO_GENERATED_CODE
+    
 }

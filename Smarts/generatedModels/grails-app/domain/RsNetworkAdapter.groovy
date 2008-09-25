@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsNetworkAdapter extends RsComputerSystemComponent
-{
-    
+class RsNetworkAdapter  extends RsComputerSystemComponent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -168,5 +167,9 @@ class RsNetworkAdapter extends RsComputerSystemComponent
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "realizedBy", "connectedVia"];
     
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     //AUTO_GENERATED_CODE
+    
 }

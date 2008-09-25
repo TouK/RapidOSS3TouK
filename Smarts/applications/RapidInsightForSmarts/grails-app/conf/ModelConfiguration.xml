@@ -39,16 +39,17 @@
                 <Property Name='acknowledged' Type='boolean' Default="false" />
                 <Property Name='severity' Type='number' Default="0"/>
                 <Property Name='source' Type='string' />
+                <Property Name='firstNotifiedAt' Type='number' />
+                <Property Name='lastNotifiedAt' Type='number' />
+                <Property Name='lastChangedAt' Type='number' />
+                <Property Name='lastClearedAt' Type='number' />
+				<Property Name="lastCreatedAt" Type="number"/>
              </Properties>
   		</Model>
-  		<Model Name="RsRcmdbEvent" Parent="RsEvent">
+  		<Model Name="RsRiEvent" Parent="RsEvent">
       		<Properties>
                 <Property Name='count' Type='number' Default="1" />
           		<Property Name='eventName' Type='string'/>
-                <Property Name='firstNotifiedAt' Type='date' />
-                <Property Name='lastNotifiedAt' Type='date' />
-                <Property Name='lastChangedAt' Type='date' />
-                <Property Name='lastClearedAt' Type='date' />
          	</Properties>
   		</Model>    
         
@@ -60,11 +61,6 @@
                 <Property Name="className" Type="string"/>
                 <Property Name="instanceName" Type="string"/>
                 <Property Name="eventName" Type="string"/>
-                <Property Name="lastNotifiedAt" Type="number"/>
-                <Property Name="lastCreatedAt" Type="number"/>
-                <Property Name="firstNotifiedAt" Type="number"/>
-                <Property Name="lastClearedAt" Type="number"/>
-                <Property Name="lastChangedAt" Type="number"/>
                 <Property Name="isRoot" Type="boolean"/>
                 <Property Name="isProblem" Type="boolean"/>
                 <Property Name="eventType" Type="string"/>

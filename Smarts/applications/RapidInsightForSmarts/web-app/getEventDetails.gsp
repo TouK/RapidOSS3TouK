@@ -24,7 +24,7 @@
         isSmartsEvent = domainObject instanceof RsSmartsNotification
         allProperties = domainObject.getPropertiesList();
         relations = DomainClassUtils.getRelations(domainObject.getClass().getName());
-        def excludedProps = ["id", "rsDatasource", "firstNotifiedAt", "lastNotifiedAt", "lastChangedAt"]
+        def excludedProps = ["id", "rsDatasource", "firstNotifiedAt", "lastNotifiedAt", "lastChangedAt", "lastClearedAt"]
         def filteredProps = allProperties.findAll {!excludedProps.contains(it.name) && !relations.containsKey(it.name)}
 %>
 <div class="yui-navset yui-navset-top">
@@ -55,6 +55,7 @@
                 def firstNotifiedAt = format.format(new Timestamp(domainObject.firstNotifiedAt));
                 def lastNotifiedAt = format.format(new Timestamp(domainObject.lastNotifiedAt));
                 def lastChangedAt = format.format(new Timestamp(domainObject.lastChangedAt));
+                def lastClearedAt = format.format(new Timestamp(domainObject.lastClearedAt));
                 def severityClass;
                 def severity = domainObject.severity;
                 if (severity == 1) {
@@ -128,6 +129,7 @@
                                 <b>First Notified At:</b> ${firstNotifiedAt}<br>
                                 <b>Last Notified At:</b> ${lastNotifiedAt}<br>
                                 <b>Last Changed At:</b> ${lastChangedAt}<br>
+                                <b>Last Cleared At:</b> ${lastClearedAt}<br>
                                 <%
                                         if (isSmartsEvent) {
                                 %>

@@ -199,7 +199,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var cell = rowEl.cells[colIndex];
             var valueEl = cell.firstChild;
             var value = dataNode.getAttribute(att);
-            valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) : value);
+            valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) || "" : value || "");
             cell.propKey = att;
             cell.propValue = value;
         }

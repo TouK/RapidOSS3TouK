@@ -23,7 +23,7 @@
 <body onload="${pageProperty(name: 'body.onload')}" class="yui-skin-sam admin">
 <div style="padding-left:10px;padding-top:5px;"><img src="${createLinkTo(dir:'images',file:'RapidInsight-white.png')}"></div>
 <div class="nav"><h1 style="display:inline">RapidInsight For Smarts</h1><span class="menuButton"><a href="${createLinkTo(dir: 'auth/logout?targetUri=/admin.gsp')}" class="logout">Logout</a></span></div>
-<p style="margin-left:20px;width:80%">This is the basic administration UI where you can define your connections.</p>
+<p style="margin-left:20px;width:80%">This is the basic administration UI where you can configure RapidInsight.</p>
 <br>
 <p/>
 <p/>

@@ -527,21 +527,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         }
     },
     cellClicked: function(cell, row, target, e, dataNode) {
-        if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
-            if (e.ctrlKey)
-            {
-                if (this.searchInput.value != "")
-                    this.appendToQuery("NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
-                else
-                    this.appendToQuery(cell.propKey + ":[0 TO *] NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
-
-            }
-            else
-            {
-                this.appendToQuery(cell.propKey + ":\"" + cell.propValue + "\"");
-                this.firePropertyClick(cell.propKey, cell.propValue, dataNode);
-            }
-        }
+        this.firePropertyClick(cell.propKey, cell.propValue, dataNode);
     },
 
     rowHeaderMenuItemClicked: function(eventType, params) {

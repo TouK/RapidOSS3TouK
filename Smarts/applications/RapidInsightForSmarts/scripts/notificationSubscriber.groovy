@@ -175,7 +175,7 @@ def getNotificationProperties(notificationObject)
         {
             if(localName == "lastNotifiedAt" || localName == "lastChangedAt" || localName == "lastClearedAt" || localName == "firstNotifiedAt")
             {
-                propValue = Long.parseLong(propValue)*1000;
+                propValue = propValue*1000;
             }
             notficationProps[localName] = propValue;
         }

@@ -3,6 +3,7 @@ YAHOO.rapidjs.component.TreeGrid = function(container, config) {
     YAHOO.rapidjs.component.TreeGrid.superclass.constructor.call(this,container, config);
 	this.nodeId = config.nodeId;
 	this.rootTag = config.rootTag;
+    this.expanded = config.expanded;
     var events = {
         'selectionChange' : new YAHOO.util.CustomEvent('selectionChange'),
         'treeNodeClick' : new YAHOO.util.CustomEvent('treeNodeClick'),
@@ -29,7 +30,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.Poll
 		if(node){
 			if(!this.rootNode || keepExisting == false){
 				this.rootNode = node;
-				this.treeGridView.handleData(this.rootNode);
+				this.treeGridView.handleData(this.rootNode, this.expanded);
 			}
 			else
 			{

@@ -87,31 +87,9 @@
 
       }
 
-      function menuItemClickedFunction( data )
-      {
-          var id = data["id"];
-          if( id == "item1" )
-          {
-            var url = "getObjectDetails.gsp?name="+ encodeURIComponent(data["nodeID"]);
-            objectDetailsDialog.show(url, "Details of " + data["nodeType"] + " " + data["nodeID"]);
-          }
-
-      }
-
 
     function menuItemFilter(id) {
-        var items = [];
-        /*
-        if(id == 'device1')
-            items = ["item2"];
-        else if(id == 'device2')
-            items = ["item1", "item2", "item3"];
-        else
-            items = ["item1", "item2"];
-        */
-
-        items = ["item1"];
-
+        var items = ["item1"];
         return items;
     }
     var topMapConfig = {
@@ -127,7 +105,7 @@
           "Switch":{ "url":"images/rapidjs/component/topologyMap/switch_icon.png"}
         },
         menuItems : { "item1": { "text": "Browse" }},
-        menuItemFilterFunction : "menuItemFilter",
+        menuItemFilter : "menuItemFilter",
         statusColors : { "1" : 0xde2c26, "2" : 0x7b4a1a, "3": 0xfae500, "4" : 0x20b4e0, "5":0x0d4702, "default" : 0x0d4702 },
 		edgeColors : { "1" : 0xffde2c26,"2" :  0xfff79229,"3":  0xfffae500, "4" :  0xff20b4e0,"5": 0xff62b446, "default" : 0xff62b446 },
         toolbarMenuItems : [{
@@ -160,6 +138,11 @@
         var componentId = params["componentId"];
         var menuId = params["menuId"];
         var data = params.data;
+        if(menuId == "item1")
+        {
+            var url = "getObjectDetails.gsp?name="+ encodeURIComponent(data["id"]);
+            objectDetailsDialog.show(url, "Details of " + data["type"] + " " + data["id"]);    
+        }
     }, this, true);
 
     topMap.events.toolbarMenuItemClicked.subscribe(function(params){

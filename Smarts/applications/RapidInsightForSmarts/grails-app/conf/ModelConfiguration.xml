@@ -43,7 +43,6 @@
                 <Property Name='lastNotifiedAt' Type='number' />
                 <Property Name='lastChangedAt' Type='number' />
                 <Property Name='lastClearedAt' Type='number' />
-				<Property Name="lastCreatedAt" Type="number"/>
              </Properties>
   		</Model>
   		<Model Name="RsRiEvent" Parent="RsEvent">
@@ -100,7 +99,6 @@
                 <Property Name="instanceName" Type="string"/>
                 <Property Name="eventName" Type="string"/>
                 <Property Name="lastNotifiedAt" Type="number"/>
-                <Property Name="lastCreatedAt" Type="number"/>
                 <Property Name="firstNotifiedAt" Type="number"/>
                 <Property Name="lastClearedAt" Type="number"/>
                 <Property Name="lastChangedAt" Type="number"/>

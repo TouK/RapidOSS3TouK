@@ -9,7 +9,7 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 def getParameters(){
    return [
            "Attributes":["ClassName", "InstanceName", "EventName", "Severity", "Acknowledged", "Name",
-                   "EventText", "OccurrenceCount", "TroubleTicketID", "LastNotifiedAt", "LastChangedAt", "LastClearedAt",
+                   "EventText", "OccurrenceCount", "TroubleTicketID", "LastNotifiedAt", "LastChangedAt", "LastClearedAt", "FirstNotifiedAt", 
            "ElementName", "ElementClassName", "SourceDomainName", "Category", "EventType", "Owner", "IsRoot", "IsProblem"],
            "NotificationList":"ALL_NOTIFICATIONS",
            "TransientInterval":300,
@@ -173,6 +173,10 @@ def getNotificationProperties(notificationObject)
         def localName = columnSmartsNameMappings[propName];
         if(localName)
         {
+            if(localName == "lastNotifiedAt" || localName == "lastChangedAt" || localName == "lastClearedAt" || localName == "firstNotifiedAt")
+            {
+                propValue = Long.parseLong(propValue)*1000;
+            }
             notficationProps[localName] = propValue;
         }
     }

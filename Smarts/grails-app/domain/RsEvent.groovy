@@ -31,8 +31,6 @@ class RsEvent {
     
     Long lastClearedAt =0;
     
-    Long lastCreatedAt =0;
-    
     Long id ;
     
     Long version ;
@@ -66,8 +64,6 @@ class RsEvent {
      lastChangedAt(nullable:true)
         
      lastClearedAt(nullable:true)
-        
-     lastCreatedAt(nullable:true)
         
      __operation_class__(nullable:true)
         

@@ -91,13 +91,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastCreatedAt:</td>
-                    
-                    <td valign="top" class="value">${rsRiEvent.lastCreatedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">lastNotifiedAt:</td>
                     
                     <td valign="top" class="value">${rsRiEvent.lastNotifiedAt}</td>

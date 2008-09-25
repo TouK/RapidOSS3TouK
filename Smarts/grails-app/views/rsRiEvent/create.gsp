@@ -105,15 +105,6 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="lastCreatedAt">lastCreatedAt:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'lastCreatedAt','errors')}">
-                            <input type="text" id="lastCreatedAt" name="lastCreatedAt" value="${fieldValue(bean:rsRiEvent,field:'lastCreatedAt')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="lastNotifiedAt">lastNotifiedAt:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'lastNotifiedAt','errors')}">

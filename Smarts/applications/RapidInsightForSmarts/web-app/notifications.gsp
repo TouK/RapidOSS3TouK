@@ -119,7 +119,7 @@
             {exp:'data["severity"] == 5', src:'images/rapidjs/component/searchlist/green.png'}
         ],
         renderCellFunction : function(key, value, data){
-        	if(key == "lastChangedAt" || key == "lastNotifiedAt" || key == "lastCreatedAt" || key == "firstNotifiedAt" || key == "lastClearedAt"){
+        	if(key == "lastChangedAt" || key == "lastNotifiedAt" || key == "firstNotifiedAt" || key == "lastClearedAt"){
                 if(value == "0" || value == "")
                 {
                     return "never"

@@ -25,8 +25,6 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
     
     Long lastNotifiedAt =0;
     
-    Long lastCreatedAt =0;
-    
     Long firstNotifiedAt =0;
     
     Long lastClearedAt =0;
@@ -118,8 +116,6 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
      eventName(blank:true,nullable:true)
         
      lastNotifiedAt(nullable:true)
-        
-     lastCreatedAt(nullable:true)
         
      firstNotifiedAt(nullable:true)
         

@@ -243,13 +243,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastCreatedAt:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsNotification.lastCreatedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">lastNotifiedAt:</td>
                     
                     <td valign="top" class="value">${rsSmartsNotification.lastNotifiedAt}</td>

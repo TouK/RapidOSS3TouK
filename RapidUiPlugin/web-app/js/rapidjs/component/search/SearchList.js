@@ -202,8 +202,22 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
 
     cellClicked: function(cell, row, target, e, dataNode) {
-        YAHOO.rapidjs.component.search.SearchList.superclass.cellClicked.call(this, cell, row, target, e, dataNode);
-        if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-menu')) {
+        if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
+            if (e.ctrlKey)
+            {
+                if (this.searchInput.value != "")
+                    this.appendToQuery("NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
+                else
+                    this.appendToQuery(cell.propKey + ":[0 TO *] NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
+
+            }
+            else
+            {
+                this.appendToQuery(cell.propKey + ":\"" + cell.propValue + "\"");
+                this.firePropertyClick(cell.propKey, cell.propValue, dataNode);
+            }
+        }
+        else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-menu')) {
             var index = 0;
             for (var i in this.propertyMenuItems) {
                 if (this.propertyMenuItems[i].condition != null) {

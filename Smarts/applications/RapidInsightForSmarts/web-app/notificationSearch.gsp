@@ -123,7 +123,7 @@
             item7 : { id : 'except', label : 'Except'},
             item8 : { id : 'browse', label : 'Browse', condition:function(key, value, data){return (key == "instanceName" || key == "elementName")}}
         },
-        renderCellFunction : function(key, value, data){
+        renderCellFunction : function(key, value, data, el){
         	if(key == "lastChangedAt"){
                 if(value == "0" || value == "")
                 {
@@ -141,6 +141,9 @@
                     {
                     }
                 }
+            }
+            else if(key == 'className' || key == 'instanceName' || key == 'eventName'){
+               YAHOO.util.Dom.setStyle(el, 'color', 'blue');
             }
             return value;
         }

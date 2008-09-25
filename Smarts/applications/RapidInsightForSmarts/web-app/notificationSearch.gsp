@@ -242,7 +242,7 @@
          nodeId:"id",
          contentPath:"Filter",
          title:'Saved Queries',
-         mouseOverCursor: 'pointer',
+         expanded:true,
          columns: [
             {attributeName:'name', colLabel:'Name', width:248, sortBy:true}
          ],

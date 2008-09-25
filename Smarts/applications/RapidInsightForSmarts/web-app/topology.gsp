@@ -212,7 +212,7 @@
          nodeId:"id",
          contentPath:"Map",
          title:'Saved Maps',
-         mouseOverCursor: 'pointer',
+         expanded:true,
          columns: [
             {attributeName:'name', colLabel:'Name', width:248, sortBy:true}
          ],

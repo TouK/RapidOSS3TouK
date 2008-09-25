@@ -216,8 +216,8 @@
          rootTag:"Filters",
          nodeId:"id",
          contentPath:"Filter",
+         expanded:true,
          title:'Saved Queries',
-         mouseOverCursor: 'pointer',
          columns: [
             {attributeName:'name', colLabel:'Name', width:248, sortBy:true}
          ],

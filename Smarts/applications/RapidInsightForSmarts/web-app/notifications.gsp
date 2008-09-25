@@ -129,7 +129,7 @@
                     try
                     {
                         var d = new Date();
-                        d.setTime(parseFloat(value)*1000)
+                        d.setTime(parseFloat(value))
                         return d.format("d M H:i:s");
                     }
                     catch(e)

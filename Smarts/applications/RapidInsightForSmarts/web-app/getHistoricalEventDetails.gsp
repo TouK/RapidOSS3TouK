@@ -16,9 +16,9 @@
     <div style="display:block;margin-top:10px;">
         <%
                 SimpleDateFormat format = new SimpleDateFormat("dd MMM HH:mm:ss")
-                def firstNotifiedAt = format.format(new Timestamp(domainObject.firstNotifiedAt * 1000));
-                def lastNotifiedAt = format.format(new Timestamp(domainObject.lastNotifiedAt * 1000));
-                def lastChangedAt = format.format(new Timestamp(domainObject.lastChangedAt * 1000));
+                def firstNotifiedAt = format.format(new Timestamp(domainObject.firstNotifiedAt));
+                def lastNotifiedAt = format.format(new Timestamp(domainObject.lastNotifiedAt));
+                def lastChangedAt = format.format(new Timestamp(domainObject.lastChangedAt));
                 def severityClass;
                 def severity = domainObject.severity;
                 if (severity == 1) {

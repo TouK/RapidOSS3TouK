@@ -208,7 +208,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 if (this.searchInput.value != "")
                     this.appendToQuery("NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
                 else
-                    this.appendToQuery(cell.propKey + ":[0 TO *] NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
+                    this.appendToQuery("alias:* NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
 
             }
             else

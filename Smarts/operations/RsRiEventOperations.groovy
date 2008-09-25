@@ -1,0 +1,6 @@
+
+    
+    class RsRiEventOperations extends RsEventOperations
+    {
+    }
+    

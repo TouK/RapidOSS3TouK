@@ -1,4 +1,4 @@
-class RsEventOperations extends RsAbstractEventOperations {
+class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 	
 	static notify(Map originalEventProps) {
 		def eventProps = [:]

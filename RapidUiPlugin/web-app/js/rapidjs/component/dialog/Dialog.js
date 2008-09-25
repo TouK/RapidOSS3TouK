@@ -5,8 +5,8 @@ YAHOO.rapidjs.component.Dialog = function(config)
     this.height = null;
     this.minHeight = 300;
     this.minWidth = 100;
-    this.maxWidth = 900;
-    this.maxHeight = 600;
+    this.maxWidth = null;
+    this.maxHeight = null;
     this.close = false;
     this.title = "&#160;";
     this.buttons = null;
@@ -77,7 +77,6 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie == 7 && IE_QUIRKS));
             // Create Resize instance, binding it to the 'resizablepanel' DIV
             this.resize = new YAHOO.util.Resize(this.container, {
-                handles: ['br'],
                 autoRatio: false,
                 status: false,
                 minHeight:this.minHeight,

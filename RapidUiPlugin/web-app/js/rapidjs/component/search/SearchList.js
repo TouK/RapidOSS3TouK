@@ -185,7 +185,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 var keyEl = cell.firstChild;
                 var valueEl = keyEl.nextSibling;
                 var value = dataNode.getAttribute(att);
-                valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) || "": value || "");
+                valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode, valueEl) || "": value || "");
                 keyEl.innerHTML = att + '=';
                 cell.propKey = att;
                 cell.propValue = value;

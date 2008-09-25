@@ -1,21 +1,4 @@
 class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
-	
-	static notify(Map originalEventProps) {
-		def eventProps = [:]
-		eventProps.putAll(originalEventProps)
-		eventProps.active = "true"
-		def event  = RsEvent.get(name:eventProps.name)
-		if (event==null){
-			eventProps.firstNotifiedAt = new Date()	
-			event.count = 0;
-		}
-		eventProps.lastNotifiedAt = new Date()
-		event.lastChangedAt = new Date()
-		event.count ++
-		event = RsEvent.add(eventProps)
-		RsEventJournal.add(eventId:event.id,eventName:event.eventName,rstime:new Date())
-	}
-	
 	public void clear() {
 		props = getAsMap();
 		props.lastClearedAt = new Date()
@@ -45,18 +28,13 @@ class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDo
 
 	public void setOwnership(boolean action, userName) {
     	if(action)        {
-                RsEventJournal.add(eventId:id, name:"TakeOwnership", rsTime:new Date(), details:"TakeOwnership by ${userName}")
+            RsEventJournal.add(eventId:id, name:"TakeOwnership", rsTime:new Date(), details:"TakeOwnership by ${userName}")
+            owner = userName
         }
         else{
-                RsEventJournal.add(eventId:id, name:"ReleaseOwnership", rsTime:new Date(), details:"RelaseOwnership by ${userName}")
+            RsEventJournal.add(eventId:id, name:"ReleaseOwnership", rsTime:new Date(), details:"RelaseOwnership by ${userName}")
+            owner = ""
         }
-                
-		if(action){
-			owner = userName
-		}
-		else{
-			owner = ""
-		}
 		lastChangedAt = new Date()
 	}
 	

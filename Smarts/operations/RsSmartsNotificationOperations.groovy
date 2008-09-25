@@ -5,11 +5,11 @@ class RsSmartsNotificationOperations extends RsAbstractEventOperations {
         SmartsNotificationDatasource ds = SmartsNotificationDatasource.get(name: rsDatasource);
         if (ds == null) throw new Exception("Datasource with name ${rsDatasource} is not defined")
         if (action) {
-            ds.acknowledge([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: " Acknowledged by " + userName])
+            ds.acknowledge([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: "Acknowledged by " + userName])
             update(acknowledged: true);
         }
         else {
-            ds.unacknowledge([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: " UnAcknowledged by " + userName])
+            ds.unacknowledge([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: "UnAcknowledged by " + userName])
             update(acknowledged: false);
         }
     }
@@ -18,11 +18,11 @@ class RsSmartsNotificationOperations extends RsAbstractEventOperations {
         SmartsNotificationDatasource ds = SmartsNotificationDatasource.get(name: rsDatasource);
         if (ds == null) throw new Exception("Datasource with name ${rsDatasource} is not defined")
         if (action) {
-            ds.takeOwnership([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: " TakeOwnership with user " + userName])
+            ds.takeOwnership([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: "TakeOwnership with user " + userName])
             update(owner: userName);
         }
         else {
-            ds.releaseOwnership([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: " ReleaseOwnership from user " + userName])
+            ds.releaseOwnership([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: "ReleaseOwnership from user " + userName])
             update(owner: "");
         }
     }

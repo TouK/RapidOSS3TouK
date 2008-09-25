@@ -111,7 +111,7 @@
                     <%
                         def currentUrl = request.uri.toString();
                     %>
-                    <li class="${currentUrl.indexOf('index.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
+                    <li class="${currentUrl == "/RapidSuite/" || currentUrl == "/RapidSuite/index.gsp" ? "selected":""}"><a href="${createLinkTo(file: 'index.gsp')}"><em>Topology</em></a></li>
                     <li class="${currentUrl.indexOf('notificationSearch.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'notificationSearch.gsp')}"><em>Notification Search</em></a></li>
                     <li class="${currentUrl.indexOf('notifications.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'notifications.gsp')}"><em>Notifications</em></a></li>
                     <li class="${currentUrl.indexOf('topology.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'topology.gsp')}"><em>Map</em></a></li>

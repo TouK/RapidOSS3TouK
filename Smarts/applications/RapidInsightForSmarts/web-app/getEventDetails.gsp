@@ -1,23 +1,31 @@
-<%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
+<%@ page import="com.ifountain.rcmdb.domain.util.DomainClassUtils; java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
 <%
     def notificationName = params.name;
     def className = params.className;
     def instanceName = params.instanceName;
     def eventName = params.eventName;
-    def allProperties = ["className", "instanceName", "eventName", "sourceDomainName", "acknowledged", "owner", "elementClassName", "elementName",
+    def smartsProperties = ["className", "instanceName", "eventName", "sourceDomainName", "acknowledged", "owner", "elementClassName", "elementName",
             "severity", "eventText", "isRoot", "isProblem", "certainty", "eventType", "category", "impact", "inMaintenance"];
+    def allProperties;
+    def relations;
     def domainObject;
-    if(notificationName != null){
-       domainObject = RsEvent.get(name: notificationName);
+    def isSmartsEvent = true;
+    if (notificationName != null) {
+        domainObject = RsEvent.get(name: notificationName);
     }
-    else{
-       notificationName = "${className} ${instanceName} ${eventName}";
-       def objects = RsSmartsNotification.search("className:\"${className}\" AND instanceName:\"${instanceName}\" AND eventName:\"${eventName}\"").results;
-       if(objects.size() > 0){
-           domainObject = objects[0];
-       }
+    else {
+        notificationName = "${className} ${instanceName} ${eventName}";
+        def objects = RsSmartsNotification.search("className:\"${className}\" AND instanceName:\"${instanceName}\" AND eventName:\"${eventName}\"").results;
+        if (objects.size() > 0) {
+            domainObject = objects[0];
+        }
     }
     if (domainObject != null) {
+        isSmartsEvent = domainObject instanceof RsSmartsNotification
+        allProperties = domainObject.getPropertiesList();
+        relations = DomainClassUtils.getRelations(domainObject.getClass().getName());
+        def excludedProps = ["id", "rsDatasource", "firstNotifiedAt", "lastNotifiedAt", "lastChangedAt"]
+        def filteredProps = allProperties.findAll {!excludedProps.contains(it.name) && !relations.containsKey(it.name)}
 %>
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
@@ -28,12 +36,12 @@
         </li>
         <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Audit Log</em></a></li>
         <%
-                if (domainObject.causes.size() > 0) {
+                if (isSmartsEvent && domainObject.causes.size() > 0) {
         %>
         <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Impact</em></a></li>
         <%
                 }
-                if (domainObject.causedBy.size() > 0) {
+                if (isSmartsEvent && domainObject.causedBy.size() > 0) {
         %>
         <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Caused By</em></a></li>
         <%
@@ -44,9 +52,9 @@
     <div style="display:block;margin-top:10px;">
         <%
                 SimpleDateFormat format = new SimpleDateFormat("dd MMM HH:mm:ss")
-                def firstNotifiedAt = format.format(new Timestamp(domainObject.firstNotifiedAt * 1000));
-                def lastNotifiedAt = format.format(new Timestamp(domainObject.lastNotifiedAt * 1000));
-                def lastChangedAt = format.format(new Timestamp(domainObject.lastChangedAt * 1000));
+                def firstNotifiedAt = format.format(new Timestamp(domainObject.firstNotifiedAt));
+                def lastNotifiedAt = format.format(new Timestamp(domainObject.lastNotifiedAt));
+                def lastChangedAt = format.format(new Timestamp(domainObject.lastChangedAt));
                 def severityClass;
                 def severity = domainObject.severity;
                 if (severity == 1) {
@@ -72,8 +80,10 @@
                     <div class="smarts-object-details" style="width:100%">
                         <table cellspacing="2" cellpadding="2" width="100%">
                             <tbody>
-
-                                <g:each var="propertyName" status="i" in="${allProperties}">
+                                <%
+                                        if (isSmartsEvent) {
+                                %>
+                                <g:each var="propertyName" status="i" in="${smartsProperties}">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td style="font-weight:bold">${propertyName}</td>
                                         <%
@@ -92,7 +102,19 @@
 
                                     </tr>
                                 </g:each>
-
+                                <%
+                                    }
+                                    else {
+                                %>
+                                <g:each var="prop" status="i" in="${filteredProps}">
+                                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                                        <td style="font-weight:bold">${prop.name}</td>
+                                        <td>${domainObject[prop.name]}</td>
+                                    </tr>
+                                </g:each>
+                                <%
+                                        }
+                                %>
                             </tbody>
                         </table>
 
@@ -106,7 +128,14 @@
                                 <b>First Notified At:</b> ${firstNotifiedAt}<br>
                                 <b>Last Notified At:</b> ${lastNotifiedAt}<br>
                                 <b>Last Changed At:</b> ${lastChangedAt}<br>
+                                <%
+                                        if (isSmartsEvent) {
+                                %>
                                 <b>Count:</b> ${domainObject.occurrenceCount}<br>
+                                <%
+                                        }
+                                %>
+
                             </div>
                         </div>
                     </div>

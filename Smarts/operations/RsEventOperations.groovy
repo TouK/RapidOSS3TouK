@@ -41,4 +41,8 @@ class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDo
 	public void addToJournal(name, details){
 		RsEventJournal.add(eventId:id, name:name, rsTime:new Date(), details:details)
 	}
+	
+	public void addToJournal(name){
+		RsEventJournal.add(eventId:id, name:name, rsTime:new Date())
+	}
 }

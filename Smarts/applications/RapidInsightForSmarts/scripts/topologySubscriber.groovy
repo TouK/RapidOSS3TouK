@@ -220,6 +220,31 @@ def update(topologyObject) {
         if (isComputerSystem(className)) {
             handleComputerSystemCreate(topologyObject);
         }
+        else if(isConnection(className))
+        {
+
+            Map connectionObjectFromSmarts = getDatasource().getObject(topologyObject);
+            Map connectedSystemIdentifiers = getConnectedComputerSystemProps(connectionObjectFromSmarts);
+            def aComputerSystem = RsComputerSystem.get(name:connectedSystemIdentifiers.A_Name);
+            def zComputerSystem = RsComputerSystem.get(name:connectedSystemIdentifiers.Z_Name);
+            if(aComputerSystem != null && zComputerSystem != null)
+            {
+                logger.debug("Creating connection object  ${connectionObjectFromSmarts.Name} of class ${connectionObjectFromSmarts.CreationClassName}");
+                def addedConnObject = addConnectionObject(connectionObjectFromSmarts);
+                if(!addedConnObject.hasErrors())
+                {
+                    addedConnObject.addRelation("connectedSystem":[aComputerSystem, zComputerSystem]);                    
+                }
+                else
+                {
+                    logger.debug("Could not created connection object  ${connectionObjectFromSmarts.Name} of class ${connectionObjectFromSmarts.CreationClassName}. Reason:"+addedConnObject.errors);    
+                }
+            }
+            else
+            {
+                logger.debug("Could not created connection object  ${connectionObjectFromSmarts.Name} of class ${connectionObjectFromSmarts.CreationClassName} because connected RsComputerSystem instances does not exist in repository.");   
+            }
+        }
     }
     else if (eventType == BaseSmartsListeningAdapter.CHANGE) {
         if (isComputerSystem(className)) {
@@ -281,16 +306,22 @@ def handleChange(updateParams)
     }
 }
 
-
-def addConnectionObject(topologyObject) {
-    getLogger().debug("Create event received for connection object ${topologyObject}")
-    Map connectionFromSmarts = getDatasource().getObject(topologyObject);
+def getConnectedComputerSystemProps(connectionFromSmarts)
+{
+    def topologyObject = [:]
     def aDisplayName = connectionFromSmarts.A_DisplayName
     def zDisplayName = connectionFromSmarts.Z_DisplayName
     topologyObject.A_ComputerSystemName = StringUtils.substringBetween(aDisplayName, "-", "/");
     topologyObject.A_Name = StringUtils.substringBefore(aDisplayName," [");
     topologyObject.Z_ComputerSystemName = StringUtils.substringBetween(zDisplayName, "-", "/");
     topologyObject.Z_Name = StringUtils.substringBefore(zDisplayName, " [");
+    return topologyObject;
+}
+def addConnectionObject(topologyObject) {
+    getLogger().debug("Create event received for connection object ${topologyObject}")
+    Map connectionFromSmarts = getDatasource().getObject(topologyObject);
+    def connectedSystemProps = getConnectedComputerSystemProps(topologyObject)
+    topologyObject.putAll(connectedSystemProps);
     def connObject = RsLink.add(getPropsWithLocalNames("RsLink", topologyObject));
     if (!connObject.hasErrors()) {
         logger.info("Connection object ${topologyObject} successfully added.")

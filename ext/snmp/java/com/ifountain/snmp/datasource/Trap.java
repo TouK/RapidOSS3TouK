@@ -138,10 +138,19 @@ public class Trap {
             VariableBinding var = (VariableBinding) variableBindings.get(i);
             Map varbind = new HashMap();
             varbind.put(RSnmpConstants.OID, var.getOid().toString());
-            varbind.put(RSnmpConstants.VARBIND_VALUE, var.getVariable().toString());
+            varbind.put(RSnmpConstants.VARBIND_VALUE, getVariableValue(var.getVariable()));
             varbinds.add(varbind);
         }
         trap.put(RSnmpConstants.VARBINDS, varbinds);
         return trap;
+    }
+
+    private String getVariableValue(Variable v){
+        if(v instanceof OctetString){
+            OctetString oc = (OctetString)v;
+            char c = ' ';
+            return oc.toASCII(c);
+        }
+        return v.toString();
     }
 }

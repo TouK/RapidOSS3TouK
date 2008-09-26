@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title><g:layoutTitle default="Grails"/></title>
+    <title><g:layoutTitle default="RapidInsight For Smarts Admin UI"/></title>
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
     <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
     <link rel="stylesheet" href="${createLinkTo(file: 'admin.css')}"/>
@@ -25,7 +25,8 @@
         <li><a href="${createLinkTo(file: 'admin.gsp')}"><em>Connectors</em></a></li>
         <li><g:link action="list" controller="script"><em>Scripts</em></g:link></li>
         <li><a href="${createLinkTo(file: 'reload.gsp')}"><em>Reload</em></a></li>
-        <li class="selected"><g:link action="list" controller="rsUser"><em>Users</em></g:link></li>
+        <li><g:link action="list" controller="rsUser"><em>Users</em></g:link></li>
+        <li class="selected"><g:link action="list" controller="group"><em>Groups</em></g:link></li>
         <li><a href="${createLinkTo(file: 'datasources.gsp')}"><em>Datasources</em></a></li>
     </ul>
     <div style="margin:20px 15px 10px;">

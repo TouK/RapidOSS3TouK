@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title><g:layoutTitle default="Grails"/></title>
+    <title><g:layoutTitle default="RapidInsight For Netcool Admin UI"/></title>
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
     <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
     <link rel="stylesheet" href="${createLinkTo(file: 'admin.css')}"/>
@@ -28,6 +28,7 @@
         <li class="selected"><g:link action="list" controller="netcoolConversionParameter"><em>Conversion Parameters</em></g:link></li>
         <li><a href="${createLinkTo(file: 'reload.gsp')}"><em>Reload</em></a></li>
         <li><g:link action="list" controller="rsUser"><em>Users</em></g:link></li>
+        <li><g:link action="list" controller="group"><em>Groups</em></g:link></li>
     </ul>
     <div style="margin:20px 15px 10px;">
         <g:layoutBody/>

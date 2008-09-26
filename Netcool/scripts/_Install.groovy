@@ -64,6 +64,7 @@ choices.each{
         {
             Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/web-app/**");
         }
+        Ant.move(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/rs.exe", toDir:"${baseDir}")
     }
 }
 

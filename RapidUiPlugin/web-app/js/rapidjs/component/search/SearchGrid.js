@@ -424,12 +424,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.columns = columns;
         for (var index = 0; index < this.columns.length; index++) {
             var header = this.headers[index];
-//            var attribute = this.columns[index]['attributeName'];
-//            if (attribute == this.lastSortAtt) {
-//                header.sortDir = this.lastSortOrder;
-//                this.updateHeaderSortState(header);
-//                this.lastSortedHeader = header;
-//            }
+            var attribute = this.columns[index]['attributeName'];
+            if (attribute == this.lastSortAtt) {
+                header.sortDir = this.lastSortOrder;
+                this.updateHeaderSortState(header);
+                this.lastSortedHeader = header;
+            }
             header.textNode.innerHTML = this.columns[index].colLabel;
         }
         this.updateColumns();
@@ -437,6 +437,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var rowEl = this.bufferView.rowEls[index];
             this.renderRow(rowEl);
         }
+        this.hideMask();
     },
     getColumnConfigFromViewNode: function(viewNode) {
         var sortColumn = viewNode.getAttribute('defaultSortColumn');

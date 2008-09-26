@@ -11,8 +11,9 @@ import com.ifountain.compass.search.FilterManager
  */
 class SearchFilterFilters {
     def filters = {
-        all(controller: "*", action: "*") {
-            before = {
+        allURIs(uri:'/**') {
+			before = {
+				FilterManager.clearFilters();
                 if(session.username != null)
                 {
                     RsUser user = RsUser.get(username:session.username);
@@ -37,10 +38,7 @@ class SearchFilterFilters {
                     }
                 }
             }
-            after = {
-             	FilterManager.clearFilters();
-            }   
-        }
+		}
     }
 
 }

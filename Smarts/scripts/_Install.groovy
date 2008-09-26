@@ -67,6 +67,8 @@ choices.each{
             Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/web-app/**");
         }
 
+        Ant.move(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/rs.exe", toDir:"${baseDir}")
+
         Ant.move(toDir:"${baseDir}/operations")
         {
             Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations");

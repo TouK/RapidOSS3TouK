@@ -3,7 +3,7 @@ import datasource.NetcoolDatasource
 import auth.Role
 import org.jsecurity.crypto.hash.Sha1Hash
 import auth.RsUser
-import auth.UserRoleRel
+import auth.Group
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -39,18 +39,19 @@ if(netcoolDatasources.isEmpty())
     throw new Exception("No netcool datasource is defined");
 }
 NetcoolDatasource netcoolDs = netcoolDatasources[0];
-def adminRole = Role.get(name:"Administrator");
-def userRole = Role.get(name:"User");
+def userRole = Role.get(name:Role.USER);
+def adminGroup = Group.get(name:RsUser.RSADMIN);
+def netcoolGroup = Group.add(name:"netcoolUsers", role:userRole);
 def userPassHash = new Sha1Hash("changeme").toHex()
 def users = netcoolDs.getUsers();
 users.each{
    String userName = it.CONVERSION;
    def user = RsUser.add(username: userName, passwordHash: userPassHash)
    if(userName.equalsIgnoreCase("root")){
-       UserRoleRel.add(rsUser: user, role: adminRole);
+       user.addRelation(groups:adminGroup)
    }
    else{
-       UserRoleRel.add(rsUser: user, role: userRole);
+       user.addRelation(groups:netcoolGroup);
    }
 }
 

@@ -371,7 +371,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         }
         this.activateView(view);
     },
-    activateView : function(view, willKeepMask) {
+    activateView : function(view) {
         this.showMask();
         var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
         var columns;
@@ -424,21 +424,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.columns = columns;
         for (var index = 0; index < this.columns.length; index++) {
             var header = this.headers[index];
-            var attribute = this.columns[index]['attributeName'];
-            if (attribute == this.lastSortAtt) {
-                header.sortDir = this.lastSortOrder;
-                this.updateHeaderSortState(header);
-                this.lastSortedHeader = header;
-            }
+//            var attribute = this.columns[index]['attributeName'];
+//            if (attribute == this.lastSortAtt) {
+//                header.sortDir = this.lastSortOrder;
+//                this.updateHeaderSortState(header);
+//                this.lastSortedHeader = header;
+//            }
             header.textNode.innerHTML = this.columns[index].colLabel;
         }
         this.updateColumns();
         for (var index = 0; index < rowCount; index++) {
             var rowEl = this.bufferView.rowEls[index];
             this.renderRow(rowEl);
-        }
-        if (!willKeepMask) {
-            this.hideMask();
         }
     },
     getColumnConfigFromViewNode: function(viewNode) {

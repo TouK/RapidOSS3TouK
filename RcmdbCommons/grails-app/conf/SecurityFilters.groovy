@@ -39,7 +39,7 @@ class SecurityFilters {
                 }
             }
         }
-        def adminControllers = ["userRoleRel"];
+        def adminControllers = ["group"];
         adminAuthorization(controller: "(" + adminControllers.join("|") + ")", action: "*") {
             before = {
                 accessControl {

@@ -3,15 +3,15 @@ package auth
 class RsUser {
     def static final String RSADMIN = "rsadmin";
     static searchable = {
-        except:["roles", "permissionRelations"]
+        except:["groups", "permissionRelations"]
      };
     String username
     String passwordHash
-    List roles = [];
+    List groups = [];
     List permissionRelations = [];
-    static cascaded = ["roles":true, "permissionRelations":true]
+    static cascaded = ["permissionRelations":true]
     static relations = [
-            roles:[type:UserRoleRel, reverseName:"rsUser", isMany:true],
+            groups:[type:Group, reverseName:"users", isMany:true],
             permissionRelations:[isMany:true, reverseName:"rsUser", type:UserPermissionRel]
     ]
     static constraints = {

@@ -1,6 +1,5 @@
 import auth.Role
 import auth.RsUser
-import auth.UserRoleRel
 import com.ifountain.compass.SingleCompassSessionManager
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import com.ifountain.rcmdb.domain.converter.DateConverter
@@ -22,6 +21,7 @@ import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
 import datasource.BaseListeningDatasource
 import com.ifountain.rcmdb.domain.converter.BooleanConverter
+import auth.Group
 
 class BootStrap {
     def quartzScheduler;
@@ -34,19 +34,19 @@ class BootStrap {
         corrrectModelData();
         initializeScripting();
     }
-    
+
     def initializeModelGenerator()
     {
         String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];
         String tempDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"];
-        ModelGenerator.getInstance().initialize (baseDirectory, tempDirectory, System.getProperty("base.dir"));
+        ModelGenerator.getInstance().initialize(baseDirectory, tempDirectory, System.getProperty("base.dir"));
     }
 
     def registerUtilities()
     {
         RapidStringUtilities.registerStringUtils();
         Date.metaClass.'static'.now = {
-            return (long)(System.currentTimeMillis()/1000);
+            return (long) (System.currentTimeMillis() / 1000);
         }
     }
 
@@ -69,14 +69,14 @@ class BootStrap {
 
         }
         ListeningAdapterManager.getInstance().initialize();
-        BaseListeningDatasource.searchEvery("isSubscribed:true").each{BaseListeningDatasource ds ->
-            if(ds.listeningScript){
-                try{
+        BaseListeningDatasource.searchEvery("isSubscribed:true").each {BaseListeningDatasource ds ->
+            if (ds.listeningScript) {
+                try {
                     log.debug("Starting listening script ${ds.listeningScript}")
                     CmdbScript.startListening(ds.listeningScript);
                     log.info("Listening script ${ds.listeningScript} successfully started.")
                 }
-                catch(e){
+                catch (e) {
                     log.warn("Error starting listening script ${ds.listeningScript}. Reason: ${e.getMessage()}");
                 }
             }
@@ -102,13 +102,13 @@ class BootStrap {
             }
         }
         int batch = 1000;
-        ModelAction.list().each{ModelAction modelAction->
-            if(modelAction.action == ModelAction.DELETE_ALL_INSTANCES)
+        ModelAction.list().each {ModelAction modelAction ->
+            if (modelAction.action == ModelAction.DELETE_ALL_INSTANCES)
             {
-                DefaultGrailsDomainClass currentDomainObject =ApplicationHolder.application.getDomainClass(modelAction.modelName);
-                if(currentDomainObject)
+                DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(modelAction.modelName);
+                if (currentDomainObject)
                 {
-                    currentDomainObject.clazz.metaClass.invokeStaticMethod (currentDomainObject.clazz, "unindex", [] as Object[]);
+                    currentDomainObject.clazz.metaClass.invokeStaticMethod(currentDomainObject.clazz, "unindex", [] as Object[]);
                 }
             }
             modelAction.remove();
@@ -166,20 +166,12 @@ class BootStrap {
 
     def registerDefaultUsers()
     {
-        def adminRole = Role.findByName(Role.ADMINISTRATOR);
-        if (!adminRole) {
-            adminRole = Role.add(name: Role.ADMINISTRATOR);
-        }
-        def userRole = Role.findByName(Role.USER);
-        if (!userRole) {
-            userRole = Role.add(name: Role.USER);
-        }
-        def adminUser = RsUser.findByUsername(RsUser.RSADMIN);
-        if (!adminUser) {
-            adminUser = RsUser.add(username: RsUser.RSADMIN, passwordHash: new Sha1Hash("changeme").toHex());
-        }
-        UserRoleRel.add(rsUser: adminUser, role: adminRole)
-        
+        def userRole = Role.add(name: Role.USER);
+        def adminRole = Role.add(name: Role.ADMINISTRATOR);
+        def adminGroup = Group.add(name: RsUser.RSADMIN, role: adminRole);
+        def adminUser = RsUser.add(username: RsUser.RSADMIN, passwordHash: new Sha1Hash("changeme").toHex());
+        adminUser.addRelation(groups:adminGroup);
+
     }
 
     def registerDefaultConverters()

@@ -1,22 +1,18 @@
+import auth.Group
 import auth.Role
 import auth.RsUser
-import auth.UserRoleRel
-import com.ifountain.rcmdb.domain.converter.DateConverter
-import com.ifountain.rcmdb.domain.converter.DoubleConverter
-import com.ifountain.rcmdb.domain.converter.LongConverter
+import com.ifountain.compass.SingleCompassSessionManager
+import com.ifountain.rcmdb.domain.converter.*
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.scripting.ScriptScheduler
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import model.DatasourceName
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
-import com.ifountain.compass.SingleCompassSessionManager
-import com.ifountain.rcmdb.domain.converter.BooleanConverter
 
 class BootStrap {
     def quartzScheduler;
@@ -81,19 +77,11 @@ class BootStrap {
 
     def registerDefaultUsers()
     {
-        def adminRole = Role.findByName("Administrator");
-        if (!adminRole) {
-            adminRole = Role.add(name: "Administrator");
-        }
-        def userRole = Role.findByName("User");
-        if (!userRole) {
-            userRole = Role.add(name: "User");
-        }
-        def adminUser = RsUser.findByUsername("rsadmin");
-        if (!adminUser) {
-            adminUser = RsUser.add(username: "rsadmin", passwordHash: new Sha1Hash("changeme").toHex());
-        }
-        UserRoleRel.add(rsUser: adminUser, role: adminRole)
+        def userRole = Role.add(name: Role.USER);
+        def adminRole = Role.add(name: Role.ADMINISTRATOR);
+        def adminGroup = Group.add(name: RsUser.RSADMIN, role: adminRole);
+        def adminUser = RsUser.add(username: RsUser.RSADMIN, passwordHash: new Sha1Hash("changeme").toHex());
+        adminUser.addRelation(groups:adminGroup);
         
     }
 

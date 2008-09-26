@@ -24,7 +24,10 @@ class ModelPropertyController {
 
     def create = {
         def modelProperty = new ModelProperty()
-        modelProperty.properties = params
+        if(params["model.id"] != null){
+            def model = Model.get([id:params["model.id"]]);
+            modelProperty.model = model;
+        }
         return ['modelProperty':modelProperty]
     }
 

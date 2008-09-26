@@ -34,35 +34,6 @@
                     </tbody>
                 </table>
             </div>
-            
-            
-            <div style="margin-top:20px;">
-        	<span style="color:#006DBA;font-size:16px;font-weight:normal;margin:0.8em 0pt 0.3em;">Role List</span>
-        	<span class="menuButton"><g:link controller="userRoleRel" params="['rsUser.id':rsUser?.id]" class="create" action="create">Assign Role</g:link></span>
-            
-	    <div class="list">
-		<table>
-		    <thead>
-			<tr>
-				<th>Role</th>
-			</tr>
-		    </thead>
-
-		    <tbody>
-		    <g:each in="${rsUser.roles}" status="i" var="userRoleRel">
-			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-
-			    <td><g:link action="show" controller="userRoleRel" id="${userRoleRel.id}">${userRoleRel.role?.name.encodeAsHTML()}</g:link></td>
-
-			</tr>
-		    </g:each>
-		    </tbody>
-		</table>
-	    </div>
-	    </div>
-
-            
-            
                 <div class="buttons" style="margin-top:30px;">
                 <g:form>
                     <input type="hidden" name="id" value="${rsUser?.id}" />

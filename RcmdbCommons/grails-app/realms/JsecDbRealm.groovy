@@ -41,17 +41,17 @@ class JsecDbRealm {
     }
 
     def hasRole(principal, roleName) {
-        def user = RsUser.get(username:principal);
-        def res = user.roles.findAll{it.role.name == roleName};
+        def user = RsUser.get(username: principal);
+        def res = user.groups.findAll {it.role?.name == roleName};
         return res.size() > 0
     }
 
     def hasAllRoles(principal, roles) {
-        def user = RsUser.get(username:principal);
+        def user = RsUser.get(username: principal);
         int numberOfFoundRoles = 0;
-        roles.each{Role role->
-            user.roles.each{userRoleRel->
-                if(role.name == userRoleRel.role.name)
+        roles.each {Role role ->
+            user.groups.each {group ->
+                if (role.name == group.role?.name)
                 {
                     numberOfFoundRoles++;
                     return;
@@ -69,12 +69,12 @@ class JsecDbRealm {
         //
         // First find all the permissions that the user has that match
         // the required permission's type and project code.
-        def user = RsUser.get(username:principal);
-        def permissions = user.permissionRelations.findAll{it.permission.type == requiredPermission.class.name}
+        def user = RsUser.get(username: principal);
+        def permissions = user.permissionRelations.findAll {it.permission.type == requiredPermission.class.name}
 
         // Try each of the permissions found and see whether any of
         // them confer the required permission.
-        def retval = permissions?.find { rel ->
+        def retval = permissions?.find {rel ->
             // Create a real permission instance from the database
             // permission.
             def perm = null
@@ -109,29 +109,30 @@ class JsecDbRealm {
         // If not, does he gain it through a role?
         //
         // First, find the roles that the user has.
-        def roles = user.roles;
+        def roles = user.groups;
 
         // If the user has no roles, then he obviously has no permissions
         // via roles.
-        if (roles.isEmpty()) return false
+        if (groups.isEmpty()) return false
 
         def results = [];
-        roles.each{role->
-            role.permissionRelations.each{rolePermissionRelation->
-                if(rolePermissionRelation.permission.type == requiredPermission.class.name)
-                {
-                    results.add(rolePermissionRelation);
+        groups.each {group ->
+            if (group.role != null) {
+                group.role.permissionRelations.each {rolePermissionRelation ->
+                    if (rolePermissionRelation.permission.type == requiredPermission.class.name)
+                    {
+                        results.add(rolePermissionRelation);
+                    }
                 }
             }
-            
         }
-        
+
 
         // There may be some duplicate entries in the results, but
         // at this stage it is not worth trying to remove them. Now,
         // create a real permission from each result and check it
         // against the required one.
-        retval = results.find { rel ->
+        retval = results.find {rel ->
             def perm = null
             def constructor = findConstructor(rel.permission.type)
             if (constructor.parameterTypes.size() == 2) {
@@ -175,7 +176,7 @@ class JsecDbRealm {
         // parameter constructor and pass in just the target.
         def preferredConstructor = null
         def fallbackConstructor = null
-        clazz.declaredConstructors.each { constructor ->
+        clazz.declaredConstructors.each {constructor ->
             def numParams = constructor.parameterTypes.size()
             if (numParams == 2) {
                 if (constructor.parameterTypes[0].equals(String) &&

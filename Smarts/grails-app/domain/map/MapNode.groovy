@@ -11,7 +11,7 @@ class MapNode {
     };
     static datasources = ["RCMDB":["keys":["nodeIdentifier":["nameInDs":"nodeIdentifier"], "username":["nameInDs":"username"], "mapName":["nameInDs":"mapName"]]]]
 
-    
+    String rsOwner = "p"
     String nodeIdentifier ="";
     
     Long xlocation =0;

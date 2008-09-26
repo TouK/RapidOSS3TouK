@@ -11,9 +11,10 @@ class Group
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "users", "role"];
     };
-    static datasources = ["RCMDB": ["keys": ["id": ["nameInDs": "id"]]]]
+    static datasources = ["RCMDB": ["keys": ["name": ["nameInDs": "name"]]]]
     String name = "";
-    String segmentFilter = "alias:*";
+    String segmentFilter = "";
+    String rsOwner = "p"
     Long id;
     Long version;
     org.springframework.validation.Errors errors;

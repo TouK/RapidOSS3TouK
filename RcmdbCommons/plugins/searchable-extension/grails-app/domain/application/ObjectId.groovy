@@ -9,6 +9,7 @@ package application
 class ObjectId {
     static searchable = true;
     Long id;
+    String rsOwner = "p"
     Long version;
     String name;
     long nextId;

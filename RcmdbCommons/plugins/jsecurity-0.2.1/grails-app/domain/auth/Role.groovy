@@ -7,6 +7,7 @@ class Role {
         except:["permissionRelations", "groups"]
      };
     String name
+    String rsOwner = "p"
     List permissionRelations = [];
     List groups = [];
     static cascaded = ["permissionRelations":true]

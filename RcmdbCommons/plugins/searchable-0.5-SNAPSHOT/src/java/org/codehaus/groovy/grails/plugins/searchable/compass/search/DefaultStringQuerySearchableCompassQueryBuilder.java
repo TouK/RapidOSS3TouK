@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.ifountain.compass.search.FilterManager;
+
 /**
  * @author Maurice Nicholson
  */
@@ -48,7 +50,7 @@ public class DefaultStringQuerySearchableCompassQueryBuilder extends AbstractSea
     public CompassQuery buildQuery(GrailsApplication grailsApplication, CompassSession compassSession, Map options, Object query) {
         Assert.notNull(query, "query cannot be null");
         Assert.isInstanceOf(String.class, query, "query must be a String but is [" + query.getClass().getName() + "]");
-
+        query = FilterManager.getQuery((String)query);
         String analyzer = (String) getOption(ANALYZER_NAMES, options);
         String parser = (String) getOption(PARSER_NAMES, options);
         String defaultSearchProperty = (String) getOption(DEFAULT_PROPERTY_NAMES, options);

@@ -11,7 +11,7 @@ class EdgeNode {
     };
     static datasources = ["RCMDB":["keys":["mapName":["nameInDs":"mapName"], "username":["nameInDs":"username"], "from":["nameInDs":"from"], "to":["nameInDs":"to"]]]]
 
-    
+    String rsOwner = "p"
     String from ="";
     
     String to ="";

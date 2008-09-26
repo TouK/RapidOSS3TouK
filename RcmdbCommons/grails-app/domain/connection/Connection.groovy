@@ -7,7 +7,7 @@ class Connection {
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
 
     String name = "";
-
+    String rsOwner = "p"
     String connectionClass = "";
     int maxNumberOfConnections = 10;
     org.springframework.validation.Errors errors ;

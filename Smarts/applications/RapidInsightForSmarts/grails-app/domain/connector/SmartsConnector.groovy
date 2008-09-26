@@ -17,6 +17,7 @@ class SmartsConnector {
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
     String name ="";
+    String rsOwner = "p"
     String logLevel = Level.WARN.toString();
     BaseListeningDatasource ds;
     SmartsConnectionTemplate connectionTemplate;

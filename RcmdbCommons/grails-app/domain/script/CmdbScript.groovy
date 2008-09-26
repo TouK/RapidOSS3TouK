@@ -19,6 +19,7 @@ class CmdbScript {
     Long startDelay = 0;
     String name = "";
     String scriptFile = "";
+    String rsOwner = "p"
     String type = ONDEMAND;
     boolean enabled = false;
     String scheduleType = PERIODIC;

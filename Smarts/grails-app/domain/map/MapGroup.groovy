@@ -11,7 +11,7 @@ class MapGroup {
     };
     static datasources = ["RCMDB":["keys":["groupName":["nameInDs":"groupName"], "username":["nameInDs":"username"]]]]
 
-    
+    String rsOwner = "p"
     String username ="";
     
     String groupName ="";

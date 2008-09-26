@@ -14,6 +14,7 @@ class ModelProperty {
     def static final String floatType = "float";
     def static final String booleanType = "boolean";
     String name;
+    String rsOwner = "p"
     String type;
     boolean blank = true;
     String defaultValue;

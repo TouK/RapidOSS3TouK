@@ -15,6 +15,7 @@ class SearchQuery {
     String username;
     SearchQueryGroup group;
     String name;
+    String rsOwner = "p"
     String query;
     String sortProperty;
     String viewName = "default";

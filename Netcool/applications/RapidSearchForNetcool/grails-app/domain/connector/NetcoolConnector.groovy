@@ -17,6 +17,7 @@ class NetcoolConnector
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
 
     String name ="ncoms";
+    String rsOwner = "p"
     String logLevel = Level.WARN.toString();
     static relations = [:]
     static constraints={

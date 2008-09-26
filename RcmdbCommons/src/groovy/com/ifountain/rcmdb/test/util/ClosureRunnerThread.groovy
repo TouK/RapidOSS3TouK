@@ -10,12 +10,13 @@ class ClosureRunnerThread extends Thread{
     Closure closure;
     boolean isFinished;
     Throwable exception;
+    Object result;
 
     public void run()
     {
         try
         {
-            closure();
+            result = closure();
         }
         catch(Throwable t)
         {

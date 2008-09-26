@@ -10,6 +10,7 @@ class Relation {
     static searchable = true;
     Long id;
     Long version;
+    String rsOwner = "p"
     Long objectId;
     String name;
     String className;

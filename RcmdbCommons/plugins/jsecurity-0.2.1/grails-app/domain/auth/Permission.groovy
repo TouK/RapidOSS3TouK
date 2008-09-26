@@ -4,6 +4,7 @@ class Permission {
         except:["userRelations", "roleRelations"]    
      };
     String type
+    String rsOwner = "p"
     String possibleActions
     List userRelations = [];
     List roleRelations = [];

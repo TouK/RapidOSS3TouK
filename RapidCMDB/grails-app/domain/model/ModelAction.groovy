@@ -11,6 +11,7 @@ class ModelAction {
     public static final String DELETE_ALL_INSTANCES = "deleteall"
     public static final String GENERATE_RESOURCES = "generateResources"
     static searchable = true;
+    String rsOwner = "p"
     String modelName;
     String action;
     boolean willBeDeleted = false;

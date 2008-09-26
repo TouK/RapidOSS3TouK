@@ -10,6 +10,7 @@ class NetcoolConversionParameter {
     static searchable = true;
     String keyField;
     String columnName;
+    String rsOwner = "p"
     int value;
     String conversion;
     org.springframework.validation.Errors errors ;

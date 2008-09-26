@@ -9,6 +9,7 @@ class ModelRelation {
      public static String ONE = "One";
      public static String MANY = "Many";
      Model firstModel;
+     String rsOwner = "p"
      Model secondModel;
      String firstName;
      String secondName;

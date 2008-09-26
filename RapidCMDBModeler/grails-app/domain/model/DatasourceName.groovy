@@ -6,6 +6,7 @@ class DatasourceName {
      static cascaded = [modelDatasources:true]
      static relations = [modelDatasources:[type:ModelDatasource, reverseName:"datasource", isMany:true]]
      String name;
+     String rsOwner = "p"
      List modelDatasources = [];
      static constraints = {
          name(blank:false, nullable:false, key:[]);

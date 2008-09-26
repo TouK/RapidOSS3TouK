@@ -60,7 +60,6 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 //        }
 //        else
 //        {
-            println "NO GRAILS APPLICATION"
             gcl = new GroovyClassLoader(this.class.classLoader);
 //        }
     }

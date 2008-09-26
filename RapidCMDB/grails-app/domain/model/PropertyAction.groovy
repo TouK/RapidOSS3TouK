@@ -10,7 +10,7 @@ class PropertyAction {
     public static final String CLEAR_RELATION = "clearrelation"
     public static final String SET_DEFAULT_VALUE = "setdefaultvalue"
     static searchable = true; 
-
+    String rsOwner = "p"
     String propName;
     String modelName;
     String action;

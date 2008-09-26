@@ -13,6 +13,7 @@ class SmartsConnectionTemplate {
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
     String name ="";
+    String rsOwner = "p"
     String broker ="localhost:426";
     String username ="";
     String password ="";

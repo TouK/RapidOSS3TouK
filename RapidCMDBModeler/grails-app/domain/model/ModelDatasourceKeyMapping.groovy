@@ -6,6 +6,7 @@ class ModelDatasourceKeyMapping {
         except:["datasource", "property"]
     };
     ModelProperty property;
+    String rsOwner = "p"
     ModelDatasource datasource;
     String nameInDatasource;
     static relations = [

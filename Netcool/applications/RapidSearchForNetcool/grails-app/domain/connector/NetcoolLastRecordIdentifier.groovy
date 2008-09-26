@@ -13,6 +13,7 @@ class NetcoolLastRecordIdentifier
 {
     static searchable = true;
     Long eventLastRecordIdentifier;
+    String rsOwner = "p"
     Long journalLastRecordIdentifier;
     String connectorName;
     static constraints = {

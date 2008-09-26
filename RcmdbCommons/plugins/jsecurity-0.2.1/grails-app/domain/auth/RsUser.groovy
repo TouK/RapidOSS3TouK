@@ -6,6 +6,7 @@ class RsUser {
         except:["groups", "permissionRelations"]
      };
     String username
+    String rsOwner = "p"
     String passwordHash
     List groups = [];
     List permissionRelations = [];

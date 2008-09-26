@@ -6,6 +6,7 @@ class ModelDatasource {
     };
     DatasourceName datasource;
     Model model;
+    String rsOwner = "p"
     List keyMappings = [];
     static relations = [
             datasource:[type:DatasourceName, reverseName:"modelDatasources", isMany:false],

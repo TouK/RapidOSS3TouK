@@ -10,6 +10,7 @@ class NetcoolColumn {
     static searchable = true;
     String netcoolName;
     String localName
+    String rsOwner = "p"
     String type;
     boolean isDeleteMarker;
 

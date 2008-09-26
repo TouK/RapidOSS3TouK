@@ -14,6 +14,7 @@ class SearchQueryGroup {
         except:["queries"]
      };
     String username;
+    String rsOwner = "p"
     String name;
     List queries = [];
     boolean isPublic = false;

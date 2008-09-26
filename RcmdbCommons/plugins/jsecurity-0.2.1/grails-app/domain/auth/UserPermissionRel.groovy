@@ -6,6 +6,7 @@ class UserPermissionRel {
     RsUser rsUser
     Permission permission
     String target
+    String rsOwner = "p"
     String actions
     static relations = [
             permission:[type:Permission, reverseName:"userRelations", isMany:false],

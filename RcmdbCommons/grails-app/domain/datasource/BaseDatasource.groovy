@@ -7,6 +7,7 @@ class BaseDatasource {
     Long id;
     Long version;
     String name ="";
+    String rsOwner = "p"
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;

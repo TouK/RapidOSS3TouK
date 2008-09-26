@@ -2,9 +2,9 @@ import script.CmdbScript
 import auth.Role
 import auth.RsUser
 import org.jsecurity.crypto.hash.Sha1Hash
-import auth.UserRoleRel
 import search.SearchQueryGroup
 import search.SearchQuery
+import auth.Group
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,9 +27,9 @@ CmdbScript.addScript(name: "taskList");
 CmdbScript.addScript(name: "suppress");
 CmdbScript.addScript(name: "removeAll");
 
-def adminRole = Role.get(name: Role.ADMINISTRATOR);
+def adminGroup = Group.get(name: RsUser.RSADMIN);
 def rootUser = RsUser.add(username: "root", passwordHash: new Sha1Hash("changeme").toHex())
-UserRoleRel.add(rsUser: rootUser, role: adminRole)
+rootUser.addRelation(groups:adminGroup);
 
 def adminUser = RsUser.RSADMIN;
 def defaultGroup = SearchQueryGroup.add(name: "By State", username:adminUser, isPublic:true);

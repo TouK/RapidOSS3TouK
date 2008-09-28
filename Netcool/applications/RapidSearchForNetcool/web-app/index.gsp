@@ -31,6 +31,7 @@
     <script type="text/javascript" src="js/rapidjs/component/tools/SearchListSettingsTool.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/LoadingTool.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/ErrorTool.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/search/AbstractSearchList.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/search/SearchList.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/simplewidgets/split.js"></script>

@@ -240,7 +240,6 @@
         id:'searchList',
         url:'search?format=xml&searchIn=NetcoolEvent',
         searchQueryParamName:'query',
-        defaultFilter:"alias:NetcoolEvent",
         rootTag:'Objects',
         contentPath:'Object',
         keyAttribute:'id',

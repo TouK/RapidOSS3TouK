@@ -238,7 +238,7 @@
 
     var searchConfig = {
         id:'searchList',
-        url:'search?format=xml',
+        url:'search?format=xml&searchIn=NetcoolEvent',
         searchQueryParamName:'query',
         defaultFilter:"alias:NetcoolEvent",
         rootTag:'Objects',

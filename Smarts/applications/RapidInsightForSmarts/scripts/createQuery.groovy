@@ -45,7 +45,6 @@ else if (queryType == "topology") {
     def sortProperties = [];
     GrailsDomainClass domainClass = web.grailsApplication.getDomainClass("RsSmartsObject")
     domainClass.getSubClasses().each {
-        println "Subclass ${it.name}"
         sortProperties.addAll(DomainClassUtils.getFilteredProperties(it.name, extraFilteredProps));
     }
     sortProperties.addAll(DomainClassUtils.getFilteredProperties("RsSmartsObject", extraFilteredProps));

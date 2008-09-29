@@ -4,6 +4,7 @@ import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import org.compass.core.engine.SearchEngineQueryParseException;
 
 /**
 * Created by IntelliJ IDEA.
@@ -25,16 +26,35 @@ class SearchController {
         StringWriter sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         def searchResults;
-        if(params.searchIn != null){
-             GrailsDomainClass grailsClass = grailsApplication.getDomainClass(params.searchIn);
-             def mc = grailsClass.metaClass;
-             searchResults =  mc.invokeStaticMethod(mc.theClass, "search", [query, params] as Object[])
+        if (params.searchIn != null) {
+            GrailsDomainClass grailsClass = grailsApplication.getDomainClass(params.searchIn);
+            def mc = grailsClass.metaClass;
+            try {
+                searchResults = mc.invokeStaticMethod(mc.theClass, "search", [query, params] as Object[])
+            }
+            catch (SearchEngineQueryParseException e) {
+                addError("invalid.search.query", [query, e.getMessage()]);
+                withFormat {
+                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                }
+                return;
+            }
+
         }
-        else{
-            searchResults = searchableService.search(query, params);
+        else {
+            try {
+                searchResults = searchableService.search(query, params);
+            }
+            catch (SearchEngineQueryParseException e) {
+                addError("invalid.search.query", [query, e.getMessage()]);
+                withFormat {
+                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                }
+                return;
+            }
         }
         def grailsClassProperties = [:]
-        builder.Objects(total: searchResults.total, offset: searchResults.offset){
+        builder.Objects(total: searchResults.total, offset: searchResults.offset) {
             searchResults.results.each {result ->
                 def className = result.getClass().name;
                 def grailsObjectProps = grailsClassProperties[className]

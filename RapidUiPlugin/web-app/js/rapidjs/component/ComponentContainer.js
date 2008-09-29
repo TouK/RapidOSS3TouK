@@ -70,6 +70,10 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
 
     getInitialHistoryState: function() {
         return "noAction";
+    },
+
+    resize: function(width, height){
+
     }
 
 };

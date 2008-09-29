@@ -237,6 +237,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 			this.timeout = 30000;
 		}
 	},
+    handleUnvisible: function(){
+//		this.abort();
+//		this.pollTask.cancel();
+	},
+
+	handleVisible : function(){
+//		this.poll();
+	},
     clearData: function(){
 	}
 });

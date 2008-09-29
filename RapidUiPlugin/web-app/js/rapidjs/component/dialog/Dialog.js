@@ -12,6 +12,9 @@ YAHOO.rapidjs.component.Dialog = function(config)
     this.buttons = null;
     this.resizable = true;
     YAHOO.ext.util.Config.apply(this, config);
+    this.events = {
+        'resize': new YAHOO.util.CustomEvent('resize')
+    }
     this.render();
 };
 
@@ -22,6 +25,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         this.container = dh.append(document.body, {tag: 'div'});
         YAHOO.util.Dom.generateId(this.container, 'r-dialog-')
         this.body = dh.append(document.body, {tag: 'div'});
+        this.bodyEl = YAHOO.ext.Element.get(this.body);
         this.footer = dh.append(document.body, {tag: 'div', style:'text-align:right;'});
 
         this.panelConfig = {
@@ -77,6 +81,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie == 7 && IE_QUIRKS));
             // Create Resize instance, binding it to the 'resizablepanel' DIV
             this.resize = new YAHOO.util.Resize(this.container, {
+                handles: ['br'], 
                 autoRatio: false,
                 status: false,
                 minHeight:this.minHeight,
@@ -93,24 +98,24 @@ YAHOO.rapidjs.component.Dialog.prototype = {
                 var panelHeight = args.height;
                 var panelWidth = args.width;
 
-                var headerHeight = this.header.offsetHeight; // Content + Padding + Border
-                var footerHeight = this.footer.offsetHeight; // Content + Padding + Border
+                var headerHeight = this.panel.header.offsetHeight; // Content + Padding + Border
+                var footerHeight = this.panel.footer.offsetHeight; // Content + Padding + Border
 
                 var bodyHeight = (panelHeight - headerHeight - footerHeight - 1);
                 var bodyWidth = (panelWidth - 20);
                 var bodyContentHeight = bodyHeight - 20;
 
-                YAHOO.util.Dom.setStyle(this.body, 'height', bodyContentHeight + 'px');
-                YAHOO.util.Dom.setStyle(this.body.childNodes[0], 'height', bodyContentHeight + 'px');
-                YAHOO.util.Dom.setStyle(this.body.childNodes[0], 'width', bodyWidth + 'px');
-
+                YAHOO.util.Dom.setStyle(this.panel.body, 'height', bodyContentHeight + 'px');
+                YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'height', bodyContentHeight + 'px');
+                YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'width', bodyWidth + 'px');
+                this.events['resize'].fireDirect(this.bodyEl.getWidth(), this.bodyEl.getHeight());
                 if (IE_SYNC) {
-                    this.sizeUnderlay();
-                    this.syncIframe();
+                    this.panel.sizeUnderlay();
+                    this.panel.syncIframe();
                 }
             }
-            this.resize.on('resize', this.func, this.panel, true);
-            this.func.createDelegate(this.panel, {width: this.width, height: this.height }, true).call({width: this.width, height: this.height});
+            this.resize.on('resize', this.func, this, true);
+            this.func.createDelegate(this, {width: this.width, height: this.height }, true).call({width: this.width, height: this.height});
         }
         this.panel.hideEvent.subscribe(this.handleHide, this, true);
         YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");

@@ -29,7 +29,7 @@ def init(){
     logger = Logger.getLogger("notificationSubscriber");
     logger.removeAllAppenders();
     def layout = new org.apache.log4j.PatternLayout("%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n");
-    def appender = new DailyRollingFileAppender(layout, "logs/topologySubscriber.log", "'.'yyyy-MM-dd");
+    def appender = new DailyRollingFileAppender(layout, "logs/notificationSubscriber.log", "'.'yyyy-MM-dd");
     logger.addAppender(appender);
     logger.setAdditivity(false);
     logger.setLevel(Level.toLevel("DEBUG"));

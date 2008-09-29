@@ -10,7 +10,7 @@ YAHOO.rapidjs.component.tool.ErrorTool = function(container, component) {
 YAHOO.lang.extend(YAHOO.rapidjs.component.tool.ErrorTool, YAHOO.rapidjs.component.tool.BasicTool, {
     performAction : function() {
         if(!this.dialog){
-            this.dialog = new YAHOO.rapidjs.component.Dialog({width:550,height:350});
+            this.dialog = new YAHOO.rapidjs.component.Dialog({width:550,height:350, close:true});
             this.body = YAHOO.ext.DomHelper.append(this.dialog.body, {tag:'div', cls:'r-errordialog-body'});
             this.appendErrors(this.errorsToBeAppended);
         }

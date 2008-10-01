@@ -13,6 +13,7 @@ class GridView {
 
     String name = "";
     String defaultSortColumn = "";
+    String sortOrder = "asc";
     String username = "";
     List gridColumns = [];
 
@@ -24,6 +25,7 @@ class GridView {
         name(blank: false, nullable: false, key: ["username"])
         username(blank: true, nullable: true)
         defaultSortColumn(blank:true, nullable: true)
+        sortOrder(inList:["asc","desc"]);
         __operation_class__(nullable:true)
         __is_federated_properties_loaded__(nullable:true)
         errors(nullable:true)

@@ -5,7 +5,7 @@ YAHOO.rapidjs.component.search.ViewBuilder = function(searchGrid) {
     this.viewData = null;
     var config = {
         width:640,
-        height:480,
+        height:520,
         minWidth:100,
         minHeight:100,
         resizable: false,
@@ -46,6 +46,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
                  '<div class="rcmdb-searchgrid-view-inputwrp"><input class="rcmdb-searchgrid-view-input"></input></div>' +
                  '<div class="rcmdb-searchgrid-view-text">Default Sort Column:</div>' +
                  '<div class="rcmdb-searchgrid-view-inputwrp"><select class="rcmdb-searchgrid-view-input"><option value=""></option></select></div>' +
+                 '<div class="rcmdb-searchgrid-view-text">Sort Order:</div>' +
+                 '<div class="rcmdb-searchgrid-view-inputwrp"><select class="rcmdb-searchgrid-view-input"><option value="asc">asc</option><option value="desc">desc</option></select></div>' +
                  '</td>' +
                  '<td valign="top"><div class="rcmdb-searchgrid-view-buttons"><div class="rcmdb-searchgrid-view-btnwrp"></div><div class="rcmdb-searchgrid-view-btnwrp"></div>' +
                  '<div class="rcmdb-searchgrid-view-btnwrp"></div><div class="rcmdb-searchgrid-view-btnwrp"></div></div>' +
@@ -67,7 +69,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         YAHOO.util.Event.addListener(this.headerInput, 'keyup', this.headerChanged, this, true);
         this.colWidthInput = inputs[2];
         YAHOO.util.Event.addListener(this.colWidthInput, 'keyup', this.widthChanged, this, true);
-        this.defaultSortInput = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-input', 'select', columnView)[0];
+        var selects = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-input', 'select', columnView);
+        this.defaultSortInput = selects[0];
+        this.sortOrderInput = selects[1];
         var buttonWrappers = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-btnwrp', 'div', columnView);
         this.addButton = new YAHOO.widget.Button(buttonWrappers[0], {onclick:{fn:this.handleAdd, scope:this},label: 'Add >>', disabled:true});
         this.addAllButton = new YAHOO.widget.Button(buttonWrappers[1], {onclick:{fn:this.handleAddAll, scope:this},label: 'Add All >>', disabled:true});
@@ -89,7 +93,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         var url = 'gridView/add';
         parameters['name'] = this.nameInput.value;
         var defaultSortColumn = this.defaultSortInput.options[this.defaultSortInput.selectedIndex].value;
-        parameters['defaultSortColumn'] = defaultSortColumn;
+        var sortOrder = this.sortOrderInput.options[this.sortOrderInput.selectedIndex].value;
+        parameters['defaultSortColumn'] = sortOrder;
+        parameters['sortOrder'] = defaultSortColumn;
         var colList = this.colList;
         var nOfColumns = colList.options.length;
         for (var index = 0; index < nOfColumns; index++) {
@@ -160,6 +166,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         SelectUtils.clear(this.colList);
         SelectUtils.clear(this.defaultSortInput);
         SelectUtils.addOption(this.defaultSortInput, '', '');
+        SelectUtils.selectTheValue(this.sortOrderInput, 'asc', 0);
         this.nameInput.value = '';
         this.nameInput.readOnly = false;
         this.attInput.readOnly = false;
@@ -204,6 +211,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         this.nameInput.value = viewName;
         this.nameInput.readOnly = true;
         var defaultSortColumn = this.currentNode.getAttribute('defaultSortColumn');
+        var sortOrder = this.currentNode.getAttribute('sortOrder');
         var colNodes = this.currentNode.getElementsByTagName('Column');
         var nOfColumns = colNodes.length;
         var orderedArray = new Array(nOfColumns);
@@ -225,6 +233,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
             SelectUtils.addOption(this.defaultSortInput, attName, attName);
         }
         SelectUtils.selectTheValue(this.defaultSortInput, defaultSortColumn, 0);
+        SelectUtils.selectTheValue(this.sortOrderInput, sortOrder, 0);
     },
     loadAvailableFields : function() {
         var nOfAvailableFields = this.availableFields.length;

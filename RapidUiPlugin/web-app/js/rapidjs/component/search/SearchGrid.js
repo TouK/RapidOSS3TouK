@@ -87,14 +87,19 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         htemplate.compile();
         this.htemplate = htemplate;
         var sortColIndex = null;
+        var sortOrder = 'asc';
         for (var i = 0; i < this.columns.length; i++) {
             if (this.columns[i]['sortBy'] == true) {
                 sortColIndex = i;
+                if(this.columns[i]['sortOrder']){
+                    sortOrder = this.columns[i]['sortOrder'];
+                }
             }
             this.addHeader(i, this.columns[i].colLabel);
         }
         if (sortColIndex != null) {
             this.lastSortedHeader = this.headers[sortColIndex];
+            this.lastSortedHeader.sortDir = sortOrder;
             this.lastSortAtt = this.columns[sortColIndex]['attributeName'];
         }
         YAHOO.util.Event.addListener(this.bwrap.dom, 'scroll', this.handleScroll, this, true);

@@ -25,7 +25,7 @@ class GridViewController {
                 render(contentType: 'text/xml') {
                     Views {
                         for (view in gridViews) {
-                            View(id:view.id, name:view.name, defaultSortColumn:view.defaultSortColumn){
+                            View(id:view.id, name:view.name, defaultSortColumn:view.defaultSortColumn, sortOrder: view.sortOrder){
                                 view.gridColumns.each{GridColumn gridColumn ->
                                    Column(attributeName:gridColumn.attributeName, header:gridColumn.header, width:gridColumn.width, columnIndex:gridColumn.columnIndex);
                                 }
@@ -139,7 +139,7 @@ class GridViewController {
 
     def add = {
         params.username = session.username;
-        def gridView = GridView.add([name: params.name, username: session.username, defaultSortColumn: params.defaultSortColumn]);
+        def gridView = GridView.add([name: params.name, username: session.username, defaultSortColumn: params.defaultSortColumn, sortOrder:params.sortOrder]);
         if (!gridView.hasErrors()) {
             gridView.gridColumns.each {
                 it.remove();

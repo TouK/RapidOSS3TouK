@@ -91,7 +91,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         for (var i = 0; i < this.columns.length; i++) {
             if (this.columns[i]['sortBy'] == true) {
                 sortColIndex = i;
-                if(this.columns[i]['sortOrder']){
+                if (this.columns[i]['sortOrder']) {
                     sortOrder = this.columns[i]['sortOrder'];
                 }
             }
@@ -364,7 +364,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         SelectUtils.remove(this.viewInput, view);
         this.viewChanged();
     },
-    viewChanged: function() {
+    viewChanged: function(newQuery, willSaveHistory) {
         var view = this.viewInput.options[this.viewInput.selectedIndex].value;
         if (view == 'default') {
             this.updateViewButton.disable();
@@ -374,9 +374,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.updateViewButton.enable();
             this.removeViewButton.enable();
         }
-        this.activateView(view);
+        this.activateView(view, newQuery, willSaveHistory);
     },
-    activateView : function(view) {
+    activateView : function(view, newQuery, willSaveHistory) {
         this.showMask();
         var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
         var columns;
@@ -429,12 +429,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.columns = columns;
         for (var index = 0; index < this.columns.length; index++) {
             var header = this.headers[index];
-            var attribute = this.columns[index]['attributeName'];
-            if (attribute == this.lastSortAtt) {
-                header.sortDir = this.lastSortOrder;
-                this.updateHeaderSortState(header);
-                this.lastSortedHeader = header;
-            }
             header.textNode.innerHTML = this.columns[index].colLabel;
         }
         this.updateColumns();
@@ -442,10 +436,20 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var rowEl = this.bufferView.rowEls[index];
             this.renderRow(rowEl);
         }
-        this.hideMask();
+        var sortedColumnIndex = this.getSortedColumnIndex();
+        var sortAtt = this.lastSortAtt;
+        var sortOrder = this.lastSortOrder;
+        if (sortedColumnIndex > -1) {
+            var column = this.columns[sortedColumnIndex];
+            sortAtt = column['attributeName'];
+            sortOrder = column['sortOrder'] || 'asc';
+        }
+        this._setQuery(newQuery || this.currentlyExecutingQuery, sortAtt, sortOrder);
+        this.handleSearch(null, willSaveHistory);
     },
     getColumnConfigFromViewNode: function(viewNode) {
         var sortColumn = viewNode.getAttribute('defaultSortColumn');
+        var sortOrder = viewNode.getAttribute('sortOrder');
         var columnNodes = viewNode.getElementsByTagName('Column');
         var columns = [];
         for (var index = 0; index < columnNodes.length; index++) {
@@ -456,6 +460,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var columnIndex = parseInt(columnNode.getAttribute('columnIndex'), 10);
             var sortBy = sortColumn == attributeName;
             var column = {attributeName:attributeName, colLabel:colLabel, width:width, sortBy:sortBy, columnIndex:columnIndex}
+            if (sortBy) {
+                column['sortOrder'] = sortOrder;
+            }
             columns.push(column);
         }
         columns.sort(function(col1, col2) {
@@ -509,20 +516,35 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     setQueryWithView: function(queryString, view)
     {
         var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
-        var sortAtt = this.lastSortAtt;
-        var sortOrder = this.lastSortOrder;
         if (currentView != view) {
             SelectUtils.selectTheValue(this.viewInput, view, 0);
-            this.viewChanged();
-            var sortedColumnIndex = this.getSortedColumnIndex();
-            if (sortedColumnIndex > -1) {
-                var column = this.columns[sortedColumnIndex];
-                sortAtt = column['attributeName'];
-                sortOrder = 'asc';
-            }
+            this.viewChanged(queryString);
         }
-        this._setQuery(queryString, sortAtt, sortOrder);
-        this.handleSearch();
+        else{
+            this._setQuery(queryString, this.lastSortAtt, this.lastSortOrder);
+            this.handleSearch();
+        }
+    },
+
+    handleSearch: function(e, willSaveHistory) {
+        this.offset = 0;
+        this._poll();
+        if (willSaveHistory !== false) {
+            var newHistoryState = [];
+            newHistoryState[newHistoryState.length] = this.searchInput.value;
+            newHistoryState[newHistoryState.length] = this.viewInput[this.viewInput.selectedIndex].value;
+            this.saveHistoryChange(newHistoryState.join("!::!"));
+        }
+    },
+
+    historyChanged: function(state) {
+        if (state != "noAction") {
+            var params = state.split("!::!");
+            var queryString = params[0]
+            var view = params[1]
+            SelectUtils.selectTheValue(this.viewInput, view, 0);
+            this.viewChanged(queryString, false);
+        }
     },
 
     getSortedColumnIndex: function() {

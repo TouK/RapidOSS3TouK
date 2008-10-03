@@ -5,7 +5,7 @@ YAHOO.rapidjs.component.search.ViewBuilder = function(searchGrid) {
     this.viewData = null;
     var config = {
         width:640,
-        height:520,
+        height:522,
         minWidth:100,
         minHeight:100,
         resizable: false,
@@ -33,7 +33,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
             html:'<table><tbody>' +
                  '<tr><td><div class="rcmdb-searchgrid-view-text">Available Fields:</div></td><td></td><td><div class="rcmdb-searchgrid-view-text">Grid Columns:</div></td><td></td></tr>' +
                  '<tr>' +
-                 '<td><div class="rcmdb-searchgrid-view-fields"><select class="rcmdb-searchgrid-view-fieldlist" size="23"></select></div></td>' +
+                 '<td><div class="rcmdb-searchgrid-view-fields"><select class="rcmdb-searchgrid-view-fieldlist" size="26"></select></div></td>' +
                  '<td valign="top"><div class="rcmdb-searchgrid-view-buttons"><div class="rcmdb-searchgrid-view-btnwrp"></div><div class="rcmdb-searchgrid-view-btnwrp"></div>' +
                  '<div class="rcmdb-searchgrid-view-btnwrp"></div><div class="rcmdb-searchgrid-view-btnwrp"></div></div>' +
                  '</td>' +
@@ -94,8 +94,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         parameters['name'] = this.nameInput.value;
         var defaultSortColumn = this.defaultSortInput.options[this.defaultSortInput.selectedIndex].value;
         var sortOrder = this.sortOrderInput.options[this.sortOrderInput.selectedIndex].value;
-        parameters['defaultSortColumn'] = sortOrder;
-        parameters['sortOrder'] = defaultSortColumn;
+        parameters['defaultSortColumn'] = defaultSortColumn;
+        parameters['sortOrder'] = sortOrder;
         var colList = this.colList;
         var nOfColumns = colList.options.length;
         for (var index = 0; index < nOfColumns; index++) {

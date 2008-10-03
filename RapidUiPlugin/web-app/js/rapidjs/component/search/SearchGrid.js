@@ -51,7 +51,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.updateViewButton.disable();
         new YAHOO.rapidjs.component.Button(wrps[2], {className:'rcmdb-searchgrid-addview', scope:this, click:this.handleAddView, tooltip: 'Add View'});
         this.viewInput = searchInputWrp.getElementsByTagName('select')[0];
-        YAHOO.util.Event.addListener(this.viewInput, 'change', this.viewChanged, this, true);
+        YAHOO.util.Event.addListener(this.viewInput, 'change', this.handleViewChange, this, true);
         this.searchCountEl = wrps[4];
         new YAHOO.rapidjs.component.Button(wrps[5], {className:'rcmdb-searchgrid-saveButton', scope:this, click:this.handleSaveQueryClick, tooltip: 'Save Query'});
         new YAHOO.rapidjs.component.Button(wrps[6], {className:'rcmdb-searchgrid-searchButton', scope:this, click:this.handleSearch, tooltip: 'Search'});
@@ -363,6 +363,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     viewRemoved : function(view) {
         SelectUtils.remove(this.viewInput, view);
         this.viewChanged();
+    },
+    handleViewChange: function(e){
+       this.viewChanged();
     },
     viewChanged: function(newQuery, willSaveHistory) {
         var view = this.viewInput.options[this.viewInput.selectedIndex].value;

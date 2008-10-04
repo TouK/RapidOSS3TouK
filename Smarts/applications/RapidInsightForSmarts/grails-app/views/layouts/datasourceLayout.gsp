@@ -9,6 +9,7 @@
 <head>
     <title><g:layoutTitle default="RapidInsight For Smarts Admin UI"/></title>
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
+    <link rel="stylesheet" href="${createLinkTo(dir: 'css/rapidjs', file: 'yuioverride.css')}"/>
     <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
     <link rel="stylesheet" href="${createLinkTo(file: 'admin.css')}"/>
      <jsec:isNotLoggedIn>

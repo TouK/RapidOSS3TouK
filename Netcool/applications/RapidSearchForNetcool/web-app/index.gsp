@@ -49,6 +49,7 @@
     <link rel="stylesheet" type="text/css" href="js/yui/assets/skins/sam/skin.css" />
     <link rel="stylesheet" type="text/css" href="js/yui/button/assets/skins/sam/button.css" />
     <link rel="stylesheet" type="text/css" href="js/yui/container/assets/skins/sam/container.css" />
+    <link rel="stylesheet" type="text/css" href="css/rapidjs/yuioverride.css" />
     <link rel="stylesheet" type="text/css" href="css/rapidjs/common.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/dialog.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/form.css" />

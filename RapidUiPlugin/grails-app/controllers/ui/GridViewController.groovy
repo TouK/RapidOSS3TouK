@@ -3,7 +3,6 @@ package ui
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 import grails.converters.deep.XML
-import com.ifountain.rcmdb.domain.util.ControllerUtils;
 
 /**
 * Created by IntelliJ IDEA.
@@ -74,7 +73,7 @@ class GridViewController {
                     flash.message = "GridView ${params.id} deleted"
                     redirect(action: list)
                 }
-                xml {render(text: ControllerUtils.convertSuccessToXml("GridView ${gridView.id} deleted"), contentType: "text/xml")}
+                xml {render(text: com.ifountain.rcmdb.domain.util.ControllerUtils.convertSuccessToXml("GridView ${gridView.id} deleted"), contentType: "text/xml")}
             }
         }
         else {
@@ -105,7 +104,7 @@ class GridViewController {
     def update = {
         def gridView = GridView.get([id: params.id])
         if (gridView) {
-            gridView.update(ControllerUtils.getClassProperties(params, GridView));
+            gridView.update(com.ifountain.rcmdb.domain.util.ControllerUtils.getClassProperties(params, GridView));
             if (!gridView.hasErrors()) {
                 flash.message = "GridView ${params.id} updated"
                 redirect(action: show, id: gridView.id)
@@ -127,7 +126,7 @@ class GridViewController {
     }
 
     def save = {
-        def gridView = GridView.add(ControllerUtils.getClassProperties(params, GridView))
+        def gridView = GridView.add(com.ifountain.rcmdb.domain.util.ControllerUtils.getClassProperties(params, GridView))
         if (!gridView.hasErrors()) {
             flash.message = "GridView ${gridView.id} created"
             redirect(action: show, id: gridView.id)
@@ -165,7 +164,7 @@ class GridViewController {
                 GridColumn.add(columnMap);
             }
             withFormat {
-                xml {render(text: ControllerUtils.convertSuccessToXml("GridView ${gridView.id} created"), contentType: "text/xml")}
+                xml {render(text: com.ifountain.rcmdb.domain.util.ControllerUtils.convertSuccessToXml("GridView ${gridView.id} created"), contentType: "text/xml")}
             }
 
         }

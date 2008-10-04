@@ -1,7 +1,5 @@
 package ui;
 
-import com.ifountain.rcmdb.domain.util.ControllerUtils
-
 
 class GridColumnController {
     def index = { redirect(action:list,params:params) }
@@ -79,7 +77,7 @@ class GridColumnController {
     def update = {
         def gridColumn = GridColumn.get( [id:params.id] )
         if(gridColumn) {
-            gridColumn.update(ControllerUtils.getClassProperties(params, GridColumn));
+            gridColumn.update(com.ifountain.rcmdb.domain.util.ControllerUtils.getClassProperties(params, GridColumn));
             if(!gridColumn.hasErrors()) {
                 flash.message = "GridColumn ${params.id} updated"
                 redirect(action:show,id:gridColumn.id)
@@ -101,7 +99,7 @@ class GridColumnController {
     }
 
     def save = {
-        def gridColumn = GridColumn.add(ControllerUtils.getClassProperties(params, GridColumn))
+        def gridColumn = GridColumn.add(com.ifountain.rcmdb.domain.util.ControllerUtils.getClassProperties(params, GridColumn))
         if(!gridColumn.hasErrors()) {
             flash.message = "GridColumn ${gridColumn.id} created"
             redirect(action:show,id:gridColumn.id)

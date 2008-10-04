@@ -83,7 +83,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             this.defaultFields = null;
             this.maxRowCellLength = this.fields.length;
         }
-        this.cellMenu = new YAHOO.widget.Menu(this.id + '_cellMenu', {position: "dynamic"});
+        this.cellMenu = new YAHOO.widget.Menu(this.id + '_cellMenu', {position: "dynamic", autofillheight:false});
 
         for (var i in this.propertyMenuItems) {
             var item = this.cellMenu.addItem({text:this.propertyMenuItems[i].label });

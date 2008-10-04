@@ -66,7 +66,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         }
 
         if (this.menuItems) {
-            this.rowMenu = new YAHOO.widget.Menu(this.id + "_rowMenu", {position: "dynamic"});
+            this.rowMenu = new YAHOO.widget.Menu(this.id + "_rowMenu", {position: "dynamic", autofillheight:false});
             for (var i in this.menuItems) {
                 if (this.menuItems[i].submenuItems)
                 {

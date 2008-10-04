@@ -6,6 +6,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import org.apache.log4j.DailyRollingFileAppender
+import org.apache.log4j.Level
 
 def getParameters(){
    return [

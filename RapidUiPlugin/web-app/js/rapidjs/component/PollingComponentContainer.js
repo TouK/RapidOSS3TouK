@@ -143,6 +143,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
             failure: this.processFailure,
             timeout: this.timeout,
             scope: this,
+            cache:false,
             argument : [callback]
         };
         if(postData && postData != "")
@@ -248,3 +249,5 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     clearData: function(){
 	}
 });
+YAHOO.util.Connect.initHeader('Pragma', 'no-cache', true);
+YAHOO.util.Connect.initHeader('Cache-Control', 'no-cache', true);

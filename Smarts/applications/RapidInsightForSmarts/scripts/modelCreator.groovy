@@ -1,6 +1,7 @@
 import groovy.xml.MarkupBuilder
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import org.apache.log4j.Logger
+import org.apache.commons.io.FileUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,6 +20,15 @@ if(!smartsModelConfigurationFile.exists())
     throw new Exception("Configuration file doesnot exist.");
 }
 def modelXmls = getModelXmls();
+String tempDirectory = web.grailsApplication.config.toProperties()["rapidCMDB.temp.dir"];
+if(tempDirectory != null)
+{
+    def modelDir = new File(tempDirectory);
+    if(modelDir.exists() && modelDir.isDirectory())
+    {
+        FileUtils.deleteDirectory (modelDir);
+    }
+}
 ModelGenerator.getInstance().generateModels (modelXmls);
 web.flash?.message = "Models generated successfully."
 def getModelXmls()

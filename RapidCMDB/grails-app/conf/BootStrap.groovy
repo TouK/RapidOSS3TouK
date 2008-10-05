@@ -25,6 +25,8 @@ import auth.Group
 
 class BootStrap {
     def quartzScheduler;
+
+    Thread listeningScriptInitializerThread;
     def init = {servletContext ->
         registerUtilities();
         registerDefaultConverters();
@@ -69,15 +71,17 @@ class BootStrap {
 
         }
         ListeningAdapterManager.getInstance().initialize();
-        BaseListeningDatasource.searchEvery("isSubscribed:true").each {BaseListeningDatasource ds ->
-            if (ds.listeningScript) {
-                try {
-                    log.debug("Starting listening script ${ds.listeningScript}")
-                    CmdbScript.startListening(ds.listeningScript);
-                    log.info("Listening script ${ds.listeningScript} successfully started.")
-                }
-                catch (e) {
-                    log.warn("Error starting listening script ${ds.listeningScript}. Reason: ${e.getMessage()}");
+        listeningScriptInitializerThread = Thread.start{
+            BaseListeningDatasource.searchEvery("isSubscribed:true").each {BaseListeningDatasource ds ->
+                if (ds.listeningScript) {
+                    try {
+                        log.debug("Starting listening script ${ds.listeningScript}")
+                        CmdbScript.startListening(ds.listeningScript);
+                        log.info("Listening script ${ds.listeningScript} successfully started.")
+                    }
+                    catch (e) {
+                        log.warn("Error starting listening script ${ds.listeningScript}. Reason: ${e.getMessage()}");
+                    }
                 }
             }
         }
@@ -185,6 +189,13 @@ class BootStrap {
 
 
     def destroy = {
+        if(listeningScriptInitializerThread != null && listeningScriptInitializerThread.isAlive())
+        {
+            log.info("Stopping listening script initializer thread");
+            listeningScriptInitializerThread.interrupt();
+            listeningScriptInitializerThread.join();
+            log.info("Stopped listening script initializer thread");
+        }
         ListeningAdapterManager.getInstance().destroy();
         ScriptManager.getInstance().destroy();
         SingleCompassSessionManager.destroy();

@@ -41,6 +41,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
         this.autoComp.dataErrorEvent.subscribe(this.dataError, this, true);
         this.autoComp.itemSelectEvent.subscribe(this.itemSelected, this, true);
         this.autoComp.unmatchedItemSelectEvent.subscribe(this.unmatchedItemSelected, this, true);
+        this.autoComp.doBeforeExpandContainer = function(oTextbox, oContainer, sQuery, aResults) {
+	        var pos = YAHOO.util.Dom.getXY(oTextbox);
+	        pos[1] += YAHOO.util.Dom.get(oTextbox).offsetHeight + 2;
+	        YAHOO.util.Dom.setXY(oContainer,pos);
+	        return true;
+	    }; 
     },
     dataError: function(autoComp, query){
        alert("data error: " + query);

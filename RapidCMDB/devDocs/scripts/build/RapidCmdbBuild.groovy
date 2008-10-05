@@ -132,6 +132,7 @@ class RapidCmdbBuild extends Build {
             }
         }
         ant.copy(file: "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir: "$env.dist_rapid_suite/scripts");
+        ant.copy(file: "$env.rapid_cmdb_cvs/scripts/TransferLdapUsers.groovy", toDir: "$env.dist_rapid_suite/scripts");
         ant.copy(file: "$env.rapid_cmdb_cvs/scripts/RSFileReader.groovy", toDir: "$env.dist_rapid_suite/scripts");
 
         ant.copy(todir: "$env.dist_rapid_suite/operations") {
@@ -199,7 +200,7 @@ class RapidCmdbBuild extends Build {
             }
         }
         ant.copy(file: "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir: "$env.dist_modeler/scripts");
-      
+        ant.copy(file: "$env.rapid_cmdb_cvs/scripts/TransferLdapUsers.groovy", toDir: "$env.dist_modeler/scripts");
         ant.copy(todir: "$env.dist_modeler/src") {
             ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/src") {
                 if (!TEST) {

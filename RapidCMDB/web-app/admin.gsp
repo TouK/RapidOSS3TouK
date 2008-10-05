@@ -34,6 +34,7 @@
                         <li class="controller"><g:link controller="databaseConnection">DatabaseConnection</g:link></li>
                         <li class="controller"><g:link controller="rapidInsightConnection">RapidInsightConnection</g:link></li>
                         <li class="controller"><g:link controller="snmpConnection">SnmpConnection</g:link></li>
+                        <li class="controller"><g:link controller="ldapConnection">LdapConnection</g:link></li>
                     </ul>
                 </div>
             </td>

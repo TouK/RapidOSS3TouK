@@ -27,7 +27,7 @@ class Group
             role: [type: Role, reverseName: "groups", isMany: false]
     ]
     static constraints = {
-        name(blank: true, nullable: true)
+        name(key:[],blank: true, nullable: true)
         segmentFilter(blank: true, nullable: true)
         __operation_class__(nullable: true)
         __is_federated_properties_loaded__(nullable: true)

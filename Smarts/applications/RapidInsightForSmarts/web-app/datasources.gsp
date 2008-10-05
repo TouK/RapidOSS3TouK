@@ -25,6 +25,7 @@
                         <li class="controller"><g:link controller="httpConnection">HttpConnection</g:link></li>
                         <li class="controller"><g:link controller="databaseConnection">DatabaseConnection</g:link></li>
                         <li class="controller"><g:link controller="snmpConnection">SnmpConnection</g:link></li>
+                        <li class="controller"><g:link controller="ldapConnection">LdapConnection</g:link></li>
                     </ul>
                 </div>
             </td>

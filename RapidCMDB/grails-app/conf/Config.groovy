@@ -39,6 +39,9 @@ rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/generatedModels".toStrin
 rapidCMDB.base.dir = System.getProperty("base.dir");
 rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss";
 
+//user authentication type local or ldap , any value other than ldap is evaluated as local
+rapidCMDB.authentication.type="local"; 
+
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
 
@@ -71,6 +74,8 @@ log4j {
     appender.'errorLog.File'="logs/RapidServerErr.log"
 
     rootLogger="warn,rapidServerLog"
+
+
 
     logger {
         // COPY THE FOLLOWING LINE TO DEFINE A NEW LOGGER THAT WILL USE THE NEW APPENDER CREATED ABOVE

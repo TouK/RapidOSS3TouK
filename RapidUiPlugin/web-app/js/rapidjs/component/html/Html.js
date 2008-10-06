@@ -36,13 +36,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.hideMask();
     },
 
-    clearData: function(){
+    clearData: function() {
         this.hideMask();
     },
 
     _show: function(url, title)
     {
-        if(title != null){
+        if (title != null) {
             this.dialog.setTitle(title)
         }
         if (url)
@@ -62,9 +62,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.showMask();
     },
 
-    show: function(url, title){
-      this._show(url,title);
-      this.saveHistoryChange(this.url + "!::!" + this.dialog.getTitle());  
+    show: function(url, title) {
+        this._show(url, title);
+        this.saveHistoryChange(this.url + "!::!" + this.dialog.getTitle());
     },
     hide: function()
     {
@@ -78,18 +78,15 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         }
     },
     showMask: function() {
-        this.mask.setTop(this.dialog.body.offsetTop);
-        this.mask.setWidth(this.dialog.body.clientWidth);
-        this.mask.setHeight(this.dialog.body.clientHeight);
-        YAHOO.util.Dom.setStyle(this.mask.dom, 'display', '');
-        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', '');
+        this.mask.show();
+        this.maskMessage.show();
+        this.mask.setRegion(getEl(this.dialog.body).getRegion())
         this.maskMessage.center(this.mask.dom);
 
     },
     hideMask: function() {
-        YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
-        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', 'none');
-
+        this.mask.hide();
+        this.maskMessage.hide();
     }
 })
 

@@ -1,8 +1,13 @@
-<Results>
-	<Critical>46</Critical>
-	<Major>42</Major>
-	<Minor>12</Minor>
-	<Warning>82</Warning>
-	<Indeterminate>62</Indeterminate>
-	<Clear>31</Clear>
-</Results>
+<Suggestions>
+    <Suggestion Name="asdf1"></Suggestion>
+    <Suggestion Name="asdf2"></Suggestion>
+    <Suggestion Name="asdf3"></Suggestion>
+    <Suggestion Name="asdf4"></Suggestion>
+    <Suggestion Name="asdf5"></Suggestion>
+    <Suggestion Name="asdf6"></Suggestion>
+    <Suggestion Name="asdf7"></Suggestion>
+    <Suggestion Name="asdf8"></Suggestion>
+    <Suggestion Name="asdf9"></Suggestion>
+    <Suggestion Name="asdf10"></Suggestion>
+    <Suggestion Name="asdf11"></Suggestion>
+</Suggestions>

@@ -1,0 +1,14 @@
+.r-autocomplete-body {
+    padding: 10px;
+}
+
+.r-autocomplete-bwrp {
+    padding-bottom: 2em;
+    width: 15em;
+}
+
+.r-autocomplete-input {
+    left: 15em;
+    margin-left: 1em;
+    position: absolute;
+}

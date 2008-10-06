@@ -1,6 +1,6 @@
 YAHOO.namespace('rapidjs');
 String.prototype.trim = function() {
-    a = this.replace(/^\s+/, '');
+    var a = this.replace(/^\s+/, '');
     return a.replace(/\s+$/, '');
 };
 YAHOO.rapidjs.ArrayUtils = new function()

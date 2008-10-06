@@ -1,7 +1,6 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.Autocomplete = function(container, config) {
     YAHOO.rapidjs.component.Autocomplete.superclass.constructor.call(this, container, config);
-    this.rootTag = null;
     this.contentPath = null;
     this.fields = null;
     this.cacheSize = 0;
@@ -30,15 +29,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
                  '<div class="r-autocomplete-suggestion"></div>' +
                  '</div></form></div>'});
         this.searchInput = this.body.getElementsByTagName('input')[0];
-        this.suggestion = YAHOO.util.Dom.getElementsByClassName('r-autocomplete-suggestion','div',  this.body)[0]
-        var buttonWrp = YAHOO.util.Dom.getElementsByClassName('r-autocomplete-swrp','div',  this.body)[0]; 
-        this.submitButton = new YAHOO.widget.Button(buttonWrp,{label:'Search', type:'submit'});
+        this.suggestion = YAHOO.util.Dom.getElementsByClassName('r-autocomplete-suggestion', 'div', this.body)[0]
+        var buttonWrp = YAHOO.util.Dom.getElementsByClassName('r-autocomplete-swrp', 'div', this.body)[0];
+        this.submitButton = new YAHOO.widget.Button(buttonWrp, {label:'Search', type:'submit'});
 
         this.datasource = new YAHOO.util.XHRDataSource(this.url);
         this.datasource.responseType = YAHOO.util.XHRDataSource.TYPE_XML;
 
         this.datasource.responseSchema = {
-            metaNode: this.rootTag,
             resultNode: this.contentPath,
             fields: this.fields
         };
@@ -50,23 +48,54 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
         this.autoComp.useShadow = true;
         this.autoComp.animVert = this.animated;
         this.autoComp.forceSelection = true;
-        this.autoComp.dataErrorEvent.subscribe(this.dataError, this, true);
         this.autoComp.doBeforeExpandContainer = function(oTextbox, oContainer, sQuery, aResults) {
-	        var pos = YAHOO.util.Dom.getXY(oTextbox);
-	        pos[1] += YAHOO.util.Dom.get(oTextbox).offsetHeight + 2;
-	        YAHOO.util.Dom.setXY(oContainer,pos);
-	        return true;
-	    };
+            var pos = YAHOO.util.Dom.getXY(oTextbox);
+            pos[1] += YAHOO.util.Dom.get(oTextbox).offsetHeight + 2;
+            YAHOO.util.Dom.setXY(oContainer, pos);
+            return true;
+        };
+        this.datasource.doBeforeParseData = this.doBeforeParseData.createDelegate(this);
+        this.autoComp.doBeforeLoadData = this.doBeforeLoadData.createDelegate(this);
         YAHOO.util.Event.addListener(this.body.getElementsByTagName('form')[0], 'submit', this.handleSubmit, this, true);
     },
-    dataError: function(autoComp, query){
-    },
-
-    handleSubmit: function(e){
+    handleSubmit: function(e) {
         YAHOO.util.Event.preventDefault(e);
         var value = this.searchInput.value;
-        if(value.trim() != ""){
+        if (value.trim() != "") {
             this.events['submit'].fireDirect(this.searchInput.value);
         }
+    },
+    doBeforeParseData: function(oRequest, oFullResponse, oCallback) {
+        var mockResponse = {responseXML:oFullResponse};
+        if (YAHOO.rapidjs.Connect.checkAuthentication(mockResponse) == true)
+        {
+            if (YAHOO.rapidjs.Connect.containsError(mockResponse) == true) {
+                var errors = YAHOO.rapidjs.Connect.getErrorMessages(oFullResponse);
+                this.events["error"].fireDirect(this, errors);
+                YAHOO.rapidjs.ErrorManager.errorOccurred(this, errors);
+            }
+            else {
+                this.events["success"].fireDirect(this);
+            }
+        }
+        return oFullResponse;
+    },
+    doBeforeLoadData: function(sQuery, oResponse, oPayload) {
+        if (oResponse.error) {
+            var st = oResponse.status;
+            if (st == -1) {
+                this.events["error"].fireDirect(this, ['Request received timeout.']);
+                YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Request received timeout.']);
+            }
+            else if (st == 404) {
+                this.events["error"].fireDirect(this, ['Specified url cannot be found.']);
+                YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Specified url cannot be found.']);
+            }
+            else if (st == 0) {
+                YAHOO.rapidjs.ErrorManager.serverDown();
+            }
+            return false;
+        }
     }
+
 })

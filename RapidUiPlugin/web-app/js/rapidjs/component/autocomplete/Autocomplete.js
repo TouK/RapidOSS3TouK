@@ -56,6 +56,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
         };
         this.datasource.doBeforeParseData = this.doBeforeParseData.createDelegate(this);
         this.autoComp.doBeforeLoadData = this.doBeforeLoadData.createDelegate(this);
+        this.autoComp.generateRequest = this.generateRequest.createDelegate(this);
         YAHOO.util.Event.addListener(this.body.getElementsByTagName('form')[0], 'submit', this.handleSubmit, this, true);
     },
     handleSubmit: function(e) {
@@ -95,6 +96,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
                 YAHOO.rapidjs.ErrorManager.serverDown();
             }
             return false;
+        }
+        return true;
+    },
+    generateRequest: function(query){
+        var url = this.url;
+        if(url.indexOf("?") >= 0)
+        {
+            return "&query=" + query;
+        }
+        else
+        {
+            return "?query=" + query;
         }
     }
 

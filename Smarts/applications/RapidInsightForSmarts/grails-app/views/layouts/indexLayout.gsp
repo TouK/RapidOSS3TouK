@@ -13,7 +13,7 @@
     <script type="text/javascript" src="js/yui/resize/resize-min.js"></script>
     <script type="text/javascript" src="js/yui/layout/layout-min.js"></script>
     <script type="text/javascript" src="js/yui/history/history-min.js"></script>
-    <script type="text/javascript" src="js/yui/datasource/datasource-beta-min.js"></script>
+    <script type="text/javascript" src="js/yui/datasource/datasource-min.js"></script>
     <script type="text/javascript" src="js/yui/datatable/datatable-beta-min.js"></script>
     <script type="text/javascript" src="js/ext/ext.js"></script>
 

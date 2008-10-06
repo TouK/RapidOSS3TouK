@@ -13,14 +13,14 @@ YAHOO.rapidjs.component.Form = function(container, config)
             { text:"Cancel", handler:this.handleCancel.createDelegate(this), scope:this } ]
     });
 
-	this.dialog.hideEvent.subscribe(function(){
-			YAHOO.util.Dom.setStyle(this.dialog.form, 'overflow', 'hidden');
-			YAHOO.util.Event.removeListener(this.dialog.form, 'keypress');
-		}, this, true)
-	this.dialog.beforeShowEvent.subscribe(function(){
-			YAHOO.util.Dom.setStyle(this.dialog.form, 'overflow', 'auto');
-			YAHOO.util.Event.addListener(this.dialog.form, 'keypress', this.handleKeypress, this, true);
-		}, this, true)
+    this.dialog.hideEvent.subscribe(function() {
+        YAHOO.util.Dom.setStyle(this.dialog.form, 'overflow', 'hidden');
+        YAHOO.util.Event.removeListener(this.dialog.form, 'keypress');
+    }, this, true)
+    this.dialog.beforeShowEvent.subscribe(function() {
+        YAHOO.util.Dom.setStyle(this.dialog.form, 'overflow', 'auto');
+        YAHOO.util.Event.addListener(this.dialog.form, 'keypress', this.handleKeypress, this, true);
+    }, this, true)
     this.successful = config.successfulyExecuted;
     this.EDIT_MODE = 0;
     this.CREATE_MODE = 1;
@@ -31,7 +31,7 @@ YAHOO.rapidjs.component.Form = function(container, config)
     this.saveObject = config.saveObject;
     this.saveUrl = config.saveUrl;
     this.requestType = null;
-    if( this.saveObject) {
+    if (this.saveObject) {
         this.saveUrl = this.saveObject.url;
         this.requestType = this.saveObject.requestType;
     }
@@ -68,7 +68,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     },
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
-	    this.hideMask();
+        this.hideMask();
         if (this.isSubmitInProggress)
         {
             this.successful();
@@ -78,15 +78,15 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         var formElements = this.dialog.form.elements;
         for (var i = 0; i < formElements.length; i++)
         {
-	        this.setFormElementValue(formElements[i], response.responseXML);
+            this.setFormElementValue(formElements[i], response.responseXML);
 
-	        if(this.fieldParams != null && this.fieldParams[formElements[i].name] != null)
-	        {
-		        if(formElements[i].nodeName == 'SELECT')
-		        	SelectUtils.selectTheValue(formElements[i],this.fieldParams[formElements[i].name],'Default');
-		        else
-	        		formElements[i].value = this.fieldParams[formElements[i].name];
-	    	}
+            if (this.fieldParams != null && this.fieldParams[formElements[i].name] != null)
+            {
+                if (formElements[i].nodeName == 'SELECT')
+                    SelectUtils.selectTheValue(formElements[i], this.fieldParams[formElements[i].name], 'Default');
+                else
+                    formElements[i].value = this.fieldParams[formElements[i].name];
+            }
         }
         this.fieldParams = null;
         this.isSubmitInProggress = false;
@@ -108,16 +108,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
                 for (var i = 0; i < options.length; i++)
                 {
                     var option = options[i];
-                    if(option.nodeType == 1){
+                    if (option.nodeType == 1) {
                         var optionValue = option.firstChild.nodeValue;
                         SelectUtils.addOption(formElement, optionValue, optionValue);
-                        if(option.getAttribute('selected') == 'true'){
+                        if (option.getAttribute('selected') == 'true') {
                             SelectUtils.selectTheValue(formElement, optionValue, 0);
                         }
                     }
                 }
             }
-            else{
+            else {
                 formElement.value = xmlNode.firstChild.nodeValue
             }
         }
@@ -131,8 +131,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
     },
     handleUnknownUrl: function(response)
     {
-	  	this.hideMask();
-	    YAHOO.rapidjs.component.Form.superclass.handleUnknownUrl.call(this);
+        this.hideMask();
+        YAHOO.rapidjs.component.Form.superclass.handleUnknownUrl.call(this);
     },
 
     handleSubmit: function()
@@ -157,9 +157,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
             params[formElement.name] = this.getFormElementValue(formElement);
         }
         this.showMask();
-        if( this.saveObject)
+        if (this.saveObject)
         {
-            if( this.requestType == "GET")
+            if (this.requestType == "GET")
             {
                 this.doGetRequest(this.url, params);
             }
@@ -172,20 +172,20 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
             this.doRequest(this.url, params);
     },
     handleCancel: function() {
-	    this.hide();
+        this.hide();
     },
-    getFormElementValue : function(formElement){
-         if (formElement.nodeName == 'SELECT') {
-             return formElement.options[formElement.selectedIndex].value;
-         }
-         else{
-             return formElement.value;
-         }
+    getFormElementValue : function(formElement) {
+        if (formElement.nodeName == 'SELECT') {
+            return formElement.options[formElement.selectedIndex].value;
+        }
+        else {
+            return formElement.value;
+        }
     },
 
     handleErrors: function(response)
     {
-	    var dh = YAHOO.ext.DomHelper;
+        var dh = YAHOO.ext.DomHelper;
         this.isSubmitInProggress = false;
         var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
         for (var i = 0; i < errors.length; i++)
@@ -200,25 +200,29 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
 
     show: function(mode, params, fieldParams)
     {
-	    this.errors.hide();
+        this.errors.hide();
         this.hideMask();
         this.clearAllFields();
         this.mode = mode;
-        if(fieldParams != null)
-       		this.fieldParams = fieldParams;
+        var willShowMask = false;
+        if (fieldParams != null)
+            this.fieldParams = fieldParams;
         if (mode == this.EDIT_MODE && this.editUrl != null)
         {
-	        this.showMask();
-	        this.doRequest(this.editUrl, params);
+            willShowMask = true;
+            this.doRequest(this.editUrl, params);
 
         }
         else if (mode == this.CREATE_MODE && this.createUrl != null)
         {
-	        this.showMask();
+            willShowMask = true;
             this.doRequest(this.createUrl, params);
         }
 
         this.dialog.show();
+        if (willShowMask) {
+            this.showMask();
+        }
     },
     hide: function()
     {
@@ -237,41 +241,38 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         for (var i = 0; i < formElements.length; i++)
         {
             var formElement = formElements[i];
-            if(formElement.nodeName != 'SELECT'){
+            if (formElement.nodeName != 'SELECT') {
                 formElement.value = '';
             }
         }
     },
     disableFormButtons: function()
     {
-	    YAHOO.util.Dom.removeClass(this.dialog.buttonSpan.firstChild,'default');
-	    for(var i = 0; i <this.dialog.getButtons().length ; i++)
-	    {
-		    this.dialog.getButtons()[i].set('disabled',true);
-    	}
+        YAHOO.util.Dom.removeClass(this.dialog.buttonSpan.firstChild, 'default');
+        for (var i = 0; i < this.dialog.getButtons().length; i++)
+        {
+            this.dialog.getButtons()[i].set('disabled', true);
+        }
 
     },
     enableFormButtons: function()
     {
-	    YAHOO.util.Dom.addClass(this.dialog.buttonSpan.firstChild,'default');
-	    for(var i = 0; i <this.dialog.getButtons().length ; i++)
-	    	this.dialog.getButtons()[i].set('disabled',false);
+        YAHOO.util.Dom.addClass(this.dialog.buttonSpan.firstChild, 'default');
+        for (var i = 0; i < this.dialog.getButtons().length; i++)
+            this.dialog.getButtons()[i].set('disabled', false);
     },
 
     showMask: function() {
-        this.mask.setTop(this.dialog.body.offsetTop);
-        this.mask.setWidth(this.dialog.body.clientWidth);
-        this.mask.setHeight(this.dialog.body.clientHeight);
-        YAHOO.util.Dom.setStyle(this.mask.dom, 'display', '');
-        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', '');
+        this.mask.show();
+        this.maskMessage.show();
+        this.mask.setRegion(getEl(this.dialog.body).getRegion());
         this.maskMessage.center(this.mask.dom);
         this.disableFormButtons();
 
     },
     hideMask: function() {
-	    this.enableFormButtons();
-        YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
-        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', 'none');
-
+        this.enableFormButtons();
+        this.mask.hide();
+        this.maskMessage.hide();
     }
 })

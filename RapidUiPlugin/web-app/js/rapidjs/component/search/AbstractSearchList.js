@@ -404,18 +404,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         return this.rowHeight;
     },
 
-    _showMask: function(top, width, height) {
-        this.mask.setTop(top);
-        this.mask.setWidth(width);
-        this.mask.setHeight(height);
-        YAHOO.util.Dom.setStyle(this.mask.dom, 'display', '');
-        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', '');
+    _showMask: function(bodyEl) {
+        this.mask.show();
+        this.maskMessage.show();
+        this.mask.setRegion(getEl(bodyEl).getRegion());
         this.maskMessage.center(this.mask.dom);
     },
 
     hideMask: function() {
-        YAHOO.util.Dom.setStyle(this.mask.dom, 'display', 'none');
-        YAHOO.util.Dom.setStyle(this.maskMessage.dom, 'display', 'none');
+        this.mask.hide();
+        this.maskMessage.hide();
     },
 
     _sort:function(arrayToBeSorted) {

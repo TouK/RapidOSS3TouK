@@ -217,7 +217,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.hideMask();
     },
     showMask: function() {
-        this._showMask(this.hwrap.dom.offsetHeight, this.bwrap.dom.clientWidth, this.bwrap.dom.clientHeight);
+        this._showMask(this.bwrap);
     },
 
     addTools: function() {

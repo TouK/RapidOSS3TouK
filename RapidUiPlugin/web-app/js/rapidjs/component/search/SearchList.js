@@ -100,7 +100,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.hideMask();
     },
     showMask: function() {
-        this._showMask(this.header.dom.offsetHeight, this.body.dom.clientWidth, this.body.dom.clientHeight);
+        this._showMask(this.body);
     },
     createEmptyRows : function(rowCount) {
         var innerHtml = '';

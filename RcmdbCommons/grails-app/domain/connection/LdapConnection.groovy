@@ -11,6 +11,7 @@ class LdapConnection  extends Connection{
     String userPassword ="";
     String username ="";
     String contextFactory ="com.sun.jndi.ldap.LdapCtxFactory";
+    String dummy="";
     
     static constraints={
         url(blank:false)

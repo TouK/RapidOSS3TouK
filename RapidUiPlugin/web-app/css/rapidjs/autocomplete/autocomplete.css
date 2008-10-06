@@ -6,8 +6,11 @@
     padding-bottom: 2em;
     width: 15em;
 }
-
-.r-autocomplete-input {
+.r-autocomplete-input{
+    height:20px;
+    margin-top:1px;
+}
+.r-autocomplete-body .yui-button {
     left: 15em;
     margin-left: 1em;
     position: absolute;

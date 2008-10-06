@@ -22,12 +22,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
         this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header.dom, {title:this.title});
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
         this.body = dh.append(this.wrapper, {tag: 'div', cls:'r-autocomplete-body',
-            html:'<div class="r-autocomplete-bwrp"><form action="javascript:void(0)"><div>' +
-                 '<input type="text"><input type="submit" value="Search" class="r-autocomplete-input">' +
-                 '<div></div>' +
-                 '</div></form>'});
+            html:'<div class="r-autocomplete-bwrp">' +
+                 '<form action="javascript:void(0)">' +
+                 '<div>' +
+                 '<input class="r-autocomplete-input" type="text"></input>' +
+                 '<div class="r-autocomplete-swrp"></div>' +
+                 '<div class="r-autocomplete-suggestion"></div>' +
+                 '</div></form></div>'});
         this.searchInput = this.body.getElementsByTagName('input')[0];
-        this.suggesstion = this.body.getElementsByTagName('div')[2];
+        this.suggestion = YAHOO.util.Dom.getElementsByClassName('r-autocomplete-suggestion','div',  this.body)[0]
+        var buttonWrp = YAHOO.util.Dom.getElementsByClassName('r-autocomplete-swrp','div',  this.body)[0]; 
+        this.submitButton = new YAHOO.widget.Button(buttonWrp,{label:'Search', type:'submit'});
 
         this.datasource = new YAHOO.util.XHRDataSource(this.url);
         this.datasource.responseType = YAHOO.util.XHRDataSource.TYPE_XML;
@@ -38,7 +43,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
             fields: this.fields
         };
         this.datasource.maxCacheEntries = this.cacheSize;
-        this.autoComp = new YAHOO.widget.AutoComplete(this.searchInput, this.suggesstion, this.datasource);
+        this.autoComp = new YAHOO.widget.AutoComplete(this.searchInput, this.suggestion, this.datasource);
         this.autoComp.useIFrame = true;
         this.autoComp.allowBrowserAutocomplete = false;
         this.autoComp.queryMatchCase = true;
@@ -46,8 +51,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
         this.autoComp.animVert = this.animated;
         this.autoComp.forceSelection = true;
         this.autoComp.dataErrorEvent.subscribe(this.dataError, this, true);
-        this.autoComp.itemSelectEvent.subscribe(this.itemSelected, this, true);
-        this.autoComp.unmatchedItemSelectEvent.subscribe(this.unmatchedItemSelected, this, true);
         this.autoComp.doBeforeExpandContainer = function(oTextbox, oContainer, sQuery, aResults) {
 	        var pos = YAHOO.util.Dom.getXY(oTextbox);
 	        pos[1] += YAHOO.util.Dom.get(oTextbox).offsetHeight + 2;
@@ -57,11 +60,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
         YAHOO.util.Event.addListener(this.body.getElementsByTagName('form')[0], 'submit', this.handleSubmit, this, true);
     },
     dataError: function(autoComp, query){
-    },
-    itemSelected: function(autoComp , elItem , oData){
-        
-    },
-    unmatchedItemSelected: function(autoComp , sSelection ){
     },
 
     handleSubmit: function(e){

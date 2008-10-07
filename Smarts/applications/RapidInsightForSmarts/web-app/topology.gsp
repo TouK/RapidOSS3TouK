@@ -192,7 +192,7 @@
          id:"filterTree",
          url:"script/run/mapList",
          rootTag:"Maps",
-         nodeId:"id",
+         keyAttribute:"id",
          contentPath:"Map",
          title:'Saved Maps',
          expanded:true,

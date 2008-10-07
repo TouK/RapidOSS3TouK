@@ -198,7 +198,7 @@
          id:"filterTree",
          url:"script/run/queryList?format=xml&type=topology",
          rootTag:"Filters",
-         nodeId:"id",
+         keyAttribute:"id",
          contentPath:"Filter",
          title:'Saved Queries',
          expanded:true,

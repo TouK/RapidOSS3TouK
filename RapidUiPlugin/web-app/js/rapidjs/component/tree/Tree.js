@@ -17,7 +17,7 @@ YAHOO.rapidjs.component.Tree = function(container, config)
     YAHOO.util.Event.addListener(this.body, 'click', this.fireTreeClick, this, true);
 
     this.menuSelectedIndex = null;
-    this.nodeId = config.nodeId;
+    this.keyAttribute = config.keyAttribute;
 
     this.nodeTag = config.nodeTag;
     this.attributeToBeDisplayed = config.displayAttribute;
@@ -48,12 +48,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Tree, YAHOO.rapidjs.component.PollingC
 
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
-        var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.nodeId]);
+        var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
         var node = this.getRootNode(data, response.responseText);
         if (node) {
             if (this.rootNode != null)
             {
-                this.rootNode.mergeData(node, this.nodeId, keepExisting, removeAttribute);
+                this.rootNode.mergeData(node, this.keyAttribute, keepExisting, removeAttribute);
             }
             else
             {

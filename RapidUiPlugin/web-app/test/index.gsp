@@ -93,7 +93,7 @@
     var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
 
 
-    var config = {  id:"filterTree","pollingInterval":1, "url":"a2.xml", "rootTag":"Filters", "nodeId":"id", "nodeTag":"Filter",
+    var config = {  id:"filterTree","pollingInterval":1, "url":"a2.xml", "rootTag":"Filters", "keyAttribute":"id", "nodeTag":"Filter",
                     "displayAttribute":"name", "nodeTypeAttribute":"nodeType", "queryAttribute":"query",
                     menuItems:{   }
     };

@@ -15,14 +15,7 @@
 </head>
 <body class=" yui-skin-sam">
 
-    <div id="left">
-         <div id="searchDiv"></div>
-
-    </div>
-    <div id="right">
-
-    </div>
-    <script type="text/javascript" src="deneme.js"></script>
+    <rui:deneme attrs="${[sezgin:['sezgin','sezgin'], mustafa:'mustafa']}"></rui:deneme>
 
 </body>
 </html>

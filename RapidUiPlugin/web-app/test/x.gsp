@@ -51,7 +51,7 @@
          id:"filterTree",
          url:"filters.xml",
          rootTag:"Filters",
-         nodeId:"id",
+         keyAttribute:"id",
          contentPath:"Filter",
          title:'Saved Queries',
          columns: [

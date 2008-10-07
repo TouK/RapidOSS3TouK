@@ -1,0 +1,83 @@
+8
+
+dir
+2890
+http://dev.ifountain.org/repos/os/RapidModules
+http://dev.ifountain.org/repos/os
+
+
+
+2008-10-06T12:11:01.004772Z
+2890
+mustafa
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+a08bcbf9-5f6c-4d33-af0a-e494bc2cacca
+
+.metadata
+dir
+
+.svn
+dir
+
+
+
+add
+
+Hyperic
+dir
+
+Netcool
+dir
+
+RapidCMDB
+dir
+
+RapidCMDB.ipr
+file
+
+
+
+
+2008-09-09T06:07:17.373000Z
+783c337884818b42442408fb94a3d084
+2008-09-11T11:45:18.454021Z
+2603
+mustafa
+
+RapidCMDBModeler
+dir
+
+RapidTesting
+dir
+
+RapidUiPlugin
+dir
+
+RcmdbCommons
+dir
+
+Smarts
+dir
+
+comp
+dir
+
+core
+dir
+
+ext
+dir
+

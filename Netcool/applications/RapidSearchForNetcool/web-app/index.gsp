@@ -444,7 +444,7 @@
          id:"filterTree",
          url:"script/run/queryList?format=xml",
          rootTag:"Filters",
-         nodeId:"id",
+         keyAttribute:"id",
          contentPath:"Filter",
          title:'Saved Queries',
          mouseOverCursor: 'pointer',

@@ -395,7 +395,7 @@
          id:"filterTree",
          url:"a3.xml",
          rootTag:"Filters",
-         nodeId:"id",
+         keyAttribute:"id",
          contentPath:"Filter",
          title:'Saved Queries',
          mouseOverCursor: 'pointer',

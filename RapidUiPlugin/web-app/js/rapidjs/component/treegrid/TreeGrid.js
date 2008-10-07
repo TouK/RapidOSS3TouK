@@ -1,7 +1,7 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.TreeGrid = function(container, config) {
     YAHOO.rapidjs.component.TreeGrid.superclass.constructor.call(this,container, config);
-	this.nodeId = config.nodeId;
+	this.keyAttribute = config.keyAttribute;
 	this.rootTag = config.rootTag;
     this.expanded = config.expanded;
     var events = {
@@ -25,7 +25,7 @@ YAHOO.rapidjs.component.TreeGrid = function(container, config) {
 YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.PollingComponentContainer, {
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
-        var data = new YAHOO.rapidjs.data.RapidXmlDocument(response,[this.nodeId]);
+        var data = new YAHOO.rapidjs.data.RapidXmlDocument(response,[this.keyAttribute]);
 		var node = this.getRootNode(data, response.responseText);
 		if(node){
 			if(!this.rootNode || keepExisting == false){
@@ -35,7 +35,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.Poll
 			else
 			{
 				this.treeGridView.isSortingDisabled = true;
-				this.rootNode.mergeData(node, this.nodeId, keepExisting, removeAttribute);
+				this.rootNode.mergeData(node, this.keyAttribute, keepExisting, removeAttribute);
 				this.treeGridView.refreshData();
 				this.treeGridView.isSortingDisabled = false;
 			}

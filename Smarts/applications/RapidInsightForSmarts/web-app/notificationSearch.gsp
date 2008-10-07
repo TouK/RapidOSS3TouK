@@ -242,7 +242,7 @@
          id:"filterTree",
          url:"script/run/queryList?format=xml&type=notification",
          rootTag:"Filters",
-         nodeId:"id",
+         keyAttribute:"id",
          contentPath:"Filter",
          title:'Saved Queries',
          expanded:true,

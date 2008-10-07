@@ -8,7 +8,7 @@
     <div class="hd">Save Map</div>
     <div class="bd">
     <form method="POST" action="javascript://nothing">
-        <table width="100%">
+        <table>
         <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="groupName" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Map Name:</label></td><td width="50%"><input type="textbox" name="mapName" style="width:175px"/></td></tr>
         </table>
@@ -24,7 +24,7 @@
     <div class="hd">Save group</div>
     <div class="bd">
     <form method="POST" action="javascript://nothing">
-        <table width="100%">
+        <table>
         <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="groupName" style="width:175px"/></td></tr>
         </table>
         <input type="hidden" name="id">

@@ -91,7 +91,7 @@
     <div class="hd">Change Password</div>
     <div class="bd">
         <form method="POST" action="javascript://nothing">
-            <table width="100%">
+            <table>
                 <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
                 <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
                 <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>

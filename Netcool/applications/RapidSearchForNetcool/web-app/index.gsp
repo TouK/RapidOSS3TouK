@@ -98,7 +98,7 @@
     <div class="hd">Save query</div>
     <div class="bd">
     <form method="POST" action="javascript://nothing">
-        <table width="100%">
+        <table>
         <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
@@ -116,7 +116,7 @@
     <div class="hd">Save group</div>
     <div class="bd">
     <form method="POST" action="javascript://nothing">
-        <table width="100%">
+        <table>
         <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
         </table>
         <input type="hidden" name="id">
@@ -128,7 +128,7 @@
     <div class="hd">Change Password</div>
     <div class="bd">
     <form method="POST" action="javascript://nothing">
-        <table width="100%">
+        <table>
         <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>

@@ -28,13 +28,8 @@ YAHOO.rapidjs.component.Form = function(container, config)
     this.mapping = config.mapping;
     this.editUrl = config.editUrl;
     this.createUrl = config.createUrl;
-    this.saveObject = config.saveObject;
     this.saveUrl = config.saveUrl;
-    this.requestType = null;
-    if (this.saveObject) {
-        this.saveUrl = this.saveObject.url;
-        this.requestType = this.saveObject.requestType;
-    }
+    this.submitAction = config.submitAction || 'GET'
     this.updateUrl = config.updateUrl;
     this.mode = this.CREATE_MODE;
     this.isSubmitInProggress = false;
@@ -157,19 +152,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
             params[formElement.name] = this.getFormElementValue(formElement);
         }
         this.showMask();
-        if (this.saveObject)
+        if (this.submitAction == "GET")
         {
-            if (this.requestType == "GET")
-            {
-                this.doGetRequest(this.url, params);
-            }
-            else
-            {
-                this.doPostRequest(this.url, params);
-            }
+            this.doGetRequest(this.url, params);
         }
         else
-            this.doRequest(this.url, params);
+        {
+            this.doPostRequest(this.url, params);
+        }
     },
     handleCancel: function() {
         this.hide();
@@ -217,6 +207,20 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         {
             willShowMask = true;
             this.doRequest(this.createUrl, params);
+        }
+        else if (this.fieldParams != null) {
+            var formElements = this.dialog.form.elements;
+            for (var i = 0; i < formElements.length; i++)
+            {
+                if (this.fieldParams != null && this.fieldParams[formElements[i].name] != null)
+                {
+                    if (formElements[i].nodeName == 'SELECT')
+                        SelectUtils.selectTheValue(formElements[i], this.fieldParams[formElements[i].name], 'Default');
+                    else
+                        formElements[i].value = this.fieldParams[formElements[i].name];
+                }
+            }
+            this.fieldParams = null;
         }
 
         this.dialog.show();

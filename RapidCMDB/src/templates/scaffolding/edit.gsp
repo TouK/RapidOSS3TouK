@@ -77,11 +77,14 @@
                             masterDatasourceKeyPropertyNames.add(key);
                         }
                         domainClass.properties.each {
-                            if (masterDatasourceKeyPropertyNames.contains(it.name)) {
-                                masterKeyProperties.add(it);
-                            }
-                            else if (!excludedProps.contains(it.name)) {
-                                otherProperties.add(it);
+                            if(it.name != "id")
+                            {
+                                if (masterDatasourceKeyPropertyNames.contains(it.name)) {
+                                    masterKeyProperties.add(it);
+                                }
+                                else if (!excludedProps.contains(it.name)) {
+                                    otherProperties.add(it);
+                                }
                             }
                         }
                         masterKeyProperties.sort {it.name};

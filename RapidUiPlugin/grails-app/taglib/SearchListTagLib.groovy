@@ -168,7 +168,6 @@ class SearchListTagLib {
 
     def getInnerConfig(body){
         def innerConfig = body();
-        println "InnerConfig : ${innerConfig}"
         if (innerConfig.length() > 0) {
             def lastIndex = innerConfig.lastIndexOf(',');
             innerConfig = innerConfig.substring(0, lastIndex) + innerConfig.substring(lastIndex + 1, innerConfig.length());

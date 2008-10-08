@@ -79,7 +79,7 @@ class TreeGridTagLib {
             cArray.add("pollingInterval:${config['pollingInterval']}")
         String innerConfig = body();
         if (innerConfig.length() > 0) {
-            def lastIndex =  innerConfig.lastIndexOf(',');
+            def lastIndex = innerConfig.lastIndexOf(',');
             innerConfig = innerConfig.substring(0, lastIndex) + innerConfig.substring(lastIndex + 1, innerConfig.length());
         }
         cArray.add(innerConfig);
@@ -89,7 +89,7 @@ class TreeGridTagLib {
     def tgColumns = {attrs, body ->
         String config = body();
         if (config.length() > 0) {
-            def lastIndex =  config.lastIndexOf(',');
+            def lastIndex = config.lastIndexOf(',');
             config = config.substring(0, lastIndex) + config.substring(lastIndex + 1, config.length());
         }
         out << "columns:[${config}],\n";
@@ -99,16 +99,16 @@ class TreeGridTagLib {
         out << """{
             attributeName:'${attrs["attributeName"]}',
             width:${attrs["width"]},
-            colLabel:'${attrs["colLabel"]}',
             ${attrs["sortBy"] ? "sortBy:'${attrs["sortBy"]}'," : ""}
             ${attrs["type"] ? "type:'${attrs["type"]}'," : ""}
+            colLabel:'${attrs["colLabel"]}'
          },\n"""
     }
 
     def tgRootImages = {attrs, body ->
         String config = body();
         if (config.length() > 0) {
-            def lastIndex =  config.lastIndexOf(',');
+            def lastIndex = config.lastIndexOf(',');
             config = config.substring(0, lastIndex) + config.substring(lastIndex + 1, config.length());
         }
         out << "rootImages:[${config}],\n";
@@ -118,7 +118,47 @@ class TreeGridTagLib {
         out << """{
             visible:"${attrs["visible"]}",
             expanded:'${attrs["expanded"]}',
-            collapsed:'${attrs["collapsed"]}',
+            collapsed:'${attrs["collapsed"]}'
+         },\n"""
+    }
+
+    def tgMenuItems = {attrs, body ->
+        String config = body();
+        if (config.length() > 0) {
+            def lastIndex = config.lastIndexOf(',');
+            config = config.substring(0, lastIndex) + config.substring(lastIndex + 1, config.length());
+        }
+        out << "menuItems:[${config}],\n";
+    }
+
+    def tgMenuItem = {attrs, body ->
+        def mArray = [];
+        mArray.add("id:'${attrs["id"]}'");
+        mArray.add("label:'${attrs["label"]}'");
+        if (attrs["visible"])
+            mArray.add("visible:\"${attrs["visible"]}\"");
+        String innerConfig = body();
+        if (innerConfig.length() > 0) {
+            def lastIndex = innerConfig.lastIndexOf(',');
+            innerConfig = innerConfig.substring(0, lastIndex) + innerConfig.substring(lastIndex + 1, innerConfig.length());
+        }
+        mArray.add(innerConfig);
+        out << "{${mArray.join(',\n')}},\n"
+    }
+
+    def tgSubmenuItems = {attrs, body ->
+        String config = body();
+        if (config.length() > 0) {
+            def lastIndex = config.lastIndexOf(',');
+            config = config.substring(0, lastIndex) + config.substring(lastIndex + 1, config.length());
+        }
+        out << "submenuItems:[${config}],\n";
+    }
+    def tgSubmenuItem = {attrs, body ->
+        out << """{
+            ${attrs["visible"] ? "visible:\"${attrs["visible"]}\"," : ""}
+            id:'${attrs["id"]}',
+            label:'${attrs["label"]}'
          },\n"""
     }
 }

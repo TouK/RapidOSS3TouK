@@ -131,16 +131,18 @@ class BootStrap {
                         modelProps.each {propName, PropertyAction action ->
                             def propVal = modelInstance[propName];
 
-                            if (action.action == PropertyAction.CLEAR_RELATION)
+                            if (action.action == PropertyAction.CLEAR_RELATION && propVal)
                             {
+                                def relsToBeRemoved = [];
                                 if (propVal instanceof Collection)
                                 {
-                                    propVal.clear();
+                                    relsToBeRemoved.addAll (propVal);
                                 }
                                 else
                                 {
-                                    modelInstance[propName] = null;
+                                    relsToBeRemoved.add (propVal);
                                 }
+                                modelInstance.removeRelations("${propName}":relsToBeRemoved);
                             }
                             else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
                             {

@@ -24,9 +24,8 @@
 class TreeGridTagLib {
     static namespace = "rui"
     def treeGrid = {attrs, body ->
-        def config = attrs['config'] ? attrs['config'] : attrs;
-        validateAttributes(config);
-        def configStr = getConfig(config);
+        validateAttributes(attrs);
+        def configStr = getConfig(attrs, body);
         out << """
            <script type="text/javascript">
                var treeConfig = ${configStr};
@@ -43,43 +42,83 @@ class TreeGridTagLib {
         def tagName = "treeGrid";
         if (!config['id']) {
             throwTagError("Tag [${tagName}] is missing required attribute [id]")
+            return;
         }
         if (!config['url']) {
             throwTagError("Tag [${tagName}] is missing required attribute [url]")
+            return;
         }
         if (!config['rootTag']) {
             throwTagError("Tag [${tagName}] is missing required attribute [rootTag]")
+            return;
         }
         if (!config['contentPath']) {
             throwTagError("Tag [${tagName}] is missing required attribute [contentPath]")
+            return;
         }
         if (!config['keyAttribute']) {
             throwTagError("Tag [${tagName}] is missing required attribute [keyAttribute]")
-        }
-        if (!config['columns']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [columns]")
+            return;
         }
     }
 
-    def getConfig(config) {
+    def getConfig(config, body) {
         def cArray = [];
-        cArray.add("id: ${config["id"]}")
-        cArray.add("url: ${config["url"]}")
-        cArray.add("rootTag: ${config["rootTag"]}")
-        cArray.add("contentPath: ${config["contentPath"]}")
-        cArray.add("keyAttribute: ${config["keyAttribute"]}")
+        cArray.add("id: '${config["id"]}'")
+        cArray.add("url: '${config["url"]}'")
+        cArray.add("rootTag: '${config["rootTag"]}'")
+        cArray.add("contentPath: '${config["contentPath"]}'")
+        cArray.add("keyAttribute: '${config["keyAttribute"]}'")
+        if (config["title"])
+            cArray.add("title:'${config['title']}'")
         if (config["expanded"])
             cArray.add("expanded:${config['expanded']}")
         if (config["tooltip"])
             cArray.add("tooltip:${config['tooltip']}")
-        def columnsArray = [];
-        config["columns"].each{column ->
-
+        if (config["pollingInterval"])
+            cArray.add("pollingInterval:${config['pollingInterval']}")
+        String innerConfig = body();
+        if (innerConfig.length() > 0) {
+            def lastIndex =  innerConfig.lastIndexOf(',');
+            innerConfig = innerConfig.substring(0, lastIndex) + innerConfig.substring(lastIndex + 1, innerConfig.length());
         }
-
+        cArray.add(innerConfig);
+        return "{${cArray.join(',\n')}}"
     }
 
-    def deneme = {attrs, body ->
-        out << attrs;
+    def tgColumns = {attrs, body ->
+        String config = body();
+        if (config.length() > 0) {
+            def lastIndex =  config.lastIndexOf(',');
+            config = config.substring(0, lastIndex) + config.substring(lastIndex + 1, config.length());
+        }
+        out << "columns:[${config}],\n";
+    }
+
+    def tgColumn = {attrs, body ->
+        out << """{
+            attributeName:'${attrs["attributeName"]}',
+            width:${attrs["width"]},
+            colLabel:'${attrs["colLabel"]}',
+            ${attrs["sortBy"] ? "sortBy:'${attrs["sortBy"]}'," : ""}
+            ${attrs["type"] ? "type:'${attrs["type"]}'," : ""}
+         },\n"""
+    }
+
+    def tgRootImages = {attrs, body ->
+        String config = body();
+        if (config.length() > 0) {
+            def lastIndex =  config.lastIndexOf(',');
+            config = config.substring(0, lastIndex) + config.substring(lastIndex + 1, config.length());
+        }
+        out << "rootImages:[${config}],\n";
+    }
+
+    def tgRootImage = {attrs, body ->
+        out << """{
+            visible:"${attrs["visible"]}",
+            expanded:'${attrs["expanded"]}',
+            collapsed:'${attrs["collapsed"]}',
+         },\n"""
     }
 }

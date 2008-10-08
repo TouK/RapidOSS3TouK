@@ -142,7 +142,7 @@ class BootStrap {
                                 {
                                     relsToBeRemoved.add (propVal);
                                 }
-                                modelInstance.removeRelations("${propName}":relsToBeRemoved);
+                                modelInstance.removeRelation("${propName}":relsToBeRemoved);
                             }
                             else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
                             {

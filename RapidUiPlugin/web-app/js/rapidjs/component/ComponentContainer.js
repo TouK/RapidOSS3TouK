@@ -5,6 +5,7 @@ YAHOO.rapidjs.component.ComponentContainer = function(container, config) {
         throw new Error("Every component should have an id.");
     }
     this.container = container;
+    YAHOO.util.Dom.generateId(this.container, 'rcomponent');
     this.config = config;
     this.url = config.url;
     this.title = config.title;

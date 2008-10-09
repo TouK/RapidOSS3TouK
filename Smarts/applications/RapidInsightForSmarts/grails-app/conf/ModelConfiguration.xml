@@ -1,6 +1,6 @@
 <Rsmodel>
     <Models>
-        <Model Name="RsSmartsObject">
+        <Model Name="RsTopologyObject">
             <Properties>
                 <Property Name='name' Type='string' IsKey='true'/>
                 <Property Name='creationClassName' Type='string'/>
@@ -19,7 +19,8 @@
                 <Property Name='owner' Type='string' />
                 <Property Name='acknowledged' Type='boolean' Default="false" />
                 <Property Name='severity' Type='number' Default="0"/>
-         	</Properties>
+                <Property Name='rsDatasource' Type='string'/>
+             </Properties>
   		</Model>    
   		
   		<Model Name="RsEventJournal">
@@ -43,6 +44,7 @@
                 <Property Name='lastNotifiedAt' Type='number' />
                 <Property Name='lastChangedAt' Type='number' />
                 <Property Name='lastClearedAt' Type='number' />
+                <Property Name='rsDatasource' Type='string'/>
              </Properties>
   		</Model>
   		<Model Name="RsRiEvent" Parent="RsEvent">
@@ -87,7 +89,6 @@
                 <Property Name="userDefined8" Type="string"/>
                 <Property Name="userDefined9" Type="string"/>
                 <Property Name="userDefined10" Type="string"/>
-                <Property Name='rsDatasource' Type='string'/>
             </Properties>
         </Model>
         <Model Name="RsSmartsHistoricalNotification" Parent="RsHistoricalEvent">
@@ -128,7 +129,6 @@
                 <Property Name="userDefined8" Type="string"/>
                 <Property Name="userDefined9" Type="string"/>
                 <Property Name="userDefined10" Type="string"/>
-                <Property Name='rsDatasource' Type='string'/>
                 <Property Name='causedBy' Type='string'/>
                 <Property Name='causes' Type='string'/>
             </Properties>
@@ -138,7 +138,7 @@
                 <Property Name="name" Type="string"/>
             </Properties>
         </Model>
-        <Model Name="RsComputerSystem" Parent="RsSmartsObject">
+        <Model Name="RsComputerSystem" Parent="RsTopologyObject">
             <Properties>
                 <Property Name="accessMode" Type="string"/>
                 <Property Name="discoveredFirstAt" Type="string"/>
@@ -164,7 +164,7 @@
                 <Property Name="managementServer" Type="string"/>
             </Properties>
         </Model>
-        <Model Name="RsComputerSystemComponent" Parent="RsSmartsObject">
+        <Model Name="RsComputerSystemComponent" Parent="RsTopologyObject">
             <Properties>
                 <Property Name="computerSystemName" Type="string"/>
                 <Property Name="tag" Type="string"/>
@@ -247,7 +247,7 @@
                 <Property Name="portType" Type="string"/>
             </Properties>
         </Model>
-        <Model Name="RsLink" Parent="RsSmartsObject">
+        <Model Name="RsLink" Parent="RsTopologyObject">
             <Properties>
                 <Property Name="a_ComputerSystemName" Type="string"/>
                 <Property Name="a_Name" Type="string"/>
@@ -270,7 +270,7 @@
                 <Property Name="z_OperStatus" Type="string"/>
             </Properties>
         </Model>
-        <Model Name="RsGroup" Parent="RsSmartsObject">
+        <Model Name="RsGroup" Parent="RsTopologyObject">
             <Properties>
             </Properties>
         </Model>
@@ -280,13 +280,13 @@
                 <Property Name="networkNumber" Type="string"/>
             </Properties>
         </Model>
-        <Model Name="RsVlan" Parent="RsSmartsObject">
+        <Model Name="RsVlan" Parent="RsTopologyObject">
             <Properties>
                 <Property Name="vlanKey" Type="string"/>
                 <Property Name="vlanNumber" Type="number"/>
             </Properties>
         </Model>
-        <Model Name="RsHsrpGroup" Parent="RsSmartsObject">
+        <Model Name="RsHsrpGroup" Parent="RsTopologyObject">
             <Properties>
                 <Property Name="activeInterfaceName" Type="string"/>
                 <Property Name="activeSystemName" Type="string"/>
@@ -315,6 +315,6 @@
         <Relation From="RsComputerSystemComponent" To="RsComputerSystemComponent" Name="layeredOver" ReverseName="underlying" Type="ManyToMany"></Relation>
         <Relation From="RsCard" To="RsNetworkAdapter" Name="realizes" ReverseName="realizedBy" Type="OneToMany"></Relation>
         <Relation From="RsLink" To="RsNetworkAdapter" Name="connectedTo" ReverseName="connectedVia" Type="OneToMany"></Relation>
-        <Relation From="RsGroup" To="RsSmartsObject" Name="consistsOf" ReverseName="memberOfGroup" Type="ManyToMany"></Relation>
+        <Relation From="RsGroup" To="RsTopologyObject" Name="consistsOf" ReverseName="memberOfGroup" Type="ManyToMany"></Relation>
     </Relations>
 </Rsmodel>

@@ -170,7 +170,7 @@ def init() {
 
     logger.debug("Marking all devices as deleted.");
     topologyMap = new CaseInsensitiveMap();
-    def deviceNames = RsSmartsObject.termFreqs("name", [size:10000000000]);
+    def deviceNames = RsTopologyObject.termFreqs("name", [size:10000000000]);
     deviceNames.each {
         topologyMap[it.getTerm()] = "deleted";
     }
@@ -212,7 +212,7 @@ def update(topologyObject) {
         logger.info("Existing objects retrieved and ${topologyMap.size()} number of objects will be deleted.");
         topologyMap.each{String objectName, String value->
             logger.debug("Deleting non existing object ${objectName}.");
-            RsSmartsObject.get(name:objectName)?.remove();
+            RsTopologyObject.get(name:objectName)?.remove();
         }
         topologyMap.clear();
     }
@@ -258,7 +258,7 @@ def update(topologyObject) {
     }
     else if (eventType == BaseSmartsListeningAdapter.DELETE) {
         getLogger().info("Removing object ${topologyObject}.");
-        RsSmartsObject.get(name: topologyObject["Name"])?.remove();
+        RsTopologyObject.get(name: topologyObject["Name"])?.remove();
     }
 }
 
@@ -293,7 +293,7 @@ def handleChange(updateParams)
     def monitoredAttribute = updateParams["ModifiedAttributeName"]
     def attributeValue = updateParams["ModifiedAttributeValue"]
     def name =  updateParams.Name;
-    def smartsObject = RsSmartsObject.get(name:name)
+    def smartsObject = RsTopologyObject.get(name:name)
     if(smartsObject)
     {
         def colMapping = COLUMN_MAPPING_DATA[smartsObject.class.simpleName];

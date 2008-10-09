@@ -28,7 +28,7 @@ else {
             ClosureEventTriggeringInterceptor.BEFORE_DELETE_EVENT,
             ClosureEventTriggeringInterceptor.BEFORE_INSERT_EVENT,
             ClosureEventTriggeringInterceptor.BEFORE_UPDATE_EVENT]
-    def rsSmartsObjectProp = web.grailsApplication.getDomainClass("RsSmartsObject").properties.findAll {!excludedProps.contains(it.name)}
+    def rsTopologyObjectProp = web.grailsApplication.getDomainClass("RsTopologyObject").properties.findAll {!excludedProps.contains(it.name)}
     web.render(contentType: 'text/xml') {
         Edit {
             id(topoMap.id)

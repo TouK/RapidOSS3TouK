@@ -10,7 +10,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-RsSmartsObject.list().each{
+RsTopologyObject.list().each{
     it.remove();
 }
 RsEvent.list().each{

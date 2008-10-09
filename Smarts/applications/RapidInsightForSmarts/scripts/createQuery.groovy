@@ -43,11 +43,11 @@ if (queryType == "notification") {
 }
 else if (queryType == "topology") {
     def sortProperties = [];
-    GrailsDomainClass domainClass = web.grailsApplication.getDomainClass("RsSmartsObject")
+    GrailsDomainClass domainClass = web.grailsApplication.getDomainClass("RsTopologyObject")
     domainClass.getSubClasses().each {
         sortProperties.addAll(DomainClassUtils.getFilteredProperties(it.name, extraFilteredProps));
     }
-    sortProperties.addAll(DomainClassUtils.getFilteredProperties("RsSmartsObject", extraFilteredProps));
+    sortProperties.addAll(DomainClassUtils.getFilteredProperties("RsTopologyObject", extraFilteredProps));
     def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
         queryGroup.username == userName && queryGroup.isPublic == false
     };

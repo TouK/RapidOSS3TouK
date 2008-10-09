@@ -19,7 +19,7 @@ def excludedProps = ['version',
         ClosureEventTriggeringInterceptor.BEFORE_DELETE_EVENT,
         ClosureEventTriggeringInterceptor.BEFORE_INSERT_EVENT,
         ClosureEventTriggeringInterceptor.BEFORE_UPDATE_EVENT]
-def netcoolEventProps = web.grailsApplication.getDomainClass("RsSmartsObject").properties.findAll {!excludedProps.contains(it.name)}
+def netcoolEventProps = web.grailsApplication.getDomainClass("RsTopologyObject").properties.findAll {!excludedProps.contains(it.name)}
 web.render(contentType: 'text/xml') {
     Create {
         groupName {

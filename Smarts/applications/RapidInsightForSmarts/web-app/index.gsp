@@ -20,7 +20,7 @@
 </rui:treeGrid>
 
 
-<rui:searchList id="searchList" url="search?format=xml&searchIn=RsSmartsObject" queryParameter="query" rootTag="Objects" contentPath="Object"
+<rui:searchList id="searchList" url="search?format=xml&searchIn=RsTopologyObject" queryParameter="query" rootTag="Objects" contentPath="Object"
          keyAttribute="id" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" lineSize="3" title="Smarts Objects"
          defaultFields="['creationClassName', 'name', 'description', 'displayName','isManaged']">
     <rui:slMenuItems>

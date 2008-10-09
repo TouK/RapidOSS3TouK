@@ -19,6 +19,38 @@
         <rui:tgRootImage visible="data.nodeType == 'filter'" expanded='images/rapidjs/component/tools/filter.png' collapsed='images/rapidjs/component/tools/filter.png'></rui:tgRootImage>
     </rui:tgRootImages>
 </rui:treeGrid>
+        
+<rui:searchGrid id="searchGrid" url="search?format=xml&searchIn=RsEvent" rootTag="Objects" title="Events" contentPath="Object" keyAttribute="id" queryParameter="query"
+        totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" fieldsUrl="script/run/getViewFields?format=xml">
+    <rui:sgMenuItems>
+        <rui:sgMenuItem id="acknowledge" label="Acknowledge" visible="data.acknowledged != 'true'"></rui:sgMenuItem>
+        <rui:sgMenuItem id="unacknowledge" label="Unacknowledge" visible="data.acknowledged == 'true'"></rui:sgMenuItem>
+        <rui:sgMenuItem id="takeOwnership" label="Take Ownership"></rui:sgMenuItem>
+        <rui:sgMenuItem id="releaseOwnership" label="Release Ownership"></rui:sgMenuItem>
+        <rui:sgMenuItem id="browse" label="Browse"></rui:sgMenuItem>
+        <rui:sgMenuItem id="eventDetails" label="Event Details"></rui:sgMenuItem>
+    </rui:sgMenuItems>
+    <rui:sgColumns>
+        <rui:sgColumn attributeName="className" colLabel="Class Name" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="instanceName" colLabel="Instance Name" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="eventName" colLabel="Event Name" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="sourceDomainName" colLabel="Source Domain Name" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="acknowledged" colLabel="Acknowledged" width="50"></rui:sgColumn>
+        <rui:sgColumn attributeName="owner" colLabel="Owner" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="lastChangedAt" colLabel="Last Changed" width="80"></rui:sgColumn>
+        <rui:sgColumn attributeName="elementClassName" colLabel="Element Class Name" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="elementName" colLabel="Element Name" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="isRoot" colLabel="Is Root" width="50"></rui:sgColumn>
+        <rui:sgColumn attributeName="severity" colLabel="Severity" width="50" sortBy="true"></rui:sgColumn>
+    </rui:sgColumns>
+    <rui:sgImages>
+        <rui:sgImage visible="data.severity == '1'" src="images/rapidjs/component/searchlist/red.png"></rui:sgImage>
+        <rui:sgImage visible="data.severity == '2'" src="images/rapidjs/component/searchlist/orange.png"></rui:sgImage>
+        <rui:sgImage visible="data.severity == '3'" src="images/rapidjs/component/searchlist/yellow.png"></rui:sgImage>
+        <rui:sgImage visible="data.severity == '4'" src="images/rapidjs/component/searchlist/blue.png"></rui:sgImage>
+        <rui:sgImage visible="data.severity == '5'" src="images/rapidjs/component/searchlist/green.png"></rui:sgImage>
+    </rui:sgImages>
+</rui:searchGrid>
 
 <rui:form id="filterDialog" width="35em" createUrl="script/run/createQuery?queryType=notification"
         editUrl="script/run/editQuery?queryType=notification" saveUrl="searchQuery/save?format=xml&type=notification"
@@ -56,10 +88,6 @@
 </rui:form>
 <rui:html id="eventDetails" width="850" height="500" iframe="false"></rui:html>
 <rui:html id="objectDetails" width="850" height="700" iframe="false"></rui:html>
-
-<div id="right">
-	<div id="searchDiv"></div>
-</div>
 <script type="text/javascript">
 	var tree = YAHOO.rapidjs.Components['filterTree'];
     var dialog = YAHOO.rapidjs.Components['filterDialog'];
@@ -71,75 +99,36 @@
     var objectDetailsDialog = YAHOO.rapidjs.Components['objectDetails'];
     eventDetailsDialog.hide();
     objectDetailsDialog.hide();
+
+    var searchGrid = YAHOO.rapidjs.Components['searchGrid'];
+    searchGrid.renderCellFunction = function(key, value, data){
+        if(key == "lastChangedAt" || key == "lastNotifiedAt" || key == "firstNotifiedAt" || key == "lastClearedAt"){
+            if(value == "0" || value == "")
+            {
+                return "never"
+            }
+            else
+            {
+                try
+                {
+                    var d = new Date();
+                    d.setTime(parseFloat(value))
+                    return d.format("d M H:i:s");
+                }
+                catch(e)
+                {
+                }
+            }
+        }
+        return value;
+    }
     
     var actionConfig = {url:'searchQuery/delete?format=xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
     var actionGroupConfig = {url:'searchQueryGroup/delete?format=xml'}
     var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
-    var smartsEventFields = ['className', 'instanceName', 'eventName', 'sourceDomainName','acknowledged','owner', 'lastChangedAt','elementClassName', 'elementName','isRoot', 'severity'];
-    var searchConfig = {
-        id:'searchGrid',
-        url:'search?format=xml&searchIn=RsEvent',
-        searchQueryParamName:'query',
-        rootTag:'Objects',
-        contentPath:'Object',
-        keyAttribute:'id',
-        totalCountAttribute:'total',
-        offsetAttribute:'offset',
-        sortOrderAttribute:'sortOrder',
-        title:'Events',
-        fieldsUrl: 'script/run/getViewFields?format=xml',
-        columns:[{attributeName:'className', colLabel:'Class Name', width:100},
-            {attributeName:'instanceName', colLabel:'Instance Name', width:100},
-            {attributeName:'eventName', colLabel:'Event Name', width:100},
-            {attributeName:'sourceDomainName', colLabel:'Source Domain Name', width:100},
-            {attributeName:'acknowledged', colLabel:'Acknowledged', width:50},
-            {attributeName:'owner', colLabel:'Owner', width:100},
-            {attributeName:'lastChangedAt', colLabel:'Last Changed', width:80},
-            {attributeName:'elementClassName', colLabel:'Element Class Name', width:100},
-            {attributeName:'elementName', colLabel:'Element Name', width:100},
-            {attributeName:'isRoot', colLabel:'Is Root', width:50},
-            {attributeName:'severity', colLabel:'Severity', width:50, sortBy:true}],
-        menuItems:{
-            item1 : { id : 'acknowledge', label : 'Acknowledge', visible:'data.acknowledged != "true"' },
-            item2 : { id : 'unacknowledge', label : 'Unacknowledge', visible:'data.acknowledged == "true"' },
-            item3 : { id : 'takeOwnership', label : 'Take Ownership'},
-            item4 : { id : 'releaseOwnership', label : 'Release Ownership'},
-            item4 : { id : 'browse', label : 'Browse'},
-            item5 : { id : 'eventDetails', label : 'Event Details' }
-        },
-        images:[
-            {exp:'data["severity"] == 1', src:'images/rapidjs/component/searchlist/red.png'},
-            {exp:'data["severity"] == 2', src:'images/rapidjs/component/searchlist/orange.png'},
-            {exp:'data["severity"] == 3', src:'images/rapidjs/component/searchlist/yellow.png'},
-            {exp:'data["severity"] == 4', src:'images/rapidjs/component/searchlist/blue.png'},
-            {exp:'data["severity"] == 5', src:'images/rapidjs/component/searchlist/green.png'}
-        ],
-        renderCellFunction : function(key, value, data){
-        	if(key == "lastChangedAt" || key == "lastNotifiedAt" || key == "firstNotifiedAt" || key == "lastClearedAt"){
-                if(value == "0" || value == "")
-                {
-                    return "never"
-                }
-                else
-                {
-                    try
-                    {
-                        var d = new Date();
-                        d.setTime(parseFloat(value))
-                        return d.format("d M H:i:s");
-                    }
-                    catch(e)
-                    {
-                    }
-                }
-            }
-            return value;
-        }
-    }
 
-    var searchGrid = new YAHOO.rapidjs.component.search.SearchGrid(document.getElementById("searchDiv"), searchConfig);
     searchGrid.events["saveQueryClicked"].subscribe(function(query) {
         dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchGrid.getSortAttribute(), sortOrder: searchGrid.getSortOrder()});
     });

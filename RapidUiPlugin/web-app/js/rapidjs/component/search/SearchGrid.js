@@ -183,7 +183,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         if (this.images) {
             for (var i = 0; i < this.images.length; i++)
             {
-                var currentExpressionStr = this.images[i]['exp'];
+                var currentExpressionStr = this.images[i]['visible'];
                 var evaluationResult = false;
                 try {
                     evaluationResult = eval(currentExpressionStr);

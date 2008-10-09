@@ -1,7 +1,7 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.search');
 YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) {
     YAHOO.rapidjs.component.search.AbstractSearchList.superclass.constructor.call(this, container, config);
-    this.searchQueryParamName = null;
+    this.queryParameter = null;
     this.renderCellFunction = null;
     this.contentPath = null;
     this.currentlyExecutingQuery = null;
@@ -143,7 +143,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         }
         this.showMask();
         this.params['offset'] = this.offset;
-        this.params[this.searchQueryParamName] = this.currentlyExecutingQuery;
+        this.params[this.queryParameter] = this.currentlyExecutingQuery;
         this.params['sort'] = this.lastSortAtt;
         this.params['order'] = this.lastSortOrder;
         this.poll();
@@ -496,8 +496,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             this.rowHeaderMenu.cfg.setProperty("context", [target.firstChild || target, 'tl', 'bl']);
             var index = 0;
             for (var i in this.menuItems) {
-                if (this.menuItems[i].condition != null) {
-                    var condRes = this.menuItems[i].condition(dataNode);
+                var menuItemConfig = this.menuItems[i];
+                if (menuItemConfig['visible'] != null) {
+                    var data = dataNode;
+                    var label = menuItemConfig.label
+                    var condRes = eval(menuItemConfig['visible']);
                     var menuItem = this.rowHeaderMenu.getItem(index);
                     if (!condRes)
                         menuItem.element.style.display = "none";
@@ -508,11 +511,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
                 var subIndex = 0;
                 for (var j in this.menuItems[i].submenuItems)
                 {
+                    var subMenuItemConfig = this.menuItems[i].submenuItems[j];
                     var submenuItem = this.rowHeaderMenu.getItem(index)._oSubmenu.getItem(subIndex);
-                    if (this.menuItems[i].submenuItems[j].condition != null)
+                    if (subMenuItemConfig['visible'] != null)
                     {
-                        var conSub = this.menuItems[i].submenuItems[j].condition(dataNode, this.menuItems[i].submenuItems[j])
-                        if (!conSub)
+                        var data = dataNode;
+                        var label = subMenuItemConfig.label
+                         var condRes = eval(subMenuItemConfig['visible']);
+                        if (!condRes)
                             submenuItem.element.style.display = "none";
                         else
                             submenuItem.element.style.display = "";

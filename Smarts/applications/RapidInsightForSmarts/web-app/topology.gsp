@@ -4,43 +4,69 @@
     <script type="text/javascript" src="js/yui/charts/charts-experimental-min.js"></script>
 </head>
 <body>
-<div id="filterDialog">
-    <div class="hd">Save Map</div>
-    <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table>
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="groupName" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Map Name:</label></td><td width="50%"><input type="textbox" name="mapName" style="width:175px"/></td></tr>
-        </table>
-        <input type="hidden" name="nodes"/>
-        <input type="hidden" name="edges"/>
-        <input type="hidden" name="id"/>
-        <input type="hidden" name="layout"/>
-    </form>
 
-    </div>
-</div>
-<div id="filterGroup">
-    <div class="hd">Save group</div>
-    <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table>
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="groupName" style="width:175px"/></td></tr>
-        </table>
-        <input type="hidden" name="id">
-    </form>
+<rui:treeGrid id="filterTree" url="script/run/mapList" rootTag="Maps" keyAttribute="id"
+     contentPath="Map" title="Saved Maps" expanded="true">
+    <rui:tgColumns>
+        <rui:tgColumn attributeName="name" colLabel="Name" width="248" sortBy="true"></rui:tgColumn>
+    </rui:tgColumns>
+    <rui:tgMenuItems>
+        <rui:tgMenuItem id="delete" label="Delete" visible="data.isPublic != 'true' && !(data.name == 'Default' && data.nodeType == 'group')"></rui:tgMenuItem>
+        <rui:tgMenuItem id="update" label="Update" visible="data.isPublic != 'true' && !(data.name == 'Default' && data.nodeType == 'group')"></rui:tgMenuItem>
+    </rui:tgMenuItems>
+    <rui:tgRootImages>
+        <rui:tgRootImage visible="data.nodeType == 'group'" expanded='images/rapidjs/component/tools/folder_open.gif' collapsed='images/rapidjs/component/tools/folder.gif'></rui:tgRootImage>
+        <rui:tgRootImage visible="data.nodeType == 'filter'" expanded='images/rapidjs/component/tools/filter.png' collapsed='images/rapidjs/component/tools/filter.png'></rui:tgRootImage>
+    </rui:tgRootImages>
+</rui:treeGrid>
+<rui:form id="filterDialog" width="35em" createUrl="script/run/createMap" editUrl="script/run/editMap" updateUrl="topoMap/update?format=xml" saveUrl="script/run/saveMap" submitAction="POST">
+    <div >
+        <div class="hd">Save Map</div>
+        <div class="bd">
+        <form method="POST" action="javascript://nothing">
+            <table>
+            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="groupName" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Map Name:</label></td><td width="50%"><input type="textbox" name="mapName" style="width:175px"/></td></tr>
+            </table>
+            <input type="hidden" name="nodes"/>
+            <input type="hidden" name="edges"/>
+            <input type="hidden" name="id"/>
+            <input type="hidden" name="layout"/>
+        </form>
 
+        </div>
     </div>
-</div>
-<div id="left">
-   <div id="treeDiv1"></div>
-</div>
+</rui:form>
+<rui:form id="filterGroupDialog" width="30em" saveUrl="mapGroup/save?format=xml" updateUrl="mapGroup/update?format=xml">
+    <div >
+        <div class="hd">Save group</div>
+        <div class="bd">
+        <form method="POST" action="javascript://nothing">
+            <table>
+            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="groupName" style="width:175px"/></td></tr>
+            </table>
+            <input type="hidden" name="id">
+        </form>
+
+        </div>
+    </div>
+    
+</rui:form>
+<rui:html id="objectDetails" width="850" height="700" iframe="false"></rui:html>
 <div id="right">
 	<div id="mapDiv"></div>
 </div>
 
 <script type="text/javascript">
-
+    
+    var tree = YAHOO.rapidjs.Components['filterTree'];
+    var groupDialog = YAHOO.rapidjs.Components['filterGroupDialog'];
+    groupDialog.successful = function(){tree.poll()};
+    var dialog = YAHOO.rapidjs.Components['filterDialog'];
+    dialog.successful = function(){tree.poll()};
+    var objectDetailsDialog = YAHOO.rapidjs.Components['objectDetails'];
+    objectDetailsDialog.hide();
+    
     function getURLParam(strParamName){
 		var strReturn = "";
 		var strHref = window.location.href;
@@ -58,22 +84,6 @@
 		}
 		return unescape(strReturn);
 	}
-
-
-
-    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
-        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
-    }, this, true);
-    YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
-        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
-    }, this, true);
-
-	/*
-    var conf = {id:"htmlComp", width:500, height:400, iframe:false};
-    var html = new YAHOO.rapidjs.component.Html(conf);
-    html.hide();
-    */
-
 
 	function saveMapFunction( data )
 	{
@@ -154,9 +164,6 @@
         }
     }, this, true);
 
-    var conf = {id:'objectDetails', width:500, height:400, iframe:false};
-    var objectDetailsDialog = new YAHOO.rapidjs.component.Html(conf);
-    objectDetailsDialog.hide();
     var actionConfig = {url:'topoMap/delete?format=xml'}
     var deleteMapAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
@@ -168,47 +175,9 @@
     var actionLoadMapConfig = {url:'script/run/getMap'}
     var loadMapAction = new YAHOO.rapidjs.component.action.RequestAction(actionLoadMapConfig);
 
-    function treeNodesUpdateDeleteConditionFunction(data)
-    {
-    	return data.getAttribute("isPublic") != "true" && !(data.getAttribute("nodeType") == "group" && data.getAttribute("name") == "Default");
-    }
-    function treeNodesCopyConditionFunction(data)
-    {
-    	return data.getAttribute("nodeType") == "filter";
-    }
 
-    var groupDefinitionDialogConfig = {
-    	id: "groupDef",
-        width:"30em",
-        saveUrl:"mapGroup/save?format=xml",
-        updateUrl:"mapGroup/update?format=xml",
-        successfulyExecuted: function () {
-            tree.poll()
-        }
 
-    };
-    var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
-    var treeGridConfig = {
-         id:"filterTree",
-         url:"script/run/mapList",
-         rootTag:"Maps",
-         keyAttribute:"id",
-         contentPath:"Map",
-         title:'Saved Maps',
-         expanded:true,
-         columns: [
-            {attributeName:'name', colLabel:'Name', width:248, sortBy:true}
-         ],
-        menuItems:{
-            Delete : { id: 'delete', label : 'Delete',  condition : treeNodesUpdateDeleteConditionFunction },
-            Update : { id: 'update', label : 'Update',  condition : treeNodesUpdateDeleteConditionFunction }
-        },
-        rootImages :[
-			{visible:'data["nodeType"] == "group"', expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'},
-			{visible:'data["nodeType"] == "filter"', expanded:'images/rapidjs/component/tools/filter.png', collapsed:'images/rapidjs/component/tools/filter.png'}
-		]
-      };
-    var tree = new YAHOO.rapidjs.component.TreeGrid(document.getElementById("treeDiv1"), treeGridConfig);
+    
     tree.addToolbarButton({
         className:'r-filterTree-groupAdd',
         scope:this,
@@ -264,38 +233,15 @@
        }
     }, this, true);
 
-    var filterDefinitionDialogConfig = {
-    	id : "filterDef",
-        width:"35em",
-        createUrl:"script/run/createMap",
-        editUrl:"script/run/editMap",
-        saveObject: { url : "script/run/saveMap", requestType : "POST" },
-        updateUrl:"topoMap/update?format=xml",
-        successfulyExecuted: function () {
-            tree.poll()
-        }
-    };
-    var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
-     var changePassDialogConfig = {
-     	id : "changePass",
-        width:"35em",
-        saveUrl:"rsUser/changePassword?format=xml",
-        successfulyExecuted: function () {}
-    };
-    var changePassDialog = new YAHOO.rapidjs.component.Form(document.getElementById("passwordDialog"), changePassDialogConfig);
-    var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
-    Event.addListener(document.getElementById('rsUser'), 'click', function(){
-         changePassDialog.show(dialog.CREATE_MODE);
-         changePassDialog.dialog.form.username.value = "${session.username}";
-    },this, true)
 
+    var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
 
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'top', body: 'top', resize: false, height:45},
                 { position: 'center', body: 'right', resize: false, gutter: '1px' },
-                { position: 'left', width: 250, resize: true, body: 'left', scroll: false}
+                { position: 'left', width: 250, resize: true, body: tree.container.id, scroll: false}
             ]
         });
         layout.on('render', function(){

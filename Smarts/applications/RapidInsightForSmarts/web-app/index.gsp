@@ -3,121 +3,120 @@
     <meta name="layout" content="indexLayout" />
 </head>
 <body>
-<div id="filterDialog">
-    <div class="hd">Save query</div>
-    <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table>
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Sort Property:</label></td><td width="50%"><select name="sortProperty" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Sort Order:</label></td><td width="50%">
-            <select name="sortOrder" style="width:175px"><option value="asc">asc</option><option value="desc">desc</option></select>
-        </td></tr>
-        </table>
-        <input type="hidden" name="id">
-    </form>
+<rui:treeGrid id="filterTree" url="script/run/queryList?format=xml&type=topology" rootTag="Filters" keyAttribute="id"
+     contentPath="Filter" title="Saved Queries" expanded="true">
+    <rui:tgColumns>
+        <rui:tgColumn attributeName="name" colLabel="Name" width="248" sortBy="true"></rui:tgColumn>
+    </rui:tgColumns>
+    <rui:tgMenuItems>
+        <rui:tgMenuItem id="delete" label="Delete" visible="data.isPublic != 'true' && !(data.name == 'Default' && data.nodeType == 'group')"></rui:tgMenuItem>
+        <rui:tgMenuItem id="update" label="Update" visible="data.isPublic != 'true' && !(data.name == 'Default' && data.nodeType == 'group')"></rui:tgMenuItem>
+        <rui:tgMenuItem id="copyQuery" label="Copy Query" visible="data.nodeType == 'filter'"></rui:tgMenuItem>
+    </rui:tgMenuItems>
+    <rui:tgRootImages>
+        <rui:tgRootImage visible="data.nodeType == 'group'" expanded='images/rapidjs/component/tools/folder_open.gif' collapsed='images/rapidjs/component/tools/folder.gif'></rui:tgRootImage>
+        <rui:tgRootImage visible="data.nodeType == 'filter'" expanded='images/rapidjs/component/tools/filter.png' collapsed='images/rapidjs/component/tools/filter.png'></rui:tgRootImage>
+    </rui:tgRootImages>
+</rui:treeGrid>
 
-    </div>
-</div>
-<div id="filterGroup">
-    <div class="hd">Save group</div>
-    <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table>
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
-        </table>
-        <input type="hidden" name="id">
-    </form>
 
+<rui:searchList id="searchList" url="search?format=xml&searchIn=RsSmartsObject" queryParameter="query" rootTag="Objects" contentPath="Object"
+         keyAttribute="id" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" lineSize="3" title="Smarts Objects"
+         defaultFields="['creationClassName', 'name', 'description', 'displayName','isManaged']">
+    <rui:slMenuItems>
+        <rui:slMenuItem id="browse" label="Browse"></rui:slMenuItem>
+        <rui:slMenuItem id="topMap" label="Show Map"></rui:slMenuItem>
+    </rui:slMenuItems>
+    <rui:slPropertyMenuItems>
+         <rui:slMenuItem id="sortAsc" label="Sort asc"></rui:slMenuItem>
+         <rui:slMenuItem id="sortDesc" label="Sort desc"></rui:slMenuItem>
+         <rui:slMenuItem id="except" label="Except"></rui:slMenuItem>
+         <rui:slMenuItem id="greaterThan" label="Greater than" visible="YAHOO.lang.isNumber(parseInt(value))"></rui:slMenuItem>
+         <rui:slMenuItem id="lessThan" label="Less than" visible="YAHOO.lang.isNumber(parseInt(value))"></rui:slMenuItem>
+         <rui:slMenuItem id="greaterThanOrEqualTo" label="Greater than or equal to" visible="YAHOO.lang.isNumber(parseInt(value))"></rui:slMenuItem>
+         <rui:slMenuItem id="lessThanOrEqualTo" label="Less than or equal to" visible="YAHOO.lang.isNumber(parseInt(value))"></rui:slMenuItem>
+    </rui:slPropertyMenuItems>
+    <rui:slFields>
+        <%
+            def computerSystemFields = ["creationClassName", "name", "vendor", "model", "managementServer", "location", "snmpAddress"];
+            def computerSystemComponentFields = ['creationClassName', 'name', 'description', 'displayName','isManaged','computerSystemName','tag']
+            def networkAdapterFields = ["creationClassName", "name", "computerSystemName", "adminStatus", "operStatus", "description", "type", "mode", "isManaged","maxSpeed", "interfaceAlias"];
+            def ipFields = ["creationClassName", "name", "computerSystemName", "address", "ipStatus", "interfaceOperStatus", "netmask", "networkNumber", "responsive", "status"];
+            def cardFields = ["creationClassName", "name", "computerSystemName", "standbyStatus", "status"];
+            def linkFields = ["creationClassName", "name", "a_ComputerSystemName", "a_Name", "a_AdminStatus", "a_OperStatus", "connectedSystemsUnresponsive", "z_ComputerSystemName",
+                            "z_Name", "z_AdminStatus", "z_OperStatus"];
+            def ipNetworkFields = ["creationClassName", "name", "netmask", "networkNumber"];
+            def hsrGroupFields = ["creationClassName", "name", "activeInterfaceName", "activeSystemName", "numberOfFaultyComponents", "virtualIP", "virtualMAC"];
+        %>
+        <rui:slField exp="data.rsAlias == 'RsComputerSystem'" fields="${computerSystemFields}"></rui:slField>
+        <rui:slField exp="data.rsAlias == 'RsComputerSystemComponent'" fields="${computerSystemComponentFields}"></rui:slField>
+        <rui:slField exp="data.rsAlias == 'RsPort'" fields="${networkAdapterFields}"></rui:slField>
+        <rui:slField exp="data.rsAlias == 'RsInterface'" fields="${networkAdapterFields}"></rui:slField>
+        <rui:slField exp="data.rsAlias == 'RsIp'" fields="${ipFields}"></rui:slField>
+        <rui:slField exp="data.rsAlias == 'RsCard'" fields="${cardFields}"></rui:slField>
+        <rui:slField exp="data.rsAlias == 'RsLink'" fields="${linkFields}"></rui:slField>
+        <rui:slField exp="data.rsAlias == 'RsIpNetwork'" fields="${ipNetworkFields}"></rui:slField>
+        <rui:slField exp="data.rsAlias == 'RsHsrGroup'" fields="${hsrGroupFields}"></rui:slField>
+    </rui:slFields>
+</rui:searchList>
+<rui:form id="filterDialog" width="35em" createUrl="script/run/createQuery?queryType=topology" editUrl="script/run/editQuery?queryType=topology"
+        saveUrl="searchQuery/save?format=xml&type=topology" updateUrl="searchQuery/update?format=xml&type=topology">
+    <div>
+        <div class="hd">Save query</div>
+        <div class="bd">
+        <form method="POST" action="javascript://nothing">
+            <table>
+            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Sort Property:</label></td><td width="50%"><select name="sortProperty" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Sort Order:</label></td><td width="50%">
+                <select name="sortOrder" style="width:175px"><option value="asc">asc</option><option value="desc">desc</option></select>
+            </td></tr>
+            </table>
+            <input type="hidden" name="id">
+        </form>
+
+        </div>
     </div>
-</div>
-<div id="left">
-    <div id="treeDiv1"></div>
-</div>
-<div id="right">
-    <div id="searchDiv"></div>
-</div>
+</rui:form>
+<rui:form id="filterGroupDialog" width="30em" saveUrl="searchQueryGroup/save?format=xml&type=topology"
+        updateUrl="searchQueryGroup/update?format=xml&type=topology">
+    <div>
+        <div class="hd">Save group</div>
+        <div class="bd">
+        <form method="POST" action="javascript://nothing">
+            <table>
+            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
+            </table>
+            <input type="hidden" name="id">
+        </form>
+
+        </div>
+    </div>
+</rui:form>
+<rui:html id="objectDetails" width="850" height="700" iframe="false"></rui:html>
 <script type="text/javascript">
 
-    function propertyMenuIsNumberCondition(key, value, data)
-    {
-           return YAHOO.lang.isNumber(parseInt(value));
-    }
-
-    function itemIsRsComputerSystemCondition(xmlData)
-    {
-           return ( xmlData.getAttribute("rsAlias") == "RsComputerSystem" )
-    }
-
-    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
-	    YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
-    }, this, true);
-    YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
-        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
-    }, this, true);
-
-
-    var conf = {id:'objectDetails', width:850, height:700, iframe:false};
-    var objectDetailsDialog = new YAHOO.rapidjs.component.Html(conf);
+    var objectDetailsDialog = YAHOO.rapidjs.Components['objectDetails'];
     objectDetailsDialog.hide();
+    var searchList = YAHOO.rapidjs.Components['searchList'];
+    var tree = YAHOO.rapidjs.Components['filterTree'];
+    var groupDialog = YAHOO.rapidjs.Components['filterGroupDialog'];
+    groupDialog.successful = function(){tree.poll()};
+    var dialog = YAHOO.rapidjs.Components['filterDialog'];
+    dialog.successful = function(){tree.poll()};
+    
     var actionConfig = {url:'searchQuery/delete?format=xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
     var actionGroupConfig = {url:'searchQueryGroup/delete?format=xml'}
     var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
 
-    var computerSystemFields = ["creationClassName", "name", "vendor", "model", "managementServer", "location", "snmpAddress"];
-    var computerSystemComponentFields = ['creationClassName', 'name', 'description', 'displayName','isManaged','computerSystemName','tag']
-    var networkAdapterFields = ["creationClassName", "name", "computerSystemName", "adminStatus", "operStatus", "description", "type", "mode", "isManaged","maxSpeed", "interfaceAlias"];
-    var ipFields = ["creationClassName", "name", "computerSystemName", "address", "ipStatus", "interfaceOperStatus", "netmask", "networkNumber", "responsive", "status"];
-    var cardFields = ["creationClassName", "name", "computerSystemName", "standbyStatus", "status"];
-    var linkFields = ["creationClassName", "name", "a_ComputerSystemName", "a_Name", "a_AdminStatus", "a_OperStatus", "connectedSystemsUnresponsive", "z_ComputerSystemName",
-                    "z_Name", "z_AdminStatus", "z_OperStatus"];
-    var ipNetworkFields = ["creationClassName", "name", "netmask", "networkNumber"];
-    var hsrGroupFields = ["creationClassName", "name", "activeInterfaceName", "activeSystemName", "numberOfFaultyComponents", "virtualIP", "virtualMAC"];
 
-    var searchConfig = {
-        id:'searchList',
-        url:'search?format=xml&searchIn=RsSmartsObject',
-        searchQueryParamName:'query',
-        rootTag:'Objects',
-        contentPath:'Object',
-        keyAttribute:'id',
-        totalCountAttribute:'total',
-        offsetAttribute:'offset',
-        sortOrderAttribute:'sortOrder',
-        lineSize:3,
-        title:'Smarts Objects',
-        defaultFields:['creationClassName', 'name', 'description', 'displayName','isManaged'],
-        fields:[
-            {exp:'data["rsAlias"] == "RsComputerSystem"', fields:computerSystemFields},
-            {exp:'data["rsAlias"] == "RsComputerSystemComponent"', fields:computerSystemComponentFields},
-            {exp:'data["rsAlias"] == "RsPort"', fields:networkAdapterFields},
-            {exp:'data["rsAlias"] == "RsInterface"', fields:networkAdapterFields},
-        	{exp:'data["rsAlias"] == "RsIp"', fields:ipFields},
-        	{exp:'data["rsAlias"] == "RsCard"', fields:cardFields},
-        	{exp:'data["rsAlias"] == "RsLink"', fields:linkFields},
-        	{exp:'data["rsAlias"] == "RsIpNetwork"', fields:ipNetworkFields},
-        	{exp:'data["rsAlias"] == "RsHsrGroup"', fields:hsrGroupFields}
-       	],
-        menuItems:{
-            item1 : { id : 'browse', label : 'Browse' },
-            item2 : { id : 'topMap', label : "Show Map" }
-        },
-        propertyMenuItems:{
-            item1 : { id : 'sortAsc', label : 'Sort asc' },
-            item2 : { id : 'sortDesc', label : 'Sort desc' },
-            item3 : { id : 'except', label : 'Except' },
-            item4 : { id : 'greaterThan', label : 'Greater than',  condition: propertyMenuIsNumberCondition},
-            item5 : { id : 'lessThan', label : 'Less than' , condition: propertyMenuIsNumberCondition},
-            item6 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: propertyMenuIsNumberCondition},
-            item7 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: propertyMenuIsNumberCondition}
-        }
-    }
 
-    var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
+
+
     searchList.events["saveQueryClicked"].subscribe(function(query) {
         dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
     });
@@ -175,47 +174,9 @@
                                  
     }, this, true);
 
-    function treeNodesUpdateDeleteConditionFunction(data)
-    {
-    	return data.getAttribute("isPublic") != "true" && !(data.getAttribute("nodeType") == "group" && data.getAttribute("name") == "Default");
-    }
-    function treeNodesCopyConditionFunction(data)
-    {
-    	return data.getAttribute("nodeType") == "filter";
-    }
 
-    var groupDefinitionDialogConfig = {
-        id:"filterGroupDialog",
-        width:"30em",
-        saveUrl:"searchQueryGroup/save?format=xml&type=topology",
-        updateUrl:"searchQueryGroup/update?format=xml&type=topology",
-        successfulyExecuted: function () {
-            tree.poll()
-        }
-    };
-    var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
-    var treeGridConfig = {
-         id:"filterTree",
-         url:"script/run/queryList?format=xml&type=topology",
-         rootTag:"Filters",
-         keyAttribute:"id",
-         contentPath:"Filter",
-         title:'Saved Queries',
-         expanded:true,
-         columns: [
-            {attributeName:'name', colLabel:'Name', width:248, sortBy:true}
-         ],
-        menuItems:{
-            Delete : { id: 'delete', label : 'Delete',  condition : treeNodesUpdateDeleteConditionFunction },
-            Update : { id: 'update', label : 'Update',  condition : treeNodesUpdateDeleteConditionFunction },
-            CopyQuery : { id: 'copyQuery', label : 'Copy Query',  condition : treeNodesCopyConditionFunction }
-        },
-        rootImages :[
-			{visible:'data["nodeType"] == "group"', expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'},
-			{visible:'data["nodeType"] == "filter"', expanded:'images/rapidjs/component/tools/filter.png', collapsed:'images/rapidjs/component/tools/filter.png'}
-		]
-      };
-    var tree = new YAHOO.rapidjs.component.TreeGrid(document.getElementById("treeDiv1"), treeGridConfig);
+
+
     tree.addToolbarButton({
         className:'r-filterTree-groupAdd',
         scope:this,
@@ -268,37 +229,14 @@
             }
     }, this, true);
 
-    var filterDefinitionDialogConfig = {
-        id:"filterDialog",
-        width:"35em",
-        createUrl:"script/run/createQuery?queryType=topology",
-        editUrl:"script/run/editQuery?queryType=topology",
-        saveUrl:"searchQuery/save?format=xml&type=topology",
-        updateUrl:"searchQuery/update?format=xml&type=topology",
-        successfulyExecuted: function () {
-            tree.poll()
-        }
-    };
-    var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
-     var changePassDialogConfig = {
-        id:"changePassDialog",
-        width:"35em",
-        saveUrl:"rsUser/changePassword?format=xml",
-        successfulyExecuted: function () {}
-    };
-    var changePassDialog = new YAHOO.rapidjs.component.Form(document.getElementById("passwordDialog"), changePassDialogConfig);
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
-    Event.addListener(document.getElementById('rsUser'), 'click', function(){
-         changePassDialog.show(dialog.CREATE_MODE);
-         changePassDialog.dialog.form.username.value = "${session.username}";
-    },this, true)
 
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'top', body: 'top', resize: false, height:45},
-                { position: 'center', body: 'right', resize: false, gutter: '1px' },
-                { position: 'left', width: 250, resize: true, body: 'left', scroll: false}
+                { position: 'center', body: searchList.container.id, resize: false, gutter: '1px' },
+                { position: 'left', width: 250, resize: true, body: tree.container.id, scroll: false}
             ]
         });
         layout.on('render', function(){

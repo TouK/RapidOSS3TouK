@@ -533,24 +533,30 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         var index = 0;
         var numberOfDisplayedItems = 0;
         for (var i in this.menuItems) {
-            if (this.menuItems[i].condition != null) {
-                var condRes = this.menuItems[i].condition(dataNode);
+            var menuItemConfig = this.menuItems[i];
+            if (menuItemConfig['visible'] != null) {
+                var data = dataNode.getAttributes();
+                var label = menuItemConfig.label
+                var evaluationResult = eval(menuItemConfig['visible']);
                 var menuItem = this.rowMenu.getItem(index);
-                if (!condRes)
+                if (!evaluationResult)
                     menuItem.element.style.display = "none";
-                else{
-                   menuItem.element.style.display = "";
-                   numberOfDisplayedItems ++;
+                else {
+                    menuItem.element.style.display = "";
+                    numberOfDisplayedItems ++;
                 }
             }
             var subIndex = 0;
             for (var j in this.menuItems[i].submenuItems)
             {
+                var subMenuItemConfig = this.menuItems[i].submenuItems[j];
                 var submenuItem = this.rowMenu.getItem(index)._oSubmenu.getItem(subIndex);
-                if (this.menuItems[i].submenuItems[j].condition != null)
+                if (subMenuItemConfig['visible'] != null)
                 {
-                    var conSub = this.menuItems[i].submenuItems[j].condition(dataNode, this.menuItems[i].submenuItems[j].label)
-                    if (!conSub)
+                    var data = dataNode.getAttributes();
+                    var label = subMenuItemConfig.label
+                    var evaluationResult = eval(subMenuItemConfig['visible']);
+                    if (!evaluationResult)
                         submenuItem.element.style.display = "none";
                     else
                         submenuItem.element.style.display = "";
@@ -559,7 +565,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             }
             index++;
         }
-        if(numberOfDisplayedItems > 0){
+        if (numberOfDisplayedItems > 0) {
             this.rowMenu.show();
         }
     },
@@ -579,7 +585,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         var parentId = this.menuItems[parentKey].id;
         var row = this.rowMenu.row;
         this.rowMenu.row = null;
-        var xmlData =  this.expandedNodes[row.rowIndex].xmlData;
+        var xmlData = this.expandedNodes[row.rowIndex].xmlData;
         this.events['rowMenuClick'].fireDirect(xmlData, id, parentId);
     },
     handleRightClick : function(event) {

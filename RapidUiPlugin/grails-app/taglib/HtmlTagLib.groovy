@@ -19,29 +19,27 @@
  * Created by IntelliJ IDEA.
  * User: Sezgin Kucukkaraaslan
  * Date: Oct 8, 2008
- * Time: 3:33:43 PM
+ * Time: 5:00:16 PM
  */
-class FormTagLib {
-    static namespace = "rui"
-    def form = {attrs, body ->
+class HtmlTagLib {
+   static namespace = "rui"
+   def html = {attrs, body ->
         validateAttributes(attrs);
         def configStr = getConfig(attrs, body);
-        def formBody = body();
-        def containerId = "rform_${attrs["id"]}"
         out << """
-           <div id="${containerId}">${formBody.trim()}<div>
            <script type="text/javascript">
-               var formConfig = ${configStr};
-               var parentContainer = document.getElementById('${containerId}');
-               var container = parentContainer.firstChild;
-               document.body.appendChild(container);
-               new YAHOO.rapidjs.component.Form(container, formConfig);
+               var htmlConfig = ${configStr};
+               var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
+               var html = new YAHOO.rapidjs.component.Html(container, htmlConfig);
+               if(html.pollingInterval > 0){
+                   html.poll();
+               }
            </script>
         """
     }
 
     def validateAttributes(config) {
-        def tagName = "form";
+        def tagName = "html";
         if (!config['id']) {
             throwTagError("Tag [${tagName}] is missing required attribute [id]")
             return;
@@ -50,17 +48,18 @@ class FormTagLib {
             throwTagError("Tag [${tagName}] is missing required attribute [width]")
             return;
         }
+        if (!config['height']) {
+            throwTagError("Tag [${tagName}] is missing required attribute [height]")
+            return;
+        }
     }
 
     def getConfig(attrs, body){
-         return """{
+        return """{
             id:'${attrs["id"]}',
-            ${attrs["createUrl"] ? "createUrl:'${attrs["createUrl"]}'," : ""}
-            ${attrs["editUrl"] ? "editUrl:'${attrs["editUrl"]}'," : ""}
-            ${attrs["saveUrl"] ? "saveUrl:'${attrs["saveUrl"]}'," : ""}
-            ${attrs["updateUrl"] ? "updateUrl:'${attrs["updateUrl"]}'," : ""}
-            ${attrs["submitAction"] ? "submitAction:'${attrs["submitAction"]}'," : ""}
-            width:'${attrs["width"]}'
-         }"""
+            ${attrs["iframe"] ? "iframe:${attrs["iframe"]}," : ""}
+            width:${attrs["width"]},
+            height:${attrs["height"]}
+        }"""
     }
 }

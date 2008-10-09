@@ -87,20 +87,23 @@
     <g:layoutHead/>
 </head>
 <body class=" yui-skin-sam">
-<div id="passwordDialog">
-    <div class="hd">Change Password</div>
-    <div class="bd">
-        <form method="POST" action="javascript://nothing">
-            <table>
-                <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
-                <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
-                <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
-            </table>
-            <input type="hidden" name="username">
-        </form>
+<rui:form  id="changePassDialog" width="35em" saveUrl="rsUser/changePassword?format=xml">
+    <div>
+        <div class="hd">Change Password</div>
+        <div class="bd">
+            <form method="POST" action="javascript://nothing">
+                <table>
+                    <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
+                    <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
+                    <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
+                </table>
+                <input type="hidden" name="username">
+            </form>
 
+        </div>
     </div>
-</div>
+</rui:form>
+
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
         <td width="0%" style="padding-left:10px;padding-top:5px;padding-right:60px;">
@@ -133,6 +136,19 @@
     </tr>
     </tbody></table>
 </div>
+<script>
+    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
+        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
+    }, this, true);
+    YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
+        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
+    }, this, true);
+
+     var changePassDialog = YAHOO.rapidjs.Components['changePassDialog']
+     YAHOO.util.Event.addListener(document.getElementById('rsUser'), 'click', function(){
+         changePassDialog.show(changePassDialog.CREATE_MODE, null, {username:"${session.username}"});
+    },this, true)
+</script>
 <g:layoutBody/>
 </body>
 </html>

@@ -160,7 +160,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             if (this.images) {
                 for (var i = 0; i < this.images.length; i++)
                 {
-                    var currentExpressionStr = this.images[i]['exp'];
+                    var currentExpressionStr = this.images[i]['visible'];
                     var evaluationResult = false;
                     try {
                         evaluationResult = eval(currentExpressionStr);
@@ -220,9 +220,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-menu')) {
             var index = 0;
             for (var i in this.propertyMenuItems) {
-                if (this.propertyMenuItems[i].condition != null) {
+                var menuItemConfig = this.propertyMenuItems[i]; 
+                if (menuItemConfig['visible'] != null) {
+                    var data = dataNode;
+                    var label = menuItemConfig.label;
+                    var key = cell.propKey;
+                    var value = cell.propValue;
                     var menuItem = this.cellMenu.getItem(index);
-                    var condRes = this.propertyMenuItems[i].condition(cell.propKey, cell.propValue, dataNode);
+                    var condRes = eval(menuItemConfig['visible'])
                     if (!condRes)
                         menuItem.element.style.display = "none";
                     else

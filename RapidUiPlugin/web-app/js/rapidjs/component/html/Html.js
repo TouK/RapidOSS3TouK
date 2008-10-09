@@ -1,7 +1,7 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component');
-YAHOO.rapidjs.component.Html = function(config)
+YAHOO.rapidjs.component.Html = function(container, config)
 {
-    YAHOO.rapidjs.component.Html.superclass.constructor.call(this, null, config);
+    YAHOO.rapidjs.component.Html.superclass.constructor.call(this, container, config);
     this.width = config.width;
     this.height = config.height;
     this.dialog = new YAHOO.rapidjs.component.Dialog({width:this.width,height:this.height, close:true});

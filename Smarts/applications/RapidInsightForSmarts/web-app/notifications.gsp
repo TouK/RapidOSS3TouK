@@ -3,77 +3,75 @@
     <meta name="layout" content="indexLayout" />
 </head>
 <body>
-<div id="filterDialog">
-    <div class="hd">Save query</div>
-    <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table>
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>View Name:</label></td><td width="50%"><select name="viewName" style="width:175px"/></td></tr>
-        </table>
-        <input type="hidden" name="id">
-        <input type="hidden" name="sortProperty">
-    </form>
 
-    </div>
-</div>
-<div id="filterGroup">
-    <div class="hd">Save group</div>
-    <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table>
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
-        </table>
-        <input type="hidden" name="id">
-    </form>
+<rui:treeGrid id="filterTree" url="script/run/queryList?format=xml&type=notification" rootTag="Filters" keyAttribute="id"
+     contentPath="Filter" title="Saved Queries" expanded="true">
+    <rui:tgColumns>
+        <rui:tgColumn attributeName="name" colLabel="Name" width="248" sortBy="true"></rui:tgColumn>
+    </rui:tgColumns>
+    <rui:tgMenuItems>
+        <rui:tgMenuItem id="delete" label="Delete" visible="data.isPublic != 'true' && !(data.name == 'Default' && data.nodeType == 'group')"></rui:tgMenuItem>
+        <rui:tgMenuItem id="update" label="Update" visible="data.isPublic != 'true' && !(data.name == 'Default' && data.nodeType == 'group')"></rui:tgMenuItem>
+        <rui:tgMenuItem id="copyQuery" label="Copy Query" visible="data.nodeType == 'filter'"></rui:tgMenuItem>
+    </rui:tgMenuItems>
+    <rui:tgRootImages>
+        <rui:tgRootImage visible="data.nodeType == 'group'" expanded='images/rapidjs/component/tools/folder_open.gif' collapsed='images/rapidjs/component/tools/folder.gif'></rui:tgRootImage>
+        <rui:tgRootImage visible="data.nodeType == 'filter'" expanded='images/rapidjs/component/tools/filter.png' collapsed='images/rapidjs/component/tools/filter.png'></rui:tgRootImage>
+    </rui:tgRootImages>
+</rui:treeGrid>
 
+<rui:form id="filterDialog" width="35em" createUrl="script/run/createQuery?queryType=notification"
+        editUrl="script/run/editQuery?queryType=notification" saveUrl="searchQuery/save?format=xml&type=notification"
+        updateUrl="searchQuery/update?format=xml&type=notification">
+    <div>
+        <div class="hd">Save query</div>
+        <div class="bd">
+        <form method="POST" action="javascript://nothing">
+            <table>
+            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>View Name:</label></td><td width="50%"><select name="viewName" style="width:175px"/></td></tr>
+            </table>
+            <input type="hidden" name="id">
+            <input type="hidden" name="sortProperty">
+        </form>
+
+        </div>
     </div>
-</div>
-<div id="left">
-    <div id="treeDiv1"></div>
-</div>
+</rui:form>
+<rui:form id="filterGroupDialog" width="30em" saveUrl="searchQueryGroup/save?format=xml&type=notification"
+        updateUrl="searchQueryGroup/update?format=xml&type=notification">
+    <div>
+        <div class="hd">Save group</div>
+        <div class="bd">
+        <form method="POST" action="javascript://nothing">
+            <table>
+            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
+            </table>
+            <input type="hidden" name="id">
+        </form>
+        </div>
+    </div>
+</rui:form>
+<rui:html id="eventDetails" width="850" height="500" iframe="false"></rui:html>
+<rui:html id="objectDetails" width="850" height="700" iframe="false"></rui:html>
+
 <div id="right">
-    <div id="searchDiv"></div>
+	<div id="searchDiv"></div>
 </div>
-
 <script type="text/javascript">
-	function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
-    {
-    	return (key == "severity" && value != '1') || (key != "severity" && propertyMenuIsNumberCondition(key, value, data));
-    }
-    function searchListPropertyMenuConditionFunctionLessThan(key, value, data)
-	{
-    	return (key == "severity" && value != '5') || (key != "severity" && propertyMenuIsNumberCondition(key, value, data));
-    }
-
-    function propertyMenuIsNumberCondition(key, value, data)
-    {
-           return YAHOO.lang.isNumber(parseInt(value));
-    }
-
-	function searchListHeaderMenuConditionFunctionAcknowledge(data)
-    {
-        return data.getAttribute("acknowledged") != "true";
-    }
-
-    function searchListHeaderMenuConditionFunctionUnacknowledge(data)
-    {
-        return data.getAttribute("acknowledged") == "true";
-    }
-
-    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
-        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
-    }, this, true);
-    YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
-        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
-    }, this, true);
-
-    var eventDetailsDialog = new YAHOO.rapidjs.component.Html({id:'eventDetails', width:850, height:500, iframe:false});
-    var objectDetailsDialog = new YAHOO.rapidjs.component.Html({id:'objectDetails', width:850, height:700, iframe:false});
+	var tree = YAHOO.rapidjs.Components['filterTree'];
+    var dialog = YAHOO.rapidjs.Components['filterDialog'];
+    dialog.successful = function(){tree.poll()};
+    var groupDialog = YAHOO.rapidjs.Components['filterGroupDialog'];
+    groupDialog.successful = function(){tree.poll()};
+    
+    var eventDetailsDialog = YAHOO.rapidjs.Components['eventDetails'];
+    var objectDetailsDialog = YAHOO.rapidjs.Components['objectDetails'];
     eventDetailsDialog.hide();
     objectDetailsDialog.hide();
+    
     var actionConfig = {url:'searchQuery/delete?format=xml'}
     var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
 
@@ -104,8 +102,8 @@
             {attributeName:'isRoot', colLabel:'Is Root', width:50},
             {attributeName:'severity', colLabel:'Severity', width:50, sortBy:true}],
         menuItems:{
-            item1 : { id : 'acknowledge', label : 'Acknowledge', condition: searchListHeaderMenuConditionFunctionAcknowledge },
-            item2 : { id : 'unacknowledge', label : 'Unacknowledge', condition: searchListHeaderMenuConditionFunctionUnacknowledge },
+            item1 : { id : 'acknowledge', label : 'Acknowledge', visible:'data.acknowledged != "true"' },
+            item2 : { id : 'unacknowledge', label : 'Unacknowledge', visible:'data.acknowledged == "true"' },
             item3 : { id : 'takeOwnership', label : 'Take Ownership'},
             item4 : { id : 'releaseOwnership', label : 'Release Ownership'},
             item4 : { id : 'browse', label : 'Browse'},
@@ -190,48 +188,6 @@
         }
 
     }, true, true);
-
-    function treeNodesUpdateDeleteConditionFunction(data)
-    {
-    	return data.getAttribute("isPublic") != "true" && !(data.getAttribute("nodeType") == "group" && data.getAttribute("name") == "Default");
-    }
-    function treeNodesCopyConditionFunction(data)
-    {
-    	return data.getAttribute("nodeType") == "filter";
-    }
-
-    var groupDefinitionDialogConfig = {
-        id:"filterGroupDialog",
-        width:"30em",
-        saveUrl:"searchQueryGroup/save?format=xml&type=notification",
-        updateUrl:"searchQueryGroup/update?format=xml&type=notification",
-        successfulyExecuted: function () {
-            tree.poll()
-        }
-    };
-    var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
-    var treeGridConfig = {
-         id:"filterTree",
-         url:"script/run/queryList?format=xml&type=notification",
-         rootTag:"Filters",
-         keyAttribute:"id",
-         contentPath:"Filter",
-         expanded:true,
-         title:'Saved Queries',
-         columns: [
-            {attributeName:'name', colLabel:'Name', width:248, sortBy:true}
-         ],
-        menuItems:{
-            Delete : { id: 'delete', label : 'Delete',  condition : treeNodesUpdateDeleteConditionFunction },
-            Update : { id: 'update', label : 'Update',  condition : treeNodesUpdateDeleteConditionFunction },
-            CopyQuery : { id: 'copyQuery', label : 'Copy Query',  condition : treeNodesCopyConditionFunction }
-        },
-        rootImages :[
-			{visible:'data["nodeType"] == "group"', expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'},
-			{visible:'data["nodeType"] == "filter"', expanded:'images/rapidjs/component/tools/filter.png', collapsed:'images/rapidjs/component/tools/filter.png'}
-		]
-      };
-    var tree = new YAHOO.rapidjs.component.TreeGrid(document.getElementById("treeDiv1"), treeGridConfig);
     tree.addToolbarButton({
         className:'r-filterTree-groupAdd',
         scope:this,
@@ -284,37 +240,15 @@
             }
     }, this, true);
 
-    var filterDefinitionDialogConfig = {
-        id:"filterDialog",
-        width:"35em",
-        createUrl:"script/run/createQuery?queryType=notification",
-        editUrl:"script/run/editQuery?queryType=notification",
-        saveUrl:"searchQuery/save?format=xml&type=notification",
-        updateUrl:"searchQuery/update?format=xml&type=notification",
-        successfulyExecuted: function () {
-            tree.poll()
-        }
-    };
-    var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
-     var changePassDialogConfig = {
-        id:"changePassDialog",
-        width:"35em",
-        saveUrl:"rsUser/changePassword?format=xml",
-        successfulyExecuted: function () {}
-    };
-    var changePassDialog = new YAHOO.rapidjs.component.Form(document.getElementById("passwordDialog"), changePassDialogConfig);
+
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
-    Event.addListener(document.getElementById('rsUser'), 'click', function(){
-         changePassDialog.show(dialog.CREATE_MODE);
-         changePassDialog.dialog.form.username.value = "${session.username}";
-    },this, true)
 
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'top', body: 'top', resize: false, height:45},
-                { position: 'center', body: 'right', resize: false, gutter: '1px' },
-                { position: 'left', width: 250, resize: true, body: 'left', scroll: false}
+                { position: 'center', body: searchGrid.container.id, resize: false, gutter: '1px' },
+                { position: 'left', width: 250, resize: true, body: tree.container.id, scroll: false}
             ]
         });
         layout.on('render', function(){

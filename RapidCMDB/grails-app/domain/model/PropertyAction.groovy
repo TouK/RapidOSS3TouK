@@ -9,14 +9,17 @@ package model
 class PropertyAction {
     public static final String CLEAR_RELATION = "clearrelation"
     public static final String SET_DEFAULT_VALUE = "setdefaultvalue"
-    static searchable = true; 
+    static searchable = {
+        except = ["propType", "defaultValue"];
+    };
     String rsOwner = "p"
     String propName;
+    String reverseName="";
     String modelName;
     String action;
+    String propTypeName = "";
     Class propType;
     Object defaultValue;
     boolean willBeDeleted = false;
-
     static transients = ["propType", "defaultValue"]
 }

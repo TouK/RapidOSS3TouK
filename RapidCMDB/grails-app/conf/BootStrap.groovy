@@ -22,6 +22,8 @@ import script.CmdbScript
 import datasource.BaseListeningDatasource
 import com.ifountain.rcmdb.domain.converter.BooleanConverter
 import auth.Group
+import com.ifountain.rcmdb.domain.property.RelationUtils
+import relation.Relation
 
 class BootStrap {
     def quartzScheduler;
@@ -100,8 +102,11 @@ class BootStrap {
                     modelProps = [:]
                     changedModelProperties[propAction.modelName] = modelProps;
                 }
-                propAction.defaultValue = currentDomainObject.clazz.newInstance()[propAction.propName];
-                propAction.propType = currentDomainObject.getPropertyByName(propAction.propName).type;
+                if(propAction.action != PropertyAction.CLEAR_RELATION)
+                {
+                    propAction.defaultValue = currentDomainObject.clazz.newInstance()[propAction.propName];
+                    propAction.propType = currentDomainObject.getPropertyByName(propAction.propName).type;
+                }
                 modelProps[propAction.propName] = propAction;
             }
         }
@@ -129,20 +134,15 @@ class BootStrap {
                     def res = currentModelClass.metaClass.invokeStaticMethod(currentModelClass, "search", ["alias:*", [max: batch, offset: index]] as Object[]);
                     res.results.each {modelInstance ->
                         modelProps.each {propName, PropertyAction action ->
-                            def propVal = modelInstance[propName];
 
-                            if (action.action == PropertyAction.CLEAR_RELATION && propVal)
+                            if (action.action == PropertyAction.CLEAR_RELATION)
                             {
-                                def relsToBeRemoved = [];
-                                if (propVal instanceof Collection)
-                                {
-                                    relsToBeRemoved.addAll (propVal);
-                                }
-                                else
-                                {
-                                    relsToBeRemoved.add (propVal);
-                                }
-                                modelInstance.removeRelation("${propName}":relsToBeRemoved);
+                                def reverseRels = RelationUtils.getReverseRelationObjects (modelInstance, action.reverseName, action.propType)
+                                def selfRels = Relation.search("objectId:${modelInstance.id} AND name:${action.propName}").results;
+                                def allRels = []
+                                allRels.addAll (selfRels);
+                                allRels.addAll (reverseRels);
+                                allRels*.remove();
                             }
                             else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
                             {

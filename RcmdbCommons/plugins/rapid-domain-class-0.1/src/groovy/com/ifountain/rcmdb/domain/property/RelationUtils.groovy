@@ -24,7 +24,14 @@ class RelationUtils
             }
             query = query.substring(0, query.length()-4)+") AND "
         }
-        return Relation.searchEvery("${query} name:${otherSideName} AND className:${otherSideClass.name} ${Relation.getRelKey(domainObject.id)}:${domainObject.id}");
+        if(otherSideClass instanceof Class)
+        {
+            return Relation.searchEvery("${query} name:${otherSideName} AND className:${otherSideClass.name} ${Relation.getRelKey(domainObject.id)}:${domainObject.id}");
+        }
+        else
+        {
+            return Relation.searchEvery("${query} name:${otherSideName} AND className:${otherSideClass} ${Relation.getRelKey(domainObject.id)}:${domainObject.id}");
+        }
     }
 
 

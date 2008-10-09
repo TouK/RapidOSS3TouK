@@ -85,7 +85,7 @@ class ExistingDataAnalyzer
                 {
                     if(!willDeleteAll)
                     {
-                        actions += new PropertyAction(modelName:currentDomainObject.name, propName:relationName, action:PropertyAction.CLEAR_RELATION);
+                        actions += new PropertyAction(modelName:currentDomainObject.name, propName:relationName, action:PropertyAction.CLEAR_RELATION, propTypeName:oldRelation.getOtherSideCls().name, reverseName:oldRelation.getOtherSideName());
                     }
                     willResourcesBeRegenerated = true;
                 }
@@ -98,6 +98,13 @@ class ExistingDataAnalyzer
         if(!oldRelations.isEmpty())
         {
             willResourcesBeRegenerated = true;
+            if(!willDeleteAll)
+            {
+                oldRelations.each{relationName, oldRelation->
+                    actions += new PropertyAction(modelName:currentDomainObject.name, propName:relationName, action:PropertyAction.CLEAR_RELATION, propTypeName:oldRelation.getOtherSideCls().name, reverseName:oldRelation.getOtherSideName());
+
+                }
+            }
         }
 
         if(willResourcesBeRegenerated)

@@ -121,7 +121,7 @@ class ApplicationController {
                     {
                         if (it instanceof PropertyAction)
                         {
-                            PropertyAction.add(propName: it.propName, action: it.action, modelName: it.modelName);
+                            PropertyAction.add(propName: it.propName, action: it.action, modelName: it.modelName, reverseName:it.reverseName, propTypeName:it.propTypeName);
                         }
                         else
                         {

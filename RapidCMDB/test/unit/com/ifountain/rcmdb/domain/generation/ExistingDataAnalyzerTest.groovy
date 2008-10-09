@@ -391,16 +391,22 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def newGrailsDomainClasses = generateDomainClasses([newDomainClass1, newDomainClass2])
 
         def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName1], newGrailsDomainClasses[modelName1]);
-        assertEquals (1, actions.size());
-        ModelAction modelAction = actions[0];
+        assertEquals (2, actions.size());
+        ModelAction modelAction = actions[1];
         assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
         assertEquals (modelName1, modelAction.modelName);
+        PropertyAction propertyAction = actions[0];
+        assertEquals (PropertyAction.CLEAR_RELATION, propertyAction.action);
+        assertEquals (modelName1, propertyAction.modelName);
 
         actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName2], newGrailsDomainClasses[modelName2]);
-        assertEquals (1, actions.size());
-        modelAction = actions[0];
+        assertEquals (2, actions.size());
+        modelAction = actions[1];
         assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
         assertEquals (modelName2, modelAction.modelName);
+        propertyAction = actions[0];
+        assertEquals (PropertyAction.CLEAR_RELATION, propertyAction.action);
+        assertEquals (modelName2, propertyAction.modelName);
     }
 
 

@@ -18,7 +18,7 @@ class RsHistoricalEvent {
     String source ="";
     
     String owner ="";
-    
+    String rsDatasource;
     Boolean acknowledged =false;
     
     Long severity =0;
@@ -48,6 +48,8 @@ class RsHistoricalEvent {
      acknowledged(nullable:true)
         
      severity(nullable:true)
+
+     rsDatasource(blank:true,nullable:true)
         
      __operation_class__(nullable:true)
         

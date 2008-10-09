@@ -82,9 +82,7 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
     String userDefined9 ="";
     
     String userDefined10 ="";
-    
-    String rsDatasource ="";
-    
+
     String causedBy ="";
     
     String causes ="";
@@ -174,8 +172,6 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
      userDefined9(blank:true,nullable:true)
         
      userDefined10(blank:true,nullable:true)
-        
-     rsDatasource(blank:true,nullable:true)
         
      causedBy(blank:true,nullable:true)
         

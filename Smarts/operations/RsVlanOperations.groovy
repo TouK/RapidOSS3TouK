@@ -1,3 +1,3 @@
-class RsVlanOperations extends RsSmartsObjectOperations {
+class RsVlanOperations extends RsTopologyObjectOperations {
 }
     

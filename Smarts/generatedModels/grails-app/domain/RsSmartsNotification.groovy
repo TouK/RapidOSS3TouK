@@ -77,8 +77,6 @@ class RsSmartsNotification  extends RsEvent {
     
     String userDefined10 ="";
     
-    String rsDatasource ="";
-    
     Long id ;
     
     Long version ;
@@ -168,8 +166,6 @@ class RsSmartsNotification  extends RsEvent {
      userDefined9(blank:true,nullable:true)
         
      userDefined10(blank:true,nullable:true)
-        
-     rsDatasource(blank:true,nullable:true)
         
      __operation_class__(nullable:true)
         

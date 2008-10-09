@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsHsrpGroup  extends RsSmartsObject {
+class RsHsrpGroup  extends RsTopologyObject {
 
     //AUTO_GENERATED_CODE
 

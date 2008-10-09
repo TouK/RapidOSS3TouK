@@ -1,5 +1,5 @@
 import com.ifountain.rcmdb.util.RCMDBDataStore
-class RsLinkOperations extends RsSmartsObjectOperations
+class RsLinkOperations extends RsTopologyObjectOperations
 {
     public static STATEINFORMATION_KEY = "stateInformationforlink"
     int getState()

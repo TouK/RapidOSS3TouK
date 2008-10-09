@@ -1,37 +1,27 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsEvent {
+class RsTopologyObject {
 
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "memberOfGroup"];
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
 
     
     String name ="";
     
-    Boolean active =true;
+    String creationClassName ="";
     
-    String owner ="";
+    String description ="";
     
-    Boolean acknowledged =false;
+    String displayName ="";
     
-    Long severity =0;
+    Boolean isManaged =false;
     
-    String source ="";
-
-    String rsDatasource;
-    
-    Long firstNotifiedAt =0;
-    
-    Long lastNotifiedAt =0;
-    
-    Long lastChangedAt =0;
-    
-    Long lastClearedAt =0;
+    String rsDatasource ="";
     
     Long id ;
     
@@ -43,31 +33,27 @@ class RsEvent {
     
     Object __is_federated_properties_loaded__ ;
     
+    List memberOfGroup =[];
     
-    static relations = [:]    
+    
+    static relations = [
+    
+        memberOfGroup:[type:RsGroup, reverseName:"consistsOf", isMany:true]
+    
+    ]
     
     static constraints={
     name(blank:false,nullable:false,key:[])
         
-     active(nullable:true)
-
+     creationClassName(blank:true,nullable:true)
+        
+     description(blank:true,nullable:true)
+        
+     displayName(blank:true,nullable:true)
+        
+     isManaged(nullable:true)
+        
      rsDatasource(blank:true,nullable:true)
-        
-     owner(blank:true,nullable:true)
-        
-     acknowledged(nullable:true)
-        
-     severity(nullable:true)
-        
-     source(blank:true,nullable:true)
-        
-     firstNotifiedAt(nullable:true)
-        
-     lastNotifiedAt(nullable:true)
-        
-     lastChangedAt(nullable:true)
-        
-     lastClearedAt(nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -79,7 +65,7 @@ class RsEvent {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "memberOfGroup"];
     
     public String toString()
     {

@@ -51,12 +51,12 @@
 <ul>
 <g:each var="c" in="${rsGroup?.consistsOf?}">
     <li style="margin-bottom:3px;">
-        <g:link controller="rsSmartsObject" action="show" id="${c.id}">${c}</g:link>
+        <g:link controller="rsTopologyObject" action="show" id="${c.id}">${c}</g:link>
         <g:link class="delete" action="removeRelation" params="['id':rsGroup?.id, 'relationName':'consistsOf', 'relatedObjectId':c.id]"></g:link>
     </li>
 </g:each>
 </ul>
-<g:link params="['id':rsGroup?.id, 'relationName':'consistsOf']" action="addTo">Add RsSmartsObject</g:link>
+<g:link params="['id':rsGroup?.id, 'relationName':'consistsOf']" action="addTo">Add RsTopologyObject</g:link>
 
                         </td>
                     </tr>

@@ -1,3 +1,3 @@
-class RsComputerSystemComponentOperations extends RsSmartsObjectOperations {
+class RsComputerSystemComponentOperations extends RsTopologyObjectOperations {
 }
     

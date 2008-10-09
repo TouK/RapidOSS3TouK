@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsLink  extends RsSmartsObject {
+class RsLink  extends RsTopologyObject {
 
     //AUTO_GENERATED_CODE
 

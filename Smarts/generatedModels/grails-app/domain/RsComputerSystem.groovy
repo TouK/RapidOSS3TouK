@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsComputerSystem  extends RsSmartsObject {
+class RsComputerSystem  extends RsTopologyObject {
 
     //AUTO_GENERATED_CODE
 

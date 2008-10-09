@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsGroup  extends RsSmartsObject {
+class RsGroup  extends RsTopologyObject {
 
     //AUTO_GENERATED_CODE
 
@@ -26,7 +26,7 @@ class RsGroup  extends RsSmartsObject {
     
     static relations = [
     
-        consistsOf:[type:RsSmartsObject, reverseName:"memberOfGroup", isMany:true]
+        consistsOf:[type:RsTopologyObject, reverseName:"memberOfGroup", isMany:true]
     
     ]
     

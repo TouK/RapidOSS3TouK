@@ -22,7 +22,7 @@ class RsEvent {
     Long severity =0;
     
     String source ="";
-    
+    String rsDatasource;
     Long firstNotifiedAt =0;
     
     Long lastNotifiedAt =0;
@@ -54,6 +54,8 @@ class RsEvent {
      acknowledged(nullable:true)
         
      severity(nullable:true)
+
+     rsDatasource(blank:true,nullable:true)
         
      source(blank:true,nullable:true)
         

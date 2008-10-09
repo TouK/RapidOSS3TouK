@@ -1,6 +1,6 @@
 import com.ifountain.rcmdb.util.RCMDBDataStore
 
-class RsComputerSystemOperations extends RsSmartsObjectOperations
+class RsComputerSystemOperations extends RsTopologyObjectOperations
 {
     public static STATEINFORMATION_KEY = "stateInformationforcompsystem"
     int getState()

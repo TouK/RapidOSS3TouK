@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsVlan  extends RsSmartsObject {
+class RsVlan  extends RsTopologyObject {
 
     //AUTO_GENERATED_CODE
 

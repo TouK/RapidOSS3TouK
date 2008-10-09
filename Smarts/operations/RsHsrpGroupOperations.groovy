@@ -1,3 +1,3 @@
-class RsHsrpGroupOperations extends RsSmartsObjectOperations {
+class RsHsrpGroupOperations extends RsTopologyObjectOperations {
 }
     

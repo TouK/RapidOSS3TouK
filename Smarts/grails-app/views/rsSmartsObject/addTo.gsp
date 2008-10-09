@@ -4,22 +4,22 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
-        <title>Add To RsSmartsObject</title>
+        <title>Add To RsTopologyObject</title>
     </head>
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-            <span class="menuButton"><g:link class="list" action="list">RsSmartsObject List</g:link></span>
-            <span class="menuButton"><g:link class="create" action="create">New RsSmartsObject</g:link></span>
+            <span class="menuButton"><g:link class="list" action="list">RsTopologyObject List</g:link></span>
+            <span class="menuButton"><g:link class="create" action="create">New RsTopologyObject</g:link></span>
         </div>
         <div class="body">
-            <h1>Add To RsSmartsObject</h1>
+            <h1>Add To RsTopologyObject</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <g:hasErrors bean="${rsSmartsObject}">
+            <g:hasErrors bean="${rsTopologyObject}">
                 <div class="errors">
-                    <g:renderErrors bean="${rsSmartsObject}" as="list" />
+                    <g:renderErrors bean="${rsTopologyObject}" as="list" />
                 </div>
             </g:hasErrors>
             <g:hasErrors bean="${flash.errors}">
@@ -34,9 +34,9 @@
                             <tr class="prop">
                                 <td valign="top" class="name">
 
-                                    <label for="${relationName}">${com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(rsSmartsObject.class, "relations")[relationName]?.type.getName()}:</label>
+                                    <label for="${relationName}">${com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(rsTopologyObject.class, "relations")[relationName]?.type.getName()}:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: rsSmartsObject, field: relationName, 'errors')}">
+                                <td valign="top" class="value ${hasErrors(bean: rsTopologyObject, field: relationName, 'errors')}">
                                     <g:select optionKey="id" from="${relatedObjectList}" name="relatedObjectId"></g:select>
                                 </td>
                             </tr>
@@ -44,7 +44,7 @@
                     </table>
                 </div>
                 <div class="buttons">
-                    <input type="hidden" name="id" value="${rsSmartsObject?.id}"/>
+                    <input type="hidden" name="id" value="${rsTopologyObject?.id}"/>
                     <input type="hidden" name="relationName" value="${relationName}"/>
                     <span class="button"><g:actionSubmit class="edit" value="AddRelation"/></span>
                 </div>

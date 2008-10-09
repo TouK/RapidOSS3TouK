@@ -4,16 +4,16 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="main"/>
-    <title>Show RsSmartsObject</title>
+    <title>Show RsTopologyObject</title>
 </head>
 <body>
 <div class="nav">
     <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-    <span class="menuButton"><g:link class="list" action="list">RsSmartsObject List</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create">New RsSmartsObject</g:link></span>
+    <span class="menuButton"><g:link class="list" action="list">RsTopologyObject List</g:link></span>
+    <span class="menuButton"><g:link class="create" action="create">New RsTopologyObject</g:link></span>
 </div>
 <div class="body">
-    <h1>Show RsSmartsObject</h1>
+    <h1>Show RsTopologyObject</h1>
     <g:if test="${flash.message}">
         <div class="message">${flash.message}</div>
     </g:if>
@@ -30,42 +30,42 @@
                 <tr class="prop">
                     <td valign="top" class="name">id:</td>
                     
-                    <td valign="top" class="value">${rsSmartsObject.id}</td>
+                    <td valign="top" class="value">${rsTopologyObject.id}</td>
                     
                 </tr>
                 
                 <tr class="prop">
                     <td valign="top" class="name">name:</td>
                     
-                    <td valign="top" class="value">${rsSmartsObject.name}</td>
+                    <td valign="top" class="value">${rsTopologyObject.name}</td>
                     
                 </tr>
                 
                 <tr class="prop">
                     <td valign="top" class="name">creationClassName:</td>
                     
-                    <td valign="top" class="value">${rsSmartsObject.creationClassName}</td>
+                    <td valign="top" class="value">${rsTopologyObject.creationClassName}</td>
                     
                 </tr>
                 
                 <tr class="prop">
                     <td valign="top" class="name">description:</td>
                     
-                    <td valign="top" class="value">${rsSmartsObject.description}</td>
+                    <td valign="top" class="value">${rsTopologyObject.description}</td>
                     
                 </tr>
                 
                 <tr class="prop">
                     <td valign="top" class="name">displayName:</td>
                     
-                    <td valign="top" class="value">${rsSmartsObject.displayName}</td>
+                    <td valign="top" class="value">${rsTopologyObject.displayName}</td>
                     
                 </tr>
                 
                 <tr class="prop">
                     <td valign="top" class="name">isManaged:</td>
                     
-                    <td valign="top" class="value">${rsSmartsObject.isManaged}</td>
+                    <td valign="top" class="value">${rsTopologyObject.isManaged}</td>
                     
                 </tr>
                 
@@ -74,7 +74,7 @@
                     
                     <td valign="top" style="text-align:left;" class="value">
                         <ul>
-                            <g:each var="m" in="${rsSmartsObject.memberOfGroup}">
+                            <g:each var="m" in="${rsTopologyObject.memberOfGroup}">
                                 <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
                             </g:each>
                         </ul>
@@ -85,7 +85,7 @@
                 <tr class="prop">
                     <td valign="top" class="name">rsDatasource:</td>
                     
-                    <td valign="top" class="value">${rsSmartsObject.rsDatasource}</td>
+                    <td valign="top" class="value">${rsTopologyObject.rsDatasource}</td>
                     
                 </tr>
                 
@@ -94,7 +94,7 @@
     </div>
     <div class="buttons">
         <g:form>
-            <input type="hidden" name="id" value="${rsSmartsObject?.id}"/>
+            <input type="hidden" name="id" value="${rsTopologyObject?.id}"/>
             <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
         </g:form>

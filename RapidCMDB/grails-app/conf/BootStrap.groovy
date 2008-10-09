@@ -25,7 +25,7 @@ import auth.Group
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import relation.Relation
 
-class BootStrap {
+class .BootStrap {
     def quartzScheduler;
 
     Thread listeningScriptInitializerThread;
@@ -137,7 +137,7 @@ class BootStrap {
 
                             if (action.action == PropertyAction.CLEAR_RELATION)
                             {
-                                def reverseRels = RelationUtils.getReverseRelationObjects (modelInstance, action.reverseName, action.propType)
+                                def reverseRels = RelationUtils.getReverseRelationObjects (modelInstance, action.reverseName, action.propTypeName)
                                 def selfRels = Relation.search("objectId:${modelInstance.id} AND name:${action.propName}").results;
                                 def allRels = []
                                 allRels.addAll (selfRels);

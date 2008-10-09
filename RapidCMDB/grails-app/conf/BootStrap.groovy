@@ -25,7 +25,7 @@ import auth.Group
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import relation.Relation
 
-class .BootStrap {
+class BootStrap {
     def quartzScheduler;
 
     Thread listeningScriptInitializerThread;

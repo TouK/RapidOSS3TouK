@@ -10,7 +10,7 @@ import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringIn
  * To change this template use File | Settings | File Templates.
  */
 
-def searchQuery = SearchQuery.get([id: params.queryId])
+def searchQuery = SearchQuery.get([id: params.queryId])   
 if (!searchQuery) {
     web.addError("default.object.not.found", [SearchQuery.class.name, params.queryId]);
     web.render(text: web.errorsToXml(web.errors), contentType: "text/xml");

@@ -63,7 +63,7 @@ def cleanUp(){
 def updateSmartsObjectState(elementName, instanceName, severity)
 {
     def computerSystemName = elementName != null && elementName != ""?elementName:instanceName;
-    def compSystemObject = RsSmartsObject.get(name:computerSystemName);
+    def compSystemObject = RsTopologyObject.get(name:computerSystemName);
     if(compSystemObject instanceof RsComputerSystem || compSystemObject instanceof RsLink)
     {
         compSystemObject.setState(severity);

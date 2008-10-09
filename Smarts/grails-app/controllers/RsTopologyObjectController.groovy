@@ -2,7 +2,7 @@ import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.domain.util.DomainClassUtils;
 
 
-class RsSmartsObjectController {
+class RsTopologyObjectController {
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
 
@@ -11,20 +11,20 @@ class RsSmartsObjectController {
 
     def list = {
         if(!params.max) params.max = 10
-        [ rsSmartsObjectList: RsSmartsObject.list( params ) ]
+        [ rsTopologyObjectList: RsTopologyObject.list( params ) ]
     }
 
     def show = {
-        def rsSmartsObject = RsSmartsObject.get([id:params.id])
+        def rsTopologyObject = RsTopologyObject.get([id:params.id])
 
-        if(!rsSmartsObject) {
-            flash.message = "RsSmartsObject not found with id ${params.id}"
+        if(!rsTopologyObject) {
+            flash.message = "RsTopologyObject not found with id ${params.id}"
             redirect(action:list)
         }
         else {
-            if(rsSmartsObject.class != RsSmartsObject)
+            if(rsTopologyObject.class != RsTopologyObject)
             {
-                def controllerName = rsSmartsObject.class.name;
+                def controllerName = rsTopologyObject.class.name;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();
@@ -37,99 +37,99 @@ class RsSmartsObjectController {
             }
             else
             {
-                return [ rsSmartsObject : rsSmartsObject ]
+                return [ rsTopologyObject : rsTopologyObject ]
             }
         }
     }
 
     def delete = {
-        def rsSmartsObject = RsSmartsObject.get( [id:params.id])
-        if(rsSmartsObject) {
+        def rsTopologyObject = RsTopologyObject.get( [id:params.id])
+        if(rsTopologyObject) {
             try{
-                rsSmartsObject.remove()
-                flash.message = "RsSmartsObject ${params.id} deleted"
+                rsTopologyObject.remove()
+                flash.message = "RsTopologyObject ${params.id} deleted"
                 redirect(action:list)
             }
             catch(e){
-                addError("default.couldnot.delete", [RsSmartsObject, rsSmartsObject])
+                addError("default.couldnot.delete", [RsTopologyObject, rsTopologyObject])
                 flash.errors = this.errors;
-                redirect(action:show, id:rsSmartsObject.id)
+                redirect(action:show, id:rsTopologyObject.id)
             }
 
         }
         else {
-            flash.message = "RsSmartsObject not found with id ${params.id}"
+            flash.message = "RsTopologyObject not found with id ${params.id}"
             redirect(action:list)
         }
     }
 
     def edit = {
-        def rsSmartsObject = RsSmartsObject.get( [id:params.id] )
+        def rsTopologyObject = RsTopologyObject.get( [id:params.id] )
 
-        if(!rsSmartsObject) {
-            flash.message = "RsSmartsObject not found with id ${params.id}"
+        if(!rsTopologyObject) {
+            flash.message = "RsTopologyObject not found with id ${params.id}"
             redirect(action:list)
         }
         else {
-            return [ rsSmartsObject : rsSmartsObject ]
+            return [ rsTopologyObject : rsTopologyObject ]
         }
     }
 
 
     def update = {
-        def rsSmartsObject = RsSmartsObject.get( [id:params.id] )
-        if(rsSmartsObject) {
-            rsSmartsObject.update(ControllerUtils.getClassProperties(params, RsSmartsObject));
-            if(!rsSmartsObject.hasErrors()) {
-                flash.message = "RsSmartsObject ${params.id} updated"
-                redirect(action:show,id:rsSmartsObject.id)
+        def rsTopologyObject = RsTopologyObject.get( [id:params.id] )
+        if(rsTopologyObject) {
+            rsTopologyObject.update(ControllerUtils.getClassProperties(params, RsTopologyObject));
+            if(!rsTopologyObject.hasErrors()) {
+                flash.message = "RsTopologyObject ${params.id} updated"
+                redirect(action:show,id:rsTopologyObject.id)
             }
             else {
-                render(view:'edit',model:[rsSmartsObject:rsSmartsObject])
+                render(view:'edit',model:[rsTopologyObject:rsTopologyObject])
             }
         }
         else {
-            flash.message = "RsSmartsObject not found with id ${params.id}"
+            flash.message = "RsTopologyObject not found with id ${params.id}"
             redirect(action:edit,id:params.id)
         }
     }
 
     def create = {
-        def rsSmartsObject = new RsSmartsObject()
-        rsSmartsObject.properties = params
-        return ['rsSmartsObject':rsSmartsObject]
+        def rsTopologyObject = new RsTopologyObject()
+        rsTopologyObject.properties = params
+        return ['rsTopologyObject':rsTopologyObject]
     }
 
     def save = {
-        def rsSmartsObject = RsSmartsObject.add(ControllerUtils.getClassProperties(params, RsSmartsObject))
-        if(!rsSmartsObject.hasErrors()) {
-            flash.message = "RsSmartsObject ${rsSmartsObject.id} created"
-            redirect(action:show,id:rsSmartsObject.id)
+        def rsTopologyObject = RsTopologyObject.add(ControllerUtils.getClassProperties(params, RsTopologyObject))
+        if(!rsTopologyObject.hasErrors()) {
+            flash.message = "RsTopologyObject ${rsTopologyObject.id} created"
+            redirect(action:show,id:rsTopologyObject.id)
         }
         else {
-            render(view:'create',model:[rsSmartsObject:rsSmartsObject])
+            render(view:'create',model:[rsTopologyObject:rsTopologyObject])
         }
     }
 
     def addTo = {
-        def rsSmartsObject = RsSmartsObject.get( [id:params.id] )
-        if(!rsSmartsObject){
-            flash.message = "RsSmartsObject not found with id ${params.id}"
+        def rsTopologyObject = RsTopologyObject.get( [id:params.id] )
+        if(!rsTopologyObject){
+            flash.message = "RsTopologyObject not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
             if(relationName){
-                def otherClass = DomainClassUtils.getStaticMapVariable(RsSmartsObject, "relations")[relationName].type;
+                def otherClass = DomainClassUtils.getStaticMapVariable(RsTopologyObject, "relations")[relationName].type;
                 def relatedObjectList = [];
                 if(otherClass){
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
                 }
-                return [rsSmartsObject:rsSmartsObject, relationName:relationName, relatedObjectList:relatedObjectList]
+                return [rsTopologyObject:rsTopologyObject, relationName:relationName, relatedObjectList:relatedObjectList]
             }
             else{
                flash.message = "No relation name specified for add relation action"
-               redirect(action:edit,id:rsSmartsObject.id)
+               redirect(action:edit,id:rsTopologyObject.id)
             }
         }
     }
@@ -137,27 +137,27 @@ class RsSmartsObjectController {
 
 
     def addRelation = {
-        def rsSmartsObject = RsSmartsObject.get( [id:params.id] )
-        if(!rsSmartsObject) {
-            flash.message = "RsSmartsObject not found with id ${params.id}"
+        def rsTopologyObject = RsTopologyObject.get( [id:params.id] )
+        if(!rsTopologyObject) {
+            flash.message = "RsTopologyObject not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
-            def otherClass = DomainClassUtils.getStaticMapVariable(RsSmartsObject, "relations")[relationName].type;
+            def otherClass = DomainClassUtils.getStaticMapVariable(RsTopologyObject, "relations")[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
                       def relationMap = [:];
                       relationMap[relationName] = res;
-                      rsSmartsObject.addRelation(relationMap);
-                      if(rsSmartsObject.hasErrors()){
+                      rsTopologyObject.addRelation(relationMap);
+                      if(rsTopologyObject.hasErrors()){
                           def relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
-                          render(view:'addTo',model:[rsSmartsObject:rsSmartsObject, relationName:relationName, relatedObjectList:relatedObjectList])
+                          render(view:'addTo',model:[rsTopologyObject:rsTopologyObject, relationName:relationName, relatedObjectList:relatedObjectList])
                       }
                       else{
-                          flash.message = "RsSmartsObject ${params.id} updated"
-                          redirect(action:edit,id:rsSmartsObject.id)
+                          flash.message = "RsTopologyObject ${params.id} updated"
+                          redirect(action:edit,id:rsTopologyObject.id)
                       }
 
                 }
@@ -174,43 +174,43 @@ class RsSmartsObjectController {
     }
 
     def removeRelation = {
-        def rsSmartsObject = RsSmartsObject.get( [id:params.id] )
-        if(!rsSmartsObject) {
-            flash.message = "RsSmartsObject not found with id ${params.id}"
+        def rsTopologyObject = RsTopologyObject.get( [id:params.id] )
+        if(!rsTopologyObject) {
+            flash.message = "RsTopologyObject not found with id ${params.id}"
             redirect(action:list)
         }
         else {
             def relationName = params.relationName;
 
-            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(RsSmartsObject, "relations")[relationName].type;
+            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(RsTopologyObject, "relations")[relationName].type;
             if(otherClass){
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
                 if(res){
                       def relationMap = [:];
                       relationMap[relationName] = res;
-                      rsSmartsObject.removeRelation(relationMap);
-                      if(rsSmartsObject.hasErrors()){
-                          render(view:'edit',model:[rsSmartsObject:rsSmartsObject])
+                      rsTopologyObject.removeRelation(relationMap);
+                      if(rsTopologyObject.hasErrors()){
+                          render(view:'edit',model:[rsTopologyObject:rsTopologyObject])
                       }
                       else{
-                          flash.message = "RsSmartsObject ${params.id} updated"
-                          redirect(action:edit,id:rsSmartsObject.id)
+                          flash.message = "RsTopologyObject ${params.id} updated"
+                          redirect(action:edit,id:rsTopologyObject.id)
                       }
                 }
                 else{
                     flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
-                    redirect(action:edit,id:rsSmartsObject.id)
+                    redirect(action:edit,id:rsTopologyObject.id)
                 }
             }
             else{
                 flash.message = "No relation exist with name ${relationName}"
-                redirect(action:edit,id:rsSmartsObject.id)
+                redirect(action:edit,id:rsTopologyObject.id)
             }
         }
     }
 
     def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("RsSmartsObject")
+        def modelClass = grailsApplication.getClassForName("RsTopologyObject")
         if (modelClass)
         {
             try

@@ -39,16 +39,28 @@ class ExistingDataAnalyzer
         Map newConstrainedProps = newDomainObject.getConstrainedProperties();
         boolean willDeleteAll = false;
         boolean willResourcesBeRegenerated = false;
-        oldKeyProperties.each{String propname->
-            if(!(newKeyProperties.contains(propname) && newClassProperties[propname].type == oldClassProperties[propname].type))
-            {
-                willDeleteAll = true;
-                return;
+        if((oldKeyProperties.isEmpty() || oldKeyProperties.size() == 1 && oldKeyProperties.contains("id")) && !(newKeyProperties.isEmpty() || newKeyProperties.size() == 1 && newKeyProperties.contains("id")))
+        {
+            willDeleteAll = true;
+        }
+        else
+        {
+            oldKeyProperties.each{String propname->
+                if(!(newKeyProperties.contains(propname) && newClassProperties[propname].type == oldClassProperties[propname].type))
+                {
+                    willDeleteAll = true;
+                    return;
+                }
             }
         }
         if(willDeleteAll)
         {
             actions += new ModelAction(modelName:currentDomainObject.name, action:ModelAction.DELETE_ALL_INSTANCES);
+            willResourcesBeRegenerated = true; 
+        }
+        else if(newKeyProperties.size() > oldKeyProperties.size())
+        {
+            willResourcesBeRegenerated = true;            
         }
         
         newClassProperties.each{String propName, GrailsDomainClassProperty prop->

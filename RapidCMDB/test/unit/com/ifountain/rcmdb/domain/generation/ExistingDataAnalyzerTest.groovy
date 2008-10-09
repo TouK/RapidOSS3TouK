@@ -237,9 +237,37 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         newDomainClass = loadGrailsDomainClass(modelName);
         newGrailsDomainClasses = generateDomainClasses([newDomainClass])
 
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
+        assertEquals (1, actions.size());
+        modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
+
+
+        keyPropList = [];
+        propList = [prop1, prop2];
+        generateModel (modelName, propList, keyPropList, []);
+        oldDomainClass = loadGrailsDomainClass(modelName);
+        oldGrailsDomainClasses = generateDomainClasses([oldDomainClass])
+
+        keyPropList = [prop1];
+        propList = [prop1, prop2];
+        generateModel (modelName, propList, keyPropList, []);
+
+        newDomainClass = loadGrailsDomainClass(modelName);
+        newGrailsDomainClasses = generateDomainClasses([newDomainClass])
+
 
         actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName], newGrailsDomainClasses[modelName]);
-        assertEquals (0, actions.size());
+        assertEquals (2, actions.size());
+        action = actions[0];
+        assertEquals (ModelAction.DELETE_ALL_INSTANCES, action.action);
+        assertEquals (modelName, action.modelName);
+
+        modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName, modelAction.modelName);
+
     }
 
     public void testIfRelationTypeIsChangedFromOneToOneToOneToMany()

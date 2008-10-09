@@ -47,7 +47,7 @@
                     <td valign="top" style="text-align:left;" class="value">
                         <ul>
                             <g:each var="c" in="${rsIpNetwork.consistsOf}">
-                                <li><g:link controller="rsSmartsObject" action="show" id="${c.id}">${c}</g:link></li>
+                                <li><g:link controller="rsTopologyObject" action="show" id="${c.id}">${c}</g:link></li>
                             </g:each>
                         </ul>
                     </td>

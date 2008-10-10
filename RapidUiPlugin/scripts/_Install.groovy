@@ -19,4 +19,8 @@ Ant.move(toDir:"$baseDir/web-app")
     }
 
 }
+Ant.move(toDir:"$baseDir/src")
+{
+    Ant.fileset(dir: "$baseDir/plugins/rapid-ui-0.1/src")
+}
 

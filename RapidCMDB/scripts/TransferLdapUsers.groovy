@@ -15,21 +15,23 @@ import auth.RsUserInformation
 
 
 
-def output=""
+def output=" "
 
 try{
 
 	/*
 	//for apache ds
+	//Searching with username : when "(|(cn=ldapuser)(cn=Administrator))" used for searchFilter only users specified will be searched
     def ldapConnectionName="apache ds"
     def searchBase = "ou=system"
-    def searchFilter="objectClass=person"
+    def searchFilter="objectClass=person"    
     def searchSubDirectories=true
     def usernameAttribute="uid"
     */
 
     //for ms ds
     //searchBase : dont specify root DN for microsoft active directory server, PartialResultException may occur
+    //Searching with username : when "(|(cn=ldapuser)(cn=Administrator))" used for searchFilter only users specified will be searched
     def ldapConnectionName="ms active directory"
     def searchBase = "CN=Users,DC=molkay,DC=selfip,DC=net"
     def searchFilter="objectClass=user"
@@ -110,7 +112,7 @@ try{
     }
     catch (NamingException ex) {
 
-        output+="No such  searchBase DN exists"
+        output+="<br> Exception occured while searching Ldap Server : ${ex}"
     }
 
 	/*

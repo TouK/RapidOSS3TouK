@@ -18,7 +18,9 @@ class RsHistoricalEvent {
     String source ="";
     
     String owner ="";
-    String rsDatasource;
+
+    String rsDatasource = "";
+
     Boolean acknowledged =false;
     
     Long severity =0;

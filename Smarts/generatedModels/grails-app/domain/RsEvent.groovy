@@ -22,7 +22,9 @@ class RsEvent {
     Long severity =0;
     
     String source ="";
-    String rsDatasource;
+
+    String rsDatasource = "";
+
     Long firstNotifiedAt =0;
     
     Long lastNotifiedAt =0;

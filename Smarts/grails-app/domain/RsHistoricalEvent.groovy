@@ -19,7 +19,7 @@ class RsHistoricalEvent {
     
     String owner ="";
 
-    String rsDatasource;
+    String rsDatasource = "";
 
     Boolean acknowledged =false;
     

@@ -23,7 +23,7 @@ class RsEvent {
     
     String source ="";
 
-    String rsDatasource;
+    String rsDatasource = "";
     
     Long firstNotifiedAt =0;
     

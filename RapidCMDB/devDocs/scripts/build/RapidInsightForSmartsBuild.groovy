@@ -109,7 +109,7 @@ class RapidInsightForSmartsBuild extends Build{
 			}
 		}	
         ant.copy(file : "${env.dist_rapid_suite}/web-app/indexLayout.gsp", todir : "${env.dist_rapid_suite}/grails-app/views/layouts" );
-        def datasourceViews = ["httpConnection", "httpDatasource","databaseConnection", "databaseDatasource",
+        def datasourceViews = ["httpConnection", "httpDatasource","databaseConnection","ldapConnection", "databaseDatasource",
                 "singleTableDatabaseDatasource", "snmpConnection", "snmpDatasource"]
 
         datasourceViews.each{

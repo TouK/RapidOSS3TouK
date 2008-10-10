@@ -21,9 +21,9 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
     ]
     
     static constraints={
-    tableKeys(blank:true,nullable:true)
+    tableKeys(blank:false,nullable:false)
         
-     tableName(blank:true,nullable:true)
+     tableName(blank:false,nullable:false)
         
      connection(nullable:true)
         

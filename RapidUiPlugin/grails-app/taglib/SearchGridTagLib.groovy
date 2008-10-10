@@ -1,3 +1,5 @@
+import com.ifountain.rui.util.TagLibUtils
+
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -25,17 +27,21 @@ class SearchGridTagLib {
     static namespace = "rui"
     def searchGrid = {attrs, body ->
         validateAttributes(attrs);
-        def configStr = getConfig(attrs, body);
+        def searchGridId = attrs["id"];
+        def configXML = "<SearchGrid>${body()}</SearchGrid>";
+        def menuEvents = [:]
+        def configStr = getConfig(attrs, configXML, menuEvents);
         out << """
            <script type="text/javascript">
-               var searchConfig = ${configStr};
-               var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
-               var searchGrid = new YAHOO.rapidjs.component.search.SearchGrid(container, searchConfig);
-               if(searchGrid.pollingInterval > 0){
-                   searchGrid.poll();
+               var ${searchGridId}c = ${configStr};
+               var ${searchGridId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
+               var ${searchGridId}sl = new YAHOO.rapidjs.component.search.SearchGrid(${searchGridId}container, ${searchGridId}c);
+               if(${searchGridId}sl.pollingInterval > 0){
+                   ${searchGridId}sl.poll();
                }
            </script>
         """
+        validateAttributes(attrs);
     }
 
     def validateAttributes(config) {
@@ -82,7 +88,8 @@ class SearchGridTagLib {
         }
     }
 
-    def getConfig(config, body) {
+    def getConfig(config, configXML, menuEvents) {
+        def xml = new XmlSlurper().parseText(configXML);
         def cArray = [];
         cArray.add("id: '${config["id"]}'")
         cArray.add("url: '${config["url"]}'")
@@ -102,61 +109,103 @@ class SearchGridTagLib {
             cArray.add("maxRowsDisplayed:${config['maxRowsDisplayed']}")
         if (config["defaultFilter"])
             cArray.add("defaultFilter:'${config['defaultFilter']}'")
-        cArray.add(getInnerConfig(body));
+
+        def menuItems = xml.MenuItems?.MenuItem;
+        def menuItemArray = [];
+        menuItems.each {menuItem ->
+            menuItemArray.add(processMenuItem(menuItem, menuEvents));
+        }
+        cArray.add("menuItems:[${menuItemArray.join(',\n')}]");
+
+        def images = xml.Images?.Image;
+        def imageArray = [];
+        images.each {image ->
+            imageArray.add("""{
+                    src:'${image.@src}',
+                    visible:\"${image.@visible}\"
+                }""")
+        }
+        cArray.add("images:[${imageArray.join(',\n')}]")
+
+        def columns = xml.Columns?.Column;
+        def columnArray = [];
+        columns.each {column ->
+            def sortOrder = column.@sortOrder.toString().trim();
+            def sortBy = column.@sortBy.toString().trim();
+            columnArray.add("""{
+                    attributeName:'${column.@attributeName}',
+                    colLabel:'${column.@colLabel}',
+                    ${sortBy != "" ? "sortBy:${sortBy}," : ""}
+                    ${sortOrder != "" ? "sortOrder:'${sortOrder}'," : ""}
+                    width:${column.@width},
+                }""")
+        }
+        cArray.add("columns:[${columnArray.join(',\n')}]")
         return "{${cArray.join(',\n')}}"
     }
 
+    def processMenuItem(menuItem, eventMap) {
+        def menuItemArray = [];
+        def id = menuItem.@id;
+        def label = menuItem.@label;
+        def visible = menuItem.@visible.toString().trim();
+        def action = menuItem.@action.toString().trim();
+        if (action != "") {
+            eventMap.put(id, action);
+        }
+        menuItemArray.add("id:'${id}'")
+        menuItemArray.add("label:'${label}'")
+        if (visible != "")
+            menuItemArray.add("visible:\"${visible}\"")
+        def subMenuItems = menuItem.SubmenuItems?.MenuItem;
+        if (subMenuItems) {
+            def subMenuItemsArray = [];
+            subMenuItems.each {subMenuItem ->
+                subMenuItemsArray.add("""{
+                   id:'${subMenuItem.@id}',
+                   ${subMenuItem.@visible.toString().trim() != "" ? "visible:\"${subMenuItem.@visible}\"," : ""}
+                   label:'${subMenuItem.@label}'
+               }""")
+                def subAction = subMenuItem.@action.toString().trim();
+                if (subAction != "") {
+                    eventMap.put(subMenuItem.@id, action)
+                }
+            }
+            if (subMenuItemsArray.size() > 0) {
+                menuItemArray.add("submenuItems:[${subMenuItemsArray.join(',\n')}]")
+            }
+
+        }
+        return "{${menuItemArray.join(',\n')}}"
+    }
+
     def sgMenuItems = {attrs, body ->
-        out << "menuItems:[${getInnerConfig(body)}],\n";
+        out << TagLibUtils.getConfigAsXml("MenuItems", attrs, [], body());
     }
     def sgSubmenuItems = {attrs, body ->
-        out << "submenuItems:[${getInnerConfig(body)}],\n";
+        out << TagLibUtils.getConfigAsXml("SubmenuItems", attrs, [], body())
     }
     def sgMenuItem = {attrs, body ->
-        def mArray = [];
-        mArray.add("id:'${attrs["id"]}'");
-        mArray.add("label:'${attrs["label"]}'");
-        if (attrs["visible"])
-            mArray.add("visible:\"${attrs["visible"]}\"");
-        mArray.add(getInnerConfig(body));
-        out << "{${mArray.join(',\n')}},\n"
+        def validAttrs = ["id", "label", "visible", "action"];
+        out << TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs, body());
     }
 
     def sgSubmenuItem = {attrs, body ->
-        out << """{
-            ${attrs["visible"] ? "visible:\"${attrs["visible"]}\"," : ""}
-            id:'${attrs["id"]}',
-            label:'${attrs["label"]}'
-         },\n"""
+        def validAttrs = ["id", "label", "visible", "action"];
+        out << TagLibUtils.getConfigAsXml("SubmenuItem", attrs, validAttrs)
     }
     def sgImages = {attrs, body ->
-        out << "images:[${getInnerConfig(body)}],\n";
+        out << TagLibUtils.getConfigAsXml("Images", attrs, [], body())
     }
     def sgImage = {attrs, body ->
-        out << """{
-            visible:"${attrs["visible"]}",
-            src:'${attrs["src"]}'
-         },\n"""
+        def validAttrs = ["src", "visible"];
+        out << TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
     }
     def sgColumns = {attrs, body ->
-        out << "columns:[${getInnerConfig(body)}],\n";
+        out << TagLibUtils.getConfigAsXml("Columns", attrs, [], body())
     }
     def sgColumn = {attrs, body ->
-        out << """{
-            attributeName:'${attrs["attributeName"]}',
-            colLabel:'${attrs["colLabel"]}',
-            ${attrs["sortBy"] ? "sortBy:${attrs["sortBy"]}," : ""}
-            ${attrs["sortOrder"] ? "sortOrder:\"${attrs["sortOrder"]}\"," : ""}
-            width:${attrs["width"]}
-         },\n"""
-    }
-
-    def getInnerConfig(body) {
-        def innerConfig = body();
-        if (innerConfig.length() > 0) {
-            def lastIndex = innerConfig.lastIndexOf(',');
-            innerConfig = innerConfig.substring(0, lastIndex) + innerConfig.substring(lastIndex + 1, innerConfig.length());
-        }
-        return innerConfig;
+        def validAttrs = ["attributeName", "colLabel", "sortBy", "sortOrder", "width"];
+        out << TagLibUtils.getConfigAsXml("Column", attrs, validAttrs)
     }
 }

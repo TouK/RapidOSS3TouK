@@ -9,7 +9,7 @@
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLinkTo(dir:'admin.gsp')}">Home</a></span>
             <span class="menuButton"><g:link class="list" action="list">SnmpDatasource List</g:link></span>
-        </div>                                      s
+        </div>
         <div class="body">
             <h1>Create SnmpDatasource</h1>
             <g:if test="${flash.message}">

@@ -48,6 +48,7 @@ class RapidCmdbBuild extends Build {
     static void main(String[] args) {
         RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();
         rapidCmdbBuilder.run(args);
+        
     }
 
     def String getExcludedClasses() {
@@ -157,6 +158,10 @@ class RapidCmdbBuild extends Build {
          ant.copy(todir: "$env.dist_rapid_suite/web-app") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/web-app") {
                 ant.exclude(name: "adminSmarts.gsp")
+                if (!TEST) {
+                    ant.exclude(name: "**/test/**")
+                    ant.exclude(name: "**/*Test*")
+                }
             }
         }
         if (TEST) {
@@ -165,7 +170,7 @@ class RapidCmdbBuild extends Build {
             }
         }
 
-        copyCommons(env.dist_rapid_suite, true);
+        copyCommons(env.dist_rapid_suite);
         def viewsDir = new File("${env.dist_rapid_suite}/grails-app/views");
         viewsDir.eachDir{
             def dirName = it.getName();
@@ -210,28 +215,28 @@ class RapidCmdbBuild extends Build {
             }
         }
         ant.copy(todir: "$env.dist_modeler/web-app") {
-            ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/web-app") 
+            ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/web-app") {
+                if (!TEST) {
+                    ant.exclude(name: "**/test/**")
+                    ant.exclude(name: "**/*Test*")
+                }
+            }
         }
         if (TEST) {
             ant.copy(todir: "$env.dist_modeler/test") {
                 ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/test")
             }
         }
-        copyCommons(env.dist_modeler, false);
+        copyCommons(env.dist_modeler);
     }
 
-    def copyCommons(toDir, copyTests){
+    def copyCommons(toDir){
         ant.copy(todir: toDir) {
-            ant.fileset(dir: "$env.rapid_cmdb_commons_cvs") {
-                if (TEST && copyTests) {
-                    ant.include(name: "**/test/**")
-                }
-                else if (TEST && !copyTests) {
-                    ant.include(name: "**/*TestCase*")
-                }
-                else
+            ant.fileset(dir: "$env.rapid_cmdb_commons_cvs") {                            
+                if (!TEST)
                 {
-                    ant.exclude(name: "**/*Test*")                        
+                    ant.exclude(name: "**/test/**")
+                    ant.exclude(name: "**/*Test*")                                           
                 }
                 ant.include(name: "**/grails-app/**");
                 ant.include(name: "**/plugins/**");

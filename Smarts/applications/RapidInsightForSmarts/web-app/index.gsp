@@ -1,7 +1,7 @@
 <html>
 <head>
-    <meta name="layout" content="indexLayout" />
-</head>
+    <meta name="layout" content="indexLayout" />       
+</head>                                   
 <body>
 <rui:treeGrid id="filterTree" url="script/run/queryList?format=xml&type=topology" rootTag="Filters" keyAttribute="id"
      contentPath="Filter" title="Saved Queries" expanded="true">

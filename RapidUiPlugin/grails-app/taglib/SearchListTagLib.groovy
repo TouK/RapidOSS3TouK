@@ -122,49 +122,43 @@ class SearchListTagLib {
             cArray.add("rowHeaderAttribute:'${config['rowHeaderAttribute']}'")
 
         def menuItems = xml.MenuItems?.MenuItem;
-        if (menuItems) {
-            def menuItemArray = [];
-            menuItems.each {menuItem ->
-                menuItemArray.add(processMenuItem(menuItem, menuEvents));
-            }
-            cArray.add("menuItems:[${menuItemArray.join(',\n')}]");
+        def menuItemArray = [];
+        menuItems.each {menuItem ->
+            menuItemArray.add(processMenuItem(menuItem, menuEvents));
         }
+        cArray.add("menuItems:[${menuItemArray.join(',\n')}]");
         def pmenuItems = xml.PropertyMenuItems?.MenuItem;
-        if (pmenuItems) {
-            def menuItemArray = [];
-            pmenuItems.each {menuItem ->
-                menuItemArray.add(processMenuItem(menuItem, propertyMenuEvents));
-            }
-            cArray.add("propertyMenuItems:[${menuItemArray.join(',\n')}]");
+
+        def pmenuItemArray = [];
+        pmenuItems.each {menuItem ->
+            pmenuItemArray.add(processMenuItem(menuItem, propertyMenuEvents));
         }
-        def images =  xml.Images?.Image;
-        if(images){
-            def imageArray = [];
-            images.each{image->
-                imageArray.add("""{
+        cArray.add("propertyMenuItems:[${pmenuItemArray.join(',\n')}]");
+
+        def images = xml.Images?.Image;
+        def imageArray = [];
+        images.each {image ->
+            imageArray.add("""{
                     src:'${image.@src}',
                     visible:\"${image.@visible}\"
                 }""")
-            }
-            cArray.add("images:[${imageArray.join(',\n')}]")
         }
-        def fields =  xml.Fields?.Field;
-        if(fields){
-            def fieldArray = [];
-            fields.each{field->
-                def exp = field.@exp;
-                def flds = field.fields.Item;
-                def fldsArray = [];
-                flds.each{
-                    fldsArray.add("'${it.text()}'");
-                }
-                fieldArray.add("""{
+        cArray.add("images:[${imageArray.join(',\n')}]")
+        def fields = xml.Fields?.Field;
+        def fieldArray = [];
+        fields.each {field ->
+            def exp = field.@exp;
+            def flds = field.fields.Item;
+            def fldsArray = [];
+            flds.each {
+                fldsArray.add("'${it.text()}'");
+            }
+            fieldArray.add("""{
                     exp:"${exp}",
                     fields:[${fldsArray.join(',')}]
                 }""")
-            }
-            cArray.add("fields:[${fieldArray.join(',\n')}]")
         }
+        cArray.add("fields:[${fieldArray.join(',\n')}]")
         return "{${cArray.join(',\n')}}"
     }
 
@@ -182,20 +176,23 @@ class SearchListTagLib {
         if (visible != "")
             menuItemArray.add("visible:\"${visible}\"")
         def subMenuItems = menuItem.SubmenuItems?.MenuItem;
-        if(subMenuItems){
+        if (subMenuItems) {
             def subMenuItemsArray = [];
-            subMenuItems.each{subMenuItem ->
-               subMenuItemsArray.add("""{
+            subMenuItems.each {subMenuItem ->
+                subMenuItemsArray.add("""{
                    id:'${subMenuItem.@id}',
                    ${subMenuItem.@visible.toString().trim() != "" ? "visible:\"${subMenuItem.@visible}\"," : ""}
                    label:'${subMenuItem.@label}'
                }""")
-               def subAction = subMenuItem.@action.toString().trim();
-               if(subAction != ""){
-                   eventMap.put(subMenuItem.@id, action)
-               }
+                def subAction = subMenuItem.@action.toString().trim();
+                if (subAction != "") {
+                    eventMap.put(subMenuItem.@id, action)
+                }
             }
-            menuItemArray.add("submenuItems:[${subMenuItemsArray.join(',\n')}]")
+            if (subMenuItemsArray.size() > 0) {
+                menuItemArray.add("submenuItems:[${subMenuItemsArray.join(',\n')}]")
+            }
+
         }
         return "{${menuItemArray.join(',\n')}}"
     }

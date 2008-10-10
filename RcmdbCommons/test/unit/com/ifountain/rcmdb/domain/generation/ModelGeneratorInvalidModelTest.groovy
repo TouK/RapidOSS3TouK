@@ -262,7 +262,46 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
     }
 
 
-    def createModel(String name, String parentModel, List modelProperties, List keyProperties, List relations)
+    public void testThrowsExceptionIfFederatedPropertyDatasourceIsNotDefined()
+    {
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        def ds1 = [name:"ds1",keyMappings:[[propertyName:prop1.name, nameInDatasource:prop1.name]]]
+        def prop2 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:ds1.name, lazy:false]
+        String modelName = "Model1";
+        def modelXml = createModel (modelName, null, [], [prop1, prop2], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+            fail("Should throw exception since  model datasource doesnot exist");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.datasourceDoesnotExists(modelName, ds1.name, prop2.name).getMessage(), e.getMessage());
+        }
+    }
+
+    public void testThrowsExceptionIfFederatedPropertyDatasourcePropertyIsNotDefined()
+    {
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasourceProperty:"prop3", lazy:false]
+        String modelName = "Model1";
+        def modelXml = createModel (modelName, null, [], [prop1, prop2], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+            fail("Should throw exception since  model datasource property doesnot exist");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.datasourcePropertyDoesnotExists(modelName, "prop3", prop2.name).getMessage(), e.getMessage());
+        }
+    }
+    def createModel(String name, String parentModel,  List modelProperties, List keyProperties, List relations)
+    {
+        return createModel(name, parentModel, [], modelProperties, keyProperties, relations);   
+    }
+
+    def createModel(String name, String parentModel, List modelDatasources,  List modelProperties, List keyProperties, List relations)
     {
         def model = new StringWriter();
         def modelbuilder = new MarkupBuilder(model);
@@ -283,6 +322,19 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
                 boolean isVersionAdded = false;
                 modelProperties.each{Map propConfig->
                     modelbuilder.Property(propConfig)
+                }
+            }
+
+            modelbuilder.Datasources(){
+                boolean isIdAdded = false;
+                boolean isVersionAdded = false;
+                modelDatasources.each{Map dsConfig->
+                    def keyMaps = dsConfig.remove("keyMappings");
+                    modelbuilder.Datasource(dsConfig){
+                        keyMaps.each{key->
+                            modelbuilder.Key(key);
+                        }
+                    }
                 }
             }
 

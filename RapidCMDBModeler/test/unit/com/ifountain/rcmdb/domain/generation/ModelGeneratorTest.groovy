@@ -687,7 +687,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         }
         catch(ModelGenerationException e)
         {
-            assertEquals (ModelGenerationException.duplicateParentDatasource(datasourceChild.name, childModel.name, parentModel.name).getMessage(), e.getMessage());
+            assertEquals (ModelGenerationException.duplicateParentDatasource(datasourceChild.name, childModel.name).getMessage(), e.getMessage());
         }
     }
 

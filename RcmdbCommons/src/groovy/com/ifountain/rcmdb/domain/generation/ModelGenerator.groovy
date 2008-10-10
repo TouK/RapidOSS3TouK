@@ -106,6 +106,7 @@ class ModelGenerator
                 throw ModelGenerationException.invalidModelName(modelName);
             }
 
+
             if(!modelMetaData.masterDatasource && !modelMetaData.parentModelName)
             {
                 throw ModelGenerationException.masterDatasourceDoesnotExists(modelName);
@@ -134,29 +135,73 @@ class ModelGenerator
                 }
             }
 
+            modelMetaData.propertyConfigurations.each{propName, config->
+                def ds = config.datasource;
+                if(ds != null)
+                {
+                    if(!checkDatasourceExist(modelMetaData, modelMetaDatas, ds))
+                    {
+                        throw ModelGenerationException.datasourceDoesnotExists(modelName, ds, propName);
+                    }
+                }
+                else
+                {
+                    if(!checkPropertyExist(modelMetaData, modelMetaDatas, config.datasourceProperty))
+                    {
+                        throw ModelGenerationException.datasourcePropertyDoesnotExists(modelName, config.datasourceProperty, propName);
+                    }
+                }
+            }
+
             modelMetaData.datasourceConfiguration.each{dsName,dsConf->
                 if(dsConf.keys.size() == 0)
                 {
                     throw ModelGenerationException.noKeySpecifiedForDatasource(dsName, modelName);
                 }
-                checkDatasourceExistInParent(modelMetaData, modelMetaDatas, modelMetaData.modelName, dsName);
+                if(modelMetaData.parentModelName && checkDatasourceExist(modelMetaDatas[modelMetaData.parentModelName], modelMetaDatas, dsName))
+                {
+                    throw ModelGenerationException.duplicateParentDatasource(dsName, modelName);
+                }
             }
         }
     }
 
-    def checkDatasourceExistInParent(ModelMetaData modelMetaData, modelMetaDatas, modelName, datasourceName)
+    def checkDatasourceExist(ModelMetaData modelMetaData, modelMetaDatas, datasourceName)
     {
+        if(modelMetaData == null) return false;
+        if(modelMetaData.datasourceConfiguration.containsKey(datasourceName))
+        {
+            return true;
+        }
         if(modelMetaData.parentModelName)
         {
             ModelMetaData parentModel = modelMetaDatas[modelMetaData.parentModelName];
-            parentModel.datasourceConfiguration.each{dsName,dsConf->
-                if(dsName == datasourceName)
-                {
-                    throw ModelGenerationException.duplicateParentDatasource(datasourceName, modelName, parentModel.modelName);
-                }
-            }
-            checkDatasourceExistInParent(parentModel, modelMetaDatas, modelName, datasourceName);
+            return checkDatasourceExist(parentModel, modelMetaDatas, datasourceName);
         }
+        return false;
+    }
+
+    def checkPropertyExist(ModelMetaData modelMetaData, modelMetaDatas, propertyName)
+    {
+        if(modelMetaData == null) return false;
+        boolean propExist = false;
+        modelMetaData.propertyList.each{
+            if(it.name == propertyName)
+            {
+                propExist = true;
+                return;
+            }
+        }
+        if(propExist)
+        {
+            return true;
+        }
+        if(modelMetaData.parentModelName)
+        {
+            ModelMetaData parentModel = modelMetaDatas[modelMetaData.parentModelName];
+            return checkPropertyExist(parentModel, modelMetaDatas, propExist);
+        }
+        return false;
     }
 
     def createModelFiles(modelMetaDatas)
@@ -167,7 +212,6 @@ class ModelGenerator
             def modelFileToBeGenerated =  getGeneratedModelFile(modelMetaData.modelName);
             def modelText =  getModelText(modelMetaData);
             modelFileToBeGenerated.setText(modelText);
-            println "GENERATED MODEL:" + modelFileToBeGenerated.absolutePath
         }
     }
 

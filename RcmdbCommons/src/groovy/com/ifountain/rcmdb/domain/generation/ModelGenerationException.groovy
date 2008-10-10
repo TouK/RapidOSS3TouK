@@ -38,9 +38,18 @@ class ModelGenerationException extends Exception{
         return new ModelGenerationException("Master datasource doesnot exist for model $modelName")
     }
 
-    public static ModelGenerationException duplicateParentDatasource(String dsName, String modelName, String parentModelName)
+    public static ModelGenerationException datasourceDoesnotExists(String modelName, String datasourceName, String propertyName)
     {
-        return new ModelGenerationException("Duplicate datasource definition in model ${modelName} and parent model ${parentModelName} for datasource ${dsName}")
+        return new ModelGenerationException("Datasource $datasourceName doesnot exist for property $propertyName in model $modelName");
+    }
+    public static ModelGenerationException datasourcePropertyDoesnotExists(String modelName, String dsPropertyName, String propertyName)
+    {
+        return new ModelGenerationException("Datasource property $dsPropertyName doesnot exist for property $propertyName in model $modelName");
+    }
+
+    public static ModelGenerationException duplicateParentDatasource(String dsName, String modelName)
+    {
+        return new ModelGenerationException("Duplicate datasource definition in model ${modelName} and parent model for datasource ${dsName}")
     }
     public static ModelGenerationException duplicateDatasource(String dsName, String modelName)
     {
@@ -83,5 +92,9 @@ class ModelGenerationException extends Exception{
     public static ModelGenerationException invalidModelRelationName(String modelName, String relationName)
     {
         return new ModelGenerationException("Invalid model relation name ${relationName} for model ${modelName}.");
+    }
+    public static ModelGenerationException childModelCannotDefineKey(String modelName)
+    {
+        return new ModelGenerationException("Child model ${modelName} can not define key.");
     }
 }

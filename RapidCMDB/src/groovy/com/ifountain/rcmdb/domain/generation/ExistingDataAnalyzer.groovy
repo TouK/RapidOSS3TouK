@@ -88,17 +88,21 @@ class ExistingDataAnalyzer
             if(oldRelation)
             {
 
-                boolean isOldMany = oldRelation.isOneToMany() || oldRelation.isManyToMany();
-                boolean isNewMany = newRelation.isOneToMany() || newRelation.isManyToMany();
+                int isOldMany = oldRelation.isOneToMany() || oldRelation.isManyToMany()?1:0;
+                int isNewMany = newRelation.isOneToMany() || newRelation.isManyToMany()?1:0;
 
-                boolean isOldOthersideMany = oldRelation.hasOtherSide() && (oldRelation.isManyToOne() || oldRelation.isManyToMany())
-                boolean isNewOthersideMany = newRelation.hasOtherSide() && (newRelation.isManyToOne() || newRelation.isManyToMany())
-                if(isOldMany != isNewMany || isOldOthersideMany != isNewOthersideMany)
+                int isOldOthersideMany = oldRelation.hasOtherSide() && (oldRelation.isManyToOne() || oldRelation.isManyToMany())?1:0
+                int isNewOthersideMany = newRelation.hasOtherSide() && (newRelation.isManyToOne() || newRelation.isManyToMany())?1:0
+                if(isOldMany > isNewMany || isOldOthersideMany > isNewOthersideMany)
                 {
                     if(!willDeleteAll)
                     {
                         actions += new PropertyAction(modelName:currentDomainObject.name, propName:relationName, action:PropertyAction.CLEAR_RELATION, propTypeName:oldRelation.getOtherSideCls().name, reverseName:oldRelation.getOtherSideName());
                     }
+                    willResourcesBeRegenerated = true;
+                }
+                else if(isOldMany != isNewMany || isOldOthersideMany != isNewOthersideMany)
+                {
                     willResourcesBeRegenerated = true;
                 }
             }

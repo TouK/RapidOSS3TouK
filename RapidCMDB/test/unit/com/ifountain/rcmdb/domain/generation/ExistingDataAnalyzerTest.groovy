@@ -306,6 +306,59 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def newGrailsDomainClasses = generateDomainClasses([newDomainClass1, newDomainClass2])
 
         def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName1], newGrailsDomainClasses[modelName1]);
+        assertEquals (1, actions.size());
+
+        ModelAction modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName1, modelAction.modelName);
+
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName2], newGrailsDomainClasses[modelName2]);
+        assertEquals (1, actions.size());
+
+        modelAction = actions[0];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelName2, modelAction.modelName);
+    }
+
+    public void testIfRelationTypeIsChangedFromOneToManyToOneToOne()
+    {
+        String modelName1 = "Class1";
+        String modelName2 = "Class2";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1, prop2];
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:modelName2, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName1, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+        def model1 = createModel(modelName1, propList, keyPropList, [rel1]);
+        def model2 = createModel (modelName2, propList, keyPropList, [revrel1]);
+
+
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def oldDomainClass1 = loadGrailsDomainClass(modelName1);
+        def oldDomainClass2 = loadGrailsDomainClass(modelName2);
+        def oldGrailsDomainClasses = generateDomainClasses([oldDomainClass1, oldDomainClass2])
+
+        rel1.cardinality = ModelGenerator.RELATION_TYPE_ONE;
+        revrel1.reverseCardinality= ModelGenerator.RELATION_TYPE_ONE;
+
+        model1 = createModel(modelName1, propList, keyPropList, [rel1]);
+        model2 = createModel (modelName2, propList, keyPropList, [revrel1]);
+
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def newDomainClass1 = loadGrailsDomainClass(modelName1);
+        def newDomainClass2 = loadGrailsDomainClass(modelName2);
+        def newGrailsDomainClasses = generateDomainClasses([newDomainClass1, newDomainClass2])
+
+
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelName1], newGrailsDomainClasses[modelName1]);
         assertEquals (2, actions.size());
         PropertyAction action = actions[0];
         assertEquals (PropertyAction.CLEAR_RELATION, action.action);
@@ -326,7 +379,7 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         assertEquals (modelName2, modelAction.modelName);
     }
 
-    public void testIfRelationTypeIsChangedFromOneToManyToOneToOne()
+    public void testIfRelationTypeIsChangedFromManyToManyToOneToMany()
     {
         String modelName1 = "Class1";
         String modelName2 = "Class2";
@@ -337,11 +390,11 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
 
         def propList = [prop1, prop2];
         def keyPropList = [prop1, prop2];
-        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:modelName2, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
-        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName1, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:modelName2, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName1, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
         def model1 = createModel(modelName1, propList, keyPropList, [rel1]);
         def model2 = createModel (modelName2, propList, keyPropList, [revrel1]);
-                
+
 
         ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
         ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);

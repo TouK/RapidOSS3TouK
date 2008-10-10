@@ -26,21 +26,19 @@ import com.ifountain.rui.util.TagLibUtils
 class SearchListTagLib {
     static namespace = "rui"
     def searchList = {attrs, body ->
-        println "calling searchList"
         validateAttributes(attrs);
         def searchListId = attrs["id"];
         def configXML = "<SearchList>${body()}</SearchList>";
         def menuEvents = [:]
         def propertyMenuEvents = [:]
         def configStr = getConfig(attrs, configXML, menuEvents, propertyMenuEvents);
-        println "Config String :${configStr}"
         out << """
            <script type="text/javascript">
                var ${searchListId}c = ${configStr};
                var ${searchListId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var ${searchListId}sl = new YAHOO.rapidjs.component.search.SearchList(${searchListId}container, ${searchListId}c);
                ${searchListId}sl.events["cellMenuClick"].subscribe(function(key, value, data, id) {
-                    
+
                }, this, true);
                if(${searchListId}sl.pollingInterval > 0){
                    ${searchListId}sl.poll();
@@ -210,8 +208,7 @@ class SearchListTagLib {
 
     def slMenuItem = {attrs, body ->
         def validAttrs = ["id", "label", "visible", "action"];
-        def menuItem = TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs, body());
-        out << menuItem
+        out << TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs, body());
     }
 
     def slSubmenuItem = {attrs, body ->

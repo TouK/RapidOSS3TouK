@@ -64,4 +64,24 @@ class ModelGenerationException extends Exception{
     {
         return new ModelGenerationException("Could not deleted controller of model $modelName");
     }
+    public static ModelGenerationException undefinedParentModel(String modelName, String parentModelName)
+    {
+        return new ModelGenerationException("Parent model ${parentModelName} is not defined. Model ${modelName} could not be created.");
+    }
+    public static ModelGenerationException undefinedRelatedModel(String modelName, String relationName, String relatedModelName)
+    {
+        return new ModelGenerationException("Could not created model ${modelName}. Reason: Related model ${relatedModelName} for relation ${relationName} is not defined.");
+    }
+    public static ModelGenerationException invalidModelName(String modelName)
+    {
+        return new ModelGenerationException("Invalid modelname ${modelName}.");
+    }
+    public static ModelGenerationException invalidModelPropertyName(String modelName, String propertyName)
+    {
+        return new ModelGenerationException("Invalid model property name ${propertyName} for model ${modelName}.");
+    }
+    public static ModelGenerationException invalidModelRelationName(String modelName, String relationName)
+    {
+        return new ModelGenerationException("Invalid model relation name ${relationName} for model ${modelName}.");
+    }
 }

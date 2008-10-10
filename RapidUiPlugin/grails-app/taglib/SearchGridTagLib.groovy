@@ -41,7 +41,6 @@ class SearchGridTagLib {
                }
            </script>
         """
-        validateAttributes(attrs);
     }
 
     def validateAttributes(config) {

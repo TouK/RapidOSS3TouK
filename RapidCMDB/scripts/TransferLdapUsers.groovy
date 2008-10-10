@@ -50,8 +50,7 @@ try{
         ldapConnection.connect()
         output+= "Connected to Ldap"
     }
-    catch (NamingException e) {
-        log.error "Could not connect to LDAP: ${e}"
+    catch (NamingException e) {        
         output+= "Could not connect to LDAP: ${e}"
         throw e
     }

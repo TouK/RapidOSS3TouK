@@ -28,14 +28,46 @@ class TreeGridTagLib {
     def treeGrid = {attrs, body ->
         validateAttributes(attrs);
         def treeGridId = attrs["id"];
+        def onNodeClick = attrs["onNodeClick"];
+        def nodeClickJs;
+        def menuEventsJs;
+        if(onNodeClick != null){
+            nodeClickJs = """
+               ${treeGridId}tg.events['treeNodeClick'].subscribe(function(xmlData){
+                   var params = {data:xmlData.getAttributes()};
+                   YAHOO.rapidjs.Actions['${onNodeClick}'].execute(params); 
+                }, this, true); 
+            """
+        }
         def configXML = "<TreeGrid>${body()}</TreeGrid>";
         def menuEvents = [:]
         def configStr = getConfig(attrs, configXML, menuEvents);
+        if(menuEvents.size() > 0){
+            def innerJs = "";
+            def index = 0;
+            menuEvents.each{id, action ->
+                innerJs += index ==0 ? "if": "else if";
+                innerJs +="""(id == '${id}'){
+                   var params = {data:xmlData.getAttributes(), id:id, parentId:parentId};
+                   YAHOO.rapidjs.Actions['${action}'].execute(params);
+                }
+                """
+                index ++;
+            }
+            menuEventsJs = """
+               ${treeGridId}tg.events['rowMenuClick'].subscribe(function(xmlData, id, parentId){
+                   ${innerJs}
+                }, this, true); 
+            """
+
+        }
         out << """
            <script type="text/javascript">
                var ${treeGridId}c = ${configStr};
                var ${treeGridId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var ${treeGridId}tg = new YAHOO.rapidjs.component.TreeGrid(${treeGridId}container, ${treeGridId}c);
+               ${nodeClickJs ? nodeClickJs:""}
+               ${menuEventsJs ? menuEventsJs:""}
                if(${treeGridId}tg.pollingInterval > 0){
                    ${treeGridId}tg.poll();
                }

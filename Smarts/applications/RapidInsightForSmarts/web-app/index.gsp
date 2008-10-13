@@ -10,7 +10,8 @@
     </rui:tgColumns>
     <rui:tgMenuItems>
         <rui:tgMenuItem id="delete" label="Delete" visible="data.isPublic != 'true' && !(data.name == 'Default' && data.nodeType == 'group')"></rui:tgMenuItem>
-        <rui:tgMenuItem id="update" label="Update" visible="data.isPublic != 'true' && !(data.name == 'Default' && data.nodeType == 'group')"></rui:tgMenuItem>
+        <rui:tgMenuItem id="queryUpdate" label="Update" visible="data.nodeType == 'filter' && data.isPublic != 'true'" action="queryUpdateAction"></rui:tgMenuItem>
+        <rui:tgMenuItem id="queryGroupUpdate" label="Update" visible="data.isPublic != 'true' && data.name != 'Default' && data.nodeType == 'group'" action="queryGroupUpdateAction"></rui:tgMenuItem>
         <rui:tgMenuItem id="copyQuery" label="Copy Query" visible="data.nodeType == 'filter'"></rui:tgMenuItem>
     </rui:tgMenuItems>
     <rui:tgRootImages>
@@ -96,6 +97,26 @@
     </div>
 </rui:form>
 <rui:html id="objectDetails" width="850" height="700" iframe="false"></rui:html>
+
+<rui:action id="setQueryAction" type="function" componentId="searchList" function="setQuery" condition="params.data.nodeType == 'filter'" >
+    <rui:functionArg>params.data.query</rui:functionArg>
+    <rui:functionArg>params.data.sortProperty</rui:functionArg>
+    <rui:functionArg>params.data.sortOrder</rui:functionArg>
+</rui:action>
+<rui:action id="queryUpdateAction" type="function" componentId="filterDialog" function="show">
+    <rui:functionArg>YAHOO.rapidjs.component.Form.EDIT_MODE</rui:functionArg>
+    <rui:functionArg>{queryId:params.data.id}</rui:functionArg>
+</rui:action>
+<rui:action id="queryGroupUpdateAction" type="function" componentId="filterGroupDialog" function="show">
+    <rui:functionArg>YAHOO.rapidjs.component.Form.EDIT_MODE</rui:functionArg>
+    <rui:functionArg>{}</rui:functionArg>
+    <rui:functionArg>{name:params.data.name, id:params.data.id}</rui:functionArg>
+</rui:action>
+<rui:action id="copyQueryAction" type="function" componentId="filterDialog" function="show">
+    <rui:functionArg>YAHOO.rapidjs.component.Form.CREATE_MODE</rui:functionArg>
+    <rui:functionArg>{}</rui:functionArg>
+    <rui:functionArg>{name:'', query:params.data.query, group:params.data.group}</rui:functionArg>
+</rui:action>
 <script type="text/javascript">
 
     var objectDetailsDialog = YAHOO.rapidjs.Components['objectDetails'];
@@ -197,14 +218,6 @@
     deleteQueryAction.events.success.subscribe(tree.poll, tree, true);
 
     deleteQueryGroupAction.events.success.subscribe(tree.poll, tree, true);
-
-    tree.events["treeNodeClick"].subscribe(function(data) {
-        if (data.getAttribute("nodeType") == "filter")
-        {
-            searchList.setQuery(data.getAttribute("query"), data.getAttribute('sortProperty'), data.getAttribute('sortOrder'));
-        }
-    }, this, true);
-
     tree.events["rowMenuClick"].subscribe(function(data, id, parentId) {
     	if (id == "delete")
         {
@@ -213,20 +226,6 @@
             else if (data.getAttribute("nodeType") == "group")
                 deleteQueryGroupAction.execute({id:data.getAttribute("id")});
         }
-        else if(id == "update"){
-            if (data.getAttribute("nodeType") == "filter")
-                dialog.show(dialog.EDIT_MODE, {queryId:data.getAttribute("id")})
-            else if(data.getAttribute("nodeType") == "group"){
-                groupDialog.show(groupDialog.EDIT_MODE)
-                groupDialog.dialog.form.name.value = data.getAttribute("name");
-                groupDialog.dialog.form.id.value = data.getAttribute("id")
-            }
-       }
-       else if(id == "copyQuery"){
-        		dialog.show(dialog.CREATE_MODE,null,{name:'', group:data.parentNode().getAttribute('name'),
-        										query:data.getAttribute('query')});
-
-            }
     }, this, true);
 
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;

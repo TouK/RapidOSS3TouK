@@ -1,4 +1,5 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component');
+
 YAHOO.rapidjs.component.Form = function(container, config)
 {
     YAHOO.rapidjs.component.Form.superclass.constructor.call(this, container, config);
@@ -22,8 +23,6 @@ YAHOO.rapidjs.component.Form = function(container, config)
         YAHOO.util.Event.addListener(this.dialog.form, 'keypress', this.handleKeypress, this, true);
     }, this, true)
     this.successful = config.successfulyExecuted;
-    this.EDIT_MODE = 0;
-    this.CREATE_MODE = 1;
     this.dialog.render();
     this.mapping = config.mapping;
     this.editUrl = config.editUrl;
@@ -31,12 +30,15 @@ YAHOO.rapidjs.component.Form = function(container, config)
     this.saveUrl = config.saveUrl;
     this.submitAction = config.submitAction || 'GET'
     this.updateUrl = config.updateUrl;
-    this.mode = this.CREATE_MODE;
+    this.mode = YAHOO.rapidjs.component.Form.CREATE_MODE;
     this.isSubmitInProggress = false;
     this.fieldParams = null;
     this.render();
 
 };
+
+YAHOO.rapidjs.component.Form.EDIT_MODE = "edit";
+YAHOO.rapidjs.component.Form.CREATE_MODE = "create";
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingComponentContainer, {
     render: function()
@@ -135,12 +137,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         this.errors.dom.innerHTML = "";
         this.errors.hide();
         this.isSubmitInProggress = true;
-        if (this.mode == this.EDIT_MODE)
+        if (this.mode == YAHOO.rapidjs.component.Form.EDIT_MODE)
         {
             this.url = this.updateUrl;
 
         }
-        else if (this.mode == this.CREATE_MODE)
+        else if (this.mode == YAHOO.rapidjs.component.Form.CREATE_MODE)
         {
             this.url = this.saveUrl;
         }
@@ -197,13 +199,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         var willShowMask = false;
         if (fieldParams != null)
             this.fieldParams = fieldParams;
-        if (mode == this.EDIT_MODE && this.editUrl != null)
+        if (mode == YAHOO.rapidjs.component.Form.EDIT_MODE && this.editUrl != null)
         {
             willShowMask = true;
             this.doRequest(this.editUrl, params);
 
         }
-        else if (mode == this.CREATE_MODE && this.createUrl != null)
+        else if (mode == YAHOO.rapidjs.component.Form.CREATE_MODE && this.createUrl != null)
         {
             willShowMask = true;
             this.doRequest(this.createUrl, params);
@@ -280,3 +282,4 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         this.maskMessage.hide();
     }
 })
+

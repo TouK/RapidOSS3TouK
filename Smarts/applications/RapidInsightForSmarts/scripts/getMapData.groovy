@@ -22,7 +22,7 @@ mapDataBuilder.graphData {
 
     nodes.each {
         def device = RsComputerSystem.get( name : it);
-        mapDataBuilder.node( id : it, state : device.getState());
+        mapDataBuilder.node( id : it, state : device.getState(), type:device.creationClassName);
     }
 
     edges.each {

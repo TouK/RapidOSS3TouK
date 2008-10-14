@@ -30,7 +30,7 @@ def edgeXmls = slurper.edge;
 def writer = new StringWriter();
 def mapBuilder = new MarkupBuilder(writer);
 
-mapBuilder.graph
+mapBuilder.graph(layout:map.layout)
 {
     nodeXmls.each {
         mapBuilder.node( id: it.@id.text(), model : it.@model.text(), type : it.@type.text(), gauged : it.@gauged.text(), expanded : it.@expanded.text(), expandable : it.@expandable.text(), x: it.@x.text(), y: it.@y.text());

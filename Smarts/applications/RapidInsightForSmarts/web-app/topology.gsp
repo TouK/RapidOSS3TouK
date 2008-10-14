@@ -109,29 +109,38 @@
         expandURL : "script/run/expandMap",
         dataURL : "script/run/getMapData",
         pollingInterval : 0,
-        icons : {
-          "Host":{ "url":"images/rapidjs/component/topologyMap/server_icon.png"},
-          "Router":{ "url":"images/rapidjs/component/topologyMap/router_icon.png"},
-          "Switch":{ "url":"images/rapidjs/component/topologyMap/switch_icon.png"}
+        nodeSize:60,
+        nodeContent:{
+            images:[
+                {
+                    id:"status", x:70, y:40, width:30, height:30, dataKey:"state", images:{
+                    "0":"green.png",
+                    "1":"red.png",
+                    "2":"orange.png",
+                    "3":"yellow.png",
+                    "4":"blue.png",
+                    "5":"green.png",
+                    "default":"green.png"}
+                },
+                {
+                    id:"icon",  x:70, y:0,  width:20, height:20, dataKey:"type", images:{
+                    "Host":"server_icon.png",
+                    "Router":"router_icon.png",
+                    "Switch":"switch_icon.png"}
+                }
+            ]
         },
-        menuItems : { "item1": { "text": "Browse" }},
-        menuItemFilter : "menuItemFilter",
+        menuFilterFunction : menuItemFilter,
         statusColors : { "1" : 0xde2c26, "2" : 0x7b4a1a, "3": 0xfae500, "4" : 0x20b4e0, "5":0x0d4702, "default" : 0x0d4702 },
 		edgeColors : { "1" : 0xffde2c26,"2" :  0xfff79229,"3":  0xfffae500, "4" :  0xff20b4e0,"5": 0xff62b446, "default" : 0xff62b446 },
         toolbarMenuItems : [{
-            "id" : "mapMenu",
-            "label" : "Map",
-            "submenuItems"  : [
-                                  {
+            "text" : "Map",
+            "subMenu"  : {id:"mapMenu", itemdata:[{
                                     "id" 	: "saveMap",
-                                    "submenuItem" : {
-                                                        "label"	: "Save Map",
-                                                        "groupName" : "mapMenu",
-                                                        "toggled"	: "true"
-                                                    }
-                                  }
-                              ]
-        }]
+                                    text:  "Save Map"}
+                        ]
+        }}],
+        nodeMenuItems : [{id:"item1","text" : "Browse"}]
     };
 
     var topMap = new YAHOO.rapidjs.component.TopologyMap(document.getElementById("mapDiv"),topMapConfig );
@@ -202,8 +211,7 @@
 
     saveMapAction.events.success.subscribe(tree.poll, tree, true);
     loadMapAction.events.success.subscribe(function(response, responseArgs){
-        topMap.setLayout(responseArgs.mapLayout*1);
-        topMap.handleLoadMap(response);
+        topMap.loadMap(response);
     }, this, true);
 
     tree.events["treeNodeClick"].subscribe(function(data) {

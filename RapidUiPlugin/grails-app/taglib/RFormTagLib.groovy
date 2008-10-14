@@ -25,17 +25,28 @@ class RFormTagLib {
     static namespace = "rui"
     def form = {attrs, body ->
         validateAttributes(attrs);
+        def formId = attrs["id"];
         def configStr = getConfig(attrs, body);
+        def onSuccess = attrs["onSuccess"];
+        def successJs;
+        if(onSuccess != null){
+            successJs = """
+               ${formId}form.events['submitSuccessful'].subscribe(function(response){
+                   YAHOO.rapidjs.Actions['${onSuccess}'].execute({});
+                }, this, true);
+            """
+        }
         def formBody = body();
         def containerId = "rform_${attrs["id"]}"
         out << """
-           <div id="${containerId}">${formBody.trim()}<div>
+           <div id="${containerId}">${formBody.trim()}</div>
            <script type="text/javascript">
-               var formConfig = ${configStr};
-               var parentContainer = document.getElementById('${containerId}');
-               var container = parentContainer.firstChild;
-               document.body.appendChild(container);
-               new YAHOO.rapidjs.component.Form(container, formConfig);
+               var ${formId}conf = ${configStr};
+               var ${formId}parentContainer = document.getElementById('${containerId}');
+               var ${formId}container =${formId}parentContainer.firstChild;
+               document.body.appendChild(${formId}container);
+               var ${formId}form = new YAHOO.rapidjs.component.Form(${formId}container, ${formId}conf);
+                ${successJs ? successJs:""}
            </script>
         """
     }

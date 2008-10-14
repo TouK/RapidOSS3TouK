@@ -247,9 +247,9 @@
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
             units: [
-                { position: 'top', body: 'top', resize: false, height:45},
-                { position: 'center', body: 'right', resize: false, gutter: '1px' },
-                { position: 'left', width: 250, resize: true, body: tree.container.id, scroll: false}
+                { position: 'top', body: 'top', resize: false, height:45, useShim:true},
+                { position: 'center', body: 'right', resize: false, gutter: '1px', useShim:true },
+                { position: 'left', width: 250, resize: true, body: tree.container.id, scroll: false, useShim:true}
             ]
         });
         layout.on('render', function(){

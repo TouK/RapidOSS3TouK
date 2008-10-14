@@ -56,7 +56,7 @@ class RapidInsightForSmartsBuild extends Build{
             ant.fileset(dir: "$env.jreDir")
         }
         def versionDate = getVersionWithDate();
-        def zipFileName = "$env.distribution/RapidInsightForSmarts_Windows$versionDate" + ".zip"
+        def zipFileName = "$env.distribution/RI4S_Windows$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
             ant.zipfileset(dir: "$env.distribution"){
             	ant.exclude(name:".project");
@@ -117,7 +117,7 @@ class RapidInsightForSmartsBuild extends Build{
         }
 
 
-        def zipFileName = "${env.distribution}/RapidInsightForSmarts_$osType$versionDate" + ".zip"
+        def zipFileName = "${env.distribution}/RI4S_$osType$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
            ant.zipfileset(dir : "$env.distribution/RapidServer", prefix:"RapidServer")
         }

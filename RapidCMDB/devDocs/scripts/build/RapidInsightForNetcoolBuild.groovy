@@ -41,7 +41,7 @@ class RapidInsightForNetcoolBuild extends Build{
             ant.fileset(dir: "$env.jreDir")
         }
         def versionDate = getVersionWithDate();
-        def zipFileName = "$env.distribution/RapidInsightForNetcool_Windows$versionDate" + ".zip"
+        def zipFileName = "$env.distribution/RI4NC_Windows$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
             ant.zipfileset(dir: "$env.distribution"){
             	ant.exclude(name:".project");
@@ -95,7 +95,7 @@ class RapidInsightForNetcoolBuild extends Build{
 		}	
 //        def osType = "Unix";
 //        if (rapidCmdb.getName().indexOf("Windows") > -1) osType = "Windows"
-        def zipFileName = "${env.distribution}/RapidInsightForNetcool_$osType$versionDate" + ".zip"
+        def zipFileName = "${env.distribution}/RI4NC_$osType$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
            ant.zipfileset(dir : "$env.distribution/RapidServer", prefix:"RapidServer")
         }

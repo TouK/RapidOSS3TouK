@@ -31,10 +31,15 @@ class TagLibUtils {
         def builder = new MarkupBuilder(writer);
         def attMap = [:]
         def listAttributes = [:]
+        def mapAttributes = [:]
         validAttrs.each{
             def value = attrs.get(it);
             if(value instanceof List){
                 listAttributes.put(it, value)
+            }
+            else if(value instanceof Map){
+                println "${it} is instance of map"
+                mapAttributes.put(it, value)
             }
             else{
                 attMap.put(it, value);    
@@ -50,6 +55,13 @@ class TagLibUtils {
                        }
                    }
                }
+               mapAttributes.each{key, valueList ->
+                   builder."${key}"(){
+                       valueList.each{k, v ->
+                           builder.Item(key:k, value:v)
+                       }
+                   }
+               }
                builder.yieldUnescaped(innerXML)
            }
         }
@@ -59,6 +71,13 @@ class TagLibUtils {
                    builder."${key}"(){
                        valueList.each{value ->
                            builder.Item(value)
+                       }
+                   }
+               }
+               mapAttributes.each{key, valueList ->
+                   builder."${key}"(){
+                       valueList.each{k, v ->
+                           builder.Item(key:k, value:v)
                        }
                    }
                }

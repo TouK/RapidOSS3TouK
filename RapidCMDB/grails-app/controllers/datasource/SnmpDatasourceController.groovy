@@ -25,7 +25,7 @@ class SnmpDatasourceController {
         else {
             if(snmpDatasource.class != SnmpDatasource)
             {
-                def controllerName = snmpDatasource.class.name;
+                def controllerName = snmpDatasource.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

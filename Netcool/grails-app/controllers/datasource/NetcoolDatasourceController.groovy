@@ -25,7 +25,7 @@ class NetcoolDatasourceController {
         else {
             if(netcoolDatasource.class != NetcoolDatasource)
             {
-                def controllerName = netcoolDatasource.class.name;
+                def controllerName = netcoolDatasource.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

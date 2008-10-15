@@ -24,7 +24,7 @@ class RsGroupController {
         else {
             if(rsGroup.class != RsGroup)
             {
-                def controllerName = rsGroup.class.name;
+                def controllerName = rsGroup.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

@@ -25,7 +25,7 @@ class SingleTableDatabaseDatasourceController {
         else {
             if(singleTableDatabaseDatasource.class != SingleTableDatabaseDatasource)
             {
-                def controllerName = singleTableDatabaseDatasource.class.name;
+                def controllerName = singleTableDatabaseDatasource.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

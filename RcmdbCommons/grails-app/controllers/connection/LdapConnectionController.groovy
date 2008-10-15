@@ -23,7 +23,7 @@ class LdapConnectionController {
         else {
             if(ldapConnection.class != LdapConnection)
             {
-                def controllerName = ldapConnection.class.name;
+                def controllerName = ldapConnection.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

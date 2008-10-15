@@ -25,7 +25,7 @@ class RapidInsightConnectionController {
         else {
             if(rapidInsightConnection.class != RapidInsightConnection)
             {
-                def controllerName = rapidInsightConnection.class.name;
+                def controllerName = rapidInsightConnection.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

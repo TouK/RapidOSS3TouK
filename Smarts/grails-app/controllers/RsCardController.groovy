@@ -24,7 +24,7 @@ class RsCardController {
         else {
             if(rsCard.class != RsCard)
             {
-                def controllerName = rsCard.class.name;
+                def controllerName = rsCard.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

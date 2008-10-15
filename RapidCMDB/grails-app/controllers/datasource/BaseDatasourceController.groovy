@@ -25,7 +25,7 @@ class BaseDatasourceController {
         else {
             if(baseDatasource.class != BaseDatasource)
             {
-                def controllerName = baseDatasource.class.name;
+                def controllerName = baseDatasource.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

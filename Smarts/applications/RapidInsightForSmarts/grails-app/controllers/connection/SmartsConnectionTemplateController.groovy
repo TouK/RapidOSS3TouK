@@ -23,7 +23,7 @@ class SmartsConnectionTemplateController {
         else {
             if(smartsConnectionTemplate.class != SmartsConnectionTemplate)
             {
-                def controllerName = smartsConnectionTemplate.class.name;
+                def controllerName = smartsConnectionTemplate.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

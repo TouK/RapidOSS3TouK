@@ -24,7 +24,7 @@ class ${className}Controller {
         else {
             if(${propertyName}.class != ${className})
             {
-                def controllerName = ${propertyName}.class.name;
+                def controllerName = ${propertyName}.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

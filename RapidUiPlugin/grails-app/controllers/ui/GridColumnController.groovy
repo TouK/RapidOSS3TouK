@@ -22,7 +22,7 @@ class GridColumnController {
         else {
             if(gridColumn.class != GridColumn)
             {
-                def controllerName = gridColumn.class.name;
+                def controllerName = gridColumn.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

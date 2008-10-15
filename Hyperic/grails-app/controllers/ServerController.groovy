@@ -23,7 +23,7 @@ class ServerController {
         else {
             if (server.class != Server)
             {
-                def controllerName = server.class.name;
+                def controllerName = server.class.simpleName;
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

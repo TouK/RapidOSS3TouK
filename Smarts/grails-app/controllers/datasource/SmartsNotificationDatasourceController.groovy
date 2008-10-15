@@ -25,7 +25,7 @@ class SmartsNotificationDatasourceController {
         else {
             if(smartsNotificationDatasource.class != SmartsNotificationDatasource)
             {
-                def controllerName = smartsNotificationDatasource.class.name;
+                def controllerName = smartsNotificationDatasource.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

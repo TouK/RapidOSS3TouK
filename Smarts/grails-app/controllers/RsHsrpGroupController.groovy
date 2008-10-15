@@ -24,7 +24,7 @@ class RsHsrpGroupController {
         else {
             if(rsHsrpGroup.class != RsHsrpGroup)
             {
-                def controllerName = rsHsrpGroup.class.name;
+                def controllerName = rsHsrpGroup.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

@@ -25,7 +25,7 @@ class ConnectionController {
         else {
             if(connection.class != Connection)
             {
-                def controllerName = connection.class.name;
+                def controllerName = connection.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

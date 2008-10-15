@@ -24,7 +24,7 @@ class RsComputerSystemController {
         else {
             if(rsComputerSystem.class != RsComputerSystem)
             {
-                def controllerName = rsComputerSystem.class.name;
+                def controllerName = rsComputerSystem.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

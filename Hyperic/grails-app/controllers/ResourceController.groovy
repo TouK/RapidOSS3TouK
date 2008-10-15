@@ -23,7 +23,7 @@ class ResourceController {
         else {
             if (resource.class != Resource)
             {
-                def controllerName = resource.class.name;
+                def controllerName = resource.class.simpleName;
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

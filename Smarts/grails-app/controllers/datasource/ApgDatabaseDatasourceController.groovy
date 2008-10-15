@@ -32,7 +32,7 @@ class ApgDatabaseDatasourceController {
         else {
             if(apgDatabaseDatasource.class != ApgDatabaseDatasource)
             {
-                def controllerName = apgDatabaseDatasource.class.name;
+                def controllerName = apgDatabaseDatasource.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

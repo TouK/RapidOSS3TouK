@@ -23,7 +23,7 @@ class ServiceController {
         else {
             if (service.class != Service)
             {
-                def controllerName = service.class.name;
+                def controllerName = service.class.simpleName;
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

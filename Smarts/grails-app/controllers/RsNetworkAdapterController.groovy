@@ -24,7 +24,7 @@ class RsNetworkAdapterController {
         else {
             if(rsNetworkAdapter.class != RsNetworkAdapter)
             {
-                def controllerName = rsNetworkAdapter.class.name;
+                def controllerName = rsNetworkAdapter.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

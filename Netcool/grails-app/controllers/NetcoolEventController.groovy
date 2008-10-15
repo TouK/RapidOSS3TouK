@@ -23,7 +23,7 @@ class NetcoolEventController {
         else {
             if (netcoolEvent.class != NetcoolEvent)
             {
-                def controllerName = netcoolEvent.class.name;
+                def controllerName = netcoolEvent.class.simpleName;
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

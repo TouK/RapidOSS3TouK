@@ -24,7 +24,7 @@ class RsIpNetworkController {
         else {
             if(rsIpNetwork.class != RsIpNetwork)
             {
-                def controllerName = rsIpNetwork.class.name;
+                def controllerName = rsIpNetwork.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

@@ -24,7 +24,7 @@ class RsInterfaceController {
         else {
             if(rsInterface.class != RsInterface)
             {
-                def controllerName = rsInterface.class.name;
+                def controllerName = rsInterface.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

@@ -23,7 +23,7 @@ class NetcoolConversionParameterController {
         else {
             if(netcoolConversionParameter.class != NetcoolConversionParameter)
             {
-                def controllerName = netcoolConversionParameter.class.name;
+                def controllerName = netcoolConversionParameter.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

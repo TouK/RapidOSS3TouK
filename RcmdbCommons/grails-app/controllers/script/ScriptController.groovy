@@ -35,7 +35,7 @@ class ScriptController {
         else {
             if (cmdbScript.class != CmdbScript)
             {
-                def controllerName = cmdbScript.class.name;
+                def controllerName = cmdbScript.class.simpleName;
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

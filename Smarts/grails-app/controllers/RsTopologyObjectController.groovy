@@ -24,7 +24,7 @@ class RsTopologyObjectController {
         else {
             if(rsTopologyObject.class != RsTopologyObject)
             {
-                def controllerName = rsTopologyObject.class.name;
+                def controllerName = rsTopologyObject.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

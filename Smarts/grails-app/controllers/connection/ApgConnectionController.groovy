@@ -31,7 +31,7 @@ class ApgConnectionController {
         else {
             if(apgConnection.class != ApgConnection)
             {
-                def controllerName = apgConnection.class.name;
+                def controllerName = apgConnection.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

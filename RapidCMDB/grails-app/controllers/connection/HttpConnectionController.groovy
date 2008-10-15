@@ -25,7 +25,7 @@ class HttpConnectionController {
         else {
             if(httpConnection.class != HttpConnection)
             {
-                def controllerName = httpConnection.class.name;
+                def controllerName = httpConnection.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

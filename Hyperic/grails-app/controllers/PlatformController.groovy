@@ -23,7 +23,7 @@ class PlatformController {
         else {
             if (platform.class != Platform)
             {
-                def controllerName = platform.class.name;
+                def controllerName = platform.class.simpleName;
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

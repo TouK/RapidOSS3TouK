@@ -24,7 +24,7 @@ class RsPortController {
         else {
             if(rsPort.class != RsPort)
             {
-                def controllerName = rsPort.class.name;
+                def controllerName = rsPort.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

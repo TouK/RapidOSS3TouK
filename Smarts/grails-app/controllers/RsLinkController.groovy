@@ -24,7 +24,7 @@ class RsLinkController {
         else {
             if(rsLink.class != RsLink)
             {
-                def controllerName = rsLink.class.name;
+                def controllerName = rsLink.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

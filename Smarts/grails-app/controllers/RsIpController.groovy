@@ -24,7 +24,7 @@ class RsIpController {
         else {
             if(rsIp.class != RsIp)
             {
-                def controllerName = rsIp.class.name;
+                def controllerName = rsIp.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

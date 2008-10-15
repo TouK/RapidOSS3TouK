@@ -23,7 +23,7 @@ class HypericServerController {
         else {
             if (hypericServer.class != HypericServer)
             {
-                def controllerName = hypericServer.class.name;
+                def controllerName = hypericServer.class.simpleName;
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

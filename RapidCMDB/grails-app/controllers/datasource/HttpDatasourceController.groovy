@@ -25,7 +25,7 @@ class HttpDatasourceController {
         else {
             if(httpDatasource.class != HttpDatasource)
             {
-                def controllerName = httpDatasource.class.name;
+                def controllerName = httpDatasource.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

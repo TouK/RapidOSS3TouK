@@ -25,7 +25,7 @@ class SmartsTopologyDatasourceController {
         else {
             if(smartsTopologyDatasource.class != SmartsTopologyDatasource)
             {
-                def controllerName = smartsTopologyDatasource.class.name;
+                def controllerName = smartsTopologyDatasource.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

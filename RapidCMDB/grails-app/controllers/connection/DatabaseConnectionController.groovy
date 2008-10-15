@@ -25,7 +25,7 @@ class DatabaseConnectionController {
         else {
             if(databaseConnection.class != DatabaseConnection)
             {
-                def controllerName = databaseConnection.class.name;
+                def controllerName = databaseConnection.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

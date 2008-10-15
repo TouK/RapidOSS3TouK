@@ -30,7 +30,7 @@ class GroupController {
         else {
             if (group.class != Group)
             {
-                def controllerName = group.class.name;
+                def controllerName = group.class.simpleName;
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

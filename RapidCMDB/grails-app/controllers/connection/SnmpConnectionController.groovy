@@ -25,7 +25,7 @@ class SnmpConnectionController {
         else {
             if(snmpConnection.class != SnmpConnection)
             {
-                def controllerName = snmpConnection.class.name;
+                def controllerName = snmpConnection.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

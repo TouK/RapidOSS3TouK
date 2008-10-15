@@ -24,7 +24,7 @@ class RsManagementServerController {
         else {
             if(rsManagementServer.class != RsManagementServer)
             {
-                def controllerName = rsManagementServer.class.name;
+                def controllerName = rsManagementServer.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

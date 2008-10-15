@@ -24,7 +24,7 @@ class RsEventJournalController {
         else {
             if(rsEventJournal.class != RsEventJournal)
             {
-                def controllerName = rsEventJournal.class.name;
+                def controllerName = rsEventJournal.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

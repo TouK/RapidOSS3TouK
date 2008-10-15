@@ -25,7 +25,7 @@ class SmartsConnectionController {
         else {
             if(smartsConnection.class != SmartsConnection)
             {
-                def controllerName = smartsConnection.class.name;
+                def controllerName = smartsConnection.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

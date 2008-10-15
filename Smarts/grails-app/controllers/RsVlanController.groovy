@@ -24,7 +24,7 @@ class RsVlanController {
         else {
             if(rsVlan.class != RsVlan)
             {
-                def controllerName = rsVlan.class.name;
+                def controllerName = rsVlan.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

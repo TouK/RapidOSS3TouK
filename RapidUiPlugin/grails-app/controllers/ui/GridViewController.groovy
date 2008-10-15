@@ -46,7 +46,7 @@ class GridViewController {
         else {
             if (gridView.class != GridView)
             {
-                def controllerName = gridView.class.name;
+                def controllerName = gridView.class.simpleName;
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

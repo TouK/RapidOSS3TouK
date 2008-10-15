@@ -23,7 +23,7 @@ class NetcoolJournalController {
         else {
             if (netcoolJournal.class != NetcoolJournal)
             {
-                def controllerName = netcoolJournal.class.name;
+                def controllerName = netcoolJournal.class.simpleName;
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

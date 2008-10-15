@@ -24,7 +24,7 @@ class RsRiEventController {
         else {
             if(rsRiEvent.class != RsRiEvent)
             {
-                def controllerName = rsRiEvent.class.name;
+                def controllerName = rsRiEvent.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

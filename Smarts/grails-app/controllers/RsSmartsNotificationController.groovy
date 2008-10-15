@@ -24,7 +24,7 @@ class RsSmartsNotificationController {
         else {
             if(rsSmartsNotification.class != RsSmartsNotification)
             {
-                def controllerName = rsSmartsNotification.class.name;
+                def controllerName = rsSmartsNotification.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

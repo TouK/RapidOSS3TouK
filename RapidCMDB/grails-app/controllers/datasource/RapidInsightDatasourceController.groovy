@@ -25,7 +25,7 @@ class RapidInsightDatasourceController {
         else {
             if(rapidInsightDatasource.class != RapidInsightDatasource)
             {
-                def controllerName = rapidInsightDatasource.class.name;
+                def controllerName = rapidInsightDatasource.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

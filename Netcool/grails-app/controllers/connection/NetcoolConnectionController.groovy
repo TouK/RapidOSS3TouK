@@ -28,7 +28,7 @@ class NetcoolConnectionController {
         else {
             if(netcoolConnection.class != NetcoolConnection)
             {
-                def controllerName = netcoolConnection.class.name;
+                def controllerName = netcoolConnection.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

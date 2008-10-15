@@ -23,7 +23,7 @@ class HypericEventController {
         else {
             if (hypericEvent.class != HypericEvent)
             {
-                def controllerName = hypericEvent.class.name;
+                def controllerName = hypericEvent.class.simpleName;                
                 if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

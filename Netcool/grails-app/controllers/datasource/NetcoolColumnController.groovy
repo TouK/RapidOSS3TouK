@@ -24,7 +24,7 @@ reclass NetcoolColumnController {
         else {
             if(netcoolColumn.class != NetcoolColumn)
             {
-                def controllerName = netcoolColumn.class.name;
+                def controllerName = netcoolColumn.class.simpleName;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

@@ -11,12 +11,12 @@
         <rui:tgColumn attributeName="name" colLabel="Name" width="248" sortBy="true"></rui:tgColumn>
     </rui:tgColumns>
     <rui:tgMenuItems>
-        <rui:tgMenuItem id="delete" label="Delete" visible="data.isPublic != 'true' && !(data.name == 'Default' && data.nodeType == 'group')"></rui:tgMenuItem>
-        <rui:tgMenuItem id="update" label="Update" visible="data.isPublic != 'true' && !(data.name == 'Default' && data.nodeType == 'group')"></rui:tgMenuItem>
+        <rui:tgMenuItem id="delete" label="Delete" visible="params.data.isPublic != 'true' && !(params.data.name == 'Default' && params.data.nodeType == 'group')"></rui:tgMenuItem>
+        <rui:tgMenuItem id="update" label="Update" visible="params.data.isPublic != 'true' && !(params.data.name == 'Default' && params.data.nodeType == 'group')"></rui:tgMenuItem>
     </rui:tgMenuItems>
     <rui:tgRootImages>
-        <rui:tgRootImage visible="data.nodeType == 'group'" expanded='images/rapidjs/component/tools/folder_open.gif' collapsed='images/rapidjs/component/tools/folder.gif'></rui:tgRootImage>
-        <rui:tgRootImage visible="data.nodeType == 'filter'" expanded='images/rapidjs/component/tools/filter.png' collapsed='images/rapidjs/component/tools/filter.png'></rui:tgRootImage>
+        <rui:tgRootImage visible="params.data.nodeType == 'group'" expanded='images/rapidjs/component/tools/folder_open.gif' collapsed='images/rapidjs/component/tools/folder.gif'></rui:tgRootImage>
+        <rui:tgRootImage visible="params.data.nodeType == 'filter'" expanded='images/rapidjs/component/tools/filter.png' collapsed='images/rapidjs/component/tools/filter.png'></rui:tgRootImage>
     </rui:tgRootImages>
 </rui:treeGrid>
 <rui:form id="filterDialog" width="35em" createUrl="script/run/createMap" editUrl="script/run/editMap" updateUrl="topoMap/update?format=xml" saveUrl="script/run/saveMap" submitAction="POST">

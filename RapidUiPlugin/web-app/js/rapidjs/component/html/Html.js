@@ -55,7 +55,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         }
         else
         {
-            this.doRequest(this.url);
+            this.doRequest(this.url, {componentId:this.id});
         }
         this.body.update("");
         this.dialog.show();

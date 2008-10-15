@@ -179,7 +179,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     renderRow: function(rowEl) {
         var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
         var dataNode = searchNode.xmlData;
-        var data = dataNode.getAttributes();
+        var params = {data:dataNode.getAttributes()};
         if (this.images) {
             for (var i = 0; i < this.images.length; i++)
             {

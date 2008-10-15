@@ -1,14 +1,17 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.action');
-YAHOO.rapidjs.component.action.RequestAction = function(config)
+YAHOO.rapidjs.component.action.RequestAction = function(config, requestParams)
 {
     this.url = config.url;
+    this.id = config.id;
     this.allowMultipleRequests = config.allowMultipleRequests;
     this.events = {
         'success' : new YAHOO.util.CustomEvent('success'),
         'error' : new YAHOO.util.CustomEvent('error')
     };
     this.lastConnection = null;
+    this.requestParams = requestParams;
     this.timeout = config.timeout != null ? config.timeout : 30000;
+    YAHOO.rapidjs.Actions[this.id] = this;
 };
 YAHOO.rapidjs.component.action.RequestAction.prototype = {
 
@@ -26,17 +29,29 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         }
         return postData
     },
-    execute : function(params, arguments) {
+    execute: function(params) {
+        var conditionResult = true;
+        if (this.condition) {
+            var conditionResult = eval(this.condition);
+        }
+        if (conditionResult) {
+            var reqParams = {};
+            for (var param in this.requestParams) {
+                reqParams[param] = eval('(' + this.requestParams[param] + ')');
+            }
+            this._execute(reqParams)
+        }
+    },
+    _execute : function(requestParams) {
         if (this.allowMultipleRequests != true)
         {
             this.abort();
         }
-        var postData = this.getPostData(params);
+        var postData = this.getPostData(requestParams);
         var callback = {
             success:this.processSuccess,
             failure: this.processFailure,
             scope: this,
-            argument: arguments,
             timeout: this.timeout
         };
         var tmpUrl = this.url;
@@ -127,16 +142,17 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
     }
 };
 
-YAHOO.rapidjs.component.action.MergeAction = function(config) {
-    YAHOO.rapidjs.component.action.MergeAction.superclass.constructor.call(this, config);
+YAHOO.rapidjs.component.action.MergeAction = function(config, requestParams, components) {
+    YAHOO.rapidjs.component.action.MergeAction.superclass.constructor.call(this, config, requestParams);
     this.removeAttribute = config.removeAttribute;
+    this.components = components;
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.action.MergeAction, YAHOO.rapidjs.component.action.RequestAction, {
     handleSuccess: function(response)
     {
-        var componentList = response.argument
-        if (componentList && componentList.length) {
+        if (this.components) {
+            var componentList = this.components;
             for (var i = 0; i < componentList.length; i++) {
                 componentList[i].events['success'].fireDirect();
                 componentList[i].handleSuccess(response, true, this.removeAttribute)
@@ -156,20 +172,17 @@ YAHOO.rapidjs.component.action.FunctionAction = function(id, component, fnc, con
 
 YAHOO.rapidjs.component.action.FunctionAction.prototype = {
     execute: function(params) {
-        var args = [];
-        for (var i = 0; i < this.arguments.length; i++) {
-             args[args.length] = eval('(' + this.arguments[i] + ')');
-        }
-        if(this.condition){
+        var conditionResult = true;
+        if (this.condition) {
             var conditionResult = eval(this.condition);
-            if(conditionResult){
-                this.targetFunction.apply(this.component, args);  
+        }
+        if (conditionResult) {
+            var args = [];
+            for (var i = 0; i < this.arguments.length; i++) {
+                args[args.length] = eval('(' + this.arguments[i] + ')');
             }
+            this.targetFunction.apply(this.component, args);
         }
-        else{
-            this.targetFunction.apply(this.component, args);    
-        }
-
     }
 };
 YAHOO.rapidjs.Actions = {};

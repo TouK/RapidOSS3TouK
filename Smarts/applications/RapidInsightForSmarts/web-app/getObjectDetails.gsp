@@ -1,7 +1,7 @@
 <%@ page import="com.ifountain.rcmdb.domain.util.DomainClassUtils" %>
 <%
     def name = params.name;
-
+    def componentId = params.componentId
     def domainObject = RsTopologyObject.get(name: name);
     if (domainObject != null) {
         String className = domainObject.getClass().getName();
@@ -43,7 +43,7 @@ cursor:pointer;
                                             if (sObj != null) {
                                 %>
                                 <td>
-                                    <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${sObj.name}'), 'Details of ${sObj.creationClassName} ${sObj.name}');">${sObj.creationClassName} ${sObj.name}<a>
+                                    <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${sObj.name}'), 'Details of ${sObj.creationClassName} ${sObj.name}');">${sObj.creationClassName} ${sObj.name}<a>
                                 </td>
                                 <%
                                     }

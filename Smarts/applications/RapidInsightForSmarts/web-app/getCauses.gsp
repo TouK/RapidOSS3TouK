@@ -8,7 +8,7 @@
 
 <%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat; datasource.SmartsNotificationDatasource" contentType="text/html;charset=UTF-8" %>
 <%
-
+    def componentId = params.componentId
     def domainObject = RsSmartsNotification.get(id: params.id);
     if (domainObject != null) {
 
@@ -21,16 +21,16 @@
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
         <li>
-            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
+            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
                 <em>Properties</em>
             </a>
         </li>
-        <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Audit Log</em></a></li>
-        <li class="selected"><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Impact</em></a></li>
+        <li><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getAuditLog.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Audit Log</em></a></li>
+        <li class="selected"><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getCauses.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Impact</em></a></li>
         <%
             if(domainObject.causedBy.size() > 0){
                 %>
-                     <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Caused By</em></a></li>
+                     <li><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getCausedBy.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Caused By</em></a></li>
                 <%
             }
         %>
@@ -65,7 +65,7 @@
             var instanceName = record.getData('name');
             var eventName = record.getData('event');
             var url = 'getEventDetails.gsp?className=' + encodeURIComponent(className) + '&instanceName=' + encodeURIComponent(instanceName) + '&eventName=' + encodeURIComponent(eventName);
-            YAHOO.rapidjs.Components['eventDetails'].show(url, 'Details of ' + className + ' ' + instanceName + ' ' + eventName);
+            YAHOO.rapidjs.Components['${componentId}'].show(url, 'Details of ' + className + ' ' + instanceName + ' ' + eventName);
         });
     });
 

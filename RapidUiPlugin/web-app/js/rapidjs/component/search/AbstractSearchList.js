@@ -498,8 +498,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             for (var i in this.menuItems) {
                 var menuItemConfig = this.menuItems[i];
                 if (menuItemConfig['visible'] != null) {
-                    var data = dataNode;
-                    var label = menuItemConfig.label
+                    var params = {data: dataNode.getAttributes(), label:menuItemConfig.label}
                     var condRes = eval(menuItemConfig['visible']);
                     var menuItem = this.rowHeaderMenu.getItem(index);
                     if (!condRes)
@@ -515,8 +514,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
                     var submenuItem = this.rowHeaderMenu.getItem(index)._oSubmenu.getItem(subIndex);
                     if (subMenuItemConfig['visible'] != null)
                     {
-                        var data = dataNode;
-                        var label = subMenuItemConfig.label
+                        var params = {data: dataNode.getAttributes(), label:subMenuItemConfig.label}
                          var condRes = eval(subMenuItemConfig['visible']);
                         if (!condRes)
                             submenuItem.element.style.display = "none";

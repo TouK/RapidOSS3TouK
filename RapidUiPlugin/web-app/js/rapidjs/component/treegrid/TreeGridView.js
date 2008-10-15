@@ -469,7 +469,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         for (var i = 0; i < expressionsArray.length; i++)
         {
             var currentExpressionStr = expressionsArray[i]['visible'];
-            var data = dataNode.getAttributes();
+            var params = {data: dataNode.getAttributes()}
             var evaluationResult = eval(currentExpressionStr);
             if (evaluationResult == true)
             {
@@ -484,7 +484,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         for (var i = 0; i < expressionsArray.length; i++)
         {
             var currentExpressionStr = expressionsArray[i]['visible'];
-            var data = dataNode.getAttributes();
+            var params = {data: dataNode.getAttributes()}
             var evaluationResult = eval(currentExpressionStr);
             if (evaluationResult == true)
             {
@@ -535,8 +535,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         for (var i in this.menuItems) {
             var menuItemConfig = this.menuItems[i];
             if (menuItemConfig['visible'] != null) {
-                var data = dataNode.getAttributes();
-                var label = menuItemConfig.label
+                var params = {data: dataNode.getAttributes(), label:menuItemConfig.label}
                 var evaluationResult = eval(menuItemConfig['visible']);
                 var menuItem = this.rowMenu.getItem(index);
                 if (!evaluationResult)

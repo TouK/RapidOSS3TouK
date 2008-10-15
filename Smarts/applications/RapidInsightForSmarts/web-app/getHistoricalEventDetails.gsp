@@ -1,5 +1,6 @@
 <%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
 <%
+    def componentId = params.componentId
     def notificationId = params.id;
     def domainObject = RsHistoricalEvent.get(id: notificationId);
     if (domainObject != null) {
@@ -8,7 +9,7 @@
 <div class="yui-navset yui-navset-top">
     <ul class="yui-nav">
         <li class="selected">
-            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getHistoricalEventDetails.gsp?id=' + encodeURIComponent('${domainObject.id}'));">
+            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getHistoricalEventDetails.gsp?id=' + encodeURIComponent('${domainObject.id}'));">
                 <em>Properties</em>
             </a>
         </li>
@@ -51,20 +52,7 @@
                                     %>
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td style="font-weight:bold">${propertyName}</td>
-                                        <%
-                                                if (propertyName == "instanceName" || propertyName == "elementName") {
-                                                    def title = propertyName == "instanceName" ? "Details of ${domainObject.className} ${domainObject.instanceName}" : "Details of ${domainObject.elementClassName} ${domainObject.elementName}"
-                                        %>
                                         <td>${domainObject[propertyName]}</td>
-                                        <%
-                                            }
-                                            else {
-                                        %>
-                                        <td>${domainObject[propertyName]}</td>
-                                        <%
-                                                }
-                                        %>
-
                                     </tr>
                                 </g:each>
 

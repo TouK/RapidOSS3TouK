@@ -8,7 +8,7 @@
 
 <%@ page import="datasource.SmartsNotificationDatasource" contentType="text/html;charset=UTF-8" %>
 <%
-
+    def componentId = params.componentId
     def domainObject = RsSmartsNotification.get(id: params.id);
     if (domainObject != null) {
         def datasource = SmartsNotificationDatasource.get(name:domainObject.rsDatasource)
@@ -24,20 +24,20 @@
                 <div class="yui-navset yui-navset-top">
                     <ul class="yui-nav">
                         <li>
-                            <a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
+                            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
                                 <em>Properties</em>
                             </a>
                         </li>
-                        <li class="selected"><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getAuditLog.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Audit Log</em></a></li>
+                        <li class="selected"><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getAuditLog.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Audit Log</em></a></li>
                          <%
                             if(domainObject.causes.size() > 0){
                                 %>
-                                    <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCauses.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Impact</em></a></li>
+                                    <li><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getCauses.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Impact</em></a></li>
                                 <%
                             }
                             if(domainObject.causedBy.size() > 0){
                                 %>
-                                     <li><a onclick="YAHOO.rapidjs.Components['eventDetails'].show('getCausedBy.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Caused By</em></a></li>
+                                     <li><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getCausedBy.gsp?id=' + encodeURIComponent('${domainObject?.id}'));"><em>Caused By</em></a></li>
                                 <%
                             }
                         %>

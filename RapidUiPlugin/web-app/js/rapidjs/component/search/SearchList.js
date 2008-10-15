@@ -21,7 +21,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
     showCurrentState: function() {
         this.searchCountEl.innerHTML = "Count: " + this.totalRowCount;
-        this.sortTextEl.innerHTML = "Sorted By: " + this.lastSortAtt + "-" + this.lastSortOrder;
+        this.sortTextEl.innerHTML = "Sorted By: " + this.lastSortAtt + " " + this.lastSortOrder;
     },
 
     getScrolledEl: function() {
@@ -79,9 +79,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         }
         else
         {
-            this.fields = this.defaultFields;
-            this.defaultFields = null;
-            this.maxRowCellLength = this.fields.length;
+            this.fields = {exp:"true", fields:this.defaultFields};
+            this.maxRowCellLength = this.defaultFields? this.defaultFields.length: 0;
         }
         this.cellMenu = new YAHOO.widget.Menu(this.id + '_cellMenu', {position: "dynamic", autofillheight:false});
 
@@ -142,8 +141,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             var insertedFields = null;
             var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
             var dataNode = searchNode.xmlData;
-            var data = dataNode.getAttributes();
-            if (this.defaultFields)
+            var params = {data:dataNode.getAttributes()};
+            if (this.fields != null)
             {
                 for (var i = 0; i < this.fields.length; i++)
                 {
@@ -153,10 +152,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                         insertedFields = this.fields[i]['fields'];
                 }
                 if (!insertedFields)
-                    insertedFields = this.defaultFields;
+                    insertedFields = [];
             }
             else
-                insertedFields = this.fields;
+                insertedFields = [];
             if (this.images) {
                 for (var i = 0; i < this.images.length; i++)
                 {
@@ -185,7 +184,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 var keyEl = cell.firstChild;
                 var valueEl = keyEl.nextSibling;
                 var value = dataNode.getAttribute(att);
-                valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode, valueEl) || "": value || "");
+                valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode, valueEl) || "" : value || "");
                 keyEl.innerHTML = att + '=';
                 cell.propKey = att;
                 cell.propValue = value;
@@ -201,15 +200,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
     },
 
+    appendExceptQuery: function(key, value) {
+        if (this.searchInput.value != "")
+            this.appendToQuery("NOT " + key + ": \"" + value + "\"");
+        else
+            this.appendToQuery("alias:* NOT " + key + ": \"" + value + "\"");
+    },
+
     cellClicked: function(cell, row, target, e, dataNode) {
         if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
             if (e.ctrlKey)
             {
-                if (this.searchInput.value != "")
-                    this.appendToQuery("NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
-                else
-                    this.appendToQuery("alias:* NOT " + cell.propKey + ": \"" + cell.propValue + "\"");
-
+                this.appendExceptQuery(cell.propKey, cell.propValue);
             }
             else
             {
@@ -220,12 +222,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         else if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-menu')) {
             var index = 0;
             for (var i in this.propertyMenuItems) {
-                var menuItemConfig = this.propertyMenuItems[i]; 
+                var menuItemConfig = this.propertyMenuItems[i];
                 if (menuItemConfig['visible'] != null) {
-                    var data = dataNode;
-                    var label = menuItemConfig.label;
-                    var key = cell.propKey;
-                    var value = cell.propValue;
+                    var params = {data:dataNode.getAttributes(), label:menuItemConfig.label, key:cell.propKey, value:cell.propValue}
                     var menuItem = this.cellMenu.getItem(index);
                     var condRes = eval(menuItemConfig['visible'])
                     if (!condRes)

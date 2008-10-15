@@ -23,8 +23,8 @@ class NotificationSearchTagLib {
         def emphasizeds = [];
 
         def nsXML = new XmlSlurper().parseText(configXML);
-        def tsMenus = nsXML.NsMenus.NsMenu;
-        tsMenus.each {menuItem ->
+        def nsMenus = nsXML.NsMenus.NsMenu;
+        nsMenus.each {menuItem ->
             def location = menuItem.@location.toString().trim();
             def id = menuItem.@id;
             if (location == "row") {
@@ -313,11 +313,11 @@ class NotificationSearchTagLib {
             else if (type == "execute" || type == "update") {
                 def paramString = "";
                 it.parameters.each {k, v ->
-                    paramString += ActionsTagLib.fRequestParam(key: k, value: v)
+                    paramString += ActionsTagLib.fRequestParam(key: k, value: v, "")
                 }
                 def url = "script/run/${it.script}?format=xml"
                 def actionType = type == "execute" ? "request" : "merge"
-                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, paramString, components:["searchList"]);
+                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, components:["searchList"], paramString);
             }
         }
         return output;
@@ -389,7 +389,7 @@ class NotificationSearchTagLib {
                 convString += convIndex == 0 ? "if" : "else if"
                 convString += """(key == '${it.@property}'){
                     var mapping = {${mArray.join(',')}}
-                    return mapping['${it.property}'] || value;
+                    return mapping[value] || value;
                }
                """
                 convIndex++;

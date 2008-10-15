@@ -26,51 +26,93 @@ import com.ifountain.rui.util.TagLibUtils
 class ActionsTagLib {
     static namespace = "rui"
 
-    def action = {attrs, body ->
-        validateAttributes(attrs);
+    static def fAction(attrs, bodyString) {
         def actionId = attrs["id"];
         def actionType = attrs["type"];
-        if(actionType == "function"){
-            def configXml = "<Action>${body()}</Action>"
+        def configXml = "<Action>${bodyString}</Action>"
+        if (actionType == "function") {
             def arguments = [];
             def args = new XmlSlurper().parseText(configXml).FunctionArg;
-            args.each{
+            args.each {
                 arguments.add("\"${it.text()}\"");
             }
-            out <<"""
+            return """
                <script type="text/javascript">
-               var comp = YAHOO.rapidjs.Components['${attrs["componentId"]}'];
-               var func = comp.${attrs["function"]};
-               new YAHOO.rapidjs.component.action.FunctionAction('${attrs["id"]}',comp ,func, ${attrs["condition"] ? "\"${attrs["condition"]}\"":"null"}, [${arguments.join(",")}] )
+               var ${actionId}comp = YAHOO.rapidjs.Components['${attrs["componentId"]}'];
+               var ${actionId}func = ${actionId}comp.${attrs["function"]};
+               new YAHOO.rapidjs.component.action.FunctionAction('${attrs["id"]}',${actionId}comp ,${actionId}func, ${attrs["condition"] ? "\"${attrs["condition"]}\"" : "null"}, [${arguments.join(",")}] )
                </script>
+            """;
+
+        }
+        else if (actionType == "request") {
+
+            def successJs;
+            def onSuccess = attrs["onSuccess"];
+            if (onSuccess) {
+                successJs = """
+               ${actionId}action.events['success'].subscribe(function(response, argument){
+                   YAHOO.rapidjs.Actions['${onSuccess}'].execute({});
+                }, this, true);
             """
-
+            }
+            def requestParams = [];
+            def params = new XmlSlurper().parseText(configXml).RequestParam;
+            params.each {
+                requestParams.add("${it.@key}:\"${it.@value}\"");
+            }
+            return """
+               <script type="text/javascript">
+               var ${actionId}config = {
+                 id:'${actionId}',
+                 ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
+                 url:'${attrs["url"]}'
+               }
+               var ${actionId}action = new YAHOO.rapidjs.component.action.RequestAction( ${actionId}config, {${requestParams.join(",")}});
+               ${successJs ? successJs : ""}
+               </script>
+            """ ;
+        }
+        else if (actionType == "merge") {
+            def requestParams = [];
+            def params = new XmlSlurper().parseText(configXml).RequestParam;
+            params.each {
+                requestParams.add("${it.@key}:\"${it.@value}\"");
+            }
+            def compnentList = attrs["components"];
+            def cList = [];
+            if (compnentList) {
+                compnentList.each {
+                    cList.add("YAHOO.rapidjs.Components['${it}']");
+                }
+            }
+            return """
+               <script type="text/javascript">
+               var ${actionId}config = {
+                 id:'${actionId}',
+                 ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
+                 ${attrs["removeAttribute"] ? "removeAttribute:'${attrs["removeAttribute"]}'," : ""}
+                 url:'${attrs["url"]}'
+               }
+               var ${actionId}action = new YAHOO.rapidjs.component.action.MergeAction( ${actionId}config, {${requestParams.join(",")}}, [${cList.join(",")}]);
+               </script>
+            """;
         }
     }
-
+    def action = {attrs, body ->
+         out << fAction(attrs, body());
+    }
+    static def fFunctionArg(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("FunctionArg", attrs, [], bodyString);
+    }
     def functionArg = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("FunctionArg", attrs, [], body()); 
+        out << fFunctionArg(attrs, body())
+    }
+    static def fRequestParam(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("RequestParam", attrs, ["key", "value"], bodyString);
+    }
+    def requestParam = {attrs, body ->
+        out << fRequestParam(attrs, "");
     }
 
-    def validateAttributes(config) {
-        def tagName = "action";
-        if (!config['id']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [id]")
-            return;
-        }
-        if (!config['type']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [type]")
-            return;
-        }
-        if (config['type'] == "function") {
-            if (!config['componentId']) {
-                throwTagError("Tag [${tagName}] is missing required attribute [componentId]")
-                return;
-            }
-            if (!config['function']) {
-                throwTagError("Tag [${tagName}] is missing required attribute [function]")
-                return;
-            }
-        }
-    }
 }

@@ -23,10 +23,9 @@
  */
 class RFormTagLib {
     static namespace = "rui"
-    def form = {attrs, body ->
-        validateAttributes(attrs);
+    static def fForm(attrs, bodyString){
         def formId = attrs["id"];
-        def configStr = getConfig(attrs, body);
+        def configStr = getConfig(attrs);
         def onSuccess = attrs["onSuccess"];
         def successJs;
         if(onSuccess != null){
@@ -36,10 +35,9 @@ class RFormTagLib {
                 }, this, true);
             """
         }
-        def formBody = body();
         def containerId = "rform_${attrs["id"]}"
-        out << """
-           <div id="${containerId}">${formBody.trim()}</div>
+        return  """
+           <div id="${containerId}">${bodyString.trim()}</div>
            <script type="text/javascript">
                var ${formId}conf = ${configStr};
                var ${formId}parentContainer = document.getElementById('${containerId}');
@@ -48,22 +46,13 @@ class RFormTagLib {
                var ${formId}form = new YAHOO.rapidjs.component.Form(${formId}container, ${formId}conf);
                 ${successJs ? successJs:""}
            </script>
-        """
+        """;
+    }
+    def form = {attrs, body ->
+        out << fForm(attrs, body());
     }
 
-    def validateAttributes(config) {
-        def tagName = "form";
-        if (!config['id']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [id]")
-            return;
-        }
-        if (!config['width']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [width]")
-            return;
-        }
-    }
-
-    def getConfig(attrs, body){
+    static def getConfig(attrs){
          return """{
             id:'${attrs["id"]}',
             ${attrs["createUrl"] ? "createUrl:'${attrs["createUrl"]}'," : ""}

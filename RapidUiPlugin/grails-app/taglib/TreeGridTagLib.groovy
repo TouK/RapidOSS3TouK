@@ -18,88 +18,67 @@ import com.ifountain.rui.util.TagLibUtils
 * USA.
 */
 /**
- * Created by IntelliJ IDEA.
- * User: Sezgin Kucukkaraaslan
- * Date: Oct 7, 2008
- * Time: 11:26:22 AM
- */
+* Created by IntelliJ IDEA.
+* User: Sezgin Kucukkaraaslan
+* Date: Oct 7, 2008
+* Time: 11:26:22 AM
+*/
 class TreeGridTagLib {
     static namespace = "rui"
-    def treeGrid = {attrs, body ->
-        validateAttributes(attrs);
+    static def fTreeGrid(attrs, bodyString) {
         def treeGridId = attrs["id"];
         def onNodeClick = attrs["onNodeClick"];
         def nodeClickJs;
         def menuEventsJs;
-        if(onNodeClick != null){
+        if (onNodeClick != null) {
             nodeClickJs = """
                ${treeGridId}tg.events['treeNodeClick'].subscribe(function(xmlData){
                    var params = {data:xmlData.getAttributes()};
-                   YAHOO.rapidjs.Actions['${onNodeClick}'].execute(params); 
-                }, this, true); 
+                   YAHOO.rapidjs.Actions['${onNodeClick}'].execute(params);
+                }, this, true);
             """
         }
-        def configXML = "<TreeGrid>${body()}</TreeGrid>";
+        def configXML = "<TreeGrid>${bodyString}</TreeGrid>";
         def menuEvents = [:]
         def configStr = getConfig(attrs, configXML, menuEvents);
-        if(menuEvents.size() > 0){
+        if (menuEvents.size() > 0) {
             def innerJs = "";
             def index = 0;
-            menuEvents.each{id, action ->
-                innerJs += index ==0 ? "if": "else if";
-                innerJs +="""(id == '${id}'){
-                   var params = {data:xmlData.getAttributes(), id:id, parentId:parentId};
+            menuEvents.each {id, action ->
+                innerJs += index == 0 ? "if" : "else if";
+                innerJs += """(id == '${id}'){
                    YAHOO.rapidjs.Actions['${action}'].execute(params);
                 }
                 """
-                index ++;
+                index++;
             }
             menuEventsJs = """
                ${treeGridId}tg.events['rowMenuClick'].subscribe(function(xmlData, id, parentId){
+                   var params = {data:xmlData.getAttributes(), id:id, parentId:parentId};
                    ${innerJs}
-                }, this, true); 
+                }, this, true);
             """
 
         }
-        out << """
+        return """
            <script type="text/javascript">
                var ${treeGridId}c = ${configStr};
                var ${treeGridId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var ${treeGridId}tg = new YAHOO.rapidjs.component.TreeGrid(${treeGridId}container, ${treeGridId}c);
-               ${nodeClickJs ? nodeClickJs:""}
-               ${menuEventsJs ? menuEventsJs:""}
+               ${nodeClickJs ? nodeClickJs : ""}
+               ${menuEventsJs ? menuEventsJs : ""}
                if(${treeGridId}tg.pollingInterval > 0){
                    ${treeGridId}tg.poll();
                }
            </script>
         """
     }
-
-    def validateAttributes(config) {
-        def tagName = "treeGrid";
-        if (!config['id']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [id]")
-            return;
-        }
-        if (!config['url']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [url]")
-            return;
-        }
-        if (!config['rootTag']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [rootTag]")
-            return;
-        }
-        if (!config['contentPath']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [contentPath]")
-            return;
-        }
-        if (!config['keyAttribute']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [keyAttribute]")
-            return;
-        }
+    def treeGrid = {attrs, body ->
+        out << fTreeGrid(attrs, body());
     }
 
-    def getConfig(config, configXML, menuEvents) {
+
+    static def getConfig(config, configXML, menuEvents) {
         def xml = new XmlSlurper().parseText(configXML);
         def cArray = [];
         cArray.add("id: '${config["id"]}'")
@@ -151,7 +130,7 @@ class TreeGridTagLib {
         return "{${cArray.join(',\n')}}"
     }
 
-    def processMenuItem(menuItem, eventMap) {
+    static def processMenuItem(menuItem, eventMap) {
         def menuItemArray = [];
         def id = menuItem.@id;
         def label = menuItem.@label;
@@ -185,39 +164,59 @@ class TreeGridTagLib {
         }
         return "{${menuItemArray.join(',\n')}}"
     }
-
+    static def fTgColumns(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("Columns", attrs, [], bodyString)
+    }
     def tgColumns = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("Columns", attrs, [], body())
+        out << fTgColumns(attrs, body())
     }
-
-    def tgColumn = {attrs, body ->
+    static def fTgColumn(attrs, bodyString) {
         def validAttrs = ["attributeName", "colLabel", "sortBy", "type", "width"];
-        out << TagLibUtils.getConfigAsXml("Column", attrs, validAttrs)
+        return TagLibUtils.getConfigAsXml("Column", attrs, validAttrs)
     }
-
+    def tgColumn = {attrs, body ->
+        out << fTgColumn(attrs, "");
+    }
+    static def fTgRootImages(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("RootImages", attrs, [], bodyString)
+    }
     def tgRootImages = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("RootImages", attrs, [], body())
+        out << fTgRootImages(attrs, body());
+    }
+    static def fTgRootImage(attrs, bodyString) {
+        def validAttrs = ["visible", "expanded", "collapsed"];
+        return TagLibUtils.getConfigAsXml("RootImage", attrs, validAttrs)
     }
 
     def tgRootImage = {attrs, body ->
-        def validAttrs = ["visible", "expanded", "collapsed"];
-        out << TagLibUtils.getConfigAsXml("RootImage", attrs, validAttrs)
+        out << fTgRootImage(attrs, "");
     }
 
+    static def fTgMenuItems(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("MenuItems", attrs, [], bodyString)
+    }
     def tgMenuItems = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("MenuItems", attrs, [], body());
+        out << fTgMenuItems(attrs, body());
     }
-
-    def tgMenuItem = {attrs, body ->
+    static def fTgMenuItem(attrs, bodyString) {
         def validAttrs = ["id", "label", "visible", "action"];
-        out << TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs, body());
+        return TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs, bodyString)
+    }
+    def tgMenuItem = {attrs, body ->
+        out << fTgMenuItem(attrs, body());
     }
 
+    static def fTgSubmenuItems(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("SubmenuItems", attrs, [], bodyString)
+    }
     def tgSubmenuItems = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("SubmenuItems", attrs, [], body())
+        out << fTgSubmenuItems(attrs, body());
+    }
+    static def fTgSubmenuItem(attrs, bodyString) {
+        def validAttrs = ["id", "label", "visible", "action"];
+        return TagLibUtils.getConfigAsXml("SubmenuItem", attrs, validAttrs)
     }
     def tgSubmenuItem = {attrs, body ->
-        def validAttrs = ["id", "label", "visible", "action"];
-        out << TagLibUtils.getConfigAsXml("SubmenuItem", attrs, validAttrs)
+        out << fTgSubmenuItem(attrs, "");
     }
 }

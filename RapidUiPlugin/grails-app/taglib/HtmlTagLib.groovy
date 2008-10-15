@@ -22,11 +22,10 @@
  * Time: 5:00:16 PM
  */
 class HtmlTagLib {
-   static namespace = "rui"
-   def html = {attrs, body ->
-        validateAttributes(attrs);
-        def configStr = getConfig(attrs, body);
-        out << """
+    static namespace = "rui"
+    static def fHtml(attrs, bodyString) {
+        def configStr = getConfig(attrs);
+        return """
            <script type="text/javascript">
                var htmlConfig = ${configStr};
                var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
@@ -35,26 +34,13 @@ class HtmlTagLib {
                    html.poll();
                }
            </script>
-        """
+        """;
+    }
+    def html = {attrs, body ->
+         out << fHtml(attrs, "");
     }
 
-    def validateAttributes(config) {
-        def tagName = "html";
-        if (!config['id']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [id]")
-            return;
-        }
-        if (!config['width']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [width]")
-            return;
-        }
-        if (!config['height']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [height]")
-            return;
-        }
-    }
-
-    def getConfig(attrs, body){
+    static def getConfig(attrs) {
         return """{
             id:'${attrs["id"]}',
             ${attrs["iframe"] ? "iframe:${attrs["iframe"]}," : ""}

@@ -25,69 +25,81 @@ import com.ifountain.rui.util.TagLibUtils
  */
 class SearchListTagLib {
     static namespace = "rui"
-    def searchList = {attrs, body ->
-        validateAttributes(attrs);
+    static def fSearchList(attrs, bodyString) {
         def searchListId = attrs["id"];
-        def configXML = "<SearchList>${body()}</SearchList>";
+        def configXML = "<SearchList>${bodyString}</SearchList>";
+        def onSaveQueryClick = attrs["onSaveQueryClick"];
+        def saveQueryClickJs;
+        if (onSaveQueryClick != null) {
+            saveQueryClickJs = """
+               ${searchListId}sl.events['saveQueryClicked'].subscribe(function(query){
+                   var params = {query:query};
+                   YAHOO.rapidjs.Actions['${onSaveQueryClick}'].execute(params);
+                }, this, true);
+            """
+        }
         def menuEvents = [:]
         def propertyMenuEvents = [:]
+        def menuEventsJs;
+        def propMenuEventsJs;
         def configStr = getConfig(attrs, configXML, menuEvents, propertyMenuEvents);
-        out << """
+        if (menuEvents.size() > 0) {
+            def innerJs = "";
+            def index = 0;
+            menuEvents.each {id, action ->
+                innerJs += index == 0 ? "if" : "else if";
+                innerJs += """(id == '${id}'){
+                   YAHOO.rapidjs.Actions['${action}'].execute(params);
+                }
+                """
+                index++;
+            }
+            menuEventsJs = """
+               ${searchListId}sl.events['rowHeaderMenuClick'].subscribe(function(xmlData, id, parentId){
+                   var params = {data:xmlData.getAttributes(), id:id, parentId:parentId};
+                   ${innerJs}
+                }, this, true);
+            """
+
+        }
+        if (propertyMenuEvents.size() > 0) {
+            def innerJs = "";
+            def index = 0;
+            propertyMenuEvents.each {id, action ->
+                innerJs += index == 0 ? "if" : "else if";
+                innerJs += """(id == '${id}'){
+                   YAHOO.rapidjs.Actions['${action}'].execute(params);
+                }
+                """
+                index++;
+            }
+            propMenuEventsJs = """
+               ${searchListId}sl.events['cellMenuClick'].subscribe(function(key, value, xmlData, id){
+                   var params = {data:xmlData.getAttributes(), id:id, key:key, value:value};
+                   ${innerJs}
+                }, this, true);
+            """
+
+        }
+        return """
            <script type="text/javascript">
                var ${searchListId}c = ${configStr};
                var ${searchListId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var ${searchListId}sl = new YAHOO.rapidjs.component.search.SearchList(${searchListId}container, ${searchListId}c);
-               ${searchListId}sl.events["cellMenuClick"].subscribe(function(key, value, data, id) {
-
-               }, this, true);
+               ${saveQueryClickJs ? saveQueryClickJs : ""}
+               ${menuEventsJs ? menuEventsJs : ""}
+               ${propMenuEventsJs ? propMenuEventsJs : ""}
                if(${searchListId}sl.pollingInterval > 0){
                    ${searchListId}sl.poll();
                }
            </script>
         """
     }
-
-    def validateAttributes(config) {
-        def tagName = "searchList";
-        if (!config['id']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [id]")
-            return;
-        }
-        if (!config['url']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [url]")
-            return;
-        }
-        if (!config['rootTag']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [rootTag]")
-            return;
-        }
-        if (!config['contentPath']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [contentPath]")
-            return;
-        }
-        if (!config['keyAttribute']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [keyAttribute]")
-            return;
-        }
-        if (!config['queryParameter']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [queryParameter]")
-            return;
-        }
-        if (!config['totalCountAttribute']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [totalCountAttribute]")
-            return;
-        }
-        if (!config['offsetAttribute']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [offsetAttribute]")
-            return;
-        }
-        if (!config['sortOrderAttribute']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [sortOrderAttribute]")
-            return;
-        }
+    def searchList = {attrs, body ->
+        out << fSearchList(attrs, body());
     }
 
-    def getConfig(config, configXML, menuEvents, propertyMenuEvents) {
+    static def getConfig(config, configXML, menuEvents, propertyMenuEvents) {
         def xml = new XmlSlurper().parseText(configXML);
         def cArray = [];
         cArray.add("id: '${config["id"]}'")
@@ -160,7 +172,7 @@ class SearchListTagLib {
         return "{${cArray.join(',\n')}}"
     }
 
-    def processMenuItem(menuItem, eventMap) {
+    static def processMenuItem(menuItem, eventMap) {
         def menuItemArray = [];
         def id = menuItem.@id;
         def label = menuItem.@label;
@@ -194,42 +206,64 @@ class SearchListTagLib {
         }
         return "{${menuItemArray.join(',\n')}}"
     }
-
-    def slMenuItems = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("MenuItems", attrs, [], body());
+    static def fSlMenuItems(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("MenuItems", attrs, [], bodyString);
     }
-
+    def slMenuItems = {attrs, body ->
+        out << fSlMenuItems(attrs, body());
+    }
+    static def fSlPropertyMenuItems(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("PropertyMenuItems", attrs, [], bodyString);
+    }
     def slPropertyMenuItems = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("PropertyMenuItems", attrs, [], body());
+        out << fSlPropertyMenuItems(attrs, body());
+    }
+    static def fSlSubmenuItems(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("SubmenuItems", attrs, [], bodyString);
     }
     def slSubmenuItems = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("SubmenuItems", attrs, [], body())
+        out << fSlSubmenuItems(attrs, body());
     }
 
+    static def fSlMenuItem(attrs, bodyString) {
+        def validAttrs = ["id", "label", "visible", "action"];
+        return TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs, bodyString);
+    }
     def slMenuItem = {attrs, body ->
-        def validAttrs = ["id", "label", "visible", "action"];
-        out << TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs, body());
+        out << fSlMenuItem(attrs, body())
     }
-
+    static def fSlSubmenuItem(attrs, bodyString) {
+        def validAttrs = ["id", "label", "visible", "action"];
+        return TagLibUtils.getConfigAsXml("SubmenuItem", attrs, validAttrs, bodyString);
+    }
     def slSubmenuItem = {attrs, body ->
-        def validAttrs = ["id", "label", "visible", "action"];
-        out << TagLibUtils.getConfigAsXml("SubmenuItem", attrs, validAttrs)
+        out << fSlSubmenuItem(attrs, body());
     }
-
+    static def fSlImages(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("Images", attrs, [], bodyString);
+    }
     def slImages = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("Images", attrs, [], body())
+        out << fSlImages(attrs, body())
+    }
+    static def fSlImage(attrs, bodyString){
+        def validAttrs = ["src", "visible"];
+        return TagLibUtils.getConfigAsXml("Image", attrs, validAttrs);
     }
     def slImage = {attrs, body ->
-        def validAttrs = ["src", "visible"];
-        out << TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
+        out << fSlImage(attrs,"")
     }
-
+    static def fSlFields(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("Fields", attrs, [], bodyString);
+    }
     def slFields = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("Fields", attrs, [], body())
+        out << fSlFields(attrs, body());
+    }
+    static def fSlField(attrs, bodyString){
+        def validAttrs = ["exp", "fields"];
+        return TagLibUtils.getConfigAsXml("Field", attrs, validAttrs)
     }
     def slField = {attrs, body ->
-        def validAttrs = ["exp", "fields"];
-        out << TagLibUtils.getConfigAsXml("Field", attrs, validAttrs)
+        out << fSlField(attrs, "")
     }
 
 }

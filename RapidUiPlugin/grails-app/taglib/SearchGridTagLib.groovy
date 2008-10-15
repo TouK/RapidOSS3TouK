@@ -25,69 +25,59 @@ import com.ifountain.rui.util.TagLibUtils
  */
 class SearchGridTagLib {
     static namespace = "rui"
-    def searchGrid = {attrs, body ->
-        validateAttributes(attrs);
+    static def fSearchGrid(attrs, bodyString){
         def searchGridId = attrs["id"];
-        def configXML = "<SearchGrid>${body()}</SearchGrid>";
+        def configXML = "<SearchGrid>${bodyString}</SearchGrid>";
+        def onSaveQueryClick = attrs["onSaveQueryClick"];
+        def saveQueryClickJs;
+        if (onSaveQueryClick != null) {
+            saveQueryClickJs = """
+               ${searchGridId}sg.events['saveQueryClicked'].subscribe(function(query){
+                   var params = {query:query};
+                   YAHOO.rapidjs.Actions['${onSaveQueryClick}'].execute(params);
+                }, this, true);
+            """
+        }
         def menuEvents = [:]
+         def menuEventsJs;
         def configStr = getConfig(attrs, configXML, menuEvents);
-        out << """
+        if (menuEvents.size() > 0) {
+            def innerJs = "";
+            def index = 0;
+            menuEvents.each {id, action ->
+                innerJs += index == 0 ? "if" : "else if";
+                innerJs += """(id == '${id}'){
+                   YAHOO.rapidjs.Actions['${action}'].execute(params);
+                }
+                """
+                index++;
+            }
+            menuEventsJs = """
+               ${searchGridId}sg.events['rowHeaderMenuClick'].subscribe(function(xmlData, id, parentId){
+                   var params = {data:xmlData.getAttributes(), id:id, parentId:parentId};
+                   ${innerJs}
+                }, this, true);
+            """
+
+        }
+        return """
            <script type="text/javascript">
                var ${searchGridId}c = ${configStr};
                var ${searchGridId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
-               var ${searchGridId}sl = new YAHOO.rapidjs.component.search.SearchGrid(${searchGridId}container, ${searchGridId}c);
-               if(${searchGridId}sl.pollingInterval > 0){
-                   ${searchGridId}sl.poll();
+               var ${searchGridId}sg = new YAHOO.rapidjs.component.search.SearchGrid(${searchGridId}container, ${searchGridId}c);
+               ${saveQueryClickJs ? saveQueryClickJs : ""}
+               ${menuEventsJs ? menuEventsJs : ""}
+               if(${searchGridId}sg.pollingInterval > 0){
+                   ${searchGridId}sg.poll();
                }
            </script>
         """
     }
-
-    def validateAttributes(config) {
-        def tagName = "searchGrid";
-        if (!config['id']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [id]")
-            return;
-        }
-        if (!config['url']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [url]")
-            return;
-        }
-        if (!config['fieldsUrl']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [fieldsUrl]")
-            return;
-        }
-        if (!config['rootTag']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [rootTag]")
-            return;
-        }
-        if (!config['contentPath']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [contentPath]")
-            return;
-        }
-        if (!config['keyAttribute']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [keyAttribute]")
-            return;
-        }
-        if (!config['queryParameter']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [queryParameter]")
-            return;
-        }
-        if (!config['totalCountAttribute']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [totalCountAttribute]")
-            return;
-        }
-        if (!config['offsetAttribute']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [offsetAttribute]")
-            return;
-        }
-        if (!config['sortOrderAttribute']) {
-            throwTagError("Tag [${tagName}] is missing required attribute [sortOrderAttribute]")
-            return;
-        }
+    def searchGrid = {attrs, body ->
+        out << fSearchGrid(attrs, body());
     }
 
-    def getConfig(config, configXML, menuEvents) {
+    static def getConfig(config, configXML, menuEvents) {
         def xml = new XmlSlurper().parseText(configXML);
         def cArray = [];
         cArray.add("id: '${config["id"]}'")
@@ -143,7 +133,7 @@ class SearchGridTagLib {
         return "{${cArray.join(',\n')}}"
     }
 
-    def processMenuItem(menuItem, eventMap) {
+    static def processMenuItem(menuItem, eventMap) {
         def menuItemArray = [];
         def id = menuItem.@id;
         def label = menuItem.@label;
@@ -177,34 +167,59 @@ class SearchGridTagLib {
         }
         return "{${menuItemArray.join(',\n')}}"
     }
-
+    static def fSgMenuItems(attrs, bodyString){
+        return TagLibUtils.getConfigAsXml("MenuItems", attrs, [], bodyString);
+    }
     def sgMenuItems = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("MenuItems", attrs, [], body());
+        out << fSgMenuItems(attrs, body())
+    }
+    static def fSgSubmenuItems(attrs, bodyString){
+        return TagLibUtils.getConfigAsXml("SubmenuItems", attrs, [], bodyString)
     }
     def sgSubmenuItems = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("SubmenuItems", attrs, [], body())
+        out << fSgSubmenuItems(attrs, body())
+    }
+    static def fSgMenuItem(attrs, bodyString){
+        def validAttrs = ["id", "label", "visible", "action"];
+        return TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs, bodyString)
     }
     def sgMenuItem = {attrs, body ->
+        out << fSgMenuItem(attrs, body())
+    }
+    static def fSgSubmenuItem(attrs, bodyString){
         def validAttrs = ["id", "label", "visible", "action"];
-        out << TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs, body());
+        return TagLibUtils.getConfigAsXml("SubmenuItem", attrs, validAttrs)
     }
 
     def sgSubmenuItem = {attrs, body ->
-        def validAttrs = ["id", "label", "visible", "action"];
-        out << TagLibUtils.getConfigAsXml("SubmenuItem", attrs, validAttrs)
+        out << fSgSubmenuItem(attrs, "")
+    }
+    static def fSgImages(attrs, bodyString){
+        return TagLibUtils.getConfigAsXml("Images", attrs, [], bodyString)
     }
     def sgImages = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("Images", attrs, [], body())
+        out << fSgImages(attrs, body())
+    }
+
+     static def fSgImage(attrs, bodyString){
+        def validAttrs = ["src", "visible"];
+        return TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
     }
     def sgImage = {attrs, body ->
-        def validAttrs = ["src", "visible"];
-        out << TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
+        out << fSgImage(attrs, "")
+    }
+
+    static def fSgColumns(attrs, bodyString){
+        return TagLibUtils.getConfigAsXml("Columns", attrs, [], bodyString)
     }
     def sgColumns = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("Columns", attrs, [], body())
+        out << fSgColumns(attrs, body())
+    }
+     static def fSgColumn(attrs, bodyString){
+        def validAttrs = ["attributeName", "colLabel", "sortBy", "sortOrder", "width"];
+        return TagLibUtils.getConfigAsXml("Column", attrs, validAttrs)
     }
     def sgColumn = {attrs, body ->
-        def validAttrs = ["attributeName", "colLabel", "sortBy", "sortOrder", "width"];
-        out << TagLibUtils.getConfigAsXml("Column", attrs, validAttrs)
+        out << fSgColumn(attrs, "")
     }
 }

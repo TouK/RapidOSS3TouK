@@ -66,7 +66,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
              */
             grailsDomainClass.metaClass.'static'.search << { Object[] args ->
                 def res = searchableMethodFactory.getMethod(delegate, "search").invoke(*args)
-                res.results.each{result->
+                res?.results?.each{result->
                     EventTriggeringUtils.triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
                 }
 
@@ -94,7 +94,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
              */
             grailsDomainClass.metaClass.'static'.searchEvery << { Object[] args ->
                 def res = searchableMethodFactory.getMethod(delegate, "searchEvery").invoke(*args)
-                res.each{result->
+                res?.each{result->
                     EventTriggeringUtils.triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
                 }
                 return res;

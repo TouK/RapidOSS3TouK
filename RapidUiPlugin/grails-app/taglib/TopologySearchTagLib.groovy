@@ -25,12 +25,12 @@ import com.ifountain.rui.util.TagLibUtils
  */
 class TopologySearchTagLib {
     static namespace = "rui";
-
     def topologySearch = {attrs, body ->
         def configXML = "<TopologySearch>${body()}</TopologySearch>";
         def searchListPollInterval = attrs["searchResultsPollingInterval"] ? attrs["searchResultsPollingInterval"] : "0";
         def treeGridPollInterval = attrs["queriesPollingInterval"] ? attrs["queriesPollingInterval"] : "0";
         def lineSize = attrs["numberOfLines"] ? attrs["numberOfLines"] : "3";
+        def defaultFields = attrs["defaultFields"] ? attrs["defaultFields"] : [];
         def rowMenus = [];
         def propertyMenus = [];
         def actions = [];
@@ -86,15 +86,15 @@ class TopologySearchTagLib {
                         TreeGridTagLib.fTgColumn(attributeName: "name", colLabel: "Name", width: "248", sortBy: "true", "")
                 ) +
                         TreeGridTagLib.fTgMenuItems([:],
-                                TreeGridTagLib.fTgMenuItem(id: "deleteQuery", label: "Delete", visible: "data.isPublic != 'true' && data.nodeType == 'filter'", action: "deleteQueryAction", "") +
-                                        TreeGridTagLib.fTgMenuItem(id: "deleteQueryGroup", label: "Delete", visible: "data.isPublic != 'true' && data.name != 'Default' && data.nodeType == 'group'", action: "deleteQueryGroupAction", "") +
-                                        TreeGridTagLib.fTgMenuItem(id: "queryUpdate", label: "Update", visible: "data.nodeType == 'filter' && data.isPublic != 'true'", action: "queryUpdateAction", "") +
-                                        TreeGridTagLib.fTgMenuItem(id: "queryGroupUpdate", label: "Update", visible: "data.isPublic != 'true' && data.name != 'Default' && data.nodeType == 'group'", action: "queryGroupUpdateAction", "") +
-                                        TreeGridTagLib.fTgMenuItem(id: "copyQuery", label: "Copy Query", visible: "data.nodeType == 'filter'", action: "copyQueryAction", "")
+                                TreeGridTagLib.fTgMenuItem(id: "deleteQuery", label: "Delete", visible: "params.data.isPublic != 'true' && params.data.nodeType == 'filter'", action: "deleteQueryAction", "") +
+                                        TreeGridTagLib.fTgMenuItem(id: "deleteQueryGroup", label: "Delete", visible: "params.data.isPublic != 'true' && params.data.name != 'Default' && params.data.nodeType == 'group'", action: "deleteQueryGroupAction", "") +
+                                        TreeGridTagLib.fTgMenuItem(id: "queryUpdate", label: "Update", visible: "params.data.nodeType == 'filter' && params.data.isPublic != 'true'", action: "queryUpdateAction", "") +
+                                        TreeGridTagLib.fTgMenuItem(id: "queryGroupUpdate", label: "Update", visible: "params.data.isPublic != 'true' && params.data.name != 'Default' && params.data.nodeType == 'group'", action: "queryGroupUpdateAction", "") +
+                                        TreeGridTagLib.fTgMenuItem(id: "copyQuery", label: "Copy Query", visible: "params.data.nodeType == 'filter'", action: "copyQueryAction", "")
                         ) +
                         TreeGridTagLib.fTgRootImages([:],
-                                TreeGridTagLib.fTgRootImage(visible: "data.nodeType == 'group'", expanded: "images/rapidjs/component/tools/folder_open.gif", collapsed: "images/rapidjs/component/tools/folder.gif", "") +
-                                        TreeGridTagLib.fTgRootImage(visible: "data.nodeType == 'filter'", expanded: "images/rapidjs/component/tools/filter.png", collapsed: "images/rapidjs/component/tools/filter.png", "")
+                                TreeGridTagLib.fTgRootImage(visible: "params.data.nodeType == 'group'", expanded: "images/rapidjs/component/tools/folder_open.gif", collapsed: "images/rapidjs/component/tools/folder.gif", "") +
+                                        TreeGridTagLib.fTgRootImage(visible: "params.data.nodeType == 'filter'", expanded: "images/rapidjs/component/tools/filter.png", collapsed: "images/rapidjs/component/tools/filter.png", "")
                         )
         )
 
@@ -139,7 +139,7 @@ class TopologySearchTagLib {
         )
         out << SearchListTagLib.fSearchList(id: "searchList", url: "search?format=xml&searchIn=RsTopologyObject", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
                 keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", lineSize: "3", title: "Smarts Objects",
-                defaultFields: ['creationClassName', 'name', 'description', 'displayName', 'isManaged'], onSaveQueryClick: "saveQueryAction",
+                defaultFields: defaultFields, onSaveQueryClick: "saveQueryAction",
                 pollingInterval: searchListPollInterval, lineSize: lineSize,
                 SearchListTagLib.fSlMenuItems([:],
                         SearchListTagLib.fSlMenuItem(id: "topMap", label: "Show Map", "") + getMenuXml(rowMenus)
@@ -148,10 +148,10 @@ class TopologySearchTagLib {
                                 SearchListTagLib.fSlMenuItem(id: "sortAsc", label: "Sort asc", action: "searchListSortAscAction", "") +
                                         SearchListTagLib.fSlMenuItem(id: "sortDesc", label: "Sort desc", action: "searchListSortDescAction", "") +
                                         SearchListTagLib.fSlMenuItem(id: "except", label: "Except", action: "exceptAction", "") +
-                                        SearchListTagLib.fSlMenuItem(id: "greaterThan", label: "Greater than", action: "greaterThanAction", visible: "YAHOO.lang.isNumber(parseInt(value))", "") +
-                                        SearchListTagLib.fSlMenuItem(id: "lessThan", label: "Less than", action: "lessThanAction", visible: "YAHOO.lang.isNumber(parseInt(value))", "") +
-                                        SearchListTagLib.fSlMenuItem(id: "greaterThanOrEqualTo", label: "Greater than or equal to", action: "greaterThanOrEqualToAction", visible: "YAHOO.lang.isNumber(parseInt(value))", "") +
-                                        SearchListTagLib.fSlMenuItem(id: "lessThanOrEqualTo", label: "Less than or equal to", action: "lessThanOrEqualToAction", visible: "YAHOO.lang.isNumber(parseInt(value))", "") +
+                                        SearchListTagLib.fSlMenuItem(id: "greaterThan", label: "Greater than", action: "greaterThanAction", visible: "YAHOO.lang.isNumber(parseInt(params.value))", "") +
+                                        SearchListTagLib.fSlMenuItem(id: "lessThan", label: "Less than", action: "lessThanAction", visible: "YAHOO.lang.isNumber(parseInt(params.value))", "") +
+                                        SearchListTagLib.fSlMenuItem(id: "greaterThanOrEqualTo", label: "Greater than or equal to", action: "greaterThanOrEqualToAction", visible: "YAHOO.lang.isNumber(parseInt(params.value))", "") +
+                                        SearchListTagLib.fSlMenuItem(id: "lessThanOrEqualTo", label: "Less than or equal to", action: "lessThanOrEqualToAction", visible: "YAHOO.lang.isNumber(parseInt(params.value))", "") +
                                         getMenuXml(propertyMenus)
                         ) +
                         SearchListTagLib.fSlFields([:], getFieldsXml(fields))
@@ -349,7 +349,7 @@ class TopologySearchTagLib {
                 }
                 def url = "script/run/${it.script}?format=xml"
                 def actionType = type == "execute" ? "request" : "merge"
-                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, paramString);
+                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, paramString, components:["searchList"]);
             }
         }
         return output;
@@ -366,7 +366,7 @@ class TopologySearchTagLib {
     def getFieldsXml(fields) {
         def output = ""
         fields.each {
-            output += SearchListTagLib.fSlField(exp: "data.rsAlias == '${it.alias}'", fields: it.fields, "");
+            output += SearchListTagLib.fSlField(exp: "params.data.rsAlias == '${it.alias}'", fields: it.fields, "");
         }
         return output;
     }

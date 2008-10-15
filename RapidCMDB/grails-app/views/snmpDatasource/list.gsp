@@ -20,7 +20,7 @@
                     <thead>
                         <tr>
                         
-                   	        <g:sortableColumn property="id" title="Id" />
+                   	       
                         
                    	        <g:sortableColumn property="name" title="Name" />
                         
@@ -32,9 +32,7 @@
                     <g:each in="${snmpDatasourceList}" status="i" var="snmpDatasource">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td><g:link action="show" id="${snmpDatasource.id}">${snmpDatasource.id?.encodeAsHTML()}</g:link></td>
-                        
-                            <td>${snmpDatasource.name?.encodeAsHTML()}</td>
+                            <td><g:link action="show" id="${snmpDatasource.id}">${snmpDatasource.name?.encodeAsHTML()}</g:link></td>
                         
 
                             <td>${snmpDatasource.connection?.encodeAsHTML()}</td>

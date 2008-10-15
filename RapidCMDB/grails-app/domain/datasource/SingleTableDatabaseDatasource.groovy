@@ -25,7 +25,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
         
      tableName(blank:false,nullable:false)
         
-     connection(nullable:true)
+     connection(nullable:false)
         
      
     }

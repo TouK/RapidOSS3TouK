@@ -15,7 +15,7 @@ class SnmpDatasource extends BaseListeningDatasource {
             connection:[isMany:false, reverseName:"snmpDatasources", type:SnmpConnection]
     ]
     static constraints={
-    connection(nullable:true)
+    connection(nullable:false)
      
     }
 }

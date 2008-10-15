@@ -14,7 +14,7 @@ class HttpDatasource extends BaseDatasource{
             connection:[isMany:false, reverseName:"httpDatasources", type:HttpConnection]
     ]
     static constraints={
-    connection(nullable:true)
+    connection(nullable:false)
         
      
     }

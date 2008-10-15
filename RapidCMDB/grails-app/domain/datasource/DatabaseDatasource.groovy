@@ -16,7 +16,7 @@ class DatabaseDatasource extends BaseDatasource{
             connection:[isMany:false, reverseName:"databaseDatasources", type:DatabaseConnection]
     ]
     static constraints={
-    connection(nullable:true)
+    connection(nullable:false)
         
      
     }

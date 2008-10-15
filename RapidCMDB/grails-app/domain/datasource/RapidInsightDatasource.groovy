@@ -16,7 +16,7 @@ class RapidInsightDatasource extends BaseDatasource{
             connection:[isMany:false, reverseName:"rapidInsightDatasources", type:RapidInsightConnection]
     ]
     static constraints={
-    connection(nullable:true)
+    connection(nullable:false)
         
      
     }

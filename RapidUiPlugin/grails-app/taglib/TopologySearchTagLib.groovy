@@ -345,11 +345,11 @@ class TopologySearchTagLib {
             else if (type == "execute" || type == "update") {
                 def paramString = "";
                 it.parameters.each {k, v ->
-                    paramString += ActionsTagLib.fRequestParam(key: k, value: v)
+                    paramString += ActionsTagLib.fRequestParam(key: k, value: v, "")
                 }
                 def url = "script/run/${it.script}?format=xml"
                 def actionType = type == "execute" ? "request" : "merge"
-                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, paramString, components:["searchList"]);
+                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, components:["searchList"], paramString);
             }
         }
         return output;
@@ -370,17 +370,18 @@ class TopologySearchTagLib {
         }
         return output;
     }
-    def getConvsersionJs(conversionsXml, emphasizeds) {
+   def getConvsersionJs(conversionsXml, emphasizeds) {
         def emphasizedString = "";
         def empIndex = 0;
         emphasizeds.each {
-            def empJs = it.emphasizeds.size() > 0 ? " && (${it.emphasizeds.join(' || ')})" : "";
-            emphasizedString += empIndex == 0 ? "if" : "else if"
-            emphasizedString += """(data.rsAlias == '${it.alias}' ${empJs}){
+            if(it.emphasizeds.size() > 0){
+                emphasizedString += empIndex == 0 ? "if" : "else if"
+                emphasizedString += """(data.rsAlias == '${it.alias}' && (${it.emphasizeds.join(' || ')})){
                 YAHOO.util.Dom.setStyle(el, 'color', 'blue');
             }
             """
-            empIndex++;
+                empIndex++;
+            }
         }
         def convString = "";
         def convIndex = 0;
@@ -389,19 +390,20 @@ class TopologySearchTagLib {
             if (type == "date") {
                 convString += convIndex == 0 ? "if" : "else if"
                 def format = it.@format.toString();
-                convString += """(data.rsAlias == '${it.alias}' && key == '${it.property}'){
+                convString += """(key == '${it.@property}'){
                 try{
                     var d = new Date();
                     d.setTime(parseFloat(value))
                     return d.format("${format}");
                 }
                 catch(e){}
-               }     
+               }
                """
                 convIndex++;
             }
             else if (type == "function") {
-                convString += """(data.rsAlias == '${it.alias}' && key == '${it.property}'){
+                convString += convIndex == 0 ? "if" : "else if"
+                convString += """(key == '${it.@property}'){
                 try{
                     return ${it.@function}(key, value, data, el);
                 }
@@ -416,10 +418,10 @@ class TopologySearchTagLib {
                 mappings.each {
                     mArray.add("'${it.@key}':'${it.@value}'")
                 }
-
-                convString += """(data.rsAlias == '${it.alias}' && key == '${it.property}'){
+                convString += convIndex == 0 ? "if" : "else if"
+                convString += """(key == '${it.@property}'){
                     var mapping = {${mArray.join(',')}}
-                    return mapping['${it.property}'] || value;
+                    return mapping[value] || value;
                }
                """
                 convIndex++;

@@ -38,7 +38,6 @@ class TagLibUtils {
                 listAttributes.put(it, value)
             }
             else if(value instanceof Map){
-                println "${it} is instance of map"
                 mapAttributes.put(it, value)
             }
             else{

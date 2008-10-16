@@ -51,7 +51,7 @@
                    if(auditTrail != null){
                       %>
                         <script>
-                             Event.onDOMReady(function() {
+                             YAHOO.util.Event.onDOMReady(function() {
                                 var mydata =   [];
                                 <g:each var="audit" in="${auditTrail}">
                                       var auditDate = new Date();
@@ -82,7 +82,7 @@
                    else{
                        %>
                         <script>
-                           Event.onDOMReady(function() {
+                           YAHOO.util.Event.onDOMReady(function() {
                               document.getElementById('auditLogTable').innerHTML = 'Cannot connect to smarts datasource ${datasource}'; 
                            })
 

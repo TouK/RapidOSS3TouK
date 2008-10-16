@@ -126,7 +126,7 @@ class SearchGridTagLib {
                     colLabel:'${column.@colLabel}',
                     ${sortBy != "" ? "sortBy:${sortBy}," : ""}
                     ${sortOrder != "" ? "sortOrder:'${sortOrder}'," : ""}
-                    width:${column.@width},
+                    width:${column.@width}
                 }""")
         }
         cArray.add("columns:[${columnArray.join(',\n')}]")

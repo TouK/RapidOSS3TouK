@@ -123,7 +123,7 @@ class TreeGridTagLib {
                     colLabel:'${column.@colLabel}',
                     ${sortBy != "" ? "sortBy:${sortBy}," : ""}
                     ${type != "" ? "type:'${type}'," : ""}
-                    width:${column.@width},
+                    width:${column.@width}
                 }""")
         }
         cArray.add("columns:[${columnArray.join(',\n')}]")

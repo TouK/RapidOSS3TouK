@@ -51,8 +51,9 @@ class ActionsTagLib {
             def onSuccess = attrs["onSuccess"];
             if (onSuccess) {
                 successJs = """
-               ${actionId}action.events['success'].subscribe(function(response, argument){
-                   YAHOO.rapidjs.Actions['${onSuccess}'].execute({});
+               ${actionId}action.events['success'].subscribe(function(response){
+                   params = {response:response}
+                   YAHOO.rapidjs.Actions['${onSuccess}'].execute(params);
                 }, this, true);
             """
             }

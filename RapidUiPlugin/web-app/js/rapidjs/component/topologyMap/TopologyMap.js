@@ -34,6 +34,7 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
 
     this.changeMenuIds(config.toolbarMenuItems, this.allToolbarMenuIds);
     this.changeMenuIds(config.nodeMenuItems, this.allNodeMenuIds);
+    this.nodeMenuItems = config.nodeMenuItems;
     config.toolbarMapMenuHandler = "topologyToolbarMapManuHandler";
     config.nodeMenuHandler = "topologyNodeManuHandler"
     config.defaultMapAdapterFunction = "topologyMapComponentAdapter"
@@ -41,17 +42,12 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.height = config.height || 540;
     this.width = config.width || 680;
     this.wMode = config.wMode;
-    this.bgColor = config.bgColor;
     this.nodeTag = config.nodeTag;
     this.dataTag = config.dataTag;
-    this.dataKeys = config.dataKeys;
-    this.id = config.id || YAHOO.util.Dom.generateId(null, "yuigen");
-    this.mapURL = config.mapURL;
-    this.nodeUrl = "../../../../"+config.nodeUrl;
     this.dataURL = config.dataURL;
-    this.initialMapURL = config.initialMapURL;
     this.expandURL = config.expandURL;
-
+    if(!config.nodeSize)
+        config.nodeSize = 60;
     this.configureTimeout(config);
     this.attributes = {};
     this.mapNodes = {};
@@ -90,10 +86,13 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.lastLoadMapRequestData = null;
     this.firstLoadMapRequestData = null;
     this.firstResponse = null;
-    this.events.mapInitialized = new YAHOO.util.CustomEvent("mapInitialized");
-    this.events.toolbarMenuItemClicked = new YAHOO.util.CustomEvent("toolbarMenuItemClicked");
-    this.events.nodeMenuItemClicked = new YAHOO.util.CustomEvent("nodeMenuItemClicked");
-    this.events.nodeClicked = new YAHOO.util.CustomEvent("nodeClicked");
+    var events = {
+        'mapInitialized': new YAHOO.util.CustomEvent("mapInitialized"),
+        'toolbarMenuItemClicked': new YAHOO.util.CustomEvent("toolbarMenuItemClicked"),
+        'nodeMenuItemClicked': new YAHOO.util.CustomEvent("nodeMenuItemClicked"),
+        'nodeClicked': new YAHOO.util.CustomEvent("nodeClicked")
+    }
+    YAHOO.ext.util.Config.apply(this.events,events);
     config.toolbarMenuItems = [];
     config.nodeMenuItems = [];
     YAHOO.util.Event.addListener(window, "load", this.initializeFlash, this, true);
@@ -111,7 +110,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         {
             for(var i=0; i < itemsWillBeShown.length; i++)
             {
-                var id = this.id+itemsWillBeShown[i];
+                var id = itemsWillBeShown[i];
                 document.getElementById(id).style.display = "";
             }
         }
@@ -130,13 +129,22 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     {
         var nodeGraphData = this.mapNodes[data.id];
         var visibleMenuItems = [];
-        if(this.config.menuFilterFunction)
+        var params = {data:data};
+        for(var i=0; i < this.nodeMenuItems.length; i++)
         {
-            visibleMenuItems  = this.config.menuFilterFunction(data);
+
+            var menuItemConfig = this.nodeMenuItems[i];
+            var visible = true;
+            if(menuItemConfig['visible'] != null){
+                visible = eval(menuItemConfig['visible']);
+            }
+            if(visible){
+                visibleMenuItems[visibleMenuItems.length] = menuItemConfig['id'];
+            }
         }
         if(nodeGraphData.expandable == "true" && nodeGraphData.expanded == "false")
         {
-            visibleMenuItems[visibleMenuItems.length] = "expand";            
+            visibleMenuItems[visibleMenuItems.length] = this.id+"expand";            
         }
         if(visibleMenuItems.length > 0)
         {
@@ -193,7 +201,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         }
         else
         {
-            this.events.nodeMenuItemClicked.fireDirect({componentID:this.id, data:data, clickedItems:clickedItems});
+            this.events.nodeClicked.fireDirect(data, clickedItems);
         }
     },
     nodeMenuClicked: function(pr1, pr2)
@@ -211,7 +219,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             }
             else
             {
-                this.events.nodeMenuItemClicked.fireDirect({componentID:this.id, menuId:menuId, data:data});
+                this.events.nodeMenuItemClicked.fireDirect(menuId, data);
             }
         }
     },
@@ -221,32 +229,32 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         var id = menuItem.id;
         if(id != null && id.length >= this.id.length && id.substring(0, this.id.length) == this.id)
         {
-            var userId = id.substring(this.id.length);
-            if(userId == "refreshTopology" )
+            var menuId = id.substring(this.id.length);
+            if(menuId == "refreshTopology" )
             {
                 this.refresh();
             }
-            else if(userId == "resetMap" )
+            else if(menuId == "resetMap" )
             {
                 this.resetMap();
             }
-            else if(userId == "resetPosition" )
+            else if(menuId == "resetPosition" )
             {
                 this.getFlashObject().resetPosition();
             }
-            else if(userId == "hierarchicalLayout" )
+            else if(menuId == "hierarchicalLayout" )
             {
                 this.setLayout(0);
             }
-            else if(userId == "circularLayout" )
+            else if(menuId == "circularLayout" )
             {
                 this.setLayout(1);
             }
-            else if(userId == "customLayout" )
+            else if(menuId == "customLayout" )
             {
                 this.setLayout(2);
             }
-            this.events.toolbarMenuItemClicked.fireDirect({componentID:this.id, menuId:userId});
+            this.events.toolbarMenuItemClicked.fireDirect(menuId);
         }
     },
 
@@ -443,20 +451,11 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
         if(this.lastLoadMapRequestData != null)
         {
-            if(this.lastLoadMapRequestData.isMap)
-            {
-                this.url = this.mapURL;
-                this.doRequest(this.url, this.lastLoadMapRequestData.params);
-            }
-            else
-            {
                 var nodes = this.getPropertiesString(this.getNodes(), ["id", "expanded", "x", "y"]);
                 var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
                 var params = { expandedNodeName : this.lastLoadMapRequestData.params.expandedNodeName, nodes : nodes, edges : edges };
                 this.url = this.expandURL;
                 this.doPostRequest(this.url, params);
-            }
-
         }
     },
 
@@ -467,7 +466,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         {
             this.handleLoadData(response);
         }
-        else // mapURL || initialMapURL || expandURL
+        else 
         {
             this.handleLoadMap( response);
         }
@@ -618,6 +617,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             propList[propList.length] = props.join(",") ;
         }
         return propList.join(";");
+    },
+
+    getNodesString: function(){
+        return this.getPropertiesString(this.getNodes(), ["id", "x", "y", "expanded", "expandable"]);
     },
 
     expandNode : function( expandedNodeName)

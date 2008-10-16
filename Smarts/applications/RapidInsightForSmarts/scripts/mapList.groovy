@@ -21,7 +21,7 @@ mapBuilder.Maps
         if( userName.equals(user.username)){
            mapBuilder.Map(id: group.id, name: group.groupName, nodeType: "group",  isPublic:"false") {
               group.maps.each {TopoMap topoMap ->
-                  mapBuilder.Map (id: topoMap.id, name: topoMap.mapName, nodeType: "filter", isPublic:"false", layout:topoMap.layout)
+                  mapBuilder.Map (id: topoMap.id, name: topoMap.mapName, nodeType: "map", isPublic:"false", layout:topoMap.layout)
               }
            }
         }

@@ -5,21 +5,24 @@
 </head>
 <body>
 
-<rui:treeGrid id="filterTree" url="script/run/mapList" rootTag="Maps" keyAttribute="id"
-     contentPath="Map" title="Saved Maps" expanded="true">
+<rui:treeGrid id="mapTree" url="script/run/mapList" rootTag="Maps" keyAttribute="id"
+     contentPath="Map" title="Saved Maps" expanded="true" onNodeClick="requestMapAction">
     <rui:tgColumns>
         <rui:tgColumn attributeName="name" colLabel="Name" width="248" sortBy="true"></rui:tgColumn>
     </rui:tgColumns>
     <rui:tgMenuItems>
-        <rui:tgMenuItem id="delete" label="Delete" visible="params.data.isPublic != 'true' && !(params.data.name == 'Default' && params.data.nodeType == 'group')"></rui:tgMenuItem>
-        <rui:tgMenuItem id="update" label="Update" visible="params.data.isPublic != 'true' && !(params.data.name == 'Default' && params.data.nodeType == 'group')"></rui:tgMenuItem>
+        <rui:tgMenuItem id="deleteMap" label="Delete" visible="params.data.isPublic != 'true' && params.data.nodeType == 'map'" action="deleteMapAction"></rui:tgMenuItem>
+        <rui:tgMenuItem id="deleteGroup" label="Delete" visible="params.data.isPublic != 'true' && params.data.name != 'Default' && params.data.nodeType == 'group'" action="deleteMapGroupAction"></rui:tgMenuItem>
+        <rui:tgMenuItem id="updateMap" label="Update" visible="params.data.isPublic != 'true' && params.data.nodeType == 'map'" action="mapUpdateAction"></rui:tgMenuItem>
+        <rui:tgMenuItem id="updateGroup" label="Update" visible="params.data.isPublic != 'true' && params.data.name != 'Default' && params.data.nodeType == 'group'" action="mapGroupUpdateAction"></rui:tgMenuItem>
     </rui:tgMenuItems>
     <rui:tgRootImages>
         <rui:tgRootImage visible="params.data.nodeType == 'group'" expanded='images/rapidjs/component/tools/folder_open.gif' collapsed='images/rapidjs/component/tools/folder.gif'></rui:tgRootImage>
-        <rui:tgRootImage visible="params.data.nodeType == 'filter'" expanded='images/rapidjs/component/tools/filter.png' collapsed='images/rapidjs/component/tools/filter.png'></rui:tgRootImage>
+        <rui:tgRootImage visible="params.data.nodeType == 'map'" expanded='images/rapidjs/component/tools/filter.png' collapsed='images/rapidjs/component/tools/filter.png'></rui:tgRootImage>
     </rui:tgRootImages>
 </rui:treeGrid>
-<rui:form id="filterDialog" width="35em" createUrl="script/run/createMap" editUrl="script/run/editMap" updateUrl="topoMap/update?format=xml" saveUrl="script/run/saveMap" submitAction="POST">
+<rui:form id="mapDialog" width="35em" createUrl="script/run/createMap" editUrl="script/run/editMap" updateUrl="topoMap/update?format=xml" saveUrl="script/run/saveMap"
+        submitAction="POST" onSuccess="refreshMapsAction">
     <div >
         <div class="hd">Save Map</div>
         <div class="bd">
@@ -33,11 +36,10 @@
             <input type="hidden" name="id"/>
             <input type="hidden" name="layout"/>
         </form>
-
         </div>
     </div>
 </rui:form>
-<rui:form id="filterGroupDialog" width="30em" saveUrl="mapGroup/save?format=xml" updateUrl="mapGroup/update?format=xml">
+<rui:form id="mapGroupDialog" width="30em" saveUrl="mapGroup/save?format=xml" updateUrl="mapGroup/update?format=xml" onSuccess="refreshMapsAction">
     <div >
         <div class="hd">Save group</div>
         <div class="bd">
@@ -47,26 +49,78 @@
             </table>
             <input type="hidden" name="id">
         </form>
-
         </div>
     </div>
-    
 </rui:form>
+   <%
+       def edgeColors = ["1" : "0xffde2c26","2":"0xfff79229","3": "0xfffae500", "4" :  "0xff20b4e0","5": "0xff62b446", "default":"0xff62b446" ]
+       def stateMapping = ["0":"green.png",
+                    "1":"red.png",
+                    "2":"orange.png",
+                    "3":"yellow.png",
+                    "4":"blue.png",
+                    "5":"green.png",
+                    "default":"green.png"]
+        def typeMapping = ["Host":"server_icon.png",
+                    "Router":"router_icon.png",
+                    "Switch":"switch_icon.png"]                    
+   %>
+<rui:topologyMap id="topoMap" dataTag="device" expandURL="script/run/expandMap" dataURL="script/run/getMapData"
+        pollingInterval="0" nodeSize="60" edgeColors="${edgeColors}">
+     <rui:tmNodeContent>
+        <rui:tmImages>
+            <rui:tmImage id="status" x="70" y="40" width="30" height="30" dataKey="state" mapping="${stateMapping}"></rui:tmImage>
+            <rui:tmImage id="icon" x="70" y="0" width="20" height="20" dataKey="type" mapping="${typeMapping}"></rui:tmImage>
+        </rui:tmImages>
+     </rui:tmNodeContent>
+     <rui:tmToolbarMenus>
+        <rui:tmToolbarMenu label="Map">
+              <rui:tmMenuItem id="saveMap" label="Save Map" action="saveMapAction"></rui:tmMenuItem>
+        </rui:tmToolbarMenu>
+     </rui:tmToolbarMenus>
+     <rui:tmMenuItems>
+        <rui:tmMenuItem id="browse" label="Browse" action="browseAction"></rui:tmMenuItem>
+     </rui:tmMenuItems>
+</rui:topologyMap>
+
 <rui:html id="objectDetails" width="850" height="700" iframe="false"></rui:html>
-<div id="right">
-	<div id="mapDiv"></div>
-</div>
+
+<rui:action id= "deleteMapAction" type= "request" url= "topoMap/delete?format=xml" onSuccess="refreshMapsAction">
+   <rui:requestParam key="id" value="params.data.id"></rui:requestParam>
+</rui:action>
+<rui:action id= "deleteMapGroupAction" type= "request" url="mapGroup/delete?format=xml" onSuccess="refreshMapsAction">
+   <rui:requestParam key="id" value="params.data.id"></rui:requestParam>
+</rui:action>
+<rui:action id= "mapUpdateAction" type= "fuction" function= "show" componentId= "mapDialog" onSuccess="refreshMapsAction">
+   <rui:functionArg>YAHOO.rapidjs.component.Form.EDIT_MODE</rui:functionArg>
+   <rui:functionArg>{mapId:params.data.id}</rui:functionArg>
+</rui:action>
+<rui:action id= "mapGroupUpdateAction" type= "fuction" function= "show" componentId="mapGroupDialog" onSuccess="refreshMapsAction">
+   <rui:functionArg>YAHOO.rapidjs.component.Form.EDIT_MODE</rui:functionArg>
+   <rui:functionArg>{}</rui:functionArg>
+   <rui:functionArg>{groupName:params.data.name, id:params.data.id}</rui:functionArg>
+</rui:action>
+<rui:action id= "requestMapAction" type="request" url= "script/run/getMap?format=xml" onSuccess="loadMapAction">
+   <rui:requestParam key="mapName" value="params.data.name"></rui:requestParam>
+</rui:action>
+<rui:action id="loadMapAction" type="function" function="loadMap" componentId="topoMap">
+   <rui:functionArg>params.response</rui:functionArg>
+</rui:action>        
+<rui:action id= "saveMapAction" type="function" function= "show" componentId="mapDialog">
+   <rui:functionArg>YAHOO.rapidjs.component.Form.CREATE_MODE</rui:functionArg>
+   <rui:functionArg>{}</rui:functionArg>
+   <rui:functionArg>{nodes:YAHOO.rapidjs.Components['topoMap'].getNodesString(), layout:YAHOO.rapidjs.Components['topoMap'].getLayout()}</rui:functionArg>
+</rui:action>        
+<rui:action id="refreshMapsAction" type="function" function="poll" componentId="mapTree"></rui:action>     
+<rui:action id="browseAction" type="function" function="show" componentId="objectDetails">
+    <rui:functionArg>'getObjectDetails.gsp?name=' + encodeURIComponent(params.data.id)</rui:functionArg>
+    <rui:functionArg>'Details of ' + params.data.type + ' ' + params.data.id</rui:functionArg>
+</rui:action>     
 
 <script type="text/javascript">
     
-    var tree = YAHOO.rapidjs.Components['filterTree'];
-    var groupDialog = YAHOO.rapidjs.Components['filterGroupDialog'];
-    groupDialog.successful = function(){tree.poll()};
-    var dialog = YAHOO.rapidjs.Components['filterDialog'];
-    dialog.successful = function(){tree.poll()};
-    var objectDetailsDialog = YAHOO.rapidjs.Components['objectDetails'];
-    objectDetailsDialog.hide();
-    
+    var tree = YAHOO.rapidjs.Components['mapTree'];
+    var topMap = YAHOO.rapidjs.Components['topoMap'];
     function getURLParam(strParamName){
 		var strReturn = "";
 		var strHref = window.location.href;
@@ -85,66 +139,6 @@
 		return unescape(strReturn);
 	}
 
-	function saveMapFunction( data )
-	{
-	    var nodes = topMap.getPropertiesString(topMap.getNodes(), ["id", "x", "y", "expanded", "expandable"]) ;
-        dialog.show(dialog.CREATE_MODE, null, { nodes : nodes, layout:topMap.getLayout()} );
-	}
-
-      function toolbarMenuFcn( id )
-      {
-          alert( id);
-
-      }
-
-
-    function menuItemFilter(id) {
-        var items = ["item1"];
-        return items;
-    }
-    var topMapConfig = {
-        id 		: "mapDiv",
-        dataTag : "device",
-        dataKeys : { id : "id", status : "status", load : "load" },
-        expandURL : "script/run/expandMap",
-        dataURL : "script/run/getMapData",
-        pollingInterval : 0,
-        nodeSize:60,
-        nodeContent:{
-            images:[
-                {
-                    id:"status", x:70, y:40, width:30, height:30, dataKey:"state", images:{
-                    "0":"green.png",
-                    "1":"red.png",
-                    "2":"orange.png",
-                    "3":"yellow.png",
-                    "4":"blue.png",
-                    "5":"green.png",
-                    "default":"green.png"}
-                },
-                {
-                    id:"icon",  x:70, y:0,  width:20, height:20, dataKey:"type", images:{
-                    "Host":"server_icon.png",
-                    "Router":"router_icon.png",
-                    "Switch":"switch_icon.png"}
-                }
-            ]
-        },
-        menuFilterFunction : menuItemFilter,
-        statusColors : { "1" : 0xde2c26, "2" : 0x7b4a1a, "3": 0xfae500, "4" : 0x20b4e0, "5":0x0d4702, "default" : 0x0d4702 },
-		edgeColors : { "1" : 0xffde2c26,"2" :  0xfff79229,"3":  0xfffae500, "4" :  0xff20b4e0,"5": 0xff62b446, "default" : 0xff62b446 },
-        toolbarMenuItems : [{
-            "text" : "Map",
-            "subMenu"  : {id:"mapMenu", itemdata:[{
-                                    "id" 	: "saveMap",
-                                    text:  "Save Map"}
-                        ]
-        }}],
-        nodeMenuItems : [{id:"item1","text" : "Browse"}]
-    };
-
-    var topMap = new YAHOO.rapidjs.component.TopologyMap(document.getElementById("mapDiv"),topMapConfig );
-
     topMap.events.mapInitialized.subscribe(function(){
         var deviceName = this.getURLParam( "name");
         if( deviceName )
@@ -153,46 +147,12 @@
         }
     }, this, true);
 
-    topMap.events.nodeMenuItemClicked.subscribe(function(params){
-        var componentId = params["componentId"];
-        var menuId = params["menuId"];
-        var data = params.data;
-        if(menuId == "item1")
-        {
-            var url = "getObjectDetails.gsp?name="+ encodeURIComponent(data["id"]);
-            objectDetailsDialog.show(url, "Details of " + data["type"] + " " + data["id"]);    
-        }
-    }, this, true);
-
-    topMap.events.toolbarMenuItemClicked.subscribe(function(params){
-        var componentId = params["componentId"];
-        var menuId = params["menuId"];
-        if(menuId == "saveMap")
-        {
-            saveMapFunction();
-        }
-    }, this, true);
-
-    var actionConfig = {url:'topoMap/delete?format=xml'}
-    var deleteMapAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
-
-    var actionGroupConfig = {url:'mapGroup/delete?format=xml'}
-    var deleteMapGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
-
-    var actionSaveMapConfig = {url:'script/run/saveMap'}
-    var saveMapAction = new YAHOO.rapidjs.component.action.RequestAction(actionSaveMapConfig);
-    var actionLoadMapConfig = {url:'script/run/getMap'}
-    var loadMapAction = new YAHOO.rapidjs.component.action.RequestAction(actionLoadMapConfig);
-
-
-
-    
     tree.addToolbarButton({
         className:'r-filterTree-groupAdd',
         scope:this,
         tooltip: 'Add group',
         click:function() {
-            groupDialog.show(groupDialog.CREATE_MODE);
+            YAHOO.rapidjs.Components['mapGroupDialog'].show(YAHOO.rapidjs.component.Form.CREATE_MODE);
         }
     });
     tree.addToolbarButton({
@@ -200,46 +160,10 @@
         scope:this,
         tooltip: 'Save Map',
         click:function() {
-            saveMapFunction();
+            YAHOO.rapidjs.Components['mapDialog'].show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {nodes:topMap.getNodesString(), layout:topMap.getLayout()});
         }
     });
     tree.poll();
-
-    deleteMapAction.events.success.subscribe(tree.poll, tree, true);
-
-    deleteMapGroupAction.events.success.subscribe(tree.poll, tree, true);
-
-    saveMapAction.events.success.subscribe(tree.poll, tree, true);
-    loadMapAction.events.success.subscribe(function(response, responseArgs){
-        topMap.loadMap(response);
-    }, this, true);
-
-    tree.events["treeNodeClick"].subscribe(function(data) {
-        if (data.getAttribute("nodeType") == "filter")
-        {
-           loadMapAction.execute( {"mapName":data.getAttribute("name")}, {"mapLayout":data.getAttribute("layout")} );
-            
-        }
-    }, this, true);
-
-    tree.events["rowMenuClick"].subscribe(function(data, id, parentId) {
-    	if (id == "delete")
-        {
-            if (data.getAttribute("nodeType") == "filter")
-                deleteMapAction.execute({id:data.getAttribute("id")});
-            else if (data.getAttribute("nodeType") == "group")
-                deleteMapGroupAction.execute({id:data.getAttribute("id")});
-        }
-        else if(id == "update"){
-            if (data.getAttribute("nodeType") == "filter")
-                dialog.show(dialog.EDIT_MODE, {mapId:data.getAttribute("id")})
-            else if(data.getAttribute("nodeType") == "group"){
-                groupDialog.show(groupDialog.EDIT_MODE)
-                groupDialog.dialog.form.groupName.value = data.getAttribute("name");
-                groupDialog.dialog.form.id.value = data.getAttribute("id")
-            }
-       }
-    }, this, true);
 
 
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
@@ -248,7 +172,7 @@
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'top', body: 'top', resize: false, height:45, useShim:true},
-                { position: 'center', body: 'right', resize: false, gutter: '1px', useShim:true },
+                { position: 'center', body: topMap.container.id, resize: false, gutter: '1px', useShim:true },
                 { position: 'left', width: 250, resize: true, body: tree.container.id, scroll: false, useShim:true}
             ]
         });

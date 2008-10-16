@@ -122,7 +122,7 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         var componentList = response.argument
         if (componentList && componentList.length) {
             for (var i = 0; i < componentList.length; i++) {
-                componentList[i].events['success'].fireDirect();
+                componentList[i].events['success'].fireDirect(response);
             }
         }
     },

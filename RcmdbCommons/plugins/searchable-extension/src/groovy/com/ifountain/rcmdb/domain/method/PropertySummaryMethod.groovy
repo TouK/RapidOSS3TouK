@@ -30,7 +30,7 @@ class PropertySummaryMethod extends AbstractRapidDomainStaticMethod{
         propertyList.each{String propName->
             summary[propName] = new PropertySummaryMapWrapper();
         }
-        def rawDataProcessorClosure = {hits->
+        def rawDataProcessorClosure = {hits,session->
             hits.each{CompassHit hit->
                 propertyList.each{String propName->
                     def prop = hit.getResource().getProperty(propName);

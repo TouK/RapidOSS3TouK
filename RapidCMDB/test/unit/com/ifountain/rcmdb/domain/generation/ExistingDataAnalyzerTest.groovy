@@ -1,20 +1,16 @@
 package com.ifountain.rcmdb.domain.generation
 
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import org.apache.commons.io.FileUtils
-import groovy.xml.MarkupBuilder
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import model.PropertyAction
-import model.ModelAction
-import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
-import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
-import org.codehaus.groovy.grails.compiler.injection.ClassInjector
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
-import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
-import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import groovy.xml.MarkupBuilder
+import model.ModelAction
+import model.PropertyAction
+import org.apache.commons.io.FileUtils
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
+import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
 
 /**
 * Created by IntelliJ IDEA.
@@ -534,6 +530,99 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         assertEquals (modelName2, modelAction.modelName)
     }
 
+    public void testIfParentModelChange()
+    {
+        String modelChild1 = "Class1";
+        String modelChild2 = "Class2";
+        String modelParent = "Class3";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+
+        def propList = [prop1];
+        def keyPropList = [prop1];
+        def model1 = createModel(modelParent, propList, keyPropList, []);
+        def model2 = createModel (modelChild1, [], [], []);
+        def model3 = createModel (modelChild2, modelParent, propList, keyPropList, []);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model3);
+
+        def oldParentClass1 = loadGrailsDomainClass(modelParent);
+        def oldChildClass2 = loadGrailsDomainClass(modelChild1);
+        def oldChildClass3 = loadGrailsDomainClass(modelChild2);
+        def oldGrailsDomainClasses = generateDomainClasses([oldParentClass1, oldChildClass2, oldChildClass3])
+
+        model2 = createModel (modelChild1, modelParent, [], [], []);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+
+        def newParentClass1 = loadGrailsDomainClass(modelParent);
+        def newChildClass2 = loadGrailsDomainClass(modelChild1);
+        def newChildClass3 = loadGrailsDomainClass(modelChild2);
+        def newGrailsDomainClasses = generateDomainClasses([newParentClass1, newChildClass2, newChildClass3])
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelChild1], newGrailsDomainClasses[modelChild1]);
+        assertEquals (2, actions.size());
+        ModelAction modelAction = actions[0];
+        assertEquals (ModelAction.DELETE_ALL_INSTANCES, modelAction.action);
+        assertEquals (modelChild1, modelAction.modelName);
+        modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelChild1, modelAction.modelName)
+
+
+        model2 = createModel (modelChild1, modelParent, [], [], []);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        newParentClass1 = loadGrailsDomainClass(modelParent);
+        newChildClass2 = loadGrailsDomainClass(modelChild1);
+        newChildClass3 = loadGrailsDomainClass(modelChild2);
+        newGrailsDomainClasses = generateDomainClasses([newParentClass1, newChildClass2, newChildClass3])
+        actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelChild1], newGrailsDomainClasses[modelChild1]);
+        assertEquals (2, actions.size());
+        modelAction = actions[0];
+        assertEquals (ModelAction.DELETE_ALL_INSTANCES, modelAction.action);
+        assertEquals (modelChild1, modelAction.modelName);
+        modelAction = actions[1];
+        assertEquals (ModelAction.GENERATE_RESOURCES, modelAction.action);
+        assertEquals (modelChild1, modelAction.modelName)
+    }
+
+    public void testIfNodeStartedToBeAParent()
+    {
+        String modelChild1 = "Class1";
+        String modelParent = "Class2";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+
+        def propList = [prop1];
+        def keyPropList = [prop1];
+        def model1 = createModel(modelParent, propList, keyPropList, []);
+        def model2 = createModel (modelChild1, [], [], []);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+        def oldParentClass1 = loadGrailsDomainClass(modelParent);
+        def oldChildClass2 = loadGrailsDomainClass(modelChild1);
+        def oldGrailsDomainClasses = generateDomainClasses([oldParentClass1, oldChildClass2])
+
+        model2 = createModel (modelChild1, modelParent, [], [], []);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+
+
+        def newParentClass1 = loadGrailsDomainClass(modelParent);
+        def newChildClass2 = loadGrailsDomainClass(modelChild1);
+        def newGrailsDomainClasses = generateDomainClasses([newParentClass1, newChildClass2])
+        def actions = ExistingDataAnalyzer.createActions (oldGrailsDomainClasses[modelParent], newGrailsDomainClasses[modelParent]);
+        assertEquals (1, actions.size());
+        ModelAction modelAction = actions[0];
+        assertEquals (ModelAction.REFRESH_DATA, modelAction.action);
+        assertEquals (modelParent, modelAction.modelName);
+    }
+
+    
+
     def generateDomainClasses(List classes)
     {
         def domainClassesMap = [:];
@@ -552,12 +641,22 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         def model = createModel(name, modelProperties, keyProperties, relations);
         ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model);
     }
+    
+    def createModel(String name,  List modelProperties, List keyProperties, List relations)
+    {
+        return createModel(name, null, modelProperties, keyProperties, relations);
+    }
 
-    def createModel(String name, List modelProperties, List keyProperties, List relations)
+    def createModel(String name, String parentName, List modelProperties, List keyProperties, List relations)
     {
         model = new StringWriter();
         modelbuilder = new MarkupBuilder(model);
-        modelbuilder.Model(name:name){
+        def props = [name:name];
+        if(parentName != null)
+        {
+            props["parentModel"] = parentName;
+        }
+        modelbuilder.Model(props){
             modelbuilder.Datasources(){
                 modelbuilder.Datasource(name:"RCMDB"){
                     keyProperties.each{Map keyPropConfig->

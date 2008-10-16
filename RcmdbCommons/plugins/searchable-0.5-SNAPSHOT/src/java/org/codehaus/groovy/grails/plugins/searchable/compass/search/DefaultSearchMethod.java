@@ -125,7 +125,7 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
             Object searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, tempOptions);
             if(rawProcessor != null)
             {
-                return doWithRawDataProcessor(rawProcessor, searchResult);
+                return doWithRawDataProcessor(session, rawProcessor, searchResult);
             }
             else
             {
@@ -167,12 +167,12 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
             }
         }
 
-        public Object doWithRawDataProcessor(Closure rawProcessor, Object searchResult) {
+        public Object doWithRawDataProcessor(CompassSession session, Closure rawProcessor, Object searchResult) {
             if (!(searchResult instanceof Collection)) {
                 return null;
             }
             rawProcessor = (Closure) rawProcessor.clone();
-            return rawProcessor.call(searchResult);
+            return rawProcessor.call(new Object[]{searchResult, session});
         }
 
         public void setGrailsApplication(GrailsApplication grailsApplication) {

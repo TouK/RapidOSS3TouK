@@ -4,7 +4,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.apache.log4j.Logger
 import com.ifountain.rcmdb.test.util.LdapConnectionTestUtils
 import com.ifountain.core.test.util.RapidCoreTestCase
-
+import connection.LdapConnectionOperations
 /**
 * Created by IntelliJ IDEA.
 * User: deneme

@@ -9,7 +9,7 @@ import org.apache.log4j.Level
  * User: mustafa sener
  * Date: Aug 27, 2008
  * Time: 3:06:21 PM
- * To change this template use File | Settings | File Templates.
+ * To change this template use File  | Settings | File Templates.
  */
 class SmartsConnector {
     static searchable = {
@@ -21,7 +21,8 @@ class SmartsConnector {
     String logLevel = Level.WARN.toString();
     BaseListeningDatasource ds;
     SmartsConnectionTemplate connectionTemplate;
-
+    int reconnectInterval = 0;
+    
     static relations  =[
             connectionTemplate:[type:SmartsConnectionTemplate, isMany:false],
             ds:[type:BaseListeningDatasource, isMany:false]
@@ -32,6 +33,7 @@ class SmartsConnector {
               Level.WARN.toString(), Level.ERROR.toString(), Level.FATAL.toString(), Level.OFF.toString()])
       ds(nullable:true)
       connectionTemplate(nullable:true)
+      
     }
     static propertyConfiguration= [:]
     static transients = [];

@@ -101,7 +101,9 @@ class SmartsConnectorController {
             if (!smartsConnector.hasErrors()) {
                 def domain = params.domain;
                 def domainType = params.domainType;
-                SmartsConnection smartsConnection = smartsConnector.ds.connection
+                smartsConnector.ds.update(reconnectInterval:smartsConnector.reconnectInterval)
+                
+                SmartsConnection smartsConnection = smartsConnector.ds.connection;
                 connection.SmartsConnectionTemplate template = smartsConnector.connectionTemplate;
                 def isConnectionParamsChanged = smartsConnection.brokerUsername != template.brokerUsername || smartsConnection.brokerPassword != template.brokerPassword || smartsConnection.broker != template.broker || smartsConnection.domain != domain || smartsConnection.domainType != domainType || smartsConnection.username != template.username || smartsConnection.userPassword != template.password
                 if(isConnectionParamsChanged)
@@ -185,12 +187,12 @@ class SmartsConnectorController {
                 if(params.type == "Topology")
                 {
                     CmdbScript script = CmdbScript.addScript(name:scriptName, scriptFile:"topologySubscriber",type:CmdbScript.LISTENING)
-                    datasource = SmartsTopologyDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script);
+                    datasource = SmartsTopologyDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:smartsConnector.reconnectInterval);
                 }
                 else
                 {
                     CmdbScript script = CmdbScript.addScript(name:scriptName, scriptFile:"notificationSubscriber",type:CmdbScript.LISTENING)
-                    datasource = SmartsNotificationDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script);
+                    datasource = SmartsNotificationDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:smartsConnector.reconnectInterval);
                 }
                 smartsConnector.addRelation(ds:datasource);
                 redirect(uri: "/admin.gsp")

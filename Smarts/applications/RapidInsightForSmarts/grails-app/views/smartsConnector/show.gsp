@@ -66,7 +66,13 @@
                     <td valign="top" class="value">${smartsConnector.logLevel}</td>
                     
                 </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Reconnect Interval:</td>
 
+                    <td valign="top" class="value">${smartsConnector.reconnectInterval} sec.</td>
+
+                </tr>
+                
                 <%
                         if (smartsConnector instanceof SmartsListeningNotificationConnector) {
 

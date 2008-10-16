@@ -1,5 +1,3 @@
-
-
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -30,6 +28,12 @@
                     <g:sortableColumn property="id" title="id"/>
                     
                     <g:sortableColumn property="name" title="name"/>
+                    <g:sortableColumn property="active" title="active"/>
+                    <g:sortableColumn property="acknowledged" title="acknowledged"/>
+                    <g:sortableColumn property="firstNotifiedAt" title="firstNotifiedAt"/>
+                    <g:sortableColumn property="lastNotifiedAt" title="lastNotifiedAt"/>
+                    <g:sortableColumn property="lastChangedAt" title="lastChangedAt"/>
+                    <g:sortableColumn property="lastClearedAt" title="lastClearedAt"/>
                     
                 </tr>
             </thead>
@@ -40,7 +44,12 @@
                         <td><g:link action="show" id="${rsRiEvent.id}">${rsRiEvent.id?.encodeAsHTML()}</g:link></td>
                         
                         <td>${rsRiEvent.name?.encodeAsHTML()}</td>
-                        
+                        <td>${rsRiEvent.active?.encodeAsHTML()}</td>
+                        <td>${rsRiEvent.acknowledged?.encodeAsHTML()}</td>
+                        <td>${rsRiEvent.firstNotifiedAt?.encodeAsHTML()}</td>
+                        <td>${rsRiEvent.lastNotifiedAt?.encodeAsHTML()}</td>
+                        <td>${rsRiEvent.lastChangedAt?.encodeAsHTML()}</td>
+                        <td>${rsRiEvent.lastClearedAt?.encodeAsHTML()}</td>
                     </tr>
                 </g:each>
             </tbody>

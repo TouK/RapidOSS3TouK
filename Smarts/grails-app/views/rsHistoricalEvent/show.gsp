@@ -49,6 +49,34 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">firstNotifiedAt:</td>
+                    
+                    <td valign="top" class="value">${rsHistoricalEvent.firstNotifiedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">lastChangedAt:</td>
+                    
+                    <td valign="top" class="value">${rsHistoricalEvent.lastChangedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">lastClearedAt:</td>
+                    
+                    <td valign="top" class="value">${rsHistoricalEvent.lastClearedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">lastNotifiedAt:</td>
+                    
+                    <td valign="top" class="value">${rsHistoricalEvent.lastNotifiedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">name:</td>
                     
                     <td valign="top" class="value">${rsHistoricalEvent.name}</td>
@@ -59,6 +87,13 @@
                     <td valign="top" class="name">owner:</td>
                     
                     <td valign="top" class="value">${rsHistoricalEvent.owner}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsHistoricalEvent.rsDatasource}</td>
                     
                 </tr>
                 

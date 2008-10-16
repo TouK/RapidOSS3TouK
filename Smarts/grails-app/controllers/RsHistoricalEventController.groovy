@@ -24,7 +24,7 @@ class RsHistoricalEventController {
         else {
             if(rsHistoricalEvent.class != RsHistoricalEvent)
             {
-                def controllerName = rsHistoricalEvent.class.simpleName;
+                def controllerName = rsHistoricalEvent.class.name;
                 if(controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();

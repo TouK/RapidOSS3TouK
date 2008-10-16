@@ -1,5 +1,3 @@
-
-
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -28,6 +26,13 @@
                 <tr>
                     
                     <g:sortableColumn property="id" title="id"/>
+                    <g:sortableColumn property="name" title="name"/>
+                    <g:sortableColumn property="active" title="active"/>
+                    <g:sortableColumn property="acknowledged" title="acknowledged"/>
+                    <g:sortableColumn property="firstNotifiedAt" title="firstNotifiedAt"/>
+                    <g:sortableColumn property="lastNotifiedAt" title="lastNotifiedAt"/>
+                    <g:sortableColumn property="lastChangedAt" title="lastChangedAt"/>
+                    <g:sortableColumn property="lastClearedAt" title="lastClearedAt"/>
                     
                 </tr>
             </thead>
@@ -36,6 +41,13 @@
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
                         <td><g:link action="show" id="${rsHistoricalEvent.id}">${rsHistoricalEvent.id?.encodeAsHTML()}</g:link></td>
+                        <td>${rsHistoricalEvent.name?.encodeAsHTML()}</td>
+                        <td>${rsHistoricalEvent.active?.encodeAsHTML()}</td>
+                        <td>${rsHistoricalEvent.acknowledged?.encodeAsHTML()}</td>
+                        <td>${rsHistoricalEvent.firstNotifiedAt?.encodeAsHTML()}</td>
+                        <td>${rsHistoricalEvent.lastNotifiedAt?.encodeAsHTML()}</td>
+                        <td>${rsHistoricalEvent.lastChangedAt?.encodeAsHTML()}</td>
+                        <td>${rsHistoricalEvent.lastClearedAt?.encodeAsHTML()}</td>
                         
                     </tr>
                 </g:each>

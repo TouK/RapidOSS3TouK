@@ -105,6 +105,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsRiEvent.rsDatasource}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">severity:</td>
                     
                     <td valign="top" class="value">${rsRiEvent.severity}</td>

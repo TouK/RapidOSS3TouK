@@ -123,6 +123,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsRiEvent,field:'rsDatasource')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="severity">severity:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'severity','errors')}">

@@ -238,6 +238,12 @@ class RapidCmdbBuild extends Build {
                     ant.exclude(name: "**/test/**")
                     ant.exclude(name: "**/*Test*")                                           
                 }
+                else
+                {
+                    ant.include(name: "**/test/**")
+                    ant.include(name: "**/*Test*")
+		            ant.include(name: "**/*TestCase*")
+                }
                 ant.include(name: "**/grails-app/**");
                 ant.include(name: "**/plugins/**");
                 ant.include(name: "**/src/**");

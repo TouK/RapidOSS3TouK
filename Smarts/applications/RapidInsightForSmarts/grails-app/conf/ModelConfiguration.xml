@@ -20,8 +20,12 @@
                 <Property Name='acknowledged' Type='boolean' Default="false" />
                 <Property Name='severity' Type='number' Default="0"/>
                 <Property Name='rsDatasource' Type='string'/>
-             </Properties>
-  		</Model>    
+                <Property Name='firstNotifiedAt' Type='number' />
+                <Property Name='lastNotifiedAt' Type='number' />
+                <Property Name='lastChangedAt' Type='number' />
+                <Property Name='lastClearedAt' Type='number' />
+         	</Properties>
+  		</Model>
   		
   		<Model Name="RsEventJournal">
             <Properties>

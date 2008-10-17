@@ -22,6 +22,15 @@
         <rui:tsMenu id="browse" label="Browse" location="row" actionType="htmlDialog" width="850" height="700"
                 url="'getObjectDetails.gsp?name=' + params.data.name" title="'Details of ' + params.data.creationClassName + ' ' + params.data.name"></rui:tsMenu>
     </rui:tsMenus>
+    <rui:tsDefaultMenus>
+        <rui:tsDefaultMenu id="sortAsc" label="Sort Asc"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="sortDesc" label="Sort desc"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="except" label="Except"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="greaterThan" label="Greater Than"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="lessThan" label="Less Than"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="greaterThanOrEqualTo" label="Greater than or equal to"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="lessThanOrEqualTo" label="Less than or equal to"></rui:tsDefaultMenu>
+    </rui:tsDefaultMenus>
     <rui:tsSearchResults>
 
         <rui:tsSearchResult alias="RsComputerSystem" properties="${computerSystemFields}" emphasizeds="${emphasized}"></rui:tsSearchResult>

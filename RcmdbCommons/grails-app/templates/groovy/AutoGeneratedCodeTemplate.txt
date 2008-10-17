@@ -3,6 +3,14 @@
 
     static searchable = {
         except = ${model.transientProps};
+    <%
+        if(model.indexName != null)
+        {
+    %>
+        subIndex="${model.indexName}"
+    <%
+        }
+    %>
     };
     static datasources = ${model.datasourceConfiguration}
 

@@ -242,6 +242,7 @@ class ModelGenerator
 
 class ModelMetaData
 {
+    def indexName;
     def modelName;
     def parentModelName;
     def datasourceConfiguration = [:];
@@ -257,6 +258,7 @@ class ModelMetaData
         def xmlModel = new XmlSlurper().parseText(modelXml);
         modelName = xmlModel.@name.text()
         parentModelName = xmlModel.@parentModel == ""?null:xmlModel.@parentModel.text()
+        indexName = xmlModel.@indexName.text() == ""?null:xmlModel.@indexName.text()
         createDatasourceConfiguration (xmlModel);
         processProperties(xmlModel);
         processRelations(xmlModel);

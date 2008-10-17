@@ -127,6 +127,36 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         checkExistanceOfMetaDataProperties(parentModelInstance);
     }
 
+    public void testGenerateModelExtendingAnotherModelWithIndexProperty()
+    {
+        def parentModel = new MockModel(name:"Class2", indexName:"index1");
+        def childModel = new MockModel(name:"Class1", parentModel:parentModel, indexName:"index2");
+        addMasterDatasource(parentModel);
+        childModel.modelProperties += new ModelProperty(name:"prop2", type:ModelProperty.numberType, model:childModel,blank:false,defaultValue:"1");
+
+        ModelGeneratorAdapter.generateModels([childModel, parentModel]);
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(childModel.name).exists());
+        assertTrue (ModelGenerator.getInstance().getGeneratedModelFile(parentModel.name).exists());
+
+
+        Class childModelClass = compileClass(childModel.name);
+        def childModelInstance = childModelClass.newInstance();
+        Class parentModelClass = compileClass(parentModel.name);
+        def parentModelInstance = parentModelClass.newInstance();
+
+        Closure searchable = childModelInstance.searchable;
+        ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
+        searchable.setDelegate (closureGetter);
+        searchable.call();
+        assertEquals("index2", closureGetter.propertiesSetByClosure["subIndex"]);
+
+        searchable = parentModelInstance.searchable;
+        closureGetter = new ClosurePropertyGetter();
+        searchable.setDelegate (closureGetter);
+        searchable.call();
+        assertEquals("index1", closureGetter.propertiesSetByClosure["subIndex"]);
+    }
+
     public void testWithSomeProperties()
     {
         ConstrainedProperty.registerNewConstraint (KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
@@ -183,6 +213,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
             searchable.setDelegate (closureGetter);
             searchable.call();
+            assertNull(closureGetter.propertiesSetByClosure["subIndex"]);
             assertEquals(3, closureGetter.propertiesSetByClosure["except"].size());
             assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
             assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));

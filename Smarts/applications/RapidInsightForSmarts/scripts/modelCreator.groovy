@@ -73,7 +73,9 @@ def getModelXmls()
         def modelDatasources = modelXml.Datasources.Datasource;
         def modelName = modelXml.@Name.text();
         def parentName = modelXml.@Parent.text();
-        def modelMetaProps = [name:modelName];
+        def indexName = modelXml.@IndexName.text();
+        indexName = indexName == null?"":indexName;
+        def modelMetaProps = [name:modelName, indexName:indexName];
         logger.info ("Creating model ${modelName} with ${modelProperties.size()} number of properties");
         if(parentName != null && parentName != "")
         {

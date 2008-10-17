@@ -7,6 +7,7 @@ class Model {
         except = ["fromRelations", "toRelations", "modelProperties", "datasources", "parentModel"];
     };
     String name;
+    String indexName = "";
     String rsOwner = "p"
     Boolean resourcesWillBeGenerated = false;
     Model parentModel;

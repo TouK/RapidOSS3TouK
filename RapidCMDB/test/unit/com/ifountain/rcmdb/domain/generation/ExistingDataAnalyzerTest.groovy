@@ -40,6 +40,12 @@ class ExistingDataAnalyzerTest extends RapidCmdbTestCase{
         new File(base_directory).mkdirs();
         metaClassCreationHandler = GroovySystem.getMetaClassRegistry().getMetaClassCreationHandler();
         GroovySystem.getMetaClassRegistry().setMetaClassCreationHandle (new ExpandoMetaClassCreationHandle());
+        ModelAction.metaClass.setProperty = {String propName, Object propValue, boolean willPersist->
+            delegate.setProperty(propName, propValue);
+        }
+        PropertyAction.metaClass.setProperty = {String propName, Object propValue, boolean willPersist->
+            delegate.setProperty(propName, propValue);
+        }
     }
 
     protected void tearDown() {

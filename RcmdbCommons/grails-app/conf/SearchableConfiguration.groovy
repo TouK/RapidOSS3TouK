@@ -18,7 +18,7 @@ class SearchableConfiguration {
      *
      * Examples: "/home/app/compassindex", "ram://app-index" or null to use the default
      */
-    String compassConnection = System.getProperty("base.dir") == null?"ram://app-index":new StringBuffer(System.getProperty("base.dir")).
+    String compassConnection = System.getProperty("index.dir") != null?System.getProperty("index.dir"):new StringBuffer(System.getProperty("base.dir")).
                 append(File.separator).
                 append("data").
                 append(File.separator).

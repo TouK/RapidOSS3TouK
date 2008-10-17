@@ -24,6 +24,7 @@ import com.ifountain.rcmdb.domain.converter.BooleanConverter
 import auth.Group
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import relation.Relation
+import com.ifountain.rcmdb.domain.generation.DataCorrectionUtilities
 
 class BootStrap {
     def quartzScheduler;
@@ -91,75 +92,7 @@ class BootStrap {
 
     def corrrectModelData()
     {
-        def changedModelProperties = [:]
-        PropertyAction.list().each {PropertyAction propAction ->
-            if (!propAction.willBeDeleted)
-            {
-                DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(propAction.modelName);
-                def modelProps = changedModelProperties[propAction.modelName];
-                if (modelProps == null)
-                {
-                    modelProps = [:]
-                    changedModelProperties[propAction.modelName] = modelProps;
-                }
-                if(propAction.action != PropertyAction.CLEAR_RELATION)
-                {
-                    propAction.defaultValue = currentDomainObject.clazz.newInstance()[propAction.propName];
-                    propAction.propType = currentDomainObject.getPropertyByName(propAction.propName).type;
-                }
-                modelProps[propAction.propName] = propAction;
-            }
-        }
-        int batch = 1000;
-        ModelAction.list().each {ModelAction modelAction ->
-            if (modelAction.action == ModelAction.DELETE_ALL_INSTANCES)
-            {
-                DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(modelAction.modelName);
-                if (currentDomainObject)
-                {
-                    currentDomainObject.clazz.metaClass.invokeStaticMethod(currentDomainObject.clazz, "unindex", [] as Object[]);
-                }
-            }
-            modelAction.remove();
-        }
-
-        changedModelProperties.each {String modelName, Map modelProps ->
-            DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(modelName);
-            if (currentDomainObject)
-            {
-                Class currentModelClass = currentDomainObject.clazz;
-                int index = 0;
-                while (true)
-                {
-                    def res = currentModelClass.metaClass.invokeStaticMethod(currentModelClass, "search", ["alias:*", [max: batch, offset: index]] as Object[]);
-                    res.results.each {modelInstance ->
-                        modelProps.each {propName, PropertyAction action ->
-
-                            if (action.action == PropertyAction.CLEAR_RELATION)
-                            {
-                                def reverseRels = RelationUtils.getReverseRelationObjects (modelInstance, action.reverseName, action.propTypeName)
-                                def selfRels = Relation.search("objectId:${modelInstance.id} AND name:${action.propName}").results;
-                                def allRels = []
-                                allRels.addAll (selfRels);
-                                allRels.addAll (reverseRels);
-                                allRels*.remove();
-                            }
-                            else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
-                            {
-                                modelInstance[propName] = action.defaultValue;
-                            }
-                            action.remove();
-                        }
-                        modelInstance.reindex();
-                    }
-                    index += batch;
-                    if (res.total < index)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
+        DataCorrectionUtilities.dataCorrectionAfterReloadStep();
     }
 
     def registerDefaultDatasources()

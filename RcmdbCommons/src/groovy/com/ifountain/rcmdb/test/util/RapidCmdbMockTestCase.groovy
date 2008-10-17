@@ -25,6 +25,9 @@ import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 import com.ifountain.rcmdb.domain.property.DefaultDomainClassPropertyInterceptor
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import org.apache.commons.io.FileUtils
+import com.ifountain.compass.SingleCompassSessionManager
+import org.compass.core.Compass
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,10 +52,13 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     def loadedClasses;
     def resolver = new PathMatchingResourcePatternResolver()
     def previousGrailsApp;
+    String indexDir = "../indexFiles"
     public void setUp() {
         super.setUp();
+        System.clearProperty("index.dir")
         previousGrailsApp = ApplicationHolder.application;
         configParams = [:]
+        FileUtils.deleteDirectory(new File(indexDir))
 //        if(previousGrailsApp != null)
 //        {
 //            println "WITH GRAILS APPLICATION"
@@ -66,6 +72,18 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 
     def initialize(List classesToBeLoaded, List pluginsToLoad)
     {
+        initialize(classesToBeLoaded, pluginsToLoad, false)
+    }
+    def initialize(List classesToBeLoaded, List pluginsToLoad, boolean isPersistant)
+    {
+        if(isPersistant)
+        {
+            System.setProperty("index.dir", "../indexFiles");
+        }
+        else
+        {
+            System.setProperty("index.dir", "ram://app-index");
+        }
         this.loadedClasses = classesToBeLoaded;
         ExpandoMetaClass.enableGlobally()
 //        classesToBeLoaded.addAll(Arrays.asList(gcl.getLoadedClasses()));
@@ -109,27 +127,38 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 		dependentPlugins*.doWithApplicationContext(appCtx)
     }
 
-    void tearDown() {
+    public void destroy()
+    {
+        if(appCtx)
+        {
+            SingleCompassSessionManager.destroy();
+            appCtx.getBean("compass").close()
+        }
         servletContext = null
-		webRequest = null
-		request = null
-		response = null
-		gcl = null
-		ga = null
-		mockManager = null
-		ctx = null
-		appCtx = null
-    	springConfig = null
-    	resolver = null
+        webRequest = null
+        request = null
+        response = null
+        gcl = null
+        ga = null
+        mockManager = null
+        ctx = null
+        appCtx = null
+        springConfig = null
+        resolver = null
 //		ExpandoMetaClass.disableGlobally()
-    	originalHandler = null
+        originalHandler = null
         ApplicationHolder.application = previousGrailsApp;
         PluginManagerHolder.pluginManager = null;
         this.loadedClasses.each{
-            GroovySystem.metaClassRegistry.removeMetaClass (it);    
+            GroovySystem.metaClassRegistry.removeMetaClass (it);
         }
         this.loadedClasses = null;
 
+    }
+
+    void tearDown() {
+        destroy();
+        System.clearProperty("index.dir")
 
     }
 }

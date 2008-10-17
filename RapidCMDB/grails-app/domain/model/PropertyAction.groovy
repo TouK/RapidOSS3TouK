@@ -12,6 +12,8 @@ class PropertyAction {
     static searchable = {
         except = ["propType", "defaultValue"];
     };
+    Long id;
+    Long version;
     String rsOwner = "p"
     String propName;
     String reverseName="";

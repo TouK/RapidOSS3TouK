@@ -13,7 +13,7 @@ import relation.Relation
  * To change this template use File | Settings | File Templates.
  */
 class RapidCmdbWithCompassTestCase extends RapidCmdbMockTestCase{
-    def initialize(List classesToBeLoaded, List pluginsToLoad)
+    def initialize(List classesToBeLoaded, List pluginsToLoad, boolean isPersistant)
     {
         IdGenerator.initialize(new MockIdGeneratorStrategy());
         pluginsToLoad +=  DomainClassGrailsPlugin;
@@ -21,7 +21,7 @@ class RapidCmdbWithCompassTestCase extends RapidCmdbMockTestCase{
         pluginsToLoad +=  gcl.loadClass("SearchableExtensionGrailsPlugin");
         pluginsToLoad +=  gcl.loadClass("RapidDomainClassGrailsPlugin");
         classesToBeLoaded += Relation;
-        super.initialize(classesToBeLoaded, pluginsToLoad);
+        super.initialize(classesToBeLoaded, pluginsToLoad, isPersistant);
     }
 
 }

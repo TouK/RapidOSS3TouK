@@ -13,6 +13,8 @@ class ModelAction {
     public static final String GENERATE_RESOURCES = "generateResources"
     static searchable = true;
     String rsOwner = "p"
+    Long id;
+    Long version;
     String modelName;
     String action;
     boolean willBeDeleted = false;

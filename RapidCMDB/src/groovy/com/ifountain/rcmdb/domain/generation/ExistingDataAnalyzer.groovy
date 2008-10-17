@@ -56,7 +56,10 @@ class ExistingDataAnalyzer
         }
         if(willDeleteAll)
         {
-            actions += new ModelAction(modelName:currentDomainObject.name, action:ModelAction.DELETE_ALL_INSTANCES);
+            def action = new ModelAction();
+            action.setProperty("modelName", currentDomainObject.name, false);
+            action.setProperty("action", ModelAction.DELETE_ALL_INSTANCES, false);
+            actions += action;
             willResourcesBeRegenerated = true; 
         }
         else if(newKeyProperties.size() > oldKeyProperties.size())
@@ -66,7 +69,10 @@ class ExistingDataAnalyzer
 
         if(currentDomainObject.subClasses.isEmpty() && !newDomainObject.subClasses.isEmpty() )
         {
-            actions += new ModelAction(modelName:currentDomainObject.name, action:ModelAction.REFRESH_DATA);
+            def action = new ModelAction();
+            action.setProperty("modelName", currentDomainObject.name, false);
+            action.setProperty("action", ModelAction.REFRESH_DATA, false);
+            actions += action;
         }
         
         newClassProperties.each{String propName, GrailsDomainClassProperty prop->
@@ -77,7 +83,11 @@ class ExistingDataAnalyzer
             {
                 if(!willDeleteAll)
                 {
-                    actions += new PropertyAction(modelName:currentDomainObject.name, propName:propName, action:PropertyAction.SET_DEFAULT_VALUE);
+                    def action = new PropertyAction();
+                    action.setProperty("modelName", currentDomainObject.name, false);
+                    action.setProperty("propName", propName, false);
+                    action.setProperty("action", PropertyAction.SET_DEFAULT_VALUE, false);
+                    actions += action;
                 }
                 if(oldProperty == null || oldProperty.type != prop.type)
                 {
@@ -103,7 +113,13 @@ class ExistingDataAnalyzer
                 {
                     if(!willDeleteAll)
                     {
-                        actions += new PropertyAction(modelName:currentDomainObject.name, propName:relationName, action:PropertyAction.CLEAR_RELATION, propTypeName:oldRelation.getOtherSideCls().name, reverseName:oldRelation.getOtherSideName());
+                        def action = new PropertyAction();
+                        action.setProperty("modelName", currentDomainObject.name, false);
+                        action.setProperty("propName", relationName, false);
+                        action.setProperty("action", PropertyAction.CLEAR_RELATION, false);
+                        action.setProperty("propTypeName", oldRelation.getOtherSideCls().name, false);
+                        action.setProperty("reverseName", oldRelation.getOtherSideName(), false);
+                        actions += action;
                     }
                     willResourcesBeRegenerated = true;
                 }
@@ -123,7 +139,13 @@ class ExistingDataAnalyzer
             if(!willDeleteAll)
             {
                 oldRelations.each{relationName, oldRelation->
-                    actions += new PropertyAction(modelName:currentDomainObject.name, propName:relationName, action:PropertyAction.CLEAR_RELATION, propTypeName:oldRelation.getOtherSideCls().name, reverseName:oldRelation.getOtherSideName());
+                    def action = new PropertyAction();
+                    action.setProperty("modelName", currentDomainObject.name, false);
+                    action.setProperty("propName", relationName, false);
+                    action.setProperty("action", PropertyAction.CLEAR_RELATION, false);
+                    action.setProperty("propTypeName", oldRelation.getOtherSideCls().name, false);
+                    action.setProperty("reverseName", oldRelation.getOtherSideName(), false);
+                    actions += action;
 
                 }
             }
@@ -131,7 +153,10 @@ class ExistingDataAnalyzer
 
         if(willResourcesBeRegenerated)
         {
-            actions += new ModelAction(modelName:currentDomainObject.name, action:ModelAction.GENERATE_RESOURCES);   
+            def action = new ModelAction();
+            action.setProperty("modelName", currentDomainObject.name, false);
+            action.setProperty("action", ModelAction.GENERATE_RESOURCES, false);
+            actions += action;   
         }
         
         return actions;

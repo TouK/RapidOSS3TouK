@@ -12,8 +12,7 @@ import com.ifountain.rcmdb.domain.method.CompassMethodInvoker
  */
 class RelationUtils
 {
-
-    def static getReverseRelationObjects(domainObject, otherSideName, otherSideClass, notRemovedRelations = null)
+    def static getReverseRelationObjectsById(id, otherSideName, otherSideClass, notRemovedRelations = null)
     {
         def query = new StringBuffer();
         if(notRemovedRelations)
@@ -26,12 +25,16 @@ class RelationUtils
         }
         if(otherSideClass instanceof Class)
         {
-            return Relation.searchEvery("${query} name:${otherSideName} AND className:${otherSideClass.name} ${Relation.getRelKey(domainObject.id)}:${domainObject.id}");
+            return Relation.searchEvery("${query} name:${otherSideName} AND className:${otherSideClass.name} ${Relation.getRelKey(id)}:${id}");
         }
         else
         {
-            return Relation.searchEvery("${query} name:${otherSideName} AND className:${otherSideClass} ${Relation.getRelKey(domainObject.id)}:${domainObject.id}");
+            return Relation.searchEvery("${query} name:${otherSideName} AND className:${otherSideClass} ${Relation.getRelKey(id)}:${id}");
         }
+    }
+    def static getReverseRelationObjects(domainObject, otherSideName, otherSideClass, notRemovedRelations = null)
+    {
+        return getReverseRelationObjectsById(domainObject.id, otherSideName, otherSideClass, notRemovedRelations);   
     }
 
 

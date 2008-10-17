@@ -106,44 +106,7 @@ class ApplicationController {
             }
             return;
         }
-        GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClassesWillBeGenerated as GrailsClass[], newDomainClassesMap);
-        domainClassesWillBeGenerated.each {GrailsDomainClass newDomainClass ->
-            GrailsDomainClass oldDomainClass = oldDomainClasses[newDomainClass.name];
-            if (oldDomainClass)
-            {
-                List actions = ExistingDataAnalyzer.createActions(oldDomainClass, newDomainClass);
-                actions.each {
-                    if (it instanceof ModelAction && it.action == ModelAction.GENERATE_RESOURCES)
-                    {
-                        ModelUtils.generateModelArtefacts(newDomainClass, baseDir, baseDir);
-                    }
-                    else
-                    {
-                        if (it instanceof PropertyAction)
-                        {
-                            PropertyAction.add(propName: it.propName, action: it.action, modelName: it.modelName, reverseName:it.reverseName, propTypeName:it.propTypeName);
-                        }
-                        else
-                        {
-                            ModelAction.add(action: it.action, modelName: it.modelName);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                ModelUtils.generateModelArtefacts(newDomainClass, baseDir, baseDir);
-            }
-        }
-
-        oldDomainClasses.each {String oldClassName, GrailsDomainClass oldDomainClass ->
-            if (!newDomainClassesMap.containsKey(oldClassName))
-            {
-                ModelUtils.deleteModelArtefacts(baseDir, oldClassName);
-                new File(tempModelDir + "/" + oldClassName + ".groovy").delete()
-                oldDomainClass.clazz.metaClass.invokeStaticMethod(oldDomainClass.clazz, "unindex", [] as Object[]);
-            }
-        }
+        com.ifountain.rcmdb.domain.generation.DataCorrectionUtilities.dataCorrectionBeforeReloadStep(baseDir, tempModelDir, oldDomainClasses, domainClassesWillBeGenerated, newDomainClassesMap);
         if (tempModelDirFile.exists()) {
             FileUtils.copyDirectory(tempModelDirFile, currentModelDirFile);
         }

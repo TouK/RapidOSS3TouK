@@ -364,8 +364,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         SelectUtils.remove(this.viewInput, view);
         this.viewChanged();
     },
-    handleViewChange: function(e){
-       this.viewChanged();
+    handleViewChange: function(e) {
+        this.viewChanged();
     },
     viewChanged: function(newQuery, willSaveHistory) {
         var view = this.viewInput.options[this.viewInput.selectedIndex].value;
@@ -399,9 +399,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
                 var columnsToUnhide = this.numberOfColumnsDrawn - this.columns.length;
                 var columnsToBeAdded = columns.length - this.numberOfColumnsDrawn;
                 for (var index = 0; index < columnsToBeAdded; index++) {
-                    var columnIndex = this.numberOfColumnsDrawn + index - 1;
+                    var columnIndex = this.numberOfColumnsDrawn + index;
                     this.addHeader(columnIndex, "&#160;")
+                    var colCssName = "#" + this.bodyId + " .rcmdb-searchgrid-col-" + columnIndex;
+                    this.addColCss(colCssName);
                 }
+                YAHOO.ext.util.CSS.getRules(true);
                 this.numberOfColumnsDrawn = columns.length;
             }
             for (var index = 0; index < columnsToUnhide; index++) {
@@ -523,7 +526,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             SelectUtils.selectTheValue(this.viewInput, view, 0);
             this.viewChanged(queryString);
         }
-        else{
+        else {
             this._setQuery(queryString, this.lastSortAtt, this.lastSortOrder);
             this.handleSearch();
         }

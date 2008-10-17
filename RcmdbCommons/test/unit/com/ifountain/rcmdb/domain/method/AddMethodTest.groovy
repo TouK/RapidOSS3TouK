@@ -73,9 +73,34 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals (expectedDomainObject1.prop6, addedObject.prop6);
         assertTrue (ChildAddMethodDomainObject.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
-        assertEquals("prop1:\"object1Prop1Value\"", ChildAddMethodDomainObject.query);
+        assertEquals("prop1:\"object1Prop1Value\"", AddMethodDomainObject1.query);
 
     }
+
+    public void testAddMethodForAChildGeneratesErrorIfKeysExistsForAnotherChildOfParentClass()
+    {
+        ChildAddMethodDomainObject expectedDomainObject1 = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop6:"object1Prop6Value");
+        AddMethod add = new AddMethod(ChildAddMethodDomainObject.metaClass, AddMethodDomainObject1.class, validator, ChildAddMethodDomainObject.allFields, [:], ["prop1"]);
+        AddMethod add2 = new AddMethod(ChildAddMethodDomainObject2.metaClass, AddMethodDomainObject1.class, validator, ChildAddMethodDomainObject2.allFields, [:], ["prop1"]);
+
+
+        
+        def props = [prop1:expectedDomainObject1.prop1];
+        def addedObject = add.invoke (ChildAddMethodDomainObject.class, [props] as Object[]);
+        AddMethodDomainObjectWithEvents.searchResult = [total:1, results:[expectedDomainObject1]];
+
+        def addedObject2 = add2.invoke (ChildAddMethodDomainObject2.class, [props] as Object[]);        
+        assertTrue(addedObject2.hasErrors())
+
+        /*
+        assertEquals (expectedDomainObject1, addedObject);
+        assertEquals (expectedDomainObject1.prop6, addedObject.prop6);
+        assertTrue (ChildAddMethodDomainObject.indexList[0].contains(addedObject));
+        assertNull(addedObject.relationsShouldBeAdded)
+        assertEquals("prop1:\"object1Prop1Value\"", AddMethodDomainObject1.query);
+        */
+    }
+    
 
     public void testAddMethodWithEvents()
     {
@@ -369,7 +394,27 @@ class AddMethodDomainObject1  extends GroovyObjectSupport
 
 class ChildAddMethodDomainObject extends AddMethodDomainObject1
 {
+    def static searchResult = [total:0, results:[]];
+    def static query;
     def static allFields = ["rel1":[type:Object], "rel2":[type:Object], "prop1":[type:String], "prop2":[type:String], "prop3":[type:String], "prop4":[type:Long], "prop5":[type:Date], "prop6":[type:String], "doubleProp":[type:Double], "booleanProp":[type:Boolean], "id":[type:Long]];
+    def static searchWithoutTriggering(queryClosure)
+    {
+        ChildAddMethodDomainObject.query = queryClosure;
+        return searchResult
+    }
+    String prop6;
+}
+
+class ChildAddMethodDomainObject2 extends AddMethodDomainObject1
+{
+    def static searchResult = [total:0, results:[]];
+    def static query;
+    def static allFields = ["rel1":[type:Object], "rel2":[type:Object], "prop1":[type:String], "prop2":[type:String], "prop3":[type:String], "prop4":[type:Long], "prop5":[type:Date], "prop6":[type:String], "doubleProp":[type:Double], "booleanProp":[type:Boolean], "id":[type:Long]];
+    def static searchWithoutTriggering(queryClosure)
+    {
+        ChildAddMethodDomainObject.query = queryClosure;
+        return searchResult
+    }
     String prop6;
 }
 

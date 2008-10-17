@@ -166,7 +166,10 @@ class SearchableExtensionGrailsPlugin {
         def propSummaryMethod = new PropertySummaryMethod(mc);
         def parentDomainClass = getParentDomainClass(dc, application)
         def relations = DomainClassUtils.getRelations(dc);
-        def getMethod = new GetMethod(mc, parentDomainClass, keys, relations);
+        def getMethod = new GetMethod(mc, keys, relations);
+        mc.'static'.getFromHierarchy = {Map searchParams->
+            return getMethod.invoke(parentDomainClass, [searchParams] as Object[])
+        }
         mc.'static'.get = {Map searchParams->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])
         }

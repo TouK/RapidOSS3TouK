@@ -17,6 +17,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
     GetMethod getMethod
     def fieldTypes = [:]
     Validator validator;
+    Class rootDomainClass;
     public AddMethod(MetaClass mc, Class rootDomainClass, Validator validator, Map allFields, Map relations, List keys) {
         super(mc);
         this.validator = validator;
@@ -24,7 +25,8 @@ class AddMethod extends AbstractRapidDomainStaticMethod
             fieldTypes[fieldName] = field.type;
         }
         this.relations = relations
-        getMethod = new GetMethod(mc, rootDomainClass, keys, relations);
+        this.rootDomainClass=rootDomainClass;
+        getMethod = new GetMethod(mc, keys, relations);
     }
 
     public boolean isWriteOperation() {
@@ -36,14 +38,21 @@ class AddMethod extends AbstractRapidDomainStaticMethod
     protected Object _invoke(Class clazz, Object[] arguments) {
         def props = arguments[0];
         props.remove("id");
-        def existingInstance = getMethod.invoke(clazz, [props, false] as Object[])
+        def existingInstance = getMethod.invoke(rootDomainClass, [props, false] as Object[])
+        def instanceOfError = false;
         if(existingInstance != null)
         {
-            return existingInstance.update(props);
+            if(clazz.isInstance(existingInstance) )
+            {
+                return existingInstance.update(props);
+            }
+            else
+            {
+                instanceOfError = true;
+            }
         }
+
         def sampleBean = clazz.newInstance()
-
-
         Errors errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
         def relatedInstances = [:];
 
@@ -65,7 +74,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
                         }
                         catch(ConversionException exception)
                         {
-                            ValidationUtils.addFieldError (errors, key, value, "rapidcmdb.invalid.property.type", [fieldType.name, value.class.name]);
+                            ValidationUtils.addFieldError (errors, key, value, "rapidcmdb.invalid.property.type", [key, fieldType.name, value.class.name]);
                         }
                     }
                     else
@@ -78,6 +87,10 @@ class AddMethod extends AbstractRapidDomainStaticMethod
             {
                 relatedInstances[key] = value;
             }
+        }
+        if(instanceOfError)
+        {
+            ValidationUtils.addObjectError(errors, "rapidcmdb.invalid.instanceof.existing", [rootDomainClass.name,existingInstance.class.name]);
         }
         if(errors.hasErrors()){
             sampleBean.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);

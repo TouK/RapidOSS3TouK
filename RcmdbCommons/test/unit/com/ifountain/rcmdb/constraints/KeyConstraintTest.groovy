@@ -123,7 +123,7 @@ class KeyConstraintDomainObjectForTest
     String key1;
     String key2;
     String key3;
-    public static Object get(Map params)
+    public static Object getFromHierarchy(Map params)
     {
         searchParams = params;
         return existingInstance;

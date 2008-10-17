@@ -21,7 +21,7 @@ class KeyConstraint extends AbstractConstraint{
         keys.each{key->
             keyMap[key] = target.getProperty(key);
         }
-        Object res = ((MetaClass)constraintOwningClass.metaClass).invokeStaticMethod(constraintOwningClass, "get", [keyMap] as Object[]);
+        Object res = constraintOwningClass.'getFromHierarchy'(keyMap);
         if(res != null && target.id != res.id)
         {
             List args = [constraintPropertyName, constraintOwningClass, propertyValue ];

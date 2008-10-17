@@ -456,6 +456,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
 
     resize : function(width, height) {
         this.body.setStyle("height", height - this.header.dom.offsetHeight);
+        this.body.setWidth(width);
         this._verticalScrollChanged();
     },
     getRowFromChild : function(childEl) {

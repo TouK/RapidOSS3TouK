@@ -1,7 +1,6 @@
 <html>
 <head>
     <meta name="layout" content="indexLayout" />
-    <script type="text/javascript" src="js/yui/charts/charts-experimental-min.js"></script>
 </head>
 <body>
 
@@ -72,6 +71,9 @@
             <rui:tmImage id="status" x="70" y="40" width="30" height="30" dataKey="state" mapping="${stateMapping}"></rui:tmImage>
             <rui:tmImage id="icon" x="70" y="0" width="20" height="20" dataKey="type" mapping="${typeMapping}"></rui:tmImage>
         </rui:tmImages>
+         <rui:tmTexts>
+            <rui:tmText id="name" x="20" y="20" width="50" height="30" dataKey="id"></rui:tmText>
+         </rui:tmTexts>
      </rui:tmNodeContent>
      <rui:tmToolbarMenus>
         <rui:tmToolbarMenu label="Map">

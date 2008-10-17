@@ -8,7 +8,7 @@ import com.ifountain.rui.util.TagLibUtils
 * To change this template use File | Settings | File Templates.
 */
 class HistoricalNotificationsTagLib {
-     static namespace = "rui";
+    static namespace = "rui";
     def historicalNotifications = {attrs, body ->
         def configXML = "<HistoricalNotifications>${body()}</HistoricalNotifications>";
         def searchListPollInterval = attrs["searchResultsPollingInterval"] ? attrs["searchResultsPollingInterval"] : "0";
@@ -21,8 +21,44 @@ class HistoricalNotificationsTagLib {
         def htmlDialogs = [];
         def fields = [];
         def emphasizeds = [];
+        def defaultMenus = ["sortAsc": [label: "Sort asc"],
+                "sortDesc": [label: "Sort desc"],
+                "except": [label: "Except"],
+                "lessThan": [label: "Less Than"],
+                "greaterThan": [label: "Greater Than"],
+                "greaterThanOrEqualTo": [label: "Greater than or equal to"],
+                "lessThanOrEqualTo": [label: "Less than or equal to"]
+        ]
 
         def hnXML = new XmlSlurper().parseText(configXML);
+        def tsDefaultMenus = hnXML.DefaultMenus.DefaultMenu;
+        tsDefaultMenus.each {
+            def id = it.@id.toString().trim();
+            if (defaultMenus.containsKey(id)) {
+                def defaultMenuConfig = defaultMenus.get(id);
+                def label = it.@label.toString();
+                defaultMenuConfig.label = label;
+                def properties = it.properties.Item;
+                if (properties.size() > 0) {
+                    def propArray = [];
+                    properties.each {p ->
+                        propArray.add("params.key == '${p.text()}'")
+                    }
+                    defaultMenuConfig.put("properties", propArray)
+                }
+                else {
+                    def excepts = it.except.Item;
+                    if (excepts.size() > 0) {
+                        def exceptArray = [];
+                        excepts.each {p ->
+                            exceptArray.add("params.key != '${p.text()}'")
+                        }
+                        defaultMenuConfig.put("except", exceptArray)
+                    }
+                }
+            }
+        }
+
         def hnMenus = hnXML.HnMenus.HnMenu;
         hnMenus.each {menuItem ->
             def location = menuItem.@location.toString().trim();
@@ -126,24 +162,24 @@ class HistoricalNotificationsTagLib {
                 defaultFields: defaultFields, onSaveQueryClick: "saveQueryAction",
                 pollingInterval: searchListPollInterval, lineSize: lineSize,
                 SearchListTagLib.fSlMenuItems([:],
-                       getMenuXml(rowMenus)
+                        getMenuXml(rowMenus)
                 ) +
                         SearchListTagLib.fSlPropertyMenuItems([:],
-                                SearchListTagLib.fSlMenuItem(id: "sortAsc", label: "Sort asc", action: "searchListSortAscAction", "") +
-                                        SearchListTagLib.fSlMenuItem(id: "sortDesc", label: "Sort desc", action: "searchListSortDescAction", "") +
-                                        SearchListTagLib.fSlMenuItem(id: "except", label: "Except", action: "exceptAction", "") +
-                                        SearchListTagLib.fSlMenuItem(id: "greaterThan", label: "Greater than", action: "greaterThanAction", visible: "(params.key == 'severity' && params.value != '1') || (params.key != 'severity' && YAHOO.lang.isNumber(parseInt(params.value)))", "") +
-                                        SearchListTagLib.fSlMenuItem(id: "lessThan", label: "Less than", action: "lessThanAction", visible: "(params.key == 'severity' && params.value != '5') || (params.key != 'severity' && YAHOO.lang.isNumber(parseInt(params.value)))", "") +
-                                        SearchListTagLib.fSlMenuItem(id: "greaterThanOrEqualTo", label: "Greater than or equal to", action: "greaterThanOrEqualToAction", visible: "YAHOO.lang.isNumber(parseInt(params.value))", "") +
-                                        SearchListTagLib.fSlMenuItem(id: "lessThanOrEqualTo", label: "Less than or equal to", action: "lessThanOrEqualToAction", visible: "YAHOO.lang.isNumber(parseInt(params.value))", "") +
+                                SearchListTagLib.fSlMenuItem(id: "sortAsc", label: defaultMenus.sortAsc.label, action: "searchListSortAscAction", visible:getSortAscVisibility(defaultMenus), "") +
+                                        SearchListTagLib.fSlMenuItem(id: "sortDesc", label: defaultMenus.sortDesc.label, action: "searchListSortDescAction", visible:getSortDescVisibility(defaultMenus),"") +
+                                        SearchListTagLib.fSlMenuItem(id: "except", label: defaultMenus.except.label, action: "exceptAction", visible:getExceptVisibility(defaultMenus),"") +
+                                        SearchListTagLib.fSlMenuItem(id: "greaterThan", label: defaultMenus.greaterThan.label, action: "greaterThanAction", visible: getGreaterThanVisibility(defaultMenus), "") +
+                                        SearchListTagLib.fSlMenuItem(id: "lessThan", label: defaultMenus.lessThan.label, action: "lessThanAction", visible: getLessThanVisibility(defaultMenus), "") +
+                                        SearchListTagLib.fSlMenuItem(id: "greaterThanOrEqualTo", label: defaultMenus.greaterThanOrEqualTo.label, action: "greaterThanOrEqualToAction", visible: getGreaterThanOrEqualVisibility(defaultMenus), "") +
+                                        SearchListTagLib.fSlMenuItem(id: "lessThanOrEqualTo", label: defaultMenus.lessThanOrEqualTo.label, action: "lessThanOrEqualToAction", visible: getLessThanOrEqualVisibility(defaultMenus), "") +
                                         getMenuXml(propertyMenus)
                         ) +
                         SearchListTagLib.fSlImages([:],
-                           SearchListTagLib.fSlImage(visible:"params.data.severity == '1'", src:"images/rapidjs/component/searchlist/red.png", "") +
-                           SearchListTagLib.fSlImage(visible:"params.data.severity == '2'", src:"images/rapidjs/component/searchlist/orange.png", "") +
-                           SearchListTagLib.fSlImage(visible:"params.data.severity == '3'", src:"images/rapidjs/component/searchlist/yellow.png", "") +
-                           SearchListTagLib.fSlImage(visible:"params.data.severity == '4'", src:"images/rapidjs/component/searchlist/blue.png", "") +
-                           SearchListTagLib.fSlImage(visible:"params.data.severity == '5'", src:"images/rapidjs/component/searchlist/green.png", "")
+                                SearchListTagLib.fSlImage(visible: "params.data.severity == '1'", src: "images/rapidjs/component/searchlist/red.png", "") +
+                                        SearchListTagLib.fSlImage(visible: "params.data.severity == '2'", src: "images/rapidjs/component/searchlist/orange.png", "") +
+                                        SearchListTagLib.fSlImage(visible: "params.data.severity == '3'", src: "images/rapidjs/component/searchlist/yellow.png", "") +
+                                        SearchListTagLib.fSlImage(visible: "params.data.severity == '4'", src: "images/rapidjs/component/searchlist/blue.png", "") +
+                                        SearchListTagLib.fSlImage(visible: "params.data.severity == '5'", src: "images/rapidjs/component/searchlist/green.png", "")
                         ) +
                         SearchListTagLib.fSlFields([:], getFieldsXml(fields))
 
@@ -276,6 +312,15 @@ class HistoricalNotificationsTagLib {
         out << TagLibUtils.getConfigAsXml("HnMenu", attrs, validAttrs);
     }
 
+    def hnDefaultMenus = {attrs, body ->
+        out << TagLibUtils.getConfigAsXml("DefaultMenus", attrs, [], body());
+    }
+    def hnDefaultMenu = {attrs, body ->
+        def validAttrs = ["id", "label", "properties", "except"]
+        out << TagLibUtils.getConfigAsXml("DefaultMenu", attrs, validAttrs);
+    }
+
+
     def hnSearchResults = {attrs, body ->
         out << TagLibUtils.getConfigAsXml("HnSearchResults", attrs, [], body());
     }
@@ -317,7 +362,7 @@ class HistoricalNotificationsTagLib {
                 }
                 def url = "script/run/${it.script}?format=xml"
                 def actionType = type == "execute" ? "request" : "merge"
-                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, components:["searchList"], paramString);
+                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, components: ["searchList"], paramString);
             }
         }
         return output;
@@ -342,7 +387,7 @@ class HistoricalNotificationsTagLib {
         def emphasizedString = "";
         def empIndex = 0;
         emphasizeds.each {
-            if(it.emphasizeds.size() > 0){
+            if (it.emphasizeds.size() > 0) {
                 emphasizedString += empIndex == 0 ? "if" : "else if"
                 emphasizedString += """(data.rsAlias == '${it.alias}' && (${it.emphasizeds.join(' || ')})){
                 YAHOO.util.Dom.setStyle(el, 'color', 'blue');
@@ -404,5 +449,38 @@ class HistoricalNotificationsTagLib {
               return value;
            }
         """
+    }
+    def getSortAscVisibility(defaultMenus) {
+        return getDefaultMenuVisibility(defaultMenus, "sortAsc", "")
+    }
+    def getSortDescVisibility(defaultMenus) {
+        return getDefaultMenuVisibility(defaultMenus, "sortDesc", "")
+    }
+    def getExceptVisibility(defaultMenus) {
+        return getDefaultMenuVisibility(defaultMenus, "except", "")
+    }
+    def getGreaterThanVisibility(defaultMenus) {
+        return getDefaultMenuVisibility(defaultMenus, "greaterThan", "(params.key == 'severity' && params.value != '1') || (params.key != 'severity' && YAHOO.lang.isNumber(parseInt(params.value)))")
+    }
+    def getLessThanVisibility(defaultMenus) {
+        return getDefaultMenuVisibility(defaultMenus, "lessThan", "(params.key == 'severity' && params.value != '5') || (params.key != 'severity' && YAHOO.lang.isNumber(parseInt(params.value)))")
+    }
+    def getLessThanOrEqualVisibility(defaultMenus) {
+        return getDefaultMenuVisibility(defaultMenus, "lessThanOrEqualTo", "YAHOO.lang.isNumber(parseInt(params.value))")
+    }
+    def getGreaterThanOrEqualVisibility(defaultMenus) {
+        return getDefaultMenuVisibility(defaultMenus, "greaterThanOrEqualTo", "YAHOO.lang.isNumber(parseInt(params.value))")
+    }
+
+    def getDefaultMenuVisibility(defaultMenus, id, originalExp) {
+        def properties = defaultMenus.get(id).get("properties");
+        def except = defaultMenus.get(id).get("except");
+        if (properties != null && properties.size() > 0) {
+            return originalExp == "" ? "${properties.join(" || ")}" : "${originalExp} && (${properties.join(' || ')})"
+        }
+        else if (except != null && except.size() > 0) {
+            return originalExp == "" ? "${except.join(" && ")}" : "${originalExp} && (${except.join(' && ')})"
+        }
+        return originalExp;
     }
 }

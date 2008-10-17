@@ -14,7 +14,7 @@
     <script type="text/javascript" src="js/yui/layout/layout-min.js"></script>
     <script type="text/javascript" src="js/yui/history/history-min.js"></script>
     <script type="text/javascript" src="js/yui/datasource/datasource-min.js"></script>
-    <script type="text/javascript" src="js/yui/datatable/datatable-beta-min.js"></script>
+    <script type="text/javascript" src="js/yui/datatable/datatable-min.js"></script>
     <script type="text/javascript" src="js/ext/ext.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/ComponentContainer.js"></script>

@@ -68,6 +68,7 @@ choices.each{
         }
 
         Ant.move(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/rs.exe", toDir:"${baseDir}")
+        // TODO operations directory is lost the cause must be found
         if(new File("${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations").exists())
         {
             Ant.move(toDir:"${baseDir}/operations")

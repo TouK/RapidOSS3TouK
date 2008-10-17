@@ -1,6 +1,6 @@
 import datasource.SmartsNotificationDatasource
 
-class RsSmartsNotificationOperations extends RsAbstractEventOperations {
+class RsSmartsNotificationOperations extends RsEventOperations {
     public void acknowledge(boolean action, userName) {
         SmartsNotificationDatasource ds = SmartsNotificationDatasource.get(name: rsDatasource);
         if (ds == null) throw new Exception("Datasource with name ${rsDatasource} is not defined")

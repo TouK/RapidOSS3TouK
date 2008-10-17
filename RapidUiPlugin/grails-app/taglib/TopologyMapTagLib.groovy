@@ -4,280 +4,333 @@ import com.ifountain.rui.util.TagLibUtils
 * Created by IntelliJ IDEA.
 * User: Administrator
 * Date: Oct 16, 2008
-* Time: 10:40:36 AM
+* Time: 2:26:57 PM
 * To change this template use File | Settings | File Templates.
 */
 class TopologyMapTagLib {
     static namespace = "rui";
-    static def fTopologyMap(attrs, bodyString) {
-        def topoMapId = attrs["id"];
-        def configXML = "<TopologyMap>${bodyString}</TopologyMap>";
-        def onNodeClick = attrs["onNodeClick"];
-
-        def nodeClickJs;
-        if (onNodeClick != null) {
-            nodeClickJs = """
-               ${topoMapId}tp.events['nodeClicked'].subscribe(function(data, clickedItems){
-                   var params = {data:data, clickedItems:clickedItems};
-                   YAHOO.rapidjs.Actions['${onNodeClick}'].execute(params);
-                }, this, true);
-            """
-        }
-        def menuEvents = [:]
-        def toolbarMenuEvents = [:]
-        def menuEventsJs;
-        def toolbarMenuEventsJs;
-        def configStr = getConfig(attrs, configXML, menuEvents, toolbarMenuEvents);
-        def onSaveMap = attrs["onSaveMap"];
-        if(onSaveMap){
-            toolbarMenuEvents.put("saveMap", onSaveMap);
-        }
-        if (menuEvents.size() > 0) {
-            def innerJs = "";
-            def index = 0;
-            menuEvents.each {id, action ->
-                innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(menuId == '${id}'){
-                   YAHOO.rapidjs.Actions['${action}'].execute(params);
-                }
-                """
-                index++;
-            }
-            menuEventsJs = """
-               ${topoMapId}tm.events['nodeMenuItemClicked'].subscribe(function(menuId, data){
-                   var params = {data:data, menuId:menuId};
-                   ${innerJs}
-                }, this, true);
-            """
-
-        }
-        if (toolbarMenuEvents.size() > 0) {
-            def innerJs = "";
-            def index = 0;
-            toolbarMenuEvents.each {id, action ->
-                innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(menuId == '${id}'){
-                   YAHOO.rapidjs.Actions['${action}'].execute(params);
-                }
-                """
-                index++;
-            }
-            toolbarMenuEventsJs = """
-               ${topoMapId}tm.events['toolbarMenuItemClicked'].subscribe(function(menuId){
-                   var params = {menuId:menuId};
-                   ${innerJs}
-                }, this, true);
-            """
-
-        }
-        return """
-           <script type="text/javascript">
-               var ${topoMapId}c = ${configStr};
-               var ${topoMapId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
-               var ${topoMapId}tm = new YAHOO.rapidjs.component.TopologyMap(${topoMapId}container, ${topoMapId}c);
-               ${nodeClickJs ? nodeClickJs : ""}
-               ${menuEventsJs ? menuEventsJs : ""}
-               ${toolbarMenuEventsJs ? toolbarMenuEventsJs : ""}
-           </script>
-        """
-    }
-
     def topologyMap = {attrs, body ->
-        out << fTopologyMap(attrs, body())
-    }
+        def configXML = "<Map>${body()}</Map>";
+        def topoMapPollInterval = attrs["mapPollingInterval"] ? attrs["mapPollingInterval"] : "0";
+        def treeGridPollInterval = attrs["savedMapsPollingInterval"] ? attrs["savedMapsPollingInterval"] : "0";
+        def nodeSize = attrs["nodeSize"] ? attrs["nodeSize"] : "60";
+        def edgeColors = ["1" : "0xffde2c26","2":"0xfff79229","3": "0xfffae500", "4" :  "0xff20b4e0","5": "0xff62b446", "default":"0xff62b446" ]
+        def nodeMenus = [];
+        def toolbarMenus = ["Map":[[id:"saveMap", label:"Save Map", action:"saveMapAction"]]];
+        def actions = [];
+        def htmlDialogs = [];
 
-    static def getConfig(config, configXML, menuEvents, toolbarMenuEvents) {
-        def xml = new XmlSlurper().parseText(configXML);
-        def cArray = [];
-        cArray.add("id: '${config["id"]}'")
-        cArray.add("dataTag: '${config["dataTag"]}'")
-        cArray.add("expandURL: '${config["expandURL"]}'")
-        cArray.add("dataURL: '${config["dataURL"]}'")
-        if (config["title"])
-            cArray.add("title:'${config['title']}'")
-        if (config["nodeSize"])
-            cArray.add("nodeSize:${config['nodeSize']}")
-        if (config["pollingInterval"])
-            cArray.add("pollingInterval:${config['pollingInterval']}")
-        def edgeNodes = config["edgeColors"];
-        def edgeNodesArray = [];
-        edgeNodes.each {k, v ->
-            edgeNodesArray.add("'${k}':${v}")
-        }
-        cArray.add("edgeColors:{${edgeNodesArray.join(',')}}")
-        def nodeContentArray = [];
-        def images = xml.NodeContent.Images.Image;
-        def imageArray = [];
-        images.each {image ->
-            def mappingArray = [];
-            def mappings = image.mapping.Item;
-            mappings.each {
-                mappingArray.add("'${it.@key}':'${it.@value}'")
+        def tmXML = new XmlSlurper().parseText(configXML);
+        def tmMenus = tmXML.Menus.Menu;
+        tmMenus.each {menuItem ->
+            def location = menuItem.@location.toString().trim();
+            def id = menuItem.@id;
+            if (location == "node") {
+                nodeMenus.add([id: id, label: menuItem.@label, visible: menuItem.@visible, action: "${id}menuAction"])
             }
-            imageArray.add("""{
-               id:'${image.@id}',
-               x:${image.@x},
-               y:${image.@y},
-               width:${image.@width},
-               height:${image.@height},
-               dataKey:'${image.@dataKey}',
-               images:{${mappingArray.join(',')}}
-           }""")
-        }
-        nodeContentArray.add("images:[${imageArray.join(',\n')}]")
-        def texts = xml.NodeContent.Texts.Text;
-        def textsArray = [];
-        texts.each {text ->
-            textsArray.add("""
-                {
-                   id:'${text.@id}',
-                   x:${text.@x},
-                   y:${text.@y},
-                   width:${text.@width},
-                   height:${text.@height},
-                   dataKey:'${text.@dataKey}'
+            else if (location == "toolbar") {
+                def parentMenu = menuItem.@parentMenu.toString();
+                def parentMenuArray = toolbarMenus.get(parentMenu);
+                if(parentMenuArray == null){
+                    parentMenuArray = [];
+                    toolbarMenus.put(parentMenu, parentMenuArray)
                 }
-              """)
-        }
-        nodeContentArray.add("texts:[${textsArray.join(',\n')}]")
-        def gauges = xml.NodeContent.Gauges.Gauge;
-        def gaugesArray = [];
-        gauges.each {gauge ->
-            gaugesArray.add("""
-                {
-                   id:'${gauge.@id}',
-                   x:${gauge.@x},
-                   y:${gauge.@y},
-                   width:${gauge.@width},
-                   height:${gauge.@height},
-                   dataKey:'${gauge.@dataKey}'
-                }
-              """)
-        }
-        nodeContentArray.add("gauges:[${gaugesArray.join(',\n')}]")
-        cArray.add("nodeContent:{${nodeContentArray.join(',\n')}}")
-
-        def menuItems = xml.MenuItems.MenuItem;
-        def menuItemsArray = [];
-        menuItems.each {menuItem ->
-            def visible = menuItem.@visible.toString().trim();
-            def action = menuItem.@action.toString().trim();
-            def id = menuItem.@id.toString();
-            if(action.length() > 0){
-                menuEvents.put(id, action);
+                parentMenuArray.add([id: id, label: menuItem.@label.toString(), action: "${id}menuAction"])
             }
-            menuItemsArray.add("""{
-                id:'${id}',
-                ${visible.length() > 0? "visible:\"${visible}\",":""}
-                text:'${menuItem.@label}'       
-            }""")
-        }
-        cArray.add("nodeMenuItems:[${menuItemsArray.join(',\n')}]")
-
-        def toolbarMenus = xml.ToolbarMenus.ToolbarMenu;
-        def tMenuArray = [];
-        def toolbarMenuIndex = 0;
-        toolbarMenus.each{toolbarMenu ->
-            def label = toolbarMenu.@label;
-            def tMenuItems = toolbarMenu.MenuItem;
-            def tMenuItemsArray = [];
-            tMenuItems.each{tMenuItem ->
-                def action = tMenuItem.@action.toString().trim();
-                def id = tMenuItem.@id.toString();
-                if(action.length() > 0){
-                    toolbarMenuEvents.put(id, action);
-                }
-                tMenuItemsArray.add("""{
-                    id:'${id}',
-                    text:'${tMenuItem.@label}'
-                }""")
+            def actionType = menuItem.@actionType.toString().trim();
+            if (actionType == "htmlDialog") {
+                htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString()])
+                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
             }
-            tMenuArray.add("""{
-                text:'${label}',
-                subMenu:{
-                    id:'subMenu${toolbarMenuIndex}',
-                    itemdata:[${tMenuItemsArray.join(',\n')}]
+            else if (actionType == "update" || actionType == "execute") {
+                def params = menuItem.parameters.Item;
+                def pMap = [:]
+                params.each {
+                    pMap.put(it.@key.toString(), it.@value.toString())
                 }
-            }""")
-            toolbarMenuIndex ++;
+                actions.add([id: "${id}menuAction", type: actionType, script: menuItem.@script.toString(), parameters: pMap]);
+            }
         }
-        cArray.add("toolbarMenuItems:[${tMenuArray.join(',\n')}]")
-        return "{${cArray.join(',\n')}}"
+
+        def images = tmXML.Images.Image;
+        def imageString = "";
+        images.each{
+            def mappings = [:]
+            def mappingXml = it.mapping.Item;
+            mappingXml.each{mapping ->
+               mappings.put(mapping.@key.toString(), mapping.@value.toString())
+            }
+            imageString += ObjectMapTagLib.fOmImage(id:it.@id, x:it.@x, y:it.@y, width:it.@width, height:it.@height, dataKey:it.@dataKey, mapping:mappings, "")
+        }
+        def texts = tmXML.Texts.Text;
+        def textString = "";
+        texts.each{
+            textString += ObjectMapTagLib.fOmText(id:it.@id, x:it.@x, y:it.@y, width:it.@width, height:it.@height, dataKey:it.@dataKey, "")
+        }
+        def gauges = tmXML.Gauges.Gauge;
+        def gaugeString = "";
+        gauges.each{
+            gaugeString += ObjectMapTagLib.fOmGauge(id:it.@id, x:it.@x, y:it.@y, width:it.@width, height:it.@height, dataKey:it.@dataKey, "")
+        }
+        out << TreeGridTagLib.fTreeGrid(id: "mapTree", url: "script/run/mapList", rootTag: "Maps",
+                keyAttribute: "id", contentPath: "Map", title: "Saved Maps", expanded: "true", onNodeClick: "requestMapAction", pollingInterval: treeGridPollInterval,
+                TreeGridTagLib.fTgColumns([:],
+                        TreeGridTagLib.fTgColumn(attributeName: "name", colLabel: "Name", width: "248", sortBy: "true", "")
+                ) +
+                        TreeGridTagLib.fTgMenuItems([:],
+                                TreeGridTagLib.fTgMenuItem(id: "deleteMap", label: "Delete", visible: "params.data.isPublic != 'true' && params.data.nodeType == 'map'", action: "deleteMapAction", "") +
+                                        TreeGridTagLib.fTgMenuItem(id: "deleteMapGroup", label: "Delete", visible: "params.data.isPublic != 'true' && params.data.name != 'Default' && params.data.nodeType == 'group'", action: "deleteMapGroupAction", "") +
+                                        TreeGridTagLib.fTgMenuItem(id: "mapUpdate", label: "Update", visible: "params.data.nodeType == 'map' && params.data.isPublic != 'true'", action: "mapUpdateAction", "") +
+                                        TreeGridTagLib.fTgMenuItem(id: "mapGroupUpdate", label: "Update", visible: "params.data.isPublic != 'true' && params.data.name != 'Default' && params.data.nodeType == 'group'", action: "mapGroupUpdateAction", "") 
+                        ) +
+                        TreeGridTagLib.fTgRootImages([:],
+                                TreeGridTagLib.fTgRootImage(visible: "params.data.nodeType == 'group'", expanded: "images/rapidjs/component/tools/folder_open.gif", collapsed: "images/rapidjs/component/tools/folder.gif", "") +
+                                        TreeGridTagLib.fTgRootImage(visible: "params.data.nodeType == 'map'", expanded: "images/rapidjs/component/tools/filter.png", collapsed: "images/rapidjs/component/tools/filter.png", "")
+                        )
+        )
+
+        out << RFormTagLib.fForm(id: "mapDialog", width: "35em", createUrl:"script/run/createMap", editUrl:"script/run/editMap",
+                updateUrl:"topoMap/update?format=xml", saveUrl:"script/run/saveMap", submitAction:"POST", onSuccess: "refreshMapsAction",
+                """
+                  <div >
+                    <div class="hd">Save Map</div>
+                    <div class="bd">
+                    <form method="POST" action="javascript://nothing">
+                        <table>
+                        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="groupName" style="width:175px"/></td></tr>
+                        <tr><td width="50%"><label>Map Name:</label></td><td width="50%"><input type="textbox" name="mapName" style="width:175px"/></td></tr>
+                        </table>
+                        <input type="hidden" name="nodes"/>
+                        <input type="hidden" name="edges"/>
+                        <input type="hidden" name="id"/>
+                        <input type="hidden" name="layout"/>
+                    </form>
+            
+                    </div>
+                </div>
+                """
+        )
+        out << RFormTagLib.fForm(id: "mapGroupDialog", width: "30em", saveUrl: "mapGroup/save?format=xml",
+                updateUrl: "mapGroup/update?format=xml", onSuccess: "refreshMapsAction",
+                """
+                 <div >
+                    <div class="hd">Save group</div>
+                    <div class="bd">
+                    <form method="POST" action="javascript://nothing">
+                        <table>
+                        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="groupName" style="width:175px"/></td></tr>
+                        </table>
+                        <input type="hidden" name="id">
+                    </form>
+                    </div>
+                </div>
+                """
+        )
+
+        out << ObjectMapTagLib.fObjectMap(id:"topoMap", dataTag:"device", expandURL:"script/run/expandMap", dataURL:"script/run/getMapData",
+            nodeSize:nodeSize, edgeColors:edgeColors, pollingInterval:topoMapPollInterval, 
+            ObjectMapTagLib.fOmMenuItems([:], getMenuXml(nodeMenus)) +
+                    ObjectMapTagLib.fOmToolbarMenus([:], getToolbarMenuXml(toolbarMenus)) +
+                    ObjectMapTagLib.fOmNodeContent([:],
+                        ObjectMapTagLib.fOmImages([:], imageString) +
+                                ObjectMapTagLib.fOmGauges([:], gaugeString)+
+                                ObjectMapTagLib.fOmTexts([:], textString)
+                    )
+
+        )
+        out << getHtmlDialogsXml(htmlDialogs)
+        out << getActionXml(actions);
+        out << ActionsTagLib.fAction(id: "deleteMapAction", type: "request", url: "topoMap/delete?format=xml", onSuccess: "refreshMapsAction",
+                ActionsTagLib.fRequestParam(key: "id", value: "params.data.id", "")
+        )
+        out << ActionsTagLib.fAction(id: "deleteMapGroupAction", type: "request", url: "mapGroup/delete?format=xml", onSuccess: "refreshMapsAction",
+                ActionsTagLib.fRequestParam(key: "id", value: "params.data.id", "")
+        )
+        out << ActionsTagLib.fAction(id: "mapUpdateAction", type: "function", componentId: "mapDialog", function: "show",
+                ActionsTagLib.fFunctionArg([:], "YAHOO.rapidjs.component.Form.EDIT_MODE") +
+                        ActionsTagLib.fFunctionArg([:], "{mapId:params.data.id}")
+        )
+        out << ActionsTagLib.fAction(id: "mapGroupUpdateAction", type: "function", componentId: "mapGroupDialog", function: "show",
+                ActionsTagLib.fFunctionArg([:], "YAHOO.rapidjs.component.Form.EDIT_MODE") +
+                        ActionsTagLib.fFunctionArg([:], "{}") +
+                        ActionsTagLib.fFunctionArg([:], "{groupName:params.data.name, id:params.data.id}")
+        )
+        out << ActionsTagLib.fAction(id: "requestMapAction", type: "request", url: "script/run/getMap?format=xml", onSuccess: "loadMapAction",
+                ActionsTagLib.fRequestParam(key: "mapName", value: "params.data.name", "")
+        )
+        out << ActionsTagLib.fAction(id: "loadMapAction", type: "function", componentId: "topoMap", function: "loadMap",
+                ActionsTagLib.fFunctionArg([:], "params.response")
+        )
+        out << ActionsTagLib.fAction(id: "saveMapAction", type: "function", componentId: "mapDialog", function: "show",
+                ActionsTagLib.fFunctionArg([:], "YAHOO.rapidjs.component.Form.CREATE_MODE") +
+                        ActionsTagLib.fFunctionArg([:], "{}") +
+                        ActionsTagLib.fFunctionArg([:], "{nodes:YAHOO.rapidjs.Components['topoMap'].getNodesString(), layout:YAHOO.rapidjs.Components['topoMap'].getLayout()}")
+        )
+        
+        out << ActionsTagLib.fAction(id: "refreshMapsAction", type: "function", function: "poll", componentId: "mapTree", "")
+        out << """
+                <script type="text/javascript">
+                    function getURLParam(strParamName){
+                        var strReturn = "";
+                        var strHref = window.location.href;
+                        if ( strHref.indexOf("?") > -1 ){
+                            var strQueryString = strHref.substr(strHref.indexOf("?")).toLowerCase();
+                            var aQueryString = strQueryString.split("&");
+                            for ( var iParam = 0; iParam < aQueryString.length; iParam++ ){
+                                if (
+                                    aQueryString[iParam].indexOf(strParamName.toLowerCase() + "=") > -1 ){
+                                    var aParam = aQueryString[iParam].split("=");
+                                    strReturn = aParam[1];
+                                    break;
+                                }
+                            }
+                        }
+                        return unescape(strReturn);
+                    }
+                    var topoMap = YAHOO.rapidjs.Components['topoMap'];
+                    var tree = YAHOO.rapidjs.Components['mapTree'];
+                    topoMap.events['mapInitialized'].subscribe(function(){
+                        var deviceName = this.getURLParam( "name");
+                        if( deviceName )
+                        {
+                            this.topoMap.loadMapForNode( deviceName);
+                        }
+                    }, this, true);
+                    tree.addToolbarButton({
+                        className:'r-filterTree-groupAdd',
+                        scope:this,
+                        tooltip: 'Add group',
+                        click:function() {
+                            YAHOO.rapidjs.Components['mapGroupDialog'].show(YAHOO.rapidjs.component.Form.CREATE_MODE);
+                        }
+                    });
+                    tree.addToolbarButton({
+                        className:'r-filterTree-queryAdd',
+                        scope:this,
+                        tooltip: 'Save Map',
+                        click:function() {
+                            YAHOO.rapidjs.Components['mapDialog'].show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {nodes:topoMap.getNodesString(), layout:topoMap.getLayout()});
+                        }
+                    });
+                    tree.poll();
+
+                    var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
+
+                    Event.onDOMReady(function() {
+                        var layout = new YAHOO.widget.Layout({
+                            units: [
+                                { position: 'top', body: 'top', resize: false, height:45},
+                                { position: 'center', body: topoMap.container.id, resize: false, gutter: '1px' },
+                                { position: 'left', width: 250, resize: true, body: tree.container.id, scroll: false}
+                            ]
+                        });
+                        layout.on('render', function(){
+                            var topUnit = layout.getUnitByPosition('top');
+                            YAHOO.util.Dom.setStyle(topUnit.get('wrap'), 'background-color', '#BBD4F6')
+                            var header = topUnit.body;
+                            YAHOO.util.Dom.setStyle(header, 'border', 'none');
+                            var left = layout.getUnitByPosition('left').body;
+                            YAHOO.util.Dom.setStyle(left, 'top', '1px');
+                        });
+                        layout.render();
+                        var layoutLeft = layout.getUnitByPosition('left');
+                        layoutLeft.on('resize', function(){
+                            YAHOO.util.Dom.setStyle(layoutLeft.body, 'top', '1px');
+                        });
+
+                        topoMap.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+                        layout.on('resize', function() {
+                            topoMap.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+                        });
+                        tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+                        layout.on('resize', function() {
+                            tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+                        });
+                        window.layout = layout;
+
+                    })
+                </script>
+                """
     }
 
-    static def fTmNodeContent(attrs, bodyString) {
-        return TagLibUtils.getConfigAsXml("NodeContent", attrs, [], bodyString)
+    def tmMenus = {attrs, body ->
+        out << TagLibUtils.getConfigAsXml("Menus", attrs, [], body());
     }
-    def tmNodeContent = {attrs, body ->
-        out << fTmNodeContent(attrs, body());
+    def tmMenu = {attrs, body ->
+        def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "parentMenu"]
+        out << TagLibUtils.getConfigAsXml("Menu", attrs, validAttrs);
     }
-    static def fTmImages(attrs, bodyString) {
-        return TagLibUtils.getConfigAsXml("Images", attrs, [], bodyString)
-    }
+
     def tmImages = {attrs, body ->
-        out << fTmImages(attrs, body());
-    }
-
-    static def fTmImage(attrs, bodyString) {
-        def validAttrs = ["id", "x", "y", "width", "height", "dataKey", "mapping"];
-        return TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
+        out << ObjectMapTagLib.fOmImages(attrs, body())
     }
     def tmImage = {attrs, body ->
-        out << fTmImage(attrs, "");
+        out << ObjectMapTagLib.fOmImage(attrs, "")
     }
 
-    static def fTmTexts(attrs, bodyString) {
-        return TagLibUtils.getConfigAsXml("Texts", attrs, [], bodyString)
-    }
     def tmTexts = {attrs, body ->
-        out << fTmTexts(attrs, body());
-    }
-    static def fTmText(attrs, bodyString) {
-        def validAttrs = ["id", "x", "y", "width", "height", "dataKey"];
-        return TagLibUtils.getConfigAsXml("Text", attrs, validAttrs)
-    }
-    def tmText = {attrs, body ->
-        out << fTmText(attrs, "");
+       out << ObjectMapTagLib.fOmTexts(attrs, body())
     }
 
-    static def fTmGauges(attrs, bodyString) {
-        return TagLibUtils.getConfigAsXml("Gauges", attrs, [], bodyString)
+    def tmText = {attrs, body->
+        out << ObjectMapTagLib.fOmText(attrs, "")
     }
+
     def tmGauges = {attrs, body ->
-        out << fTmGauges(attrs, body());
-    }
-    static def fTmGauge(attrs, bodyString) {
-        def validAttrs = ["id", "x", "y", "width", "height", "dataKey"];
-        return TagLibUtils.getConfigAsXml("Gauge", attrs, validAttrs)
-    }
-    def tmGauge = {attrs, body ->
-        out << fTmGauge(attrs, "");
+        out << ObjectMapTagLib.fOmGauges(attrs, body())
     }
 
-    static def fTmMenuItems(attrs, bodyString) {
-        return TagLibUtils.getConfigAsXml("MenuItems", attrs, [], bodyString)
+    def tmGauge = {attrs, body ->
+        out << ObjectMapTagLib.fOmGauge(attrs, "")
     }
-    def tmMenuItems = {attrs, body ->
-        out << fTmMenuItems(attrs, body());
+
+    def getMenuXml(menus) {
+        def output = "";
+        menus.each {
+            output += ObjectMapTagLib.fOmMenuItem(it, "")
+        }
+        return output;
     }
-    static def fTmMenuItem(attrs, bodyString) {
-        def validAttrs = ["id", "label", "action", "visible"];
-        return TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs)
+    def getToolbarMenuXml(toolbarMenus){
+        def output = "";
+        toolbarMenus.each{menuLabel, menuItems ->
+            def innerXml = "";
+            menuItems.each{
+                innerXml += ObjectMapTagLib.fOmMenuItem(it, "")
+            }
+            output += ObjectMapTagLib.fOmToolbarMenu(label:menuLabel, innerXml);
+        }
+        return output;
     }
-    def tmMenuItem = {attrs, body ->
-        out << fTmMenuItem(attrs, "");
+
+    def getActionXml(actions) {
+        def output = ""
+        actions.each {
+            def type = it.type;
+            if (type == "htmlDialog") {
+                output += ActionsTagLib.fAction(id: it.id, type: "function", componentId: it.component, function: "show",
+                        ActionsTagLib.fFunctionArg([:], it.url) +
+                                ActionsTagLib.fFunctionArg([:], it.title)
+                )
+            }
+            else if (type == "execute" || type == "update") {
+                def paramString = "";
+                it.parameters.each {k, v ->
+                    paramString += ActionsTagLib.fRequestParam(key: k, value: v, "")
+                }
+                def url = "script/run/${it.script}?format=xml"
+                def actionType = type == "execute" ? "request" : "merge"
+                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, components:["topoMap"], paramString);
+            }
+        }
+        return output;
     }
-    static def fTmToolbarMenus(attrs, bodyString) {
-        return TagLibUtils.getConfigAsXml("ToolbarMenus", attrs, [], bodyString)
-    }
-    def tmToolbarMenus = {attrs, body ->
-        out << fTmToolbarMenus(attrs, body());
-    }
-    static def fTmToolbarMenu(attrs, bodyString) {
-        def validAttrs = ["label"];
-        return TagLibUtils.getConfigAsXml("ToolbarMenu", attrs, validAttrs, bodyString)
-    }
-    def tmToolbarMenu = {attrs, body ->
-        out << fTmToolbarMenu(attrs, body());
+
+    def getHtmlDialogsXml(htmlDialogs) {
+        def output = "";
+        htmlDialogs.each {
+            output += HtmlTagLib.fHtml(id: it.id, width: it.width, height: it.height, iframe: "false", "")
+        }
+        return output;
     }
 }

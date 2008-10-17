@@ -8,6 +8,7 @@ YAHOO.rapidjs.component.Html = function(container, config)
 
     this.iframe = config.iframe;
     this.format = "html";
+    this.params = {componentId:this.id}
     this.render();
     this.url = null
 
@@ -16,18 +17,26 @@ YAHOO.rapidjs.component.Html = function(container, config)
 YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingComponentContainer, {
     render: function()
     {
+        var dh = YAHOO.ext.DomHelper;
+        var wrp = dh.append(this.dialog.body, {tag:'div'});
+        this.header = dh.append(wrp, {tag:'div'})
+        this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {});
+        YAHOO.util.Dom.setStyle(this.toolbar.el, 'border-top', '1px solid #e0e3ef');
+        if(this.iframe != true){
+            this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));    
+        }
+        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
+
         if (this.iframe == true)
         {
-            var dh = YAHOO.ext.DomHelper;
-            this.body = dh.append(this.dialog.body, {tag: 'iframe', frameborder:0, scrolling:"no", height:this.height, width:this.width }, true);
+            this.body = dh.append(wrp, {tag: 'iframe', frameborder:0, scrolling:"no", height:this.height - this.header.offsetHeight, width:this.width }, true);
         }
         else
         {
-            var dh = YAHOO.ext.DomHelper;
-            this.mask = dh.append(this.dialog.body, {tag:'div', cls:'rcmdb-form-mask'}, true);
-            this.maskMessage = dh.append(this.dialog.body, {tag:'div', cls:'rcmdb-form-mask-loadingwrp', html:'<div class="rcmdb-form-mask-loading">Loading...</div>'}, true)
+            this.mask = dh.append(wrp, {tag:'div', cls:'rcmdb-form-mask'}, true);
+            this.maskMessage = dh.append(wrp, {tag:'div', cls:'rcmdb-form-mask-loadingwrp', html:'<div class="rcmdb-form-mask-loading">Loading...</div>'}, true)
             this.hideMask();
-            this.body = dh.append(this.dialog.body, {tag:'div'}, true);
+            this.body = dh.append(wrp, {tag:'div'}, true);
         }
     },
     handleSuccess: function(response, keepExisting, removeAttribute)
@@ -55,7 +64,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         }
         else
         {
-            this.doRequest(this.url, {componentId:this.id});
+            this.doRequest(this.url, this.params);
         }
         this.body.update("");
         this.dialog.show();
@@ -80,7 +89,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
     showMask: function() {
         this.mask.show();
         this.maskMessage.show();
-        this.mask.setRegion(getEl(this.dialog.body).getRegion())
+        var region = getEl(this.dialog.body).getRegion();
+        var bodyRegion = new YAHOO.util.Region(region.top + this.header.offsetHeight, region.right, region.bottom, region.left)
+        this.mask.setRegion(bodyRegion)
         this.maskMessage.center(this.mask.dom);
 
     },

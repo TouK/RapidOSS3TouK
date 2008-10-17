@@ -28,7 +28,7 @@
         def excludedProps = ["id", "rsDatasource", "firstNotifiedAt", "lastNotifiedAt", "lastChangedAt", "lastClearedAt"]
         def filteredProps = allProperties.findAll {!excludedProps.contains(it.name) && !relations.containsKey(it.name)}
 %>
-<div class="yui-navset yui-navset-top">
+<div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li class="selected">
             <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">

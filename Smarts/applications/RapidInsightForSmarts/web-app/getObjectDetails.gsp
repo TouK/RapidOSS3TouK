@@ -16,7 +16,7 @@ text-decoration:underline;
 cursor:pointer;
 }
 </style>
-<div class="yui-navset yui-navset-top smarts-object-details">
+<div class="yui-navset yui-navset-top smarts-object-details" style="margin-top:5px">
     <div style="display:block">
         <div>
             <table width="100%" cellspacing="1" cellpadding="1">
@@ -62,7 +62,7 @@ cursor:pointer;
                                                 def sortedRelatedObjects = relatedObjects.sort{"${it.creationClassName}${it.name}"};
                                                 sortedRelatedObjects.each {
                                         %>
-                                        <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['objectDetails'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${it.name}'), 'Details of ${it.creationClassName} ${it.name}');">${it.creationClassName} ${it.name}<a></li>
+                                        <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${it.name}'), 'Details of ${it.creationClassName} ${it.name}');">${it.creationClassName} ${it.name}<a></li>
                                         <%
                                                 }
                                         %>

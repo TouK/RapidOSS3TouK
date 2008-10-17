@@ -5,7 +5,7 @@
     if (netcoolEvent != null) {
         def journals = NetcoolJournal.search("serverserial:${netcoolEvent.serverserial} AND servername:${netcoolEvent.servername}").results;
 %>
-<div class="yui-navset yui-navset-top">
+<div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li><a onclick="window.html.show('getDetails.gsp?type=NetcoolEvent&id=${netcoolEvent?.id}');"><em>Event</em></a></li>
         <li class="selected"><a><em>Journal</em></a></li>

@@ -6,7 +6,7 @@
     if (domainObject != null) {
         def allProperties = domainObject.getPropertiesList();
 %>
-<div class="yui-navset yui-navset-top">
+<div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li class="selected">
             <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getHistoricalEventDetails.gsp?id=' + encodeURIComponent('${domainObject.id}'));">

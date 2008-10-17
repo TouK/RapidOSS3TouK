@@ -17,7 +17,7 @@
 <style>
     .yui-skin-sam .yui-dt-liner { cursor:pointer; }
 </style>
-<div class="yui-navset yui-navset-top">
+<div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li>
             <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">

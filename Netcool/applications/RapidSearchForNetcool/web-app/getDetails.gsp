@@ -17,7 +17,7 @@
     }
     if (domainObject != null) {
 %>
-<div class="yui-navset yui-navset-top">
+<div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li class="selected"><a><em>Event</em></a></li>
         <li><a onclick="window.html.show('getJournals.gsp?type=NetcoolJournal&id=${domainObject?.id}');"><em>Journal</em></a></li>

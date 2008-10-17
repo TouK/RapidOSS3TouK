@@ -14,10 +14,11 @@ def userName = web.session.username;
 def queryType = params.queryType;
 def extraFilteredProps = ["rsDatasource"];
 def gridViews = GridView.search("username:\"${userName}\"", [sort:"name"]).results;
-if (queryType == "notification") {
-    def sortProperties = DomainClassUtils.getFilteredProperties("RsSmartsNotification", extraFilteredProps);
+if (queryType == "notification" || queryType == "historicalnotification") {
+    def className = queryType == "notification"? "RsSmartsNotification": "RsSmartsHistoricalNotification";
+    def sortProperties = DomainClassUtils.getFilteredProperties(className, extraFilteredProps);
     def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
-        queryGroup.username == userName && queryGroup.isPublic == false
+        queryGroup.username == userName && queryGroup.isPublic == false && (queryGroup.type == queryType || queryGroup.type =="default")
     };
     def sortProps = sortProperties.sort{it.name} 
     web.render(contentType: 'text/xml') {
@@ -49,7 +50,7 @@ else if (queryType == "topology") {
     }
     sortProperties.addAll(DomainClassUtils.getFilteredProperties("RsTopologyObject", extraFilteredProps));
     def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
-        queryGroup.username == userName && queryGroup.isPublic == false
+        queryGroup.username == userName && queryGroup.isPublic == false && (queryGroup.type == queryType || queryGroup.type =="default")
     };
     def sortProps = sortProperties.sort{it.name}
     def propertyMap = [:]

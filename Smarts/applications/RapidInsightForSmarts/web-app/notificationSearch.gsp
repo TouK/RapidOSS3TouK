@@ -37,6 +37,15 @@
         <rui:nsMenu id="takeOwnership" label="Take Ownership" location="row" script="setOwnership" actionType="update" parameters="${[name:'params.data.name', act:'true']}"></rui:nsMenu>
         <rui:nsMenu id="releaseOwnership" label="Release Ownership" location="row" script="setOwnership" actionType="update" parameters="${[name:'params.data.name', act:'false']}"></rui:nsMenu>
     </rui:nsMenus>
+    <rui:nsDefaultMenus>
+        <rui:nsDefaultMenu id="sortAsc" label="Sort Asc"></rui:nsDefaultMenu>
+        <rui:nsDefaultMenu id="sortDesc" label="Sort desc"></rui:nsDefaultMenu>
+        <rui:nsDefaultMenu id="except" label="Except"></rui:nsDefaultMenu>
+        <rui:nsDefaultMenu id="greaterThan" label="Greater Than"></rui:nsDefaultMenu>
+        <rui:nsDefaultMenu id="lessThan" label="Less Than"></rui:nsDefaultMenu>
+        <rui:nsDefaultMenu id="greaterThanOrEqualTo" label="Greater than or equal to"></rui:nsDefaultMenu>
+        <rui:nsDefaultMenu id="lessThanOrEqualTo" label="Less than or equal to"></rui:nsDefaultMenu>
+    </rui:nsDefaultMenus>
     <rui:nsSearchResults>
         <%
             def smartsEventFields = ["className", "instanceName", "eventName", "sourceDomainName", "acknowledged", "owner", "lastChangedAt",

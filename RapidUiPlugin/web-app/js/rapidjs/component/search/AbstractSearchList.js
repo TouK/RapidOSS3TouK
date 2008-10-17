@@ -44,6 +44,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.calculateRowHeight();
     this.init();
     this.render();
+    this.events['error'].subscribe(function(){this.hideMask()}, this, true)
 }
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapidjs.component.PollingComponentContainer, {

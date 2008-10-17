@@ -11,6 +11,7 @@ YAHOO.rapidjs.component.Html = function(container, config)
     this.params = {componentId:this.id}
     this.render();
     this.url = null
+    this.events['error'].subscribe(function(){this.hideMask()}, this, true)
 
 };
 

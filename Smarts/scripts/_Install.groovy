@@ -68,10 +68,12 @@ choices.each{
         }
 
         Ant.move(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/rs.exe", toDir:"${baseDir}")
-
-        Ant.move(toDir:"${baseDir}/operations")
+        if(new File("${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations").exists())
         {
-            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations");
+            Ant.move(toDir:"${baseDir}/operations")
+            {
+                Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations");
+            }
         }
     }
 }

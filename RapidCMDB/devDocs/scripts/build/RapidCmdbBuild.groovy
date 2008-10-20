@@ -170,7 +170,7 @@ class RapidCmdbBuild extends Build {
             }
         }
 
-        copyCommons(env.dist_rapid_suite);
+        copyCommons(env.dist_rapid_suite, true);
         def viewsDir = new File("${env.dist_rapid_suite}/grails-app/views");
         viewsDir.eachDir{
             def dirName = it.getName();
@@ -227,10 +227,10 @@ class RapidCmdbBuild extends Build {
                 ant.fileset(dir: "$env.rapid_cmdb_modeler_cvs/test")
             }
         }
-        copyCommons(env.dist_modeler);
+        copyCommons(env.dist_modeler, false);
     }
 
-    def copyCommons(toDir){
+    def copyCommons(toDir, copyTests){
         ant.copy(todir: toDir) {
             ant.fileset(dir: "$env.rapid_cmdb_commons_cvs") {                            
                 if (!TEST)
@@ -240,9 +240,15 @@ class RapidCmdbBuild extends Build {
                 }
                 else
                 {
-                    ant.include(name: "**/test/**")
-                    ant.include(name: "**/*Test*")
-		            ant.include(name: "**/*TestCase*")
+                    if(copyTests)
+                    {
+                        ant.include(name: "**/test/**")
+                        ant.include(name: "**/*Test*")
+                    }
+                    else
+                    {
+		                ant.include(name: "**/*TestCase*")
+                    }
                 }
                 ant.include(name: "**/grails-app/**");
                 ant.include(name: "**/plugins/**");

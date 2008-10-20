@@ -144,24 +144,16 @@ class GridViewController {
                 it.remove();
             }
             def columns = [:];
-            params.each {key, value ->
-                Matcher matcher = COLUMN_PROPERTY_PATTERN.matcher(key);
-                if (matcher.matches())
-                {
-                    int order = Integer.parseInt(matcher.group(1));
-                    String propertyName = matcher.group(2);
-                    def column = columns.get(order);
-                    if (column == null)
-                    {
-                        column = [columnIndex: order];
-                        columns.put(order, column);
-                    }
-                    column."${propertyName}" = value;
-                }
-            }
-            columns.each {index, columnMap ->
-                columnMap.put("gridView", gridView);
-                GridColumn.add(columnMap);
+            def columnString = params["columns"];
+            def columnsList = columnString.split("::");
+            def columnIndex = 1;
+            columnsList.each{
+                def props = it.split(";;");
+                def attributeName = props[0]
+                def header = props[1]
+                def width = Long.parseLong(props[2]);
+                GridColumn.add(gridView:gridView, attributeName:attributeName, header:header, width:width, columnIndex:columnIndex)
+                columnIndex ++;
             }
             withFormat {
                 xml {render(text: com.ifountain.rcmdb.domain.util.ControllerUtils.convertSuccessToXml("GridView ${gridView.id} created"), contentType: "text/xml")}

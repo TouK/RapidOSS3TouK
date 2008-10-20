@@ -98,14 +98,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         parameters['sortOrder'] = sortOrder;
         var colList = this.colList;
         var nOfColumns = colList.options.length;
+        var columnsArray = [];
         for (var index = 0; index < nOfColumns; index++) {
+            var colArray = [];
             var fieldName = colList.options[index].value;
             var colConfig = this.columnsConfig[fieldName];
-            var colName = 'column' + (index + 1);
-            parameters[colName + 'attributeName'] = fieldName;
-            parameters[colName + 'header'] = colConfig['header'];
-            parameters[colName + 'width'] = colConfig['width'];
+            colArray[colArray.length] = fieldName;
+            colArray[colArray.length] = colConfig['header'];
+            colArray[colArray.length] = colConfig['width'];
+            columnsArray[columnsArray.length] = colArray.join(";;");
         }
+        parameters['columns'] = columnsArray.join("::");
         this.doPostRequest(url, parameters, this.saveSuccess.createDelegate(this));
     },
     saveSuccess: function(response) {

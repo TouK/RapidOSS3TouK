@@ -90,7 +90,7 @@ def update(notificationObject){
         {
             notificationsMap.remove(notificationName);
         }
-        if(eventType == BaseSmartsListeningAdapter.NOTIFY || eventType == BaseSmartsListeningAdapter.CHANGE)
+        if(eventType == BaseSmartsListeningAdapter.NOTIFY || (eventType == BaseSmartsListeningAdapter.CHANGE && notificationObject.Active == "true"))
         {
             RsSmartsNotification addedEvent = RsSmartsNotification.add(notificationProps);
             updateSmartsObjectState(addedEvent.elementName, addedEvent.instanceName, addedEvent.severity)

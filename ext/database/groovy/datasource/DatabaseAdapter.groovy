@@ -43,7 +43,17 @@ public class DatabaseAdapter extends BaseAdapter {
             def record = new CaseInsensitiveMap();
 	        for(int i=1; i <= colCount; i++)
 	        {
-		        record.put(metaData.getColumnName(i).toUpperCase(), String.valueOf(rset.getObject(i)).trim());
+                String fieldvalue=null;
+                if(rset.getObject(i) instanceof Date)
+                {
+                    fieldvalue=String.valueOf(rset.getObject(i).getTime()) 
+                }
+                else
+                {
+                   fieldvalue=String.valueOf(rset.getObject(i)).trim();
+                }
+                
+                record.put(metaData.getColumnName(i).toUpperCase(), fieldvalue);
 	        }
 	        results += record;
 	    }

@@ -11,7 +11,7 @@
             <span class="menuButton"><g:link class="create" action="create">New LdapConnection</g:link></span>
         </div>
         <div class="body">
-            <h1>LdapConnection List </h1>
+            <h1>LdapConnection List</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>

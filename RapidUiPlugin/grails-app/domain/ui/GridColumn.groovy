@@ -21,7 +21,7 @@ class GridColumn {
     Object __is_federated_properties_loaded__ ;
 
     static constraints = {
-        attributeName(blank: false, nullable: false, key: [])
+        attributeName(blank: false, nullable: false, key: ["gridView"])
         header(blank:true, nullable: true)
         columnIndex(nullable: true)
         width(nullable: true)

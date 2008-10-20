@@ -351,6 +351,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     },
     viewAdded: function(viewNode) {
         var view = viewNode.getAttribute('name');
+        SelectUtils.remove(this.viewInput, view);
         SelectUtils.addOption(this.viewInput, view, view);
         SelectUtils.selectTheValue(this.viewInput, view, 0);
         this.viewChanged();

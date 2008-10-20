@@ -24,9 +24,9 @@ class GridViewController {
                 render(contentType: 'text/xml') {
                     Views {
                         for (view in gridViews) {
-                            View(id:view.id, name:view.name, defaultSortColumn:view.defaultSortColumn, sortOrder: view.sortOrder){
-                                view.gridColumns.each{GridColumn gridColumn ->
-                                   Column(attributeName:gridColumn.attributeName, header:gridColumn.header, width:gridColumn.width, columnIndex:gridColumn.columnIndex);
+                            View(id: view.id, name: view.name, defaultSortColumn: view.defaultSortColumn, sortOrder: view.sortOrder) {
+                                view.gridColumns.each {GridColumn gridColumn ->
+                                    Column(attributeName: gridColumn.attributeName, header: gridColumn.header, width: gridColumn.width, columnIndex: gridColumn.columnIndex);
                                 }
                             }
                         }
@@ -138,22 +138,24 @@ class GridViewController {
 
     def add = {
         params.username = session.username;
-        def gridView = GridView.add([name: params.name, username: session.username, defaultSortColumn: params.defaultSortColumn, sortOrder:params.sortOrder]);
+        def gridView = GridView.add([name: params.name, username: session.username, defaultSortColumn: params.defaultSortColumn, sortOrder: params.sortOrder]);
         if (!gridView.hasErrors()) {
             gridView.gridColumns.each {
                 it.remove();
             }
             def columns = [:];
-            def columnString = params["columns"];
-            def columnsList = columnString.split("::");
-            def columnIndex = 1;
-            columnsList.each{
-                def props = it.split(";;");
-                def attributeName = props[0]
-                def header = props[1]
-                def width = Long.parseLong(props[2]);
-                GridColumn.add(gridView:gridView, attributeName:attributeName, header:header, width:width, columnIndex:columnIndex)
-                columnIndex ++;
+            def columnString = params["columns"].trim();
+            if (columnString.length() > 0) {
+                def columnsList = columnString.split("::");
+                def columnIndex = 1;
+                columnsList.each {
+                    def props = it.split(";;");
+                    def attributeName = props[0]
+                    def header = props[1]
+                    def width = Long.parseLong(props[2]);
+                    GridColumn.add(gridView: gridView, attributeName: attributeName, header: header, width: width, columnIndex: columnIndex)
+                    columnIndex++;
+                }
             }
             withFormat {
                 xml {render(text: com.ifountain.rcmdb.domain.util.ControllerUtils.convertSuccessToXml("GridView ${gridView.id} created"), contentType: "text/xml")}

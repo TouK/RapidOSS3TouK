@@ -90,10 +90,11 @@ class ModelDatasourceControllerIntegrationTests extends RapidCmdbIntegrationTest
         assertEquals(model.id, modelDatasource.model.id);
         IntegrationTestUtils.resetController(mdc);
         def modelDatasourceId = modelDatasource.id;
+        def datasourceName = datasource.name;
         mdc.params["id"] = modelDatasourceId;
         mdc.delete();
         assertEquals(0, ModelDatasource.list().size());
-        assertEquals("ModelDatasource ${modelDatasource} deleted", mdc.flash.message);
+        assertEquals("ModelDatasource ${datasourceName} deleted", mdc.flash.message);
         assertEquals("/model/show/" + model.id, mdc.response.redirectedUrl);
     }
 

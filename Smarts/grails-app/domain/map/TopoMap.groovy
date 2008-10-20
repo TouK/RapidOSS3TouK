@@ -16,7 +16,7 @@ class TopoMap
     String mapName ="";
     
     String username ="";
-    int layout;
+    Long layout;
     String rsOwner = "p"
     Long id ;
     

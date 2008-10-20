@@ -13,7 +13,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
     String tableName ="";
     
     DatabaseConnection connection ;
-    int reconnectInterval = 0;
+    Long reconnectInterval = 0;
     
 
     static relations = [

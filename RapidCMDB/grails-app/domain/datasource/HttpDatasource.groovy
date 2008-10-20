@@ -9,7 +9,7 @@ class HttpDatasource extends BaseDatasource{
 
     
     HttpConnection connection ;
-    int reconnectInterval = 0;
+    Long reconnectInterval = 0;
     static relations = [
             connection:[isMany:false, reverseName:"httpDatasources", type:HttpConnection]
     ]

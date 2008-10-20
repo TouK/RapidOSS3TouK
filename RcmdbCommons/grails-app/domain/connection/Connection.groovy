@@ -9,7 +9,7 @@ class Connection {
     String name = "";
     String rsOwner = "p"
     String connectionClass = "";
-    int maxNumberOfConnections = 10;
+    Long maxNumberOfConnections = 10;
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;

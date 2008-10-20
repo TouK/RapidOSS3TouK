@@ -18,7 +18,7 @@ class ApgDatabaseDatasource extends BaseDatasource{
     };
     static datasources = [:]
     ApgConnection connection;
-    int reconnectInterval = 0;
+    Long reconnectInterval = 0;
     static relations = [
             connection: [isMany: false, reverseName: "apgDatabaseDatasources", type: ApgConnection]
     ]

@@ -10,7 +10,7 @@ class RapidInsightDatasource extends BaseDatasource{
 
     
     RapidInsightConnection connection ;
-    int reconnectInterval = 0;
+    Long reconnectInterval = 0;
     
     static relations = [
             connection:[isMany:false, reverseName:"rapidInsightDatasources", type:RapidInsightConnection]

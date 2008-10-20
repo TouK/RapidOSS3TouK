@@ -10,7 +10,7 @@ class SmartsNotificationDatasource extends BaseListeningDatasource{
 
     
     SmartsConnection connection ;
-    int reconnectInterval = 0;
+    Long reconnectInterval = 0;
     
 
     static relations = [

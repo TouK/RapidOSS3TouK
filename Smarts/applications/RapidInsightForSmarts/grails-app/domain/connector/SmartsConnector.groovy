@@ -21,7 +21,7 @@ class SmartsConnector {
     String logLevel = Level.WARN.toString();
     BaseListeningDatasource ds;
     SmartsConnectionTemplate connectionTemplate;
-    int reconnectInterval = 0;
+    Long reconnectInterval = 0;
     
     static relations  =[
             connectionTemplate:[type:SmartsConnectionTemplate, isMany:false],

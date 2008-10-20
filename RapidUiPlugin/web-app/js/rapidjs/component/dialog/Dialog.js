@@ -28,17 +28,18 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         this.bodyEl = YAHOO.ext.Element.get(this.body);
         this.footer = dh.append(document.body, {tag: 'div', style:'text-align:right;'});
 
-        this.panelConfig = {
+        var panelConfig = {
             draggable: true,
             constraintoviewport: true,
             fixedcenter:true,
             visible:false,
             close:this.close,
             width:this.width + "px",
-            height:this.height + "px"
+            height:this.height + "px",
+            autofillheight:false
         };
 
-        this.panel = new YAHOO.widget.Panel(this.container, this.panelConfig);
+        this.panel = new YAHOO.widget.Panel(this.container, panelConfig);
         this.panel.setHeader(this.title);
         this.panel.setBody(this.body);
         this.panel.setFooter(this.footer);

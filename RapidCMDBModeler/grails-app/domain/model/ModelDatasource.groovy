@@ -34,6 +34,6 @@ class ModelDatasource {
         })
     }
     String toString(){
-        return datasource.name;  
+        return getProperty("datasource").name;  
     }
 }

@@ -23,7 +23,7 @@
 <p/>
 <div class="yui-navset">
     <ul class="yui-nav">
-        <li><a href="${createLinkTo(file: 'admin.gsp')}"><em>Connectors</em></a></li>
+        <li><a href="${createLinkTo(file: 'admin.gsp')}"><em>Smarts</em></a></li>
         <li><g:link action="list" controller="script"><em>Scripts</em></g:link></li>
         <li><a href="${createLinkTo(file: 'reload.gsp')}"><em>Reload</em></a></li>
         <li class="selected"><g:link action="list" controller="rsUser"><em>Users</em></g:link></li>

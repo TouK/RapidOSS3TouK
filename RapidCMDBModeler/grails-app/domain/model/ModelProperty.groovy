@@ -26,8 +26,8 @@ class ModelProperty {
     boolean lazy = true;
 
     static relations = [
-            propertySpecifyingDatasource:[type:DatasourceName,  isMany:false],
-            propertyDatasource:[type:DatasourceName, isMany:false],
+            propertySpecifyingDatasource:[type:ModelProperty,  isMany:false],
+            propertyDatasource:[type:ModelDatasource, isMany:false],
             model:[type:Model, reverseName:"modelProperties", isMany:false],
             mappedKeys:[type:ModelDatasourceKeyMapping, reverseName:"property", isMany:true],
     ]

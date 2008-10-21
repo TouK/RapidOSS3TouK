@@ -55,7 +55,7 @@ class SearchableConfiguration {
     "compass.converter.long.format":"#000000000000000000000000000000",
     "compass.converter.boolean.type":CompassBooleanConverter.class.name,
     "compass.converter.double.type":CompassDoubleConverter.class.name,
-    "compass.converter.double.format":"#000000000000000000000000000000",
+    "compass.converter.double.format":"#000000000000000000000000000000.00000000000000",
     "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name,
     "compass.transaction.disableThreadBoundLocalTransaction":"true",
     "compass.cache.first":"org.compass.core.cache.first.NullFirstLevelCache",

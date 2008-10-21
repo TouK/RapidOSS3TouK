@@ -46,3 +46,5 @@ SearchQuery.add(group: defaultTopologyGroup, name: "Router", query: "creationCla
 SearchQuery.add(group: defaultTopologyGroup, name: "Switch", query: "creationClassName:\"Switch\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
 SearchQuery.add(group: defaultTopologyGroup, name: "Interface", query: "creationClassName:\"Interface\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
 SearchQuery.add(group: defaultTopologyGroup, name: "Port", query: "creationClassName:\"Port\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
+SearchQuery.add(group: defaultTopologyGroup, name: "Down Interfaces/Ports", query: "alias:RsNetworkAdapter AND adminStatus:\"UP\" AND operStatus:\"DOWN\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
+SearchQuery.add(group: defaultTopologyGroup, name: "Disabled Interfaces", query: "creationClassName:\"Interface\" AND adminStatus:\"DOWN\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");

@@ -28,8 +28,7 @@ def watchConfig = [
         [new File("${workspaceDir}/RapidModules/RcmdbCommons"), new File("${rootDir.absolutePath}/RapidSuite")],
         [new File("${workspaceDir}/RapidModules/ext/database/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")],
         [new File("${workspaceDir}/RapidModules/ext/http/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/ext/rapidinsight/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/ext/smarts/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")]
+        [new File("${workspaceDir}/RapidModules/ext/rapidinsight/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")]
 ]
 
 

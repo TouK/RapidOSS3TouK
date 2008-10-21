@@ -176,6 +176,7 @@ class NotificationsTagLib {
                         }
                     });
                     tree.poll();
+                    searchGrid.poll();
                     searchGrid.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
                         var notificationName = xmlData.getAttribute("name");
                         if(id == "browse"){

@@ -264,6 +264,7 @@ class NotificationSearchTagLib {
                         }
                     });
                     tree.poll();
+                    searchList.poll();
 
                     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
 

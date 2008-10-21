@@ -152,7 +152,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                         insertedFields = this.fields[i]['fields'];
                 }
                 if (!insertedFields)
-                    insertedFields = [];
+                    insertedFields = this.defaultFields || [];
             }
             else
                 insertedFields = [];

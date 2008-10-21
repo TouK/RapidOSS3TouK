@@ -6,6 +6,13 @@
     if (domainObject != null) {
         String className = domainObject.getClass().getName();
         def allProperties = domainObject.getPropertiesList();
+        def propertyNames = ["creationClassName", "name"];
+        allProperties.each{
+            def propName = it.name
+            if(propName != "creationClassName" || propName != "name"){
+                propertyNames.add(propName)
+            }
+        }
         def relations = DomainClassUtils.getRelations(className);
 %>
 <style>
@@ -22,24 +29,24 @@ cursor:pointer;
             <table width="100%" cellspacing="1" cellpadding="1">
                 <tbody>
 
-                    <g:each var="property" status="i" in="${allProperties}">
+                    <g:each var="propertyName" status="i" in="${propertyNames}">
                         <%
-                            if(property.name != "id" && property.name != "rsDatasource")
+                            if(propertyName != "id" && propertyName != "rsDatasource")
                             {
                         %>
                             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                <td width="0%" style="font-weight:bold">${property.name}</td>
+                                <td width="0%" style="font-weight:bold">${propertyName}</td>
                                 <%
-                                        if (!relations.containsKey(property.name)) {
+                                        if (!relations.containsKey(propertyName)) {
 
                                 %>
-                                <td>${domainObject[property.name]}&nbsp;</td>
+                                <td>${domainObject[propertyName]}&nbsp;</td>
                                 <%
                                     }
                                     else {
-                                        def relation = relations[property.name];
+                                        def relation = relations[propertyName];
                                         if (relation.isOneToOne() || relation.isManyToOne()) {
-                                            def sObj = domainObject[property.name]
+                                            def sObj = domainObject[propertyName]
                                             if (sObj != null) {
                                 %>
                                 <td>
@@ -58,7 +65,7 @@ cursor:pointer;
                                 <td width="100%">
                                     <ul style="margin-left: 10px;">
                                         <%
-                                                def relatedObjects = domainObject[property.name];
+                                                def relatedObjects = domainObject[propertyName];
                                                 def sortedRelatedObjects = relatedObjects.sort{"${it.creationClassName}${it.name}"};
                                                 sortedRelatedObjects.each {
                                         %>

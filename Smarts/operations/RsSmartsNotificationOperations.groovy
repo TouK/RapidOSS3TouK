@@ -6,11 +6,11 @@ class RsSmartsNotificationOperations extends RsEventOperations {
         if (ds == null) throw new Exception("Datasource with name ${rsDatasource} is not defined")
         if (action) {
             ds.acknowledge([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: "Acknowledged by " + userName])
-            update(acknowledged: true);
+            update(acknowledged: true, owner:userName);
         }
         else {
             ds.unacknowledge([ClassName: className, InstanceName: instanceName, EventName: eventName, User: userName, AuditTrailText: "UnAcknowledged by " + userName])
-            update(acknowledged: false);
+            update(acknowledged: false, owner:userName);
         }
     }
 

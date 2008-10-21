@@ -42,7 +42,7 @@ class SmartsConnection extends Connection {
         brokerUsername(blank: true, nullable: true)
         brokerPassword(blank: true, nullable: true)
         broker(blank: true, nullable: true)
-        domainType(inList: [AM, OI, SAM, MPLS, BGP, OSPF, SDH])
+        domainType(inList: [AM, OI, SAM])
         connectionClass(validator: {val, obj ->
             try
             {

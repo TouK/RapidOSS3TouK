@@ -55,7 +55,7 @@
     </rui:nsSearchResults>
     <rui:nsConversions>
         <rui:nsConversion property="lastChangedAt" type="function" function="formatLastChangedAt"></rui:nsConversion>
-        %{--<rui:nsConversion property="severity" type="mapping" mapping="['1':'Critical', '2':'Major', '3':'Minor', '4':'Unknown', '5':'Normal']"></rui:nsConversion>--}%
+        <rui:nsConversion property="severity" type="mapping" mapping="['0':'Clear', '1':'Critical', '2':'Major', '3':'Minor', '4':'Unknown', '5':'Normal']"></rui:nsConversion>
         %{--<rui:nsConversion property="lastClearedAt" type="date" format="d M H:i:s"></rui:nsConversion>--}%
     </rui:nsConversions>
 </rui:notificationSearch>

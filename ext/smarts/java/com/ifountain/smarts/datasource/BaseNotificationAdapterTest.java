@@ -32,7 +32,115 @@ public class BaseNotificationAdapterTest extends SmartsTestCase {
         notificationAdapter = SmartsTestUtils.getNotificationAdapter();
         SmartsTestUtils.archiveAllNotifications();
     }
+   
+    public void testNotificationCreationWithElementNameAndElementClassName() throws Exception {
+        String routerInstanceName="router1";
+        String portInstanceName="port1";
+        SmartsTestUtils.createTopologyInstance("Router",routerInstanceName);
+        SmartsTestUtils.createTopologyInstance("Port",portInstanceName);
 
+
+        String eventName = "WENameWECName";
+        String newNotificationName = "NOTIFICATION-Port_"+portInstanceName+"_"+eventName;
+        SmartsTestUtils.archiveNotification("Port", portInstanceName, eventName);
+
+        NotificationCreateParams createParameters = SmartsTestUtils.getTestParametersForCreate();
+        createParameters.getIdentifierParameters().setClassName("Port");
+        createParameters.getIdentifierParameters().setInstanceName(portInstanceName);
+        createParameters.getIdentifierParameters().setEventName(eventName);
+
+        SmartsTestUtils.archiveAllNotifications();
+        //the case where both elementname and elementclassname are set, in this case the event will have the given elementname and elementclassname
+        createParameters.getAttributeParameters().put("ElementName",new MR_AnyValString(routerInstanceName));
+        createParameters.getAttributeParameters().put("ElementClassName",new MR_AnyValString("Router"));
+
+        // expected property values
+        MR_AnyValString expClassName = new MR_AnyValString("Port");
+        MR_AnyValString expInstName = new MR_AnyValString(portInstanceName);
+        MR_AnyVal expOccurredOn = new MR_AnyValObjRef(new MR_Ref("Router", routerInstanceName));
+        MR_AnyValString expEventDisplayName = new MR_AnyValString(eventName);
+        MR_AnyValString expElementClassName = new MR_AnyValString("Router");
+        MR_AnyValString expElementName = new MR_AnyValString(routerInstanceName);
+
+        String[] propertyNamesToAssert1 = {  SmartsConstants.PARAM_CLASSNAME, SmartsConstants.PARAM_INSTANCENAME, "EventDisplayName",  "OccurredOn","ElementClassName","ElementName"};        
+        MR_AnyVal[] expectedPropVals1 = { expClassName, expInstName, expEventDisplayName,  expOccurredOn, expElementClassName,expElementName};
+
+        assertCreateNotification(createParameters, newNotificationName, 1);
+        SmartsTestUtils.assertPropertyValues(newNotificationName, propertyNamesToAssert1, expectedPropVals1);
+
+    }
+
+    public void testNotificationCreationWithElementNameWithoutElementClassName() throws Exception {
+        String routerInstanceName="router1";
+        String portInstanceName="port1";
+        SmartsTestUtils.createTopologyInstance("Router",routerInstanceName);
+        SmartsTestUtils.createTopologyInstance("Port",portInstanceName);
+
+
+        String eventName = "WENameWoutECName";
+        String newNotificationName = "NOTIFICATION-Port_"+portInstanceName+"_"+eventName;
+        SmartsTestUtils.archiveNotification("Port", portInstanceName, eventName);
+
+        NotificationCreateParams createParameters = SmartsTestUtils.getTestParametersForCreate();
+        createParameters.getIdentifierParameters().setClassName("Port");
+        createParameters.getIdentifierParameters().setInstanceName(portInstanceName);
+        createParameters.getIdentifierParameters().setEventName(eventName);
+        
+        SmartsTestUtils.archiveAllNotifications();
+        //the case where element name is set elementclassname is not set, elementname and elementclassname expected to be assigned as instancename classname
+        createParameters.getAttributeParameters().put("ElementName",new MR_AnyValString(routerInstanceName));
+        
+
+        // expected property values
+        MR_AnyValString expClassName = new MR_AnyValString("Port");
+        MR_AnyValString expInstName = new MR_AnyValString(portInstanceName);
+        MR_AnyVal expOccurredOn = new MR_AnyValObjRef(new MR_Ref("Port", portInstanceName));
+        MR_AnyValString expEventDisplayName = new MR_AnyValString(eventName);
+        MR_AnyValString expElementClassName = new MR_AnyValString("Port");
+        MR_AnyValString expElementName = new MR_AnyValString(portInstanceName);
+
+
+        String[] propertyNamesToAssert = {  SmartsConstants.PARAM_CLASSNAME, SmartsConstants.PARAM_INSTANCENAME, "EventDisplayName",  "OccurredOn","ElementClassName","ElementName"};
+        MR_AnyVal[] expectedPropVals = { expClassName, expInstName, expEventDisplayName,  expOccurredOn,expElementClassName, expElementName};
+
+        assertCreateNotification(createParameters, newNotificationName, 1);
+        SmartsTestUtils.assertPropertyValues(newNotificationName, propertyNamesToAssert, expectedPropVals);
+    }
+     public void testNotificationCreationWithoutElementNameWithElementClassName() throws Exception {
+        String routerInstanceName="router1";
+        String portInstanceName="port1";
+        SmartsTestUtils.createTopologyInstance("Router",routerInstanceName);
+        SmartsTestUtils.createTopologyInstance("Port",portInstanceName);
+
+
+        String eventName = "WOutENameWECName";
+        String newNotificationName = "NOTIFICATION-Port_"+portInstanceName+"_"+eventName;
+        SmartsTestUtils.archiveNotification("Port", portInstanceName, eventName);
+
+        NotificationCreateParams createParameters = SmartsTestUtils.getTestParametersForCreate();
+        createParameters.getIdentifierParameters().setClassName("Port");
+        createParameters.getIdentifierParameters().setInstanceName(portInstanceName);
+        createParameters.getIdentifierParameters().setEventName(eventName);
+         
+        SmartsTestUtils.archiveAllNotifications();
+        //the case where element name is set elementclassname is not set, elementname and elementclassname expected to be assigned as instancename classname
+        createParameters.getAttributeParameters().put("ElementClassName",new MR_AnyValString("Router"));
+
+        // expected property values
+        MR_AnyValString expClassName = new MR_AnyValString("Port");
+        MR_AnyValString expInstName = new MR_AnyValString(portInstanceName);
+        MR_AnyVal expOccurredOn = new MR_AnyValObjRef(new MR_Ref("Port", portInstanceName));
+        MR_AnyValString expEventDisplayName = new MR_AnyValString(eventName);
+        MR_AnyValString expElementClassName = new MR_AnyValString("Port");
+        MR_AnyValString expElementName = new MR_AnyValString(portInstanceName);
+
+
+        String[] propertyNamesToAssert = {  SmartsConstants.PARAM_CLASSNAME, SmartsConstants.PARAM_INSTANCENAME, "EventDisplayName",  "OccurredOn","ElementClassName","ElementName"};
+        MR_AnyVal[] expectedPropVals = { expClassName, expInstName, expEventDisplayName,  expOccurredOn,expElementClassName, expElementName};
+
+        assertCreateNotification(createParameters, newNotificationName, 1);
+        SmartsTestUtils.assertPropertyValues(newNotificationName, propertyNamesToAssert, expectedPropVals);
+    }
     public void testFetchNotificationInstances() throws Exception {
         String className = "Switch";
         String instanceName = "eraaswiad";

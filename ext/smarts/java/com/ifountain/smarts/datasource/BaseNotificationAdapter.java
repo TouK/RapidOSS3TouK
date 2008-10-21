@@ -36,7 +36,7 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
         NotificationNotifyParams notifyParameters = getNotifyParameters(clonedParams);
         NotificationAggregateParams aggParams = getAggregateParameters(clonedParams);
         MR_AnyValString unknownAgent=getMrStringValue(clonedParams,SmartsConstants.PARAM_UNKNOWNAGENT, "Ignore");
-        
+
         Map<String, MR_AnyVal> optParams = new HashMap<String, MR_AnyVal>();
         List<String> keys = new ArrayList<String>(clonedParams.keySet());
         for (Iterator<String> iter = keys.iterator(); iter.hasNext();)
@@ -56,6 +56,7 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
                 + createParams.getIdentifierParameters().getInstanceName() + ", "
                 + createParams.getIdentifierParameters().getEventName()
         );
+ 
         MR_AnyVal[] args = createParams.getIdentifierParameters().getMethodArgs();
         MR_AnyVal notification = invokeOperationWithNativeParams(SmartsConstants.NOTIFICATION_FACTORY_CLASS, SmartsConstants.NOTIFICATION_FACTORY_INSTANCE, SmartsConstants.MAKE_NOTIFICATION, args);
         String notificationInstanceName = SmartsHelper.parseNotificationName(notification);
@@ -73,7 +74,7 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
 
         setAttributes(notificationInstanceName, createParams.getAttributeParameters());
         invokeNotify(notificationInstanceName, createParams.getNotifyParameters());
-        MR_AnyVal occurredOn = findOccurredOn(createParams.getIdentifierParameters(), createParams.getUnknownAgent());
+        MR_AnyVal occurredOn = findOccurredOn(createParams.getIdentifierParameters(), createParams.getUnknownAgent(),createParams.getAttributeParameters());
         if (occurredOn != null) { // skip occurredOn if class/instance does not exist or could not be created
             put(SmartsConstants.NOTIFICATION_CLASS, notificationInstanceName, "OccurredOn", occurredOn);
         }
@@ -266,7 +267,16 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
     }
     
     private void setAttributes(String notification, Map<String, MR_AnyVal> attributes) throws Exception {
-        Set<String> keys = attributes.keySet();
+        Map<String, MR_AnyVal> clonedParams = new HashMap<String, MR_AnyVal>(attributes);
+
+        //if both of elementname and elementclassname are set or either of them are set dont put them to notification
+        if(clonedParams.get("ElementName")!=null || clonedParams.get("ElementClassName")!=null)
+        {
+            clonedParams.remove("ElementName");
+            clonedParams.remove("ElementClassName");
+        }
+        
+        Set<String> keys = clonedParams.keySet();
         Iterator<String> iterator = keys.iterator();
         while (iterator.hasNext()) {
             String attribute = iterator.next();
@@ -279,20 +289,40 @@ public class BaseNotificationAdapter extends BaseSmartsAdapter {
     	invokeOperationWithNativeParams(SmartsConstants.NOTIFICATION_CLASS, notification, SmartsConstants.NOTIFY, notifyParameters.getMethodArgs());
     }
     
-    private MR_AnyVal findOccurredOn(NotificationIdentifierParams identifierParams, String unknownAgent) {
+    private MR_AnyVal findOccurredOn(NotificationIdentifierParams identifierParams, String unknownAgent,Map<String, MR_AnyVal> attributeParameters ) {
         MR_AnyVal occurredOn = null;
         try {
-            occurredOn = getInstanceFromRepository(identifierParams.getClassName(), identifierParams.getInstanceName());
+            String className=null;
+            String instanceName=null;
+            
+            MR_AnyVal elementName = attributeParameters.get("ElementName");
+            MR_AnyVal elementClassName = attributeParameters.get("ElementClassName");
+            
+            if(elementName!=null && elementClassName!=null)
+            {
+                className=elementClassName.toString();
+                instanceName=elementName.toString();
+            }
+            else
+            {
+                className=identifierParams.getClassName();
+                instanceName=identifierParams.getInstanceName();
+            }
+            
+            occurredOn = getInstanceFromRepository(className, instanceName);
+
+            
             if (occurredOn == null) {
                 logger.info("Instance to be associated not found");
+
                 if (unknownAgent.equalsIgnoreCase(SmartsConstants.PARAM_CREATE)) {
                     logger.info("Creating nonexisting instance");
-                    createInstance(identifierParams.getClassName(), identifierParams.getInstanceName());
-                    occurredOn = getInstanceFromRepository(identifierParams.getClassName(), identifierParams.getInstanceName());
+                    createInstance(className, instanceName);
+                    occurredOn = getInstanceFromRepository(className, instanceName);                    
                 }
             }
         } catch (Exception e) {
-            logger.warn("EXCEPTION while finding/creating OcurredOn !!!");
+            logger.warn("EXCEPTION while finding/creating OcurredOn !!!");            
             //We do not care if this fails, we will still create the original notification
         }
         return occurredOn;

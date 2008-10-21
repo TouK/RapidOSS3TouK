@@ -12,7 +12,7 @@ def getParameters(){
    return [
            "Attributes":["ClassName", "InstanceName", "EventName", "Severity", "Acknowledged", "Name",
                    "EventText", "OccurrenceCount", "TroubleTicketID", "LastNotifiedAt", "LastChangedAt", "LastClearedAt", "FirstNotifiedAt", 
-           "ElementName", "ElementClassName", "SourceDomainName", "Category", "EventType", "Owner", "IsRoot", "IsProblem"],
+           "ElementName", "ElementClassName", "SourceDomainName", "Category", "EventType", "Owner", "IsRoot", "InstanceDisplayName", "ClassDisplayName"],
            "NotificationList":"ALL_NOTIFICATIONS",
            "TransientInterval":300,
            "TailMode":false

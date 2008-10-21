@@ -262,9 +262,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
                 this.renderTask.delay(100);
             }
         }
-        else if ((rowStartIndex + interval) > (this.lastOffset + nOfSearchData - 3)) {
+        else if ((rowStartIndex + interval) > (this.lastOffset + nOfSearchData - 1)) {
             var nextOffset = rowStartIndex - interval;
-            if (nextOffset > this.lastOffset) {
+            if (nextOffset > this.lastOffset && (rowStartIndex + interval) < this.totalRowCount) {
                 this.renderTask.cancel();
                 this.scrollPollTask.delay(100, this.scrollPoll, this, [nextOffset]);
             }

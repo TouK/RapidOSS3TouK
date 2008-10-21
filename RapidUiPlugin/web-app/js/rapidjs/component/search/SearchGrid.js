@@ -181,21 +181,23 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         var dataNode = searchNode.xmlData;
         var params = {data:dataNode.getAttributes()};
         if (this.images) {
+            var evaluationResult = false;
+            var imageSrc;
             for (var i = 0; i < this.images.length; i++)
             {
+                imageSrc = this.images[i]['src'];
                 var currentExpressionStr = this.images[i]['visible'];
-                var evaluationResult = false;
                 try {
                     evaluationResult = eval(currentExpressionStr);
+                    if (evaluationResult) {
+                        break;
+                    }
                 }
                 catch(e) {
                 }
-                if (evaluationResult == true)
-                {
-                    var imageSrc = this.images[i]['src'];
-                    YAHOO.util.Dom.getElementsByClassName('rcmdb-search-row-headermenu', 'div', rowEl.dom)[0].style.backgroundImage = 'url("' + imageSrc + '")';
-                }
             }
+            var menuEl = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-row-headermenu', 'div', rowEl.dom)[0]
+            menuEl.style.backgroundImage = evaluationResult ? 'url("' + imageSrc + '")' : '';
         }
         var nOfColumns = this.columns.length;
         for (var colIndex = 1; colIndex < nOfColumns; colIndex++) {

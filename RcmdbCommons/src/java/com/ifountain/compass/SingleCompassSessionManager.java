@@ -17,15 +17,17 @@ public class SingleCompassSessionManager {
     private static String lastOpenedSession;
     private static Compass compassInstance;
     private static int maxNumberOfTrs;
-    private static long maxWaitTime;
+    private static long sessionCheckingInterval;
     private static int numberOfExecutedTrs;
     private static CompassSession compassSessionInstance;
     private static CompassTransaction compassTransactionInstance;
-    private static Map uncommittedTransactions = new HashMap();
+    private static Map uncommittedTransactions = Collections.synchronizedMap(new HashMap());
     private static Timer timer = new Timer();
     private static boolean timeout = false;
     private static boolean isDestroyed = true;
     private static Object sessionLock = new Object();
+    private static Object beginTrLock = new Object();
+    private static Object sessionCapacityIsFullLock = new Object();
 
     static TransactionListener listenerInstance = new TransactionListener()
     {
@@ -47,13 +49,16 @@ public class SingleCompassSessionManager {
                 synchronized (sessionLock)
                 {
                     uncommittedTransactions.remove(tr.id);
-                    SingleCompassSessionManager.closeSession(tr.getSession());
+                    if(isDestroyed)
+                    {
+                        SingleCompassSessionManager.closeSession(tr.getSession());
+                    }
                 }
             }
             else
             {
                 tr.transaction.commit();
-                tr.getSession().close();
+                tr.transaction.getSession().close();
             }
 
         }
@@ -65,13 +70,16 @@ public class SingleCompassSessionManager {
                 synchronized (sessionLock)
                 {
                     uncommittedTransactions.remove(tr.id);
-                    SingleCompassSessionManager.closeSession(tr.getSession());
+                    if(isDestroyed)
+                    {
+                        SingleCompassSessionManager.closeSession(tr.getSession());
+                    }
                 }
             }
             else
             {
                 tr.transaction.rollback();
-                tr.getSession().close();
+                tr.transaction.getSession().close();
             }
 
         }
@@ -79,18 +87,24 @@ public class SingleCompassSessionManager {
 
     private static boolean isBatchInsertMode()
     {
-        return maxNumberOfTrs > 0 || maxWaitTime > 0;
+        return maxNumberOfTrs > 0;
     }
     public static void initialize(Compass compass)
     {
         SingleCompassSessionManager.initialize(compass, 0, 0);
     }
-    public static void initialize(Compass compass, int maxNumberOfTrs, long maxWaitTime)
+    public static void initialize(Compass compass, int maxNumberOfTrs)
     {
+        SingleCompassSessionManager.initialize(compass, maxNumberOfTrs, 10);
+    }
+    public static void initialize(Compass compass, int maxNumberOfTrs, long sessionCheckingInterval)
+    {
+        if(sessionCheckingInterval <= 0) sessionCheckingInterval = 10;
         isDestroyed = false;
+        numberOfExecutedTrs = 0;
         uncommittedTransactions.clear();
         SingleCompassSessionManager.maxNumberOfTrs = maxNumberOfTrs;
-        SingleCompassSessionManager.maxWaitTime = maxWaitTime;
+        SingleCompassSessionManager.sessionCheckingInterval = sessionCheckingInterval;
         compassInstance = compass;
         if(isBatchInsertMode()){
             synchronized (sessionLock)
@@ -105,7 +119,7 @@ public class SingleCompassSessionManager {
 
     private static void startTimer()
     {
-        if(maxWaitTime <= 0) return;
+        if(sessionCheckingInterval <= 0) return;
         timer = new Timer();
         TimerTask closeTask = new TimerTask()
         {
@@ -121,7 +135,7 @@ public class SingleCompassSessionManager {
                 }
             }
         };
-        timer.schedule(closeTask, maxWaitTime, maxWaitTime);
+        timer.schedule(closeTask, sessionCheckingInterval, sessionCheckingInterval);
     }
 
     private static void closeSession(CompassSession session)
@@ -132,29 +146,41 @@ public class SingleCompassSessionManager {
             {
                 compassTransactionInstance.commit();
                 session.close();
+                System.out.println("CLOSED");
                 numberOfExecutedTrs = 0;
+                synchronized (sessionCapacityIsFullLock)
+                {
+                    sessionCapacityIsFullLock.notifyAll();
+                }
             }
         }
     }
 
     public static CompassTransaction beginTransaction()
     {
-        if(isDestroyed) throw new UnInitializedSessionManagerException();
-        synchronized (sessionLock)
-        {
-            if(isBatchInsertMode())
-            {
-                if(compassSessionInstance.isClosed())
-                {
-                    lastOpenedSession = new Date().toString();
-                    compassSessionInstance =  compassInstance.openSession();
-                    compassTransactionInstance = compassSessionInstance.beginTransaction();
+        if (isDestroyed) throw new UnInitializedSessionManagerException();
+        synchronized (beginTrLock) {
+            if (isBatchInsertMode() && numberOfExecutedTrs >= maxNumberOfTrs) {
+                try {
+                    synchronized (sessionCapacityIsFullLock) {
+                        sessionCapacityIsFullLock.wait();
+                    }
                 }
-                return new RapidCompassTransaction(compassTransactionInstance, listenerInstance);
+                catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-            else
-            {
-                return new RapidCompassTransaction(compassInstance.openSession().beginTransaction(), listenerInstance);
+            synchronized (sessionLock) {
+                if (isBatchInsertMode()) {
+                    if (compassSessionInstance.isClosed()) {
+                        lastOpenedSession = new Date().toString();
+                        compassSessionInstance = compassInstance.openSession();
+                        compassTransactionInstance = compassSessionInstance.beginTransaction();
+                    }
+                    return new RapidCompassTransaction(compassTransactionInstance, listenerInstance);
+                } else {
+                    return new RapidCompassTransaction(compassInstance.openSession().beginTransaction(), listenerInstance);
+                }
             }
         }
 

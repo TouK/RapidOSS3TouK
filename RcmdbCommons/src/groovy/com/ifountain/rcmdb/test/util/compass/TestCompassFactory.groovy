@@ -32,16 +32,16 @@ import org.compass.core.config.CompassConfiguration
  * @author Maurice Nicholson
  */
 class TestCompassFactory {
-
+    static indexDirectory = "../testindex";
     static getGrailsApplication(Collection classes) {
         def grailsApplication = new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader(Thread.currentThread().getContextClassLoader())) //new GroovyClassLoader())
         grailsApplication.initialise()
         return grailsApplication
     }
 
-    static getCompass(Collection classes, Collection instances = null) {
+    static getCompass(Collection classes, Collection instances = null, boolean willPersist = false) {
         def grailsApplication = getGrailsApplication(classes)
-        return getCompass(grailsApplication, instances, false)
+        return getCompass(grailsApplication, instances, willPersist)
     }
 
     static getPersistedCompass(Collection classes, Collection instances = null) {
@@ -58,7 +58,7 @@ class TestCompassFactory {
         def config = new CompassConfiguration()
         if(willPersist)
         {
-            config.setConnection("../testindex")    
+            config.setConnection(indexDirectory)
         }
         else
         {

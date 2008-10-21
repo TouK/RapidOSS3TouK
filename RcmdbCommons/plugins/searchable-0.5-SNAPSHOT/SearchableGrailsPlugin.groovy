@@ -219,7 +219,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
     def doWithApplicationContext = {
         def config = getConfiguration(parentCtx)
         def compass = applicationContext.getBean("compass")
-        SingleCompassSessionManager.initialize (compass, config?config.batchSize:0, config?config.maxTransactionWaitTime:0)
+        SingleCompassSessionManager.initialize (compass, config?config.batchSize:0, config?config.transactionCheckingInterval:0)
         if (!SearchableCompassUtils.hasMappings(compass)) {
             return false
         }

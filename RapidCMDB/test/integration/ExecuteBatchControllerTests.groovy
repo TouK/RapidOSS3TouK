@@ -65,9 +65,9 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
 
     void testActionFailsIfAddObjectFails() {
         def ebc = new ExecuteBatchController();
-        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createAddObjectAction(SmartsObject.class.getName(), ["name": "router1"])
+        ebc.params[RapidCMDBConstants.DATA_PARAMETER] = createAddObjectAction(SmartsObject.class.getName(), ["creationClassName": "Router"])
         ebc.index();
-        def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "default.blank.message", args: ["creationClassName", "class SmartsObject"])]);
+        def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "default.blank.message", args: ["name", "class SmartsObject"])]);
         XMLTestUtils.compareXml(errorXml, ebc.response.contentAsString);
         assertEquals(0, SmartsObject.list().size());
     }

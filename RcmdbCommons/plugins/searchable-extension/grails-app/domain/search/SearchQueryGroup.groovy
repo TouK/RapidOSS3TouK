@@ -23,7 +23,7 @@ class SearchQueryGroup {
             queries:[type:SearchQuery, reverseName:"group", isMany:true]
     ]
     static constraints = {
-        name(key:["username"]);
+        name(key:["username", "type"]);
     }
 
 }

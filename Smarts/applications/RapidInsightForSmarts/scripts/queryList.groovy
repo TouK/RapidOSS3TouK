@@ -12,7 +12,7 @@ if(user == null){
 def writer = new StringWriter();
 def queryBuilder = new MarkupBuilder(writer);
 
-SearchQueryGroup.add(name:"Default", username:web.session.username, type:"default");
+SearchQueryGroup.add(name:"My Queries", username:web.session.username, type:"default");
 def queryGroups = SearchQueryGroup.search("type:\"${filterType}\" OR type:\"default\"").results;
 queryBuilder.Filters
 {

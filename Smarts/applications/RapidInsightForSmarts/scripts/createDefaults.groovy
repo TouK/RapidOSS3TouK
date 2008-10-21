@@ -31,17 +31,17 @@ CmdbScript.addScript(name: "saveMap");
 CmdbScript.addScript(name: "getMapData");
 
 def adminUser = RsUser.RSADMIN;
-def bySevertyGroup = SearchQueryGroup.add(name: "By Severity", username:adminUser, isPublic:true, type:"notification");
+def defaultEventGroup = SearchQueryGroup.add(name: "Default", username:adminUser, isPublic:true, type:"notification");
 
-SearchQuery.add(group: bySevertyGroup, name: "Critical Events", query: "severity:1", sortProperty: "lastChangedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"notification");
-SearchQuery.add(group: bySevertyGroup, name: "Major Events", query: "severity:2", sortProperty: "lastChangedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"notification");
-SearchQuery.add(group: bySevertyGroup, name: "Minor Events", query: "severity:3", sortProperty: "lastChangedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"notification");
-SearchQuery.add(group: bySevertyGroup, name: "Unknown Events", query: "severity:4", sortProperty: "lastChangedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"notification");
-SearchQuery.add(group: bySevertyGroup, name: "Normal Events", query: "severity:5", sortProperty: "lastChangedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"notification");
+SearchQuery.add(group: defaultEventGroup, name: "Critical Events", query: "severity:1", sortProperty: "lastChangedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"notification");
+SearchQuery.add(group: defaultEventGroup, name: "Major Events", query: "severity:2", sortProperty: "lastChangedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"notification");
+SearchQuery.add(group: defaultEventGroup, name: "Minor Events", query: "severity:3", sortProperty: "lastChangedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"notification");
+SearchQuery.add(group: defaultEventGroup, name: "Unknown Events", query: "severity:4", sortProperty: "lastChangedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"notification");
+SearchQuery.add(group: defaultEventGroup, name: "Normal Events", query: "severity:5", sortProperty: "lastChangedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"notification");
 
-def byClassGroup = SearchQueryGroup.add(name: "By Class", username:adminUser, isPublic:true, type:"topology");
+def defaultTopologyGroup = SearchQueryGroup.add(name: "Default", username:adminUser, isPublic:true, type:"topology");
 
-SearchQuery.add(group: byClassGroup, name: "Router", query: "creationClassName:\"Router\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
-SearchQuery.add(group: byClassGroup, name: "Switch", query: "creationClassName:\"Switch\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
-SearchQuery.add(group: byClassGroup, name: "Interface", query: "creationClassName:\"Interface\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
-SearchQuery.add(group: byClassGroup, name: "Port", query: "creationClassName:\"Port\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
+SearchQuery.add(group: defaultTopologyGroup, name: "Router", query: "creationClassName:\"Router\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
+SearchQuery.add(group: defaultTopologyGroup, name: "Switch", query: "creationClassName:\"Switch\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
+SearchQuery.add(group: defaultTopologyGroup, name: "Interface", query: "creationClassName:\"Interface\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");
+SearchQuery.add(group: defaultTopologyGroup, name: "Port", query: "creationClassName:\"Port\"", sortProperty: "name", sortOrder: "asc", username:adminUser, isPublic:true, type:"topology");

@@ -34,7 +34,8 @@ YAHOO.rapidjs.component.Form = function(container, config)
     this.isSubmitInProggress = false;
     this.fieldParams = null;
     var events = {
-        'submitSuccessful': new YAHOO.util.CustomEvent('submitSuccessful')
+        'submitSuccessful': new YAHOO.util.CustomEvent('submitSuccessful'),
+        'submit': new YAHOO.util.CustomEvent('submit')
     }
     YAHOO.ext.util.Config.apply(this.events, events);
     this.render();
@@ -166,6 +167,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         {
             this.doPostRequest(this.url, params);
         }
+        this.events['submit'].fireDirect();
     },
     handleCancel: function() {
         this.hide();

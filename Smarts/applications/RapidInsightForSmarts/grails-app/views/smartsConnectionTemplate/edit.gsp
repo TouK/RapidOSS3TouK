@@ -3,16 +3,16 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Edit SmartsConnectionTemplate</title>
+    <title>Edit Connection Data</title>
 </head>
 <body>
 <div class="nav">
     <span class="menuButton"><a class="home" href="${createLinkTo(dir:'/admin.gsp')}">Home</a></span>
-    <span class="menuButton"><g:link class="list" action="list">Smarts Connection Configuration Data List</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create">New Smarts Connection Configuration Data</g:link></span>
+    <span class="menuButton"><g:link class="list" action="list">Connection Data List</g:link></span>
+    <span class="menuButton"><g:link class="create" action="create">New Connection Data</g:link></span>
 </div>
 <div class="body">
-    <h1>Edit Smarts Connection Configuration Data</h1>
+    <h1>Edit Connection Data</h1>
     <g:if test="${flash.message}">
         <div class="message">${flash.message}</div>
     </g:if>

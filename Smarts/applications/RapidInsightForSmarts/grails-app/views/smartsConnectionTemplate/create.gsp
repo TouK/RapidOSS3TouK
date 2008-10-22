@@ -3,12 +3,12 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Create SmartsConnectionTemplate</title>
+    <title>Create Connection Data</title>
 </head>
 <body>
 <div class="nav">
     <span class="menuButton"><a class="home" href="${createLinkTo(dir:'/admin.gsp')}">Home</a></span>
-    <span class="menuButton"><g:link class="list" action="list">Smarts Connection Configuration Data List</g:link></span>
+    <span class="menuButton"><g:link class="list" action="list">Connection Data List</g:link></span>
 </div>
 <div class="body">
     <h1>Create Smarts Connection Configuration Data</h1>

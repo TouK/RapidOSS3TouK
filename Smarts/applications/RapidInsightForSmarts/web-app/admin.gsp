@@ -47,7 +47,7 @@
                     <tr>
                         <td>
                             <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Connection Data</span>
-                            <span class="menuButton"><g:link class="create" controller="smartsConnectionTemplate" action="create">New Connection Configuration Data</g:link></span>
+                            <span class="menuButton"><g:link class="create" controller="smartsConnectionTemplate" action="create">New Connection Data</g:link></span>
                             <div class="list">
                                 <table>
                                     <thead>

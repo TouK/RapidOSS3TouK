@@ -112,7 +112,7 @@ def update(notificationObject){
                     }
                 }
                 def causesObjects = [];
-                notificationRelationPropValues.Causeds.each{notificationRelationProp->
+                notificationRelationPropValues.Causes.each{notificationRelationProp->
                     def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
                     if(rsEvent)
                     {

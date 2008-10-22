@@ -19,7 +19,7 @@ class DomainOperationLoadException extends Exception{
 
     public static DomainOperationLoadException operationFileDoesnotExist(String path)
     {
-        return new DomainOperationLoadException("Operation could not loaded successfully", new FileNotFoundException(path, null));
+        return new DomainOperationLoadException("Operation file ${path} does not exist", new FileNotFoundException(path, null));
     }
 
     public static DomainOperationLoadException compileException(Throwable compileException)

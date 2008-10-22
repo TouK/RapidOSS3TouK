@@ -50,7 +50,8 @@ class ReloadOperationsMethod extends AbstractRapidDomainStaticMethod{
         }
         catch(DomainOperationLoadException exception)
         {
-            logger.info(exception.getMessage(), exception);
+            logger.warn(exception.getMessage());
+            logger.info("",exception);
             throw exception;
         }
     }

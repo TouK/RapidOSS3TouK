@@ -17,6 +17,10 @@ YAHOO.rapidjs.component.ComponentContainer = function(container, config) {
         'error' :new YAHOO.util.CustomEvent('error')
     };
     YAHOO.rapidjs.Components[this.id] = this;
+    if(!YAHOO.util.History.historyChangedEvent){
+        YAHOO.util.History.historyChangedEvent = new YAHOO.util.CustomEvent("historyChanged");    
+    }
+    YAHOO.util.History.historyChangedEvent.subscribe(this.globalHistoryChanged, this, true);
     var bookmarkedHistoryState = YAHOO.util.History.getBookmarkedState(this.id);
     var initialHistoryState = bookmarkedHistoryState || this.getInitialHistoryState();
     YAHOO.util.History.register(this.id, initialHistoryState, function (state) {
@@ -57,6 +61,10 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
         }
     },
 
+    globalHistoryChanged: function(compId, state){
+
+    },
+
     historyChanged: function(state){
         
     },
@@ -66,6 +74,7 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
             this.historyChangeFromSave = false;
             return;
         }
+        YAHOO.util.History.historyChangedEvent.fireDirect(this.id, state);
         this.historyChanged(state);
     },
 

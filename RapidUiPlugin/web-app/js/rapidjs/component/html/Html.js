@@ -90,6 +90,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
             this._show(params[0], params[1]);
         }
     },
+    globalHistoryChanged: function(compId, state){
+       if(compId != this.id){
+           this.hide();
+       }
+    },
     showMask: function() {
         this.mask.show();
         this.maskMessage.show();

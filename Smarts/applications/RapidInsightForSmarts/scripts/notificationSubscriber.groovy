@@ -69,7 +69,7 @@ def updateSmartsObjectState(elementName, instanceName, severity)
         compSystemObject.setState(severity);
         if(compSystemObject.hasErrors())
         {
-            logger.warn("Could not udpate state of ${compSystemObject} , Reason ${compSystemObject.errors}");
+            logger.warn("Could not update state of ${compSystemObject} , Reason ${compSystemObject.errors}");
         }
     }
 }

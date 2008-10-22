@@ -67,6 +67,10 @@ def updateSmartsObjectState(elementName, instanceName, severity)
     if(compSystemObject instanceof RsComputerSystem || compSystemObject instanceof RsLink)
     {
         compSystemObject.setState(severity);
+        if(compSystemObject.hasErrors())
+        {
+            logger.warn("Could not udpate state of ${compSystemObject} , Reason ${compSystemObject.errors}");
+        }
     }
 }
 def update(notificationObject){
@@ -93,27 +97,43 @@ def update(notificationObject){
         if(eventType == BaseSmartsListeningAdapter.NOTIFY || (eventType == BaseSmartsListeningAdapter.CHANGE && notificationObject.Active == "true"))
         {
             RsSmartsNotification addedEvent = RsSmartsNotification.add(notificationProps);
-            updateSmartsObjectState(addedEvent.elementName, addedEvent.instanceName, addedEvent.severity)
-            def notificationRelationPropValues = datasource.getNotification([ClassName:notificationObject.ClassName, InstanceName:notificationObject.InstanceName, EventName:notificationObject.EventName], ["CausedBy", "Causes"]);
-            def causedByObjects = [];
-            notificationRelationPropValues.CausedBy.each{notificationRelationProp->
-                def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
-                if(rsEvent)
+            if(!addedEvent.hasErrors())
+            {
+                logger.info("Added ${notificationName} to repository");
+                updateSmartsObjectState(addedEvent.elementName, addedEvent.instanceName, addedEvent.severity)
+                def notificationRelationPropValues = datasource.getNotification([ClassName:notificationObject.ClassName, InstanceName:notificationObject.InstanceName, EventName:notificationObject.EventName], ["CausedBy", "Causes"]);
+                def causedByObjects = [];
+                notificationRelationPropValues.CausedBy.each{notificationRelationProp->
+                    def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
+                    if(rsEvent)
+                    {
+                        causedByObjects.add(rsEvent);
+                    }
+                }
+                def causesObjects = [];
+                notificationRelationPropValues.Causeds.each{notificationRelationProp->
+                    def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
+                    if(rsEvent)
+                    {
+                        causesObjects.add(rsEvent);
+                    }
+                }
+                addedEvent.addRelation(causedBy:causedByObjects);
+                addedEvent.addRelation(causes:causesObjects);
+
+                if(!addedEvent.hasErrors())
                 {
-                    causedByObjects.add(rsEvent);
+                    logger.info("Added Relations of ${notificationName} to repository");
+                }
+                else
+                {
+                    logger.warn("Could not add relations of ${notificationName} to repository, Reason ${addedEvent.errors}");
                 }
             }
-            def causesObjects = [];
-            notificationRelationPropValues.Causeds.each{notificationRelationProp->
-                def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
-                if(rsEvent)
-                {
-                    causesObjects.add(rsEvent);
-                }
+            else
+            {
+                logger.warn("Could not add ${notificationName} to repository, Reason ${addedEvent.errors}");
             }
-            addedEvent.addRelation(causedBy:causedByObjects);
-            addedEvent.addRelation(causes:causesObjects);
-            logger.info("Added ${notificationName} to repository");
         }
         else if(eventType == BaseSmartsListeningAdapter.CLEAR)
         {
@@ -158,7 +178,7 @@ def archiveNotification(notification)
     }
     else
     {
-        logger.info("${notification.name} can not be archived");        
+        logger.warn("${notification.name} can not be archived, Reason :${notification.errors} ");
     }
 }
 

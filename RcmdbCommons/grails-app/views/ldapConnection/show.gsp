@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Show LdapConnection</title>
+    <title>Show LdapConnection </title>
 </head>
 <body>
 <div class="nav">

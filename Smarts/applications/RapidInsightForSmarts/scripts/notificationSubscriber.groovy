@@ -107,6 +107,7 @@ def update(notificationObject){
                     def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
                     if(rsEvent)
                     {
+                        logger.debug("RsSmartsNotification ${rsEvent.name} will be added to ${addedEvent.name}'s causedBy")
                         causedByObjects.add(rsEvent);
                     }
                 }
@@ -115,11 +116,14 @@ def update(notificationObject){
                     def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
                     if(rsEvent)
                     {
+                        logger.debug("RsSmartsNotification ${rsEvent.name} will be added to ${addedEvent.name}'s causes")
                         causesObjects.add(rsEvent);
                     }
                 }
                 addedEvent.addRelation(causedBy:causedByObjects);
+                logger.info("${causedByObjects.size()} objects has been added to ${addedEvent.name}'s causedBy")
                 addedEvent.addRelation(causes:causesObjects);
+                logger.info("${causesObjects.size()} objects has been added to ${addedEvent.name}'s causes")
 
                 if(!addedEvent.hasErrors())
                 {

@@ -108,6 +108,7 @@ class NotificationsTagLib {
                 pollingInterval: searchGridPollInterval, fieldsUrl: "script/run/getViewFields?format=xml",
                 SearchGridTagLib.fSgMenuItems([:],
                         SearchGridTagLib.fSgMenuItem(id: "browse", label: "Browse", "") +
+                        SearchGridTagLib.fSgMenuItem(id: "topMap", label: "Show Map", "") +
                                 getMenuXml(rowMenus)
                 ) +
                         SearchGridTagLib.fSgImages([:],
@@ -178,17 +179,20 @@ class NotificationsTagLib {
                     tree.poll();
                     searchGrid.poll();
                     searchGrid.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
-                        var notificationName = xmlData.getAttribute("name");
+                        var key = 'elementName'
+                        var value = xmlData.getAttribute(key);
+                        if(!value || value == ''){
+                            key = 'instanceName'
+                            value = xmlData.getAttribute(key)
+                        }
                         if(id == "browse"){
-                            var key = 'elementName'
-                            var value = xmlData.getAttribute(key);
-                            if(!value || value == ''){
-                                key = 'instanceName'
-                                value = xmlData.getAttribute(key)
-                            }
                             var url = "getObjectDetails.gsp?name="+ encodeURIComponent(value);
                             var title = key == "instanceName"? "Details of " + xmlData.getAttribute("className") + " " + value : "Details of " + xmlData.getAttribute("elementClassName") + " " + value
                             YAHOO.rapidjs.Components['objectDetailsmenuHtml'].show(url, title);
+                        }
+                        else if(id == 'topMap'){
+                            var url = "redirectToMap.gsp?name="+value;
+                            window.location = url;
                         }
                     }, this, true);
 

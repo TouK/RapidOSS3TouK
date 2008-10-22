@@ -162,7 +162,7 @@ class NotificationSearchTagLib {
                 defaultFields: defaultFields, onSaveQueryClick: "saveQueryAction",
                 pollingInterval: searchListPollInterval, lineSize: lineSize,
                 SearchListTagLib.fSlMenuItems([:],
-                       getMenuXml(rowMenus)
+                       SearchListTagLib.fSlMenuItem(id: "topMap", label: "Show Map", "") + getMenuXml(rowMenus)
                 ) +
                         SearchListTagLib.fSlPropertyMenuItems([:],
                                 SearchListTagLib.fSlMenuItem(id: "sortAsc", label: defaultMenus.sortAsc.label, action: "searchListSortAscAction", visible:getSortAscVisibility(defaultMenus), "") +
@@ -247,6 +247,18 @@ class NotificationSearchTagLib {
                     var searchList = YAHOO.rapidjs.Components['searchList'];
                     var tree = YAHOO.rapidjs.Components['filterTree'];
                     ${getConvsersionJs(nsXML.NsConversions.NsConversion, emphasizeds)}
+                    searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
+                         if( id == "topMap" )
+                         {
+                            var value = xmlData.getAttribute('elementName');
+                            if(!value || value == ''){
+                                value = xmlData.getAttribute('instanceName')
+                            }
+                            var url = "redirectToMap.gsp?name="+value;
+                            window.location = url;
+                         }
+
+                    }, this, true);
                     tree.addToolbarButton({
                         className:'r-filterTree-groupAdd',
                         scope:this,

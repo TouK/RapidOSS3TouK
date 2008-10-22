@@ -39,7 +39,7 @@ class TopologyMapTagLib {
             }
             def actionType = menuItem.@actionType.toString().trim();
             if (actionType == "htmlDialog") {
-                htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString()])
+                htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
                 actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
             }
             else if (actionType == "update" || actionType == "execute") {
@@ -257,7 +257,7 @@ class TopologyMapTagLib {
         out << TagLibUtils.getConfigAsXml("Menus", attrs, [], body());
     }
     def tmMenu = {attrs, body ->
-        def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "parentMenu"]
+        def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "parentMenu", "x", "y"]
         out << TagLibUtils.getConfigAsXml("Menu", attrs, validAttrs);
     }
 
@@ -329,7 +329,7 @@ class TopologyMapTagLib {
     def getHtmlDialogsXml(htmlDialogs) {
         def output = "";
         htmlDialogs.each {
-            output += HtmlTagLib.fHtml(id: it.id, width: it.width, height: it.height, iframe: "false", "")
+            output += HtmlTagLib.fHtml(id: it.id, width: it.width, height: it.height, iframe: "false", x:it.x, y:it.y, "")
         }
         return output;
     }

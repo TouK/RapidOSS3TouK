@@ -4,7 +4,10 @@ YAHOO.rapidjs.component.Html = function(container, config)
     YAHOO.rapidjs.component.Html.superclass.constructor.call(this, container, config);
     this.width = config.width;
     this.height = config.height;
-    this.dialog = new YAHOO.rapidjs.component.Dialog({width:this.width,height:this.height, close:true});
+    this.x = config.x;
+    this.y = config.y;
+    this.fixedcenter = config.fixedcenter;
+    this.dialog = new YAHOO.rapidjs.component.Dialog({width:this.width,height:this.height, close:true, x:this.x, y:this.y, fixedcenter:this.fixedcenter});
 
     this.iframe = config.iframe;
     this.format = "html";

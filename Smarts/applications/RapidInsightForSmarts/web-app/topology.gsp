@@ -18,7 +18,7 @@
 
 <rui:topologyMap nodeSize="60" mapPollingInterval="0" savedMapsPollingInterval="0">
     <rui:tmMenus>
-        <rui:tmMenu id="browse" label="Browse" location="node" actionType="htmlDialog" width="850" height="700"
+        <rui:tmMenu id="browse" label="Browse" location="node" actionType="htmlDialog" width="850" height="700" x="85" y="50" 
                 url="'getObjectDetails.gsp?name=' + params.data.id" title="'Details of ' + params.data.type + ' ' + params.data.id"></rui:tmMenu>
     </rui:tmMenus>
     <rui:tmImages>

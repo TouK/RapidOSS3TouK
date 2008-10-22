@@ -44,6 +44,9 @@ class HtmlTagLib {
         return """{
             id:'${attrs["id"]}',
             ${attrs["iframe"] ? "iframe:${attrs["iframe"]}," : ""}
+            ${attrs["x"] ? "x:${attrs["x"]}," : ""}
+            ${attrs["y"] ? "y:${attrs["y"]}," : ""}
+            ${attrs["fixedcenter"] ? "fixedcenter:${attrs["fixedcenter"]}," : ""}
             width:${attrs["width"]},
             height:${attrs["height"]}
         }"""

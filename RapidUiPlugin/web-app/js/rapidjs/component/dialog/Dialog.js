@@ -11,7 +11,13 @@ YAHOO.rapidjs.component.Dialog = function(config)
     this.title = "&#160;";
     this.buttons = null;
     this.resizable = true;
+    this.x = 0;
+    this.y = 0;
+    this.fixedcenter = false;
     YAHOO.ext.util.Config.apply(this, config);
+    if(!this.x && !this.y){
+        this.fixedcenter = true;
+    }
     this.events = {
         'resize': new YAHOO.util.CustomEvent('resize')
     }
@@ -31,12 +37,14 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         var panelConfig = {
             draggable: true,
             constraintoviewport: true,
-            fixedcenter:true,
+            fixedcenter:this.fixedcenter,
             visible:false,
             close:this.close,
             width:this.width + "px",
             height:this.height + "px",
-            autofillheight:false
+            autofillheight:false,
+            x:this.x,
+            y:this.y
         };
 
         this.panel = new YAHOO.widget.Panel(this.container, panelConfig);
@@ -125,6 +133,8 @@ YAHOO.rapidjs.component.Dialog.prototype = {
 
     show: function(url)
     {
+        var y = this.y || 0
+        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "" + y);
         this.panel.show();
         YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.panel);
     },

@@ -258,21 +258,7 @@ class TopologySearchTagLib {
                          var objectName = xmlData.getAttribute("name");
                          if( id == "topMap" )
                          {
-                            var deviceName;
-                            if( xmlData.getAttribute("computerSystemName") )
-                            {
-                               deviceName = xmlData.getAttribute("computerSystemName");
-                            }
-                            else if( xmlData.getAttribute("a_ComputerSystemName") )
-                            {
-                                deviceName = xmlData.getAttribute("a_ComputerSystemName");
-                            }
-                            else
-                            {
-                               deviceName = objectName;
-                            }
-
-                            var url = "topology.gsp?name="+deviceName;
+                            var url = "redirectToMap.gsp?name="+objectName;
                             window.location = url;
                          }
 

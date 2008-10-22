@@ -20,7 +20,7 @@
 <div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li>
-            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
+            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('smartsEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
                 <em>Properties</em>
             </a>
         </li>
@@ -63,7 +63,7 @@
             var className = record.getData('className')
             var instanceName = record.getData('name');
             var eventName = record.getData('event');
-            var url = 'getEventDetails.gsp?className=' + encodeURIComponent(className) + '&instanceName=' + encodeURIComponent(instanceName) + '&eventName=' + encodeURIComponent(eventName);
+            var url = 'smartsEventDetails.gsp?className=' + encodeURIComponent(className) + '&instanceName=' + encodeURIComponent(instanceName) + '&eventName=' + encodeURIComponent(eventName);
             YAHOO.rapidjs.Components['${componentId}'].show(url, 'Details of ' + className + ' ' + instanceName + ' ' + eventName);
         });
     });

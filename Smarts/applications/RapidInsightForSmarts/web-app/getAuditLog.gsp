@@ -24,7 +24,7 @@
                 <div class="yui-navset yui-navset-top" style="margin-top:5px">
                     <ul class="yui-nav">
                         <li>
-                            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
+                            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('smartsEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
                                 <em>Properties</em>
                             </a>
                         </li>

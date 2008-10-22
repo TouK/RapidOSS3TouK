@@ -70,6 +70,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
 
         }
         this.panel.render();
+        YAHOO.rapidjs.component.OVERLAY_MANAGER.register(this.panel)
 
 
         if (this.resizable) {
@@ -125,6 +126,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
     show: function(url)
     {
         this.panel.show();
+        YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.panel);
     },
     hide: function()
     {
@@ -143,3 +145,5 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         return this.title;
     }
 };
+
+YAHOO.rapidjs.component.OVERLAY_MANAGER = new YAHOO.widget.OverlayManager();

@@ -22,8 +22,8 @@ YAHOO.rapidjs.component.Form = function(container, config)
         YAHOO.util.Dom.setStyle(this.dialog.form, 'overflow', 'auto');
         YAHOO.util.Event.addListener(this.dialog.form, 'keypress', this.handleKeypress, this, true);
     }, this, true)
-    this.successful = config.successfulyExecuted;
     this.dialog.render();
+    YAHOO.rapidjs.component.OVERLAY_MANAGER.register(this.dialog);
     this.mapping = config.mapping;
     this.editUrl = config.editUrl;
     this.createUrl = config.createUrl;
@@ -230,6 +230,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         }
 
         this.dialog.show();
+        YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.dialog);
         if (willShowMask) {
             this.showMask();
         }

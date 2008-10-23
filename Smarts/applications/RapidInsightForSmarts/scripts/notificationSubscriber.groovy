@@ -89,11 +89,13 @@ def update(notificationObject){
         }
         if(eventType == BaseSmartsListeningAdapter.NOTIFY || (eventType == BaseSmartsListeningAdapter.CHANGE && notificationObject.Active))
         {
+            logger.debug("Event type is ${eventType}. Adding notification ${notificationProps.name}")
             RsSmartsNotification addedEvent = RsSmartsNotification.add(notificationProps);
             if(!addedEvent.hasErrors())
             {
                 logger.info("Added ${notificationName} to repository");
                 updateSmartsObjectState(addedEvent.elementName, addedEvent.instanceName, addedEvent.severity)
+                logger.info("Object state is updated.")
                 def notificationRelationPropValues = datasource.getNotification([ClassName:notificationObject.ClassName, InstanceName:notificationObject.InstanceName, EventName:notificationObject.EventName], ["CausedBy", "Causes"]);
                 def causedByObjects = [];
                 notificationRelationPropValues.CausedBy.each{notificationRelationProp->
@@ -159,6 +161,7 @@ def serializeRelations(domainObject, relationName)
 def archiveNotification(notification)
 {
     if(notification == null) return;
+    logger.debug("Archiving notification ${notification.name}")
     def historicalNotificationProps = [:];
     columnLocalNameMappings.each{String localName, String smartsName->
         historicalNotificationProps[localName] = notification[localName];
@@ -170,6 +173,7 @@ def archiveNotification(notification)
     if(!notification.hasErrors())
     {
         RsSmartsHistoricalNotification.add(historicalNotificationProps);
+        logger.debug("Updating object state.")
         updateSmartsObjectState(notification.elementName, notification.instanceName, -1)
         logger.info("${notification.name} is moved  to HistoricalNotification");
     }

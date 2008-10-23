@@ -145,8 +145,7 @@ public class SingleCompassSessionManager {
             if(maxNumberOfTrs > 0 && numberOfExecutedTrs >= maxNumberOfTrs && uncommittedTransactions.isEmpty() || numberOfExecutedTrs > 0 && timeout && uncommittedTransactions.isEmpty() || isDestroyed && !timeout && uncommittedTransactions.isEmpty())
             {
                 compassTransactionInstance.commit();
-                session.close();
-                System.out.println("CLOSED");
+                session.close();                
                 numberOfExecutedTrs = 0;
                 synchronized (sessionCapacityIsFullLock)
                 {

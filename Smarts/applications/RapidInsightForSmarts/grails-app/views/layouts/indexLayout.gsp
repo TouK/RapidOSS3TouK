@@ -55,7 +55,6 @@
 
     <script type="text/javascript" src="js/rapidjs/component/action/Action.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/html/Html.js"></script>
-    <script type="text/javascript" src="js/yui/charts/charts-experimental-min.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/topologyMap/TopologyMap.js"></script>
 
 
@@ -68,10 +67,7 @@
     <link rel="stylesheet" type="text/css" href="css/rapidjs/common.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/dialog.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/form.css"/>
-    <link rel="stylesheet" type="text/css" href="css/rapidjs/mgrid.css"/>
-    <link rel="stylesheet" type="text/css" href="css/rapidjs/overlay.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/layout.css"/>
-    <link rel="stylesheet" type="text/css" href="css/rapidjs/ryuitree.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/search/search.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/search/searchlist.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/search/searchgrid.css"/>

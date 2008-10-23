@@ -111,11 +111,13 @@ public class StagingArea {
     // IMPORTANT COMMENT: This method regulates access to shared resource stagedNotifications and should be synchronized!
     // This method is used by the Smoother thread
     public synchronized void processedStagedNotifications() {
+        logger.debug(logPrefix + "processing staged notifications.");
         Enumeration notifications = stagedNotifications.keys();
         ArrayList notificationsInList = null;
         try
         {
-            notificationsInList = SmartsHelper.getExistingNotificationsOfAList(notificationAdapter.getDomainManager(), nlName);
+            notificationsInList = SmartsHelper.getExistingNotificationsOfAList(notificationAdapter.getDomainManager(), nlName, logger);
+            logger.debug(logPrefix + notificationsInList.size() + " notifications exist in " + nlName);
             while (notifications.hasMoreElements()){
                 processEachStagedNotification((String) notifications.nextElement(), notificationsInList);
             }

@@ -17,6 +17,8 @@ import com.smarts.remote.SmRepositoryInterfaceHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class SmartsHelper {
 
     public static ArrayList<String> getExistingNotificationsOfAList(BaseSmartsAdapter smartsAdapter, String nlName) throws Exception {
@@ -29,12 +31,14 @@ public class SmartsHelper {
         }
         return notificationsInList;
     }
-    public static ArrayList<String> getExistingNotificationsOfAList(SmRepositoryInterfaceHandler domainManager, String nlName) throws Exception {
+    public static ArrayList<String> getExistingNotificationsOfAList(SmRepositoryInterfaceHandler domainManager, String nlName, Logger logger) throws Exception {
+        logger.debug("Getting existing notifications of " + nlName);
         ArrayList<String> notificationsInList = new ArrayList<String>();
         String[] propNames = {"AllNotifications"};
         MR_AnyVal[] anyVals = domainManager.getProperties(SmartsConstants.NOTIFICATION_LIST_CLASS, nlName, propNames);
         String[] nNames = (String[])anyVals[0].getValue();
         for (int i = 0; i < nNames.length; i++) {
+            logger.debug("Got " + nNames[i]);
             notificationsInList.add(nNames[i]);
         }
         return notificationsInList;

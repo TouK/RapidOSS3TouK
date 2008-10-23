@@ -2,7 +2,7 @@ YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.Autocomplete = function(container, config) {
     YAHOO.rapidjs.component.Autocomplete.superclass.constructor.call(this, container, config);
     this.contentPath = null;
-    this.fields = null;
+    this.suggestionAttribute = null;
     this.cacheSize = 0;
     this.animated = false;
     YAHOO.ext.util.Config.apply(this, config);
@@ -38,7 +38,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
 
         this.datasource.responseSchema = {
             resultNode: this.contentPath,
-            fields: this.fields
+            fields: [this.suggestionAttribute]
         };
         this.datasource.maxCacheEntries = this.cacheSize;
         this.autoComp = new YAHOO.widget.AutoComplete(this.searchInput, this.suggestion, this.datasource);

@@ -63,7 +63,12 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
     },
 
     globalHistoryChanged: function(compId, state){
-
+       if(this.popupWindow && compId != this.id){
+           this.popupWindow.hide();
+       }
+       else if(this.popupWindow && state != this.getInitialHistoryState() && compId == this.id){
+           this.popupWindow.show();
+       }
     },
 
     historyChanged: function(state){
@@ -88,6 +93,7 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
     },
 
     setTitle: function(title){
+        this.title = title;
         if(this.popupWindow){
             this.popupWindow.setTitle(title);
         }

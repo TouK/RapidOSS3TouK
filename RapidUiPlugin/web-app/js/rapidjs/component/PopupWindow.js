@@ -2,6 +2,7 @@ YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.PopupWindow = function(component, config) {
     this.component = component;
     this.component.popupWindow = this;
+    this.title = '&#160;'
     YAHOO.ext.util.Config.apply(this, config);
     this.dialog = new YAHOO.rapidjs.component.Dialog({
         width:this.width,
@@ -12,7 +13,7 @@ YAHOO.rapidjs.component.PopupWindow = function(component, config) {
         maxHeight: this.maxHeight,
         x: this.x,
         y: this.y,
-        title: this.title || '&#160;',
+        title: this.title,
         close: true
     });
     this.setTitle(this.title);
@@ -42,5 +43,9 @@ YAHOO.rapidjs.component.PopupWindow.prototype = {
       if(this.component.toolbar){
           this.component.toolbar.setTitle("");
       }
+   },
+
+   isVisible: function(){
+      return this.dialog.isVisible(); 
    }
 }

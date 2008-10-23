@@ -35,17 +35,6 @@
     color: #000000;
     font-size:13px;
 }
-
-
-.rcmdb-search-row-headermenu {
-    background-image: url( ../../../images/rapidjs/component/searchlist/default.png );
-    background-repeat: no-repeat;
-    height: 100%;
-    overflow: hidden;
-    width: 19px;
-    z-index: 1;
-    cursor:pointer;
-}
 .rcmdb-search-row-menupos{
 	font-size:17px;
 }

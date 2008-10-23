@@ -54,9 +54,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 	    }
         if(this.pollingInterval > 0)
         {
-            this.pollTask.delay(this.pollingInterval*1000);
+            if(!this.popupWindow || (this.popupWindow && this.popupWindow.isVisible())){
+                this.pollTask.delay(this.pollingInterval*1000);
+            }
         }
-
 
     },
 
@@ -239,8 +240,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 		}
 	},
     handleUnvisible: function(){
-//		this.abort();
-//		this.pollTask.cancel();
+		this.abort();
+		this.pollTask.cancel();
 	},
 
 	handleVisible : function(){

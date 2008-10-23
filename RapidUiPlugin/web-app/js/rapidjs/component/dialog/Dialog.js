@@ -153,6 +153,10 @@ YAHOO.rapidjs.component.Dialog.prototype = {
     },
     getTitle: function() {
         return this.title;
+    },
+
+    isVisible: function(){
+        return this.panel.cfg.getProperty("visible")
     }
 };
 

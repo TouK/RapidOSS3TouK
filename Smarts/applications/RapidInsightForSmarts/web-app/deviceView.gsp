@@ -59,15 +59,22 @@
         <rui:sgColumn attributeName="lastChangedAt" colLabel="Last Change" width="120"></rui:sgColumn>
     </rui:sgColumns>
 </rui:searchGrid>
+<rui:html id="objectDetails"></rui:html>
 <rui:popupWindow componentId="eventsGrid2" width="850" height="700" title="Events"></rui:popupWindow>
-<rui:action id="submitAction" type="function" function="setQueryWithView" componentId="eventsGrid2">
+<rui:action id="submitAction1" type="function" function="setQueryWithView" componentId="eventsGrid2">
     <rui:functionArg>'instanceName:' + params.query</rui:functionArg>
     <rui:functionArg>'default'</rui:functionArg>
+</rui:action>
+
+<rui:action id="submitAction" type="function" function="show" componentId="objectDetails">
+    <rui:functionArg>'getObjectDetails.gsp?name=' + params.query</rui:functionArg>
+    <rui:functionArg>'Details of ' + params.query</rui:functionArg>
 </rui:action>
 
 <script type="text/javascript">
     var eventsGrid = YAHOO.rapidjs.Components['eventsGrid'];
     var autocomplete = YAHOO.rapidjs.Components['searchDevice'];
+    var objectDetails = YAHOO.rapidjs.Components['objectDetails'];
     eventsGrid.renderCellFunction = function(key, value, data, el){
         if(key == "lastNotifiedAt" || key == "lastChangedAt"){
             if(value == "0" || value == "")
@@ -92,31 +99,24 @@
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'top', body: 'top', resize: false, height:45},
-                { position: 'center', body: eventsGrid.container.id, resize: false, gutter: '1px' },
+                { position: 'center', body: objectDetails.container.id, resize: false, gutter: '1px' },
+                { position: 'bottom', body: eventsGrid.container.id, resize: false, gutter: '1px', height:300},
                 { position: 'left', width: 250, resize: true, body: autocomplete.container.id, scroll: false}
             ]
         });
-        layout.on('render', function(){
-            var topUnit = layout.getUnitByPosition('top');
-            YAHOO.util.Dom.setStyle(topUnit.get('wrap'), 'background-color', '#BBD4F6')
-            var header = topUnit.body;
-            YAHOO.util.Dom.setStyle(header, 'border', 'none');
-            var left = layout.getUnitByPosition('left').body;
-            YAHOO.util.Dom.setStyle(left, 'top', '1px');
-        });
-        layout.render();
-        var layoutLeft = layout.getUnitByPosition('left');
-        layoutLeft.on('resize', function(){
-            YAHOO.util.Dom.setStyle(layoutLeft.body, 'top', '1px');
-        });
 
-        eventsGrid.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+        layout.render();
+        eventsGrid.resize(layout.getUnitByPosition('bottom').body.offsetWidth, layout.getUnitByPosition('bottom').body.offsetHeight);
         layout.on('resize', function() {
-            eventsGrid.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+            eventsGrid.resize(layout.getUnitByPosition('bottom').body.offsetWidth, layout.getUnitByPosition('bottom').body.offsetHeight);
         });
-        autocomplete.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+        autocomplete.resize(layout.getUnitByPosition('left').body.offsetWidth, layout.getUnitByPosition('left').body.offsetHeight);
         layout.on('resize', function() {
-            autocomplete.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+            autocomplete.resize(layout.getUnitByPosition('left').body.offsetWidth, layout.getUnitByPosition('left').body.offsetHeight);
+        });
+        objectDetails.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+        layout.on('resize', function() {
+            objectDetails.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
         });
         window.layout = layout;
     })

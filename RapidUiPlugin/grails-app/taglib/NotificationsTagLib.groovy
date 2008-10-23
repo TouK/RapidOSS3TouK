@@ -121,7 +121,8 @@ class NotificationsTagLib {
                         SearchGridTagLib.fSgColumns([:], columnsStr)
 
         )
-        out << HtmlTagLib.fHtml(id: "objectDetailsmenuHtml", width: "850", height: "700", x:"85", y:"50", iframe: "false", "");
+        out << HtmlTagLib.fHtml(id: "objectDetailsmenuHtml", iframe: "false", "");
+        out << PopupWindowTagLib.fPopupWindow(componentId: "objectDetailsmenuHtml", width: "850", height: "700", x:"85", y:"50", "");
         out << getHtmlDialogsXml(htmlDialogs)
         out << getActionXml(actions);
 
@@ -188,7 +189,9 @@ class NotificationsTagLib {
                         if(id == "browse"){
                             var url = "getObjectDetails.gsp?name="+ encodeURIComponent(value);
                             var title = key == "instanceName"? "Details of " + xmlData.getAttribute("className") + " " + value : "Details of " + xmlData.getAttribute("elementClassName") + " " + value
-                            YAHOO.rapidjs.Components['objectDetailsmenuHtml'].show(url, title);
+                            var objectDetailsHtml = YAHOO.rapidjs.Components['objectDetailsmenuHtml'];
+                            objectDetailsHtml.popupWindow.show();
+                            objectDetailsHtml.show(url, title);
                         }
                         else if(id == 'topMap'){
                             var url = "redirectToMap.gsp?name="+value;
@@ -291,7 +294,8 @@ class NotificationsTagLib {
     def getHtmlDialogsXml(htmlDialogs) {
         def output = "";
         htmlDialogs.each {
-            output += HtmlTagLib.fHtml(id: it.id, width: it.width, height: it.height, iframe: "false", x:it.x, y:it.y, "")
+            output += HtmlTagLib.fHtml(id: it.id, iframe: "false", "")
+            output += PopupWindowTagLib.fPopupWindow(componentId: it.id, width: it.width, height: it.height, x:it.x, y:it.y, "")
         }
         return output;
     }

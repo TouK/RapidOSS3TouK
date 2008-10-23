@@ -387,7 +387,8 @@ class TopologySearchTagLib {
     def getHtmlDialogsXml(htmlDialogs) {
         def output = "";
         htmlDialogs.each {
-            output += HtmlTagLib.fHtml(id: it.id, width: it.width, height: it.height, iframe: "false",x:it.x, y:it.y, "")
+            output += HtmlTagLib.fHtml(id: it.id, iframe: "false", "")
+            output += PopupWindowTagLib.fPopupWindow(componentId: it.id, width: it.width, height: it.height, x:it.x, y:it.y, "")
         }
         return output;
     }

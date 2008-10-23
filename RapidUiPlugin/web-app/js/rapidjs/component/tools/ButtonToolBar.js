@@ -20,5 +20,9 @@ YAHOO.rapidjs.component.tool.ButtonToolBar.prototype = {
          var buttonContainer = YAHOO.ext.DomHelper.append(this.toolsEl, {tag:'div', cls:'r-buttontoolbar-button'});
         buttonContainer.appendChild(basicTool.button.el.dom);
         basicTool.containerChanged(buttonContainer);
+    },
+
+    setTitle: function(title){
+        this.titleEl.innerHTML = title;
     }
 }

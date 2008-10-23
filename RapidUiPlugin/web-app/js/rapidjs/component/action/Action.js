@@ -177,6 +177,9 @@ YAHOO.rapidjs.component.action.FunctionAction.prototype = {
             var conditionResult = eval(this.condition);
         }
         if (conditionResult) {
+            if(this.component.popupWindow){
+                this.component.popupWindow.show();
+            }
             var args = [];
             for (var i = 0; i < this.arguments.length; i++) {
                 args[args.length] = eval('(' + this.arguments[i] + ')');

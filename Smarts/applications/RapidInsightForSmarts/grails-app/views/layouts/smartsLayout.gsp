@@ -27,6 +27,7 @@
     <script type="text/javascript" src="js/rapidjs/data/NodeFactory.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/RapidElement.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/PollingComponentContainer.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/PopupWindow.js"></script>
     <script type="text/javascript" src="js/rapidjs/data/RapidXmlDocument.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/SelectUtils.js"></script>

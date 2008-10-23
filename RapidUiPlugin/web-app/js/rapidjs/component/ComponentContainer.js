@@ -10,6 +10,7 @@ YAHOO.rapidjs.component.ComponentContainer = function(container, config) {
     this.url = config.url;
     this.title = config.title;
     this.toolbar = null;
+    this.popupWindow = null;
     this.events = {
         'contextmenuclicked': new YAHOO.util.CustomEvent('contextmenuclicked'),
         'loadstatechanged' :new YAHOO.util.CustomEvent('loadstatechanged'),
@@ -84,6 +85,17 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
 
     resize: function(width, height){
 
+    },
+
+    setTitle: function(title){
+        if(this.popupWindow){
+            this.popupWindow.setTitle(title);
+        }
+        else{
+            if(this.toolbar){
+                this.toolbar.setTitle(title);
+            }
+        }
     }
 
 };

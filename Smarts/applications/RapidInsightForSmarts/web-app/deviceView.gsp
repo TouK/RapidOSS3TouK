@@ -36,7 +36,31 @@
         <rui:sgColumn attributeName="lastChangedAt" colLabel="Last Change" width="120"></rui:sgColumn>
     </rui:sgColumns>
 </rui:searchGrid>
-<rui:action id="submitAction" type="function" function="setQueryWithView" componentId="eventsGrid">
+<rui:searchGrid id="eventsGrid2" url="search?format=xml&searchIn=RsEvent" queryParameter="query" rootTag="Objects" contentPath="Object"
+                keyAttribute="id" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" title="Events List"
+                pollingInterval="30" fieldsUrl="script/run/getViewFields?format=xml">
+    <rui:sgImages>
+        <rui:sgImage visible="params.data.severity == '1'" src="images/rapidjs/component/searchlist/red.png"></rui:sgImage>
+        <rui:sgImage visible="params.data.severity == '2'" src="images/rapidjs/component/searchlist/orange.png"></rui:sgImage>
+        <rui:sgImage visible="params.data.severity == '3'" src="images/rapidjs/component/searchlist/yellow.png"></rui:sgImage>
+        <rui:sgImage visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/blue.png"></rui:sgImage>
+        <rui:sgImage visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/green.png"></rui:sgImage>
+    </rui:sgImages>
+     <rui:sgColumns>
+        <rui:sgColumn attributeName="acknowledged" colLabel="Ack" width="50"></rui:sgColumn>
+        <rui:sgColumn attributeName="owner" colLabel="Owner" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="elementName" colLabel="Element Name" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="classDisplayName" colLabel="Class" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="instanceDisplayName" colLabel="Name" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="eventName" colLabel="Event" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="sourceDomainName" colLabel="Source" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="occurrenceCount" colLabel="Count" width="50"></rui:sgColumn>
+        <rui:sgColumn attributeName="lastNotifiedAt" colLabel="Last Notify" width="120"></rui:sgColumn>
+        <rui:sgColumn attributeName="lastChangedAt" colLabel="Last Change" width="120"></rui:sgColumn>
+    </rui:sgColumns>
+</rui:searchGrid>
+<rui:popupWindow componentId="eventsGrid2" width="850" height="700" title="Events"></rui:popupWindow>
+<rui:action id="submitAction" type="function" function="setQueryWithView" componentId="eventsGrid2">
     <rui:functionArg>'instanceName:' + params.query</rui:functionArg>
     <rui:functionArg>'default'</rui:functionArg>
 </rui:action>

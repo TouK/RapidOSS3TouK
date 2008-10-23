@@ -21,44 +21,34 @@
  * Date: Oct 23, 2008
  * Time: 10:20:23 AM
  */
-class AutocompleteTagLib {
-
+class PopupWindowTagLib {
     static namespace = "rui"
 
-    static def fAutocomplete(attrs, bodyString) {
+    static def fPopupWindow(attrs, bodyString) {
         def configString = getConfig(attrs);
-        def onSubmit = attrs["onSubmit"];
-        def submitJs;
-        if (onSubmit != null) {
-            submitJs = """
-               autocomplete.events['submit'].subscribe(function(query){
-                   var params = {query:query};
-                   YAHOO.rapidjs.Actions['${onSubmit}'].execute(params);
-                }, this, true);
-            """
-        }
+        def componentId = attrs["componentId"];
         return """
            <script type="text/javascript">
-               var aConfig = ${configString};
-               var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
-               var autocomplete = new YAHOO.rapidjs.component.Autocomplete(container, aConfig);
-               ${submitJs ? submitJs : ""}
+               var pConfig = ${configString};
+               new YAHOO.rapidjs.component.PopupWindow(YAHOO.rapidjs.Components['${componentId}'], pConfig);
            </script>
         """;
     }
-    def autocomplete = {attrs, body ->
-        out << fAutocomplete(attrs, "")
+    def popupWindow = {attrs, body ->
+        out << fPopupWindow(attrs, "")
     }
 
     static def getConfig(attrs) {
         return """{
-            id:'${attrs["id"]}',
-            title:'${attrs["title"]}',
-            url:'${attrs["url"]}',
-            contentPath:'${attrs["contentPath"]}',
-            ${attrs["cacheSize"] ? "cacheSize:${attrs["cacheSize"]}," : ""}
-            ${attrs["animated"] ? "animated:${attrs["animated"]}," : ""}
-            suggestionAttribute:'${attrs["suggestionAttribute"]}'
+            width:${attrs["width"]},
+            ${attrs["x"] ? "x:${attrs["x"]}," : ""}
+            ${attrs["y"] ? "y:${attrs["y"]}," : ""}
+            ${attrs["minHeight"] ? "minHeight:${attrs["minHeight"]}," : ""}
+            ${attrs["maxHeight"] ? "maxHeight:${attrs["maxHeight"]}," : ""}
+            ${attrs["minWidth"] ? "minWidth:${attrs["minWidth"]}," : ""}
+            ${attrs["maxWidth"] ? "maxWidth:${attrs["maxWidth"]}," : ""}
+            ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
+            height:${attrs["height"]}
         }"""
     }
 }

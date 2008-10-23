@@ -39,7 +39,7 @@ class SmartsTopologyDatasourceOperations extends BaseListeningDatasourceOperatio
         paramsList.each{
             smartsSubscribeParamsList.add(new SmartsSubscribeParameters(it.CreationClassName, it.Name, it.Attributes as String[]));
         }
-        return new SmartsTopologyListeningAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger(), smartsSubscribeParamsList as SmartsSubscribeParameters[]);
+        return new SmartsTopologyListeningAdapter(connection.name, reconnectInterval*1000, params.logger, smartsSubscribeParamsList as SmartsSubscribeParameters[]);
     }
 
     def addObject(Map params){

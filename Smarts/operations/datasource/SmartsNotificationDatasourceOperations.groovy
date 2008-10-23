@@ -31,7 +31,7 @@ class SmartsNotificationDatasourceOperations extends BaseListeningDatasourceOper
     }
 
     def getListeningAdapter(Map params){
-         return new SmartsNotificationListeningAdapter(connection.name, reconnectInterval*1000, Logger.getRootLogger(),
+         return new SmartsNotificationListeningAdapter(connection.name, reconnectInterval*1000, params.logger,
                  params.Attributes, params.NotificationList, params.TransientInterval, params.TailMode);
     }
 

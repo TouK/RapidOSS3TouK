@@ -3,6 +3,7 @@ package script
 import com.ifountain.rcmdb.scripting.ScriptManager
 import datasource.BaseListeningDatasource
 import org.quartz.CronTrigger
+import org.apache.log4j.Level
 
 class CmdbScript {
     def messageService;
@@ -26,6 +27,10 @@ class CmdbScript {
     String cronExpression = "* * * * * ?";
     Long period = 1;
     String staticParam = "";
+    String logFile="cmdbscript";
+    String logLevel = Level.WARN.toString();
+    
+    
     BaseListeningDatasource listeningDatasource;
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
@@ -67,6 +72,8 @@ class CmdbScript {
         __operation_class__(nullable:true)
         __is_federated_properties_loaded__(nullable:true)
         errors(nullable:true)
+        logLevel(inList:[Level.ALL.toString(),Level.DEBUG.toString(),Level.INFO.toString(),
+              Level.WARN.toString(), Level.ERROR.toString(), Level.FATAL.toString(), Level.OFF.toString()])
     }
 
     String toString()

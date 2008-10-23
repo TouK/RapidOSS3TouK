@@ -71,15 +71,19 @@ class ListeningAdapterManager {
             stopAdapter(listeningDatasource);
             BaseListeningAdapter listeningAdapter = null;
             def scriptObject;
+            def scriptLogger;
             try {
+                scriptLogger=CmdbScript.startScriptLogger(script);
                 scriptObject = ScriptManager.getInstance().getScriptObject(script.scriptFile);
                 scriptObject.setProperty("datasource", listeningDatasource);
                 scriptObject.setProperty("staticParam", script.staticParam);
+                scriptObject.setProperty("logger", scriptLogger);                
                 scriptObject.run();
                 def params = scriptObject.getParameters();
                 if (params == null) {
                     throw new Exception("Subscription parameters cannot be null");
                 }
+                params.logger=scriptLogger;
                 listeningAdapter = listeningDatasource.getListeningAdapter(params);
             }
             catch (e) {
@@ -94,11 +98,12 @@ class ListeningAdapterManager {
             }
 
             try {
-                ListeningAdapterObserver adapterObserver = new ListeningAdapterObserver(scriptObject, logger);
+                ListeningAdapterObserver adapterObserver = new ListeningAdapterObserver(scriptObject, scriptLogger);
                 listeningAdapter.addObserver(adapterObserver);
                 listeningAdapter.subscribe();
                 listeningAdapters.put(listeningDatasource.name, listeningAdapter);
                 observers.put(listeningAdapter, adapterObserver);
+                
             }
             catch (e) {
                 throw new Exception("Error during subscription. Reason: ${e.getMessage()}", e);
@@ -117,6 +122,7 @@ class ListeningAdapterManager {
             adapter.unsubscribe();
             adapter.deleteObservers();
             ListeningAdapterObserver observer = observers.remove(adapter);
+            
             try {
                 observer.getScriptInstance().cleanUp();
             }
@@ -124,6 +130,10 @@ class ListeningAdapterManager {
                 throw new Exception("Error during script clean up. Reason: " + e.getMessage(), e)
             }
 
+        }
+        CmdbScript script = listeningDatasource.listeningScript;
+        if (script && script.type == CmdbScript.LISTENING) {
+             CmdbScript.stopScriptLogger(script);
         }
     }
 

@@ -127,7 +127,7 @@ CLASSES_TO_BE_SUBSCRIBED = ["RsComputerSystem", "RsComputerSystemComponent", "Rs
 
 
 COLUMN_MAPPING_DATA = null;
-logger = null;
+
 Map topologyMap = null;
 existingObjectsRetrieved = false;
 
@@ -160,14 +160,6 @@ def getParameters() {
 }
 
 def init() {
-    logger = Logger.getLogger("topologySubscriber")
-    logger.removeAllAppenders();
-    def layout = new org.apache.log4j.PatternLayout("%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n");
-    def appender = new DailyRollingFileAppender(layout, "logs/topologySubscriber.log", "'.'yyyy-MM-dd");
-    logger.addAppender(appender);
-    logger.setAdditivity(false);
-    logger.setLevel(Level.toLevel("DEBUG"));
-
     logger.debug("Marking all devices as deleted.");
     topologyMap = new CaseInsensitiveMap();
     def deviceNames = RsTopologyObject.termFreqs("name", [size:10000000000]);
@@ -180,7 +172,7 @@ def init() {
 }
 
 def cleanUp() {
-    getLogger().removeAllAppenders();
+    
 }
 
 boolean isComputerSystemComponent(String className)

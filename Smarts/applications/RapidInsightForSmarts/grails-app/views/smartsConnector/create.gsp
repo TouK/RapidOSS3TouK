@@ -80,9 +80,6 @@
                         <td valign="top" class="name">
                             <label for="domainType">Domain Type:</label>
                         </td>
-                        <%
-                            def smartsConnection = new SmartsConnection();
-                        %>
                         <td valign="top" class="value ${hasErrors(bean: smartsConnection, field: 'domainType', 'errors')}">
                             <g:select id="domainType" name="domainType" from="${smartsConnection.constraints.domainType.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:smartsConnection,field:'domainType')}"></g:select>
                         </td>
@@ -92,8 +89,8 @@
                         <td valign="top" class="name">
                             <label for="logLevel">Log Level:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean: smartsConnector, field: 'logLevel', 'errors')}">
-                            <g:select id="logLevel" name="logLevel" from="${smartsConnector.constraints.logLevel.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:smartsConnector,field:'logLevel')}"></g:select>
+                        <td valign="top" class="value ${hasErrors(bean: listeningScript, field: 'logLevel', 'errors')}">
+                            <g:select id="logLevel" name="logLevel" from="${listeningScript.constraints.logLevel.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:listeningScript,field:'logLevel')}"></g:select>
                         </td>
                     </tr>
 

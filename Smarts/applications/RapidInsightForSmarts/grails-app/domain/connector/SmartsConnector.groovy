@@ -17,8 +17,7 @@ class SmartsConnector {
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
     String name ="";
-    String rsOwner = "p"
-    String logLevel = Level.WARN.toString();
+    String rsOwner = "p";    
     BaseListeningDatasource ds;
     SmartsConnectionTemplate connectionTemplate;
     Long reconnectInterval = 0;
@@ -28,9 +27,7 @@ class SmartsConnector {
             ds:[type:BaseListeningDatasource, isMany:false]
     ]
     static constraints={
-      name(blank:false,nullable:false,key:[])
-      logLevel(inList:[Level.ALL.toString(),Level.DEBUG.toString(),Level.INFO.toString(),
-              Level.WARN.toString(), Level.ERROR.toString(), Level.FATAL.toString(), Level.OFF.toString()])
+      name(blank:false,nullable:false,key:[])      
       ds(nullable:true)
       connectionTemplate(nullable:true)
       

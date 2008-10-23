@@ -101,35 +101,45 @@ class SmartsConnectorController {
             if (!smartsConnector.hasErrors()) {
                 def domain = params.domain;
                 def domainType = params.domainType;
-                smartsConnector.ds.update(reconnectInterval:smartsConnector.reconnectInterval)
-                
-                SmartsConnection smartsConnection = smartsConnector.ds.connection;
-                connection.SmartsConnectionTemplate template = smartsConnector.connectionTemplate;
-                def isConnectionParamsChanged = smartsConnection.brokerUsername != template.brokerUsername || smartsConnection.brokerPassword != template.brokerPassword || smartsConnection.broker != template.broker || smartsConnection.domain != domain || smartsConnection.domainType != domainType || smartsConnection.username != template.username || smartsConnection.userPassword != template.password
-                if(isConnectionParamsChanged)
-                {
-                    def connectionParams = [domain:domain, domainType:domainType, broker:template.broker, username:template.username, userPassword:template.password, brokerUsername:template.brokerUsername, brokerPassword:template.brokerPassword]
-                    smartsConnection.update(connectionParams);
-                    if (!smartsConnection.hasErrors()) {
-                        if(isConnectionParamsChanged)
-                        {
-                            def wasAdapterSubscribed = smartsConnector.ds.isSubscribed;
-                            CmdbScript.stopListening(smartsConnector.getScriptName(smartsConnector.name));
-                            if(wasAdapterSubscribed){
-                                CmdbScript.startListening(smartsConnector.getScriptName(smartsConnector.name));    
-                            }
+                smartsConnector.ds.update(reconnectInterval:smartsConnector.reconnectInterval);
+                smartsConnector.ds.listeningScript.update(logFile:smartsConnector.name,logLevel:params.logLevel);
 
+                if(!smartsConnector.ds.hasErrors() && !smartsConnector.ds.listeningScript.hasErrors())
+                {
+                    SmartsConnection smartsConnection = smartsConnector.ds.connection;
+                    connection.SmartsConnectionTemplate template = smartsConnector.connectionTemplate;
+                    def isConnectionParamsChanged = smartsConnection.brokerUsername != template.brokerUsername || smartsConnection.brokerPassword != template.brokerPassword || smartsConnection.broker != template.broker || smartsConnection.domain != domain || smartsConnection.domainType != domainType || smartsConnection.username != template.username || smartsConnection.userPassword != template.password
+                    if(isConnectionParamsChanged)
+                    {
+                        def connectionParams = [domain:domain, domainType:domainType, broker:template.broker, username:template.username, userPassword:template.password, brokerUsername:template.brokerUsername, brokerPassword:template.brokerPassword]
+                        smartsConnection.update(connectionParams);
+                        if (!smartsConnection.hasErrors()) {
+                            if(isConnectionParamsChanged)
+                            {
+                                def wasAdapterSubscribed = smartsConnector.ds.isSubscribed;
+                                CmdbScript.stopListening(smartsConnector.getScriptName(smartsConnector.name));
+                                if(wasAdapterSubscribed){
+                                    CmdbScript.startListening(smartsConnector.getScriptName(smartsConnector.name));
+                                }
+
+                            }
+                            redirect(uri: "/admin.gsp")
                         }
-                        redirect(uri: "/admin.gsp")
+                        else {
+                            render(view: 'edit', model: [smartsConnector: smartsConnector])
+                        }
                     }
-                    else {
-                        render(view: 'edit', model: [smartsConnector: smartsConnector])
+                    else
+                    {
+                        redirect(uri: "/admin.gsp")
                     }
                 }
                 else
                 {
-                    redirect(uri: "/admin.gsp")    
+                    render(view: 'edit', model: [smartsConnector: smartsConnector])                    
                 }
+                                
+
             }
             else {
                 render(view: 'edit', model: [smartsConnector: smartsConnector])
@@ -152,7 +162,7 @@ class SmartsConnectorController {
             smartsConnector = new SmartsListeningNotificationConnector()            
         }
         smartsConnector.properties = params
-        return [smartsConnector: smartsConnector]
+        return [smartsConnector: smartsConnector,smartsConnection: new SmartsConnection(),listeningScript:new CmdbScript()]
     }
 
     def save = {
@@ -184,27 +194,49 @@ class SmartsConnectorController {
                 def datasourceName = smartsConnector.getDatasourceName(smartsConnector.name);
                 def datasource = null;
                 def scriptName = smartsConnector.getScriptName(smartsConnector.name);
-                if(params.type == "Topology")
+                def scriptFile = params.type == "Topology"?"topologySubscriber":"notificationSubscriber";
+                def scriptParams=[name:scriptName, scriptFile:scriptFile,type:CmdbScript.LISTENING,logFile:smartsConnector.name,logLevel:params.logLevel]
+                
+                CmdbScript script = CmdbScript.addScript(ControllerUtils.getClassProperties(scriptParams, CmdbScript), true);
+                if(!script.hasErrors())
                 {
-                    CmdbScript script = CmdbScript.addScript(name:scriptName, scriptFile:"topologySubscriber",type:CmdbScript.LISTENING)
-                    datasource = SmartsTopologyDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:smartsConnector.reconnectInterval);
+                    if(params.type == "Topology")
+                    {
+                        datasource = SmartsTopologyDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:smartsConnector.reconnectInterval);
+                    }
+                    else
+                    {
+                        datasource = SmartsNotificationDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:smartsConnector.reconnectInterval);
+                    }
+                    smartsConnector.addRelation(ds:datasource);
+
+                    if(!datasource.hasErrors())
+                    {
+                        redirect(uri: "/admin.gsp")
+                    }
+                    else
+                    {
+                        script.remove();
+                        datasource.remove();
+                        smartsConnector.remove();
+                        render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection,listeningScript:new CmdbScript()])
+                    }
                 }
                 else
                 {
-                    CmdbScript script = CmdbScript.addScript(name:scriptName, scriptFile:"notificationSubscriber",type:CmdbScript.LISTENING)
-                    datasource = SmartsNotificationDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:smartsConnector.reconnectInterval);
+                    script.remove();
+                    smartsConnector.remove();
+                    render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection,listeningScript:script]);
                 }
-                smartsConnector.addRelation(ds:datasource);
-                redirect(uri: "/admin.gsp")
             }
             else {
-                smartsConnector.remove();
-                render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection])
+                smartsConnector.remove();                
+                render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection,listeningScript:new CmdbScript()])
             }
 
         }
-        else {
-            render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: null])
+        else {            
+            render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: new SmartsConnection(),listeningScript:new CmdbScript()])
         }
     }
 

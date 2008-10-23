@@ -63,7 +63,7 @@
                 <tr class="prop">
                     <td valign="top" class="name">Log Level:</td>
                     
-                    <td valign="top" class="value">${smartsConnector.logLevel}</td>
+                    <td valign="top" class="value">${smartsConnector?.ds?.listeningScript?.logLevel}</td>
                     
                 </tr>
                 <tr class="prop">

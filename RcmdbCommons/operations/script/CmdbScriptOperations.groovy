@@ -5,6 +5,9 @@ import com.ifountain.rcmdb.scripting.ScriptingException
 import org.quartz.CronTrigger
 import datasource.BaseListeningDatasource
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
+import org.apache.log4j.Logger
+import org.apache.log4j.DailyRollingFileAppender
+import org.apache.log4j.Level
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
@@ -38,7 +41,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     {
         ScriptManager.getInstance().reloadScript(scriptFile);
     }
-    
+
     static def addScript(Map params, boolean fromController) throws Exception {
         if(!params.get("scriptFile") || params.get("scriptFile").trim() == "")
         {
@@ -182,5 +185,22 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
          else{
              throw new Exception("No listening datasource defined");
          }
+    }
+
+    static def startScriptLogger(CmdbScript script)
+    {
+        def logger = Logger.getLogger(script.logFile);
+        logger.removeAllAppenders();
+        def layout = new org.apache.log4j.PatternLayout("%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n");
+        def appender = new DailyRollingFileAppender(layout, "logs/${script.logFile}.log", "'.'yyyy-MM-dd");
+        logger.addAppender(appender);
+        logger.setAdditivity(false);
+        logger.setLevel(Level.toLevel(script.logLevel));
+        logger.debug("Script Logger started");
+        return logger;
+    }
+    static def stopScriptLogger(CmdbScript script)
+    {
+        Logger.getLogger(script.logFile).removeAllAppenders();
     }
 }

@@ -44,6 +44,16 @@
             <g:renderErrors bean="${flash.errors}"/>
         </div>
     </g:hasErrors>
+    <g:hasErrors bean="${datasource.errors}">
+        <div class="errors">
+            <g:renderErrors bean="${datasource.errors}"/>
+        </div>
+    </g:hasErrors>
+    <g:hasErrors bean="${listeningScript.errors}">
+        <div class="errors">
+            <g:renderErrors bean="${listeningScript.errors}"/>
+        </div>
+    </g:hasErrors>
     <g:form action="save" method="post">
         <div class="dialog">
             <table>

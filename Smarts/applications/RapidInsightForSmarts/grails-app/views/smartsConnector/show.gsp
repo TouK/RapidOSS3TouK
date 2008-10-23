@@ -69,7 +69,7 @@
                 <tr class="prop">
                     <td valign="top" class="name">Reconnect Interval:</td>
 
-                    <td valign="top" class="value">${smartsConnector.reconnectInterval} sec.</td>
+                    <td valign="top" class="value">${smartsConnector?.ds?.reconnectInterval} sec.</td>
 
                 </tr>
                 

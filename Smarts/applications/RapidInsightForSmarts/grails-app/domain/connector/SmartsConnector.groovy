@@ -20,7 +20,7 @@ class SmartsConnector {
     String rsOwner = "p";    
     BaseListeningDatasource ds;
     SmartsConnectionTemplate connectionTemplate;
-    Long reconnectInterval = 0;
+    
     
     static relations  =[
             connectionTemplate:[type:SmartsConnectionTemplate, isMany:false],

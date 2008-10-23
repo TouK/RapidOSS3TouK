@@ -94,8 +94,8 @@
                         <td valign="top" class="name">
                             <label for="reconnectInterval">Reconnect Interval:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:smartsConnector,field:'reconnectInterval','errors')}">
-                            <input type="text" class="inputtextfield" id="reconnectInterval" name="reconnectInterval" value="${fieldValue(bean:smartsConnector,field:'reconnectInterval')}" /> sec.
+                        <td valign="top" class="value ${hasErrors(bean:smartsConnector?.ds,field:'reconnectInterval','errors')}">
+                            <input type="text" class="inputtextfield" id="reconnectInterval" name="reconnectInterval" value="${fieldValue(bean:smartsConnector?.ds,field:'reconnectInterval')}" /> sec.
                         </td>
                     </tr>
                     

@@ -101,7 +101,7 @@ class SmartsConnectorController {
             if (!smartsConnector.hasErrors()) {
                 def domain = params.domain;
                 def domainType = params.domainType;
-                smartsConnector.ds.update(reconnectInterval:smartsConnector.reconnectInterval);
+                smartsConnector.ds.update(reconnectInterval:params.reconnectInterval);
                 smartsConnector.ds.listeningScript.update(logFile:smartsConnector.name,logLevel:params.logLevel);
 
                 if(!smartsConnector.ds.hasErrors() && !smartsConnector.ds.listeningScript.hasErrors())
@@ -153,28 +153,33 @@ class SmartsConnectorController {
 
     def create = {
         def smartsConnector = null;
+        def datasource=null;
         if(params.type == "Topology")
         {
             smartsConnector = new SmartsListeningTopologyConnector()
+            datasource=new SmartsTopologyDatasource();
         }
         else
         {
-            smartsConnector = new SmartsListeningNotificationConnector()            
+            smartsConnector = new SmartsListeningNotificationConnector()
+            datasource=new SmartsNotificationDatasource();
         }
         smartsConnector.properties = params
-        return [smartsConnector: smartsConnector,smartsConnection: new SmartsConnection(),listeningScript:new CmdbScript()]
+        return [smartsConnector: smartsConnector,smartsConnection: new SmartsConnection(),listeningScript:new CmdbScript(),datasource:datasource]
     }
 
     def save = {
-
+        def errorDatasource=null; // dummy to send to create view when datasource is not created
         SmartsConnector smartsConnector = null;
         if(params.type == "Topology")
         {
+            errorDatasource=new SmartsTopologyDatasource();            
             def connectorParams = ControllerUtils.getClassProperties(params, SmartsListeningTopologyConnector);
-            smartsConnector = SmartsListeningTopologyConnector.add(connectorParams)
+            smartsConnector = SmartsListeningTopologyConnector.add(connectorParams);
         }
         else
         {
+            errorDatasource=new SmartsNotificationDatasource();
             def connectorParams = ControllerUtils.getClassProperties(params, SmartsListeningNotificationConnector);
             smartsConnector = SmartsListeningNotificationConnector.add(connectorParams)            
         }
@@ -194,7 +199,7 @@ class SmartsConnectorController {
                 def datasourceName = smartsConnector.getDatasourceName(smartsConnector.name);
                 def datasource = null;
                 def scriptName = smartsConnector.getScriptName(smartsConnector.name);
-                def scriptFile = params.type == "Topology"?"topologySubscriber":"notificationSubscriber";
+                def scriptFile = (params.type == "Topology"?"topologySubscriber":"notificationSubscriber");
                 def scriptParams=[name:scriptName, scriptFile:scriptFile,type:CmdbScript.LISTENING,logFile:smartsConnector.name,logLevel:params.logLevel]
                 
                 CmdbScript script = CmdbScript.addScript(ControllerUtils.getClassProperties(scriptParams, CmdbScript), true);
@@ -202,11 +207,11 @@ class SmartsConnectorController {
                 {
                     if(params.type == "Topology")
                     {
-                        datasource = SmartsTopologyDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:smartsConnector.reconnectInterval);
+                        datasource = SmartsTopologyDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:params.reconnectInterval);
                     }
                     else
                     {
-                        datasource = SmartsNotificationDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:smartsConnector.reconnectInterval);
+                        datasource = SmartsNotificationDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:params.reconnectInterval);
                     }
                     smartsConnector.addRelation(ds:datasource);
 
@@ -219,24 +224,24 @@ class SmartsConnectorController {
                         script.remove();
                         datasource.remove();
                         smartsConnector.remove();
-                        render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection,listeningScript:new CmdbScript()])
+                        render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection,listeningScript:new CmdbScript(),datasource:datasource])
                     }
                 }
                 else
                 {
                     script.remove();
                     smartsConnector.remove();
-                    render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection,listeningScript:script]);
+                    render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection,listeningScript:script,datasource:errorDatasource]);
                 }
             }
             else {
                 smartsConnector.remove();                
-                render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection,listeningScript:new CmdbScript()])
+                render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: smartsConnection,listeningScript:new CmdbScript(),datasource:errorDatasource])
             }
 
         }
         else {            
-            render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: new SmartsConnection(),listeningScript:new CmdbScript()])
+            render(view: 'create', model: [smartsConnector: smartsConnector, smartsConnection: new SmartsConnection(),listeningScript:new CmdbScript(),datasource:errorDatasource])
         }
     }
 

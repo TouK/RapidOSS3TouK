@@ -177,7 +177,7 @@ YAHOO.rapidjs.component.action.FunctionAction.prototype = {
             var conditionResult = eval(this.condition);
         }
         if (conditionResult) {
-            if(this.component.popupWindow){
+            if (this.component.popupWindow) {
                 this.component.popupWindow.show();
             }
             var args = [];
@@ -185,6 +185,27 @@ YAHOO.rapidjs.component.action.FunctionAction.prototype = {
                 args[args.length] = eval('(' + this.arguments[i] + ')');
             }
             this.targetFunction.apply(this.component, args);
+        }
+    }
+};
+YAHOO.rapidjs.component.action.CombinedAction = function(id, actions, condition) {
+    this.actions = actions || [];
+    this.id = id;
+    this.condition = condition;
+    YAHOO.rapidjs.Actions[this.id] = this;
+};
+
+YAHOO.rapidjs.component.action.CombinedAction.prototype = {
+    execute: function(params) {
+        var conditionResult = true;
+        if (this.condition) {
+            var conditionResult = eval(this.condition);
+        }
+        if (conditionResult) {
+            for (var i = 0; i < this.actions.length; i++) {
+                var action = this.actions[i];
+                action.execute(params);
+            }
         }
     }
 };

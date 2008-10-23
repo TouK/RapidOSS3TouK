@@ -43,6 +43,7 @@ class HtmlTagLib {
     static def getConfig(attrs) {
         return """{
             ${attrs["iframe"] ? "iframe:${attrs["iframe"]}," : ""}
+            ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
             id:'${attrs["id"]}'
         }"""
     }

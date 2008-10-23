@@ -61,15 +61,17 @@
 </rui:searchGrid>
 <rui:html id="objectDetails"></rui:html>
 <rui:popupWindow componentId="eventsGrid2" width="850" height="700" title="Events"></rui:popupWindow>
-<rui:action id="submitAction1" type="function" function="setQueryWithView" componentId="eventsGrid2">
+<rui:action id="showEventsAction" type="function" function="setQueryWithView" componentId="eventsGrid">
     <rui:functionArg>'instanceName:' + params.query</rui:functionArg>
     <rui:functionArg>'default'</rui:functionArg>
 </rui:action>
 
-<rui:action id="submitAction" type="function" function="show" componentId="objectDetails">
+<rui:action id="objectDetailsAction" type="function" function="show" componentId="objectDetails">
     <rui:functionArg>'getObjectDetails.gsp?name=' + params.query</rui:functionArg>
     <rui:functionArg>'Details of ' + params.query</rui:functionArg>
 </rui:action>
+
+<rui:action id="submitAction" type="combined" actions="${['showEventsAction', 'objectDetailsAction']}"></rui:action>
 
 <script type="text/javascript">
     var eventsGrid = YAHOO.rapidjs.Components['eventsGrid'];

@@ -169,12 +169,14 @@ public class AsyncMemoryMirrorDirectoryWrapper extends Directory {
             synchronized (waitLock) {
                 waitLock.notifyAll();
             }
+            log.info("CONTINUE TO PROCESS COMPASS FILE QUEUE AT "+ System.currentTimeMillis());
         }
     }
 
     public void checkWaitingBytesToBeProcessed() throws InterruptedException {
          synchronized (waitLock) {
             if (numberOfUnProcessedBytes > maxNumberOfUnProcessedBytes) {
+                log.info("WAITING TO PROCESS COMPASS FILE QUEUE AT "+System.currentTimeMillis());
                 waitLock.wait();
             }
         }

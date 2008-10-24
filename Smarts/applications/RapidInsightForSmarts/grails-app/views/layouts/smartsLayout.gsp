@@ -113,6 +113,7 @@
                         def currentUrl = request.uri.toString();
                     %>
                     <li class="${currentUrl.indexOf('deviceView.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'deviceView.gsp')}"><em>Device View</em></a></li>
+                    <li class="${currentUrl.indexOf('eventsView.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'eventsView.gsp')}"><em>Events View</em></a></li>
                 </ul>
             </div>
         </td>

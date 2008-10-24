@@ -50,7 +50,7 @@ public class StagingArea {
 
     // IMPORTANT COMMENT: This method regulates access to shared resource stagedNotifications and should be synchronized!
     // This method is used by the Processor thread in ListeningAdapter
-    public void updateStagedNotifications(String notificationName, String eventType, MR_PropertyNameValue[] nameValuePairs) {
+    public synchronized void updateStagedNotifications(String notificationName, String eventType, MR_PropertyNameValue[] nameValuePairs) {
         if(stagedNotifications.containsKey(notificationName)){
             logger.debug(logPrefix + notificationName + " was in staging area");
             StagedNotification stagedNotification = (StagedNotification) stagedNotifications.get(notificationName);

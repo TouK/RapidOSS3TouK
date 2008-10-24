@@ -108,7 +108,7 @@ class RapidInsightForSmartsBuild extends Build{
 				ant.pathelement(location : "${env.dist_rapid_server_lib}/log4j-1.2.15.jar");
 			}
 		}	
-        ant.copy(file : "${env.dist_rapid_suite}/web-app/indexLayout.gsp", todir : "${env.dist_rapid_suite}/grails-app/views/layouts" );
+        ant.move(file : "${env.dist_rapid_suite}/web-app/indexLayout.gsp", todir : "${env.dist_rapid_suite}/grails-app/views/layouts" );
         def datasourceViews = ["httpConnection", "httpDatasource","databaseConnection","ldapConnection", "databaseDatasource",
                 "singleTableDatabaseDatasource", "snmpConnection", "snmpDatasource"]
 

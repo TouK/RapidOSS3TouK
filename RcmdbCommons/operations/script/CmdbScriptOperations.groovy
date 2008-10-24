@@ -203,4 +203,8 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     {
         Logger.getLogger(script.logFile).removeAllAppenders();
     }
+    static def getScriptLogger(CmdbScript script)
+    {
+        return Logger.getLogger(script.logFile);
+    }
 }

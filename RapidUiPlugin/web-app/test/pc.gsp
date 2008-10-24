@@ -32,13 +32,13 @@
      {
         id:"chartDiv",
         title:"Sample Chart",
-        url : "http://localhost:3333/RapidUi/test/pcxml.gsp",
+        url : "pcxml.gsp",
 	    dataType : "YAHOO.util.XHRDataSource.TYPE_XML",
 	    swfURL: "../js/yui/charts/assets/charts.swf"
         //,  pollingInterval:0
      };
 
-    alert("creating layout");
+    //alert("creating layout");
 
 
 

@@ -12,7 +12,7 @@
 <head>
 
 <script type="text/javascript" src="/RapidUi/js/yui/utilities/utilities.js"></script>
-<script type="text/javascript" src="/RapidUi/js/yui/resize/resize-beta-min.js"></script>
+
 <script type="text/javascript" src="/RapidUi/js/yui/layout/layout-min.js"></script>
 <script type="text/javascript" src="/RapidUi/js/yui/resize/resize-min.js"></script>
 <script type="text/javascript" src="/RapidUi/js/ext/ext.js"></script>
@@ -23,7 +23,7 @@
 <script type="text/javascript" src="/RapidUi/js/yui/container/container-min.js"></script>
 <script type="text/javascript" src="/RapidUi/js/yui/button/button-min.js"></script>
 <script type="text/javascript" src="/RapidUi/js/yui/json/json-min.js"></script>
-<script type="text/javascript" src="/RapidUi/js/yui/datasource/datasource-beta-min.js"></script>
+<script type="text/javascript" src="/RapidUi/js/yui/datasource/datasource-min.js"></script>
 <script type="text/javascript" src="/RapidUi/js/rapidjs/component/ComponentContainer.js"></script>
 <script type="text/javascript" src="/RapidUi/js/rapidjs/RapidUtil.js"></script>
 <script type="text/javascript" src="/RapidUi/js/rapidjs/component/tools/BasicTool.js"></script>

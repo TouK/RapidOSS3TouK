@@ -12,7 +12,7 @@ YAHOO.rapidjs.component.PieChart = function(container, config){
     YAHOO.widget.Chart.SWFURL = this.swfURL;
 
 
-    this.initializeTask = new YAHOO.ext.util.DelayedTask(this.handleChart, this);
+    //this.initializeTask = new YAHOO.ext.util.DelayedTask(this.handleChart, this);
     
     this.dataSource = new YAHOO.util.DataSource(this.dataUrl);
 	this.dataSource.responseType = YAHOO.util.DataSource[this.dataType];
@@ -117,7 +117,7 @@ YAHOO.extend(YAHOO.rapidjs.component.PieChart, YAHOO.rapidjs.component.PollingCo
 
 
         this.chart.subscribe("contentReady",function(){
-            alert("chart content ready");
+            //alert("chart content ready");
             //alert("chart state is"+this.chartCreated);
             this.chartCreated=true;
         },this,true);
@@ -126,12 +126,11 @@ YAHOO.extend(YAHOO.rapidjs.component.PieChart, YAHOO.rapidjs.component.PollingCo
     },
     handleSuccess: function (response)
 	{
-        alert("handle success");
+        //alert("handle success");
         this.response = response;
-        this.handleChart();
-		//var respond =  this.dataSource.parseXMLData(null,response.responseXML);
-        
-        //this.chart._loadDataHandler("", respond, false);
+        //this.handleChart();
+		var respond =  this.dataSource.parseXMLData(null,response.responseXML);
+        this.chart._loadDataHandler("", respond, false);
 	},
     handleChart : function()
     {

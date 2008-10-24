@@ -135,7 +135,7 @@ class NotificationsTagLib {
         out << ActionsTagLib.fAction(id: "saveQueryAction", type: "function", componentId: "filterDialog", function: "show",
                 ActionsTagLib.fFunctionArg([:], "YAHOO.rapidjs.component.Form.CREATE_MODE") +
                         ActionsTagLib.fFunctionArg([:], "{}") +
-                        ActionsTagLib.fFunctionArg([:], "{query:params.query, sortProperty:YAHOO.rapidjs.Components['searchGrid'].getSortAttribute(), sortProperty:YAHOO.rapidjs.Components['searchList'].getSortOrder()}")
+                        ActionsTagLib.fFunctionArg([:], "{query:params.query, sortProperty:YAHOO.rapidjs.Components['searchGrid'].getSortAttribute(), sortProperty:YAHOO.rapidjs.Components['searchGrid'].getSortOrder()}")
         )
         out << ActionsTagLib.fAction(id: "setQueryAction", type: "function", componentId: "searchGrid", function: "setQueryWithView", condition: "params.data.nodeType == 'filter'",
                 ActionsTagLib.fFunctionArg([:], "params.data.query") +

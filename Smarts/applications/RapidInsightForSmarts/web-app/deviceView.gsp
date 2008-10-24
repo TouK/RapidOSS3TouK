@@ -108,17 +108,20 @@
         });
 
         layout.render();
-        eventsGrid.resize(layout.getUnitByPosition('bottom').body.offsetWidth, layout.getUnitByPosition('bottom').body.offsetHeight);
+        var bottomUnit = layout.getUnitByPosition('bottom');
+        var leftUnit = layout.getUnitByPosition('left');
+        var centerUnit = layout.getUnitByPosition('center');
+        eventsGrid.resize(bottomUnit.getSizes().body.w, bottomUnit.getSizes().body.h);
         layout.on('resize', function() {
-            eventsGrid.resize(layout.getUnitByPosition('bottom').body.offsetWidth, layout.getUnitByPosition('bottom').body.offsetHeight);
+            eventsGrid.resize(bottomUnit.getSizes().body.w, bottomUnit.getSizes().body.h);
         });
-        autocomplete.resize(layout.getUnitByPosition('left').body.offsetWidth, layout.getUnitByPosition('left').body.offsetHeight);
+        autocomplete.resize(leftUnit.getSizes().body.w, leftUnit.getSizes().body.h);
         layout.on('resize', function() {
-            autocomplete.resize(layout.getUnitByPosition('left').body.offsetWidth, layout.getUnitByPosition('left').body.offsetHeight);
+            autocomplete.resize(leftUnit.getSizes().body.w, leftUnit.getSizes().body.h);
         });
-        objectDetails.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+        objectDetails.resize(centerUnit.getSizes().body.w, centerUnit.getSizes().body.h);
         layout.on('resize', function() {
-            objectDetails.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+            objectDetails.resize(centerUnit.getSizes().body.w, centerUnit.getSizes().body.h);
         });
         window.layout = layout;
     })

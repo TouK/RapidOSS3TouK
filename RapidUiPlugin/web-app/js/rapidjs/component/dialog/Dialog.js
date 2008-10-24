@@ -118,7 +118,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
                 YAHOO.util.Dom.setStyle(this.panel.body, 'height', bodyContentHeight + 'px');
                 YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'height', bodyContentHeight + 'px');
                 YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'width', bodyWidth + 'px');
-                this.events['resize'].fireDirect(this.bodyEl.getWidth(), this.bodyEl.getHeight());
+                this.events['resize'].fireDirect(this.bodyEl.getWidth(true), this.bodyEl.getHeight(true));
                 if (IE_SYNC) {
                     this.panel.sizeUnderlay();
                     this.panel.syncIframe();

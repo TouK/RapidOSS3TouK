@@ -22,6 +22,10 @@ def init(){
    ListeningAdapterManagerTest.scriptMap.scriptInitInvoked=true 
 }
 
+def cleanUp(){
+   ListeningAdapterManagerTest.scriptMap.cleanUpInvoked=true
+}
+
 def getParameters(){
    return [
            "returnparam1":"param1"

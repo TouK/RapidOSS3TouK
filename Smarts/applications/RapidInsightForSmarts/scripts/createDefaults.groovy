@@ -29,6 +29,7 @@ CmdbScript.addScript(name: "getMap");
 CmdbScript.addScript(name: "mapList");
 CmdbScript.addScript(name: "saveMap");
 CmdbScript.addScript(name: "getMapData");
+CmdbScript.addScript(name: "autocomplete");
 
 def adminUser = RsUser.RSADMIN;
 def defaultEventGroup = SearchQueryGroup.add(name: "Default", username:adminUser, isPublic:true, type:"notification");

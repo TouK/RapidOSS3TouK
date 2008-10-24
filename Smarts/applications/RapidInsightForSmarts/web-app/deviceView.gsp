@@ -16,6 +16,15 @@
 <rui:searchGrid id="eventsGrid" url="search?format=xml&searchIn=RsEvent" queryParameter="query" rootTag="Objects" contentPath="Object"
                 keyAttribute="id" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" title="Events List"
                 pollingInterval="0" fieldsUrl="script/run/getViewFields?format=xml">
+    <rui:sgMenuItems>
+        <rui:sgMenuItem id="browseInstance" label="Browse" visible="!params.data.elementName || params.data.elementName == ''" action="browseInstanceAction"></rui:sgMenuItem>
+        <rui:sgMenuItem id="browseElement" label="Browse" visible="params.data.elementName && params.data.elementName != ''" action="browseElementAction"></rui:sgMenuItem>
+        <rui:sgMenuItem id="eventDetails" label="Event Details" action="eventDetailsAction"></rui:sgMenuItem>
+        <rui:sgMenuItem id="acknowledge" label="Acknowledge" visible="params.data.acknowledged != 'true'" action="acknowledgeAction"></rui:sgMenuItem>
+        <rui:sgMenuItem id="unacknowledge" label="Unacknowledge" visible="params.data.acknowledged == 'true'" action="unacknowledgeAction"></rui:sgMenuItem>
+        <rui:sgMenuItem id="takeOwnership" label="Take Ownership" action="takeOwnAction"></rui:sgMenuItem>
+        <rui:sgMenuItem id="releaseOwnership" label="Release Ownership" action="releaseOwnAction"></rui:sgMenuItem>
+    </rui:sgMenuItems>
     <rui:sgImages>
         <rui:sgImage visible="params.data.severity == '1'" src="images/rapidjs/component/searchlist/red.png"></rui:sgImage>
         <rui:sgImage visible="params.data.severity == '2'" src="images/rapidjs/component/searchlist/orange.png"></rui:sgImage>
@@ -36,15 +45,45 @@
         <rui:sgColumn attributeName="lastChangedAt" colLabel="Last Change" width="120"></rui:sgColumn>
     </rui:sgColumns>
 </rui:searchGrid>
-<rui:html id="objectDetails"></rui:html>
+<rui:html id="objectDetailsmenuHtml" title="Device Details"></rui:html>
+<rui:html id="eventDetails" iframe="false"></rui:html>
+<rui:popupWindow componentId="eventDetails" width="850" height="500"></rui:popupWindow>
 <rui:action id="showEventsAction" type="function" function="setQueryWithView" componentId="eventsGrid">
     <rui:functionArg>'instanceName:' + params.query</rui:functionArg>
     <rui:functionArg>'default'</rui:functionArg>
 </rui:action>
 
-<rui:action id="objectDetailsAction" type="function" function="show" componentId="objectDetails">
+<rui:action id="objectDetailsAction" type="function" function="show" componentId="objectDetailsmenuHtml">
     <rui:functionArg>'getObjectDetails.gsp?name=' + params.query</rui:functionArg>
     <rui:functionArg>'Details of ' + params.query</rui:functionArg>
+</rui:action>
+<rui:action id="eventDetailsAction" type="function" function="show" componentId="eventDetails">
+    <rui:functionArg>'getEventDetails.gsp?name=' + params.data.name</rui:functionArg>
+    <rui:functionArg>'Details of ' + params.data.name</rui:functionArg>
+</rui:action>
+<rui:action id="browseInstanceAction" type="function" function="show" componentId="objectDetailsmenuHtml">
+    <rui:functionArg>'getObjectDetails.gsp?name=' + params.data.name</rui:functionArg>
+    <rui:functionArg>'Details of ' + params.data.className + ' ' + params.data.instanceName</rui:functionArg>
+</rui:action>
+<rui:action id="browseElementAction" type="function" function="show" componentId="objectDetailsmenuHtml">
+    <rui:functionArg>'getObjectDetails.gsp?name=' + params.data.name</rui:functionArg>
+    <rui:functionArg>'Details of ' + params.data.elementClassName + ' ' + params.data.elementName</rui:functionArg>
+</rui:action>
+<rui:action id="acknowledgeAction" type="merge" url="script/run/acknowledge" components="${['eventsGrid']}">
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
+    <rui:requestParam key="acknowledged" value="true"></rui:requestParam>
+</rui:action>
+<rui:action id="unacknowledgeAction" type="merge" url="script/run/acknowledge" components="${['eventsGrid']}">
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
+    <rui:requestParam key="acknowledged" value="false"></rui:requestParam>
+</rui:action>
+<rui:action id="takeOwnAction" type="merge" url="script/run/setOwnership" components="${['eventsGrid']}">
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
+    <rui:requestParam key="act" value="true"></rui:requestParam>
+</rui:action>
+<rui:action id="releaseOwnAction" type="merge" url="script/run/setOwnership" components="${['eventsGrid']}">
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
+    <rui:requestParam key="act" value="false"></rui:requestParam>
 </rui:action>
 
 <rui:action id="submitAction" type="combined" actions="${['showEventsAction', 'objectDetailsAction']}"></rui:action>
@@ -52,7 +91,7 @@
 <script type="text/javascript">
     var eventsGrid = YAHOO.rapidjs.Components['eventsGrid'];
     var autocomplete = YAHOO.rapidjs.Components['searchDevice'];
-    var objectDetails = YAHOO.rapidjs.Components['objectDetails'];
+    var objectDetails = YAHOO.rapidjs.Components['objectDetailsmenuHtml'];
     eventsGrid.renderCellFunction = function(key, value, data, el){
         if(key == "lastNotifiedAt" || key == "lastChangedAt"){
             if(value == "0" || value == "")
@@ -78,8 +117,8 @@
             units: [
                 { position: 'top', body: 'top', resize: false, height:45},
                 { position: 'center', body: objectDetails.container.id, resize: false, gutter: '1px' },
-                { position: 'bottom', body: eventsGrid.container.id, resize: false, gutter: '1px', height:300},
-                { position: 'left', width: 250, resize: true, body: autocomplete.container.id, scroll: false}
+                { position: 'bottom', resize: true, body: eventsGrid.container.id, gutter: '1px', height:300},
+                { position: 'left', width: 280, resize: true, body: autocomplete.container.id, scroll: false}
             ]
         });
 

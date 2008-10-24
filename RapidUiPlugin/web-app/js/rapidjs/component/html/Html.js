@@ -17,7 +17,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         var dh = YAHOO.ext.DomHelper;
         var wrp = dh.append(this.container, {tag:'div'});
         this.header = dh.append(wrp, {tag:'div'})
-        this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {});
+        this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title:this.title || ""});
         YAHOO.util.Dom.setStyle(this.toolbar.el, 'border-top', '1px solid #e0e3ef');
         if(this.iframe != true){
             this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));    

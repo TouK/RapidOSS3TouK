@@ -57,7 +57,8 @@ class SearchableConfiguration {
     "compass.converter.double.type":CompassDoubleConverter.class.name,
     "compass.converter.double.format":"#000000000000000000000000000000.00000000000000",
     "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name,
-    "compass.transaction.disableThreadBoundLocalTransaction":"true",
+    "compass.engine.store.wrapper.wrapper1.type":"com.ifountain.compass.AsyncMemoryMirrorDirectoryWrapperProvider",
+    "compass.engine.store.wrapper.wrapper1.awaitTermination":"10000000",
     "compass.cache.first":"org.compass.core.cache.first.NullFirstLevelCache",
     "compass.transaction.lockTimeout":45];
 

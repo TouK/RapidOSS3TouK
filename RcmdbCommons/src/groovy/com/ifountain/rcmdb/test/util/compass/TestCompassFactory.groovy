@@ -32,7 +32,7 @@ import org.compass.core.config.CompassConfiguration
  * @author Maurice Nicholson
  */
 class TestCompassFactory {
-    static indexDirectory = "../testindex";
+    static indexDirectory = "d:/testindex";
     static getGrailsApplication(Collection classes) {
         def grailsApplication = new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader(Thread.currentThread().getContextClassLoader())) //new GroovyClassLoader())
         grailsApplication.initialise()
@@ -64,9 +64,11 @@ class TestCompassFactory {
         {
             config.setConnection("ram://testindex")
         }
-//        config.getSettings().setSetting ("compass.transaction.isolation", "lucene");
+//        config.getSettings().setSetting ("compass.transaction.isolation", "batch_insert");
         config.getSettings().setSetting ("compass.transaction.disableThreadBoundLocalTransaction", "true");
         config.getSettings().setSetting ("compass.cache.first", "org.compass.core.cache.first.NullFirstLevelCache");
+        config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.type", "com.ifountain.compass.AsyncMemoryMirrorDirectoryWrapperProvider");
+        config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.awaitTermination", "10000000");
         configurator.configure(config, [:])
         def compass = config.buildCompass()
 

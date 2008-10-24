@@ -26,7 +26,6 @@ import com.ifountain.rcmdb.domain.property.DefaultDomainClassPropertyInterceptor
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.apache.commons.io.FileUtils
-import com.ifountain.compass.SingleCompassSessionManager
 import org.compass.core.Compass
 
 /**
@@ -131,7 +130,6 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     {
         if(appCtx)
         {
-            SingleCompassSessionManager.destroy();
             appCtx.getBean("compass").close()
         }
         servletContext = null

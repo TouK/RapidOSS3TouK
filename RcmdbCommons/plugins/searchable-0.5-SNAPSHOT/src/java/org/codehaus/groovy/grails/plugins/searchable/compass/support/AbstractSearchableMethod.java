@@ -25,8 +25,6 @@ import org.springframework.util.Assert;
 
 import java.util.Map;
 
-import com.ifountain.compass.SingleCompassSessionManager;
-
 /**
  * @author Maurice Nicholson
  */
@@ -53,31 +51,8 @@ public abstract class AbstractSearchableMethod implements SearchableMethod {
     }
 
     protected Object doInCompass(CompassCallback compassCallback) {
-        CompassTransaction tx=null;
-        try {
-
-	            tx = SingleCompassSessionManager.beginTransaction();
-                Object result = compassCallback.doInCompass(tx.getSession());
-                tx.commit();
-                return result;
-
-        } catch (RuntimeException e) {
-            if (tx != null) {
-                try {
-                    tx.rollback();
-                } catch (Exception e1) {
-                }
-            }
-            throw e;
-        } catch (Error err) {
-            if (tx != null) {
-                try {
-                    tx.rollback();
-                } catch (Exception e1) {
-                }
-            }
-            throw err;
-        }
+        CompassTemplate template = new CompassTemplate(compass);
+        return template.execute(compassCallback);   
     }
 
     public Map getDefaultOptions() {

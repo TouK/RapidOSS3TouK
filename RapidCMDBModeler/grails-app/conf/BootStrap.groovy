@@ -1,7 +1,6 @@
 import auth.Group
 import auth.Role
 import auth.RsUser
-import com.ifountain.compass.SingleCompassSessionManager
 import com.ifountain.rcmdb.domain.converter.*
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.scripting.ScriptManager
@@ -88,7 +87,6 @@ class BootStrap {
 
     def destroy = {
         ScriptManager.getInstance().destroy();
-        SingleCompassSessionManager.destroy();
     }
 
 }

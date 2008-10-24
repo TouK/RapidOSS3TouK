@@ -1,6 +1,5 @@
 import auth.Role
 import auth.RsUser
-import com.ifountain.compass.SingleCompassSessionManager
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.DoubleConverter
@@ -133,7 +132,6 @@ class BootStrap {
         }
         ListeningAdapterManager.getInstance().destroy();
         ScriptManager.getInstance().destroy();
-        SingleCompassSessionManager.destroy();
     }
 
 }

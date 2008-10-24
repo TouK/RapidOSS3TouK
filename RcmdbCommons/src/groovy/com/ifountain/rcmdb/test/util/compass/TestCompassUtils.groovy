@@ -16,7 +16,6 @@
 package com.ifountain.rcmdb.test.util.compass
 
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils
-import com.ifountain.compass.SingleCompassSessionManager
 
 /**
 *
@@ -40,12 +39,14 @@ class TestCompassUtils {
     }
 
     static withCompassSession(compass, Closure closure) {
-        def tx =SingleCompassSessionManager.beginTransaction();
+        def session = compass.openSession()
+        def tx = session.beginTransaction()
         def result
         try {
             result = closure(tx.getSession())
         } finally {
             tx.commit()
+            session.close();
         }
         return result
     }

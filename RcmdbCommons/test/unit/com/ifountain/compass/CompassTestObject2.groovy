@@ -1,12 +1,12 @@
 package com.ifountain.compass
 /**
  * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: Jul 28, 2008
- * Time: 12:20:43 PM
+ * User: mustafa sener
+ * Date: Oct 22, 2008
+ * Time: 11:20:21 AM
  * To change this template use File | Settings | File Templates.
  */
-class CompassTestObject {
+class CompassTestObject2 {
     static searchable = true // modified by tests
     static relations = [:]
     Long id
@@ -61,4 +61,3 @@ class CompassTestObject {
 
 
 }
-

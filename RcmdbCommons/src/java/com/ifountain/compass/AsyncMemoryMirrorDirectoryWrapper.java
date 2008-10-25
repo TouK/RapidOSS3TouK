@@ -169,15 +169,15 @@ public class AsyncMemoryMirrorDirectoryWrapper extends Directory {
             synchronized (waitLock) {
                 waitLock.notifyAll();
             }
-            log.info("CONTINUE TO PROCESS COMPASS FILE QUEUE AT "+ System.currentTimeMillis());
         }
     }
 
     public void checkWaitingBytesToBeProcessed() throws InterruptedException {
          synchronized (waitLock) {
             if (numberOfUnProcessedBytes > maxNumberOfUnProcessedBytes) {
-                log.info("WAITING TO PROCESS COMPASS FILE QUEUE AT "+System.currentTimeMillis());
+                log.info("waiting to process compass data queue. Current queue lnegth is "+numberOfUnProcessedBytes+" bytes at "+System.currentTimeMillis());
                 waitLock.wait();
+                log.info("continue to process compass data queue. Current queue lnegth is "+numberOfUnProcessedBytes+" bytes at "+System.currentTimeMillis());
             }
         }
     }
@@ -276,10 +276,14 @@ public class AsyncMemoryMirrorDirectoryWrapper extends Directory {
                             IndexOutput indexOutput = dir.createOutput(name);
                             ramIndexOutput.writeTo(indexOutput);
                             indexOutput.close();
-                            changeNumberOfBytes(-ramIndexOutput.length());
-                            checkNotifyWaitingThreads();
+
                         } catch (IOException e) {
                             logAsyncErrorMessage("write [" + name + "]");
+                        }
+                        synchronized (byteProcessLock)
+                        {
+                            changeNumberOfBytes(-ramIndexOutput.length());
+                            checkNotifyWaitingThreads();
                         }
                     }
                 });

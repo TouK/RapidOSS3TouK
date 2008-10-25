@@ -16,17 +16,17 @@ abstract class AbstractRapidDomainStaticMethod{
     }
 
     public Object invoke(Class clazz, Object[] arguments) {
-        if(isWriteOperation())
-        {
-            synchronized (WriteOperationSynchronizer.writeOperationLock)
-            {
-                return _invoke(clazz, arguments);
-            }
-        }
-        else
-        {
+//        if(isWriteOperation())
+//        {
+//            synchronized (WriteOperationSynchronizer.writeOperationLock)
+//            {
+//                return _invoke(clazz, arguments);
+//            }
+//        }
+//        else
+//        {
             return _invoke(clazz, arguments);
-        }
+//        }
 
     }
     abstract boolean isWriteOperation();

@@ -32,17 +32,17 @@ abstract class AbstractRapidDomainMethod{
         this.mc = mc;
     }
     public final Object invoke(Object domainObject, Object[] arguments) {
-        if(isWriteOperation())
-        {
-            synchronized (WriteOperationSynchronizer.writeOperationLock)
-            {
-                return _invoke(domainObject, arguments);
-            }
-        }
-        else
-        {
+//        if(isWriteOperation())
+//        {
+//            synchronized (WriteOperationSynchronizer.writeOperationLock)
+//            {
+//                return _invoke(domainObject, arguments);
+//            }
+//        }
+//        else
+//        {
             return _invoke(domainObject, arguments);
-        }
+//        }
 
     }
 

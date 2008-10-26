@@ -14,7 +14,7 @@ class ModelGenerator
 {
     public static String FILE_DIR_TYPE = "file";
     public static String RAM_DIR_TYPE = "ram";
-    public static String MIRRORED_DIR_TYPE = "mirrored";
+    public static String MIRRORED_DIR_TYPE = "mirror";
     public static final String VALID_DIR_TYPES = [FILE_DIR_TYPE, RAM_DIR_TYPE, MIRRORED_DIR_TYPE]
     private static final String validModelNameExpression = "[A-Z][a-z_][A-Za-z_0-9]*"
     private static final String validPropertyNameExpression = "[a-z_][a-z_][A-Za-z_0-9]*"

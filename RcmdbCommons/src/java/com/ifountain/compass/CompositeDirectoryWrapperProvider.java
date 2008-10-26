@@ -67,7 +67,6 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
     }
 
     public Directory wrap(String subIndex, Directory dir) throws SearchEngineException {
-        System.out.println("BURADA");
         List allClassMappings = DomainClassMappingHelper.getDomainClassMappings();
         try {
             String dirType = null;

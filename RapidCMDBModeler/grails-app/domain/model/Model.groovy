@@ -5,7 +5,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 class Model {
     public static String FILE_DIR_TYPE = "file";
     public static String RAM_DIR_TYPE = "ram";
-    public static String MIRRORED_DIR_TYPE = "mirrored";
+    public static String MIRRORED_DIR_TYPE = "mirror";
     static searchable = {
         except = ["fromRelations", "toRelations", "modelProperties", "datasources", "parentModel"];
     };

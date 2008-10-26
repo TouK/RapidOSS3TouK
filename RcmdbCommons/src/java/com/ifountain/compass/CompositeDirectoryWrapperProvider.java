@@ -67,35 +67,35 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
     }
 
     public Directory wrap(String subIndex, Directory dir) throws SearchEngineException {
-        if(dir instanceof RAMDirectory) return dir;
-        List allClassMappings = DomainClassMappingHelper.getDomainClassMappings();
+//        if(dir instanceof RAMDirectory) return dir;
+//        List allClassMappings = DomainClassMappingHelper.getDomainClassMappings();
         try {
-            String dirType = null;
-            for(int i=0; i < allClassMappings.size(); i++)
-            {
-                if(subIndex.equals(((CompassClassMapping)allClassMappings.get(i)).getSubIndex()))
-                {
-                    dirType = ((CompassClassMapping)allClassMappings.get(i)).getDirType();
-                    break;
-                }
-            }
-
-            if(dirType == null)
-            {
-                return dir;    
-            }
-            else if(dirType.equalsIgnoreCase("ram"))
-            {
-                return new RAMDirectory(dir);
-            }
-            else  if(dirType.equalsIgnoreCase("mirror"))
-            {
+//            String dirType = null;
+//            for(int i=0; i < allClassMappings.size(); i++)
+//            {
+//                if(subIndex.equals(((CompassClassMapping)allClassMappings.get(i)).getSubIndex()))
+//                {
+//                    dirType = ((CompassClassMapping)allClassMappings.get(i)).getDirType();
+//                    break;
+//                }
+//            }
+//
+//            if(dirType == null)
+//            {
+//                return dir;
+//            }
+//            else if(dirType.equalsIgnoreCase("ram"))
+//            {
+//                return new RAMDirectory(dir);
+//            }
+//            else  if(dirType.equalsIgnoreCase("mirror"))
+//            {
                 return new MemoryMirrorDirectoryWrapper(dir, awaitTermination, maxNumberOfUnProcessedBytes, minNumberOfUnProcessedBytes, doCreateExecutorService());
-            }
-            else
-            {
-                return dir;
-            }
+//            }
+//            else
+//            {
+//                return dir;
+//            }
         } catch (IOException e) {
             throw new SearchEngineException("Failed to wrap directory [" + dir + "] with async memory wrapper", e);
         }

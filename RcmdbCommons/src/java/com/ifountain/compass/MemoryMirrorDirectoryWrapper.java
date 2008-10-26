@@ -18,21 +18,11 @@ package com.ifountain.compass;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.collections.map.LinkedMap;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.IndexInput;
-import org.apache.lucene.store.IndexOutput;
-import org.apache.lucene.store.Lock;
-import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.store.RAMOutputStream;
-import org.compass.core.util.concurrent.SingleThreadThreadFactory;
+import org.apache.lucene.store.*;
 
 /**
  * Wraps a Lucene {@link org.apache.lucene.store.Directory} with
@@ -52,9 +42,9 @@ import org.compass.core.util.concurrent.SingleThreadThreadFactory;
  *
  * @author kimchy
  */
-public class AsyncMemoryMirrorDirectoryWrapper extends Directory {
+public class MemoryMirrorDirectoryWrapper extends Directory {
 
-    private static final Log log = LogFactory.getLog(AsyncMemoryMirrorDirectoryWrapper.class);
+    private static final Log log = LogFactory.getLog(MemoryMirrorDirectoryWrapper.class);
 
     private Directory dir;
 
@@ -69,7 +59,7 @@ public class AsyncMemoryMirrorDirectoryWrapper extends Directory {
     private Object waitLock = new Object();
     private long maxNumberOfUnProcessedBytes, minNumberOfUnProcessedBytes;
 
-    public AsyncMemoryMirrorDirectoryWrapper(Directory dir, long awaitTermination, long maxNumberOfUnProcessedBytes, long minNumberOfUnProcessedBytes, ExecutorService executorService) throws IOException {
+    public MemoryMirrorDirectoryWrapper(Directory dir, long awaitTermination, long maxNumberOfUnProcessedBytes, long minNumberOfUnProcessedBytes, ExecutorService executorService) throws IOException {
         this.dir = dir;
         this.maxNumberOfUnProcessedBytes = maxNumberOfUnProcessedBytes;
         this.minNumberOfUnProcessedBytes = minNumberOfUnProcessedBytes;
@@ -139,12 +129,6 @@ public class AsyncMemoryMirrorDirectoryWrapper extends Directory {
     }
 
     public void touchFile(final String name) throws IOException {
-        try {
-            checkWaitingBytesToBeProcessed();
-        }
-        catch (InterruptedException e) {
-            return;
-        }
         ramDir.touchFile(name);
         if(willBeProcessed(name))
         {
@@ -172,9 +156,9 @@ public class AsyncMemoryMirrorDirectoryWrapper extends Directory {
         }
     }
 
-    public void checkWaitingBytesToBeProcessed() throws InterruptedException {
+    public synchronized void checkWaitingBytesToBeProcessed() throws InterruptedException {
          synchronized (waitLock) {
-            if (numberOfUnProcessedBytes > maxNumberOfUnProcessedBytes) {
+            if (numberOfUnProcessedBytes >= maxNumberOfUnProcessedBytes) {
                 log.info("waiting to process compass data queue. Current queue lnegth is "+numberOfUnProcessedBytes+" bytes at "+System.currentTimeMillis());
                 waitLock.wait();
                 log.info("continue to process compass data queue. Current queue lnegth is "+numberOfUnProcessedBytes+" bytes at "+System.currentTimeMillis());
@@ -212,6 +196,12 @@ public class AsyncMemoryMirrorDirectoryWrapper extends Directory {
     }
 
     public IndexOutput createOutput(String name) throws IOException {
+        try {
+            checkWaitingBytesToBeProcessed();
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return new AsyncMemoryMirrorIndexOutput(name, (RAMOutputStream) ramDir.createOutput(name));
     }
 

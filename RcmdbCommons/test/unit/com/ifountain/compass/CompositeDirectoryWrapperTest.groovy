@@ -11,6 +11,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClas
 import org.apache.lucene.store.RAMDirectory
 import org.apache.lucene.store.Directory
 import org.apache.lucene.store.FSDirectory
+import org.compass.core.config.CompassSettings
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,6 +26,8 @@ class CompositeDirectoryWrapperProviderTest extends  AbstractSearchableCompassTe
     protected void setUp() {
         super.setUp()
         FileUtils.deleteDirectory (new File(TestCompassFactory.indexDirectory));
+        System.setProperty("mirrorDirTypeMaxBufferSize", "128")
+        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "64")
     }
 
     protected void tearDown() {
@@ -32,6 +35,45 @@ class CompositeDirectoryWrapperProviderTest extends  AbstractSearchableCompassTe
         if(compass)
         {
             compass.close();
+        }
+        System.setProperty("mirrorDirTypeMaxBufferSize", "128")
+        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "64")
+    }
+
+    public void testConfig()
+    {
+        CompassSettings settings = new CompassSettings();
+        CompositeDirectoryWrapperProvider provider = new CompositeDirectoryWrapperProvider();
+        System.setProperty("mirrorDirTypeMaxBufferSize", "aaa")
+        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "1")
+        try
+        {
+            provider.configure (settings);
+            fail("Should throw exception since mirrorDirTypeMaxBufferSize is invalid");
+        }
+        catch(InvalidMirrorBufferSizeException e)
+        {
+        }
+
+        System.setProperty("mirrorDirTypeMaxBufferSize", "1")
+        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "aaa")
+        try
+        {
+            provider.configure (settings);
+            fail("Should throw exception since mirrorDirTypeContinueToProcessBufferSize is invalid");
+        }
+        catch(InvalidMirrorBufferSizeException e)
+        {
+        }
+        System.setProperty("mirrorDirTypeMaxBufferSize", "1")
+        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "5")
+        try
+        {
+            provider.configure (settings);
+            fail("Should throw exception sincer mirrorDirTypeMaxBufferSize should be greater than mirrorDirTypeContinueToProcessBufferSize");
+        }
+        catch(InvalidMirrorBufferSizeException e)
+        {
         }
     }
 

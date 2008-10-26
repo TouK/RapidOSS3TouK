@@ -40,34 +40,27 @@ class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
         }
     }
 
-//    public void testWaitsProcessingSpecifiedNumberOfbytes()
-//    {
-//        System.setProperty("maxNumberOfUnProcessedBytes", "20")
-//        System.setProperty("minNumberOfUnProcessedBytes", "10")
-//        compass = TestCompassFactory.getCompass([ParentObject, CompassTestObject,CompassTestObject2], null, true)
-//        println compass.openSession().beginTransaction().getSession().queryBuilder().queryString("alias:*").toQuery().hits().length();
-//        long t = System.currentTimeMillis();
-//        for(int i=0; i < 10; i++)
-//        {
-//
-//            CompassSession session = compass.openSession();
-//            def tr = session.beginTransaction();
-//            if(i % 2 == 0)
-//            {
-//                session.save (new CompassTestObject(id:4001+i));
-//            }
-//            else
-//            {
-//                session.save (new CompassTestObject2(id:4001+i));
-//            }
-//            tr.commit();
-//            session.close();
-//        }
-//        println compass.openSession().beginTransaction().getSession().queryBuilder().queryString("alias:ParentObject").toQuery().hits().each{
-//            println "DDDD:"+it.getData()
-//        }
-//        println System.currentTimeMillis()-t;
-//    }
+    public void testPerformance()
+    {
+        System.setProperty("mirrorDirTypeMaxBufferSize", "20")
+        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "10")
+        compass = TestCompassFactory.getCompass([CompassTestObject], null, true)
+        int expectedNumberOfObjects = 38;
+        int objectsWillBeInserted = 1000;
+        long t = System.nanoTime();
+        for(int i=0; i < objectsWillBeInserted; i++)
+        {
+
+            CompassSession session = compass.openSession();
+            def tr = session.beginTransaction();
+            session.save (new CompassTestObject(id:i));
+            tr.commit();
+            session.close();
+        }
+        def numberOfObjectsProcessedPerSecond = objectsWillBeInserted/((System.nanoTime()-t)/Math.pow(10,9));
+        println "Processing ${numberOfObjectsProcessedPerSecond} number of objects per second"
+        assertTrue("Should process more than ${expectedNumberOfObjects} but only processed ${numberOfObjectsProcessedPerSecond}", numberOfObjectsProcessedPerSecond>=expectedNumberOfObjects);
+    }
 
     public void testWithAFileBiggerThanMaxNumberOfBytes()
     {

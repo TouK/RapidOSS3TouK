@@ -26,8 +26,8 @@ class SearchableConfiguration {
                 append(File.separator).
                 append(GrailsUtil.getEnvironment()).
                 toString();
-    int batchSize = 100;
-    long transactionCheckingInterval = 10;//in msecs
+    int mirrorDirTypeMaxBufferSize = 64;
+    int mirrorDirTypeContinueToProcessBufferSize = 32;
     /**
      * Any settings you wish to pass to Compass
      *
@@ -57,7 +57,7 @@ class SearchableConfiguration {
     "compass.converter.double.type":CompassDoubleConverter.class.name,
     "compass.converter.double.format":"#000000000000000000000000000000.00000000000000",
     "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name,
-    "compass.engine.store.wrapper.wrapper1.type":"com.ifountain.compass.AsyncMemoryMirrorDirectoryWrapperProvider",
+    "compass.engine.store.wrapper.wrapper1.type":"com.ifountain.compass.CompositeDirectoryWrapperProvider",
     "compass.engine.store.wrapper.wrapper1.awaitTermination":"10000000",
     "compass.cache.first":"org.compass.core.cache.first.NullFirstLevelCache",
     "compass.transaction.lockTimeout":45];

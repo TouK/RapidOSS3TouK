@@ -7,7 +7,9 @@ package com.ifountain.compass
  * To change this template use File | Settings | File Templates.
  */
 class CompassTestObject {
-    static searchable = true // modified by tests
+    static searchable = {
+        dirType "mirror"
+    }
     static relations = [:]
     Long id
     Long version

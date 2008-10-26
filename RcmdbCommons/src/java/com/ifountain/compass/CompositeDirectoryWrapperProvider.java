@@ -47,15 +47,21 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
         awaitTermination = settings.getSettingAsLong("awaitTermination", 5);
         try
         {
-            maxNumberOfUnProcessedBytes = (long)(Long.parseLong(System.getProperty("maxNumberOfUnProcessedBytes", "128"))* Math.pow(2, 20));
+            maxNumberOfUnProcessedBytes = (long)(Long.parseLong(System.getProperty("mirrorDirTypeMaxBufferSize", "128"))* Math.pow(2, 20));
         }catch(NumberFormatException e)
         {
+            throw new InvalidMirrorBufferSizeException("mirrorDirTypeMaxBufferSize", System.getProperty("mirrorDirTypeMaxBufferSize"), e.getMessage());
         }
         try
         {
-            minNumberOfUnProcessedBytes = (long)(Long.parseLong(System.getProperty("minNumberOfUnProcessedBytes", "64"))* Math.pow(2, 20));
+            minNumberOfUnProcessedBytes = (long)(Long.parseLong(System.getProperty("mirrorDirTypeContinueToProcessBufferSize", "64"))* Math.pow(2, 20));
         }catch(NumberFormatException e)
         {
+            throw new InvalidMirrorBufferSizeException("mirrorDirTypeContinueToProcessBufferSize", System.getProperty("mirrorDirTypeContinueToProcessBufferSize"), e.getMessage());
+        }
+        if(minNumberOfUnProcessedBytes >= maxNumberOfUnProcessedBytes)
+        {
+            throw new InvalidMirrorBufferSizeException("mirrorDirTypeContinueToProcessBufferSize", System.getProperty("mirrorDirTypeContinueToProcessBufferSize"), "mirrorDirTypeMaxBufferSize should be greater than mirrorDirTypeContinueToProcessBufferSize");    
         }
 
     }

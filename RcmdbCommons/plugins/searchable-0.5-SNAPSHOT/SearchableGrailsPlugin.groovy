@@ -184,8 +184,10 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
     // Build Compass and Compass::GPS
     def doWithSpring = {
         // Configuration
-        config = getConfiguration(parentCtx)
 
+        config = getConfiguration(parentCtx)
+        System.setProperty("mirrorDirTypeMaxBufferSize", ""+config.mirrorDirTypeMaxBufferSize)
+        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", ""+config.mirrorDirTypeContinueToProcessBufferSize)
         // Compass
         LOG.debug("Defining Compass and Compass::GPS beans")
         config?.compassSettings["compass.transaction.disableThreadBoundLocalTransaction"] = "true"

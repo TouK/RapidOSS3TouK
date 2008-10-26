@@ -69,7 +69,7 @@ class TestCompassFactory {
 //        config.getSettings().setSetting ("compass.transaction.isolation", "batch_insert");
         config.getSettings().setSetting ("compass.transaction.disableThreadBoundLocalTransaction", "true");
         config.getSettings().setSetting ("compass.cache.first", "org.compass.core.cache.first.NullFirstLevelCache");
-        config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.type", "com.ifountain.compass.AsyncMemoryMirrorDirectoryWrapperProvider");
+        config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.type", "com.ifountain.compass.CompositeDirectoryWrapperProvider");
         config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.awaitTermination", "10000000");
         configurator.configure(config, [:])
         def compass = config.buildCompass()

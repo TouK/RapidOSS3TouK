@@ -19,21 +19,26 @@ package com.ifountain.compass;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.List;
+
 import org.compass.core.lucene.engine.store.wrapper.*;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.RAMDirectory;
 import org.compass.core.CompassException;
 import org.compass.core.config.CompassConfigurable;
 import org.compass.core.config.CompassSettings;
 import org.compass.core.engine.SearchEngineException;
 import org.compass.core.util.concurrent.SingleThreadThreadFactory;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.DomainClassMappingHelper;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClassMapping;
 
 /**
- * Wraps a Lucene {@link Directory} with {@link AsyncMemoryMirrorDirectoryWrapper}.
+ * Wraps a Lucene {@link Directory} with {@link MemoryMirrorDirectoryWrapper}.
  *
  * @author kimchy
- * @see AsyncMemoryMirrorDirectoryWrapper
+ * @see MemoryMirrorDirectoryWrapper
  */
-public class AsyncMemoryMirrorDirectoryWrapperProvider implements DirectoryWrapperProvider, CompassConfigurable {
+public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvider, CompassConfigurable {
 
     private long awaitTermination;
     private long maxNumberOfUnProcessedBytes = (long)Math.pow(2, 27);
@@ -56,8 +61,34 @@ public class AsyncMemoryMirrorDirectoryWrapperProvider implements DirectoryWrapp
     }
 
     public Directory wrap(String subIndex, Directory dir) throws SearchEngineException {
+        List allClassMappings = DomainClassMappingHelper.getDomainClassMappings();
         try {
-            return new AsyncMemoryMirrorDirectoryWrapper(dir, awaitTermination, maxNumberOfUnProcessedBytes, minNumberOfUnProcessedBytes, doCreateExecutorService());
+            String dirType = null;
+            for(int i=0; i < allClassMappings.size(); i++)
+            {
+                if(subIndex.equals(((CompassClassMapping)allClassMappings.get(i)).getSubIndex()))
+                {
+                    dirType = ((CompassClassMapping)allClassMappings.get(i)).getDirType();
+                    break;
+                }
+            }
+
+            if(dirType == null)
+            {
+                return dir;    
+            }
+            else if(dirType.equalsIgnoreCase("ram"))
+            {
+                return new RAMDirectory(dir);
+            }
+            else  if(dirType.equalsIgnoreCase("mirror"))
+            {
+                return new MemoryMirrorDirectoryWrapper(dir, awaitTermination, maxNumberOfUnProcessedBytes, minNumberOfUnProcessedBytes, doCreateExecutorService());
+            }
+            else
+            {
+                return dir;
+            }
         } catch (IOException e) {
             throw new SearchEngineException("Failed to wrap directory [" + dir + "] with async memory wrapper", e);
         }

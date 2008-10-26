@@ -9,11 +9,13 @@ package com.ifountain.rcmdb.test.util
 class ClosureRunnerThread extends Thread{
     Closure closure;
     boolean isFinished;
+    boolean isStarted;
     Throwable exception;
     Object result;
 
     public void run()
     {
+        isStarted = true;
         try
         {
             result = closure();

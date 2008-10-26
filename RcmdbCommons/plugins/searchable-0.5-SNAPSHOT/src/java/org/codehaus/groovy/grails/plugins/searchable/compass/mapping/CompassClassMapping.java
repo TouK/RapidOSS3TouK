@@ -33,6 +33,7 @@ public class CompassClassMapping {
     private Class mappedClassSuperClass;
 
     private String alias;
+    private String dirType;
     private String analyzer;
     private BigDecimal boost;
     private String converter;
@@ -122,6 +123,14 @@ public class CompassClassMapping {
 
     public void setBoost(BigDecimal boost) {
         this.boost = boost;
+    }
+
+    public String getDirType() {
+        return dirType;
+    }
+
+    public void setDirType(String dirType) {
+        this.dirType = dirType;
     }
 
     public String getConverter() {

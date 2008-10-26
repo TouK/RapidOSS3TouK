@@ -36,7 +36,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
 
     static final SEARCHABLE_PROPERTY_OPTION_ALIASES = [propertyConverter: 'converter']
 
-    static final CLASS_MAPPING_OPTIONS = ['all', 'allName', 'allAnalyzer', 'allTermVector', 'alias', 'analyzer', 'boost', 'converter', 'enableAll', 'managedId', 'root', 'subIndex', 'supportUnmarshall']
+    static final CLASS_MAPPING_OPTIONS = ['all', 'allName', 'allAnalyzer', 'dirType', 'allTermVector', 'alias', 'analyzer', 'boost', 'converter', 'enableAll', 'managedId', 'root', 'subIndex', 'supportUnmarshall']
 
     GrailsDomainClass grailsDomainClass;
     Class mappedClass;

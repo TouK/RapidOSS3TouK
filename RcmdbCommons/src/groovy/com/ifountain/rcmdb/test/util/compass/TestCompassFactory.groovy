@@ -26,6 +26,7 @@ import org.compass.core.CompassException
 import org.compass.core.CompassSession
 import org.compass.core.CompassTemplate
 import org.compass.core.config.CompassConfiguration
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
  *
@@ -51,6 +52,7 @@ class TestCompassFactory {
 
 
     static getCompass(GrailsApplication grailsApplication, Collection instances = null, boolean willPersist) {
+        ApplicationHolder.application = grailsApplication;
         def configurator = SearchableCompassConfiguratorFactory.getDomainClassMappingConfigurator(
             grailsApplication,
             [SearchableGrailsDomainClassMappingConfiguratorFactory.getSearchableClassPropertyMappingConfigurator([(Long):"#000000000000000000000000000000"], [], new DefaultSearchableCompassClassMappingXmlBuilder())] as SearchableGrailsDomainClassMappingConfigurator[]

@@ -2,6 +2,9 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.plugins.searchable.compass.converter.DefaultCompassConverterLookupHelper
+import org.compass.core.converter.ConverterLookup
+import org.compass.core.converter.DefaultConverterLookup
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,7 +19,7 @@ class DomainClassMappingHelper {
         List domainClasses = ApplicationHolder.application.getDomainClasses();
         List allClassMappings = new ArrayList();
         domainClasses.each{GrailsDomainClass domainCLass->
-            CompositeSearchableGrailsDomainClassCompassClassMapper mapper = SearchableGrailsDomainClassCompassClassMapperFactory.getDefaultSearchableGrailsDomainClassCompassClassMapper([],[:]);
+            CompositeSearchableGrailsDomainClassCompassClassMapper mapper = SearchableGrailsDomainClassCompassClassMapperFactory.getDefaultSearchableGrailsDomainClassCompassClassMapper([],[:], new DefaultConverterLookup());
             allClassMappings.add(mapper.getCompassClassMapping(domainCLass, domainClasses));
         }
         CompassMappingUtils.resolveSubIndexes (allClassMappings);

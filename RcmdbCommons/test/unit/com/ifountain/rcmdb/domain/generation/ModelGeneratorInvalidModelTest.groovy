@@ -42,6 +42,22 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
     }
 
+    public void testThrowsExceptionIfInvalidDirTypeSpecified()
+    {
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        String modelName = "ChildModel";
+        String invalidDirType = "invalidDirType"
+        def modelXml = createModel (modelName, null, [], [prop1], [], [], invalidDirType);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+            fail("Should throw exception since dirType is not valid");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.invalidDirType(modelName, invalidDirType).getMessage(), e.getMessage());
+        }
+    }
+
     public void testThrowsExceptionIfOneOfRelatedClassesDoesnotExist()
     {
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
@@ -301,13 +317,15 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         return createModel(name, parentModel, [], modelProperties, keyProperties, relations);   
     }
 
-    def createModel(String name, String parentModel, List modelDatasources,  List modelProperties, List keyProperties, List relations)
+    def createModel(String name, String parentModel, List modelDatasources,  List modelProperties, List keyProperties, List relations, String dirType = null)
     {
         def model = new StringWriter();
         def modelbuilder = new MarkupBuilder(model);
         def modelProps = [name:name];
         if(parentModel)
         modelProps["parentModel"] = parentModel;
+        if(dirType)
+        modelProps["dirType"] = dirType;
         modelbuilder.Model(modelProps){
             modelbuilder.Datasources(){
                 modelbuilder.Datasource(name:"RCMDB"){

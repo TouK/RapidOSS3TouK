@@ -7,7 +7,15 @@
         if(model.indexName != null)
         {
     %>
-        subIndex="${model.indexName}"
+        subIndex "${model.indexName}"
+    <%
+        }
+    %>
+    <%
+        if(model.dirType != null)
+        {
+    %>
+        dirType "${model.dirType}"
     <%
         }
     %>

@@ -12,7 +12,10 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 
 class ModelGenerator 
 {
-
+    public static String FILE_DIR_TYPE = "file";
+    public static String RAM_DIR_TYPE = "ram";
+    public static String MIRRORED_DIR_TYPE = "mirrored";
+    public static final String VALID_DIR_TYPES = [FILE_DIR_TYPE, RAM_DIR_TYPE, MIRRORED_DIR_TYPE]
     private static final String validModelNameExpression = "[A-Z][a-z_][A-Za-z_0-9]*"
     private static final String validPropertyNameExpression = "[a-z_][a-z_][A-Za-z_0-9]*"
     public static final String NUMBER_TYPE = "number"
@@ -106,7 +109,10 @@ class ModelGenerator
                 throw ModelGenerationException.invalidModelName(modelName);
             }
 
-
+            if(modelMetaData.dirType != null && !VALID_DIR_TYPES.contains(modelMetaData.dirType) )
+            {
+                throw ModelGenerationException.invalidDirType(modelName, modelMetaData.dirType);
+            }
             if(!modelMetaData.masterDatasource && !modelMetaData.parentModelName)
             {
                 throw ModelGenerationException.masterDatasourceDoesnotExists(modelName);
@@ -243,6 +249,7 @@ class ModelGenerator
 class ModelMetaData
 {
     def indexName;
+    def dirType;
     def modelName;
     def parentModelName;
     def datasourceConfiguration = [:];
@@ -259,6 +266,7 @@ class ModelMetaData
         modelName = xmlModel.@name.text()
         parentModelName = xmlModel.@parentModel == ""?null:xmlModel.@parentModel.text()
         indexName = xmlModel.@indexName.text() == ""?null:xmlModel.@indexName.text()
+        dirType = xmlModel.@dirType.text() == ""?null:xmlModel.@dirType.text()
         createDatasourceConfiguration (xmlModel);
         processProperties(xmlModel);
         processRelations(xmlModel);

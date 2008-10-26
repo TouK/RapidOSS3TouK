@@ -67,6 +67,7 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
     }
 
     public Directory wrap(String subIndex, Directory dir) throws SearchEngineException {
+        if(dir instanceof RAMDirectory) return dir;
         List allClassMappings = DomainClassMappingHelper.getDomainClassMappings();
         try {
             String dirType = null;

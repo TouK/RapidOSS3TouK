@@ -11,7 +11,7 @@
 </head>
 <body>
 <rui:pieChart id="summaryChart" url="piechart.xml" fields="${['state', 'count']}" dataField="count" contentPath="Item" title="Summary View" 
-        categoryField="state" legend="bottom" swfURL="js/yui/charts/assets/charts.swf" colors="${[0xff0000, 0xff7514, 0xddc700, 0x2dbfcd, 0x00ff00]}"></rui:pieChart>
+        categoryField="state" legend="bottom" swfURL="js/yui/charts/assets/charts.swf" colors="${['0xff0000', '0xff7514', '0xddc700', '0x2dbfcd', '0x00ff00']}"></rui:pieChart>
 <rui:treeGrid id="topologyTree" url="script/run/getHierarchy?format=xml" rootTag="Objects" pollingInterval="60"
         keyAttribute="id" contentPath="Object" title="Service View">
     <rui:tgColumns>

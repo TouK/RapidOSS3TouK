@@ -44,6 +44,7 @@ class HtmlTagLib {
         return """{
             ${attrs["iframe"] ? "iframe:${attrs["iframe"]}," : ""}
             ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
+            ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
             id:'${attrs["id"]}'
         }"""
     }

@@ -47,6 +47,7 @@
     <script type="text/javascript" src="js/rapidjs/component/search/ViewBuilder.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/search/SearchGrid.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/autocomplete/Autocomplete.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/pieChart/PieChart.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/simplewidgets/split.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/Tooltip.js"></script>
@@ -112,6 +113,7 @@
                     <%
                         def currentUrl = request.uri.toString();
                     %>
+                    <li class="${currentUrl.indexOf('serviceView.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'serviceView.gsp')}"><em>Service View</em></a></li>
                     <li class="${currentUrl.indexOf('deviceView.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'deviceView.gsp')}"><em>Device View</em></a></li>
                     <li class="${currentUrl.indexOf('eventsView.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'eventsView.gsp')}"><em>Events View</em></a></li>
                 </ul>

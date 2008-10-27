@@ -3,10 +3,10 @@ def classes = ["Host", "Node", "Switch", "Router", "NetworkConnection", "Cable",
 web.render(contentType: 'text/xml') {
     Objects() {
         classes.each {className ->
-           Object(name:className){
+           Object(id:className, name:className){
                def results = RsTopologyObject.search("creationClassName:\"${className}\"").results;
                results.each{RsTopologyObject topoObj ->
-                   Object(name:topoObj.name, creationClassName:topoObj.creationClassName, rsAlias:topoObj.getClass().getName())
+                   Object(id:topoObj.id, name:topoObj.name, creationClassName:topoObj.creationClassName, rsAlias:topoObj.getClass().getName())
                }
            }
         }

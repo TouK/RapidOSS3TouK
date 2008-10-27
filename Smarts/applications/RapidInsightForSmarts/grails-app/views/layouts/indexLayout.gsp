@@ -10,6 +10,8 @@
 <head>
     <title>iFountain - RapidInsight for Smarts</title>
     <script type="text/javascript" src="js/yui/utilities/utilities.js"></script>
+    <script type="text/javascript" src="js/yui/container/container-min.js"></script>
+    <script type="text/javascript" src="js/yui/menu/menu-min.js"></script>
     <script type="text/javascript" src="js/yui/resize/resize-min.js"></script>
     <script type="text/javascript" src="js/yui/layout/layout-min.js"></script>
     <script type="text/javascript" src="js/yui/history/history-min.js"></script>
@@ -22,10 +24,9 @@
     <script type="text/javascript" src="js/rapidjs/data/NodeFactory.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/RapidElement.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/PollingComponentContainer.js"></script>
-    <script type="text/javascript" src="js/yui/container/container-min.js"></script>
+
     <script type="text/javascript" src="js/yui/button/button-min.js"></script>
     <script type="text/javascript" src="js/rapidjs/data/RapidXmlDocument.js"></script>
-
     <script type="text/javascript" src="js/rapidjs/SelectUtils.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/form/Form.js"></script>
 
@@ -34,7 +35,7 @@
     <script type="text/javascript" src="js/rapidjs/component/tools/SettingsTool.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/dialog/Dialog.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/PopupWindow.js"></script>
-    <script type="text/javascript" src="js/yui/menu/menu-min.js"></script>
+
 
     <script type="text/javascript" src="js/rapidjs/component/search/SearchNode.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/ButtonToolBar.js"></script>

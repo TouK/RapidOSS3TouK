@@ -71,7 +71,7 @@ class ListeningAdapterManagerTest extends GroovyTestCase{
         
         
         CompassForTests.initialize([CmdbScript]);
-        CompassForTests.setAddObjects([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript")]);
+        CompassForTests.setAddObjects([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",staticParam:"x:5")]);
         def script=CmdbScript.addScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript");
 
         def ds=new BaseListeningDatasourceMock();
@@ -84,8 +84,8 @@ class ListeningAdapterManagerTest extends GroovyTestCase{
         assertEquals(scriptMap.logger,CmdbScript.getScriptLogger(script));
         assertEquals(scriptMap.datasource,ds);
         assertEquals(scriptMap.staticParam,script.staticParam);
-
-
+        assertEquals(scriptMap.staticParamMap.x,CmdbScript.getStaticParamMap(script).x);
+        
 
         assertEquals(scriptMap.scriptRunStarted,true);
         assertEquals(scriptMap.scriptRunEnded,true);

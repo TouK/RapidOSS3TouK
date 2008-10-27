@@ -82,6 +82,7 @@ class SmartsConnectorController {
     def update = {
         SmartsConnector smartsConnector = SmartsConnector.get([id: params.id])
         if (smartsConnector) {
+            def staticParam=smartsConnector.ds.listeningScript.staticParam;
             if(params.type == "Topology" && smartsConnector instanceof SmartsListeningTopologyConnector)
             {
                 Map connectorParams = ControllerUtils.getClassProperties(params, SmartsListeningTopologyConnector)
@@ -91,6 +92,7 @@ class SmartsConnectorController {
             {
                 Map connectorParams = ControllerUtils.getClassProperties(params, SmartsListeningNotificationConnector)
                 smartsConnector.update(connectorParams);
+                staticParam="notificationList:${smartsConnector.notificationList},tailMode:${String.valueOf(smartsConnector.tailMode)}";
             }
             else
             {
@@ -102,7 +104,7 @@ class SmartsConnectorController {
                 def domain = params.domain;
                 def domainType = params.domainType;
                 smartsConnector.ds.update(reconnectInterval:params.reconnectInterval);
-                smartsConnector.ds.listeningScript.update(logFile:smartsConnector.name,logLevel:params.logLevel);
+                smartsConnector.ds.listeningScript.update(logFile:smartsConnector.name,logLevel:params.logLevel,staticParam:staticParam);
 
                 if(!smartsConnector.ds.hasErrors() && !smartsConnector.ds.listeningScript.hasErrors())
                 {
@@ -170,6 +172,7 @@ class SmartsConnectorController {
 
     def save = {
         def errorDatasource=null; // dummy to send to create view when datasource is not created
+        def staticParam="";
         SmartsConnector smartsConnector = null;
         if(params.type == "Topology")
         {
@@ -180,8 +183,10 @@ class SmartsConnectorController {
         else
         {
             errorDatasource=new SmartsNotificationDatasource();
+
             def connectorParams = ControllerUtils.getClassProperties(params, SmartsListeningNotificationConnector);
-            smartsConnector = SmartsListeningNotificationConnector.add(connectorParams)            
+            smartsConnector = SmartsListeningNotificationConnector.add(connectorParams)
+            staticParam="notificationList:${smartsConnector.notificationList},tailMode:${String.valueOf(smartsConnector.tailMode)}";
         }
         if (!smartsConnector.hasErrors()) {
             def connectionName = smartsConnector.getConnectionName(smartsConnector.name);
@@ -200,7 +205,7 @@ class SmartsConnectorController {
                 def datasource = null;
                 def scriptName = smartsConnector.getScriptName(smartsConnector.name);
                 def scriptFile = (params.type == "Topology"?"topologySubscriber":"notificationSubscriber");
-                def scriptParams=[name:scriptName, scriptFile:scriptFile,type:CmdbScript.LISTENING,logFile:smartsConnector.name,logLevel:params.logLevel]
+                def scriptParams=[name:scriptName, scriptFile:scriptFile,type:CmdbScript.LISTENING,logFile:smartsConnector.name,logLevel:params.logLevel,staticParam:staticParam]
                 
                 CmdbScript script = CmdbScript.addScript(ControllerUtils.getClassProperties(scriptParams, CmdbScript), true);
                 if(!script.hasErrors())

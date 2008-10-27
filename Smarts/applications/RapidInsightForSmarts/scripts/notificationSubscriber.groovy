@@ -11,14 +11,13 @@ import org.apache.log4j.Level
 def getParameters(){
    return [
            "Attributes":["ClassName", "InstanceName", "EventName", "Severity", "Acknowledged", "Name",
-                   "EventText", "OccurrenceCount", "TroubleTicketID", "LastNotifiedAt", "LastChangedAt", "LastClearedAt", "FirstNotifiedAt", 
+                   "EventText", "OccurrenceCount", "TroubleTicketID", "LastNotifiedAt", "LastChangedAt", "LastClearedAt", "FirstNotifiedAt",
            "ElementName", "ElementClassName", "SourceDomainName", "Category", "EventType", "Owner", "IsRoot", "InstanceDisplayName", "ClassDisplayName"],
-           "NotificationList":"ALL_NOTIFICATIONS",
+           "NotificationList":staticParamMap.notificationList,
            "TransientInterval":300,
-           "TailMode":false
+           "TailMode":(staticParamMap.tailMode=="true")
    ]
 }
-
 
 
 notificationsMap = null; 

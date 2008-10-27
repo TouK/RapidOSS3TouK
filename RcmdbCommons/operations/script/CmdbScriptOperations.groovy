@@ -207,4 +207,17 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     {
         return Logger.getLogger(script.logFile);
     }
+    static def getStaticParamMap(CmdbScript script)
+    {
+         def map=[:];
+         if(script.staticParam)
+         {
+             def regex="([^,]+):([^,]+)";
+             def matcher = ( script.staticParam =~ regex );
+             while (matcher.find()) {                
+                map.put(matcher.group(1),matcher.group(2));
+            }
+         }
+         return map;
+    }
 }

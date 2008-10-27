@@ -9,7 +9,9 @@ import com.ifountain.rcmdb.datasource.*
 
 ListeningAdapterManagerTest.scriptMap.datasource=datasource
 ListeningAdapterManagerTest.scriptMap.staticParam=staticParam
+ListeningAdapterManagerTest.scriptMap.staticParamMap=staticParamMap
 ListeningAdapterManagerTest.scriptMap.logger=logger
+
 
 println "script started"
 ListeningAdapterManagerTest.scriptMap.scriptRunStarted=true

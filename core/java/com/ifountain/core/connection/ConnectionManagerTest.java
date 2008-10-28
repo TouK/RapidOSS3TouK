@@ -56,6 +56,7 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         parameterSupplier.setParam(param);
 
         //releases connection
+        // TODO it can stock here, check timout    
         assertTrue(ConnectionManager.checkConnection(connectionName));
         assertTrue(ConnectionManager.checkConnection(connectionName));
         assertTrue(ConnectionManager.checkConnection(connectionName));

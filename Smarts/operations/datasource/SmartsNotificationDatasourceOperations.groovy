@@ -200,7 +200,10 @@ class SmartsNotificationDatasourceOperations extends BaseListeningDatasourceOper
     }
     def invokeOperation(className, instanceName, opName, opParams){
         opParams.each{
-            throw new Exception("Operation parameters cannot be null.");
+            if(it == null)
+            {
+                throw new Exception("Operation parameters cannot be null.");
+            }
         }
         this.adapter.invokeOperation(className, instanceName, opName, opParams);
     }

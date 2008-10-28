@@ -113,7 +113,10 @@ class SmartsTopologyDatasourceOperations extends BaseListeningDatasourceOperatio
     def invokeOperation(className, instanceName, opName, opParams){
         checkParams([ClassName:className, InstanceName:instanceName, OperationName:opName], ["ClassName", "InstanceName", "OperationName"]);
         opParams.each{
-            throw new Exception("Operation parameters cannot be null.");
+            if(it == null)
+            {
+                throw new Exception("Operation parameters cannot be null.");
+            }    
         }
         this.adapter.invokeOperation(className, instanceName, opName, opParams);
     }

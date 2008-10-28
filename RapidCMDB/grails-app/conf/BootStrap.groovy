@@ -24,6 +24,8 @@ import auth.Group
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import relation.Relation
 import com.ifountain.rcmdb.domain.generation.DataCorrectionUtilities
+import java.text.SimpleDateFormat
+import com.ifountain.rcmdb.util.RapidDateUtilities
 
 class BootStrap {
     def quartzScheduler;
@@ -49,9 +51,7 @@ class BootStrap {
     def registerUtilities()
     {
         RapidStringUtilities.registerStringUtils();
-        Date.metaClass.'static'.now = {
-            return (long) (System.currentTimeMillis() / 1000);
-        }
+        RapidDateUtilities.registerDateUtils();
     }
 
     def initializeScripting()

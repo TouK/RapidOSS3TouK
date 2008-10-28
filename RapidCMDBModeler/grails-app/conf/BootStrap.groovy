@@ -12,6 +12,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
+import com.ifountain.rcmdb.util.RapidDateUtilities
 
 class BootStrap {
     def quartzScheduler;
@@ -27,9 +28,7 @@ class BootStrap {
     def registerUtilities()
     {
         RapidStringUtilities.registerStringUtils();
-        Date.metaClass.'static'.now = {
-            return (long)(System.currentTimeMillis()/1000);
-        }
+        RapidDateUtilities.registerDateUtils();
     }
 
     def initializeModelGenerator()

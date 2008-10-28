@@ -5,12 +5,12 @@ class RsRiEventOperations  extends RsEventOperations {
 		eventProps.active = "true"
 		def event = RsEvent.get(name:eventProps.name)
 		if (event == null){
-			eventProps.firstNotifiedAt = Date.now() * 1000 
+			eventProps.firstNotifiedAt = Date.now()
 		} else {
 			eventProps.count = event.count + 1;
 		}
-		eventProps.lastNotifiedAt = Date.now() * 1000
-		eventProps.lastChangedAt = Date.now() * 1000
+		eventProps.lastNotifiedAt = Date.now()
+		eventProps.lastChangedAt = Date.now()
 		event = RsRiEvent.add(eventProps)
 		if (event.hasErrors()) {
 		    println event.errors

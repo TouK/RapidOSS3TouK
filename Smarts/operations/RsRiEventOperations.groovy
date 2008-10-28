@@ -5,13 +5,12 @@ class RsRiEventOperations  extends RsEventOperations {
 		eventProps.active = "true"
 		def event = RsEvent.get(name:eventProps.name)
 		if (event == null){
-			eventProps.firstNotifiedAt = Date.now() 
+			eventProps.firstNotifiedAt = Date.now() * 1000 
 		} else {
 			eventProps.count = event.count + 1;
 		}
-		eventProps.lastNotifiedAt = Date.now()
-		eventProps.lastChangedAt = Date.now()
-		println "eventProps: " + eventProps
+		eventProps.lastNotifiedAt = Date.now() * 1000
+		eventProps.lastChangedAt = Date.now() * 1000
 		event = RsRiEvent.add(eventProps)
 		if (event.hasErrors()) {
 		    println event.errors
@@ -19,4 +18,5 @@ class RsRiEventOperations  extends RsEventOperations {
 		RsEventJournal.add(eventId:event.id,eventName:event.eventName,rsTime:new Date(),details:"Created the event")
 		return event;
 	}
+
 }

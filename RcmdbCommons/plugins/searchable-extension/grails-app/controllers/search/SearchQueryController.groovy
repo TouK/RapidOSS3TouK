@@ -118,16 +118,17 @@ class SearchQueryController {
 
     def update = {
         def searchQuery = SearchQuery.get([id: params.id])
+        def groupType = params.type;
         if (searchQuery) {
-            if (params.group == "")
+            if (params.group == "" || params.group == "My Queries")
             {
                 params.group = "My Queries";
-                params.type = "default"
+                groupType = "default"
             }
-            def group = SearchQueryGroup.get(name: params.group, username: session.username, type:params.type);
+            def group = SearchQueryGroup.get(name: params.group, username: session.username, type:groupType);
             if (group == null)
             {
-                group = SearchQueryGroup.add(name: params.group, username: session.username, type:params.type);
+                group = SearchQueryGroup.add(name: params.group, username: session.username, type:groupType);
             }
             params["group"] = ["id": group.id];
             searchQuery.update(ControllerUtils.getClassProperties(params, SearchQuery));
@@ -191,15 +192,16 @@ class SearchQueryController {
 
     def save = {
         params["username"] = session.username
-        if (params.group == "")
+        def groupType = params.type;
+        if (params.group == "" || params.group == "My Queries")
         {
             params.group = "My Queries";
-            params.type = "default"
+            groupType = "default"
         }
-        def group = SearchQueryGroup.get(name: params.group, username: session.username, type:params.type);
+        def group = SearchQueryGroup.get(name: params.group, username: session.username, type:groupType);
         if (group == null)
         {
-            group = SearchQueryGroup.add(name: params.group, username: session.username, type:params.type);
+            group = SearchQueryGroup.add(name: params.group, username: session.username, type:groupType);
         }
         params["group"] = ["id": group.id];
         def searchQuery = SearchQuery.add(ControllerUtils.getClassProperties(params, SearchQuery))

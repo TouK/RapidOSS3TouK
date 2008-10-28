@@ -52,9 +52,12 @@ public class ConnectionManagerTest extends RapidCoreTestCase
 
         String connectionName = "conn1";
         ConnectionParam param = createConnectionParam(connectionName);
-        param.setMaxNumberOfConnectionsInPool(2);
+        param.setMaxNumberOfConnectionsInPool(1);
         parameterSupplier.setParam(param);
 
+        //releases connection
+        assertTrue(ConnectionManager.checkConnection(connectionName));
+        assertTrue(ConnectionManager.checkConnection(connectionName));
         assertTrue(ConnectionManager.checkConnection(connectionName));
 
         param = createConnectionParam(connectionName, NotConnectedConnection.class.getName());

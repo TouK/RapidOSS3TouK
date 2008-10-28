@@ -58,9 +58,9 @@ public class ConnectionManager
             if(conn.isConnected()){
                 connected = true;
             }
+            releaseConnection(conn);
         }
         catch(Exception e){
-
         }
 
         return connected;

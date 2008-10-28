@@ -15,8 +15,11 @@ class RapidDateUtilitiesTest extends RapidCmdbTestCase{
     {
         RapidDateUtilities.registerDateUtils();
         long time = System.currentTimeMillis()-100000;
+        int timeInInt = 10000;
         assertTrue (Date.now() >= System.currentTimeMillis()-100);
         assertEquals (new Date(time), Date.toDate(time));
+        assertEquals (new Date(time), Date.toDate(new Long(time)));
+        assertEquals (new Date(timeInInt), Date.toDate(timeInInt));
         assertEquals (new Date(time), Date.toDate(""+time));
         String dateFormat = "yyyy-MM-dd";
         SimpleDateFormat format = new SimpleDateFormat(dateFormat);

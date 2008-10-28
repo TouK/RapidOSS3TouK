@@ -3,7 +3,7 @@ import auth.RsUser;
 def notificationName = params.name;
 def user = RsUser.findByUsername(web.session.username);
 def act = params.act;
-def rsEvent = RsSmartsNotification.get(name:notificationName);
+def rsEvent = RsEvent.get(name:notificationName);
 if (rsEvent) {
     /*def userId = RsNotification.search("$user.username").results[0];
     println(userId);
@@ -29,5 +29,5 @@ if (rsEvent) {
     }
 }
 else {
-    throw new Exception("RsSmartsNotification with name: ${notificationName} does not exist." );
+    throw new Exception("RsEvent with name: ${notificationName} does not exist." );
 }

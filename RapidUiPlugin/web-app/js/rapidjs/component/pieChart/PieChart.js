@@ -34,10 +34,6 @@ YAHOO.rapidjs.component.PieChart = function(container, config) {
 
 
 YAHOO.extend(YAHOO.rapidjs.component.PieChart, YAHOO.rapidjs.component.PollingComponentContainer, {
-    poll:function()
-    {
-        YAHOO.rapidjs.component.PieChart.superclass.poll.call(this);
-    },
     render:function()
     {
         this.chart = new YAHOO.widget.PieChart(this.body.dom, null,

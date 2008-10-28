@@ -522,8 +522,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         }
         YAHOO.rapidjs.component.search.SearchGrid.superclass._poll.call(this);
     },
-    setQueryWithView: function(queryString, view)
+    setQueryWithView: function(queryString, view, title)
     {
+        if(title){
+            this.setTitle(title);
+        }
         var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
         if (currentView != view) {
             SelectUtils.selectTheValue(this.viewInput, view, 0);

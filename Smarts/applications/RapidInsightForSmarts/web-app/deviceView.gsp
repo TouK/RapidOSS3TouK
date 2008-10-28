@@ -51,6 +51,7 @@
 <rui:action id="showEventsAction" type="function" function="setQueryWithView" componentId="eventsGrid">
     <rui:functionArg>'instanceName:' + params.query</rui:functionArg>
     <rui:functionArg>'default'</rui:functionArg>
+    <rui:functionArg>'Events of ' + params.query</rui:functionArg>
 </rui:action>
 
 <rui:action id="objectDetailsAction" type="function" function="show" componentId="objectDetailsmenuHtml">

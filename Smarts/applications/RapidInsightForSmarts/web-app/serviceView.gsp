@@ -13,9 +13,9 @@
 <rui:pieChart id="summaryChart" url="piechart.xml" fields="${['state', 'count']}" dataField="count" contentPath="Item" title="Summary View" 
         categoryField="state" legend="bottom" swfURL="js/yui/charts/assets/charts.swf" colors="${['0xff0000', '0xff7514', '0xddc700', '0x2dbfcd', '0x00ff00']}"></rui:pieChart>
 <rui:treeGrid id="topologyTree" url="script/run/getHierarchy?format=xml" rootTag="Objects" pollingInterval="60"
-        keyAttribute="id" contentPath="Object" title="Service View">
+        keyAttribute="id" contentPath="Object" title="Service View" onNodeClick="treeNodeClickedAction">
     <rui:tgColumns>
-        <rui:tgColumn attributeName="name" colLabel="Name" width="248" sortBy="true"></rui:tgColumn>
+        <rui:tgColumn attributeName="displayName" colLabel="Name" width="248" sortBy="true"></rui:tgColumn>
     </rui:tgColumns>
 </rui:treeGrid>
 <rui:searchGrid id="eventsGrid" url="search?format=xml&searchIn=RsEvent" queryParameter="query" rootTag="Objects" contentPath="Object"
@@ -82,7 +82,26 @@
     <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="act" value="false"></rui:requestParam>
 </rui:action>
+<rui:action id="getEventsAction" type="function" componentId="eventsGrid" function="setQueryWithView">
+    <rui:functionArg>getEventsQuery(params.data)</rui:functionArg>
+    <rui:functionArg>'default'</rui:functionArg>
+    <rui:functionArg>'Events of ' + params.data.displayName</rui:functionArg>
+</rui:action>
+<rui:action id="getSummaryAction" type="function" componentId="summaryChart" function="poll">
+    <rui:functionArg>{nodeType:params.data.nodeType, name:params.data.name}</rui:functionArg>
+    <rui:functionArg>'Summary View for ' + params.data.displayName</rui:functionArg>
+</rui:action>
+<rui:action id="treeNodeClickedAction" type="combined" actions="${['getEventsAction', 'getSummaryAction']}"></rui:action>
     <script type="text/javascript">
+        function getEventsQuery(data){
+            if(data.nodeType == 'Container'){
+                return 'className:"' + data.name + '"'
+            }
+            else{
+                return 'className:"' + data.creationClassName + '" AND instanceName:"' + data.name + '"';
+            }
+        }
+        
         var eventsGrid = YAHOO.rapidjs.Components['eventsGrid'];
         var topologyTree = YAHOO.rapidjs.Components['topologyTree'];
         var summaryChart = YAHOO.rapidjs.Components['summaryChart'];

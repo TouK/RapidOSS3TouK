@@ -3,8 +3,10 @@
     def componentId = params.componentId
     def notificationId = params.id;
     def domainObject = RsHistoricalEvent.get(id: notificationId);
+    def excludedProps = ["firstNotifiedAt", "lastNotifiedAt", "lastChangedAt", "lastClearedAt"]
     if (domainObject != null) {
-        def allProperties = domainObject.getPropertiesList();
+        def propList = domainObject.getPropertiesList();
+        def allProperties = propList.findAll{!excludedProps.contains(it.name)}
 %>
 <div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
@@ -20,6 +22,7 @@
                 def firstNotifiedAt = format.format(new Timestamp(domainObject.firstNotifiedAt));
                 def lastNotifiedAt = format.format(new Timestamp(domainObject.lastNotifiedAt));
                 def lastChangedAt = format.format(new Timestamp(domainObject.lastChangedAt));
+                def lastClearedAt = format.format(new Timestamp(domainObject.lastClearedAt));
                 def severityClass;
                 def severity = domainObject.severity;
                 if (severity == 1) {
@@ -70,7 +73,7 @@
                                     <b>First Notified At:</b> ${firstNotifiedAt}<br>
                                     <b>Last Notified At:</b> ${lastNotifiedAt}<br>
                                     <b>Last Changed At:</b> ${lastChangedAt}<br>
-                                    <b>Count:</b> ${domainObject.occurrenceCount}<br>
+                                    <b>Last Cleared At:</b> ${lastClearedAt}<br>
                                 </div>
                             </div>
                         </div>

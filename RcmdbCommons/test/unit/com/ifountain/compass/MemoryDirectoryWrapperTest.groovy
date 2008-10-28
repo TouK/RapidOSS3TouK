@@ -76,6 +76,7 @@ class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
         output.writeByte ((byte)1);
         output.close();
         assertNotNull(wrapper.createOutput("1.cfs"));
+        wrapper.close();
         
 
     }
@@ -148,6 +149,7 @@ class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
         assertTrue(deleteFileThread.isFinished);
         assertTrue(renameFileThread.isFinished);
         assertTrue(antherNewThread.isFinished);
+        wrapper.close();
 
     }
 
@@ -179,7 +181,7 @@ class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
         files.each {
             wrapper.deleteFile (it);
         }
-        serv.shutdown();
+        wrapper.close();
         assertEquals (validFiles.size(), dir.deletedFileList.size());
         assertEquals (validFiles.size(), dir.touchFileList.size());
         assertEquals (validFiles.size(), dir.renameFileList.size());
@@ -188,6 +190,7 @@ class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
         assertTrue (dir.touchFileList.containsAll(validFiles));
         assertTrue (dir.renameFileList.containsAll(validFiles));
         assertTrue (dir.createOutputFileList.containsAll(validFiles));
+
     }
 }
 

@@ -264,7 +264,7 @@ class SmartsConnectorController {
                 def connectionParams = ["broker":connTemplate.broker, "username":connTemplate.username, "userPassword":connTemplate.password,
                     "brokerUsername":connTemplate.brokerUsername, "brokerPassword":connTemplate.brokerPassword];
                 smartsConnector.ds.connection.update(connectionParams);
-                if (checkConnection(smartsConnector.ds.connection.name)) {
+                if (ConnectionManager.checkConnection(smartsConnector.ds.connection.name)) {
                     CmdbScript.startListening(script.name);
                     flash.message = "Connector ${smartsConnector.name} successfully started"
                 }
@@ -298,18 +298,6 @@ class SmartsConnectorController {
         }
     }
 
-
-    def checkConnection(connectionName) {
-        try {
-            SmartsConnectionImpl conn = ConnectionManager.getConnection(connectionName);
-            if (conn.isConnected()) {
-                return true;
-            }
-        }
-        catch (e) {
-        }
-        return false;
-    }
 }
 
 

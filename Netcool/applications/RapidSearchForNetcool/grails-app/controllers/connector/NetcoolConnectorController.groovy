@@ -185,7 +185,7 @@ class NetcoolConnectorController {
             def script = CmdbScript.get(name: scriptName);
             try
             {
-                if (checkConnection(connName)) {
+                if (ConnectionManager.checkConnection(connName)) {
                     CmdbScript.updateScript(script, [enabled: true], false);
                     flash.message = "Connector ${netcoolConnector.name} successfully started"
                 }
@@ -245,17 +245,5 @@ class NetcoolConnectorController {
         template.make([connectorName: connectorName]).writeTo(fw);
         fw.close();
         CmdbScript.addScript(name: scriptName, enabled: false, type: CmdbScript.SCHEDULED, period: 30);
-    }
-
-    def checkConnection(connectionName) {
-        try {
-            def conn = ConnectionManager.getConnection(connectionName);
-            if (conn.isConnected()) {
-                return true;
-            }
-        }
-        catch (e) {
-        }
-        return false;
     }
 }

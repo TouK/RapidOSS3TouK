@@ -1,6 +1,6 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component');
-YAHOO.rapidjs.component.TimelineComponent = function(container, config){
-	YAHOO.rapidjs.component.TimelineComponent.superclass.constructor.call(this,container, config);
+YAHOO.rapidjs.component.TimelineWindow = function(container, config){
+	YAHOO.rapidjs.component.TimelineWindow.superclass.constructor.call(this,container, config);
 
     var events = {
         'tooltipClick' : new YAHOO.util.CustomEvent('tooltipClick')
@@ -57,7 +57,7 @@ YAHOO.rapidjs.component.TimelineComponent = function(container, config){
 
 };
 
-YAHOO.extend(YAHOO.rapidjs.component.TimelineComponent, YAHOO.rapidjs.component.PollingComponentContainer, {
+YAHOO.extend(YAHOO.rapidjs.component.TimelineWindow, YAHOO.rapidjs.component.PollingComponentContainer, {
 	handleSuccess: function(response){
 		this.clearData();
 		this.eventSource.loadXML(response.responseXML, this.url);

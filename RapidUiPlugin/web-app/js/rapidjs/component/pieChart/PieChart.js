@@ -6,7 +6,6 @@ YAHOO.rapidjs.component.PieChart = function(container, config) {
     this.dataField = null;
     this.categoryField = null;
     this.colors = null;
-    this.fields = null;
     YAHOO.ext.util.Config.apply(this, config);
     this.chart = null;
     this.chartIsReady = false;
@@ -16,7 +15,7 @@ YAHOO.rapidjs.component.PieChart = function(container, config) {
 
     this.datasource.responseSchema = {
         resultNode: this.contentPath,
-        fields: this.fields
+        fields: [this.categoryField, this.dataField]
     };
     this.header = YAHOO.ext.DomHelper.append(this.container, {tag:'div'});
     this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title:this.title});

@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="../css/rapidjs/timeline/timeline.css" />
     <script type="text/javascript" src="../js/rapidjs/component/timeline/Timeline.js"></script>
     <script type="text/javascript" src="../js/rapidjs/component/timeline/Timelineext.js"></script>
-    <script type="text/javascript" src="../js/rapidjs/component/timeline/TimelineComponent.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/timeline/TimelineWindow.js"></script>
     <script type="text/javascript" src="../js/rapidjs/component/tree/Tree.js"></script>
 
 	<title>iFountain - RapidInsight for Netcool</title><link rel="stylesheet" type="text/css" href="../js/yui/assets/skins/sam/menu.css" />

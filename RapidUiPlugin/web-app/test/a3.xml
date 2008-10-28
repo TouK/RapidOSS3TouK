@@ -1,3 +1,93 @@
-<Filter group="group1" query="asdasdasdsad">
+<Objects>
+    <Object id="Host" name="Host">
+        <Object id="219" name="ercpsvsyr1" creationClassName="Host" rsAlias="RsComputerSystem"/>
+        <Object id="225" name="ercpsvsyr2" creationClassName="Host" rsAlias="RsComputerSystem"/>
+        <Object id="231" name="ercpsvsyr5" creationClassName="Host" rsAlias="RsComputerSystem"/>
+        <Object id="237" name="ercpsvsyr6" creationClassName="Host" rsAlias="RsComputerSystem"/>
+        <Object id="243" name="ercpsvsyr3" creationClassName="Host" rsAlias="RsComputerSystem"/>
+        <Object id="249" name="ercpsvsyr4" creationClassName="Host" rsAlias="RsComputerSystem"/>
+        <Object id="255" name="ercpsvsyr7" creationClassName="Host" rsAlias="RsComputerSystem"/>
+        <Object id="261" name="ercpsvsyr8" creationClassName="Host" rsAlias="RsComputerSystem"/>
+        <Object id="267" name="ercpsvnyc3" creationClassName="Host" rsAlias="RsComputerSystem"/>
+        <Object id="276" name="ercpsvnyc4" creationClassName="Host" rsAlias="RsComputerSystem"/>
+    </Object>
+    <Object id="Node" name="Node"/>
 
-</Filter>
+    <Object id="Switch" name="Switch">
+        <Object id="60" name="ernaswbos1" creationClassName="Switch" rsAlias="RsComputerSystem"/>
+        <Object id="114" name="ernaswbur" creationClassName="Switch" rsAlias="RsComputerSystem"/>
+        <Object id="174" name="ernaswptm" creationClassName="Switch" rsAlias="RsComputerSystem"/>
+        <Object id="303" name="ernaswpro" creationClassName="Switch" rsAlias="RsComputerSystem"/>
+        <Object id="497" name="ernaswcam" creationClassName="Switch" rsAlias="RsComputerSystem"/>
+        <Object id="572" name="ercaswjfk" creationClassName="Switch" rsAlias="RsComputerSystem"/>
+        <Object id="634" name="eraaswbwi" creationClassName="Switch" rsAlias="RsComputerSystem"/>
+        <Object id="808" name="ercaswroc" creationClassName="Switch" rsAlias="RsComputerSystem"/>
+        <Object id="857" name="ercaswbuf" creationClassName="Switch" rsAlias="RsComputerSystem"/>
+        <Object id="917" name="ernaswhfd" creationClassName="Switch" rsAlias="RsComputerSystem"/>
+    </Object>
+
+    <Object id="Router" name="Router">
+        <Object id="379" name="ercartalb" creationClassName="Router" rsAlias="RsComputerSystem"/>
+        <Object id="404" name="ernartbur" creationClassName="Router" rsAlias="RsComputerSystem"/>
+        <Object id="460" name="ernartbos" creationClassName="Router" rsAlias="RsComputerSystem"/>
+        <Object id="481" name="eraartbwi" creationClassName="Router" rsAlias="RsComputerSystem"/>
+        <Object id="674" name="erccrtnyc1" creationClassName="Router" rsAlias="RsComputerSystem"/>
+        <Object id="741" name="erccrtnyc2" creationClassName="Router" rsAlias="RsComputerSystem"/>
+        <Object id="2069" name="eraartpit" creationClassName="Router" rsAlias="RsComputerSystem"/>
+        <Object id="2085" name="ernartcam" creationClassName="Router" rsAlias="RsComputerSystem"/>
+        <Object id="2113" name="eraartphl" creationClassName="Router" rsAlias="RsComputerSystem"/>
+        <Object id="2138" name="ercertnyc" creationClassName="Router" rsAlias="RsComputerSystem"/>
+    </Object>
+
+    
+
+    <Object id="Card" name="Card">
+        <Object id="69" name="CARD-ernaswbos1/1" creationClassName="Card" rsAlias="RsCard"/>
+        <Object id="116" name="CARD-ernaswbur/1" creationClassName="Card" rsAlias="RsCard"/>
+        <Object id="194" name="CARD-ernaswptm/1" creationClassName="Card" rsAlias="RsCard"/>
+        <Object id="308" name="CARD-ernaswpro/1" creationClassName="Card" rsAlias="RsCard"/>
+        <Object id="510" name="CARD-ernaswcam/1" creationClassName="Card" rsAlias="RsCard"/>
+        <Object id="583" name="CARD-ercaswjfk/1" creationClassName="Card" rsAlias="RsCard"/>
+        <Object id="657" name="CARD-eraaswbwi/1" creationClassName="Card" rsAlias="RsCard"/>
+        <Object id="689" name="CARD-erccrtnyc1/Serial/2" creationClassName="Card" rsAlias="RsCard"/>
+        <Object id="709" name="CARD-erccrtnyc1/Serial/1" creationClassName="Card" rsAlias="RsCard"/>
+        <Object id="715" name="CARD-erccrtnyc1/FastEthernet/3" creationClassName="Card" rsAlias="RsCard"/>
+    </Object>
+    <Object id="Interface" name="Interface">
+        <Object id="87" name="IF-ernaswbos1/1" creationClassName="Interface" rsAlias="RsInterface"/>
+        <Object id="117" name="IF-ernaswbur/1" creationClassName="Interface" rsAlias="RsInterface"/>
+        <Object id="187" name="IF-ernaswptm/1" creationClassName="Interface" rsAlias="RsInterface"/>
+        <Object id="221" name="IF-ercpsvsyr1/1" creationClassName="Interface" rsAlias="RsInterface"/>
+        <Object id="227" name="IF-ercpsvsyr2/1" creationClassName="Interface" rsAlias="RsInterface"/>
+        <Object id="233" name="IF-ercpsvsyr5/1" creationClassName="Interface" rsAlias="RsInterface"/>
+        <Object id="239" name="IF-ercpsvsyr6/1" creationClassName="Interface" rsAlias="RsInterface"/>
+        <Object id="245" name="IF-ercpsvsyr3/1" creationClassName="Interface" rsAlias="RsInterface"/>
+        <Object id="251" name="IF-ercpsvsyr4/1" creationClassName="Interface" rsAlias="RsInterface"/>
+        <Object id="257" name="IF-ercpsvsyr7/1" creationClassName="Interface" rsAlias="RsInterface"/>
+    </Object>
+
+    <Object id="IP" name="IP">
+        <Object id="61" name="IP-10.10.38.1" creationClassName="IP" rsAlias="RsIp"/>
+        <Object id="115" name="IP-10.10.31.162" creationClassName="IP" rsAlias="RsIp"/>
+        <Object id="175" name="IP-10.10.31.66" creationClassName="IP" rsAlias="RsIp"/>
+        <Object id="220" name="IP-10.10.9.65" creationClassName="IP" rsAlias="RsIp"/>
+        <Object id="226" name="IP-10.10.9.66" creationClassName="IP" rsAlias="RsIp"/>
+        <Object id="232" name="IP-10.10.9.69" creationClassName="IP" rsAlias="RsIp"/>
+        <Object id="238" name="IP-10.10.9.70" creationClassName="IP" rsAlias="RsIp"/>
+        <Object id="244" name="IP-10.10.9.67" creationClassName="IP" rsAlias="RsIp"/>
+        <Object id="250" name="IP-10.10.9.68" creationClassName="IP" rsAlias="RsIp"/>
+        <Object id="256" name="IP-10.10.9.71" creationClassName="IP" rsAlias="RsIp"/>
+    </Object>
+    <Object id="Port" name="Port">
+        <Object id="62" name="PORT-ernaswbos1/1.2" creationClassName="Port" rsAlias="RsPort"/>
+        <Object id="63" name="PORT-ernaswbos1/1.14" creationClassName="Port" rsAlias="RsPort"/>
+        <Object id="64" name="PORT-ernaswbos1/1.4" creationClassName="Port" rsAlias="RsPort"/>
+        <Object id="65" name="PORT-ernaswbos1/1.15" creationClassName="Port" rsAlias="RsPort"/>
+        <Object id="66" name="PORT-ernaswbos1/1.9" creationClassName="Port" rsAlias="RsPort"/>
+        <Object id="67" name="PORT-ernaswbos1/1.5" creationClassName="Port" rsAlias="RsPort"/>
+        <Object id="68" name="PORT-ernaswbos1/1.1" creationClassName="Port" rsAlias="RsPort"/>
+        <Object id="71" name="PORT-ernaswbos1/1.23" creationClassName="Port" rsAlias="RsPort"/>
+        <Object id="73" name="PORT-ernaswbos1/1.17" creationClassName="Port" rsAlias="RsPort"/>
+        <Object id="75" name="PORT-ernaswbos1/1.20" creationClassName="Port" rsAlias="RsPort"/>
+    </Object>
+</Objects>

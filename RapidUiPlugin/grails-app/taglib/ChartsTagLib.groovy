@@ -21,23 +21,17 @@ class ChartsTagLib {
     }
 
     static def getPieConfig(attrs) {
-        def fieldsArray = [];
-        def fields = attrs["fields"];
-        fields.each {
-            fieldsArray.add("'${it}'");
-        }
         return """{
             id:'${attrs["id"]}',
             url:'${attrs["url"]}',
             contentPath:'${attrs["contentPath"]}',
             swfURL:'${attrs["swfURL"]}',
-            dataField:'${attrs["dataField"]}',
             categoryField:'${attrs["categoryField"]}',
             ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
             ${attrs["legend"] ? "legend:'${attrs["legend"]}'," : ""}
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
             ${attrs["colors"] ? "colors:${attrs["colors"]}," : ""}
-            fields:[${fieldsArray.join(',')}]
+            dataField:'${attrs["dataField"]}'
         }"""
     }
 

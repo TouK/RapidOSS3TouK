@@ -534,32 +534,34 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         var numberOfDisplayedItems = 0;
         for (var i in this.menuItems) {
             var menuItemConfig = this.menuItems[i];
+            var evaluationResult = true;
+            var menuItem = this.rowMenu.getItem(index);
             if (menuItemConfig['visible'] != null) {
                 var params = {data: dataNode.getAttributes(), label:menuItemConfig.label}
-                var evaluationResult = eval(menuItemConfig['visible']);
-                var menuItem = this.rowMenu.getItem(index);
-                if (!evaluationResult)
-                    menuItem.element.style.display = "none";
-                else {
-                    menuItem.element.style.display = "";
-                    numberOfDisplayedItems ++;
-                }
+                evaluationResult = eval(menuItemConfig['visible']);
+            }
+            if (!evaluationResult)
+                menuItem.element.style.display = "none";
+            else {
+                menuItem.element.style.display = "";
+                numberOfDisplayedItems ++;
             }
             var subIndex = 0;
             for (var j in this.menuItems[i].submenuItems)
             {
                 var subMenuItemConfig = this.menuItems[i].submenuItems[j];
                 var submenuItem = this.rowMenu.getItem(index)._oSubmenu.getItem(subIndex);
+                var subEvaluationResult = true;
                 if (subMenuItemConfig['visible'] != null)
                 {
                     var data = dataNode.getAttributes();
                     var label = subMenuItemConfig.label
-                    var evaluationResult = eval(subMenuItemConfig['visible']);
-                    if (!evaluationResult)
-                        submenuItem.element.style.display = "none";
-                    else
-                        submenuItem.element.style.display = "";
+                    var subEvaluationResult = eval(subMenuItemConfig['visible']);
                 }
+                if (!subEvaluationResult)
+                    submenuItem.element.style.display = "none";
+                else
+                    submenuItem.element.style.display = "";
                 subIndex++;
             }
             index++;

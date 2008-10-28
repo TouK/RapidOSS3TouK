@@ -58,6 +58,10 @@
     <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeGridView.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeGrid.js"></script>
 
+    <script type="text/javascript" src="js/rapidjs/component/timeline/Timeline.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/timeline/Timelineext.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/timeline/TimelineWindow.js"></script>
+
     <script type="text/javascript" src="js/rapidjs/component/action/Action.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/html/Html.js"></script>
 

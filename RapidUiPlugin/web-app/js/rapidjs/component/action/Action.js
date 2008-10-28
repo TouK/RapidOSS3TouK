@@ -1,8 +1,9 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.action');
-YAHOO.rapidjs.component.action.RequestAction = function(config, requestParams)
+YAHOO.rapidjs.component.action.RequestAction = function(config, requestParams, components)
 {
     this.url = config.url;
     this.id = config.id;
+    this.components = components;
     this.allowMultipleRequests = config.allowMultipleRequests;
     this.events = {
         'success' : new YAHOO.util.CustomEvent('success'),
@@ -119,7 +120,7 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         }
     },
     handleSuccess: function(response) {
-        var componentList = response.argument
+        var componentList = this.components;
         if (componentList && componentList.length) {
             for (var i = 0; i < componentList.length; i++) {
                 componentList[i].events['success'].fireDirect(response);
@@ -132,7 +133,7 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
 
     },
     _fireErrors : function(response, errors) {
-        var componentList = response.argument
+        var componentList = this.components;
         if (componentList && componentList.length) {
             for (var i = 0; i < componentList.length; i++) {
                 componentList[i].events['error'].fireDirect(componentList[i], errors);
@@ -143,9 +144,8 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
 };
 
 YAHOO.rapidjs.component.action.MergeAction = function(config, requestParams, components) {
-    YAHOO.rapidjs.component.action.MergeAction.superclass.constructor.call(this, config, requestParams);
+    YAHOO.rapidjs.component.action.MergeAction.superclass.constructor.call(this, config, requestParams, components);
     this.removeAttribute = config.removeAttribute;
-    this.components = components;
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.action.MergeAction, YAHOO.rapidjs.component.action.RequestAction, {

@@ -62,6 +62,13 @@ class ActionsTagLib {
             params.each {
                 requestParams.add("${it.@key}:\"${it.@value}\"");
             }
+            def compnentList = attrs["components"];
+            def cList = [];
+            if (compnentList) {
+                compnentList.each {
+                    cList.add("YAHOO.rapidjs.Components['${it}']");
+                }
+            }
             return """
                <script type="text/javascript">
                var ${actionId}config = {
@@ -69,7 +76,7 @@ class ActionsTagLib {
                  ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
                  url:'${attrs["url"]}'
                }
-               var ${actionId}action = new YAHOO.rapidjs.component.action.RequestAction( ${actionId}config, {${requestParams.join(",")}});
+               var ${actionId}action = new YAHOO.rapidjs.component.action.RequestAction( ${actionId}config, {${requestParams.join(",")}}, [${cList.join(",")}]);
                ${successJs ? successJs : ""}
                </script>
             """ ;

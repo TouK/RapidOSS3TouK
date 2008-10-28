@@ -73,11 +73,13 @@
                     <div style="padding:0px 10px;">
                         <div style="background-color:#EDF5FF;padding:3px;border:#2647A0 1px solid">
                             <div class="event-details-severity ${severityClass}"></div>
-                            <div style="padding:3px 20px 20px 20px;width:190px;">
-                                <b>First Notified At:</b> ${firstNotifiedAt}<br>
-                                <b>Last Notified At:</b> ${lastNotifiedAt}<br>
-                                <b>Last Changed At:</b> ${lastChangedAt}<br>
-                                <b>Last Cleared At:</b> ${lastClearedAt}<br>
+                            <div style="padding:3px 20px 20px 20px;">
+                                <div style="width:190px;">
+                                    <b>First Notified At:</b> ${firstNotifiedAt}<br>
+                                    <b>Last Notified At:</b> ${lastNotifiedAt}<br>
+                                    <b>Last Changed At:</b> ${lastChangedAt}<br>
+                                    <b>Last Cleared At:</b> ${lastClearedAt}<br>
+                                </div>
                             </div>
                         </div>
                     </div>

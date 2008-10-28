@@ -27,6 +27,15 @@
     }
     if (domainObject != null) {
 %>
+<script type="text/javascript">
+    window.showSmartsObjectDetails = function (url, title){
+        var objectDetails = YAHOO.rapidjs.Components['objectDetailsmenuHtml'];
+        if(objectDetails.popupWindow){
+            objectDetails.popupWindow.show();
+        }
+        objectDetails.show(url, title);
+    }
+</script>
 <div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li class="selected">
@@ -88,7 +97,7 @@
                                                 if (propertyName == "instanceName" || propertyName == "elementName") {
                                                     def title = propertyName == "instanceName" ? "Details of ${domainObject.className} ${domainObject.instanceName}" : "Details of ${domainObject.elementClassName} ${domainObject.elementName}"
                                         %>
-                                        <td><a style="color:#006DBA;text-decoration:underline;cursor:pointer" onclick="YAHOO.rapidjs.Components['objectDetailsmenuHtml'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${domainObject[propertyName]}'), '${title}');">${domainObject[propertyName]}</a></td>
+                                        <td><a style="color:#006DBA;text-decoration:underline;cursor:pointer" onclick="window.showSmartsObjectDetails('getObjectDetails.gsp?name=' + encodeURIComponent('${domainObject[propertyName]}'), '${title}');">${domainObject[propertyName]}</a></td>
                                         <%
                                             }
                                             else {

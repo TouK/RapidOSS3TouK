@@ -50,6 +50,21 @@ public class ConnectionManager
     {
     }
 
+    public static boolean checkConnection(String connectionName)
+    {
+        boolean connected=false;
+        try{
+            IConnection conn = getConnection(connectionName);
+            if(conn.isConnected()){
+                connected = true;
+            }
+        }
+        catch(Exception e){
+
+        }
+
+        return connected;
+    }
     public static IConnection getConnection(String connectionName) throws ConnectionInitializationException, ConnectionPoolException, ConnectionException, UndefinedConnectionException
     {
         ConnectionParam param = paramSupplier.getConnectionParam(connectionName);

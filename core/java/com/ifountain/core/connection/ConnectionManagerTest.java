@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.core.connection.exception.UndefinedConnectionException;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
+import com.ifountain.core.connection.mocks.NotConnectedConnection;
 import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl;
 import com.ifountain.core.test.util.RapidCoreTestCase;
 
@@ -44,7 +45,25 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         ConnectionManager.setParamSupplier(parameterSupplier);
         
     }
-    
+
+    public void testcheckConnection() throws Exception
+    {
+        assertFalse(ConnectionManager.checkConnection("dx4545"));
+
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        param.setMaxNumberOfConnectionsInPool(2);
+        parameterSupplier.setParam(param);
+
+        assertTrue(ConnectionManager.checkConnection(connectionName));
+
+        param = createConnectionParam(connectionName, NotConnectedConnection.class.getName());
+        param.setMaxNumberOfConnectionsInPool(2);
+        parameterSupplier.setParam(param);
+
+        assertFalse(ConnectionManager.checkConnection(connectionName));
+        
+    }
     public void testGetConnection() throws Exception
     {
         String connectionName = "conn1";
@@ -265,9 +284,14 @@ public class ConnectionManagerTest extends RapidCoreTestCase
     
     private ConnectionParam createConnectionParam(String connectionName)
     {
+        return createConnectionParam(connectionName, MockConnectionImpl.class.getName());
+    }
+
+    private ConnectionParam createConnectionParam(String connectionName, String className)
+    {
         Map<String, Object> optionalParams = new HashMap<String, Object>();
         optionalParams.put("OptParam1", "optvalue1");
-        ConnectionParam param = new ConnectionParam("Database", connectionName, MockConnectionImpl.class.getName(), optionalParams);
+        ConnectionParam param = new ConnectionParam("Database", connectionName, className, optionalParams);
         return param;
     }
     

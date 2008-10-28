@@ -4,13 +4,13 @@
 </head>
 <body>
 <%
-       def stateMapping = ["0":"green.png",
-                    "1":"red.png",
-                    "2":"orange.png",
-                    "3":"yellow.png",
-                    "4":"blue.png",
-                    "5":"green.png",
-                    "default":"green.png"]
+       def stateMapping = ["0":"../states/green.png",
+                    "1":"../states/red.png",
+                    "2":"../states/orange.png",
+                    "3":"../states/yellow.png",
+                    "4":"../states/blue.png",
+                    "5":"../states/green.png",
+                    "default":"../states/green.png"]
         def typeMapping = ["Host":"server_icon.png",
                     "Router":"router_icon.png",
                     "Switch":"switch_icon.png"]

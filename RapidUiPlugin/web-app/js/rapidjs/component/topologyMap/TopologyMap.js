@@ -587,7 +587,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
     resize : function(width, height) {
 
-        this.body.setHeight( height - this.header.offsetHeight);
+        this.body.setHeight( height - this.header.getHeight() - this.menuBarElement.getHeight()-3);
         this.body.setWidth( width);
 
     },

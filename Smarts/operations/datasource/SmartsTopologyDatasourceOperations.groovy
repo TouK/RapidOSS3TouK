@@ -21,6 +21,7 @@ class SmartsTopologyDatasourceOperations extends BaseListeningDatasourceOperatio
 
     def getProperty(Map keys, String propName)
      {
+         checkParams(keys, ["CreationClassName", "Name"]);
          def prop = this.adapter.getObject(keys.CreationClassName, keys.Name, [propName]);
          if(prop)
          {
@@ -30,6 +31,7 @@ class SmartsTopologyDatasourceOperations extends BaseListeningDatasourceOperatio
      }
 
     def getProperties(Map keys, List properties){
+        checkParams(keys, ["CreationClassName", "Name"]);
         return this.adapter.getObject(keys.CreationClassName, keys.Name, properties);
     }
 
@@ -43,6 +45,7 @@ class SmartsTopologyDatasourceOperations extends BaseListeningDatasourceOperatio
     }
 
     def addObject(Map params){
+        checkParams(params, ["CreationClassName", "Name"]);
         def tempParams = [:];
         tempParams.putAll(params);
         def className = tempParams.CreationClassName;
@@ -53,10 +56,12 @@ class SmartsTopologyDatasourceOperations extends BaseListeningDatasourceOperatio
     }
 
     def getObject(Map keys){
+        checkParams(keys, ["CreationClassName", "Name"]);
         return this.adapter.getObject(keys.CreationClassName, keys.Name);
     }
 
     def getObject(Map keys, List properties){
+        checkParams(keys, ["CreationClassName", "Name"]);
         Map<String, Object> result = this.adapter.getObject(keys.CreationClassName, keys.Name, properties);
         if (!result){
             result = [:];
@@ -65,22 +70,27 @@ class SmartsTopologyDatasourceOperations extends BaseListeningDatasourceOperatio
     }
 
     def getObjects(Map keys){
+        checkParams(keys, ["CreationClassName", "Name"]);
         return this.adapter.getObjects(keys.CreationClassName, keys.Name);
     }
 
     def getObjects(Map keys, boolean expEnabled){
+        checkParams(keys, ["CreationClassName", "Name"]);
         return this.adapter.getObjects(keys.CreationClassName, keys.Name, expEnabled);
     }
 
     def getObjects(Map keys, List properties, boolean expEnabled){
+        checkParams(keys, ["CreationClassName", "Name"]);
         return this.adapter.getObjects(keys.CreationClassName, keys.Name, properties, expEnabled);
     }
 
     def removeObject(Map keys){
+        checkParams(keys, ["CreationClassName", "Name"]);
         this.adapter.deleteTopologyInstance(keys.CreationClassName, keys.Name);
     }
 
     def updateObject(Map updateParams){
+        checkParams(updateParams, ["CreationClassName", "Name"]);
         def tempParams = [:];
         tempParams.putAll(updateParams);
         def className = tempParams.CreationClassName;
@@ -91,14 +101,36 @@ class SmartsTopologyDatasourceOperations extends BaseListeningDatasourceOperatio
     }
 
     def addTopologyRelation(firstClassName, firstInstanceName, secondClassName, secondInstanceName, relationName){
+        checkParams([firstClassName:firstClassName, firstInstanceName:firstInstanceName, secondClassName:secondClassName, secondInstanceName:secondInstanceName, relationName:relationName], ["relationName", "secondInstanceName", "secondClassName","firstInstanceName","firstClassName"]);
         this.adapter.addRelationshipBetweenTopologyObjects(firstClassName, firstInstanceName, secondClassName, secondInstanceName, relationName);
     }
 
     def removeTopologyRelation(firstClassName, firstInstanceName, secondClassName, secondInstanceName, relationName){
+        checkParams([firstClassName:firstClassName, firstInstanceName:firstInstanceName, secondClassName:secondClassName, secondInstanceName:secondInstanceName, relationName:relationName], ["relationName", "secondInstanceName", "secondClassName","firstInstanceName","firstClassName"]);
         this.adapter.removeTopologyRelationship(firstClassName, firstInstanceName, secondClassName, secondInstanceName, relationName);
     }
 
     def invokeOperation(className, instanceName, opName, opParams){
+        checkParams([ClassName:className, InstanceName:instanceName, OperationName:opName], ["ClassName", "InstanceName", "OperationName"]);
+        opParams.each{
+            throw new Exception("Operation parameters cannot be null.");
+        }
         this.adapter.invokeOperation(className, instanceName, opName, opParams);
+    }
+
+    def checkParams(Map params, List requiredParams)
+    {
+        requiredParams.each{paramName->
+            if(params[paramName] == null)
+            {
+                throw new Exception("Mandatory parameter ${paramName} can not be null.");
+            }
+        }
+        params.each{paramName, paramsValue->
+            if(paramsValue == null)
+            {
+                throw new Exception("Parameter ${paramName} can not be null.");
+            }
+        }
     }
 }

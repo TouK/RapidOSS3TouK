@@ -1,31 +1,21 @@
+import auth.Group
 import auth.Role
 import auth.RsUser
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
-import com.ifountain.rcmdb.domain.converter.DateConverter
-import com.ifountain.rcmdb.domain.converter.DoubleConverter
-import com.ifountain.rcmdb.domain.converter.LongConverter
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.converter.*
+import com.ifountain.rcmdb.domain.generation.DataCorrectionUtilities
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.scripting.ScriptScheduler
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.util.RapidDateUtilities
 import com.ifountain.rcmdb.util.RapidStringUtilities
+import datasource.BaseListeningDatasource
 import datasource.RCMDBDatasource
-import model.ModelAction
-import model.PropertyAction
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
-import datasource.BaseListeningDatasource
-import com.ifountain.rcmdb.domain.converter.BooleanConverter
-import auth.Group
-import com.ifountain.rcmdb.domain.property.RelationUtils
-import relation.Relation
-import com.ifountain.rcmdb.domain.generation.DataCorrectionUtilities
-import java.text.SimpleDateFormat
-import com.ifountain.rcmdb.util.RapidDateUtilities
 
 class BootStrap {
     def quartzScheduler;

@@ -10,6 +10,7 @@
 <head>
     <title>iFountain - RapidInsight for Smarts</title>
     <script type="text/javascript" src="js/yui/utilities/utilities.js"></script>
+    <script type="text/javascript" src="js/yui/json/json-min.js"></script>
     <script type="text/javascript" src="js/yui/resize/resize-min.js"></script>
     <script type="text/javascript" src="js/yui/layout/layout-min.js"></script>
     <script type="text/javascript" src="js/yui/history/history-min.js"></script>

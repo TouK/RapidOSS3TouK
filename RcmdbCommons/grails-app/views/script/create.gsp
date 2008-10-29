@@ -15,6 +15,8 @@
         var enabledRow = document.getElementById('enabledRow');
         var datasourceRow = document.getElementById('datasourceRow');
         var staticParamRow = document.getElementById('staticParamRow');
+        var logFileRow = document.getElementById('logFileRow');
+        var logLevelRow = document.getElementById('logLevelRow');
         var typeSelect = document.getElementById("type");
         var scriptType = typeSelect.options[typeSelect.selectedIndex].value;
         datasourceRow.style.display = (scriptType == "Listening"? "":"none");
@@ -24,6 +26,8 @@
         cronRow.style.display = (scriptType == "Scheduled"? "":"none");
         enabledRow.style.display = (scriptType == "Scheduled"? "":"none");
         staticParamRow.style.display = (scriptType != "OnDemand"? "":"none");
+        logFileRow.style.display = (scriptType == "Listening"? "":"none");
+        logLevelRow.style.display = (scriptType == "Listening"? "":"none");
         scheduleTypeChanged();
     }
 
@@ -163,6 +167,25 @@
                                 <input type="text" id="staticParam" name="staticParam" value="${fieldValue(bean: cmdbScript, field: 'staticParam')}"/>
                             </td>
                         </tr>
+
+                    <tr class="prop" id="logFileRow">
+                        <td valign="top" class="name">
+                            <label for="logFile">Log File Name:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'logFile', 'errors')}">
+                            <input type="text" class="inputtextfield" id="logFile" name="logFile" value="${fieldValue(bean: cmdbScript, field: 'logFile')}"/>
+                        </td>
+                    </tr>
+                    
+                     <tr class="prop" id="logLevelRow">
+                        <td valign="top" class="name">
+                            <label for="logLevel">Log Level:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'logLevel', 'errors')}">
+                            <g:select id="logLevel" name="logLevel" from="${cmdbScript.constraints.logLevel.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:cmdbScript,field:'logLevel')}"></g:select>
+                        </td>
+                    </tr>
+
                 </tbody>
             </table>
         </div>

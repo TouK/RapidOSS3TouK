@@ -124,6 +124,16 @@
                     <td valign="top" class="value">${cmdbScript.staticParam}</td>
 
                 </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Log File:</td>
+
+                    <td valign="top" class="value">${cmdbScript.logFile}</td>
+                </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Log Level:</td>
+
+                    <td valign="top" class="value">${cmdbScript.logLevel}</td>
+                </tr>
                 <%
                         }
                 %>

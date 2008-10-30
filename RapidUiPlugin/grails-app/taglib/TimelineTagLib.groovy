@@ -1,17 +1,132 @@
+import com.ifountain.rui.util.TagLibUtils
+
 /**
- * Created by IntelliJ IDEA.
- * User: Sezgin Kucukkaraaslan
- * Date: Oct 28, 2008
- * Time: 10:17:11 AM
- */
+* Created by IntelliJ IDEA.
+* User: Sezgin Kucukkaraaslan
+* Date: Oct 28, 2008
+* Time: 10:17:11 AM
+*/
 class TimelineTagLib {
     static namespace = "rui";
 
     static def fTimeline(attrs, bodyString){
-        
+        def configXML = "<Timeline>${bodyString}</Timeline>"
+        def configStr = getConfig(attrs, configXML);
+        def onTooltipClick = attrs["onTooltipClick"];
+        def tooltipClickJs;
+        if (onTooltipClick != null) {
+            tooltipClickJs = """
+               timeline.events['tooltipClick'].subscribe(function(buble, data){
+                   var params = {data:data, buble:buble};
+                   YAHOO.rapidjs.Actions['${onTooltipClick}'].execute(params);
+                }, this, true);
+            """
+        }
+        return """
+           <script type="text/javascript">
+               var timelineConfig = ${configStr};
+               var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
+               var timeline = new YAHOO.rapidjs.component.TimelineWindow(container, timelineConfig);
+               ${tooltipClickJs ? tooltipClickJs : ""}
+               if(timeline.pollingInterval > 0){
+                   timeline.poll();
+               }
+           </script>
+        """
     }
 
     def timeline = {attrs, body ->
         out << fTimeline(attrs, body());
     }
+
+    def tlBands = {attrs, body ->
+        out << fTlBands(attrs, body());
+    }
+
+    def tlBand = {attrs, body ->
+       out << fTlBand(attrs, "");
+    }
+
+    static def getConfig(attrs, configXML){
+        def xml = new XmlSlurper().parseText(configXML);
+        def bands = xml.Bands.Band;
+        def bandsArray = [];
+        bands.each{
+            def intervalUnit = getIntervalUnit(it.@intervalUnit.toString().trim())
+            def showText = it.@showText.toString().trim()
+            def trackHeight = it.@trackHeight.toString().trim()
+            def trackGap = it.@trackGap.toString().trim()
+            def syncWith = it.@syncWith.toString().trim()
+            def layoutWith = it.@layoutWith.toString().trim()
+            def date = it.@date.toString().trim()
+            def highlight  = it.@highlight.toString().trim()
+            def textWidth  = it.@textWidth.toString().trim()
+            bandsArray.add("""{
+                width:'${it.@width}',       
+                intervalPixels:${it.@intervalPixels},
+                ${showText != "" ? "showText:${showText}," : ""}       
+                ${trackHeight != "" ? "trackHeight:${trackHeight}," : ""}       
+                ${trackGap != "" ? "trackGap:${trackGap}," : ""}       
+                ${syncWith != "" ? "syncWith:${syncWith}," : ""}       
+                ${layoutWith != "" ? "layoutWith:${layoutWith}," : ""}       
+                ${highlight  != "" ? "highlight :${highlight}," : ""}
+                ${date != "" ? "date:'${date}'," : ""}
+                ${textWidth != "" ? "textWidth:${textWidth}," : ""}
+                intervalUnit:${intervalUnit}
+            }""")
+        }
+         return """{
+            id:'${attrs["id"]}',
+            url:'${attrs["url"]}',
+            ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
+            ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
+            Bands:[${bandsArray.join(',\n')}]
+        }"""
+    }
+
+    static def getIntervalUnit(intervalUnit){
+        switch(intervalUnit){
+            case "millisecond":
+                return "Timeline.DateTime.MILLISECOND"
+            case "second":
+                 return "Timeline.DateTime.SECOND"
+            case "minute":
+                 return "Timeline.DateTime.MINUTE"
+            case "hour":
+                 return "Timeline.DateTime.HOUR"
+            case "day":
+                 return "Timeline.DateTime.DAY"
+            case "week":
+                 return "Timeline.DateTime.WEEK"
+            case "month":
+                 return "Timeline.DateTime.MONTH"
+            case "year":
+                 return "Timeline.DateTime.YEAR"
+            case "decade":
+                 return "Timeline.DateTime.DECADE"
+            case "century":
+                 return "Timeline.DateTime.CENTURY"
+            case "millennium":
+                 return "Timeline.DateTime.MILLENNIUM"
+            case "epoch":
+                 return "Timeline.DateTime.EPOCH"
+            case "era":
+                 return "Timeline.DateTime.ERA"
+            default:
+                 return "Timeline.DateTime.DAY"
+        }
+    }
+
+
+
+    static def fTlBands(attrs, bodyString){
+       TagLibUtils.getConfigAsXml("Bands", attrs, [], bodyString);
+    }
+
+    static def fTlBand(attrs, bodyString){
+        def validAttrs = ["intervalUnit", "width", "intervalPixels", "showText", "trackHeight", "date",
+                "trackGap", "textWidth", "highlight", "syncWith", "layoutWith"];
+        TagLibUtils.getConfigAsXml("Band", attrs, validAttrs);
+    }
+
 }

@@ -53,6 +53,13 @@
         <rui:sgColumn attributeName="lastChangedAt" colLabel="Last Change" width="120"></rui:sgColumn>
     </rui:sgColumns>
 </rui:searchGrid>
+<rui:timeline id="eventHistory" url="timeline.xml" title="Event History">
+    <rui:tlBands>
+        <rui:tlBand width="70%" intervalUnit="hour" intervalPixels="100"></rui:tlBand>
+        <rui:tlBand width="30%" intervalUnit="day" intervalPixels="200" intervalPixels="200" syncWith="0" highlight="true" showText="false" trackHeight="0.5"></rui:tlBand>
+    </rui:tlBands>
+</rui:timeline>
+<rui:popupWindow componentId="eventHistory" width="730" height="450"></rui:popupWindow>
 <rui:html id="objectDetailsmenuHtml" iframe="false"></rui:html>
 <rui:popupWindow componentId="objectDetailsmenuHtml" width="850" height="700" x="85" y="50"></rui:popupWindow>
 <rui:html id="eventDetails" iframe="false"></rui:html>
@@ -95,6 +102,10 @@
     <rui:functionArg>'Summary View for ' + params.data.displayName</rui:functionArg>
 </rui:action>
 <rui:action id="treeNodeClickedAction" type="combined" actions="${['getEventsAction', 'getSummaryAction']}"></rui:action>
+<rui:action id="eventHistoryAction" componentId="eventHistory" type="function" function="poll">
+    <rui:functionArg>{nodeType:params.data.nodeType, name:params.data.name}</rui:functionArg>
+    <rui:functionArg>'Event History of ' + params.data.displayName</rui:functionArg>
+</rui:action>
     <script type="text/javascript">
         function getEventsQuery(data){
             if(data.nodeType == 'Container'){
@@ -108,28 +119,6 @@
         var eventsGrid = YAHOO.rapidjs.Components['eventsGrid'];
         var topologyTree = YAHOO.rapidjs.Components['topologyTree'];
         var summaryChart = YAHOO.rapidjs.Components['summaryChart'];
-        var timelineConfig = {
-            id: "eventHistory",
-            url	  : "timeline.xml",
-            Bands : [
-                        {
-                            width:          "70%",
-                            intervalUnit:   Timeline.DateTime.HOUR,
-                            intervalPixels: 100
-                        },
-                        {
-                            width:          "30%",
-                            intervalUnit:   Timeline.DateTime.DAY,
-                            intervalPixels: 200,
-                            syncWith : 		0,
-                            highlight :		true,
-                            showText :		false,
-                            trackHeight : 	0.5
-                        }
-                     ]
-        };
-        var timeline = new YAHOO.rapidjs.component.TimelineWindow(YAHOO.ext.DomHelper.append(document.body, {tag:'div'}),timelineConfig );
-        new YAHOO.rapidjs.component.PopupWindow(timeline, {width:730, height:450});
         eventsGrid.renderCellFunction = function(key, value, data, el){
             if(key == "lastNotifiedAt" || key == "lastChangedAt"){
                 if(value == "0" || value == "")
@@ -180,9 +169,5 @@
         })
 
     </script>
- <rui:action id="eventHistoryAction" componentId="eventHistory" type="function" function="poll">
-    <rui:functionArg>{nodeType:params.data.nodeType, name:params.data.name}</rui:functionArg>
-    <rui:functionArg>'Event History of ' + params.data.displayName</rui:functionArg>
-</rui:action>
 </body>
 </html>

@@ -264,7 +264,7 @@ class ModelMetaData
         modelName = xmlModel.@name.text()
         parentModelName = xmlModel.@parentModel == ""?null:xmlModel.@parentModel.text()
         indexName = xmlModel.@indexName.text() == ""?null:xmlModel.@indexName.text()
-        storageType = xmlModel.@getStorageType.text() == ""?null:xmlModel.@getStorageType.text()
+        storageType = xmlModel.@StorageType.text() == ""?null:xmlModel.@StorageType.text()
         createDatasourceConfiguration (xmlModel);
         processProperties(xmlModel);
         processRelations(xmlModel);

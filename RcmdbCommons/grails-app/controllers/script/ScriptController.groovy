@@ -60,6 +60,7 @@ class ScriptController {
     }
 
     def save = {
+        params.logFile=params.name;
         def script = CmdbScript.addScript(ControllerUtils.getClassProperties(params, CmdbScript), true)
         if (script.hasErrors()) {
             render(view: 'create', controller: 'script', model: [cmdbScript: script])
@@ -98,6 +99,7 @@ class ScriptController {
     def update = {
         def script = CmdbScript.get([id: params.id])
         if (script) {
+            params.logFile=params.name;
             script = CmdbScript.updateScript(script, ControllerUtils.getClassProperties(params, CmdbScript), true);
             if (script.hasErrors()) {
                 render(view: 'edit', model: [cmdbScript: script])

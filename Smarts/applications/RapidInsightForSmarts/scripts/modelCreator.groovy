@@ -73,7 +73,7 @@ def getModelXmls()
         def modelDatasources = modelXml.Datasources.Datasource;
         def modelName = modelXml.@Name.text();
         def parentName = modelXml.@Parent.text();
-        def dirType = modelXml.@DirType.text();
+        def storageType = modelXml.@StorageType.text();
         def indexName = modelXml.@IndexName.text();
         indexName = indexName == null?"":indexName;
         def modelMetaProps = [name:modelName, indexName:indexName];
@@ -84,10 +84,10 @@ def getModelXmls()
             modelMetaProps["parentModel"] = parentName;
         }
 
-        if(dirType != null && dirType != "")
+        if(storageType != null && storageType != "")
         {
-            logger.info ("Model ${modelName} is will be written to ${dirType} directory");
-            modelMetaProps["dirType"] = dirType;
+            logger.info ("Model ${modelName} will be written to ${storageType} storage.");
+            modelMetaProps["storageType"] = storageType;
         }
         modelBuilder.Model(modelMetaProps)
         {

@@ -12,6 +12,7 @@ import org.apache.lucene.store.RAMDirectory
 import org.apache.lucene.store.Directory
 import org.apache.lucene.store.FSDirectory
 import org.compass.core.config.CompassSettings
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,8 +27,8 @@ class CompositeDirectoryWrapperProviderTest extends  AbstractSearchableCompassTe
     protected void setUp() {
         super.setUp()
         FileUtils.deleteDirectory (new File(TestCompassFactory.indexDirectory));
-        System.setProperty("mirrorDirTypeMaxBufferSize", "128")
-        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "64")
+        System.setProperty("mirrorBufferUpperLimit", "128")
+        System.setProperty("mirrorBufferLowerLimit", "64")
     }
 
     protected void tearDown() {
@@ -36,41 +37,41 @@ class CompositeDirectoryWrapperProviderTest extends  AbstractSearchableCompassTe
         {
             compass.close();
         }
-        System.setProperty("mirrorDirTypeMaxBufferSize", "128")
-        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "64")
+        System.setProperty("mirrorBufferUpperLimit", "128")
+        System.setProperty("mirrorBufferLowerLimit", "64")
     }
 
     public void testConfig()
     {
         CompassSettings settings = new CompassSettings();
         CompositeDirectoryWrapperProvider provider = new CompositeDirectoryWrapperProvider();
-        System.setProperty("mirrorDirTypeMaxBufferSize", "aaa")
-        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "1")
+        System.setProperty("mirrorBufferUpperLimit", "aaa")
+        System.setProperty("mirrorBufferLowerLimit", "1")
         try
         {
             provider.configure (settings);
-            fail("Should throw exception since mirrorDirTypeMaxBufferSize is invalid");
+            fail("Should throw exception since mirrorBufferUpperLimit is invalid");
         }
         catch(InvalidMirrorBufferSizeException e)
         {
         }
 
-        System.setProperty("mirrorDirTypeMaxBufferSize", "1")
-        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "aaa")
+        System.setProperty("mirrorBufferUpperLimit", "1")
+        System.setProperty("mirrorBufferLowerLimit", "aaa")
         try
         {
             provider.configure (settings);
-            fail("Should throw exception since mirrorDirTypeContinueToProcessBufferSize is invalid");
+            fail("Should throw exception since mirrorBufferLowerLimit is invalid");
         }
         catch(InvalidMirrorBufferSizeException e)
         {
         }
-        System.setProperty("mirrorDirTypeMaxBufferSize", "1")
-        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "5")
+        System.setProperty("mirrorBufferUpperLimit", "1")
+        System.setProperty("mirrorBufferLowerLimit", "5")
         try
         {
             provider.configure (settings);
-            fail("Should throw exception sincer mirrorDirTypeMaxBufferSize should be greater than mirrorDirTypeContinueToProcessBufferSize");
+            fail("Should throw exception sincer mirrorBufferUpperLimit should be greater than mirrorBufferLowerLimit");
         }
         catch(InvalidMirrorBufferSizeException e)
         {
@@ -102,7 +103,7 @@ class CompositeDirectoryWrapperProviderTest extends  AbstractSearchableCompassTe
 
 class RamProviderDomainClass{
     static searchable = {
-        dirType "ram"
+        storageType ModelGenerator.RAM_DIR_TYPE
     }
     static relations = [:]
     Long id
@@ -112,7 +113,7 @@ class RamProviderDomainClass{
 
 class FileProviderDomainClass{
     static searchable = {
-        dirType "file"
+        storageType ModelGenerator.FILE_DIR_TYPE
     }
     static relations = [:]
     Long id
@@ -122,7 +123,7 @@ class FileProviderDomainClass{
 
 class MirrorProviderDomainClass{
     static searchable = {
-        dirType "mirror"
+        storageType ModelGenerator.MIRRORED_DIR_TYPE
     }
     static relations = [:]
     Long id
@@ -132,7 +133,7 @@ class MirrorProviderDomainClass{
 
 class SubIndexSpecifiedMirrorProviderDomainClass{
     static searchable = {
-        dirType "mirror"
+        storageType ModelGenerator.MIRRORED_DIR_TYPE
     }
     static relations = [:]
     Long id

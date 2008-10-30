@@ -21,7 +21,7 @@ class ModelGeneratorAdapter {
         models.each{Model model->
             StringWriter writer = new StringWriter();
             def modelBuilder = new MarkupBuilder(writer);
-            modelBuilder.Model(name:model.name, parentModel:model.parentModel?model.parentModel.name:null, indexName:model.indexName, dirType:model.dirType)
+            modelBuilder.Model(name:model.name, parentModel:model.parentModel?model.parentModel.name:null, indexName:model.indexName, storageType:model.storageType)
             {
                 modelBuilder.Properties(){
                     model.modelProperties.each{ModelProperty property->

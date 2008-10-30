@@ -47,21 +47,21 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
         awaitTermination = settings.getSettingAsLong("awaitTermination", 5);
         try
         {
-            maxNumberOfUnProcessedBytes = (long)(Long.parseLong(System.getProperty("mirrorDirTypeMaxBufferSize", "128"))* Math.pow(2, 20));
+            maxNumberOfUnProcessedBytes = (long)(Long.parseLong(System.getProperty("mirrorBufferUpperLimit", "128"))* Math.pow(2, 20));
         }catch(NumberFormatException e)
         {
-            throw new InvalidMirrorBufferSizeException("mirrorDirTypeMaxBufferSize", System.getProperty("mirrorDirTypeMaxBufferSize"), e.getMessage());
+            throw new InvalidMirrorBufferSizeException("mirrorBufferUpperLimit", System.getProperty("mirrorBufferUpperLimit"), e.getMessage());
         }
         try
         {
-            minNumberOfUnProcessedBytes = (long)(Long.parseLong(System.getProperty("mirrorDirTypeContinueToProcessBufferSize", "64"))* Math.pow(2, 20));
+            minNumberOfUnProcessedBytes = (long)(Long.parseLong(System.getProperty("mirrorBufferLowerLimit", "64"))* Math.pow(2, 20));
         }catch(NumberFormatException e)
         {
-            throw new InvalidMirrorBufferSizeException("mirrorDirTypeContinueToProcessBufferSize", System.getProperty("mirrorDirTypeContinueToProcessBufferSize"), e.getMessage());
+            throw new InvalidMirrorBufferSizeException("mirrorBufferLowerLimit", System.getProperty("mirrorBufferLowerLimit"), e.getMessage());
         }
         if(minNumberOfUnProcessedBytes >= maxNumberOfUnProcessedBytes)
         {
-            throw new InvalidMirrorBufferSizeException("mirrorDirTypeContinueToProcessBufferSize", System.getProperty("mirrorDirTypeContinueToProcessBufferSize"), "mirrorDirTypeMaxBufferSize should be greater than mirrorDirTypeContinueToProcessBufferSize");    
+            throw new InvalidMirrorBufferSizeException("mirrorBufferLowerLimit", System.getProperty("mirrorBufferLowerLimit"), "mirrorBufferUpperLimit should be greater than mirrorBufferLowerLimit");    
         }
 
     }
@@ -69,25 +69,25 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
     public Directory wrap(String subIndex, Directory dir) throws SearchEngineException {
         List allClassMappings = DomainClassMappingHelper.getDomainClassMappings();
         try {
-            String dirType = null;
+            String storageType = null;
             for(int i=0; i < allClassMappings.size(); i++)
             {
                 if(subIndex.equals(((CompassClassMapping)allClassMappings.get(i)).getSubIndex()))
                 {
-                    dirType = ((CompassClassMapping)allClassMappings.get(i)).getDirType();
+                    storageType = ((CompassClassMapping)allClassMappings.get(i)).getStorageType();
                     break;
                 }
             }
 
-            if(dirType == null)
+            if(storageType == null)
             {
                 return dir;
             }
-            else if(dirType.equalsIgnoreCase("ram"))
+            else if(storageType.equalsIgnoreCase("Memory"))
             {
                 return new RAMDirectory(dir);
             }
-            else  if(dirType.equalsIgnoreCase("mirror"))
+            else  if(storageType.equalsIgnoreCase("FileAndMemory"))
             {
                 return new MemoryMirrorDirectoryWrapper(dir, awaitTermination, maxNumberOfUnProcessedBytes, minNumberOfUnProcessedBytes, doCreateExecutorService());
             }

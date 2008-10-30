@@ -9,7 +9,7 @@ package com.ifountain.compass
 class InvalidMirrorBufferSizeException extends RuntimeException{
 
     public InvalidMirrorBufferSizeException(String setting, String value, String reason) {
-        super("Invalid mirror dirType ${setting} value ${value}. Reason:${reason}".toString());    //To change body of overridden methods use File | Settings | File Templates.
+        super("Invalid mirror storageType ${setting} value ${value}. Reason:${reason}".toString());    //To change body of overridden methods use File | Settings | File Templates.
     }
 
 }

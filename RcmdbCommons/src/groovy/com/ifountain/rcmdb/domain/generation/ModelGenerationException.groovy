@@ -98,8 +98,8 @@ class ModelGenerationException extends Exception{
         return new ModelGenerationException("Child model ${modelName} can not define key.");
     }
 
-    public static ModelGenerationException invalidDirType(String modelName, String dirType)
+    public static ModelGenerationException invalidStorageType(String modelName, String storageType)
     {
-        return new ModelGenerationException("Invalid dirType ${dirType} for model ${modelName}.");
+        return new ModelGenerationException("Invalid storageType ${storageType} for model ${modelName}.");
     }
 }

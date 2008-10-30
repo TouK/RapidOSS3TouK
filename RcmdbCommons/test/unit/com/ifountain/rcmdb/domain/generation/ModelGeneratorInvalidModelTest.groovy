@@ -42,19 +42,19 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
     }
 
-    public void testThrowsExceptionIfInvalidDirTypeSpecified()
+    public void testThrowsExceptionIfInvalidStorageTypeSpecified()
     {
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
         String modelName = "ChildModel";
-        String invalidDirType = "invalidDirType"
-        def modelXml = createModel (modelName, null, [], [prop1], [], [], invalidDirType);
+        String invalidStorageType = "invalidStorageType"
+        def modelXml = createModel (modelName, null, [], [prop1], [], [], invalidStorageType);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
-            fail("Should throw exception since dirType is not valid");
+            fail("Should throw exception since storageType is not valid");
         }catch(ModelGenerationException e)
         {
-            assertEquals (ModelGenerationException.invalidDirType(modelName, invalidDirType).getMessage(), e.getMessage());
+            assertEquals (ModelGenerationException.invalidStorageType(modelName, invalidStorageType).getMessage(), e.getMessage());
         }
     }
 
@@ -317,15 +317,15 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         return createModel(name, parentModel, [], modelProperties, keyProperties, relations);   
     }
 
-    def createModel(String name, String parentModel, List modelDatasources,  List modelProperties, List keyProperties, List relations, String dirType = null)
+    def createModel(String name, String parentModel, List modelDatasources,  List modelProperties, List keyProperties, List relations, String storageType = null)
     {
         def model = new StringWriter();
         def modelbuilder = new MarkupBuilder(model);
         def modelProps = [name:name];
         if(parentModel)
         modelProps["parentModel"] = parentModel;
-        if(dirType)
-        modelProps["dirType"] = dirType;
+        if(storageType)
+        modelProps["storageType"] = storageType;
         modelbuilder.Model(modelProps){
             modelbuilder.Datasources(){
                 modelbuilder.Datasource(name:"RCMDB"){

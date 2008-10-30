@@ -42,8 +42,8 @@ class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
 
     public void testPerformance()
     {
-        System.setProperty("mirrorDirTypeMaxBufferSize", "20")
-        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", "10")
+        System.setProperty("mirrorBufferUpperLimit", "20")
+        System.setProperty("mirrorBufferLowerLimit", "10")
         compass = TestCompassFactory.getCompass([CompassTestObject], null, true)
         int expectedNumberOfObjects = 38;
         int objectsWillBeInserted = 1000;

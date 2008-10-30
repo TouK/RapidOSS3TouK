@@ -12,10 +12,10 @@
         }
     %>
     <%
-        if(model.dirType != null)
+        if(model.storageType != null)
         {
     %>
-        dirType "${model.dirType}"
+        storageType "${model.storageType}"
     <%
         }
     %>

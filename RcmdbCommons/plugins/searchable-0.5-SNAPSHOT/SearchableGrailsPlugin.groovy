@@ -186,8 +186,8 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
         // Configuration
 
         config = getConfiguration(parentCtx)
-        System.setProperty("mirrorDirTypeMaxBufferSize", ""+config.mirrorDirTypeMaxBufferSize)
-        System.setProperty("mirrorDirTypeContinueToProcessBufferSize", ""+config.mirrorDirTypeContinueToProcessBufferSize)
+        System.setProperty("mirrorBufferUpperLimit", ""+config.mirrorBufferUpperLimit)
+        System.setProperty("mirrorBufferLowerLimit", ""+config.mirrorBufferLowerLimit)
         // Compass
         LOG.debug("Defining Compass and Compass::GPS beans")
         config?.compassSettings["compass.transaction.disableThreadBoundLocalTransaction"] = "true"

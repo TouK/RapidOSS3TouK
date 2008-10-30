@@ -3,15 +3,15 @@ package model
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class Model {
-    public static String FILE_DIR_TYPE = "file";
-    public static String RAM_DIR_TYPE = "ram";
-    public static String MIRRORED_DIR_TYPE = "mirror";
+    public static String FILE_DIR_TYPE = "File";
+    public static String RAM_DIR_TYPE = "Memory";
+    public static String MIRRORED_DIR_TYPE = "FileAndMemory";
     static searchable = {
         except = ["fromRelations", "toRelations", "modelProperties", "datasources", "parentModel"];
     };
     String name;
     String indexName = "";
-    String dirType = FILE_DIR_TYPE;
+    String storageType = FILE_DIR_TYPE;
     String rsOwner = "p"
     Boolean resourcesWillBeGenerated = false;
     Model parentModel;
@@ -41,7 +41,7 @@ class Model {
         });
         parentModel(nullable:true);
         resourcesWillBeGenerated(nullable:true);
-        dirType(inList:[FILE_DIR_TYPE, RAM_DIR_TYPE, MIRRORED_DIR_TYPE]);
+        storageType(inList:[FILE_DIR_TYPE, RAM_DIR_TYPE, MIRRORED_DIR_TYPE]);
     }
 //
 //    def getOperations()

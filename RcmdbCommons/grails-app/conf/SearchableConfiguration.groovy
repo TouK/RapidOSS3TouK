@@ -26,8 +26,8 @@ class SearchableConfiguration {
                 append(File.separator).
                 append(GrailsUtil.getEnvironment()).
                 toString();
-    int mirrorDirTypeMaxBufferSize = 64;
-    int mirrorDirTypeContinueToProcessBufferSize = 32;
+    int mirrorBufferUpperLimit = 64;
+    int mirrorBufferLowerLimit = 32;
     /**
      * Any settings you wish to pass to Compass
      *

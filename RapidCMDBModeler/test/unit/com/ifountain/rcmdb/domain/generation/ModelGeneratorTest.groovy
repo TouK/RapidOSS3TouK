@@ -72,7 +72,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     
     public void testGenerateModel()
     {
-        def model = new MockModel(name:"Class1", dirType:ModelGenerator.RAM_DIR_TYPE);
+        def model = new MockModel(name:"Class1", storageType:ModelGenerator.RAM_DIR_TYPE);
         addMasterDatasource(model);
 
         ModelGeneratorAdapter.generateModels([model]);
@@ -98,7 +98,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
-        assertEquals(ModelGenerator.RAM_DIR_TYPE, closureGetter.propertiesSetByClosure["dirType"]);
+        assertEquals(ModelGenerator.RAM_DIR_TYPE, closureGetter.propertiesSetByClosure["storageType"]);
 
         ModelGenerator.DEFAULT_IMPORTS.each {
             assertTrue(ModelGenerator.getInstance().getGeneratedModelFile(model.name).getText ().indexOf("import $it") >= 0);

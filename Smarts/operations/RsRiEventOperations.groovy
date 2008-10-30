@@ -1,3 +1,5 @@
+import org.apache.log4j.Logger;
+
 class RsRiEventOperations  extends RsEventOperations {
 	static notify(Map originalEventProps) {
 		def eventProps = [:]
@@ -12,10 +14,15 @@ class RsRiEventOperations  extends RsEventOperations {
 		eventProps.lastNotifiedAt = Date.now()
 		eventProps.lastChangedAt = Date.now()
 		event = RsRiEvent.add(eventProps)
-		if (event.hasErrors()) {
-		    println event.errors
+		
+		if (!event.hasErrors()) {
+            RsEventJournal.add(eventId:event.id,eventName:event.eventName,rsTime:new Date(),details:"Created the event")
 		}
-		RsEventJournal.add(eventId:event.id,eventName:event.eventName,rsTime:new Date(),details:"Created the event")
+		else
+        {
+           Logger.getRootLogger().warn("Could not add RsRiEvent ${eventProps} (skipping RsEventJournal add), Reason ${event.errors}");           
+        }
+
 		return event;
 	}
 

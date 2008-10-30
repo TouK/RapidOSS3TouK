@@ -39,7 +39,9 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClas
  * @see MemoryMirrorDirectoryWrapper
  */
 public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvider, CompassConfigurable {
-
+    public static String FILE_DIR_TYPE = "File";
+    public static String RAM_DIR_TYPE = "Memory";
+    public static String MIRRORED_DIR_TYPE = "FileAndMemory";
     private long awaitTermination;
     private long maxNumberOfUnProcessedBytes = (long)Math.pow(2, 27);
     private long minNumberOfUnProcessedBytes = (long)Math.pow(2, 26);
@@ -83,11 +85,11 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
             {
                 return dir;
             }
-            else if(storageType.equalsIgnoreCase("Memory"))
+            else if(storageType.equalsIgnoreCase(RAM_DIR_TYPE))
             {
                 return new RAMDirectory(dir);
             }
-            else  if(storageType.equalsIgnoreCase("FileAndMemory"))
+            else  if(storageType.equalsIgnoreCase(FILE_DIR_TYPE))
             {
                 return new MemoryMirrorDirectoryWrapper(dir, awaitTermination, maxNumberOfUnProcessedBytes, minNumberOfUnProcessedBytes, doCreateExecutorService());
             }

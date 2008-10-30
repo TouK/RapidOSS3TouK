@@ -103,7 +103,7 @@ class CompositeDirectoryWrapperProviderTest extends  AbstractSearchableCompassTe
 
 class RamProviderDomainClass{
     static searchable = {
-        storageType ModelGenerator.RAM_DIR_TYPE
+        storageType CompositeDirectoryWrapperProvider.RAM_DIR_TYPE
     }
     static relations = [:]
     Long id
@@ -113,7 +113,7 @@ class RamProviderDomainClass{
 
 class FileProviderDomainClass{
     static searchable = {
-        storageType ModelGenerator.FILE_DIR_TYPE
+        storageType CompositeDirectoryWrapperProvider.FILE_DIR_TYPE
     }
     static relations = [:]
     Long id
@@ -123,7 +123,7 @@ class FileProviderDomainClass{
 
 class MirrorProviderDomainClass{
     static searchable = {
-        storageType ModelGenerator.MIRRORED_DIR_TYPE
+        storageType CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE
     }
     static relations = [:]
     Long id
@@ -133,7 +133,7 @@ class MirrorProviderDomainClass{
 
 class SubIndexSpecifiedMirrorProviderDomainClass{
     static searchable = {
-        storageType ModelGenerator.MIRRORED_DIR_TYPE
+        storageType CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE
     }
     static relations = [:]
     Long id

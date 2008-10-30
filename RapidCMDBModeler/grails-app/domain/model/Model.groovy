@@ -1,17 +1,15 @@
 package model
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import com.ifountain.compass.CompositeDirectoryWrapperProvider
 
 class Model {
-    public static String FILE_DIR_TYPE = "File";
-    public static String RAM_DIR_TYPE = "Memory";
-    public static String MIRRORED_DIR_TYPE = "FileAndMemory";
     static searchable = {
         except = ["fromRelations", "toRelations", "modelProperties", "datasources", "parentModel"];
     };
     String name;
     String indexName = "";
-    String storageType = FILE_DIR_TYPE;
+    String storageType = CompositeDirectoryWrapperProvider.FILE_DIR_TYPE;
     String rsOwner = "p"
     Boolean resourcesWillBeGenerated = false;
     Model parentModel;
@@ -41,7 +39,7 @@ class Model {
         });
         parentModel(nullable:true);
         resourcesWillBeGenerated(nullable:true);
-        storageType(inList:[FILE_DIR_TYPE, RAM_DIR_TYPE, MIRRORED_DIR_TYPE]);
+        storageType(inList:[CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, CompositeDirectoryWrapperProvider.RAM_DIR_TYPE, CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE]);
     }
 //
 //    def getOperations()

@@ -8,7 +8,7 @@ package com.ifountain.compass
  */
 class CompassTestObject {
     static searchable = {
-        storageType "FileAndMemory"
+        storageType CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE
     }
     static relations = [:]
     Long id

@@ -9,13 +9,11 @@ import groovy.util.slurpersupport.GPathResult
 import org.springframework.validation.Errors
 import groovy.text.Template
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import com.ifountain.compass.CompositeDirectoryWrapperProvider
 
 class ModelGenerator 
 {
-    public static String FILE_DIR_TYPE = "File";
-    public static String RAM_DIR_TYPE = "Memory";
-    public static String MIRRORED_DIR_TYPE = "FileAndMemory";
-    public static final String VALID_DIR_TYPES = [FILE_DIR_TYPE, RAM_DIR_TYPE, MIRRORED_DIR_TYPE]
+    public static final String VALID_DIR_TYPES = [CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, CompositeDirectoryWrapperProvider.RAM_DIR_TYPE, CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE]
     private static final String validModelNameExpression = "[A-Z][a-z_][A-Za-z_0-9]*"
     private static final String validPropertyNameExpression = "[a-z_][a-z_][A-Za-z_0-9]*"
     public static final String NUMBER_TYPE = "number"
@@ -266,7 +264,7 @@ class ModelMetaData
         modelName = xmlModel.@name.text()
         parentModelName = xmlModel.@parentModel == ""?null:xmlModel.@parentModel.text()
         indexName = xmlModel.@indexName.text() == ""?null:xmlModel.@indexName.text()
-        storageType = xmlModel.@storageType.text() == ""?null:xmlModel.@storageType.text()
+        storageType = xmlModel.@getStorageType.text() == ""?null:xmlModel.@getStorageType.text()
         createDatasourceConfiguration (xmlModel);
         processProperties(xmlModel);
         processRelations(xmlModel);

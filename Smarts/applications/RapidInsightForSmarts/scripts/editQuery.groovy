@@ -67,7 +67,7 @@ else {
         def sortProperties = [];
         GrailsDomainClass domainClass = web.grailsApplication.getDomainClass("RsTopologyObject")
         domainClass.getSubClasses().each {
-            println "Subclass ${it.name}"
+            //println "Subclass ${it.name}"
             sortProperties.addAll(DomainClassUtils.getFilteredProperties(it.name, extraFilteredProps));
         }
         sortProperties.addAll(DomainClassUtils.getFilteredProperties("RsTopologyObject", extraFilteredProps));

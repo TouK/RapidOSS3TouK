@@ -20,7 +20,8 @@ YAHOO.rapidjs.component.PollingComponentContainer = function(container, config)
 YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapidjs.component.ComponentContainer, {
 
 	poll : function(params, title){
-        this.doRequest(this.url, params || this.params);
+        this.params = params || this.params;
+        this.doRequest(this.url, this.params);
         if(title){
             this.setTitle(title);
         }

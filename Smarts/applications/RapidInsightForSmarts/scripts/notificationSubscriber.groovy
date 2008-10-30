@@ -42,9 +42,9 @@ def init(){
     }
     logger.debug("Marking all notifications as deleted.");
     notificationsMap = new CaseInsensitiveMap()
-    def notificationNames = RsSmartsNotification.termFreqs("name", [size:10000000000]).term;
-    notificationNames.each {
-        notificationsMap[it] = "deleted";
+    def notificationNames = RsSmartsNotification.propertySummary("alias:*", ["name"]);
+    notificationNames.name.each {propertyValue, occurrenceCount->
+        notificationsMap[propertyValue] = "deleted";
     }
     existingObjectsRetrieved = false;
 }

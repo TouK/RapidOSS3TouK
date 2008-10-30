@@ -1,0 +1,6 @@
+
+    
+    class RsRiHistoricalEventOperations extends RsHistoricalEventOperations
+    {
+    }
+    

@@ -56,7 +56,13 @@
                 <Property Name='count' Type='number' Default="1" />
           		<Property Name='eventName' Type='string'/>
          	</Properties>
-  		</Model>    
+  		</Model>
+        <Model Name="RsRiHistoricalEvent" Parent="RsHistoricalEvent">
+      		<Properties>
+                <Property Name='count' Type='number' Default="1" />
+          		<Property Name='eventName' Type='string'/>
+         	</Properties>
+  		</Model> 
         
         <Model Name="RsSmartsNotification" Parent="RsEvent">
             <Properties>

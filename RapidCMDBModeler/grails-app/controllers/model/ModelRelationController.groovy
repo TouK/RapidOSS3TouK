@@ -44,8 +44,7 @@ class ModelRelationController {
             render(view:'create',model:[modelRelation:modelRelation, 'modelId':params["firstModel.id"]])
         }
     }
-    def update = {
-        println params;
+    def update = {        
         def cardinalities = params["cardinality"]?.split("To");
         if(cardinalities != null){
             params["firstCardinality"] = cardinalities[0];

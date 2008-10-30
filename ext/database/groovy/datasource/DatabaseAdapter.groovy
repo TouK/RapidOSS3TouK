@@ -6,33 +6,33 @@ import java.sql.ResultSet
 import org.apache.log4j.Logger;
 
 public class DatabaseAdapter extends BaseAdapter {
-    
+
     public DatabaseAdapter(){
     	super();
     }
-    
+
     public DatabaseAdapter(String datasourceName, long reconnectInterval, Logger logger) {
         super(datasourceName, reconnectInterval, logger);
     }
-    
+
     public static getInstance(datasourceName, tableName, keys){
     	return new SingleTableDatabaseAdapter(datasourceName, tableName, keys, 0, Logger.getRootLogger());
     }
 
     public static getInstance(datasourceName){
     	return new DatabaseAdapter(datasourceName, 0, Logger.getRootLogger());
-    }    
-    
+    }
+
     public int executeUpdate(sql) throws Exception{
         return executeUpdate(sql, []);
     }
-    
+
     public int executeUpdate(sql, queryParams) throws Exception{
         ExecuteUpdateAction action = new ExecuteUpdateAction(logger, sql, (Object[]) queryParams);
         executeAction(action);
         return action.getAffectedRowCount();
     }
- 
+
     public List executeQuery(sql,  queryParams) throws Exception{
         List results = [];
         def rset = executeQuery(sql,  queryParams, 0);
@@ -44,20 +44,21 @@ public class DatabaseAdapter extends BaseAdapter {
 	        for(int i=1; i <= colCount; i++)
 	        {
                 String fieldValue=null;
-                if(rset.getObject(i) instanceof Date)
+                if(rset.getObject(i) instanceof java.util.Date)
                 {
-                    fieldValue=String.valueOf(rset.getObject(i).getTime())
+                    fieldValue=String.valueOf(rset.getTimestamp(i).getTime());
+                    logger.debug("Converting date field from ${rset.getTimestamp(i)} to ${fieldValue}");
                 }
                 else
                 {
                     fieldValue=String.valueOf(rset.getObject(i)).trim();
                 }
-                
+
                 record.put(metaData.getColumnName(i).toUpperCase(), fieldValue);
 	        }
 	        results += record;
 	    }
-	    
+
 	    return results;
     }
 

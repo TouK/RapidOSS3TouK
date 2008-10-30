@@ -218,18 +218,19 @@ class NotificationsTagLib {
                             YAHOO.util.Dom.setStyle(left, 'top', '1px');
                         });
                         layout.render();
+                        var layoutCenter = layout.getUnitByPosition('center');
                         var layoutLeft = layout.getUnitByPosition('left');
                         layoutLeft.on('resize', function(){
                             YAHOO.util.Dom.setStyle(layoutLeft.body, 'top', '1px');
                         });
 
-                        searchGrid.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+                        searchGrid.resize(layoutCenter.getSizes().body.w, layoutCenter.getSizes().body.h);
                         layout.on('resize', function() {
-                            searchGrid.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+                            searchGrid.resize(layoutCenter.getSizes().body.w, layoutCenter.getSizes().body.h);
                         });
-                        tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+                        tree.resize(layoutLeft.getSizes().body.w, layoutLeft.getSizes().body.h);
                         layout.on('resize', function() {
-                            tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+                            tree.resize(layoutLeft.getSizes().body.w, layoutLeft.getSizes().body.h);
                         });
                         window.layout = layout;
 

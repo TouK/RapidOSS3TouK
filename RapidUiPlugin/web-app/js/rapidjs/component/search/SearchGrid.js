@@ -280,8 +280,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         return "rcmdb-searchgrid";
     },
     resize : function(width, height) {
-        this.body.setStyle("height", height - this.header.dom.offsetHeight);
-        this.bwrap.setStyle("height", height - (this.header.dom.offsetHeight + this.hwrap.getHeight()));
+        this.body.setWidth(width);
+        this.body.setHeight(height - this.header.dom.offsetHeight);
+        this.bwrap.setHeight(height - (this.header.dom.offsetHeight + this.hwrap.getHeight()));
         var totalWidth = this.getTotalColumnWidth();
         this.scrollPos.setWidth(totalWidth);
         this._verticalScrollChanged();

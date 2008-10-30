@@ -237,47 +237,28 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         var interval = Math.floor(this.getScrolledEl().getHeight() / this.rowHeight);
         interval = interval + 2;
         var nOfSearchData = this.searchData.length;
-        if (this.totalRowCount < rowStartIndex + interval)
+        var currentUpperBound = rowStartIndex + interval;
+        if(currentUpperBound > this.totalRowCount)
         {
-            rowStartIndex = this.totalRowCount - interval;
+            rowStartIndex = this.totalRowCount - interval; 
         }
-        if (rowStartIndex < 0)
-        {
+        if(rowStartIndex < 0){
             rowStartIndex = 0;
-            interval = this.totalRowCount;
         }
-
-        if (rowStartIndex < this.lastOffset + 2) {
-            var nextOffset = (rowStartIndex + interval * 2) - this.maxRowsDisplayed;
-
-            if (nextOffset < 0) {
-                nextOffset = 0;
-            }
-            if (nextOffset < this.lastOffset) {
-                this.renderTask.cancel();
-                this.scrollPollTask.delay(100, this.scrollPoll, this, [nextOffset]);
-            }
-            else {
-                this.scrollPollTask.cancel();
-                this.renderTask.delay(100);
-            }
+        var outOfBounds = rowStartIndex < this.lastOffset || currentUpperBound > (this.lastOffset+nOfSearchData) && this.lastOffset+nOfSearchData < this.totalRowCount;
+        if(outOfBounds)
+        {
+             var nextOffset = rowStartIndex  - Math.floor(this.maxRowsDisplayed/2);
+             if(nextOffset < 0)
+             nextOffset = 0;
+             this.renderTask.cancel();
+             this.scrollPollTask.delay(100, this.scrollPoll, this, [nextOffset]);
         }
-        else if ((rowStartIndex + interval) > (this.lastOffset + nOfSearchData - 1)) {
-            var nextOffset = rowStartIndex - interval;
-            if (nextOffset > this.lastOffset && (rowStartIndex + interval) < this.totalRowCount) {
-                this.renderTask.cancel();
-                this.scrollPollTask.delay(100, this.scrollPoll, this, [nextOffset]);
-            }
-            else {
-                this.scrollPollTask.cancel();
-                this.renderTask.delay(100);
-            }
-        }
-        else {
+        else
+        {
             this.scrollPollTask.cancel();
             this.renderTask.delay(100);
         }
-
     },
 
     renderRows : function() {

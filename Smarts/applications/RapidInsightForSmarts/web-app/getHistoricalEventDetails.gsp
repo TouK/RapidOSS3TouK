@@ -19,10 +19,10 @@
     <div style="display:block;margin-top:10px;">
         <%
                 SimpleDateFormat format = new SimpleDateFormat("dd MMM HH:mm:ss")
-                def firstNotifiedAt = format.format(new Timestamp(domainObject.firstNotifiedAt));
-                def lastNotifiedAt = format.format(new Timestamp(domainObject.lastNotifiedAt));
-                def lastChangedAt = format.format(new Timestamp(domainObject.lastChangedAt));
-                def lastClearedAt = format.format(new Timestamp(domainObject.lastClearedAt));
+                def firstNotifiedAt = domainObject.firstNotifiedAt == 0 ? "never" : format.format(new Timestamp(domainObject.firstNotifiedAt));
+                def lastNotifiedAt = domainObject.lastNotifiedAt == 0 ? "never" : format.format(new Timestamp(domainObject.lastNotifiedAt));
+                def lastChangedAt = domainObject.lastChangedAt == 0 ? "never" : format.format(new Timestamp(domainObject.lastChangedAt));
+                def lastClearedAt = domainObject.lastClearedAt == 0 ? "never" : format.format(new Timestamp(domainObject.lastClearedAt));
                 def severityClass;
                 def severity = domainObject.severity;
                 if (severity == 1) {

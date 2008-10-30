@@ -46,8 +46,7 @@ public class DatabaseAdapter extends BaseAdapter {
                 String fieldValue=null;
                 if(rset.getObject(i) instanceof java.util.Date)
                 {
-                    fieldValue=String.valueOf(rset.getTimestamp(i).getTime());
-                    logger.debug("Converting date field from ${rset.getTimestamp(i)} to ${fieldValue}");
+                    fieldValue=String.valueOf(rset.getTimestamp(i).getTime());                    
                 }
                 else
                 {

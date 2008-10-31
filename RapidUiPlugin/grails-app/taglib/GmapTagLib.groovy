@@ -45,7 +45,8 @@ class GmapTagLib {
             latitudeAttributeName:'${attrs["latitudeField"]}',
             longitudeAttributeName:'${attrs["longitudeField"]}',
             addressAttributeName:'${attrs["addressField"]}',
-            markerAttributeName:'${attrs["markerField"]}'
+            markerAttributeName:'${attrs["markerField"]}',
+            tooltipAttributeName:'${attrs["tooltipField"]}'
         }"""
     }
 }

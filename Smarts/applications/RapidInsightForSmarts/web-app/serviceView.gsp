@@ -20,7 +20,7 @@
     </rui:tgColumns>
     <rui:tgMenuItems>
         <rui:tgMenuItem id="eventHistory" label="Get Event History" action="eventHistoryAction"></rui:tgMenuItem>
-        <rui:tgMenuItem id="deviceLocations" label="Get Device Locations" action="deviceLocationsAction"></rui:tgMenuItem>
+        <rui:tgMenuItem id="deviceLocations" label="Get Device Locations" action="deviceLocationsAction" visible="params.data.rsAlias == 'RsComputerSystem' || params.data.isComputerSystem == 'true'"></rui:tgMenuItem>
     </rui:tgMenuItems>
 </rui:treeGrid>
 <rui:searchGrid id="eventsGrid" url="search?format=xml&searchIn=RsEvent" queryParameter="query" rootTag="Objects" contentPath="Object"
@@ -63,8 +63,8 @@
 </rui:timeline>
 <rui:popupWindow componentId="eventHistory" width="730" height="450"></rui:popupWindow>
 
-<rui:gmap id="deviceLocations" url="gmap.xml" title="Devices Map" contentPath="Location"
-        timeout="120" latitudeField="Lat" longitudeField="Lng" addressField="Address" markerField="Marker"></rui:gmap>
+<rui:gmap id="deviceLocations" url="script/run/getDeviceLocations?format=xml" title="Devices Map" contentPath="Location"
+        timeout="120" latitudeField="Lat" longitudeField="Lng" addressField="Address" markerField="Marker" tooltipField="Tooltip"></rui:gmap>
 
 <rui:popupWindow componentId="deviceLocations" width="800" height="600"></rui:popupWindow>
 
@@ -115,7 +115,8 @@
     <rui:functionArg>'Event History of ' + params.data.displayName</rui:functionArg>
 </rui:action>
 <rui:action id="deviceLocationsAction" componentId="deviceLocations" type="function" function="poll">
-
+     <rui:functionArg>{nodeType:params.data.nodeType, name:params.data.name}</rui:functionArg>
+    <rui:functionArg>'Locations of ' + params.data.displayName</rui:functionArg>
 </rui:action>
     <script type="text/javascript">
         function getEventsQuery(data){

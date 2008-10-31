@@ -124,6 +124,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">geocodes:</td>
+                    
+                    <td valign="top" class="value">${rsComputerSystem.geocodes}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">hostsAccessPoints:</td>
                     
                     <td valign="top" style="text-align:left;" class="value">

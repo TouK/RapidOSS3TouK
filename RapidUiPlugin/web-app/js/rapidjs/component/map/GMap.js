@@ -135,7 +135,7 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
 			this.renderingFinished = true;
 		}
 
-		this.poll();
+//			this.poll();
 
     }
 });

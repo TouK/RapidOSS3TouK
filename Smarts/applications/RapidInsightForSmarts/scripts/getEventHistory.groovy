@@ -8,10 +8,10 @@ def name = params.name;
 
 def historicalEvents = null;
 if(nodeType == "Container"){
-    historicalEvents = RsSmartsHistoricalNotification.search("className:\"${name}\"").results;
+    historicalEvents = RsSmartsHistoricalNotification.search("className:\"${name}\"", [max:10000000]).results;
 }
 else{
-   historicalEvents = RsSmartsHistoricalNotification.search("instanceName:\"${name}\"").results;
+   historicalEvents = RsSmartsHistoricalNotification.search("instanceName:\"${name}\"", [max:10000000]).results;
 }
 
 web.render(contentType: 'text/xml'){

@@ -13,7 +13,7 @@ def writer = new StringWriter();
 def queryBuilder = new MarkupBuilder(writer);
 
 SearchQueryGroup.add(name:"My Queries", username:web.session.username, type:"default");
-def queryGroups = SearchQueryGroup.search("type:\"${filterType}\" OR type:\"default\"").results;
+def queryGroups = SearchQueryGroup.search("type:\"${filterType}\" OR type:\"default\"", [max:10000000]).results;
 queryBuilder.Filters
 {
     queryGroups.each {SearchQueryGroup group ->

@@ -13,7 +13,7 @@ import ui.GridView;
 def userName = web.session.username;
 def queryType = params.queryType;
 def extraFilteredProps = ["rsDatasource"];
-def gridViews = GridView.search("username:\"${userName}\"", [sort:"name"]).results;
+def gridViews = GridView.search("username:\"${userName}\"", [sort:"name", max:10000000]).results;
 if (queryType == "notification" || queryType == "historicalnotification") {
     def className = queryType == "notification"? "RsSmartsNotification": "RsSmartsHistoricalNotification";
     def sortProperties = DomainClassUtils.getFilteredProperties(className, extraFilteredProps);

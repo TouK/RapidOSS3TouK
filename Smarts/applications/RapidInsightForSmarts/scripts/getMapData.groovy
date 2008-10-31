@@ -29,9 +29,9 @@ mapDataBuilder.graphData {
         def edgeTokens = it.splitPreserveAllTokens(",");
         def source = edgeTokens[0];
         def target = edgeTokens[1];
-        def links = RsLink.search( "a_ComputerSystemName:${source} z_ComputerSystemName: ${target}").results;
+        def links = RsLink.search( "a_ComputerSystemName:${source} z_ComputerSystemName: ${target}", [max:10000000]).results;
         if( links.size() == 0 )
-        	links = RsLink.search( "a_ComputerSystemName:${target} z_ComputerSystemName: ${source}").results;
+        	links = RsLink.search( "a_ComputerSystemName:${target} z_ComputerSystemName: ${source}", [max:10000000]).results;
 
         if( links.size() != 0 )
 

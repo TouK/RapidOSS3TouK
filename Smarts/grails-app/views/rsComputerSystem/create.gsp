@@ -114,6 +114,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="geocodes">geocodes:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'geocodes','errors')}">
+                            <input type="text" id="geocodes" name="geocodes" value="${fieldValue(bean:rsComputerSystem,field:'geocodes')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="isManaged">isManaged:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'isManaged','errors')}">

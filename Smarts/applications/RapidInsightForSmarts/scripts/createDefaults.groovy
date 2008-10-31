@@ -32,6 +32,7 @@ CmdbScript.addScript(name: "getMapData");
 CmdbScript.addScript(name: "autocomplete");
 CmdbScript.addScript(name: "getHierarchy");
 CmdbScript.addScript(name: "getEventHistory");
+CmdbScript.addScript(name: "getSummaryData");
 
 def adminUser = RsUser.RSADMIN;
 def defaultEventGroup = SearchQueryGroup.add(name: "Default", username:adminUser, isPublic:true, type:"notification");

@@ -11,8 +11,8 @@
     <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA7ipkp7ZXyXVH2UHyOgqZhxT2yXp_ZAY8_ufC3CFXhHIE1NvwkxRnNbZP5arP3T53Mzg-yLZcEMRBew"></script>
 </head>
 <body>
-<rui:pieChart id="summaryChart" url="piechart.xml" dataField="count" contentPath="Item" title="Summary View" 
-        categoryField="state" legend="bottom" swfURL="js/yui/charts/assets/charts.swf" colors="${['0xff0000', '0xff7514', '0xddc700', '0x2dbfcd', '0x00ff00']}"></rui:pieChart>
+<rui:pieChart id="summaryChart" url="script/run/getSummaryData?format=xml" dataField="count" contentPath="Item" title="Summary View" 
+        categoryField="severity" legend="bottom" swfURL="js/yui/charts/assets/charts.swf" colors="${['0xff0000', '0xff7514', '0xddc700', '0x2dbfcd', '0x00ff00']}"></rui:pieChart>
 <rui:treeGrid id="topologyTree" url="script/run/getHierarchy?format=xml" rootTag="Objects" pollingInterval="60"
         keyAttribute="id" contentPath="Object" title="Service View" onNodeClick="treeNodeClickedAction">
     <rui:tgColumns>

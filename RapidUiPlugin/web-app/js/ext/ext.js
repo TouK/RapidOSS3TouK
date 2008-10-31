@@ -1029,20 +1029,6 @@ String.leftPad = function (val, size, ch) {
     return result;
 };
 
-// workaround for Safari 1.3 not supporting hasOwnProperty
-if(YAHOO.util.Connect){
-    YAHOO.util.Connect.setHeader = function(o){
-		for(var prop in this._http_header){
-		    // if(this._http_header.hasOwnProperty(prop)){
-			if(typeof this._http_header[prop] != 'function'){
-				o.conn.setRequestHeader(prop, this._http_header[prop]);
-			}
-		}
-		delete this._http_header;
-		this._http_header = {};
-		this._has_http_headers = false;
-	};
-}
 /**
  * A simple enhancement to drag drop that allows you to constrain the movement of the
  * DD or DDProxy object to a particular element.<br /><br />

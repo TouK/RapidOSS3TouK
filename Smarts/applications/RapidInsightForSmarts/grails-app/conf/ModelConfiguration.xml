@@ -156,6 +156,7 @@
                 <Property Name="discoveryErrorInfo" Type="string"/>
                 <Property Name="discoveryTime" Type="string"/>
                 <Property Name="location" Type="string"/>
+                <Property Name="geocodes" Type="string"/>
                 <Property Name="model" Type="string"/>
                 <Property Name="numberOfIPs" Type="number"/>
                 <Property Name="numberOfIPv6s" Type="number"/>

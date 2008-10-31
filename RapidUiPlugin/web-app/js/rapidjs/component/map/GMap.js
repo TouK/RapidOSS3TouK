@@ -137,9 +137,6 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
 
 		this.poll();
 
-    },
-    layout: function(){
-		this.timeline.layout();
-	}
+    }
 });
 

@@ -162,9 +162,9 @@ def getParameters() {
 def init() {
     logger.debug("Marking all devices as deleted.");
     topologyMap = new CaseInsensitiveMap();
-    def deviceNames = RsTopologyObject.termFreqs("name", [size:10000000000]);
-    deviceNames.each {
-        topologyMap[it.getTerm()] = "deleted";
+    def deviceNames = RsTopologyObject.propertySummary("alias:*", ["name"]);
+    deviceNames.name.each {propertyValue, occurrenceCount->
+        topologyMap[propertyValue] = "deleted";
     }
     logger.debug("Marked all devices as deleted.");
     existingObjectsRetrieved = false;
@@ -357,27 +357,25 @@ Logger getLogger() {
 def getExistingCompouterSystems(String objectName)
 {
     def existingComputerSystemComponents = new CaseInsensitiveMap();
-    def terms = RsComputerSystemComponent.termFreqs("computerSystemName:\""+objectName+"\"");
-    terms.each{
-        existingComputerSystemComponents[it.getTerm()] = it.getTerm();
+    def computerSystemComponentNames = RsComputerSystemComponent.propertySummary("computerSystemName:\"${objectName}\"", ["name"]);
+    computerSystemComponentNames.name.each {propertyValue, occurrenceCount->
+        existingComputerSystemComponents[propertyValue] = propertyValue;
     }
-
     return existingComputerSystemComponents;
 }
 
 def getExistingConnections(String objectName)
 {
     def existingConnections = new CaseInsensitiveMap();
-    def terms = RsLink.termFreqs("a_ComputerSystemName:\""+objectName+"\"");
-    terms.each{
-        existingConnections[it.getTerm()] = it.getTerm();
+    def connectionNames = RsLink.propertySummary("a_ComputerSystemName:\"${objectName}\"", ["name"]);
+    connectionNames.name.each {propertyValue, occurrenceCount->
+        existingConnections[propertyValue] = propertyValue;
     }
 
-    terms = RsLink.termFreqs("z_ComputerSystemName:\""+objectName+"\"");
-    terms.each{
-        existingConnections[it.getTerm()] = it.getTerm();
+    connectionNames = RsLink.propertySummary("z_ComputerSystemName:\"${objectName}\"", ["name"]);
+    connectionNames.name.each {propertyValue, occurrenceCount->
+        existingConnections[propertyValue] = propertyValue;
     }
-
     return existingConnections;
 }
 

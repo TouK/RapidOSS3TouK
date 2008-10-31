@@ -55,7 +55,7 @@
         <rui:sgColumn attributeName="lastChangedAt" colLabel="Last Change" width="120"></rui:sgColumn>
     </rui:sgColumns>
 </rui:searchGrid>
-<rui:timeline id="eventHistory" url="timeline.xml" title="Event History">
+<rui:timeline id="eventHistory" url="script/run/getEventHistory?format=xml" title="Event History">
     <rui:tlBands>
         <rui:tlBand width="70%" intervalUnit="hour" intervalPixels="100"></rui:tlBand>
         <rui:tlBand width="30%" intervalUnit="day" intervalPixels="200" intervalPixels="200" syncWith="0" highlight="true" showText="false" trackHeight="0.5"></rui:tlBand>

@@ -8,6 +8,7 @@
 <html>
 <head>
     <meta name="layout" content="smartsLayout" />
+    <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA7ipkp7ZXyXVH2UHyOgqZhxT2yXp_ZAY8_ufC3CFXhHIE1NvwkxRnNbZP5arP3T53Mzg-yLZcEMRBew"></script>
 </head>
 <body>
 <rui:pieChart id="summaryChart" url="piechart.xml" dataField="count" contentPath="Item" title="Summary View" 
@@ -19,6 +20,7 @@
     </rui:tgColumns>
     <rui:tgMenuItems>
         <rui:tgMenuItem id="eventHistory" label="Get Event History" action="eventHistoryAction"></rui:tgMenuItem>
+        <rui:tgMenuItem id="deviceLocations" label="Get Device Locations" action="deviceLocationsAction"></rui:tgMenuItem>
     </rui:tgMenuItems>
 </rui:treeGrid>
 <rui:searchGrid id="eventsGrid" url="search?format=xml&searchIn=RsEvent" queryParameter="query" rootTag="Objects" contentPath="Object"
@@ -60,6 +62,12 @@
     </rui:tlBands>
 </rui:timeline>
 <rui:popupWindow componentId="eventHistory" width="730" height="450"></rui:popupWindow>
+
+<rui:gmap id="deviceLocations" url="gmap.xml" title="Devices Map" contentPath="Location"
+        timeout="120" latitudeField="Lat" longitudeField="Lng" addressField="Address" markerField="Marker"></rui:gmap>
+
+<rui:popupWindow componentId="deviceLocations" width="800" height="600"></rui:popupWindow>
+
 <rui:html id="objectDetailsmenuHtml" iframe="false"></rui:html>
 <rui:popupWindow componentId="objectDetailsmenuHtml" width="850" height="700" x="85" y="50"></rui:popupWindow>
 <rui:html id="eventDetails" iframe="false"></rui:html>
@@ -105,6 +113,9 @@
 <rui:action id="eventHistoryAction" componentId="eventHistory" type="function" function="poll">
     <rui:functionArg>{nodeType:params.data.nodeType, name:params.data.name}</rui:functionArg>
     <rui:functionArg>'Event History of ' + params.data.displayName</rui:functionArg>
+</rui:action>
+<rui:action id="deviceLocationsAction" componentId="deviceLocations" type="function" function="poll">
+
 </rui:action>
     <script type="text/javascript">
         function getEventsQuery(data){

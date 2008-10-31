@@ -49,6 +49,7 @@
     <script type="text/javascript" src="js/rapidjs/component/search/SearchGrid.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/autocomplete/Autocomplete.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/pieChart/PieChart.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/map/GMap.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/simplewidgets/split.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/Tooltip.js"></script>

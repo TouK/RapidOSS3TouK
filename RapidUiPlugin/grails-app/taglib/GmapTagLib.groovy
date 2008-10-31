@@ -31,13 +31,14 @@ class GmapTagLib {
         """;
     }
     def gmap = {attrs, body ->
-         out << fHtml(attrs, "");
+         out << fGmap(attrs, "");
     }
 
     static def getConfig(attrs) {
         return """{
             id:'${attrs["id"]}',
             url:'${attrs["url"]}',
+            contentPath:'${attrs["contentPath"]}',
             ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
             ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}

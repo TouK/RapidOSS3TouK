@@ -20,13 +20,12 @@ YAHOO.rapidjs.component.PollingComponentContainer = function(container, config)
 YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapidjs.component.ComponentContainer, {
 
 	poll : function(params, title){
-        this.params = params || this.params;
-        this.doRequest(this.url, this.params);
+        this.doRequest(this.url, params || this.params);
         if(title){
             this.setTitle(title);
         }
     },
-    
+
 
     processSuccess : function(response){
         YAHOO.rapidjs.ErrorManager.serverUp();
@@ -190,17 +189,23 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         {
             postData = postData.substring(0, postData.length-1);
         }
-        if(postData && postData != "")
+
+        var queryIndex=url.indexOf("?");
+        if( queryIndex>= 0)
         {
-            if(url.indexOf("?") >= 0)
-            {
-                url = url + "&" + postData;
-            }
-            else
-            {
-                url = url + "?" + postData;
-            }
+	        if(postData && postData != "")
+	        {
+	        	postData=postData+"&"+url.substring(queryIndex+1,url.length)
+	        }
+	        else
+	        {
+		        postData=url.substring(queryIndex+1,url.length)
+			}
+
+            url = url.substring(0,queryIndex);
         }
+
+
 
         var callback = {
             success: this.processSuccess,
@@ -211,7 +216,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
             argument : [callback]
         };
 
-        this.lastConnection = YAHOO.util.Connect.asyncRequest('POST',url , callback, null);
+        this.lastConnection = YAHOO.util.Connect.asyncRequest('POST',url , callback, postData);
         this.events["loadstatechanged"].fireDirect(this, true);
     },
 

@@ -162,7 +162,7 @@ def getParameters() {
 def init() {
     logger.debug("Marking all devices as deleted.");
     topologyMap = new CaseInsensitiveMap();
-    def deviceNames = RsTopologyObject.propertySummary("alias:*", ["name"]);
+    def deviceNames = RsTopologyObject.propertySummary("alias:* AND rsDatasource:\"${getDatasource().name}\"", ["name"]);
     deviceNames.name.each {propertyValue, occurrenceCount->
         topologyMap[propertyValue] = "deleted";
     }

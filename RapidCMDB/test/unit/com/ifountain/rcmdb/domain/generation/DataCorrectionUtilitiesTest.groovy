@@ -38,10 +38,6 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         FileUtils.copyDirectoryToDirectory(new File(templatesDir), new File(base_directory+"/src"));
     }
 
-    public void tearDown() {
-        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-    }
-
     public void testBeforeReloadWithModelDeleteAllInstances()
     {
         String model1Name = "Class1";
@@ -69,7 +65,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         FileUtils.deleteDirectory (new File(base_directory+"operations"))
         def newClass1 = loadGrailsDomainClass(model1Name, temp_directory, true);
         def newDomainClasses = generateDomainClasses([newClass1])
-        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (base_directory, temp_directory, oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
+        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
         assertNull (oldClass1.'get'(prop1:"obj1"));
         assertTrue (new File(base_directory+"grails-app/controllers/${model1Name}Controller.groovy").exists());
         assertTrue (new File(base_directory+"grails-app/views/${model1Name}/list.gsp").exists());
@@ -94,7 +90,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         FileUtils.deleteDirectory (new File(base_directory+"operations"))
         def newClass1 = loadGrailsDomainClass(model1Name, temp_directory, true);
         def newDomainClasses = generateDomainClasses([newClass1])
-        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (base_directory, temp_directory, [:], new ArrayList(newDomainClasses.values()), newDomainClasses );
+        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), [:], new ArrayList(newDomainClasses.values()), newDomainClasses );
         assertTrue (new File(base_directory+"grails-app/controllers/${model1Name}Controller.groovy").exists());
         assertTrue (new File(base_directory+"grails-app/views/${model1Name}/list.gsp").exists());
         assertTrue (new File(base_directory+"operations/${model1Name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
@@ -129,7 +125,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         def newChildClass1 = loadGrailsDomainClass(modelChild1, temp_directory);
         def newDomainClasses = generateDomainClasses([parentClass1, newChildClass1])
         
-        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (base_directory, temp_directory, oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses);
+        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses);
         destroy();
         gcl = new GroovyClassLoader();
         newChildClass1 = loadGrailsDomainClass(modelChild1, temp_directory);
@@ -164,7 +160,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         new File(base_directory+"grails-app/conrollers").mkdirs();
         new File(base_directory+"grails-app/views").mkdirs();
         new File(base_directory+"operations").mkdirs();
-        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (base_directory, temp_directory, oldDomainClasses, new ArrayList(), [:]);
+        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), oldDomainClasses, new ArrayList(), [:]);
         assertNull (oldClass1.'get'(prop1:"obj1"));
         assertFalse (new File(base_directory+"grails-app/controllers/${model1Name}Controller.groovy").exists());
         assertFalse (new File(base_directory+"grails-app/views/${model1Name}/list.gsp").exists());
@@ -201,7 +197,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         FileUtils.deleteDirectory (new File(base_directory+"operations"))
         def newClass1 = loadGrailsDomainClass(model1Name, temp_directory, true);
         def newDomainClasses = generateDomainClasses([newClass1])
-        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (base_directory, temp_directory, oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
+        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
         assertTrue (new File(base_directory+"grails-app/controllers/${model1Name}Controller.groovy").exists());
         assertTrue (new File(base_directory+"grails-app/views/${model1Name}/list.gsp").exists());
         assertTrue (new File(base_directory+"operations/${model1Name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
@@ -240,7 +236,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
 
         def newClass1 = loadGrailsDomainClass(model1Name, temp_directory, true);
         def newDomainClasses = generateDomainClasses([newClass1])
-        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (base_directory, temp_directory, oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
+        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
         this.destroy();
         gcl = new GroovyClassLoader(this.class.classLoader);
         newClass1 = loadGrailsDomainClass(model1Name, temp_directory);
@@ -303,7 +299,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         def newClass1 = loadGrailsDomainClass(modelName1, temp_directory, true);
         def newClass2 = loadGrailsDomainClass(modelName2, temp_directory, true);
         def newDomainClasses = generateDomainClasses([newClass1, newClass2])
-        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (base_directory, temp_directory, oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
+        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
         this.destroy();
         gcl = new GroovyClassLoader(this.class.classLoader);
         newClass1 = loadGrailsDomainClass(modelName1, temp_directory);

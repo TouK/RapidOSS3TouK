@@ -232,7 +232,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             var menuId = id.substring(this.id.length);
             if(menuId == "refreshTopology" )
             {
-                this.refresh();
+                this.refreshData();
             }
             else if(menuId == "resetMap" )
             {
@@ -446,7 +446,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
 
 
-    refresh : function()
+    refreshData : function()
     {
 
         if(this.lastLoadMapRequestData != null)

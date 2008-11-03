@@ -105,16 +105,16 @@
     <rui:functionArg>'default'</rui:functionArg>
     <rui:functionArg>'Events of ' + params.data.displayName</rui:functionArg>
 </rui:action>
-<rui:action id="getSummaryAction" type="function" componentId="summaryChart" function="poll">
+<rui:action id="getSummaryAction" type="function" componentId="summaryChart" function="refresh">
     <rui:functionArg>{nodeType:params.data.nodeType, name:params.data.name}</rui:functionArg>
     <rui:functionArg>'Summary View for ' + params.data.displayName</rui:functionArg>
 </rui:action>
 <rui:action id="treeNodeClickedAction" type="combined" actions="${['getEventsAction', 'getSummaryAction']}"></rui:action>
-<rui:action id="eventHistoryAction" componentId="eventHistory" type="function" function="poll">
+<rui:action id="eventHistoryAction" componentId="eventHistory" type="function" function="refresh">
     <rui:functionArg>{nodeType:params.data.nodeType, name:params.data.name}</rui:functionArg>
     <rui:functionArg>'Event History of ' + params.data.displayName</rui:functionArg>
 </rui:action>
-<rui:action id="deviceLocationsAction" componentId="deviceLocations" type="function" function="poll">
+<rui:action id="deviceLocationsAction" componentId="deviceLocations" type="function" function="refresh">
      <rui:functionArg>{nodeType:params.data.nodeType, name:params.data.name}</rui:functionArg>
     <rui:functionArg>'Locations of ' + params.data.displayName</rui:functionArg>
 </rui:action>

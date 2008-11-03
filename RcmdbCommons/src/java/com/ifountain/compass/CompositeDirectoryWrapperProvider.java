@@ -24,6 +24,8 @@ import java.util.List;
 import org.compass.core.lucene.engine.store.wrapper.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.compass.core.CompassException;
 import org.compass.core.config.CompassConfigurable;
 import org.compass.core.config.CompassSettings;
@@ -39,6 +41,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClas
  * @see MemoryMirrorDirectoryWrapper
  */
 public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvider, CompassConfigurable {
+    private static final Log log = LogFactory.getLog(CompositeDirectoryWrapperProvider.class);
     public static String FILE_DIR_TYPE = "File";
     public static String RAM_DIR_TYPE = "Memory";
     public static String MIRRORED_DIR_TYPE = "FileAndMemory";
@@ -80,7 +83,7 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
                     break;
                 }
             }
-
+            log.info("Creating storageType "+storageType+" for "+subIndex);
             if(storageType == null)
             {
                 return dir;

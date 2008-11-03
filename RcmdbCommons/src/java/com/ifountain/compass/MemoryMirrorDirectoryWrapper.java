@@ -60,6 +60,7 @@ public class MemoryMirrorDirectoryWrapper extends Directory {
     private long maxNumberOfUnProcessedBytes, minNumberOfUnProcessedBytes;
 
     public MemoryMirrorDirectoryWrapper(Directory dir, long awaitTermination, long maxNumberOfUnProcessedBytes, long minNumberOfUnProcessedBytes, ExecutorService executorService) throws IOException {
+        log.info("Initializing FileAndMemory storage type for directory " + dir.toString() + " awaitTermination :" + awaitTermination + " maxNumberOfUnProcessedBytes:"+maxNumberOfUnProcessedBytes+" minNumberOfUnProcessedBytes:"+minNumberOfUnProcessedBytes);
         this.dir = dir;
         this.maxNumberOfUnProcessedBytes = maxNumberOfUnProcessedBytes;
         this.minNumberOfUnProcessedBytes = minNumberOfUnProcessedBytes;
@@ -174,10 +175,7 @@ public class MemoryMirrorDirectoryWrapper extends Directory {
 
     public void close() throws IOException {
         ramDir.close();
-        if (log.isDebugEnabled()) {
-            log.debug("Directory [" + dir + "] shutsdown, waiting for [" + awaitTermination +
-                    "] minutes for tasks to finish executing");
-        }
+        log.info("Directory [" + dir + "] shutsdown, waiting for [" + awaitTermination +"] minutes for tasks to finish executing");
         executorService.shutdown();
         if (!executorService.isTerminated()) {
             try {

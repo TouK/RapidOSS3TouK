@@ -130,7 +130,10 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     {
         if(appCtx)
         {
-            appCtx.getBean("compass").close()
+            if(appCtx.containsBean("compass"))
+            {
+                appCtx.getBean("compass").close()
+            }
         }
         servletContext = null
         webRequest = null

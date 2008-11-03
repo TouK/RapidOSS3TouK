@@ -8,6 +8,7 @@ class RsRiEvent extends RsEvent
 
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        storageType "FileAndMemory"
     };
     static datasources = [:]
 

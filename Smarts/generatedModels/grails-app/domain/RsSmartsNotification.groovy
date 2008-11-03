@@ -7,6 +7,7 @@ class RsSmartsNotification  extends RsEvent {
 
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "causedBy", "causes"];
+        storageType "FileAndMemory"
     };
     static datasources = [:]
 

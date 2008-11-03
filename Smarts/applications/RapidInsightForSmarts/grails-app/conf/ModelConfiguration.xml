@@ -36,7 +36,7 @@
             </Properties>
         </Model>
 
-   		<Model Name="RsEvent">
+   		<Model Name="RsEvent" StorageType="FileAndMemory">
       		<Properties>
        			<Property Name='name' Type='string' IsKey="true"/>
           		<Property Name='active' Type='boolean' Default="true" />
@@ -51,7 +51,7 @@
                 <Property Name='rsDatasource' Type='string'/>
              </Properties>
   		</Model>
-  		<Model Name="RsRiEvent" Parent="RsEvent">
+  		<Model Name="RsRiEvent" Parent="RsEvent" StorageType="FileAndMemory">
       		<Properties>
                 <Property Name='count' Type='number' Default="1" />
           		<Property Name='eventName' Type='string'/>
@@ -64,7 +64,7 @@
          	</Properties>
   		</Model> 
         
-        <Model Name="RsSmartsNotification" Parent="RsEvent">
+        <Model Name="RsSmartsNotification" Parent="RsEvent" StorageType="FileAndMemory">
             <Properties>
                 <Property Name='creationClassName' Type='string'/>
                 <Property Name='description' Type='string'/>

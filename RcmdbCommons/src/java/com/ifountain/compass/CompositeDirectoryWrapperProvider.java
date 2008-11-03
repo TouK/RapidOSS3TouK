@@ -92,7 +92,7 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
             {
                 return new RAMDirectory(dir);
             }
-            else  if(storageType.equalsIgnoreCase(FILE_DIR_TYPE))
+            else  if(storageType.equalsIgnoreCase(MIRRORED_DIR_TYPE))
             {
                 return new MemoryMirrorDirectoryWrapper(dir, awaitTermination, maxNumberOfUnProcessedBytes, minNumberOfUnProcessedBytes, doCreateExecutorService());
             }

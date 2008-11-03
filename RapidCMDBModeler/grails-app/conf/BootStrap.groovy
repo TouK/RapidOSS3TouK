@@ -13,6 +13,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.jsecurity.crypto.hash.Sha1Hash
 import script.CmdbScript
 import com.ifountain.rcmdb.util.RapidDateUtilities
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import org.springframework.web.context.support.WebApplicationContextUtils
 
 class BootStrap {
     def quartzScheduler;
@@ -86,6 +88,13 @@ class BootStrap {
 
     def destroy = {
         ScriptManager.getInstance().destroy();
+        def servletCtx = ServletContextHolder.getServletContext()
+        def webAppCtx = WebApplicationContextUtils.getWebApplicationContext(servletCtx)
+        def compass = webAppCtx.getBean("compass")
+        if(compass)
+        {
+            compass.close();
+        }
     }
 
 }

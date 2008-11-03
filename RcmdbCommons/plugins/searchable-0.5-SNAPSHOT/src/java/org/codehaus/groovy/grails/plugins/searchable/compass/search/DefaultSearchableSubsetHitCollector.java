@@ -44,6 +44,10 @@ public class DefaultSearchableSubsetHitCollector extends AbstractSearchableHitCo
 
         int offset = MapUtils.getIntValue(options, "offset");
         int max = MapUtils.getIntValue(options, "max");
+        if(max > hits.length())
+        {
+            max = hits.length();
+        }
         List collectedHits = new ArrayList(max);
         int low = offset;
         int high = Math.min(low + max, hits.length());

@@ -29,7 +29,6 @@ class SmartsConnector {
     static constraints={
       name(blank:false,nullable:false,key:[])      
       ds(nullable:true)
-      connectionTemplate(nullable:true)
       
     }
     static propertyConfiguration= [:]

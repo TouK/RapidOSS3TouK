@@ -48,6 +48,9 @@ public class DatabaseAdapter extends BaseAdapter {
                 {
                     fieldValue=String.valueOf(rset.getTimestamp(i).getTime());                    
                 }
+                else if(rset.getObject(i) == null){
+                    fieldValue = "";
+                }
                 else
                 {
                     fieldValue=String.valueOf(rset.getObject(i)).trim();

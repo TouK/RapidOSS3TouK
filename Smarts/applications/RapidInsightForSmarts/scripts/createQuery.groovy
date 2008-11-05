@@ -13,14 +13,20 @@ import ui.GridView;
 def userName = web.session.username;
 def queryType = params.queryType;
 def extraFilteredProps = ["rsDatasource"];
-def gridViews = GridView.searchEvery("username:\"${userName}\"", [sort:"name"]);
+def gridViews = GridView.searchEvery("username:\"${userName}\"", [sort: "name"]);
 if (queryType == "notification" || queryType == "historicalnotification") {
-    def className = queryType == "notification"? "RsSmartsNotification": "RsSmartsHistoricalNotification";
-    def sortProperties = DomainClassUtils.getFilteredProperties(className, extraFilteredProps);
+    def className = queryType == "notification" ? "RsEvent" : "RsHistoricalEvent";
+    def allProps = [];
+    GrailsDomainClass domainClass = web.grailsApplication.getDomainClass(className)
+    domainClass.getSubClasses().each {
+        allProps.addAll(DomainClassUtils.getFilteredProperties(it.name, extraFilteredProps));
+    }
+    allProps.addAll(DomainClassUtils.getFilteredProperties(className, extraFilteredProps));
     def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
-        queryGroup.username == userName && queryGroup.isPublic == false && (queryGroup.type == queryType || queryGroup.type =="default")
+        queryGroup.username == userName && queryGroup.isPublic == false && (queryGroup.type == queryType || queryGroup.type == "default")
     };
-    def sortProps = sortProperties.sort{it.name} 
+    def sortProps = allProps.sort {it.name}
+    def propertyMap = [:]
     web.render(contentType: 'text/xml') {
         Create {
             group {
@@ -30,12 +36,15 @@ if (queryType == "notification" || queryType == "historicalnotification") {
             }
             sortProperty {
                 sortProps.each {
-                    option(it.name)
+                    if(!propertyMap.containsKey(it.name)){
+                        propertyMap.put(it.name, it.name);
+                        option(it.name)
+                    }
                 }
             }
-            viewName{
+            viewName {
                 option('default');
-                gridViews.each{
+                gridViews.each {
                     option(it.name)
                 }
             }
@@ -50,9 +59,9 @@ else if (queryType == "topology") {
     }
     sortProperties.addAll(DomainClassUtils.getFilteredProperties("RsTopologyObject", extraFilteredProps));
     def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
-        queryGroup.username == userName && queryGroup.isPublic == false && (queryGroup.type == queryType || queryGroup.type =="default")
+        queryGroup.username == userName && queryGroup.isPublic == false && (queryGroup.type == queryType || queryGroup.type == "default")
     };
-    def sortProps = sortProperties.sort{it.name}
+    def sortProps = sortProperties.sort {it.name}
     def propertyMap = [:]
     web.render(contentType: 'text/xml') {
         Create {
@@ -64,15 +73,15 @@ else if (queryType == "topology") {
             sortProperty {
                 sortProps.each {
                     def propertyName = it.name;
-                    if(!propertyMap.containsKey(propertyName)){
+                    if (!propertyMap.containsKey(propertyName)) {
                         option(propertyName)
                     }
                     propertyMap.put(propertyName, propertyName)
                 }
             }
-            viewName{
+            viewName {
                 option('default');
-                gridViews.each{
+                gridViews.each {
                     option(it.name)
                 }
             }

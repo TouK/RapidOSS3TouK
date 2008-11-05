@@ -32,6 +32,7 @@ class SmartsListeningTopologyConnector extends SmartsConnector{
         return "${connectorName}TopologyDs";
     }
     static def getScriptName(connectorName){
-        return "${connectorName}TopologyListeningScript";
+        //return "${connectorName}TopologyListeningScript";
+        return connectorName;
     }
 }

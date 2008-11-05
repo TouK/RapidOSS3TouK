@@ -103,8 +103,10 @@ class SmartsConnectorController {
             if (!smartsConnector.hasErrors()) {
                 def domain = params.domain;
                 def domainType = params.domainType;
+                def scriptName = smartsConnector.getScriptName(smartsConnector.name);
+
                 smartsConnector.ds.update(reconnectInterval:params.reconnectInterval);
-                smartsConnector.ds.listeningScript.update(logFile:smartsConnector.name,logLevel:params.logLevel,staticParam:staticParam);
+                smartsConnector.ds.listeningScript.update(name:scriptName,logFile:smartsConnector.name,logLevel:params.logLevel,staticParam:staticParam);
 
                 if(!smartsConnector.ds.hasErrors() && !smartsConnector.ds.listeningScript.hasErrors())
                 {

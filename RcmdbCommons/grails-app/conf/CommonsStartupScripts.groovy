@@ -5,6 +5,6 @@
  * Time: 5:11:55 PM
  * To change this template use File | Settings | File Templates.
  */
-class StartupScriptsConfig{
-    def scripts = [];
+class CommonsStartupScripts{
+    def static scripts = [];
 }

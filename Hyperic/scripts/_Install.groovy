@@ -66,6 +66,6 @@ Ant.move(toDir:"${baseDir}/scripts")
 
 Ant.move(toDir:"${baseDir}/grails-app/conf")
 {
-    Ant.fileset(file:"${baseDir}/plugins/hyperic-0.1/grails-app/conf/StartupScriptsConfig.groovy");
+    Ant.fileset(file:"${baseDir}/plugins/hyperic-0.1/grails-app/conf/HypericStartupScripts.groovy");
 }
 

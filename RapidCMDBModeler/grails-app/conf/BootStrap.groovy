@@ -15,6 +15,7 @@ import script.CmdbScript
 import com.ifountain.rcmdb.util.RapidDateUtilities
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.springframework.web.context.support.WebApplicationContextUtils
+import com.ifountain.rcmdb.scripting.ScriptingUtils
 
 class BootStrap {
     def quartzScheduler;
@@ -42,7 +43,8 @@ class BootStrap {
 
     def initializeScripting()
     {
-        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), new StartupScriptsConfig().scripts);
+        def startupScripts = ScriptingUtils.getStartupScriptList(baseDir, ApplicationHolder.application.getClassLoader());
+        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), startupScripts);
         ScriptScheduler.getInstance().initialize(quartzScheduler);
         CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {
             try {

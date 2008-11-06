@@ -21,15 +21,19 @@ public class LoggerUtilsTest extends RCompTestCase {
         LoggerUtils.configureLogger(logger,Level.DEBUG,logFile,false);
         assertEquals(logger.getLevel(),Level.DEBUG);
         assertFalse(logger.getAllAppenders().hasMoreElements());
+        assertTrue(logger.getAdditivity());
+
 
         LoggerUtils.configureLogger(logger,Level.INFO,logFile,false);
         assertEquals(logger.getLevel(),Level.INFO);
         assertFalse(logger.getAllAppenders().hasMoreElements());
-
+        assertTrue(logger.getAdditivity());
+        
         LoggerUtils.configureLogger(logger,Level.INFO,logFile,true);
         assertEquals(logger.getLevel(),Level.INFO);
         assertTrue(logger.getAllAppenders().hasMoreElements());
-
+        assertFalse(logger.getAdditivity());
+        
         assertEquals(logger.getAllAppenders().nextElement().getClass(),(new DailyRollingFileAppender()).getClass());
 
     }

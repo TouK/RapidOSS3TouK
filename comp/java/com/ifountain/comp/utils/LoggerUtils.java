@@ -45,7 +45,7 @@ public class LoggerUtils
     public static void configureLogger(Logger aLogger, Level level, String fileName, String layoutPattern, boolean addFileAppender)
     {
         aLogger.removeAllAppenders();
-        aLogger.setAdditivity(false);
+        
         if(level != null)
         {
             aLogger.setLevel(level);
@@ -53,10 +53,11 @@ public class LoggerUtils
 
         if(addFileAppender)
         {
+            aLogger.setAdditivity(false);
             if (fileName != null) {
                 try {
                     PatternLayout layout = new PatternLayout(layoutPattern);
-                    DailyRollingFileAppender fileappender = new DailyRollingFileAppender(layout, fileName, ".yyyy-MM-dd");
+                    DailyRollingFileAppender fileappender = new DailyRollingFileAppender(layout, "logs/"+fileName+".log", ".yyyy-MM-dd");
                     fileappender.setAppend(true);
                     fileappender.setName(DAILY_ROLLING_FILE_APPENDER);
                     aLogger.addAppender(fileappender);
@@ -69,7 +70,11 @@ public class LoggerUtils
                 System.err.println(fileName + " log file could not be initialized.");
                 addConsoleAppender(aLogger, layoutPattern);
             }
-        }   
+        }
+        else
+        {
+            aLogger.setAdditivity(true);
+        }        
 
     }
     

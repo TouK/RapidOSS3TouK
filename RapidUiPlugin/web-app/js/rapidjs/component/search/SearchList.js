@@ -226,7 +226,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             for (var i in this.propertyMenuItems) {
                 var menuItemConfig = this.propertyMenuItems[i];
                 if (menuItemConfig['visible'] != null) {
-                    var params = {data:dataNode.getAttributes(), label:menuItemConfig.label, key:cell.propKey, value:cell.propValue}
+                    var params = {data:dataNode.getAttributes(), label:menuItemConfig.label, menuId:menuItemConfig.id, key:cell.propKey, value:cell.propValue}
                     var menuItem = this.cellMenu.getItem(index);
                     var condRes = eval(menuItemConfig['visible'])
                     if (!condRes)

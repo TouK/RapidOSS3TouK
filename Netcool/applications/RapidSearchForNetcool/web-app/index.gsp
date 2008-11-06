@@ -5,6 +5,9 @@
     <script type="text/javascript" src="js/yui/resize/resize-min.js"></script>
     <script type="text/javascript" src="js/yui/layout/layout-min.js"></script>
     <script type="text/javascript" src="js/yui/history/history-min.js"></script>
+    <script type="text/javascript" src="js/yui/container/container-min.js"></script>
+    <script type="text/javascript" src="js/yui/menu/menu-min.js"></script>
+    <script type="text/javascript" src="js/yui/button/button-min.js"></script>
     <script type="text/javascript" src="js/ext/ext.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/ComponentContainer.js"></script>
@@ -12,8 +15,7 @@
     <script type="text/javascript" src="js/rapidjs/data/NodeFactory.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/RapidElement.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/PollingComponentContainer.js"></script>
-    <script type="text/javascript" src="js/yui/container/container-min.js"></script>
-    <script type="text/javascript" src="js/yui/button/button-min.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/PopupWindow.js"></script>
     <script type="text/javascript" src="js/rapidjs/data/RapidXmlDocument.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/SelectUtils.js"></script>
@@ -21,10 +23,8 @@
 
     <script type="text/javascript" src="js/rapidjs/component/simplewidgets/Button.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/BasicTool.js"></script>
-    <script type="text/javascript" src="js/yui/container/container_core-min.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/SettingsTool.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/dialog/Dialog.js"></script>
-    <script type="text/javascript" src="js/yui/menu/menu-min.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/search/SearchNode.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/ButtonToolBar.js"></script>
@@ -53,8 +53,6 @@
     <link rel="stylesheet" type="text/css" href="css/rapidjs/common.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/dialog.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/form.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/mgrid.css" />
-	<link rel="stylesheet" type="text/css" href="css/rapidjs/overlay.css" />
 
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/ryuitree.css" />
     <link rel="stylesheet" type="text/css" href="css/rapidjs/search/search.css" />
@@ -62,9 +60,6 @@
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/simplewidgets/button.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/tools/tools.css" />
 	<link rel="stylesheet" type="text/css" href="css/rapidjs/treegrid/treegrid.css" />
-
-
-
     <jsec:isNotLoggedIn>
 	  <g:javascript>window.location='auth/login?targetUri=/index.gsp'</g:javascript>
 	</jsec:isNotLoggedIn>
@@ -89,58 +84,17 @@
 		}
 		.yui-skin-sam .yui-layout-unit .yui-resize-handle-r .yui-layout-resize-knob{
 			background-image : none;
-
 		}
+        .dragging, .drag-hint {
+          border: 1px solid gray;
+          background-color: blue;
+          color: white;
+          opacity: 0.76;
+          filter: "alpha(opacity=76)";
+        }
     </style>
 </head>
-<body class=" yui-skin-sam">
-<div id="filterDialog">
-    <div class="hd">Save query</div>
-    <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table>
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Sort Property:</label></td><td width="50%"><select name="sortProperty" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Sort Order:</label></td><td width="50%">
-            <select name="sortOrder" style="width:175px"><option value="asc">asc</option><option value="desc">desc</option></select>
-        </td></tr>
-        </table>
-        <input type="hidden" name="id">
-    </form>
-
-    </div>
-</div>
-<div id="filterGroup">
-    <div class="hd">Save group</div>
-    <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table>
-        <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
-        </table>
-        <input type="hidden" name="id">
-    </form>
-
-    </div>
-</div>
-<div id="passwordDialog">
-    <div class="hd">Change Password</div>
-    <div class="bd">
-    <form method="POST" action="javascript://nothing">
-        <table>
-        <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
-        </table>
-        <input type="hidden" name="username">
-    </form>
-
-    </div>
-</div>
-<div id="left">
-    <div id="treeDiv1"></div>
-</div>
+<body class="yui-skin-sam">
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
         <td width="0%" style="padding-left:10px;padding-top:5px;">
@@ -158,396 +112,301 @@
         </td>
     </tr></tbody></table>
 </div>
-<div id="right">
-    <div id="searchDiv"></div>
-</div>
-  <style>
-    .dragging, .drag-hint {
-      border: 1px solid gray;
-      background-color: blue;
-      color: white;
-      opacity: 0.76;
-      filter: "alpha(opacity=76)";
-    }
-    </style>
+<rui:form id="changePassDialog" width="35em" saveUrl="rsUser/changePassword?format=xml">
+    <div>
+        <div class="hd">Change Password</div>
+        <div class="bd">
+            <form method="POST" action="javascript://nothing">
+                <table>
+                    <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
+                    <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
+                    <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
+                </table>
+                <input type="hidden" name="username">
+            </form>
+        </div>
+    </div>
+</rui:form>
+<rui:form id="filterDialog" width="35em" createUrl="script/run/createQuery?queryType=event" editUrl="script/run/editQuery?queryType=event"
+        saveUrl="searchQuery/save?format=xml&type=event" updateUrl="searchQuery/update?format=xml&type=event" onSuccess="refreshQueriesAction">
+    <div>
+        <div class="hd">Save query</div>
+        <div class="bd">
+        <form method="POST" action="javascript://nothing">
+            <table>
+            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Query Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Query:</label></td><td width="50%"><input type="textbox" name="query" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Sort Property:</label></td><td width="50%"><select name="sortProperty" style="width:175px"/></td></tr>
+            <tr><td width="50%"><label>Sort Order:</label></td><td width="50%">
+                <select name="sortOrder" style="width:175px"><option value="asc">asc</option><option value="desc">desc</option></select>
+            </td></tr>
+            </table>
+            <input type="hidden" name="id">
+        </form>
 
+        </div>
+    </div>
+</rui:form>
+<rui:form id="filterGroupDialog" width="30em" saveUrl="searchQueryGroup/save?format=xml&type=event"
+        updateUrl="searchQueryGroup/update?format=xml&type=event" onSuccess="refreshQueriesAction">
+    <div >
+        <div class="hd">Save group</div>
+        <div class="bd">
+        <form method="POST" action="javascript://nothing">
+            <table>
+            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px"/></td></tr>
+            </table>
+            <input type="hidden" name="id">
+        </form>
+        </div>
+    </div>
+</rui:form>
+<rui:treeGrid id="filterTree" url="script/run/queryList?format=xml&type=event" rootTag="Filters" pollingInterval="0"
+        keyAttribute="id" contentPath="Filter" title="Saved Queries" expanded="true" onNodeClick="setQueryAction">
+    <rui:tgColumns>
+        <rui:tgColumn attributeName="name" colLabel="Name" width="248" sortBy="true"></rui:tgColumn>
+    </rui:tgColumns>
+    <rui:tgMenuItems>
+        <rui:tgMenuItem id="deleteQuery" label="Delete" visible="params.data.isPublic != 'true' && params.data.nodeType == 'filter'" action="deleteQueryAction"></rui:tgMenuItem>
+        <rui:tgMenuItem id="deleteQueryGroup" label="Delete" visible="params.data.isPublic != 'true' && params.data.name != 'My Queries' && params.data.nodeType == 'group'" action="deleteQueryGroupAction"></rui:tgMenuItem>
+        <rui:tgMenuItem id="queryUpdate" label="Update" visible="params.data.nodeType == 'filter' && params.data.isPublic != 'true'" action="queryUpdateAction"></rui:tgMenuItem>
+        <rui:tgMenuItem id="queryGroupUpdate" label="Update" visible="params.data.isPublic != 'true' && params.data.name != 'My Queries' && params.data.nodeType == 'group'" action="queryGroupUpdateAction"></rui:tgMenuItem>
+        <rui:tgMenuItem id="copyQuery" label="Copy Query" visible="params.data.nodeType == 'filter'" action="copyQueryAction"></rui:tgMenuItem>
+    </rui:tgMenuItems>
+    <rui:tgRootImages>
+        <rui:tgRootImage visible="params.data.nodeType == 'group'" expanded="images/rapidjs/component/tools/folder_open.gif" collapsed="images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
+        <rui:tgRootImage visible="params.data.nodeType == 'filter'" expanded="images/rapidjs/component/tools/filter.png" collapsed="images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
+    </rui:tgRootImages>
+</rui:treeGrid>
+<%
+    def defaultFields = ['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey'];
+%>
+<rui:searchList id="searchList" url="search?format=xml&searchIn=NetcoolEvent" rootTag="Objects" contentPath="Object" keyAttribute="id"
+    lineSize="3" title="Netcool Events" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
+    pollingInterval="0" defaultFields="${defaultFields}" onSaveQueryClick="saveQueryAction">
+    <rui:slMenuItems>
+        <rui:slMenuItem id="eventDetails" label="Event Details" action="eventDetailsAction"></rui:slMenuItem>
+        <rui:slMenuItem id="acknowledge" label="Acknowledge" action="acknowledgeAction" visible="params.data.acknowledged == 'No'"></rui:slMenuItem>
+        <rui:slMenuItem id="deacknowledge" label="Deacknowledge" action="deacknowledgeAction" visible="params.data.acknowledged == 'Yes'"></rui:slMenuItem>
+        <rui:slMenuItem id="takeOwnership" label="Take Ownership" action="takeOwnAction"></rui:slMenuItem>
+        <rui:slMenuItem id="addTaskToList" label="Add Task To List" action="addTaskAction" visible="params.data.tasklist == '0'"></rui:slMenuItem>
+        <rui:slMenuItem id="removeTaskFromList" label="Remove Task From List" action="removeTaskAction" visible="params.data.tasklist == '1'"></rui:slMenuItem>
+        <rui:slMenuItem id="suppressEscalate" label="Suppress/Escalate">
+               <rui:slSubmenuItems>
+                    <rui:slSubmenuItem id="0" label="Normal" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '0'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="1" label="Escalated" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '1'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="2" label="Escalated-Level 2" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '2'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="3" label="Escalated-Level 3" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '3'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="4" label="Suppressed" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '4'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="5" label="Hidden" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '5'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="6" label="Maintenance" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '6'"></rui:slSubmenuItem>
+               </rui:slSubmenuItems>
+        </rui:slMenuItem>
+        <rui:slMenuItem id="severity" label="Suppress/Escalate">
+               <rui:slSubmenuItems>
+                    <rui:slSubmenuItem id="5" label="Critical" action="severityAction" visible="params.key =='severity' && params.value != '5'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="4" label="Major" action="severityAction" visible="params.key =='severity' && params.value != '4'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="3" label="Minor" action="severityAction" visible="params.key =='severity' && params.value != '3'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="2" label="Warning" action="severityAction" visible="params.key =='severity' && params.value != '2'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="1" label="Indeterminate" action="severityAction" visible="params.key =='severity' && params.value != '1'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="0" label="Clear" action="severityAction" visible="params.key =='severity' && params.value != '0'"></rui:slSubmenuItem>
+               </rui:slSubmenuItems>
+        </rui:slMenuItem>
+    </rui:slMenuItems>
+    <rui:slPropertyMenuItems>
+        <rui:slMenuItem id="sortAsc" label="Sort asc" action="sortAscAction"></rui:slMenuItem>
+        <rui:slMenuItem id="sortDesc" label="Sort desc" action="sortDescAction"></rui:slMenuItem>
+        <rui:slMenuItem id="greaterThan" label="Greater than" action="greaterThanAction"
+                visible="(params.key == 'severity' && params.value != '5') || (params.key == 'suppressescl' && params.value != '6') || YAHOO.lang.isNumber(parseInt(params.value))"></rui:slMenuItem>
+        <rui:slMenuItem id="lessThan" label="Less than" action="lessThanAction"
+                visible="(params.key == 'severity' && params.value != '0') || (params.key == 'suppressescl' && params.value != '0') || YAHOO.lang.isNumber(parseInt(params.value))"></rui:slMenuItem>
+        <rui:slMenuItem id="greaterThanOrEqualTo" label="Greater than or equal to" action="greaterThanEqualAction" visible="YAHOO.lang.isNumber(parseInt(params.value))"></rui:slMenuItem>
+        <rui:slMenuItem id="lessThanOrEqualTo" label="Less than or equal to" action="lessThanEqualAction" visible="YAHOO.lang.isNumber(parseInt(params.value))"></rui:slMenuItem>
+        <rui:slMenuItem id="except" label="Except" action="exceptAction"></rui:slMenuItem>
+    </rui:slPropertyMenuItems>
+     <rui:slImages>
+        <rui:slImage visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/red.png"></rui:slImage>
+        <rui:slImage visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/orange.png"></rui:slImage>
+        <rui:slImage visible="params.data.severity == '3'" src="images/rapidjs/component/searchlist/yellow.png"></rui:slImage>
+        <rui:slImage visible="params.data.severity == '2'" src="images/rapidjs/component/searchlist/blue.png"></rui:slImage>
+        <rui:slImage visible="params.data.severity == '1'" src="images/rapidjs/component/searchlist/purple.png"></rui:slImage>
+        <rui:slImage visible="params.data.severity == '0'" src="images/rapidjs/component/searchlist/green.png"></rui:slImage>
+    </rui:slImages>
+</rui:searchList>
+<rui:html id="eventDetails" iframe="false"></rui:html>
+<rui:popupWindow componentId="eventDetails" width="500" height="400"></rui:popupWindow>
+
+
+<rui:action id="eventDetailsAction"  type="function" function="show" componentId="eventDetails">
+    <rui:functionArg>'getDetails.gsp?id=' + params.data.id</rui:functionArg>
+    <rui:functionArg>'Details of ' + params.data.identifier</rui:functionArg>
+</rui:action>
+<rui:action id="acknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['searchList']}">
+    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
+    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="acknowledged" value="'true'"></rui:requestParam>
+</rui:action>
+<rui:action id="deacknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['searchList']}">
+    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
+    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="acknowledged" value="'false'"></rui:requestParam>
+</rui:action>
+<rui:action id="takeOwnAction" type="merge" url="script/run/takeOwnership?format=xml" components="${['searchList']}">
+    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
+    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+</rui:action>
+<rui:action id="addTaskAction" type="merge" url="script/run/taskList?format=xml" components="${['searchList']}">
+    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
+    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="taskList" value="'true'"></rui:requestParam>
+</rui:action>
+<rui:action id="removeTaskAction" type="merge" url="script/run/taskList?format=xml" components="${['searchList']}">
+    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
+    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="taskList" value="'false'"></rui:requestParam>
+</rui:action>
+<rui:action id="suppressEscalateAction" type="merge" url="script/run/suppress?format=xml" components="${['searchList']}">
+    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
+    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="suppressescl" value="params.menuId"></rui:requestParam>
+</rui:action>
+<rui:action id="severityAction" type="merge" url="script/run/severity?format=xml" components="${['searchList']}">
+    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
+    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="severity" value="params.menuId"></rui:requestParam>
+</rui:action>
+<rui:action id="greaterThanAction" type="function" componentId="searchList" function="appendToQuery">
+    <rui:functionArg>params.key + ':{' + params.value + ' TO *}'</rui:functionArg>
+</rui:action>
+<rui:action id="lessThanAction" type="function" componentId="searchList" function="appendToQuery">
+    <rui:functionArg>params.key + ':{* TO ' + params.value + '}'</rui:functionArg>
+</rui:action>
+<rui:action id="greaterThanEqualAction" type="function" componentId="searchList" function="appendToQuery">
+    <rui:functionArg>params.key + ':[' + params.value + ' TO *]'</rui:functionArg>
+</rui:action>
+<rui:action id="lessThanEqualAction" type="function" componentId="searchList" function="appendToQuery">
+    <rui:functionArg>params.key + ':[* TO ' + params.value + ']'</rui:functionArg>
+</rui:action>
+<rui:action id="sortAscAction" type="function" componentId="searchList" function="sort">
+    <rui:functionArg>params.key</rui:functionArg>
+    <rui:functionArg>'asc'</rui:functionArg>
+</rui:action>
+<rui:action id="sortDescAction" type="function" componentId="searchList" function="sort">
+    <rui:functionArg>params.key</rui:functionArg>
+    <rui:functionArg>'desc'</rui:functionArg>
+</rui:action>
+<rui:action id="exceptAction" type="function" componentId="searchList" function="appendExceptQuery">
+    <rui:functionArg>params.key</rui:functionArg>
+    <rui:functionArg>params.value</rui:functionArg>
+</rui:action>
+<rui:action id="saveQueryAction" type="function" componentId="filterDialog" function="show">
+    <rui:functionArg>YAHOO.rapidjs.component.Form.CREATE_MODE</rui:functionArg>
+    <rui:functionArg>{}</rui:functionArg>
+    <rui:functionArg>{query:params.query, sortProperty:YAHOO.rapidjs.Components['searchList'].getSortAttribute(), sortProperty:YAHOO.rapidjs.Components['searchList'].getSortOrder()}</rui:functionArg>
+</rui:action>
+
+<rui:action id="deleteQueryAction" type="request" url="searchQuery/delete?format=xml" onSuccess="refreshQueriesAction">
+    <rui:requestParam key="id" value="params.data.id"></rui:requestParam>
+</rui:action>
+<rui:action id="deleteQueryGroupAction" type="request" url="searchQueryGroup/delete?format=xml" onSuccess="refreshQueriesAction">
+    <rui:requestParam key="id" value="params.data.id"></rui:requestParam>
+</rui:action>
+<rui:action id="queryUpdateAction" type="function" componentId="filterDialog" function="show">
+    <rui:functionArg>YAHOO.rapidjs.component.Form.EDIT_MODE</rui:functionArg>
+    <rui:functionArg>{queryId:params.data.id}</rui:functionArg>
+</rui:action>
+<rui:action id="queryGroupUpdateAction" type="function" componentId="filterGroupDialog" function="show">
+    <rui:functionArg>YAHOO.rapidjs.component.Form.EDIT_MODE</rui:functionArg>
+    <rui:functionArg>{}</rui:functionArg>
+    <rui:functionArg>{name:params.data.name, id:params.data.id}</rui:functionArg>
+</rui:action>
+<rui:action id="copyQueryAction" type="function" componentId="filterDialog" function="show">
+    <rui:functionArg>YAHOO.rapidjs.component.Form.CREATE_MODE</rui:functionArg>
+    <rui:functionArg>{}</rui:functionArg>
+    <rui:functionArg>{name:'', query:params.data.query, group:params.data.group, viewName:params.data.viewName}</rui:functionArg>
+</rui:action>
+<rui:action id="setQueryAction" type="function" componentId="searchList" function="setQuery" condition="params.data.nodeType == 'filter'">
+    <rui:functionArg>params.data.query</rui:functionArg>
+    <rui:functionArg>params.data.sortProperty</rui:functionArg>
+    <rui:functionArg>params.data.sortOrder</rui:functionArg>
+</rui:action>
+<rui:action id="refreshQueriesAction" type="function" function="poll" componentId="filterTree"></rui:action>
 <script type="text/javascript">
-    function searchListPropertyMenuConditionFunctionGreaterThan(key, value, data)
-    {
-    	return (key == "severity" && value != '5') || (key == "suppressescl" && value != '6') ||
-    		   (key != "severity" && key != "suppressescl" && searchListPropertyMenuConditionFunction(key, value, data));
-    }
-    function searchListPropertyMenuConditionFunctionLessThan(key, value, data)
-	{
-    	return (key == "severity" && value != '0') || (key == "suppressescl" && value != '0')||
-    	 	   (key != "severity" && key != "suppressescl" && searchListPropertyMenuConditionFunction(key, value, data));
-    }
-
-    function searchListPropertyMenuConditionFunction(key, value, data)
-    {
-           return YAHOO.lang.isNumber(parseInt(value));
-    }
-
-    function searchListHeaderMenuConditionFunctionAcknowledge(data)
-    {
-        return data.getAttribute("acknowledged") == "No";
-    }
-
-    function searchListHeaderMenuConditionFunctionDeacknowledge(data)
-    {
-        return data.getAttribute("acknowledged") == "Yes";
-    }
-
-    function searchListHeaderMenuConditionFunctionAddTaskToList(data)
-    {
-        return data.getAttribute("tasklist") == 0;
-    }
-
-    function searchListHeaderMenuConditionFunctionRemoveTaskFromList(data)
-    {
-        return data.getAttribute("tasklist") == 1;
-    }
-    function searchListHeaderMenuConditionFunctionSeveritySubmenu( data, item )
-    {
-        var severity = data.getAttribute("severity");
-        return !(severity == item.id);
-    }
-
-    function searchListHeaderMenuConditionFunctionSuppressSubmenu (data, item)
-    {
-        var suppress = data.getAttribute("suppressescl");
-        return !(suppress == item.id);
-    }
-
-    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
+   YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
         YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
     }, this, true);
     YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
         YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
     }, this, true);
 
+     var changePassDialog = YAHOO.rapidjs.Components['changePassDialog']
+     YAHOO.util.Event.addListener(document.getElementById('rsUser'), 'click', function(){
+         changePassDialog.show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {username:"${session.username}"});
+    },this, true)
 
-    var conf = {id:"eventDetails", width:500, height:400, iframe:false};
-    var html = new YAHOO.rapidjs.component.Html(conf);
-    html.hide();
-    var actionConfig = {url:'searchQuery/delete?format=xml'}
-    var deleteQueryAction = new YAHOO.rapidjs.component.action.RequestAction(actionConfig);
-
-    var actionGroupConfig = {url:'searchQueryGroup/delete?format=xml'}
-    var deleteQueryGroupAction = new YAHOO.rapidjs.component.action.RequestAction(actionGroupConfig);
-
-
-    var searchConfig = {
-        id:'searchList',
-        url:'search?format=xml&searchIn=NetcoolEvent',
-        searchQueryParamName:'query',
-        rootTag:'Objects',
-        contentPath:'Object',
-        keyAttribute:'id',
-        totalCountAttribute:'total',
-        offsetAttribute:'offset',
-        sortOrderAttribute:'sortOrder',
-        titleAttribute:"serverserial",
-        lineSize:3,
-        title:'Netcool Events',
-        defaultFields:['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey'],
-        menuItems:{
-            item1 : { id : 'eventDetails', label : 'Event Details' },
-            item2 : { id : 'acknowledge', label : 'Acknowledge', condition: searchListHeaderMenuConditionFunctionAcknowledge },
-            item3 : { id : 'deacknowledge', label : 'Deacknowledge', condition: searchListHeaderMenuConditionFunctionDeacknowledge },
-            item4 : { id : 'takeOwnership', label : 'Take Ownership' },
-            item5 : { id : 'addTaskToList', label : 'Add Task To List', condition: searchListHeaderMenuConditionFunctionAddTaskToList },
-            item6 : { id : 'removeTaskFromList', label : 'Remove Task From List', condition: searchListHeaderMenuConditionFunctionRemoveTaskFromList },
-            item7 : { id : 'suppressEscalate', label : 'Suppress/Escalate',  submenuItems : {
-                            subItem1 : { id: '0', label : 'Normal', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu},
-                            subItem2 : { id: '1', label : 'Escalated', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu},
-                            subItem3 : { id: '2', label : 'Escalated-Level 2', condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem4 : { id: '3', label : 'Escalated-Level 3',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem5 : { id: '4', label : 'Suppressed',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem6 : { id: '5', label : 'Hidden',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu },
-                            subItem7 : { id: '6', label : 'Maintenance',condition: searchListHeaderMenuConditionFunctionSuppressSubmenu }
-                        }
-                    },
-            item8 : { id : 'severity', label : 'Change Severity', submenuItems : {
-                            subItem1 : { id: '5', label : 'Critical', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
-                            subItem2 : { id: '4', label : 'Major', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu},
-                            subItem3 : { id: '3', label : 'Minor', condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
-                            subItem4 : { id: '2', label : 'Warning',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
-                            subItem5 : { id: '1', label : 'Indeterminate',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu },
-                            subItem6 : { id: '0', label : 'Clear',condition: searchListHeaderMenuConditionFunctionSeveritySubmenu }
-                        }
-                    }
-        } ,
-        images:[
-            {exp:'data["severity"] == 5', src:'images/rapidjs/component/searchlist/red.png'},
-            {exp:'data["severity"] == 4', src:'images/rapidjs/component/searchlist/orange.png'},
-            {exp:'data["severity"] == 3', src:'images/rapidjs/component/searchlist/yellow.png'},
-            {exp:'data["severity"] == 2', src:'images/rapidjs/component/searchlist/blue.png'},
-            {exp:'data["severity"] == 1', src:'images/rapidjs/component/searchlist/purple.png'},
-            {exp:'data["severity"] == 0', src:'images/rapidjs/component/searchlist/green.png'}
-        ],
-        propertyMenuItems:{
-            item1 : { id : 'sortAsc', label : 'Sort asc' },
-            item2 : { id : 'sortDesc', label : 'Sort desc' },
-            item3 : { id : 'greaterThan', label : 'Greater than',  condition: searchListPropertyMenuConditionFunctionGreaterThan},
-            item4 : { id : 'lessThan', label : 'Less than' , condition: searchListPropertyMenuConditionFunctionLessThan},
-            item5 : { id : 'greaterThanOrEqualTo', label : 'Greater than or equal to',  condition: searchListPropertyMenuConditionFunction},
-            item6 : { id : 'lessThanOrEqualTo', label : 'Less than or equal to' , condition: searchListPropertyMenuConditionFunction},
-            item7 : { id : 'except', label : 'Except' , condition: function(){return true;}}
-        } ,
-        renderCellFunction : function(key, value, data){
-        	if(key == "lastoccurrence" || key == "statechange"){
-                var d = new Date();
-                d.setTime(parseFloat(value)*1000)
-                return d.format("d/m/Y H:i:s");
-            }
-            else if(key == "severity")
-            {
-            		switch(value)
-            		{
-            			case '5' : return "Critical";
-            			case '4' : return "Major";
-            			case '3' : return "Minor";
-            			case '2' : return "Warning";
-            			case '1' : return "Indeterminate";
-            			case '0' : return "Clear";
-            			default  : return "";
-            		}
-
-            }
-            else if(key == "suppressescl")
-            {
-            		switch(value)
-            		{
-            			case '6' : return "Maintenance";
-            			case '5' : return "Hidden";
-            			case '4' : return "Suppressed";
-            			case '3' : return "Escalated-Level_3";
-            			case '2' : return "Escalated-Level_2";
-            			case '1' : return "Escalated";
-            			case '0' : return "Normal";
-            			default  : return "";
-            		}
-            }
-            return value;
+    var filterTree = YAHOO.rapidjs.Components['filterTree'];
+    var searchList = YAHOO.rapidjs.Components['searchList'];
+    searchList.renderCellFunction = function(key, value, data){
+        if(key == "lastoccurrence" || key == "statechange"){
+            var d = new Date();
+            d.setTime(parseFloat(value)*1000)
+            return d.format("d/m/Y H:i:s");
         }
+        else if(key == "severity")
+        {
+                switch(value)
+                {
+                    case '5' : return "Critical";
+                    case '4' : return "Major";
+                    case '3' : return "Minor";
+                    case '2' : return "Warning";
+                    case '1' : return "Indeterminate";
+                    case '0' : return "Clear";
+                    default  : return "";
+                }
+
+        }
+        else if(key == "suppressescl")
+        {
+                switch(value)
+                {
+                    case '6' : return "Maintenance";
+                    case '5' : return "Hidden";
+                    case '4' : return "Suppressed";
+                    case '3' : return "Escalated-Level_3";
+                    case '2' : return "Escalated-Level_2";
+                    case '1' : return "Escalated";
+                    case '0' : return "Normal";
+                    default  : return "";
+                }
+        }
+        return value;
     }
-
-    var searchList = new YAHOO.rapidjs.component.search.SearchList(document.getElementById("searchDiv"), searchConfig);
-    searchList.events["saveQueryClicked"].subscribe(function(query) {
-        dialog.show(dialog.CREATE_MODE, null, {query:query, sortProperty:searchList.getSortAttribute(), sortOrder: searchList.getSortOrder()});
-    });
-
-    var acknowledgeConfig = { url: 'script/run/acknowledge?format=xml' };
-	var acknowledgeAction = new YAHOO.rapidjs.component.action.MergeAction(acknowledgeConfig);
-
-	var taskListConfig = { url: 'script/run/taskList?format=xml' };
-	var taskListAction = new YAHOO.rapidjs.component.action.MergeAction(taskListConfig);
-
-	var severityConfig = { url: 'script/run/severity?format=xml' };
-	var severityAction = new YAHOO.rapidjs.component.action.MergeAction(severityConfig);
-
-    var suppressConfig = { url: 'script/run/suppress?format=xml' };
-	var suppressAction = new YAHOO.rapidjs.component.action.MergeAction(suppressConfig);
-
-    var takeOwnershipConfig = { url: 'script/run/takeOwnership?format=xml' };
-	var takeOwnershipAction = new YAHOO.rapidjs.component.action.MergeAction(takeOwnershipConfig);
-
-    searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
-    	var serverName = xmlData.getAttribute("servername");
-       	var serverSerial = xmlData.getAttribute("serverserial");
-
-        if( id == "eventDetails"){
-            var eventId = xmlData.getAttribute("id");
-            var url = "getDetails.gsp?id="+eventId;
-            html.show(url);
-        }
-        else if( id == 'acknowledge' )
-            acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"true"}, [searchList]);
-
-        else if( id == 'deacknowledge' )
-    		acknowledgeAction.execute({servername:serverName, serverserial : serverSerial, acknowledged:"false"}, [searchList]);
-
-        else if( id == 'addTaskToList' )
-        	taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"true"}, [searchList]);
-
-        else if( id == 'removeTaskFromList' )
-        	taskListAction.execute({servername:serverName, serverserial : serverSerial, taskList:"false"}, [searchList]);
-
-        else if( parentId == 'suppressEscalate' )
-        	suppressAction.execute({servername:serverName, serverserial : serverSerial, suppressescl:id }, [searchList]);
-
-        else if (parentId == 'severity')
-        	severityAction.execute({servername:serverName, serverserial : serverSerial, severity:id}, [searchList]);
-        else if (id == 'takeOwnership')
-        	takeOwnershipAction.execute({servername:serverName, serverserial : serverSerial}, [searchList]);
-
-    }, this, true);
-    searchList.events["rowDoubleClicked"].subscribe(function(xmlData, event){
-    	if(YAHOO.util.Event.getTarget(event).className != 'rcmdb-search-cell-key')
-    	{
-    		var eventId = xmlData.getAttribute("id");
-            var url = "getDetails.gsp?id="+eventId;
-            html.show(url);
-        }
-
-    }, true, true);
-
-    searchList.events["cellMenuClick"].subscribe(function(key, value, xmlData, id) {
-			if(	id == "except"){
-				 if(searchList.searchBox.dom.getElementsByTagName('input')[0].value!= "")
-                	searchList.appendToQuery("NOT " + key + ": \""+ value + "\"");
-                 else
-                    searchList.appendToQuery(key + ":[0 TO *] NOT "+ key + ": \""+ value + "\"");
-			}
-	        else if (id == "sortAsc") {
-	            searchList.sort(key, 'asc');
-	        }
-	        else if (id == "sortDesc") {
-	            searchList.sord(key, 'desc');
-	        }
-	        else if (id == "greaterThan") {
-	           	searchList.appendToQuery(key + ":{" + value + " TO *}");
-	        }
-            else if (id == "greaterThanOrEqualTo") {
-	        	searchList.appendToQuery(key + ":[" + value + " TO *]");
-	        }
-            else if (id == "lessThanOrEqualTo") {
-	        	searchList.appendToQuery(key + ":[* TO " + value + "]");
-	        }
-            else if (id == "lessThan") {
-	        	searchList.appendToQuery(key + ":{* TO " + value + "}");
-	        }
-
-    }, this, true);
-
-    function treeNodesUpdateDeleteConditionFunction(data)
-    {
-    	return data.getAttribute("isPublic") != "true" && !(data.getAttribute("nodeType") == "group" && data.getAttribute("name") == "Default");
-    }
-    function treeNodesCopyConditionFunction(data)
-    {
-    	return data.getAttribute("nodeType") == "filter";
-    }
-
-    var groupDefinitionDialogConfig = {
-        id:"filterGroupDialog",
-        width:"30em",
-        saveUrl:"searchQueryGroup/save?format=xml",
-        updateUrl:"searchQueryGroup/update?format=xml",
-        successfulyExecuted: function () {
-            tree.poll()
-        }
-    };
-    var groupDialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterGroup"), groupDefinitionDialogConfig);
-    var treeGridConfig = {
-         id:"filterTree",
-         url:"script/run/queryList?format=xml",
-         rootTag:"Filters",
-         keyAttribute:"id",
-         contentPath:"Filter",
-         title:'Saved Queries',
-         mouseOverCursor: 'pointer',
-         columns: [
-            {attributeName:'name', colLabel:'Name', width:248, sortBy:true}
-         ],
-        menuItems:{
-            Delete : { id: 'delete', label : 'Delete',  condition : treeNodesUpdateDeleteConditionFunction },
-            Update : { id: 'update', label : 'Update',  condition : treeNodesUpdateDeleteConditionFunction },
-            CopyQuery : { id: 'copyQuery', label : 'Copy Query',  condition : treeNodesCopyConditionFunction }
-        },
-        rootImages :[
-			{visible:'data["nodeType"] == "group"', expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'},
-			{visible:'data["nodeType"] == "filter"', expanded:'images/rapidjs/component/tools/filter.png', collapsed:'images/rapidjs/component/tools/filter.png'}
-		]
-      };
-
-
-
-    var tree = new YAHOO.rapidjs.component.TreeGrid(document.getElementById("treeDiv1"), treeGridConfig);
-    tree.addToolbarButton({
+    filterTree.addToolbarButton({
         className:'r-filterTree-groupAdd',
         scope:this,
         tooltip: 'Add group',
         click:function() {
-            groupDialog.show(groupDialog.CREATE_MODE);
+            YAHOO.rapidjs.Components['filterGroupDialog'].show(YAHOO.rapidjs.component.Form.CREATE_MODE);
         }
     });
-    tree.addToolbarButton({
+    filterTree.addToolbarButton({
         className:'r-filterTree-queryAdd',
         scope:this,
         tooltip: 'Add query',
         click:function() {
-            dialog.show(dialog.CREATE_MODE);
+            YAHOO.rapidjs.Components['filterDialog'].show(YAHOO.rapidjs.component.Form.CREATE_MODE);
         }
     });
-    tree.poll();
-    deleteQueryAction.events.success.subscribe(tree.poll, tree, true);
-
-    deleteQueryGroupAction.events.success.subscribe(tree.poll, tree, true);
-
-    tree.events["treeNodeClick"].subscribe(function(data) {
-        if (data.getAttribute("nodeType") == "filter")
-        {
-            searchList.setQuery(data.getAttribute("query"), data.getAttribute('sortProperty'), data.getAttribute('sortOrder'));
-        }
-    }, this, true);
-
-    tree.events["rowMenuClick"].subscribe(function(data, id, parentId) {
-    	if (id == "delete")
-        {
-            if (data.getAttribute("nodeType") == "filter")
-                deleteQueryAction.execute({id:data.getAttribute("id")});
-            else if (data.getAttribute("nodeType") == "group")
-                deleteQueryGroupAction.execute({id:data.getAttribute("id")});
-        }
-        else if(id == "update"){
-            if (data.getAttribute("nodeType") == "filter")
-                dialog.show(dialog.EDIT_MODE, {queryId:data.getAttribute("id")})
-            else if(data.getAttribute("nodeType") == "group"){
-                groupDialog.show(groupDialog.EDIT_MODE)
-                groupDialog.dialog.form.name.value = data.getAttribute("name");
-                groupDialog.dialog.form.id.value = data.getAttribute("id")
-            }
-       }
-       else if(id == "copyQuery"){
-        		dialog.show(dialog.CREATE_MODE,null,{name:'', group:data.parentNode().getAttribute('name'),
-        										query:data.getAttribute('query')});
-
-            }
-    }, this, true);
-
-    var filterDefinitionDialogConfig = {
-        id:"filterDialog",
-        width:"35em",
-        createUrl:"script/run/createQuery",
-        editUrl:"script/run/editQuery",
-        saveUrl:"searchQuery/save?format=xml",
-        updateUrl:"searchQuery/update?format=xml",
-        successfulyExecuted: function () {
-            tree.poll()
-        }
-    };
-    var dialog = new YAHOO.rapidjs.component.Form(document.getElementById("filterDialog"), filterDefinitionDialogConfig);
-     var changePassDialogConfig = {
-        id:"changePassDialog",
-        width:"35em",
-        saveUrl:"rsUser/changePassword?format=xml",
-        successfulyExecuted: function () {}
-    };
-    var changePassDialog = new YAHOO.rapidjs.component.Form(document.getElementById("passwordDialog"), changePassDialogConfig);
+    filterTree.poll();
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
-    Event.addListener(document.getElementById('rsUser'), 'click', function(){
-         changePassDialog.show(dialog.CREATE_MODE);
-         changePassDialog.dialog.form.username.value = "${session.username}";
-    },this, true)
-
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'top', body: 'top', resize: false, height:40},
-                { position: 'center', body: 'right', resize: false, gutter: '1px' },
-                { position: 'left', width: 250, resize: true, body: 'left', scroll: false}
+                { position: 'center', body: searchList.container.id, resize: false, gutter: '1px' },
+                { position: 'left', width: 250, resize: true, body: filterTree.container.id, scroll: false}
             ]
         });
         layout.on('render', function(){
@@ -564,13 +423,13 @@
             YAHOO.util.Dom.setStyle(layoutLeft.body, 'top', '1px');
         });
 
-        searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+        searchList.resize(layout.getUnitByPosition('center').getSizes().body.w, layout.getUnitByPosition('center').getSizes().body.h);
         layout.on('resize', function() {
-            searchList.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+            searchList.resize(layout.getUnitByPosition('center').getSizes().body.w, layout.getUnitByPosition('center').getSizes().body.h);
         });
-        tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+        filterTree.resize(layout.getUnitByPosition('center').getSizes().body.w, layout.getUnitByPosition('center').getSizes().body.h);
         layout.on('resize', function() {
-            tree.resize(layout.getUnitByPosition('center').body.offsetWidth, layout.getUnitByPosition('center').body.offsetHeight);
+            filterTree.resize(layout.getUnitByPosition('center').getSizes().body.w, layout.getUnitByPosition('center').getSizes().body.h);
         });
         window.layout = layout;
 

@@ -110,19 +110,19 @@
     <rui:functionArg>'getObjectDetails.gsp?name=' + params.data.name</rui:functionArg>
     <rui:functionArg>'Details of ' + params.data.elementClassName + ' ' + params.data.elementName</rui:functionArg>
 </rui:action>
-<rui:action id="acknowledgeAction" type="merge" url="script/run/acknowledge" components="${['eventsGrid']}">
+<rui:action id="acknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['eventsGrid']}">
     <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="acknowledged" value="true"></rui:requestParam>
 </rui:action>
-<rui:action id="unacknowledgeAction" type="merge" url="script/run/acknowledge" components="${['eventsGrid']}">
+<rui:action id="unacknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['eventsGrid']}">
     <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="acknowledged" value="false"></rui:requestParam>
 </rui:action>
-<rui:action id="takeOwnAction" type="merge" url="script/run/setOwnership" components="${['eventsGrid']}">
+<rui:action id="takeOwnAction" type="merge" url="script/run/setOwnership?format=xml" components="${['eventsGrid']}">
     <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="act" value="true"></rui:requestParam>
 </rui:action>
-<rui:action id="releaseOwnAction" type="merge" url="script/run/setOwnership" components="${['eventsGrid']}">
+<rui:action id="releaseOwnAction" type="merge" url="script/run/setOwnership?format=xml" components="${['eventsGrid']}">
     <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="act" value="false"></rui:requestParam>
 </rui:action>

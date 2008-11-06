@@ -153,7 +153,7 @@ class NetcoolConnectorController {
                 def datasource = datasource.NetcoolDatasource.add(name: datasourceName, connection: netcoolConnection);
                 createConversionScript();
                 createConnectorScript(netcoolConnector.name);
-                if (checkConnection(connectionParams.name)) {
+                if (ConnectionManager.checkConnection(connectionParams.name)) {
                     flash.message = "NetcoolConnector ${netcoolConnector.name} created"
                 }
                 else {

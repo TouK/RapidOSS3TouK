@@ -481,7 +481,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             for (var i in this.menuItems) {
                 var menuItemConfig = this.menuItems[i];
                 if (menuItemConfig['visible'] != null) {
-                    var params = {data: dataNode.getAttributes(), label:menuItemConfig.label}
+                    var params = {data: dataNode.getAttributes(), label:menuItemConfig.label, menuId:menuItemConfig.id}
                     var condRes = eval(menuItemConfig['visible']);
                     var menuItem = this.rowHeaderMenu.getItem(index);
                     if (!condRes)

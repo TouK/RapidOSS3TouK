@@ -175,7 +175,7 @@ class RapidDomainClassGrailsPlugin {
                         {
                             oprInstance = manager.operationClass.newInstance() ;
                             manager.operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
-                            delegate[RapidCMDBConstants.OPERATION_PROPERTY_NAME] = oprInstance;
+                            delegate.setProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME, oprInstance, false);
                         }
                         try {
                             return oprInstance.invokeMethod(name, args)

@@ -65,14 +65,6 @@ choices.each{
             Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/web-app/**");
         }
         Ant.move(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/rs.exe", toDir:"${baseDir}")
-        // TODO operations directory is lost the cause must be found
-        if(new File("${baseDir}/plugins/netcool-0.2/operations").exists())
-        {
-            Ant.move(toDir:"${baseDir}/operations")
-            {
-                Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/operations");
-            }
-        }
     }
 }
 

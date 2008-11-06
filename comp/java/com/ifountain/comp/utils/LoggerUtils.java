@@ -34,36 +34,45 @@ public class LoggerUtils
 
     public static final String DAILY_ROLLING_FILE_APPENDER = "DailyRollingFileAppender";
 
-    public static void configureLogger(Logger aLogger, String fileName, Level level)
+    public static void configureLogger(Logger aLogger,  Level level ,String fileName)
     {
-        configureLogger(aLogger, fileName, level, "%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n");
+        configureLogger(aLogger, level, fileName,  "%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n",true);
     }
-    public static void configureLogger(Logger aLogger, String fileName, Level level, String layoutPattern)
+    public static void configureLogger(Logger aLogger,  Level level ,String fileName,boolean addFileAppender)
     {
+        configureLogger(aLogger, level, fileName,  "%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n",addFileAppender);
+    }
+    public static void configureLogger(Logger aLogger, Level level, String fileName, String layoutPattern, boolean addFileAppender)
+    {
+        aLogger.removeAllAppenders();
         aLogger.setAdditivity(false);
-        if (fileName != null) {
-        	try {
-                PatternLayout layout = new PatternLayout(layoutPattern);
-                DailyRollingFileAppender fileappender = new DailyRollingFileAppender(layout, fileName, ".yyyy-MM-dd");
-                fileappender.setAppend(true);
-                fileappender.setName(DAILY_ROLLING_FILE_APPENDER);
-                aLogger.removeAllAppenders();
-                aLogger.addAppender(fileappender);
-            } catch (IOException e) {
-            	System.err.println(fileName + " log file could not be initialized.");
-            	addConsoleAppender(aLogger, layoutPattern);
-            }
-    	}
-        else {
-        	System.err.println(fileName + " log file could not be initialized.");
-        	addConsoleAppender(aLogger, layoutPattern);
-        }
         if(level != null)
         {
             aLogger.setLevel(level);
         }
-    }
 
+        if(addFileAppender)
+        {
+            if (fileName != null) {
+                try {
+                    PatternLayout layout = new PatternLayout(layoutPattern);
+                    DailyRollingFileAppender fileappender = new DailyRollingFileAppender(layout, fileName, ".yyyy-MM-dd");
+                    fileappender.setAppend(true);
+                    fileappender.setName(DAILY_ROLLING_FILE_APPENDER);
+                    aLogger.addAppender(fileappender);
+                } catch (IOException e) {
+                    System.err.println(fileName + " log file could not be initialized.");
+                    addConsoleAppender(aLogger, layoutPattern);
+                }
+            }
+            else {
+                System.err.println(fileName + " log file could not be initialized.");
+                addConsoleAppender(aLogger, layoutPattern);
+            }
+        }   
+
+    }
+    
     public static void addConsoleAppender(Logger aLogger, String layoutPattern)
     {
     	String layout_str = "";

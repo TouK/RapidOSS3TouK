@@ -12,17 +12,22 @@ import java.util.HashMap;
  * To change this template use File | Settings | File Templates.
  */
 public class MapSerializer {
-    public static final String ENRTY_SPLITTER = ""+(char)936;
-    public static final String KEY_VALUE_SPLITTER = ""+(char)937;
+    public static final String SPLITTER = ""+(char)936;
     public static String convertToString(Map map)
     {
         StringBuffer str = new StringBuffer();
         for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
            Map.Entry entry = (Map.Entry) it.next();
-           str.append(entry.getKey()).append(KEY_VALUE_SPLITTER).append(entry.getValue()).append(ENRTY_SPLITTER);
+           str.append(entry.getKey()).append(SPLITTER).append(entry.getValue()).append(SPLITTER);
         }
-        
-        return str.toString();
+        if(str.length() > 0)
+        {
+            return str.substring(0, str.length()-1);
+        }
+        else
+        {
+            return "";
+        }
     }
 
     public static Map convertToMap(String str)
@@ -30,12 +35,12 @@ public class MapSerializer {
         Map map = new HashMap();
         if(str.length() != 0)
         {
-            String[] mapEntries = str.split(ENRTY_SPLITTER);
-            for(int i=0; i < mapEntries.length; i++)
+            String[] mapEntries = str.split(SPLITTER,-1);
+            for(int i=0; i < mapEntries.length; i+=2)
             {
-                String entry = mapEntries[i];
-                String[] keyValue = entry.split(KEY_VALUE_SPLITTER);
-                map.put(keyValue[0], keyValue[1]);
+                String key = mapEntries[i];
+                String value = mapEntries[i+1];
+                map.put(key, value);
             }
         }
         return map;

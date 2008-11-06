@@ -165,4 +165,35 @@ class RsUserController {
             render(view: 'create', model: [rsUser: rsUser])
         }
     }
+
+    def createUser = {
+        def password1 = params["password1"];
+        def password2 = params["password2"];
+        if (!password1 || !password2 || password1 != password2) {
+            addError("default.passwords.dont.match", []);
+            render(text: errorsToXml(errors), contentType: "text/xml")
+            return;
+        }
+        def groupname = params.groupname;
+        if (!groupname || groupname.trim().length() == 0) {
+            addError("default.missing.mandatory.parameter", ["groupname"]);
+            render(text: errorsToXml(errors), contentType: "text/xml")
+            return;
+        }
+        def group = Group.get(name: groupname);
+        if (group) {
+            def rsUser = RsUser.add(username: params["username"], passwordHash: new Sha1Hash(password1).toHex());
+            if (!rsUser.hasErrors()) {
+                rsUser.addRelation(groups: group);
+                render(text: ControllerUtils.convertSuccessToXml("User ${params['username']} created"), contentType: "text/xml")
+            }
+            else {
+                render(text: errorsToXml(rsUser.errors), contentType: "text/xml")
+            }
+        }
+        else {
+            addError("default.object.not.found", [Group.class.name, groupname]);
+            render(text: errorsToXml(errors), contentType: "text/xml")
+        }
+    }
 }

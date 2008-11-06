@@ -203,7 +203,7 @@
                     <rui:slSubmenuItem id="6" label="Maintenance" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '6'"></rui:slSubmenuItem>
                </rui:slSubmenuItems>
         </rui:slMenuItem>
-        <rui:slMenuItem id="severity" label="Suppress/Escalate">
+        <rui:slMenuItem id="severity" label="Chanage Severity">
                <rui:slSubmenuItems>
                     <rui:slSubmenuItem id="5" label="Critical" action="severityAction" visible="params.key =='severity' && params.value != '5'"></rui:slSubmenuItem>
                     <rui:slSubmenuItem id="4" label="Major" action="severityAction" visible="params.key =='severity' && params.value != '4'"></rui:slSubmenuItem>

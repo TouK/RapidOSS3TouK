@@ -106,7 +106,10 @@ class SmartsConnectorController {
                 def scriptName = smartsConnector.getScriptName(smartsConnector.name);
 
                 smartsConnector.ds.update(reconnectInterval:params.reconnectInterval);
-                smartsConnector.ds.listeningScript.update(name:scriptName,logFile:smartsConnector.name,logLevel:params.logLevel,staticParam:staticParam);
+                
+                def scriptParams=[name:scriptName,logFile:smartsConnector.name,logLevel:params.logLevel,staticParam:staticParam];
+                CmdbScript.updateScript(smartsConnector.ds.listeningScript, ControllerUtils.getClassProperties(scriptParams, CmdbScript), true);
+
 
                 if(!smartsConnector.ds.hasErrors() && !smartsConnector.ds.listeningScript.hasErrors())
                 {

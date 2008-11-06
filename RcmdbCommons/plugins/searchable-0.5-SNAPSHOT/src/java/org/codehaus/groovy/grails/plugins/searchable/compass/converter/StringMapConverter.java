@@ -35,6 +35,8 @@ import org.compass.core.spi.InternalCompassSession;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.ifountain.compass.utils.MapSerializer;
+
 /**
  * Based on the example from Compass's unit tests
  *
@@ -48,7 +50,7 @@ public class StringMapConverter implements Converter, CompassConfigurable {
     public void configure(CompassSettings settings) throws CompassException {
         supportUnmarshall = settings.getSettingAsBoolean("supportUnmarshall", true);
     }
-
+    //TODO: In official release Eval is used to deserialize Map but it causes memory leak. It replaced by a custom serializer.
     public boolean marshall(Resource resource, Object root, Mapping mapping, MarshallingContext context) throws ConversionException {
         if (root == null) {
             return false;
@@ -65,7 +67,7 @@ public class StringMapConverter implements Converter, CompassConfigurable {
         }
 
         if (supportUnmarshall) {
-            String stringmap = DefaultGroovyMethods.inspect(map);
+            String stringmap = MapSerializer.convertToString(map);
             InternalCompassSession compassSession = context.getSession();
             InternalCompass compass = compassSession.getCompass();
             SearchEngineFactory searchEngineFactory = compass.getSearchEngineFactory();
@@ -95,7 +97,7 @@ public class StringMapConverter implements Converter, CompassConfigurable {
         if (stringmap == null) {
             return null;
         }
-        return Eval.me(stringmap);
+        return MapSerializer.convertToMap(stringmap);
     }
 
     public boolean isSupportUnmarshall() {

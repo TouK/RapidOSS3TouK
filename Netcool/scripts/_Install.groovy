@@ -96,5 +96,5 @@ Ant.move(toDir:"${baseDir}/grails-app/domain")
 
 Ant.move(toDir:"${baseDir}/operations")
 {
-    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/operations/NetcoolEventOperations.groovy");
+    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/operations/**");
 }

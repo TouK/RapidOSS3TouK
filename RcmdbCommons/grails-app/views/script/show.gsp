@@ -48,7 +48,16 @@
                     <td valign="top" class="value">${cmdbScript.scriptFile}</td>
 
                 </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Log Level:</td>
 
+                    <td valign="top" class="value">${cmdbScript.logLevel}</td>
+                </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Use Own Log File:</td>
+
+                    <td valign="top" class="value">${cmdbScript.logFileOwn}</td>
+                </tr>
                 <tr class="prop">
                     <td valign="top" class="name">Type:</td>
 
@@ -128,12 +137,7 @@
                     <td valign="top" class="name">Log File:</td>
 
                     <td valign="top" class="value">${cmdbScript.logFile}</td>
-                </tr>
-                <tr class="prop">
-                    <td valign="top" class="name">Log Level:</td>
-
-                    <td valign="top" class="value">${cmdbScript.logLevel}</td>
-                </tr>
+                </tr>                          
                 <%
                         }
                 %>

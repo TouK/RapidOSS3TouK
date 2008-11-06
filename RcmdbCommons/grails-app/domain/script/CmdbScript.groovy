@@ -29,7 +29,7 @@ class CmdbScript {
     String staticParam = "";
     String logFile="cmdbscript";
     String logLevel = Level.WARN.toString();
-    
+    boolean logFileOwn=false;
     
     BaseListeningDatasource listeningDatasource;
     org.springframework.validation.Errors errors ;

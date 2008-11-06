@@ -65,7 +65,7 @@ class ScriptManager {
             try
             {
                 addScript(it);
-                runScript(it, [:]);
+                runScript(it, [:],Logger.getRootLogger());
             }
             catch (t)
             {
@@ -117,7 +117,7 @@ class ScriptManager {
         addScript(scriptPath);
     }
 
-    def runScript(scriptPath, bindings) throws ScriptingException
+    def runScript(scriptPath, bindings,scriptLogger) throws ScriptingException
     {
         scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
         def scriptClass = scripts[scriptPath];
@@ -128,6 +128,7 @@ class ScriptManager {
             bindings.each {propName, propValue ->
                 scriptObject.setProperty(propName, propValue);
             }
+            scriptObject.setProperty("logger", scriptLogger);
             try
             {
 

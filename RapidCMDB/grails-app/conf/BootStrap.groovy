@@ -19,6 +19,7 @@ import script.CmdbScript
 import org.compass.core.Compass
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.springframework.web.context.support.WebApplicationContextUtils
+import script.CmdbScript;
 
 class BootStrap {
     def quartzScheduler;
@@ -49,6 +50,10 @@ class BootStrap {
 
     def initializeScripting()
     {
+        CmdbScript.list().each{
+            CmdbScript.configureScriptLogger(it);
+        }
+        
         ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), new StartupScriptsConfig().scripts);
         ScriptScheduler.getInstance().initialize(quartzScheduler);
         CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {

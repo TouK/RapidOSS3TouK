@@ -247,7 +247,7 @@ class ScriptController {
                     def start = System.currentTimeMillis();
                     try
                     {
-                        def result = ScriptManager.getInstance().runScript(script.name, bindings);
+                        def result = ScriptManager.getInstance().runScript(script.name, bindings,CmdbScript.getScriptLogger(script));
                         junitTest.setRunTime(System.currentTimeMillis() - start)
                         renderText = String.valueOf(result);
                     }

@@ -1,7 +1,7 @@
 package script
 import com.ifountain.core.test.util.RapidCoreTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
-
+import org.apache.log4j.Level;
 /**
  * Created by IntelliJ IDEA.
  * User: iFountain
@@ -31,6 +31,37 @@ class CmdbScriptTest extends RapidCoreTestCase{
          assertEquals(mapParams3.size(),0);
                   
 
+     }
+
+     void testConfigureScriptLogger()
+     {
+          CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
+
+          def logLevel=Level.DEBUG;
+          def scriptParams=[:]
+          scriptParams["name"]="testscript";
+          scriptParams["logFile"]="testscript";
+          scriptParams["logLevel"]=logLevel.toString();
+          scriptParams["logFileOwn"]=false;
+          
+          CmdbScript script=new CmdbScript(name:scriptParams.name,logFile:scriptParams.logFile,logFileOwn:scriptParams.logFileOwn,logLevel:scriptParams.logLevel);
+
+          def logger=null;
+          
+          CmdbScript.configureScriptLogger(script);
+          logger=CmdbScript.getScriptLogger(script);
+          assertEquals(logger.getLevel(),logLevel);
+          assertFalse(logger.getAllAppenders().hasMoreElements());
+
+          script.logFileOwn=true;          
+          script.logLevel=Level.INFO.toString();
+          CmdbScript.configureScriptLogger(script);
+          logger=CmdbScript.getScriptLogger(script);
+          assertEquals(logger.getLevel(),Level.INFO);
+          assertTrue(logger.getAllAppenders().hasMoreElements());
+
+          
+          
      }
      
 }

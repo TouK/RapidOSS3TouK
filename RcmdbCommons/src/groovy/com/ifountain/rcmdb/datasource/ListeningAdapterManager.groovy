@@ -73,7 +73,7 @@ class ListeningAdapterManager {
             def scriptObject;
             def scriptLogger;
             try {
-                scriptLogger=CmdbScript.startScriptLogger(script);
+                scriptLogger=CmdbScript.getScriptLogger(script);
                 scriptObject = ScriptManager.getInstance().getScriptObject(script.scriptFile);
                 scriptObject.setProperty("datasource", listeningDatasource);
                 scriptObject.setProperty("staticParam", script.staticParam);

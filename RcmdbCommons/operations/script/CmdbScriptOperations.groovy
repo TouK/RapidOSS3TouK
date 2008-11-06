@@ -6,8 +6,9 @@ import org.quartz.CronTrigger
 import datasource.BaseListeningDatasource
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import org.apache.log4j.Logger
-import org.apache.log4j.DailyRollingFileAppender
 import org.apache.log4j.Level
+import org.apache.log4j.DailyRollingFileAppender;
+import com.ifountain.comp.utils.LoggerUtils;
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
@@ -42,10 +43,14 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         ScriptManager.getInstance().reloadScript(scriptFile);
     }
 
-    static def addScript(Map params, boolean fromController) throws Exception {
+    static def addScript(Map params, boolean fromController) throws Exception {        
         if(!params.get("scriptFile") || params.get("scriptFile").trim() == "")
         {
             params["scriptFile"] = params.name;
+        }
+        if(!params.get("logFile") || params.get("logFile").trim() == "")
+        {                           
+            params["logFile"] = params.name;
         }
         def script = CmdbScript.add(params)
         if (!script.hasErrors()) {
@@ -61,6 +66,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
                     ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
                 }
             }
+            configureScriptLogger(script);
         }
         if (!fromController && script.hasErrors()) {
             throw new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
@@ -93,6 +99,11 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
 
     static def updateScript(CmdbScript script, Map params, boolean fromController) throws Exception {
         def scriptFileBeforeUpdate = script.scriptFile;
+        if(!params.get("logFile") || params.get("logFile").trim() == "")
+        {
+            params["logFile"] = params.name;
+        }
+        
         script.update(params);
 
         if (!script.hasErrors()) {
@@ -114,6 +125,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
                     ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
                 }
             }
+            configureScriptLogger(script);
         }
         if (!fromController && script.hasErrors()) {
             throw new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
@@ -146,7 +158,13 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
 
     static def runScript(CmdbScript script, Map params) throws Exception {
-        return ScriptManager.getInstance().runScript(script.scriptFile, params);
+
+        if(script.type==CmdbScript.SCHEDULED)
+        {
+            params.staticParam=script.staticParam;
+            params.staticParamMap=CmdbScript.getStaticParamMap(script);
+        }    
+        return ScriptManager.getInstance().runScript(script.scriptFile, params,getScriptLogger(script));
     }
 
     static def startListening(scriptName) throws Exception{
@@ -187,25 +205,19 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
          }
     }
 
-    static def startScriptLogger(CmdbScript script)
+    static def configureScriptLogger(CmdbScript script)
     {
-        def logger = Logger.getLogger(script.logFile);
-        logger.removeAllAppenders();
-        def layout = new org.apache.log4j.PatternLayout("%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n");
-        def appender = new DailyRollingFileAppender(layout, "logs/${script.logFile}.log", "'.'yyyy-MM-dd");
-        logger.addAppender(appender);
-        logger.setAdditivity(false);
-        logger.setLevel(Level.toLevel(script.logLevel));
-        logger.debug("Script Logger started");
-        return logger;
-    }
+        def logger=getScriptLogger(script);
+        LoggerUtils.configureLogger(logger,Level.toLevel(script.logLevel),script.logFile,script.logFileOwn); 
+        
+    }    
     static def stopScriptLogger(CmdbScript script)
     {
-        Logger.getLogger(script.logFile).removeAllAppenders();
+        //getScriptLogger(script).removeAllAppenders();
     }
     static def getScriptLogger(CmdbScript script)
     {
-        return Logger.getLogger(script.logFile);
+        return Logger.getLogger("scripting.${script.type}.${script.logFile}");
     }
     static def getStaticParamMap(CmdbScript script)
     {

@@ -108,7 +108,9 @@ class SmartsConnectorController {
                 smartsConnector.ds.update(reconnectInterval:params.reconnectInterval);
                 
                 def scriptParams=[name:scriptName,logFile:smartsConnector.name,logLevel:params.logLevel,staticParam:staticParam];
-                CmdbScript.updateScript(smartsConnector.ds.listeningScript, ControllerUtils.getClassProperties(scriptParams, CmdbScript), true);
+                def scriptClassParams=ControllerUtils.getClassProperties(scriptParams, CmdbScript);
+                scriptClassParams["logFileOwn"]=true;
+                CmdbScript.updateScript(smartsConnector.ds.listeningScript,scriptClassParams, true);
 
 
                 if(!smartsConnector.ds.hasErrors() && !smartsConnector.ds.listeningScript.hasErrors())
@@ -211,8 +213,9 @@ class SmartsConnectorController {
                 def scriptName = smartsConnector.getScriptName(smartsConnector.name);
                 def scriptFile = (params.type == "Topology"?"topologySubscriber":"notificationSubscriber");
                 def scriptParams=[name:scriptName, scriptFile:scriptFile,type:CmdbScript.LISTENING,logFile:smartsConnector.name,logLevel:params.logLevel,staticParam:staticParam]
-                
-                CmdbScript script = CmdbScript.addScript(ControllerUtils.getClassProperties(scriptParams, CmdbScript), true);
+                def scriptClassParams=ControllerUtils.getClassProperties(scriptParams, CmdbScript);
+                scriptClassParams["logFileOwn"]=true;
+                CmdbScript script = CmdbScript.addScript(scriptClassParams, true);
                 if(!script.hasErrors())
                 {
                     if(params.type == "Topology")

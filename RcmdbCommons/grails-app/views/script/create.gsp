@@ -14,8 +14,7 @@
         var cronRow = document.getElementById('cronExpressionRow');
         var enabledRow = document.getElementById('enabledRow');
         var datasourceRow = document.getElementById('datasourceRow');
-        var staticParamRow = document.getElementById('staticParamRow');        
-        var logLevelRow = document.getElementById('logLevelRow');
+        var staticParamRow = document.getElementById('staticParamRow');      
         var typeSelect = document.getElementById("type");
         var scriptType = typeSelect.options[typeSelect.selectedIndex].value;
         datasourceRow.style.display = (scriptType == "Listening"? "":"none");
@@ -24,8 +23,7 @@
         periodRow.style.display = (scriptType == "Scheduled"? "":"none");
         cronRow.style.display = (scriptType == "Scheduled"? "":"none");
         enabledRow.style.display = (scriptType == "Scheduled"? "":"none");
-        staticParamRow.style.display = (scriptType != "OnDemand"? "":"none");        
-        logLevelRow.style.display = (scriptType == "Listening"? "":"none");
+        staticParamRow.style.display = (scriptType != "OnDemand"? "":"none");
         scheduleTypeChanged();
     }
 
@@ -95,7 +93,22 @@
                             <input type="text" class="inputtextfield" id="scriptFile" name="scriptFile" value="${fieldValue(bean: cmdbScript, field: 'scriptFile')}"/>
                         </td>
                     </tr>
-
+                    <tr class="prop" id="logLevelRow">
+                        <td valign="top" class="name">
+                            <label for="logLevel">Log Level:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'logLevel', 'errors')}">
+                            <g:select id="logLevel" name="logLevel" from="${cmdbScript.constraints.logLevel.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:cmdbScript,field:'logLevel')}"></g:select>
+                        </td>
+                    </tr>
+                     <tr class="prop" id="logFileOwnRow">
+                        <td valign="top" class="name">
+                            <label for="logFileOwn">Use Own Log File:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'logFileOwn', 'errors')}">
+                            <g:checkBox name="logFileOwn" value="${cmdbScript?.logFileOwn}"></g:checkBox>
+                        </td>
+                    </tr>
                     <tr class="prop">
                         <td valign="top" class="name">
                             <label for="type">Type:</label>
@@ -105,6 +118,7 @@
                                     value="${fieldValue(bean:cmdbScript,field:'type')}" onchange="typeChanged()"></g:select>
                         </td>
                     </tr>
+                    
                         <tr class="prop" id="scheduleTypeRow">
                             <td valign="top" class="name">
                                 <label for="scheduleType">Schedule Type:</label>
@@ -166,15 +180,7 @@
                             </td>
                         </tr>
               
-                     <tr class="prop" id="logLevelRow">
-                        <td valign="top" class="name">
-                            <label for="logLevel">Log Level:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'logLevel', 'errors')}">
-                            <g:select id="logLevel" name="logLevel" from="${cmdbScript.constraints.logLevel.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:cmdbScript,field:'logLevel')}"></g:select>
-                        </td>
-                    </tr>
-                    
+                     
 
                 </tbody>
             </table>

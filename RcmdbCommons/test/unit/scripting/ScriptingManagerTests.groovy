@@ -7,7 +7,8 @@ import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 /**
 * Created by IntelliJ IDEA.
 * User: Administrator
@@ -20,12 +21,14 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
     def static base_directory = "../testoutput/";
     def static scriptResultList;
     ScriptManager manager;
+    Logger testLogger;
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         scriptResultList = [];
         manager = ScriptManager.getInstance();
         manager.initialize(this.class.getClassLoader(), base_directory, []);
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
+        testLogger=Logger.getLogger("scriptingtestlogger");
     }
 
     protected void tearDown() {
@@ -147,7 +150,31 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         scriptObject = cls.newInstance();
         assertEquals (expectedScriptMessage, scriptObject.run())
     }
+    
+    public void testRunScriptCreatesLogger()
+    {
+        def scriptName = "script1.groovy";
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write ("return logger");
+        manager.addScript(scriptName)
 
+        def bindings=[:];
+
+        def logLevel=Level.DEBUG;
+        def logger=Logger.getLogger("testlogger");
+        logger.setLevel(logLevel);
+
+
+        def res=manager.runScript(scriptName, bindings,logger);
+        assertEquals(res.getLevel(),logLevel);
+        assertEquals(res.getName(),"testlogger");
+
+        logger.setLevel(Level.INFO);
+        res=manager.runScript(scriptName, bindings,logger);
+        assertEquals(res.getLevel(),Level.INFO);
+        
+    }
+    
     public void testRunScript()
     {
         def scriptName = "script1.groovy";
@@ -156,8 +183,8 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         manager.addScript(scriptName)
 
         def bindings = ["name":"user1"]
-        assertEquals ("user1", manager.runScript(scriptName, bindings));
-        assertEquals ("user1", manager.runScript("script1", bindings));
+        assertEquals ("user1", manager.runScript(scriptName, bindings,testLogger));
+        assertEquals ("user1", manager.runScript("script1", bindings,testLogger));
     }
     public void testRunScriptThrowsRuntimeExceptions()
     {
@@ -170,7 +197,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         def bindings = [:]
         try
         {
-            manager.runScript(scriptName, bindings);
+            manager.runScript(scriptName, bindings,testLogger);
             fail("Should throw exception");
         }
         catch(ScriptingException e)
@@ -185,7 +212,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         def bindings = [:]
         try
         {
-            manager.runScript(scriptName, bindings);
+            manager.runScript(scriptName, bindings,testLogger);
             fail("Should throw exception");
         }
         catch(ScriptingException e)

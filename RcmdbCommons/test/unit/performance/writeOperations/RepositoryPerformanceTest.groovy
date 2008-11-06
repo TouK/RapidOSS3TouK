@@ -1,4 +1,4 @@
-package writeOperations
+package performance.writeOperations
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.domain.method.AddMethodDomainObject1

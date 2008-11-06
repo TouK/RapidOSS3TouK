@@ -16,7 +16,7 @@
 
 /**
  * Gant script that runs the Grails unit tests
- * 
+ *
  * @author Graeme Rocher
  *
  * @since 0.4
@@ -120,12 +120,12 @@ target(testApp: "The test app implementation target") {
             runUnitTests()
         }
         defaultSystemProps.each{propName, propValue->
-            System.setProperty(propName, propValue);    
+            System.setProperty(propName, propValue);
         }
         shutdownApp();
         if(!unitOnly) {
             runIntegrationTests()
-        }   
+        }
         event("AllTestsEnd", ["Finishing test-app"])
         produceReports()
     }
@@ -139,7 +139,7 @@ target(testApp: "The test app implementation target") {
 target(packageTests:"Puts some useful things on the classpath") {
     Ant.copy(todir:classesDirPath) {
 		fileset(dir:"${basedir}", includes:"application.properties")
-	}					
+	}
 	Ant.copy(todir:classesDirPath, failonerror:false) {
 		fileset(dir:"${basedir}/grails-app/conf", includes:"**", excludes:"*.groovy, log4j*, hibernate, spring")
 		fileset(dir:"${basedir}/grails-app/conf/hibernate", includes:"**/**")
@@ -152,18 +152,13 @@ target(packageTests:"Puts some useful things on the classpath") {
             exclude(name:"**/*.java")
             exclude(name:"**/*.groovy)")
         }
-        fileset(dir:"${basedir}/test/performance") {
-            include(name:"**/**")
-            exclude(name:"**/*.java")
-            exclude(name:"**/*.groovy)")
-        }
         fileset(dir:"${basedir}/test/integration") {
             include(name:"**/**")
             exclude(name:"**/*.java")
             exclude(name:"**/*.groovy)")
         }
-	}           
-	
+	}
+
 }
 target(compileTests: "Compiles the test cases") {
     event("CompileStart", ['tests'])
@@ -252,7 +247,7 @@ def runTests = {suite, TestResult result, Closure callback ->
                         def t = test.testAt(i)
                         System.out.println "--Output from ${t.name}--"
                         System.err.println "--Output from ${t.name}--"
-                        
+
                         callback(test, {
                             savedOut.print "                    ${t.name}..."
                             event("TestStart", [test, t, thisTest])
@@ -263,17 +258,17 @@ def runTests = {suite, TestResult result, Closure callback ->
                         runCount += thisTest.runCount()
                         failureCount += thisTest.failureCount()
                         errorCount += thisTest.errorCount()
-                        
+
                         if (thisTest.errorCount() > 0 || thisTest.failureCount() > 0) {
                             savedOut.println "FAILURE"
                             thisTest.errors().each {result.addError(t, it.thrownException())}
                             thisTest.failures().each {result.addFailure(t, it.thrownException())}
                         }
                         else {savedOut.println "SUCCESS"}
-                    } 
+                    }
                     junitTest.setCounts(runCount, failureCount, errorCount);
                     junitTest.setRunTime(System.currentTimeMillis() - start)
-                    
+
                     def outString = outBytes.toString()
                     def errString = errBytes.toString()
                     new File("${testDir}/TEST-${test.name}-out.txt").write(outString)
@@ -298,8 +293,6 @@ target(runUnitTests: "Run Grails' unit tests under the test/unit directory") {
         loadApp()
         def testFiles = resolveTestResources {"test/unit/${it}.groovy"}
         testFiles.addAll(resolveTestResources {"test/unit/${it}.java"})
-        testFiles.addAll(resolveTestResources {"test/performance/${it}.groovy"})
-        testFiles.addAll(resolveTestResources {"test/performance/${it}.java"})
         testFiles = testFiles.findAll {it.exists()}
         if (testFiles.size() == 0) {
             event("StatusUpdate", ["No tests found in test/unit to execute"])
@@ -309,7 +302,6 @@ target(runUnitTests: "Run Grails' unit tests under the test/unit directory") {
         def suite = new TestSuite()
 //		appCtx.grailsApplication.classLoader.addURL(new File("test/unit").toURI().toURL())
         populateTestSuite(suite, testFiles, classLoader, appCtx, "test/unit/")
-        populateTestSuite(suite, testFiles, classLoader, appCtx, "test/performance/")
         if (suite.testCount() > 0) {
 
             event("TestSuiteStart", ["unit"])
@@ -357,7 +349,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
         //if(integrationOnly) {
             loadApp()
         //}
-        configureApp()   
+        configureApp()
         def app = appCtx.getBean(GrailsApplication.APPLICATION_ID)
         if (app.parentContext == null) {
             app.applicationContext = appCtx
@@ -382,7 +374,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
                 interceptor?.init()
 
                 def start = new Date()
-                
+
                 def savedOut = System.out
                 runTests(suite, result) {test, invocation ->
                     name = test.name[0..-6]
@@ -399,7 +391,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
                     }
 
 					def callable = { status ->
-                        invocation()                 
+                        invocation()
                         status?.setRollbackOnly()
                     }
 					if(test.isTransactional()) {
@@ -407,7 +399,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
                             def template = new TransactionTemplate(appCtx.transactionManager)
                     	    template.execute( callable as TransactionCallback )
                         } else {
-                            System.out = savedOut                            
+                            System.out = savedOut
                             println "Error: There is no test datasource defined and integration test ${test.name} does not set transactional = false"
                             println "Tests aborted"
                             exit(1)
@@ -419,7 +411,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
                     RequestContextHolder.setRequestAttributes(null);
                 }
                 def end = new Date()
-                
+
                 event("TestSuiteEnd", ["integration",suite])
                 println "Integration Tests Completed in ${end.time - start.time}ms"
                 println "-------------------------------------------------------"

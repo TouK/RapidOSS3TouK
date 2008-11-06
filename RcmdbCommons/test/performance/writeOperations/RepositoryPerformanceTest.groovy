@@ -6,6 +6,7 @@ import com.ifountain.compass.CompassTestObject
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import org.apache.commons.io.FileUtils
+import com.ifountain.compass.CompositeDirectoryWrapperProvider
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,9 +27,19 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
 
     public void testAddOperationPerformanceWithFileStorageType()
     {
+        _testAddOperationPerformance(CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, 100, 10);
+    }
+
+    public void testAddOperationPerformanceWithFileAndMemoryStorageType()
+    {
+        _testAddOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 25);
+    }
+
+    private void _testAddOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
+    {
         def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
         String propValue = "ThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValue"
-        def modelMetaProps = [name:"Model1", storageType:"File"]
+        def modelMetaProps = [name:"Model1", storageType:storageType]
         def modelProps = [keyProp];
         for(int i=0; i < 50; i++)
         {
@@ -40,7 +51,6 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
         Class modelClass = this.gcl.parseClass(modelString);
         initialize([modelClass],[], true);
-        int numberOfObjectsToBeInserted = 100;
         long t = System.nanoTime();
         for(int i=0; i < numberOfObjectsToBeInserted; i++)
         {
@@ -50,14 +60,14 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         assertEquals(numberOfObjectsToBeInserted, modelClass.'search'("alias:*").total);
         def numberOfObjectsInsertedPerSecond = numberOfObjectsToBeInserted/totalTime;
         println "Number of objects inserted per second:"+numberOfObjectsInsertedPerSecond
-        assertTrue (numberOfObjectsInsertedPerSecond > 30);
+        assertTrue ("Number of inserted objects ${numberOfObjectsInsertedPerSecond} should be greater than ${expectedNumberOfObjectsToBeInsertedPersecond}", numberOfObjectsInsertedPerSecond > expectedNumberOfObjectsToBeInsertedPersecond);
     }
 
-    public void testAddWithUpdateOperationPerformanceWithFileStorageType()
+    private void _testUpdateOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
     {
         def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
         String propValue = "ThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValue"
-        def modelMetaProps = [name:"Model1", storageType:"File"]
+        def modelMetaProps = [name:"Model1", storageType:storageType]
         def modelProps = [keyProp];
         for(int i=0; i < 50; i++)
         {
@@ -69,7 +79,6 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
         Class modelClass = this.gcl.parseClass(modelString);
         initialize([modelClass],[], true);
-        int numberOfObjectsToBeInserted = 100;
 
         for(int i=0; i < numberOfObjectsToBeInserted; i++)
         {
@@ -85,7 +94,16 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         long totalTime = (System.nanoTime() - t)/Math.pow(10,9);
         def numberOfObjectsInsertedPerSecond = numberOfObjectsToBeInserted/totalTime;
         println "Number of objects update per second:"+numberOfObjectsInsertedPerSecond
-        assertTrue (numberOfObjectsInsertedPerSecond > 20);
+        assertTrue ("Number of updated objects ${numberOfObjectsInsertedPerSecond} should be greater than ${expectedNumberOfObjectsToBeInsertedPersecond}", numberOfObjectsInsertedPerSecond > expectedNumberOfObjectsToBeInsertedPersecond);
     }
 
+    public void testAddWithUpdateOperationPerformanceWithFileStorageType()
+    {
+        _testUpdateOperationPerformance(CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, 100, 10);
+    }
+
+    public void testAddWithUpdateOperationPerformanceWithFileAndMemoryStorageType()
+    {
+        _testUpdateOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 30);
+    }
 }

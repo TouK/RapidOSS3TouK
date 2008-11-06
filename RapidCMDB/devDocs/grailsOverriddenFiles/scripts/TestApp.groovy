@@ -152,6 +152,11 @@ target(packageTests:"Puts some useful things on the classpath") {
             exclude(name:"**/*.java")
             exclude(name:"**/*.groovy)")
         }
+        fileset(dir:"${basedir}/test/performance") {
+            include(name:"**/**")
+            exclude(name:"**/*.java")
+            exclude(name:"**/*.groovy)")
+        }
         fileset(dir:"${basedir}/test/integration") {
             include(name:"**/**")
             exclude(name:"**/*.java")
@@ -293,6 +298,8 @@ target(runUnitTests: "Run Grails' unit tests under the test/unit directory") {
         loadApp()
         def testFiles = resolveTestResources {"test/unit/${it}.groovy"}
         testFiles.addAll(resolveTestResources {"test/unit/${it}.java"})
+        testFiles.addAll(resolveTestResources {"test/performance/${it}.groovy"})
+        testFiles.addAll(resolveTestResources {"test/performance/${it}.java"})
         testFiles = testFiles.findAll {it.exists()}
         if (testFiles.size() == 0) {
             event("StatusUpdate", ["No tests found in test/unit to execute"])

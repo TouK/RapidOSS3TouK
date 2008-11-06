@@ -11,6 +11,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import relation.Relation
 import org.compass.core.Resource
+import org.compass.core.CompassHit
 
 /**
  * Created by IntelliJ IDEA.
@@ -82,10 +83,14 @@ class DataCorrectionUtilities
 
     public static void dataCorrectionAfterReloadStep()
     {
+        def domainClasses = [:];
+        ApplicationHolder.application.getDomainClasses().each{
+            domainClasses[it.clazz.name] = it;
+        }
         ModelAction.list().each {ModelAction modelAction ->
             if (modelAction.action == ModelAction.REFRESH_DATA)
             {
-                Class currentModelClass = ApplicationHolder.application.getDomainClass(modelAction.modelName).clazz;
+                Class currentModelClass = domainClasses[modelAction.modelName].clazz;
                 def propList = currentModelClass.'getPropertiesList'();
                 def propNames = propList.findAll {!it.isRelation && !it.isOperationProperty}.name
                 propNames.add("id");
@@ -103,10 +108,11 @@ class DataCorrectionUtilities
             modelAction.remove();
         }
         def changedModelProperties = [:]
-        PropertyAction.list().each {PropertyAction propAction ->
+        def propActions = PropertyAction.list();
+        propActions.each {PropertyAction propAction ->
             if (!propAction.willBeDeleted)
             {
-                DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(propAction.modelName);
+                DefaultGrailsDomainClass currentDomainObject = domainClasses[propAction.modelName];
                 def modelProps = changedModelProperties[propAction.modelName];
                 if (modelProps == null)
                 {
@@ -122,7 +128,7 @@ class DataCorrectionUtilities
             }
         }
         changedModelProperties.each {String modelName, Map modelProps ->
-            DefaultGrailsDomainClass currentDomainObject = ApplicationHolder.application.getDomainClass(modelName);
+            DefaultGrailsDomainClass currentDomainObject = domainClasses[modelName];
             if (currentDomainObject)
             {
                 Class currentModelClass = currentDomainObject.clazz;
@@ -130,39 +136,43 @@ class DataCorrectionUtilities
                 def propNames = propList.findAll {!it.isRelation && !it.isOperationProperty}.name
                 propNames.add("id");
                 currentModelClass.'searchEvery'("alias:*", [raw:{hits, session->
-                    hits.each{hit->
+                    hits.each{CompassHit hit->
                         Resource res = hit.getResource();
-                        def newObj = currentModelClass.newInstance();
-                        def newProps = [:]
-                        modelProps.each {propName, PropertyAction action ->
-                            if (action.action == PropertyAction.CLEAR_RELATION)
-                            {
-                                def id = res.getObject("id");
-                                def reverseRels = RelationUtils.getReverseRelationObjectsById(id, action.reverseName, action.propTypeName)
-                                def selfRels = Relation.search("objectId:${id} AND name:${action.propName}").results;
-                                def allRels = []
-                                allRels.addAll (selfRels);
-                                allRels.addAll (reverseRels);
-                                allRels*.remove();
-                            }
-                            else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
-                            {
-                                newProps[propName] = action.defaultValue;
-                                
-                            }
-                        }
-                        if(!newProps.isEmpty())
+                        def objectRealClass = domainClasses[hit.alias()];
+                        if(objectRealClass)
                         {
-                            propNames.each{propName->
-                                def newPropVal = newProps[propName];
-                                if(newPropVal == null)
+                            def newObj = objectRealClass.newInstance();
+                            def newProps = [:]
+                            modelProps.each {propName, PropertyAction action ->
+                                if (action.action == PropertyAction.CLEAR_RELATION)
                                 {
-                                    newPropVal = res.getObject(propName)
+                                    def id = res.getObject("id");
+                                    def reverseRels = RelationUtils.getReverseRelationObjectsById(id, action.reverseName, action.propTypeName)
+                                    def selfRels = Relation.search("objectId:${id} AND name:${action.propName}").results;
+                                    def allRels = []
+                                    allRels.addAll (selfRels);
+                                    allRels.addAll (reverseRels);
+                                    allRels*.remove();
                                 }
-                                newObj.setProperty(propName, newPropVal, false);
+                                else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
+                                {
+                                    newProps[propName] = action.defaultValue;
+
+                                }
                             }
-                            session.delete(res);
-                            session.save(newObj);
+                            if(!newProps.isEmpty())
+                            {
+                                propNames.each{propName->
+                                    def newPropVal = newProps[propName];
+                                    if(newPropVal == null)
+                                    {
+                                        newPropVal = res.getObject(propName)
+                                    }
+                                    newObj.setProperty(propName, newPropVal, false);
+                                }
+                                session.delete(res);
+                                session.save(newObj);
+                            }
                         }
                     }
                 }]);

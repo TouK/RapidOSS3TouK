@@ -252,6 +252,61 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         assertEquals (new Long(1), instance.prop2);
     }
 
+    public void testAfterReloadWithPropertyActionRelatedOfParentModel()
+    {
+
+        String modelChild1 = "Class1";
+        String modelParent = "Class2";
+
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+
+        def propList = [prop1, prop2];
+        def keyPropList = [prop1];
+        def model1 = createModel(modelParent, propList, keyPropList, []);
+        def model2 = createModel(modelChild1, modelParent, [], [], []);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
+        def parentClass1 = loadGrailsDomainClass(modelParent, temp_directory);
+        def childClass1 = loadGrailsDomainClass(modelChild1, temp_directory);
+        initialize([parentClass1, childClass1, ModelAction, PropertyAction], [], true)
+        def oldDomainClasses = [:];
+        oldDomainClasses[modelParent] = this.ga.getDomainClass(modelParent);
+        oldDomainClasses[modelChild1] = this.ga.getDomainClass(modelChild1);
+
+
+        childClass1.'add'(prop1:"prop1Value1", prop2:"prop2Value1");
+        childClass1.'add'(prop1:"prop1Value2", prop2:"prop2Value2");
+        childClass1.'add'(prop1:"prop1Value3", prop2:"prop2Value3");
+        assertEquals (3, childClass1.'list'().size());
+
+        prop2.type = ModelGenerator.NUMBER_TYPE;
+        propList = [prop1, prop2];
+        keyPropList = [prop1];
+        model1 = createModel (modelParent, propList, keyPropList, []);
+        ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
+
+        def newParentClass1 = loadGrailsDomainClass(modelParent, temp_directory, true);
+        def newChildClass1 = loadGrailsDomainClass(modelChild1, temp_directory, true);
+        def newDomainClasses = generateDomainClasses([newParentClass1, newChildClass1])
+        DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
+        this.destroy();
+        gcl = new GroovyClassLoader(this.class.classLoader);
+        newParentClass1 = loadGrailsDomainClass(modelParent, temp_directory);
+        newChildClass1 = loadGrailsDomainClass(modelChild1, temp_directory);
+        this.initialize([newParentClass1, newChildClass1, ModelAction, PropertyAction], [], true)
+        DataCorrectionUtilities.dataCorrectionAfterReloadStep ();
+        assertTrue(ModelAction.search("alias:*").results.isEmpty());
+        assertEquals(0, PropertyAction.list().size());
+        assertEquals (3, newChildClass1.'list'().size());
+        def instance = newChildClass1.'get'(prop1:"prop1Value1");
+        assertEquals (new Long(1), instance.prop2);
+        instance = newChildClass1.'get'(prop1:"prop1Value2");
+        assertEquals (new Long(1), instance.prop2);
+        instance = newChildClass1.'get'(prop1:"prop1Value3");
+        assertEquals (new Long(1), instance.prop2);
+    }
+
 
     public void testAfterReloadWithPropertyRelationAction()
     {

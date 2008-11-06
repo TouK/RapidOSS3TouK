@@ -14,17 +14,17 @@ import org.apache.log4j.DailyRollingFileAppender;
 public class LoggerUtilsTest extends RCompTestCase {
     
     public void testConfigureLoggerWithAllParams(){
-         Logger logger=Logger.getLogger("testlogger");
-         String logFile="testlogfile";
+        Logger logger=Logger.getLogger("testlogger");
+        String logFile="testlogfile";
+        
 
+        LoggerUtils.configureLogger(logger,Level.DEBUG,logFile,false);
+        assertEquals(logger.getLevel(),Level.DEBUG);
+        assertFalse(logger.getAllAppenders().hasMoreElements());
 
-         LoggerUtils.configureLogger(logger,Level.DEBUG,logFile,false);
-         assertEquals(logger.getLevel(),Level.DEBUG);
-         assertFalse(logger.getAllAppenders().hasMoreElements());
-
-         LoggerUtils.configureLogger(logger,Level.INFO,logFile,false);
-         assertEquals(logger.getLevel(),Level.INFO);
-         assertFalse(logger.getAllAppenders().hasMoreElements());
+        LoggerUtils.configureLogger(logger,Level.INFO,logFile,false);
+        assertEquals(logger.getLevel(),Level.INFO);
+        assertFalse(logger.getAllAppenders().hasMoreElements());
 
         LoggerUtils.configureLogger(logger,Level.INFO,logFile,true);
         assertEquals(logger.getLevel(),Level.INFO);

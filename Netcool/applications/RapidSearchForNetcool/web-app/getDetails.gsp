@@ -2,6 +2,7 @@
 <%
     def type = params.type;
     def id = params.id;
+    def componentId = params.componentId;
     def allProperties = [];
     def domainObject = null;
     GrailsDomainClass domainClass = ApplicationHolder.application.getDomainClass("NetcoolEvent");
@@ -20,7 +21,7 @@
 <div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li class="selected"><a><em>Event</em></a></li>
-        <li><a onclick="window.html.show('getJournals.gsp?type=NetcoolJournal&id=${domainObject?.id}');"><em>Journal</em></a></li>
+        <li><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getJournals.gsp?type=NetcoolJournal&id=${domainObject?.id}');"><em>Journal</em></a></li>
     </ul>
     <div style="display:block">
         <table>

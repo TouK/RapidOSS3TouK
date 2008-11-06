@@ -1,13 +1,14 @@
 <%@ page import="datasource.NetcoolConversionParameter; java.sql.Timestamp; java.text.SimpleDateFormat" %>
 <%
     def eventId = params.id;
+    def componentId = params.componentId;
     def netcoolEvent = NetcoolEvent.get(id: eventId)
     if (netcoolEvent != null) {
         def journals = NetcoolJournal.search("serverserial:${netcoolEvent.serverserial} AND servername:${netcoolEvent.servername}").results;
 %>
 <div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
-        <li><a onclick="window.html.show('getDetails.gsp?type=NetcoolEvent&id=${netcoolEvent?.id}');"><em>Event</em></a></li>
+        <li><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getDetails.gsp?type=NetcoolEvent&id=${netcoolEvent?.id}');"><em>Event</em></a></li>
         <li class="selected"><a><em>Journal</em></a></li>
     </ul>
     <div style="display:block;padding-top:5px;padding-left:5px">

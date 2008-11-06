@@ -1,0 +1,458 @@
+<Rsmodel>
+    <Models>
+    	<Model Name="Model1">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+          		<Property Name='prop2' Type='string'/>
+         	</Properties>
+  		</Model>    
+
+  		<Model Name="Model2">
+      		<Properties>
+                <Property Name='prop1' Type='string' IsKey="true"/>
+                <Property Name='prop2' Type='string' IsKey="true"/>
+         	</Properties>
+  		</Model>   
+  		
+  		<Model Name="Model3">
+      		<Properties>
+                <Property Name='prop1' Type='string' IsKey="true"/>
+                <Property Name='prop2' Type='string'/>
+                <Property Name='prop3' Type='string' IsKey="true"/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model4">
+      		<Properties>
+                <Property Name='prop2' Type='string'/>
+                <Property Name='prop3' Type='string' IsKey="true"/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model5">
+      		<Properties>
+                <Property Name='prop2' Type='string'/>
+         	</Properties>
+  		</Model>      
+  		
+  		<Model Name="Model6">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model7">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+		<Model Name="Model8">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model9">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model10">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model11">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model12">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model13">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model14">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model15">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model16">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model17">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model18">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model19">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model20">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model21">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model22">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model23">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model> 
+  		
+  		<Model Name="Model24">
+      		<Properties>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+  		
+  		<Model Name="Model25">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+  		
+  		<Model Name="Model26">
+      		<Properties>
+                <Property Name='prop1' Type='number'/>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+  		
+  		<Model Name="Model27">
+      		<Properties>
+                <Property Name='newprop1' Type='string'/>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+  		
+  		<Model Name="Model28">
+      		<Properties>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+
+  		<Model Name="Model29" Parent="Model28">
+      		<Properties>
+                <Property Name='prop29_1' Type='string'/>
+         	</Properties>
+  		</Model>
+
+  		<Model Name="Model30">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+
+ 		<Model Name="Model31">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+
+  		<Model Name="Model32" Parent="Model31">
+      		<Properties>
+                <Property Name='prop32_1' Type='string'/>
+         	</Properties>
+  		</Model>
+
+  		<Model Name="Model33">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+  		
+  		<Model Name="Model34">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+                <Property Name='prop2' Type='number' />
+         	</Properties>
+  		</Model>
+
+  		<Model Name="Model35" Parent="Model34">
+      		<Properties>
+                <Property Name='prop35_1' Type='string'/>
+         	</Properties>
+  		</Model>
+
+  		<Model Name="Model36">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+  		
+  		<Model Name="Model37">
+      		<Properties>
+                <Property Name='newprop1' Type='string'/>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+
+  		<Model Name="Model38" Parent="Model37">
+      		<Properties>
+                <Property Name='prop38_1' Type='string'/>
+         	</Properties>
+  		</Model>
+
+  		<Model Name="Model39">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+                <Property Name='prop2' Type='string' />
+         	</Properties>
+  		</Model>
+  		
+  		<Model Name="Model40">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model41">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model42">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model43">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model44">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model45">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model46">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model47">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model48">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model49">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model50">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model51">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model52">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model53" Parent="Model52">
+      		<Properties>
+                <Property Name='childprop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model54">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model55">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model56" Parent="Model55">
+      		<Properties>
+                <Property Name='childprop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model57">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model58">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model59" Parent="Model58">
+      		<Properties>
+                <Property Name='childprop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model60">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model61">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model62" Parent="Model61">
+      		<Properties>
+                <Property Name='childprop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model63">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model64">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model65" Parent="Model64">
+      		<Properties>
+                <Property Name='childprop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model66">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model67">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model68" Parent="Model67">
+      		<Properties>
+                <Property Name='childprop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+  		<Model Name="Model69">
+      		<Properties>
+                <Property Name='prop1' Type='string'/>
+         	</Properties>
+  		</Model>  
+  		
+    </Models>
+    
+    <Relations>
+    	<Relation From="Model6" To="Model7" Name="from6To7" ReverseName="reverse_from6To7" Type="OneToOne"></Relation>
+    	<Relation From="Model8" To="Model9" Name="from8To9" ReverseName="reverse_from8To9" Type="OneToMany"></Relation>
+    	<Relation From="Model10" To="Model11" Name="from10To11" ReverseName="reverse_from10To11" Type="ManyToMany"></Relation>
+    	<Relation From="Model18" To="Model19" Name="from18To19" ReverseName="reverse_from18To19" Type="OneToMany"></Relation>
+    	<Relation From="Model20" To="Model21" Name="from20To21" ReverseName="reverse_from20To21" Type="ManyToMany"></Relation>
+    	<Relation From="Model22" To="Model23" Name="from22To23" ReverseName="reverse_from22To23" Type="ManyToMany"></Relation>
+    	<Relation From="Model29" To="Model30" Name="from29To30" ReverseName="reverse_from29To30" Type="OneToMany"></Relation>
+    	<Relation From="Model32" To="Model33" Name="from32To33" ReverseName="reverse_from32To33" Type="OneToOne"></Relation>
+    	<Relation From="Model35" To="Model36" Name="from35To36" ReverseName="reverse_from35To36" Type="OneToMany"></Relation>
+    	<Relation From="Model38" To="Model39" Name="from38To39" ReverseName="reverse_from38To39" Type="OneToMany"></Relation>
+    	<Relation From="Model40" To="Model41" Name="newfrom40To41" ReverseName="reverse_from40To41" Type="OneToOne"></Relation>
+    	<Relation From="Model42" To="Model43" Name="newfrom42To43" ReverseName="reverse_from42To43" Type="OneToMany"></Relation>
+    	<Relation From="Model44" To="Model45" Name="newfrom44To45" ReverseName="reverse_from44To45" Type="ManyToMany"></Relation>
+    	<Relation From="Model46" To="Model47" Name="from46To47" ReverseName="reverse_from46To47" Type="OneToOne"></Relation>
+    	<Relation From="Model48" To="Model49" Name="from48To49" ReverseName="reverse_from48To49" Type="OneToOne"></Relation>
+    	<Relation From="Model50" To="Model51" Name="from50To51" ReverseName="reverse_from50To51" Type="OneToMany"></Relation>
+    	<Relation From="Model52" To="Model54" Name="newfrom52To54" ReverseName="reverse_from52To54" Type="OneToOne"></Relation>
+    	<Relation From="Model55" To="Model57" Name="newfrom55To57" ReverseName="reverse_from55To57" Type="OneToMany"></Relation>
+    	<Relation From="Model58" To="Model60" Name="newfrom58To60" ReverseName="reverse_from58To60" Type="ManyToMany"></Relation>
+    	<Relation From="Model61" To="Model63" Name="from61To63" ReverseName="reverse_from61To63" Type="OneToOne"></Relation>
+    	<Relation From="Model64" To="Model66" Name="from64To66" ReverseName="reverse_from64To66" Type="OneToOne"></Relation>
+    	<Relation From="Model67" To="Model69" Name="from67To69" ReverseName="reverse_from67To69" Type="OneToMany"></Relation>
+    </Relations>
+</Rsmodel>

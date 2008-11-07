@@ -1,10 +1,8 @@
 import java.text.SimpleDateFormat;
 
-import com.ifountain.rcmdb.scripting.*;
 
-
-System.gc();
-System.gc();
+Runtime.getRuntime().gc();
+Runtime.getRuntime().gc();
 
 
 def total = Runtime.getRuntime().totalMemory() / Math.pow(2,20);

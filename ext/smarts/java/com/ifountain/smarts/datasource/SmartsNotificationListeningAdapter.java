@@ -123,6 +123,7 @@ public class SmartsNotificationListeningAdapter extends BaseSmartsListeningAdapt
                 {
                 }
                 logger.debug(logPrefix+ "Smoother stopped");
+                smoother = null;
             }
 
         }

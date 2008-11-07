@@ -131,11 +131,7 @@ class ListeningAdapterManager {
                 throw new Exception("Error during script clean up. Reason: " + e.getMessage(), e)
             }
 
-        }
-        CmdbScript script = listeningDatasource.listeningScript;
-        if (script && script.type == CmdbScript.LISTENING) {
-             CmdbScript.stopScriptLogger(script);
-        }
+        }        
     }
 
     public boolean isSubscribed(BaseListeningDatasource listeningDatasource) {

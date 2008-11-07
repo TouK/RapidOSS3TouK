@@ -11,17 +11,8 @@
     def componentId = params.componentId
     def domainObject = RsSmartsNotification.get(id: params.id);
     if (domainObject != null) {
-        def datasource = SmartsNotificationDatasource.get(name:domainObject.rsDatasource)
-        if(datasource != null){
-            def auditTrail
-            try{
-                auditTrail =  datasource.getNotification(["ClassName":domainObject.className, "InstanceName":domainObject.instanceName, "EventName":domainObject.eventName], ["AuditTrail"]).AuditTrail;
-            }
-            catch(e){
-
-            }
-            %>
-                <div class="yui-navset yui-navset-top" style="margin-top:5px">
+        %>
+             <div class="yui-navset yui-navset-top" style="margin-top:5px">
                     <ul class="yui-nav">
                         <li>
                             <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('smartsEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
@@ -47,6 +38,18 @@
 
                     </div>
                 </div>
+       <%
+        def datasource = SmartsNotificationDatasource.get(name:domainObject.rsDatasource)
+        if(datasource != null){
+            def auditTrail
+            try{
+                auditTrail =  datasource.getNotification(["ClassName":domainObject.className, "InstanceName":domainObject.instanceName, "EventName":domainObject.eventName], ["AuditTrail"]).AuditTrail;
+            }
+            catch(e){
+
+            }
+            %>
+
                 <%
                    if(auditTrail != null){
                       %>
@@ -92,7 +95,7 @@
         }
         else{
             %>
-                Could not find RsSmartsNotification's datasource;
+                Could not find RsSmartsNotification's datasource.
             <%
         }
     }

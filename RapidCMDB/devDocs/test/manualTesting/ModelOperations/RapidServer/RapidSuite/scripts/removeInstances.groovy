@@ -1,0 +1,36 @@
+def random=new Random(System.currentTimeMillis());
+
+def deletelimit=40;
+def deletecount=0;
+
+Fiction.search("alias:*",[max:1000]).results.each{
+    if(random.nextInt(10)==0 && deletecount<deletelimit)
+    {
+       it.remove();
+       deletecount++;
+    }
+}
+logger.info("Deleted ${deletecount} Ficton");
+
+deletecount=0;
+ScienceFiction.search("alias:*",[max:1000]).results.each{
+    if(random.nextInt(10)==0 && deletecount<deletelimit)
+    {
+       it.remove();
+       deletecount++;
+    }
+}
+
+logger.info("Deleted ${deletecount} ScienceFicton");
+
+
+deletecount=0;
+Person.search("alias:*",[max:1000]).results.each{
+    if(random.nextInt(10)==0 && deletecount<(deletelimit*2))
+    {
+       it.remove();
+       deletecount++;
+    }
+}
+
+logger.info("Deleted ${deletecount} Person");

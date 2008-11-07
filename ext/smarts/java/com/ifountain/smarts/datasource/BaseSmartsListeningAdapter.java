@@ -93,7 +93,7 @@ public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
             try {
                 ((SmartsConnectionImpl) getConnection()).getDomainManager().deleteObserver(this);
             } catch (Exception e) {
-                logger.debug(logPrefix + "Cannot delete observer.");
+                logger.warn(logPrefix + "Cannot delete observer.", e);
             }
             isObserverCreated = false;
         }
@@ -146,7 +146,7 @@ public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
             unsubscribeFrom();
             logger.debug(logPrefix + "Observer is unsubscribed.");
         } catch (Exception e) {
-            logger.warn(logPrefix + "Could not unsubscribed.");
+            logger.warn(logPrefix + "Could not unsubscribed.", e);
         }
         finally {
             deleteSmartsObserver();

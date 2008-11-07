@@ -1,4 +1,5 @@
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat
+import utils.TestingConstants;
 
 
 Runtime.getRuntime().gc();
@@ -14,7 +15,7 @@ def currentTime=sdf.format(Calendar.getInstance().getTime());
 
 def used = total - free;
 
-def file = new File("memory.txt");
+def file = new File("${TestingConstants.MEMORY_TEST_RESULTS_ROOT_DIR}/memory.txt");
 def line = "Time: "+currentTime +"\tTotal: " +total + "\tFree: " + free + "\tUsed: " + used + "\n";
 file.append(line);
 return line;

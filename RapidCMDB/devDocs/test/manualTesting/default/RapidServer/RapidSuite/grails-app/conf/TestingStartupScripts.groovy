@@ -6,5 +6,5 @@
  * To change this template use File | Settings | File Templates.
  */
 class TestingStartupScripts{
-    def static scripts = [];
+    def static scripts = ["testConfiguration"];
 }

@@ -108,7 +108,7 @@ public class SmartsNotificationListeningAdapter extends BaseSmartsListeningAdapt
             unsubscribeFromProperties();
         }
         catch (SmRemoteException sre) {
-            logger.debug(logPrefix + "Not even subscribed, no need to unsubscribe.");
+            logger.warn(logPrefix + "Not even subscribed, no need to unsubscribe.", sre);
         }
         finally{
             if ( smoother != null )

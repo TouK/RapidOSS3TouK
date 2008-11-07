@@ -1,0 +1,42 @@
+<Rsmodel>
+    <Models>
+        <Model Name="Book">
+            <Properties>
+                <Property Name='name' Type='string' IsKey='true'/>
+                <Property Name='publishDate' Type='date'/>
+                <Property Name='description' Type='string'/>
+            </Properties>
+        </Model>
+        
+        <Model Name="Person">
+            <Properties>
+                <Property Name='name' Type='string' IsKey='true'/>
+                <Property Name='birthDate' Type='date'/>
+                <Property Name='address' Type='string'/>
+                <Property Name='email' Type='string'/>
+            </Properties>
+        </Model>
+        
+        <Model Name="Author" Parent="Person">
+            <Properties>
+                <Property Name='numberOfBooks' Type='number'/>
+            </Properties>
+        </Model>
+        
+        <Model Name="Fiction" Parent="Book">
+            <Properties>
+            	<Property Name='mainCharacterName' Type='string'/>
+            </Properties>
+        </Model>
+        
+        <Model Name="ScienceFiction" Parent="Fiction">
+            <Properties>
+            </Properties>
+        </Model>
+        
+    </Models>
+    <Relations>
+        <Relation From="Author" To="Book" Name="books" ReverseName="authors" Type="ManyToMany"></Relation>
+        <Relation From="Fiction" To="Person" Name="mainCharacter" ReverseName="referringBooks" Type="ManyToOne"></Relation>
+    </Relations>
+</Rsmodel>

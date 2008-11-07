@@ -18,14 +18,14 @@ addCount=0;
 Person.search("alias:*",[max:1000]).results.each{
     if(random.nextInt(10)==0 && addCount<addLimit)
     {
-       def nextElement=fictionList.remove();
-       if(nextElement)
-       {
-            it.addRelation(referringBooks:nextElement);
+       if(!fictionList.isEmpty())
+       {    
+            it.addRelation(referringBooks:fictionList.remove(0));
             addCount++;
        }
     }
 }
+logger.info("Added ${addCount} Ficton - Person Relations");
 
 
 def scienceFictionList=[]
@@ -42,11 +42,13 @@ addCount=0;
 Author.search("alias:*",[max:1000]).results.each{
     if(random.nextInt(10)==0 && addCount<addLimit)
     {
-       def nextElement=scienceFictionList.remove();
-       if(nextElement)
+        if(!scienceFictionList.isEmpty())
        {
-            it.addRelation(books:nextElement);
+            it.addRelation(books:scienceFictionList.remove(0));
             addCount++;
-       }
+       }       
     }
 }
+
+
+logger.info("Added ${addCount} ScienceFicton - Author Relations");

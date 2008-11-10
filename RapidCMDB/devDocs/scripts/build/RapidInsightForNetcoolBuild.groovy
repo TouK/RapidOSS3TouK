@@ -79,7 +79,7 @@ class RapidInsightForNetcoolBuild extends Build{
 
         ant.java(fork : "true", classname : "com.ifountain.comp.utils.JsCssCombiner"){
 			ant.arg(value : "-file");
-			ant.arg(value : "${env.dist_rapid_suite}/web-app/index.gsp");
+			ant.arg(value : "${env.dist_rapid_suite}/grails-app/views/layouts/indexLayout.gsp");
 			ant.arg(value : "-applicationPath");
 			ant.arg(value : "${env.dist_rapid_suite}/web-app");
 			ant.arg(value : "-target");
@@ -92,7 +92,8 @@ class RapidInsightForNetcoolBuild extends Build{
 				ant.pathelement(location : "${env.dist_rapid_server_lib}/commons-io-1.4.jar");
 				ant.pathelement(location : "${env.dist_rapid_server_lib}/log4j-1.2.15.jar");
 			}
-		}	
+		}
+		ant.move(file : "${env.dist_rapid_suite}/web-app/indexLayout.gsp", todir : "${env.dist_rapid_suite}/grails-app/views/layouts" );
 //        def osType = "Unix";
 //        if (rapidCmdb.getName().indexOf("Windows") > -1) osType = "Windows"
         def zipFileName = "${env.distribution}/RI4NC_$osType$versionDate" + ".zip"

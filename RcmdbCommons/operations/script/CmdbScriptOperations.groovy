@@ -99,7 +99,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
 
     static def updateScript(CmdbScript script, Map params, boolean fromController) throws Exception {
         def scriptFileBeforeUpdate = script.scriptFile;
-        if(!params.get("logFile") || params.get("logFile").trim() == "")
+        if((!params.get("logFile") || params.get("logFile").trim() == "") && params.name)
         {
             params["logFile"] = params.name;
         }

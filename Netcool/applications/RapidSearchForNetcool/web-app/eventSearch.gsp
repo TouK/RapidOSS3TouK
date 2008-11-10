@@ -20,6 +20,21 @@
         </td>
     </tr></tbody></table>
 </div>
+<rui:form id="changePassDialog" width="35em" saveUrl="rsUser/changePassword?format=xml">
+    <div>
+        <div class="hd">Change Password</div>
+        <div class="bd">
+            <form method="POST" action="javascript://nothing">
+                <table>
+                    <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
+                    <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
+                    <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
+                </table>
+                <input type="hidden" name="username">
+            </form>
+        </div>
+    </div>
+</rui:form>
 <rui:form id="filterDialog" width="35em" createUrl="script/run/createQuery?queryType=event" editUrl="script/run/editQuery?queryType=event"
         saveUrl="searchQuery/save?format=xml&type=event" updateUrl="searchQuery/update?format=xml&type=event" onSuccess="refreshQueriesAction">
     <div>
@@ -70,66 +85,63 @@
     <rui:tgRootImages>
         <rui:tgRootImage visible="params.data.nodeType == 'group'" expanded="images/rapidjs/component/tools/folder_open.gif" collapsed="images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
         <rui:tgRootImage visible="params.data.nodeType == 'filter'" expanded="images/rapidjs/component/tools/filter.png" collapsed="images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
-    </rui:tgRootImages>                                                                                
+    </rui:tgRootImages>
 </rui:treeGrid>
-
-<rui:searchGrid id="searchGrid" url="search?format=xml&searchIn=NetcoolEvent" rootTag="Objects" contentPath="Object" keyAttribute="id"
-    title="Netcool Events" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
-    pollingInterval="0" onSaveQueryClick="saveQueryAction" fieldsUrl="script/run/getViewFields?format=xml">
-    <rui:sgColumns>
-        <rui:sgColumn attributeName="node" colLabel="Node" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="owneruid" colLabel="Owner" width="50"></rui:sgColumn>
-        <rui:sgColumn attributeName="ownergid" colLabel="Group" width="50"></rui:sgColumn>
-        <rui:sgColumn attributeName="acknowledged" colLabel="Ack" width="50"></rui:sgColumn>
-        <rui:sgColumn attributeName="manager" colLabel="Manager" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="summary" colLabel="Summary" width="250"></rui:sgColumn>
-        <rui:sgColumn attributeName="tally" colLabel="Count" width="50"></rui:sgColumn>
-        <rui:sgColumn attributeName="suppressescl" colLabel="Suppr/Escl" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="tasklist" colLabel="TaskList" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="lastoccurrence" colLabel="Last Occurrence" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="statechange" colLabel="State Change" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="alertgroup" colLabel="Alert Group" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="alertkey" colLabel="Alert Key" width="100"></rui:sgColumn>
-    </rui:sgColumns>
-    <rui:sgMenuItems>
-        <rui:sgMenuItem id="eventDetails" label="Event Details" action="eventDetailsAction"></rui:sgMenuItem>
-        <rui:sgMenuItem id="acknowledge" label="Acknowledge" action="acknowledgeAction" visible="params.data.acknowledged == 'No'"></rui:sgMenuItem>
-        <rui:sgMenuItem id="deacknowledge" label="Deacknowledge" action="deacknowledgeAction" visible="params.data.acknowledged == 'Yes'"></rui:sgMenuItem>
-        <rui:sgMenuItem id="takeOwnership" label="Take Ownership" action="takeOwnAction"></rui:sgMenuItem>
-        <rui:sgMenuItem id="addTaskToList" label="Add Task To List" action="addTaskAction" visible="params.data.tasklist == '0'"></rui:sgMenuItem>
-        <rui:sgMenuItem id="removeTaskFromList" label="Remove Task From List" action="removeTaskAction" visible="params.data.tasklist == '1'"></rui:sgMenuItem>
-        <rui:sgMenuItem id="suppressEscalate" label="Suppress/Escalate">
-               <rui:sgSubmenuItems>
-                    <rui:sgSubmenuItem id="0" label="Normal" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '0'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="1" label="Escalated" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '1'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="2" label="Escalated-Level 2" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '2'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="3" label="Escalated-Level 3" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '3'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="4" label="Suppressed" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '4'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="5" label="Hidden" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '5'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="6" label="Maintenance" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '6'"></rui:sgSubmenuItem>
-               </rui:sgSubmenuItems>
-        </rui:sgMenuItem>
-        <rui:sgMenuItem id="severity" label="Chanage Severity">
-               <rui:sgSubmenuItems>
-                    <rui:sgSubmenuItem id="5" label="Critical" action="severityAction" visible="params.key =='severity' && params.value != '5'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="4" label="Major" action="severityAction" visible="params.key =='severity' && params.value != '4'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="3" label="Minor" action="severityAction" visible="params.key =='severity' && params.value != '3'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="2" label="Warning" action="severityAction" visible="params.key =='severity' && params.value != '2'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="1" label="Indeterminate" action="severityAction" visible="params.key =='severity' && params.value != '1'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="0" label="Clear" action="severityAction" visible="params.key =='severity' && params.value != '0'"></rui:sgSubmenuItem>
-               </rui:sgSubmenuItems>
-        </rui:sgMenuItem>
-    </rui:sgMenuItems>
-     <rui:sgImages>
-        <rui:sgImage visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/red.png"></rui:sgImage>
-        <rui:sgImage visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/orange.png"></rui:sgImage>
-        <rui:sgImage visible="params.data.severity == '3'" src="images/rapidjs/component/searchlist/yellow.png"></rui:sgImage>
-        <rui:sgImage visible="params.data.severity == '2'" src="images/rapidjs/component/searchlist/blue.png"></rui:sgImage>
-        <rui:sgImage visible="params.data.severity == '1'" src="images/rapidjs/component/searchlist/purple.png"></rui:sgImage>
-        <rui:sgImage visible="params.data.severity == '0'" src="images/rapidjs/component/searchlist/green.png"></rui:sgImage>
-    </rui:sgImages>
-
-</rui:searchGrid>
+<%
+    def defaultFields = ['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey'];
+%>
+<rui:searchList id="searchList" url="search?format=xml&searchIn=NetcoolEvent" rootTag="Objects" contentPath="Object" keyAttribute="id"
+    lineSize="3" title="Netcool Events" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
+    pollingInterval="0" defaultFields="${defaultFields}" onSaveQueryClick="saveQueryAction">
+    <rui:slMenuItems>
+        <rui:slMenuItem id="eventDetails" label="Event Details" action="eventDetailsAction"></rui:slMenuItem>
+        <rui:slMenuItem id="acknowledge" label="Acknowledge" action="acknowledgeAction" visible="params.data.acknowledged == 'No'"></rui:slMenuItem>
+        <rui:slMenuItem id="deacknowledge" label="Deacknowledge" action="deacknowledgeAction" visible="params.data.acknowledged == 'Yes'"></rui:slMenuItem>
+        <rui:slMenuItem id="takeOwnership" label="Take Ownership" action="takeOwnAction"></rui:slMenuItem>
+        <rui:slMenuItem id="addTaskToList" label="Add Task To List" action="addTaskAction" visible="params.data.tasklist == '0'"></rui:slMenuItem>
+        <rui:slMenuItem id="removeTaskFromList" label="Remove Task From List" action="removeTaskAction" visible="params.data.tasklist == '1'"></rui:slMenuItem>
+        <rui:slMenuItem id="suppressEscalate" label="Suppress/Escalate">
+               <rui:slSubmenuItems>
+                    <rui:slSubmenuItem id="0" label="Normal" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '0'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="1" label="Escalated" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '1'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="2" label="Escalated-Level 2" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '2'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="3" label="Escalated-Level 3" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '3'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="4" label="Suppressed" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '4'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="5" label="Hidden" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '5'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="6" label="Maintenance" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '6'"></rui:slSubmenuItem>
+               </rui:slSubmenuItems>
+        </rui:slMenuItem>
+        <rui:slMenuItem id="severity" label="Chanage Severity">
+               <rui:slSubmenuItems>
+                    <rui:slSubmenuItem id="5" label="Critical" action="severityAction" visible="params.key =='severity' && params.value != '5'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="4" label="Major" action="severityAction" visible="params.key =='severity' && params.value != '4'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="3" label="Minor" action="severityAction" visible="params.key =='severity' && params.value != '3'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="2" label="Warning" action="severityAction" visible="params.key =='severity' && params.value != '2'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="1" label="Indeterminate" action="severityAction" visible="params.key =='severity' && params.value != '1'"></rui:slSubmenuItem>
+                    <rui:slSubmenuItem id="0" label="Clear" action="severityAction" visible="params.key =='severity' && params.value != '0'"></rui:slSubmenuItem>
+               </rui:slSubmenuItems>
+        </rui:slMenuItem>
+    </rui:slMenuItems>
+    <rui:slPropertyMenuItems>
+        <rui:slMenuItem id="sortAsc" label="Sort asc" action="sortAscAction"></rui:slMenuItem>
+        <rui:slMenuItem id="sortDesc" label="Sort desc" action="sortDescAction"></rui:slMenuItem>
+        <rui:slMenuItem id="greaterThan" label="Greater than" action="greaterThanAction"
+                visible="(params.key == 'severity' && params.value != '5') || (params.key == 'suppressescl' && params.value != '6') || YAHOO.lang.isNumber(parseInt(params.value))"></rui:slMenuItem>
+        <rui:slMenuItem id="lessThan" label="Less than" action="lessThanAction"
+                visible="(params.key == 'severity' && params.value != '0') || (params.key == 'suppressescl' && params.value != '0') || YAHOO.lang.isNumber(parseInt(params.value))"></rui:slMenuItem>
+        <rui:slMenuItem id="greaterThanOrEqualTo" label="Greater than or equal to" action="greaterThanEqualAction" visible="YAHOO.lang.isNumber(parseInt(params.value))"></rui:slMenuItem>
+        <rui:slMenuItem id="lessThanOrEqualTo" label="Less than or equal to" action="lessThanEqualAction" visible="YAHOO.lang.isNumber(parseInt(params.value))"></rui:slMenuItem>
+        <rui:slMenuItem id="except" label="Except" action="exceptAction"></rui:slMenuItem>
+    </rui:slPropertyMenuItems>
+     <rui:slImages>
+        <rui:slImage visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/red.png"></rui:slImage>
+        <rui:slImage visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/orange.png"></rui:slImage>
+        <rui:slImage visible="params.data.severity == '3'" src="images/rapidjs/component/searchlist/yellow.png"></rui:slImage>
+        <rui:slImage visible="params.data.severity == '2'" src="images/rapidjs/component/searchlist/blue.png"></rui:slImage>
+        <rui:slImage visible="params.data.severity == '1'" src="images/rapidjs/component/searchlist/purple.png"></rui:slImage>
+        <rui:slImage visible="params.data.severity == '0'" src="images/rapidjs/component/searchlist/green.png"></rui:slImage>
+    </rui:slImages>
+</rui:searchList>
 <rui:html id="eventDetails" iframe="false"></rui:html>
 <rui:popupWindow componentId="eventDetails" width="500" height="400"></rui:popupWindow>
 
@@ -138,31 +150,31 @@
     <rui:functionArg>'getDetails.gsp?id=' + params.data.id</rui:functionArg>
     <rui:functionArg>'Details of ' + params.data.identifier</rui:functionArg>
 </rui:action>
-<rui:action id="acknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['searchGrid']}">
+<rui:action id="acknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['searchList']}">
     <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
     <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
     <rui:requestParam key="acknowledged" value="'true'"></rui:requestParam>
 </rui:action>
-<rui:action id="deacknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['searchGrid']}">
+<rui:action id="deacknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['searchList']}">
     <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
     <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
     <rui:requestParam key="acknowledged" value="'false'"></rui:requestParam>
 </rui:action>
-<rui:action id="takeOwnAction" type="merge" url="script/run/takeOwnership?format=xml" components="${['searchGrid']}">
+<rui:action id="takeOwnAction" type="merge" url="script/run/takeOwnership?format=xml" components="${['searchList']}">
     <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
     <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
 </rui:action>
-<rui:action id="addTaskAction" type="merge" url="script/run/taskList?format=xml" components="${['searchGrid']}">
+<rui:action id="addTaskAction" type="merge" url="script/run/taskList?format=xml" components="${['searchList']}">
     <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
     <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
     <rui:requestParam key="taskList" value="'true'"></rui:requestParam>
 </rui:action>
-<rui:action id="removeTaskAction" type="merge" url="script/run/taskList?format=xml" components="${['searchGrid']}">
+<rui:action id="removeTaskAction" type="merge" url="script/run/taskList?format=xml" components="${['searchList']}">
     <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
     <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
     <rui:requestParam key="taskList" value="'false'"></rui:requestParam>
 </rui:action>
-<rui:action id="suppressEscalateAction" type="merge" url="script/run/suppress?format=xml" components="${['searchGrid']}">
+<rui:action id="suppressEscalateAction" type="merge" url="script/run/suppress?format=xml" components="${['searchList']}">
     <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
     <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
     <rui:requestParam key="suppressescl" value="params.menuId"></rui:requestParam>
@@ -172,10 +184,34 @@
     <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
     <rui:requestParam key="severity" value="params.menuId"></rui:requestParam>
 </rui:action>
+<rui:action id="greaterThanAction" type="function" componentId="searchList" function="appendToQuery">
+    <rui:functionArg>params.key + ':{' + params.value + ' TO *}'</rui:functionArg>
+</rui:action>
+<rui:action id="lessThanAction" type="function" componentId="searchList" function="appendToQuery">
+    <rui:functionArg>params.key + ':{* TO ' + params.value + '}'</rui:functionArg>
+</rui:action>
+<rui:action id="greaterThanEqualAction" type="function" componentId="searchList" function="appendToQuery">
+    <rui:functionArg>params.key + ':[' + params.value + ' TO *]'</rui:functionArg>
+</rui:action>
+<rui:action id="lessThanEqualAction" type="function" componentId="searchList" function="appendToQuery">
+    <rui:functionArg>params.key + ':[* TO ' + params.value + ']'</rui:functionArg>
+</rui:action>
+<rui:action id="sortAscAction" type="function" componentId="searchList" function="sort">
+    <rui:functionArg>params.key</rui:functionArg>
+    <rui:functionArg>'asc'</rui:functionArg>
+</rui:action>
+<rui:action id="sortDescAction" type="function" componentId="searchList" function="sort">
+    <rui:functionArg>params.key</rui:functionArg>
+    <rui:functionArg>'desc'</rui:functionArg>
+</rui:action>
+<rui:action id="exceptAction" type="function" componentId="searchList" function="appendExceptQuery">
+    <rui:functionArg>params.key</rui:functionArg>
+    <rui:functionArg>params.value</rui:functionArg>
+</rui:action>
 <rui:action id="saveQueryAction" type="function" componentId="filterDialog" function="show">
     <rui:functionArg>YAHOO.rapidjs.component.Form.CREATE_MODE</rui:functionArg>
     <rui:functionArg>{}</rui:functionArg>
-    <rui:functionArg>{query:params.query, sortProperty:YAHOO.rapidjs.Components['searchGrid'].getSortAttribute(), sortProperty:YAHOO.rapidjs.Components['searchGrid'].getSortOrder()}</rui:functionArg>
+    <rui:functionArg>{query:params.query, sortProperty:YAHOO.rapidjs.Components['searchList'].getSortAttribute(), sortProperty:YAHOO.rapidjs.Components['searchList'].getSortOrder()}</rui:functionArg>
 </rui:action>
 
 <rui:action id="deleteQueryAction" type="request" url="searchQuery/delete?format=xml" onSuccess="refreshQueriesAction">
@@ -198,15 +234,28 @@
     <rui:functionArg>{}</rui:functionArg>
     <rui:functionArg>{name:'', query:params.data.query, group:params.data.group, viewName:params.data.viewName}</rui:functionArg>
 </rui:action>
-<rui:action id="setQueryAction" type="function" componentId="searchGrid" function="setQueryWithView" condition="params.data.nodeType == 'filter'">
+<rui:action id="setQueryAction" type="function" componentId="searchList" function="setQuery" condition="params.data.nodeType == 'filter'">
     <rui:functionArg>params.data.query</rui:functionArg>
-    <rui:functionArg>params.data.viewName</rui:functionArg>
+    <rui:functionArg>params.data.sortProperty</rui:functionArg>
+    <rui:functionArg>params.data.sortOrder</rui:functionArg>
 </rui:action>
 <rui:action id="refreshQueriesAction" type="function" function="poll" componentId="filterTree"></rui:action>
 <script type="text/javascript">
+   YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
+        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
+    }, this, true);
+    YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
+        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
+    }, this, true);
+
+     var changePassDialog = YAHOO.rapidjs.Components['changePassDialog']
+     YAHOO.util.Event.addListener(document.getElementById('rsUser'), 'click', function(){
+         changePassDialog.show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {username:"${session.username}"});
+    },this, true)
+
     var filterTree = YAHOO.rapidjs.Components['filterTree'];
-    var searchGrid = YAHOO.rapidjs.Components['searchGrid'];
-    searchGrid.renderCellFunction = function(key, value, data){
+    var searchList = YAHOO.rapidjs.Components['searchList'];
+    searchList.renderCellFunction = function(key, value, data){
         if(key == "lastoccurrence" || key == "statechange"){
             var d = new Date();
             d.setTime(parseFloat(value)*1000)
@@ -264,7 +313,7 @@
         var layout = new YAHOO.widget.Layout({
             units: [
                 { position: 'top', body: 'top', resize: false, height:40},
-                { position: 'center', body: searchGrid.container.id, resize: false, gutter: '1px' },
+                { position: 'center', body: searchList.container.id, resize: false, gutter: '1px' },
                 { position: 'left', width: 250, resize: true, body: filterTree.container.id, scroll: false}
             ]
         });
@@ -282,9 +331,9 @@
             YAHOO.util.Dom.setStyle(layoutLeft.body, 'top', '1px');
         });
 
-        searchGrid.resize(layout.getUnitByPosition('center').getSizes().body.w, layout.getUnitByPosition('center').getSizes().body.h);
+        searchList.resize(layout.getUnitByPosition('center').getSizes().body.w, layout.getUnitByPosition('center').getSizes().body.h);
         layout.on('resize', function() {
-            searchGrid.resize(layout.getUnitByPosition('center').getSizes().body.w, layout.getUnitByPosition('center').getSizes().body.h);
+            searchList.resize(layout.getUnitByPosition('center').getSizes().body.w, layout.getUnitByPosition('center').getSizes().body.h);
         });
         filterTree.resize(layout.getUnitByPosition('center').getSizes().body.w, layout.getUnitByPosition('center').getSizes().body.h);
         layout.on('resize', function() {

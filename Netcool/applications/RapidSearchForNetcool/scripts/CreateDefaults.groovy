@@ -26,6 +26,7 @@ CmdbScript.addScript(name: "takeOwnership");
 CmdbScript.addScript(name: "taskList");
 CmdbScript.addScript(name: "suppress");
 CmdbScript.addScript(name: "removeAll");
+CmdbScript.addScript(name: "getViewFields");
 
 def adminGroup = Group.get(name: RsUser.RSADMIN);
 def rootUser = RsUser.add(username: "root", passwordHash: new Sha1Hash("changeme").toHex())

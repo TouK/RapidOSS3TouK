@@ -98,8 +98,7 @@ class ModelRelationController {
     }
 
     def create = {
-        def modelRelation = new ModelRelation()
-        modelRelation.properties = params
+        def modelRelation = new ModelRelation(ControllerUtils.getClassProperties(params, ModelRelation))
         return ['modelRelation':modelRelation]
     }
 }

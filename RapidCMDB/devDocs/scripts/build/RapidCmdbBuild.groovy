@@ -235,6 +235,13 @@ class RapidCmdbBuild extends Build {
             }
         }
         copyCommons(env.dist_modeler, false);
+        def viewsDir = new File("${env.dist_modeler}/grails-app/views");
+        viewsDir.eachDir{
+            def dirName = it.getName();
+            if(dirName != "layouts"){
+                ant.copy(file:"${env.dist_modeler}/grails-app/views/layouts/main.gsp", toFile:"${env.dist_modeler}/grails-app/views/layouts/${dirName}.gsp")
+            }
+        }
     }
 
     def copyCommons(toDir, copyTests){

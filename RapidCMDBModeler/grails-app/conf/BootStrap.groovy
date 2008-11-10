@@ -43,6 +43,7 @@ class BootStrap {
 
     def initializeScripting()
     {
+        def baseDir = System.getProperty("base.dir");
         def startupScripts = ScriptingUtils.getStartupScriptList(baseDir, ApplicationHolder.application.getClassLoader());
         ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), startupScripts);
         ScriptScheduler.getInstance().initialize(quartzScheduler);

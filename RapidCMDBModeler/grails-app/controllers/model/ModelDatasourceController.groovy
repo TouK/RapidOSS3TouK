@@ -21,8 +21,7 @@ class ModelDatasourceController {
     }
 
     def create = {
-        def modelDatasource = new ModelDatasource()
-        modelDatasource.properties = params
+        def modelDatasource = new ModelDatasource(ControllerUtils.getClassProperties(params, ModelDatasource))
         return ['modelDatasource':modelDatasource]
     }
     def show = {

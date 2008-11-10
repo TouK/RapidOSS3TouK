@@ -2,8 +2,13 @@ package model
 
 class ModelDatasource {
     static searchable = {
-        except:["model","keyMappings","datasource"]
+        except:["model","keyMappings","datasource", "errors", "__operation_class__", "__is_federated_properties_loaded__"]
     };
+    Long id;
+    Long version;
+    org.springframework.validation.Errors errors;
+    Object __operation_class__;
+    Object __is_federated_properties_loaded__;
     DatasourceName datasource;
     Model model;
     String rsOwner = "p"
@@ -15,6 +20,9 @@ class ModelDatasource {
     ]
     static cascaded = ["keyMappings":true]
     static constraints = {
+         __operation_class__(nullable: true)
+        __is_federated_properties_loaded__(nullable: true)
+        errors(nullable: true)
         model(key:["datasource"], validator: {val, obj ->
             def error = null;
             def tempModel = val.parentModel;

@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div class="nav"><h1 style="display:inline">Modeler Admin UI</h1><span class="menuButton"><a href="auth/logout?targetUri=/index.gsp" class="logout">Logout</a></span></div>
+<div class="nav"><h1 style="display:inline">Modeler Admin UI</h1></div>
 <p style="margin-left:20px;width:80%">This is the basic administration UI where you can define model your classes and maintain them.</p>
 <br>
 <p/>
@@ -50,6 +50,7 @@
             <div class="dialog" style="margin-left:20px;">
                 <ul style="margin-left:25px;">
                     <li class="controller"><g:link controller="rsUser">Users</g:link></li>
+                    <li class="controller"><g:link controller="group">Groups</g:link></li>
                 </ul>
             </div>
     </table></div>

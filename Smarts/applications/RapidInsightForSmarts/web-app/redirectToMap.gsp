@@ -18,7 +18,7 @@
         else if(object instanceof RsLink){
            relatedObject = object.a_ComputerSystemName; 
         }
-        response.sendRedirect("topology.gsp?name=${relatedObject}")
+        response.sendRedirect("topologyMap.gsp?name=${relatedObject}")
     %>
      </head>
 </html>

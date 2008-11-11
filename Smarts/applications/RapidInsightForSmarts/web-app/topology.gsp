@@ -1,34 +1,48 @@
 <html>
 <head>
-    <meta name="layout" content="indexLayout" />
+    <meta name="layout" content="indexLayout"/>
 </head>
 <body>
 <%
-       def stateMapping = ["0":"../states/green.png",
-                    "1":"../states/red.png",
-                    "2":"../states/orange.png",
-                    "3":"../states/yellow.png",
-                    "4":"../states/blue.png",
-                    "5":"../states/green.png",
-                    "default":"../states/green.png"]
-        def typeMapping = ["Host":"server_icon.png",
-                    "Router":"router_icon.png",
-                    "Switch":"switch_icon.png"]
-   %>
+    def defaultFields = ["creationClassName", "name", "description", "displayName", "isManaged"];
+    def computerSystemFields = ["creationClassName", "name", "vendor", "model", "managementServer", "location", "snmpAddress"];
+    def computerSystemComponentFields = ['creationClassName', 'name', 'description', 'displayName', 'isManaged', 'computerSystemName', 'tag']
+    def networkAdapterFields = ["creationClassName", "name", "computerSystemName", "adminStatus", "operStatus", "description", "type", "mode", "isManaged", "maxSpeed", "interfaceAlias"];
+    def ipFields = ["creationClassName", "name", "computerSystemName", "address", "ipStatus", "interfaceOperStatus", "netmask", "networkNumber", "responsive", "status"];
+    def cardFields = ["creationClassName", "name", "computerSystemName", "standbyStatus", "status"];
+    def linkFields = ["creationClassName", "name", "a_ComputerSystemName", "a_Name", "a_AdminStatus", "a_OperStatus", "connectedSystemsUnresponsive", "z_ComputerSystemName",
+            "z_Name", "z_AdminStatus", "z_OperStatus"];
+    def ipNetworkFields = ["creationClassName", "name", "netmask", "networkNumber"];
+    def hsrGroupFields = ["creationClassName", "name", "activeInterfaceName", "activeSystemName", "numberOfFaultyComponents", "virtualIP", "virtualMAC"];
+    def emphasized = ["creationClassName", "name"]
+%>
 
-<rui:topologyMap nodeSize="60" mapPollingInterval="0" savedMapsPollingInterval="0">
-    <rui:tmMenus>
-        <rui:tmMenu id="browse" label="Browse" location="node" actionType="htmlDialog" width="850" height="700" x="85" y="50" 
-                url="'getObjectDetails.gsp?name=' + params.data.id" title="'Details of ' + params.data.type + ' ' + params.data.id"></rui:tmMenu>
-    </rui:tmMenus>
-    <rui:tmImages>
-        <rui:tmImage id="status" x="70" y="40" width="30" height="30" dataKey="state" mapping="${stateMapping}"></rui:tmImage>
-        <rui:tmImage id="icon" x="70" y="0" width="20" height="20" dataKey="type" mapping="${typeMapping}"></rui:tmImage>
-    </rui:tmImages>
-     <rui:tmTexts>
-        <rui:tmText id="name" x="15" y="20" width="70" height="30" dataKey="id"></rui:tmText>
-     </rui:tmTexts>
-</rui:topologyMap>
+<rui:topologySearch queriesPollingInterval="0" searchResultsPollingInterval="0" numberOfLines="3" defaultFields="${defaultFields}">
+    <rui:tsMenus>
+        <rui:tsMenu id="browse" label="Browse" location="row" actionType="htmlDialog" width="850" height="700" x="85" y="50"
+                url="'getObjectDetails.gsp?name=' + params.data.name" title="'Details of ' + params.data.creationClassName + ' ' + params.data.name"></rui:tsMenu>
+    </rui:tsMenus>
+    <rui:tsDefaultMenus>
+        <rui:tsDefaultMenu id="sortAsc" label="Sort Asc"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="sortDesc" label="Sort desc"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="except" label="Except"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="greaterThan" label="Greater Than"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="lessThan" label="Less Than"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="greaterThanOrEqualTo" label="Greater than or equal to"></rui:tsDefaultMenu>
+        <rui:tsDefaultMenu id="lessThanOrEqualTo" label="Less than or equal to"></rui:tsDefaultMenu>
+    </rui:tsDefaultMenus>
+    <rui:tsSearchResults>
 
+        <rui:tsSearchResult alias="RsComputerSystem" properties="${computerSystemFields}" emphasizeds="${emphasized}"></rui:tsSearchResult>
+        <rui:tsSearchResult alias="RsComputerSystemComponent" properties="${computerSystemComponentFields}" emphasizeds="${emphasized}"></rui:tsSearchResult>
+        <rui:tsSearchResult alias="RsPort" properties="${networkAdapterFields}" emphasizeds="${emphasized}"></rui:tsSearchResult>
+        <rui:tsSearchResult alias="RsInterface" properties="${networkAdapterFields}" emphasizeds="${emphasized}"></rui:tsSearchResult>
+        <rui:tsSearchResult alias="RsIp" properties="${ipFields}" emphasizeds="${emphasized}"></rui:tsSearchResult>
+        <rui:tsSearchResult alias="RsCard" properties="${cardFields}" emphasizeds="${emphasized}"></rui:tsSearchResult>
+        <rui:tsSearchResult alias="RsLink" properties="${linkFields}" emphasizeds="${emphasized}"></rui:tsSearchResult>
+        <rui:tsSearchResult alias="RsIpNetwork" properties="${ipNetworkFields}" emphasizeds="${emphasized}"></rui:tsSearchResult>
+        <rui:tsSearchResult alias="RsHsrGroup" properties="${hsrGroupFields}" emphasizeds="${emphasized}"></rui:tsSearchResult>
+    </rui:tsSearchResults>
+</rui:topologySearch>
 </body>
 </html>

@@ -16,8 +16,8 @@ class ModelRelation {
      String firstCardinality;
      String secondCardinality;
      static relations = [
-            secondModel:[type:Model, reverseName:"toRelations", isMany:true],
-            firstModel:[type:Model, reverseName:"fromRelations", isMany:true],
+            secondModel:[type:Model, reverseName:"toRelations", isMany:false],
+            firstModel:[type:Model, reverseName:"fromRelations", isMany:false],
      ]
 
      static constraints = {

@@ -141,6 +141,7 @@ class RapidCmdbBuild extends Build {
         ant.copy(file: "$env.rapid_cmdb_cvs/scripts/ImportUtility.groovy", toDir: "$env.dist_rapid_suite/scripts");
         ant.copy(file: "$env.rapid_cmdb_cvs/scripts/SampleExportScript.groovy", toDir: "$env.dist_rapid_suite/scripts");
         ant.copy(file: "$env.rapid_cmdb_cvs/scripts/SampleImportScript.groovy", toDir: "$env.dist_rapid_suite/scripts");
+        ant.copy(file: "$env.rapid_cmdb_cvs/scripts/modelCreator.groovy", toDir: "$env.dist_rapid_suite/scripts");
 
         ant.copy(todir: "$env.dist_rapid_suite/operations") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/operations")

@@ -45,7 +45,7 @@
 <p/>
 <div class="front">
     <table><tr><th width="50%">User Management</th></tr>
-        <tr><td><p style="margin-left:20px;">Manage Users and their Roles.</p>
+        <tr><td><p style="margin-left:20px;">Manage Users.</p>
             <br>
             <div class="dialog" style="margin-left:20px;">
                 <ul style="margin-left:25px;">

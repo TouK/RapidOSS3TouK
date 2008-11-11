@@ -1,6 +1,6 @@
 <Rsmodel>
     <Models>
-        <Model Name="NetcoolEvent">
+        <Model Name="NetcoolEvent" StorageType="FileAndMemory">
             <Properties>
                 <Property Name='identifier' Type='string'/>
                 <Property Name='serial' Type='number' Default="0"/>

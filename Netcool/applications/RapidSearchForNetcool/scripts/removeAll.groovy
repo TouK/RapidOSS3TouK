@@ -14,6 +14,7 @@ import datasource.NetcoolConversionParameter
  */
 NetcoolEvent.removeAll();
 NetcoolJournal.removeAll();
+NetcoolHistoricalJournal.removeAll();
 NetcoolLastRecordIdentifier.removeAll();
 NetcoolConversionParameter.removeAll();
 NetcoolConnector.list().each{

@@ -7,6 +7,7 @@ import datasource.NetcoolDatasource
 import org.apache.log4j.Logger
 import com.ifountain.comp.utils.CaseInsensitiveMap
 import datasource.NetcoolConversionParameter
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -82,10 +83,11 @@ class NetcoolConnectorImpl {
             markedEvents.remove(rec.SERVERNAME+rec.SERVERSERIAL);
         }
         logger.info("Following events are deleted before connector start ${markedEvents}");
+        def eventProperties = DomainClassUtils.getFilteredProperties("NetcoolEvent", ["id"])
         markedEvents.each{key, event->
             def historicalEventProps = [:];
-            nameMappings.each{String netcoolName, String localName->
-                historicalEventProps[localName] = event[localName];
+            eventProperties.each{p->
+                historicalEventProps[p.name] = event[p.name];
             }
             NetcoolHistoricalEvent.add(historicalEventProps);
             event.remove();

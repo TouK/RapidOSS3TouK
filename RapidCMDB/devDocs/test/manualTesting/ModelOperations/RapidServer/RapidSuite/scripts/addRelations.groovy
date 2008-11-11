@@ -1,5 +1,7 @@
 def random=new Random(System.currentTimeMillis());
 
+logger.info("Starting addRelations");
+
 def addLimit=30;
 def addCount=0;
 
@@ -19,8 +21,10 @@ Person.search("alias:*",[max:1000]).results.each{
     if(random.nextInt(10)==0 && addCount<addLimit)
     {
        if(!fictionList.isEmpty())
-       {    
-            it.addRelation(referringBooks:fictionList.remove(0));
+       {
+//            long t = System.nanoTime();
+	        it.addRelation(referringBooks:fictionList.remove(0));
+//            logger.info((System.nanoTime()-t)/Math.pow(10,9));
             addCount++;
        }
     }
@@ -31,7 +35,7 @@ logger.info("Added ${addCount} Ficton - Person Relations");
 def scienceFictionList=[]
 addCount=0;
 ScienceFiction.search("alias:*",[max:1000]).results.each{
-    if(random.nextInt(10)==0 && addCount<addLimit)
+    if(random.nextInt(5)==0 && addCount<addLimit)
     {
        scienceFictionList.add(it);
        addCount++;
@@ -40,15 +44,19 @@ ScienceFiction.search("alias:*",[max:1000]).results.each{
 
 addCount=0;
 Author.search("alias:*",[max:1000]).results.each{
-    if(random.nextInt(10)==0 && addCount<addLimit)
+    if(random.nextInt(5)==0 && addCount<addLimit)
     {
-        if(!scienceFictionList.isEmpty())
+       if(!scienceFictionList.isEmpty())
        {
+//	        long t = System.nanoTime();
             it.addRelation(books:scienceFictionList.remove(0));
+//            logger.info((System.nanoTime()-t)/Math.pow(10,9));
             addCount++;
-       }       
+       }
     }
 }
 
 
 logger.info("Added ${addCount} ScienceFicton - Author Relations");
+
+logger.info("Ended addRelations");

@@ -1,5 +1,7 @@
 def random=new Random(System.currentTimeMillis());
 
+logger.info("Starting addInstances");
+
 def addlimit=50;
 
 def addTimes=random.nextInt(addlimit)+20;
@@ -20,7 +22,7 @@ logger.info("Added ${addTimes} ScienceFicton");
 addTimes=random.nextInt(addlimit)+20;
 addTimes.times{
     def name="Author${random.nextInt(5000)}";
-    Author.add(name:name,birthDate:new Date(),address:"street ${Math.random()}",email:"@d@g@@f@e@s@@a@",numberOfBooks:Random.nextInt(5000));
+    Author.add(name:name,birthDate:new Date(),address:"street ${Math.random()}",email:"@d@g@@f@e@s@@a@",numberOfBooks:random.nextInt(5000));
 }
 logger.info("Added ${addTimes} Author");
 
@@ -32,3 +34,5 @@ addTimes.times{
 }
 logger.info("Added ${addTimes} Person");
 
+
+logger.info("Ended addInstances");

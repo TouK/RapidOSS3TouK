@@ -4,7 +4,7 @@ import org.apache.log4j.Logger
 
 
 
-
+logger.info("Starting searchInstances");
 
 def output=" "
 
@@ -20,5 +20,7 @@ limit.times{
 }
 
 logger.info("Search all models ${limit} times");
+
+logger.info("Ended searchInstances");
 
 

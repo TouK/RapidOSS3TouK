@@ -60,7 +60,7 @@ class NetcoolConnectorImpl {
         def lastUpdateTime = 0;
         while(true)
         {
-            def res = invokeMethod(NetcoolEvent, "search", ["connectorname:${connectorName} -(${deleteMarkerLocalName}:${deleteMarkerConvertedValue})", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
+            def res = invokeMethod(NetcoolEvent, "search", ["connectorname:${connectorName}", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
             if(res.results.isEmpty())
             {
                 break;
@@ -83,7 +83,12 @@ class NetcoolConnectorImpl {
         }
         logger.info("Following events are deleted before connector start ${markedEvents}");
         markedEvents.each{key, event->
-             event.setProperty(deleteMarkerLocalName, deleteMarkerConvertedValue);
+            def historicalEventProps = [:];
+            nameMappings.each{String netcoolName, String localName->
+                historicalEventProps[localName] = event[localName];
+            }
+            NetcoolHistoricalEvent.add(historicalEventProps);
+            event.remove();
         }
     }
 

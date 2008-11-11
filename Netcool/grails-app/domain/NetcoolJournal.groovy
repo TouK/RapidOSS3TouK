@@ -6,7 +6,9 @@ class NetcoolJournal {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    
+    
     };
     static datasources = ["RCMDB":["keys":["keyfield":["nameInDs":"keyfield"], "servername":["nameInDs":"servername"]]]]
 
@@ -23,11 +25,19 @@ class NetcoolJournal {
     
     String connectorname ="";
     
+    Long id ;
+    
+    Long version ;
+    
     org.springframework.validation.Errors errors ;
     
     Object __operation_class__ ;
     
-    static relations=[:]
+    Object __is_federated_properties_loaded__ ;
+    
+    
+    static relations = [:]    
+    
     static constraints={
     serverserial(nullable:true)
         
@@ -43,19 +53,26 @@ class NetcoolJournal {
         
      __operation_class__(nullable:true)
         
+     __is_federated_properties_loaded__(nullable:true)
+        
      errors(nullable:true)
         
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     public String toString()
     {
     	return "${getClass().getName()}[keyfield:$keyfield, servername:$servername]";
     }
     
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
     //AUTO_GENERATED_CODE
+
+
     
 }

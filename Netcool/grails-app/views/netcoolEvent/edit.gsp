@@ -22,6 +22,11 @@
             <g:renderErrors bean="${netcoolEvent}" as="list"/>
         </div>
     </g:hasErrors>
+    <g:hasErrors bean="${flash.errors}">
+       <div class="errors">
+            <g:renderErrors bean="${flash.errors}"/>
+        </div>
+    </g:hasErrors>
     <g:form method="post" >
         <input type="hidden" name="id" value="${netcoolEvent?.id}"/>
         <div class="dialog">
@@ -51,7 +56,7 @@
                             <label for="acknowledged">acknowledged:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'acknowledged','errors')}">
-                            <input type="text" id="acknowledged" name="acknowledged" value="${fieldValue(bean:netcoolEvent,field:'acknowledged')}" />
+                            <input type="text" id="acknowledged" name="acknowledged" value="${fieldValue(bean:netcoolEvent,field:'acknowledged')}"/>
                         </td>
                     </tr>
                     
@@ -246,6 +251,42 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="ncx733corrnotif">ncx733corrnotif:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'ncx733corrnotif','errors')}">
+                            <input type="text" id="ncx733corrnotif" name="ncx733corrnotif" value="${fieldValue(bean:netcoolEvent,field:'ncx733corrnotif')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="ncx733eventtype">ncx733eventtype:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'ncx733eventtype','errors')}">
+                            <input type="text" id="ncx733eventtype" name="ncx733eventtype" value="${fieldValue(bean:netcoolEvent,field:'ncx733eventtype')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="ncx733probablecause">ncx733probablecause:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'ncx733probablecause','errors')}">
+                            <input type="text" id="ncx733probablecause" name="ncx733probablecause" value="${fieldValue(bean:netcoolEvent,field:'ncx733probablecause')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="ncx733specificprob">ncx733specificprob:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'ncx733specificprob','errors')}">
+                            <input type="text" id="ncx733specificprob" name="ncx733specificprob" value="${fieldValue(bean:netcoolEvent,field:'ncx733specificprob')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="nmoscausetype">nmoscausetype:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'nmoscausetype','errors')}">
@@ -411,7 +452,7 @@
                             <label for="severity">severity:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'severity','errors')}">
-                            <input type="text" id="severity" name="severity" value="${fieldValue(bean:netcoolEvent,field:'severity')}"/>
+                            <input type="text" id="severity" name="severity" value="${fieldValue(bean:netcoolEvent,field:'severity')}" />
                         </td>
                     </tr>
                     
@@ -466,42 +507,6 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'url','errors')}">
                             <input type="text" id="url" name="url" value="${fieldValue(bean:netcoolEvent,field:'url')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="x733corrnotif">x733corrnotif:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'x733corrnotif','errors')}">
-                            <input type="text" id="x733corrnotif" name="x733corrnotif" value="${fieldValue(bean:netcoolEvent,field:'x733corrnotif')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="x733eventtype">x733eventtype:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'x733eventtype','errors')}">
-                            <input type="text" id="x733eventtype" name="x733eventtype" value="${fieldValue(bean:netcoolEvent,field:'x733eventtype')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="x733probablecause">x733probablecause:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'x733probablecause','errors')}">
-                            <input type="text" id="x733probablecause" name="x733probablecause" value="${fieldValue(bean:netcoolEvent,field:'x733probablecause')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="x733specificprob">x733specificprob:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'x733specificprob','errors')}">
-                            <input type="text" id="x733specificprob" name="x733specificprob" value="${fieldValue(bean:netcoolEvent,field:'x733specificprob')}"/>
                         </td>
                     </tr>
                     

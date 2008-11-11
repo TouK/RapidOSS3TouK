@@ -1,0 +1,130 @@
+<Rsmodel>
+    <Models>
+        <Model Name="NetcoolEvent">
+            <Properties>
+                <Property Name='identifier' Type='string'/>
+                <Property Name='serial' Type='number' Default="0"/>
+                <Property Name='node' Type='string'/>
+                <Property Name='nodealias' Type='string'/>
+                <Property Name='manager' Type='string'/>
+                <Property Name='agent' Type='string'/>
+                <Property Name='alertgroup' Type='string'/>
+                <Property Name='alertkey' Type='string'/>
+                <Property Name='severity' Type='number' Default="0"/>
+                <Property Name='summary' Type='string'/>
+                <Property Name='statechange' Type='number' Default="0"/>
+                <Property Name='firstoccurrence' Type='number' Default="0"/>
+                <Property Name='lastoccurrence' Type='number' Default="0"/>
+                <Property Name='internallast' Type='number' Default="0"/>
+                <Property Name='poll' Type='number' Default="0"/>
+                <Property Name='nctype' Type='number' Default="0"/>
+                <Property Name='tally' Type='number' Default="0"/>
+                <Property Name='grade' Type='number' Default="0"/>
+                <Property Name='ncclass' Type='string'/>
+                <Property Name='location' Type='string'/>
+                <Property Name='owneruid' Type='string'/>
+                <Property Name='ownergid' Type='string'/>
+                <Property Name='acknowledged' Type='string'/>
+                <Property Name='flash' Type='number' Default="0"/>
+                <Property Name='eventid' Type='string'/>
+                <Property Name='expiretime' Type='number' Default="0"/>
+                <Property Name='processreq' Type='number' Default="0"/>
+                <Property Name='suppressescl' Type='number' Default="0"/>
+                <Property Name='customer' Type='string'/>
+                <Property Name='service' Type='string'/>
+                <Property Name='physicalslot' Type='number' Default="0"/>
+                <Property Name='physicalport' Type='number' Default="0"/>
+                <Property Name='physicalcard' Type='string'/>
+                <Property Name='tasklist' Type='number' Default="0"/>
+                <Property Name='nmosserial' Type='string'/>
+                <Property Name='nmosobjinst' Type='number' Default="0"/>
+                <Property Name='nmoscausetype' Type='number' Default="0"/>
+                <Property Name='localnodealias' Type='string'/>
+                <Property Name='localpriobj' Type='string'/>
+                <Property Name='localsecobj' Type='string'/>
+                <Property Name='localrootobj' Type='string'/>
+                <Property Name='remotenodealias' Type='string'/>
+                <Property Name='remotepriobj' Type='string'/>
+                <Property Name='remotesecobj' Type='string'/>
+                <Property Name='remoterootobj' Type='string'/>
+                <Property Name='ncx733eventtype' Type='number' Default="0"/>
+                <Property Name='ncx733probablecause' Type='number' Default="0"/>
+                <Property Name='ncx733specificprob' Type='string'/>
+                <Property Name='ncx733corrnotif' Type='string'/>
+                <Property Name='servername' Type='string' IsKey='true'/>
+                <Property Name='serverserial' Type='number' Default="0" IsKey='true'/>
+                <Property Name='url' Type='string'/>
+                <Property Name='connectorname' Type='string'/>
+            </Properties>
+        </Model>
+        <Model Name="NetcoolHistoricalEvent">
+            <Properties>
+                <Property Name='identifier' Type='string'/>
+                <Property Name='serial' Type='number' Default="0"/>
+                <Property Name='node' Type='string'/>
+                <Property Name='nodealias' Type='string'/>
+                <Property Name='manager' Type='string'/>
+                <Property Name='agent' Type='string'/>
+                <Property Name='alertgroup' Type='string'/>
+                <Property Name='alertkey' Type='string'/>
+                <Property Name='severity' Type='number' Default="0"/>
+                <Property Name='summary' Type='string'/>
+                <Property Name='statechange' Type='number' Default="0"/>
+                <Property Name='firstoccurrence' Type='number' Default="0"/>
+                <Property Name='lastoccurrence' Type='number' Default="0"/>
+                <Property Name='internallast' Type='number' Default="0"/>
+                <Property Name='poll' Type='number' Default="0"/>
+                <Property Name='nctype' Type='number' Default="0"/>
+                <Property Name='tally' Type='number' Default="0"/>
+                <Property Name='grade' Type='number' Default="0"/>
+                <Property Name='ncclass' Type='string'/>
+                <Property Name='location' Type='string'/>
+                <Property Name='owneruid' Type='string'/>
+                <Property Name='ownergid' Type='string'/>
+                <Property Name='acknowledged' Type='string'/>
+                <Property Name='flash' Type='number' Default="0"/>
+                <Property Name='eventid' Type='string'/>
+                <Property Name='expiretime' Type='number' Default="0"/>
+                <Property Name='processreq' Type='number' Default="0"/>
+                <Property Name='suppressescl' Type='number' Default="0"/>
+                <Property Name='customer' Type='string'/>
+                <Property Name='service' Type='string'/>
+                <Property Name='physicalslot' Type='number' Default="0"/>
+                <Property Name='physicalport' Type='number' Default="0"/>
+                <Property Name='physicalcard' Type='string'/>
+                <Property Name='tasklist' Type='number' Default="0"/>
+                <Property Name='nmosserial' Type='string'/>
+                <Property Name='nmosobjinst' Type='number' Default="0"/>
+                <Property Name='nmoscausetype' Type='number' Default="0"/>
+                <Property Name='localnodealias' Type='string'/>
+                <Property Name='localpriobj' Type='string'/>
+                <Property Name='localsecobj' Type='string'/>
+                <Property Name='localrootobj' Type='string'/>
+                <Property Name='remotenodealias' Type='string'/>
+                <Property Name='remotepriobj' Type='string'/>
+                <Property Name='remotesecobj' Type='string'/>
+                <Property Name='remoterootobj' Type='string'/>
+                <Property Name='ncx733eventtype' Type='number' Default="0"/>
+                <Property Name='ncx733probablecause' Type='number' Default="0"/>
+                <Property Name='ncx733specificprob' Type='string'/>
+                <Property Name='ncx733corrnotif' Type='string'/>
+                <Property Name='servername' Type='string'/>
+                <Property Name='serverserial' Type='number' Default="0"/>
+                <Property Name='url' Type='string'/>
+                <Property Name='connectorname' Type='string'/>
+            </Properties>
+        </Model>
+        <Model Name="NetcoolJournal">
+            <Properties>
+                <Property Name='serverserial' Type='number' Default="0"/>
+                <Property Name='keyfield' Type='string' IsKey="true"/>
+                <Property Name='text' Type='string'/>
+                <Property Name='chrono' Type='number' Default="0"/>
+                <Property Name='servername' Type='string' IsKey="true"/>
+                <Property Name='connectorname' Type='string'/>
+            </Properties>
+        </Model>
+    </Models>
+    <Relations>
+    </Relations>
+</Rsmodel>

@@ -27,6 +27,7 @@ CmdbScript.addScript(name: "taskList");
 CmdbScript.addScript(name: "suppress");
 CmdbScript.addScript(name: "removeAll");
 CmdbScript.addScript(name: "getViewFields");
+CmdbScript.addScript(name: "modelCreator");
 
 def adminGroup = Group.get(name: RsUser.RSADMIN);
 def rootUser = RsUser.add(username: "root", passwordHash: new Sha1Hash("changeme").toHex())

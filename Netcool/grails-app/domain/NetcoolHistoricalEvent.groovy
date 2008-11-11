@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class NetcoolEvent {
+class NetcoolHistoricalEvent {
 
     //AUTO_GENERATED_CODE
 
@@ -10,7 +10,7 @@ class NetcoolEvent {
     
     
     };
-    static datasources = ["RCMDB":["keys":["servername":["nameInDs":"servername"], "serverserial":["nameInDs":"serverserial"]]]]
+    static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
 
     
     String identifier ="";
@@ -231,9 +231,9 @@ class NetcoolEvent {
         
      ncx733corrnotif(blank:true,nullable:true)
         
-     servername(blank:false,nullable:false)
+     servername(blank:true,nullable:true)
         
-     serverserial(nullable:false,key:["servername"])
+     serverserial(nullable:true)
         
      url(blank:true,nullable:true)
         
@@ -253,14 +253,12 @@ class NetcoolEvent {
     
     public String toString()
     {
-    	return "${getClass().getName()}[servername:$servername, serverserial:$serverserial]";
+    	return "${getClass().getName()}[id:$id]";
     }
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
-
-
     
 }

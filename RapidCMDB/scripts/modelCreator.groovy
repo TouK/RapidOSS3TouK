@@ -13,10 +13,10 @@ import org.apache.commons.io.FileUtils
 logger = Logger.getLogger(getClass().name);
 logger.info ("Model creator started");
 def baseDir = System.getProperty ("base.dir");
-smartsModelConfigurationFile = new File("$baseDir/grails-app/conf/ModelConfiguration.xml");
-if(!smartsModelConfigurationFile.exists())
+modelConfigurationFile = new File("$baseDir/grails-app/conf/ModelConfiguration.xml");
+if(!modelConfigurationFile.exists())
 {
-    logger.info ("Configuration file ${smartsModelConfigurationFile.absolutePath} doesnot exist.");
+    logger.info ("Configuration file ${modelConfigurationFile.absolutePath} doesnot exist.");
     throw new Exception("Configuration file doesnot exist.");
 }
 def modelXmls = getModelXmls();
@@ -34,7 +34,7 @@ web.flash?.message = "Models generated successfully."
 def getModelXmls()
 {
     def slurper = new XmlSlurper()
-    def res = slurper.parseText(smartsModelConfigurationFile.getText());
+    def res = slurper.parseText(modelConfigurationFile.getText());
     def modelsXml = res.Models.Model;
     def relations = res.Relations.Relation;
 
@@ -136,7 +136,7 @@ def getModelXmls()
                     {
                         modelPropertyConfig["defaultvalue"] = "";
                     }
-                    
+
                     modelBuilder.Property(modelPropertyConfig);
                     if(isKey)
                     {
@@ -170,9 +170,9 @@ def getModelXmls()
                             }
                             modelBuilder.Key(propertyName:keyPropName, nameInDatasource:keyPropNameInDatasource);
                         }
-                    }    
+                    }
                 }
-                
+
             }
 
             modelBuilder.Relations()
@@ -197,13 +197,13 @@ def getCardinality(cardinalityString)
         return ModelGenerator.RELATION_TYPE_MANY;
     }
 }
-def getParentObjects(allSmartsModelObjects, parents, obj)
+def getParentObjects(allModelObjects, parents, obj)
 {
     if(obj.parentName != null)
     {
-        def parent = allSmartsModelObjects[obj.parentName];
+        def parent = allModelObjects[obj.parentName];
         parents.add(parent);
-        getParentObjects(allSmartsModelObjects, parents, parent);
+        getParentObjects(allModelObjects, parents, parent);
     }
 }
 

@@ -21,6 +21,11 @@
             <g:renderErrors bean="${netcoolJournal}" as="list"/>
         </div>
     </g:hasErrors>
+    <g:hasErrors bean="${flash.errors}">
+       <div class="errors">
+            <g:renderErrors bean="${flash.errors}"/>
+        </div>
+    </g:hasErrors>
     <g:form action="save" method="post" >
         <div class="dialog">
             <table>
@@ -67,7 +72,7 @@
                             <label for="serverserial">serverserial:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolJournal,field:'serverserial','errors')}">
-                            <input type="text" id="serverserial" name="serverserial" value="${fieldValue(bean:netcoolJournal,field:'serverserial')}"/>
+                            <input type="text" id="serverserial" name="serverserial" value="${fieldValue(bean:netcoolJournal,field:'serverserial')}" />
                         </td>
                     </tr>
                     

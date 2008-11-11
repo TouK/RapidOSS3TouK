@@ -11,7 +11,8 @@ import org.apache.log4j.Logger
 * To change this template use File | Settings | File Templates.
 */
 Logger logger = Logger.getLogger("getConversionParameters");
-def defaultConversionColumnConfiguration = ["Class":"ncclass", "Type":"nctype"]
+def defaultConversionColumnConfiguration = ["Class":"ncclass", "Type":"nctype", "X733EventType":"ncx733eventtype",
+        "X733ProbableCause":"ncx733probablecause","X733SpecificProb":"ncx733specificprob","X733CorrNotif":"ncx733corrnotif"]
 def deleteColName = "isdeleted"
 def baseDir = System.getProperty ("base.dir");
 def netcoolConfigurationFile = new File("$baseDir/grails-app/conf/NetcoolFieldConfiguration.xml"); 

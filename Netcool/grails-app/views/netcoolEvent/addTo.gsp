@@ -18,9 +18,14 @@
             <div class="message">${flash.message}</div>
             </g:if>
             <g:hasErrors bean="${netcoolEvent}">
-            <div class="errors">
-                <g:renderErrors bean="${netcoolEvent}" as="list" />
-            </div>
+                <div class="errors">
+                    <g:renderErrors bean="${netcoolEvent}" as="list" />
+                </div>
+            </g:hasErrors>
+            <g:hasErrors bean="${flash.errors}">
+               <div class="errors">
+                    <g:renderErrors bean="${flash.errors}"/>
+                </div>
             </g:hasErrors>
             <g:form method="post" >
                 <div class="dialog">
@@ -28,7 +33,8 @@
                         <tbody>
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="${relationName}">${netcoolEvent.hasMany[relationName]?.getName()}:</label>
+
+                                    <label for="${relationName}">${com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(netcoolEvent.class, "relations")[relationName]?.type.getName()}:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: netcoolEvent, field: relationName, 'errors')}">
                                     <g:select optionKey="id" from="${relatedObjectList}" name="relatedObjectId"></g:select>

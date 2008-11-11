@@ -4,22 +4,22 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
-        <title>Add To NetcoolJournal</title>
+        <title>Add To NetcoolHistoricalEvent</title>
     </head>
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
-            <span class="menuButton"><g:link class="list" action="list">NetcoolJournal List</g:link></span>
-            <span class="menuButton"><g:link class="create" action="create">New NetcoolJournal</g:link></span>
+            <span class="menuButton"><g:link class="list" action="list">NetcoolHistoricalEvent List</g:link></span>
+            <span class="menuButton"><g:link class="create" action="create">New NetcoolHistoricalEvent</g:link></span>
         </div>
         <div class="body">
-            <h1>Add To NetcoolJournal</h1>
+            <h1>Add To NetcoolHistoricalEvent</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
-            <g:hasErrors bean="${netcoolJournal}">
+            <g:hasErrors bean="${netcoolHistoricalEvent}">
                 <div class="errors">
-                    <g:renderErrors bean="${netcoolJournal}" as="list" />
+                    <g:renderErrors bean="${netcoolHistoricalEvent}" as="list" />
                 </div>
             </g:hasErrors>
             <g:hasErrors bean="${flash.errors}">
@@ -34,9 +34,9 @@
                             <tr class="prop">
                                 <td valign="top" class="name">
 
-                                    <label for="${relationName}">${com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(netcoolJournal.class, "relations")[relationName]?.type.getName()}:</label>
+                                    <label for="${relationName}">${com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(netcoolHistoricalEvent.class, "relations")[relationName]?.type.getName()}:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: netcoolJournal, field: relationName, 'errors')}">
+                                <td valign="top" class="value ${hasErrors(bean: netcoolHistoricalEvent, field: relationName, 'errors')}">
                                     <g:select optionKey="id" from="${relatedObjectList}" name="relatedObjectId"></g:select>
                                 </td>
                             </tr>
@@ -44,7 +44,7 @@
                     </table>
                 </div>
                 <div class="buttons">
-                    <input type="hidden" name="id" value="${netcoolJournal?.id}"/>
+                    <input type="hidden" name="id" value="${netcoolHistoricalEvent?.id}"/>
                     <input type="hidden" name="relationName" value="${relationName}"/>
                     <span class="button"><g:actionSubmit class="edit" value="AddRelation"/></span>
                 </div>

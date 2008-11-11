@@ -40,11 +40,11 @@
                 <g:each in="${groupList}" status="i" var="group">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                        <td>${group.id?.encodeAsHTML()}</td>
+                        <td><g:link action="show" id="${group.id}">${group.id?.encodeAsHTML()}</g:link></td>
                         
                         <td>${group.name?.encodeAsHTML()}</td>
                         
-                        <td><g:link action="show" controller="role" id="${group.role?.id}">${group.role?.encodeAsHTML()}</g:link></td>
+                        <td>${group.role?.encodeAsHTML()}</td>
                         
                         <td>${group.segmentFilter?.encodeAsHTML()}</td>
                         

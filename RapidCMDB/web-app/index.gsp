@@ -29,10 +29,10 @@
                     <%
                         grailsApplication.domainClasses.each {
                             def mc = it.metaClass;
-                            if (mc.getMetaProperty("propertyConfiguration") != null) {
-                    %>
-                    <li class="controller"><g:link controller="${it.logicalPropertyName}">${mc.getTheClass().name}</g:link></li>
-                    <%
+                            if (mc.getMetaProperty("propertyConfiguration") != null && mc.getTheClass().name.indexOf(".")<0 ) {
+                                %>
+                                <li class="controller"><g:link controller="${it.logicalPropertyName}">${mc.getTheClass().name}</g:link></li>
+                                <%
                             }
                         }
                     %>

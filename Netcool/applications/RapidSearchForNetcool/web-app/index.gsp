@@ -100,23 +100,23 @@
         <rui:sgMenuItem id="removeTaskFromList" label="Remove Task From List" action="removeTaskAction" visible="params.data.tasklist == '1'"></rui:sgMenuItem>
         <rui:sgMenuItem id="suppressEscalate" label="Suppress/Escalate">
                <rui:sgSubmenuItems>
-                    <rui:sgSubmenuItem id="0" label="Normal" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '0'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="1" label="Escalated" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '1'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="2" label="Escalated-Level 2" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '2'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="3" label="Escalated-Level 3" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '3'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="4" label="Suppressed" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '4'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="5" label="Hidden" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '5'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="6" label="Maintenance" action="suppressEscalateAction" visible="params.key =='suppressescl' && params.value != '6'"></rui:sgSubmenuItem>
+                    <rui:sgMenuItem id="0" label="Normal" action="suppressEscalateAction" visible="params.data.suppressescl != '0'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="1" label="Escalated" action="suppressEscalateAction" visible="params.data.suppressescl != '1'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="2" label="Escalated-Level 2" action="suppressEscalateAction" visible="params.data.suppressescl != '2'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="3" label="Escalated-Level 3" action="suppressEscalateAction" visible="params.data.suppressescl != '3'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="4" label="Suppressed" action="suppressEscalateAction" visible="params.data.suppressescl != '4'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="5" label="Hidden" action="suppressEscalateAction" visible="params.data.suppressescl != '5'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="6" label="Maintenance" action="suppressEscalateAction" visible="params.data.suppressescl != '6'"></rui:sgMenuItem>
                </rui:sgSubmenuItems>
         </rui:sgMenuItem>
         <rui:sgMenuItem id="severity" label="Chanage Severity">
                <rui:sgSubmenuItems>
-                    <rui:sgSubmenuItem id="5" label="Critical" action="severityAction" visible="params.key =='severity' && params.value != '5'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="4" label="Major" action="severityAction" visible="params.key =='severity' && params.value != '4'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="3" label="Minor" action="severityAction" visible="params.key =='severity' && params.value != '3'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="2" label="Warning" action="severityAction" visible="params.key =='severity' && params.value != '2'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="1" label="Indeterminate" action="severityAction" visible="params.key =='severity' && params.value != '1'"></rui:sgSubmenuItem>
-                    <rui:sgSubmenuItem id="0" label="Clear" action="severityAction" visible="params.key =='severity' && params.value != '0'"></rui:sgSubmenuItem>
+                    <rui:sgMenuItem id="5" label="Critical" action="severityAction" visible="params.data.severity != '5'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="4" label="Major" action="severityAction" visible="params.data.severity != '4'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="3" label="Minor" action="severityAction" visible="params.data.severity != '3'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="2" label="Warning" action="severityAction" visible="params.data.severity != '2'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="1" label="Indeterminate" action="severityAction" visible="params.data.severity != '1'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="0" label="Clear" action="severityAction" visible="params.data.severity != '0'"></rui:sgMenuItem>
                </rui:sgSubmenuItems>
         </rui:sgMenuItem>
     </rui:sgMenuItems>
@@ -167,7 +167,7 @@
     <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
     <rui:requestParam key="suppressescl" value="params.menuId"></rui:requestParam>
 </rui:action>
-<rui:action id="severityAction" type="merge" url="script/run/severity?format=xml" components="${['searchList']}">
+<rui:action id="severityAction" type="merge" url="script/run/severity?format=xml" components="${['searchGrid']}">
     <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
     <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
     <rui:requestParam key="severity" value="params.menuId"></rui:requestParam>
@@ -259,6 +259,7 @@
         }
     });
     filterTree.poll();
+    searchGrid.poll();
     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
     Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({

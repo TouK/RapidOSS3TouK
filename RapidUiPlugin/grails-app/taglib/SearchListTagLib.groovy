@@ -39,24 +39,35 @@ class SearchListTagLib {
             """
         }
         def menuEvents = [:]
+        def subMenuEvents = [:]
         def propertyMenuEvents = [:]
         def menuEventsJs;
         def propMenuEventsJs;
-        def configStr = getConfig(attrs, configXML, menuEvents, propertyMenuEvents);
-        if (menuEvents.size() > 0) {
+        def configStr = getConfig(attrs, configXML, menuEvents, subMenuEvents, propertyMenuEvents);
+        if (menuEvents.size() > 0 || subMenuEvents.size() > 0) {
             def innerJs = "";
             def index = 0;
             menuEvents.each {id, action ->
                 innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(id == '${id}'){
+                innerJs += """(menuId == '${id}'){
                    YAHOO.rapidjs.Actions['${action}'].execute(params);
                 }
                 """
                 index++;
             }
+            subMenuEvents.each {parentId, subMap ->
+                subMap.each {id, action ->
+                    innerJs += index == 0 ? "if" : "else if";
+                    innerJs += """(parentId == '${parentId}' && menuId == '${id}'){
+                       YAHOO.rapidjs.Actions['${action}'].execute(params);
+                    }
+                    """
+                    index++;
+                }
+            }
             menuEventsJs = """
-               ${searchListId}sl.events['rowHeaderMenuClick'].subscribe(function(xmlData, id, parentId){
-                   var params = {data:xmlData.getAttributes(), id:id, parentId:parentId};
+               ${searchListId}sl.events['rowHeaderMenuClick'].subscribe(function(xmlData, menuId, parentId){
+                   var params = {data:xmlData.getAttributes(), menuId:menuId, parentId:parentId};
                    ${innerJs}
                 }, this, true);
             """
@@ -67,15 +78,15 @@ class SearchListTagLib {
             def index = 0;
             propertyMenuEvents.each {id, action ->
                 innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(id == '${id}'){
+                innerJs += """(menuId == '${id}'){
                    YAHOO.rapidjs.Actions['${action}'].execute(params);
                 }
                 """
                 index++;
             }
             propMenuEventsJs = """
-               ${searchListId}sl.events['cellMenuClick'].subscribe(function(key, value, xmlData, id){
-                   var params = {data:xmlData.getAttributes(), id:id, key:key, value:value};
+               ${searchListId}sl.events['cellMenuClick'].subscribe(function(key, value, xmlData, menuId){
+                   var params = {data:xmlData.getAttributes(), menuId:menuId, key:key, value:value};
                    ${innerJs}
                 }, this, true);
             """
@@ -99,7 +110,7 @@ class SearchListTagLib {
         out << fSearchList(attrs, body());
     }
 
-    static def getConfig(config, configXML, menuEvents, propertyMenuEvents) {
+    static def getConfig(config, configXML, menuEvents, subMenuEvents, propertyMenuEvents) {
         def xml = new XmlSlurper().parseText(configXML);
         def cArray = [];
         cArray.add("id: '${config["id"]}'")
@@ -134,14 +145,14 @@ class SearchListTagLib {
         def menuItems = xml.MenuItems?.MenuItem;
         def menuItemArray = [];
         menuItems.each {menuItem ->
-            menuItemArray.add(processMenuItem(menuItem, menuEvents));
+            menuItemArray.add(processMenuItem(menuItem, menuEvents, subMenuEvents));
         }
         cArray.add("menuItems:[${menuItemArray.join(',\n')}]");
         def pmenuItems = xml.PropertyMenuItems?.MenuItem;
 
         def pmenuItemArray = [];
         pmenuItems.each {menuItem ->
-            pmenuItemArray.add(processMenuItem(menuItem, propertyMenuEvents));
+            pmenuItemArray.add(processMenuItem(menuItem, propertyMenuEvents, [:]));
         }
         cArray.add("propertyMenuItems:[${pmenuItemArray.join(',\n')}]");
 
@@ -172,7 +183,7 @@ class SearchListTagLib {
         return "{${cArray.join(',\n')}}"
     }
 
-    static def processMenuItem(menuItem, eventMap) {
+    static def processMenuItem(menuItem, eventMap, subMenuEvents) {
         def menuItemArray = [];
         def id = menuItem.@id;
         def label = menuItem.@label;
@@ -196,7 +207,12 @@ class SearchListTagLib {
                }""")
                 def subAction = subMenuItem.@action.toString().trim();
                 if (subAction != "") {
-                    eventMap.put(subMenuItem.@id, action)
+                    def subMap = subMenuEvents.get(id);
+                    if (!subMap) {
+                        subMap = [:]
+                        subMenuEvents.put(id, subMap);
+                    }
+                    subMap.put(subMenuItem.@id, subAction)
                 }
             }
             if (subMenuItemsArray.size() > 0) {
@@ -231,13 +247,6 @@ class SearchListTagLib {
     }
     def slMenuItem = {attrs, body ->
         out << fSlMenuItem(attrs, body())
-    }
-    static def fSlSubmenuItem(attrs, bodyString) {
-        def validAttrs = ["id", "label", "visible", "action"];
-        return TagLibUtils.getConfigAsXml("SubmenuItem", attrs, validAttrs, bodyString);
-    }
-    def slSubmenuItem = {attrs, body ->
-        out << fSlSubmenuItem(attrs, body());
     }
     static def fSlImages(attrs, bodyString) {
         return TagLibUtils.getConfigAsXml("Images", attrs, [], bodyString);

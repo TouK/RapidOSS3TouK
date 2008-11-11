@@ -25,7 +25,7 @@ import com.ifountain.rui.util.TagLibUtils
  */
 class SearchGridTagLib {
     static namespace = "rui"
-    static def fSearchGrid(attrs, bodyString){
+    static def fSearchGrid(attrs, bodyString) {
         def searchGridId = attrs["id"];
         def configXML = "<SearchGrid>${bodyString}</SearchGrid>";
         def onSaveQueryClick = attrs["onSaveQueryClick"];
@@ -39,22 +39,33 @@ class SearchGridTagLib {
             """
         }
         def menuEvents = [:]
-         def menuEventsJs;
-        def configStr = getConfig(attrs, configXML, menuEvents);
-        if (menuEvents.size() > 0) {
+        def subMenuEvents = [:]
+        def menuEventsJs;
+        def configStr = getConfig(attrs, configXML, menuEvents, subMenuEvents);
+        if (menuEvents.size() > 0 || subMenuEvents.size() > 0) {
             def innerJs = "";
             def index = 0;
             menuEvents.each {id, action ->
                 innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(id == '${id}'){
+                innerJs += """(menuId == '${id}'){
                    YAHOO.rapidjs.Actions['${action}'].execute(params);
                 }
                 """
                 index++;
             }
+            subMenuEvents.each {parentId, subMap ->
+                subMap.each {id, action ->
+                    innerJs += index == 0 ? "if" : "else if";
+                    innerJs += """(parentId == '${parentId}' && menuId == '${id}'){
+                       YAHOO.rapidjs.Actions['${action}'].execute(params);
+                    }
+                    """
+                    index++;
+                }
+            }
             menuEventsJs = """
-               ${searchGridId}sg.events['rowHeaderMenuClick'].subscribe(function(xmlData, id, parentId){
-                   var params = {data:xmlData.getAttributes(), id:id, parentId:parentId};
+               ${searchGridId}sg.events['rowHeaderMenuClick'].subscribe(function(xmlData, menuId, parentId){
+                   var params = {data:xmlData.getAttributes(), menuId:menuId, parentId:parentId};
                    ${innerJs}
                 }, this, true);
             """
@@ -77,7 +88,7 @@ class SearchGridTagLib {
         out << fSearchGrid(attrs, body());
     }
 
-    static def getConfig(config, configXML, menuEvents) {
+    static def getConfig(config, configXML, menuEvents, subMenuEvents) {
         def xml = new XmlSlurper().parseText(configXML);
         def cArray = [];
         cArray.add("id: '${config["id"]}'")
@@ -102,7 +113,7 @@ class SearchGridTagLib {
         def menuItems = xml.MenuItems?.MenuItem;
         def menuItemArray = [];
         menuItems.each {menuItem ->
-            menuItemArray.add(processMenuItem(menuItem, menuEvents));
+            menuItemArray.add(processMenuItem(menuItem, menuEvents, subMenuEvents));
         }
         cArray.add("menuItems:[${menuItemArray.join(',\n')}]");
 
@@ -133,7 +144,7 @@ class SearchGridTagLib {
         return "{${cArray.join(',\n')}}"
     }
 
-    static def processMenuItem(menuItem, eventMap) {
+    static def processMenuItem(menuItem, eventMap, subMenuEvents) {
         def menuItemArray = [];
         def id = menuItem.@id;
         def label = menuItem.@label;
@@ -157,7 +168,12 @@ class SearchGridTagLib {
                }""")
                 def subAction = subMenuItem.@action.toString().trim();
                 if (subAction != "") {
-                    eventMap.put(subMenuItem.@id, action)
+                    def subMap = subMenuEvents.get(id);
+                    if (!subMap) {
+                        subMap = [:]
+                        subMenuEvents.put(id, subMap);
+                    }
+                    subMap.put(subMenuItem.@id, subAction)
                 }
             }
             if (subMenuItemsArray.size() > 0) {
@@ -167,41 +183,33 @@ class SearchGridTagLib {
         }
         return "{${menuItemArray.join(',\n')}}"
     }
-    static def fSgMenuItems(attrs, bodyString){
+    static def fSgMenuItems(attrs, bodyString) {
         return TagLibUtils.getConfigAsXml("MenuItems", attrs, [], bodyString);
     }
     def sgMenuItems = {attrs, body ->
         out << fSgMenuItems(attrs, body())
     }
-    static def fSgSubmenuItems(attrs, bodyString){
+    static def fSgSubmenuItems(attrs, bodyString) {
         return TagLibUtils.getConfigAsXml("SubmenuItems", attrs, [], bodyString)
     }
     def sgSubmenuItems = {attrs, body ->
         out << fSgSubmenuItems(attrs, body())
     }
-    static def fSgMenuItem(attrs, bodyString){
+    static def fSgMenuItem(attrs, bodyString) {
         def validAttrs = ["id", "label", "visible", "action"];
         return TagLibUtils.getConfigAsXml("MenuItem", attrs, validAttrs, bodyString)
     }
     def sgMenuItem = {attrs, body ->
         out << fSgMenuItem(attrs, body())
     }
-    static def fSgSubmenuItem(attrs, bodyString){
-        def validAttrs = ["id", "label", "visible", "action"];
-        return TagLibUtils.getConfigAsXml("SubmenuItem", attrs, validAttrs)
-    }
-
-    def sgSubmenuItem = {attrs, body ->
-        out << fSgSubmenuItem(attrs, "")
-    }
-    static def fSgImages(attrs, bodyString){
+    static def fSgImages(attrs, bodyString) {
         return TagLibUtils.getConfigAsXml("Images", attrs, [], bodyString)
     }
     def sgImages = {attrs, body ->
         out << fSgImages(attrs, body())
     }
 
-     static def fSgImage(attrs, bodyString){
+    static def fSgImage(attrs, bodyString) {
         def validAttrs = ["src", "visible"];
         return TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
     }
@@ -209,13 +217,13 @@ class SearchGridTagLib {
         out << fSgImage(attrs, "")
     }
 
-    static def fSgColumns(attrs, bodyString){
+    static def fSgColumns(attrs, bodyString) {
         return TagLibUtils.getConfigAsXml("Columns", attrs, [], bodyString)
     }
     def sgColumns = {attrs, body ->
         out << fSgColumns(attrs, body())
     }
-     static def fSgColumn(attrs, bodyString){
+    static def fSgColumn(attrs, bodyString) {
         def validAttrs = ["attributeName", "colLabel", "sortBy", "sortOrder", "width"];
         return TagLibUtils.getConfigAsXml("Column", attrs, validAttrs)
     }

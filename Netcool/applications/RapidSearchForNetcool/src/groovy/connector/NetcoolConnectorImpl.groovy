@@ -17,31 +17,33 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
  * To change this template use File | Settings | File Templates.
  */
 class NetcoolConnectorImpl {
-    public static MAPPING_FOR_KNOWN_COLUMNS = ["class":"netcoolclass", "type":"nctype"]
+    public static MAPPING_FOR_KNOWN_COLUMNS = ["class": "netcoolclass", "type": "nctype"]
     Map nameMappings;
     NetcoolDatasource datasource;
-    def deleteMarkerField ;
+    def deleteMarkerField;
     def connectorName;
     Class NetcoolEvent;
     Class NetcoolJournal;
     Logger logger;
     Map columnConversionParameters;
+    def netcoolEventProperties;
     public NetcoolConnectorImpl(NetcoolConnector connector, Logger logger, Map columnConversionParameters)
     {
         this.logger = logger;
+        netcoolEventProperties = DomainClassUtils.getFilteredProperties("NetcoolEvent", ["id"]);
         this.columnConversionParameters = columnConversionParameters;
         NetcoolEvent = this.class.classLoader.loadClass("NetcoolEvent");
         NetcoolJournal = this.class.classLoader.loadClass("NetcoolJournal");
         def datasourceName = NetcoolConnector.getDatasourceName(connector.name)
-        this.datasource = NetcoolDatasource.get(name:datasourceName);
-        if(this.datasource == null){
+        this.datasource = NetcoolDatasource.get(name: datasourceName);
+        if (this.datasource == null) {
             throw new Exception("Datasource ${datasourceName} of Connector ${connector.name} could not be found.")
         }
         this.connectorName = connector.name;
         nameMappings = new CaseInsensitiveMap();
-        NetcoolColumn.list().each{NetcoolColumn map->
+        NetcoolColumn.list().each {NetcoolColumn map ->
             nameMappings[map.netcoolName] = map.localName;
-            if(map.isDeleteMarker)
+            if (map.isDeleteMarker)
             {
                 deleteMarkerField = map;
             }
@@ -52,44 +54,48 @@ class NetcoolConnectorImpl {
     //Get all events after marking as deleted. discard lastrecordidentifier
     def markAllEventsAsDeleted()
     {
-        def deleteMarkerLocalName = deleteMarkerField?deleteMarkerField.localName:"severity"
-        def deleteMarkerNetcoolName = deleteMarkerField?deleteMarkerField.netcoolName:"Severity"
-        def deleteMarkerConvertedValue = NetcoolConversionParameter.getConvertedValue(deleteMarkerNetcoolName, 0)
+        logger.debug("Marking deleted events.")
+        def deleteMarkerLocalName = deleteMarkerField ? deleteMarkerField.localName : "severity"
+        def deleteMarkerNetcoolName = deleteMarkerField ? deleteMarkerField.netcoolName : "Severity"
         def markedEvents = [:];
-        int offset= 0 ;
+        int offset = 0;
         int batchSize = 1000;
         def lastUpdateTime = 0;
-        while(true)
+        while (true)
         {
-            def res = invokeMethod(NetcoolEvent, "search", ["connectorname:${connectorName}", [max:batchSize, offset:offset, sort:"id"]] as Object[]);
-            if(res.results.isEmpty())
+            def res = invokeMethod(NetcoolEvent, "search", ["connectorname:${connectorName}", [max: batchSize, offset: offset, sort: "id"]] as Object[]);
+            if (res.results.isEmpty())
             {
                 break;
             }
-            res.results.each{event->
-                markedEvents[event.servername+event.serverserial] = event;
-                if(event.statechange > lastUpdateTime)
+            res.results.each {event ->
+                markedEvents[event.servername + event.serverserial] = event;
+                if (event.statechange > lastUpdateTime)
                 {
                     lastUpdateTime = event.statechange;
                 }
             }
             offset += batchSize;
         }
-
+        logger.debug("Last update time in repository is ${lastUpdateTime}")
+        logger.debug("Getting active events from netcool repository.")
         def whereClause = "StateChange <= ${lastUpdateTime} AND ${deleteMarkerNetcoolName} > 0";
+
         List records = datasource.getEvents(whereClause);
+        logger.debug(records.size() + " number of active events found that have been added to the repository.")
         for (Map rec in records)
         {
-            markedEvents.remove(rec.SERVERNAME+rec.SERVERSERIAL);
+            markedEvents.remove(rec.SERVERNAME + rec.SERVERSERIAL);
         }
         logger.info("Following events are deleted before connector start ${markedEvents}");
-        def eventProperties = DomainClassUtils.getFilteredProperties("NetcoolEvent", ["id"])
-        markedEvents.each{key, event->
+        markedEvents.each {key, event ->
             def historicalEventProps = [:];
-            eventProperties.each{p->
+            netcoolEventProperties.each {p ->
                 historicalEventProps[p.name] = event[p.name];
             }
+            logger.debug("Creating historical event with properties ${historicalEventProps}")
             NetcoolHistoricalEvent.add(historicalEventProps);
+            logger.debug("Removing event ${event}")
             event.remove();
         }
     }
@@ -104,68 +110,85 @@ class NetcoolConnectorImpl {
     def processEvents()
     {
 
-        NetcoolLastRecordIdentifier lastRecordIdentifier = NetcoolLastRecordIdentifier.get(connectorName:connectorName);
-        if(lastRecordIdentifier == null)
+        NetcoolLastRecordIdentifier lastRecordIdentifier = NetcoolLastRecordIdentifier.get(connectorName: connectorName);
+        if (lastRecordIdentifier == null)
         {
-            lastRecordIdentifier = NetcoolLastRecordIdentifier.add(connectorName:connectorName, eventLastRecordIdentifier:0, journalLastRecordIdentifier:0);
+            lastRecordIdentifier = NetcoolLastRecordIdentifier.add(connectorName: connectorName, eventLastRecordIdentifier: 0, journalLastRecordIdentifier: 0);
         }
+        def deleteMarkerNetcoolName = deleteMarkerField ? deleteMarkerField.netcoolName : "Severity"
         def lastEventStateChange = lastRecordIdentifier.eventLastRecordIdentifier;
         logger.info("Processing events. after ${lastEventStateChange}");
         def whereClause = "StateChange > ${lastEventStateChange} AND StateChange <= getdate - 1";
         List records = datasource.getEvents(whereClause);
         logger.info("Got ${records.size()} number of records");
-        for (Map rec in records){
-            logger.info("Adding event ${rec}");
-            def eventProps = getEventProperties(rec);
-            logger.info("Event properties are ${eventProps}");
-            def res = invokeMethod(NetcoolEvent, "add",[eventProps] as Object[]);
-            if(!res.hasErrors())
-            {
-                logger.info("Event added.");
-                def lastStateChange = Long.parseLong(rec.statechange);
-                if (lastStateChange > lastEventStateChange){
-                    lastEventStateChange = lastStateChange;
+        for (Map rec in records) {
+            if (rec[deleteMarkerNetcoolName] == "0") {
+                logger.info("Removing event ${rec}")
+                def event = NetcoolEvent.get(serverserial: rec.SERVERSERIAL, servername: rec.SERVERNAME);
+                if (event) {
+                    def historicalEventProps = [:];
+                    netcoolEventProperties.each {p ->
+                        historicalEventProps[p.name] = event[p.name];
+                    }
+                    logger.debug("Creating historical event with properties ${historicalEventProps}")
+                    NetcoolHistoricalEvent.add(historicalEventProps);
+                    event.remove();
                 }
             }
-            else
-            {
-                logger.warn("Could not added event with serial ${rec.SERVERSERIAL}. Reason :${res.errors}");    
+            else {
+                logger.info("Adding event ${rec}");
+                def eventProps = getEventProperties(rec);
+                logger.info("Event properties are ${eventProps}");
+                def res = invokeMethod(NetcoolEvent, "add", [eventProps] as Object[]);
+                if (!res.hasErrors())
+                {
+                    logger.info("Event added.");
+                    def lastStateChange = Long.parseLong(rec.statechange);
+                    if (lastStateChange > lastEventStateChange) {
+                        lastEventStateChange = lastStateChange;
+                    }
+                }
+                else
+                {
+                    logger.warn("Could not add event with serial ${rec.SERVERSERIAL}. Reason :${res.errors}");
+                }
             }
+
         }
-        lastRecordIdentifier.eventLastRecordIdentifier = lastEventStateChange; 
+        lastRecordIdentifier.eventLastRecordIdentifier = lastEventStateChange;
     }
 
     def processJournals()
     {
-        NetcoolLastRecordIdentifier lastRecordIdentifier = NetcoolLastRecordIdentifier.get(connectorName:connectorName);
+        NetcoolLastRecordIdentifier lastRecordIdentifier = NetcoolLastRecordIdentifier.get(connectorName: connectorName);
         def lastJournalStateChange = lastRecordIdentifier.journalLastRecordIdentifier;
         logger.info("Processing journals. after ${lastJournalStateChange}");
-        if( lastJournalStateChange == null)
+        if (lastJournalStateChange == null)
         {
             lastJournalStateChange = 0;
         }
         def whereClause = "Chrono>$lastJournalStateChange AND Chrono <= getdate() - 1 ORDER BY Chrono";
         List records = datasource.getJournalEntries(whereClause);
         logger.info("Got ${records.size()} number of journals.");
-        for (Map rec in records){
+        for (Map rec in records) {
             logger.info("Adding journal ${rec}");
             def journalProps = getJournalProperties(rec);
 
-            if(journalProps != null)
+            if (journalProps != null)
             {
                 logger.info("Adding journal with properties${journalProps}");
                 def res = invokeMethod(NetcoolJournal, "add", [journalProps] as Object[]);
-                if(!res.hasErrors())
+                if (!res.hasErrors())
                 {
                     logger.info("Jourmal added.");
                     def lastStateChange = Long.parseLong(rec.chrono);
-                    if (lastStateChange > lastJournalStateChange){
+                    if (lastStateChange > lastJournalStateChange) {
                         lastJournalStateChange = lastStateChange;
                     }
                 }
                 else
                 {
-                    logger.warn("Could not added journal with serial ${journalProps.serverserial}. Reason :${res.errors}");    
+                    logger.warn("Could not added journal with serial ${journalProps.serverserial}. Reason :${res.errors}");
                 }
 
             }
@@ -181,16 +204,16 @@ class NetcoolConnectorImpl {
     def getEventProperties(Map rec)
     {
         def eventMap = [:]
-        rec.each{String propName, String propValue->
+        rec.each {String propName, String propValue ->
             def convProp = this.columnConversionParameters[propName];
-            if(convProp != null)
+            if (convProp != null)
             {
-                propValue = convProp[propValue] 
+                propValue = convProp[propValue]
             }
             def localColName = nameMappings[propName];
-            if(localColName == null)
+            if (localColName == null)
             {
-                localColName = MAPPING_FOR_KNOWN_COLUMNS[propName.toLowerCase()]!= null?MAPPING_FOR_KNOWN_COLUMNS[propName.toLowerCase()]:propName;
+                localColName = MAPPING_FOR_KNOWN_COLUMNS[propName.toLowerCase()] != null ? MAPPING_FOR_KNOWN_COLUMNS[propName.toLowerCase()] : propName;
             }
             eventMap[localColName.toLowerCase()] = propValue;
         }
@@ -204,17 +227,17 @@ class NetcoolConnectorImpl {
     }
     def getJournalProperties(Map rec)
     {
-        def serverSerialColName = nameMappings["serverserial"]?nameMappings["serverserial"]:"serverserial";
-        def connectorNameColName = nameMappings["connectorname"]?nameMappings["connectorname"]:"connectorname";
+        def serverSerialColName = nameMappings["serverserial"] ? nameMappings["serverserial"] : "serverserial";
+        def connectorNameColName = nameMappings["connectorname"] ? nameMappings["connectorname"] : "connectorname";
         def query = "${serverSerialColName}:\"${rec.SERIAL}\" AND ${connectorNameColName}:\"${this.connectorName}\""
         def event = invokeMethod(NetcoolEvent, "search", [query] as Object[]).results[0];
-        if(event == null) return null;
-        def journalMap = [servername:event.servername, serverserial:event.serverserial, connectorname:this.connectorName]
+        if (event == null) return null;
+        def journalMap = [servername: event.servername, serverserial: event.serverserial, connectorname: this.connectorName]
         StringBuffer text = new StringBuffer();
-        rec.each{String propName, String propValue->
-            if(propName.startsWith("text") && propValue != "")
+        rec.each {String propName, String propValue ->
+            if (propName.startsWith("text") && propValue != "")
             {
-                text.append(" ").append(propValue); 
+                text.append(" ").append(propValue);
             }
             else
             {

@@ -1,5 +1,7 @@
 import search.SearchQueryGroup
+import ui.GridView
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,16 +11,11 @@ import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringIn
  * To change this template use File | Settings | File Templates.
  */
 def userName = web.session.username;
-def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup->
+def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
     queryGroup.username == userName && queryGroup.isPublic == false
 };
-def excludedProps = ['version',
-        "errors", "__operation_class__",
-        ClosureEventTriggeringInterceptor.ONLOAD_EVENT,
-        ClosureEventTriggeringInterceptor.BEFORE_DELETE_EVENT,
-        ClosureEventTriggeringInterceptor.BEFORE_INSERT_EVENT,
-        ClosureEventTriggeringInterceptor.BEFORE_UPDATE_EVENT]
-def netcoolEventProps = web.grailsApplication.getDomainClass("NetcoolEvent").properties.findAll {!excludedProps.contains(it.name)}
+def gridViews = GridView.searchEvery("username:\"${userName}\"", [sort: "name"]);
+def netcoolEventProps = DomainClassUtils.getFilteredProperties("NetcoolEvent");
 web.render(contentType: 'text/xml') {
     Create {
         group {
@@ -28,6 +25,12 @@ web.render(contentType: 'text/xml') {
         }
         sortProperty {
             netcoolEventProps.each {
+                option(it.name)
+            }
+        }
+        viewName {
+            option('default');
+            gridViews.each {
                 option(it.name)
             }
         }

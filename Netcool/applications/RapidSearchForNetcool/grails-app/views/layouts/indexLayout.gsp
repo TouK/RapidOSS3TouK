@@ -107,8 +107,9 @@
                     <%
                         def currentUrl = request.uri.toString();
                     %>
-                    <li class="${currentUrl == "/RapidSuite/" || currentUrl == "/RapidSuite/index.gsp" ? "selected":""}"><a href="${createLinkTo(file: 'index.gsp')}"><em>Netcool Events</em></a></li>
+                    <li class="${currentUrl.indexOf('events.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'events.gsp')}"><em>Netcool Events</em></a></li>
                     <li class="${currentUrl.indexOf('eventSearch.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'eventSearch.gsp')}"><em>Event Search</em></a></li>
+                    <li class="${currentUrl.indexOf('historicalEvents.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'historicalEvents.gsp')}"><em>Historical Events</em></a></li>
                 </ul>
             </div>
         </td>

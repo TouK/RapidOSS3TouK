@@ -20,7 +20,8 @@ queryBuilder.Filters
         if((userName.equals(RsUser.RSADMIN) && group.isPublic) || userName.equals(user.username)){
            queryBuilder.Filter(id: group.id, name: group.name, nodeType: "group",  isPublic:group.isPublic) {
               group.queries.each {SearchQuery query ->
-                  queryBuilder.Filter(id: query.id, name: query.name, nodeType: "filter", query: query.query, sortProperty: query.sortProperty, sortOrder: query.sortOrder, isPublic:query.isPublic)
+                  queryBuilder.Filter(id: query.id, name: query.name, nodeType: "filter", viewName:query.viewName, group:group.name, 
+                          query: query.query, sortProperty: query.sortProperty, sortOrder: query.sortOrder, isPublic:query.isPublic)
               }
            }
         }

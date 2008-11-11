@@ -32,3 +32,15 @@
     opacity: 0.76;
     filter: "alpha(opacity=76)";
 }
+.netcool-object-details td {
+    padding: 0.1em 0.5em;
+    vertical-align: top;
+}
+
+.netcool-object-details .even td {
+    background: #DBEAFF;
+}
+
+.netcool-object-details .odd td {
+    background: #EDF5FF;
+}

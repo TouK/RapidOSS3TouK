@@ -1,6 +1,8 @@
 import search.SearchQuery
 import search.SearchQueryGroup
+import ui.GridView
 import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,7 +12,7 @@ import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringIn
  * To change this template use File | Settings | File Templates.
  */
 
-def searchQuery = SearchQuery.get([id: params.queryId])   
+def searchQuery = SearchQuery.get([id: params.queryId])
 if (!searchQuery) {
     web.addError("default.object.not.found", [SearchQuery.class.name, params.queryId]);
     web.render(text: web.errorsToXml(web.errors), contentType: "text/xml");
@@ -20,13 +22,8 @@ else {
     def searchQueryGroups = SearchQueryGroup.list().findAll {
         it.username == userName && it.isPublic == false
     };
-    def excludedProps = ['version',
-            "errors", "__operation_class__",
-            ClosureEventTriggeringInterceptor.ONLOAD_EVENT,
-            ClosureEventTriggeringInterceptor.BEFORE_DELETE_EVENT,
-            ClosureEventTriggeringInterceptor.BEFORE_INSERT_EVENT,
-            ClosureEventTriggeringInterceptor.BEFORE_UPDATE_EVENT]
-    def netcoolEventProps = web.grailsApplication.getDomainClass("NetcoolEvent").properties.findAll {!excludedProps.contains(it.name)}
+    def gridViews = GridView.searchEvery("username:\"${userName}\"", [sort: "name"]);
+    def netcoolEventProps = DomainClassUtils.getFilteredProperties("NetcoolEvent")
     web.render(contentType: 'text/xml') {
         Edit {
             id(searchQuery.id)
@@ -49,6 +46,12 @@ else {
                     else {
                         option(it.name)
                     }
+                }
+            }
+            viewName {
+                option(selected: searchQuery.viewName == 'default', 'default')
+                gridViews.each {
+                    option(selected: searchQuery.viewName == it.name, it.name)
                 }
             }
         }

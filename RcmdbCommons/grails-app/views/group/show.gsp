@@ -25,48 +25,48 @@
         <table>
             <tbody>
 
-                
+
                 <tr class="prop">
                     <td valign="top" class="name">id:</td>
-                    
+
                     <td valign="top" class="value">${group.id}</td>
-                    
+
                 </tr>
-                
+
                 <tr class="prop">
                     <td valign="top" class="name">name:</td>
-                    
+
                     <td valign="top" class="value">${group.name}</td>
-                    
+
                 </tr>
-                
+
                 <tr class="prop">
                     <td valign="top" class="name">role:</td>
-                    
+
                     <td valign="top" class="value">${group?.role}</td>
-                    
+
                 </tr>
-                
+
                 <tr class="prop">
                     <td valign="top" class="name">segmentFilter:</td>
-                    
+
                     <td valign="top" class="value">${group.segmentFilter}</td>
-                    
+
                 </tr>
-                
+
                 <tr class="prop">
                     <td valign="top" class="name">users:</td>
-                    
+
                     <td valign="top" style="text-align:left;" class="value">
                         <ul>
                             <g:each var="u" in="${group.users}">
-                                <li><g:link controller="User" action="show" id="${u.id}">${u}</g:link></li>
+                                <li><g:link controller="rsUser" action="show" id="${u.id}">${u}</g:link></li>
                             </g:each>
                         </ul>
                     </td>
-                    
+
                 </tr>
-                
+
             </tbody>
         </table>
     </div>

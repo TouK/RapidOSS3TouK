@@ -54,6 +54,7 @@ class SearchController {
             }
         }
         def grailsClassProperties = [:]
+        def grailsClassRelations = [:]
         builder.Objects(total: searchResults.total, offset: searchResults.offset) {
             searchResults.results.each {result ->
                 def className = result.getClass().name;
@@ -63,9 +64,16 @@ class SearchController {
                     grailsObjectProps = DomainClassUtils.getFilteredProperties(className);
                     grailsClassProperties[result.getClass().name] = grailsObjectProps;
                 }
+                def grailsObjectRelations = grailsClassRelations[className];
+                if(grailsObjectRelations == null){
+                    grailsObjectRelations = DomainClassUtils.getRelations(className);
+                    grailsClassRelations[result.getClass().name] = grailsObjectRelations;
+                }
                 def props = [:];
                 grailsObjectProps.each {resultProperty ->
-                    props[resultProperty.name] = result[resultProperty.name];
+                    if(!grailsObjectRelations.containsKey(resultProperty.name)){
+                        props[resultProperty.name] = result[resultProperty.name];    
+                    }
                 }
                 props.put("sortOrder", sortOrder++)
                 props.put("rsAlias", result.getClass().name)

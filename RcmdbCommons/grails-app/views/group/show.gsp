@@ -43,7 +43,7 @@
                 <tr class="prop">
                     <td valign="top" class="name">role:</td>
                     
-                    <td valign="top" class="value"><g:link controller="Role" action="show" id="${group?.role?.id}">${group?.role}</g:link></td>
+                    <td valign="top" class="value">${group?.role}</td>
                     
                 </tr>
                 

@@ -34,13 +34,10 @@
                         <tbody>
                         
                             <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="datasource">Datasource:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:modelDatasourceKeyMapping,field:'datasource','errors')}">
-                                    <g:select class="inputtextfield" optionKey="id" from="${ModelDatasource.list()}" name="datasource.id" value="${modelDatasourceKeyMapping?.datasource?.id}" ></g:select>
-                                </td>
-                            </tr> 
+                                <td valign="top" class="name">Datasource:</td>
+
+                               <td valign="top" class="value">${modelDatasourceKeyMapping.datasource}</td>
+                            </tr>
                         
                             <tr class="prop">
                                 <td valign="top" class="name">

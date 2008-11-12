@@ -28,6 +28,11 @@
         <table>
             <tbody>
                 <tr class="prop">
+                    <td valign="top" class="name">Datasource:</td>
+
+                   <td valign="top" class="value"><g:link controller="modelDatasource" action="show" id="${modelDatasourceKeyMapping?.datasource?.id}">${modelDatasourceKeyMapping?.datasource}</g:link></td>
+                </tr>
+                <tr class="prop">
                     <td valign="top" class="name">Name In Datasource:</td>
 
                     <td valign="top" class="value">${modelDatasourceKeyMapping.nameInDatasource}</td>

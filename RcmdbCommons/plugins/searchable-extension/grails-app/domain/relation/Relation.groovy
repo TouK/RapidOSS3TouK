@@ -12,22 +12,16 @@ class Relation {
     Long version;
     String rsOwner = "p"
     Long objectId;
-    String name;
-    String className;
-    Map relatedObjectIds = [:]
+    Long reverseObjectId;
+    String name = "";
+    String reverseName = "";
     static relations = [:]
     static constraints = {
-        objectId(key:["name"]);
+        objectId(key:["name", "reverseObjectId", "reverseName"]);
     }
 
     public String toString() {
-        return "objId:${objectId} name:${name}"
+        return "objectId:${objectId} reverseObjectId:${reverseObjectId} name:${name} reverseName:${reverseName}";
     }
-
-    public static String getRelKey(id)
-    {
-        return "relatedObjId${id}".toString();   
-    }
-
 
 }

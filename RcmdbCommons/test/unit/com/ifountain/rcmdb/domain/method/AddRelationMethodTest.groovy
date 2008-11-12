@@ -1,7 +1,7 @@
 package com.ifountain.rcmdb.domain.method
 
+import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import relation.Relation
 
 /**
 * Created by IntelliJ IDEA.
@@ -53,9 +53,11 @@ class AddRelationMethodTest extends RapidCmdbWithCompassTestCase{
         assertTrue(expectedDomainObject1.rel2.contains(expectedDomainObject2));
         assertTrue(expectedDomainObject1.rel2.contains(expectedDomainObject3));
         assertTrue (expectedDomainObject1.hasErrors());
-        assertEquals (2, Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.size());
-        assertTrue (Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.containsKey(Relation.getRelKey(expectedDomainObject2.id)));
-        assertTrue (Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.containsKey(Relation.getRelKey(expectedDomainObject3.id)));
+
+        def allRelatedObjectIds = RelationUtils.getRelatedObjectsIds(expectedDomainObject1, "rel2", "revRel2")
+        assertEquals (2, allRelatedObjectIds.size());
+        assertTrue (allRelatedObjectIds.containsKey(expectedDomainObject2.id));
+        assertTrue (allRelatedObjectIds.containsKey(expectedDomainObject3.id));
     }
 
 

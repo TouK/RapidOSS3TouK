@@ -36,33 +36,40 @@ class ValidationUtils {
     {
         def emptyBean = domainObject.class.newInstance()
         fields.each{String propName, type->
-            def propValue = domainObject[propName];
-            if(relationMetData.containsKey(propName) && props.containsKey(propName))
+            if(relationMetData.containsKey(propName))
             {
-                def newValue = props[propName];
-                def metaData = relationMetData[propName]
-                def value = domainObject[propName];
-                if(metaData.isOneToOne() || metaData.isManyToOne())
+                def value = null
+                if(domainObject.id != null)
                 {
-                    value = newValue instanceof Collection?newValue[0]:newValue;
+                    value = domainObject[propName];
                 }
-                else
+                if(props.containsKey(propName))
                 {
-                    value = !clearOldValues && value instanceof Collection?value:[];
-                    def isCollection = newValue instanceof Collection;
-                    if(newValue != null && !isCollection)
+                    def newValue = props[propName];
+                    def metaData = relationMetData[propName]
+                    if(metaData.isOneToOne() || metaData.isManyToOne())
                     {
-                        value.add(newValue)
+                        value = newValue instanceof Collection?newValue[0]:newValue;
                     }
-                    else if(isCollection)
+                    else
                     {
-                        value.addAll(newValue);
+                        value = !clearOldValues && value instanceof Collection?value:[];
+                        def isCollection = newValue instanceof Collection;
+                        if(newValue != null && !isCollection)
+                        {
+                            value.add(newValue)
+                        }
+                        else if(isCollection)
+                        {
+                            value.addAll(newValue);
+                        }
                     }
                 }
                 emptyBean.setProperty(propName, value, false);
             }
             else
             {
+                def propValue = domainObject[propName];
                 emptyBean.setProperty(propName, propValue, false);
             }
         }

@@ -6,6 +6,7 @@ import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.domain.property.RelationUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -113,9 +114,10 @@ class RemoveRelationMethodTest extends RapidCmdbWithCompassTestCase{
         assertFalse(expectedDomainObject1.rel2.contains(expectedDomainObject3));
         assertTrue (expectedDomainObject1.hasErrors());
 
-        assertEquals (1, relation.Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.size());
-        assertTrue (relation.Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.containsKey(relation.Relation.getRelKey(expectedDomainObject2.id)));
-        assertFalse (relation.Relation.get(objectId:expectedDomainObject1.id, name:"rel2").relatedObjectIds.containsKey(relation.Relation.getRelKey(expectedDomainObject3.id)));
+        def allRelatedObjectIds = RelationUtils.getRelatedObjectsIds(expectedDomainObject1, "rel2", "revRel2")
+        assertEquals (1, allRelatedObjectIds.size());
+        assertTrue (allRelatedObjectIds.containsKey(expectedDomainObject2.id));
+        assertFalse (allRelatedObjectIds.containsKey(expectedDomainObject3.id));
     }
 
 

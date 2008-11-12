@@ -87,27 +87,7 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                         domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
                     }
 
-                    Relation relationObject = Relation.get(objectId:domainObject.id, name:relation.name);
-                    def notRemovedRelations = [];
-                    if(relationObject)
-                    {
-                        value.each{
-                            def res = relationObject.relatedObjectIds.remove(Relation.getRelKey(it.id));
-                            if(!res)
-                            {
-                                notRemovedRelations.add(it);    
-                            }
-                        }
-                    }
-                    if(relationObject && notRemovedRelations.size() != value.size())
-                    {
-                        relationObject.reindex();                        
-                    }
-                    def reverseObjects = RelationUtils.getReverseRelationObjects(domainObject, relation.otherSideName, relation.otherSideCls, notRemovedRelations)
-                    reverseObjects.each{
-                        it.relatedObjectIds.remove(Relation.getRelKey(domainObject.id));
-                        it.reindex();
-                    }
+                    RelationUtils.removeRelations(domainObject, relation, value);
                 }
             }
             return domainObject;

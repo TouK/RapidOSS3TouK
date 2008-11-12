@@ -43,22 +43,6 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
         return true;
     }
 
-    def removeExistingRelations(domainObject, Relation relationObject,  relOtherSideName, relOtherSideClass)
-    {
-        if(relationObject && !relationObject.relatedObjectIds.isEmpty())
-        {
-            relationObject.relatedObjectIds.clear()
-            relationObject.reindex();
-        }
-        else
-        {
-            def relationsToBeRemoved = RelationUtils.getReverseRelationObjects(domainObject, relOtherSideName, relOtherSideClass);
-            relationsToBeRemoved.each{Relation previousRelation->
-                previousRelation.relatedObjectIds.remove(Relation.getRelKey(domainObject.id))
-                previousRelation.reindex();
-            }
-        }
-    }
     protected Object _invoke(Object domainObject, Object[] arguments) {
 
         def props = arguments[0];
@@ -79,20 +63,9 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                 RelationMetaData relation = relations.get(key);
                 if(relation)
                 {
-                    Relation domainObjectRelations = Relation.get(objectId:domainObject.id, name:relation.name);
-                    def allRefRelationObjs = [:];
-                    def referencingRelations = RelationUtils.getReverseRelationObjects(domainObject, relation.otherSideName, relation.getOtherSideCls());
-                    if(domainObjectRelations == null)
-                    {
-                        domainObjectRelations = Relation.add(objectId:domainObject.id, name:relation.name, className:relation.cls.name);
-                    }
-                    allRefRelationObjs.putAll (domainObjectRelations.relatedObjectIds);
-                    referencingRelations.each{
-                        allRefRelationObjs[Relation.getRelKey(it.objectId)] = it.objectId;
-                    }
-                    
+                    def allRefRelationObjs = RelationUtils.getRelatedObjectsIds(domainObject, relation.name, relation.otherSideName);
                     value = value instanceof Collection?value:[value];
-                    value = value.findAll {!allRefRelationObjs.containsKey(Relation.getRelKey(it.id))}
+                    value = value.findAll {!allRefRelationObjs.containsKey(it.id)}
                     def validValues = [];
                     Errors errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
                     value.each{relatedObject->
@@ -117,23 +90,27 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                     if(value.size() >0){
                         if(relation.type == RelationMetaData.ONE_TO_ONE || relation.type == RelationMetaData.MANY_TO_ONE)
                         {
-                            removeExistingRelations(domainObject, domainObjectRelations, relation.otherSideName, relation.otherSideCls);
+                            RelationUtils.removeExistingRelations(domainObject, relation.name, relation.otherSideName);
+                            if(relation.otherSideName != null && relation.type == RelationMetaData.ONE_TO_ONE)
+                            {
+                                RelationUtils.removeExistingRelations(value[0], relation.otherSideName, relation.name);
+                            }
                             value = [value[0]];
 
                         }
                         else if(relation.type == RelationMetaData.ONE_TO_MANY)
                         {
-                            value.each{newRelatedObject->
-                                Relation newRelatedObjectRelations = Relation.get(objectId:newRelatedObject.id, name:relation.otherSideName);
-                                removeExistingRelations(newRelatedObject, newRelatedObjectRelations, relation.name, relation.cls);
+                            if(relation.otherSideName != null)
+                            {
+                                value.each{newRelatedObject->
+                                    RelationUtils.removeExistingRelations(newRelatedObject, relation.otherSideName, relation.name);
+                                }
                             }
 
 
                         }
-                        value.each{newRelatedObject->
-                            domainObjectRelations.relatedObjectIds.put(Relation.getRelKey(newRelatedObject.id), newRelatedObject.id);
-                        }
-                        domainObjectRelations.reindex();
+                        RelationUtils.addRelatedObjects(domainObject, relation, value);
+
                     }
                 }
             }

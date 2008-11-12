@@ -1,17 +1,12 @@
 package com.ifountain.rcmdb.domain.generation
 
-import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
-import org.codehaus.groovy.grails.commons.GrailsClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import model.ModelAction
-import com.ifountain.rcmdb.util.ModelUtils
-import model.PropertyAction
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 import com.ifountain.rcmdb.domain.property.RelationUtils
-import relation.Relation
-import org.compass.core.Resource
+import com.ifountain.rcmdb.util.ModelUtils
+import model.ModelAction
+import model.PropertyAction
+import org.codehaus.groovy.grails.commons.*
 import org.compass.core.CompassHit
+import org.compass.core.Resource
 
 /**
  * Created by IntelliJ IDEA.
@@ -147,12 +142,7 @@ class DataCorrectionUtilities
                                 if (action.action == PropertyAction.CLEAR_RELATION)
                                 {
                                     def id = res.getObject("id");
-                                    def reverseRels = RelationUtils.getReverseRelationObjectsById(id, action.reverseName, action.propTypeName)
-                                    def selfRels = Relation.search("objectId:${id} AND name:${action.propName}").results;
-                                    def allRels = []
-                                    allRels.addAll (selfRels);
-                                    allRels.addAll (reverseRels);
-                                    allRels*.remove();
+                                    RelationUtils.removeExistingRelationsById(id, action.propName, action.reverseName)
                                 }
                                 else if (action.action == PropertyAction.SET_DEFAULT_VALUE)
                                 {

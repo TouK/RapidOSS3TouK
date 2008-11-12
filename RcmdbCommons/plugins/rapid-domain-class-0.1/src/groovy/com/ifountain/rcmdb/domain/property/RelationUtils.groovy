@@ -1,7 +1,10 @@
 package com.ifountain.rcmdb.domain.property
 
-import relation.Relation
 import com.ifountain.rcmdb.domain.method.CompassMethodInvoker
+import com.ifountain.rcmdb.domain.util.RelationMetaData
+import org.compass.core.CompassHit
+import org.compass.core.CompassSession
+import relation.Relation
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,49 +15,89 @@ import com.ifountain.rcmdb.domain.method.CompassMethodInvoker
  */
 class RelationUtils
 {
-    def static getReverseRelationObjectsById(id, otherSideName, otherSideClass, notRemovedRelations = null)
+    public static final String NULL_RELATION_NAME = "-"
+    public static void addRelatedObjects(object, RelationMetaData relation, Collection relatedObjects)
     {
-        def query = new StringBuffer();
-        if(notRemovedRelations)
-        {
-            query.append("(")
-            notRemovedRelations.each{relatedObject->
-                query.append("objectId:").append(relatedObject.id).append(" OR ")
+        def otherSideName = relation.otherSideName == null?NULL_RELATION_NAME:relation.otherSideName;
+        def relationName = relation.name == null?NULL_RELATION_NAME:relation.name;
+        relatedObjects.each{
+            Relation.add(objectId:object.id, reverseObjectId:it.id, name:relationName, reverseName:otherSideName);
+        }
+    }
+    public static void removeRelations(object, RelationMetaData relation, Collection relatedObjects)
+    {
+        if(relatedObjects.isEmpty()) return;
+        def otherSideName = relation.otherSideName == null?NULL_RELATION_NAME:relation.otherSideName;
+        def relationName = relation.name == null?NULL_RELATION_NAME:relation.name;
+        StringBuffer bf = new StringBuffer("(objectId:").append(object.id).append(" AND ").append("name:\"").append(relationName).append("\" AND ");
+        bf.append("reverseName:\"").append(otherSideName).append("\"");
+        bf.append(" AND ").append("(")
+        relatedObjects.each{
+            bf.append("reverseObjectId:").append(it.id).append(" OR ")
+        }
+        bf.delete(bf.length()-3, bf.length());
+        bf.append(")) OR (")
+        bf.append("reverseObjectId:").append(object.id).append(" AND ").append("reverseName:\"").append(relationName).append("\" AND ");
+        bf.append("name:\"").append(otherSideName).append("\"");
+        bf.append(" AND ").append("(")
+        relatedObjects.each{
+            bf.append("objectId:").append(it.id).append(" OR ")
+        }
+        bf.delete(bf.length()-3, bf.length());
+        bf.append("))");
+        Relation.searchEvery(bf.toString(), [raw:{hits, CompassSession session->
+            hits.each{CompassHit hit->
+                session.delete (hit.getResource());
             }
-            query = query.substring(0, query.length()-4)+") AND "
-        }
-        if(otherSideClass instanceof Class)
-        {
-            return Relation.searchEvery("${query} name:${otherSideName} AND className:${otherSideClass.name} ${Relation.getRelKey(id)}:${id}");
-        }
-        else
-        {
-            return Relation.searchEvery("${query} name:${otherSideName} AND className:${otherSideClass} ${Relation.getRelKey(id)}:${id}");
-        }
+        }]);
+
+
     }
-    def static getReverseRelationObjects(domainObject, otherSideName, otherSideClass, notRemovedRelations = null)
+    public static void removeExistingRelations(object, String relationName, String otherSideName)
     {
-        return getReverseRelationObjectsById(domainObject.id, otherSideName, otherSideClass, notRemovedRelations);   
+        removeExistingRelationsById(object.id, relationName, otherSideName);
     }
+    public static void removeExistingRelationsById(objectId)
+    {
+        def query = "objectId:${objectId} OR reverseObjectId:${objectId}";  
+        Relation.searchEvery(query, [raw:{hits, CompassSession session->
+            hits.each{CompassHit hit->
+                session.delete (hit.getResource());
+            }
+        }]);
+    }
+    public static void removeExistingRelationsById(objectId, String relationName, String otherSideName)
+    {
+        otherSideName = otherSideName == null?NULL_RELATION_NAME:otherSideName;
+        relationName = relationName == null?NULL_RELATION_NAME:relationName;
+        def allRelatedObjectIds = [:];
 
-
+        def query = "(objectId:${objectId} AND name:\"${relationName}\" AND reverseName:\"${otherSideName}\") OR (reverseObjectId:${objectId} AND reverseName:\"${relationName}\" AND name:\"${otherSideName}\")";
+        Relation.searchEvery(query, [raw:{hits, CompassSession session->
+            hits.each{CompassHit hit->
+                session.delete (hit.getResource());                
+            }
+        }]);
+    }
+    public static Map getRelatedObjectsIds(object, String relationName, String otherSideName)
+    {
+        otherSideName = otherSideName == null?NULL_RELATION_NAME:otherSideName;
+        relationName = relationName == null?NULL_RELATION_NAME:relationName;
+        def allRelatedObjectIds = [:];
+        def query = "objectId:${object.id} AND name:\"${relationName}\" AND reverseName:\"${otherSideName}\"";
+        allRelatedObjectIds.putAll(Relation.propertySummary(query, "reverseObjectId").reverseObjectId);
+        query = "reverseObjectId:${object.id} AND reverseName:\"${relationName}\" AND name:\"${otherSideName}\"";
+        allRelatedObjectIds.putAll(Relation.propertySummary(query, "objectId").objectId);
+        return allRelatedObjectIds;
+    }
     public static Object getRelatedObjects(object, com.ifountain.rcmdb.domain.util.RelationMetaData relationMetaData)
     {
-        Relation domainObjectRelations = Relation.get(objectId:object.id, name:relationMetaData.name);
-        def reverseRelationObjects = getReverseRelationObjects(object, relationMetaData.otherSideName, relationMetaData.otherSideCls)
-        def allRelatedObjectsIds = [:];
-        if(domainObjectRelations)
-        {
-            allRelatedObjectsIds.putAll (domainObjectRelations.relatedObjectIds);
-        }
-        reverseRelationObjects.each{
-            allRelatedObjectsIds[Relation.getRelKey(it.objectId)] = it.objectId;            
-        }
+        def allRealtedObjectIds = getRelatedObjectsIds(object, relationMetaData.name, relationMetaData.otherSideName);
         if(relationMetaData.isOneToOne() || relationMetaData.isManyToOne())
         {
-            if(!allRelatedObjectsIds.isEmpty())
+            if(!allRealtedObjectIds.isEmpty())
             {
-                    return CompassMethodInvoker.search(relationMetaData.otherSideCls.metaClass, "id:${allRelatedObjectsIds.values().iterator().next()}").results[0];
+                    return CompassMethodInvoker.search(relationMetaData.otherSideCls.metaClass, "id:${allRealtedObjectIds.keySet().iterator().next()}").results[0];
             }
             else
             {
@@ -63,14 +106,14 @@ class RelationUtils
         }
         else
         {
-            if(allRelatedObjectsIds.isEmpty())
+            if(allRealtedObjectIds.isEmpty())
             {
                 return [];
             }
             else
             {
                 StringBuffer query = new StringBuffer();
-                allRelatedObjectsIds.each{relKey,  id->
+                allRealtedObjectIds.each{id, numberOfIds->
                     query.append("id:").append(id).append(" OR ")
                 }
                 return CompassMethodInvoker.searchEvery(relationMetaData.otherSideCls.metaClass, query.substring(0, query.length()-4));

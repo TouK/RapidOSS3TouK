@@ -1,10 +1,7 @@
 package com.ifountain.rcmdb.domain.method
 
-import com.ifountain.rcmdb.domain.util.RelationMetaData
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import org.springframework.validation.BeanPropertyBindingResult
-import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import org.springframework.validation.BeanPropertyBindingResult
 import relation.Relation
 
 /**
@@ -87,10 +84,7 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
         assertFalse (relatedObj3.revRel3.contains(objectToBeRemoved));
         assertNull (objectToBeRemoved.rel1);
         assertTrue (objectToBeRemoved.rel2.isEmpty());
-        assertNull(Relation.get(objectId:objectToBeRemoved.id, name:"rel1"));
-        assertNull(Relation.get(objectId:objectToBeRemoved.id, name:"rel2"));
-        assertNull(Relation.get(objectId:objectToBeRemoved.id, name:"rel3"));
-        assertNull(Relation.get(objectId:objectToBeRemoved.id, name:"rel4"));
+        assertEquals(0, Relation.search("objectId:${objectToBeRemoved.id} OR reverseObjectId:${objectToBeRemoved.id}").total);
     }
     
 }

@@ -1,12 +1,9 @@
 package performance.writeOperations
 
-import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.domain.method.AddMethodDomainObject1
-import com.ifountain.compass.CompassTestObject
+import com.ifountain.compass.CompositeDirectoryWrapperProvider
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
-import org.apache.commons.io.FileUtils
-import com.ifountain.compass.CompositeDirectoryWrapperProvider
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,20 +34,7 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
 
     private void _testAddOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
     {
-        def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
-        String propValue = "ThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValue"
-        def modelMetaProps = [name:"Model1", storageType:storageType]
-        def modelProps = [keyProp];
-        for(int i=0; i < 50; i++)
-        {
-            def prop = [name:"prop"+i, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:propValue]
-            modelProps.add(prop);
-
-        }
-        def keyPropList = [keyProp];
-        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
-        Class modelClass = this.gcl.parseClass(modelString);
-        initialize([modelClass],[], true);
+        Class modelClass = intializeCompassWithSimpleObjects(storageType);
         long t = System.nanoTime();
         for(int i=0; i < numberOfObjectsToBeInserted; i++)
         {
@@ -65,20 +49,7 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
 
     private void _testUpdateOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
     {
-        def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
-        String propValue = "ThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValue"
-        def modelMetaProps = [name:"Model1", storageType:storageType]
-        def modelProps = [keyProp];
-        for(int i=0; i < 50; i++)
-        {
-            def prop = [name:"prop"+i, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:propValue]
-            modelProps.add(prop);
-
-        }
-        def keyPropList = [keyProp];
-        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
-        Class modelClass = this.gcl.parseClass(modelString);
-        initialize([modelClass],[], true);
+        Class modelClass = intializeCompassWithSimpleObjects(storageType);
 
         for(int i=0; i < numberOfObjectsToBeInserted; i++)
         {
@@ -97,6 +68,75 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         assertTrue ("Number of updated objects ${numberOfObjectsInsertedPerSecond} should be greater than ${expectedNumberOfObjectsToBeInsertedPersecond}", numberOfObjectsInsertedPerSecond > expectedNumberOfObjectsToBeInsertedPersecond);
     }
 
+    private void _testRemoveOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
+    {
+
+        Class modelClass = intializeCompassWithSimpleObjects(storageType);
+        def modelIntances = [];
+        for(int i=0; i < numberOfObjectsToBeInserted; i++)
+        {
+            modelIntances.add(modelClass.'add'(keyProp:"keyPropValue"+i));
+        }
+        assertEquals(numberOfObjectsToBeInserted, modelClass.'search'("alias:*").total);
+
+        long t = System.nanoTime();
+        modelIntances*.remove();
+        long totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+
+        def numberOfObjectsInsertedPerSecond = numberOfObjectsToBeInserted;
+        if(totalTime > 0)
+        {
+            numberOfObjectsInsertedPerSecond = numberOfObjectsToBeInserted/totalTime;
+        }
+        println "Number of objects deleted per second:"+numberOfObjectsInsertedPerSecond
+        assertEquals(0, modelClass.'search'("alias:*").total);
+        assertTrue ("Number of deleted objects ${numberOfObjectsInsertedPerSecond} should be greater than ${expectedNumberOfObjectsToBeInsertedPersecond}", numberOfObjectsInsertedPerSecond > expectedNumberOfObjectsToBeInsertedPersecond);
+    }
+
+
+
+    def intializeCompassWithSimpleObjects(String storageType)
+    {
+        def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
+        String propValue = "ThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValue"
+        def modelMetaProps = [name:"Model1", storageType:storageType]
+        def modelProps = [keyProp];
+        for(int i=0; i < 50; i++)
+        {
+            def prop = [name:"prop"+i, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:propValue]
+            modelProps.add(prop);
+
+        }
+        def keyPropList = [keyProp];
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
+        Class modelClass = this.gcl.parseClass(modelString);
+        initialize([modelClass],[], true);
+        return modelClass;
+    }
+
+    def intializeCompassWithObjectsHavingRelations(String storageType)
+    {
+        def modelName1 = "Model1";
+        def modelName2 = "Model2";
+        def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:modelName2, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName1, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+
+        String propValue = "ThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValue"
+        def model1MetaProps = [name:modelName1, storageType:storageType]
+        def model2MetaProps = [name:modelName2, storageType:storageType]
+        def modelProps = [keyProp];
+
+        def keyPropList = [keyProp];
+        String model1String = ModelGenerationTestUtils.getModelText(model1MetaProps, modelProps, keyPropList, [rel1])
+        String model2String = ModelGenerationTestUtils.getModelText(model2MetaProps, modelProps, keyPropList, [revrel1])
+        this.gcl.parseClass(model1String+model2String);
+        Class model1Class = this.gcl.loadClass(modelName1);
+        Class model2Class = this.gcl.loadClass(modelName2);
+        initialize([model1Class, model2Class],[], true);
+        return [model1Class, model2Class];
+    }
+
     public void testAddWithUpdateOperationPerformanceWithFileStorageType()
     {
         _testUpdateOperationPerformance(CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, 100, 10);
@@ -105,5 +145,117 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
     public void testAddWithUpdateOperationPerformanceWithFileAndMemoryStorageType()
     {
         _testUpdateOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 30);
+    }
+
+    public void testRemoveOperationPerformanceWithFileStorageType()
+    {
+        _testRemoveOperationPerformance(CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, 100, 90);
+    }
+
+    public void testRemoveOperationPerformanceWithFileAndMemoryStorageType()
+    {
+        _testRemoveOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 90);
+    }
+
+    public void testAddRemoveRelationOperationPerformanceWithAddingRelationToSingleInstance()
+    {
+        def numberOfRelationsToBeInserted = 100;
+        def expectedNumberOfRelationsToBeInsertedPersecond = 95;
+        def expectedNumberOfRelationsToBeRemovedPersecond = 95;
+        def modelClasses = intializeCompassWithObjectsHavingRelations(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE);
+        def relatedModelInstances = [];
+        def singleModelInstance = modelClasses[0].'add'(keyProp:"keyPropValue0")
+        for(int i=0; i < numberOfRelationsToBeInserted; i++)
+        {
+            relatedModelInstances.add(modelClasses[1].'add'(keyProp:"keyPropValue"+i));
+        }
+        assertEquals(1, modelClasses[0].'search'("alias:*").total);
+        assertEquals(numberOfRelationsToBeInserted, modelClasses[1].'search'("alias:*").total);
+
+        long t = System.nanoTime();
+        singleModelInstance.addRelation(rel1:relatedModelInstances);
+        long totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+
+        def numberOfRelationsInsertedPerSecond = numberOfRelationsToBeInserted;
+        if(totalTime > 0)
+        {
+            numberOfRelationsInsertedPerSecond = numberOfRelationsToBeInserted/totalTime;
+        }
+        println "Number of relation inserted to one object per second:"+numberOfRelationsInsertedPerSecond
+        assertEquals(numberOfRelationsToBeInserted, singleModelInstance.rel1.size());
+        assertTrue ("Number of added relations ${numberOfRelationsInsertedPerSecond} should be greater than ${expectedNumberOfRelationsToBeInsertedPersecond}", numberOfRelationsInsertedPerSecond > expectedNumberOfRelationsToBeInsertedPersecond);
+
+
+        t = System.nanoTime();
+        singleModelInstance.removeRelation(rel1:relatedModelInstances);
+        totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+
+        def numberOfDeletedRelationsPerSecond = numberOfRelationsToBeInserted;
+        if(totalTime > 0)
+        {
+            numberOfDeletedRelationsPerSecond = numberOfRelationsToBeInserted/totalTime;
+        }
+        println "Number of deleted relations from one object per second:"+numberOfDeletedRelationsPerSecond
+        assertEquals(0, singleModelInstance.rel1.size());
+        assertTrue ("Number of deleted relations ${numberOfRelationsInsertedPerSecond} should be greater than ${expectedNumberOfRelationsToBeRemovedPersecond}", numberOfDeletedRelationsPerSecond > expectedNumberOfRelationsToBeRemovedPersecond);
+
+    }
+
+    public void testAddRemoveRelationOperationPerformanceWithAddingRelationToMultipleInstance()
+    {
+        def numberOfRelationsToBeInserted = 100;
+        def expectedNumberOfRelationsToBeInsertedPersecond = 10;
+        def expectedNumberOfRelationsToBeRemovedPersecond = 10;
+        def modelClasses = intializeCompassWithObjectsHavingRelations(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE);
+        def relatedModelInstancesGroup1 = [];
+        def relatedModelInstancesGroup2 = [];
+        for(int i=0; i < numberOfRelationsToBeInserted; i++)
+        {
+            relatedModelInstancesGroup1.add(modelClasses[0].'add'(keyProp:"keyPropValue"+i));
+            relatedModelInstancesGroup2.add(modelClasses[1].'add'(keyProp:"keyPropValue"+i));
+        }
+        assertEquals(numberOfRelationsToBeInserted, modelClasses[0].'search'("alias:*").total);
+        assertEquals(numberOfRelationsToBeInserted, modelClasses[1].'search'("alias:*").total);
+
+        long t = System.nanoTime();
+        for(int i=0; i < numberOfRelationsToBeInserted; i++)
+        {
+            relatedModelInstancesGroup1[i].addRelation(rel1:relatedModelInstancesGroup2[i]);
+        }
+        long totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+
+        def numberOfRelationsInsertedPerSecond = numberOfRelationsToBeInserted;
+        if(totalTime > 0)
+        {
+            numberOfRelationsInsertedPerSecond = numberOfRelationsToBeInserted/totalTime;
+        }
+        println "Number of inserted relations to one object per second:"+numberOfRelationsInsertedPerSecond
+        for(int i=0; i < numberOfRelationsToBeInserted; i++)
+        {
+            def group1Obj = modelClasses[0].'get'(keyProp:"keyPropValue"+i)
+            assertEquals(relatedModelInstancesGroup2[i].id, group1Obj.rel1[0].id);
+        }
+        assertTrue ("Number of inserted relations ${numberOfRelationsInsertedPerSecond} should be greater than ${expectedNumberOfRelationsToBeInsertedPersecond}", numberOfRelationsInsertedPerSecond > expectedNumberOfRelationsToBeInsertedPersecond);
+
+
+        t = System.nanoTime();
+        for(int i=0; i < numberOfRelationsToBeInserted; i++)
+        {
+            relatedModelInstancesGroup1[i].removeRelation(rel1:relatedModelInstancesGroup2[i]);
+        }
+        totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+
+        def numberOfRelationsDeletedPerSecond = numberOfRelationsToBeInserted;
+        if(totalTime > 0)
+        {
+            numberOfRelationsDeletedPerSecond = numberOfRelationsToBeInserted/totalTime;
+        }
+        println "Number of deleted relations to one object per second:"+numberOfRelationsDeletedPerSecond
+        for(int i=0; i < numberOfRelationsToBeInserted; i++)
+        {
+            def group1Obj = modelClasses[0].'get'(keyProp:"keyPropValue"+i)
+            assertEquals(0, group1Obj.rel1.size());
+        }
+        assertTrue ("Number of deleted relations ${numberOfRelationsDeletedPerSecond} should be greater than ${expectedNumberOfRelationsToBeRemovedPersecond}", numberOfRelationsDeletedPerSecond > expectedNumberOfRelationsToBeRemovedPersecond);
     }
 }

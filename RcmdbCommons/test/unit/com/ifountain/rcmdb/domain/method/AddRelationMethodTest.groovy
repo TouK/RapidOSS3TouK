@@ -2,6 +2,9 @@ package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.compass.CompositeDirectoryWrapperProvider
 
 /**
 * Created by IntelliJ IDEA.
@@ -191,6 +194,35 @@ class AddRelationMethodTest extends RapidCmdbWithCompassTestCase{
         assertTrue(relatedDomainObject1.noOtherSideRel4.contains(relatedDomainObject5));
     }
 
+    public void testAddRelationDefinedInChildObjects()
+    {
+        def parentModelName = "ParentModel";
+        def childModelName = "ChildModel";
+        def relatedModelName = "RelatedModel";
+        def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:childModelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+
+        def parentModelMetaProps = [name:parentModelName]
+        def childModelMetaProps = [name:childModelName, parentModel:parentModelName]
+        def relatedModelMetaProps = [name:relatedModelName]
+        def modelProps = [keyProp];
+        def keyPropList = [keyProp];
+        String parentModelString = ModelGenerationTestUtils.getModelText(parentModelMetaProps, modelProps, keyPropList, [])
+        String childModelString = ModelGenerationTestUtils.getModelText(childModelMetaProps, [], [], [rel1])
+        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, modelProps, keyPropList, [revrel1])
+        this.gcl.parseClass(parentModelString+childModelString+relatedModelString);
+        Class parentModelClass = this.gcl.loadClass(parentModelName);
+        Class childModelClass = this.gcl.loadClass(childModelName);
+        Class relatedModelClass = this.gcl.loadClass(relatedModelName);
+        initialize([parentModelClass,childModelClass, relatedModelClass], [])
+        def childObj = childModelClass.'add'(keyProp:"child1");
+        def relatedObj = relatedModelClass.'add'(keyProp:"relatedObj1");
+        childObj.addRelation(rel1:relatedObj);
+        assertFalse (childObj.hasErrors());
+        assertEquals (relatedObj.id, childObj.rel1[0].id);
+    }
+
 }
 
 class RelationMethodDomainObject3 extends RelationMethodDomainObject2{
@@ -206,6 +238,7 @@ class RelationMethodDomainObject3 extends RelationMethodDomainObject2{
 
     //AUTO_GENERATED_CODE
 }
+
 
 class RelationMethodDomainObject4{
      static searchable = {

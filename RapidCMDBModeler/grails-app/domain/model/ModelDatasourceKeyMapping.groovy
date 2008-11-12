@@ -23,6 +23,6 @@ class ModelDatasourceKeyMapping {
     }
 
     String toString(){
-        return property.name;
+        return getProperty("property").name;
     }
 }

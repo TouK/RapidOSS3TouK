@@ -36,6 +36,7 @@ class Env {
     static def rapid_ext = "$rapid_modules/ext"
     static def rapid_ext_build = basedir+"/build/ext"
 
+    static def rapid_insight = "$rapid_modules/RapidInsight"
     static def rapid_netcool = "$rapid_modules/Netcool"
     static def rapid_smarts = "$rapid_modules/Smarts"
     static def rapid_hyperic = "$rapid_modules/Hyperic"

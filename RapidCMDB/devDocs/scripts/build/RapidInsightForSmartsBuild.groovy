@@ -32,7 +32,7 @@ package build
 class RapidInsightForSmartsBuild extends Build{
 	def version = "$env.rapid_smarts/RI4SVersion.txt";
 	def versionInBuild = "$env.dist_rapid_suite/RI4SVersion.txt";
-	def rapidCMDBBuild = new RapidCmdbBuild();
+	def riBuild = new RapidInsightBuild();
 
     static void main(String[] args) {
         RapidInsightForSmartsBuild rapidInsightForSmartsBuilder = new RapidInsightForSmartsBuild();
@@ -66,27 +66,18 @@ class RapidInsightForSmartsBuild extends Build{
     }
 
     def buildWindows(){
-    	rapidCMDBBuild.buildWindowsWithPlugins();
+    	riBuild.createDirectories();
     	buildPerOS("Windows");
     }
 
     def buildUnix(){
-    	rapidCMDBBuild.buildUnixWithPlugins();
+    	riBuild.createDirectories();
     	buildPerOS("Unix");
     }
 
     def buildPerOS(osType) {
-        ant.delete(dir:env.dist_rapid_server);
-
-        def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB");
-        ant.unzip(src: rapidCmdb.absolutePath, dest: env.distribution);
-        ant.delete(dir:env.dist_modeler);
-
         def smartsPlugin = listFiles(new File(env.distribution), "grails-smarts");
         installPlugin(smartsPlugin, env.dist_rapid_suite, [Ant:ant], ["smarts_applications":"1"]);
-
-        def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
-        installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant:ant], [:]);
 
         ant.copy(file : version, tofile : versionInBuild );
         setVersionAndBuildNumber(versionInBuild);
@@ -109,11 +100,12 @@ class RapidInsightForSmartsBuild extends Build{
 			}
 		}	
         ant.move(file : "${env.dist_rapid_suite}/web-app/indexLayout.gsp", todir : "${env.dist_rapid_suite}/grails-app/views/layouts" );
-        def datasourceViews = ["httpConnection", "httpDatasource","databaseConnection","ldapConnection", "databaseDatasource",
-                "singleTableDatabaseDatasource", "snmpConnection", "snmpDatasource"]
+        def adminViews = ["httpConnection", "httpDatasource","databaseConnection","ldapConnection", "databaseDatasource",
+                "singleTableDatabaseDatasource", "snmpConnection", "snmpDatasource", "script", "rsUser", "group", "smartsConnector", "smartsConnection",
+        "smartsConnectionTemplate", "smartsNotificationDatasource", "smartsTopologyDatasource", "smartsNotificationConnector", "smartsTopologyConnector"]
 
-        datasourceViews.each{
-            ant.copy(file : "${env.dist_rapid_suite}/grails-app/views/layouts/datasourceLayout.gsp", toFile : "${env.dist_rapid_suite}/grails-app/views/layouts/${it}.gsp", overwrite:true );
+        adminViews.each{
+            ant.copy(file : "${env.dist_rapid_suite}/grails-app/views/layouts/adminLayout.gsp", toFile : "${env.dist_rapid_suite}/grails-app/views/layouts/${it}.gsp", overwrite:true );
         }
 
 

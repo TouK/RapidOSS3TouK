@@ -84,7 +84,7 @@
     <link rel="stylesheet" type="text/css" href="css/rapidjs/tools/tools.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/treegrid/treegrid.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/autocomplete/autocomplete.css"/>
-    <link rel="stylesheet" type="text/css" href="smartsindex.css"/>
+    <link rel="stylesheet" type="text/css" href="riindex.css"/>
 
     <jsec:isNotLoggedIn>
         <g:javascript>window.location='auth/login?targetUri=/index.gsp'</g:javascript>

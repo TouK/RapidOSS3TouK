@@ -11,23 +11,6 @@
      <meta name="layout" content="indexLayout"/>
 </head>
 <body>
-<div id="top" style="background-color:#BBD4F6;">
-    <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
-        <td width="0%" style="padding-left:10px;padding-top:5px;">
-            <img src="images/RapidInsight-blue.png">
-        </td>
-        <td width="100%"></td>
-        <td id="serverDownEl" width="0%" style="display:none">
-            <img src="images/network-offline.png"/>
-        </td>
-        <td width="0%">
-           <div style="vertical-align:bottom">
-               <span id="rsUser" style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;cursor:pointer">${session.username}</span>
-               <a href="auth/logout" style="font-size:13px;font-weight:bold;color:#083772;text-align:right;text-decoration:none">Logout</a>
-           </div>
-        </td>
-    </tr></tbody></table>
-</div>
 <rui:form id="filterDialog" width="35em" createUrl="script/run/createQuery?queryType=event" editUrl="script/run/editQuery?queryType=event"
         saveUrl="searchQuery/save?format=xml&type=event" updateUrl="searchQuery/update?format=xml&type=event" onSuccess="refreshQueriesAction">
     <div>

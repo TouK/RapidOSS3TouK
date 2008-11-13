@@ -11,7 +11,7 @@ Brief description of the plugin.
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/Netcool+Plugin"
+    def documentation = "http://grails.org/RapidInsight+Plugin"
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)

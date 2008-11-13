@@ -1,3 +1,3 @@
 class SmartsStartupScripts{
-    def static scripts = ["createDefaults"];
+    def static scripts = ["createSmartsDefaults"];
 }

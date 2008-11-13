@@ -1,0 +1,255 @@
+<Rsmodel>
+    <Models>
+        <Model Name="RsTopologyObject">
+            <Properties>
+                <Property Name='name' Type='string' IsKey='true'/>
+                <Property Name='creationClassName' Type='string'/>
+                <Property Name='description' Type='string'/>
+                <Property Name='displayName' Type='string'/>
+                <Property Name='isManaged' Type='boolean'/>
+                <Property Name='rsDatasource' Type='string'/>
+            </Properties>
+        </Model>
+
+	  	<Model Name="RsHistoricalEvent">
+      		<Properties>
+          		<Property Name='name' Type='string'/>
+          		<Property Name='active' Type='boolean' Default="true" />
+                <Property Name='source' Type='string' />
+                <Property Name='owner' Type='string' />
+                <Property Name='acknowledged' Type='boolean' Default="false" />
+                <Property Name='severity' Type='number' Default="0"/>
+                <Property Name='rsDatasource' Type='string'/>
+                <Property Name='firstNotifiedAt' Type='number' />
+                <Property Name='lastNotifiedAt' Type='number' />
+                <Property Name='lastChangedAt' Type='number' />
+                <Property Name='lastClearedAt' Type='number' />
+         	</Properties>
+  		</Model>
+
+  		<Model Name="RsEventJournal">
+            <Properties>
+                <Property Name='eventId' Type='string' />
+    			<Property Name='rsTime' Type='date' />
+    			<Property Name='eventName' Type='string' />
+    			<Property Name='details' Type='string' />
+            </Properties>
+        </Model>
+
+   		<Model Name="RsEvent" StorageType="FileAndMemory">
+      		<Properties>
+       			<Property Name='name' Type='string' IsKey="true"/>
+          		<Property Name='active' Type='boolean' Default="true" />
+                <Property Name='owner' Type='string' />
+                <Property Name='acknowledged' Type='boolean' Default="false" />
+                <Property Name='severity' Type='number' Default="0"/>
+                <Property Name='source' Type='string' />
+                <Property Name='firstNotifiedAt' Type='number' />
+                <Property Name='lastNotifiedAt' Type='number' />
+                <Property Name='lastChangedAt' Type='number' />
+                <Property Name='lastClearedAt' Type='number' />
+                <Property Name='rsDatasource' Type='string'/>
+                <Property Name='willExpireAt' Type='number' />
+                <Property Name='visibility' Type='number' />
+             </Properties>
+  		</Model>
+  		<Model Name="RsRiEvent" Parent="RsEvent" StorageType="FileAndMemory">
+      		<Properties>
+                <Property Name='count' Type='number' Default="1" />
+          		<Property Name='eventName' Type='string'/>
+          		<Property Name='node' Type='string'/>
+         	</Properties>
+  		</Model>
+        <Model Name="RsRiHistoricalEvent" Parent="RsHistoricalEvent">
+      		<Properties>
+                <Property Name='count' Type='number' Default="1" />
+          		<Property Name='eventName' Type='string'/>
+         	</Properties>
+  		</Model>
+
+       
+        <Model Name="RsManagementServer">
+            <Properties>
+                <Property Name="name" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsComputerSystem" Parent="RsTopologyObject">
+            <Properties>
+                <Property Name="accessMode" Type="string"/>
+                <Property Name="discoveredFirstAt" Type="string"/>
+                <Property Name="discoveredLastAt" Type="string"/>
+                <Property Name="discoveryErrorInfo" Type="string"/>
+                <Property Name="discoveryTime" Type="string"/>
+                <Property Name="location" Type="string"/>
+                <Property Name="geocodes" Type="string"/>
+                <Property Name="model" Type="string"/>
+                <Property Name="numberOfIPs" Type="number"/>
+                <Property Name="numberOfIPv6s" Type="number"/>
+                <Property Name="numberOfInterfaces" Type="number"/>
+                <Property Name="numberOfNetworkAdapters" Type="number"/>
+                <Property Name="numberOfPorts" Type="number"/>
+                <Property Name="osVersion" Type="string"/>
+                <Property Name="primaryOwnerContact" Type="string"/>
+                <Property Name="primaryOwnerName" Type="string"/>
+                <Property Name="readCommunity" Type="string"/>
+                <Property Name="snmpAddress" Type="string"/>
+                <Property Name="supportsSNMP" Type="boolean"/>
+                <Property Name="systemName" Type="string"/>
+                <Property Name="systemObjectID" Type="string"/>
+                <Property Name="vendor" Type="string"/>
+                <Property Name="managementServer" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsComputerSystemComponent" Parent="RsTopologyObject">
+            <Properties>
+                <Property Name="computerSystemName" Type="string"/>
+                <Property Name="tag" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsCard" Parent="RsComputerSystemComponent">
+            <Properties>
+                <Property Name="serialNumber" Type="string"/>
+                <Property Name="standbyStatus" Type="string"/>
+                <Property Name="status" Type="string"/>
+                <Property Name="type" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsIp" Parent="RsComputerSystemComponent">
+            <Properties>
+                <Property Name="address" Type="string"/>
+                <Property Name="creationClassName" Type="string"/>
+                <Property Name="description" Type="string"/>
+                <Property Name="ipStatus" Type="string"/>
+                <Property Name="interfaceAdminStatus" Type="string"/>
+                <Property Name="interfaceMode" Type="string"/>
+                <Property Name="interfaceName" Type="string"/>
+                <Property Name="interfaceOperStatus" Type="string"/>
+                <Property Name="interfaceType" Type="string"/>
+                <Property Name="netmask" Type="string"/>
+                <Property Name="networkNumber" Type="string"/>
+                <Property Name="responsive" Type="boolean"/>
+                <Property Name="status" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsNetworkAdapter" Parent="RsComputerSystemComponent">
+            <Properties>
+                <Property Name="adminStatus" Type="string"/>
+                <Property Name="deviceID" Type="string"/>
+                <Property Name="displayClassName" Type="string"/>
+                <Property Name="displayName" Type="string"/>
+                <Property Name="duplexMode" Type="string"/>
+                <Property Name="duplexSource" Type="string"/>
+                <Property Name="interfaceAlias" Type="string"/>
+                <Property Name="interfaceCode" Type="string"/>
+                <Property Name="interfaceNumber" Type="number"/>
+                <Property Name="isConnector" Type="boolean"/>
+                <Property Name="isFlapping" Type="boolean"/>
+                <Property Name="isNetworkAdapterNotOperating" Type="boolean"/>
+                <Property Name="lastChangedAt" Type="string"/>
+                <Property Name="maxSpeed" Type="number"/>
+                <Property Name="maxTransferUnit" Type="number"/>
+                <Property Name="maximumUptime" Type="number"/>
+                <Property Name="mib2IfType" Type="number"/>
+                <Property Name="mode" Type="string"/>
+                <Property Name="operStatus" Type="string"/>
+                <Property Name="peerSystemName" Type="string"/>
+                <Property Name="peerSystemType" Type="string"/>
+                <Property Name="status" Type="string"/>
+                <Property Name="systemModel" Type="string"/>
+                <Property Name="systemName" Type="string"/>
+                <Property Name="systemObjectID" Type="string"/>
+                <Property Name="systemType" Type="string"/>
+                <Property Name="systemVendor" Type="string"/>
+                <Property Name="type" Type="string"/>
+                <Property Name="cardName" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsInterface" Parent="RsNetworkAdapter">
+            <Properties>
+                <Property Name="interfaceKey" Type="string"/>
+                <Property Name="hasIPAddresses" Type="boolean"/>
+                <Property Name="hasIPv6Addresses" Type="boolean"/>
+            </Properties>
+        </Model>
+        <Model Name="RsPort" Parent="RsNetworkAdapter">
+            <Properties>
+                <Property Name="designatedBridge" Type="string"/>
+                <Property Name="designatedPort" Type="number"/>
+                <Property Name="isConnectedToManagedSystem" Type="boolean"/>
+                <Property Name="isConnectedToSystem" Type="boolean"/>
+                <Property Name="managedState" Type="string"/>
+                <Property Name="portKey" Type="string"/>
+                <Property Name="portNumber" Type="number"/>
+                <Property Name="portType" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsLink" Parent="RsTopologyObject">
+            <Properties>
+                <Property Name="a_ComputerSystemName" Type="string"/>
+                <Property Name="a_Name" Type="string"/>
+                <Property Name="a_AdminStatus" Type="string"/>
+                <Property Name="a_DisplayName" Type="string"/>
+                <Property Name="a_DuplexMode" Type="string"/>
+                <Property Name="a_IsFlapping" Type="boolean"/>
+                <Property Name="a_MaxSpeed" Type="number"/>
+                <Property Name="a_Mode" Type="string"/>
+                <Property Name="a_OperStatus" Type="string"/>
+                <Property Name="connectedSystemsUnresponsive" Type="boolean"/>
+                <Property Name="z_ComputerSystemName" Type="string"/>
+                <Property Name="z_Name" Type="string"/>
+                <Property Name="z_AdminStatus" Type="string"/>
+                <Property Name="z_DisplayName" Type="string"/>
+                <Property Name="z_DuplexMode" Type="string"/>
+                <Property Name="z_IsFlapping" Type="boolean"/>
+                <Property Name="z_MaxSpeed" Type="number"/>
+                <Property Name="z_Mode" Type="string"/>
+                <Property Name="z_OperStatus" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsGroup" Parent="RsTopologyObject">
+            <Properties>
+            </Properties>
+        </Model>
+        <Model Name="RsIpNetwork" Parent="RsGroup">
+            <Properties>
+                <Property Name="netmask" Type="string"/>
+                <Property Name="networkNumber" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsVlan" Parent="RsTopologyObject">
+            <Properties>
+                <Property Name="vlanKey" Type="string"/>
+                <Property Name="vlanNumber" Type="number"/>
+            </Properties>
+        </Model>
+        <Model Name="RsHsrpGroup" Parent="RsTopologyObject">
+            <Properties>
+                <Property Name="activeInterfaceName" Type="string"/>
+                <Property Name="activeSystemName" Type="string"/>
+                <Property Name="atRiskThreshold" Type="number"/>
+                <Property Name="groupNumber" Type="string"/>
+                <Property Name="hsrpEpStateChanged" Type="boolean"/>
+                <Property Name="isAnyComponentDown" Type="boolean"/>
+                <Property Name="isAnyHSRPEndpointActive" Type="boolean"/>
+                <Property Name="isEveryComponentDown" Type="boolean"/>
+                <Property Name="isEveryHSRPEndpointReady" Type="boolean"/>
+                <Property Name="isGroupPartOfSingleUnresponsiveSystem" Type="boolean"/>
+                <Property Name="isVirtualIPUnresponsive" Type="boolean"/>
+                <Property Name="numberOfComponents" Type="number"/>
+                <Property Name="numberOfFaultyComponents" Type="number"/>
+                <Property Name="virtualIP" Type="string"/>
+                <Property Name="virtualMAC" Type="string"/>
+            </Properties>
+        </Model>
+    </Models>
+    <Relations>
+        <Relation From="RsComputerSystem" To="RsIpNetwork" Name="ipNetworks" ReverseName="memberSystems" Type="ManyToMany"></Relation>
+        <Relation From="RsComputerSystem" To="RsComputerSystemComponent" Name="composedOf" ReverseName="partOf" Type="OneToMany"></Relation>
+        <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystem" Type="ManyToMany"></Relation>
+        <Relation From="RsComputerSystem" To="RsIp" Name="hostsAccessPoints" ReverseName="hostedBy" Type="OneToMany"></Relation>
+        <Relation From="RsComputerSystemComponent" To="RsComputerSystemComponent" Name="layeredOver" ReverseName="underlying" Type="ManyToMany"></Relation>
+        <Relation From="RsCard" To="RsNetworkAdapter" Name="realizes" ReverseName="realizedBy" Type="OneToMany"></Relation>
+        <Relation From="RsLink" To="RsNetworkAdapter" Name="connectedTo" ReverseName="connectedVia" Type="OneToMany"></Relation>
+        <Relation From="RsGroup" To="RsTopologyObject" Name="consistsOf" ReverseName="memberOfGroup" Type="ManyToMany"></Relation>
+    </Relations>
+</Rsmodel>

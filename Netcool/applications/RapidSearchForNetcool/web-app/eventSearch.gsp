@@ -3,38 +3,6 @@
      <meta name="layout" content="indexLayout"/>
 </head>
 <body>
-<div id="top" style="background-color:#BBD4F6;">
-    <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
-        <td width="0%" style="padding-left:10px;padding-top:5px;">
-            <img src="images/RapidInsight-blue.png">
-        </td>
-        <td width="100%"></td>
-        <td id="serverDownEl" width="0%" style="display:none">
-            <img src="images/network-offline.png"/>
-        </td>
-        <td width="0%">
-           <div style="vertical-align:bottom">
-               <span id="rsUser" style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;cursor:pointer">${session.username}</span>
-               <a href="auth/logout" style="font-size:13px;font-weight:bold;color:#083772;text-align:right;text-decoration:none">Logout</a>
-           </div>
-        </td>
-    </tr></tbody></table>
-</div>
-<rui:form id="changePassDialog" width="35em" saveUrl="rsUser/changePassword?format=xml">
-    <div>
-        <div class="hd">Change Password</div>
-        <div class="bd">
-            <form method="POST" action="javascript://nothing">
-                <table>
-                    <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
-                    <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
-                    <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
-                </table>
-                <input type="hidden" name="username">
-            </form>
-        </div>
-    </div>
-</rui:form>
 <rui:form id="filterDialog" width="35em" createUrl="script/run/createQuery?queryType=event" editUrl="script/run/editQuery?queryType=event"
         saveUrl="searchQuery/save?format=xml&type=event" updateUrl="searchQuery/update?format=xml&type=event" onSuccess="refreshQueriesAction">
     <div>
@@ -241,18 +209,6 @@
 </rui:action>
 <rui:action id="refreshQueriesAction" type="function" function="poll" componentId="filterTree"></rui:action>
 <script type="text/javascript">
-   YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
-        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
-    }, this, true);
-    YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
-        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
-    }, this, true);
-
-     var changePassDialog = YAHOO.rapidjs.Components['changePassDialog']
-     YAHOO.util.Event.addListener(document.getElementById('rsUser'), 'click', function(){
-         changePassDialog.show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {username:"${session.username}"});
-    },this, true)
-
     var filterTree = YAHOO.rapidjs.Components['filterTree'];
     var searchList = YAHOO.rapidjs.Components['searchList'];
     searchList.renderCellFunction = function(key, value, data){

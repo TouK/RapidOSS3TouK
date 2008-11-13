@@ -43,6 +43,7 @@
     <orderEntry type="module" module-name="comp" />
     <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="ext" />
+    <orderEntry type="module" module-name="RapidInsight" />
     <orderEntry type="module" module-name="RcmdbCommons" />
     <orderEntry type="module" module-name="RapidCMDB" />
     <orderEntry type="library" name="compass" level="project" />

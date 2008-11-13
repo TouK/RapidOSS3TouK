@@ -49,13 +49,22 @@ choices.each{
         {
             Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/i18n/**");
         }
-        Ant.move(toDir:"${baseDir}/grails-app/views/layouts")
+        Ant.move(toDir:"${baseDir}/grails-app/views")
         {
-            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/views/layouts");
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/views");
         }
-        Ant.move(toDir:"${baseDir}/plugins/${pluginName}/grails-app")
+        Ant.mkdir(dir:"${baseDir}/generatedModels/grails-app/domain")
+        Ant.copy(toDir:"${baseDir}/generatedModels/grails-app/domain")
         {
-            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/**");
+            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/domain/*.groovy");
+        }
+        Ant.move(toDir:"${baseDir}/grails-app/controllers")
+        {
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/controllers");
+        }
+         Ant.move(toDir:"${baseDir}/grails-app/domain")
+        {
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/grails-app/domain");
         }
 
         Ant.move(toDir:"${baseDir}/scripts")
@@ -66,40 +75,15 @@ choices.each{
         {
             Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/web-app/**");
         }
-
-        Ant.move(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/rs.exe", toDir:"${baseDir}")
-        // TODO operations directory is lost the cause must be found
-        if(new File("${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations").exists())
+        Ant.move(toDir:"${baseDir}/operations")
         {
-            Ant.move(toDir:"${baseDir}/operations")
-            {
-                Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations");
-            }
+            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForSmarts/operations/**");
         }
-    }
-}
 
-Ant.move(toDir:"${baseDir}/grails-app/controllers")
-{
-    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/controllers/Rs*.groovy");
-}
-
-Ant.move(toDir:"${baseDir}/generatedModels")
-{
-    Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/generatedModels");
-}
-Ant.move(toDir:"${baseDir}/grails-app/views")
-{
-    Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/grails-app/views"){
-        Ant.filename(name:"rs*/**")
     }
-}
-Ant.move(toDir:"${baseDir}/grails-app/domain")
-{
-    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/domain/Rs*.groovy");
 }
 Ant.move(toDir:"${baseDir}/operations")
 {
-    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/operations/**");
+   Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/operations");
 }
 

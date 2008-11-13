@@ -17,7 +17,7 @@ package build
 class RapidInsightForNetcoolBuild extends Build{
 	def version = "$env.rapid_netcool/RI4NCVersion.txt"; 
 	def versionInBuild = "$env.dist_rapid_suite/RI4NCVersion.txt";
-	def rapidCMDBBuild = new RapidCmdbBuild();
+	def riBuild = new RapidInsightBuild();
 
     static void main(String[] args) {
         RapidInsightForNetcoolBuild rapidInsightForNetcoolBuilder = new RapidInsightForNetcoolBuild();
@@ -51,27 +51,18 @@ class RapidInsightForNetcoolBuild extends Build{
     }    
 
     def buildWindows(){
-    	rapidCMDBBuild.buildWindowsWithPlugins();
+    	riBuild.createDirectories("Windows");
     	buildPerOS("Windows");
     }
-    
+
     def buildUnix(){
-    	rapidCMDBBuild.buildUnixWithPlugins();
+    	riBuild.createDirectories("Unix");
     	buildPerOS("Unix");
     }
 
     def buildPerOS(osType) {
-        ant.delete(dir:env.dist_rapid_server);
-
-        def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB");
-        ant.unzip(src: rapidCmdb.absolutePath, dest: env.distribution);
-        ant.delete(dir:env.dist_modeler);
-
         def netcoolPlugin = listFiles(new File(env.distribution), "grails-netcool");
         installPlugin(netcoolPlugin, env.dist_rapid_suite, [Ant:ant], ["netcool_applications":"1"]);
-
-        def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
-        installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant:ant], [:]);
 
         ant.copy(file : version, tofile : versionInBuild );
         setVersionAndBuildNumber(versionInBuild);
@@ -94,6 +85,13 @@ class RapidInsightForNetcoolBuild extends Build{
 			}
 		}
 		ant.move(file : "${env.dist_rapid_suite}/web-app/indexLayout.gsp", todir : "${env.dist_rapid_suite}/grails-app/views/layouts" );
+        def adminViews = ["httpConnection", "httpDatasource","databaseConnection","ldapConnection", "databaseDatasource",
+                       "singleTableDatabaseDatasource", "snmpConnection", "snmpDatasource", "script", "rsUser", "group", "netcoolConnector", "netcoolConversionParameter"]
+
+               adminViews.each{
+                   ant.copy(file : "${env.dist_rapid_suite}/grails-app/views/layouts/adminLayout.gsp", toFile : "${env.dist_rapid_suite}/grails-app/views/layouts/${it}.gsp", overwrite:true );
+               }
+		
 //        def osType = "Unix";
 //        if (rapidCmdb.getName().indexOf("Windows") > -1) osType = "Windows"
         def zipFileName = "${env.distribution}/RI4NC_$osType$versionDate" + ".zip"

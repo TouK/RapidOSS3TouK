@@ -13,7 +13,8 @@ Ant.property(environment:"env")
 grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
 def baseDir = System.getProperty("base.dir");
 def choices = System.getProperty("netcool_applications");
-def apps = ["RapidSearchForNetcool"]
+def apps = ["RapidInsightForNetcool"]
+def pluginName = "netcool-0.2"
 if(choices == null)
 {
     println "Netcool plugin has following applications. Select one of them to install or skip:"
@@ -32,69 +33,54 @@ choices.each{
     {
         Ant.move(toDir:"${baseDir}/grails-app/templates")
         {
-            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/templates/**");
+            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/grails-app/templates/**");
         }
         Ant.move(toDir:"${baseDir}/grails-app/conf")
         {
-            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/conf/**");
+            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/grails-app/conf/**");
         }
         Ant.move(toDir:"${baseDir}/grails-app/i18n")
         {
-            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/i18n/**");
+            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/grails-app/i18n/**");
         }
-        Ant.move(toDir:"${baseDir}/grails-app/views/layouts")
+        Ant.move(toDir:"${baseDir}/grails-app/views")
         {
-            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/views/layouts/**");
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/grails-app/views");
         }
-        Ant.move(toDir:"${baseDir}/plugins/netcool-0.2/grails-app")
+        Ant.mkdir(dir:"${baseDir}/generatedModels/grails-app/domain")
+        Ant.copy(toDir:"${baseDir}/generatedModels/grails-app/domain")
         {
-            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/grails-app/**");
+            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/grails-app/domain/*.groovy");
         }
-
-        Ant.move(toDir:"${baseDir}/plugins/netcool-0.2/src")
+        Ant.move(toDir:"${baseDir}/grails-app/controllers")
         {
-            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/src/**");
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/grails-app/controllers");
+        }
+         Ant.move(toDir:"${baseDir}/grails-app/domain")
+        {
+            Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/grails-app/domain");
+        }
+        Ant.move(toDir:"${baseDir}/plugins/${pluginName}/src")
+        {
+            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/src/**");
         }
 
         Ant.move(toDir:"${baseDir}/scripts")
         {
-            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/scripts/**");
+            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/scripts/**");
         }
         Ant.move(toDir:"${baseDir}/web-app")
         {
-            Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/web-app/**");
+            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/web-app/**");
         }
-        Ant.move(file:"${baseDir}/plugins/netcool-0.2/applications/RapidSearchForNetcool/rs.exe", toDir:"${baseDir}")
+        Ant.move(toDir:"${baseDir}/operations")
+        {
+            Ant.fileset(file:"${baseDir}/plugins/${pluginName}/applications/RapidInsightForNetcool/operations/**");
+        }
     }
-}
-
-Ant.move(toDir:"${baseDir}/generatedModels")
-{
-    Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/generatedModels");
-}
-
-Ant.move(toDir:"${baseDir}/grails-app/controllers")
-{
-    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/grails-app/controllers/NetcoolEventController.groovy");
-    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/grails-app/controllers/NetcoolJournalController.groovy");
-}
-Ant.move(toDir:"${baseDir}/grails-app/views/netcoolEvent")
-{
-    Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/grails-app/views/netcoolEvent");
-}
-
-Ant.move(toDir:"${baseDir}/grails-app/views/netcoolJournal")
-{
-    Ant.fileset(dir:"${baseDir}/plugins/netcool-0.2/grails-app/views/netcoolJournal");
-}
-
-Ant.move(toDir:"${baseDir}/grails-app/domain")
-{
-    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/grails-app/domain/NetcoolEvent.groovy");
-    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/grails-app/domain/NetcoolJournal.groovy");
 }
 
 Ant.move(toDir:"${baseDir}/operations")
 {
-    Ant.fileset(file:"${baseDir}/plugins/netcool-0.2/operations/**");
+    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/operations/**");
 }

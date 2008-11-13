@@ -70,24 +70,24 @@ def addDataForParentPropertyTestsWithProb(){
 	m2 = Model30.add(prop1:"Model30 Prop1", prop2:"Model30 Prop2 Instance1");
 	m3 = Model30.add(prop1:"Model30 Prop1", prop2:"Model30 Prop2 Instance2");
 	Model30.add(prop1:"Model30 Prop1", prop2:"Model30 Prop2 Instance3");
-	m1.addRelation(from29to30:[m2,m3]);
+	m1.addRelation(from29To30:[m2,m3]);
 	
 	// Make a key property non-key
 	m1 = Model32.add(prop1:"Model32 ToBeNonKeyProp1", prop2:"Model32 Prop2 Instance1", prop32_1:"Model32 Prop32_1 Instance1");
 	m2 = Model33.add(prop1:"Model33 Prop1", prop2:"Model33 Prop2 Instance1");
-	m1.addRelation(from32to33:m2);
+	m1.addRelation(from32To33:m2);
 	
 	// Change type of the property
 	m1 = Model35.add(prop1:"Model35 ToBeTypeChangedProp1", prop2:"Model35 Prop2 Instance1", prop35_1:"Model35 Prop35_1 Instance1");
 	m2 = Model36.add(prop1:"Model36 Prop1", prop2:"Model36 Prop2 Instance1");
 	m3 = Model36.add(prop1:"Model36 Prop1", prop2:"Model36 Prop2 Instance2");
-	m1.addRelation(from35to36:[m2,m3]);
+	m1.addRelation(from35To36:[m2,m3]);
 	
 	// Rename property
 	m1 = Model38.add(prop1:"Model38 ToBeRenamedProp1", prop2:"Model38 Prop2 Instance1", prop38_1:"Model38 Prop38_1 Instance1");
 	m2 = Model39.add(prop1:"Model39 Prop1", prop2:"Model39 Prop2 Instance1");
 	m3 = Model39.add(prop1:"Model39 Prop1", prop2:"Model39 Prop2 Instance2");
-
+	m1.addRelation(from38To39:[m2,m3]);
 }
 
 def addDataForRelationChangeTestsWithNoProb(){

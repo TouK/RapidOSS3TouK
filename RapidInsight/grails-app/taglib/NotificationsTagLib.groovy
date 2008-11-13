@@ -29,6 +29,9 @@ class NotificationsTagLib {
                 htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
                 actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
             }
+            else if(actionType == "link"){
+                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString()])
+            }
             else if (actionType == "update" || actionType == "execute") {
                 def params = menuItem.parameters.Item;
                 def pMap = [:]
@@ -106,9 +109,7 @@ class NotificationsTagLib {
                 keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", title: "Events", onSaveQueryClick: "saveQueryAction",
                 pollingInterval: searchGridPollInterval, fieldsUrl: "script/run/getViewFields?format=xml",
                 SearchGridTagLib.fSgMenuItems([:],
-                        SearchGridTagLib.fSgMenuItem(id: "browse", label: "Browse", "") +
-                        SearchGridTagLib.fSgMenuItem(id: "topMap", label: "Show Map", "") +
-                                getMenuXml(rowMenus)
+                        getMenuXml(rowMenus)
                 ) +
                         SearchGridTagLib.fSgImages([:],
                                 SearchGridTagLib.fSgImage(visible: "params.data.severity == '1'", src: "images/rapidjs/component/searchlist/red.png", "") +
@@ -120,8 +121,6 @@ class NotificationsTagLib {
                         SearchGridTagLib.fSgColumns([:], columnsStr)
 
         )
-        out << HtmlTagLib.fHtml(id: "objectDetailsmenuHtml", iframe: "false", "");
-        out << PopupWindowTagLib.fPopupWindow(componentId: "objectDetailsmenuHtml", width: "850", height: "700", x:"85", y:"50", "");
         out << getHtmlDialogsXml(htmlDialogs)
         out << getActionXml(actions);
 
@@ -178,26 +177,6 @@ class NotificationsTagLib {
                     });
                     tree.poll();
                     searchGrid.poll();
-                    searchGrid.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
-                        var key = 'elementName'
-                        var value = xmlData.getAttribute(key);
-                        if(!value || value == ''){
-                            key = 'instanceName'
-                            value = xmlData.getAttribute(key)
-                        }
-                        if(id == "browse"){
-                            var url = "getObjectDetails.gsp?name="+ encodeURIComponent(value);
-                            var title = key == "instanceName"? "Details of " + xmlData.getAttribute("className") + " " + value : "Details of " + xmlData.getAttribute("elementClassName") + " " + value
-                            var objectDetailsHtml = YAHOO.rapidjs.Components['objectDetailsmenuHtml'];
-                            objectDetailsHtml.popupWindow.show();
-                            objectDetailsHtml.show(url, title);
-                        }
-                        else if(id == 'topMap'){
-                            var url = "redirectToMap.gsp?name="+value;
-                            window.location = url;
-                        }
-                    }, this, true);
-
                     var Dom = YAHOO.util.Dom, Event = YAHOO.util.Event;
 
                     Event.onDOMReady(function() {
@@ -277,6 +256,9 @@ class NotificationsTagLib {
                         ActionsTagLib.fFunctionArg([:], it.url) +
                                 ActionsTagLib.fFunctionArg([:], it.title)
                 )
+            }
+            else if(type == "link"){
+                output += ActionsTagLib.fAction(id: it.id, type: "link", url: it.url, "");
             }
             else if (type == "execute" || type == "update") {
                 def paramString = "";

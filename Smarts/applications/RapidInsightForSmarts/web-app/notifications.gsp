@@ -26,6 +26,11 @@
 </script>
 <rui:notifications queriesPollingInterval="0" searchResultsPollingInterval="0">
     <rui:ntMenus>
+        <rui:ntMenu id="objectDetails" actionType="htmlDialog" width="850" height="700" x="85" y="50" label="Browse"
+            url="params.data.elementName != '' ? 'getObjectDetails.gsp?name=' + params.data.elementName : 'getObjectDetails.gsp?name=' + params.data.instanceName"
+            title="params.data.elementName != '' ? 'Details of ' + params.data.elementClassName + ' ' + params.data.elementName : 'Details of ' + params.data.className + ' ' + params.data.instanceName"></rui:ntMenu>
+        <rui:ntMenu id="showMap" actionType="link" label="Show Map"
+            url="params.data.elementName != '' ? 'redirectToMap.gsp?name=' + params.data.elementName : 'redirectToMap.gsp?name=' + params.data.instanceName"></rui:ntMenu>
         <rui:ntMenu id="eventDetails" label="Event Details" actionType="htmlDialog" width="850" height="500"
                 url="'getEventDetails.gsp?name=' + params.data.name" title="'Details of ' + params.data.name"></rui:ntMenu>
         <rui:ntMenu id="acknowledge" label="Acknowledge" script="acknowledge" visible="params.data.acknowledged != 'true'" actionType="update" parameters="${[name:'params.data.name', acknowledged:'true']}"></rui:ntMenu>

@@ -28,10 +28,6 @@
     <rui:nsMenus>
         <rui:nsMenu id="eventDetails" label="Event Details" location="row" actionType="htmlDialog" width="850" height="500"
                 url="'getEventDetails.gsp?name=' + params.data.name" title="'Details of ' + params.data.name"></rui:nsMenu>
-
-        <rui:nsMenu id="objectDetails" label="Browse" location="property" actionType="htmlDialog" width="850" height="700" visible="params.key == 'instanceName' || params.key == 'elementName'"  x="85" y="50" 
-                url="'getObjectDetails.gsp?name=' + params.value" title="'Details of ' + (params.key == 'instanceName'? params.data.className:params.data.elementClassName) +' ' + params.value"></rui:nsMenu>
-
         <rui:nsMenu id="acknowledge" label="Acknowledge" location="row" script="acknowledge" visible="params.data.acknowledged != 'true'" actionType="update" parameters="${[name:'params.data.name', acknowledged:'true']}"></rui:nsMenu>
         <rui:nsMenu id="unacknowledge" label="Unacknowledge" location="row" script="acknowledge" visible="params.data.acknowledged == 'true'" actionType="update" parameters="${[name:'params.data.name', acknowledged:'false']}"></rui:nsMenu>
         <rui:nsMenu id="takeOwnership" label="Take Ownership" location="row" script="setOwnership" actionType="update" parameters="${[name:'params.data.name', act:'true']}"></rui:nsMenu>

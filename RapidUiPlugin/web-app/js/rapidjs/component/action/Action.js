@@ -188,6 +188,25 @@ YAHOO.rapidjs.component.action.FunctionAction.prototype = {
         }
     }
 };
+YAHOO.rapidjs.component.action.LinkAction = function(id, urlExp, condition) {
+    this.condition = condition;
+    this.urlExp = urlExp;
+    this.id = id;
+    YAHOO.rapidjs.Actions[this.id] = this;
+};
+
+YAHOO.rapidjs.component.action.LinkAction.prototype = {
+    execute: function(params) {
+        var conditionResult = true;
+        if (this.condition) {
+            var conditionResult = eval(this.condition);
+        }
+        if (conditionResult) {
+            var url = eval(this.urlExp)
+            window.location = url;
+        }
+    }
+};
 YAHOO.rapidjs.component.action.CombinedAction = function(id, actions, condition) {
     this.actions = actions || [];
     this.id = id;

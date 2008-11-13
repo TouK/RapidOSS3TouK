@@ -120,6 +120,13 @@ class ActionsTagLib {
                </script>
             """;
         }
+        else if(actionType == "link"){
+            return """
+               <script type="text/javascript">
+               var ${actionId}action = new YAHOO.rapidjs.component.action.LinkAction( '${actionId}', \"${attrs["url"]}\", ${attrs["condition"] ? "\"${attrs["condition"]}\"" : "null"});
+               </script>
+            """;
+        }
     }
     def action = {attrs, body ->
          out << fAction(attrs, body());

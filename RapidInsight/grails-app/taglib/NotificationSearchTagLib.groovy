@@ -73,6 +73,9 @@ class NotificationSearchTagLib {
                 htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
                 actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
             }
+             else if(actionType == "link"){
+                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString()])
+            }
             else if (actionType == "update" || actionType == "execute") {
                 def params = menuItem.parameters.Item;
                 def pMap = [:]
@@ -161,7 +164,7 @@ class NotificationSearchTagLib {
                 defaultFields: defaultFields, onSaveQueryClick: "saveQueryAction",
                 pollingInterval: searchListPollInterval, lineSize: lineSize,
                 SearchListTagLib.fSlMenuItems([:],
-                       SearchListTagLib.fSlMenuItem(id: "topMap", label: "Show Map", "") + getMenuXml(rowMenus)
+                       getMenuXml(rowMenus)
                 ) +
                         SearchListTagLib.fSlPropertyMenuItems([:],
                                 SearchListTagLib.fSlMenuItem(id: "sortAsc", label: defaultMenus.sortAsc.label, action: "searchListSortAscAction", visible:getSortAscVisibility(defaultMenus), "") +
@@ -246,18 +249,6 @@ class NotificationSearchTagLib {
                     var searchList = YAHOO.rapidjs.Components['searchList'];
                     var tree = YAHOO.rapidjs.Components['filterTree'];
                     ${getConvsersionJs(nsXML.NsConversions.NsConversion, emphasizeds)}
-                    searchList.events["rowHeaderMenuClick"].subscribe(function(xmlData, id, parentId) {
-                         if( id == "topMap" )
-                         {
-                            var value = xmlData.getAttribute('elementName');
-                            if(!value || value == ''){
-                                value = xmlData.getAttribute('instanceName')
-                            }
-                            var url = "redirectToMap.gsp?name="+value;
-                            window.location = url;
-                         }
-
-                    }, this, true);
                     tree.addToolbarButton({
                         className:'r-filterTree-groupAdd',
                         scope:this,
@@ -365,6 +356,9 @@ class NotificationSearchTagLib {
                         ActionsTagLib.fFunctionArg([:], it.url) +
                                 ActionsTagLib.fFunctionArg([:], it.title)
                 )
+            }
+            else if(type == "link"){
+                output += ActionsTagLib.fAction(id: it.id, type: "link", url: it.url, "");
             }
             else if (type == "execute" || type == "update") {
                 def paramString = "";

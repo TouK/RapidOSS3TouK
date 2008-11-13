@@ -21,6 +21,7 @@
     <rui:tsMenus>
         <rui:tsMenu id="browse" label="Browse" location="row" actionType="htmlDialog" width="850" height="700" x="85" y="50"
                 url="'getObjectDetails.gsp?name=' + params.data.name" title="'Details of ' + params.data.creationClassName + ' ' + params.data.name"></rui:tsMenu>
+        <rui:tsMenu id="showMap" label="Show Map" location="row" actionType="link" url="'redirectToMap.gsp?name='+params.data.name"></rui:tsMenu>
     </rui:tsMenus>
     <rui:tsDefaultMenus>
         <rui:tsDefaultMenu id="sortAsc" label="Sort Asc"></rui:tsDefaultMenu>

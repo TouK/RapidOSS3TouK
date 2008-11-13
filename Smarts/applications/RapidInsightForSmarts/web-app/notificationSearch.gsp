@@ -28,7 +28,8 @@
     <rui:nsMenus>
         <rui:nsMenu id="eventDetails" label="Event Details" location="row" actionType="htmlDialog" width="850" height="500"
                 url="'getEventDetails.gsp?name=' + params.data.name" title="'Details of ' + params.data.name"></rui:nsMenu>
-
+         <rui:nsMenu id="showMap" actionType="link" label="Show Map" location="row"
+            url="params.data.elementName != '' ? 'redirectToMap.gsp?name=' + params.data.elementName : 'redirectToMap.gsp?name=' + params.data.instanceName"></rui:nsMenu>
         <rui:nsMenu id="objectDetails" label="Browse" location="property" actionType="htmlDialog" width="850" height="700" visible="params.key == 'instanceName' || params.key == 'elementName'"  x="85" y="50" 
                 url="'getObjectDetails.gsp?name=' + params.value" title="'Details of ' + (params.key == 'instanceName'? params.data.className:params.data.elementClassName) +' ' + params.value"></rui:nsMenu>
 

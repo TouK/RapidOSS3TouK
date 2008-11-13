@@ -41,6 +41,9 @@ class TopologyMapTagLib {
                 htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
                 actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
             }
+            else if(actionType == "link"){
+                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString()])
+            }
             else if (actionType == "update" || actionType == "execute") {
                 def params = menuItem.parameters.Item;
                 def pMap = [:]
@@ -311,6 +314,9 @@ class TopologyMapTagLib {
                         ActionsTagLib.fFunctionArg([:], it.url) +
                                 ActionsTagLib.fFunctionArg([:], it.title)
                 )
+            }
+            else if(type == "link"){
+                output += ActionsTagLib.fAction(id: it.id, type: "link", url: it.url, "");
             }
             else if (type == "execute" || type == "update") {
                 def paramString = "";

@@ -39,6 +39,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="RcmdbCommons" />
     <orderEntry type="module" module-name="RapidCMDB" />
+    <orderEntry type="module" module-name="RapidUiPlugin" />
     <orderEntryProperties />
   </component>
 </module>

@@ -100,7 +100,8 @@ class PropertyDatasourceManagerBean implements InitializingBean
                 def dsConf = [];
                 keys[datasourceName] = dsConf;
                 datsourceConfig.keys.each{String dsKey, Map dsKeyConfig->
-                    dsConf << new DatasourceProperty(name:dsKey, nameInDatasource:dsKeyConfig.nameInDs, datasourceName:datasourceName);
+                    def type = domainClass.metaClass.getMetaProperty(dsKey).type;                    
+                    dsConf << new DatasourceProperty(type:type,name:dsKey, nameInDatasource:dsKeyConfig.nameInDs, datasourceName:datasourceName);
                 }
 
             }
@@ -118,9 +119,10 @@ class PropertyDatasourceManagerBean implements InitializingBean
         if(propertyConfigs)
         {
             propertyConfigs.each{String propName, Map propConfig->
+                def type = domainClass.metaClass.getMetaProperty(propName).type;
                 def isDynamic =  propConfig.datasource == null;
                 def dsName = propConfig.datasource != null?propConfig.datasource:propConfig.datasourceProperty
-                propertiesByName[propName] = new DatasourceProperty(name:propName, nameInDatasource:propConfig.nameInDs, datasourceName:dsName, isLazy:propConfig.lazy, isDynamic:isDynamic);
+                propertiesByName[propName] = new DatasourceProperty(type:type, name:propName, nameInDatasource:propConfig.nameInDs, datasourceName:dsName, isLazy:propConfig.lazy, isDynamic:isDynamic);
             }
 
         }
@@ -134,6 +136,8 @@ class DatasourceProperty
     String datasourceName;
     boolean isDynamic;
     boolean isLazy;
+    Class type;
+    
     boolean isFederated()
     {
         return datasourceName != null && datasourceName != "";
@@ -142,7 +146,7 @@ class DatasourceProperty
     public boolean equals(Object obj) {
         if(obj instanceof DatasourceProperty)
         {
-            return name == obj.name && nameInDatasource == obj.nameInDatasource && datasourceName == obj.datasourceName
+            return name == obj.name && nameInDatasource == obj.nameInDatasource && datasourceName == obj.datasourceName  && type == obj.type;
         }
         return false;
     }

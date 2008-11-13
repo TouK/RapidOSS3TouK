@@ -44,12 +44,12 @@ class PropertyDatasourceManagerTest extends RapidCmdbMockTestCase
         manager.afterPropertiesSet();
         def propsForDs1 = manager.getDatasourceProperties(modelClass, "ds1");
         assertEquals (2, propsForDs1.size());
-        assertTrue (propsForDs1.contains(new DatasourceProperty(name:"prop2", nameInDatasource:"prop2", datasourceName:"ds1")));
-        assertTrue (propsForDs1.contains(new DatasourceProperty(name:"prop3", nameInDatasource:"prop3", datasourceName:"ds1")));
+        assertTrue (propsForDs1.contains(new DatasourceProperty(name:"prop2", nameInDatasource:"prop2", datasourceName:"ds1",type:String)));
+        assertTrue (propsForDs1.contains(new DatasourceProperty(name:"prop3", nameInDatasource:"prop3", datasourceName:"ds1",type:String)));
 
         def propsForDs2 = manager.getDatasourceProperties(modelClass, "ds2");
         assertEquals (1, propsForDs2.size());
-        assertTrue (propsForDs2.contains(new DatasourceProperty(name:"prop4", nameInDatasource:"prop4", datasourceName:"ds2")));
+        assertTrue (propsForDs2.contains(new DatasourceProperty(name:"prop4", nameInDatasource:"prop4", datasourceName:"ds2",type:String)));
 
         def propsForDs1ReRequested = manager.getDatasourceProperties(modelClass, "ds1");
         assertSame (propsForDs1, propsForDs1ReRequested);
@@ -77,12 +77,12 @@ class PropertyDatasourceManagerTest extends RapidCmdbMockTestCase
         manager.afterPropertiesSet();
         def keysForDs1 = manager.getDatasourceKeys(modelClass, "ds1");
         assertEquals (2, keysForDs1.size());
-        assertTrue (keysForDs1.contains(new DatasourceProperty(name:"prop1", nameInDatasource:"prop1", datasourceName:"ds1")));
-        assertTrue (keysForDs1.contains(new DatasourceProperty(name:"prop2", nameInDatasource:"prop2", datasourceName:"ds1")));
+        assertTrue (keysForDs1.contains(new DatasourceProperty(name:"prop1", nameInDatasource:"prop1", datasourceName:"ds1",type:String)));
+        assertTrue (keysForDs1.contains(new DatasourceProperty(name:"prop2", nameInDatasource:"prop2", datasourceName:"ds1",type:String)));
 
         def keysForDs2 = manager.getDatasourceKeys(modelClass, "ds2");
         assertEquals (1, keysForDs2.size());
-        assertTrue (keysForDs2.contains(new DatasourceProperty(name:"prop3", nameInDatasource:"prop3", datasourceName:"ds2")));
+        assertTrue (keysForDs2.contains(new DatasourceProperty(name:"prop3", nameInDatasource:"prop3", datasourceName:"ds2",type:String)));
 
         def keysForDs1ReRequested = manager.getDatasourceKeys(modelClass, "ds1");
         assertSame (keysForDs1, keysForDs1ReRequested);
@@ -151,9 +151,9 @@ class PropertyDatasourceManagerTest extends RapidCmdbMockTestCase
         manager.afterPropertiesSet();
         def props = manager.getDatasourceProperties(childModelClass, "ds1");
         assertEquals (3, props.size());
-        assertTrue (props.contains(new DatasourceProperty(name:"prop2", nameInDatasource:"prop2", datasourceName:"ds1")));
-        assertTrue (props.contains(new DatasourceProperty(name:"prop3", nameInDatasource:"prop3", datasourceName:"ds1")));
-        assertTrue (props.contains(new DatasourceProperty(name:"prop4", nameInDatasource:"prop4", datasourceName:"ds1")));
+        assertTrue (props.contains(new DatasourceProperty(name:"prop2", nameInDatasource:"prop2", datasourceName:"ds1",type:String)));
+        assertTrue (props.contains(new DatasourceProperty(name:"prop3", nameInDatasource:"prop3", datasourceName:"ds1",type:String)));
+        assertTrue (props.contains(new DatasourceProperty(name:"prop4", nameInDatasource:"prop4", datasourceName:"ds1",type:String)));
     }
 
     public void testGetDatasourcePropertiesWithDynamicProperty()
@@ -173,8 +173,8 @@ class PropertyDatasourceManagerTest extends RapidCmdbMockTestCase
         manager.afterPropertiesSet();
         def props = manager.getDatasourceProperties(modelClass, "ds1");
         assertEquals (2, props.size());
-        assertTrue (props.contains(new DatasourceProperty(name:"prop2", nameInDatasource:"prop2", datasourceName:"ds1")));
-        assertTrue (props.contains(new DatasourceProperty(name:"prop3", nameInDatasource:"prop3", datasourceName:"ds1")));
+        assertTrue (props.contains(new DatasourceProperty(name:"prop2", nameInDatasource:"prop2", datasourceName:"ds1",type:String)));
+        assertTrue (props.contains(new DatasourceProperty(name:"prop3", nameInDatasource:"prop3", datasourceName:"ds1",type:String)));
 
         def propsReRequested = manager.getDatasourceProperties(modelClass, "ds1");
         assertSame (props, propsReRequested);

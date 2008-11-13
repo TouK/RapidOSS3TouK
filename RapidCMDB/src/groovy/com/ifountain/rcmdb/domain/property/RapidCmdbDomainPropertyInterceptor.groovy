@@ -15,7 +15,9 @@ import org.springframework.context.ApplicationContext
  * To change this template use File | Settings | File Templates.
  */
 class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassPropertyInterceptor {
-
+    public RapidCmdbDomainPropertyInterceptor()
+    {
+    }
     public Object getDomainClassProperty(Object domainObject, String propertyName) {
         if(ServletContextHolder.servletContext != null){
             ApplicationContext appContext = ServletContextHolder.servletContext.getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT);
@@ -31,7 +33,7 @@ class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassPropertyInter
     }
     
 
-    def getFederatedProperty(Object domainObject, PropertyDatasourceManagerBean bean, String propName) {
+    public Object getFederatedProperty(Object domainObject, PropertyDatasourceManagerBean bean, String propName) {
         DatasourceProperty requestedPropertyConfiguration = bean.getPropertyConfiguration(domainObject.class, propName);
         def datasourceName = requestedPropertyConfiguration.datasourceName;
         def realDsName = datasourceName;

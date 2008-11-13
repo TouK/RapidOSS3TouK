@@ -260,7 +260,6 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         datasourceClass.metaClass.invokeStaticMethod(datasourceClass, "add", [[name:"ds1"]] as Object[]);
         
         def modelText = ModelGenerator.getInstance().getModelText(createModel(modelName,datasources, properties))
-        println modelText;
         GroovyClassLoader gcl = new GroovyClassLoader();
         Class domainClass = gcl.parseClass(modelText);
         return domainClass;

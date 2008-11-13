@@ -28,11 +28,19 @@ class SearchController {
         def searchResults;
         if (params.searchIn != null) {
             GrailsDomainClass grailsClass = grailsApplication.getDomainClass(params.searchIn);
+            if(grailsClass == null)
+            {
+                addError("invalid.search.searchIn", [params.searchIn]);
+                withFormat {
+                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                }
+                return;
+            }
             def mc = grailsClass.metaClass;
             try {
                 searchResults = mc.invokeStaticMethod(mc.theClass, "search", [query, params] as Object[])
             }
-            catch (SearchEngineQueryParseException e) {
+            catch (Throwable e) {
                 addError("invalid.search.query", [query, e.getMessage()]);
                 withFormat {
                     xml {render(text: errorsToXml(errors), contentType: "text/xml")}
@@ -45,7 +53,7 @@ class SearchController {
             try {
                 searchResults = searchableService.search(query, params);
             }
-            catch (SearchEngineQueryParseException e) {
+            catch (Throwable e) {
                 addError("invalid.search.query", [query, e.getMessage()]);
                 withFormat {
                     xml {render(text: errorsToXml(errors), contentType: "text/xml")}

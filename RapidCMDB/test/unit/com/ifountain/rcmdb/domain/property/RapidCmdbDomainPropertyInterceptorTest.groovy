@@ -58,7 +58,26 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         interceptor.setDomainClassProperty(instance, "prop1", "updatedProp1Value")
         assertEquals("updatedProp1Value", interceptor.getDomainClassProperty(instance, "prop1"));
     }
+    public void testInterceptorDoesNotThrowConversionExceptionWithFederatedProperties()
+    {
+        def modelName = "Model1"
+        def datasources = [
+                [name:"RCMDB", keyProperties:[[name:"prop1"]]],
+                [name:"ds1", keyProperties:[[name:"prop1"]]]
+        ]
+        def properties = [[name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
+        [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1", nameInDatasource:"prop2SeverName"],
+        [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1"],
+        [name:"prop4", type:ModelGenerator.NUMBER_TYPE, blank:false, defaultValue:"1", datasource:"ds1"]];
 
+        Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
+        def instance = domainClass.newInstance();
+        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+
+        result = [prop2SeverName:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded",prop4:"abcd"];
+        assertEquals (new Long(1), interceptor.getDomainClassProperty(instance, "prop4"));
+    }
+    
     public void testInterceptorWithFederatedProperties()
     {
         def modelName = "Model1"
@@ -68,7 +87,9 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         ]
         def properties = [[name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
         [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1", nameInDatasource:"prop2SeverName"],
-        [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1"]];
+        [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1"],
+        [name:"prop4", type:ModelGenerator.FLOAT_TYPE, blank:false, defaultValue:"1", datasource:"ds1"]];
+        
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)       
         def instance = domainClass.newInstance();
         RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
@@ -77,16 +98,17 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         interceptor.setDomainClassProperty(instance, "prop1", prop1Value);
         assertEquals (prop1Value, interceptor.getDomainClassProperty(instance, "prop1"));
 
-        result = [prop2SeverName:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded"];
+        result = [prop2SeverName:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded",prop4:"15.88"];
         
         assertEquals ("prop2Value", interceptor.getDomainClassProperty(instance, "prop2"));
         assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance, "prop3"));
         assertEquals (prop1Value, interceptor.getDomainClassProperty(instance, "prop1"));
+        assertEquals (new Double(15.88), interceptor.getDomainClassProperty(instance, "prop4"));
 
         assertEquals (1, getProperties.size());
         assertEquals (1, getProperties[0][0].size());
         assertEquals (prop1Value, getProperties[0][0]["prop1"]);
-        assertEquals (2, getProperties[0][1].size());
+        assertEquals (3, getProperties[0][1].size());
         assertTrue(getProperties[0][1].contains("prop2SeverName"));
         assertTrue(getProperties[0][1].contains("prop3"));
 
@@ -108,7 +130,8 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         ]
         def properties = [[name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
         [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1", lazy:true],
-        [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1"]];
+        [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1"],
+        [name:"prop4", type:ModelGenerator.FLOAT_TYPE, blank:false, defaultValue:"1", datasource:"ds1", lazy:true]];
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
 
         def instance = domainClass.newInstance();
@@ -123,17 +146,23 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         result = [prop2:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded"];
         assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance, "prop3"));
         assertEquals (prop1Value, interceptor.getDomainClassProperty(instance, "prop1"));
-
+        result = "15.88"
+        assertEquals (new Double(15.88), interceptor.getDomainClassProperty(instance, "prop4"));
+        
         assertEquals (1, getProperties.size());
         assertEquals (1, getProperties[0][0].size());
         assertEquals (prop1Value, getProperties[0][0]["prop1"]);
         assertEquals (1, getProperties[0][1].size());
         assertTrue(getProperties[0][1].contains("prop3"));
 
-        assertEquals (1, getProperty.size());
+        assertEquals (2, getProperty.size());
         assertEquals (1, getProperty[0][0].size());
         assertEquals (prop1Value, getProperty[0][0]["prop1"]);
         assertEquals ("prop2", getProperty[0][1]);
+
+        assertEquals (1, getProperty[1][0].size());
+        assertEquals (prop1Value, getProperty[1][0]["prop1"]);
+        assertEquals ("prop4", getProperty[1][1]);
 
 
         result = "updatedServerValue";

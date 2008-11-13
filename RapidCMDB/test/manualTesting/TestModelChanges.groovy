@@ -88,7 +88,7 @@ def checkParentPropertyChangeWithProb(){
 	}
 	data = Model36.search("prop2:Model36 Prop2 Instance2");
 	assert (data.total == 1);
-	assert (data.results[0].reverse_from35To36 == m1);
+	assert (data.results[0].reverse_from35To36 == m1.results[0]);
 	
 	m1 = Model38.search("prop2:*");
 	assert (m1.total == 1);
@@ -100,8 +100,7 @@ def checkParentPropertyChangeWithProb(){
 	
 	data = Model39.search("prop2:Model39 Prop2 Instance2");
 	assert (data.total == 1);
-	assert (data.results[0].reverse_from38To39 == m1);
-	
+	assert (data.results[0].reverse_from38To39 == m1.results[0]);
 }
 
 def checkRelationChangesNoProblems(){

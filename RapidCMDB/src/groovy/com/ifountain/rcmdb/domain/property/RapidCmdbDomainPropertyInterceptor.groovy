@@ -15,9 +15,7 @@ import org.springframework.context.ApplicationContext
  * To change this template use File | Settings | File Templates.
  */
 class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassPropertyInterceptor {
-    public RapidCmdbDomainPropertyInterceptor()
-    {
-    }
+    
     public Object getDomainClassProperty(Object domainObject, String propertyName) {
         if(ServletContextHolder.servletContext != null){
             ApplicationContext appContext = ServletContextHolder.servletContext.getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT);

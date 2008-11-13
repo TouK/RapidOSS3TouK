@@ -16,6 +16,9 @@ class OperationStatistics {
     public static final REMOVE_OPERATION_NAME = "Remove";
     public static final REMOVE_RELATION_OPERATION_NAME = "RemoveRelation";
     public static final UPDATE_OPERATION_NAME = "Update";
+    public static final SEARCH_OPERATION_NAME = "Search";
+    public static final SEARCH_TOP_OPERATION_NAME = "SearchTop";
+    public static final COUNT_HITS_OPERATION_NAME = "CountHits";
     private static OperationStatistics operationStatisticsObject;
     Map operationStatistics = [:];
     Map modelStatistics = [:];
@@ -45,11 +48,17 @@ class OperationStatistics {
         operationStatistics[ADD_RELATION_OPERATION_NAME] = new GlobalOperationStatisticResult(name:ADD_RELATION_OPERATION_NAME);
         operationStatistics[REMOVE_RELATION_OPERATION_NAME] = new GlobalOperationStatisticResult(name:REMOVE_RELATION_OPERATION_NAME);
         operationStatistics[UPDATE_OPERATION_NAME] = new GlobalOperationStatisticResult(name:UPDATE_OPERATION_NAME);
+        operationStatistics[SEARCH_OPERATION_NAME] = new GlobalOperationStatisticResult(name:SEARCH_OPERATION_NAME);
+        operationStatistics[SEARCH_TOP_OPERATION_NAME] = new GlobalOperationStatisticResult(name:SEARCH_TOP_OPERATION_NAME);
+        operationStatistics[COUNT_HITS_OPERATION_NAME] = new GlobalOperationStatisticResult(name:COUNT_HITS_OPERATION_NAME);
         modelStatistics[ADD_OPERATION_NAME] = [:];
         modelStatistics[REMOVE_OPERATION_NAME] = [:];
         modelStatistics[ADD_RELATION_OPERATION_NAME] = [:];
         modelStatistics[REMOVE_RELATION_OPERATION_NAME] = [:];
         modelStatistics[UPDATE_OPERATION_NAME] = [:];
+        modelStatistics[SEARCH_OPERATION_NAME] = [:];
+        modelStatistics[SEARCH_TOP_OPERATION_NAME] = [:];
+        modelStatistics[COUNT_HITS_OPERATION_NAME] = [:];
     }
     
     public String getGlobalStatistics()
@@ -75,6 +84,7 @@ class OperationStatistics {
 
     public void addStatisticResult(String operationType, OperationStatisticResult result)
     {
+        result.stop();
         GlobalOperationStatisticResult globalResult = operationStatistics[operationType]
         if(globalResult != null)
         {
@@ -103,7 +113,7 @@ class GlobalOperationStatisticResult
     long totalOperationDuration;
     public synchronized void addOperationStatisticResult(OperationStatisticResult result)
     {
-        numberOfOperationsPerformed++
+        numberOfOperationsPerformed+=result.numberOfOperations;
         totalOperationDuration += result.operationDuration;
     }
 
@@ -126,9 +136,10 @@ class GlobalOperationStatisticResult
 class OperationStatisticResult
 {
     String model;
-    long operationDuration;
+    long operationDuration = 0;
+    long numberOfOperations =1;
     long startingTime = -1;
-    public void startTime()
+    public void start()
     {
         startingTime = System.nanoTime()   
     }

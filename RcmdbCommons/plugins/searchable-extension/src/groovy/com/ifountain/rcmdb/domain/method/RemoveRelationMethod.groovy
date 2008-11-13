@@ -8,6 +8,8 @@ import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import com.ifountain.rcmdb.domain.util.ValidationUtils
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -46,6 +48,8 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
     }
 
     protected Object _invoke(Object domainObject, Object[] arguments) {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
+        statistics.start();
         def props = arguments[0];
         def flush = true;
         if(arguments.length == 2)
@@ -55,7 +59,7 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                 flush = false;
             }
         }
-        def changedInstances = [:]
+        long numberOfRemovedRelations = 0;
         boolean isChanged = false;
         props.each{key,value->
             RelationMetaData relation = relations.get(key);
@@ -86,10 +90,13 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                     {
                         domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
                     }
-
+                    numberOfRemovedRelations += value.size();
                     RelationUtils.removeRelations(domainObject, relation, value);
                 }
             }
+            statistics.stop();
+            statistics.numberOfOperations = numberOfRemovedRelations;
+            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_RELATION_OPERATION_NAME, statistics);
             return domainObject;
         }
 

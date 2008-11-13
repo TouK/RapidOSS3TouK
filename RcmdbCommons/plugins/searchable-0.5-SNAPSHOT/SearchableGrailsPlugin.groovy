@@ -8,6 +8,8 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.DefaultSear
 import org.codehaus.groovy.grails.plugins.searchable.compass.spring.DefaultSearchableCompassFactoryBean
 import org.codehaus.groovy.grails.plugins.support.GrailsPluginUtils
 import org.compass.gps.impl.SingleCompassGps
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /*
 * Copyright 2007 the original author or authors.
@@ -64,27 +66,39 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
              * search: Returns a subset of the instances of this class matching the given query
              */
             grailsDomainClass.metaClass.'static'.search << { Object[] args ->
+                OperationStatisticResult statistics = new OperationStatisticResult(model:delegate.name);
+                statistics.start();
                 def res = searchableMethodFactory.getMethod(delegate, "search").invoke(*args)
                 res?.results?.each{result->
                     EventTriggeringUtils.triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
                 }
-
+                statistics.stop();
+                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
                 return res;
             }
 
             grailsDomainClass.metaClass.'static'.searchWithoutTriggering << { Object[] args ->
-                return searchableMethodFactory.getMethod(delegate, "search").invoke(*args)
+                OperationStatisticResult statistics = new OperationStatisticResult(model:delegate.name);
+                statistics.start();
+                def res = searchableMethodFactory.getMethod(delegate, "search").invoke(*args)
+                statistics.stop();
+                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
+                return res;
             }
 
             /**
              * searchTop: Returns the top (most relevant) instance of this class matching the given query
              */
             grailsDomainClass.metaClass.'static'.searchTop << { Object[] args ->
+                OperationStatisticResult statistics = new OperationStatisticResult(model:delegate.name);
+                statistics.start();
                 def res = searchableMethodFactory.getMethod(delegate, "searchTop").invoke(*args)
                 if(res)
                 {
                     EventTriggeringUtils.triggerEvent (res, EventTriggeringUtils.ONLOAD_EVENT);
                 }
+                statistics.stop();
+                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_TOP_OPERATION_NAME, statistics);
                 return res;
             }
 
@@ -92,10 +106,14 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
              * searchEvery: Returns all instance of this class matching the given query
              */
             grailsDomainClass.metaClass.'static'.searchEvery << { Object[] args ->
+                OperationStatisticResult statistics = new OperationStatisticResult(model:delegate.name);
+                statistics.start();
                 def res = searchableMethodFactory.getMethod(delegate, "searchEvery").invoke(*args)
                 res?.each{result->
                     EventTriggeringUtils.triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
                 }
+                statistics.stop();
+                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
                 return res;
             }
 
@@ -103,7 +121,12 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
              * Returns the number of hits for the given query matching instances of this class
              */
             grailsDomainClass.metaClass.'static'.countHits << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "countHits").invoke(*args)
+                OperationStatisticResult statistics = new OperationStatisticResult(model:delegate.name);
+                statistics.start();
+                def res = searchableMethodFactory.getMethod(delegate, "countHits").invoke(*args)
+                statistics.stop();
+                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.COUNT_HITS_OPERATION_NAME, statistics);
+                return res;
             }
 
             /**

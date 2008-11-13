@@ -2,6 +2,8 @@ package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.domain.util.ValidationUtils
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -39,6 +41,8 @@ class RemoveMethod extends AbstractRapidDomainMethod{
     }
 
     protected Object _invoke(Object domainObject, Object[] arguments) {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
+        statistics.start();
         def keyMap = [id:domainObject.id];
         def numberOfExistingObjects = CompassMethodInvoker.countHits(mc, keyMap);
         if(numberOfExistingObjects == 0)
@@ -78,6 +82,8 @@ class RemoveMethod extends AbstractRapidDomainMethod{
             }
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
             CompassMethodInvoker.unindex(mc, domainObject);
+            statistics.stop();
+            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_OPERATION_NAME, statistics);
             if(!relsToBeRemoved.isEmpty())
             {
                 RelationUtils.removeExistingRelationsById(domainObject.id);

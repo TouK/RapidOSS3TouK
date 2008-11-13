@@ -7,6 +7,8 @@ import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import com.ifountain.rcmdb.domain.util.ValidationUtils
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -44,7 +46,8 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
     }
 
     protected Object _invoke(Object domainObject, Object[] arguments) {
-
+        OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
+        statistics.start();
         def props = arguments[0];
         def flush = true;
         if(arguments.length == 2)
@@ -54,7 +57,6 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                 flush = false;
             }
         }
-
 
         def relatedInstances = [:]
         props.each{key,value->
@@ -110,6 +112,9 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
 
                         }
                         RelationUtils.addRelatedObjects(domainObject, relation, value);
+                        statistics.stop();
+                        statistics.numberOfOperations = value.size();
+                        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_RELATION_OPERATION_NAME, statistics);
 
                     }
                 }

@@ -10,6 +10,8 @@ import org.springframework.validation.Errors
 import org.springframework.validation.Validator
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 class AddMethod extends AbstractRapidDomainStaticMethod
 {
@@ -36,6 +38,8 @@ class AddMethod extends AbstractRapidDomainStaticMethod
 
 
     protected Object _invoke(Class clazz, Object[] arguments) {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
+        statistics.start();
         def props = arguments[0];
         props.remove("id");
         def existingInstance = getMethod.invoke(rootDomainClass, [props, false] as Object[])
@@ -109,9 +113,13 @@ class AddMethod extends AbstractRapidDomainStaticMethod
             CompassMethodInvoker.index (mc, sampleBean);
             if(!relatedInstances.isEmpty())
             {
+                statistics.stop();
                 sampleBean.addRelation(relatedInstances);
+                statistics.start();
             }
             EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.ONLOAD_EVENT);
+            statistics.stop();
+            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, statistics);
         }
         return sampleBean;
     }

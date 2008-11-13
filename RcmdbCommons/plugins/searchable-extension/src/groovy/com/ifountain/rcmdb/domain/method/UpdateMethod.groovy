@@ -7,6 +7,8 @@ import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -51,6 +53,8 @@ class UpdateMethod extends AbstractRapidDomainMethod{
     }
 
     protected Object _invoke(Object domainObject, Object[] arguments) {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
+        statistics.start();
         def props = arguments[0];
         props.remove("id");
         def relationToBeAddedMap = [:]
@@ -105,9 +109,12 @@ class UpdateMethod extends AbstractRapidDomainMethod{
         {
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
             domainObject.reindex(domainObject);
+            statistics.stop();
             domainObject.removeRelation(relationToBeRemovedMap);
             domainObject.addRelation(relationToBeAddedMap);
+            statistics.start();
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.ONLOAD_EVENT);
+            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.UPDATE_OPERATION_NAME, statistics);
         }
         else
         {

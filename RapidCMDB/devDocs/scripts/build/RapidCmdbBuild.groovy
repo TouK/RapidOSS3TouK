@@ -298,6 +298,7 @@ class RapidCmdbBuild extends Build {
             ant.zipfileset(dir: "$env.distribution"){
             	ant.exclude(name:".project");
             	ant.exclude(name:"*.zip");
+            	ant.exclude(name:"**/temp/**");
             }
         }
     }
@@ -352,7 +353,7 @@ class RapidCmdbBuild extends Build {
             	ant.exclude(name:".project");
             }
         }
-        rapidUiBuild.run([]);
+
         return zipFileName;
     }
     
@@ -363,7 +364,8 @@ class RapidCmdbBuild extends Build {
     }
     
     def buildAdditionalPlugins(){
-    	netcoolBuild.run([]);
+    	rapidUiBuild.run([]);
+        netcoolBuild.run([]);
     	smartsBuild.run([]);
     	hypericBuild.run([]);
     }

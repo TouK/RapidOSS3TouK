@@ -127,4 +127,18 @@ class OperationStatisticResult
 {
     String model;
     long operationDuration;
+    long startingTime = -1;
+    public void startTime()
+    {
+        startingTime = System.nanoTime()   
+    }
+
+    public void stop()
+    {
+        if(startingTime != -1)
+        {
+            operationDuration += System.nanoTime()-startingTime;
+        }
+        startingTime = -1;
+    }
 }

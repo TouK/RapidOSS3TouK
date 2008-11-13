@@ -49,8 +49,13 @@ class RapidInsightBuild extends Build {
         buildPerOS("Unix");
     }
 
-    def createDirectories() {
-        rapidCMDBBuild.buildWindowsWithPlugins();
+    def createDirectories(osType) {
+        if(osType == "Windows"){
+            rapidCMDBBuild.buildWindowsWithPlugins();    
+        }
+        else{
+            rapidCMDBBuild.buildUnixWithPlugins();
+        }
         ant.delete(dir: env.dist_rapid_server);
 
         def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB");
@@ -65,7 +70,7 @@ class RapidInsightBuild extends Build {
     }
 
     def buildPerOS(osType) {
-        createDirectories()
+        createDirectories(osType)
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();

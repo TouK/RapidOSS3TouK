@@ -66,12 +66,12 @@ class RapidInsightForSmartsBuild extends Build{
     }
 
     def buildWindows(){
-    	riBuild.createDirectories();
+    	riBuild.createDirectories("Windows");
     	buildPerOS("Windows");
     }
 
     def buildUnix(){
-    	riBuild.createDirectories();
+    	riBuild.createDirectories("Unix");
     	buildPerOS("Unix");
     }
 

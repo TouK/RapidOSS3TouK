@@ -63,7 +63,7 @@ class NetcoolConnectorImpl {
         def lastUpdateTime = 0;
         while (true)
         {
-            def res = invokeMethod(NetcoolEvent, "search", ["connectorname:${connectorName}", [max: batchSize, offset: offset, sort: "id"]] as Object[]);
+            def res = invokeMethod(NetcoolEvent, "search", ["rsDatasource:${connectorName}", [max: batchSize, offset: offset, sort: "id"]] as Object[]);
             if (res.results.isEmpty())
             {
                 break;
@@ -217,7 +217,7 @@ class NetcoolConnectorImpl {
             }
             eventMap[localColName.toLowerCase()] = propValue;
         }
-        eventMap["connectorname"] = connectorName
+        eventMap["rsDatasource"] = connectorName
         return eventMap;
     }
 
@@ -228,11 +228,11 @@ class NetcoolConnectorImpl {
     def getJournalProperties(Map rec)
     {
         def serverSerialColName = nameMappings["serverserial"] ? nameMappings["serverserial"] : "serverserial";
-        def connectorNameColName = nameMappings["connectorname"] ? nameMappings["connectorname"] : "connectorname";
+        def connectorNameColName = nameMappings["rsDatasource"] ? nameMappings["rsDatasource"] : "rsDatasource";
         def query = "${serverSerialColName}:\"${rec.SERIAL}\" AND ${connectorNameColName}:\"${this.connectorName}\""
         def event = invokeMethod(NetcoolEvent, "search", [query] as Object[]).results[0];
         if (event == null) return null;
-        def journalMap = [servername: event.servername, serverserial: event.serverserial, connectorname: this.connectorName]
+        def journalMap = [servername: event.servername, serverserial: event.serverserial, rsDatasource: this.connectorName]
         StringBuffer text = new StringBuffer();
         rec.each {String propName, String propValue ->
             if (propName.startsWith("text") && propValue != "")

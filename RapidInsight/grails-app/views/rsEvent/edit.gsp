@@ -134,10 +134,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="visibility">visibility:</label>
+                            <label for="state">state:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'visibility','errors')}">
-                            <input type="text" id="visibility" name="visibility" value="${fieldValue(bean:rsEvent,field:'visibility')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'state','errors')}">
+                            <input type="text" id="state" name="state" value="${fieldValue(bean:rsEvent,field:'state')}" />
                         </td>
                     </tr>
                     

@@ -56,9 +56,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">connectorname:</td>
+                    <td valign="top" class="name">rsdatasource:</td>
                     
-                    <td valign="top" class="value">${netcoolJournal.connectorname}</td>
+                    <td valign="top" class="value">${netcoolJournal.rsdatasource}</td>
                     
                 </tr>
                 

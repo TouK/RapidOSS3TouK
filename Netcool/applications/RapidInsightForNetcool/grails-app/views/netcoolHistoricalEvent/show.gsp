@@ -42,6 +42,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">active:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.active}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">agent:</td>
                     
                     <td valign="top" class="value">${netcoolHistoricalEvent.agent}</td>
@@ -63,13 +70,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">connectorname:</td>
-                    
-                    <td valign="top" class="value">${netcoolHistoricalEvent.connectorname}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">customer:</td>
                     
                     <td valign="top" class="value">${netcoolHistoricalEvent.customer}</td>
@@ -84,16 +84,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">expiretime:</td>
+                    <td valign="top" class="name">firstNotifiedAt:</td>
                     
-                    <td valign="top" class="value">${netcoolHistoricalEvent.expiretime}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">firstoccurrence:</td>
-                    
-                    <td valign="top" class="value">${netcoolHistoricalEvent.firstoccurrence}</td>
+                    <td valign="top" class="value">${netcoolHistoricalEvent.firstNotifiedAt}</td>
                     
                 </tr>
                 
@@ -126,9 +119,23 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastoccurrence:</td>
+                    <td valign="top" class="name">lastChangedAt:</td>
                     
-                    <td valign="top" class="value">${netcoolHistoricalEvent.lastoccurrence}</td>
+                    <td valign="top" class="value">${netcoolHistoricalEvent.lastChangedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">lastClearedAt:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.lastClearedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">lastNotifiedAt:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.lastNotifiedAt}</td>
                     
                 </tr>
                 
@@ -171,6 +178,13 @@
                     <td valign="top" class="name">manager:</td>
                     
                     <td valign="top" class="value">${netcoolHistoricalEvent.manager}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">name:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.name}</td>
                     
                 </tr>
                 
@@ -252,16 +266,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">ownergid:</td>
+                    <td valign="top" class="name">owner:</td>
                     
-                    <td valign="top" class="value">${netcoolHistoricalEvent.ownergid}</td>
+                    <td valign="top" class="value">${netcoolHistoricalEvent.owner}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">owneruid:</td>
+                    <td valign="top" class="name">ownergid:</td>
                     
-                    <td valign="top" class="value">${netcoolHistoricalEvent.owneruid}</td>
+                    <td valign="top" class="value">${netcoolHistoricalEvent.ownergid}</td>
                     
                 </tr>
                 
@@ -329,6 +343,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.rsDatasource}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">serial:</td>
                     
                     <td valign="top" class="value">${netcoolHistoricalEvent.serial}</td>
@@ -364,9 +385,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">statechange:</td>
+                    <td valign="top" class="name">source:</td>
                     
-                    <td valign="top" class="value">${netcoolHistoricalEvent.statechange}</td>
+                    <td valign="top" class="value">${netcoolHistoricalEvent.source}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">state:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.state}</td>
                     
                 </tr>
                 
@@ -374,13 +402,6 @@
                     <td valign="top" class="name">summary:</td>
                     
                     <td valign="top" class="value">${netcoolHistoricalEvent.summary}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">suppressescl:</td>
-                    
-                    <td valign="top" class="value">${netcoolHistoricalEvent.suppressescl}</td>
                     
                 </tr>
                 
@@ -402,6 +423,13 @@
                     <td valign="top" class="name">url:</td>
                     
                     <td valign="top" class="value">${netcoolHistoricalEvent.url}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">willExpireAt:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.willExpireAt}</td>
                     
                 </tr>
                 

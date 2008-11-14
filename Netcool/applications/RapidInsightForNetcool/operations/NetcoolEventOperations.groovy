@@ -8,7 +8,7 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.Abstra
 
     public void updateAtNc(Map params){
 	    def tempParams = [:];
-	    def ncds = getDatasource(connectorname);
+	    def ncds = getDatasource(rsDatasource);
 	    tempParams.put("ServerSerial", serverserial);
 	    params.each{prop, newValue->
 	    	def propLowerCase = prop.toLowerCase();
@@ -32,12 +32,12 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.Abstra
     }
 
     public void removeFromNc(){
-	    def ncds = getDatasource(connectorname);
+	    def ncds = getDatasource(rsDatasource);
 	    ncds.removeEvent(serverserial);
     }
 
     public void setSeverity(newValue, userName){
-	    def ncds = getDatasource(connectorname);
+	    def ncds = getDatasource(rsDatasource);
         ncds.setSeverityAction(serverserial, newValue, userName);
         update(severity : newValue);
 	    update(acknowledged:NetcoolConversionParameter.getConvertedValue("Acknowledged", 0));
@@ -45,19 +45,19 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.Abstra
     }
 
     public void setSuppressescl(newValue, userName){
-	    def ncds = getDatasource(connectorname);
+	    def ncds = getDatasource(rsDatasource);
 	    ncds.suppressAction(serverserial,  newValue, userName);
 	    update(suppressescl : newValue);
     }
 
     public void addToTaskList(boolean action){
-	    def ncds = getDatasource(connectorname);
+	    def ncds = getDatasource(rsDatasource);
 	    ncds.taskListAction(serverserial,action);
 	    update(tasklist : action?1:0);
     }
 
     public void acknowledge(boolean action, userName){
-	    def ncds = getDatasource(connectorname);
+	    def ncds = getDatasource(rsDatasource);
 	    ncds.acknowledgeAction(serverserial, action, userName);
         if(action)
         {
@@ -70,15 +70,15 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.Abstra
     }
 
     public void assign(newValue){
-	 	def ncds = getDatasource(connectorname);
+	 	def ncds = getDatasource(rsDatasource);
 	 	ncds.assignAction(serverserial, NetcoolConversionParameter.getRealValue("OwnerUID", newValue));
 	 	update(owneruid : newValue);
 	 	update(acknowledged : NetcoolConversionParameter.getConvertedValue("Acknowledged", 0));
 
     }
 
-    def getDatasource(connectorName){
-        def datasourceName = NetcoolConnector.getDatasourceName(connectorName);
+    def getDatasource(rsDatasource){
+        def datasourceName = NetcoolConnector.getDatasourceName(rsDatasource);
         return NetcoolDatasource.get(name:datasourceName);
     }
 }

@@ -29,9 +29,7 @@
                     
                     <g:sortableColumn property="id" title="id"/>
                     
-                    <g:sortableColumn property="servername" title="servername"/>
-                    
-                    <g:sortableColumn property="serverserial" title="serverserial"/>
+                    <g:sortableColumn property="name" title="name"/>
                     
                 </tr>
             </thead>
@@ -41,9 +39,7 @@
                         
                         <td><g:link action="show" id="${netcoolEvent.id}">${netcoolEvent.id?.encodeAsHTML()}</g:link></td>
                         
-                        <td>${netcoolEvent.servername?.encodeAsHTML()}</td>
-                        
-                        <td>${netcoolEvent.serverserial?.encodeAsHTML()}</td>
+                        <td>${netcoolEvent.name?.encodeAsHTML()}</td>
                         
                     </tr>
                 </g:each>

@@ -125,6 +125,20 @@
                     
                 </tr>
                 
+                <tr class="prop">
+                    <td valign="top" class="name">state:</td>
+                    
+                    <td valign="top" class="value">${rsRiHistoricalEvent.state}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">willExpireAt:</td>
+                    
+                    <td valign="top" class="value">${rsRiHistoricalEvent.willExpireAt}</td>
+                    
+                </tr>
+                
             </tbody>
         </table>
     </div>

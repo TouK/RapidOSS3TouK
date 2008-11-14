@@ -51,7 +51,7 @@
             This will be used as an input by the next step, event model creation. The XML file shows all the properties supported by your Netcool server. 
             You can remove properties from this file before modifying the model. 
             <p></p> 
-            <li class="controller"><g:link controller="script" action="run" id="NetcoolConfigurationLoader" style="text-decoration:underline">Create Event and Journal Models</g:link></li>
+            <li class="controller"><g:link controller="script" action="run" id="modelCreator" style="text-decoration:underline">Create Event and Journal Models</g:link></li>
             <p></p>
             Overwrites the default event model with the new one. This process uses the edited XML file (RS_HOME/RapidSuite/grails-app/conf/NetcoolFieldConfiguration.xm) 
             as the input. RapidInsight for Netcool will generate all necessary files to update the Event and Journal models.

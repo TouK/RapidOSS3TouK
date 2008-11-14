@@ -15,7 +15,6 @@ import auth.Group
  */
 
 CmdbScript.addScript(name: "NetcoolColumnMapping");
-CmdbScript.addScript(name: "NetcoolConfigurationLoader");
 CmdbScript.addScript(name: "importUsers");
 CmdbScript.addScript(name: "severity");
 CmdbScript.addScript(name: "takeOwnership");

@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsHistoricalEvent 
-{
-    
+class RsHistoricalEvent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -35,6 +34,10 @@ class RsHistoricalEvent
     Long lastChangedAt =0;
     
     Long lastClearedAt =0;
+    
+    Long willExpireAt =0;
+    
+    Long state =0;
     
     Long id ;
     
@@ -72,6 +75,10 @@ class RsHistoricalEvent
         
      lastClearedAt(nullable:true)
         
+     willExpireAt(nullable:true)
+        
+     state(nullable:true)
+        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
@@ -93,4 +100,6 @@ class RsHistoricalEvent
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+    
 }

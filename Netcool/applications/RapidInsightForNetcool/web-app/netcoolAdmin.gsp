@@ -1,4 +1,4 @@
-<%@ page import="script.CmdbScript; connector.NetcoolConnector" %>
+<%@ page import="connection.NetcoolConnection; script.CmdbScript; connector.NetcoolConnector" %>
 <%--
   Created by IntelliJ IDEA.
   User: Sezgin Kucukkaraaslan

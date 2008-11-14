@@ -93,9 +93,9 @@ class NetcoolRealValues {
         return nodeOptions[nextNumber(nodeOptions.size())] + nextNumber(1000000);
     }
 
-    public Map getJournalProperties(connectorName, serverName, serial) {
+    public Map getJournalProperties(rsDatasource, serverName, serial) {
         def ch = (System.currentTimeMillis()- nextNumber(200000))/1000;
-        return [keyfield:"$serial:0:$ch", connectorName:connectorName, servername:serverName, serverserial:serial, chrono:ch, text:textOptions[nextNumber(textOptions.size())]];
+        return [keyfield:"$serial:0:$ch", rsDatasource:rsDatasource, servername:serverName, serverserial:serial, chrono:ch, text:textOptions[nextNumber(textOptions.size())]];
 
     }
 

@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsEvent 
-{
-    
+class RsEvent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -40,7 +39,7 @@ class RsEvent
     
     Long willExpireAt =0;
     
-    Long visibility =0;
+    Long state =0;
     
     Long id ;
     
@@ -80,7 +79,7 @@ class RsEvent
         
      willExpireAt(nullable:true)
         
-     visibility(nullable:true)
+     state(nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -103,4 +102,6 @@ class RsEvent
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+    
 }

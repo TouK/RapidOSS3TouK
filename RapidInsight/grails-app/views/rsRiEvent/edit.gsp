@@ -116,6 +116,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="node">node:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'node','errors')}">
+                            <input type="text" id="node" name="node" value="${fieldValue(bean:rsRiEvent,field:'node')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="owner">owner:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'owner','errors')}">
@@ -152,10 +161,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="visibility">visibility:</label>
+                            <label for="state">state:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'visibility','errors')}">
-                            <input type="text" id="visibility" name="visibility" value="${fieldValue(bean:rsRiEvent,field:'visibility')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'state','errors')}">
+                            <input type="text" id="state" name="state" value="${fieldValue(bean:rsRiEvent,field:'state')}" />
                         </td>
                     </tr>
                     

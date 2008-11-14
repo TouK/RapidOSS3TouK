@@ -98,6 +98,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">node:</td>
+                    
+                    <td valign="top" class="value">${rsRiEvent.node}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">owner:</td>
                     
                     <td valign="top" class="value">${rsRiEvent.owner}</td>
@@ -126,9 +133,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">visibility:</td>
+                    <td valign="top" class="name">state:</td>
                     
-                    <td valign="top" class="value">${rsRiEvent.visibility}</td>
+                    <td valign="top" class="value">${rsRiEvent.state}</td>
                     
                 </tr>
                 

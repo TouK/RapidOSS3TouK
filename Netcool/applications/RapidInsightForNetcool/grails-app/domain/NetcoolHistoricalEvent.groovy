@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class NetcoolHistoricalEvent {
+class NetcoolHistoricalEvent  extends RsHistoricalEvent {
 
     //AUTO_GENERATED_CODE
 
@@ -10,7 +10,7 @@ class NetcoolHistoricalEvent {
     
     
     };
-    static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
+    static datasources = [:]
 
     
     String identifier ="";
@@ -29,15 +29,7 @@ class NetcoolHistoricalEvent {
     
     String alertkey ="";
     
-    Long severity =0;
-    
     String summary ="";
-    
-    Long statechange =0;
-    
-    Long firstoccurrence =0;
-    
-    Long lastoccurrence =0;
     
     Long internallast =0;
     
@@ -47,27 +39,19 @@ class NetcoolHistoricalEvent {
     
     Long tally =0;
     
-    Long grade =0;
-    
     String ncclass ="";
+    
+    Long grade =0;
     
     String location ="";
     
-    String owneruid ="";
-    
     String ownergid ="";
-    
-    String acknowledged ="";
     
     Long flash =0;
     
     String eventid ="";
     
-    Long expiretime =0;
-    
     Long processreq =0;
-    
-    Long suppressescl =0;
     
     String customer ="";
     
@@ -117,8 +101,6 @@ class NetcoolHistoricalEvent {
     
     String url ="";
     
-    String connectorname ="";
-    
     Long id ;
     
     Long version ;
@@ -149,15 +131,7 @@ class NetcoolHistoricalEvent {
         
      alertkey(blank:true,nullable:true)
         
-     severity(nullable:true)
-        
      summary(blank:true,nullable:true)
-        
-     statechange(nullable:true)
-        
-     firstoccurrence(nullable:true)
-        
-     lastoccurrence(nullable:true)
         
      internallast(nullable:true)
         
@@ -167,27 +141,19 @@ class NetcoolHistoricalEvent {
         
      tally(nullable:true)
         
-     grade(nullable:true)
-        
      ncclass(blank:true,nullable:true)
+        
+     grade(nullable:true)
         
      location(blank:true,nullable:true)
         
-     owneruid(blank:true,nullable:true)
-        
      ownergid(blank:true,nullable:true)
-        
-     acknowledged(blank:true,nullable:true)
         
      flash(nullable:true)
         
      eventid(blank:true,nullable:true)
         
-     expiretime(nullable:true)
-        
      processreq(nullable:true)
-        
-     suppressescl(nullable:true)
         
      customer(blank:true,nullable:true)
         
@@ -237,8 +203,6 @@ class NetcoolHistoricalEvent {
         
      url(blank:true,nullable:true)
         
-     connectorname(blank:true,nullable:true)
-        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
@@ -251,14 +215,11 @@ class NetcoolHistoricalEvent {
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
-    public String toString()
-    {
-    	return "${getClass().getName()}[id:$id]";
-    }
-    
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
     
 }

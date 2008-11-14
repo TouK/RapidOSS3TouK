@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsRiHistoricalEvent extends RsHistoricalEvent
-{
-    
+class RsRiHistoricalEvent  extends RsHistoricalEvent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -52,4 +51,6 @@ class RsRiHistoricalEvent extends RsHistoricalEvent
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+    
 }

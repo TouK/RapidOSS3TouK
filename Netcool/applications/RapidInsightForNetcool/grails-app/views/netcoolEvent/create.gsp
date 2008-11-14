@@ -33,19 +33,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="servername">servername:</label>
+                            <label for="name">name:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'servername','errors')}">
-                            <input type="text" id="servername" name="servername" value="${fieldValue(bean:netcoolEvent,field:'servername')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="serverserial">serverserial:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'serverserial','errors')}">
-                            <input type="text" id="serverserial" name="serverserial" value="${fieldValue(bean:netcoolEvent,field:'serverserial')}" />
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'name','errors')}">
+                            <input type="text" id="name" name="name" value="${fieldValue(bean:netcoolEvent,field:'name')}"/>
                         </td>
                     </tr>
                     
@@ -54,7 +45,16 @@
                             <label for="acknowledged">acknowledged:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'acknowledged','errors')}">
-                            <input type="text" id="acknowledged" name="acknowledged" value="${fieldValue(bean:netcoolEvent,field:'acknowledged')}"/>
+                            <g:checkBox name="acknowledged" value="${netcoolEvent?.acknowledged}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="active">active:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'active','errors')}">
+                            <g:checkBox name="active" value="${netcoolEvent?.active}" ></g:checkBox>
                         </td>
                     </tr>
                     
@@ -87,15 +87,6 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="connectorname">connectorname:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'connectorname','errors')}">
-                            <input type="text" id="connectorname" name="connectorname" value="${fieldValue(bean:netcoolEvent,field:'connectorname')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="customer">customer:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'customer','errors')}">
@@ -114,19 +105,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="expiretime">expiretime:</label>
+                            <label for="firstNotifiedAt">firstNotifiedAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'expiretime','errors')}">
-                            <input type="text" id="expiretime" name="expiretime" value="${fieldValue(bean:netcoolEvent,field:'expiretime')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="firstoccurrence">firstoccurrence:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'firstoccurrence','errors')}">
-                            <input type="text" id="firstoccurrence" name="firstoccurrence" value="${fieldValue(bean:netcoolEvent,field:'firstoccurrence')}" />
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'firstNotifiedAt','errors')}">
+                            <input type="text" id="firstNotifiedAt" name="firstNotifiedAt" value="${fieldValue(bean:netcoolEvent,field:'firstNotifiedAt')}" />
                         </td>
                     </tr>
                     
@@ -168,10 +150,28 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="lastoccurrence">lastoccurrence:</label>
+                            <label for="lastChangedAt">lastChangedAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'lastoccurrence','errors')}">
-                            <input type="text" id="lastoccurrence" name="lastoccurrence" value="${fieldValue(bean:netcoolEvent,field:'lastoccurrence')}" />
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'lastChangedAt','errors')}">
+                            <input type="text" id="lastChangedAt" name="lastChangedAt" value="${fieldValue(bean:netcoolEvent,field:'lastChangedAt')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="lastClearedAt">lastClearedAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'lastClearedAt','errors')}">
+                            <input type="text" id="lastClearedAt" name="lastClearedAt" value="${fieldValue(bean:netcoolEvent,field:'lastClearedAt')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="lastNotifiedAt">lastNotifiedAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'lastNotifiedAt','errors')}">
+                            <input type="text" id="lastNotifiedAt" name="lastNotifiedAt" value="${fieldValue(bean:netcoolEvent,field:'lastNotifiedAt')}" />
                         </td>
                     </tr>
                     
@@ -330,19 +330,19 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="ownergid">ownergid:</label>
+                            <label for="owner">owner:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'ownergid','errors')}">
-                            <input type="text" id="ownergid" name="ownergid" value="${fieldValue(bean:netcoolEvent,field:'ownergid')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'owner','errors')}">
+                            <input type="text" id="owner" name="owner" value="${fieldValue(bean:netcoolEvent,field:'owner')}"/>
                         </td>
                     </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="owneruid">owneruid:</label>
+                            <label for="ownergid">ownergid:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'owneruid','errors')}">
-                            <input type="text" id="owneruid" name="owneruid" value="${fieldValue(bean:netcoolEvent,field:'owneruid')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'ownergid','errors')}">
+                            <input type="text" id="ownergid" name="ownergid" value="${fieldValue(bean:netcoolEvent,field:'ownergid')}"/>
                         </td>
                     </tr>
                     
@@ -429,10 +429,37 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:netcoolEvent,field:'rsDatasource')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="serial">serial:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'serial','errors')}">
                             <input type="text" id="serial" name="serial" value="${fieldValue(bean:netcoolEvent,field:'serial')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="servername">servername:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'servername','errors')}">
+                            <input type="text" id="servername" name="servername" value="${fieldValue(bean:netcoolEvent,field:'servername')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="serverserial">serverserial:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'serverserial','errors')}">
+                            <input type="text" id="serverserial" name="serverserial" value="${fieldValue(bean:netcoolEvent,field:'serverserial')}" />
                         </td>
                     </tr>
                     
@@ -456,10 +483,19 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="statechange">statechange:</label>
+                            <label for="source">source:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'statechange','errors')}">
-                            <input type="text" id="statechange" name="statechange" value="${fieldValue(bean:netcoolEvent,field:'statechange')}" />
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'source','errors')}">
+                            <input type="text" id="source" name="source" value="${fieldValue(bean:netcoolEvent,field:'source')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="state">state:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'state','errors')}">
+                            <input type="text" id="state" name="state" value="${fieldValue(bean:netcoolEvent,field:'state')}" />
                         </td>
                     </tr>
                     
@@ -469,15 +505,6 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'summary','errors')}">
                             <input type="text" id="summary" name="summary" value="${fieldValue(bean:netcoolEvent,field:'summary')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="suppressescl">suppressescl:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'suppressescl','errors')}">
-                            <input type="text" id="suppressescl" name="suppressescl" value="${fieldValue(bean:netcoolEvent,field:'suppressescl')}" />
                         </td>
                     </tr>
                     
@@ -505,6 +532,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'url','errors')}">
                             <input type="text" id="url" name="url" value="${fieldValue(bean:netcoolEvent,field:'url')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="willExpireAt">willExpireAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolEvent,field:'willExpireAt','errors')}">
+                            <input type="text" id="willExpireAt" name="willExpireAt" value="${fieldValue(bean:netcoolEvent,field:'willExpireAt')}" />
                         </td>
                     </tr>
                     

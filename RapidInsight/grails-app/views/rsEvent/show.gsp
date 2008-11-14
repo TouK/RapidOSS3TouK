@@ -112,9 +112,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">visibility:</td>
+                    <td valign="top" class="name">state:</td>
                     
-                    <td valign="top" class="value">${rsEvent.visibility}</td>
+                    <td valign="top" class="value">${rsEvent.state}</td>
                     
                 </tr>
                 

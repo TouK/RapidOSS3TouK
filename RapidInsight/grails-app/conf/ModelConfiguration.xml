@@ -24,7 +24,9 @@
                 <Property Name='lastNotifiedAt' Type='number' />
                 <Property Name='lastChangedAt' Type='number' />
                 <Property Name='lastClearedAt' Type='number' />
-         	</Properties>
+                <Property Name='willExpireAt' Type='number' />
+                <Property Name='state' Type='number' />
+             </Properties>
   		</Model>
 
   		<Model Name="RsEventJournal">
@@ -50,7 +52,7 @@
                 <Property Name='lastClearedAt' Type='number' />
                 <Property Name='rsDatasource' Type='string'/>
                 <Property Name='willExpireAt' Type='number' />
-                <Property Name='visibility' Type='number' />
+                <Property Name='state' Type='number' />
              </Properties>
   		</Model>
   		<Model Name="RsRiEvent" Parent="RsEvent" StorageType="FileAndMemory">

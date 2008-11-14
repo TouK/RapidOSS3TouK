@@ -33,7 +33,7 @@ for(int i=0; i < 1000000; i++)
         totalEventInsertTime += interval;
         for(int j = 0; j < DemoValues.nextNumber(5); j++)
         {
-            def journalProps = DemoValues.getJournalProperties(props.connectorname, props.servername, props.serial);
+            def journalProps = DemoValues.getJournalProperties(props.rsDatasource, props.servername, props.serial);
             tempT = System.nanoTime();
             def journal = NetcoolJournal.add(journalProps);
             interval = System.nanoTime() - tempT;

@@ -23,7 +23,7 @@ class NetcoolJournal {
     
     String servername ="";
     
-    String connectorname ="";
+    String rsdatasource ="";
     
     Long id ;
     
@@ -49,7 +49,7 @@ class NetcoolJournal {
         
      servername(blank:false,nullable:false,key:["keyfield"])
         
-     connectorname(blank:true,nullable:true)
+     rsdatasource(blank:true,nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -72,6 +72,8 @@ class NetcoolJournal {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
 
 
     

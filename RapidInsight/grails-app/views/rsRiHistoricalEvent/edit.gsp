@@ -150,6 +150,24 @@
                         </td>
                     </tr>
                     
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="state">state:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiHistoricalEvent,field:'state','errors')}">
+                            <input type="text" id="state" name="state" value="${fieldValue(bean:rsRiHistoricalEvent,field:'state')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="willExpireAt">willExpireAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiHistoricalEvent,field:'willExpireAt','errors')}">
+                            <input type="text" id="willExpireAt" name="willExpireAt" value="${fieldValue(bean:rsRiHistoricalEvent,field:'willExpireAt')}" />
+                        </td>
+                    </tr>
+                    
                 </tbody>
             </table>
         </div>

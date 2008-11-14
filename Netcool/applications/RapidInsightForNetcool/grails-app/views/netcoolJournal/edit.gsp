@@ -62,10 +62,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="connectorname">connectorname:</label>
+                            <label for="rsdatasource">rsdatasource:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:netcoolJournal,field:'connectorname','errors')}">
-                            <input type="text" id="connectorname" name="connectorname" value="${fieldValue(bean:netcoolJournal,field:'connectorname')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:netcoolJournal,field:'rsdatasource','errors')}">
+                            <input type="text" id="rsdatasource" name="rsdatasource" value="${fieldValue(bean:netcoolJournal,field:'rsdatasource')}"/>
                         </td>
                     </tr>
                     

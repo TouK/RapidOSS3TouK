@@ -8,7 +8,9 @@
 
 <html>
 <head><title>redirecting</title>
-    <meta http-equiv="REFRESH" content="0;url=smartsAdmin.gsp">
+    <%
+        response.sendRedirect("smartsAdmin.gsp");
+    %>
 </head>
 <body></body>
 </html>

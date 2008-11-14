@@ -21,7 +21,7 @@ class SmartsConnectorController {
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 
     def list = {
-        redirect(uri: '/admin.gsp');
+        redirect(uri: '/smartsAdmin.gsp');
     }
 
     def show = {
@@ -29,7 +29,7 @@ class SmartsConnectorController {
 
         if (!smartsConnector) {
             flash.message = "SmartsConnector not found with id ${params.id}"
-            redirect(uri: "/admin.gsp")
+            redirect(uri: "/smartsAdmin.gsp")
         }
         else {
             return [smartsConnector: smartsConnector]
@@ -42,7 +42,7 @@ class SmartsConnectorController {
             try {
                 deleteConnector(smartsConnector)
                 flash.message = "SmartsConnector ${smartsConnector.name} deleted"
-                redirect(uri: "/admin.gsp")
+                redirect(uri: "/smartsAdmin.gsp")
             }
             catch (e) {
                 e.printStackTrace();
@@ -54,7 +54,7 @@ class SmartsConnectorController {
         }
         else {
             flash.message = "SmartsConnector not found with id ${params.id}"
-            redirect(uri: "/admin.gsp")
+            redirect(uri: "/smartsAdmin.gsp")
         }
     }
 
@@ -71,7 +71,7 @@ class SmartsConnectorController {
 
         if (!smartsConnector) {
             flash.message = "SmartsConnector not found with id ${params.id}"
-            redirect(uri: "/admin.gsp")
+            redirect(uri: "/smartsAdmin.gsp")
         }
         else {
             return [smartsConnector: smartsConnector]
@@ -132,7 +132,7 @@ class SmartsConnectorController {
                                 }
 
                             }
-                            redirect(uri: "/admin.gsp")
+                            redirect(uri: "/smartsAdmin.gsp")
                         }
                         else {
                             render(view: 'edit', model: [smartsConnector: smartsConnector])
@@ -140,7 +140,7 @@ class SmartsConnectorController {
                     }
                     else
                     {
-                        redirect(uri: "/admin.gsp")
+                        redirect(uri: "/smartsAdmin.gsp")
                     }
                 }
                 else
@@ -230,7 +230,7 @@ class SmartsConnectorController {
 
                     if(!datasource.hasErrors())
                     {
-                        redirect(uri: "/admin.gsp")
+                        redirect(uri: "/smartsAdmin.gsp")
                     }
                     else
                     {
@@ -262,7 +262,7 @@ class SmartsConnectorController {
         SmartsConnector smartsConnector = SmartsConnector.get([id: params.id])
         if (!smartsConnector) {
             flash.message = "SmartsConnector not found with id ${params.id}"
-            redirect(uri: '/admin.gsp');
+            redirect(uri: '/smartsAdmin.gsp');
         }
         else {
             def script = smartsConnector.ds.listeningScript
@@ -288,7 +288,7 @@ class SmartsConnectorController {
                 flash.errors = this.errors;
             }
 
-            redirect(uri: '/admin.gsp');
+            redirect(uri: '/smartsAdmin.gsp');
         }
     }
 
@@ -296,13 +296,13 @@ class SmartsConnectorController {
         SmartsConnector smartsConnector = SmartsConnector.get([id: params.id])
         if (!smartsConnector) {
             flash.message = "SmartsConnector not found with id ${params.id}"
-            redirect(uri: '/admin.gsp');
+            redirect(uri: '/smartsAdmin.gsp');
         }
         else {
             def script = smartsConnector.ds.listeningScript
             CmdbScript.stopListening(script.name);
             flash.message = "Connector ${smartsConnector.name} successfully stopped"
-            redirect(uri: '/admin.gsp');
+            redirect(uri: '/smartsAdmin.gsp');
         }
     }
 

@@ -6,5 +6,5 @@
  * To change this template use File | Settings | File Templates.
  */
 class NetcoolScriptConfigurationParams {
-    def static COLUMNS_WILL_BE_CONVERTED = ["Class":"", "OwnerUID":"", "OwnerGID":"", "Acknowledged":""];
+    def static COLUMNS_WILL_BE_CONVERTED = ["Class":"", "OwnerUID":"", "OwnerGID":""];
 }

@@ -15,7 +15,7 @@ class NetcoolConnectorController {
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 
     def list = {
-        redirect(uri: '/admin.gsp');
+        redirect(uri: '/netcoolAdmin.gsp');
     }
 
     def show = {
@@ -23,14 +23,14 @@ class NetcoolConnectorController {
 
         if (!netcoolConnector) {
             flash.message = "NetcoolConnector not found with id ${params.id}"
-            redirect(uri: "/admin.gsp")
+            redirect(uri: "/netcoolAdmin.gsp")
         }
         else {
             def connectionName = NetcoolConnector.getConnectionName(netcoolConnector.name);
             def netcoolConnection = NetcoolConnection.findByName(connectionName)
             if (!netcoolConnector) {
                 flash.message = "NetcoolConnection not found with name ${connectionName}"
-                redirect(uri: "/admin.gsp")
+                redirect(uri: "/netcoolAdmin.gsp")
             }
             else {
                 return [netcoolConnector: netcoolConnector, netcoolConnection: netcoolConnection]
@@ -53,7 +53,7 @@ class NetcoolConnectorController {
                 NetcoolDatasource.get(name: datasourceName)?.remove();
                 netcoolConnector.remove()
                 flash.message = "NetcoolConnector ${netcoolConnector.name} deleted"
-                redirect(uri: "/admin.gsp")
+                redirect(uri: "/netcoolAdmin.gsp")
             }
             catch (e) {
                 addError("connector.delete.exception", [netcoolConnector.name, e.getMessage()])
@@ -64,7 +64,7 @@ class NetcoolConnectorController {
         }
         else {
             flash.message = "NetcoolConnector not found with id ${params.id}"
-            redirect(uri: "/admin.gsp")
+            redirect(uri: "/netcoolAdmin.gsp")
         }
     }
 
@@ -73,14 +73,14 @@ class NetcoolConnectorController {
 
         if (!netcoolConnector) {
             flash.message = "NetcoolConnector not found with id ${params.id}"
-            redirect(uri: "/admin.gsp")
+            redirect(uri: "/netcoolAdmin.gsp")
         }
         else {
             def connectionName = NetcoolConnector.getConnectionName(netcoolConnector.name);
             def netcoolConnection = NetcoolConnection.findByName(connectionName)
             if (!netcoolConnector) {
                 flash.message = "NetcoolConnection not found with name ${connectionName}"
-                redirect(uri: "/admin.gsp")
+                redirect(uri: "/netcoolAdmin.gsp")
             }
             else {
                 return [netcoolConnector: netcoolConnector, netcoolConnection: netcoolConnection]
@@ -103,7 +103,7 @@ class NetcoolConnectorController {
                 if (netcoolConnection.host == tempConnection.host && netcoolConnection.port == tempConnection.port) {
                     NetcoolConnectorFactory.setLogLevel(netcoolConnector.name, netcoolConnector.logLevel);
                     flash.message = "NetcoolConnector ${netcoolConnector.name} updated"
-                     redirect(uri: "/admin.gsp")
+                     redirect(uri: "/netcoolAdmin.gsp")
                 }
                 else {
                     netcoolConnection.update(connectionParams);
@@ -116,7 +116,7 @@ class NetcoolConnectorController {
                         else {
                             flash.message = "NetcoolConnector ${netcoolConnector.name} updated, but connection could not be established"
                         }
-                        redirect(uri: "/admin.gsp")
+                        redirect(uri: "/netcoolAdmin.gsp")
                     }
                     else {
                         render(view: 'edit', model: [netcoolConnector: netcoolConnector, netcoolConnection: netcoolConnection])
@@ -159,7 +159,7 @@ class NetcoolConnectorController {
                 else {
                     flash.message = "NetcoolConnector ${netcoolConnector.name} created, but connection could not be established"
                 }
-                 redirect(uri: "/admin.gsp")
+                 redirect(uri: "/netcoolAdmin.gsp")
             }
             else {
                 netcoolConnector.remove();
@@ -176,7 +176,7 @@ class NetcoolConnectorController {
         def netcoolConnector = NetcoolConnector.get([id: params.id])
         if (!netcoolConnector) {
             flash.message = "NetcoolConnector not found with id ${params.id}"
-            redirect(uri: '/admin.gsp');
+            redirect(uri: '/netcoolAdmin.gsp');
         }
         else {
             NetcoolConnectorFactory.removeConnector(netcoolConnector.name);
@@ -201,7 +201,7 @@ class NetcoolConnectorController {
                 flash.errors = this.errors;
             }
 
-            redirect(uri: '/admin.gsp');
+            redirect(uri: '/netcoolAdmin.gsp');
         }
     }
 
@@ -209,14 +209,14 @@ class NetcoolConnectorController {
         def netcoolConnector = NetcoolConnector.get([id: params.id])
         if (!netcoolConnector) {
             flash.message = "NetcoolConnector not found with id ${params.id}"
-            redirect(uri: '/admin.gsp');
+            redirect(uri: '/netcoolAdmin.gsp');
         }
         else {
             NetcoolConnectorFactory.removeConnector(netcoolConnector.name);
             def scriptName = NetcoolConnector.getScriptName(netcoolConnector.name)
             def script = CmdbScript.updateScript(CmdbScript.get(name: scriptName), [enabled: false], true);
             flash.message = "Connector ${netcoolConnector.name} successfully stopped"
-            redirect(uri: '/admin.gsp');
+            redirect(uri: '/netcoolAdmin.gsp');
         }
     }
 

@@ -26,4 +26,6 @@ conversionParams.each{Map params->
         NetcoolConversionParameter.add(keyField:params.keyfield, columnName:params.colName, value:params.value, conversion:params.conversion);
     }
 }
+NetcoolConversionParameter.add(keyField:"Acknowledged0", columnName:"Acknowledged", value:0, conversion:"false")
+NetcoolConversionParameter.add(keyField:"Acknowledged1", columnName:"Acknowledged", value:1, conversion:"true")
 NetcoolConnectorFactory.clearConversionParams();

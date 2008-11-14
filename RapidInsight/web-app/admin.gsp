@@ -8,7 +8,9 @@
 
 <html>
 <head><title>redirecting</title>
-    <meta http-equiv="REFRESH" content="0;url=script/list">
+    <%
+        response.sendRedirect("script/list");
+    %>
 </head>
 <body></body>
 </html>

@@ -207,7 +207,7 @@
     searchList.renderCellFunction = function(key, value, data){
         if(key == "lastNotifiedAt" || key == "lastChangedAt"){
             var d = new Date();
-            d.setTime(parseFloat(value)*1000)
+            d.setTime(parseFloat(value))
             return d.format("d/m/Y H:i:s");
         }
         else if(key == "severity")

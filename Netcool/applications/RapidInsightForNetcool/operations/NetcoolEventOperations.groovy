@@ -5,7 +5,16 @@ import connector.NetcoolConnector
 class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
 	def propsThatCantBeChanged = ["identifier","serverserial","serial"];
-
+    public void clear(){
+        def props = asMap();
+		props.remove('__operation_class__');
+		props.remove('__is_federated_properties_loaded__');
+		props.remove('errors');
+		props.lastClearedAt = Date.now()
+		props.active = "false"
+		def historicalEvent = NetcoolHistoricalEvent.add(props)
+        remove()
+    }
     public void updateAtNc(Map params){
 	    def tempParams = [:];
 	    def ncds = getDatasource(rsDatasource);

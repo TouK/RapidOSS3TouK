@@ -21,6 +21,7 @@ class NetcoolConnectorImpl {
         "x733probablecause": "ncx733probablecause", "x733specificprob": "ncx733specificprob", "x733corrnotif": "ncx733corrnotif",
         "acknowledged": "acknowledged", "owneruid": "owner", "severity": "severity", "firstoccurrence": "firstNotifiedAt",
         "lastoccurrence": "lastNotifiedAt", "suppressescl": "state", "expiretime": "willExpireAt", "statechange": "lastChangedAt"]
+    public static TIMESTAMP_FIELDS = ["statechange", "firstoccurrence", "lastoccurrence", "internallast"]
     Map nameMappings;
     NetcoolDatasource datasource;
     def deleteMarkerField;
@@ -29,11 +30,9 @@ class NetcoolConnectorImpl {
     Class NetcoolJournal;
     Logger logger;
     Map columnConversionParameters;
-    def netcoolEventProperties;
     public NetcoolConnectorImpl(NetcoolConnector connector, Logger logger, Map columnConversionParameters)
     {
         this.logger = logger;
-        netcoolEventProperties = DomainClassUtils.getFilteredProperties("NetcoolEvent", ["id"]);
         this.columnConversionParameters = columnConversionParameters;
         NetcoolEvent = this.class.classLoader.loadClass("NetcoolEvent");
         NetcoolJournal = this.class.classLoader.loadClass("NetcoolJournal");
@@ -92,14 +91,7 @@ class NetcoolConnectorImpl {
         }
         logger.info("Following events are deleted before connector start ${markedEvents}");
         markedEvents.each {key, event ->
-            def historicalEventProps = [:];
-            netcoolEventProperties.each {p ->
-                historicalEventProps[p.name] = event[p.name];
-            }
-            logger.debug("Creating historical event with properties ${historicalEventProps}")
-            NetcoolHistoricalEvent.add(historicalEventProps);
-            logger.debug("Removing event ${event}")
-            event.remove();
+            event.clear();
         }
     }
 
@@ -126,16 +118,10 @@ class NetcoolConnectorImpl {
         logger.info("Got ${records.size()} number of records");
         for (Map rec in records) {
             if (rec[deleteMarkerNetcoolName] == "0") {
-                logger.info("Removing event ${rec}")
+                logger.info("Clearing event ${rec}")
                 def event = NetcoolEvent.get(name: "${rec.SERVERNAME}_${rec.SERVERSERIAL}");
                 if (event) {
-                    def historicalEventProps = [:];
-                    netcoolEventProperties.each {p ->
-                        historicalEventProps[p.name] = event[p.name];
-                    }
-                    logger.debug("Creating historical event with properties ${historicalEventProps}")
-                    NetcoolHistoricalEvent.add(historicalEventProps);
-                    event.remove();
+                    event.clear();
                 }
             }
             else {
@@ -217,6 +203,12 @@ class NetcoolConnectorImpl {
                 catch(e){
                 }
 
+            }
+            if(TIMESTAMP_FIELDS.contains(propName.toLowerCase())){
+                try{
+                   propValue = Long.parseLong(propValue) * 1000;
+                }
+                catch(e){}
             }
             def localColName = nameMappings[propName];
             if (localColName == null)

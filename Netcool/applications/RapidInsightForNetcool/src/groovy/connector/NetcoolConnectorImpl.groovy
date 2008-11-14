@@ -236,7 +236,7 @@ class NetcoolConnectorImpl {
         def journalMap = [servername: event.servername, serverserial: event.serverserial, rsDatasource: this.connectorName]
         StringBuffer text = new StringBuffer();
         rec.each {String propName, String propValue ->
-            if (propName.startsWith("text") && propValue != "")
+            if (propName.toLowerCase().startsWith("text") && propValue != "")
             {
                 text.append(" ").append(propValue);
             }

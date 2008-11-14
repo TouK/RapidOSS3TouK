@@ -4,10 +4,10 @@ import com.ifountain.rcmdb.domain.method.*
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.springframework.validation.BindException
 import org.springframework.validation.Errors
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsApplication
 
 /**
 * Created by IntelliJ IDEA.
@@ -126,7 +126,7 @@ class SearchableExtensionGrailsPlugin {
         def keys = DomainClassUtils.getKeys(dc);
         def persProps = DomainClassUtils.getPersistantProperties(dc, true);
         def addMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
-        def removeAllMethod = new RemoveAllMethod(mc);
+        def removeAllMatchingMethod = new RemoveAllMatchingMethod(mc, relations);
         def removeMethod = new RemoveMethod(mc, relations);
         def updateMethod = new UpdateMethod(mc, dc.validator, persProps, relations);
         def addRelationMethod = new AddRelationMethod(mc, relations);
@@ -152,7 +152,10 @@ class SearchableExtensionGrailsPlugin {
             return removeMethod.invoke(delegate, null);
         }
         mc.'static'.removeAll = {->
-            removeAllMethod.invoke(mc.theClass, null);
+            removeAllMatchingMethod.invoke(mc.theClass, ["alias:*"] as Object[]);
+        }
+        mc.'static'.removeAll = {query->
+            removeAllMatchingMethod.invoke(mc.theClass, [query] as Object[]);
         }
         mc.'static'.add = {Map props->
             return addMethod.invoke(mc.theClass, [props] as Object[]);

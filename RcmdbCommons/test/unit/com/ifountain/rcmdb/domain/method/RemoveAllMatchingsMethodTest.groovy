@@ -1,0 +1,116 @@
+package com.ifountain.rcmdb.domain.method
+
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
+import com.ifountain.rcmdb.domain.property.RelationUtils
+import org.apache.commons.lang.StringUtils
+import org.apache.commons.io.FileUtils
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: mustafa sener
+ * Date: Nov 13, 2008
+ * Time: 6:01:25 PM
+ * To change this template use File | Settings | File Templates.
+ */
+class RemoveAllMatchingsMethodTest  extends RapidCmdbWithCompassTestCase{
+
+    public void setUp() {
+        super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
+        FileUtils.deleteDirectory (new File(ModelGenerationTestUtils.temp_Dir))
+        FileUtils.deleteDirectory (new File(ModelGenerationTestUtils.base_Dir))
+    }
+
+    public void tearDown() {
+        super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    public void testRemoveAllMatchings()
+    {
+        def modelName = "Model";
+        def relatedModelName = "RelatedModel";
+        def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false]
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+
+        def relatedModelMetaProps = [name:relatedModelName]
+        def modelMetaProps = [name:modelName]
+        def modelProps = [keyProp,prop1];
+        def keyPropList = [keyProp];
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [rel1])
+        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, modelProps, keyPropList, [revrel1])
+        this.gcl.parseClass(modelString+relatedModelString);
+        Class modelClass = this.gcl.loadClass(modelName);
+        Class relatedModelClass = this.gcl.loadClass(relatedModelName);
+        initialize([modelClass, relatedModelClass], [])
+        def modelInstance1 = modelClass.'add'(keyProp:"model1Instance1", prop1:"group1");
+        def modelInstance2 = modelClass.'add'(keyProp:"model1Instance2", prop1:"group1");
+        def modelInstance3 = modelClass.'add'(keyProp:"model1Instance3", prop1:"group2");
+        def relatedObject1 = relatedModelClass.'add'(keyProp:"relatedObjectInstance1", revrel1:[modelInstance1, modelInstance3]);
+        def relatedObject2 = relatedModelClass.'add'(keyProp:"relatedObjectInstance2", revrel1:[modelInstance2]);
+        assertFalse (modelInstance1.hasErrors());
+        assertFalse (modelInstance2.hasErrors());
+        assertFalse (modelInstance3.hasErrors());
+        assertFalse (relatedObject1.hasErrors());
+        assertFalse (relatedObject2.hasErrors());
+        assertEquals (relatedObject1.id, modelInstance1.rel1[0].id);
+        assertEquals (relatedObject2.id, modelInstance2.rel1[0].id);
+        assertEquals (relatedObject1.id, modelInstance3.rel1[0].id);
+
+        modelClass.'removeAll'("prop1:group1");
+        assertNull (modelClass.'get'(keyProp:modelInstance1.keyProp));
+        assertNull (modelClass.'get'(keyProp:modelInstance2.keyProp));
+        assertNotNull (modelClass.'get'(keyProp:modelInstance3.keyProp));
+        def objectIdsForInstance1 = RelationUtils.getRelatedObjectsIdsByObjectId(modelInstance1.id, "rel1", "revrel1");
+        def objectIdsForInstance2 = RelationUtils.getRelatedObjectsIdsByObjectId(modelInstance2.id, "rel1", "revrel1");
+        assertTrue (objectIdsForInstance1.isEmpty());
+        assertTrue (objectIdsForInstance2.isEmpty());
+    }
+
+    public void testRemoveAllMatchingsWithCascade()
+    {
+        def modelName = "Model";
+        def relatedModelName = "RelatedModel";
+        def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false]
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:false];
+
+        def relatedModelMetaProps = [name:relatedModelName]
+        def modelMetaProps = [name:modelName]
+        def modelProps = [keyProp,prop1];
+        def keyPropList = [keyProp];
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [rel1])
+        def beforeClosure = StringUtils.substringBefore(modelString, "{");
+        def afterClosure = StringUtils.substringAfter(modelString, "{");
+        modelString = beforeClosure+"""{static cascaded = ["rel1":true]"""+afterClosure 
+        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, modelProps, keyPropList, [revrel1])
+        this.gcl.parseClass(modelString+relatedModelString);
+        Class modelClass = this.gcl.loadClass(modelName);
+        Class relatedModelClass = this.gcl.loadClass(relatedModelName);
+        initialize([modelClass, relatedModelClass], [])
+        def modelInstance1 = modelClass.'add'(keyProp:"model1Instance1", prop1:"group1");
+        def modelInstance3 = modelClass.'add'(keyProp:"model1Instance3", prop1:"group2");
+        def relatedObject1 = relatedModelClass.'add'(keyProp:"relatedObjectInstance1", revrel1:[modelInstance1]);
+        def relatedObject2 = relatedModelClass.'add'(keyProp:"relatedObjectInstance2", revrel1:[modelInstance3]);
+        assertFalse (modelInstance1.hasErrors());
+        assertFalse (modelInstance3.hasErrors());
+        assertFalse (relatedObject1.hasErrors());
+        assertFalse (relatedObject2.hasErrors());
+        assertEquals (relatedObject1.id, modelInstance1.rel1.id);
+        assertEquals (relatedObject2.id, modelInstance3.rel1.id);
+
+        modelClass.'removeAll'("prop1:group1");
+        assertNull (modelClass.'get'(keyProp:modelInstance1.keyProp));
+        assertNotNull (modelClass.'get'(keyProp:modelInstance3.keyProp));
+        assertNull (relatedModelClass.'get'(keyProp:relatedObject1.keyProp));
+        assertNotNull (relatedModelClass.'get'(keyProp:relatedObject2.keyProp));
+        def objectIdsForInstance1 = RelationUtils.getRelatedObjectsIdsByObjectId(modelInstance1.id, "rel1", "revrel1");
+        def objectIdsForInstance3 = RelationUtils.getRelatedObjectsIdsByObjectId(modelInstance3.id, "rel1", "revrel1");
+        assertTrue (objectIdsForInstance1.isEmpty());
+        assertFalse (objectIdsForInstance3.isEmpty());
+
+    }
+}

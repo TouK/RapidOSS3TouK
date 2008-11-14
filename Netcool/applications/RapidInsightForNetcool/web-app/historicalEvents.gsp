@@ -67,16 +67,16 @@
     pollingInterval="0" onSaveQueryClick="saveQueryAction" fieldsUrl="script/run/getViewFields?format=xml">
     <rui:sgColumns>
         <rui:sgColumn attributeName="node" colLabel="Node" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="owneruid" colLabel="Owner" width="50"></rui:sgColumn>
+        <rui:sgColumn attributeName="owner" colLabel="Owner" width="50"></rui:sgColumn>
         <rui:sgColumn attributeName="ownergid" colLabel="Group" width="50"></rui:sgColumn>
         <rui:sgColumn attributeName="acknowledged" colLabel="Ack" width="50"></rui:sgColumn>
         <rui:sgColumn attributeName="manager" colLabel="Manager" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="summary" colLabel="Summary" width="250"></rui:sgColumn>
         <rui:sgColumn attributeName="tally" colLabel="Count" width="50"></rui:sgColumn>
-        <rui:sgColumn attributeName="suppressescl" colLabel="Suppr/Escl" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="state" colLabel="Suppr/Escl" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="tasklist" colLabel="TaskList" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="lastoccurrence" colLabel="Last Occurrence" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="statechange" colLabel="State Change" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="lastNotifiedAt" colLabel="Last Occurrence" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="lastChangedAt" colLabel="State Change" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="alertgroup" colLabel="Alert Group" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="alertkey" colLabel="Alert Key" width="100"></rui:sgColumn>
     </rui:sgColumns>
@@ -136,7 +136,7 @@
     var filterTree = YAHOO.rapidjs.Components['filterTree'];
     var searchGrid = YAHOO.rapidjs.Components['searchGrid'];
     searchGrid.renderCellFunction = function(key, value, data){
-        if(key == "lastoccurrence" || key == "statechange"){
+        if(key == "lastNotifiedAt" || key == "lastChangedAt"){
             var d = new Date();
             d.setTime(parseFloat(value)*1000)
             return d.format("d/m/Y H:i:s");
@@ -155,7 +155,7 @@
                 }
 
         }
-        else if(key == "suppressescl")
+        else if(key == "state")
         {
                 switch(value)
                 {

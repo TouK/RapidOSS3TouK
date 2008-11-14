@@ -9,11 +9,10 @@
 import auth.RsUser;
 import datasource.NetcoolConversionParameter;
 
-def netcoolServerName = params.servername;
-def serverSerial = params.serverserial;
+def eventName = params.name;
 def user = RsUser.findByUsername(web.session.username);
 
-def netcoolEvent = NetcoolEvent.get(servername: netcoolServerName, serverserial: serverSerial);
+def netcoolEvent = NetcoolEvent.get(name:eventName);
 if (netcoolEvent) {
     def userId = NetcoolConversionParameter.search("columnName:OwnerUID AND conversion:$user.username").results[0]
     if(userId == null){

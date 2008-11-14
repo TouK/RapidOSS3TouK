@@ -67,16 +67,16 @@
     pollingInterval="0" onSaveQueryClick="saveQueryAction" fieldsUrl="script/run/getViewFields?format=xml">
     <rui:sgColumns>
         <rui:sgColumn attributeName="node" colLabel="Node" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="owneruid" colLabel="Owner" width="50"></rui:sgColumn>
+        <rui:sgColumn attributeName="owner" colLabel="Owner" width="50"></rui:sgColumn>
         <rui:sgColumn attributeName="ownergid" colLabel="Group" width="50"></rui:sgColumn>
         <rui:sgColumn attributeName="acknowledged" colLabel="Ack" width="50"></rui:sgColumn>
         <rui:sgColumn attributeName="manager" colLabel="Manager" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="summary" colLabel="Summary" width="250"></rui:sgColumn>
         <rui:sgColumn attributeName="tally" colLabel="Count" width="50"></rui:sgColumn>
-        <rui:sgColumn attributeName="suppressescl" colLabel="Suppr/Escl" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="state" colLabel="Suppr/Escl" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="tasklist" colLabel="TaskList" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="lastoccurrence" colLabel="Last Occurrence" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="statechange" colLabel="State Change" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="lastNotifiedAt" colLabel="Last Occurrence" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="lastChangedAt" colLabel="State Change" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="alertgroup" colLabel="Alert Group" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="alertkey" colLabel="Alert Key" width="100"></rui:sgColumn>
     </rui:sgColumns>
@@ -89,13 +89,13 @@
         <rui:sgMenuItem id="removeTaskFromList" label="Remove Task From List" action="removeTaskAction" visible="params.data.tasklist == '1'"></rui:sgMenuItem>
         <rui:sgMenuItem id="suppressEscalate" label="Suppress/Escalate">
                <rui:sgSubmenuItems>
-                    <rui:sgMenuItem id="0" label="Normal" action="suppressEscalateAction" visible="params.data.suppressescl != '0'"></rui:sgMenuItem>
-                    <rui:sgMenuItem id="1" label="Escalated" action="suppressEscalateAction" visible="params.data.suppressescl != '1'"></rui:sgMenuItem>
-                    <rui:sgMenuItem id="2" label="Escalated-Level 2" action="suppressEscalateAction" visible="params.data.suppressescl != '2'"></rui:sgMenuItem>
-                    <rui:sgMenuItem id="3" label="Escalated-Level 3" action="suppressEscalateAction" visible="params.data.suppressescl != '3'"></rui:sgMenuItem>
-                    <rui:sgMenuItem id="4" label="Suppressed" action="suppressEscalateAction" visible="params.data.suppressescl != '4'"></rui:sgMenuItem>
-                    <rui:sgMenuItem id="5" label="Hidden" action="suppressEscalateAction" visible="params.data.suppressescl != '5'"></rui:sgMenuItem>
-                    <rui:sgMenuItem id="6" label="Maintenance" action="suppressEscalateAction" visible="params.data.suppressescl != '6'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="0" label="Normal" action="suppressEscalateAction" visible="params.data.state != '0'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="1" label="Escalated" action="suppressEscalateAction" visible="params.data.state != '1'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="2" label="Escalated-Level 2" action="suppressEscalateAction" visible="params.data.state != '2'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="3" label="Escalated-Level 3" action="suppressEscalateAction" visible="params.data.state != '3'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="4" label="Suppressed" action="suppressEscalateAction" visible="params.data.state != '4'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="5" label="Hidden" action="suppressEscalateAction" visible="params.data.state != '5'"></rui:sgMenuItem>
+                    <rui:sgMenuItem id="6" label="Maintenance" action="suppressEscalateAction" visible="params.data.state != '6'"></rui:sgMenuItem>
                </rui:sgSubmenuItems>
         </rui:sgMenuItem>
         <rui:sgMenuItem id="severity" label="Chanage Severity">
@@ -128,37 +128,30 @@
     <rui:functionArg>'Details of ' + params.data.identifier</rui:functionArg>
 </rui:action>
 <rui:action id="acknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['searchGrid']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="acknowledged" value="'true'"></rui:requestParam>
 </rui:action>
 <rui:action id="deacknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['searchGrid']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="acknowledged" value="'false'"></rui:requestParam>
 </rui:action>
 <rui:action id="takeOwnAction" type="merge" url="script/run/takeOwnership?format=xml" components="${['searchGrid']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
 </rui:action>
 <rui:action id="addTaskAction" type="merge" url="script/run/taskList?format=xml" components="${['searchGrid']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="taskList" value="'true'"></rui:requestParam>
 </rui:action>
 <rui:action id="removeTaskAction" type="merge" url="script/run/taskList?format=xml" components="${['searchGrid']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="taskList" value="'false'"></rui:requestParam>
 </rui:action>
 <rui:action id="suppressEscalateAction" type="merge" url="script/run/suppress?format=xml" components="${['searchGrid']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="suppressescl" value="params.menuId"></rui:requestParam>
 </rui:action>
 <rui:action id="severityAction" type="merge" url="script/run/severity?format=xml" components="${['searchGrid']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="severity" value="params.menuId"></rui:requestParam>
 </rui:action>
 <rui:action id="saveQueryAction" type="function" componentId="filterDialog" function="show">
@@ -196,7 +189,7 @@
     var filterTree = YAHOO.rapidjs.Components['filterTree'];
     var searchGrid = YAHOO.rapidjs.Components['searchGrid'];
     searchGrid.renderCellFunction = function(key, value, data){
-        if(key == "lastoccurrence" || key == "statechange"){
+        if(key == "lastNotifiedAt" || key == "lastChangedAt"){
             var d = new Date();
             d.setTime(parseFloat(value)*1000)
             return d.format("d/m/Y H:i:s");
@@ -215,7 +208,7 @@
                 }
 
         }
-        else if(key == "suppressescl")
+        else if(key == "state")
         {
                 switch(value)
                 {

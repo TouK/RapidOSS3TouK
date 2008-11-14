@@ -56,7 +56,7 @@
     </rui:tgRootImages>
 </rui:treeGrid>
 <%
-    def defaultFields = ['node', 'owneruid', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','suppressescl','tasklist','lastoccurrence','statechange','alertgroup','alertkey'];
+    def defaultFields = ['node', 'owner', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','state','tasklist','lastNotifiedAt','lastChangedAt','alertgroup','alertkey'];
 %>
 <rui:searchList id="searchList" url="search?format=xml&searchIn=NetcoolEvent" rootTag="Objects" contentPath="Object" keyAttribute="id"
     lineSize="3" title="Netcool Events" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
@@ -70,13 +70,13 @@
         <rui:slMenuItem id="removeTaskFromList" label="Remove Task From List" action="removeTaskAction" visible="params.data.tasklist == '1'"></rui:slMenuItem>
         <rui:slMenuItem id="suppressEscalate" label="Suppress/Escalate">
                <rui:slSubmenuItems>
-                    <rui:slMenuItem id="0" label="Normal" action="suppressEscalateAction" visible="params.data.suppressescl != '0'"></rui:slMenuItem>
-                    <rui:slMenuItem id="1" label="Escalated" action="suppressEscalateAction" visible="params.data.suppressescl != '1'"></rui:slMenuItem>
-                    <rui:slMenuItem id="2" label="Escalated-Level 2" action="suppressEscalateAction" visible="params.data.suppressescl != '2'"></rui:slMenuItem>
-                    <rui:slMenuItem id="3" label="Escalated-Level 3" action="suppressEscalateAction" visible="params.data.suppressescl != '3'"></rui:slMenuItem>
-                    <rui:slMenuItem id="4" label="Suppressed" action="suppressEscalateAction" visible="params.data.suppressescl != '4'"></rui:slMenuItem>
-                    <rui:slMenuItem id="5" label="Hidden" action="suppressEscalateAction" visible="params.data.suppressescl != '5'"></rui:slMenuItem>
-                    <rui:slMenuItem id="6" label="Maintenance" action="suppressEscalateAction" visible="params.data.suppressescl != '6'"></rui:slMenuItem>
+                    <rui:slMenuItem id="0" label="Normal" action="suppressEscalateAction" visible="params.data.state != '0'"></rui:slMenuItem>
+                    <rui:slMenuItem id="1" label="Escalated" action="suppressEscalateAction" visible="params.data.state != '1'"></rui:slMenuItem>
+                    <rui:slMenuItem id="2" label="Escalated-Level 2" action="suppressEscalateAction" visible="params.data.state != '2'"></rui:slMenuItem>
+                    <rui:slMenuItem id="3" label="Escalated-Level 3" action="suppressEscalateAction" visible="params.data.state != '3'"></rui:slMenuItem>
+                    <rui:slMenuItem id="4" label="Suppressed" action="suppressEscalateAction" visible="params.data.state != '4'"></rui:slMenuItem>
+                    <rui:slMenuItem id="5" label="Hidden" action="suppressEscalateAction" visible="params.data.state != '5'"></rui:slMenuItem>
+                    <rui:slMenuItem id="6" label="Maintenance" action="suppressEscalateAction" visible="params.data.state != '6'"></rui:slMenuItem>
                </rui:slSubmenuItems>
         </rui:slMenuItem>
         <rui:slMenuItem id="severity" label="Chanage Severity">
@@ -119,37 +119,30 @@
     <rui:functionArg>'Details of ' + params.data.identifier</rui:functionArg>
 </rui:action>
 <rui:action id="acknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['searchList']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="acknowledged" value="'true'"></rui:requestParam>
 </rui:action>
 <rui:action id="deacknowledgeAction" type="merge" url="script/run/acknowledge?format=xml" components="${['searchList']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="acknowledged" value="'false'"></rui:requestParam>
 </rui:action>
 <rui:action id="takeOwnAction" type="merge" url="script/run/takeOwnership?format=xml" components="${['searchList']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
 </rui:action>
 <rui:action id="addTaskAction" type="merge" url="script/run/taskList?format=xml" components="${['searchList']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="taskList" value="'true'"></rui:requestParam>
 </rui:action>
 <rui:action id="removeTaskAction" type="merge" url="script/run/taskList?format=xml" components="${['searchList']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="taskList" value="'false'"></rui:requestParam>
 </rui:action>
 <rui:action id="suppressEscalateAction" type="merge" url="script/run/suppress?format=xml" components="${['searchList']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="suppressescl" value="params.menuId"></rui:requestParam>
 </rui:action>
 <rui:action id="severityAction" type="merge" url="script/run/severity?format=xml" components="${['searchList']}">
-    <rui:requestParam key="servername" value="params.data.servername"></rui:requestParam>
-    <rui:requestParam key="serverserial" value="params.data.serverserial"></rui:requestParam>
+    <rui:requestParam key="name" value="params.data.name"></rui:requestParam>
     <rui:requestParam key="severity" value="params.menuId"></rui:requestParam>
 </rui:action>
 <rui:action id="greaterThanAction" type="function" componentId="searchList" function="appendToQuery">
@@ -212,7 +205,7 @@
     var filterTree = YAHOO.rapidjs.Components['filterTree'];
     var searchList = YAHOO.rapidjs.Components['searchList'];
     searchList.renderCellFunction = function(key, value, data){
-        if(key == "lastoccurrence" || key == "statechange"){
+        if(key == "lastNotifiedAt" || key == "lastChangedAt"){
             var d = new Date();
             d.setTime(parseFloat(value)*1000)
             return d.format("d/m/Y H:i:s");
@@ -231,7 +224,7 @@
                 }
 
         }
-        else if(key == "suppressescl")
+        else if(key == "state")
         {
                 switch(value)
                 {

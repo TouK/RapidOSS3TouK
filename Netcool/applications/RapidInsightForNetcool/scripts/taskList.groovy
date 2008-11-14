@@ -5,13 +5,11 @@
  * Time: 11:08:26 AM
  * To change this template use File | Settings | File Templates.
  */
-
-def netcoolServerName = params.servername;
-def serverSerial = params.serverserial;
+def eventName = params.name
 def taskList = params.taskList;
 
 
-def netcoolEvent = NetcoolEvent.get(servername: netcoolServerName, serverserial: serverSerial);
+def netcoolEvent = NetcoolEvent.get(name: eventName);
 if (netcoolEvent) {
     if (taskList == "true")
         netcoolEvent.addToTaskList(true);

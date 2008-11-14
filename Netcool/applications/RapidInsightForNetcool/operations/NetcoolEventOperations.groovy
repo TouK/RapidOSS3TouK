@@ -47,7 +47,7 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.Abstra
     public void setSuppressescl(newValue, userName){
 	    def ncds = getDatasource(rsDatasource);
 	    ncds.suppressAction(serverserial,  newValue, userName);
-	    update(suppressescl : newValue);
+	    update(state : newValue);
     }
 
     public void addToTaskList(boolean action){

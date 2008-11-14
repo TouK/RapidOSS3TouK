@@ -8,12 +8,11 @@
 
 import auth.RsUser;
 
-def netcoolServerName = params.servername;
-def serverSerial = params.serverserial;
+def eventName = params.name;
 def user = RsUser.findByUsername(web.session.username);
 def severity = Integer.parseInt(params.severity);
 
-def netcoolEvent = NetcoolEvent.get(servername: netcoolServerName, serverserial: serverSerial);
+def netcoolEvent = NetcoolEvent.get(name:eventName);
 if (netcoolEvent) {
     netcoolEvent.setSeverity(severity, user);
     def props = [:];

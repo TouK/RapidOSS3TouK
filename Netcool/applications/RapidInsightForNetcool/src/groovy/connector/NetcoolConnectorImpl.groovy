@@ -17,7 +17,10 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
  * To change this template use File | Settings | File Templates.
  */
 class NetcoolConnectorImpl {
-    public static MAPPING_FOR_KNOWN_COLUMNS = ["class": "netcoolclass", "type": "nctype"]
+    public static MAPPING_FOR_KNOWN_COLUMNS = ["class": "netcoolclass", "type": "nctype", "x733eventtype": "ncx733eventtype",
+        "x733probablecause": "ncx733probablecause", "x733specificprob": "ncx733specificprob", "x733corrnotif": "ncx733corrnotif",
+        "acknowledged": "acknowledged", "owneruid": "owner", "severity": "severity", "firstoccurrence": "firstNotifiedAt",
+        "lastoccurrence": "lastNotifiedAt", "suppressescl": "state", "expiretime": "willExpireAt", "statechange": "lastChangedAt"]
     Map nameMappings;
     NetcoolDatasource datasource;
     def deleteMarkerField;
@@ -124,7 +127,7 @@ class NetcoolConnectorImpl {
         for (Map rec in records) {
             if (rec[deleteMarkerNetcoolName] == "0") {
                 logger.info("Removing event ${rec}")
-                def event = NetcoolEvent.get(serverserial: rec.SERVERSERIAL, servername: rec.SERVERNAME);
+                def event = NetcoolEvent.get(name: "${rec.SERVERNAME}_${rec.SERVERSERIAL}");
                 if (event) {
                     def historicalEventProps = [:];
                     netcoolEventProperties.each {p ->
@@ -208,16 +211,22 @@ class NetcoolConnectorImpl {
             def convProp = this.columnConversionParameters[propName];
             if (convProp != null)
             {
-                propValue = convProp[propValue]
+                try{
+                    propValue = convProp[propValue.toInteger()]
+                }
+                catch(e){
+                }
+
             }
             def localColName = nameMappings[propName];
             if (localColName == null)
             {
-                localColName = MAPPING_FOR_KNOWN_COLUMNS[propName.toLowerCase()] != null ? MAPPING_FOR_KNOWN_COLUMNS[propName.toLowerCase()] : propName;
+                localColName = MAPPING_FOR_KNOWN_COLUMNS[propName.toLowerCase()] != null ? MAPPING_FOR_KNOWN_COLUMNS[propName.toLowerCase()] : propName.toLowerCase();
             }
-            eventMap[localColName.toLowerCase()] = propValue;
+            eventMap[localColName] = propValue;
         }
         eventMap["rsDatasource"] = connectorName
+        eventMap["name"] = "${rec.SERVERNAME}_${rec.SERVERSERIAL}"
         return eventMap;
     }
 

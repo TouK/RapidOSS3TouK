@@ -330,6 +330,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="state">state:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'state','errors')}">
+                            <input type="text" id="state" name="state" value="${fieldValue(bean:rsSmartsNotification,field:'state')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="troubleTicketID">troubleTicketID:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'troubleTicketID','errors')}">
@@ -424,6 +433,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'userDefined9','errors')}">
                             <input type="text" id="userDefined9" name="userDefined9" value="${fieldValue(bean:rsSmartsNotification,field:'userDefined9')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="willExpireAt">willExpireAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'willExpireAt','errors')}">
+                            <input type="text" id="willExpireAt" name="willExpireAt" value="${fieldValue(bean:rsSmartsNotification,field:'willExpireAt')}" />
                         </td>
                     </tr>
                     

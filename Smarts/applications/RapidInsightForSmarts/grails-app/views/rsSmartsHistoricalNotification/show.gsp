@@ -273,6 +273,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">state:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsHistoricalNotification.state}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">troubleTicketID:</td>
                     
                     <td valign="top" class="value">${rsSmartsHistoricalNotification.troubleTicketID}</td>
@@ -346,6 +353,13 @@
                     <td valign="top" class="name">userDefined9:</td>
                     
                     <td valign="top" class="value">${rsSmartsHistoricalNotification.userDefined9}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">willExpireAt:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsHistoricalNotification.willExpireAt}</td>
                     
                 </tr>
                 

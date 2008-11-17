@@ -36,11 +36,7 @@ class RapidInsightBuild extends Build {
         def versionDate = getVersionWithDate();
         def zipFileName = "$env.distribution/RI_Windows$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
-            ant.zipfileset(dir: "$env.distribution") {
-                ant.exclude(name: ".project");
-                ant.exclude(name: "*.zip");
-                ant.exclude(name: "Modules");
-            }
+            ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
         }
     }
 

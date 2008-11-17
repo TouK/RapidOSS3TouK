@@ -7,7 +7,7 @@
 
 <html>
 <head>
-    <meta name="layout" content="smartsLayout" />
+    <meta name="layout" content="indexLayout" />
     <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA7ipkp7ZXyXVH2UHyOgqZhxT2yXp_ZAY8_ufC3CFXhHIE1NvwkxRnNbZP5arP3T53Mzg-yLZcEMRBew"></script>
 </head>
 <body>

@@ -39,6 +39,7 @@ class RapidInsightBuild extends Build {
             ant.zipfileset(dir: "$env.distribution") {
                 ant.exclude(name: ".project");
                 ant.exclude(name: "*.zip");
+                ant.exclude(name: "Modules");
             }
         }
     }

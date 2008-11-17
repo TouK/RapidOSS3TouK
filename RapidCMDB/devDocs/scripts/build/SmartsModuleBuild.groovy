@@ -43,7 +43,7 @@ class SmartsModuleBuild extends Build {
 
     def build() {
         clean();
-        ant.javac(srcdir: "$env.rapid_ext/smarts/java", destdir: env.rapid_smarts_build, excludes: getExcludedClasses()) {
+        ant.javac(srcdir: "$env.rapid_smarts/src/java", destdir: env.rapid_smarts_build, excludes: getExcludedClasses()) {
             ant.classpath(refid: "classpath");
         }
         ant.jar(destfile: env.rapid_rssmarts_jar, basedir: env.rapid_smarts_build);
@@ -64,6 +64,19 @@ class SmartsModuleBuild extends Build {
         ant.copy(todir: "$env.dist_modules_rapid_suite") {
             ant.fileset(dir: "$env.rapid_smarts/applications/RapidInsightForSmarts")
         }
+        def versionDate = getVersionWithDate();
+        ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
+            ant.arg(value: "-file");
+            ant.arg(value: "${env.dist_modules_rapid_suite}/grails-app/views/layouts/indexLayout.gsp");
+            ant.arg(value: "-applicationPath");
+            ant.arg(value: "${env.dist_rapid_suite}/web-app");
+            ant.arg(value: "-target");
+            ant.arg(value: "${env.dist_modules_rapid_suite}/web-app");
+            ant.arg(value: "-suffix");
+            ant.arg(value: "${versionDate}");
+                ant.classpath(refid: "classpath");
+        }
+        ant.move(file: "${env.dist_modules_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
         def adminViews = ["httpConnection", "httpDatasource", "databaseConnection", "ldapConnection", "databaseDatasource",
                 "singleTableDatabaseDatasource", "snmpConnection", "snmpDatasource", "script", "rsUser", "group", "smartsConnector", "smartsConnection",
                 "smartsConnectionTemplate", "smartsNotificationDatasource", "smartsTopologyDatasource", "smartsNotificationConnector", "smartsTopologyConnector"]

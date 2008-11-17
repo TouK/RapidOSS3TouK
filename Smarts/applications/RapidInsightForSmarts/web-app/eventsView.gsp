@@ -7,10 +7,10 @@
 
 <html>
 <head>
-    <meta name="layout" content="smartsLayout"/>
+    <meta name="layout" content="indexLayout"/>
 </head>
 <body>
-<rui:treeGrid id="filterTree" url="script/run/queryList?format=xml&type=notification" rootTag="Filters" pollingInterval="0"
+<rui:treeGrid id="filterTree" url="script/run/queryList?format=xml&type=event" rootTag="Filters" pollingInterval="0"
         keyAttribute="id" contentPath="Filter" title="SavedQueries" expanded="true" onNodeClick="setQueryAction">
     <rui:tgColumns>
         <rui:tgColumn attributeName="name" colLabel="Name" width="248" sortBy="true"></rui:tgColumn>
@@ -28,8 +28,8 @@
     </rui:tgRootImages>
 </rui:treeGrid>
 
-<rui:form id="filterDialog" width="35em" createUrl="script/run/createQuery?queryType=notification" editUrl="script/run/editQuery?queryType=notification"
-        saveUrl="searchQuery/save?format=xml&type=notification" updateUrl="searchQuery/update?format=xml&type=notification" onSuccess="refreshQueriesAction">
+<rui:form id="filterDialog" width="35em" createUrl="script/run/createQuery?queryType=event" editUrl="script/run/editQuery?queryType=event"
+        saveUrl="searchQuery/save?format=xml&type=event" updateUrl="searchQuery/update?format=xml&type=event" onSuccess="refreshQueriesAction">
     <div>
         <div class="hd">Save query</div>
         <div class="bd">
@@ -47,8 +47,8 @@
         </div>
     </div>
 </rui:form>
-<rui:form id="filterGroupDialog" width="30em" saveUrl="searchQueryGroup/save?format=xml&type=notification"
-        updateUrl="searchQueryGroup/update?format=xml&type=notification" onSuccess="refreshQueriesAction">
+<rui:form id="filterGroupDialog" width="30em" saveUrl="searchQueryGroup/save?format=xml&type=event"
+        updateUrl="searchQueryGroup/update?format=xml&type=event" onSuccess="refreshQueriesAction">
     <div>
         <div class="hd">Save group</div>
         <div class="bd">

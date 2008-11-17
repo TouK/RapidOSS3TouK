@@ -47,7 +47,6 @@ class NetcoolModuleBuild extends Build {
         ant.copy(todir: "$env.dist_modules_rapid_suite") {
             ant.fileset(dir: "$env.rapid_netcool/applications/RapidInsightForNetcool")
         }
-        ant.copy(todir: "$env.dist_rapid_suite/web-app", file:"$env.rapid_netcool/applications/RapidInsightForNetcool/web-app/netcool.css")
         def versionDate = getVersionWithDate();
         ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
             ant.arg(value: "-file");
@@ -60,7 +59,6 @@ class NetcoolModuleBuild extends Build {
             ant.arg(value: "${versionDate}");
                 ant.classpath(refid: "classpath");
         }
-        ant.delete(file:"$env.dist_rapid_suite/web-app/netcool.css")
         ant.move(file: "${env.dist_modules_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
         def adminViews = ["httpConnection", "httpDatasource", "databaseConnection", "ldapConnection", "databaseDatasource",
                 "singleTableDatabaseDatasource", "snmpConnection", "snmpDatasource", "script", "rsUser", "group", "netcoolConnector", "netcoolConversionParameter"]

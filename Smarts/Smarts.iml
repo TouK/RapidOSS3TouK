@@ -48,16 +48,6 @@
     <orderEntry type="module" module-name="RapidCMDB" />
     <orderEntry type="library" name="compass" level="project" />
     <orderEntry type="library" name="LicencedJars" level="project" />
-    <orderEntry type="module-library">
-      <library name="smartsplugin">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/lib" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
-      </library>
-    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>

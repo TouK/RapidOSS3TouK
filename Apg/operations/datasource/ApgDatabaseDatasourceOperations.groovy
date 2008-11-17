@@ -3,6 +3,7 @@ package datasource
 import com.ifountain.apg.datasource.ApgDatabaseAdapter
 import com.watch4net.apg.v2.remote.sample.jaxws.db.*
 import org.apache.log4j.Logger
+import groovy.lang.PropertyValue
 
 /**
  * Created by IntelliJ IDEA.

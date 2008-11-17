@@ -6,7 +6,7 @@
 --%>
 <html>
 <head>
-    <meta name="layout" content="smartsLayout" />
+    <meta name="layout" content="indexLayout" />
 </head>
 <body>
 <rui:autocomplete id="searchDevice" title="Device Search" url="script/run/autocomplete"

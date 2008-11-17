@@ -416,7 +416,9 @@ public class SmartsNotificationListeningAdapter extends BaseSmartsListeningAdapt
     }
 
     protected void startSmoother(){
-        int refreshInterval = transientInterval/3;
+        //Previously it was dependent on transientinterval. We replaced this with a fixed time interval.
+//        int refreshInterval = transientInterval/3;
+        int refreshInterval = 10;
         smoother = new Smoother(stagingArea, refreshInterval);
 		smoother.start();
     }

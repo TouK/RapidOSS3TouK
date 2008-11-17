@@ -3,10 +3,7 @@ package com.ifountain.smarts.datasource;
 import com.smarts.repos.MR_PropertyNameValue;
 import com.ifountain.smarts.util.SmartsHelper;
 
-import java.util.Hashtable;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 
@@ -112,26 +109,47 @@ public class StagingArea {
     // This method is used by the Smoother thread
     public synchronized void processedStagedNotifications() {
         logger.debug(logPrefix + "processing staged notifications.");
-        Enumeration notifications = stagedNotifications.keys();
-        ArrayList notificationsInList = null;
-        try
+        Map<String, StagedNotification> expiredNotifications = getExpiredNotificationList();
+        if(!expiredNotifications.isEmpty())
         {
-            notificationsInList = SmartsHelper.getExistingNotificationsOfAList(notificationAdapter.getDomainManager(), nlName, logger);
-            logger.debug(logPrefix + notificationsInList.size() + " notifications exist in " + nlName);
-            while (notifications.hasMoreElements()){
-                processEachStagedNotification((String) notifications.nextElement(), notificationsInList);
+            try
+            {
+                Map<String, String> notificationsInListAsMap = SmartsHelper.getExistingNotificationsOfAListAsMap(notificationAdapter.getDomainManager(), nlName, logger);
+                logger.debug(logPrefix + notificationsInListAsMap.size() + " notifications exist in " + nlName);
+                Set entries = expiredNotifications.entrySet();
+                for(Iterator<Map.Entry<String,StagedNotification>> it=entries.iterator(); it.hasNext(); )
+                {
+                    Map.Entry<String,StagedNotification> notificationEntry = it.next();
+                    processEachStagedNotification(notificationEntry.getKey(), notificationEntry.getValue(), notificationsInListAsMap);
+
+                }
+            }
+            catch (Exception e)
+            {
+                String errorMsg = "Exception <" + e.toString() + "> while accesing notification list: " + nlName;
+                logger.error(errorMsg);
             }
         }
-        catch (Exception e)
-        {
-            String errorMsg = "Exception <" + e.toString() + "> while accesing notification list: " + nlName;
-            logger.error(errorMsg);
-        }
+
     }
-    private void processEachStagedNotification(String notificationName, ArrayList notificationsInList){
-        boolean isNotificationInList = notificationsInList.contains(notificationName);
+    private Map<String, StagedNotification> getExpiredNotificationList(){
+        Map<String, StagedNotification> expiredNotifications = new HashMap<String, StagedNotification>();
+        Enumeration notifications = stagedNotifications.keys();
+        long currentTime = new Date().getTime();
+        while (notifications.hasMoreElements()){
+            String notificationName = (String)notifications.nextElement();
+            StagedNotification stagedNotification = (StagedNotification)stagedNotifications.get(notificationName);
+            if(stagedNotification.getTimeStamp()+ transientInterval < currentTime)
+            {
+                expiredNotifications.put(notificationName, stagedNotification);    
+            }
+        }
+        return expiredNotifications;
+    }
+    private void processEachStagedNotification(String notificationName, StagedNotification notification, Map<String, String> notificationsInListAsMap){
+        boolean isNotificationInList = notificationsInListAsMap.containsKey(notificationName);
         if (isNotificationInList){
-            updateAdapter(notificationName,(StagedNotification) stagedNotifications.get(notificationName));
+            updateAdapter(notificationName,notification);
         }
         else{
             logger.debug(logPrefix + notificationName + " is not a member of " + nlName + ", will not send it to Reader. Removing from staged notifications.");
@@ -140,15 +158,10 @@ public class StagingArea {
     }
 
      private void updateAdapter(String notificationName, StagedNotification stagedNotification){
-        if(stagedNotification.getTimeStamp()+ transientInterval < new Date().getTime()){
-            logger.debug(logPrefix + "Sending " + notificationName + " to the Reader, with event name: " + stagedNotification.getEventName());
-            sendNotification(stagedNotification.getEventName(), stagedNotification.getNameValuePairs());
-            stagedNotifications.remove(notificationName);
-            logger.debug(logPrefix + "Removed " + notificationName + " from staging area.");
-        }
-        else{
-            logger.debug(logPrefix + notificationName + " has not expired in the staging area yet");
-        }
+        logger.debug(logPrefix + "Sending " + notificationName + " to the Reader, with event name: " + stagedNotification.getEventName());
+        sendNotification(stagedNotification.getEventName(), stagedNotification.getNameValuePairs());
+        stagedNotifications.remove(notificationName);
+        logger.debug(logPrefix + "Removed " + notificationName + " from staging area.");
     }
 
     protected void sendNotification(String eventType, MR_PropertyNameValue[] propertyNameValues) {

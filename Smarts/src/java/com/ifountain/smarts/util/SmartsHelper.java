@@ -14,8 +14,7 @@ import com.smarts.repos.MR_AnyValArray;
 import com.smarts.repos.MR_PropertyNameValue;
 import com.smarts.remote.SmRepositoryInterfaceHandler;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 
@@ -38,8 +37,40 @@ public class SmartsHelper {
         MR_AnyVal[] anyVals = domainManager.getProperties(SmartsConstants.NOTIFICATION_LIST_CLASS, nlName, propNames);
         String[] nNames = (String[])anyVals[0].getValue();
         for (int i = 0; i < nNames.length; i++) {
-            logger.debug("Got " + nNames[i]);
             notificationsInList.add(nNames[i]);
+        }
+        if(logger.isDebugEnabled())
+        {
+            StringBuffer notificationNameBuffer = new StringBuffer("Got from ").append(nlName).append("[");
+            for(int i=0; i < notificationsInList.size(); i++)
+            {
+                notificationNameBuffer.append(notificationsInList.get(i)).append(", ");
+            }
+            notificationNameBuffer.append("]");
+            logger.debug(notificationNameBuffer.toString());
+        }
+        return notificationsInList;
+    }
+
+    public static Map<String, String> getExistingNotificationsOfAListAsMap(SmRepositoryInterfaceHandler domainManager, String nlName, Logger logger) throws Exception {
+        logger.debug("Getting existing notifications of " + nlName);
+        Map<String, String> notificationsInList = new HashMap<String, String>();
+        String[] propNames = {"AllNotifications"};
+        MR_AnyVal[] anyVals = domainManager.getProperties(SmartsConstants.NOTIFICATION_LIST_CLASS, nlName, propNames);
+        String[] nNames = (String[])anyVals[0].getValue();
+        for (int i = 0; i < nNames.length; i++) {
+            notificationsInList.put(nNames[i], nNames[i]);
+        }
+        if(logger.isDebugEnabled())
+        {
+            StringBuffer notificationNameBuffer = new StringBuffer("Got from ").append(nlName).append("[");
+            Set entries = notificationsInList.entrySet();
+            for(Iterator<Map.Entry<String, String>> it=entries.iterator(); it.hasNext(); )
+            {
+                notificationNameBuffer.append(it.next().getKey()).append(", ");    
+            }
+            notificationNameBuffer.append("]");
+            logger.debug(notificationNameBuffer.toString());
         }
         return notificationsInList;
     }

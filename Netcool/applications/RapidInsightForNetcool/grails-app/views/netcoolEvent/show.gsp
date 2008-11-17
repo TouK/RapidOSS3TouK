@@ -49,13 +49,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">active:</td>
-                    
-                    <td valign="top" class="value">${netcoolEvent.active}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">agent:</td>
                     
                     <td valign="top" class="value">${netcoolEvent.agent}</td>
@@ -77,6 +70,34 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">changedAt:</td>
+                    
+                    <td valign="top" class="value">${netcoolEvent.changedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">clearedAt:</td>
+                    
+                    <td valign="top" class="value">${netcoolEvent.clearedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">count:</td>
+                    
+                    <td valign="top" class="value">${netcoolEvent.count}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">createdAt:</td>
+                    
+                    <td valign="top" class="value">${netcoolEvent.createdAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">customer:</td>
                     
                     <td valign="top" class="value">${netcoolEvent.customer}</td>
@@ -84,16 +105,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">eventid:</td>
+                    <td valign="top" class="name">elementName:</td>
                     
-                    <td valign="top" class="value">${netcoolEvent.eventid}</td>
+                    <td valign="top" class="value">${netcoolEvent.elementName}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">firstNotifiedAt:</td>
+                    <td valign="top" class="name">eventid:</td>
                     
-                    <td valign="top" class="value">${netcoolEvent.firstNotifiedAt}</td>
+                    <td valign="top" class="value">${netcoolEvent.eventid}</td>
                     
                 </tr>
                 
@@ -126,23 +147,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastChangedAt:</td>
+                    <td valign="top" class="name">lastoccurrence:</td>
                     
-                    <td valign="top" class="value">${netcoolEvent.lastChangedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">lastClearedAt:</td>
-                    
-                    <td valign="top" class="value">${netcoolEvent.lastClearedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">lastNotifiedAt:</td>
-                    
-                    <td valign="top" class="value">${netcoolEvent.lastNotifiedAt}</td>
+                    <td valign="top" class="value">${netcoolEvent.lastoccurrence}</td>
                     
                 </tr>
                 
@@ -402,13 +409,6 @@
                     <td valign="top" class="name">summary:</td>
                     
                     <td valign="top" class="value">${netcoolEvent.summary}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">tally:</td>
-                    
-                    <td valign="top" class="value">${netcoolEvent.tally}</td>
                     
                 </tr>
                 

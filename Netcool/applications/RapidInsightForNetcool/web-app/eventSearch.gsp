@@ -56,7 +56,7 @@
     </rui:tgRootImages>
 </rui:treeGrid>
 <%
-    def defaultFields = ['node', 'owner', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','state','tasklist','lastNotifiedAt','lastChangedAt','alertgroup','alertkey'];
+    def defaultFields = ['node', 'owner', 'ownergid', 'acknowledged','agent','manager', 'summary','tally','severity','state','tasklist','lastoccurrence','changedAt','alertgroup','alertkey'];
 %>
 <rui:searchList id="searchList" url="search?format=xml&searchIn=NetcoolEvent" rootTag="Objects" contentPath="Object" keyAttribute="id"
     lineSize="3" title="Netcool Events" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
@@ -205,7 +205,7 @@
     var filterTree = YAHOO.rapidjs.Components['filterTree'];
     var searchList = YAHOO.rapidjs.Components['searchList'];
     searchList.renderCellFunction = function(key, value, data){
-        if(key == "lastNotifiedAt" || key == "lastChangedAt"){
+        if(key == "lastoccurence" || key == "changedAt"){
             var d = new Date();
             d.setTime(parseFloat(value))
             return d.format("d/m/Y H:i:s");

@@ -7,6 +7,8 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
 
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    
+    
     };
     static datasources = [:]
 
@@ -23,15 +25,9 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
     
     String eventName ="";
     
-    Long lastNotifiedAt =0;
-    
-    Long firstNotifiedAt =0;
-    
-    Long lastClearedAt =0;
-    
-    Long lastChangedAt =0;
-    
     Boolean isRoot =false;
+    
+    Boolean isProblem =false;
     
     String eventType ="";
     
@@ -49,7 +45,7 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
     
     String category ="";
     
-    Long occurrenceCount =0;
+    Long lastNotifiedAt =0;
     
     String classDisplayName ="";
     
@@ -58,8 +54,6 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
     String eventDisplayName ="";
     
     String elementClassName ="";
-    
-    String elementName ="";
     
     String sourceDomainName ="";
     
@@ -82,10 +76,6 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
     String userDefined9 ="";
     
     String userDefined10 ="";
-
-    String causedBy ="";
-    
-    String causes ="";
     
     Long id ;
     
@@ -113,15 +103,9 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
         
      eventName(blank:true,nullable:true)
         
-     lastNotifiedAt(nullable:true)
-        
-     firstNotifiedAt(nullable:true)
-        
-     lastClearedAt(nullable:true)
-        
-     lastChangedAt(nullable:true)
-        
      isRoot(nullable:true)
+        
+     isProblem(nullable:true)
         
      eventType(blank:true,nullable:true)
         
@@ -139,7 +123,7 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
         
      category(blank:true,nullable:true)
         
-     occurrenceCount(nullable:true)
+     lastNotifiedAt(nullable:true)
         
      classDisplayName(blank:true,nullable:true)
         
@@ -148,8 +132,6 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
      eventDisplayName(blank:true,nullable:true)
         
      elementClassName(blank:true,nullable:true)
-        
-     elementName(blank:true,nullable:true)
         
      sourceDomainName(blank:true,nullable:true)
         
@@ -173,10 +155,6 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
         
      userDefined10(blank:true,nullable:true)
         
-     causedBy(blank:true,nullable:true)
-        
-     causes(blank:true,nullable:true)
-        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
@@ -193,5 +171,6 @@ class RsSmartsHistoricalNotification  extends RsHistoricalEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
     
 }

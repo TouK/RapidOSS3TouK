@@ -17,8 +17,6 @@ class RsEvent {
     
     String name ="";
     
-    Boolean active =true;
-    
     String owner ="";
     
     Boolean acknowledged =false;
@@ -27,19 +25,21 @@ class RsEvent {
     
     String source ="";
     
-    Long firstNotifiedAt =0;
+    Long createdAt =0;
     
-    Long lastNotifiedAt =0;
+    Long changedAt =0;
     
-    Long lastChangedAt =0;
-    
-    Long lastClearedAt =0;
+    Long clearedAt =0;
     
     String rsDatasource ="";
     
     Long willExpireAt =0;
     
     Long state =0;
+    
+    String elementName ="";
+    
+    Long count =1;
     
     Long id ;
     
@@ -57,8 +57,6 @@ class RsEvent {
     static constraints={
     name(blank:false,nullable:false,key:[])
         
-     active(nullable:true)
-        
      owner(blank:true,nullable:true)
         
      acknowledged(nullable:true)
@@ -67,19 +65,21 @@ class RsEvent {
         
      source(blank:true,nullable:true)
         
-     firstNotifiedAt(nullable:true)
+     createdAt(nullable:true)
         
-     lastNotifiedAt(nullable:true)
+     changedAt(nullable:true)
         
-     lastChangedAt(nullable:true)
-        
-     lastClearedAt(nullable:true)
+     clearedAt(nullable:true)
         
      rsDatasource(blank:true,nullable:true)
         
      willExpireAt(nullable:true)
         
      state(nullable:true)
+        
+     elementName(blank:true,nullable:true)
+        
+     count(nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -102,6 +102,7 @@ class RsEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
     
 }

@@ -61,10 +61,10 @@ objectDetails.show(url, title);
     <div style="display:block;margin-top:10px;">
         <%
                 SimpleDateFormat format = new SimpleDateFormat("dd MMM HH:mm:ss")
-                def firstNotifiedAt = domainObject.firstNotifiedAt == 0 ? "never" : format.format(new Timestamp(domainObject.firstNotifiedAt));
+                def firstNotifiedAt = domainObject.createdAt == 0 ? "never" : format.format(new Timestamp(domainObject.createdAt));
                 def lastNotifiedAt = domainObject.lastNotifiedAt == 0 ? "never" : format.format(new Timestamp(domainObject.lastNotifiedAt));
-                def lastChangedAt = domainObject.lastChangedAt == 0 ? "never" : format.format(new Timestamp(domainObject.lastChangedAt));
-                def lastClearedAt = domainObject.lastClearedAt == 0 ? "never" : format.format(new Timestamp(domainObject.lastClearedAt));
+                def lastChangedAt = domainObject.changedAt == 0 ? "never" : format.format(new Timestamp(domainObject.changedAt));
+                def lastClearedAt = domainObject.clearedAt == 0 ? "never" : format.format(new Timestamp(domainObject.clearedAt));
                 def severityClass;
                 def severity = domainObject.severity;
                 if (severity == 1) {
@@ -123,7 +123,7 @@ objectDetails.show(url, title);
                                     <b>Last Notified At:</b> ${lastNotifiedAt}<br>
                                     <b>Last Changed At:</b> ${lastChangedAt}<br>
                                     <b>Last Cleared At:</b> ${lastClearedAt}<br>
-                                    <b>Count:</b> ${domainObject.occurrenceCount}<br>
+                                    <b>Count:</b> ${domainObject.count}<br>
                                 </div>
                             </div>
                         </div>

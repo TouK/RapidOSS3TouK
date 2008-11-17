@@ -11,10 +11,10 @@
         <Property Name='alertgroup' Type='string' />
         <Property Name='alertkey' Type='string' />
         <Property Name='summary' Type='string' />
+        <Property Name='lastoccurrence' Type='number' />
         <Property Name='internallast' Type='number' />
         <Property Name='poll' Type='number' />
         <Property Name='nctype' Type='number' />
-        <Property Name='tally' Type='number' />
         <Property Name='ncclass' Type='string' />
         <Property Name='grade' Type='number' />
         <Property Name='location' Type='string' />
@@ -59,10 +59,10 @@
         <Property Name='alertgroup' Type='string' />
         <Property Name='alertkey' Type='string' />
         <Property Name='summary' Type='string' />
+        <Property Name='lastoccurrence' Type='number' />
         <Property Name='internallast' Type='number' />
         <Property Name='poll' Type='number' />
         <Property Name='nctype' Type='number' />
-        <Property Name='tally' Type='number' />
         <Property Name='ncclass' Type='string' />
         <Property Name='grade' Type='number' />
         <Property Name='location' Type='string' />

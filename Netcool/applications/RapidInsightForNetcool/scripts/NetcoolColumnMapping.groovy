@@ -15,8 +15,8 @@ Logger logger = Logger.getLogger("getConversionParameters");
 def defaultConversionColumnConfiguration = ["Class": "ncclass", "Type": "nctype", "X733EventType": "ncx733eventtype",
         "X733ProbableCause": "ncx733probablecause", "X733SpecificProb": "ncx733specificprob", "X733CorrNotif": "ncx733corrnotif"]
 
-def rsEventColumnConfiguration = ["Acknowledged": "acknowledged", "OwnerUID": "owner", "Severity": "severity", "FirstOccurrence": "firstNotifiedAt",
-        "LastOccurrence": "lastNotifiedAt", "SuppressEscl": "state", "ExpireTime": "willExpireAt", "StateChange": "lastChangedAt"]
+def rsEventColumnConfiguration = ["Acknowledged": "acknowledged", "OwnerUID": "owner", "Severity": "severity", "FirstOccurrence": "createdAt",
+         "SuppressEscl": "state", "ExpireTime": "willExpireAt", "StateChange": "changedAt", "Tally":"count"]
 def deleteColName = "isdeleted"
 def baseDir = System.getProperty("base.dir");
 def netcoolConfigurationFile = new File("$baseDir/grails-app/conf/NetcoolModelConfiguration.xml");

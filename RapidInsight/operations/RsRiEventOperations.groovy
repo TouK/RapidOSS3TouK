@@ -7,12 +7,11 @@ class RsRiEventOperations  extends RsEventOperations {
 		eventProps.active = "true"
 		def event = RsEvent.get(name:eventProps.name)
 		if (event == null){
-			eventProps.firstNotifiedAt = Date.now()
+			eventProps.createdAt = Date.now()
 		} else {
 			eventProps.count = event.count + 1;
 		}
-		eventProps.lastNotifiedAt = Date.now()
-		eventProps.lastChangedAt = Date.now()
+		eventProps.changedAt = Date.now()
 		event = RsRiEvent.add(eventProps)
 		
 		if (!event.hasErrors()) {
@@ -31,7 +30,7 @@ class RsRiEventOperations  extends RsEventOperations {
 		props.remove('__operation_class__');
 		props.remove('__is_federated_properties_loaded__');
 		props.remove('errors');
-		props.lastClearedAt = Date.now()
+		props.clearedAt = Date.now()
 		props.active = "false"
 		RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date())
 		def historicalEvent = RsRiHistoricalEvent.add(props)

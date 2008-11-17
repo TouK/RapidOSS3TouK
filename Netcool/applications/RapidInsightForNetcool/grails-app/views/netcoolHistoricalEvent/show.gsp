@@ -35,16 +35,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">acknowledged:</td>
+                    <td valign="top" class="name">name:</td>
                     
-                    <td valign="top" class="value">${netcoolHistoricalEvent.acknowledged}</td>
+                    <td valign="top" class="value">${netcoolHistoricalEvent.name}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">active:</td>
+                    <td valign="top" class="name">acknowledged:</td>
                     
-                    <td valign="top" class="value">${netcoolHistoricalEvent.active}</td>
+                    <td valign="top" class="value">${netcoolHistoricalEvent.acknowledged}</td>
                     
                 </tr>
                 
@@ -70,6 +70,34 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">changedAt:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.changedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">clearedAt:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.clearedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">count:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.count}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">createdAt:</td>
+                    
+                    <td valign="top" class="value">${netcoolHistoricalEvent.createdAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">customer:</td>
                     
                     <td valign="top" class="value">${netcoolHistoricalEvent.customer}</td>
@@ -77,16 +105,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">eventid:</td>
+                    <td valign="top" class="name">elementName:</td>
                     
-                    <td valign="top" class="value">${netcoolHistoricalEvent.eventid}</td>
+                    <td valign="top" class="value">${netcoolHistoricalEvent.elementName}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">firstNotifiedAt:</td>
+                    <td valign="top" class="name">eventid:</td>
                     
-                    <td valign="top" class="value">${netcoolHistoricalEvent.firstNotifiedAt}</td>
+                    <td valign="top" class="value">${netcoolHistoricalEvent.eventid}</td>
                     
                 </tr>
                 
@@ -119,23 +147,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastChangedAt:</td>
+                    <td valign="top" class="name">lastoccurrence:</td>
                     
-                    <td valign="top" class="value">${netcoolHistoricalEvent.lastChangedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">lastClearedAt:</td>
-                    
-                    <td valign="top" class="value">${netcoolHistoricalEvent.lastClearedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">lastNotifiedAt:</td>
-                    
-                    <td valign="top" class="value">${netcoolHistoricalEvent.lastNotifiedAt}</td>
+                    <td valign="top" class="value">${netcoolHistoricalEvent.lastoccurrence}</td>
                     
                 </tr>
                 
@@ -178,13 +192,6 @@
                     <td valign="top" class="name">manager:</td>
                     
                     <td valign="top" class="value">${netcoolHistoricalEvent.manager}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">name:</td>
-                    
-                    <td valign="top" class="value">${netcoolHistoricalEvent.name}</td>
                     
                 </tr>
                 
@@ -402,13 +409,6 @@
                     <td valign="top" class="name">summary:</td>
                     
                     <td valign="top" class="value">${netcoolHistoricalEvent.summary}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">tally:</td>
-                    
-                    <td valign="top" class="value">${netcoolHistoricalEvent.tally}</td>
                     
                 </tr>
                 

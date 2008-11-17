@@ -35,16 +35,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">acknowledged:</td>
+                    <td valign="top" class="name">name:</td>
                     
-                    <td valign="top" class="value">${rsSmartsHistoricalNotification.acknowledged}</td>
+                    <td valign="top" class="value">${rsSmartsHistoricalNotification.name}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">active:</td>
+                    <td valign="top" class="name">acknowledged:</td>
                     
-                    <td valign="top" class="value">${rsSmartsHistoricalNotification.active}</td>
+                    <td valign="top" class="value">${rsSmartsHistoricalNotification.acknowledged}</td>
                     
                 </tr>
                 
@@ -56,23 +56,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">causedBy:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsHistoricalNotification.causedBy}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">causes:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsHistoricalNotification.causes}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">certainty:</td>
                     
                     <td valign="top" class="value">${rsSmartsHistoricalNotification.certainty}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">changedAt:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsHistoricalNotification.changedAt}</td>
                     
                 </tr>
                 
@@ -87,6 +80,27 @@
                     <td valign="top" class="name">className:</td>
                     
                     <td valign="top" class="value">${rsSmartsHistoricalNotification.className}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">clearedAt:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsHistoricalNotification.clearedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">count:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsHistoricalNotification.count}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">createdAt:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsHistoricalNotification.createdAt}</td>
                     
                 </tr>
                 
@@ -161,13 +175,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">firstNotifiedAt:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsHistoricalNotification.firstNotifiedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">impact:</td>
                     
                     <td valign="top" class="value">${rsSmartsHistoricalNotification.impact}</td>
@@ -196,6 +203,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">isProblem:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsHistoricalNotification.isProblem}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">isRoot:</td>
                     
                     <td valign="top" class="value">${rsSmartsHistoricalNotification.isRoot}</td>
@@ -203,37 +217,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastChangedAt:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsHistoricalNotification.lastChangedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">lastClearedAt:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsHistoricalNotification.lastClearedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">lastNotifiedAt:</td>
                     
                     <td valign="top" class="value">${rsSmartsHistoricalNotification.lastNotifiedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">name:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsHistoricalNotification.name}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">occurrenceCount:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsHistoricalNotification.occurrenceCount}</td>
                     
                 </tr>
                 

@@ -51,15 +51,6 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="active">active:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'active','errors')}">
-                            <g:checkBox name="active" value="${rsSmartsNotification?.active}" ></g:checkBox>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="category">category:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'category','errors')}">
@@ -78,6 +69,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="changedAt">changedAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'changedAt','errors')}">
+                            <input type="text" id="changedAt" name="changedAt" value="${fieldValue(bean:rsSmartsNotification,field:'changedAt')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="classDisplayName">classDisplayName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'classDisplayName','errors')}">
@@ -91,6 +91,33 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'className','errors')}">
                             <input type="text" id="className" name="className" value="${fieldValue(bean:rsSmartsNotification,field:'className')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="clearedAt">clearedAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'clearedAt','errors')}">
+                            <input type="text" id="clearedAt" name="clearedAt" value="${fieldValue(bean:rsSmartsNotification,field:'clearedAt')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="count">count:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'count','errors')}">
+                            <input type="text" id="count" name="count" value="${fieldValue(bean:rsSmartsNotification,field:'count')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="createdAt">createdAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'createdAt','errors')}">
+                            <input type="text" id="createdAt" name="createdAt" value="${fieldValue(bean:rsSmartsNotification,field:'createdAt')}" />
                         </td>
                     </tr>
                     
@@ -186,15 +213,6 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="firstNotifiedAt">firstNotifiedAt:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'firstNotifiedAt','errors')}">
-                            <input type="text" id="firstNotifiedAt" name="firstNotifiedAt" value="${fieldValue(bean:rsSmartsNotification,field:'firstNotifiedAt')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="impact">impact:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'impact','errors')}">
@@ -249,37 +267,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="lastChangedAt">lastChangedAt:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'lastChangedAt','errors')}">
-                            <input type="text" id="lastChangedAt" name="lastChangedAt" value="${fieldValue(bean:rsSmartsNotification,field:'lastChangedAt')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="lastClearedAt">lastClearedAt:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'lastClearedAt','errors')}">
-                            <input type="text" id="lastClearedAt" name="lastClearedAt" value="${fieldValue(bean:rsSmartsNotification,field:'lastClearedAt')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="lastNotifiedAt">lastNotifiedAt:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'lastNotifiedAt','errors')}">
                             <input type="text" id="lastNotifiedAt" name="lastNotifiedAt" value="${fieldValue(bean:rsSmartsNotification,field:'lastNotifiedAt')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="occurrenceCount">occurrenceCount:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsSmartsNotification,field:'occurrenceCount','errors')}">
-                            <input type="text" id="occurrenceCount" name="occurrenceCount" value="${fieldValue(bean:rsSmartsNotification,field:'occurrenceCount')}" />
                         </td>
                     </tr>
                     

@@ -49,9 +49,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">active:</td>
+                    <td valign="top" class="name">changedAt:</td>
                     
-                    <td valign="top" class="value">${rsRiEvent.active}</td>
+                    <td valign="top" class="value">${rsRiEvent.changedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">clearedAt:</td>
+                    
+                    <td valign="top" class="value">${rsRiEvent.clearedAt}</td>
                     
                 </tr>
                 
@@ -63,44 +70,30 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">eventName:</td>
+                    <td valign="top" class="name">createdAt:</td>
                     
-                    <td valign="top" class="value">${rsRiEvent.eventName}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">firstNotifiedAt:</td>
-                    
-                    <td valign="top" class="value">${rsRiEvent.firstNotifiedAt}</td>
+                    <td valign="top" class="value">${rsRiEvent.createdAt}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastChangedAt:</td>
+                    <td valign="top" class="name">description:</td>
                     
-                    <td valign="top" class="value">${rsRiEvent.lastChangedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">lastClearedAt:</td>
-                    
-                    <td valign="top" class="value">${rsRiEvent.lastClearedAt}</td>
+                    <td valign="top" class="value">${rsRiEvent.description}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastNotifiedAt:</td>
+                    <td valign="top" class="name">elementName:</td>
                     
-                    <td valign="top" class="value">${rsRiEvent.lastNotifiedAt}</td>
+                    <td valign="top" class="value">${rsRiEvent.elementName}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">node:</td>
+                    <td valign="top" class="name">identifier:</td>
                     
-                    <td valign="top" class="value">${rsRiEvent.node}</td>
+                    <td valign="top" class="value">${rsRiEvent.identifier}</td>
                     
                 </tr>
                 

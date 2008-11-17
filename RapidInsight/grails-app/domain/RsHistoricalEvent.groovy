@@ -10,14 +10,10 @@ class RsHistoricalEvent {
     
     
     };
-    static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
 
     
     String name ="";
-    
-    Boolean active =true;
-    
-    String source ="";
     
     String owner ="";
     
@@ -25,19 +21,23 @@ class RsHistoricalEvent {
     
     Long severity =0;
     
+    String source ="";
+    
+    Long createdAt =0;
+    
+    Long changedAt =0;
+    
+    Long clearedAt =0;
+    
     String rsDatasource ="";
-    
-    Long firstNotifiedAt =0;
-    
-    Long lastNotifiedAt =0;
-    
-    Long lastChangedAt =0;
-    
-    Long lastClearedAt =0;
     
     Long willExpireAt =0;
     
     Long state =0;
+    
+    String elementName ="";
+    
+    Long count =1;
     
     Long id ;
     
@@ -53,11 +53,7 @@ class RsHistoricalEvent {
     static relations = [:]    
     
     static constraints={
-    name(blank:true,nullable:true)
-        
-     active(nullable:true)
-        
-     source(blank:true,nullable:true)
+    name(blank:false,nullable:false,key:[])
         
      owner(blank:true,nullable:true)
         
@@ -65,19 +61,23 @@ class RsHistoricalEvent {
         
      severity(nullable:true)
         
+     source(blank:true,nullable:true)
+        
+     createdAt(nullable:true)
+        
+     changedAt(nullable:true)
+        
+     clearedAt(nullable:true)
+        
      rsDatasource(blank:true,nullable:true)
-        
-     firstNotifiedAt(nullable:true)
-        
-     lastNotifiedAt(nullable:true)
-        
-     lastChangedAt(nullable:true)
-        
-     lastClearedAt(nullable:true)
         
      willExpireAt(nullable:true)
         
      state(nullable:true)
+        
+     elementName(blank:true,nullable:true)
+        
+     count(nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -93,13 +93,14 @@ class RsHistoricalEvent {
     
     public String toString()
     {
-    	return "${getClass().getName()}[id:$id]";
+    	return "${getClass().getName()}[name:$name]";
     }
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
     
 }

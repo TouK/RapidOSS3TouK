@@ -40,9 +40,9 @@
         <rui:sgColumn attributeName="instanceDisplayName" colLabel="Name" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="eventName" colLabel="Event" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="sourceDomainName" colLabel="Source" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="occurrenceCount" colLabel="Count" width="50"></rui:sgColumn>
+        <rui:sgColumn attributeName="count" colLabel="Count" width="50"></rui:sgColumn>
         <rui:sgColumn attributeName="lastNotifiedAt" colLabel="Last Notify" width="120"></rui:sgColumn>
-        <rui:sgColumn attributeName="lastChangedAt" colLabel="Last Change" width="120"></rui:sgColumn>
+        <rui:sgColumn attributeName="changedAt" colLabel="Last Change" width="120"></rui:sgColumn>
     </rui:sgColumns>
 </rui:searchGrid>
 <rui:html id="objectDetailsmenuHtml" title="Device Details"></rui:html>
@@ -94,7 +94,7 @@
     var autocomplete = YAHOO.rapidjs.Components['searchDevice'];
     var objectDetails = YAHOO.rapidjs.Components['objectDetailsmenuHtml'];
     eventsGrid.renderCellFunction = function(key, value, data, el){
-        if(key == "lastNotifiedAt" || key == "lastChangedAt"){
+        if(key == "lastNotifiedAt" || key == "changedAt"){
             if(value == "0" || value == "")
             {
                 return "never"

@@ -10,7 +10,7 @@ class NetcoolEventOperations extends com.ifountain.rcmdb.domain.operation.Abstra
 		props.remove('__operation_class__');
 		props.remove('__is_federated_properties_loaded__');
 		props.remove('errors');
-		props.lastClearedAt = Date.now()
+		props.clearedAt = Date.now()
 		props.active = "false"
 		def historicalEvent = NetcoolHistoricalEvent.add(props)
         remove()

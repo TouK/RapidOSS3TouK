@@ -4,7 +4,7 @@ class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDo
 		props.remove('__operation_class__');
 		props.remove('__is_federated_properties_loaded__');
 		props.remove('errors');
-		props.lastClearedAt = Date.now()
+		props.clearedAt = Date.now()
 		props.active = "false"
 		RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date())
 		def historicalEvent = RsHistoricalEvent.add(props)
@@ -26,7 +26,7 @@ class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDo
 			}
 		}
 		acknowledged = action
-		lastChangedAt = Date.now()
+		changedAt = Date.now()
 	}	
 
 	public void setOwnership(boolean action, userName) {
@@ -38,7 +38,7 @@ class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDo
             RsEventJournal.add(eventId:id, eventName:"ReleaseOwnership", rsTime:new Date(), details:"RelaseOwnership by ${userName}")
             owner = ""
         }
-		lastChangedAt = Date.now()
+		changedAt = Date.now()
 	}
 	
 	public void addToJournal(name, details){

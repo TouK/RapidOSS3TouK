@@ -4,7 +4,7 @@
 </head>
 <body>
 <script>
-     function formatLastChangedAt(key, value, data, el){
+     function formatChangedAt(key, value, data, el){
         if(value == "0" || value == "")
         {
             return "never"
@@ -40,15 +40,15 @@
     </rui:hnDefaultMenus>
     <rui:hnSearchResults>
         <%
-             def smartsEventFields = ["className", "instanceName", "eventName", "sourceDomainName","acknowledged","owner", "lastChangedAt",
+             def smartsEventFields = ["className", "instanceName", "eventName", "sourceDomainName","acknowledged","owner", "changedAt",
                    "elementClassName", "elementName","isRoot", "severity"];
         %>
         <rui:hnSearchResult alias="RsSmartsHistoricalNotification" properties="${smartsEventFields}" emphasizeds="${['className', 'instanceName', 'eventName']}"></rui:hnSearchResult>
     </rui:hnSearchResults>
     <rui:hnConversions>
-        <rui:hnConversion property="lastChangedAt" type="function" function="formatLastChangedAt"></rui:hnConversion>
+        <rui:hnConversion property="changedAt" type="function" function="formatChangedAt"></rui:hnConversion>
         %{--<rui:nsConversion property="severity" type="mapping" mapping="['1':'Critical', '2':'Major', '3':'Minor', '4':'Unknown', '5':'Normal']"></rui:nsConversion>--}%
-        %{--<rui:nsConversion property="lastClearedAt" type="date" format="d M H:i:s"></rui:nsConversion>--}%
+        %{--<rui:nsConversion property="clearedAt" type="date" format="d M H:i:s"></rui:nsConversion>--}%
     </rui:hnConversions>
 </rui:historicalNotifications>
 

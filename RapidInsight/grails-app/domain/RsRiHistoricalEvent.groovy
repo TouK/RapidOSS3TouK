@@ -13,9 +13,9 @@ class RsRiHistoricalEvent  extends RsHistoricalEvent {
     static datasources = [:]
 
     
-    Long count =1;
+    String description ="";
     
-    String eventName ="";
+    String identifier ="";
     
     Long id ;
     
@@ -31,9 +31,9 @@ class RsRiHistoricalEvent  extends RsHistoricalEvent {
     static relations = [:]    
     
     static constraints={
-    count(nullable:true)
+    description(blank:true,nullable:true)
         
-     eventName(blank:true,nullable:true)
+     identifier(blank:true,nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -51,6 +51,7 @@ class RsRiHistoricalEvent  extends RsHistoricalEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
     
 }

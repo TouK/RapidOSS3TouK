@@ -19,8 +19,8 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 class NetcoolConnectorImpl {
     public static MAPPING_FOR_KNOWN_COLUMNS = ["class": "netcoolclass", "type": "nctype", "x733eventtype": "ncx733eventtype",
         "x733probablecause": "ncx733probablecause", "x733specificprob": "ncx733specificprob", "x733corrnotif": "ncx733corrnotif",
-        "acknowledged": "acknowledged", "owneruid": "owner", "severity": "severity", "firstoccurrence": "firstNotifiedAt",
-        "lastoccurrence": "lastNotifiedAt", "suppressescl": "state", "expiretime": "willExpireAt", "statechange": "lastChangedAt"]
+        "acknowledged": "acknowledged", "owneruid": "owner", "severity": "severity", "firstoccurrence": "createdAt",
+        "suppressescl": "state", "expiretime": "willExpireAt", "statechange": "changedAt", "tally":"count"]
     public static TIMESTAMP_FIELDS = ["statechange", "firstoccurrence", "lastoccurrence", "internallast"]
     Map nameMappings;
     NetcoolDatasource datasource;

@@ -18,12 +18,11 @@
                 <Property Name="inMaintenance" Type="boolean"/>
                 <Property Name="troubleTicketID" Type="string"/>
                 <Property Name="category" Type="string"/>
-                <Property Name="occurrenceCount" Type="number"/>
+                <Property Name="lastNotifiedAt" Type="number"/>
                 <Property Name="classDisplayName" Type="string"/>
                 <Property Name="instanceDisplayName" Type="string"/>
                 <Property Name="eventDisplayName" Type="string"/>
                 <Property Name="elementClassName" Type="string"/>
-                <Property Name="elementName" Type="string"/>
                 <Property Name="sourceDomainName" Type="string"/>
                 <Property Name="userDefined1" Type="string"/>
                 <Property Name="userDefined2" Type="string"/>
@@ -45,11 +44,8 @@
                 <Property Name="className" Type="string"/>
                 <Property Name="instanceName" Type="string"/>
                 <Property Name="eventName" Type="string"/>
-                <Property Name="lastNotifiedAt" Type="number"/>
-                <Property Name="firstNotifiedAt" Type="number"/>
-                <Property Name="lastClearedAt" Type="number"/>
-                <Property Name="lastChangedAt" Type="number"/>
                 <Property Name="isRoot" Type="boolean"/>
+                <Property Name="isProblem" Type="boolean"/>
                 <Property Name="eventType" Type="string"/>
                 <Property Name="eventState" Type="string"/>
                 <Property Name="eventText" Type="string"/>
@@ -58,12 +54,11 @@
                 <Property Name="inMaintenance" Type="boolean"/>
                 <Property Name="troubleTicketID" Type="string"/>
                 <Property Name="category" Type="string"/>
-                <Property Name="occurrenceCount" Type="number"/>
+                <Property Name="lastNotifiedAt" Type="number"/>
                 <Property Name="classDisplayName" Type="string"/>
                 <Property Name="instanceDisplayName" Type="string"/>
                 <Property Name="eventDisplayName" Type="string"/>
                 <Property Name="elementClassName" Type="string"/>
-                <Property Name="elementName" Type="string"/>
                 <Property Name="sourceDomainName" Type="string"/>
                 <Property Name="userDefined1" Type="string"/>
                 <Property Name="userDefined2" Type="string"/>
@@ -75,8 +70,6 @@
                 <Property Name="userDefined8" Type="string"/>
                 <Property Name="userDefined9" Type="string"/>
                 <Property Name="userDefined10" Type="string"/>
-                <Property Name='causedBy' Type='string'/>
-                <Property Name='causes' Type='string'/>
             </Properties>
         </Model>
     </Models>

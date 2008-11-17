@@ -15,11 +15,9 @@ class RsRiEvent  extends RsEvent {
     static datasources = [:]
 
     
-    Long count =1;
+    String description ="";
     
-    String eventName ="";
-    
-    String node ="";
+    String identifier ="";
     
     Long id ;
     
@@ -35,11 +33,9 @@ class RsRiEvent  extends RsEvent {
     static relations = [:]    
     
     static constraints={
-    count(nullable:true)
+    description(blank:true,nullable:true)
         
-     eventName(blank:true,nullable:true)
-        
-     node(blank:true,nullable:true)
+     identifier(blank:true,nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -57,6 +53,7 @@ class RsRiEvent  extends RsEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
 

@@ -33,6 +33,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="name">name:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'name','errors')}">
+                            <input type="text" id="name" name="name" value="${fieldValue(bean:rsHistoricalEvent,field:'name')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="acknowledged">acknowledged:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'acknowledged','errors')}">
@@ -42,55 +51,46 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="active">active:</label>
+                            <label for="changedAt">changedAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'active','errors')}">
-                            <g:checkBox name="active" value="${rsHistoricalEvent?.active}" ></g:checkBox>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="firstNotifiedAt">firstNotifiedAt:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'firstNotifiedAt','errors')}">
-                            <input type="text" id="firstNotifiedAt" name="firstNotifiedAt" value="${fieldValue(bean:rsHistoricalEvent,field:'firstNotifiedAt')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'changedAt','errors')}">
+                            <input type="text" id="changedAt" name="changedAt" value="${fieldValue(bean:rsHistoricalEvent,field:'changedAt')}" />
                         </td>
                     </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="lastChangedAt">lastChangedAt:</label>
+                            <label for="clearedAt">clearedAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'lastChangedAt','errors')}">
-                            <input type="text" id="lastChangedAt" name="lastChangedAt" value="${fieldValue(bean:rsHistoricalEvent,field:'lastChangedAt')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="lastClearedAt">lastClearedAt:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'lastClearedAt','errors')}">
-                            <input type="text" id="lastClearedAt" name="lastClearedAt" value="${fieldValue(bean:rsHistoricalEvent,field:'lastClearedAt')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'clearedAt','errors')}">
+                            <input type="text" id="clearedAt" name="clearedAt" value="${fieldValue(bean:rsHistoricalEvent,field:'clearedAt')}" />
                         </td>
                     </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="lastNotifiedAt">lastNotifiedAt:</label>
+                            <label for="count">count:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'lastNotifiedAt','errors')}">
-                            <input type="text" id="lastNotifiedAt" name="lastNotifiedAt" value="${fieldValue(bean:rsHistoricalEvent,field:'lastNotifiedAt')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'count','errors')}">
+                            <input type="text" id="count" name="count" value="${fieldValue(bean:rsHistoricalEvent,field:'count')}" />
                         </td>
                     </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="name">name:</label>
+                            <label for="createdAt">createdAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'name','errors')}">
-                            <input type="text" id="name" name="name" value="${fieldValue(bean:rsHistoricalEvent,field:'name')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'createdAt','errors')}">
+                            <input type="text" id="createdAt" name="createdAt" value="${fieldValue(bean:rsHistoricalEvent,field:'createdAt')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="elementName">elementName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsHistoricalEvent,field:'elementName','errors')}">
+                            <input type="text" id="elementName" name="elementName" value="${fieldValue(bean:rsHistoricalEvent,field:'elementName')}"/>
                         </td>
                     </tr>
                     

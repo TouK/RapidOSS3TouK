@@ -23,6 +23,7 @@ def getParameters(){
 notificationsMap = null; 
 columnLocalNameMappings = [:]
 columnSmartsNameMappings = [:]
+defaultColumnMappings = ["createdAt":"FirstNotifiedAt", "changedAt":"LastChangedAt", "clearedAt":"LastClearedAt", "count":"OccurrenceCount"]
 existingObjectsRetrieved = false;
 
 def init(){
@@ -35,7 +36,13 @@ def init(){
         if(prop.isPersistent() && !relations.containsKey(prop.name))
         {
             def propName = prop.getName();
-            def smartsName = propName.substring(0,1).toUpperCase()+propName.substring(1);
+            def smartsName;
+            if(defaultColumnMappings.containsKey(propName)){
+                smartsName = defaultColumnMappings[propName];
+            }
+            else{
+                smartsName = propName.substring(0,1).toUpperCase()+propName.substring(1);    
+            }
             columnLocalNameMappings[propName] = smartsName;
             columnSmartsNameMappings[smartsName] = propName;
         }
@@ -201,7 +208,7 @@ def getNotificationProperties(notificationObject)
         def localName = columnSmartsNameMappings[propName];
         if(localName)
         {
-            if(localName == "lastNotifiedAt" || localName == "lastChangedAt" || localName == "lastClearedAt" || localName == "firstNotifiedAt")
+            if(localName == "createdAt" || localName == "changedAt" || localName == "clearedAt")
             {
                 propValue = propValue*1000;
             }

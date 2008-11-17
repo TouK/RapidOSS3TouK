@@ -31,13 +31,13 @@ class NetcoolEvent  extends RsEvent {
     
     String summary ="";
     
+    Long lastoccurrence =0;
+    
     Long internallast =0;
     
     Long poll =0;
     
     Long nctype =0;
-    
-    Long tally =0;
     
     String ncclass ="";
     
@@ -133,13 +133,13 @@ class NetcoolEvent  extends RsEvent {
         
      summary(blank:true,nullable:true)
         
+     lastoccurrence(nullable:true)
+        
      internallast(nullable:true)
         
      poll(nullable:true)
         
      nctype(nullable:true)
-        
-     tally(nullable:true)
         
      ncclass(blank:true,nullable:true)
         
@@ -219,6 +219,8 @@ class NetcoolEvent  extends RsEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
 
 
 

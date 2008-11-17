@@ -4,7 +4,7 @@
 </head>
 <body>
 <script>
-     function formatLastChangedAt(key, value, data, el){
+     function formatChangedAt(key, value, data, el){
         if(value == "0" || value == "")
         {
             return "never"
@@ -41,14 +41,12 @@
         <rui:ntColumn attributeName="instanceDisplayName" colLabel="Name" width="100"></rui:ntColumn>
         <rui:ntColumn attributeName="count" colLabel="Count" width="50"></rui:ntColumn>
         <rui:ntColumn attributeName="source" colLabel="Source" width="100"></rui:ntColumn>
-        <rui:ntColumn attributeName="lastNotifiedAt" colLabel="Last Notify" width="120"></rui:ntColumn>
-        <rui:ntColumn attributeName="lastChangedAt" colLabel="Last Change" width="120"></rui:ntColumn>
+        <rui:ntColumn attributeName="changedAt" colLabel="Last Change" width="120"></rui:ntColumn>
     </rui:ntColumns>
     <rui:ntConversions>
-        <rui:ntConversion property="lastChangedAt" type="function" function="formatLastChangedAt"></rui:ntConversion>
-        <rui:ntConversion property="lastNotifiedAt" type="function" function="formatLastChangedAt"></rui:ntConversion>
+        <rui:ntConversion property="changedAt" type="function" function="formatChangedAt"></rui:ntConversion>
         %{--<rui:nsConversion property="severity" type="mapping" mapping="['1':'Critical', '2':'Major', '3':'Minor', '4':'Unknown', '5':'Normal']"></rui:nsConversion>--}%
-        %{--<rui:nsConversion property="lastClearedAt" type="date" format="d M H:i:s"></rui:nsConversion>--}%
+        %{--<rui:nsConversion property="clearedAt" type="date" format="d M H:i:s"></rui:nsConversion>--}%
     </rui:ntConversions>
 </rui:notifications>
 

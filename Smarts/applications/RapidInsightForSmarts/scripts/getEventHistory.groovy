@@ -18,7 +18,7 @@ web.render(contentType: 'text/xml'){
    data(){
        historicalEvents.each{RsSmartsHistoricalNotification historicalEvent ->
            def start = formatter.format(new Timestamp(historicalEvent.lastNotifiedAt)) + " GMT";
-           def end = formatter.format(new Timestamp(historicalEvent.lastClearedAt)) + " GMT";
+           def end = formatter.format(new Timestamp(historicalEvent.clearedAt)) + " GMT";
            def title = historicalEvent.instanceName + " " + historicalEvent.eventName;
            event(title:title, start:start, end:end, isDuration:"true", historicalEvent.eventText)
        }

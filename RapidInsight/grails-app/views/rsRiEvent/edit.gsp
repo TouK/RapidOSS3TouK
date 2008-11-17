@@ -53,10 +53,19 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="active">active:</label>
+                            <label for="changedAt">changedAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'active','errors')}">
-                            <g:checkBox name="active" value="${rsRiEvent?.active}" ></g:checkBox>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'changedAt','errors')}">
+                            <input type="text" id="changedAt" name="changedAt" value="${fieldValue(bean:rsRiEvent,field:'changedAt')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="clearedAt">clearedAt:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'clearedAt','errors')}">
+                            <input type="text" id="clearedAt" name="clearedAt" value="${fieldValue(bean:rsRiEvent,field:'clearedAt')}" />
                         </td>
                     </tr>
                     
@@ -71,55 +80,37 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="eventName">eventName:</label>
+                            <label for="createdAt">createdAt:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'eventName','errors')}">
-                            <input type="text" id="eventName" name="eventName" value="${fieldValue(bean:rsRiEvent,field:'eventName')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="firstNotifiedAt">firstNotifiedAt:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'firstNotifiedAt','errors')}">
-                            <input type="text" id="firstNotifiedAt" name="firstNotifiedAt" value="${fieldValue(bean:rsRiEvent,field:'firstNotifiedAt')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'createdAt','errors')}">
+                            <input type="text" id="createdAt" name="createdAt" value="${fieldValue(bean:rsRiEvent,field:'createdAt')}" />
                         </td>
                     </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="lastChangedAt">lastChangedAt:</label>
+                            <label for="description">description:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'lastChangedAt','errors')}">
-                            <input type="text" id="lastChangedAt" name="lastChangedAt" value="${fieldValue(bean:rsRiEvent,field:'lastChangedAt')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="lastClearedAt">lastClearedAt:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'lastClearedAt','errors')}">
-                            <input type="text" id="lastClearedAt" name="lastClearedAt" value="${fieldValue(bean:rsRiEvent,field:'lastClearedAt')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'description','errors')}">
+                            <input type="text" id="description" name="description" value="${fieldValue(bean:rsRiEvent,field:'description')}"/>
                         </td>
                     </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="lastNotifiedAt">lastNotifiedAt:</label>
+                            <label for="elementName">elementName:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'lastNotifiedAt','errors')}">
-                            <input type="text" id="lastNotifiedAt" name="lastNotifiedAt" value="${fieldValue(bean:rsRiEvent,field:'lastNotifiedAt')}" />
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'elementName','errors')}">
+                            <input type="text" id="elementName" name="elementName" value="${fieldValue(bean:rsRiEvent,field:'elementName')}"/>
                         </td>
                     </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="node">node:</label>
+                            <label for="identifier">identifier:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'node','errors')}">
-                            <input type="text" id="node" name="node" value="${fieldValue(bean:rsRiEvent,field:'node')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiEvent,field:'identifier','errors')}">
+                            <input type="text" id="identifier" name="identifier" value="${fieldValue(bean:rsRiEvent,field:'identifier')}"/>
                         </td>
                     </tr>
                     

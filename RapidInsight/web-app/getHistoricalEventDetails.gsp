@@ -3,7 +3,7 @@
     def componentId = params.componentId
     def notificationId = params.id;
     def domainObject = RsHistoricalEvent.get(id: notificationId);
-    def excludedProps = ["firstNotifiedAt", "lastNotifiedAt", "lastChangedAt", "lastClearedAt"]
+    def excludedProps = ["createdAt", "changedAt", "clearedAt"]
     if (domainObject != null) {
         def propList = domainObject.getPropertiesList();
         def allProperties = propList.findAll{!excludedProps.contains(it.name)}
@@ -19,10 +19,9 @@
     <div style="display:block;margin-top:10px;">
         <%
                 SimpleDateFormat format = new SimpleDateFormat("dd MMM HH:mm:ss")
-                def firstNotifiedAt = domainObject.firstNotifiedAt == 0 ? "never" : format.format(new Timestamp(domainObject.firstNotifiedAt));
-                def lastNotifiedAt = domainObject.lastNotifiedAt == 0 ? "never" : format.format(new Timestamp(domainObject.lastNotifiedAt));
-                def lastChangedAt = domainObject.lastChangedAt == 0 ? "never" : format.format(new Timestamp(domainObject.lastChangedAt));
-                def lastClearedAt = domainObject.lastClearedAt == 0 ? "never" : format.format(new Timestamp(domainObject.lastClearedAt));
+                def createdAt = domainObject.createdAt == 0 ? "never" : format.format(new Timestamp(domainObject.createdAt));
+                def changedAt = domainObject.changedAt == 0 ? "never" : format.format(new Timestamp(domainObject.changedAt));
+                def clearedAt = domainObject.clearedAt == 0 ? "never" : format.format(new Timestamp(domainObject.clearedAt));
                 def severityClass;
                 def severity = domainObject.severity;
                 if (severity == 1) {
@@ -70,10 +69,9 @@
                             <div class="event-details-severity ${severityClass}"></div>
                             <div style="padding:3px 20px 20px 20px;">
                                 <div style="width:190px;">
-                                    <b>First Notified At:</b> ${firstNotifiedAt}<br>
-                                    <b>Last Notified At:</b> ${lastNotifiedAt}<br>
-                                    <b>Last Changed At:</b> ${lastChangedAt}<br>
-                                    <b>Last Cleared At:</b> ${lastClearedAt}<br>
+                                    <b>Created At:</b> ${createdAt}<br>
+                                    <b>Changed At:</b> ${changedAt}<br>
+                                    <b>Cleared At:</b> ${clearedAt}<br>
                                 </div>
                             </div>
                         </div>

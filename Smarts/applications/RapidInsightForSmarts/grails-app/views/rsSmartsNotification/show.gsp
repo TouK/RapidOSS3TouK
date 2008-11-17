@@ -49,13 +49,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">active:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsNotification.active}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">category:</td>
                     
                     <td valign="top" class="value">${rsSmartsNotification.category}</td>
@@ -96,6 +89,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">changedAt:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsNotification.changedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">classDisplayName:</td>
                     
                     <td valign="top" class="value">${rsSmartsNotification.classDisplayName}</td>
@@ -106,6 +106,27 @@
                     <td valign="top" class="name">className:</td>
                     
                     <td valign="top" class="value">${rsSmartsNotification.className}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">clearedAt:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsNotification.clearedAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">count:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsNotification.count}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">createdAt:</td>
+                    
+                    <td valign="top" class="value">${rsSmartsNotification.createdAt}</td>
                     
                 </tr>
                 
@@ -180,13 +201,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">firstNotifiedAt:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsNotification.firstNotifiedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">impact:</td>
                     
                     <td valign="top" class="value">${rsSmartsNotification.impact}</td>
@@ -229,30 +243,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastChangedAt:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsNotification.lastChangedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">lastClearedAt:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsNotification.lastClearedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">lastNotifiedAt:</td>
                     
                     <td valign="top" class="value">${rsSmartsNotification.lastNotifiedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">occurrenceCount:</td>
-                    
-                    <td valign="top" class="value">${rsSmartsNotification.occurrenceCount}</td>
                     
                 </tr>
                 

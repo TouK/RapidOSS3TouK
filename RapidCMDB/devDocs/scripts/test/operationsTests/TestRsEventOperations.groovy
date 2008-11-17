@@ -4,9 +4,9 @@ RsRiEvent.removeAll();
 RsEventJournal.removeAll();
 RsHistoricalEvent.removeAll();
 
-event1 = RsEvent.add(name:"RsEvent1",owner:"Pinar",firstNotifiedAt:now,lastNotifiedAt:now,lastChangedAt:now, lastClearedAt:now);
-event2 = RsEvent.add(name:"RsEvent2",owner:"Berkay",firstNotifiedAt:now,lastNotifiedAt:now,lastChangedAt:now, lastClearedAt:now);
-event3 = RsEvent.add(name:"RsEvent3",owner:"Karl",firstNotifiedAt:now,severity:2,lastNotifiedAt:now,lastChangedAt:now, lastClearedAt:now);
+event1 = RsEvent.add(name:"RsEvent1",owner:"Pinar",createdAt:now,changedAt:now, clearedAt:now);
+event2 = RsEvent.add(name:"RsEvent2",owner:"Berkay",createdAt:now,changedAt:now, clearedAt:now);
+event3 = RsEvent.add(name:"RsEvent3",owner:"Karl",createdAt:now,severity:2,changedAt:now, clearedAt:now);
 
 assert (event1.owner == "Pinar" && event1.acknowledged == false)
 event1.acknowledge(true,"Berkay");
@@ -56,7 +56,7 @@ assert journal.total == 0;
 journal = RsEventJournal.search("eventId:${historicalEvent.results[0].id}")
 assert journal.total == 4;
 
-event = RsRiEvent.notify([name:"RsRiEvent1",eventName:"Down", owner:"Karl",firstNotifiedAt:now,lastNotifiedAt:now,lastChangedAt:now, lastClearedAt:now]);
+event = RsRiEvent.notify([name:"RsRiEvent1",eventName:"Down", owner:"Karl",createdAt:now,changedAt:now, clearedAt:now]);
 oldid = event.id;
 event.acknowledge(true,"Pinar");
 event.setOwnership(true,"Tugrul");
@@ -71,7 +71,7 @@ assert journal.total == 0;
 journal = RsEventJournal.search("eventId:${historicalEvent.results[0].id}")
 assert journal.total == 4;
 
-event = RsRiEvent.notify([name:"RsRiEvent1",eventName:"Down", owner:"Karl",firstNotifiedAt:now,lastNotifiedAt:now,lastChangedAt:now, lastClearedAt:now]);
+event = RsRiEvent.notify([name:"RsRiEvent1",eventName:"Down", owner:"Karl",createdAt:now,changedAt:now, clearedAt:now]);
 event.clear();
 
 historicalEvent = RsHistoricalEvent.search("name:RsRiEvent1");

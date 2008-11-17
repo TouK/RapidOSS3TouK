@@ -75,8 +75,8 @@
         <rui:sgColumn attributeName="tally" colLabel="Count" width="50"></rui:sgColumn>
         <rui:sgColumn attributeName="state" colLabel="Suppr/Escl" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="tasklist" colLabel="TaskList" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="lastNotifiedAt" colLabel="Last Occurrence" width="100"></rui:sgColumn>
-        <rui:sgColumn attributeName="lastChangedAt" colLabel="State Change" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="lastoccurrence" colLabel="Last Occurrence" width="100"></rui:sgColumn>
+        <rui:sgColumn attributeName="changedAt" colLabel="State Change" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="alertgroup" colLabel="Alert Group" width="100"></rui:sgColumn>
         <rui:sgColumn attributeName="alertkey" colLabel="Alert Key" width="100"></rui:sgColumn>
     </rui:sgColumns>
@@ -189,7 +189,7 @@
     var filterTree = YAHOO.rapidjs.Components['filterTree'];
     var searchGrid = YAHOO.rapidjs.Components['searchGrid'];
     searchGrid.renderCellFunction = function(key, value, data){
-        if(key == "lastNotifiedAt" || key == "lastChangedAt"){
+        if(key == "lastoccurence" || key == "changedAt"){
             var d = new Date();
             d.setTime(parseFloat(value))
             return d.format("d/m/Y H:i:s");

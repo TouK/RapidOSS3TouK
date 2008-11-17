@@ -49,37 +49,37 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">active:</td>
+                    <td valign="top" class="name">changedAt:</td>
                     
-                    <td valign="top" class="value">${rsEvent.active}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">firstNotifiedAt:</td>
-                    
-                    <td valign="top" class="value">${rsEvent.firstNotifiedAt}</td>
+                    <td valign="top" class="value">${rsEvent.changedAt}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastChangedAt:</td>
+                    <td valign="top" class="name">clearedAt:</td>
                     
-                    <td valign="top" class="value">${rsEvent.lastChangedAt}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">lastClearedAt:</td>
-                    
-                    <td valign="top" class="value">${rsEvent.lastClearedAt}</td>
+                    <td valign="top" class="value">${rsEvent.clearedAt}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">lastNotifiedAt:</td>
+                    <td valign="top" class="name">count:</td>
                     
-                    <td valign="top" class="value">${rsEvent.lastNotifiedAt}</td>
+                    <td valign="top" class="value">${rsEvent.count}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">createdAt:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.createdAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">elementName:</td>
+                    
+                    <td valign="top" class="value">${rsEvent.elementName}</td>
                     
                 </tr>
                 

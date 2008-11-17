@@ -7,7 +7,10 @@ class RsSmartsNotification  extends RsEvent {
 
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "causedBy", "causes"];
+    
+    
         storageType "FileAndMemory"
+    
     };
     static datasources = [:]
 
@@ -44,7 +47,7 @@ class RsSmartsNotification  extends RsEvent {
     
     String category ="";
     
-    Long occurrenceCount =0;
+    Long lastNotifiedAt =0;
     
     String classDisplayName ="";
     
@@ -53,8 +56,6 @@ class RsSmartsNotification  extends RsEvent {
     String eventDisplayName ="";
     
     String elementClassName ="";
-    
-    String elementName ="";
     
     String sourceDomainName ="";
     
@@ -77,7 +78,7 @@ class RsSmartsNotification  extends RsEvent {
     String userDefined9 ="";
     
     String userDefined10 ="";
-
+    
     Long id ;
     
     Long version ;
@@ -134,7 +135,7 @@ class RsSmartsNotification  extends RsEvent {
         
      category(blank:true,nullable:true)
         
-     occurrenceCount(nullable:true)
+     lastNotifiedAt(nullable:true)
         
      classDisplayName(blank:true,nullable:true)
         
@@ -143,8 +144,6 @@ class RsSmartsNotification  extends RsEvent {
      eventDisplayName(blank:true,nullable:true)
         
      elementClassName(blank:true,nullable:true)
-        
-     elementName(blank:true,nullable:true)
         
      sourceDomainName(blank:true,nullable:true)
         
@@ -184,5 +183,6 @@ class RsSmartsNotification  extends RsEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
     
 }

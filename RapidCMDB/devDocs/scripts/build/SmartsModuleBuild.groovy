@@ -28,11 +28,51 @@ class SmartsModuleBuild extends Build {
         SmartsModuleBuild smartsModuleBuild = new SmartsModuleBuild();
         smartsModuleBuild.run(args);
     }
+    def clean() {
+        ant.delete(dir: env.rapid_smarts_build);
+        ant.mkdir(dir: env.rapid_smarts_build);
+        ant.delete(dir: env.dist_modules);
+        ant.mkdir(dir: env.dist_modules);
+    }
+    def String getExcludedClasses() {
+        if (!TEST) {
+            return "**/*Test*, **/*Mock*, **/test/**";
+        }
+        return "";
+    }
+
     def build() {
-        ant.copy(file: (String) classpath.getProperty("skclient_jar"), toDir: "$env.dist_rapid_server_lib");
-        ant.copy(file: (String) classpath.getProperty("net_jar"), toDir: "$env.dist_rapid_server_lib");
-        createPlugin(env.rapid_smarts, ["applications/**", "operations/**"]);
-        ant.delete(file: env.dist_rapid_server_lib + "/skclient_jar");
-        ant.delete(file: env.dist_rapid_server_lib + "/net_jar");
+        clean();
+        ant.javac(srcdir: "$env.rapid_ext/smarts/java", destdir: env.rapid_smarts_build, excludes: getExcludedClasses()) {
+            ant.classpath(refid: "classpath");
+        }
+        ant.jar(destfile: env.rapid_rssmarts_jar, basedir: env.rapid_smarts_build);
+        ant.copy(file: env.rapid_rssmarts_jar, toDir: "$env.dist_modules_rapid_suite/lib");
+        ant.copy(todir: "$env.dist_modules_rapid_suite/grails-app") {
+            ant.fileset(dir: "$env.rapid_smarts/grails-app")
+        }
+        ant.copy(todir: "$env.dist_modules_rapid_suite/operations") {
+            ant.fileset(dir: "$env.rapid_smarts/operations")
+        }
+        ant.copy(todir: "$env.dist_modules_rapid_suite/src/groovy") {
+            ant.fileset(dir: "$env.rapid_smarts/src/groovy")
+        }
+        ant.copy(toDir:"${env.dist_modules_rapid_suite}/generatedModels/grails-app/domain")
+        {
+            ant.fileset(file:"${env.rapid_smarts}/applications/RapidInsightForSmarts/grails-app/domain/*.groovy");
+        }
+        ant.copy(todir: "$env.dist_modules_rapid_suite") {
+            ant.fileset(dir: "$env.rapid_smarts/applications/RapidInsightForSmarts")
+        }
+        def adminViews = ["httpConnection", "httpDatasource", "databaseConnection", "ldapConnection", "databaseDatasource",
+                "singleTableDatabaseDatasource", "snmpConnection", "snmpDatasource", "script", "rsUser", "group", "smartsConnector", "smartsConnection",
+                "smartsConnectionTemplate", "smartsNotificationDatasource", "smartsTopologyDatasource", "smartsNotificationConnector", "smartsTopologyConnector"]
+
+        adminViews.each {
+            ant.copy(file: "${env.dist_modules_rapid_suite}/grails-app/views/layouts/adminLayout.gsp", toFile: "${env.dist_modules_rapid_suite}/grails-app/views/layouts/${it}.gsp", overwrite: true);
+        }
+        ant.zip(destfile: "$env.distribution/SmartsPlugin.zip") {
+            ant.zipfileset(dir: "$env.dist_modules")
+        }
     }
 }

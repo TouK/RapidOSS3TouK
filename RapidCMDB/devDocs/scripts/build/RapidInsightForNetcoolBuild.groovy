@@ -92,8 +92,6 @@ class RapidInsightForNetcoolBuild extends Build{
                    ant.copy(file : "${env.dist_rapid_suite}/grails-app/views/layouts/adminLayout.gsp", toFile : "${env.dist_rapid_suite}/grails-app/views/layouts/${it}.gsp", overwrite:true );
                }
 		
-//        def osType = "Unix";
-//        if (rapidCmdb.getName().indexOf("Windows") > -1) osType = "Windows"
         def zipFileName = "${env.distribution}/RI4NC_$osType$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
            ant.zipfileset(dir : "$env.distribution/RapidServer", prefix:"RapidServer")

@@ -139,6 +139,7 @@ class Build extends Parent{
 			ant.pathelement(location : env.rapid_core_jar);
 			ant.pathelement(location : env.rapid_ext_jar);
 			ant.pathelement(location : env.rapid_cmdb_jar);
+			ant.pathelement(location : env.rapid_rssmarts_jar);
 			ant.pathelement(location : (String)classpath.getProperty("smack_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("smackx_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("joscar-0_9_3-patched_jar"));

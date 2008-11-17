@@ -12,6 +12,8 @@ class Env {
 	static def testresults = basedir+"/TestResults";
 	static def dist_rapid_server = "$distribution/RapidServer";
 	static def dist_rapid_suite = "$dist_rapid_server/RapidSuite";
+	static def dist_modules = "$distribution/Modules";
+	static def dist_modules_rapid_suite = "$dist_modules/RapidSuite";
 	static def dist_modeler = "$dist_rapid_server/Modeler";
 	static def dist_rapid_suite_lib = dist_rapid_suite + "/lib";
 	static def dist_modeler_lib = dist_modeler + "/lib";
@@ -35,6 +37,7 @@ class Env {
 
     static def rapid_ext = "$rapid_modules/ext"
     static def rapid_ext_build = basedir+"/build/ext"
+    static def rapid_smarts_build = basedir+"/build/smarts"
 
     static def rapid_insight = "$rapid_modules/RapidInsight"
     static def rapid_netcool = "$rapid_modules/Netcool"
@@ -52,6 +55,7 @@ class Env {
 	static def rapid_core_jar = "$rapid_core_build/core.jar";
 	static def rapid_comp_jar = "$rapid_comp_build/comp.jar";
 	static def rapid_ext_jar = "$rapid_ext_build/ext.jar";
+	static def rapid_rssmarts_jar = "$rapid_ext_build/rssmarts.jar";
 	static def rapid_cmdb_jar = "$rapid_cmdb_build/rcmdb.jar";
 
 	static def smarts_testreport = "$testresults/Smarts/test-reports";

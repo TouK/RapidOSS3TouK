@@ -40,9 +40,6 @@ class RapidCmdbBuild extends Build {
 	def UNIX = "Unix";
 	def WINDOWS = "Windows";
 	def osType; 
-    def smartsBuild = new SmartsModuleBuild();
-//    def rapidInsightForNetcoolBuild = new RapidInsightForNetcoolBuild(this);
-    def netcoolBuild = new NetcoolModuleBuild();
     def rapidUiBuild = new RapidUiPluginBuild();
     def hypericBuild = new HypericBuild();
     def riBuild = new RapidInsightPluginBuild();
@@ -125,14 +122,6 @@ class RapidCmdbBuild extends Build {
                     ant.exclude(name: "**/*Test*")
                     ant.exclude(name: "domain/*.groovy")
                 }
-
-                // exclude Smarts classes
-                ant.exclude(name: "controllers/datasource/Smarts*.groovy")
-                ant.exclude(name: "controllers/connection/Smarts*.groovy")
-                ant.exclude(name: "domain/datasource/Smarts*.groovy")
-                ant.exclude(name: "domain/connection/Smarts*.groovy")
-                ant.exclude(name: "views/smarts*/*")
-                ant.exclude(name: "views/smarts*")
             }
         }
         ant.copy(file: "$env.rapid_cmdb_cvs/scripts/HelloWorld.groovy", toDir: "$env.dist_rapid_suite/scripts");
@@ -366,10 +355,8 @@ class RapidCmdbBuild extends Build {
     
     def buildAdditionalPlugins(){
     	rapidUiBuild.run([]);
-        netcoolBuild.run([]);
-    	smartsBuild.run([]);
-    	hypericBuild.run([]);
     	riBuild.run([]);
+    	hypericBuild.run([]);
     }
     
     def buildModules(){

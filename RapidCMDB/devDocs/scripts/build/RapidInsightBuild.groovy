@@ -9,6 +9,8 @@ class RapidInsightBuild extends Build {
     def version = "$env.rapid_insight/RIVersion.txt";
     def versionInBuild = "$env.dist_rapid_suite/RIVersion.txt";
     def rapidCMDBBuild = new RapidCmdbBuild();
+    def smartsBuild = new SmartsModuleBuild();
+    def netcoolBuild = new NetcoolModuleBuild();
 
     static void main(String[] args) {
         RapidInsightBuild rapidInsightBuilder = new RapidInsightBuild();
@@ -102,6 +104,12 @@ class RapidInsightBuild extends Build {
         ant.zip(destfile: zipFileName) {
             ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
         }
+        netcoolBuild.versionNo = versionNo;
+        netcoolBuild.buildNo = buildNo;
+        netcoolBuild.build();
+        smartsBuild.versionNo = versionNo;
+        smartsBuild.buildNo = buildNo
+        smartsBuild.build();
     }
 
     def listFiles(File rootDir, String regexp)

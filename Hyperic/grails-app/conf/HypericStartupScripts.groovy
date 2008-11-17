@@ -1,3 +1,3 @@
 class HypericStartupScripts{
-    def static scripts = ["Startup"];
+    def static scripts = ["HypericStartup"];
 }

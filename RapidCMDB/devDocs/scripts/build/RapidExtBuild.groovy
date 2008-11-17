@@ -42,9 +42,6 @@ class RapidExtBuild extends Build {
         ant.javac(srcdir: "$env.rapid_ext/snmp/java", destdir: env.rapid_ext_build, excludes: getExcludedClasses()) {
             ant.classpath(refid: "classpath");
         }
-        ant.javac(srcdir: "$env.rapid_ext/smarts/java", destdir: env.rapid_ext_build, excludes: getExcludedClasses()) {
-            ant.classpath(refid: "classpath");
-        }
     }
 
 

@@ -61,6 +61,8 @@ public class ConnectionManager
             releaseConnection(conn);
         }
         catch(Exception e){
+             logger.warn("Exception in ConnectionManager checkConnection "+e);
+             e.printStackTrace();
         }
 
         return connected;

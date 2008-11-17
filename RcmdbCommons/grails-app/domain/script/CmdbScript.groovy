@@ -14,7 +14,7 @@ class CmdbScript {
     public static String SCHEDULED = "Scheduled";
     public static String LISTENING = "Listening";
     static searchable = {
-        except = ["listeningDatasource", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["listeningDatasource", "errors", "__operation_class__", "__is_federated_properties_loaded__","messageService"];
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
     Long startDelay = 0;

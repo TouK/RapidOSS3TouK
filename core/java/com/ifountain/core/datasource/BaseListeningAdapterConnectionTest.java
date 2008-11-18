@@ -98,6 +98,40 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
             t1.interrupt();
         }
     }
+
+    public void testCancelsReconnectionIfUserUnsubscribed() throws Exception
+    {
+        createConnectionParam(connectionName, NotConnectedConnection.class);
+        listeningAdapter = new MockBaseListeningAdapter(connectionName, 100);
+
+
+        TestAction subscribeWaitAction = new SubscribeWaitAction(listeningAdapter);
+
+        TestActionExecutorThread t1 = new TestActionExecutorThread(subscribeWaitAction);
+        t1.start();
+
+        Thread.sleep(300);
+
+        try
+        {
+            assertTrue(t1.isStarted());
+            assertFalse(t1.isExecutedSuccessfully());
+            assertNull(t1.getThrowedException());
+
+            listeningAdapter.unsubscribe();
+            Thread.sleep(300);
+            assertTrue(t1.isStarted());
+            assertFalse(t1.isExecutedSuccessfully());
+            assertNotNull(t1.getThrowedException());
+            
+
+        }
+        finally
+        {
+            t1.interrupt();
+        }
+    }
+    
     
 //    public void testReconnectionWithConnectionExceptionThrownWhileSubscription() throws Exception
 //    {

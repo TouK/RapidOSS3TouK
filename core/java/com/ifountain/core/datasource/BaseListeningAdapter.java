@@ -30,6 +30,8 @@ import org.apache.log4j.Logger;
 import com.ifountain.core.connection.ConnectionManager;
 import com.ifountain.core.connection.IConnection;
 import com.ifountain.core.connection.exception.ConnectionException;
+import com.ifountain.core.connection.exception.ConnectionInitializationException;
+import com.ifountain.core.connection.exception.ConnectionPoolException;
 
 public abstract class BaseListeningAdapter extends Observable implements Observer {
 
@@ -38,6 +40,8 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     protected Logger logger;
     protected IConnection connection;
     protected boolean isSubscribed = false;
+    protected boolean stoppedByUser = false;
+    private Object subscriptionLock = new Object();
 
     public BaseListeningAdapter(String connectionName, long reconnectInterval, Logger logger) {
         this.connectionName = connectionName;
@@ -67,62 +71,89 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
 
     protected abstract void _unsubscribe();
 
-    public void subscribe() throws Exception {
+    public void subscribeInternally() throws Exception {
         if (!isSubscribed()) {
             while (true) {
                 try {
-                    connection = ConnectionManager.getConnection(connectionName);
+                    synchronized (subscriptionLock)
+                    {
+                        if(!stoppedByUser)
+                        {
+                            connection = ConnectionManager.getConnection(connectionName);
+                            try
+                            {
+                                _subscribe();
+                                isSubscribed = true;
+                                break;
+                            }
+                            catch(Exception e)
+                            {
+                                if (connection.isConnected()) {
+                                    throw e;
+                                } else {
+                                    connection.setConnectedOnce(false);
+                                    if (reconnectInterval > 0) {
+                                        Thread.sleep(reconnectInterval);
+                                    } else {
+                                        throw new ConnectionException(e);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Stopped by user cannot subscribe");
+                        }
+                    }
                 }
                 catch (ConnectionException e) {
                     if (reconnectInterval > 0) {
                         Thread.sleep(reconnectInterval);
-                        continue;
                     } else {
                         throw e;
-                    }
-                }
-                try {
-                    _subscribe();
-                    isSubscribed = true;
-                    break;
-
-                }
-                catch (Exception e) {
-                    if (connection.isConnected()) {
-                        throw e;
-                    } else {
-                        connection.setConnectedOnce(false);
-                        if (reconnectInterval > 0) {
-                            Thread.sleep(reconnectInterval);
-                        } else {
-                            throw new ConnectionException(e);
-                        }
                     }
                 }
                 finally {
                     if (!isSubscribed()) {
-                        ConnectionManager.releaseConnection(connection);
-                        connection = null;
+                        releaseConnection();
                     }
                 }
             }
         }
     }
+    public void subscribe() throws Exception {
+        synchronized (subscriptionLock)
+        {
+            this.stoppedByUser = false;
+        }
+        subscribeInternally();
+    }
 
     public void unsubscribe() throws Exception {
+        synchronized (subscriptionLock)
+        {
+            this.stoppedByUser = true;
+            unsubscribeInternally();
+        }
+    }
+
+    private synchronized void releaseConnection() throws ConnectionInitializationException, ConnectionPoolException, ConnectionException {
+        if (connection != null) {
+            ConnectionManager.releaseConnection(connection);
+            connection = null;
+        }
+    }
+    private void unsubscribeInternally() throws Exception {
         if (isSubscribed()) {
             _unsubscribe();
             isSubscribed = false;
-            if (connection != null) {
-                ConnectionManager.releaseConnection(connection);
-                connection = null;
-            }
+            releaseConnection();
         }
     }
 
     protected void disconnectDetected() throws Exception {
-        unsubscribe();
-        subscribe();
+        unsubscribeInternally();
+        subscribeInternally();
     }
 
     public boolean isSubscribed() {

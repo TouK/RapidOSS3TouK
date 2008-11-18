@@ -416,13 +416,14 @@ public class SmartsNotificationListeningAdapter extends BaseSmartsListeningAdapt
     }
 
     protected void startSmoother(){
-        //Previously it was dependent on transientinterval. We replaced this with a fixed time interval.
-//        int refreshInterval = transientInterval/3;
-        int refreshInterval = 10;
+        //Smoother thread will check stagedarea with an interval less than transientinterval. This is not mandatory. We choose dividing by 3.
+        //It guarantees a notificaion waiting time should be no more than 1.3*transientInterval.
+        int refreshInterval = transientInterval/3;
+        if(refreshInterval == 0) refreshInterval = 1;
         smoother = new Smoother(stagingArea, refreshInterval);
 		smoother.start();
     }
-     protected void setSmoother(Smoother smoother) {
+    protected void setSmoother(Smoother smoother) {
         this.smoother = smoother;
     }
 }

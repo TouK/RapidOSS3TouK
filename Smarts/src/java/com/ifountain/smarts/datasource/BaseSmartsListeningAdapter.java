@@ -127,6 +127,8 @@ public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
                 try {
                     disconnectDetected();
                 } catch (Exception e) {
+                    logger.info(logPrefix+e.toString());
+                    logger.debug(logPrefix+e.toString(), e);
                 }
                 return null;
         }

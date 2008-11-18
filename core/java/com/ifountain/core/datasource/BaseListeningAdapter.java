@@ -71,7 +71,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
 
     protected abstract void _unsubscribe();
 
-    public void subscribeInternally() throws Exception {
+    private void subscribeInternally() throws Exception {
         if (!isSubscribed()) {
             while (true) {
                 try {

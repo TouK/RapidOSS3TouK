@@ -157,6 +157,8 @@ public class StagingArea {
         }
     }
 
+    // TODO: If exception occurs when  sendNotification is called , then the remaining notifications will not be processed
+    // If exception will preserve on the next run of processedStagedNotifications some notifications will not be processed, and the situation will go on like that forever until the exception disappears
      private void updateAdapter(String notificationName, StagedNotification stagedNotification){
         logger.debug(logPrefix + "Sending " + notificationName + " to the Reader, with event name: " + stagedNotification.getEventName());
         sendNotification(stagedNotification.getEventName(), stagedNotification.getNameValuePairs());

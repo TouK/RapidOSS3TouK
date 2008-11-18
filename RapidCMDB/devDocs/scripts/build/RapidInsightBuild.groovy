@@ -97,6 +97,11 @@ class RapidInsightBuild extends Build {
         adminViews.each {
             ant.copy(file: "${env.dist_rapid_suite}/grails-app/views/layouts/adminLayout.gsp", toFile: "${env.dist_rapid_suite}/grails-app/views/layouts/${it}.gsp", overwrite: true);
         }
+
+        def dbViews = ["databaseConnection", "databaseDatasource", "singleTableDatabaseDatasource"];
+        dbViews.each{
+           ant.copy(file: "${env.dist_rapid_suite}/web-app/dbDatasources.gsp", toFile: "${env.dist_rapid_suite}/grails-app/views/${it}/list.gsp", overwrite: true); 
+        }
         def zipFileName = "${env.distribution}/RI_$osType$versionDate" + ".zip"
         ant.zip(destfile: zipFileName) {
             ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")

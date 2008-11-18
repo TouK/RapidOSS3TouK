@@ -123,12 +123,24 @@ class ScriptController {
             {
                 script.reload();
                 flash.message = "Script reloaded successfully.";
-                redirect(action: show, controller: 'script', id: script.id);
+                if(params.targetURI){
+                    redirect(uri:params.targetURI);
+                }
+                else{
+                    redirect(action: show, controller: 'script', id: script.id);    
+                }
+
             }
             catch (t)
             {
                 flash.message = "Exception occurred while reloading. Reason : ${t.getMessage()}";
-                redirect(action: show, controller: 'script', id: script.id);
+                if(params.targetURI){
+                    redirect(uri:params.targetURI);
+                }
+                else{
+                    redirect(action: show, controller: 'script', id: script.id);    
+                }
+
             }
 
         }

@@ -79,6 +79,9 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
 
     static def deleteScript(CmdbScript script) throws Exception {
         def scriptName = script.name;
+        if(script.listeningDatasource){
+            stopListening(script)
+        }
         script.remove()
         if(CmdbScript.countHits("scriptFile:"+script.scriptFile) == 0)
         {
@@ -99,6 +102,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
 
     static def updateScript(CmdbScript script, Map params, boolean fromController) throws Exception {
         def scriptFileBeforeUpdate = script.scriptFile;
+        def scriptNameBeforeUpdate = script.name;
         if((!params.get("logFile") || params.get("logFile").trim() == "") && params.name)
         {
             params["logFile"] = params.name;
@@ -116,7 +120,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
                 }
                 ScriptManager.getInstance().addScript(script.scriptFile);
             }
-            ScriptScheduler.getInstance().unscheduleScript(script.name)
+            ScriptScheduler.getInstance().unscheduleScript(scriptNameBeforeUpdate)
             if (script.type == CmdbScript.SCHEDULED && script.enabled) {
                 if (script.scheduleType == CmdbScript.CRON) {
                     ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)

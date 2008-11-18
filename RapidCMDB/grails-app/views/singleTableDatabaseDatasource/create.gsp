@@ -3,6 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="layout" content="adminLayout" />
         <title>Create SingleTableDatabaseDatasource</title>         
     </head>
     <body>

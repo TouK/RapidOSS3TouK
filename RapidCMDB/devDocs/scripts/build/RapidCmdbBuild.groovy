@@ -154,7 +154,6 @@ class RapidCmdbBuild extends Build {
         }
          ant.copy(todir: "$env.dist_rapid_suite/web-app") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/web-app") {
-                ant.exclude(name: "adminSmarts.gsp")
                 if (!TEST) {
                     ant.exclude(name: "**/test/**")
                     ant.exclude(name: "**/*Test*")
@@ -168,14 +167,6 @@ class RapidCmdbBuild extends Build {
         }
 
         copyCommons(env.dist_rapid_suite, true);
-        def viewsDir = new File("${env.dist_rapid_suite}/grails-app/views");
-        viewsDir.eachDir{
-            def dirName = it.getName();
-            if(dirName != "layouts"){
-                ant.copy(file:"${env.dist_rapid_suite}/grails-app/views/layouts/main.gsp", toFile:"${env.dist_rapid_suite}/grails-app/views/layouts/${dirName}.gsp")
-            }
-        }
-        
         if(osType == WINDOWS){
 	        ant.copy(todir: "$env.dist_rapid_server/jre") {
 	            ant.fileset(dir: "$env.jreDir")
@@ -226,13 +217,6 @@ class RapidCmdbBuild extends Build {
             }
         }
         copyCommons(env.dist_modeler, false);
-        def viewsDir = new File("${env.dist_modeler}/grails-app/views");
-        viewsDir.eachDir{
-            def dirName = it.getName();
-            if(dirName != "layouts"){
-                ant.copy(file:"${env.dist_modeler}/grails-app/views/layouts/main.gsp", toFile:"${env.dist_modeler}/grails-app/views/layouts/${dirName}.gsp")
-            }
-        }
     }
 
     def copyCommons(toDir, copyTests){

@@ -91,13 +91,6 @@ class RapidInsightBuild extends Build {
             }
         }
         ant.move(file: "${env.dist_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_rapid_suite}/grails-app/views/layouts");
-        def adminViews = ["httpConnection", "httpDatasource", "databaseConnection", "ldapConnection", "databaseDatasource",
-                "singleTableDatabaseDatasource", "snmpConnection", "snmpDatasource", "script", "rsUser", "group"]
-
-        adminViews.each {
-            ant.copy(file: "${env.dist_rapid_suite}/grails-app/views/layouts/adminLayout.gsp", toFile: "${env.dist_rapid_suite}/grails-app/views/layouts/${it}.gsp", overwrite: true);
-        }
-
         def dbViews = ["databaseConnection", "databaseDatasource", "singleTableDatabaseDatasource"];
         dbViews.each{
            ant.copy(file: "${env.dist_rapid_suite}/web-app/dbDatasources.gsp", toFile: "${env.dist_rapid_suite}/grails-app/views/${it}/list.gsp", overwrite: true); 

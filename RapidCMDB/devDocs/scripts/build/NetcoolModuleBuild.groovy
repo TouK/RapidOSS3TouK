@@ -60,12 +60,6 @@ class NetcoolModuleBuild extends Build {
                 ant.classpath(refid: "classpath");
         }
         ant.move(file: "${env.dist_modules_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
-        def adminViews = ["httpConnection", "httpDatasource", "databaseConnection", "ldapConnection", "databaseDatasource",
-                "singleTableDatabaseDatasource", "snmpConnection", "snmpDatasource", "script", "rsUser", "group", "netcoolConnector", "netcoolConversionParameter"]
-
-        adminViews.each {
-            ant.copy(file: "${env.dist_modules_rapid_suite}/grails-app/views/layouts/adminLayout.gsp", toFile: "${env.dist_modules_rapid_suite}/grails-app/views/layouts/${it}.gsp", overwrite: true);
-        }
         ant.zip(destfile: "$env.distribution/NetcoolPlugin.zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }

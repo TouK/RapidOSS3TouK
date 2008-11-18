@@ -262,11 +262,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     handleScroll: function() {
         this.syncScroll();
         var scrollLeft = this.bwrap.dom.scrollLeft;
-        if (this.prevScrollLeft == scrollLeft)
+        if (this.prevScrollLeft == scrollLeft && !this.scrollChangedIntentially)
         {
             this._verticalScrollChanged();
         }
         this.prevScrollLeft = scrollLeft;
+        this.scrollChangedIntentially = false;
     },
 
     setCSSWidth : function(colIndex, width, pos) {
@@ -525,7 +526,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     },
     setQueryWithView: function(queryString, view, title)
     {
-        if(title){
+        if (title) {
             this.setTitle(title);
         }
         var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
@@ -542,6 +543,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     handleSearch: function(e, willSaveHistory) {
         this.offset = 0;
         this._poll();
+        this._changeScroll(0);
         if (willSaveHistory !== false) {
             var newHistoryState = [];
             newHistoryState[newHistoryState.length] = this.searchInput.value;

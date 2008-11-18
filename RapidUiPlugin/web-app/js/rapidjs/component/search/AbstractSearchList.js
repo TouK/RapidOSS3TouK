@@ -44,7 +44,9 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.calculateRowHeight();
     this.init();
     this.render();
-    this.events['error'].subscribe(function(){this.hideMask()}, this, true)
+    this.events['error'].subscribe(function() {
+        this.hideMask()
+    }, this, true)
 }
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapidjs.component.PollingComponentContainer, {
@@ -52,10 +54,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.offset = 0;
         var newHistoryState = [];
         this._poll();
+        this._changeScroll(0);
         newHistoryState[newHistoryState.length] = this.searchInput.value;
         newHistoryState[newHistoryState.length] = this.lastSortAtt;
         newHistoryState[newHistoryState.length] = this.lastSortOrder;
         this.saveHistoryChange(newHistoryState.join("!::!"));
+    },
+
+    _changeScroll: function(scrollTop) {
+        this.scrollChangedIntentially = true;
+        this.getScrolledEl().dom.scrollTop = scrollTop;
     },
 
     historyChanged: function(state) {
@@ -218,11 +226,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
 
     handleScroll: function() {
         var scrollLeft = this.getScrolledEl().dom.scrollLeft;
-        if (this.prevScrollLeft == scrollLeft)
+        if (this.prevScrollLeft == scrollLeft && !this.scrollChangedIntentially)
         {
             this._verticalScrollChanged();
         }
         this.prevScrollLeft = scrollLeft;
+        this.scrollChangedIntentially = false;
     },
 
     scrollPoll : function(offset) {
@@ -238,21 +247,21 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         interval = interval + 2;
         var nOfSearchData = this.searchData.length;
         var currentUpperBound = rowStartIndex + interval;
-        if(currentUpperBound > this.totalRowCount)
+        if (currentUpperBound > this.totalRowCount)
         {
-            rowStartIndex = this.totalRowCount - interval; 
+            rowStartIndex = this.totalRowCount - interval;
         }
-        if(rowStartIndex < 0){
+        if (rowStartIndex < 0) {
             rowStartIndex = 0;
         }
-        var outOfBounds = rowStartIndex < this.lastOffset || currentUpperBound > (this.lastOffset+nOfSearchData) && this.lastOffset+nOfSearchData < this.totalRowCount;
-        if(outOfBounds)
+        var outOfBounds = rowStartIndex < this.lastOffset || currentUpperBound > (this.lastOffset + nOfSearchData) && this.lastOffset + nOfSearchData < this.totalRowCount;
+        if (outOfBounds)
         {
-             var nextOffset = rowStartIndex  - Math.floor(this.maxRowsDisplayed/2);
-             if(nextOffset < 0)
-             nextOffset = 0;
-             this.renderTask.cancel();
-             this.scrollPollTask.delay(100, this.scrollPoll, this, [nextOffset]);
+            var nextOffset = rowStartIndex - Math.floor(this.maxRowsDisplayed / 2);
+            if (nextOffset < 0)
+                nextOffset = 0;
+            this.renderTask.cancel();
+            this.scrollPollTask.delay(100, this.scrollPoll, this, [nextOffset]);
         }
         else
         {
@@ -498,7 +507,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
                     if (subMenuItemConfig['visible'] != null)
                     {
                         var params = {data: dataNode.getAttributes(), label:subMenuItemConfig.label}
-                         var condRes = eval(subMenuItemConfig['visible']);
+                        var condRes = eval(subMenuItemConfig['visible']);
                         if (!condRes)
                             submenuItem.element.style.display = "none";
                         else

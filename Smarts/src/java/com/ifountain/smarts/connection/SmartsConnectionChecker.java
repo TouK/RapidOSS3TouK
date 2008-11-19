@@ -22,19 +22,18 @@ public class SmartsConnectionChecker extends Thread{
     {
          logger.debug(logPrefix+"starting SmartsConnectionChecker");
          while(connection.checkConnection() && !stopChecker)
-         {
-            logger.debug(logPrefix+"Checked in SmartsConnectionChecker");
+         {              
             try{                
                 Thread.sleep(1000);
             }
             catch (InterruptedException exceptionWillBeIgnored) {
             }
          }
-         logger.debug(logPrefix+"Loop ended in SmartsConnectionChecker");
+         logger.debug(logPrefix+"Checking ended in SmartsConnectionChecker");
          if(!stopChecker)
          {
              try {
-                 logger.info(logPrefix+"Gonna disconnect connection");
+                 logger.warn(logPrefix+"Catched connection to smarts is lost, will _disconnect connection");
                  connection._disconnect();
              }
              catch (RuntimeException exceptionWillBeIgnored) {

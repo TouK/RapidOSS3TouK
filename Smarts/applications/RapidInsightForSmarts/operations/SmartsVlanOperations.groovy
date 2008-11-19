@@ -1,0 +1,6 @@
+
+    
+    class SmartsVlanOperations extends RsTopologyObjectOperations
+    {
+    }
+    

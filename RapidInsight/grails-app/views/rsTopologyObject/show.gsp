@@ -42,9 +42,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">creationClassName:</td>
+                    <td valign="top" class="name">className:</td>
                     
-                    <td valign="top" class="value">${rsTopologyObject.creationClassName}</td>
+                    <td valign="top" class="value">${rsTopologyObject.className}</td>
                     
                 </tr>
                 

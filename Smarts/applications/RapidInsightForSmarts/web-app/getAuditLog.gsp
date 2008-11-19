@@ -9,7 +9,7 @@
 <%@ page import="datasource.SmartsNotificationDatasource" contentType="text/html;charset=UTF-8" %>
 <%
     def componentId = params.componentId
-    def domainObject = RsSmartsNotification.get(id: params.id);
+    def domainObject = SmartsNotification.get(id: params.id);
     if (domainObject != null) {
         %>
              <div class="yui-navset yui-navset-top" style="margin-top:5px">
@@ -95,7 +95,7 @@
         }
         else{
             %>
-                Could not find RsSmartsNotification's datasource.
+                Could not find SmartsNotification's datasource.
             <%
         }
     }

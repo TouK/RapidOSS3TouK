@@ -1,44 +1,23 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsComputerSystem extends RsTopologyObject
-{
-    
+class RsComputerSystem  extends RsTopologyObject {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ipNetworks", "composedOf", "connectedVia", "hostsAccessPoints"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connectedVia"];
     
     
     };
     static datasources = [:]
 
     
-    String accessMode ="";
-    
-    String discoveredFirstAt ="";
-    
-    String discoveredLastAt ="";
-    
-    String discoveryErrorInfo ="";
-    
-    String discoveryTime ="";
-    
     String location ="";
     
     String geocodes ="";
     
     String model ="";
-    
-    Long numberOfIPs =0;
-    
-    Long numberOfIPv6s =0;
-    
-    Long numberOfInterfaces =0;
-    
-    Long numberOfNetworkAdapters =0;
-    
-    Long numberOfPorts =0;
     
     String osVersion ="";
     
@@ -50,15 +29,11 @@ class RsComputerSystem extends RsTopologyObject
     
     String snmpAddress ="";
     
-    Boolean supportsSNMP =false;
-    
     String systemName ="";
     
     String systemObjectID ="";
     
     String vendor ="";
-    
-    String managementServer ="";
     
     Long id ;
     
@@ -70,53 +45,21 @@ class RsComputerSystem extends RsTopologyObject
     
     Object __is_federated_properties_loaded__ ;
     
-    List ipNetworks =[];
-    
-    List composedOf =[];
-    
     List connectedVia =[];
-    
-    List hostsAccessPoints =[];
     
     
     static relations = [
     
-        ipNetworks:[type:RsIpNetwork, reverseName:"memberSystems", isMany:true]
-    
-        ,composedOf:[type:RsComputerSystemComponent, reverseName:"partOf", isMany:true]
-    
-        ,connectedVia:[type:RsLink, reverseName:"connectedSystem", isMany:true]
-    
-        ,hostsAccessPoints:[type:RsIp, reverseName:"hostedBy", isMany:true]
+        connectedVia:[type:RsLink, reverseName:"connectedSystem", isMany:true]
     
     ]
     
     static constraints={
-    accessMode(blank:true,nullable:true)
-        
-     discoveredFirstAt(blank:true,nullable:true)
-        
-     discoveredLastAt(blank:true,nullable:true)
-        
-     discoveryErrorInfo(blank:true,nullable:true)
-        
-     discoveryTime(blank:true,nullable:true)
-        
-     location(blank:true,nullable:true)
+    location(blank:true,nullable:true)
         
      geocodes(blank:true,nullable:true)
         
      model(blank:true,nullable:true)
-        
-     numberOfIPs(nullable:true)
-        
-     numberOfIPv6s(nullable:true)
-        
-     numberOfInterfaces(nullable:true)
-        
-     numberOfNetworkAdapters(nullable:true)
-        
-     numberOfPorts(nullable:true)
         
      osVersion(blank:true,nullable:true)
         
@@ -128,15 +71,11 @@ class RsComputerSystem extends RsTopologyObject
         
      snmpAddress(blank:true,nullable:true)
         
-     supportsSNMP(nullable:true)
-        
      systemName(blank:true,nullable:true)
         
      systemObjectID(blank:true,nullable:true)
         
      vendor(blank:true,nullable:true)
-        
-     managementServer(blank:true,nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -148,10 +87,11 @@ class RsComputerSystem extends RsTopologyObject
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ipNetworks", "composedOf", "connectedVia", "hostsAccessPoints"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connectedVia"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

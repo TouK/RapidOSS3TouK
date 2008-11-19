@@ -42,51 +42,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">a_AdminStatus:</td>
-                    
-                    <td valign="top" class="value">${rsLink.a_AdminStatus}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">a_ComputerSystemName:</td>
                     
                     <td valign="top" class="value">${rsLink.a_ComputerSystemName}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">a_DisplayName:</td>
-                    
-                    <td valign="top" class="value">${rsLink.a_DisplayName}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">a_DuplexMode:</td>
-                    
-                    <td valign="top" class="value">${rsLink.a_DuplexMode}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">a_IsFlapping:</td>
-                    
-                    <td valign="top" class="value">${rsLink.a_IsFlapping}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">a_MaxSpeed:</td>
-                    
-                    <td valign="top" class="value">${rsLink.a_MaxSpeed}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">a_Mode:</td>
-                    
-                    <td valign="top" class="value">${rsLink.a_Mode}</td>
                     
                 </tr>
                 
@@ -98,9 +56,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">a_OperStatus:</td>
+                    <td valign="top" class="name">className:</td>
                     
-                    <td valign="top" class="value">${rsLink.a_OperStatus}</td>
+                    <td valign="top" class="value">${rsLink.className}</td>
                     
                 </tr>
                 
@@ -114,33 +72,6 @@
                             </g:each>
                         </ul>
                     </td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">connectedSystemsUnresponsive:</td>
-                    
-                    <td valign="top" class="value">${rsLink.connectedSystemsUnresponsive}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">connectedTo:</td>
-                    
-                    <td valign="top" style="text-align:left;" class="value">
-                        <ul>
-                            <g:each var="c" in="${rsLink.connectedTo}">
-                                <li><g:link controller="rsNetworkAdapter" action="show" id="${c.id}">${c}</g:link></li>
-                            </g:each>
-                        </ul>
-                    </td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">creationClassName:</td>
-                    
-                    <td valign="top" class="value">${rsLink.creationClassName}</td>
                     
                 </tr>
                 
@@ -186,13 +117,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">z_AdminStatus:</td>
-                    
-                    <td valign="top" class="value">${rsLink.z_AdminStatus}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">z_ComputerSystemName:</td>
                     
                     <td valign="top" class="value">${rsLink.z_ComputerSystemName}</td>
@@ -200,51 +124,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">z_DisplayName:</td>
-                    
-                    <td valign="top" class="value">${rsLink.z_DisplayName}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">z_DuplexMode:</td>
-                    
-                    <td valign="top" class="value">${rsLink.z_DuplexMode}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">z_IsFlapping:</td>
-                    
-                    <td valign="top" class="value">${rsLink.z_IsFlapping}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">z_MaxSpeed:</td>
-                    
-                    <td valign="top" class="value">${rsLink.z_MaxSpeed}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">z_Mode:</td>
-                    
-                    <td valign="top" class="value">${rsLink.z_Mode}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">z_Name:</td>
                     
                     <td valign="top" class="value">${rsLink.z_Name}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">z_OperStatus:</td>
-                    
-                    <td valign="top" class="value">${rsLink.z_OperStatus}</td>
                     
                 </tr>
                 

@@ -70,55 +70,55 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 
 CLASS_MAPPINGS = [
-    RsComputerSystem : [
+    SmartsComputerSystem : [
             classes:[Bridge:[:], Hub:[:], Host:[:], Node:[:], Switch:[:], Router:[:], Firewall:[:], RelayDevice:[:], TerminalServer:[:]],
             defaultColumnsToBeSubscribed: ["Name", "DiscoveredLastAt", "DiscoveryErrorInfo"],
-            columnsMapping:[SNMPAddress:"snmpAddress"]
+            columnsMapping:[SNMPAddress:"snmpAddress", CreationClassName:"className"]
     ],
-    RsComputerSystemComponent :[
+    SmartsComputerSystemComponent :[
             classes:[PowerSupply:[:], Processor:[:], Memory:[:], TemperatureSensor:[:], VoltageSensor:[:], Fan:[:], Disk:[:], FileSystem:[:], LogicalDisk:[:], NumericSensor:[:]],
             defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[:]
+            columnsMapping:[CreationClassName:"className"]
     ],
     RsGroup:[
             classes:[CardRedundancyGroup:[:], RedundancyGroup:[:], SystemRedundancyGroup:[:]],
             defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[:]
+            columnsMapping:[CreationClassName:"className"]
     ],
-    RsLink: [
+    SmartsLink: [
             classes:[NetworkConnection:[:], Cable:[:], TrunkCable:[:]],
             defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[:]
+            columnsMapping:[CreationClassName:"className"]
     ],
-    RsCard: [
+    SmartsCard: [
             classes:[Card:[:]],
             defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[:]
+            columnsMapping:[CreationClassName:"className"]
     ],
-    RsIp: [
+    SmartsIp: [
             classes:[IP:[:]],
             defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[:]
+            columnsMapping:[CreationClassName:"className"]
     ],
-    RsInterface: [
+    SmartsInterface: [
             classes:[Interface:[:]],
             defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[:]
+            columnsMapping:[CreationClassName:"className"]
     ],
-    RsPort: [
+    SmartsPort: [
             classes:[Port:[:]],
             defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[:]
+            columnsMapping:[CreationClassName:"className"]
     ],
-    RsManagementServer: [
+    RsManagementSystem: [
             classes:[ManagementServer:[:]],
             defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[:]
+            columnsMapping:[CreationClassName:"className"]
     ]
 ]
 
 
-CLASSES_TO_BE_SUBSCRIBED = ["RsComputerSystem", "RsComputerSystemComponent", "RsGroup", "RsLink", "RsCard", "RsIp", "RsInterface", "RsPort"]
+CLASSES_TO_BE_SUBSCRIBED = ["SmartsComputerSystem", "SmartsComputerSystemComponent", "RsGroup", "SmartsLink", "SmartsCard", "SmartsIp", "SmartsInterface", "SmartsPort"]
 
 
 
@@ -177,17 +177,17 @@ def cleanUp() {
 
 boolean isComputerSystemComponent(String className)
 {
-    return CLASS_MAPPINGS.RsComputerSystemComponent.classes.containsKey(className) || CLASS_MAPPINGS.RsIp.classes.containsKey(className) || CLASS_MAPPINGS.RsPort.classes.containsKey(className) || CLASS_MAPPINGS.RsInterface.classes.containsKey(className) || CLASS_MAPPINGS.RsCard.classes.containsKey(className);
+    return CLASS_MAPPINGS.SmartsComputerSystemComponent.classes.containsKey(className) || CLASS_MAPPINGS.SmartsIp.classes.containsKey(className) || CLASS_MAPPINGS.SmartsPort.classes.containsKey(className) || CLASS_MAPPINGS.SmartsInterface.classes.containsKey(className) || CLASS_MAPPINGS.SmartsCard.classes.containsKey(className);
 }
 
 boolean isComputerSystem(String className)
 {
-    return CLASS_MAPPINGS.RsComputerSystem.classes.containsKey(className);
+    return CLASS_MAPPINGS.SmartsComputerSystem.classes.containsKey(className);
 }
 
 boolean isConnection(String className)
 {
-    return CLASS_MAPPINGS.RsLink.classes.containsKey(className);
+    return CLASS_MAPPINGS.SmartsLink.classes.containsKey(className);
 }
 
 def update(topologyObject) {
@@ -217,8 +217,8 @@ def update(topologyObject) {
 
             Map connectionObjectFromSmarts = getDatasource().getObject(topologyObject);
             Map connectedSystemIdentifiers = getConnectedComputerSystemProps(connectionObjectFromSmarts);
-            def aComputerSystem = RsComputerSystem.get(name:connectedSystemIdentifiers.A_Name);
-            def zComputerSystem = RsComputerSystem.get(name:connectedSystemIdentifiers.Z_Name);
+            def aComputerSystem = SmartsComputerSystem.get(name:connectedSystemIdentifiers.A_Name);
+            def zComputerSystem = SmartsComputerSystem.get(name:connectedSystemIdentifiers.Z_Name);
             if(aComputerSystem != null && zComputerSystem != null)
             {
                 logger.debug("Creating connection object  ${connectionObjectFromSmarts.Name} of class ${connectionObjectFromSmarts.CreationClassName}");
@@ -234,7 +234,7 @@ def update(topologyObject) {
             }
             else
             {
-                logger.debug("Could not created connection object  ${connectionObjectFromSmarts.Name} of class ${connectionObjectFromSmarts.CreationClassName} because connected RsComputerSystem instances does not exist in repository.");   
+                logger.debug("Could not created connection object  ${connectionObjectFromSmarts.Name} of class ${connectionObjectFromSmarts.CreationClassName} because connected SmartsComputerSystem instances does not exist in repository.");   
             }
         }
     }
@@ -255,7 +255,7 @@ def update(topologyObject) {
 }
 
 def handleComputerSystemCreate(Map topologyObject) {
-    RsComputerSystem computerSystem = RsComputerSystem.get(name: topologyObject["Name"])
+    SmartsComputerSystem computerSystem = SmartsComputerSystem.get(name: topologyObject["Name"])
     if (!computerSystem || computerSystem && computerSystem.discoveredLastAt != topologyObject["DiscoveredLastAt"]) {
         addComputerSystemToRepository(topologyObject);
     }
@@ -314,12 +314,12 @@ def addConnectionObject(topologyObject) {
     Map connectionFromSmarts = getDatasource().getObject(topologyObject);
     def connectedSystemProps = getConnectedComputerSystemProps(topologyObject)
     topologyObject.putAll(connectedSystemProps);
-    def connObject = RsLink.add(getPropsWithLocalNames("RsLink", topologyObject));
+    def connObject = SmartsLink.add(getPropsWithLocalNames("SmartsLink", topologyObject));
     if (!connObject.hasErrors()) {
         logger.info("Connection object ${topologyObject} successfully added.")
         def connectedAdapters = [];
         connectionFromSmarts.ConnectedTo.each{networkAdapter->
-            def rsNetworkAdapterObjects = RsNetworkAdapter.get(name:networkAdapter.Name);
+            def rsNetworkAdapterObjects = SmartsNetworkAdapter.get(name:networkAdapter.Name);
             if(rsNetworkAdapterObjects)
             {
                 connectedAdapters.add(rsNetworkAdapterObjects);
@@ -357,7 +357,7 @@ Logger getLogger() {
 def getExistingCompouterSystems(String objectName)
 {
     def existingComputerSystemComponents = new CaseInsensitiveMap();
-    def computerSystemComponentNames = RsComputerSystemComponent.propertySummary("computerSystemName:\"${objectName}\"", ["name"]);
+    def computerSystemComponentNames = SmartsComputerSystemComponent.propertySummary("computerSystemName:\"${objectName}\"", ["name"]);
     computerSystemComponentNames.name.each {propertyValue, occurrenceCount->
         existingComputerSystemComponents[propertyValue] = propertyValue;
     }
@@ -367,12 +367,12 @@ def getExistingCompouterSystems(String objectName)
 def getExistingConnections(String objectName)
 {
     def existingConnections = new CaseInsensitiveMap();
-    def connectionNames = RsLink.propertySummary("a_ComputerSystemName:\"${objectName}\"", ["name"]);
+    def connectionNames = SmartsLink.propertySummary("a_ComputerSystemName:\"${objectName}\"", ["name"]);
     connectionNames.name.each {propertyValue, occurrenceCount->
         existingConnections[propertyValue] = propertyValue;
     }
 
-    connectionNames = RsLink.propertySummary("z_ComputerSystemName:\"${objectName}\"", ["name"]);
+    connectionNames = SmartsLink.propertySummary("z_ComputerSystemName:\"${objectName}\"", ["name"]);
     connectionNames.name.each {propertyValue, occurrenceCount->
         existingConnections[propertyValue] = propertyValue;
     }
@@ -382,9 +382,9 @@ def getExistingConnections(String objectName)
 def addComputerSystemToRepository(topologyObject) {
     logger.debug("creating ComputertSystem object ${topologyObject.Name} of class ${topologyObject.CreationClassName}")
     Map deviceFromSmarts = getDatasource().getObject(topologyObject);
-    def deviceProps = getPropsWithLocalNames("RsComputerSystem", deviceFromSmarts);
+    def deviceProps = getPropsWithLocalNames("SmartsComputerSystem", deviceFromSmarts);
     deviceProps["managementServer"] = datasource.connection.domain;
-    RsComputerSystem computerSystem = RsComputerSystem.add(deviceProps)
+    SmartsComputerSystem computerSystem = SmartsComputerSystem.add(deviceProps)
     if (!computerSystem.hasErrors()) {
         def existingCompSystems = getExistingCompouterSystems(computerSystem.name);
         def existingConnections = getExistingConnections(computerSystem.name);
@@ -396,7 +396,7 @@ def addComputerSystemToRepository(topologyObject) {
                  if (isComputerSystemComponent(containmentObjectFromSmarts.CreationClassName))
                  {
                     logger.debug("Creating ComputerSystemComponent object  ${containmentObjectFromSmarts.Name} of class ${containmentObjectFromSmarts.CreationClassName}");
-                    RsComputerSystemComponent containmentObject = addComputerSystemComponent(containmentObjectFromSmarts, computerSystem.name);
+                    SmartsComputerSystemComponent containmentObject = addComputerSystemComponent(containmentObjectFromSmarts, computerSystem.name);
                     if (!containmentObject.hasErrors()) {
                         addedComputerSystemComponents.add(containmentObject);
                         logger.info("ComputerSystemComponent object ${containmentObjectFromSmarts} successfully added.");
@@ -407,7 +407,7 @@ def addComputerSystemToRepository(topologyObject) {
                 }
                 else
                 {
-                    logger.debug("${containmentObjectFromSmarts.Name} of class ${containmentObjectFromSmarts.CreationClassName} is not a RsComputerSystemComponent object discarding");
+                    logger.debug("${containmentObjectFromSmarts.Name} of class ${containmentObjectFromSmarts.CreationClassName} is not a SmartsComputerSystemComponent object discarding");
                 }
             }
             return addedComputerSystemComponents;
@@ -417,7 +417,7 @@ def addComputerSystemToRepository(topologyObject) {
         computerSystem.addRelation("hostsAccessPoints":addedHostAccessPoints);
         computerSystem.addRelation("composedOf":addedComposedOf);
         existingCompSystems.each{String name, String value->
-            RsComputerSystemComponent.get(name:name).remove();
+            SmartsComputerSystemComponent.get(name:name).remove();
         }
 
         def connectionProcessor = {connectionTopologyObjects->
@@ -435,7 +435,7 @@ def addComputerSystemToRepository(topologyObject) {
                 }
                 else
                 {
-                    logger.debug("${connectionObjectFromSmarts.Name} of class ${connectionObjectFromSmarts.CreationClassName} is not a RsLink object discarding");
+                    logger.debug("${connectionObjectFromSmarts.Name} of class ${connectionObjectFromSmarts.CreationClassName} is not a SmartsLink object discarding");
                 }
             }
             return connectionObjects;
@@ -444,7 +444,7 @@ def addComputerSystemToRepository(topologyObject) {
         computerSystem.addRelation("connectedVia":addedConnectionObjects);
 
         existingConnections.each{String name, String value->
-            RsLink.get(name:name).remove();
+            SmartsLink.get(name:name).remove();
         }
     }
     else {
@@ -452,62 +452,62 @@ def addComputerSystemToRepository(topologyObject) {
     }
 }
 
-RsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts, computerSystemName) {
+SmartsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts, computerSystemName) {
     containmentObjectFromSmarts.ComputerSystemName =computerSystemName;
-    def addedRsComputerSystemObject = null;
-    if (CLASS_MAPPINGS.RsInterface.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
+    def addedSmartsComputerSystemObject = null;
+    if (CLASS_MAPPINGS.SmartsInterface.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
 
-        def props = getPropsWithLocalNames("RsInterface", containmentObjectFromSmarts);
-        getLogger().debug("Creating RsInterface with ${props}")
-        addedRsComputerSystemObject = RsInterface.add(props);
+        def props = getPropsWithLocalNames("SmartsInterface", containmentObjectFromSmarts);
+        getLogger().debug("Creating SmartsInterface with ${props}")
+        addedSmartsComputerSystemObject = SmartsInterface.add(props);
     }
-    else if (CLASS_MAPPINGS.RsCard.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
+    else if (CLASS_MAPPINGS.SmartsCard.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
 
-        def props = getPropsWithLocalNames("RsCard", containmentObjectFromSmarts);
-        getLogger().debug("Creating RsCard with ${props}")
-        addedRsComputerSystemObject = RsCard.add(props);
+        def props = getPropsWithLocalNames("SmartsCard", containmentObjectFromSmarts);
+        getLogger().debug("Creating SmartsCard with ${props}")
+        addedSmartsComputerSystemObject = SmartsCard.add(props);
         def connectedAdapters = [];
         containmentObjectFromSmarts.Realizes.each{networkAdapter->
-            def rsNetworkAdapterObjects = RsNetworkAdapter.get(name:networkAdapter.Name);
+            def rsNetworkAdapterObjects = SmartsNetworkAdapter.get(name:networkAdapter.Name);
             if(rsNetworkAdapterObjects)
             {
                 connectedAdapters.add(rsNetworkAdapterObjects);
             }
         }
-        addedRsComputerSystemObject.addRelation(realizes:connectedAdapters);
+        addedSmartsComputerSystemObject.addRelation(realizes:connectedAdapters);
     }
-    else if (CLASS_MAPPINGS.RsIp.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
+    else if (CLASS_MAPPINGS.SmartsIp.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
 
-        def props = getPropsWithLocalNames("RsIp", containmentObjectFromSmarts);
-        getLogger().debug("Creating RsIp with ${props}")
-        addedRsComputerSystemObject = RsIp.add(props);
+        def props = getPropsWithLocalNames("SmartsIp", containmentObjectFromSmarts);
+        getLogger().debug("Creating SmartsIp with ${props}")
+        addedSmartsComputerSystemObject = SmartsIp.add(props);
         def connectedAdapters = [];
         containmentObjectFromSmarts.Realizes.each{networkAdapter->
-            def rsNetworkAdapterObjects = RsNetworkAdapter.get(name:networkAdapter.Name);
+            def rsNetworkAdapterObjects = SmartsNetworkAdapter.get(name:networkAdapter.Name);
             if(rsNetworkAdapterObjects)
             {
                 connectedAdapters.add(rsNetworkAdapterObjects);
             }
         }
-        addedRsComputerSystemObject.addRelation(realizes:connectedAdapters);
+        addedSmartsComputerSystemObject.addRelation(realizes:connectedAdapters);
     }
-    else if (CLASS_MAPPINGS.RsPort.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
+    else if (CLASS_MAPPINGS.SmartsPort.classes.containsKey(containmentObjectFromSmarts.CreationClassName)) {
 
-        def props = getPropsWithLocalNames("RsPort", containmentObjectFromSmarts);
-        getLogger().debug("Creating RsPort with ${props}")
-        addedRsComputerSystemObject = RsPort.add(props);
+        def props = getPropsWithLocalNames("SmartsPort", containmentObjectFromSmarts);
+        getLogger().debug("Creating SmartsPort with ${props}")
+        addedSmartsComputerSystemObject = SmartsPort.add(props);
     }
     else
     {
 
-        def props = getPropsWithLocalNames("RsComputerSystemComponent", containmentObjectFromSmarts);
-        getLogger().debug("Creating RsComputerSystemComponent with ${props}")
-        addedRsComputerSystemObject = RsComputerSystemComponent.add(props);
+        def props = getPropsWithLocalNames("SmartsComputerSystemComponent", containmentObjectFromSmarts);
+        getLogger().debug("Creating SmartsComputerSystemComponent with ${props}")
+        addedSmartsComputerSystemObject = SmartsComputerSystemComponent.add(props);
     }
 
     def layeredOverObjects = [];
     containmentObjectFromSmarts.LayeredOver.each{connectedComputerSystemObject->
-        def rsConnectedComputerSystemObject = RsComputerSystemComponent.get(name:connectedComputerSystemObject.Name);
+        def rsConnectedComputerSystemObject = SmartsComputerSystemComponent.get(name:connectedComputerSystemObject.Name);
         if(rsConnectedComputerSystemObject)
         {
             layeredOverObjects.add(rsConnectedComputerSystemObject);
@@ -515,21 +515,21 @@ RsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts
     }
     def underlyingObjects = [];
     containmentObjectFromSmarts.Underlying.each{connectedComputerSystemObject->
-        def rsConnectedComputerSystemObject = RsComputerSystemComponent.get(name:connectedComputerSystemObject.Name);
+        def rsConnectedComputerSystemObject = SmartsComputerSystemComponent.get(name:connectedComputerSystemObject.Name);
         if(rsConnectedComputerSystemObject)
         {
             underlyingObjects.add(rsConnectedComputerSystemObject);
         }
     }
 
-    addedRsComputerSystemObject.addRelation(layeredOver:layeredOverObjects);
-    addedRsComputerSystemObject.addRelation(underlying:underlyingObjects);
+    addedSmartsComputerSystemObject.addRelation(layeredOver:layeredOverObjects);
+    addedSmartsComputerSystemObject.addRelation(underlying:underlyingObjects);
 
-    if(addedRsComputerSystemObject instanceof RsNetworkAdapter)
+    if(addedSmartsComputerSystemObject instanceof SmartsNetworkAdapter)
     {
         def realizedByObjects = [];
         containmentObjectFromSmarts.RealizedBy.each{connectedComputerSystemObject->
-            def rsConnectedComputerSystemObject = RsCard.get(name:connectedComputerSystemObject.Name);
+            def rsConnectedComputerSystemObject = SmartsCard.get(name:connectedComputerSystemObject.Name);
             if(rsConnectedComputerSystemObject)
             {
                 realizedByObjects.add(rsConnectedComputerSystemObject);
@@ -537,15 +537,15 @@ RsComputerSystemComponent addComputerSystemComponent(containmentObjectFromSmarts
         }
         def connectedViaObjects = [];
         containmentObjectFromSmarts.ConnectedVia.each{connectedComputerSystemObject->
-            def rsConnectedComputerSystemObject = RsLink.get(name:connectedComputerSystemObject.Name);
+            def rsConnectedComputerSystemObject = SmartsLink.get(name:connectedComputerSystemObject.Name);
             if(rsConnectedComputerSystemObject)
             {
                 connectedViaObjects.add(rsConnectedComputerSystemObject);
             }
         }
 
-        addedRsComputerSystemObject.addRelation(realizedBy:realizedByObjects);
-        addedRsComputerSystemObject.addRelation(connectedVia:connectedViaObjects);
+        addedSmartsComputerSystemObject.addRelation(realizedBy:realizedByObjects);
+        addedSmartsComputerSystemObject.addRelation(connectedVia:connectedViaObjects);
     }
-    return addedRsComputerSystemObject;
+    return addedSmartsComputerSystemObject;
 }

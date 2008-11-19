@@ -4,10 +4,10 @@ def name = params.name;
 def severityMap = ["1":0, "2":0, "3":0, "4":0, "5":0]
 def severitySummary = null
 if(nodeType == "Container"){
-    severitySummary = RsSmartsNotification.propertySummary("className:\"${name}\"", ["severity"]);
+    severitySummary = SmartsNotification.propertySummary("className:\"${name}\"", ["severity"]);
 }
 else{
-   severitySummary = RsSmartsNotification.propertySummary("instanceName:\"${name}\"", ["severity"]);
+   severitySummary = SmartsNotification.propertySummary("instanceName:\"${name}\"", ["severity"]);
 }
  severitySummary.severity.each{propValue, numberOfObjects ->
      severityMap.put("" + propValue, numberOfObjects);

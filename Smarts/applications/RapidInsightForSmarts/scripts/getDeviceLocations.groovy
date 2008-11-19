@@ -3,7 +3,7 @@ def name = params.name;
 
 def devices = [];
 if (nodeType == "Container") {
-    devices = RsComputerSystem.searchEvery("creationClassName:\"${name}\"");
+    devices = RsComputerSystem.searchEvery("className:\"${name}\"");
 }
 else {
     def topoObj = RsComputerSystem.get(name: name);

@@ -19,6 +19,6 @@ RsEvent.list().each{
 RsHistoricalEvent.list().each{
     it.remove();
 }
-RsManagementServer.list().each{
+RsManagementSystem.list().each{
     it.remove();
 }

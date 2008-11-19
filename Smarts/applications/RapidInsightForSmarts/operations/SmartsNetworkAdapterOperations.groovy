@@ -1,0 +1,6 @@
+
+    
+    class SmartsNetworkAdapterOperations extends SmartsComputerSystemComponentOperations
+    {
+    }
+    

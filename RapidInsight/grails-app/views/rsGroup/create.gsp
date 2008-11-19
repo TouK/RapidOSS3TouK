@@ -42,10 +42,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="creationClassName">creationClassName:</label>
+                            <label for="className">className:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsGroup,field:'creationClassName','errors')}">
-                            <input type="text" id="creationClassName" name="creationClassName" value="${fieldValue(bean:rsGroup,field:'creationClassName')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:rsGroup,field:'className','errors')}">
+                            <input type="text" id="className" name="className" value="${fieldValue(bean:rsGroup,field:'className')}"/>
                         </td>
                     </tr>
                     

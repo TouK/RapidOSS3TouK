@@ -1,0 +1,6 @@
+
+    
+    class SmartsIpOperations extends SmartsComputerSystemComponentOperations
+    {
+    }
+    

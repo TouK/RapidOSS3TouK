@@ -12,10 +12,7 @@
         def objectName = params.name;
         def relatedObject = objectName;
         def object = RsTopologyObject.get(name:objectName);
-        if(object instanceof RsComputerSystemComponent){
-            relatedObject = object.computerSystemName;
-        }
-        else if(object instanceof RsLink){
+        if(object instanceof RsLink){
            relatedObject = object.a_ComputerSystemName; 
         }
         response.sendRedirect("topologyMap.gsp?name=${relatedObject}")

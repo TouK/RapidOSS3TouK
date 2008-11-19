@@ -53,5 +53,6 @@ class RsRiHistoricalEvent  extends RsHistoricalEvent {
     //AUTO_GENERATED_CODE
 
 
+
     
 }

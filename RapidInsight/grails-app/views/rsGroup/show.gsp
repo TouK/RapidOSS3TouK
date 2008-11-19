@@ -42,6 +42,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">className:</td>
+                    
+                    <td valign="top" class="value">${rsGroup.className}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">consistsOf:</td>
                     
                     <td valign="top" style="text-align:left;" class="value">
@@ -51,13 +58,6 @@
                             </g:each>
                         </ul>
                     </td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">creationClassName:</td>
-                    
-                    <td valign="top" class="value">${rsGroup.creationClassName}</td>
                     
                 </tr>
                 

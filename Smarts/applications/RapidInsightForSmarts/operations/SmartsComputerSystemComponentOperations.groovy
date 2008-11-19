@@ -1,0 +1,6 @@
+
+    
+    class SmartsComputerSystemComponentOperations extends RsTopologyObjectOperations
+    {
+    }
+    

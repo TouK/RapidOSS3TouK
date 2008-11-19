@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsTopologyObject 
-{
-    
+class RsTopologyObject {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -16,7 +15,7 @@ class RsTopologyObject
     
     String name ="";
     
-    String creationClassName ="";
+    String className ="";
     
     String description ="";
     
@@ -48,7 +47,7 @@ class RsTopologyObject
     static constraints={
     name(blank:false,nullable:false,key:[])
         
-     creationClassName(blank:true,nullable:true)
+     className(blank:true,nullable:true)
         
      description(blank:true,nullable:true)
         
@@ -79,4 +78,5 @@ class RsTopologyObject
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

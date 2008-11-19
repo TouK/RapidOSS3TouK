@@ -52,7 +52,7 @@
             def smartsEventFields = ["className", "instanceName", "eventName", "sourceDomainName", "acknowledged", "owner", "changedAt",
                     "elementClassName", "elementName", "isRoot", "severity"];
         %>
-        <rui:nsSearchResult alias="RsSmartsNotification" properties="${smartsEventFields}" emphasizeds="${['className', 'instanceName', 'eventName']}"></rui:nsSearchResult>
+        <rui:nsSearchResult alias="SmartsNotification" properties="${smartsEventFields}" emphasizeds="${['className', 'instanceName', 'eventName']}"></rui:nsSearchResult>
     </rui:nsSearchResults>
     <rui:nsConversions>
         <rui:nsConversion property="changedAt" type="function" function="formatChangedAt"></rui:nsConversion>

@@ -33,15 +33,6 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="name">name:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsRiHistoricalEvent,field:'name','errors')}">
-                            <input type="text" id="name" name="name" value="${fieldValue(bean:rsRiHistoricalEvent,field:'name')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="acknowledged">acknowledged:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsRiHistoricalEvent,field:'acknowledged','errors')}">
@@ -109,6 +100,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsRiHistoricalEvent,field:'identifier','errors')}">
                             <input type="text" id="identifier" name="identifier" value="${fieldValue(bean:rsRiHistoricalEvent,field:'identifier')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="name">name:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsRiHistoricalEvent,field:'name','errors')}">
+                            <input type="text" id="name" name="name" value="${fieldValue(bean:rsRiHistoricalEvent,field:'name')}"/>
                         </td>
                     </tr>
                     

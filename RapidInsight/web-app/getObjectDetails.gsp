@@ -6,10 +6,10 @@
     if (domainObject != null) {
         String className = domainObject.getClass().getName();
         def allProperties = domainObject.getPropertiesList();
-        def propertyNames = ["creationClassName", "name"];
+        def propertyNames = ["className", "name"];
         allProperties.each{
             def propName = it.name
-            if(propName != "creationClassName" || propName != "name"){
+            if(propName != "className" || propName != "name"){
                 propertyNames.add(propName)
             }
         }
@@ -50,7 +50,7 @@ cursor:pointer;
                                             if (sObj != null) {
                                 %>
                                 <td>
-                                    <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${sObj.name}'), 'Details of ${sObj.creationClassName} ${sObj.name}');">${sObj.creationClassName} ${sObj.name}<a>
+                                    <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${sObj.name}'), 'Details of ${sObj.className} ${sObj.name}');">${sObj.className} ${sObj.name}<a>
                                 </td>
                                 <%
                                     }
@@ -66,10 +66,10 @@ cursor:pointer;
                                     <ul style="margin-left: 10px;">
                                         <%
                                                 def relatedObjects = domainObject[propertyName];
-                                                def sortedRelatedObjects = relatedObjects.sort{"${it.creationClassName}${it.name}"};
+                                                def sortedRelatedObjects = relatedObjects.sort{"${it.className}${it.name}"};
                                                 sortedRelatedObjects.each {
                                         %>
-                                        <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${it.name}'), 'Details of ${it.creationClassName} ${it.name}');">${it.creationClassName} ${it.name}<a></li>
+                                        <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${it.name}'), 'Details of ${it.className} ${it.name}');">${it.className} ${it.name}<a></li>
                                         <%
                                                 }
                                         %>

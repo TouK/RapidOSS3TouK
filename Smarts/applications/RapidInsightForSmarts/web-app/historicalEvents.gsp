@@ -43,7 +43,7 @@
              def smartsEventFields = ["className", "instanceName", "eventName", "sourceDomainName","acknowledged","owner", "changedAt",
                    "elementClassName", "elementName","isRoot", "severity"];
         %>
-        <rui:hnSearchResult alias="RsSmartsHistoricalNotification" properties="${smartsEventFields}" emphasizeds="${['className', 'instanceName', 'eventName']}"></rui:hnSearchResult>
+        <rui:hnSearchResult alias="SmartsHistoricalNotification" properties="${smartsEventFields}" emphasizeds="${['className', 'instanceName', 'eventName']}"></rui:hnSearchResult>
     </rui:hnSearchResults>
     <rui:hnConversions>
         <rui:hnConversion property="changedAt" type="function" function="formatChangedAt"></rui:hnConversion>

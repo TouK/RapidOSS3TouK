@@ -8,15 +8,15 @@ def name = params.name;
 
 def historicalEvents = null;
 if(nodeType == "Container"){
-    historicalEvents = RsSmartsHistoricalNotification.searchEvery("className:\"${name}\"");
+    historicalEvents = SmartsHistoricalNotification.searchEvery("className:\"${name}\"");
 }
 else{
-   historicalEvents = RsSmartsHistoricalNotification.searchEvery("instanceName:\"${name}\"");
+   historicalEvents = SmartsHistoricalNotification.searchEvery("instanceName:\"${name}\"");
 }
 
 web.render(contentType: 'text/xml'){
    data(){
-       historicalEvents.each{RsSmartsHistoricalNotification historicalEvent ->
+       historicalEvents.each{SmartsHistoricalNotification historicalEvent ->
            def start = formatter.format(new Timestamp(historicalEvent.lastNotifiedAt)) + " GMT";
            def end = formatter.format(new Timestamp(historicalEvent.clearedAt)) + " GMT";
            def title = historicalEvent.instanceName + " " + historicalEvent.eventName;

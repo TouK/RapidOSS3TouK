@@ -42,64 +42,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="a_AdminStatus">a_AdminStatus:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'a_AdminStatus','errors')}">
-                            <input type="text" id="a_AdminStatus" name="a_AdminStatus" value="${fieldValue(bean:rsLink,field:'a_AdminStatus')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="a_ComputerSystemName">a_ComputerSystemName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsLink,field:'a_ComputerSystemName','errors')}">
                             <input type="text" id="a_ComputerSystemName" name="a_ComputerSystemName" value="${fieldValue(bean:rsLink,field:'a_ComputerSystemName')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="a_DisplayName">a_DisplayName:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'a_DisplayName','errors')}">
-                            <input type="text" id="a_DisplayName" name="a_DisplayName" value="${fieldValue(bean:rsLink,field:'a_DisplayName')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="a_DuplexMode">a_DuplexMode:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'a_DuplexMode','errors')}">
-                            <input type="text" id="a_DuplexMode" name="a_DuplexMode" value="${fieldValue(bean:rsLink,field:'a_DuplexMode')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="a_IsFlapping">a_IsFlapping:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'a_IsFlapping','errors')}">
-                            <g:checkBox name="a_IsFlapping" value="${rsLink?.a_IsFlapping}" ></g:checkBox>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="a_MaxSpeed">a_MaxSpeed:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'a_MaxSpeed','errors')}">
-                            <input type="text" id="a_MaxSpeed" name="a_MaxSpeed" value="${fieldValue(bean:rsLink,field:'a_MaxSpeed')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="a_Mode">a_Mode:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'a_Mode','errors')}">
-                            <input type="text" id="a_Mode" name="a_Mode" value="${fieldValue(bean:rsLink,field:'a_Mode')}"/>
                         </td>
                     </tr>
                     
@@ -114,28 +60,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="a_OperStatus">a_OperStatus:</label>
+                            <label for="className">className:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'a_OperStatus','errors')}">
-                            <input type="text" id="a_OperStatus" name="a_OperStatus" value="${fieldValue(bean:rsLink,field:'a_OperStatus')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="connectedSystemsUnresponsive">connectedSystemsUnresponsive:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'connectedSystemsUnresponsive','errors')}">
-                            <g:checkBox name="connectedSystemsUnresponsive" value="${rsLink?.connectedSystemsUnresponsive}" ></g:checkBox>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="creationClassName">creationClassName:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'creationClassName','errors')}">
-                            <input type="text" id="creationClassName" name="creationClassName" value="${fieldValue(bean:rsLink,field:'creationClassName')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'className','errors')}">
+                            <input type="text" id="className" name="className" value="${fieldValue(bean:rsLink,field:'className')}"/>
                         </td>
                     </tr>
                     
@@ -177,15 +105,6 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="z_AdminStatus">z_AdminStatus:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'z_AdminStatus','errors')}">
-                            <input type="text" id="z_AdminStatus" name="z_AdminStatus" value="${fieldValue(bean:rsLink,field:'z_AdminStatus')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="z_ComputerSystemName">z_ComputerSystemName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsLink,field:'z_ComputerSystemName','errors')}">
@@ -195,64 +114,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="z_DisplayName">z_DisplayName:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'z_DisplayName','errors')}">
-                            <input type="text" id="z_DisplayName" name="z_DisplayName" value="${fieldValue(bean:rsLink,field:'z_DisplayName')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="z_DuplexMode">z_DuplexMode:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'z_DuplexMode','errors')}">
-                            <input type="text" id="z_DuplexMode" name="z_DuplexMode" value="${fieldValue(bean:rsLink,field:'z_DuplexMode')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="z_IsFlapping">z_IsFlapping:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'z_IsFlapping','errors')}">
-                            <g:checkBox name="z_IsFlapping" value="${rsLink?.z_IsFlapping}" ></g:checkBox>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="z_MaxSpeed">z_MaxSpeed:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'z_MaxSpeed','errors')}">
-                            <input type="text" id="z_MaxSpeed" name="z_MaxSpeed" value="${fieldValue(bean:rsLink,field:'z_MaxSpeed')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="z_Mode">z_Mode:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'z_Mode','errors')}">
-                            <input type="text" id="z_Mode" name="z_Mode" value="${fieldValue(bean:rsLink,field:'z_Mode')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="z_Name">z_Name:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsLink,field:'z_Name','errors')}">
                             <input type="text" id="z_Name" name="z_Name" value="${fieldValue(bean:rsLink,field:'z_Name')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="z_OperStatus">z_OperStatus:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'z_OperStatus','errors')}">
-                            <input type="text" id="z_OperStatus" name="z_OperStatus" value="${fieldValue(bean:rsLink,field:'z_OperStatus')}"/>
                         </td>
                     </tr>
                     

@@ -35,13 +35,6 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">name:</td>
-                    
-                    <td valign="top" class="value">${rsRiHistoricalEvent.name}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
                     <td valign="top" class="name">acknowledged:</td>
                     
                     <td valign="top" class="value">${rsRiHistoricalEvent.acknowledged}</td>
@@ -94,6 +87,13 @@
                     <td valign="top" class="name">identifier:</td>
                     
                     <td valign="top" class="value">${rsRiHistoricalEvent.identifier}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">name:</td>
+                    
+                    <td valign="top" class="value">${rsRiHistoricalEvent.name}</td>
                     
                 </tr>
                 

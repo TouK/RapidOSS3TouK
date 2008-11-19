@@ -29,7 +29,7 @@ existingObjectsRetrieved = false;
 def init(){
     logger.debug("Getting column mapping information.");
 
-    GrailsDomainClass gdc = ApplicationHolder.getApplication().getDomainClass(RsSmartsNotification.name);
+    GrailsDomainClass gdc = ApplicationHolder.getApplication().getDomainClass(SmartsNotification.name);
     def dcProperties = gdc.getProperties();
     def relations = DomainClassUtils.getRelations(gdc);
     dcProperties.each{GrailsDomainClassProperty prop->
@@ -49,7 +49,7 @@ def init(){
     }
     logger.debug("Marking all notifications as deleted.");
     notificationsMap = new CaseInsensitiveMap()
-    def notificationNames = RsSmartsNotification.propertySummary("alias:* AND rsDatasource:\"${getDatasource().name}\"", ["name"]);
+    def notificationNames = SmartsNotification.propertySummary("alias:* AND rsDatasource:\"${getDatasource().name}\"", ["name"]);
     notificationNames.name.each {propertyValue, occurrenceCount->
         notificationsMap[propertyValue] = "deleted";
     }
@@ -80,7 +80,7 @@ def update(notificationObject){
         existingObjectsRetrieved = true;
         logger.info("Existing objects retrieved and ${notificationsMap.size()} number of events will be moved to HistoricalNotification.");
         notificationsMap.each{String archivedNotificationName, String value->
-            def notification = RsSmartsNotification.search("name:${archivedNotificationName}").results[0];
+            def notification = SmartsNotification.search("name:${archivedNotificationName}").results[0];
             archiveNotification(notification);
         }
         notificationsMap.clear();
@@ -96,7 +96,7 @@ def update(notificationObject){
         if(eventType == BaseSmartsListeningAdapter.NOTIFY || (eventType == BaseSmartsListeningAdapter.CHANGE && notificationObject.Active))
         {
             logger.debug("Event type is ${eventType}. Adding notification ${notificationProps.name}")
-            RsSmartsNotification addedEvent = RsSmartsNotification.add(notificationProps);
+            SmartsNotification addedEvent = SmartsNotification.add(notificationProps);
             if(!addedEvent.hasErrors())
             {
                 logger.info("Added ${notificationName} to repository");
@@ -105,19 +105,19 @@ def update(notificationObject){
                 def notificationRelationPropValues = datasource.getNotification([ClassName:notificationObject.ClassName, InstanceName:notificationObject.InstanceName, EventName:notificationObject.EventName], ["CausedBy", "Causes"]);
                 def causedByObjects = [];
                 notificationRelationPropValues.CausedBy.each{notificationRelationProp->
-                    def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
+                    def rsEvent = SmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
                     if(rsEvent)
                     {
-                        logger.debug("RsSmartsNotification ${rsEvent.name} will be added to ${addedEvent.name}'s causedBy")
+                        logger.debug("SmartsNotification ${rsEvent.name} will be added to ${addedEvent.name}'s causedBy")
                         causedByObjects.add(rsEvent);
                     }
                 }
                 def causesObjects = [];
                 notificationRelationPropValues.Causes.each{notificationRelationProp->
-                    def rsEvent = RsSmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
+                    def rsEvent = SmartsNotification.search("name:${notificationRelationProp.Name}").results[0];
                     if(rsEvent)
                     {
-                        logger.debug("RsSmartsNotification ${rsEvent.name} will be added to ${addedEvent.name}'s causes")
+                        logger.debug("SmartsNotification ${rsEvent.name} will be added to ${addedEvent.name}'s causes")
                         causesObjects.add(rsEvent);
                     }
                 }
@@ -142,11 +142,11 @@ def update(notificationObject){
         }
         else if(eventType == BaseSmartsListeningAdapter.CLEAR)
         {
-            archiveNotification(RsSmartsNotification.get(name:notificationName));
+            archiveNotification(SmartsNotification.get(name:notificationName));
         }
         else if(eventType == BaseSmartsListeningAdapter.ARCHIVE)
         {
-            archiveNotification(RsSmartsNotification.get(name:notificationName));
+            archiveNotification(SmartsNotification.get(name:notificationName));
         }
     }
 }
@@ -178,7 +178,7 @@ def archiveNotification(notification)
     notification.remove();
     if(!notification.hasErrors())
     {
-        RsSmartsHistoricalNotification.add(historicalNotificationProps);
+        SmartsHistoricalNotification.add(historicalNotificationProps);
         logger.debug("Updating object state.")
         updateSmartsObjectState(notification.elementName, notification.instanceName, -1)
         logger.info("${notification.name} is moved  to HistoricalNotification");

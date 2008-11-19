@@ -26,7 +26,7 @@ nodes.each{node->
         {
             isExpanded = "true";
         }
-        deviceMap[device.name] = [ "id" : deviceName, "model" : device.model, "type": device.creationClassName, "gauged" : "true", "expanded" : isExpanded, x:x, y:y];
+        deviceMap[device.name] = [ "id" : deviceName, "model" : device.model, "type": device.className, "gauged" : "true", "expanded" : isExpanded, x:x, y:y];
     }
 
 }
@@ -53,7 +53,7 @@ deviceMap.each{deviceName, deviceConfigMap->
                         if(!deviceMap.containsKey(otherSide) && !deviceSet.containsKey(otherSide))
                         {
                             def expandable = isExpandable(otherSide, edgeMap);
-                            deviceSet[otherSide] = [ "id" : otherSide, "model" : otherSideDevice.model, "type": otherSideDevice.creationClassName, "gauged" : "true", "expandable" : expandable, "expanded":"false" ];
+                            deviceSet[otherSide] = [ "id" : otherSide, "model" : otherSideDevice.model, "type": otherSideDevice.className, "gauged" : "true", "expandable" : expandable, "expanded":"false" ];
                         }
                     }
                 }

@@ -20,7 +20,7 @@
     }
     else {
         notificationName = "${className} ${instanceName} ${eventName}";
-        def objects = RsSmartsNotification.search("className:\"${className}\" AND instanceName:\"${instanceName}\" AND eventName:\"${eventName}\"").results;
+        def objects = SmartsNotification.search("className:\"${className}\" AND instanceName:\"${instanceName}\" AND eventName:\"${eventName}\"").results;
         if (objects.size() > 0) {
             domainObject = objects[0];
         }

@@ -9,7 +9,7 @@
 <%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat; datasource.SmartsNotificationDatasource" contentType="text/html;charset=UTF-8" %>
 <%
     def componentId = params.componentId
-    def domainObject = RsSmartsNotification.get(id: params.id);
+    def domainObject = SmartsNotification.get(id: params.id);
     if (domainObject != null) {
 
 

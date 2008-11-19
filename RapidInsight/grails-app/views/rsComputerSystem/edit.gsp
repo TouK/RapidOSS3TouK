@@ -44,29 +44,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="accessMode">accessMode:</label>
+                            <label for="className">className:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'accessMode','errors')}">
-                            <input type="text" id="accessMode" name="accessMode" value="${fieldValue(bean:rsComputerSystem,field:'accessMode')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="composedOf">composedOf:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'composedOf','errors')}">
-                            
-<ul>
-<g:each var="c" in="${rsComputerSystem?.composedOf?}">
-    <li style="margin-bottom:3px;">
-        <g:link controller="rsComputerSystemComponent" action="show" id="${c.id}">${c}</g:link>
-        <g:link class="delete" action="removeRelation" params="['id':rsComputerSystem?.id, 'relationName':'composedOf', 'relatedObjectId':c.id]"></g:link>
-    </li>
-</g:each>
-</ul>
-<g:link params="['id':rsComputerSystem?.id, 'relationName':'composedOf']" action="addTo">Add RsComputerSystemComponent</g:link>
-
+                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'className','errors')}">
+                            <input type="text" id="className" name="className" value="${fieldValue(bean:rsComputerSystem,field:'className')}"/>
                         </td>
                     </tr>
                     
@@ -91,55 +72,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="creationClassName">creationClassName:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'creationClassName','errors')}">
-                            <input type="text" id="creationClassName" name="creationClassName" value="${fieldValue(bean:rsComputerSystem,field:'creationClassName')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="description">description:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'description','errors')}">
                             <input type="text" id="description" name="description" value="${fieldValue(bean:rsComputerSystem,field:'description')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="discoveredFirstAt">discoveredFirstAt:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'discoveredFirstAt','errors')}">
-                            <input type="text" id="discoveredFirstAt" name="discoveredFirstAt" value="${fieldValue(bean:rsComputerSystem,field:'discoveredFirstAt')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="discoveredLastAt">discoveredLastAt:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'discoveredLastAt','errors')}">
-                            <input type="text" id="discoveredLastAt" name="discoveredLastAt" value="${fieldValue(bean:rsComputerSystem,field:'discoveredLastAt')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="discoveryErrorInfo">discoveryErrorInfo:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'discoveryErrorInfo','errors')}">
-                            <input type="text" id="discoveryErrorInfo" name="discoveryErrorInfo" value="${fieldValue(bean:rsComputerSystem,field:'discoveryErrorInfo')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="discoveryTime">discoveryTime:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'discoveryTime','errors')}">
-                            <input type="text" id="discoveryTime" name="discoveryTime" value="${fieldValue(bean:rsComputerSystem,field:'discoveryTime')}"/>
                         </td>
                     </tr>
                     
@@ -163,44 +99,6 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="hostsAccessPoints">hostsAccessPoints:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'hostsAccessPoints','errors')}">
-                            
-<ul>
-<g:each var="h" in="${rsComputerSystem?.hostsAccessPoints?}">
-    <li style="margin-bottom:3px;">
-        <g:link controller="rsIp" action="show" id="${h.id}">${h}</g:link>
-        <g:link class="delete" action="removeRelation" params="['id':rsComputerSystem?.id, 'relationName':'hostsAccessPoints', 'relatedObjectId':h.id]"></g:link>
-    </li>
-</g:each>
-</ul>
-<g:link params="['id':rsComputerSystem?.id, 'relationName':'hostsAccessPoints']" action="addTo">Add RsIp</g:link>
-
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="ipNetworks">ipNetworks:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'ipNetworks','errors')}">
-                            
-<ul>
-<g:each var="i" in="${rsComputerSystem?.ipNetworks?}">
-    <li style="margin-bottom:3px;">
-        <g:link controller="rsIpNetwork" action="show" id="${i.id}">${i}</g:link>
-        <g:link class="delete" action="removeRelation" params="['id':rsComputerSystem?.id, 'relationName':'ipNetworks', 'relatedObjectId':i.id]"></g:link>
-    </li>
-</g:each>
-</ul>
-<g:link params="['id':rsComputerSystem?.id, 'relationName':'ipNetworks']" action="addTo">Add RsIpNetwork</g:link>
-
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="isManaged">isManaged:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'isManaged','errors')}">
@@ -214,15 +112,6 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'location','errors')}">
                             <input type="text" id="location" name="location" value="${fieldValue(bean:rsComputerSystem,field:'location')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="managementServer">managementServer:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'managementServer','errors')}">
-                            <input type="text" id="managementServer" name="managementServer" value="${fieldValue(bean:rsComputerSystem,field:'managementServer')}"/>
                         </td>
                     </tr>
                     
@@ -251,51 +140,6 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'model','errors')}">
                             <input type="text" id="model" name="model" value="${fieldValue(bean:rsComputerSystem,field:'model')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="numberOfIPs">numberOfIPs:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'numberOfIPs','errors')}">
-                            <input type="text" id="numberOfIPs" name="numberOfIPs" value="${fieldValue(bean:rsComputerSystem,field:'numberOfIPs')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="numberOfIPv6s">numberOfIPv6s:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'numberOfIPv6s','errors')}">
-                            <input type="text" id="numberOfIPv6s" name="numberOfIPv6s" value="${fieldValue(bean:rsComputerSystem,field:'numberOfIPv6s')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="numberOfInterfaces">numberOfInterfaces:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'numberOfInterfaces','errors')}">
-                            <input type="text" id="numberOfInterfaces" name="numberOfInterfaces" value="${fieldValue(bean:rsComputerSystem,field:'numberOfInterfaces')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="numberOfNetworkAdapters">numberOfNetworkAdapters:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'numberOfNetworkAdapters','errors')}">
-                            <input type="text" id="numberOfNetworkAdapters" name="numberOfNetworkAdapters" value="${fieldValue(bean:rsComputerSystem,field:'numberOfNetworkAdapters')}" />
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="numberOfPorts">numberOfPorts:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'numberOfPorts','errors')}">
-                            <input type="text" id="numberOfPorts" name="numberOfPorts" value="${fieldValue(bean:rsComputerSystem,field:'numberOfPorts')}" />
                         </td>
                     </tr>
                     
@@ -350,15 +194,6 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'snmpAddress','errors')}">
                             <input type="text" id="snmpAddress" name="snmpAddress" value="${fieldValue(bean:rsComputerSystem,field:'snmpAddress')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="supportsSNMP">supportsSNMP:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsComputerSystem,field:'supportsSNMP','errors')}">
-                            <g:checkBox name="supportsSNMP" value="${rsComputerSystem?.supportsSNMP}" ></g:checkBox>
                         </td>
                     </tr>
                     

@@ -124,7 +124,7 @@
                 return 'className:"' + data.name + '"'
             }
             else{
-                return 'className:"' + data.creationClassName + '" AND instanceName:"' + data.name + '"';
+                return 'className:"' + data.className + '" AND instanceName:"' + data.name + '"';
             }
         }
         

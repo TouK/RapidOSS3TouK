@@ -4,7 +4,7 @@
     def domainObject = RsEvent.get(name: notificationName);
     def redirectedGsp;
     if (domainObject != null) {
-        if (domainObject.getClass().getName() == "RsSmartsNotification") {
+        if (domainObject.getClass().getName() == "SmartsNotification") {
             redirectedGsp = "smartsEventDetails.gsp";
         }
         else {

@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsGroup extends RsTopologyObject
-{
-    
+class RsGroup  extends RsTopologyObject {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -50,4 +49,5 @@ class RsGroup extends RsTopologyObject
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

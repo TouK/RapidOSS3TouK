@@ -26,7 +26,7 @@ public class SmartsConnectionImpl extends BaseConnection{
 	private String password;
 	private String brokerUsername;
 	private String brokerPassword;
-	private SmRemoteDomainManager domainManager;
+	protected SmRemoteDomainManager domainManager;
 	
 
 	protected void connect() throws Exception {
@@ -57,30 +57,36 @@ public class SmartsConnectionImpl extends BaseConnection{
         }
         this.domainManager = new SmRemoteDomainManager();
 	}
+    public boolean checkConnection()
+       {
+           if(domainManager != null)
+           {
+               try
+               {
+                   domainManager.noop();
+               }
+               catch(Exception exception)
+               {
+                   return false;
+               }
+               return domainManager.attached();
+           } else
+           {
+               return false;
+           }
+       }
 
-	public boolean isConnected() {
-        if(domainManager != null)
-        {
-            try
-            {
-                domainManager.noop();
-            }
-            catch (Exception e)
-            {
-                try {
-                    domainManager.detach();
-                }
-                catch (RuntimeException exceptionWillBeIgnored) {
-                }
-                return false;
-            }
-            return domainManager.attached();
-        }
-        else
-        {
-            return false;
-        }
-	}
+       public boolean isConnected()
+       {
+           boolean flag = checkConnection();
+           if(!flag && domainManager != null)
+               try
+               {
+                   domainManager.detach();
+               }
+               catch(RuntimeException runtimeexception) { }
+           return flag;
+       }
 	
 	private String checkParam(String parameterName) throws UndefinedConnectionParameterException {
         if(!params.getOtherParams().containsKey(parameterName)){

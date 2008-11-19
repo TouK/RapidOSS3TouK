@@ -6,9 +6,9 @@
 * Time: 4:15:26 PM
 * To change this template use File | Settings | File Templates.
 */
-class HistoricalNotificationsTagLib {
+class HistoricalEventsTagLib {
     static namespace = "rui";
-    def historicalNotifications = {attrs, body ->
+    def historicalEvents = {attrs, body ->
         def configXML = "<HistoricalNotifications>${body()}</HistoricalNotifications>";
         def searchListPollInterval = attrs["searchResultsPollingInterval"] ? attrs["searchResultsPollingInterval"] : "0";
         def treeGridPollInterval = attrs["queriesPollingInterval"] ? attrs["queriesPollingInterval"] : "0";
@@ -160,7 +160,7 @@ class HistoricalNotificationsTagLib {
                 """
         )
         out << SearchListTagLib.fSearchList(id: "searchList", url: "search?format=xml&searchIn=RsHistoricalEvent", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
-                keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", lineSize: "3", title: "Events",
+                keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", lineSize: "3", title: "Historical Events",
                 defaultFields: defaultFields, onSaveQueryClick: "saveQueryAction",
                 pollingInterval: searchListPollInterval, lineSize: lineSize,
                 SearchListTagLib.fSlMenuItems([:],
@@ -307,35 +307,35 @@ class HistoricalNotificationsTagLib {
                 """
     }
 
-    def hnMenus = {attrs, body ->
+    def heMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnMenus", attrs, [], body());
     }
-    def hnMenu = {attrs, body ->
+    def heMenu = {attrs, body ->
         def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "x", "y"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnMenu", attrs, validAttrs);
     }
 
-    def hnDefaultMenus = {attrs, body ->
+    def heDefaultMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("DefaultMenus", attrs, [], body());
     }
-    def hnDefaultMenu = {attrs, body ->
+    def heDefaultMenu = {attrs, body ->
         def validAttrs = ["id", "label", "properties", "except"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("DefaultMenu", attrs, validAttrs);
     }
 
 
-    def hnSearchResults = {attrs, body ->
+    def heSearchResults = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnSearchResults", attrs, [], body());
     }
-    def hnSearchResult = {attrs, body ->
+    def heSearchResult = {attrs, body ->
         def validAttrs = ["alias", "properties", "emphasizeds"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnSearchResult", attrs, validAttrs);
     }
 
-    def hnConversions = {attrs, body ->
+    def heConversions = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnConversions", attrs, [], body());
     }
-    def hnConversion = {attrs, body ->
+    def heConversion = {attrs, body ->
         def validAttrs = ["type", "format", "property", "function", "mapping"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnConversion", attrs, validAttrs);
     }

@@ -1,42 +1,27 @@
 
-/* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
-* noted in a separate copyright notice. All rights reserved.
-* This file is part of RapidCMDB.
-*
-* RapidCMDB is free software; you can redistribute it and/or modify
-* it under the terms version 2 of the GNU General Public License as
-* published by the Free Software Foundation. This program is distributed
-* in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-* even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-* PARTICULAR PURPOSE. See the GNU General Public License for more
-* details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-* USA.
-*/
 /**
- * Created by IntelliJ IDEA.
- * User: Sezgin Kucukkaraaslan
- * Date: Oct 14, 2008
- * Time: 9:47:43 AM
- */
-class TopologySearchTagLib {
-    static namespace = "rui";
-    def topologySearch = {attrs, body ->
-        def configXML = "<TopologySearch>${body()}</TopologySearch>";
+* Created by IntelliJ IDEA.
+* User: Administrator
+* Date: Oct 14, 2008
+* Time: 6:47:38 PM
+* To change this template use File | Settings | File Templates.
+*/
+class EventSearchTagLib {
+   static namespace = "rui";
+    def eventSearch = {attrs, body ->
+        def configXML = "<NotificationSearch>${body()}</NotificationSearch>";
         def searchListPollInterval = attrs["searchResultsPollingInterval"] ? attrs["searchResultsPollingInterval"] : "0";
         def treeGridPollInterval = attrs["queriesPollingInterval"] ? attrs["queriesPollingInterval"] : "0";
         def lineSize = attrs["numberOfLines"] ? attrs["numberOfLines"] : "3";
-        def defaultFields = attrs["defaultFields"] ? attrs["defaultFields"] : [];
+        def defaultFields = attrs["defaultFields"] ? attrs["defaultFields"] : []; 
         def rowMenus = [];
         def propertyMenus = [];
         def actions = [];
         def htmlDialogs = [];
         def fields = [];
         def emphasizeds = [];
-        def defaultMenus = ["sortAsc": [label: "Sort asc"],
+
+         def defaultMenus = ["sortAsc": [label: "Sort asc"],
                 "sortDesc": [label: "Sort desc"],
                 "except": [label: "Except"],
                 "lessThan": [label: "Less Than"],
@@ -45,8 +30,8 @@ class TopologySearchTagLib {
                 "lessThanOrEqualTo": [label: "Less than or equal to"]
         ]
 
-        def tsXML = new XmlSlurper().parseText(configXML);
-        def tsDefaultMenus = tsXML.DefaultMenus.DefaultMenu;
+        def nsXML = new XmlSlurper().parseText(configXML);
+        def tsDefaultMenus = nsXML.DefaultMenus.DefaultMenu;
         tsDefaultMenus.each {
             def id = it.@id.toString().trim();
             if (defaultMenus.containsKey(id)) {
@@ -73,8 +58,8 @@ class TopologySearchTagLib {
                 }
             }
         }
-        def tsMenus = tsXML.TsMenus.TsMenu;
-        tsMenus.each {menuItem ->
+        def nsMenus = nsXML.NsMenus.NsMenu;
+        nsMenus.each {menuItem ->
             def location = menuItem.@location.toString().trim();
             def id = menuItem.@id;
             if (location == "row") {
@@ -88,7 +73,7 @@ class TopologySearchTagLib {
                 htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
                 actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
             }
-            else if(actionType == "link"){
+             else if(actionType == "link"){
                 actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString()])
             }
             else if (actionType == "update" || actionType == "execute") {
@@ -100,7 +85,7 @@ class TopologySearchTagLib {
                 actions.add([id: "${id}menuAction", type: actionType, script: menuItem.@script.toString(), parameters: pMap]);
             }
         }
-        def searchResults = tsXML.TsSearchResults.TsSearchResult;
+        def searchResults = nsXML.NsSearchResults.NsSearchResult;
         searchResults.each {searchResult ->
             def alias = searchResult.@alias.toString();
             def fieldsXml = searchResult.properties.Item;
@@ -117,7 +102,7 @@ class TopologySearchTagLib {
             emphasizeds.add([alias: alias, emphasizeds: empArray]);
         }
 
-        out << TreeGridTagLib.fTreeGrid(id: "filterTree", url: "script/run/queryList?format=xml&type=topology", rootTag: "Filters",
+        out << TreeGridTagLib.fTreeGrid(id: "filterTree", url: "script/run/queryList?format=xml&type=event", rootTag: "Filters",
                 keyAttribute: "id", contentPath: "Filter", title: "Saved Queries", expanded: "true", onNodeClick: "setQueryAction", pollingInterval: treeGridPollInterval,
                 TreeGridTagLib.fTgColumns([:],
                         TreeGridTagLib.fTgColumn(attributeName: "name", colLabel: "Name", width: "248", sortBy: "true", "")
@@ -135,8 +120,8 @@ class TopologySearchTagLib {
                         )
         )
 
-        out << RFormTagLib.fForm(id: "filterDialog", width: "35em", createUrl: "script/run/createQuery?queryType=topology", editUrl: "script/run/editQuery?queryType=topology",
-                saveUrl: "searchQuery/save?format=xml&type=topology", updateUrl: "searchQuery/update?format=xml&type=topology", onSuccess: "refreshQueriesAction",
+        out << RFormTagLib.fForm(id: "filterDialog", width: "35em", createUrl: "script/run/createQuery?queryType=event", editUrl: "script/run/editQuery?queryType=event",
+                saveUrl: "searchQuery/save?format=xml&type=event", updateUrl: "searchQuery/update?format=xml&type=event", onSuccess: "refreshQueriesAction",
                 """
                   <div>
                     <div class="hd">Save query</div>
@@ -158,8 +143,8 @@ class TopologySearchTagLib {
                 </div>
                 """
         )
-        out << RFormTagLib.fForm(id: "filterGroupDialog", width: "30em", saveUrl: "searchQueryGroup/save?format=xml&type=topology",
-                updateUrl: "searchQueryGroup/update?format=xml&type=topology", onSuccess: "refreshQueriesAction",
+        out << RFormTagLib.fForm(id: "filterGroupDialog", width: "30em", saveUrl: "searchQueryGroup/save?format=xml&type=event",
+                updateUrl: "searchQueryGroup/update?format=xml&type=event", onSuccess: "refreshQueriesAction",
                 """
                   <div>
                     <div class="hd">Save group</div>
@@ -174,22 +159,29 @@ class TopologySearchTagLib {
                 </div>
                 """
         )
-        out << SearchListTagLib.fSearchList(id: "searchList", url: "search?format=xml&searchIn=RsTopologyObject", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
-                keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", lineSize: "3", title: "Inventory",
+        out << SearchListTagLib.fSearchList(id: "searchList", url: "search?format=xml&searchIn=RsEvent", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
+                keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", lineSize: "3", title: "Event Search",
                 defaultFields: defaultFields, onSaveQueryClick: "saveQueryAction",
                 pollingInterval: searchListPollInterval, lineSize: lineSize,
                 SearchListTagLib.fSlMenuItems([:],
-                        getMenuXml(rowMenus)
+                       getMenuXml(rowMenus)
                 ) +
                         SearchListTagLib.fSlPropertyMenuItems([:],
                                 SearchListTagLib.fSlMenuItem(id: "sortAsc", label: defaultMenus.sortAsc.label, action: "searchListSortAscAction", visible:getSortAscVisibility(defaultMenus), "") +
-                                        SearchListTagLib.fSlMenuItem(id: "sortDesc", label: defaultMenus.sortDesc.label, action: "searchListSortDescAction",visible:getSortDescVisibility(defaultMenus),  "") +
-                                        SearchListTagLib.fSlMenuItem(id: "except", label: defaultMenus.except.label, action: "exceptAction",visible:getExceptVisibility(defaultMenus),  "") +
+                                        SearchListTagLib.fSlMenuItem(id: "sortDesc", label: defaultMenus.sortDesc.label, action: "searchListSortDescAction",visible:getSortDescVisibility(defaultMenus), "") +
+                                        SearchListTagLib.fSlMenuItem(id: "except", label: defaultMenus.except.label, action: "exceptAction", visible:getExceptVisibility(defaultMenus), "") +
                                         SearchListTagLib.fSlMenuItem(id: "greaterThan", label: defaultMenus.greaterThan.label, action: "greaterThanAction", visible: getGreaterThanVisibility(defaultMenus), "") +
                                         SearchListTagLib.fSlMenuItem(id: "lessThan", label: defaultMenus.lessThan.label, action: "lessThanAction", visible: getLessThanVisibility(defaultMenus), "") +
                                         SearchListTagLib.fSlMenuItem(id: "greaterThanOrEqualTo", label: defaultMenus.greaterThanOrEqualTo.label, action: "greaterThanOrEqualToAction", visible: getGreaterThanOrEqualVisibility(defaultMenus), "") +
                                         SearchListTagLib.fSlMenuItem(id: "lessThanOrEqualTo", label: defaultMenus.lessThanOrEqualTo.label, action: "lessThanOrEqualToAction", visible: getLessThanOrEqualVisibility(defaultMenus), "") +
                                         getMenuXml(propertyMenus)
+                        ) +
+                        SearchListTagLib.fSlImages([:],
+                           SearchListTagLib.fSlImage(visible:"params.data.severity == '1'", src:"images/rapidjs/component/searchlist/red.png", "") +
+                           SearchListTagLib.fSlImage(visible:"params.data.severity == '2'", src:"images/rapidjs/component/searchlist/orange.png", "") +
+                           SearchListTagLib.fSlImage(visible:"params.data.severity == '3'", src:"images/rapidjs/component/searchlist/yellow.png", "") +
+                           SearchListTagLib.fSlImage(visible:"params.data.severity == '4'", src:"images/rapidjs/component/searchlist/blue.png", "") +
+                           SearchListTagLib.fSlImage(visible:"params.data.severity == '5'", src:"images/rapidjs/component/searchlist/green.png", "")
                         ) +
                         SearchListTagLib.fSlFields([:], getFieldsXml(fields))
 
@@ -256,7 +248,7 @@ class TopologySearchTagLib {
                 <script type="text/javascript">
                     var searchList = YAHOO.rapidjs.Components['searchList'];
                     var tree = YAHOO.rapidjs.Components['filterTree'];
-                    ${getConvsersionJs(tsXML.TsConversions.TsConversion, emphasizeds)}
+                    ${getConvsersionJs(nsXML.NsConversions.NsConversion, emphasizeds)}
                     tree.addToolbarButton({
                         className:'r-filterTree-groupAdd',
                         scope:this,
@@ -315,35 +307,36 @@ class TopologySearchTagLib {
                 """
     }
 
-    def tsMenus = {attrs, body ->
-        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsMenus", attrs, [], body());
+    def esMenus = {attrs, body ->
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NsMenus", attrs, [], body());
     }
-    def tsMenu = {attrs, body ->
+    def esMenu = {attrs, body ->
         def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "x", "y"]
-        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsMenu", attrs, validAttrs);
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NsMenu", attrs, validAttrs);
     }
-    def tsDefaultMenus = {attrs, body ->
+
+    def esDefaultMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("DefaultMenus", attrs, [], body());
     }
-    def tsDefaultMenu = {attrs, body ->
+    def esDefaultMenu = {attrs, body ->
         def validAttrs = ["id", "label", "properties", "except"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("DefaultMenu", attrs, validAttrs);
     }
 
-    def tsSearchResults = {attrs, body ->
-        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsSearchResults", attrs, [], body());
+    def esSearchResults = {attrs, body ->
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NsSearchResults", attrs, [], body());
     }
-    def tsSearchResult = {attrs, body ->
+    def esSearchResult = {attrs, body ->
         def validAttrs = ["alias", "properties", "emphasizeds"]
-        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsSearchResult", attrs, validAttrs);
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NsSearchResult", attrs, validAttrs);
     }
 
-    def tsConversions = {attrs, body ->
-        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsConversions", attrs, [], body());
+    def esConversions = {attrs, body ->
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NsConversions", attrs, [], body());
     }
-    def tsConversion = {attrs, body ->
+    def esConversion = {attrs, body ->
         def validAttrs = ["type", "format", "property", "function", "mapping"]
-        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsConversion", attrs, validAttrs);
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NsConversion", attrs, validAttrs);
     }
 
     def getMenuXml(menus) {
@@ -374,7 +367,7 @@ class TopologySearchTagLib {
                 }
                 def url = "script/run/${it.script}?format=xml"
                 def actionType = type == "execute" ? "request" : "merge"
-                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, components: ["searchList"], paramString);
+                output += ActionsTagLib.fAction(id: it.id, type: actionType, url: url, components:["searchList"], paramString);
             }
         }
         return output;
@@ -400,13 +393,13 @@ class TopologySearchTagLib {
         def emphasizedString = "";
         def empIndex = 0;
         emphasizeds.each {
-            if (it.emphasizeds.size() > 0) {
+            if(it.emphasizeds.size() > 0){
                 emphasizedString += empIndex == 0 ? "if" : "else if"
                 emphasizedString += """(data.rsAlias == '${it.alias}' && (${it.emphasizeds.join(' || ')})){
                 YAHOO.util.Dom.setStyle(el, 'color', 'blue');
             }
             """
-                empIndex++;
+                empIndex++;    
             }
         }
         def convString = "";
@@ -463,8 +456,6 @@ class TopologySearchTagLib {
            }
         """
     }
-
-
     def getSortAscVisibility(defaultMenus) {
         return getDefaultMenuVisibility(defaultMenus, "sortAsc", "")
     }
@@ -475,10 +466,10 @@ class TopologySearchTagLib {
         return getDefaultMenuVisibility(defaultMenus, "except", "")
     }
     def getGreaterThanVisibility(defaultMenus) {
-        return getDefaultMenuVisibility(defaultMenus, "greaterThan", "YAHOO.lang.isNumber(parseInt(params.value))")
+        return getDefaultMenuVisibility(defaultMenus, "greaterThan", "(params.key == 'severity' && params.value != '1') || (params.key != 'severity' && YAHOO.lang.isNumber(parseInt(params.value)))")
     }
     def getLessThanVisibility(defaultMenus) {
-        return getDefaultMenuVisibility(defaultMenus, "lessThan", "YAHOO.lang.isNumber(parseInt(params.value))")
+        return getDefaultMenuVisibility(defaultMenus, "lessThan", "(params.key == 'severity' && params.value != '5') || (params.key != 'severity' && YAHOO.lang.isNumber(parseInt(params.value)))")
     }
     def getLessThanOrEqualVisibility(defaultMenus) {
         return getDefaultMenuVisibility(defaultMenus, "lessThanOrEqualTo", "YAHOO.lang.isNumber(parseInt(params.value))")
@@ -486,7 +477,7 @@ class TopologySearchTagLib {
     def getGreaterThanOrEqualVisibility(defaultMenus) {
         return getDefaultMenuVisibility(defaultMenus, "greaterThanOrEqualTo", "YAHOO.lang.isNumber(parseInt(params.value))")
     }
-
+    
     def getDefaultMenuVisibility(defaultMenus, id, originalExp) {
         def properties = defaultMenus.get(id).get("properties");
         def except = defaultMenus.get(id).get("except");
@@ -498,6 +489,4 @@ class TopologySearchTagLib {
         }
         return originalExp;
     }
-
 }
-

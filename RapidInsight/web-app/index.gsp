@@ -1,7 +1,7 @@
 <html>
 <head><title>redirecting</title>
     <%
-        response.sendRedirect("notifications.gsp");
+        response.sendRedirect("events.gsp");
     %>
 </head>
 <body></body>

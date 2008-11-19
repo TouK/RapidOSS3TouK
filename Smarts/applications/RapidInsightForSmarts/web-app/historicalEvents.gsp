@@ -24,33 +24,33 @@
         }
      }
 </script>
-<rui:historicalNotifications queriesPollingInterval="0" searchResultsPollingInterval="0" numberOfLines="3" defaultFields="${['name']}">
-    <rui:hnMenus>
-        <rui:hnMenu id="eventDetails" label="Event Details" location="row" actionType="htmlDialog" width="850" height="500"
-                url="'getHistoricalEventDetails.gsp?id=' + params.data.id" title="'Details of ' + params.data.name"></rui:hnMenu>
-    </rui:hnMenus>
-     <rui:hnDefaultMenus>
-        <rui:hnDefaultMenu id="sortAsc" label="Sort Asc"></rui:hnDefaultMenu>
-        <rui:hnDefaultMenu id="sortDesc" label="Sort desc"></rui:hnDefaultMenu>
-        <rui:hnDefaultMenu id="except" label="Except"></rui:hnDefaultMenu>
-        <rui:hnDefaultMenu id="greaterThan" label="Greater Than"></rui:hnDefaultMenu>
-        <rui:hnDefaultMenu id="lessThan" label="Less Than"></rui:hnDefaultMenu>
-        <rui:hnDefaultMenu id="greaterThanOrEqualTo" label="Greater than or equal to"></rui:hnDefaultMenu>
-        <rui:hnDefaultMenu id="lessThanOrEqualTo" label="Less than or equal to"></rui:hnDefaultMenu>
-    </rui:hnDefaultMenus>
-    <rui:hnSearchResults>
+<rui:historicalEvents queriesPollingInterval="0" searchResultsPollingInterval="0" numberOfLines="3" defaultFields="${['name']}">
+    <rui:heMenus>
+        <rui:heMenu id="eventDetails" label="Event Details" location="row" actionType="htmlDialog" width="850" height="500"
+                url="'getHistoricalEventDetails.gsp?id=' + params.data.id" title="'Details of ' + params.data.name"></rui:heMenu>
+    </rui:heMenus>
+     <rui:heDefaultMenus>
+        <rui:heDefaultMenu id="sortAsc" label="Sort Asc"></rui:heDefaultMenu>
+        <rui:heDefaultMenu id="sortDesc" label="Sort desc"></rui:heDefaultMenu>
+        <rui:heDefaultMenu id="except" label="Except"></rui:heDefaultMenu>
+        <rui:heDefaultMenu id="greaterThan" label="Greater Than"></rui:heDefaultMenu>
+        <rui:heDefaultMenu id="lessThan" label="Less Than"></rui:heDefaultMenu>
+        <rui:heDefaultMenu id="greaterThanOrEqualTo" label="Greater than or equal to"></rui:heDefaultMenu>
+        <rui:heDefaultMenu id="lessThanOrEqualTo" label="Less than or equal to"></rui:heDefaultMenu>
+    </rui:heDefaultMenus>
+    <rui:heSearchResults>
         <%
              def smartsEventFields = ["className", "instanceName", "eventName", "sourceDomainName","acknowledged","owner", "changedAt",
                    "elementClassName", "elementName","isRoot", "severity"];
         %>
-        <rui:hnSearchResult alias="SmartsHistoricalNotification" properties="${smartsEventFields}" emphasizeds="${['className', 'instanceName', 'eventName']}"></rui:hnSearchResult>
-    </rui:hnSearchResults>
-    <rui:hnConversions>
-        <rui:hnConversion property="changedAt" type="function" function="formatChangedAt"></rui:hnConversion>
-        %{--<rui:nsConversion property="severity" type="mapping" mapping="['1':'Critical', '2':'Major', '3':'Minor', '4':'Unknown', '5':'Normal']"></rui:nsConversion>--}%
-        %{--<rui:nsConversion property="clearedAt" type="date" format="d M H:i:s"></rui:nsConversion>--}%
-    </rui:hnConversions>
-</rui:historicalNotifications>
+        <rui:heSearchResult alias="SmartsHistoricalNotification" properties="${smartsEventFields}" emphasizeds="${['className', 'instanceName', 'eventName']}"></rui:heSearchResult>
+    </rui:heSearchResults>
+    <rui:heConversions>
+        <rui:heConversion property="changedAt" type="function" function="formatChangedAt"></rui:heConversion>
+        %{--<rui:heConversion property="severity" type="mapping" mapping="['1':'Critical', '2':'Major', '3':'Minor', '4':'Unknown', '5':'Normal']"></rui:heConversion>--}%
+        %{--<rui:heConversion property="clearedAt" type="date" format="d M H:i:s"></rui:heConversion>--}%
+    </rui:heConversions>
+</rui:historicalEvents>
 
 
 </body>

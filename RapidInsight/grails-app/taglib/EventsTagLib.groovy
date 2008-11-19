@@ -6,9 +6,9 @@
 * Time: 1:47:39 PM
 * To change this template use File | Settings | File Templates.
 */
-class NotificationsTagLib {
+class EventsTagLib {
     static namespace = "rui";
-    def notifications = {attrs, body ->
+    def events = {attrs, body ->
         def configXML = "<Notifications>${body()}</Notifications>";
         def searchGridPollInterval = attrs["searchResultsPollingInterval"] ? attrs["searchResultsPollingInterval"] : "0";
         def treeGridPollInterval = attrs["queriesPollingInterval"] ? attrs["queriesPollingInterval"] : "0";
@@ -217,25 +217,25 @@ class NotificationsTagLib {
                 """
     }
 
-    def ntMenus = {attrs, body ->
+    def evMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NtMenus", attrs, [], body());
     }
-    def ntMenu = {attrs, body ->
+    def evMenu = {attrs, body ->
         def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "x", "y"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NtMenu", attrs, validAttrs);
     }
 
-    def ntConversions = {attrs, body ->
+    def evConversions = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NtConversions", attrs, [], body());
     }
-    def ntConversion = {attrs, body ->
+    def evConversion = {attrs, body ->
         def validAttrs = ["type", "format", "property", "function", "mapping"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NtConversion", attrs, validAttrs);
     }
-    def ntColumns = {attrs, body ->
+    def evColumns = {attrs, body ->
         out << SearchGridTagLib.fSgColumns(attrs, body())
     }
-    def ntColumn = {attrs, body ->
+    def evColumn = {attrs, body ->
         out << SearchGridTagLib.fSgColumn(attrs, "")
     }
 

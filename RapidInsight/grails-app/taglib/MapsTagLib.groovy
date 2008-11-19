@@ -6,9 +6,9 @@
 * Time: 2:26:57 PM
 * To change this template use File | Settings | File Templates.
 */
-class TopologyMapTagLib {
+class MapsTagLib {
     static namespace = "rui";
-    def topologyMap = {attrs, body ->
+    def maps = {attrs, body ->
         def configXML = "<Map>${body()}</Map>";
         def topoMapPollInterval = attrs["mapPollingInterval"] ? attrs["mapPollingInterval"] : "0";
         def treeGridPollInterval = attrs["savedMapsPollingInterval"] ? attrs["savedMapsPollingInterval"] : "0";
@@ -255,34 +255,34 @@ class TopologyMapTagLib {
                 """
     }
 
-    def tmMenus = {attrs, body ->
+    def mpMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("Menus", attrs, [], body());
     }
-    def tmMenu = {attrs, body ->
+    def mpMenu = {attrs, body ->
         def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "parentMenu", "x", "y"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("Menu", attrs, validAttrs);
     }
 
-    def tmImages = {attrs, body ->
+    def mpImages = {attrs, body ->
         out << ObjectMapTagLib.fOmImages(attrs, body())
     }
-    def tmImage = {attrs, body ->
+    def mpImage = {attrs, body ->
         out << ObjectMapTagLib.fOmImage(attrs, "")
     }
 
-    def tmTexts = {attrs, body ->
+    def mpTexts = {attrs, body ->
        out << ObjectMapTagLib.fOmTexts(attrs, body())
     }
 
-    def tmText = {attrs, body->
+    def mpText = {attrs, body->
         out << ObjectMapTagLib.fOmText(attrs, "")
     }
 
-    def tmGauges = {attrs, body ->
+    def mpGauges = {attrs, body ->
         out << ObjectMapTagLib.fOmGauges(attrs, body())
     }
 
-    def tmGauge = {attrs, body ->
+    def mpGauge = {attrs, body ->
         out << ObjectMapTagLib.fOmGauge(attrs, "")
     }
 

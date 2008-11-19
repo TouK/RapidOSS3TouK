@@ -27,7 +27,7 @@
                     <g:each in="${userList}" status="i" var="rsUser">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td><g:link action="show" id="${rsUser.id}">${rsUser.username?.encodeAsHTML()}</g:link></td>
+                            <td><g:link action="edit" id="${rsUser.id}">${rsUser.username?.encodeAsHTML()}</g:link></td>
                         </tr>
                     </g:each>
                     </tbody>

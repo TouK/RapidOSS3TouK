@@ -58,6 +58,53 @@ class RsUserController {
         }
     }
 
+    def editGroups = {
+        def rsUser = RsUser.get(id: params.id)
+
+        if (!rsUser) {
+            flash.message = "User not found with id ${params.id}"
+            redirect(action: list)
+        }
+        else {
+            def userGroupsMap = [:];
+            rsUser.groups.each{
+                userGroupsMap.put(it.name, it.name);
+            }
+            def groups = Group.list();
+            def availableGroups = groups.findAll{!userGroupsMap.containsKey(it.name)};
+            return [rsUser: rsUser, availableGroups:availableGroups]
+        }
+    }
+
+    def updateGroups = {
+        def rsUser = RsUser.get(id: params.id)
+
+        if (!rsUser) {
+            flash.message = "User not found with id ${params.id}"
+            redirect(action: list)
+        }
+        else {
+            def groups = [];
+            groups.addAll(Arrays.asList(params.groups.split(",")));
+            rsUser.groups.each{
+                if(!groups.contains(it.name)){
+                    rsUser.removeRelation(groups:it);
+                }
+                else{
+                    groups.remove(it.name)
+                }
+           }
+           groups.each{
+               def group = Group.get(name:it);
+               if(group){
+                    rsUser.addRelation(groups:group);
+               }
+           }
+           flash.message = "User groups successfully updated."
+           render(view: 'edit', model: [rsUser: rsUser])
+        }
+    }
+
     def changePassword = {
         def rsUser = RsUser.get(username: params.username)
         if (rsUser) {
@@ -119,7 +166,7 @@ class RsUserController {
             if (password1 != password2) {
                 def errors = [message(code: "default.passwords.dont.match", args: [])]
                 flash.errors = errors;
-                redirect(action: show, id: rsUser.id)
+                render(view: 'edit', model: [rsUser: rsUser])
                 return;
             }
             if (password1 && password1 != "") {
@@ -128,7 +175,7 @@ class RsUserController {
             rsUser.update([username: params["username"]])
             if (!rsUser.hasErrors()) {
                 flash.message = "User ${params.id} updated"
-                redirect(action: show, id: rsUser.id)
+                redirect(action: list)
             }
             else {
                 render(view: 'edit', model: [rsUser: rsUser])

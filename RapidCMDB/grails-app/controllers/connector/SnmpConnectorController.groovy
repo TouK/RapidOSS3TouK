@@ -128,7 +128,7 @@ class SnmpConnectorController {
     }
 
     def save = {
-        SnmpConnector snmpConnector = SnmpConnector.add(ControllerUtils.getClassProperties(params, SmartsListeningTopologyConnector));
+        SnmpConnector snmpConnector = SnmpConnector.add(ControllerUtils.getClassProperties(params, SnmpConnector));
         if (!snmpConnector.hasErrors()) {
             params.name = snmpConnector.getConnectionName(snmpConnector.name);
             SnmpConnection snmpConnection = SnmpConnection.add(ControllerUtils.getClassProperties(params, SnmpConnection))

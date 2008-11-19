@@ -24,3 +24,5 @@ CmdbScript.addScript(name: "getMap");
 CmdbScript.addScript(name: "mapList");
 CmdbScript.addScript(name: "saveMap");
 CmdbScript.addScript(name: "getMapData");
+CmdbScript.addScript(name: "createDefaultQueries");
+CmdbScript.runScript("createDefaultQueries");

@@ -315,33 +315,33 @@ class InventoryTagLib {
                 """
     }
 
-    def iMenus = {attrs, body ->
+    def inMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsMenus", attrs, [], body());
     }
-    def iMenu = {attrs, body ->
+    def inMenu = {attrs, body ->
         def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "x", "y"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsMenu", attrs, validAttrs);
     }
-    def iDefaultMenus = {attrs, body ->
+    def inDefaultMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("DefaultMenus", attrs, [], body());
     }
-    def iDefaultMenu = {attrs, body ->
+    def inDefaultMenu = {attrs, body ->
         def validAttrs = ["id", "label", "properties", "except"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("DefaultMenu", attrs, validAttrs);
     }
 
-    def iSearchResults = {attrs, body ->
+    def inSearchResults = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsSearchResults", attrs, [], body());
     }
-    def iSearchResult = {attrs, body ->
+    def inSearchResult = {attrs, body ->
         def validAttrs = ["alias", "properties", "emphasizeds"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsSearchResult", attrs, validAttrs);
     }
 
-    def iConversions = {attrs, body ->
+    def inConversions = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsConversions", attrs, [], body());
     }
-    def iConversion = {attrs, body ->
+    def inConversion = {attrs, body ->
         def validAttrs = ["type", "format", "property", "function", "mapping"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsConversion", attrs, validAttrs);
     }

@@ -11,25 +11,25 @@
 %>
 
 <rui:inventory queriesPollingInterval="0" searchResultsPollingInterval="0" numberOfLines="3" defaultFields="${defaultFields}">
-    <rui:iMenus>
-        <rui:iMenu id="browse" label="Browse" location="row" actionType="htmlDialog" width="850" height="700" x="85" y="50"
-                url="'getObjectDetails.gsp?name=' + params.data.name" title="'Details of ' + params.data.className + ' ' + params.data.name"></rui:iMenu>
-        <rui:iMenu id="showMap" label="Show Map" location="row" actionType="link" url="'redirectToMap.gsp?name='+params.data.name"></rui:iMenu>
-    </rui:iMenus>
-    <rui:iDefaultMenus>
-        <rui:iDefaultMenu id="sortAsc" label="Sort Asc"></rui:iDefaultMenu>
-        <rui:iDefaultMenu id="sortDesc" label="Sort desc"></rui:iDefaultMenu>
-        <rui:iDefaultMenu id="except" label="Except"></rui:iDefaultMenu>
-        <rui:iDefaultMenu id="greaterThan" label="Greater Than"></rui:iDefaultMenu>
-        <rui:iDefaultMenu id="lessThan" label="Less Than"></rui:iDefaultMenu>
-        <rui:iDefaultMenu id="greaterThanOrEqualTo" label="Greater than or equal to"></rui:iDefaultMenu>
-        <rui:iDefaultMenu id="lessThanOrEqualTo" label="Less than or equal to"></rui:iDefaultMenu>
-    </rui:iDefaultMenus>
-    <rui:iSearchResults>
+    <rui:inMenus>
+        <rui:inMenu id="browse" label="Browse" location="row" actionType="htmlDialog" width="850" height="700" x="85" y="50"
+                url="'getObjectDetails.gsp?name=' + params.data.name" title="'Details of ' + params.data.className + ' ' + params.data.name"></rui:inMenu>
+        <rui:inMenu id="showMap" label="Show Map" location="row" actionType="link" url="'redirectToMap.gsp?name='+params.data.name"></rui:inMenu>
+    </rui:inMenus>
+    <rui:inDefaultMenus>
+        <rui:inDefaultMenu id="sortAsc" label="Sort Asc"></rui:inDefaultMenu>
+        <rui:inDefaultMenu id="sortDesc" label="Sort desc"></rui:inDefaultMenu>
+        <rui:inDefaultMenu id="except" label="Except"></rui:inDefaultMenu>
+        <rui:inDefaultMenu id="greaterThan" label="Greater Than"></rui:inDefaultMenu>
+        <rui:inDefaultMenu id="lessThan" label="Less Than"></rui:inDefaultMenu>
+        <rui:inDefaultMenu id="greaterThanOrEqualTo" label="Greater than or equal to"></rui:inDefaultMenu>
+        <rui:inDefaultMenu id="lessThanOrEqualTo" label="Less than or equal to"></rui:inDefaultMenu>
+    </rui:inDefaultMenus>
+    <rui:inSearchResults>
 
-        <rui:iSearchResult alias="RsComputerSystem" properties="${computerSystemFields}" emphasizeds="${emphasized}"></rui:iSearchResult>
-        <rui:iSearchResult alias="RsLink" properties="${linkFields}" emphasizeds="${emphasized}"></rui:iSearchResult>
-    </rui:iSearchResults>
+        <rui:inSearchResult alias="RsComputerSystem" properties="${computerSystemFields}" emphasizeds="${emphasized}"></rui:inSearchResult>
+        <rui:inSearchResult alias="RsLink" properties="${linkFields}" emphasizeds="${emphasized}"></rui:inSearchResult>
+    </rui:inSearchResults>
 </rui:inventory>
 </body>
 </html>

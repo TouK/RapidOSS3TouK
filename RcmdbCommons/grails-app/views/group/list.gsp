@@ -41,7 +41,7 @@
                 <g:each in="${groupList}" status="i" var="group">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                        <td><g:link action="show" id="${group.id}">${group.id?.encodeAsHTML()}</g:link></td>
+                        <td><g:link action="edit" id="${group.id}">${group.id?.encodeAsHTML()}</g:link></td>
                         
                         <td>${group.name?.encodeAsHTML()}</td>
                         

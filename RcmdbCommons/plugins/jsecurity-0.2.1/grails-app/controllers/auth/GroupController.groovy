@@ -81,6 +81,52 @@ class GroupController {
         }
     }
 
+    def editUsers = {
+        def group = Group.get([id: params.id])
+        if (!group) {
+            flash.message = "Group not found with id ${params.id}"
+            redirect(action: list)
+        }
+        else {
+            def groupUsersMap = [:];
+            group.users.each {
+                groupUsersMap.put(it.username, it.username);
+            }
+            def users = RsUser.list();
+            def availableUsers = users.findAll {!groupUsersMap.containsKey(it.username)};
+            return [group: group, availableUsers: availableUsers]
+        }
+    }
+
+    def updateUsers = {
+        def group = Group.get([id: params.id])
+
+        if (!group) {
+            flash.message = "Group not found with id ${params.id}"
+            redirect(action: list)
+        }
+        else {
+            def users = [];
+            users.addAll(Arrays.asList(params.users.split(",")));
+            group.users.each {
+                if (!users.contains(it.username)) {
+                    group.removeRelation(users: it);
+                }
+                else {
+                    users.remove(it.username)
+                }
+            }
+            users.each {
+                def rsUser = RsUser.get(username: it);
+                if (rsUser) {
+                    group.addRelation(users: rsUser);
+                }
+            }
+            flash.message = "Group users successfully updated."
+            render(view: 'edit', model: [group: group])
+        }
+    }
+
 
     def update = {
         def group = Group.get([id: params.id])
@@ -88,7 +134,7 @@ class GroupController {
             group.update(ControllerUtils.getClassProperties(params, Group));
             if (!group.hasErrors()) {
                 flash.message = "Group ${params.id} updated"
-                redirect(action: show, id: group.id)
+                redirect(action: list)
             }
             else {
                 render(view: 'edit', model: [group: group])

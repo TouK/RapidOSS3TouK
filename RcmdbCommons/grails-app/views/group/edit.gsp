@@ -60,25 +60,6 @@
                         </td>
                     </tr>
                     
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="users">users:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:group,field:'users','errors')}">
-                            
-<ul>
-<g:each var="u" in="${group?.users?}">
-    <li style="margin-bottom:3px;">
-        <g:link controller="User" action="show" id="${u.id}">${u}</g:link>
-        <g:link class="delete" action="removeRelation" params="['id':group?.id, 'relationName':'users', 'relatedObjectId':u.id]"></g:link>
-    </li>
-</g:each>
-</ul>
-<g:link params="['id':group?.id, 'relationName':'users']" action="addTo">Add User</g:link>
-
-                        </td>
-                    </tr>
-                    
                 </tbody>
             </table>
         </div>
@@ -87,6 +68,26 @@
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
         </div>
     </g:form>
+    <div class="list" style="margin-top:20px;">
+        <span style="color:#233D5F;font-size:16px;font-weight:bold;margin:0.8em 0pt 0.3em;">Users</span>
+        <span class="menuButton"><g:link class="create" action="editUsers" id="${group?.id}">Edit Users</g:link></span>
+        <table>
+            <thead>
+                <tr>
+                    <th>name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <g:each in="${group.users}" status="i" var="rsUser">
+                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+
+                        <td><g:link action="edit" controller="rsUser" id="${rsUser.id}">${rsUser.username?.encodeAsHTML()}</g:link></td>
+
+                    </tr>
+                </g:each>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>

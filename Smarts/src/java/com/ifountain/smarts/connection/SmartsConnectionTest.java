@@ -10,6 +10,7 @@ import com.ifountain.smarts.test.util.SmartsConnectionParams;
 import com.ifountain.smarts.test.util.SmartsTestCase;
 import com.ifountain.smarts.test.util.SmartsTestConstants;
 import com.ifountain.smarts.test.util.SmartsTestUtils;
+import com.ifountain.smarts.connection.mocks.SmartsConnectionImplMock;
 import com.smarts.remote.SmRemoteException;
 
 import java.net.UnknownHostException;
@@ -152,5 +153,16 @@ public class SmartsConnectionTest extends SmartsTestCase {
             fail("Should throw exception");
         }catch (SmRemoteException e){
         }
+    }
+    public void testDisconnectDetachesDomainManager() throws Exception {
+	    ConnectionParam param = DatasourceTestUtils.getParamSupplier().getConnectionParam(SmartsTestUtils.SMARTS_TEST_CONNECTION_NAME);
+        SmartsConnectionImplMock connection=new SmartsConnectionImplMock(); 
+        connection.init(param);
+        connection.connect();
+        assertTrue(connection.isConnected());
+        assertFalse(SmartsConnectionImplMock.detachCalled);
+        connection.disconnect();
+
+        assertTrue(SmartsConnectionImplMock.detachCalled);
     }
 }

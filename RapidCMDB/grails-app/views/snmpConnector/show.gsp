@@ -41,15 +41,8 @@
                     <td valign="top" class="name">Port:</td>
                     <td valign="top" class="value">${snmpConnector?.connection?.port}</td>
                 </tr>
-
-                <tr class="prop">
-                    <td valign="top" class="name">Script Name:</td>
-
-                    <td valign="top" class="value">${snmpConnector?.script?.name}</td>
-                </tr>
                 <tr class="prop">
                     <td valign="top" class="name">Script File:</td>
-
                     <td valign="top" class="value">${snmpConnector?.script?.scriptFile}</td>
                 </tr>
                 <tr class="prop">

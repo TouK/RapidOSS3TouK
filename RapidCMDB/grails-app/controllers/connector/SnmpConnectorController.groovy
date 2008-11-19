@@ -95,7 +95,7 @@ class SnmpConnectorController {
                         return;
                     }
                 }
-                params.name = params.scriptName;
+                params.name = snmpConnector.name;
                 def scriptClassParams = ControllerUtils.getClassProperties(params, CmdbScript);
                 def isScriptChanged = scriptClassParams.name != snmpConnector.script.name || scriptClassParams.scriptFile != snmpConnector.script.scriptFile
                 CmdbScript.updateScript(snmpConnector.script, scriptClassParams, true);
@@ -135,8 +135,8 @@ class SnmpConnectorController {
             if (!snmpConnection.hasErrors()) {
                 snmpConnector.addRelation(connection:snmpConnection);
                 def datasourceName = snmpConnector.getDatasourceName(snmpConnector.name);
-                params.name = params.scriptName;
-                params.type = CmdbScript.LISTENING 
+                params.name=snmpConnector.name;
+                params.type = CmdbScript.LISTENING;
                 def scriptClassParams = ControllerUtils.getClassProperties(params, CmdbScript);
                 CmdbScript script = CmdbScript.addScript(scriptClassParams, true);
                 if (!script.hasErrors())

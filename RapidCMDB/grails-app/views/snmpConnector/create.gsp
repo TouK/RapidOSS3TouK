@@ -63,15 +63,7 @@
                         <td valign="top" class="value ${hasErrors(bean: snmpConnection, field: 'port', 'errors')}">
                             <input type="text" id="port" name="port" value="${snmpConnection?.port}"/>
                         </td>
-                    </tr>
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="scriptName">Script Name:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: script, field: 'name', 'errors')}">
-                            <input type="text" class="inputtextfield" id="scriptName" name="scriptName" value="${fieldValue(bean: script, field: 'name')}"/>
-                        </td>
-                    </tr>
+                    </tr>                    
 
                     <tr class="prop">
                         <td valign="top" class="name">

@@ -26,8 +26,7 @@
 
                     <g:sortableColumn property="name" title="Name"/>
                     <th>Host</th>
-                    <th>Port</th>
-                    <th>Script Name</th>
+                    <th>Port</th>                    
                     <th>Script File</th>
                     <th>Log Level</th>
                     <th></th>
@@ -41,8 +40,7 @@
 
                         <td>${snmpConnector.connection?.host?.encodeAsHTML()}</td>
 
-                        <td>${snmpConnector.connection?.port?.encodeAsHTML()}</td>
-                        <td>${snmpConnector.script?.name?.encodeAsHTML()}</td>
+                        <td>${snmpConnector.connection?.port?.encodeAsHTML()}</td>                        
                         <td>${snmpConnector.script?.scriptFile?.encodeAsHTML()}</td>
                         <td>${snmpConnector.script?.logLevel?.encodeAsHTML()}</td>
                         <%

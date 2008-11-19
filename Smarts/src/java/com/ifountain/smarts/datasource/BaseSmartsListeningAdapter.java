@@ -10,6 +10,7 @@ package com.ifountain.smarts.datasource;
 
 import com.ifountain.core.datasource.BaseListeningAdapter;
 import com.ifountain.smarts.connection.SmartsConnectionImpl;
+import com.ifountain.smarts.connection.SmartsConnectionChecker;
 import com.ifountain.smarts.util.DataFromObservable;
 import com.ifountain.smarts.util.SmartsConstants;
 import com.ifountain.smarts.util.property.MRPropertyNameValuesToMap;
@@ -29,7 +30,7 @@ import java.util.HashMap;
 public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
 
     protected SmartsSubscribeParameters[] subscribeParams;
-     protected boolean existingObjectsRetrieved = false;
+    protected boolean existingObjectsRetrieved = false;
     protected String logPrefix = "[BaseSmartsObserver]: ";
     protected boolean isObserverCreated;
     public static final String DELETE = "DELETE";
@@ -41,7 +42,8 @@ public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
     public static final String CREATE = "CREATE";
     public static final String EVENT_TYPE_NAME = "ICEventType";
     public static final String RECEIVE_EXISTING_FINISHED = "ReceiveExistingCompleted";
-
+    protected SmartsConnectionChecker connectionChecker;
+    
     public BaseSmartsListeningAdapter(String connectionName, long reconnectInterval, Logger logger, SmartsSubscribeParameters[] subscribeParams) {
         super(connectionName, reconnectInterval, logger);
         this.subscribeParams = subscribeParams;
@@ -56,6 +58,17 @@ public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
 
     @Override
     protected void _subscribe() throws Exception {
+        try{
+            logger.info(logPrefix+" Starting SmartsConnectionChecker");
+            connectionChecker=new SmartsConnectionChecker((SmartsConnectionImpl)getConnection(),logger);
+            connectionChecker.start();
+            logger.info(logPrefix+" Started SmartsConnectionChecker");
+        }
+        catch(Exception e)
+        {
+            logger.warn(logPrefix+"Could not start SmartsConnectionChecker. Reason :"+ e );            
+        }
+
         if (subscribeParams != null) {
             for (int i = 0; i < subscribeParams.length; i++) {
                 logger.info(logPrefix + "Observer is subscribing to parameter which has " + subscribeParams[i]);
@@ -143,6 +156,29 @@ public abstract class BaseSmartsListeningAdapter extends BaseListeningAdapter {
 
     @Override
     protected void _unsubscribe() {
+
+        if(connectionChecker!=null)
+        {
+           try{
+                logger.info(logPrefix+" Stopping SmartsConnectionChecker");
+                connectionChecker.stopChecker();
+                try{
+                    connectionChecker.join();
+                }
+                catch(InterruptedException exceptionWillBeIgnored)
+                {
+
+                }
+                connectionChecker=null;
+                logger.info(logPrefix+" Stopped SmartsConnectionChecker");
+            }
+            catch(Exception e)
+            {
+                logger.warn(logPrefix+"Could not stop SmartsConnectionChecker. Reason :"+ e );
+            }
+        }
+
+        
         logger.debug(logPrefix + "Observer is unsubscribing.");
         try {
             unsubscribeFrom();

@@ -22,6 +22,14 @@
  */
 package com.ifountain.comp.utils;
 
+import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.util.EncodingUtil;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,130 +39,132 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethodBase;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.util.EncodingUtil;
-
 public class HttpUtils {
 
-	private static MultiThreadedHttpConnectionManager manager = new MultiThreadedHttpConnectionManager();
+    private static MultiThreadedHttpConnectionManager manager = new MultiThreadedHttpConnectionManager();
     private HttpClient httpClient = new HttpClient(manager);
     private HttpClient clientForBasicAuth = new HttpClient(manager);
-    private static int INITIAL_BUFFER_SIZE = 4*1024;//4K
-    
-    public String doPostRequest(String urlStr, Map params) throws HttpException, HttpStatusException, IOException
-    {
-    	PostMethod post = preparePostMethod(urlStr, params);
-    	return executeHttpMethod(post, httpClient);
+    private static int INITIAL_BUFFER_SIZE = 4 * 1024;//4K
+
+    public String doPostRequest(String urlStr, Map params) throws HttpStatusException, IOException {
+        PostMethod post = preparePostMethod(urlStr, params);
+        return getHttpString(post, httpClient);
     }
 
     public PostMethod preparePostMethod(String urlStr, Map params) {
         PostMethod post = new PostMethod(urlStr);
-    	post.setRequestBody(getNameValuePairsFromMap(params));
-    	post.getParams().setContentCharset("UTF-8");
+        post.setRequestBody(getNameValuePairsFromMap(params));
+        post.getParams().setContentCharset("UTF-8");
         return post;
     }
-    
-    public String doGetRequest(String urlStr, Map params) throws HttpException, HttpStatusException, IOException{
+
+    public String doGetRequest(String urlStr, Map params) throws HttpStatusException, IOException {
         GetMethod get = prepareGetMethod(urlStr, params);
         return executeGetMethod(get, httpClient);
     }
-    public String doGetWithBasicAuth(String urlStr, String userName, String password, Map params) throws HttpException, HttpStatusException, IOException{
+
+    public BufferedImage getImage(String urlStr, Map params) throws HttpStatusException, IOException {
+        GetMethod get = prepareGetMethod(urlStr, params);
+        return executeGetImage(get, httpClient);
+    }
+
+    public String doGetWithBasicAuth(String urlStr, String userName, String password, Map params) throws HttpStatusException, IOException {
         URL url = new URL(urlStr);
         GetMethod get = prepareGetForBasicAuth(urlStr, params);
         clientForBasicAuth.getState().setCredentials(new AuthScope(url.getHost(), -1), new UsernamePasswordCredentials(userName, password));
         return executeGetMethod(get, clientForBasicAuth);
     }
 
-	public String executeGetMethod(GetMethod get, HttpClient client) throws HttpStatusException, HttpException, IOException {
-		return executeHttpMethod(get, client);
-	}
-	
-	public String executeGetMethod(GetMethod get) throws HttpStatusException, HttpException, IOException {
-	    return executeHttpMethod(get, httpClient);
-	}
+    public String executeGetMethod(GetMethod get, HttpClient client) throws HttpStatusException, IOException {
+        return getHttpString(get, client);
+    }
 
-    public String executePostMethod(PostMethod post, HttpClient client) throws HttpStatusException, HttpException, IOException {
-        return executeHttpMethod(post, client);
+    public BufferedImage executeGetImage(GetMethod get, HttpClient client) throws HttpStatusException, IOException {
+        byte[] rowData = executeHttpMethod(get, client);
+        if (rowData != null) {
+            InputStream in = new ByteArrayInputStream(rowData);
+            return javax.imageio.ImageIO.read(in);
+        }
+        return null;
     }
-    public String executePostMethod(PostMethod post) throws HttpStatusException, HttpException, IOException {
-        return executeHttpMethod(post, httpClient);
+
+    public String executeGetMethod(GetMethod get) throws HttpStatusException, IOException {
+        return getHttpString(get, httpClient);
     }
-	public GetMethod prepareGetMethod(String urlStr, Map params) {
-		GetMethod get = new GetMethod(urlStr);
+
+    public String executePostMethod(PostMethod post, HttpClient client) throws HttpStatusException, IOException {
+        return getHttpString(post, client);
+    }
+
+    public String executePostMethod(PostMethod post) throws HttpStatusException, IOException {
+        return getHttpString(post, httpClient);
+    }
+
+    public GetMethod prepareGetMethod(String urlStr, Map params) {
+        GetMethod get = new GetMethod(urlStr);
         get.setFollowRedirects(true);
         get.setQueryString(getNameValuePairsFromMap(params));
         get.getParams().setContentCharset("UTF-8");
-		return get;
-	}
-    
-    public GetMethod prepareGetForBasicAuth(String urlString, Map params){
+        return get;
+    }
+
+    public GetMethod prepareGetForBasicAuth(String urlString, Map params) {
         GetMethod get = prepareGetMethod(urlString, params);
         get.setDoAuthentication(true);
         return get;
     }
 
-	private NameValuePair[] getNameValuePairsFromMap(Map params) {
-		List nameValuePairs = new ArrayList();
-    	Iterator iterator = params.keySet().iterator();
-    	while(iterator.hasNext())
-    	{
-    		String key = (String) iterator.next();
-    		String value = (String) params.get(key);
-    		nameValuePairs.add(new NameValuePair(key, value));
-    	}
-    	NameValuePair[] pairs = (NameValuePair[]) nameValuePairs.toArray(new NameValuePair[0]);
-    	
-		return pairs;
-	}
-    
-    private String executeHttpMethod(HttpMethodBase method, HttpClient client) throws HttpStatusException, HttpException, IOException
-    {
-    	String response = "";
-        
+    private NameValuePair[] getNameValuePairsFromMap(Map params) {
+        List nameValuePairs = new ArrayList();
+        Iterator iterator = params.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = (String) iterator.next();
+            String value = (String) params.get(key);
+            nameValuePairs.add(new NameValuePair(key, value));
+        }
+        NameValuePair[] pairs = (NameValuePair[]) nameValuePairs.toArray(new NameValuePair[0]);
+
+        return pairs;
+    }
+
+    private String getHttpString(HttpMethodBase method, HttpClient client) throws HttpStatusException, IOException {
+        byte[] rawData = executeHttpMethod(method, client);
+        if (rawData != null) {
+            return EncodingUtil.getString(rawData, method.getResponseCharSet());
+        }
+        return null;
+
+    }
+
+    private byte[] executeHttpMethod(HttpMethodBase method, HttpClient client) throws HttpStatusException, IOException {
         try {
             // Execute the method.
             int statusCode = client.executeMethod(method);
             if (statusCode > 399) {//2xx status codes are success, 3xx are redirections etc., 4xx are errors.
                 throw new HttpStatusException("ERROR: HttpServer returned the following status code <" + statusCode + "> for the url:\n " + method.getURI());
             }
-            
+
             InputStream instream = method.getResponseBodyAsStream();
             if (instream != null) {
                 long contentLength = method.getResponseContentLength();
                 if (contentLength > Integer.MAX_VALUE) { //guard below cast from overflow
-                    throw new IOException("Content too large to be buffered: "+ contentLength +" bytes");
+                    throw new IOException("Content too large to be buffered: " + contentLength + " bytes");
                 }
-                
-                
-                ByteArrayOutputStream outstream = new ByteArrayOutputStream( contentLength > 0 ? (int) contentLength : INITIAL_BUFFER_SIZE);
+                ByteArrayOutputStream outstream = new ByteArrayOutputStream(contentLength > 0 ? (int) contentLength : INITIAL_BUFFER_SIZE);
                 byte[] buffer = new byte[4096];
                 int len;
                 while ((len = instream.read(buffer)) > 0) {
                     outstream.write(buffer, 0, len);
                 }
                 outstream.close();
-                byte[] rawData = outstream.toByteArray();
-                if (rawData != null) {
-                    return EncodingUtil.getString(rawData, method.getResponseCharSet());
-                } else {
-                    return null;
-                }
+                return outstream.toByteArray();
             }
-        } 
-        
-        finally {
-            // Release the connection. When keepalive is true(which is true by default), connection 
-            //must be released to reuse it. 
-        	method.releaseConnection();
         }
-        return response;
+        finally {
+            // Release the connection. When keepalive is true(which is true by default), connection
+            //must be released to reuse it.
+            method.releaseConnection();
+        }
+        return null;
     }
 }

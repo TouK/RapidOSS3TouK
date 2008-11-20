@@ -1,7 +1,8 @@
 package datasource
 
 import com.ifountain.core.datasource.BaseAdapter
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import java.awt.image.BufferedImage;
 
 public class HttpAdapter extends BaseAdapter{
     
@@ -30,6 +31,11 @@ public class HttpAdapter extends BaseAdapter{
         DoRequestAction action = new DoRequestAction(logger, url, params, type);
         executeAction(action);
         return action.getResponse();
+    }
+    public BufferedImage getImage(String url, Map params) throws Exception{
+        GetImageAction action = new GetImageAction(url, params);
+        executeAction(action);
+        return action.getImage();
     }
     
     public String doRequest(String url, Map params) throws Exception{

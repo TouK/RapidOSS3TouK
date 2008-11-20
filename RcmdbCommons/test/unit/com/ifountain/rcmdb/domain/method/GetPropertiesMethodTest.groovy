@@ -5,6 +5,8 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import com.ifountain.core.domain.annotations.HideProperty
+import com.ifountain.rcmdb.domain.constraints.KeyConstraint
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,13 +29,14 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
 
     public void testGetProperties()
     {
+        ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
         GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodDomainObject);
         GetPropertiesMethod method = new GetPropertiesMethod(cls);
         method.operationClass = GetPropertiesMethodDomainObjectOperations;
 
         def allProperties = method.getDomainObjectProperties();
         println allProperties.name
-        assertEquals (8, allProperties.size())
+        assertEquals (10, allProperties.size())
 
         RapidDomainClassProperty prop = allProperties[0]//propsMap["declaredProp1"];
         assertEquals("declaredProp1", prop.name);
@@ -43,36 +46,55 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         prop = allProperties[1]//propsMap["declaredProp2"];
         assertEquals("declaredProp2", prop.name);
         assertFalse(prop.isRelation);
+        assertFalse (prop.isKey);
         assertTrue(prop.isOperationProperty);
 
         prop = allProperties[2];
         assertEquals("id", prop.name);
         assertFalse (prop.isRelation);
+        assertFalse (prop.isKey);
         assertFalse (prop.isOperationProperty);
 
         prop = allProperties[3]//propsMap["oprProp2"];
         assertEquals("oprProp2", prop.name);
+        assertFalse (prop.isKey);
         assertFalse(prop.isRelation);
         assertTrue(prop.isOperationProperty);
 
         prop = allProperties[4]//propsMap["oprProp3"];
         assertEquals("oprProp3", prop.name);
+        assertFalse (prop.isKey);
         assertFalse(prop.isRelation);
         assertTrue(prop.isOperationProperty);
 
         prop = allProperties[5]//propsMap["prop1"];
         assertEquals("prop1", prop.name);
+        assertTrue (prop.isKey);
         assertFalse (prop.isRelation);
         assertFalse (prop.isOperationProperty);
 
-        prop = allProperties[6]//propsMap["rel1"];
-        assertEquals("rel1", prop.name);
-        assertTrue (prop.isRelation);
+        prop = allProperties[6]//propsMap["prop1"];
+        assertEquals("prop2", prop.name);
+        assertTrue (prop.isKey);
+        assertFalse (prop.isRelation);
         assertFalse (prop.isOperationProperty);
 
-        prop = allProperties[7]//propsMap["rel1"];
+        prop = allProperties[7]//propsMap["prop1"];
+        assertEquals("prop3", prop.name);
+        assertFalse (prop.isKey);
+        assertFalse (prop.isRelation);
+        assertFalse (prop.isOperationProperty);
+
+        prop = allProperties[8]//propsMap["rel1"];
+        assertEquals("rel1", prop.name);
+        assertTrue (prop.isRelation);
+        assertTrue (prop.isKey);
+        assertFalse (prop.isOperationProperty);
+
+        prop = allProperties[9]//propsMap["rel1"];
         assertEquals("rel2", prop.name);
         assertTrue (prop.isRelation);
+        assertFalse (prop.isKey);
         assertFalse (prop.isOperationProperty);
 
 
@@ -86,7 +108,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         }
         method.setOperationClass (null);
         allProperties = method.getDomainObjectProperties();
-        assertEquals (4, allProperties.size())
+        assertEquals (6, allProperties.size())
     }
 
     public void testGetPropertiesWithHidepropertyAnnotation()
@@ -106,6 +128,8 @@ class GetPropertiesMethodDomainObject
     Long id ;
     Long version ;
     String prop1;
+    String prop2;
+    String prop3;
     RelationMethodDomainObject2 rel1;
     List rel2 = [];
 
@@ -115,6 +139,7 @@ class GetPropertiesMethodDomainObject
     static constraints={
      __operation_class__(nullable:true)
      __is_federated_properties_loaded__(nullable:true)
+     prop1(key:["prop2", "rel1"]);
      errors(nullable:true)
      rel1(nullable:true)
      rel2(nullable:true)

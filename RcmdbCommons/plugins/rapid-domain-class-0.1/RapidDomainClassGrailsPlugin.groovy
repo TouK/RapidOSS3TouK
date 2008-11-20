@@ -22,6 +22,7 @@ import org.springframework.validation.FieldError
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.domain.method.GetPropertiesMethod
+import com.ifountain.rcmdb.domain.method.KeySetMethod
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors", "__is_federated_properties_loaded__":RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, "__operation_class__":RapidCMDBConstants.OPERATION_PROPERTY_NAME]
@@ -156,9 +157,13 @@ class RapidDomainClassGrailsPlugin {
     def addOperationsSupport(GrailsDomainClass dc, application, ctx)
     {
         GetPropertiesMethod getPropertiesMethod = new GetPropertiesMethod(dc);
+        KeySetMethod keySetMethod = new KeySetMethod(dc);
         MetaClass mc = dc.metaClass;
         mc.static.getPropertiesList = {->
             return getPropertiesMethod.getDomainObjectProperties();
+        }
+        mc.static.keySet= {->
+            return keySetMethod.getKeys();
         }
         if(mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)
         {

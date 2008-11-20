@@ -24,12 +24,16 @@ class GetPropertiesMethod
         def grailsDomainClassProperties = dc.getProperties();
         def relations = DomainClassUtils.getRelations(dc);
         def propsToBeFiltered = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME, RapidCMDBConstants.OPERATION_PROPERTY_NAME, RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED]
+        def keyProps = DomainClassUtils.getKeys(dc);
         grailsDomainClassProperties.each{GrailsDomainClassProperty prop->
             if(!propsToBeFiltered.contains(prop.name))
             {
-                allDomainClassProperties.add(new RapidDomainClassProperty(name:prop.name, isRelation:relations.containsKey(prop.name), isOperationProperty:false))
+                def isKey = keyProps.contains(prop.name);
+                allDomainClassProperties.add(new RapidDomainClassProperty(name:prop.name, isRelation:relations.containsKey(prop.name), isOperationProperty:false, isKey:isKey))
+
             }
         }
+
         allProperties = [];
         allProperties.addAll(allDomainClassProperties);
         Collections.sort (allProperties);
@@ -76,6 +80,7 @@ class RapidDomainClassProperty  implements Comparable
 {
     String name;
     boolean isRelation;
+    boolean isKey;
     boolean isOperationProperty;
 
     public int compareTo(Object o) {

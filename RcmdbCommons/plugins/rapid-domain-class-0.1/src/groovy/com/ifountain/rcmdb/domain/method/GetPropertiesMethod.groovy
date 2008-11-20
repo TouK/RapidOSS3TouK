@@ -6,6 +6,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import java.lang.reflect.Modifier
+import com.ifountain.rcmdb.domain.util.RelationMetaData
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +30,15 @@ class GetPropertiesMethod
             if(!propsToBeFiltered.contains(prop.name))
             {
                 def isKey = keyProps.contains(prop.name);
-                allDomainClassProperties.add(new RapidDomainClassProperty(name:prop.name, isRelation:relations.containsKey(prop.name), isOperationProperty:false, isKey:isKey))
+                RelationMetaData relation = relations.get(prop.name);
+                if(relation == null)
+                {
+                    allDomainClassProperties.add(new RapidDomainClassProperty(name:prop.name, isOperationProperty:false, isKey:isKey))
+                }
+                else
+                {
+                    allDomainClassProperties.add(new RapidDomainClassRelation(name:prop.name, relatedModel:relation.otherSideCls, reverseName:relation.otherSideName, type:relation.getType(), isOperationProperty:false, isKey:isKey))
+                }
 
             }
         }
@@ -88,4 +97,17 @@ class RapidDomainClassProperty  implements Comparable
         return name.compareTo(other.name);
     }
 
+}
+
+class RapidDomainClassRelation extends RapidDomainClassProperty
+{
+    String reverseName;
+    int type;
+    Class relatedModel;
+    boolean isMany;
+
+    public RapidDomainClassRelation()
+    {
+        this.isRelation = true;
+    }
 }

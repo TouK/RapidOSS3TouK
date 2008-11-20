@@ -7,6 +7,7 @@ import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import com.ifountain.core.domain.annotations.HideProperty
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import com.ifountain.rcmdb.domain.util.RelationMetaData
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,7 +36,6 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         method.operationClass = GetPropertiesMethodDomainObjectOperations;
 
         def allProperties = method.getDomainObjectProperties();
-        println allProperties.name
         assertEquals (10, allProperties.size())
 
         RapidDomainClassProperty prop = allProperties[0]//propsMap["declaredProp1"];
@@ -86,16 +86,24 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         assertFalse (prop.isOperationProperty);
 
         prop = allProperties[8]//propsMap["rel1"];
+        assertTrue (prop instanceof RapidDomainClassRelation);
         assertEquals("rel1", prop.name);
         assertTrue (prop.isRelation);
         assertTrue (prop.isKey);
         assertFalse (prop.isOperationProperty);
+        assertEquals (RelationMetaData.ONE_TO_ONE, prop.type);
+        assertEquals (RelationMethodDomainObject2, prop.relatedModel);
+        assertEquals ("revRel1", prop.reverseName);
 
         prop = allProperties[9]//propsMap["rel1"];
+        assertTrue (prop instanceof RapidDomainClassRelation);
         assertEquals("rel2", prop.name);
         assertTrue (prop.isRelation);
         assertFalse (prop.isKey);
         assertFalse (prop.isOperationProperty);
+        assertEquals (RelationMetaData.ONE_TO_MANY, prop.type);
+        assertEquals (RelationMethodDomainObject2, prop.relatedModel);
+        assertEquals ("revRel2", prop.reverseName);
 
 
         try

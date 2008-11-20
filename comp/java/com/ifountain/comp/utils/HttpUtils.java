@@ -67,6 +67,10 @@ public class HttpUtils {
         GetMethod get = prepareGetMethod(urlStr, params);
         return executeGetImage(get, httpClient);
     }
+     public byte[] getBytes(String urlStr, Map params) throws HttpStatusException, IOException {
+        GetMethod get = prepareGetMethod(urlStr, params);
+        return executeHttpMethod(get, httpClient);
+    }
 
     public String doGetWithBasicAuth(String urlStr, String userName, String password, Map params) throws HttpStatusException, IOException {
         URL url = new URL(urlStr);

@@ -37,7 +37,12 @@ public class HttpAdapter extends BaseAdapter{
         executeAction(action);
         return action.getImage();
     }
-    
+    def getBytes(String url, Map params) throws Exception{
+        GetBytesAction action = new GetBytesAction(url, params);
+        executeAction(action);
+        return action.getBytes();
+    }
+
     public String doRequest(String url, Map params) throws Exception{
         return doGetRequest(url, params);
     }

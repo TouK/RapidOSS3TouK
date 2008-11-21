@@ -361,6 +361,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="partOfVlan">partOfVlan:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:smartsPort,field:'partOfVlan','errors')}">
+                            
+<ul>
+<g:each var="p" in="${smartsPort?.partOfVlan?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="smartsVlan" action="show" id="${p.id}">${p}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':smartsPort?.id, 'relationName':'partOfVlan', 'relatedObjectId':p.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':smartsPort?.id, 'relationName':'partOfVlan']" action="addTo">Add SmartsVlan</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="peerSystemName">peerSystemName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:smartsPort,field:'peerSystemName','errors')}">

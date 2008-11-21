@@ -82,6 +82,19 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">connectedViaVlan:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${smartsComputerSystem.connectedViaVlan}">
+                                <li><g:link controller="smartsVlan" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">description:</td>
                     
                     <td valign="top" class="value">${smartsComputerSystem.description}</td>
@@ -140,6 +153,13 @@
                             </g:each>
                         </ul>
                     </td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">hsrpGroup:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="smartsHSRPGroup" action="show" id="${smartsComputerSystem?.hsrpGroup?.id}">${smartsComputerSystem?.hsrpGroup}</g:link></td>
                     
                 </tr>
                 
@@ -240,6 +260,19 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">partOf:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="p" in="${smartsComputerSystem.partOf}">
+                                <li><g:link controller="smartsVlan" action="show" id="${p.id}">${p}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">primaryOwnerContact:</td>
                     
                     <td valign="top" class="value">${smartsComputerSystem.primaryOwnerContact}</td>
@@ -292,6 +325,19 @@
                     <td valign="top" class="name">systemObjectID:</td>
                     
                     <td valign="top" class="value">${smartsComputerSystem.systemObjectID}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">underlying:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="u" in="${smartsComputerSystem.underlying}">
+                                <li><g:link controller="smartsVlan" action="show" id="${u.id}">${u}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

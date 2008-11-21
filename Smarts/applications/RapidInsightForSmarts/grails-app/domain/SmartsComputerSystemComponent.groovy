@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class SmartsComputerSystemComponent extends RsTopologyObject
-{
-    
+class SmartsComputerSystemComponent  extends RsTopologyObject {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -68,4 +67,5 @@ class SmartsComputerSystemComponent extends RsTopologyObject
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

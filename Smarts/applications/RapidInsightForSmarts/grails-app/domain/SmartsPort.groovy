@@ -1,13 +1,12 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class SmartsPort extends SmartsNetworkAdapter
-{
-    
+class SmartsPort  extends SmartsNetworkAdapter {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "partOfVlan"];
     
     
     };
@@ -40,8 +39,14 @@ class SmartsPort extends SmartsNetworkAdapter
     
     Object __is_federated_properties_loaded__ ;
     
+    List partOfVlan =[];
     
-    static relations = [:]    
+    
+    static relations = [
+    
+        partOfVlan:[type:SmartsVlan, reverseName:"connectedPorts", isMany:true]
+    
+    ]
     
     static constraints={
     designatedBridge(blank:true,nullable:true)
@@ -70,10 +75,11 @@ class SmartsPort extends SmartsNetworkAdapter
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "partOfVlan"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

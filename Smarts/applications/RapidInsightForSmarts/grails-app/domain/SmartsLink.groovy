@@ -1,13 +1,12 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class SmartsLink extends RsLink
-{
-    
+class SmartsLink  extends RsLink {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connectedTo"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "vlans", "connectedTo"];
     
     
     };
@@ -54,12 +53,16 @@ class SmartsLink extends RsLink
     
     Object __is_federated_properties_loaded__ ;
     
+    List vlans =[];
+    
     List connectedTo =[];
     
     
     static relations = [
     
-        connectedTo:[type:SmartsNetworkAdapter, reverseName:"connectedVia", isMany:true]
+        vlans:[type:SmartsVlan, reverseName:"trunkCables", isMany:true]
+    
+        ,connectedTo:[type:SmartsNetworkAdapter, reverseName:"connectedVia", isMany:true]
     
     ]
     
@@ -104,10 +107,11 @@ class SmartsLink extends RsLink
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connectedTo"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "vlans", "connectedTo"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

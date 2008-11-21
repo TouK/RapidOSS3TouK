@@ -100,6 +100,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="connectedViaVlan">connectedViaVlan:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:smartsComputerSystem,field:'connectedViaVlan','errors')}">
+                            
+<ul>
+<g:each var="c" in="${smartsComputerSystem?.connectedViaVlan?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="smartsVlan" action="show" id="${c.id}">${c}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':smartsComputerSystem?.id, 'relationName':'connectedViaVlan', 'relatedObjectId':c.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':smartsComputerSystem?.id, 'relationName':'connectedViaVlan']" action="addTo">Add SmartsVlan</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="description">description:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:smartsComputerSystem,field:'description','errors')}">
@@ -177,6 +196,15 @@
 </ul>
 <g:link params="['id':smartsComputerSystem?.id, 'relationName':'hostsAccessPoints']" action="addTo">Add SmartsIp</g:link>
 
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="hsrpGroup">hsrpGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:smartsComputerSystem,field:'hsrpGroup','errors')}">
+                            <g:select optionKey="id" from="${SmartsHSRPGroup.list()}" name="hsrpGroup.id" value="${smartsComputerSystem?.hsrpGroup?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
                     
@@ -310,6 +338,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="partOf">partOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:smartsComputerSystem,field:'partOf','errors')}">
+                            
+<ul>
+<g:each var="p" in="${smartsComputerSystem?.partOf?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="smartsVlan" action="show" id="${p.id}">${p}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':smartsComputerSystem?.id, 'relationName':'partOf', 'relatedObjectId':p.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':smartsComputerSystem?.id, 'relationName':'partOf']" action="addTo">Add SmartsVlan</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="primaryOwnerContact">primaryOwnerContact:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:smartsComputerSystem,field:'primaryOwnerContact','errors')}">
@@ -377,6 +424,25 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:smartsComputerSystem,field:'systemObjectID','errors')}">
                             <input type="text" id="systemObjectID" name="systemObjectID" value="${fieldValue(bean:smartsComputerSystem,field:'systemObjectID')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="underlying">underlying:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:smartsComputerSystem,field:'underlying','errors')}">
+                            
+<ul>
+<g:each var="u" in="${smartsComputerSystem?.underlying?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="smartsVlan" action="show" id="${u.id}">${u}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':smartsComputerSystem?.id, 'relationName':'underlying', 'relatedObjectId':u.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':smartsComputerSystem?.id, 'relationName':'underlying']" action="addTo">Add SmartsVlan</g:link>
+
                         </td>
                     </tr>
                     

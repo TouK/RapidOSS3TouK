@@ -285,6 +285,19 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">partOfVlan:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="p" in="${smartsPort.partOfVlan}">
+                                <li><g:link controller="smartsVlan" action="show" id="${p.id}">${p}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">peerSystemName:</td>
                     
                     <td valign="top" class="value">${smartsPort.peerSystemName}</td>

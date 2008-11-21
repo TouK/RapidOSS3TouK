@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class SmartsNotification extends RsEvent
-{
-    
+class SmartsNotification  extends RsEvent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -184,4 +183,5 @@ class SmartsNotification extends RsEvent
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

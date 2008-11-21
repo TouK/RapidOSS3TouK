@@ -123,6 +123,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="hsrpGroup">hsrpGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:smartsComputerSystem,field:'hsrpGroup','errors')}">
+                            <g:select optionKey="id" from="${SmartsHSRPGroup.list()}" name="hsrpGroup.id" value="${smartsComputerSystem?.hsrpGroup?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="isManaged">isManaged:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:smartsComputerSystem,field:'isManaged','errors')}">

@@ -1,13 +1,12 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class SmartsVlan extends RsTopologyObject
-{
-    
+class SmartsVlan  extends RsTopologyObject {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connectedPorts", "connectedSystems", "layeredOver", "memberSystems", "trunkCables"];
     
     
     };
@@ -28,8 +27,30 @@ class SmartsVlan extends RsTopologyObject
     
     Object __is_federated_properties_loaded__ ;
     
+    List connectedPorts =[];
     
-    static relations = [:]    
+    List connectedSystems =[];
+    
+    List layeredOver =[];
+    
+    List memberSystems =[];
+    
+    List trunkCables =[];
+    
+    
+    static relations = [
+    
+        connectedPorts:[type:SmartsPort, reverseName:"partOfVlan", isMany:true]
+    
+        ,connectedSystems:[type:SmartsComputerSystem, reverseName:"connectedViaVlan", isMany:true]
+    
+        ,layeredOver:[type:SmartsComputerSystem, reverseName:"underlying", isMany:true]
+    
+        ,memberSystems:[type:SmartsComputerSystem, reverseName:"partOf", isMany:true]
+    
+        ,trunkCables:[type:SmartsLink, reverseName:"vlans", isMany:true]
+    
+    ]
     
     static constraints={
     vlanKey(blank:true,nullable:true)
@@ -46,10 +67,11 @@ class SmartsVlan extends RsTopologyObject
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connectedPorts", "connectedSystems", "layeredOver", "memberSystems", "trunkCables"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

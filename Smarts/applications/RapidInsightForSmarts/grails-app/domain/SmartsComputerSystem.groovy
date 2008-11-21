@@ -1,13 +1,12 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class SmartsComputerSystem extends RsComputerSystem
-{
-    
+class SmartsComputerSystem  extends RsComputerSystem {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ipNetworks", "composedOf", "hostsAccessPoints"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "hsrpGroup", "connectedViaVlan", "underlying", "partOf", "ipNetworks", "composedOf", "hostsAccessPoints"];
     
     
     };
@@ -48,6 +47,14 @@ class SmartsComputerSystem extends RsComputerSystem
     
     Object __is_federated_properties_loaded__ ;
     
+    SmartsHSRPGroup hsrpGroup ;
+    
+    List connectedViaVlan =[];
+    
+    List underlying =[];
+    
+    List partOf =[];
+    
     List ipNetworks =[];
     
     List composedOf =[];
@@ -57,7 +64,15 @@ class SmartsComputerSystem extends RsComputerSystem
     
     static relations = [
     
-        ipNetworks:[type:SmartsIpNetwork, reverseName:"memberSystems", isMany:true]
+        hsrpGroup:[type:SmartsHSRPGroup, reverseName:"computerSystems", isMany:false]
+    
+        ,connectedViaVlan:[type:SmartsVlan, reverseName:"connectedSystems", isMany:true]
+    
+        ,underlying:[type:SmartsVlan, reverseName:"layeredOver", isMany:true]
+    
+        ,partOf:[type:SmartsVlan, reverseName:"memberSystems", isMany:true]
+    
+        ,ipNetworks:[type:SmartsIpNetwork, reverseName:"memberSystems", isMany:true]
     
         ,composedOf:[type:SmartsComputerSystemComponent, reverseName:"partOf", isMany:true]
     
@@ -96,14 +111,17 @@ class SmartsComputerSystem extends RsComputerSystem
         
      errors(nullable:true)
         
+     hsrpGroup(nullable:true)
+        
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ipNetworks", "composedOf", "hostsAccessPoints"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "hsrpGroup", "connectedViaVlan", "underlying", "partOf", "ipNetworks", "composedOf", "hostsAccessPoints"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

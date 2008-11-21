@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class SmartsIp extends SmartsComputerSystemComponent
-{
-    
+class SmartsIp  extends SmartsComputerSystemComponent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -100,4 +99,5 @@ class SmartsIp extends SmartsComputerSystemComponent
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

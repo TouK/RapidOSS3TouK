@@ -49,6 +49,32 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">connectedPorts:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${smartsVlan.connectedPorts}">
+                                <li><g:link controller="smartsPort" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">connectedSystems:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${smartsVlan.connectedSystems}">
+                                <li><g:link controller="smartsComputerSystem" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">description:</td>
                     
                     <td valign="top" class="value">${smartsVlan.description}</td>
@@ -70,6 +96,19 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">layeredOver:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="l" in="${smartsVlan.layeredOver}">
+                                <li><g:link controller="smartsComputerSystem" action="show" id="${l.id}">${l}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">memberOfGroup:</td>
                     
                     <td valign="top" style="text-align:left;" class="value">
@@ -83,9 +122,35 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">memberSystems:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${smartsVlan.memberSystems}">
+                                <li><g:link controller="smartsComputerSystem" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">rsDatasource:</td>
                     
                     <td valign="top" class="value">${smartsVlan.rsDatasource}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">trunkCables:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="t" in="${smartsVlan.trunkCables}">
+                                <li><g:link controller="smartsLink" action="show" id="${t.id}">${t}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

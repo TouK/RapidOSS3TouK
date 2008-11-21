@@ -201,7 +201,7 @@
                 <Property Name="vlanNumber" Type="number"/>
             </Properties>
         </Model>
-        <Model Name="SmartsHsrpGroup" Parent="RsTopologyObject">
+        <Model Name="SmartsHSRPGroup" Parent="RsTopologyObject">
             <Properties>
                 <Property Name="activeInterfaceName" Type="string"/>
                 <Property Name="activeSystemName" Type="string"/>
@@ -220,8 +220,27 @@
                 <Property Name="virtualMAC" Type="string"/>
             </Properties>
         </Model>
+        <Model Name="SmartsHSRPEndpoint" Parent="SmartsComputerSystemComponent">
+            <Properties>
+                <Property Name="hsrpEndpointKey" Type="string"/>
+                <Property Name="isReady" Type="string"/>
+                <Property Name="isSwitchOverActive" Type="string"/>
+                <Property Name="groupNumber" Type="string"/>
+                <Property Name="numberOfComponents" Type="string"/>
+                <Property Name="numberOfFaultyComponents" Type="string"/>
+                <Property Name="virtualIP" Type="string"/>
+                <Property Name="virtualMAC" Type="string"/>
+            </Properties>
+        </Model>
     </Models>
     <Relations>
+        <Relation From="SmartsHSRPGroup" To="SmartsComputerSystem" Name="computerSystems" ReverseName="hsrpGroup" Type="OneToMany"></Relation>
+        <Relation From="SmartsHSRPGroup" To="SmartsHSRPEndpoint" Name="endPoints" ReverseName="hsrpGroup" Type="OneToMany"></Relation>
+        <Relation From="SmartsVlan" To="SmartsPort" Name="connectedPorts" ReverseName="partOfVlan" Type="ManyToMany"></Relation>
+        <Relation From="SmartsVlan" To="SmartsComputerSystem" Name="connectedSystems" ReverseName="connectedViaVlan" Type="ManyToMany"></Relation>
+        <Relation From="SmartsVlan" To="SmartsComputerSystem" Name="layeredOver" ReverseName="underlying" Type="ManyToMany"></Relation>
+        <Relation From="SmartsVlan" To="SmartsComputerSystem" Name="memberSystems" ReverseName="partOf" Type="ManyToMany"></Relation>
+        <Relation From="SmartsVlan" To="SmartsLink" Name="trunkCables" ReverseName="vlans" Type="ManyToMany"></Relation>
         <Relation From="SmartsNotification" To="SmartsNotification" Name="causedBy" ReverseName="causes" Type="ManyToMany"></Relation>
         <Relation From="SmartsComputerSystem" To="SmartsIpNetwork" Name="ipNetworks" ReverseName="memberSystems" Type="ManyToMany"></Relation>
         <Relation From="SmartsComputerSystem" To="SmartsComputerSystemComponent" Name="composedOf" ReverseName="partOf" Type="OneToMany"></Relation>

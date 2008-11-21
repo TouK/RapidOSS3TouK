@@ -236,6 +236,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="vlans">vlans:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:smartsLink,field:'vlans','errors')}">
+                            
+<ul>
+<g:each var="v" in="${smartsLink?.vlans?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="smartsVlan" action="show" id="${v.id}">${v}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':smartsLink?.id, 'relationName':'vlans', 'relatedObjectId':v.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':smartsLink?.id, 'relationName':'vlans']" action="addTo">Add SmartsVlan</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="z_AdminStatus">z_AdminStatus:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:smartsLink,field:'z_AdminStatus','errors')}">

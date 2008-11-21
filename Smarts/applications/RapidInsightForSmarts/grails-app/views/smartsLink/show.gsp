@@ -186,6 +186,19 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">vlans:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="v" in="${smartsLink.vlans}">
+                                <li><g:link controller="smartsVlan" action="show" id="${v.id}">${v}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">z_AdminStatus:</td>
                     
                     <td valign="top" class="value">${smartsLink.z_AdminStatus}</td>

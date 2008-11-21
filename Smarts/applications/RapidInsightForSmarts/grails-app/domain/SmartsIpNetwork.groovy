@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class SmartsIpNetwork extends RsGroup
-{
-    
+class SmartsIpNetwork  extends RsGroup {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -58,4 +57,5 @@ class SmartsIpNetwork extends RsGroup
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

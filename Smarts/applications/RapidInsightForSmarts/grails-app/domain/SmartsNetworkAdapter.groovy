@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class SmartsNetworkAdapter extends SmartsComputerSystemComponent
-{
-    
+class SmartsNetworkAdapter  extends SmartsComputerSystemComponent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -174,4 +173,5 @@ class SmartsNetworkAdapter extends SmartsComputerSystemComponent
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

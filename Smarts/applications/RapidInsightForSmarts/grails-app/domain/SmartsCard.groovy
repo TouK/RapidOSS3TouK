@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class SmartsCard extends SmartsComputerSystemComponent
-{
-    
+class SmartsCard  extends SmartsComputerSystemComponent {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -66,4 +65,5 @@ class SmartsCard extends SmartsComputerSystemComponent
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

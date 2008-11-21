@@ -13,7 +13,7 @@ class SmartsModuleTest extends Test{
 	}
 	
 	def setupForTestExecution(){
-		setClasspathForTestExecution();
+        setClasspathForTestExecution();
 		ant.delete(dir : env.smarts_testreport);
 		ant.delete(dir : env.smarts_testhtml);
 	    ant.copy(file : "$env.dev_docs/RCMDBTest.properties", toDir : env.rapid_modules);

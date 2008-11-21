@@ -28,6 +28,19 @@ class RapidInsightBuild extends Build {
         buildUnix();
         addJreOnTopOfUnixAndZip();
     }
+    def testBuild() {
+        TEST = true;
+        createDirectories("Unix", false);
+        smartsBuild.build();
+        ant.unzip(src:"$env.distribution/SmartsPlugin.zip", dest:env.dist_rapid_server);
+        ant.copy(tofile: "$env.dist_rapid_suite/../conf/groovy-starter.conf", file:"${env.dev_docs}/groovy-starter-for-tests.conf", overwrite:"true")
+        ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
+            ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {
+                ant.include(name: "*.groovy")
+                ant.include(name: "test/*")
+            }
+        }
+    }
 
     def addJreOnTopOfUnixAndZip() {
         ant.copy(todir: "$env.dist_rapid_server/jre") {
@@ -48,18 +61,23 @@ class RapidInsightBuild extends Build {
         buildPerOS("Unix");
     }
 
-    def createDirectories(osType) {
+    def createDirectories(osType){
+       createDirectories(osType, true);
+    }
+    def createDirectories(osType, willDeleteModeler) {
         if(osType == "Windows"){
             rapidCMDBBuild.buildWindowsWithPlugins();    
         }
         else{
             rapidCMDBBuild.buildUnixWithPlugins();
         }
-        ant.delete(dir: env.dist_rapid_server);
+        ant.delete(dir: env.dist_rapid_server);    
 
         def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB");
         ant.unzip(src: rapidCmdb.absolutePath, dest: env.distribution);
-        ant.delete(dir: env.dist_modeler);
+        if(willDeleteModeler){
+            ant.delete(dir: env.dist_modeler);
+        }
 
         def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
         installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant: ant], [:]);

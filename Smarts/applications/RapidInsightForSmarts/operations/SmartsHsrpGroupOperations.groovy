@@ -1,6 +1,0 @@
-
-    
-    class SmartsHsrpGroupOperations extends RsTopologyObjectOperations
-    {
-    }
-    

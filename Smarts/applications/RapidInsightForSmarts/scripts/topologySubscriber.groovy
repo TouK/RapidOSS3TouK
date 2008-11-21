@@ -300,7 +300,7 @@ def addObject(String className, String name)
 {
     if(PROCESSED_OBJECTS.containsKey(name))
     {
-        return RsTopologyobject.get(name:name);
+        return RsTopologyObject.get(name:name);
     }
     logger.debug("adding object with CreationClassName:${className } Name:${name}");
     Map smartsClassConfiguration = REAL_CLASSES_TO_MODELS_MAP[className];
@@ -332,7 +332,7 @@ def addObject(Map smartsClassConfiguration, Map propertiesFromSmarts)
 {
     if(PROCESSED_OBJECTS.containsKey(propertiesFromSmarts.Name))
     {
-        return RsTopologyobject.get(name:propertiesFromSmarts.Name);
+        return RsTopologyObject.get(name:propertiesFromSmarts.Name);
     }
      def rsProperties = [:]
     smartsClassConfiguration.columnsMapping.each{String smartsPropertyName, String rsPropertyName->

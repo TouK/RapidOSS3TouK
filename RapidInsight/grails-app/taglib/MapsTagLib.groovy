@@ -222,7 +222,7 @@ class MapsTagLib {
                         var layout = new YAHOO.widget.Layout({
                             units: [
                                 { position: 'top', body: 'top', resize: false, height:45},
-                                { position: 'center', body: topoMap.container.id, resize: false, gutter: '1px' },
+                                { position: 'center', body: topoMap.container.id, resize: false, gutter: '1px', useShim:true},
                                 { position: 'left', width: 250, resize: true, body: tree.container.id, scroll: false}
                             ]
                         });

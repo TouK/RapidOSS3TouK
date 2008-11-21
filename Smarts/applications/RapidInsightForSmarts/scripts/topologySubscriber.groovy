@@ -203,7 +203,6 @@ def init() {
     //The class mapping information contains information from ri to smarts mapping. This information will be used to construct smarts to ri configuration for
     //each of configured smarts class
     createSmartsToRiClassMapping();
-
     //existing instances will be marked as deleted in init. They will be saved as deleted in a map called topologyMap
     //Instances will be remoeved from map until  BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED event is received.
     //After that each of the remaining instances will be deleted.
@@ -334,7 +333,7 @@ def addObject(Map smartsClassConfiguration, Map propertiesFromSmarts)
     {
         return RsTopologyObject.get(name:propertiesFromSmarts.Name);
     }
-     def rsProperties = [:]
+    def rsProperties = [rsDatasource:getDatasource().name]
     smartsClassConfiguration.columnsMapping.each{String smartsPropertyName, String rsPropertyName->
         def propValue = defaultPropertyProcessingClosure(smartsPropertyName, rsPropertyName, propertiesFromSmarts);
         rsProperties[rsPropertyName] = propValue;

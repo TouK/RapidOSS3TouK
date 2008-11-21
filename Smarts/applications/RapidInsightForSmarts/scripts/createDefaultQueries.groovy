@@ -1,5 +1,6 @@
 import search.SearchQuery
 import auth.RsUser
+import search.SearchQueryGroup
 
 def adminUser = RsUser.RSADMIN;
 def defaultEventGroup = SearchQueryGroup.add(name: "Default", username:adminUser, isPublic:true, type:"event");

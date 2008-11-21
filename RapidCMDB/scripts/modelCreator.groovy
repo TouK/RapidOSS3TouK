@@ -12,7 +12,6 @@ import org.apache.commons.io.filefilter.FalseFileFilter
 * Time: 11:44:46 AM
 * To change this template use File | Settings | File Templates.
 */
-logger = Logger.getLogger(getClass().name);
 logger.info("Model creator started");
 def baseDir = System.getProperty("base.dir");
 confDir = new File("${baseDir}/grails-app/conf");

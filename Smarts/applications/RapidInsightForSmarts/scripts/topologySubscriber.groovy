@@ -526,6 +526,7 @@ def receivingExitingDevicesCompleted()
 
 def createSmartsToRiClassMapping()
 {
+    def excludedProps = ["rsDatasource":"rsDatasource"]
     REAL_CLASSES_TO_MODELS_MAP = [:];
     CLASS_MAPPINGS.each{String rsClassName, Map rsClassConfiguration->
         GrailsDomainClass rsDomainClass = ApplicationHolder.getApplication().getDomainClass(rsClassName);
@@ -538,7 +539,7 @@ def createSmartsToRiClassMapping()
             defaultColMappings = defaultColMappings ==null?[:]:defaultColMappings;
             rsDomainClass.clazz.'getPropertiesList'().each{property->
                 String propName = property.name;
-                if(!property.isOperationProperty && !property.isRelation && !defaultColMappings.containsKey(propName) && !colClosures.containsKey(propName))
+                if(!excludedProps.containsKey(propName) && !property.isOperationProperty && !property.isRelation && !defaultColMappings.containsKey(propName) && !colClosures.containsKey(propName))
                 {
                         def smartsName = getSmartsPropertyName(propName)
                         columnsMap[smartsName] = propName;

@@ -12,7 +12,7 @@ import auth.Role
  */
 class RiForSmartsSecurityFilters {
     def filters = {
-        def adminControllers = [];
+        def adminControllers = ["smartsConnectionTemplate", "smartsConnector"];
         adminAuthorization(controller: "(" + adminControllers.join("|") + ")", action: "*") {
             before = {
                 accessControl {

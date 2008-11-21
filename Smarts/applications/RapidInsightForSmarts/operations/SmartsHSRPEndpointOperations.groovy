@@ -1,0 +1,6 @@
+
+    
+    class SmartsHSRPEndpointOperations extends SmartsComputerSystemComponentOperations
+    {
+    }
+    

@@ -133,7 +133,7 @@ REAL_CLASSES_TO_MODELS_MAP = null;
 PROCESSED_OBJECTS = [:];
 //This map will hold last discovery dates of computersystem objects. If any of these date is changed all of the hierachy will be recreated
 COMPUTER_SYSTEM_OBJECTS_DISCOVERED_AT = [:];
-
+DATASOURCE_NAME = getDatasource().name;
 // This is the default property processing closure all of the smarts properties will be converted into ri properties in this closure
 //Also users can give some custom closures to properties if they want to create custom mapping by using columnClosures configuration item
 defaultPropertyProcessingClosure = {String smartsPropertyName, String rsPropertyName, Map smartsObjectProperties->
@@ -305,7 +305,7 @@ def addObject(String className, String name)
     Map smartsClassConfiguration = REAL_CLASSES_TO_MODELS_MAP[className];
     if(smartsClassConfiguration)
     {
-        Map propertiesFromSmarts = getDatasource().getObject([CreationClassName:className, Name:name]);
+        Map propertiesFromSmarts = getSmartsObjectProperties(className, name);
         if(propertiesFromSmarts)
         {
             def addedObject = addObject(smartsClassConfiguration, propertiesFromSmarts);
@@ -333,7 +333,7 @@ def addObject(Map smartsClassConfiguration, Map propertiesFromSmarts)
     {
         return RsTopologyObject.get(name:propertiesFromSmarts.Name);
     }
-    def rsProperties = [rsDatasource:getDatasource().name]
+    def rsProperties = [rsDatasource:DATASOURCE_NAME]
     smartsClassConfiguration.columnsMapping.each{String smartsPropertyName, String rsPropertyName->
         def propValue = defaultPropertyProcessingClosure(smartsPropertyName, rsPropertyName, propertiesFromSmarts);
         rsProperties[rsPropertyName] = propValue;
@@ -346,15 +346,29 @@ def addObject(Map smartsClassConfiguration, Map propertiesFromSmarts)
     return smartsClassConfiguration.rsClass.'add'(rsProperties);
 }
 RELATIONS_TO_BE_PROCESSED = [];
+SMARTS_OBJECT_PROPERTIES = [:]
 def updateComputerSystemRelations(String className, String name)
 {
     RELATIONS_TO_BE_PROCESSED.clear();
+    SMARTS_OBJECT_PROPERTIES.clear();
     RELATIONS_TO_BE_PROCESSED.add([CreationClassName:className, Name:name]);
     while(!RELATIONS_TO_BE_PROCESSED.isEmpty())
     {
         Map relObject = RELATIONS_TO_BE_PROCESSED.remove(0);
         updateRelationsWithCreationClassName(relObject.CreationClassName, relObject.Name);
     }
+    SMARTS_OBJECT_PROPERTIES.clear();
+}
+
+def getSmartsObjectProperties(creationClassName, name)
+{
+    def smartsObjectProperties = SMARTS_OBJECT_PROPERTIES[name];
+    if(smartsObjectProperties == null)
+    {
+        smartsObjectProperties = getDatasource().getObject([CreationClassName:creationClassName, Name:name])
+        SMARTS_OBJECT_PROPERTIES[name] = smartsObjectProperties;
+    }
+    return smartsObjectProperties;
 }
 def updateRelationsWithCreationClassName(String className, String name)
 {
@@ -366,9 +380,10 @@ def updateRelationsWithCreationClassName(String className, String name)
     Map smartsClassConfiguration = REAL_CLASSES_TO_MODELS_MAP[className];
     if(smartsClassConfiguration)
     {
-        Map propertiesFromSmarts = getDatasource().getObject([CreationClassName:className, Name:name]);
+        Map propertiesFromSmarts = getSmartsObjectProperties(className, name);
         if(propertiesFromSmarts)
         {
+            SMARTS_OBJECT_PROPERTIES.remove(name);
             def addedObject = smartsClassConfiguration.rsClass.'get'(name:name);
             updateRelations(addedObject, smartsClassConfiguration, propertiesFromSmarts)
         }
@@ -504,7 +519,7 @@ def markExistingDevices()
 {
     logger.debug("Marking all devices as deleted.");
     topologyMap = new CaseInsensitiveMap();
-    def deviceNames = RsTopologyObject.propertySummary("alias:* AND rsDatasource:\"${getDatasource().name}\"", ["name"]);
+    def deviceNames = RsTopologyObject.propertySummary("alias:* AND rsDatasource:\"${DATASOURCE_NAME}\"", ["name"]);
     deviceNames.name.each {propertyValue, occurrenceCount->
         topologyMap[propertyValue] = "deleted";
     }

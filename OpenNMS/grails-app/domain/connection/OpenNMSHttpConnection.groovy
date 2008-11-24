@@ -20,7 +20,7 @@ class OpenNMSHttpConnection extends Connection{
     String baseUrl = "";
     String userPassword = "";
     String username = "";
-    String connectionClass = "connection.HypericConnectionImpl";
+    String connectionClass = OpenNMSHttpConnectionImpl.name;
     List openNMSHttpDatasources = [];
 
     static relations = [

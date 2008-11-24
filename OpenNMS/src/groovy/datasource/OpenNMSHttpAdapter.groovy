@@ -9,7 +9,7 @@ import org.apache.log4j.Logger
  * To change this template use File | Settings | File Templates.
  */
 class OpenNMSHttpAdapter extends HttpAdapter{
-     public HypericAdapter(String connectionName, long reconnectInterval, Logger logger) {
+     public OpenNMSHttpAdapter(String connectionName, long reconnectInterval, Logger logger) {
         super(connectionName, reconnectInterval, logger);
     }
 }

@@ -5,6 +5,7 @@ import com.ifountain.rcmdb.domain.util.RelationMetaData
 import org.compass.core.CompassHit
 import org.compass.core.CompassSession
 import relation.Relation
+import com.ifountain.rcmdb.domain.IdGenerator
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,9 +21,19 @@ class RelationUtils
     {
         def otherSideName = relation.otherSideName == null?NULL_RELATION_NAME:relation.otherSideName;
         def relationName = relation.name == null?NULL_RELATION_NAME:relation.name;
+        def relationObjects = [];
+        def objId = object.id;
         relatedObjects.each{
-            Relation.add(objectId:object.id, reverseObjectId:it.id, name:relationName, reverseName:otherSideName);
+            def relObjectId = IdGenerator.getInstance().getNextId();
+            def relationObject = new Relation();
+            relationObject.setProperty ("id", relObjectId, false);
+            relationObject.setProperty ("objectId", objId, false);
+            relationObject.setProperty ("reverseObjectId", it.id, false);
+            relationObject.setProperty ("name", relationName, false);
+            relationObject.setProperty ("reverseName", otherSideName, false);
+            relationObjects.add(relationObject);
         }
+        Relation.index(relationObjects);
     }
     public static void removeRelations(object, RelationMetaData relation, Collection relatedObjects)
     {

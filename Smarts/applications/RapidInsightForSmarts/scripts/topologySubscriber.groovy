@@ -267,7 +267,7 @@ def createHierachy(topologyObject)
 {
     if(COMPUTER_SYSTEM_OBJECTS_DISCOVERED_AT[topologyObject.Name] == null || COMPUTER_SYSTEM_OBJECTS_DISCOVERED_AT[topologyObject.Name].DiscoveredLastAt != topologyObject.DiscoveredLastAt)
     {
-        logger.warn("Starting to create whole hierachy");
+        logger.warn("Starting to create hierachy");
         getComputerSystemObjects();
         PROCESSED_OBJECTS.clear();
         COMPUTER_SYSTEM_OBJECTS_DISCOVERED_AT.each{String objectName, Map config->
@@ -277,7 +277,7 @@ def createHierachy(topologyObject)
                 updateComputerSystemRelations(config.CreationClassName, objectName);
             }
         }
-        logger.warn("Finished to create whole hierachy");
+        logger.warn("Finished to create hierachy");
         PROCESSED_OBJECTS.clear();
     }
 }

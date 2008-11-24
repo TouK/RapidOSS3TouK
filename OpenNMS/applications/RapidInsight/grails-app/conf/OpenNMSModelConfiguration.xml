@@ -53,5 +53,8 @@
             </Properties>
         </Model>
     </Models>
-    <Relations></Relations>
+    <Relations>
+        <Relation From="OpenNmsNode" To="OpenNmsIpInterface" Name="ipInterfaces" ReverseName="node" Type="OneToMany"></Relation>
+        <Relation From="OpenNmsIpInterface" To="OpenNmsService" Name="services" ReverseName="ipInterface" Type="OneToMany"></Relation>
+    </Relations>
 </Rsmodel>

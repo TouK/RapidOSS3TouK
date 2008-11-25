@@ -1,4 +1,4 @@
-<%@ page import="connection.OpenNMSHttpConnection" %>
+<%@ page import="connection.OpenNmsHttpConnection; connection.OpenNMSHttpConnection" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -45,7 +45,7 @@
                 </table>
             </div>
             <div class="paginateButtons">
-                <g:paginate total="${OpenNMSHttpConnection.count()}" />
+                <g:paginate total="${OpenNmsHttpConnection.count()}" />
             </div>
         </div>
     </body>

@@ -1,4 +1,4 @@
-<%@ page import="datasource.OpenNMSHttpDatasource" %>
+<%@ page import="datasource.OpenNmsHttpDatasource" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -41,7 +41,7 @@
                                     <label for="connection">Connection:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:openNMSHttpDatasource,field:'connection','errors')}">
-                                    <g:select class="inputtextfield" optionKey="id" from="${connection.OpenNMSHttpConnection.list()}" name="connection.id" value="${openNMSHttpDatasource?.connection?.id}" ></g:select>
+                                    <g:select class="inputtextfield" optionKey="id" from="${connection.OpenNmsHttpConnection.list()}" name="connection.id" value="${openNMSHttpDatasource?.connection?.id}" ></g:select>
                                 </td>
                             </tr>
                             <tr class="prop">

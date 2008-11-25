@@ -1,4 +1,4 @@
-<%@ page import="datasource.OpenNMSHttpDatasource" %>
+<%@ page import="datasource.OpenNmsHttpDatasource" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>

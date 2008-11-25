@@ -1,4 +1,4 @@
-<%@ page import="datasource.OpenNMSHttpDatasource" %>
+<%@ page import="datasource.OpenNmsHttpDatasource" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -40,7 +40,7 @@
                 </table>
             </div>
             <div class="paginateButtons">
-                <g:paginate total="${OpenNMSHttpDatasource.count()}" />
+                <g:paginate total="${OpenNmsHttpDatasource.count()}" />
             </div>
         </div>
     </body>

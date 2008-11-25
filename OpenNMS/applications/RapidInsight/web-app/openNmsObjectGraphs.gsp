@@ -26,20 +26,11 @@
        {
          for(graph in openNmsObject.graphs)
          {
-            def url=graph.url;
-            def queryParams=new ParameterParser().parse(URIUtil.getQuery(url),'&' as char);
-            def params=[:]
-            for(param in queryParams)
-            {
-            	params[param.name]=param.value;
-            }
-            params["start"]="1227538040382"
-            params["end"]="1227624440382"
-            def image=openNmsGraphDs.adapter.doGetRequest(url,params);
+            
             %>
              Graph url ${graph.url} <br>
              <hr>
-             ${image}
+             <img src="openNmsGraph/viewImage?id=${graph.id}">
              <hr>
             <%
             }

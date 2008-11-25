@@ -15,7 +15,7 @@ class OpenNmsHttpDatasource extends BaseDatasource{
     };
     static datasources = [:]
 
-    OpenNMSHttpConnection connection;
+    OpenNmsHttpConnection connection;
     Long reconnectInterval = 0;
 
     static relations = [

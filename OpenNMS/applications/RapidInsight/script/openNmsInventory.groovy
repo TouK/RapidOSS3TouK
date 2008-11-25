@@ -9,7 +9,7 @@ def snmpInterfaceDs = SingleTableDatabaseDatasource.get(name:"openNmsSnmpInterfa
 def openNmsServer = RsManagementSystem.get(name:"openNmsServer")
 def openNmsGraphDs=HttpDatasource.get(name:"opennmsds");
 
-openNmsGraphDs.doGetRequest("/j_acegi_security_check", ["j_username":"admin","j_password":"admin"]);
+openNmsGraphDs.doGetRequest("j_acegi_security_check", ["j_username":"admin","j_password":"admin"]);
 
 if(!openNmsServer)
 {
@@ -64,7 +64,7 @@ nodes.each{ n ->
 		if(n.NODESYSOID)
 		{
 			logger.debug("Requesting graphs of Node ${n.NODEID}");
-			def graphsXml=openNmsGraphDs.doGetRequest("/rapidcmdb/graphresultsasxml.jsp",["reports":"all","resourceId":"node["+n.NODEID+"].nodeSnmp[]"]);
+			def graphsXml=openNmsGraphDs.doGetRequest("rapidcmdb/graphresultsasxml.jsp",["reports":"all","resourceId":"node["+n.NODEID+"].nodeSnmp[]"]);
 
             def parser = new XmlParser()
             def nodeGraphs = parser.parseText(graphsXml)
@@ -76,10 +76,10 @@ nodes.each{ n ->
                 def graphObj=OpenNmsGraph.add(url:graph."@url");
                 if(graphObj.hasErrors())
                 {
-                    logger.warn("Could not add graps. Reason: ${graphObj.errors}")                    
+                    logger.warn("Could not add graps. Reason: ${graphObj.errors}")
                 }
 
-                logger.debug("Adding graph to Node ${n.NODEID} with url ${graph."@url"} as a relation");                
+                logger.debug("Adding graph to Node ${n.NODEID} with url ${graph."@url"} as a relation");
                 nodeObj.addRelation("graphs":[graphObj]);
                 if(nodeObj.hasErrors())
                 {

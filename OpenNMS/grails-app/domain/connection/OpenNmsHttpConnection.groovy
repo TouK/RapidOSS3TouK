@@ -22,10 +22,10 @@ class OpenNmsHttpConnection extends Connection{
     String userPassword = "";
     String username = "";
     String connectionClass = OpenNmsHttpConnectionImpl.name;
-    List openNMSHttpDatasources = [];
+    List openNmsHttpDatasources = [];
 
     static relations = [
-            openNMSHttpDatasources: [isMany: true, reverseName: "connection", type: OpenNmsHttpDatasource]
+            openNmsHttpDatasources: [isMany: true, reverseName: "connection", type: OpenNmsHttpDatasource]
     ]
     static constraints = {
         baseUrl(blank: true, nullable: true)

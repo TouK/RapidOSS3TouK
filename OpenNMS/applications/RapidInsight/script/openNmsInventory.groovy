@@ -7,7 +7,14 @@ def ifServicesDs = SingleTableDatabaseDatasource.get(name:"openNmsServicesDs")
 def serviceMapDs = SingleTableDatabaseDatasource.get(name:"openNmsServiceMapDs")
 def snmpInterfaceDs = SingleTableDatabaseDatasource.get(name:"openNmsSnmpInterfacesDs")
 def openNmsServer = RsManagementSystem.get(name:"openNmsServer")
+def openNmsGraphDs=HttpDatasource.get(name:"opennmsds");
 
+openNmsGraphDs.doGetRequest("/j_acegi_security_check", ["j_username":"admin","j_password":"admin"]);
+
+if(!openNmsServer)
+{
+    openNmsServer=RsManagementSystem.add(name:"openNmsServer");
+}
 // openNmsServer.lastPolledAt = "1218148765718"
 def stringDateValue = Date.toDate(openNmsServer.lastPolledAt).toString("yyyy-MM-dd HH:mm:ss.SSS")
 logger.info("stringDateValue: " + stringDateValue)
@@ -22,9 +29,12 @@ serviceMapDs.getRecords().each {
 	serviceMap[it.SERVICEID] = it.SERVICENAME
 }
 
-def nodes = nodesDs.getRecords("LASTCAPSDPOLL > '${stringDateValue}'")
+//def nodes = nodesDs.getRecords("LASTCAPSDPOLL > '${stringDateValue}'")
+def nodes = nodesDs.getRecords();
+
 
 nodes.each{ n ->
+
 	def nProps = [:]
 	nProps.openNmsId = n.NODEID
 	nProps.dpName = n.DPNAME
@@ -41,15 +51,38 @@ nodes.each{ n ->
 	nProps.operatingSystem = n.OPERATINGSYSTEM
 	nProps.foreignSource = n.FOREIGNSOURCE
 	nProps.foreignId = n.FOREIGNID
+
+
+	logger.debug("Adding OpenNmsNode with props ${nProps}");
+
 	def nodeObj = OpenNmsNode.add(nProps)
 	if (nodeObj.hasErrors()) {
 		logger.error("nProps: " + nProps)
 		logger.error("could not add node: " + nodeObj.errors)
 	} else {
 
+		if(n.NODESYSOID)
+		{
+			logger.debug("Requesting graphs of Node ${n.NODEID}");
+			def graphsXml=openNmsGraphDs.doGetRequest("/rapidcmdb/graphresultsasxml.jsp",["reports":"all","resourceId":"node["+n.NODEID+"].nodeSnmp[]"]);
+
+            def parser = new XmlParser()
+            def nodeGraphs = parser.parseText(graphsXml)
+
+            println "33"+nodeGraphs.Graphs.graph
+
+            for(graph in nodeGraphs.Graphs.graph)
+            {
+	            println graph
+	            println graph."@url";
+                //def graph=OpenNmsGraph.add(url:)
+            }
+
+		}
+
 		def ipInterfaces = interfacesDs.getRecords("NODEID=${n.NODEID}")
 		ipInterfaces.each{ i ->
-			logger.info("ip interface table " + i)
+			//logger.info("ip interface table " + i)
 			def iProps = [:]
 			iProps.openNmsId = i.NODEID + "-" + i.ID
 			iProps.ipAddress = i.IPADDR
@@ -326,7 +359,7 @@ def getIfStatusString(def ifStatusNum) {
 		"LowerLayerDown"   //7
 	]
 	if (ifStatusNum == "") {return}
-	
+
 	int num = ifStatusNum.toInteger()
 
 	if (num < operAdminStatus.size()) {

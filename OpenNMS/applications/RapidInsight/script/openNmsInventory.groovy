@@ -19,9 +19,9 @@ if(!openNmsServer)
 def stringDateValue = Date.toDate(openNmsServer.lastPolledAt).toString("yyyy-MM-dd HH:mm:ss.SSS")
 logger.info("stringDateValue: " + stringDateValue)
 
-// OpenNmsNode.list()*.remove()
-// OpenNmsIpInterface.list()*.remove()
-// OpenNmsService.list()*.remove()
+OpenNmsNode.list()*.remove()
+OpenNmsIpInterface.list()*.remove()
+OpenNmsService.list()*.remove()
 
 
 def serviceMap = [:]
@@ -69,14 +69,25 @@ nodes.each{ n ->
             def parser = new XmlParser()
             def nodeGraphs = parser.parseText(graphsXml)
 
-            println "33"+nodeGraphs.Graphs.graph
 
-            for(graph in nodeGraphs.Graphs.graph)
+            for(graph in nodeGraphs.Graph)
             {
-	            println graph
-	            println graph."@url";
-                //def graph=OpenNmsGraph.add(url:)
+                logger.debug("Adding Graph with url ${graph."@url"}");
+                def graphObj=OpenNmsGraph.add(url:graph."@url");
+                if(graphObj.hasErrors())
+                {
+                    logger.warn("Could not add graps. Reason: ${graphObj.errors}")                    
+                }
+
+                logger.debug("Adding graph to Node ${n.NODEID} with url ${graph."@url"} as a relation");                
+                nodeObj.addRelation("graphs":[graphObj]);
+                if(nodeObj.hasErrors())
+                {
+                    logger.warn("Could not add Graph Relation. Reason: ${nodeObj.errors}")
+                }
+
             }
+            logger.debug("The Node ${nodeObj.openNmsId} has graphs ${nodeObj.graphs}");
 
 		}
 

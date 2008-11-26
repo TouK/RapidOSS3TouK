@@ -25,6 +25,11 @@
                 <em>Properties</em>
             </a>
         </li>
+        <li>
+            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventJournals.gsp?id=' + encodeURIComponent('${domainObject.id}') + '&isHistorical=false');">
+                <em>Journal</em>
+            </a>
+        </li>
     </ul>
     <div style="display:block;margin-top:10px;">
         <%

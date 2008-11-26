@@ -4,11 +4,67 @@
 		<Object id=2001 modelName=Fiction isbn='isbn_Kar' title='Kar' fictionProp='fiction prop for Kar'/>
 	</Objects>
 	<Relations>
-		<Relation fromObjectIdentifier='2001' fromModel='Book' toObjectIdentifier='2006' toModel='Author' name=myAuthor />
+		<Relation fromObjectId='2001' fromModel='Book' toObjectId='2006' toModel='Author' name=myAuthor />
 	</Relations>
 </Data>
 */
 import groovy.xml.MarkupBuilder
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils 
+
+
+// Import Configuration data. 
+// NOTE: This method removes the existing config data, and imports them from the xml file.
+def importConfigData(web, fname){
+	def slurper = new XmlSlurper();
+	def data = slurper.parse(fname);
+	def idMap =[:];
+	def objs = [];
+	data.Objects.Object.each{obj->
+		objs.add(obj.attributes());
+	}
+	
+	data.Models.Model.each{
+		def modelName = it.@name.toString();
+		def model = web.grailsApplication.getDomainClass(modelName).clazz;
+		model.removeAll();
+	}
+	
+	def instances = [];
+	objs.each{obj->
+		def modelName = obj.modelName;
+		def clazz = web.grailsApplication.getDomainClass(modelName).clazz;
+		def instance = clazz.newInstance();
+		def propList = clazz.getPropertiesList();
+		def skip = false;
+			
+		if (modelName == "relation.Relation"){
+			obj.objectId = idMap[obj.objectId];
+			obj.reverseObjectId = idMap[obj.reverseObjectId];
+			if (obj.objectId == null || obj.reverseObjectId == null){
+				logger.warn("One or more objects for this relation in XML file ($fname) do not exist: Relation id: <${obj.id}>")
+				skip = true;
+			}
+		}
+		if (!skip){
+			propList.each{prop->
+				def propValFromXml = obj."$prop.name";
+				if (prop.name == "id"){
+					def oldIdFromXml = propValFromXml;
+					propValFromXml = com.ifountain.rcmdb.domain.IdGenerator.getInstance().getNextId().toString();
+					idMap.put(oldIdFromXml, propValFromXml);
+				}
+				if (prop!="modelName" && propValFromXml!=null && propValFromXml!=''){
+					// code to change the prop type from string to internal type
+					def fieldType = clazz.metaClass.getMetaProperty(prop.name).type;
+					def converter = RapidConvertUtils.getInstance().lookup(fieldType);
+					def propVal = converter.convert(fieldType, propValFromXml);
+	 				instance.setProperty(prop.name, propVal, false);
+				}
+			}
+	 		clazz.index(instance);
+		}
+	}
+}
 
 // Import object properties from an xml file "as is"
 // This can be used when a parent model is deleted or a parent model is added, 
@@ -25,7 +81,6 @@ def importObjects(web, fname){
 		def model = web.grailsApplication.getDomainClass(props["modelName"]).clazz;
 		props.remove("modelName");
 		props.remove("id");
-		model.add(props);
 	}	
 }
 
@@ -51,7 +106,7 @@ def importRenamedProperties(web, Map changedPropNameMap, fname){
 		}
 		def model = web.grailsApplication.getDomainClass(props.modelName).clazz;
 		id = props.id;
-		props.remove(id);
+		props.remove("id");
 		props.remove("modelName");
 		def updatedObj = model.get(id:id);
 		updatedObj.update(props);
@@ -73,8 +128,8 @@ def importRenamedRelations(web, Map changedRelationNameMap, fname){
 		if (changedRelationNameMap.containsKey(relName)){
 			relName = changedRelationNameMap."$relName";
 		}
-		from=rel.attributes().fromObjectIdentifier
-		to=rel.attributes().toObjectIdentifier
+		from=rel.attributes().fromObjectId;
+		to=rel.attributes().toObjectId;
 		fromModelName=rel.attributes().fromModel
 		toModelName=rel.attributes().toModel
 		def fromModel = web.grailsApplication.getDomainClass(fromModelName).clazz;
@@ -105,11 +160,11 @@ def importForTypeChangedProperty(web, changedProp, Map oldValueNewValueMap, fnam
 				myObj.update(changedProp:newValue);
 			}
 			else{
-				println "The obj <$id> has a value <$oldValue> which can not be found in the old-new value map!"
+				logger.warn("The obj <$id> has a value <$oldValue> which can not be found in the old-new value map!");
 			}
 		}
 		else{
-			println "Skipping the update for the obj <$id>: It does not have the prop <$changedProp>"
+			logger.warn("Skipping the update for the obj <$id>: It does not have the prop <$changedProp>");
 		}
 	}	
 }

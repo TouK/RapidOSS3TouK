@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>iFountain - RapidInsight for Smarts</title>
+    <title>iFountain - RapidInsight</title>
     <script type="text/javascript" src="js/yui/utilities/utilities.js"></script>
     <script type="text/javascript" src="js/yui/json/json-min.js"></script>
     <script type="text/javascript" src="js/yui/resize/resize-min.js"></script>

@@ -7,7 +7,7 @@
 
 <html>
 <head>
-    <title>RapidInsight For Netcool Admin UI</title>
+    <title>RapidInsight Admin UI</title>
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
     <link rel="stylesheet" href="${createLinkTo(dir: 'css/rapidjs', file: 'yuioverride.css')}"/>
     <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>

@@ -12,7 +12,7 @@
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
     <link rel="stylesheet" href="${createLinkTo(dir: 'css/rapidjs', file: 'yuioverride.css')}"/>
     <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
-    <link rel="stylesheet" href="${createLinkTo(file: 'admin.css')}"/>
+    <link rel="stylesheet" href="${createLinkTo(file: 'rimain.css')}"/>
     <jsec:isNotLoggedIn>
         <g:javascript>window.location='auth/login?targetUri=/admin.gsp'</g:javascript>
     </jsec:isNotLoggedIn>
@@ -21,7 +21,7 @@
     </jsec:lacksRole>
     <g:layoutHead/>
 </head>
-<body onload="${pageProperty(name: 'body.onload')}" class="yui-skin-sam admin">
+<body onload="${pageProperty(name: 'body.onload')}" class="yui-skin-sam rimain">
 <div style="padding-left:10px;padding-top:5px;"><img src="${createLinkTo(dir: 'images', file: 'RapidInsight-white.png')}"></div>
 <div class="nav"><h1 style="display:inline">RapidInsight For Smarts</h1><span class="menuButton"><a href="${createLinkTo(dir:'auth/logout?targetUri=/admin.gsp')}" class="logout">Logout</a></span></div>
 <p style="margin-left:20px;width:80%">This is the basic administration UI where you can configure RapidInsight.</p>

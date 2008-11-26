@@ -126,7 +126,7 @@
                     %>
                     <li class="${currentUrl.indexOf('events.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'events.gsp')}"><em>Events</em></a></li>
                     <li class="${currentUrl.indexOf('eventSearch.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'eventSearch.gsp')}"><em>Event Search</em></a></li>
-                    <li class="${currentUrl.indexOf('historicalEvents.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'historicalEvents.gsp')}"><em>Historical Notifications</em></a></li>
+                    <li class="${currentUrl.indexOf('historicalEvents.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'historicalEvents.gsp')}"><em>Historical Events</em></a></li>
                     <li class="${currentUrl.indexOf('inventory.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'inventory.gsp')}"><em>Inventory</em></a></li>
                     <li class="${currentUrl.indexOf('maps.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'maps.gsp')}"><em>Maps</em></a></li>
                     %{--<li class="${currentUrl.indexOf('serviceView.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'serviceView.gsp')}"><em>Service View</em></a></li>--}%

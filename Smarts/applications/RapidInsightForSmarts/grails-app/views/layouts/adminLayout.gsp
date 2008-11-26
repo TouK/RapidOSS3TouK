@@ -39,7 +39,7 @@
         <li class="${currentUrl.matches('.*/rsUser/.*')? "selected":""}"><g:link action="list" controller="rsUser"><em>Users</em></g:link></li>
         <li class="${currentUrl.matches('.*/group/.*')? "selected":""}"><g:link action="list" controller="group"><em>Groups</em></g:link></li>
         <li class="${(currentUrl.indexOf('dbDatasources.gsp') > -1 || currentUrl.matches('.*/.*([dD]atabase).*/.*'))? "selected":""}"><a href="${createLinkTo(file: 'dbDatasources.gsp')}"><em>Database</em></a></li>
-        <li class="${currentUrl.matches('.*/snmpConnector/.*') ? "selected" : ""}"><g:link action="list" controller="snmpConnector"><em>Snmp</em></g:link></li>
+        <li class="${currentUrl.matches('.*/snmpConnector/.*') ? "selected" : ""}"><g:link action="list" controller="snmpConnector"><em>SNMP</em></g:link></li>
         %{--<li class="${(currentUrl.indexOf('datasources.gsp') > -1 || currentUrl.matches('.*/.*^([dD]atabase).*(Datasource|Connection)/.*'))? "selected":""}"><a href="${createLinkTo(file: 'datasources.gsp')}"><em>Datasources</em></a></li>--}%
     </ul>
     <div style="margin:20px 15px 10px;">

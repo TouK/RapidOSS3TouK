@@ -7,7 +7,7 @@ def ifServicesDs = SingleTableDatabaseDatasource.get(name:"openNmsServicesDs")
 def serviceMapDs = SingleTableDatabaseDatasource.get(name:"openNmsServiceMapDs")
 def snmpInterfaceDs = SingleTableDatabaseDatasource.get(name:"openNmsSnmpInterfacesDs")
 def openNmsServer = RsManagementSystem.get(name:"openNmsServer")
-def openNmsGraphDs=HttpDatasource.get(name:"opennmsds");
+openNmsGraphDs=HttpDatasource.get(name:"opennmsds");
 
 openNmsGraphDs.doGetRequest("j_acegi_security_check", ["j_username":"admin","j_password":"admin"]);
 
@@ -22,6 +22,7 @@ logger.info("stringDateValue: " + stringDateValue)
 OpenNmsNode.list()*.remove()
 OpenNmsIpInterface.list()*.remove()
 OpenNmsService.list()*.remove()
+OpenNmsGraph.list()*.remove()
 
 
 def serviceMap = [:]
@@ -31,7 +32,6 @@ serviceMapDs.getRecords().each {
 
 //def nodes = nodesDs.getRecords("LASTCAPSDPOLL > '${stringDateValue}'")
 def nodes = nodesDs.getRecords();
-
 
 nodes.each{ n ->
 
@@ -63,32 +63,7 @@ nodes.each{ n ->
 
 		if(n.NODESYSOID)
 		{
-			logger.debug("Requesting graphs of Node ${n.NODEID}");
-			def graphsXml=openNmsGraphDs.doGetRequest("rapidcmdb/graphresultsasxml.jsp",["reports":"all","resourceId":"node["+n.NODEID+"].nodeSnmp[]"]);
-
-            def parser = new XmlParser()
-            def nodeGraphs = parser.parseText(graphsXml)
-
-
-            for(graph in nodeGraphs.Graph)
-            {
-                logger.debug("Adding Graph with url ${graph."@url"}");
-                def graphObj=OpenNmsGraph.add(url:graph."@url");
-                if(graphObj.hasErrors())
-                {
-                    logger.warn("Could not add graps. Reason: ${graphObj.errors}")
-                }
-
-                logger.debug("Adding graph to Node ${n.NODEID} with url ${graph."@url"} as a relation");
-                nodeObj.addRelation("graphs":[graphObj]);
-                if(nodeObj.hasErrors())
-                {
-                    logger.warn("Could not add Graph Relation. Reason: ${nodeObj.errors}")
-                }
-
-            }
-            logger.debug("The Node ${nodeObj.openNmsId} has graphs ${nodeObj.graphs}");
-
+            addGraphsToObject(n.NODEID,nodeObj,"node",[:]);           
 		}
 
 		def ipInterfaces = interfacesDs.getRecords("NODEID=${n.NODEID}")
@@ -123,7 +98,10 @@ nodes.each{ n ->
 				logger.error("nProps: " + nProps)
 				logger.error("could not add ipInterface: " + ipInterfaceObj.errors)
 			} else {
-				nodeObj.addRelation("ipInterfaces":[ipInterfaceObj])
+                nodeObj.addRelation("ipInterfaces":[ipInterfaceObj])
+
+                addGraphsToObject(i.NODEID,ipInterfaceObj,"ipinterface",["ipinterfaceid":i.ID]);
+
 				def ifServices = ifServicesDs.getRecords("IPINTERFACEID=${i.ID}")
 				ifServices.each{ s ->
 					def sProps = [:]
@@ -382,4 +360,44 @@ def getIfStatusString(def ifStatusNum) {
 
 if (nodes.size() > 0) {
 	openNmsServer.lastPolledAt = Date.now()
+}
+
+
+def addGraphsToObject(nodeId,openNmsObject,objectType,additionalParams)
+{
+     def requestParams=[:]
+     requestParams["reports"]="all"
+     requestParams["nodeid"]=nodeId
+     requestParams["type"]=objectType
+
+     if(objectType=="ipinterface")
+     {
+         requestParams["ipinterfaceid"]=additionalParams["ipinterfaceid"];
+     }
+
+    logger.debug("Requesting graphs of Object ${openNmsObject.openNmsId}");
+    def graphsXml=openNmsGraphDs.doGetRequest("rapidcmdb/graphresultsasxml.jsp",requestParams);
+
+    def parser = new XmlParser()
+    def nodeGraphs = parser.parseText(graphsXml)
+
+    for(graph in nodeGraphs.Graph)
+    {
+        logger.debug("Adding Graph with url ${graph."@url"}");
+        def graphObj=OpenNmsGraph.add(url:graph."@url");
+        if(graphObj.hasErrors())
+        {
+            logger.warn("Could not add graps. Reason: ${graphObj.errors}")
+        }
+
+        logger.debug("Adding graph to Object ${openNmsObject.openNmsId} with url ${graph."@url"} as a relation");
+        openNmsObject.addRelation("graphs":[graphObj]);
+        if(openNmsObject.hasErrors())
+        {
+            logger.warn("Could not add Graph Relation. Reason: ${openNmsObject.errors}")
+        }
+
+    }
+    logger.debug("The Node ${openNmsObject.openNmsId} has graphs ${openNmsObject.graphs}");
+
 }

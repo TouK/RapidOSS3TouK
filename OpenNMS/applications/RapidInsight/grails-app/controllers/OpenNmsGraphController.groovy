@@ -6,7 +6,7 @@ import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.httpclient.util.ParameterParser;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-
+import java.util.Date;
 class OpenNmsGraphController {
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
@@ -256,14 +256,17 @@ class OpenNmsGraphController {
             {
             	params[param.name]=param.value;
             }
-            params["start"]="1227538040382"
-            params["end"]="1227624440382"
+            long end=new Date().getTime();
+            long start=end-(24*60*60*1000);
+            
+            params["start"]=String.valueOf(start);
+            params["end"]=String.valueOf(end);
             image=openNmsGraphDs.adapter.getImage(url,params);
         }
 
-        response.contentType="image/jpeg";
-              
-        ImageIO.write(image, "JPEG", response.outputStream);
+        response.contentType="image/png";
+
+        ImageIO.write(image, "png", response.outputStream);
         response.outputStream.flush()
         return;
 

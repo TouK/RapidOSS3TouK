@@ -137,7 +137,6 @@ def update(Map topologyObject) {
     }
     else if (eventType == BaseSmartsListeningAdapter.CHANGE) {
         if (className == "ICF_TopologyManager") {
-            //Changes to DiscoveredLastAt also will trigger recreating hierarchy
             def monitoredAttribute = topologyObject["ModifiedAttributeName"]
             def attributeValue = topologyObject["ModifiedAttributeValue"]
             if (monitoredAttribute == TOPOLOGY_MANAGER_CLASS_DISCOVERY_PROPERTY) {
@@ -147,7 +146,7 @@ def update(Map topologyObject) {
         }
         else
         {
-            addObject(topologyObject.CreationClassName, topologyObject.Name);
+            updateSmartsobject(topologyObject.CreationClassName, topologyObject.Name, monitoredAttribute, attributeValue);
         }
     }
     else if (eventType == BaseSmartsListeningAdapter.DELETE) {
@@ -176,6 +175,37 @@ def createTopology(topologyObject)
     logger.warn("Finished creating topology");
 }
 
+def updateSmartsobject(String creationClassName, String name, String monitoredAttributeName, String monitoredAttributeValue)
+{
+    if(logger.isDebugEnabled())
+        logger.debug("Updating object with CreationClassName:${topologyObject} Name:${name}. Will try to set property ${monitoredAttributeName} to ${monitoredAttributeValue}");
+    def rsConfiguration = SMARTS_TO_RS_CLASS_NAME_MAPPING[creationClassName];
+    if(rsConfiguration != null)
+    {
+        def rsName = rsConfiguration.propertyMapping[monitoredAttributeName];
+        if(rsName != null)
+        {
+            def topoObj = RsTopologyObject.get(name:name)
+            if(topoObj != null)
+            {
+                topoObj[monitoredAttributeName] = monitoredAttributeValue;
+            }
+            else
+            {
+                logger.info("Could not updated object ${name} since object does not exist in ri repository");
+            }
+        }
+        else
+        {
+            logger.info("Will not update object ${name} since ${monitoredAttributeName} is not mapped to ri model property");
+        }
+    }
+    else
+    {
+        logger.info("Will not update object ${name} since ${creationClassName} is not configured.");
+    }
+}
+
 def addSmartsObjects(Map rsClassConfiguration, String smartsClassName) {
     Class rsClass = rsClassConfiguration.rsClass;
     if (rsClass != null) {
@@ -202,7 +232,8 @@ def addSmartsObjects(Map rsClassConfiguration, String smartsClassName) {
                     rsProperties.putAll(customProps);
                 }
             }
-            logger.debug("adding object of ${rsClass.name} with properties ${rsProperties}");
+            if(logger.isDebugEnabled())
+                logger.debug("adding object of ${rsClass.name} with properties ${rsProperties}");
             def addedObject = rsClass.'add'(rsProperties);
             if (addedObject.hasErrors()) {
                 logger.warn("Could not add object with CreationClassName:${smartsClassName } Name:${smartsobjectProperties.Name}. Reason:${addedObject.errors}");
@@ -224,7 +255,8 @@ def addSmartsObjects(Map rsClassConfiguration, String smartsClassName) {
                                 relatedObjectNames.add(smartsRelation.Name);
                             }
                             else {
-                                logger.debug("Discarding related object ${smartsRelation.Name} of object ${smartsobjectProperties.Name} because related objects is not an instance of ${relatedModel.name}");
+                                if(logger.isDebugEnabled())
+                                    logger.debug("Discarding related object ${smartsRelation.Name} of object ${smartsobjectProperties.Name} because related objects is not an instance of ${relatedModel.name}");
                             }
                         }
                         if (!relatedObjectNames.isEmpty()) {
@@ -236,7 +268,8 @@ def addSmartsObjects(Map rsClassConfiguration, String smartsClassName) {
                     RELATIONS_TO_BE_ADDED[smartsobjectProperties.Name] = relations;
                 }
                 else {
-                    logger.debug("object with CreationClassName:${smartsClassName} Name:${smartsobjectProperties.Name} does not have any relations");
+                    if(logger.isDebugEnabled())
+                        logger.debug("object with CreationClassName:${smartsClassName} Name:${smartsobjectProperties.Name} does not have any relations");
                 }
             }
         }
@@ -295,18 +328,28 @@ def addRelations()
             }
             if(!rsRelations.isEmpty())
             {
-                logger.debug("Adding relations ${rsRelations} to RsObject ${object}.");
+                if(logger.isDebugEnabled())
+                    logger.debug("Adding relations ${rsRelations} to RsObject ${object}.");
                 object.addRelation(rsRelations);
+                if(object.hasErrors())
+                {
+                    logger.info("Exception occurred while adding relations to ${object}. Reason ${object.errors}");
+                }
             }
             else
             {
                 logger.info("RsObject ${object} does not have any related objects.");
             }
 
-            if(!relationsToBeRemoved.isEmpty())
+            if(!relationsToBeRemoved.isEmpty() && !object.hasErrors())
             {
-                logger.debug("Removing relations ${relationsToBeRemoved} from RsObject ${object}.");
+                if(logger.isDebugEnabled())
+                    logger.debug("Removing relations ${relationsToBeRemoved} from RsObject ${object}.");
                 object.removeRelation(relationsToBeRemoved);
+                if(object.hasErrors())
+                {
+                    logger.info("Exception occurred while removing relations from ${object}. Reason ${object.errors}");
+                }
             }
         }
         else
@@ -353,7 +396,8 @@ def createMappingConfiguration()
 }
 def createRelationMapping(Map processedClasses, Class cls)
 {
-    logger.debug("Creating relation configuration for ${cls.name} ${processedClasses}");
+    if(logger.isDebugEnabled())
+        logger.debug("Creating relation configuration for ${cls.name} ${processedClasses}");
     def rsClassConfig = CLASS_MAPPINGS[cls.name];
     processedClasses.put(cls.name,cls.name)
     if(rsClassConfig)
@@ -391,13 +435,13 @@ def getSmartsPropertyName(String propName)
 
 def markExistingDevices()
 {
-    logger.debug("Marking all devices as deleted.");
+    logger.info("Marking all devices as deleted.");
     topologyMap = new CaseInsensitiveMap();
     def deviceNames = RsTopologyObject.propertySummary("alias:* AND rsDatasource:\"${DATASOURCE_NAME}\"", ["name"]);
     deviceNames.name.each {propertyValue, occurrenceCount->
         topologyMap[propertyValue] = "deleted";
     }
-    logger.debug("Marked all devices as deleted.");
+    logger.info("Marked all devices as deleted.");
     firstTimeRetrieved = false;
 }
 
@@ -406,7 +450,8 @@ def receivingExitingDevicesCompleted()
     firstTimeRetrieved = true;
     logger.info("Existing objects retrieved and ${topologyMap.size()} number of objects will be deleted.");
     topologyMap.each{String objectName, String value->
-        logger.debug("Deleting non existing object ${objectName}.");
+        if(logger.isDebugEnabled())
+            logger.debug("Deleting non existing object ${objectName}.");
         RsTopologyObject.get(name:objectName)?.remove();
     }
     topologyMap.clear();

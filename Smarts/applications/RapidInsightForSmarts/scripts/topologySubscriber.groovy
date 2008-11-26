@@ -3,195 +3,109 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import com.ifountain.smarts.datasource.BaseSmartsListeningAdapter
 import org.apache.commons.lang.StringUtils
-
-/**
- * Created by IntelliJ IDEA.
- * User: mustafa sener
- * Date: Nov 18, 2008
- * Time: 4:25:31 PM
- * To change this template use File | Settings | File Templates.
- */
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////CONFIGURATION DATA///////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CLASS_MAPPINGS = [
     SmartsComputerSystem : [
             classes:[Bridge:[:], Hub:[:], Host:[:], Node:[:], Switch:[:], Router:[:], Firewall:[:], RelayDevice:[:], TerminalServer:[:]],
-            defaultColumnsToBeSubscribed: ["Name", "DiscoveredLastAt", "DiscoveryErrorInfo"],
-            columnsMapping:[SNMPAddress:"snmpAddress", CreationClassName:"className"],
-            relationsMapping:["ConnectedVia":"ConnectedViaVlan"]
+            defaultPropertiesToBeSubscribed: ["Name", "DiscoveredLastAt", "DiscoveryErrorInfo"],
+            propertyMapping:[SNMPAddress:"snmpAddress", CreationClassName:"className"],
+            relationMapping:["ConnectedVia":"ConnectedViaVlan"]
     ],
     SmartsComputerSystemComponent :[
             classes:[PowerSupply:[:], Processor:[:], Memory:[:], TemperatureSensor:[:], VoltageSensor:[:], Fan:[:], Disk:[:], FileSystem:[:], LogicalDisk:[:], NumericSensor:[:]],
-            defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[CreationClassName:"className"]
+            defaultPropertiesToBeSubscribed: ["Name"],
+            propertyMapping:[CreationClassName:"className"]
     ],
     SmartsGroup:[
             classes:[CardRedundancyGroup:[:], RedundancyGroup:[:], SystemRedundancyGroup:[:]],
-            defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[CreationClassName:"className"]
+            defaultPropertiesToBeSubscribed: ["Name"],
+            propertyMapping:[CreationClassName:"className"]
     ],
     SmartsLink: [
             classes:[NetworkConnection:[:], Cable:[:], TrunkCable:[:]],
-            defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[CreationClassName:"className"],
-            columnMappingClosures:[a_ComputerSystemName:"aComputerNameClosure",
-                a_Name:"aNameClosure",
-                z_ComputerSystemName:"zComputerNameClosure",
-                z_Name:"zNameClosure",
-            ]
+            defaultPropertiesToBeSubscribed: ["Name"],
+            propertyMapping:[CreationClassName:"className"],
+            customPropertyConfig:[closure:"linkCustomProperties", customProperties:["a_Name", "a_ComputerSystemName","z_ComputerSystemName","z_Name"]]
     ],
     SmartsCard: [
             classes:[Card:[:]],
-            defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[CreationClassName:"className"]
+            defaultPropertiesToBeSubscribed: ["Name"],
+            propertyMapping:[CreationClassName:"className"]
     ],
     SmartsIp: [
             classes:[IP:[:]],
-            defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[CreationClassName:"className"]
+            defaultPropertiesToBeSubscribed: ["Name"],
+            propertyMapping:[CreationClassName:"className"]
     ],
     SmartsInterface: [
             classes:[Interface:[:]],
-            defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[CreationClassName:"className"]
+            defaultPropertiesToBeSubscribed: ["Name"],
+            propertyMapping:[CreationClassName:"className"]
     ],
     SmartsPort: [
             classes:[Port:[:]],
-            defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[CreationClassName:"className"],
-            relationsMapping:["PartOf":"partOfVlan"]
+            defaultPropertiesToBeSubscribed: ["Name"],
+            propertyMapping:[CreationClassName:"className"],
+            relationMapping:["PartOf":"partOfVlan"]
     ],
     SmartsManagementServer: [
             classes:[ManagementServer:[:]],
-            defaultColumnsToBeSubscribed: ["Name"],
-            columnsMapping:[CreationClassName:"className"],
-            relationsMapping:[:]
+            defaultPropertiesToBeSubscribed: ["Name"],
+            propertyMapping:[CreationClassName:"className"],
+            relationMapping:[:]
     ],
     SmartsHSRPGroup:[
         classes:[HSRPGroup:[:]],
-        defaultColumnsToBeSubscribed: ["Name"],
-        columnsMapping:[CreationClassName:"className"],
-        relationsMapping:[:]
+        defaultPropertiesToBeSubscribed: ["Name"],
+        propertyMapping:[CreationClassName:"className"],
+        relationMapping:[:]
     ],
     SmartsIpNetwork:[
         classes:[IPNetwork:[:]],
-        defaultColumnsToBeSubscribed: ["Name"],
-        columnsMapping:[CreationClassName:"className"]
+        defaultPropertiesToBeSubscribed: ["Name"],
+        propertyMapping:[CreationClassName:"className"]
     ],
     SmartsVlan:[
         classes:[VLAN:[:]],
-        defaultColumnsToBeSubscribed: ["Name"],
-        columnsMapping:[CreationClassName:"className"],
+        defaultPropertiesToBeSubscribed: ["Name"],
+        propertyMapping:[CreationClassName:"className"],
     ],
     SmartsHSRPEndpoint:[
         classes:[HSRPEndpoint:[:]],
-        defaultColumnsToBeSubscribed: ["Name"],
-        columnsMapping:[CreationClassName:"className"],
-        relationsMapping:[:]
+        defaultPropertiesToBeSubscribed: ["Name"],
+        propertyMapping:[CreationClassName:"className"],
+        relationMapping:[:]
     ]
 ]
 
 CLASSES_TO_BE_SUBSCRIBED = ["SmartsComputerSystem", "SmartsComputerSystemComponent", "SmartsGroup", "SmartsLink", "SmartsCard", "SmartsIp", "SmartsInterface", "SmartsPort"]
-
-aComputerNameClosure = {String rsPropertyName, Map smartsObjectProperties->
-    def aDisplayName = smartsObjectProperties.A_DisplayName
-    return StringUtils.substringBetween(aDisplayName, "-", "/");
-}
-aNameClosure = {String rsPropertyName, Map smartsObjectProperties->
-    def aDisplayName = smartsObjectProperties.A_DisplayName
-    return StringUtils.substringBefore(aDisplayName," [");
-}
-
-zComputerNameClosure = {String rsPropertyName, Map smartsObjectProperties->
+linkCustomProperties = {Class rsClass, List closureProperties, Map smartsObjectProperties->
     def zDisplayName = smartsObjectProperties.Z_DisplayName
-    return StringUtils.substringBetween(zDisplayName, "-", "/");
+    def aDisplayName = smartsObjectProperties.A_DisplayName
+    return [
+            a_ComputerSystemName:StringUtils.substringBetween(aDisplayName, "-", "/"),
+            a_Name:StringUtils.substringBefore(aDisplayName," ["),
+            z_ComputerSystemName:StringUtils.substringBetween(zDisplayName, "-", "/"),
+            z_Name:StringUtils.substringBefore(zDisplayName," ["),
+    ]
 }
-
-zNameClosure = {String rsPropertyName, Map smartsObjectProperties->
-    def zDisplayName = smartsObjectProperties.Z_DisplayName
-    return StringUtils.substringBefore(zDisplayName," [");
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-REAL_CLASSES_TO_MODELS_MAP = null;
-
-//This map is needed to prevent stack overflow while creating hierachy in updateRelations method.
-// Actually at the init phase processing relations is ordered by classes whihc means that each relation will be added by only one class.
-// However, this is not sufficient for self referencing models.
-// Also it prevent objects to be reprocessed multiple times
-PROCESSED_OBJECTS = [:];
-//This map will hold last discovery dates of computersystem objects. If any of these date is changed all of the hierachy will be recreated
-COMPUTER_SYSTEM_OBJECTS_DISCOVERED_AT = [:];
+TOPOLOGY_MANAGER_CLASS = "ICF_TopologyManager";
+TOPOLOGY_MANAGER_CLASS_DISCOVERY_PROPERTY = "lastProbeFinishedAt";
+SMARTS_TO_RS_CLASS_NAME_MAPPING = [:];
+DOMAIN_CLASSES = [:];
 DATASOURCE_NAME = getDatasource().name;
-// This is the default property processing closure all of the smarts properties will be converted into ri properties in this closure
-//Also users can give some custom closures to properties if they want to create custom mapping by using columnClosures configuration item
-defaultPropertyProcessingClosure = {String smartsPropertyName, String rsPropertyName, Map smartsObjectProperties->
-    return smartsObjectProperties[smartsPropertyName];
-}
-
-// This is the default relation processing closure. All of the smarts relations will be converted into ri relations in this closure
-//Also users can give some custom closures to relations if they want to create custom mapping by using relationClosures configuration item
-defaultRelationProcessingClosure = {String smartsRelationName, String rsRelationName, Class relatedModelClass, Map smartsObjectProperties->
-    def smartsRelations = smartsObjectProperties[smartsRelationName];
-    def rsRelationObjects = [];
-    if(smartsRelations)
-    {
-        logger.info("Relations in smarts ${smartsRelations}");
-        //Each smarts relation will be processed
-        smartsRelations.each{Map smartsRelatedObject->
-            String relatedCreationClassName = smartsRelatedObject.CreationClassName;
-            String relatedObjectName = smartsRelatedObject.Name;
-            def smartsToRiMappingConfiguration = REAL_CLASSES_TO_MODELS_MAP[relatedCreationClassName];
-            //If there is a mapping configuration between related smarts class and ri class this relation will be processed
-            //o.w. it will be discarded
-            if(smartsToRiMappingConfiguration != null)
-            {
-                //If mapped ri class is and instance of ri relation class it will be processed
-                //o.w. it will be discarded
-                if(relatedModelClass.isAssignableFrom(smartsToRiMappingConfiguration.rsClass))
-                {
-                    RsTopologyObject relatedObject = addObject(relatedCreationClassName, relatedObjectName);
-                    if(relatedObject != null && !relatedObject.hasErrors())
-                    {
-                        rsRelationObjects.add(relatedObject)
-                    }
-                }
-                else
-                {
-                    logger.info("Discarding  related object with CreationClassName:${relatedCreationClassName} and Name:${relatedObjectName}. Class ${smartsToRiMappingConfiguration.rsClass} is not an instanceof ${relatedModelClass}");
-                }
-            }
-            else
-            {
-                logger.info("Discarding  related object with CreationClassName:${relatedCreationClassName} and Name:${relatedObjectName}.SmartsToRiMapping configuration does not exist.");
-            }
-        }
-    }
-
-    return rsRelationObjects;
-}
-
-
 topologyMap = null;
-existingObjectsRetrieved = false;
+firstTimeRetrieved = false;
 
 def getParameters() {
-    //All of the classes which will be subscribed are configured in CLASSES_TO_BE_SUBSCRIBED. For each of these classes, defaultColumnsToBeSubscribed mapping property
-    //will be used to subscribe to smarts server
-    def params = [];
+    def params = [[CreationClassName: TOPOLOGY_MANAGER_CLASS, Name: ".*", Attributes: []]];
     CLASSES_TO_BE_SUBSCRIBED.each{String rsClassName->
-        def colsToBeSubscribed = CLASS_MAPPINGS[rsClassName].defaultColumnsToBeSubscribed;
+        def colsToBeSubscribed = CLASS_MAPPINGS[rsClassName].defaultPropertiesToBeSubscribed;
         CLASS_MAPPINGS[rsClassName].classes.each{String smartsClassName, Map classConfig->
             params.add([CreationClassName: smartsClassName, Name: ".*", Attributes: colsToBeSubscribed]);
         }
@@ -200,13 +114,12 @@ def getParameters() {
 }
 
 def init() {
-    //The class mapping information contains information from ri to smarts mapping. This information will be used to construct smarts to ri configuration for
-    //each of configured smarts class
-    createSmartsToRiClassMapping();
-    //existing instances will be marked as deleted in init. They will be saved as deleted in a map called topologyMap
-    //Instances will be remoeved from map until  BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED event is received.
-    //After that each of the remaining instances will be deleted.
-    markExistingDevices();
+
+    ApplicationHolder.application.getDomainClasses().each{GrailsDomainClass domainClass->
+        DOMAIN_CLASSES[domainClass.clazz.name] = domainClass;
+    }
+    createMappingConfiguration();
+    markExistingDevices()
 }
 
 def cleanUp() {
@@ -217,37 +130,19 @@ def cleanUp() {
 def update(Map topologyObject) {
     String eventType = topologyObject[BaseSmartsListeningAdapter.EVENT_TYPE_NAME];
     String className = topologyObject["CreationClassName"];
-    //Removing instance from objects to be deleted map
-    if(!existingObjectsRetrieved)
-    {
-        topologyMap.remove(topologyObject.Name);
-    }
-    //If existing objects received completely remaining objects will be deleted from the system
-    if(eventType == BaseSmartsListeningAdapter.RECEIVE_EXISTING_FINISHED)
-    {
-        receivingExitingDevicesCompleted();
-    }
-    else if (eventType == BaseSmartsListeningAdapter.CREATE) {
-        //Only computer system objects will be created. All of the hierachy will be traversed according to relations to RsComputerSystem
-        //and related objects will be created and relations will be added to objects.
-        if (isComputerSystem(className)) {
-            createHierachy(topologyObject);
+    if (eventType == BaseSmartsListeningAdapter.CREATE) {
+        if (className == "ICF_TopologyManager") {
+            createTopology();
         }
-        else
-        {
-            logger.debug("${topologyObject} is not an instance of SmartsComputerSystem create will be discarded.");
-        }
-
     }
     else if (eventType == BaseSmartsListeningAdapter.CHANGE) {
-        if (isComputerSystem(className)) {
+        if (className == "ICF_TopologyManager") {
             //Changes to DiscoveredLastAt also will trigger recreating hierarchy
             def monitoredAttribute = topologyObject["ModifiedAttributeName"]
             def attributeValue = topologyObject["ModifiedAttributeValue"]
-            if (monitoredAttribute == "DiscoveredLastAt") {
-                topologyObject = [CreationClassName:topologyObject.CreationClassName, Name:topologyObject.Name]
-                topologyObject[monitoredAttribute] = attributeValue;
-                createHierachy(topologyObject);
+            if (monitoredAttribute == TOPOLOGY_MANAGER_CLASS_DISCOVERY_PROPERTY) {
+                logger.warn("Topology discovery finished at ${attributeValue}. Will create topology");
+                createTopology();
             }
         }
         else
@@ -261,252 +156,231 @@ def update(Map topologyObject) {
     }
 
 }
-
-//If a change occurred in last discovery times of computer system objects or if a newly created object is received all of the hierachy will be recreated.
-def createHierachy(topologyObject)
+RELATIONS_TO_BE_ADDED = [:]
+def createTopology(topologyObject)
 {
-    if(COMPUTER_SYSTEM_OBJECTS_DISCOVERED_AT[topologyObject.Name] == null || COMPUTER_SYSTEM_OBJECTS_DISCOVERED_AT[topologyObject.Name].DiscoveredLastAt != topologyObject.DiscoveredLastAt)
-    {
-        logger.warn("Starting to create hierachy");
-        getComputerSystemObjects();
-        PROCESSED_OBJECTS.clear();
-        COMPUTER_SYSTEM_OBJECTS_DISCOVERED_AT.each{String objectName, Map config->
-            def addedObject = addObject(config.CreationClassName, objectName);
-            if(addedObject != null&& !addedObject.hasErrors())
-            {
-                updateComputerSystemRelations(config.CreationClassName, objectName);
-            }
+    RELATIONS_TO_BE_ADDED = [:]
+    logger.warn("Starting creating topology");
+    CLASS_MAPPINGS.each{String rsClassName, Map rsClassConfiguration->
+        rsClassConfiguration.classes.each{String smartsClassName, Map classConfMap->
+            addSmartsObjects(rsClassConfiguration, smartsClassName)
         }
-        logger.warn("Finished to create hierachy");
-        PROCESSED_OBJECTS.clear();
     }
+    if(!firstTimeRetrieved)
+    {
+        receivingExitingDevicesCompleted();
+        firstTimeRetrieved = true;
+    }
+
+    addRelations();
+    logger.warn("Finished creating topology");
 }
 
-def getComputerSystemObjects()
-{
-    COMPUTER_SYSTEM_OBJECTS_DISCOVERED_AT = [:];
-    def colsToBeSubscribed = new ArrayList(CLASS_MAPPINGS.SmartsComputerSystem.defaultColumnsToBeSubscribed);
-    colsToBeSubscribed.add("CreationClassName")
-    CLASS_MAPPINGS.SmartsComputerSystem.classes.each{String className, Map classConfig->
-        def smartsObjects = getDatasource().getObjects([CreationClassName:className, Name:".*"], colsToBeSubscribed, true);
-        smartsObjects.each{smartsObject->
-            COMPUTER_SYSTEM_OBJECTS_DISCOVERED_AT[smartsObject.Name] = [DiscoveredLastAt:smartsObject.DiscoveredLastAt, CreationClassName:smartsObject.CreationClassName];
+def addSmartsObjects(Map rsClassConfiguration, String smartsClassName) {
+    Class rsClass = rsClassConfiguration.rsClass;
+    if (rsClass != null) {
+        Map propertyMappingConfiguration = rsClassConfiguration.propertyMapping;
+        String customPropertyClosureName = rsClassConfiguration.customPropertyConfig?.closure;
+        Closure customPropertyClosure = null;
+        if (customPropertyClosureName != null) {
+            customPropertyClosure = this.getProperty(customPropertyClosureName);
         }
-    }
-}
-
-def addObject(String className, String name)
-{
-    if(PROCESSED_OBJECTS.containsKey(name))
-    {
-        return RsTopologyObject.get(name:name);
-    }
-    logger.debug("adding object with CreationClassName:${className } Name:${name}");
-    Map smartsClassConfiguration = REAL_CLASSES_TO_MODELS_MAP[className];
-    if(smartsClassConfiguration)
-    {
-        Map propertiesFromSmarts = getSmartsObjectProperties(className, name);
-        if(propertiesFromSmarts)
-        {
-            def addedObject = addObject(smartsClassConfiguration, propertiesFromSmarts);
-            if(addedObject.hasErrors())
-            {
-                logger.info("Could not add object with CreationClassName:${className } Name:${name}. Reason:${addedObject.errors}");
+        List closureProperties = rsClassConfiguration.customPropertyConfig?.customProperties
+        Map relationMappingConfiguration = rsClassConfiguration.relationMapping
+        logger.info("adding objects from smarts with CreationClassName:${smartsClassName} to model ${rsClass}");
+        List smartsObjects = getDatasource().getObjects([CreationClassName: smartsClassName, Name: ".*"], [], true);
+        logger.info("Got ${smartsObjects.size()} number of objects from smarts");
+        smartsObjects.each {Map smartsobjectProperties ->
+            def rsProperties = [rsDatasource: DATASOURCE_NAME]
+            propertyMappingConfiguration.each {String smartsPropertyName, String rsPropertyName ->
+                def propValue = smartsobjectProperties[smartsPropertyName]
+                rsProperties[rsPropertyName] = propValue;
             }
-            return addedObject;
-        }
-        else
-        {
-            logger.info("Could not add object with CreationClassName:${className } Name:${name} since smarts server does not have object");
+            if (customPropertyClosure != null) {
+                def customProps = customPropertyClosure(rsClass, closureProperties, smartsobjectProperties);
+                if (customProps instanceof Map) {
+                    rsProperties.putAll(customProps);
+                }
+            }
+            logger.debug("adding object of ${rsClass.name} with properties ${rsProperties}");
+            def addedObject = rsClass.'add'(rsProperties);
+            if (addedObject.hasErrors()) {
+                logger.warn("Could not add object with CreationClassName:${smartsClassName } Name:${smartsobjectProperties.Name}. Reason:${addedObject.errors}");
+            }
+            else {
+                if (!firstTimeRetrieved) {
+                    topologyMap.remove(smartsobjectProperties.Name);
+                }
+                def relations = [:]
+                relationMappingConfiguration.each {String smartsRelationName, Map rsRelationConfig ->
+                    List smartsRelations = smartsobjectProperties[smartsRelationName];
+                    def rsRelationName = rsRelationConfig.rsName;
+                    Class relatedModel = rsRelationConfig.relatedModel;
+                    if (smartsRelations) {
+                        def relatedObjectNames = [];
+                        smartsRelations.each {Map smartsRelation ->
+                            def configuration = SMARTS_TO_RS_CLASS_NAME_MAPPING[smartsRelation.CreationClassName];
+                            if (configuration != null && relatedModel.isAssignableFrom(configuration.rsClass)) {
+                                relatedObjectNames.add(smartsRelation.Name);
+                            }
+                            else {
+                                logger.debug("Discarding related object ${smartsRelation.Name} of object ${smartsobjectProperties.Name} because related objects is not an instance of ${relatedModel.name}");
+                            }
+                        }
+                        if (!relatedObjectNames.isEmpty()) {
+                            relations[rsRelationConfig.rsName] = relatedObjectNames;
+                        }
+                    }
+                }
+                if (!relations.isEmpty()) {
+                    RELATIONS_TO_BE_ADDED[smartsobjectProperties.Name] = relations;
+                }
+                else {
+                    logger.debug("object with CreationClassName:${smartsClassName} Name:${smartsobjectProperties.Name} does not have any relations");
+                }
+            }
         }
     }
     else
     {
-        logger.info("Could not add object with CreationClassName:${className } Name:${name} since SmartsToRiConfiguration does not exist");
+        logger.warn("Discarding objects of ${smartsClassName} class. Mapped ri model does not exist.");    
     }
-    return null;
 }
 
-def addObject(Map smartsClassConfiguration, Map propertiesFromSmarts)
-{
-    if(PROCESSED_OBJECTS.containsKey(propertiesFromSmarts.Name))
-    {
-        return RsTopologyObject.get(name:propertiesFromSmarts.Name);
-    }
-    def rsProperties = [rsDatasource:DATASOURCE_NAME]
-    smartsClassConfiguration.columnsMapping.each{String smartsPropertyName, String rsPropertyName->
-        def propValue = defaultPropertyProcessingClosure(smartsPropertyName, rsPropertyName, propertiesFromSmarts);
-        rsProperties[rsPropertyName] = propValue;
-    }
-    smartsClassConfiguration.columnMappingClosures.each{String rsPropertyName, String rsPropertyClosureName->
-        def propValue = this.getProperty(rsPropertyClosureName)(rsPropertyName, propertiesFromSmarts);
-        rsProperties[rsPropertyName] = propValue;
-    }
-    logger.debug("adding object of ${smartsClassConfiguration.rsClass.name} with properties ${rsProperties}");
-    return smartsClassConfiguration.rsClass.'add'(rsProperties);
-}
-RELATIONS_TO_BE_PROCESSED = [];
-SMARTS_OBJECT_PROPERTIES = [:]
-def updateComputerSystemRelations(String className, String name)
-{
-    RELATIONS_TO_BE_PROCESSED.clear();
-    SMARTS_OBJECT_PROPERTIES.clear();
-    RELATIONS_TO_BE_PROCESSED.add([CreationClassName:className, Name:name]);
-    while(!RELATIONS_TO_BE_PROCESSED.isEmpty())
-    {
-        Map relObject = RELATIONS_TO_BE_PROCESSED.remove(0);
-        updateRelationsWithCreationClassName(relObject.CreationClassName, relObject.Name);
-    }
-    SMARTS_OBJECT_PROPERTIES.clear();
-}
 
-def getSmartsObjectProperties(creationClassName, name)
+def addRelations()
 {
-    def smartsObjectProperties = SMARTS_OBJECT_PROPERTIES[name];
-    if(smartsObjectProperties == null)
-    {
-        smartsObjectProperties = getDatasource().getObject([CreationClassName:creationClassName, Name:name])
-        SMARTS_OBJECT_PROPERTIES[name] = smartsObjectProperties;
-    }
-    return smartsObjectProperties;
-}
-def updateRelationsWithCreationClassName(String className, String name)
-{
-
-    if(PROCESSED_OBJECTS.get(name) != null){
-        return null;
-    }
-    PROCESSED_OBJECTS.put(name, name);
-    Map smartsClassConfiguration = REAL_CLASSES_TO_MODELS_MAP[className];
-    if(smartsClassConfiguration)
-    {
-        Map propertiesFromSmarts = getSmartsObjectProperties(className, name);
-        if(propertiesFromSmarts)
+    logger.warn("started adding relations");
+    RELATIONS_TO_BE_ADDED.each{String objectName, Map relationWithObjectName->
+        def object = RsTopologyObject.get(name:objectName);
+        if(object)
         {
-            SMARTS_OBJECT_PROPERTIES.remove(name);
-            def addedObject = smartsClassConfiguration.rsClass.'get'(name:name);
-            updateRelations(addedObject, smartsClassConfiguration, propertiesFromSmarts)
+            Map rsRelations = [:]
+            Map relationsToBeRemoved = [:]
+            relationWithObjectName.each{String relationName, List relatedObjectNames->
+                def existingRelations = [:];
+                def existingRelation = object[relationName];
+                if(existingRelation instanceof Collection)
+                {
+                    existingRelation.each{
+                        existingRelations[it.name] = it;
+                    }
+                }
+                else if(existingRelation != null)
+                {
+                    existingRelations[existingRelation.name] = existingRelation;    
+                }
+                def relatedObjects = [];
+                relatedObjectNames.each{String relatedObjectName->
+                    def rsObject = RsTopologyObject.get(name:relatedObjectName);
+                    existingRelations.remove(rsObject.name);
+                    if(rsObject)
+                    {
+                        relatedObjects.add(rsObject);
+                    }
+                    else
+                    {
+                        logger.info("Could not added relation between RsObject with name ${objectName} and ${relatedObjectName}. Because ${relatedObjectName} does not exist");
+                    }
+                }
+                if(!relatedObjects.isEmpty())
+                {
+                    rsRelations[relationName] = relatedObjects;
+                }
+                if(!existingRelations.isEmpty())
+                {
+                    relationsToBeRemoved[relationName] = existingRelations.values();
+                }
+
+            }
+            if(!rsRelations.isEmpty())
+            {
+                logger.debug("Adding relations ${rsRelations} to RsObject ${object}.");
+                object.addRelation(rsRelations);
+            }
+            else
+            {
+                logger.info("RsObject ${object} does not have any related objects.");
+            }
+
+            if(!relationsToBeRemoved.isEmpty())
+            {
+                logger.debug("Removing relations ${relationsToBeRemoved} from RsObject ${object}.");
+                object.removeRelation(relationsToBeRemoved);
+            }
         }
         else
         {
-            logger.info("Could not updated relations of object with CreationClassName:${className } Name:${name} since smarts server does not have object");
+            logger.info("Could not add relations since RsObject with name ${objectName} does not exists.");
         }
     }
-    else
-    {
-        logger.info("Could not updated relations of object with CreationClassName:${className } Name:${name} since SmartsToRiConfiguration does not exist");
-    }
+    RELATIONS_TO_BE_ADDED.clear();
+    logger.warn("finished adding relations");
 }
 
-def updateRelations(RsTopologyObject object, Map smartsClassConfiguration, Map propertiesFromSmarts)
-{
-    def relationsToBeAdded = [:]
-    def relationsToBeRemoved = [:]
-    smartsClassConfiguration.relationsMapping.each{String smartsRelationName, Map rsRelationConfig->
-        def existingRelations = [:];
-        object[rsRelationConfig.rsRelationName].each{
-            existingRelations[it.name] = it;
-        }
-
-        List relations = defaultRelationProcessingClosure(smartsRelationName, rsRelationConfig.rsRelationName, rsRelationConfig.relatedModel, propertiesFromSmarts);
-
-        if(relations)
-        {
-            relations.each{
-                existingRelations.remove(it.name);
-            }
-            relationsToBeAdded[rsRelationConfig.rsRelationName] = relations;
-        }
-        if(existingRelations)
-        {
-            relationsToBeRemoved[rsRelationConfig.rsRelationName] = new ArrayList(existingRelations.values());
-        }
-    }
-    smartsClassConfiguration.relationMappingClosures.each{String rsRelationName, String rsRelationClosureName->
-        def existingRelations = [:];
-        object[rsRelationName].each{
-            existingRelations[it.name] = it;
-        }
-        List relations = this.getProperty(rsRelationClosureName)(rsRelationName, propertiesFromSmarts);
-        if(relations)
-        {
-            relations.each{
-                existingRelations.remove(it.name);
-            }
-            relationsToBeAdded[rsRelationName] = relations;
-        }
-        if(existingRelations)
-        {
-            relationsToBeRemoved[rsRelationName] = new ArrayList(existingRelations.values());
-        }
-    }
-    if(!relationsToBeAdded.isEmpty())
-    {
-        logger.info("Adding relations ${relationsToBeAdded} of ${object.name}");
-        object.addRelation(relationsToBeAdded);
-
-        relationsToBeAdded.each{String relName, List relatedObjects->
-            relatedObjects.each{RsTopologyObject relatedObject->
-                String objectName = relatedObject.name;
-                RELATIONS_TO_BE_PROCESSED.add([CreationClassName:relatedObject.className, Name:objectName]);
-            }
-        }
-    }
-    if(!relationsToBeRemoved.isEmpty())
-    {
-        logger.info("Removing relations ${relationsToBeRemoved} of ${object.name}");
-        object.removeRelation(relationsToBeRemoved);
-        relationsToBeRemoved.each{String relName, List relatedObjects->
-            relatedObjects.each{RsTopologyObject relatedObject->
-                String objectName = relatedObject.name;
-                RELATIONS_TO_BE_PROCESSED.add([CreationClassName:relatedObject.className, Name:objectName]);
-            }
-        }
-    }
-}
-
-boolean isComputerSystem(String className)
-{
-    return CLASS_MAPPINGS.SmartsComputerSystem.classes.containsKey(className);
-}
 def getDatasource() {
     return datasource;
 }
 
 
-
-def constructSmartsToSmartsRelationMappings(Map processedRelations, Class cls)
+def createMappingConfiguration()
 {
-    def rsClassConfig = CLASS_MAPPINGS[cls.name];
-    if(rsClassConfig)
-    {
-        def relClosures = rsClassConfig["relationMappingClosures"];
-        relClosures = relClosures==null?[:]:relClosures;
-        def relationMap = [:]
-        def classesToBeExpanded = [];
-        cls.'getPropertiesList'().each{prop->
-            if(prop.isRelation && !relClosures.containsKey(prop.name))
-            {
-                if(!processedRelations.containsKey(prop.relatedModel.name+prop.reverseName+prop.name))
+    CLASS_MAPPINGS.each{String rsClassName, Map configuration->
+        GrailsDomainClass domainClass = ApplicationHolder.application.getDomainClass(rsClassName);
+        if(domainClass != null)
+        {
+            configuration.rsClass = domainClass.clazz;
+            Map colMapping = configuration.propertyMapping!= null?configuration.propertyMapping:[:];
+            Map customPropertyConfig = configuration.customPropertyConfig!= null?configuration.customPropertyConfig:[closure:null, customProperties:[]];
+            configuration.customPropertyConfig = customPropertyConfig; 
+            configuration.propertyMapping = colMapping;
+            configuration.rsClass.'getPropertiesList'().each{prop->
+                if(!prop.isRelation && !prop.isOperationProperty)
                 {
-                    processedRelations.put(cls.name+prop.name+prop.reverseName, prop)
-                    relationMap[getSmartsPropertyName(prop.name)] = [rsRelationName:prop.name, relatedModel:prop.relatedModel];
-                    if(cls != prop.relatedModel &&!classesToBeExpanded.contains(prop.relatedModel))
+                    def smartsRelationName = getSmartsPropertyName(prop.name);
+                    if(!colMapping.values().contains(prop.name) && !configuration.customPropertyConfig.customProperties.contains(prop.name))
                     {
-                        classesToBeExpanded.add(prop.relatedModel);
+                        colMapping[smartsRelationName] = prop.name;
                     }
                 }
             }
+            configuration.classes.each{String smartsClassName, smartsClassConfig->
+                SMARTS_TO_RS_CLASS_NAME_MAPPING[smartsClassName] = configuration;                
+            }
         }
-
-        rsClassConfig.classes.each{String smartsClassName, Map smartsClassConfig->
-            REAL_CLASSES_TO_MODELS_MAP[smartsClassName]["relationsMapping"] = relationMap;
-            REAL_CLASSES_TO_MODELS_MAP[smartsClassName]["relationMappingClosures"] = relClosures;
+    }
+    createRelationMapping([:], SmartsComputerSystem)
+}
+def createRelationMapping(Map processedClasses, Class cls)
+{
+    logger.debug("Creating relation configuration for ${cls.name} ${processedClasses}");
+    def rsClassConfig = CLASS_MAPPINGS[cls.name];
+    processedClasses.put(cls.name,cls.name)
+    if(rsClassConfig)
+    {
+        Map relationMap = rsClassConfig.relationMapping == null?[:]:rsClassConfig.relationMapping;
+        Map rsToSmarts = [:]
+        relationMap.each{String smartsRelName, String rsRelName->
+            rsToSmarts[rsRelName] = smartsRelName
         }
-        classesToBeExpanded.each{
-            constructSmartsToSmartsRelationMappings(processedRelations, it);
+        relationMap.clear();
+        rsClassConfig.relationMapping = relationMap;
+        cls.'getPropertiesList'().each{prop->
+            if(prop.isRelation)
+            {
+                def smartsRelationName = rsToSmarts[prop.name];
+                if(smartsRelationName == null)
+                {
+                    smartsRelationName = getSmartsPropertyName(prop.name);
+                }
+                relationMap[smartsRelationName] = [rsName:prop.name, relatedModel:prop.relatedModel];
+                if(!processedClasses.containsKey(prop.relatedModel.name))
+                {
+                    processedClasses.put(prop.relatedModel.name,prop.relatedModel.name)
+                    createRelationMapping(processedClasses, prop.relatedModel);
+                }
+            }
         }
-
     }
 }
 
@@ -524,12 +398,12 @@ def markExistingDevices()
         topologyMap[propertyValue] = "deleted";
     }
     logger.debug("Marked all devices as deleted.");
-    existingObjectsRetrieved = false;
+    firstTimeRetrieved = false;
 }
 
 def receivingExitingDevicesCompleted()
 {
-    existingObjectsRetrieved = true;
+    firstTimeRetrieved = true;
     logger.info("Existing objects retrieved and ${topologyMap.size()} number of objects will be deleted.");
     topologyMap.each{String objectName, String value->
         logger.debug("Deleting non existing object ${objectName}.");
@@ -539,33 +413,3 @@ def receivingExitingDevicesCompleted()
 }
 
 
-def createSmartsToRiClassMapping()
-{
-    def excludedProps = ["rsDatasource":"rsDatasource"]
-    REAL_CLASSES_TO_MODELS_MAP = [:];
-    CLASS_MAPPINGS.each{String rsClassName, Map rsClassConfiguration->
-        GrailsDomainClass rsDomainClass = ApplicationHolder.getApplication().getDomainClass(rsClassName);
-        if(rsDomainClass != null)
-        {
-            def columnsMap = [:]
-            def colClosures = rsClassConfiguration["columnMappingClosures"];
-            def defaultColMappings = rsClassConfiguration.columnsMapping;
-            colClosures = colClosures==null?[:]:colClosures;
-            defaultColMappings = defaultColMappings ==null?[:]:defaultColMappings;
-            rsDomainClass.clazz.'getPropertiesList'().each{property->
-                String propName = property.name;
-                if(!excludedProps.containsKey(propName) && !property.isOperationProperty && !property.isRelation && !defaultColMappings.containsKey(propName) && !colClosures.containsKey(propName))
-                {
-                        def smartsName = getSmartsPropertyName(propName)
-                        columnsMap[smartsName] = propName;
-                }
-            }
-            columnsMap.putAll (defaultColMappings);
-            rsClassConfiguration.classes.each{String smartsClassName, Map smartsClassConfig->
-                    REAL_CLASSES_TO_MODELS_MAP[smartsClassName] = [rsClass:rsDomainClass.clazz, columnsMapping:columnsMap, columnMappingClosures:colClosures]
-            }
-        }
-    }
-    constructSmartsToSmartsRelationMappings([:], SmartsComputerSystem);
-    logger.warn("Created smarts to ri mapping information ${REAL_CLASSES_TO_MODELS_MAP}");
-}

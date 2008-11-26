@@ -89,8 +89,8 @@ class AuthController {
         // Log the user out of the application.
         SecurityUtils.subject?.logout()
 
-        // For now, redirect back to the home page.
-        redirect(uri: '/')
+        def targetUri = params.targetUri ?: "/"
+        redirect(uri: targetUri)
     }
 
     def unauthorized = {

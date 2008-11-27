@@ -1,7 +1,3 @@
-import connector.*;
-import org.apache.log4j.Logger
-
-
 
 
 logger.info("Starting searchInstances");

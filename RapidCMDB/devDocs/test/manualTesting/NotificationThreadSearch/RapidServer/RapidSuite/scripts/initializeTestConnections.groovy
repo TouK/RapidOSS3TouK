@@ -116,7 +116,10 @@ else{
                 smartsDatasourceParams.name=smartsConnector.getDatasourceName(smartsConnector.name);
                 smartsDatasourceParams.connection=smartsConnection
                 smartsDatasourceParams.listeningScript=script
+                //when this is set to true bootstrap will start the listening script after running startup scripts
+                smartsDatasourceParams.isSubscribed=true
 
+                
                 def datasource = SmartsNotificationDatasource.add(smartsDatasourceParams);
                 if(datasource.hasErrors())
                 {
@@ -130,8 +133,8 @@ else{
                 {
                     logger.warn("created SmartsNotificationDatasource for test");
                     smartsConnector.addRelation(ds:datasource);
-
-
+                    //no need to run the script since  bootstrap will start the listening script after running startup scripts when ds is saved as isSubscribed : true
+                    /*
                     Thread.start{
 
 
@@ -154,6 +157,7 @@ else{
 
                         logger.warn("endin thread");
                     }
+                    */
 
                 }
 

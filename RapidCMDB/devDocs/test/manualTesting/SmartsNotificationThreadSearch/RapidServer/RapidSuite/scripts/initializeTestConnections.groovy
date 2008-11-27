@@ -34,7 +34,6 @@ smartsConnectionParams.domainType = "SAM"
 
 def smartsScriptParams=[:]
 smartsScriptParams.scriptFile="notificationSubscriber"
-smartsScriptParams.type=CmdbScript.LISTENING
 smartsScriptParams.logLevel=org.apache.log4j.Level.DEBUG.toString()
 smartsScriptParams.logFileOwn=true
 
@@ -52,7 +51,6 @@ httpDatasourceParams.name="localhttpds"
 
 def searcherScriptParams=[:]
 searcherScriptParams.name="startRequesters"
-searcherScriptParams.type=CmdbScript.ONDEMAND
 searcherScriptParams.logLevel=org.apache.log4j.Level.DEBUG.toString()
 searcherScriptParams.logFileOwn=true
 
@@ -100,7 +98,8 @@ else{
             def staticParam="notificationList:${smartsConnector.notificationList},tailMode:${String.valueOf(smartsConnector.tailMode)}";
             smartsScriptParams.name=smartsConnector.getScriptName(smartsConnector.name);
             smartsScriptParams.staticParam=staticParam;
-
+            smartsScriptParams.type=CmdbScript.LISTENING
+            
             CmdbScript script = CmdbScript.addScript(smartsScriptParams, true);
             if(script.hasErrors())
             {
@@ -188,7 +187,7 @@ else
     else
     {
         logger.warn("created httpDatasource for test");
-
+        searcherScriptParams.type=CmdbScript.ONDEMAND
         CmdbScript startRequestersScript = CmdbScript.addScript(searcherScriptParams, true);
         if(startRequestersScript.hasErrors())
         {

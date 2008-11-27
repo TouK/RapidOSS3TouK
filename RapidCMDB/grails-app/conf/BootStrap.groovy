@@ -56,12 +56,13 @@ class BootStrap {
         }
         def baseDir = System.getProperty("base.dir");
 
-        
+        //ScriptScheduler and ListeningAdapterManager should be initialized in order for the startup scripts to use them
+        ScriptScheduler.getInstance().initialize(quartzScheduler);
+        ListeningAdapterManager.getInstance().initialize();
         
         def startupScripts = ScriptingUtils.getStartupScriptList(baseDir, ApplicationHolder.application.getClassLoader());
-
         ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), startupScripts);
-        ScriptScheduler.getInstance().initialize(quartzScheduler);
+
 
         CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {
             try {
@@ -77,7 +78,7 @@ class BootStrap {
             }
 
         }
-        ListeningAdapterManager.getInstance().initialize();
+
         listeningScriptInitializerThread = Thread.start{
             BaseListeningDatasource.searchEvery("isSubscribed:true").each {BaseListeningDatasource ds ->
                 if (ds.listeningScript) {

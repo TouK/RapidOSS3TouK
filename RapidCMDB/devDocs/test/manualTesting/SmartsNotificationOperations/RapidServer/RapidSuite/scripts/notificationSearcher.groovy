@@ -12,7 +12,7 @@ def random=new Random(System.currentTimeMillis());
 def limit=random.nextInt(100)+1000
 
 output+=" gonna search ${limit} RsSmartsNotification items <br> "
-RsSmartsNotification.search("alias:*",[max:limit]).results.each{
+SmartsNotification.search("alias:*",[max:limit]).results.each{
 
 }
 output+=" searched ${limit} items <br> "

@@ -1,3 +1,3 @@
-class NotificationThreadSearchStartupScripts{
+class SmartsNotificationThreadSearchStartupScripts{
     def static scripts = ["initializeTestConnections"];
 }

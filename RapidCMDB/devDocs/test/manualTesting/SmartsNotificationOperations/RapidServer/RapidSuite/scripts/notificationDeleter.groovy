@@ -1,7 +1,7 @@
 import connector.*;
 logger.warn("*gonna do notdeleter");
 
-def smcon=SmartsConnector.get(name:NotificationOperationsConstants.NOTIFICATION_CONNECTOR_NAME);
+def smcon=SmartsConnector.get(name:"smnot");
 def ds=smcon.ds;
 
 def output=" ";

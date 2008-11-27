@@ -4,7 +4,7 @@ logger.warn("*gonna do notwebsearch");
 
 
 
-def ds=HttpDatasource.get(name:NotificationOperationsConstants.HTTP_DATASOURCE_NAME);
+def ds=HttpDatasource.get(name:"localhttpds");
 
 
 def result=ds.doGetRequest("search?format=xml",[format:"xml",sort:"id",order:"asc",searchIn:"RsEvent",offset:"0",max:"1000",rnd:"1225386195701",login:"rsadmin",password:"changeme"]);

@@ -10,15 +10,64 @@ import connection.SmartsConnectionTemplate;
 import connector.SmartsListeningNotificationConnector;
 import script.CmdbScript;
 import datasource.SmartsNotificationDatasource;
+import com.ifountain.core.connection.ConnectionManager;
+import connection.HttpConnection;
+import datasource.HttpDatasource;
 
-def smartsConnectionTemplate = SmartsConnectionTemplate.add(name:"smartscon",broker:"192.168.1.100:426",brokerUsername:"SecureBroker",brokerPassWord:"Secure",username:"admin",password:"changeme")
+// Parameter definitions for smarts Notification Connector
+def smartsConnectionTemplateParams=[:]
+smartsConnectionTemplateParams.name="smartscon"
+smartsConnectionTemplateParams.broker="192.168.1.100:426"
+smartsConnectionTemplateParams.brokerUsername="SecureBroker"
+smartsConnectionTemplateParams.brokerPassword="Secure"
+smartsConnectionTemplateParams.username="admin"
+smartsConnectionTemplateParams.password="changeme"
+
+def smartsConnectorParams=[:]
+smartsConnectorParams.name="smnot"
+smartsConnectorParams.notificationList="ALL_NOTIFICATIONS"
+smartsConnectorParams.tailMode=false
+
+def smartsConnectionParams=[:]
+smartsConnectionParams.domain = "INCHARGE-SA"
+smartsConnectionParams.domainType = "SAM"
+
+def smartsScriptParams=[:]
+smartsScriptParams.scriptFile="notificationSubscriber"
+smartsScriptParams.type=CmdbScript.LISTENING
+smartsScriptParams.logLevel=org.apache.log4j.Level.DEBUG.toString()
+smartsScriptParams.logFileOwn=true
+
+def smartsDatasourceParams=[:]
+smartsDatasourceParams.reconnectInterval=3
+
+//Parameter definitions for http datasource to localhost for search
+
+def httpConnectionParams=[:]
+httpConnectionParams.name="localhttpcon"
+httpConnectionParams.baseUrl="http://localhost:12222/RapidSuite/"
+
+def httpDatasourceParams=[:]
+httpDatasourceParams.name="localhttpds"
+
+def searcherScriptParams=[:]
+searcherScriptParams.name="startRequesters"
+searcherScriptParams.type=CmdbScript.ONDEMAND
+searcherScriptParams.logLevel=org.apache.log4j.Level.DEBUG.toString()
+searcherScriptParams.logFileOwn=true
+
+//script to initialize and starts smarts notification connector
+
+def smartsConnectionTemplate = SmartsConnectionTemplate.add(smartsConnectionTemplateParams)
+
 if(smartsConnectionTemplate.hasErrors()) {
     logger.warn("Can not create smartsConnectionTemplate for test. Reason : ${smartsConnectionTemplate.errors}");
-    smartsConnectionTemplate.remove();    
+    smartsConnectionTemplate.remove();
 }
 else{
     logger.warn("Created smartsConnectionTemplate for test");
-    def smartsConnector = SmartsListeningNotificationConnector.add(name:"smnot",connectionTemplate:smartsConnectionTemplate,notificationList:"ALL_NOTIFICATIONS",tailMode:false)
+    smartsConnectorParams.connectionTemplate=smartsConnectionTemplate
+    def smartsConnector = SmartsListeningNotificationConnector.add(smartsConnectorParams)
     if(smartsConnector.hasErrors())
     {
         logger.warn("Can not create smartsConnector for test. Reason : ${smartsConnector.errors}");
@@ -28,16 +77,15 @@ else{
     else
     {
         logger.warn("Created smartsConnector for test");
-        def connectionName = smartsConnector.getConnectionName(smartsConnector.name);
-        def connectionParams = [name:connectionName];
-        connectionParams.broker = smartsConnector.connectionTemplate.broker
-        connectionParams.username = smartsConnector.connectionTemplate.username
-        connectionParams.userPassword = smartsConnector.connectionTemplate.password
-        connectionParams.brokerUsername = smartsConnector.connectionTemplate.brokerUsername
-        connectionParams.brokerPassword = smartsConnector.connectionTemplate.brokerPassword
-        connectionParams.domain = "INCHARGE-SA"
-        connectionParams.domainType = "SAM"
-        SmartsConnection smartsConnection = SmartsConnection.add(connectionParams)
+
+        smartsConnectionParams.name=smartsConnector.getConnectionName(smartsConnector.name);
+        smartsConnectionParams.broker = smartsConnector.connectionTemplate.broker
+        smartsConnectionParams.username = smartsConnector.connectionTemplate.username
+        smartsConnectionParams.userPassword = smartsConnector.connectionTemplate.password
+        smartsConnectionParams.brokerUsername = smartsConnector.connectionTemplate.brokerUsername
+        smartsConnectionParams.brokerPassword = smartsConnector.connectionTemplate.brokerPassword
+
+        SmartsConnection smartsConnection = SmartsConnection.add(smartsConnectionParams)
 
         if (smartsConnection.hasErrors()) {
             logger.warn("Can not create smartsConnection for test. Reason : ${smartsConnection.errors}");
@@ -47,12 +95,13 @@ else{
         }
         else{
             logger.warn("Created smartsConnection for test");
-            def scriptName = smartsConnector.getScriptName(smartsConnector.name);
-            def scriptFile = "notificationSubscriber";
+
+
             def staticParam="notificationList:${smartsConnector.notificationList},tailMode:${String.valueOf(smartsConnector.tailMode)}";
-            def scriptParams=[name:scriptName, scriptFile:scriptFile,type:CmdbScript.LISTENING,logFile:smartsConnector.name,logLevel:org.apache.log4j.Level.DEBUG.toString(),staticParam:staticParam,logFileOwn:true]
-            
-            CmdbScript script = CmdbScript.addScript(scriptParams, true);
+            smartsScriptParams.name=smartsConnector.getScriptName(smartsConnector.name);
+            smartsScriptParams.staticParam=staticParam;
+
+            CmdbScript script = CmdbScript.addScript(smartsScriptParams, true);
             if(script.hasErrors())
             {
                 logger.warn("Can not create CmdbScript for test. Reason : ${script.errors}");
@@ -64,8 +113,11 @@ else{
             else
             {
                 logger.warn("created CmdbScript for test");
-                def datasourceName = smartsConnector.getDatasourceName(smartsConnector.name);
-                def datasource = SmartsNotificationDatasource.add(name: datasourceName, connection: smartsConnection, listeningScript:script,reconnectInterval:3);
+                smartsDatasourceParams.name=smartsConnector.getDatasourceName(smartsConnector.name);
+                smartsDatasourceParams.connection=smartsConnection
+                smartsDatasourceParams.listeningScript=script
+
+                def datasource = SmartsNotificationDatasource.add(smartsDatasourceParams);
                 if(datasource.hasErrors())
                 {
                     logger.warn("Can not create SmartsNotificationDatasource for test. Reason : ${datasource.errors}");
@@ -78,6 +130,31 @@ else{
                 {
                     logger.warn("created SmartsNotificationDatasource for test");
                     smartsConnector.addRelation(ds:datasource);
+
+
+                    Thread.start{
+
+
+                        logger.warn("startin thread");
+
+                        try{
+	                        if (ConnectionManager.checkConnection(smartsConnector.ds.connection.name)) {
+		                        logger.warn("gonna start listening");
+	                            CmdbScript.startListening(script.name);
+	                            logger.warn( "Connector ${smartsConnector.name} successfully started");
+	                        }
+	                        else {
+	                            logger.warn("Could not connect to smarts server.")
+	                        }
+                    	}
+                    	catch(e)
+                    	{
+	                    	logger.warn("Exception occured during starting listening script",e);
+	                    }
+
+                        logger.warn("endin thread");
+                    }
+
                 }
 
 
@@ -86,5 +163,48 @@ else{
     }
 }
 
+//script to initialize http connection and start searcher script
 
+def httpConnection=HttpConnection.add(httpConnectionParams)
+if(httpConnection.hasErrors())
+{
+    logger.warn("Can not create httpConnection for test. Reason : ${httpConnection.errors}");
+    httpConnection.remove();
+}
+else
+{
+    logger.warn("created httpConnection for test");
+    httpDatasourceParams.connection=httpConnection
+    def httpDatasource=HttpDatasource.add(httpDatasourceParams)
+    if(httpDatasource.hasErrors())
+    {
+        logger.warn("Can not create httpDatasource for test. Reason : ${httpDatasource.errors}");
+        httpDatasource.remove();
+    }
+    else
+    {
+        logger.warn("created httpDatasource for test");
 
+        CmdbScript startRequestersScript = CmdbScript.addScript(searcherScriptParams, true);
+        if(startRequestersScript.hasErrors())
+        {
+            logger.warn("Can not create startRequestersScript for test. Reason : ${startRequestersScript.errors}");
+            startRequestersScript.remove();
+        }
+        else{
+            Thread.start{
+                logger.warn("starting searcher script");
+
+                try{
+                    CmdbScript.runScript(startRequestersScript,[:]);
+                }
+                catch(e)
+                {
+                    logger.warn("Exception occured during start running searcher script",e);
+                }
+                logger.warn("searcher script ended");
+            }
+
+        }
+    }
+}

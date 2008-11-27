@@ -20,7 +20,7 @@ class SmartsNotificationOperations extends RsEventOperations
         }
         remove()
     }
-    def serializeRelations(domainObject, relationName)
+    def serializeRelations( relationName)
     {
         def serializedRelation = new StringBuffer();
         getProperty(relationName).each {

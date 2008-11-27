@@ -72,9 +72,9 @@ class NetcoolConnectorImpl {
             }
             res.results.each {event ->
                 markedEvents[event.servername + event.serverserial] = event;
-                if (event.statechange > lastUpdateTime)
+                if (event.changedAt > lastUpdateTime)
                 {
-                    lastUpdateTime = event.statechange;
+                    lastUpdateTime = event.changedAt;
                 }
             }
             offset += batchSize;

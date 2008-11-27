@@ -1,6 +1,5 @@
 <%@ page import="com.ifountain.rcmdb.domain.util.DomainClassUtils; com.ifountain.rcmdb.util.RapidCMDBConstants" %>
 <%
-    def type = params.type;
     def id = params.id;
     def componentId = params.componentId;
     def allProperties = [];
@@ -15,7 +14,7 @@
 <div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li class="selected"><a><em>Event</em></a></li>
-        <li><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getJournals.gsp?type=NetcoolJournal&id=${domainObject?.id}');"><em>Journal</em></a></li>
+        <li><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getJournals.gsp?isHistorical=false&id=${domainObject?.id}');"><em>Journal</em></a></li>
     </ul>
     <div style="display:block" class="netcool-object-details">
         <table width="100%">

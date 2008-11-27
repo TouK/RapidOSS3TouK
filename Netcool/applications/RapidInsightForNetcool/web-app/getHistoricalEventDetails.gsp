@@ -19,7 +19,11 @@
     }
     if (domainObject != null) {
 %>
-<div style="margin-top:5px">
+<div class="yui-navset yui-navset-top" style="margin-top:5px">
+    <ul class="yui-nav">
+        <li class="selected"><a><em>Event</em></a></li>
+        <li><a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getJournals.gsp?isHistorical=true&id=${domainObject?.id}');"><em>Journal</em></a></li>
+    </ul>
     <div style="display:block" class="netcool-object-details">
         <table width="100%">
             <tbody>

@@ -151,34 +151,14 @@ def update(notificationObject){
     }
 }
 
-def serializeRelations(domainObject, relationName)
-{
-    def serializedRelation = new StringBuffer();
-    domainObject[relationName].each{
-        serializedRelation.append(it.name).append(", ")   
-    }
-    if(serializedRelation.length() > 0)
-    {
-        return serializedRelation.substring(0, serializedRelation.length()-2);
-    }
-    return "";
-}
 
 def archiveNotification(notification)
 {
     if(notification == null) return;
     logger.debug("Archiving notification ${notification.name}")
-    def historicalNotificationProps = [:];
-    columnLocalNameMappings.each{String localName, String smartsName->
-        historicalNotificationProps[localName] = notification[localName];
-    }
-    historicalNotificationProps["active"] = false;
-    historicalNotificationProps["causedBy"] = serializeRelations(notification, "causedBy");
-    historicalNotificationProps["causes"] = serializeRelations(notification, "causes");
-    notification.remove();
+    notification.clear();
     if(!notification.hasErrors())
     {
-        SmartsHistoricalNotification.add(historicalNotificationProps);
         logger.debug("Updating object state.")
         updateSmartsObjectState(notification.elementName, notification.instanceName, -1)
         logger.info("${notification.name} is moved  to HistoricalNotification");

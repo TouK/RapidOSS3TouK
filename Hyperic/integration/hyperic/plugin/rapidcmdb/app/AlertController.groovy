@@ -52,9 +52,24 @@ class AlertController
                     AppdefEntityValue aev = new AppdefEntityValue(aeid, AuthzSubjectManagerEJBImpl.getOne().getOverlordPojo()) // this returns the owner of the alert
 
                     xml.HypericEvent('id': myAlert.id,
-                                     'name': myAlert.alertDefinition.alertDefinitionValue.name,
-                                     'owner_name': aev.getName(),
-                                     'timestamp': myAlert.alertValue.ctime,
+                                     'name': alertDef.name,
+                                     'owner': aev.getName(),
+                                     'timestamp': myAlert.ctime,
+                                     'mtime': alertDef.mtime,
+                                     'stateId': myAlert.stateId,
+                                     'ackedBy': myAlert.ackedBy,
+                                     'acknowledgeable': myAlert.alertValue.acknowledgeable,
+                                     'description': alertDef.description,
+                                     'severity':alertDef.severity.code,
+                                     'priority':alertDef.priority,
+                                     'enabled':alertDef.enabled,
+                                     'active':alertDef.active,
+                                     'frequencyType':alertDef.frequencyType,
+                                     'count':alertDef.count,
+                                     'range':alertDef.range,
+                                     'willRecover':alertDef.willRecover,
+                                     'deleted':alertDef.deleted,
+                                     'lastFired':alertDef.lastFired,
                                      'fixed': myAlert.fixed
                     )
                     i++

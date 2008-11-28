@@ -242,7 +242,7 @@ class OpenNmsGraphController {
         //response.contentType = photo.fileType //'image/jpeg' will do too
         //response.outputStream << photo.file //'myphoto.jpg' will do too
 
-        def openNmsGraphDs=HttpDatasource.get(name:"opennmsds");
+        def openNmsGraphDs=HttpDatasource.get(name:"openNmsHttpDs");
         openNmsGraphDs.doGetRequest("j_acegi_security_check", ["j_username":"admin","j_password":"admin"]);
 
         def graph=OpenNmsGraph.get(id:params.id);

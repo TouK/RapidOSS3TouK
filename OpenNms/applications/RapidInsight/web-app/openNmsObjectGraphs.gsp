@@ -14,7 +14,7 @@
 <body>
 
 <%
-    def openNmsGraphDs=HttpDatasource.get(name:"opennmsds");
+    def openNmsGraphDs=HttpDatasource.get(name:"openNmsHttpDs");
     openNmsGraphDs.doGetRequest("j_acegi_security_check", ["j_username":"admin","j_password":"admin"]);
 
 

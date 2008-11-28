@@ -33,10 +33,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="openNmsId">openNmsId:</label>
+                            <label for="name">name:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:openNmsIpInterface,field:'openNmsId','errors')}">
-                            <input type="text" id="openNmsId" name="openNmsId" value="${fieldValue(bean:openNmsIpInterface,field:'openNmsId')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsIpInterface,field:'name','errors')}">
+                            <input type="text" id="name" name="name" value="${fieldValue(bean:openNmsIpInterface,field:'name')}"/>
                         </td>
                     </tr>
                     
@@ -46,6 +46,33 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsIpInterface,field:'adminStatus','errors')}">
                             <input type="text" id="adminStatus" name="adminStatus" value="${fieldValue(bean:openNmsIpInterface,field:'adminStatus')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="className">className:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsIpInterface,field:'className','errors')}">
+                            <input type="text" id="className" name="className" value="${fieldValue(bean:openNmsIpInterface,field:'className')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="description">description:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsIpInterface,field:'description','errors')}">
+                            <input type="text" id="description" name="description" value="${fieldValue(bean:openNmsIpInterface,field:'description')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="displayName">displayName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsIpInterface,field:'displayName','errors')}">
+                            <input type="text" id="displayName" name="displayName" value="${fieldValue(bean:openNmsIpInterface,field:'displayName')}"/>
                         </td>
                     </tr>
                     
@@ -114,6 +141,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="isManaged">isManaged:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsIpInterface,field:'isManaged','errors')}">
+                            <g:checkBox name="isManaged" value="${openNmsIpInterface?.isManaged}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="lastPolledAt">lastPolledAt:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsIpInterface,field:'lastPolledAt','errors')}">
@@ -154,6 +190,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsIpInterface,field:'operStatus','errors')}">
                             <input type="text" id="operStatus" name="operStatus" value="${fieldValue(bean:openNmsIpInterface,field:'operStatus')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsIpInterface,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:openNmsIpInterface,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

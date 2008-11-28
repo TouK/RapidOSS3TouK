@@ -35,9 +35,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">openNmsId:</td>
+                    <td valign="top" class="name">name:</td>
                     
-                    <td valign="top" class="value">${openNmsIpInterface.openNmsId}</td>
+                    <td valign="top" class="value">${openNmsIpInterface.name}</td>
                     
                 </tr>
                 
@@ -45,6 +45,27 @@
                     <td valign="top" class="name">adminStatus:</td>
                     
                     <td valign="top" class="value">${openNmsIpInterface.adminStatus}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">className:</td>
+                    
+                    <td valign="top" class="value">${openNmsIpInterface.className}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">description:</td>
+                    
+                    <td valign="top" class="value">${openNmsIpInterface.description}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">displayName:</td>
+                    
+                    <td valign="top" class="value">${openNmsIpInterface.displayName}</td>
                     
                 </tr>
                 
@@ -111,6 +132,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">isManaged:</td>
+                    
+                    <td valign="top" class="value">${openNmsIpInterface.isManaged}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">lastPolledAt:</td>
                     
                     <td valign="top" class="value">${openNmsIpInterface.lastPolledAt}</td>
@@ -121,6 +149,19 @@
                     <td valign="top" class="name">macAddress:</td>
                     
                     <td valign="top" class="value">${openNmsIpInterface.macAddress}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${openNmsIpInterface.memberOfGroup}">
+                                <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 
@@ -142,6 +183,13 @@
                     <td valign="top" class="name">operStatus:</td>
                     
                     <td valign="top" class="value">${openNmsIpInterface.operStatus}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${openNmsIpInterface.rsDatasource}</td>
                     
                 </tr>
                 

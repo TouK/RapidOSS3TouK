@@ -35,9 +35,30 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">openNmsId:</td>
+                    <td valign="top" class="name">name:</td>
                     
-                    <td valign="top" class="value">${openNmsService.openNmsId}</td>
+                    <td valign="top" class="value">${openNmsService.name}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">className:</td>
+                    
+                    <td valign="top" class="value">${openNmsService.className}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">description:</td>
+                    
+                    <td valign="top" class="value">${openNmsService.description}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">displayName:</td>
+                    
+                    <td valign="top" class="value">${openNmsService.displayName}</td>
                     
                 </tr>
                 
@@ -62,6 +83,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">isManaged:</td>
+                    
+                    <td valign="top" class="value">${openNmsService.isManaged}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">lastFailedAt:</td>
                     
                     <td valign="top" class="value">${openNmsService.lastFailedAt}</td>
@@ -76,9 +104,15 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">name:</td>
+                    <td valign="top" class="name">memberOfGroup:</td>
                     
-                    <td valign="top" class="value">${openNmsService.name}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${openNmsService.memberOfGroup}">
+                                <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 
@@ -93,6 +127,20 @@
                     <td valign="top" class="name">qualifier:</td>
                     
                     <td valign="top" class="value">${openNmsService.qualifier}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${openNmsService.rsDatasource}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">serviceName:</td>
+                    
+                    <td valign="top" class="value">${openNmsService.serviceName}</td>
                     
                 </tr>
                 

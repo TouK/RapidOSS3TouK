@@ -35,9 +35,30 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">openNmsId:</td>
+                    <td valign="top" class="name">name:</td>
                     
-                    <td valign="top" class="value">${openNmsObject.openNmsId}</td>
+                    <td valign="top" class="value">${openNmsObject.name}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">className:</td>
+                    
+                    <td valign="top" class="value">${openNmsObject.className}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">description:</td>
+                    
+                    <td valign="top" class="value">${openNmsObject.description}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">displayName:</td>
+                    
+                    <td valign="top" class="value">${openNmsObject.displayName}</td>
                     
                 </tr>
                 
@@ -51,6 +72,33 @@
                             </g:each>
                         </ul>
                     </td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">isManaged:</td>
+                    
+                    <td valign="top" class="value">${openNmsObject.isManaged}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${openNmsObject.memberOfGroup}">
+                                <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${openNmsObject.rsDatasource}</td>
                     
                 </tr>
                 

@@ -35,10 +35,37 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="openNmsId">openNmsId:</label>
+                            <label for="name">name:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'openNmsId','errors')}">
-                            <input type="text" id="openNmsId" name="openNmsId" value="${fieldValue(bean:openNmsService,field:'openNmsId')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'name','errors')}">
+                            <input type="text" id="name" name="name" value="${fieldValue(bean:openNmsService,field:'name')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="className">className:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'className','errors')}">
+                            <input type="text" id="className" name="className" value="${fieldValue(bean:openNmsService,field:'className')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="description">description:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'description','errors')}">
+                            <input type="text" id="description" name="description" value="${fieldValue(bean:openNmsService,field:'description')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="displayName">displayName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'displayName','errors')}">
+                            <input type="text" id="displayName" name="displayName" value="${fieldValue(bean:openNmsService,field:'displayName')}"/>
                         </td>
                     </tr>
                     
@@ -72,6 +99,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="isManaged">isManaged:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'isManaged','errors')}">
+                            <g:checkBox name="isManaged" value="${openNmsService?.isManaged}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="lastFailedAt">lastFailedAt:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'lastFailedAt','errors')}">
@@ -90,10 +126,20 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="name">name:</label>
+                            <label for="memberOfGroup">memberOfGroup:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'name','errors')}">
-                            <input type="text" id="name" name="name" value="${fieldValue(bean:openNmsService,field:'name')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${openNmsService?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':openNmsService?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':openNmsService?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
                         </td>
                     </tr>
                     
@@ -112,6 +158,24 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'qualifier','errors')}">
                             <input type="text" id="qualifier" name="qualifier" value="${fieldValue(bean:openNmsService,field:'qualifier')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:openNmsService,field:'rsDatasource')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="serviceName">serviceName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'serviceName','errors')}">
+                            <input type="text" id="serviceName" name="serviceName" value="${fieldValue(bean:openNmsService,field:'serviceName')}"/>
                         </td>
                     </tr>
                     

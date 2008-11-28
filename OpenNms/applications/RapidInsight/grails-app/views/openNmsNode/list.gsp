@@ -29,7 +29,7 @@
                     
                     <g:sortableColumn property="id" title="id"/>
                     
-                    <g:sortableColumn property="openNmsId" title="openNmsId"/>
+                    <g:sortableColumn property="name" title="name"/>
                     
                 </tr>
             </thead>
@@ -39,7 +39,7 @@
                         
                         <td><g:link action="show" id="${openNmsNode.id}">${openNmsNode.id?.encodeAsHTML()}</g:link></td>
                         
-                        <td>${openNmsNode.openNmsId?.encodeAsHTML()}</td>
+                        <td>${openNmsNode.name?.encodeAsHTML()}</td>
                         
                     </tr>
                 </g:each>

@@ -35,10 +35,19 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="openNmsId">openNmsId:</label>
+                            <label for="name">name:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'openNmsId','errors')}">
-                            <input type="text" id="openNmsId" name="openNmsId" value="${fieldValue(bean:openNmsNode,field:'openNmsId')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'name','errors')}">
+                            <input type="text" id="name" name="name" value="${fieldValue(bean:openNmsNode,field:'name')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="className">className:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'className','errors')}">
+                            <input type="text" id="className" name="className" value="${fieldValue(bean:openNmsNode,field:'className')}"/>
                         </td>
                     </tr>
                     
@@ -48,6 +57,24 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'createdAt','errors')}">
                             <g:datePicker name="createdAt" value="${openNmsNode?.createdAt}" noSelection="['':'']"></g:datePicker>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="description">description:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'description','errors')}">
+                            <input type="text" id="description" name="description" value="${fieldValue(bean:openNmsNode,field:'description')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="displayName">displayName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'displayName','errors')}">
+                            <input type="text" id="displayName" name="displayName" value="${fieldValue(bean:openNmsNode,field:'displayName')}"/>
                         </td>
                     </tr>
                     
@@ -127,6 +154,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="isManaged">isManaged:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'isManaged','errors')}">
+                            <g:checkBox name="isManaged" value="${openNmsNode?.isManaged}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="lastPolledAt">lastPolledAt:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'lastPolledAt','errors')}">
@@ -136,10 +172,20 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="name">name:</label>
+                            <label for="memberOfGroup">memberOfGroup:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'name','errors')}">
-                            <input type="text" id="name" name="name" value="${fieldValue(bean:openNmsNode,field:'name')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${openNmsNode?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':openNmsNode?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':openNmsNode?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
                         </td>
                     </tr>
                     
@@ -154,10 +200,28 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="nodeName">nodeName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'nodeName','errors')}">
+                            <input type="text" id="nodeName" name="nodeName" value="${fieldValue(bean:openNmsNode,field:'nodeName')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="operatingSystem">operatingSystem:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'operatingSystem','errors')}">
                             <input type="text" id="operatingSystem" name="operatingSystem" value="${fieldValue(bean:openNmsNode,field:'operatingSystem')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsNode,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:openNmsNode,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

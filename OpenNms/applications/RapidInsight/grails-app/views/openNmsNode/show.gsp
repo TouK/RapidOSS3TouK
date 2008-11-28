@@ -35,9 +35,16 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">openNmsId:</td>
+                    <td valign="top" class="name">name:</td>
                     
-                    <td valign="top" class="value">${openNmsNode.openNmsId}</td>
+                    <td valign="top" class="value">${openNmsNode.name}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">className:</td>
+                    
+                    <td valign="top" class="value">${openNmsNode.className}</td>
                     
                 </tr>
                 
@@ -45,6 +52,20 @@
                     <td valign="top" class="name">createdAt:</td>
                     
                     <td valign="top" class="value">${openNmsNode.createdAt}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">description:</td>
+                    
+                    <td valign="top" class="value">${openNmsNode.description}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">displayName:</td>
+                    
+                    <td valign="top" class="value">${openNmsNode.displayName}</td>
                     
                 </tr>
                 
@@ -103,6 +124,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">isManaged:</td>
+                    
+                    <td valign="top" class="value">${openNmsNode.isManaged}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">lastPolledAt:</td>
                     
                     <td valign="top" class="value">${openNmsNode.lastPolledAt}</td>
@@ -110,9 +138,15 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">name:</td>
+                    <td valign="top" class="name">memberOfGroup:</td>
                     
-                    <td valign="top" class="value">${openNmsNode.name}</td>
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${openNmsNode.memberOfGroup}">
+                                <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 
@@ -124,9 +158,23 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">nodeName:</td>
+                    
+                    <td valign="top" class="value">${openNmsNode.nodeName}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">operatingSystem:</td>
                     
                     <td valign="top" class="value">${openNmsNode.operatingSystem}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${openNmsNode.rsDatasource}</td>
                     
                 </tr>
                 

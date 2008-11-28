@@ -33,10 +33,37 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="openNmsId">openNmsId:</label>
+                            <label for="name">name:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'openNmsId','errors')}">
-                            <input type="text" id="openNmsId" name="openNmsId" value="${fieldValue(bean:openNmsService,field:'openNmsId')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'name','errors')}">
+                            <input type="text" id="name" name="name" value="${fieldValue(bean:openNmsService,field:'name')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="className">className:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'className','errors')}">
+                            <input type="text" id="className" name="className" value="${fieldValue(bean:openNmsService,field:'className')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="description">description:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'description','errors')}">
+                            <input type="text" id="description" name="description" value="${fieldValue(bean:openNmsService,field:'description')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="displayName">displayName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'displayName','errors')}">
+                            <input type="text" id="displayName" name="displayName" value="${fieldValue(bean:openNmsService,field:'displayName')}"/>
                         </td>
                     </tr>
                     
@@ -46,6 +73,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'ipInterface','errors')}">
                             <g:select optionKey="id" from="${OpenNmsIpInterface.list()}" name="ipInterface.id" value="${openNmsService?.ipInterface?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="isManaged">isManaged:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'isManaged','errors')}">
+                            <g:checkBox name="isManaged" value="${openNmsService?.isManaged}" ></g:checkBox>
                         </td>
                     </tr>
                     
@@ -69,15 +105,6 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="name">name:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'name','errors')}">
-                            <input type="text" id="name" name="name" value="${fieldValue(bean:openNmsService,field:'name')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
                             <label for="notify">notify:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'notify','errors')}">
@@ -91,6 +118,24 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'qualifier','errors')}">
                             <input type="text" id="qualifier" name="qualifier" value="${fieldValue(bean:openNmsService,field:'qualifier')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:openNmsService,field:'rsDatasource')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="serviceName">serviceName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:openNmsService,field:'serviceName','errors')}">
+                            <input type="text" id="serviceName" name="serviceName" value="${fieldValue(bean:openNmsService,field:'serviceName')}"/>
                         </td>
                     </tr>
                     

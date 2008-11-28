@@ -3,8 +3,8 @@ import com.ifountain.rcmdb.util.RapidDateUtilities
 
 def interfacesDs = SingleTableDatabaseDatasource.get(name:"openNmsInterfacesDs")
 def nodesDs = SingleTableDatabaseDatasource.get(name:"openNmsNodesDs")
-def ifServicesDs = SingleTableDatabaseDatasource.get(name:"openNmsServicesDs")
-def serviceMapDs = SingleTableDatabaseDatasource.get(name:"openNmsServiceMapDs")
+def ifServicesDs = SingleTableDatabaseDatasource.get(name:"openNmsInterfaceServicesDs")
+def servicesDs = SingleTableDatabaseDatasource.get(name:"openNmsServicesDs")
 def snmpInterfaceDs = SingleTableDatabaseDatasource.get(name:"openNmsSnmpInterfacesDs")
 def openNmsServer = RsManagementSystem.get(name:"openNmsServer")
 openNmsGraphDs=HttpDatasource.get(name:"openNmsHttpDs");
@@ -25,9 +25,9 @@ OpenNmsService.list()*.remove()
 OpenNmsGraph.list()*.remove()
 
 
-def serviceMap = [:]
-serviceMapDs.getRecords().each {
-	serviceMap[it.SERVICEID] = it.SERVICENAME
+def serviceNames = [:]
+servicesDs.getRecords().each {
+	serviceNames[it.SERVICEID] = it.SERVICENAME
 }
 
 //def nodes = nodesDs.getRecords("LASTCAPSDPOLL > '${stringDateValue}'")
@@ -36,7 +36,7 @@ def nodes = nodesDs.getRecords();
 nodes.each{ n ->
 
 	def nProps = [:]
-	nProps.openNmsId = n.NODEID
+	nProps.name = n.NODEID
 	nProps.dpName = n.DPNAME
 	nProps.type = n.NODETYPE
 	nProps.createdAt = Date.toDate(n.NODECREATETIME)
@@ -45,13 +45,16 @@ nodes.each{ n ->
 	nProps.sysName = n.NODESYSNAME
 	nProps.sysDescription = n.NODESYSDESCRIPTION
 	nProps.sysLocation = n.NODESYSLOCATION
-	nProps.name = n.NODELABEL
 	nProps.netbiosName = n.NODENETBIOSNAME
 	nProps.domainName = n.NODEDOMAINNAME
 	nProps.operatingSystem = n.OPERATINGSYSTEM
 	nProps.foreignSource = n.FOREIGNSOURCE
 	nProps.foreignId = n.FOREIGNID
 
+	nProps.nodeName = n.NODELABEL
+	nProps.className = "OpenNmsNode"
+	nProps.displayName=nProps.nodeName
+    nProps.rsDatasource=nodesDs.connection.name
 
 	logger.debug("Adding OpenNmsNode with props ${nProps}");
 
@@ -63,14 +66,14 @@ nodes.each{ n ->
 
 		if(n.NODESYSOID)
 		{
-            addGraphsToObject(n.NODEID,nodeObj,"node",[:]);           
+            addGraphsToObject(n.NODEID,nodeObj,"node",[:]);
 		}
 
 		def ipInterfaces = interfacesDs.getRecords("NODEID=${n.NODEID}")
 		ipInterfaces.each{ i ->
 			//logger.info("ip interface table " + i)
 			def iProps = [:]
-			iProps.openNmsId = i.NODEID + "-" + i.ID
+			iProps.name = i.NODEID + "-" + i.ID
 			iProps.ipAddress = i.IPADDR
 			if (i.ISMANAGED == "M") {
 				iProps.isManaged = true
@@ -78,6 +81,11 @@ nodes.each{ n ->
 				iProps.isManaged = false
 			}
 			iProps.lastPolledAt = Date.toDate(i.IPLASTCAPSDPOLL)
+
+			iProps.className = "OpenNmsIpInterface"
+			iProps.displayName=iProps.ipAddress
+            iProps.rsDatasource=interfacesDs.connection.name
+
 			if (i.SNMPINTERFACEID != "") {
 				def sI = snmpInterfaceDs.getRecord(i.SNMPINTERFACEID.toInteger())
 				logger.info("sI " + sI)
@@ -93,6 +101,7 @@ nodes.each{ n ->
 				iProps.adminStatus = getIfStatusString(sI.SNMPIFADMINSTATUS)
 				iProps.operStatus = getIfStatusString(sI.SNMPIFOPERSTATUS)
 			}
+			logger.debug("Adding OpenNmsIpInterface with props ${iProps}");
 			def ipInterfaceObj = OpenNmsIpInterface.add(iProps)
 			if (ipInterfaceObj.hasErrors()) {
 				logger.error("nProps: " + nProps)
@@ -105,14 +114,20 @@ nodes.each{ n ->
 				def ifServices = ifServicesDs.getRecords("IPINTERFACEID=${i.ID}")
 				ifServices.each{ s ->
 					def sProps = [:]
-					sProps.openNmsId =s.NODEID + "-" + s.IPINTERFACEID + "-" + s.ID
+					sProps.name =s.NODEID + "-" + s.IPINTERFACEID + "-" + s.ID
 					sProps.lastGoodAt = s.LASTGOOD
 					sProps.lastFailedAt = s.LASTFAIL
 					sProps.qualifier = s.QUALIFIER
 					sProps.status = s.STATUS
 					sProps.source = s.SOURCE
 					sProps.notify = s.NOTIFY
-					sProps.name = serviceMap[s.SERVICEID]
+
+					sProps.serviceName = serviceNames[s.SERVICEID]
+					sProps.className = "OpenNmsService"
+					sProps.displayName=sProps.serviceName
+                    sProps.rsDatasource=ifServicesDs.connection.name
+
+                    logger.debug("Adding OpenNmsService with props ${sProps}");
 					def ifServiceObj = OpenNmsService.add(sProps)
 					if (ifServiceObj.hasErrors()) {
 						logger.error("sProps: " + sProps)
@@ -375,7 +390,7 @@ def addGraphsToObject(nodeId,openNmsObject,objectType,additionalParams)
          requestParams["ipinterfaceid"]=additionalParams["ipinterfaceid"];
      }
 
-    logger.debug("Requesting graphs of Object ${openNmsObject.openNmsId}");
+    logger.debug("Requesting graphs of Object ${openNmsObject.name}");
     def graphsXml=openNmsGraphDs.doGetRequest("rapidcmdb/graphresultsasxml.jsp",requestParams);
 
     def parser = new XmlParser()
@@ -390,7 +405,7 @@ def addGraphsToObject(nodeId,openNmsObject,objectType,additionalParams)
             logger.warn("Could not add graps. Reason: ${graphObj.errors}")
         }
 
-        logger.debug("Adding graph to Object ${openNmsObject.openNmsId} with url ${graph."@url"} as a relation");
+        logger.debug("Adding graph to Object ${openNmsObject.name} with url ${graph."@url"} as a relation");
         openNmsObject.addRelation("graphs":[graphObj]);
         if(openNmsObject.hasErrors())
         {
@@ -398,6 +413,6 @@ def addGraphsToObject(nodeId,openNmsObject,objectType,additionalParams)
         }
 
     }
-    logger.debug("The Node ${openNmsObject.openNmsId} has graphs ${openNmsObject.graphs}");
+    logger.debug("The Node ${openNmsObject.name} has graphs ${openNmsObject.graphs}");
 
 }

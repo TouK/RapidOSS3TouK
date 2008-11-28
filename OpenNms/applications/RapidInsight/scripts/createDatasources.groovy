@@ -12,8 +12,8 @@ dbDatasourceParams.add([name:"openNmsAlarmsDs",tableName:"alarms",tableKeys:"ala
 dbDatasourceParams.add([name:"openNmsNodesDs",tableName:"node",tableKeys:"nodeid"]);
 dbDatasourceParams.add([name:"openNmsInterfacesDs",tableName:"ipinterface",tableKeys:"id"]);
 dbDatasourceParams.add([name:"openNmsSnmpInterfacesDs",tableName:"snmpinterface",tableKeys:"id"]);
-dbDatasourceParams.add([name:"openNmsServicesDs",tableName:"ifservices",tableKeys:"id"]);
-dbDatasourceParams.add([name:"openNmsServiceMapDs",tableName:"servicemap",tableKeys:"ipaddr,servicemapname"]);
+dbDatasourceParams.add([name:"openNmsInterfaceServicesDs",tableName:"ifservices",tableKeys:"id"]);
+dbDatasourceParams.add([name:"openNmsServicesDs",tableName:"service",tableKeys:"serviceid"]);
 
 def dbConnection=DatabaseConnection.add(name:"openNmsConn",driver:"org.postgresql.Driver",url:"jdbc:postgresql://localhost:5432/opennms",username:"opennms",userPassword:"opennms");
 if(dbConnection.hasErrors())

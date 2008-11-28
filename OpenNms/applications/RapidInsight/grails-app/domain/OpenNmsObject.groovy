@@ -1,8 +1,9 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class OpenNmsObject {
-
+class OpenNmsObject extends RsTopologyObject
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -10,10 +11,8 @@ class OpenNmsObject {
     
     
     };
-    static datasources = ["RCMDB":["keys":["openNmsId":["nameInDs":"openNmsId"]]]]
+    static datasources = [:]
 
-    
-    String openNmsId ="";
     
     Long id ;
     
@@ -35,9 +34,7 @@ class OpenNmsObject {
     ]
     
     static constraints={
-    openNmsId(blank:false,nullable:false,key:[])
-        
-     __operation_class__(nullable:true)
+    __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
         
@@ -49,16 +46,8 @@ class OpenNmsObject {
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "graphs"];
     
-    public String toString()
-    {
-    	return "${getClass().getName()}[openNmsId:$openNmsId]";
-    }
-    
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
-
-
-    
 }

@@ -1,8 +1,9 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class OpenNmsService  extends OpenNmsObject {
-
+class OpenNmsService extends OpenNmsObject
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -13,7 +14,7 @@ class OpenNmsService  extends OpenNmsObject {
     static datasources = [:]
 
     
-    String name ="";
+    String serviceName ="";
     
     Date lastGoodAt =new Date(0);
     
@@ -47,7 +48,7 @@ class OpenNmsService  extends OpenNmsObject {
     ]
     
     static constraints={
-    name(blank:true,nullable:true)
+    serviceName(blank:true,nullable:true)
         
      lastGoodAt(nullable:true)
         
@@ -79,7 +80,4 @@ class OpenNmsService  extends OpenNmsObject {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
-
-
-    
 }

@@ -1,8 +1,9 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class OpenNmsGraph {
-
+class OpenNmsGraph 
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -60,6 +61,4 @@ class OpenNmsGraph {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
-
-    
 }

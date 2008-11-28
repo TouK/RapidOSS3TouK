@@ -1,8 +1,9 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class OpenNmsNode  extends OpenNmsObject {
-
+class OpenNmsNode extends OpenNmsObject
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -13,7 +14,7 @@ class OpenNmsNode  extends OpenNmsObject {
     static datasources = [:]
 
     
-    String name ="";
+    String nodeName ="";
     
     String dpName ="";
     
@@ -63,7 +64,7 @@ class OpenNmsNode  extends OpenNmsObject {
     ]
     
     static constraints={
-    name(blank:true,nullable:true)
+    nodeName(blank:true,nullable:true)
         
      dpName(blank:true,nullable:true)
         
@@ -109,7 +110,4 @@ class OpenNmsNode  extends OpenNmsObject {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
-
-
-    
 }

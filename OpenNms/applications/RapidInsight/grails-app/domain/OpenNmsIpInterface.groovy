@@ -1,8 +1,9 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class OpenNmsIpInterface  extends OpenNmsObject {
-
+class OpenNmsIpInterface extends OpenNmsObject
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -107,7 +108,4 @@ class OpenNmsIpInterface  extends OpenNmsObject {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
-
-
-    
 }

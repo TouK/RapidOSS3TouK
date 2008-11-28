@@ -1,12 +1,7 @@
-import com.ifountain.rcmdb.domain.util.ControllerUtils;
+import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.domain.util.DomainClassUtils;
 
-import datasource.HttpDatasource;
-import org.apache.commons.httpclient.util.URIUtil;
-import org.apache.commons.httpclient.util.ParameterParser;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.util.Date;
+
 class OpenNmsGraphController {
     def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = { redirect(action:list,params:params) }
@@ -236,6 +231,4 @@ class OpenNmsGraphController {
             redirect(action:list)
         }
     }
-
-   
 }

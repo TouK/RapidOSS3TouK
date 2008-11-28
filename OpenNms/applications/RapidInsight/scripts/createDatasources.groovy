@@ -15,7 +15,7 @@ dbDatasourceParams.add([name:"openNmsSnmpInterfacesDs",tableName:"snmpinterface"
 dbDatasourceParams.add([name:"openNmsServicesDs",tableName:"ifservices",tableKeys:"id"]);
 dbDatasourceParams.add([name:"openNmsServiceMapDs",tableName:"servicemap",tableKeys:"ipaddr,servicemapname"]);
 
-def dbConnection=DatabaseConnection.add(driver:"org.postgresql.Driver",url:"jdbc:postgresql://localhost:5432/opennms",username:"opennms",userPassword:"opennms");
+def dbConnection=DatabaseConnection.add(name:"openNmsConn",driver:"org.postgresql.Driver",url:"jdbc:postgresql://localhost:5432/opennms",username:"opennms",userPassword:"opennms");
 if(dbConnection.hasErrors())
 {
     logger.warn("Can not create dbConnection. Reason: ${dbConnection.errors}");
@@ -27,7 +27,7 @@ else
     {
         dsParams.connection=dbConnection;
         def dbDatasource=SingleTableDatabaseDatasource.add(dsParams);
-        if(dbDatasource.hasErros())
+        if(dbDatasource.hasErrors())
         {
             logger.warn("Can not create dbDatasource ${dsParams.name}. Reason: ${dbDatasource.errors}");
         }
@@ -41,7 +41,7 @@ else
 }
 
 
-def httpConnection=HttpConnection.add(baseUrl:"http://localhost:8980/opennms/");
+def httpConnection=HttpConnection.add(name:"openNmsHttpConn",baseUrl:"http://localhost:8980/opennms/");
 if(httpConnection.hasErrors())
 {
     logger.warn("Can not create httpConnection. Reason: ${httpConnection.errors}");
@@ -49,7 +49,7 @@ if(httpConnection.hasErrors())
 else
 {
     logger.warn("Created httpConnection");
-    def httpDatasource=HttpDatasource.add(connection:httpConnection);
+    def httpDatasource=HttpDatasource.add(name:"openNmsHttpDs",connection:httpConnection);
     if(httpDatasource.hasErrors())
     {
         logger.warn("Can not create httpDatasource. Reason: ${httpDatasource.errors}");

@@ -7,7 +7,7 @@ def ifServicesDs = SingleTableDatabaseDatasource.get(name:"openNmsServicesDs")
 def serviceMapDs = SingleTableDatabaseDatasource.get(name:"openNmsServiceMapDs")
 def snmpInterfaceDs = SingleTableDatabaseDatasource.get(name:"openNmsSnmpInterfacesDs")
 def openNmsServer = RsManagementSystem.get(name:"openNmsServer")
-openNmsGraphDs=HttpDatasource.get(name:"opennmsds");
+openNmsGraphDs=HttpDatasource.get(name:"openNmsHttpDs");
 
 openNmsGraphDs.doGetRequest("j_acegi_security_check", ["j_username":"admin","j_password":"admin"]);
 

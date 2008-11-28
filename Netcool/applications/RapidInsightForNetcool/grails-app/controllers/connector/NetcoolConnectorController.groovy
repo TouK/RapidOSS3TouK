@@ -110,7 +110,7 @@ class NetcoolConnectorController {
                     if (!netcoolConnection.hasErrors()) {
                         NetcoolConnectorFactory.removeConnector(netcoolConnector.name);
                         createConversionScript();
-                        if (checkConnection(connectionParams.name)) {
+                        if (ConnectionManager.checkConnection(connectionParams.name)) {
                             flash.message = "NetcoolConnector ${netcoolConnector.name} updated"
                         }
                         else {

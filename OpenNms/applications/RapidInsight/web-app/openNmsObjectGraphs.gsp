@@ -30,7 +30,7 @@
             %>
              Graph url ${graph.url} <br>
              <hr>
-             <img src="openNmsGraph/viewImage?id=${graph.id}">
+             <img src="openNmsShowGraph/show?id=${graph.id}">
              <hr>
             <%
             }

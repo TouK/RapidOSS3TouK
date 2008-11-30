@@ -138,7 +138,10 @@ class RapidCmdbBuild extends Build {
         }
 
         ant.copy(todir: "$env.dist_rapid_server/licenses") {
-            ant.fileset(dir: "$env.rapid_cmdb_cvs/licenses")
+            ant.fileset(dir: "$env.rapid_cmdb_cvs/licenses"){
+            	ant.exclude(name: "grails_license.txt")
+            	ant.exclude(name: "IFountain End User License Agreement.pdf")
+            }
         }
 
         ant.copy(todir: "$env.dist_rapid_suite/plugins") {

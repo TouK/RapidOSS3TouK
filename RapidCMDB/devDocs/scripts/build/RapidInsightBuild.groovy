@@ -27,7 +27,9 @@ class RapidInsightBuild extends Build {
     def build() {
         buildUnix();
         addJreOnTopOfUnixAndZip();
+        makeEnterprise();
     }
+    
     def testBuild() {
         TEST = true;
         createDirectories("Unix", false);
@@ -109,6 +111,7 @@ class RapidInsightBuild extends Build {
             }
         }
         ant.move(file: "${env.dist_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_rapid_suite}/grails-app/views/layouts");
+        ant.move(file: "${env.dist_rapid_server}/licenses/RapidCMDB_license.txt", toFile: "${env.dist_rapid_server}/licenses/RapidInsightCommunityLicense.txt");
         def dbViews = ["databaseConnection", "databaseDatasource", "singleTableDatabaseDatasource"];
         dbViews.each{
            ant.copy(file: "${env.dist_rapid_suite}/web-app/dbDatasources.gsp", toFile: "${env.dist_rapid_suite}/grails-app/views/${it}/list.gsp", overwrite: true); 
@@ -123,6 +126,23 @@ class RapidInsightBuild extends Build {
         smartsBuild.versionNo = versionNo;
         smartsBuild.buildNo = buildNo
         smartsBuild.build();
+    }
+    
+    def makeEnterprise(){
+    	ant.unzip(src: "${env.distribution}/RI_Windows$versionDate" + ".zip", dest: env.distribution + "/WEnt");
+    	ant.unzip(src: "${env.distribution}/RI_Unix$versionDate" + ".zip", dest: env.distribution + "/UEnt");
+    	
+    	ant.delete(file: env.distribution + "/WEnt/RapidServer/licenses/RapidInsightCommunityLicense.txt");
+    	ant.delete(file: env.distribution + "/UEnt/RapidServer/licenses/RapidInsightCommunityLicense.txt");
+    	ant.copy(file: "$env.rapid_cmdb_cvs/licenses/IFountain End User License Agreement.pdf", toDir: env.distribution + "/WEnt/RapidServer/licenses", overwrite: true);
+    	ant.copy(file: "$env.rapid_cmdb_cvs/licenses/IFountain End User License Agreement.pdf", toDir: env.distribution + "/UEnt/RapidServer/licenses", overwrite: true);
+    	
+        ant.zip(destfile: "${env.distribution}/RIE_Windows$versionDate" + ".zip") {
+            ant.zipfileset(dir: "$env.distribution/WEnt")
+        }
+        ant.zip(destfile: "${env.distribution}/RIE_Unix$versionDate" + ".zip") {
+            ant.zipfileset(dir: "$env.distribution/UEnt")
+        }        
     }
 
     def listFiles(File rootDir, String regexp)

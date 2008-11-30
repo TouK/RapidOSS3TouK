@@ -129,6 +129,7 @@ class RapidInsightBuild extends Build {
     }
     
     def makeEnterprise(){
+    	def versionDate = getVersionWithDate();
     	ant.unzip(src: "${env.distribution}/RI_Windows$versionDate" + ".zip", dest: env.distribution + "/WEnt");
     	ant.unzip(src: "${env.distribution}/RI_Unix$versionDate" + ".zip", dest: env.distribution + "/UEnt");
     	

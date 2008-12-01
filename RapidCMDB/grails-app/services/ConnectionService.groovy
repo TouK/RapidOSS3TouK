@@ -56,7 +56,7 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
     }
     public void afterPropertiesSet()
     {
-        String poolCheckIntervalStr = grailsApplication.config.getProperty("connection.pool.checker.interval");
+        String poolCheckIntervalStr = ((GrailsApplication)grailsApplication).config.flatten()["connection.pool.checker.interval"];
         if(poolCheckIntervalStr == null) poolCheckIntervalStr = "10000"
         long poolCheckInterval = Long.parseLong(String.valueOf(poolCheckIntervalStr));
         ConnectionManager.initialize (Logger.getRootLogger(), this, this.getClass().getClassLoader(), poolCheckInterval);

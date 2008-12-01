@@ -17,7 +17,7 @@ import org.hyperic.util.pager.PageControl
 import org.hyperic.util.pager.PageList
 
 class AlertController
-	extends BaseController
+extends BaseController
 {
     def AlertController() {
         setXMLMethods(['list', 'get'])
@@ -25,52 +25,56 @@ class AlertController
 
     def list(xml, params) {
         def pageInfo = new PageInfo(AlertSortField.DATE, true)
-        def overlord     = HQUtil.overlord
-        def rhelp        = new ResourceHelper(overlord)
+        def overlord = HQUtil.overlord
+        def rhelp = new ResourceHelper(overlord)
         def pMan = PlatMan.one
         def ahelp = new AlertHelper(overlord)
         def aMan = AlertMan.one
 
-        def begin = params.getOne('begin')
+        def lasttimestamp = 0;
+        def timestampParam = params.getOne('lasttimestamp')
+        if (timestampParam != null) {
+            lasttimestamp = Long.parseLong(timestampParam);
+        }
 
-        xml.HypericEvents('timestamp':new Date().getTime()) {
+        xml.HypericEvents('timestamp': new Date().getTime()) {
             def alerts = aMan.findAllAlerts()
 
             if (alerts != null) {
                 def i = 0
-                while (i < (alerts.size() / 2)) {  //because findAllAlerts, unexpectedly, returns the alert set twice
+                while (i < (alerts.size() / 2)) {//because findAllAlerts, unexpectedly, returns the alert set twice
                     def myAlert2 = alerts.getAt(i)
                     def myAlert = aMan.findAlertById(myAlert2.id)
-                    if (begin != null) {
-                        if (myAlert.alertValue.ctime.toString() < begin.toString()) {
-                            i++
-                            continue;
-                        }
+                    if (myAlert.alertValue.ctime < lasttimestamp) {
+                        i++
+                        continue;
                     }
                     AlertDefinition alertDef = myAlert.getAlertDefinition()
                     AppdefEntityID aeid = new AppdefEntityID(alertDef.getAppdefType(), alertDef.getAppdefId())
                     AppdefEntityValue aev = new AppdefEntityValue(aeid, AuthzSubjectManagerEJBImpl.getOne().getOverlordPojo()) // this returns the owner of the alert
 
                     xml.HypericEvent('id': myAlert.id,
-                                     'name': alertDef.name,
-                                     'owner': aev.getName(),
-                                     'timestamp': myAlert.ctime,
-                                     'mtime': alertDef.mtime,
-                                     'stateId': myAlert.stateId,
-                                     'ackedBy': myAlert.ackedBy,
-                                     'acknowledgeable': myAlert.alertValue.acknowledgeable,
-                                     'description': alertDef.description,
-                                     'severity':alertDef.severity.code,
-                                     'priority':alertDef.priority,
-                                     'enabled':alertDef.enabled,
-                                     'active':alertDef.active,
-                                     'frequencyType':alertDef.frequencyType,
-                                     'count':alertDef.count,
-                                     'range':alertDef.range,
-                                     'willRecover':alertDef.willRecover,
-                                     'deleted':alertDef.deleted,
-                                     'lastFired':alertDef.lastFired,
-                                     'fixed': myAlert.fixed
+                            'alertDefinition': alertDef.name,
+                            'resourceId':aeid.getID(),
+                            'resourceType':aeid.typeName,
+                            'resource':aev.name,
+                            'timestamp': myAlert.ctime,
+                            'mtime': alertDef.mtime,
+                            'stateId': myAlert.stateId,
+                            'ackedBy': myAlert.ackedBy,
+                            'acknowledgeable': myAlert.alertValue.acknowledgeable,
+                            'description': alertDef.description,
+                            'severity': alertDef.severity.code,
+                            'priority': alertDef.priority,
+                            'enabled': alertDef.enabled,
+                            'active': alertDef.active,
+                            'frequencyType': alertDef.frequencyType,
+                            'count': alertDef.count,
+                            'range': alertDef.range,
+                            'willRecover': alertDef.willRecover,
+                            'deleted': alertDef.deleted,
+                            'lastFired': alertDef.lastFired,
+                            'fixed': myAlert.fixed
                     )
                     i++
                 }
@@ -78,11 +82,11 @@ class AlertController
         }
         xml
     }
-    
+
 
     def get(xml, params) {
-        def overlord     = HQUtil.overlord
-        def rhelp        = new ResourceHelper(overlord)
+        def overlord = HQUtil.overlord
+        def rhelp = new ResourceHelper(overlord)
         def ahelp = new AlertHelper(overlord)
         def aMan = AlertMan.one
 
@@ -122,11 +126,11 @@ class AlertController
                 catch (ServerNotFoundException e) {
                     sers = null
                 }
-                for(svr2 in sers) {
+                for (svr2 in sers) {
                     source.add(svr2)
                 }
                 alerts = new PageList()
-                for(x in source) {
+                for (x in source) {
                     alerts.addAll(aMan.findAlerts(overlord.authzSubjectValue, AppdefEntityID.newServerID(x.id), PageControl.PAGE_ALL))
                 }
                 break;
@@ -141,18 +145,18 @@ class AlertController
                 catch (ServiceNotFoundException e) {
                     servs = null
                 }
-                for(svc2 in servs) {
+                for (svc2 in servs) {
                     def svc = svcMan.findServiceById(svc2.id)
                     source.add(svc)
                 }
                 alerts = new PageList()
-                for(x in source) {
+                for (x in source) {
                     alerts.addAll(aMan.findAlerts(overlord.authzSubjectValue, AppdefEntityID.newServiceID(x.id), PageControl.PAGE_ALL))
                 }
                 break;
         }
 
-        xml.'RapidCMDB'('source':'Hyperic HQ', 'date':new Date()) {
+        xml.'RapidCMDB'('source': 'Hyperic HQ', 'date': new Date()) {
             xml.'Alerts'() {
                 if (alerts != null) {
                     for (myAlert2 in alerts) {
@@ -167,10 +171,10 @@ class AlertController
                         AppdefEntityValue aev = new AppdefEntityValue(aeid, AuthzSubjectManagerEJBImpl.getOne().getOverlordPojo())
 
                         xml.'alert'('id': myAlert.id,
-                                    'alert_name': myAlert.alertDefinition.alertDefinitionValue.name,
-                                    'owner_name': aev.getName(),
-                                    'timestamp': myAlert.alertValue.ctime,
-                                    'fixed': myAlert.fixed
+                                'alert_name': myAlert.alertDefinition.alertDefinitionValue.name,
+                                'owner_name': aev.getName(),
+                                'timestamp': myAlert.alertValue.ctime,
+                                'fixed': myAlert.fixed
                         )
                     }
                 }

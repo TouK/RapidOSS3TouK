@@ -13,7 +13,7 @@ import org.hyperic.hq.hqu.rendit.util.HQUtil
 import org.hyperic.util.pager.PageControl
 
 class StatusController
-	extends BaseController
+extends BaseController
 {
     def StatusController() {
         setXMLMethods(['list', 'detail'])
@@ -21,209 +21,72 @@ class StatusController
 
     def list(xml, params) {
         def pageInfo = new PageInfo(ResourceSortField.NAME, true)
-        def overlord     = HQUtil.overlord
-        def rhelp        = new ResourceHelper(overlord)
+        def overlord = HQUtil.overlord
+        def rhelp = new ResourceHelper(overlord)
 
-        def begins = params.getOne('begin')
-        def plats
-        try {
-            plats  = rhelp.findAllPlatforms() // returns list of type Resource
+        def lasttimestamp = 0;
+        def timestampParam = params.getOne('lasttimestamp')
+        if (timestampParam != null) {
+            lasttimestamp = Long.parseLong(timestampParam);
         }
-        catch (PlatformNotFoundException e) {
-            plats = null
-        }
-        def pMan = PlatMan.one
-        def servMan = serviceMan.one
 
-        xml.HypericObjects('timestamp':new Date().getTime()) {
-            plats.each { plat ->
-                def p = pMan.findPlatformById(plat.instanceId) // returns type Platform
-                def status = null
-                def last_timestamp = "0"
-                for (metric in plat.enabledMetrics) {
-                    if (metric.template.name == "Availability") {
-                        if (metric.lastDataPoint != null) {
-                            last_timestamp = metric.lastDataPoint.timestamp.toString()
-                            status = metric.lastDataPoint.value
-                        }
-                        break;
-                    }
-                }
-                if (begins <= last_timestamp)
-                    xml.HypericObject(type: "platform", name: p.name, Availability: status) // listing the platforms
-            }
+        def plats = rhelp.findAllPlatforms()
+        def servers = rhelp.findAllServers()
+        def services = rhelp.findAllServices()
 
-            def servers
-            try {
-                servers = rhelp.findAllServers() // returns list of type Resource
-            }
-            catch (ServerNotFoundException e) {
-                servers = null
-            }
-
-            if (servers != null) {
-                for (s in servers) {
-                    def ss = rhelp.find('server': s.toServer().id) // returns type Server
-                    def last_timestamp = "0"
+        xml.HypericObjects('timestamp': new Date().getTime()) {
+            xml.Platforms() {
+                plats.each {plat ->
+                    def platform = plat.toPlatform();
                     def status = null
-                    for (metric in ss.enabledMetrics) {
+                    def last_timestamp = 0
+                    for (metric in plat.enabledMetrics) {
                         if (metric.template.name == "Availability") {
-                            if (metric.lastDataPoint != null)
+                            if (metric.lastDataPoint != null) {
                                 last_timestamp = metric.lastDataPoint.timestamp.toString()
                                 status = metric.lastDataPoint.value
+                            }
                             break;
                         }
                     }
-                    if (begins <= last_timestamp)
-                        xml.HypericObject(type: "server", name: ss.name, Availability: status) // listing the servers
+                    if (lasttimestamp <= last_timestamp)
+                        xml.Platform(id: platform.id, name: platform.name, Availability: status)
                 }
             }
-
-            def services
-            try {
-                services = servMan.getAllServices(overlord.authzSubjectValue, PageControl.PAGE_ALL) // returns list of type Resource
-            }
-            catch (ServiceNotFoundException e) {
-                services = null
-            }
-
-            if (services != null) {
-                for (svc2 in services) {
-                    def svc = rhelp.find('service': svc2.getId()) // returns type Service
-
-                    def last_timestamp = "0"
+            xml.Servers() {
+                servers.each {serv ->
+                    def server = serv.toServer();
                     def status = null
-                    for (metric in svc.enabledMetrics) {
+                    def last_timestamp = 0
+                    for (metric in serv.enabledMetrics) {
                         if (metric.template.name == "Availability") {
-                            if (metric.lastDataPoint != null)
+                            if (metric.lastDataPoint != null) {
                                 last_timestamp = metric.lastDataPoint.timestamp.toString()
                                 status = metric.lastDataPoint.value
+                            }
                             break;
                         }
                     }
-                    if (begins <= last_timestamp)
-                        xml.HypericObject(type: "service", name: svc.name, Availability: status) // listing the services
+                    if (lasttimestamp <= last_timestamp)
+                        xml.Server(id: server.id, name: server.name, Availability: status)
                 }
             }
-        }
-        xml
-    }
-
-
-    def detail(xml, params) {
-        def pageInfo = new PageInfo(ResourceSortField.NAME, true)
-        def overlord     = HQUtil.overlord
-        def rhelp        = new ResourceHelper(overlord)
-
-        def begins = params.getOne('begin')
-        def plats
-        try {
-            plats = rhelp.findAllPlatforms() // returns list of type Resource
-        }
-        catch (PlatformNotFoundException e) {
-            plats = null
-        }
-        def pMan = PlatMan.one
-        def serMan = serverMan.one
-        def servMan = serviceMan.one
-
-        xml.HypericObjects('timestamp':new Date().getTime()) {
-            plats.each { plat ->
-
-                def last_timestamp = "0"
-                for (metric in plat.enabledMetrics) {
-                    if (metric.template.name == "Availability") {
-                        if (metric.lastDataPoint != null)
-                            last_timestamp = metric.lastDataPoint.timestamp.toString()
-                        break;
-                    }
-                }
-
-                if (begins <= last_timestamp || last_timestamp == "0") {
-                    def p = pMan.findPlatformById(plat.instanceId)  // returns type Platform
-                    xml.HypericObject(type: "platform", name: p.name) // listing the platforms
-                }
-            }
-
-            def servers
-            try {
-                servers = rhelp.findAllServers() // returns list of type Resource
-            }
-            catch (ServerNotFoundException e) {
-                servers = null
-            }
-
-            if (servers != null) {
-                for (s in servers) {
-                    def ss = rhelp.find('server': s.toServer().id) // returns list of type Server
-                    def last_timestamp = "0"
-                    for (metric in ss.enabledMetrics) {
+            xml.Services() {
+                services.each {serv ->
+                    def service = serv.toService();
+                    def status = null
+                    def last_timestamp = 0
+                    for (metric in serv.enabledMetrics) {
                         if (metric.template.name == "Availability") {
-                            if (metric.lastDataPoint != null)
+                            if (metric.lastDataPoint != null) {
                                 last_timestamp = metric.lastDataPoint.timestamp.toString()
+                                status = metric.lastDataPoint.value
+                            }
                             break;
                         }
                     }
-
-                    if (begins <= last_timestamp || last_timestamp == "0") {
-                        def platName
-                        def plat
-                        try {
-                            plat = pMan.getPlatformByServer(overlord.authzSubjectValue, s.toServer().id) // returns type PlatformValue
-                            if (plat != null)
-                                platName = plat.getName()
-                            else platName = ""
-                        }
-                        catch (PlatformNotFoundException e) {
-                            platName = ""
-                        }
-
-                        xml.HypericObject(type: "server", name: ss.name, platform: platName) // listing the servers
-                    }
-                }
-            }
-
-
-            def services
-            try {
-                services = servMan.getAllServices(overlord.authzSubjectValue, PageControl.PAGE_ALL) // returns list of type Resource
-            }
-            catch (ServiceNotFoundException e) {
-                services = null
-            }
-
-            if (services != null) {
-                for (svc2 in services) {
-                    def svc = rhelp.find('service': svc2.getId()) // returns list of type Service
-                    def last_timestamp = "0"
-                    for (metric in svc.enabledMetrics) {
-                        if (metric.template.name == "Availability") {
-                            if (metric.lastDataPoint != null)
-                                last_timestamp = metric.lastDataPoint.timestamp.toString()
-                            break;
-                        }
-                    }
-
-                    if (begins <= last_timestamp || last_timestamp == "0") {
-                        def server
-                        def serverName
-                        def platName
-                        try {
-                            server = serMan.getServerByService(overlord.authzSubjectValue, svc2.id) // returns type ServerValue
-                            serverName = server.getName()
-                            platName = pMan.getPlatformByServer(overlord.authzSubjectValue, server.id).getName() // returns type PlatformValue
-                        }
-                        catch (ServerNotFoundException se) {
-                            serverName = ""
-                            platName = ""
-                        }
-                        catch (PlatformNotFoundException pe) {
-                            platName = ""
-                        }
-
-
-                        xml.HypericObject(type: "service", name: svc.name, server: serverName, platform: platName) // listing the services
-                    }
+                    if (lasttimestamp <= last_timestamp)
+                        xml.Service(id: service.id, name: service.name, Availability: status)
                 }
             }
         }

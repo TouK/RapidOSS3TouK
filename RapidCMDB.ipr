@@ -263,7 +263,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Apg/Apg.iml" filepath="$PROJECT_DIR$/Apg/Apg.iml" />
       <module fileurl="file://$PROJECT_DIR$/Hyperic/Hyperic.iml" filepath="$PROJECT_DIR$/Hyperic/Hyperic.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Netcool/Netcool.iml" filepath="$PROJECT_DIR$/Netcool/Netcool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Netcool/Netcool.iml" filepath="$PROJECT_DIR$/../Netcool/Netcool.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" filepath="$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidInsight/RapidInsight.iml" filepath="$PROJECT_DIR$/RapidInsight/RapidInsight.iml" />
@@ -492,6 +492,7 @@
     </option>
   </component>
   <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/../Netcool" vcs="svn" />
     <mapping directory="$PROJECT_DIR$" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../ThirdParty" vcs="svn" />
   </component>
@@ -539,8 +540,8 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
     </library>
     <library name="quartz">
       <CLASSES>

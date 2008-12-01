@@ -21,7 +21,7 @@ class ExporterController
 extends BaseController
 {
     def ExporterController() {
-        setXMLMethods(['list', 'platform', 'server', 'service', 'alert'])
+        setXMLMethods(['list', 'get'])
     }
 
 
@@ -58,7 +58,7 @@ extends BaseController
                         def platName = "";
                         def platformId = "";
                         try {
-                            plat = pMan.getPlatformByServer(overlord.authzSubjectValue, s.toServer().id)
+                            def plat = pMan.getPlatformByServer(overlord.authzSubjectValue, s.toServer().id)
                             if (plat != null) {
                                 platName = plat.getName()
                                 platformId = plat.id;

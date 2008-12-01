@@ -53,7 +53,6 @@ class NetcoolModuleBuild extends Build {
         ant.copy(todir: "$env.dist_modules_rapid_suite") {
             ant.fileset(dir: "$env.rapid_netcool/applications/RapidInsightForNetcool")
         }
-        def versionDate = getVersionWithDate();
         ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
             ant.arg(value: "-file");
             ant.arg(value: "${env.dist_modules_rapid_suite}/grails-app/views/layouts/indexLayout.gsp");

@@ -35,6 +35,7 @@ domain.property.interceptorclass = "com.ifountain.rcmdb.domain.property.RapidCmd
 plugin {
     excludes = "hibernate"
 }
+connection.pool.checker.interval = 10000;
 rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/generatedModels".toString();
 rapidCMDB.base.dir = System.getProperty("base.dir");
 rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss";

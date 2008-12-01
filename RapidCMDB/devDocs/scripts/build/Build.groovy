@@ -45,7 +45,7 @@ class Build extends Parent{
 		versionNo = verReader.readLine().substring(9);
 		
 		buildNo =  new java.text.SimpleDateFormat("yyMMddHH").format(new Date(System.currentTimeMillis()));
-		verFile.append("\rBuild: " + buildNo);
+		verFile.append("\r\nBuild: " + buildNo);
 	}
 	
     def createPlugin(pluginDir, pluginResources)

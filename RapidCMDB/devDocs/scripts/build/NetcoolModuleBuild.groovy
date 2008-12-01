@@ -22,6 +22,9 @@ package build;
  * Time: 4:45:18 PM
  */
 class NetcoolModuleBuild extends Build {
+	def version = "$env.rapid_smarts/RINetcoolVersion.txt";
+	def versionInBuild = "$env.dist_modules_rapid_suite/RINetcoolVersion.txt"; 
+	 
     static void main(String[] args) {
         NetcoolModuleBuild netcoolModuleBuild = new NetcoolModuleBuild();
         netcoolModuleBuild.run(args);
@@ -32,6 +35,9 @@ class NetcoolModuleBuild extends Build {
     }
     def build() {
         clean();
+        ant.copy(file: version, tofile: versionInBuild);
+        setVersionAndBuildNumber(versionInBuild);
+        def versionDate = getVersionWithDate();
         ant.copy(todir: "$env.dist_modules_rapid_suite/grails-app") {
             ant.fileset(dir: "$env.rapid_netcool/grails-app")
         }
@@ -60,7 +66,7 @@ class NetcoolModuleBuild extends Build {
                 ant.classpath(refid: "classpath");
         }
         ant.move(file: "${env.dist_modules_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
-        ant.zip(destfile: "$env.distribution/NetcoolPlugin.zip") {
+        ant.zip(destfile: "$env.distribution/NetcoolPlugin_$versionDate.zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }
     }

@@ -23,6 +23,8 @@ package build
  * Time: 4:45:18 PM
  */
 class SmartsModuleBuild extends Build {
+	 def version = "$env.rapid_smarts/RISmartsVersion.txt";
+	 def versionInBuild = "$env.dist_modules_rapid_suite/RISmartsVersion.txt";
 
     static void main(String[] args) {
         SmartsModuleBuild smartsModuleBuild = new SmartsModuleBuild();
@@ -43,6 +45,9 @@ class SmartsModuleBuild extends Build {
 
     def build() {
         clean();
+        ant.copy(file: version, tofile: versionInBuild);
+        setVersionAndBuildNumber(versionInBuild);
+        def versionDate = getVersionWithDate();
         ant.javac(srcdir: "$env.rapid_smarts/src/java", destdir: env.rapid_smarts_build, excludes: getExcludedClasses()) {
             ant.classpath(refid: "classpath");
         }
@@ -64,7 +69,6 @@ class SmartsModuleBuild extends Build {
         ant.copy(todir: "$env.dist_modules_rapid_suite") {
             ant.fileset(dir: "$env.rapid_smarts/applications/RapidInsightForSmarts")
         }
-        def versionDate = getVersionWithDate();
         ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
             ant.arg(value: "-file");
             ant.arg(value: "${env.dist_modules_rapid_suite}/grails-app/views/layouts/indexLayout.gsp");
@@ -77,7 +81,7 @@ class SmartsModuleBuild extends Build {
                 ant.classpath(refid: "classpath");
         }
         ant.move(file: "${env.dist_modules_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
-        ant.zip(destfile: "$env.distribution/SmartsPlugin.zip") {
+        ant.zip(destfile: "$env.distribution/SmartsPlugin_$versionDate.zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }
     }

@@ -12,6 +12,8 @@ tagSvn() {
     svn copy http://dev.ifountain.org/repos/os/ThirdParty http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging ThirdParty"
     svn copy http://dev.ifountain.org/repos/os/RapidModules http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging RapidModules"    
     svn copy http://dev.ifountain.org/repos/os/LicencedJars http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging LicencedJars"    
+    svn copy http://dev.ifountain.org/repos/os/Netcool http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Netcool"    
+    svn copy http://dev.ifountain.org/repos/os/Smarts http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Smarts"    
 }
 
 checkOutTag() {
@@ -26,9 +28,13 @@ checkOutTag() {
     rm -rf RapidModules
     rm -rf ThirdParty
     rm -rf LicencedJars
+    rm -rf Netcool
+    rm -rf Smarts
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/RapidModules ./RapidModules
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/ThirdParty ./ThirdParty
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/LicencedJars ./LicencedJars
+    svn checkout file:///var/www/svn/os/tags/$TAG_NAME/Netcool ./Netcool
+    svn checkout file:///var/www/svn/os/tags/$TAG_NAME/Smarts ./Smarts
 }
 runTestBuildAndJavaTests() {
     rm -rf TestResults/

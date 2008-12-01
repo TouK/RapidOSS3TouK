@@ -65,7 +65,7 @@ class NetcoolModuleBuild extends Build {
                 ant.classpath(refid: "classpath");
         }
         ant.move(file: "${env.dist_modules_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
-        ant.zip(destfile: "$env.distribution/NetcoolPlugin_$versionDate.zip") {
+        ant.zip(destfile: "$env.distribution/NetcoolPlugin_$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }
     }

@@ -12,7 +12,7 @@
       <sourceFolder url="file://$MODULE_DIR$/applications/RapidInsight/grails-app/controllers" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/applications/RapidInsight/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/applications/RapidInsight/grails-app/views" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/applications/RapidInsight/opearations" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/applications/RapidInsight/operations" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/conf" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/controllers" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/domain" isTestSource="false" />

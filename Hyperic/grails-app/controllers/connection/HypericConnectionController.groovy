@@ -86,7 +86,7 @@ class HypericConnectionController {
             hypericConnection.update(ControllerUtils.getClassProperties(params, HypericConnection));
             if(!hypericConnection.hasErrors()) {
                 flash.message = "HypericConnection ${params.id} updated"
-                redirect(action:show,id:hypericConnection.id)
+                redirect(action:list)
             }
             else {
                 render(view:'edit',model:[hypericConnection:hypericConnection])
@@ -108,7 +108,7 @@ class HypericConnectionController {
         def hypericConnection = HypericConnection.add(ControllerUtils.getClassProperties(params, HypericConnection))
         if(!hypericConnection.hasErrors()) {
             flash.message = "HypericConnection ${hypericConnection.id} created"
-            redirect(action:show,id:hypericConnection.id)
+            redirect(action:list)
         }
         else {
             render(view:'create',model:[hypericConnection:hypericConnection])

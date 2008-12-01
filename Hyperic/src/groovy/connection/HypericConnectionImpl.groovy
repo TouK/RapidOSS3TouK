@@ -23,14 +23,13 @@ class HypericConnectionImpl extends HttpConnectionImpl {
 
     public void disconnect() {
         def completeUrl = getBaseUrl() + "/Logout.do";
-        def params = [:];
-        def response = getHttpConnection().doGetRequest(completeUrl, params);
+        def response = getHttpConnection().doGetRequest(completeUrl, [:]);
         if (response.indexOf("LoginForm") < 0) {
             throw new Exception("Could not logout");
         }
     }
 
-    public void _init(ConnectionParam param) throws Exception {
+    public void init(ConnectionParam param) throws Exception {
         super.init(param);
         this.username = checkParam(USERNAME);
         this.password = checkParam(PASSWORD);
@@ -38,8 +37,8 @@ class HypericConnectionImpl extends HttpConnectionImpl {
 
     public boolean checkConnection() {
         def completeUrl = getBaseUrl() + "/j_security_check.do";
-        def params = ["j_username": username, "j_password": password];
-        def response = getHttpConnection().doGetRequest(completeUrl, params);
+        def urlParams = ["j_username": this.username, "j_password": this.password];
+        def response = getHttpConnection().doGetRequest(completeUrl, urlParams);
         if (response.indexOf("LoginForm") > -1) {
             return false;
         }

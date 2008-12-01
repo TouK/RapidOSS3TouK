@@ -1,5 +1,9 @@
 import datasource.*;
 
+def hypericDatasources = HypericDatasource.list();
+if(hypericDatasources.size() == 0){
+    logger.warn("Cannot get Hyperic events, because no hyperic datasource is defined");
+}
 def hypericDs = HttpDatasource.get(name:"hyperic");
 
 // Running the hyperic script

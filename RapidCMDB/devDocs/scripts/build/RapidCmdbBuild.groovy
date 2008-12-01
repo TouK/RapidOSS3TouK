@@ -343,7 +343,7 @@ class RapidCmdbBuild extends Build {
     def buildAdditionalPlugins(){
     	rapidUiBuild.run([]);
     	riBuild.run([]);
-    	hypericBuild.run([]);
+    	//hypericBuild.run([]);
     }
     
     def buildModules(){

@@ -34,6 +34,8 @@ class HypericBuild extends Build {
         ant.copy(todir: "$env.dist_modules_rapid_suite") {
             ant.fileset(dir: "$env.rapid_hyperic/applications/RapidInsight")
         }
+
+        ant.copy(file: "${env.dist_modules_rapid_suite}/web-app/hypericAdmin.gsp", toFile: "${env.dist_modules_rapid_suite}/grails-app/views/hypericConnection/list.gsp", overwrite: true); 
         ant.zip(destfile: "$env.distribution/HypericPlugin.zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }

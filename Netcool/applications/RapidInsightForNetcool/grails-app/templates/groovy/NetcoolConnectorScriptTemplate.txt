@@ -1,5 +1,0 @@
-import connector.NetcoolConnector
-import connector.NetcoolConnectorFactory
-def netcoolConnector = NetcoolConnector.get(name:"${connectorName}");
-def connector = NetcoolConnectorFactory.createConnector(netcoolConnector);
-connector.run();

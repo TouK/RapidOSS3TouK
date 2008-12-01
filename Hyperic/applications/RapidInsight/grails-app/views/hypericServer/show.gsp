@@ -35,37 +35,98 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">username:</td>
+                    <td valign="top" class="name">name:</td>
                     
-                    <td valign="top" class="value">${hypericServer.username}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">event_timestamp:</td>
-                    
-                    <td valign="top" class="value">${hypericServer.event_timestamp}</td>
+                    <td valign="top" class="value">${hypericServer.name}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">password:</td>
+                    <td valign="top" class="name">availability:</td>
                     
-                    <td valign="top" class="value">${hypericServer.password}</td>
-                    
-                </tr>
-                
-                <tr class="prop">
-                    <td valign="top" class="name">relation_timestamp:</td>
-                    
-                    <td valign="top" class="value">${hypericServer.relation_timestamp}</td>
+                    <td valign="top" class="value">${hypericServer.availability}</td>
                     
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">status_timestamp:</td>
+                    <td valign="top" class="name">className:</td>
                     
-                    <td valign="top" class="value">${hypericServer.status_timestamp}</td>
+                    <td valign="top" class="value">${hypericServer.className}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">description:</td>
+                    
+                    <td valign="top" class="value">${hypericServer.description}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">displayName:</td>
+                    
+                    <td valign="top" class="value">${hypericServer.displayName}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">hypericName:</td>
+                    
+                    <td valign="top" class="value">${hypericServer.hypericName}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">isManaged:</td>
+                    
+                    <td valign="top" class="value">${hypericServer.isManaged}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">location:</td>
+                    
+                    <td valign="top" class="value">${hypericServer.location}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${hypericServer.memberOfGroup}">
+                                <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">platform:</td>
+                    
+                    <td valign="top" class="value"><g:link controller="hypericPlatform" action="show" id="${hypericServer?.platform?.id}">${hypericServer?.platform}</g:link></td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${hypericServer.rsDatasource}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">services:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="s" in="${hypericServer.services}">
+                                <li><g:link controller="hypericService" action="show" id="${s.id}">${s}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
                     
                 </tr>
                 

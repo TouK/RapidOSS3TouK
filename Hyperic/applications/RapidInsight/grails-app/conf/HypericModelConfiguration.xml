@@ -1,0 +1,27 @@
+<RsModel>
+    <Models>
+        <Model Name='HypericResource' Parent='RsTopologyObject'>
+            <Properties>
+                <Property Name='hypericName' Type='string'/>
+                <Property Name='availability' Type='float'/>
+                <Property Name='location' Type='string'/>
+            </Properties>
+        </Model>
+        <Model Name='HypericPlatform' Parent='HypericResource'>
+            <Properties>
+            </Properties>
+        </Model>
+        <Model Name='HypericServer' Parent='HypericResource'>
+            <Properties>
+            </Properties>
+        </Model>
+        <Model Name='HypericService' Parent='HypericResource'>
+            <Properties>
+            </Properties>
+        </Model>
+    </Models>
+    <Relations>
+		<Relation From="HypericPlatform" To="HypericServer" Name="servers" ReverseName="platform" Type="OneToMany"></Relation>
+		<Relation From="HypericServer" To="HypericService" Name="services" ReverseName="server" Type="OneToMany"></Relation>
+	</Relations>
+</RsModel>

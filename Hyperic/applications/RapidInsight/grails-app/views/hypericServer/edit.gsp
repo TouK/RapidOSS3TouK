@@ -35,46 +35,129 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="username">username:</label>
+                            <label for="name">name:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'username','errors')}">
-                            <input type="text" id="username" name="username" value="${fieldValue(bean:hypericServer,field:'username')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="event_timestamp">event_timestamp:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'event_timestamp','errors')}">
-                            <input type="text" id="event_timestamp" name="event_timestamp" value="${fieldValue(bean:hypericServer,field:'event_timestamp')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'name','errors')}">
+                            <input type="text" id="name" name="name" value="${fieldValue(bean:hypericServer,field:'name')}"/>
                         </td>
                     </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="password">password:</label>
+                            <label for="availability">availability:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'password','errors')}">
-                            <input type="text" id="password" name="password" value="${fieldValue(bean:hypericServer,field:'password')}"/>
-                        </td>
-                    </tr>
-                    
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="relation_timestamp">relation_timestamp:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'relation_timestamp','errors')}">
-                            <input type="text" id="relation_timestamp" name="relation_timestamp" value="${fieldValue(bean:hypericServer,field:'relation_timestamp')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'availability','errors')}">
+                            <input type="text" id="availability" name="availability" value="${fieldValue(bean:hypericServer,field:'availability')}" />
                         </td>
                     </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="status_timestamp">status_timestamp:</label>
+                            <label for="className">className:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'status_timestamp','errors')}">
-                            <input type="text" id="status_timestamp" name="status_timestamp" value="${fieldValue(bean:hypericServer,field:'status_timestamp')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'className','errors')}">
+                            <input type="text" id="className" name="className" value="${fieldValue(bean:hypericServer,field:'className')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="description">description:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'description','errors')}">
+                            <input type="text" id="description" name="description" value="${fieldValue(bean:hypericServer,field:'description')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="displayName">displayName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'displayName','errors')}">
+                            <input type="text" id="displayName" name="displayName" value="${fieldValue(bean:hypericServer,field:'displayName')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="hypericName">hypericName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'hypericName','errors')}">
+                            <input type="text" id="hypericName" name="hypericName" value="${fieldValue(bean:hypericServer,field:'hypericName')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="isManaged">isManaged:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'isManaged','errors')}">
+                            <g:checkBox name="isManaged" value="${hypericServer?.isManaged}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="location">location:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'location','errors')}">
+                            <input type="text" id="location" name="location" value="${fieldValue(bean:hypericServer,field:'location')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="memberOfGroup">memberOfGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${hypericServer?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':hypericServer?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':hypericServer?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="platform">platform:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'platform','errors')}">
+                            <g:select optionKey="id" from="${HypericPlatform.list()}" name="platform.id" value="${hypericServer?.platform?.id}" noSelection="['null':'']"></g:select>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:hypericServer,field:'rsDatasource')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="services">services:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:hypericServer,field:'services','errors')}">
+                            
+<ul>
+<g:each var="s" in="${hypericServer?.services?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="hypericService" action="show" id="${s.id}">${s}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':hypericServer?.id, 'relationName':'services', 'relatedObjectId':s.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':hypericServer?.id, 'relationName':'services']" action="addTo">Add HypericService</g:link>
+
                         </td>
                     </tr>
                     

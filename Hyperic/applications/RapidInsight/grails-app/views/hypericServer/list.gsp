@@ -29,7 +29,7 @@
                     
                     <g:sortableColumn property="id" title="id"/>
                     
-                    <g:sortableColumn property="username" title="username"/>
+                    <g:sortableColumn property="name" title="name"/>
                     
                 </tr>
             </thead>
@@ -39,7 +39,7 @@
                         
                         <td><g:link action="show" id="${hypericServer.id}">${hypericServer.id?.encodeAsHTML()}</g:link></td>
                         
-                        <td>${hypericServer.username?.encodeAsHTML()}</td>
+                        <td>${hypericServer.name?.encodeAsHTML()}</td>
                         
                     </tr>
                 </g:each>

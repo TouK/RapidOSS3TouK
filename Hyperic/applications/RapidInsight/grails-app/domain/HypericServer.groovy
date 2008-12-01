@@ -1,57 +1,59 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class HypericServer {
-
+class HypericServer extends HypericResource
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "platform", "services"];
+    
+    
     };
-    static datasources = ["RCMDB":["keys":["username":["nameInDs":"username"]]]]
+    static datasources = [:]
 
     
-    java.lang.String event_timestamp ="";
+    Long id ;
     
-    java.lang.String relation_timestamp ="";
-    
-    java.lang.String status_timestamp ="";
-    
-    java.lang.String username ="";
-    
-    java.lang.String password ="";
+    Long version ;
     
     org.springframework.validation.Errors errors ;
     
-    java.lang.Object __operation_class__ ;
+    Object __operation_class__ ;
     
-
-    static relations = [:]
+    Object __is_federated_properties_loaded__ ;
+    
+    HypericPlatform platform ;
+    
+    List services =[];
+    
+    
+    static relations = [
+    
+        platform:[type:HypericPlatform, reverseName:"servers", isMany:false]
+    
+        ,services:[type:HypericService, reverseName:"server", isMany:true]
+    
+    ]
+    
     static constraints={
-    event_timestamp(blank:true,nullable:true)
+    __operation_class__(nullable:true)
         
-     relation_timestamp(blank:true,nullable:true)
-        
-     status_timestamp(blank:true,nullable:true)
-        
-     username(blank:false,nullable:false,key:[])
-        
-     password(blank:true,nullable:true)
-        
-     __operation_class__(nullable:true)
+     __is_federated_properties_loaded__(nullable:true)
         
      errors(nullable:true)
         
+     platform(nullable:true)
+        
      
     }
+
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "platform", "services"];
     
-    public String toString()
-    {
-    	return "${getClass().getName()}[username:$username]";
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
     }
-    
     //AUTO_GENERATED_CODE
-    
 }

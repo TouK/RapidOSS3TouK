@@ -22,7 +22,7 @@ package build;
  * Time: 4:45:18 PM
  */
 class NetcoolModuleBuild extends Build {
-	def version = "$env.rapid_smarts/RINetcoolVersion.txt";
+	def version = "$env.rapid_netcool/RINetcoolVersion.txt";
 	def versionInBuild = "$env.dist_modules_rapid_suite/RINetcoolVersion.txt"; 
 	 
     static void main(String[] args) {

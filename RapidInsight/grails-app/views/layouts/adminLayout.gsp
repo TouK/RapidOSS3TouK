@@ -21,8 +21,7 @@
     <g:layoutHead/>
 </head>
 <body onload="${pageProperty(name: 'body.onload')}" class="yui-skin-sam rimain">
-<div style="padding-left:10px;padding-top:5px;"><img src="${createLinkTo(dir: 'images', file: 'RapidInsight-white.png')}"></div>
-<div class="nav"><span class="menuButton"><a href="${createLinkTo(dir:'auth/logout?targetUri=/admin.gsp')}" class="logout">Logout</a></span></div>
+<<div style="padding-left:10px;padding-top:5px;"><img src="${createLinkTo(dir: 'images', file: 'RapidInsight-white.png')}"><span class="menuButton"><a href="${createLinkTo(dir:'auth/logout?targetUri=/admin.gsp')}" class="logout">Logout</a></span></div>
 <br>
 <p/>
 <p/>
@@ -40,7 +39,7 @@
         <li class="${currentUrl.matches('.*/ldapConnection/.*') ? "selected" : ""}"><g:link action="list" controller="ldapConnection"><em>LDAP</em></g:link></li>
         %{--<li class="${(currentUrl.indexOf('datasources.gsp') > -1 || currentUrl.matches('.*/.*^([dD]atabase).*(Datasource|Connection)/.*')) ? "selected" : ""}"><a href="${createLinkTo(file: 'datasources.gsp')}"><em>Datasources</em></a></li>--}%
     </ul>
-    <div style="margin:20px 15px 10px;">
+    <div style="margin:5px 5px 5px;">
         <g:layoutBody/>
     </div>
 </div>

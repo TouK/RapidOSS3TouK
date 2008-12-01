@@ -25,30 +25,32 @@ package com.ifountain.core.connection;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class BaseConnection implements IConnection {
-    protected boolean isConnectedOnce = false;
+    protected boolean isConnected = false;
     protected ConnectionParam params;
-
-    public void _connect() throws Exception {
+    protected long timeout;
+    public final void _connect() throws Exception {
         connect();
-        isConnectedOnce = true;
+        isConnected = true;
     }
 
-    public void _disconnect(){
+    public final void _disconnect(){
         disconnect();
-        isConnectedOnce = false;
+        isConnected = false;
     }
 
-    public boolean isConnectedOnce() {
-        return isConnectedOnce;
-    }
-
-    public void setConnectedOnce(boolean isConnectedOnce) {
-        this.isConnectedOnce = isConnectedOnce;
-    }
     public ConnectionParam getParameters() {
-           return params;
-       }    
+        return params;
+    }
 
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
+    public final boolean isConnected() {
+        return isConnected;
+    }
+    public long getTimeout() {
+        return timeout;
+    }
     protected abstract void connect() throws Exception;
     protected abstract void disconnect();
 

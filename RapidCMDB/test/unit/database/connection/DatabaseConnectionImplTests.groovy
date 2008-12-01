@@ -99,7 +99,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
         conn.init(param);
         conn.connect();
-        assertTrue(conn.isConnected());
+        assertTrue(conn.checkConnection());
         assertFalse(conn.getConnection().isClosed());
     }
     
@@ -107,10 +107,10 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
         conn.init(param);
         conn.connect();
-        assertTrue(conn.isConnected());
+        assertTrue(conn.checkConnection());
         assertFalse(conn.getConnection().isClosed());
         conn.disconnect();
-        assertFalse(conn.isConnected());
+        assertFalse(conn.checkConnection());
         assertTrue(conn.getConnection().isClosed());
     }
 }

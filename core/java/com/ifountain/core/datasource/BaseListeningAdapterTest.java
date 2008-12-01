@@ -22,13 +22,6 @@
  */
 package com.ifountain.core.datasource;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-
 import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.comp.test.util.WaitAction;
 import com.ifountain.comp.test.util.threads.TestAction;
@@ -41,6 +34,8 @@ import com.ifountain.core.connection.mocks.MockConnectionImpl;
 import com.ifountain.core.datasource.mocks.MockBaseListeningAdapter;
 import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl;
 import com.ifountain.core.test.util.RapidCoreTestCase;
+
+import java.util.*;
 
 
 public class BaseListeningAdapterTest extends RapidCoreTestCase {
@@ -66,6 +61,7 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
     {
         listeningAdapter.subscribe();
         assertTrue(listeningAdapter.getConnection().isConnected());
+        assertTrue(listeningAdapter.getConnection().checkConnection());
         assertTrue(listeningAdapter.isSubscribed());
     }
     
@@ -132,6 +128,7 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         param.setMaxNumberOfConnectionsInPool(1);
         listeningAdapter.subscribe();
         assertTrue(listeningAdapter.getConnection().isConnected());
+        assertTrue(listeningAdapter.getConnection().checkConnection());
         assertTrue(listeningAdapter.isSubscribed());
         
         listeningAdapter.unsubscribe();

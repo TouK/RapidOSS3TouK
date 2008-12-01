@@ -51,7 +51,7 @@ public class RapidCoreTestCase extends RapidTestCase
     protected void setUp() throws Exception
     {
         super.setUp();
-        ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), RapidCoreTestCase.class.getClassLoader());
+        ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), RapidCoreTestCase.class.getClassLoader(), 1000);
     }
     
     @Override

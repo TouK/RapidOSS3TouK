@@ -26,7 +26,7 @@ import org.apache.commons.pool.PoolableObjectFactory;
 import com.ifountain.core.connection.exception.ConnectionException;
 import com.ifountain.core.connection.exception.ConnectionInitializationException;
  
-public class PoolableConnectionFactory implements PoolableObjectFactory
+public class PoolableConnectionFactory extends BaseConnectionFactory
 {
 
     private ConnectionParam param;
@@ -35,35 +35,23 @@ public class PoolableConnectionFactory implements PoolableObjectFactory
     /**
      * @param param
      */
-    public PoolableConnectionFactory(ClassLoader classLoader, ConnectionParam param)
+    public PoolableConnectionFactory(ClassLoader classLoader, ConnectionParam param, Class timeoutStrategyClass)
     {
+        super(timeoutStrategyClass);
         this.classLoader = classLoader;
         this.param = param;
     }
 
     public void activateObject(Object arg0) throws Exception
     {
-        IConnection ds = (IConnection) arg0;
-        if(!ds.isConnectedOnce())
-        {
-            try
-            {
-                ds._connect();
-            }
-            catch (Throwable e)
-            {
-                throw new ConnectionException(e);
-            }
-        }
     }
 
-    public void destroyObject(Object arg0) throws Exception
+    protected void _destroyObject(IConnection conn) throws Exception
     {
-        IConnection conn = (IConnection) arg0;
         conn._disconnect();
     }
 
-    public Object makeObject() throws Exception
+    protected IConnection _makeObject(long timeout) throws Exception
     {
         String className = param.getConnectionClass();
         IConnection conn;
@@ -76,7 +64,18 @@ public class PoolableConnectionFactory implements PoolableObjectFactory
             throw new ConnectionInitializationException("Could not initialized connection " + param.getConnectionName(),e);
         }
         conn.init(param);
-        activateObject(conn);
+        if(timeout > 0)
+        {
+            conn.setTimeout(timeout);
+        }
+        try
+        {
+            conn._connect();
+        }
+        catch (Throwable e)
+        {
+            throw new ConnectionException(e);
+        }
         return conn;
     }
 
@@ -88,9 +87,10 @@ public class PoolableConnectionFactory implements PoolableObjectFactory
     {
         try
         {
-            boolean result1 = (arg0.getClass() == classLoader.loadClass(arg0.getClass().getName())); 
-            boolean result2 = ((IConnection)arg0).getParameters().equals(param);
-            return result1 && result2;
+            IConnection conn = (IConnection)arg0;
+            boolean result1 = (conn.getClass() == classLoader.loadClass(conn.getClass().getName())); 
+            boolean result2 = conn.getParameters().equals(param);
+            return result1 && result2 && conn.isConnected();
         }
         catch (ClassNotFoundException e)
         {

@@ -9,6 +9,7 @@ import org.apache.log4j.Logger
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import org.codehaus.groovy.grails.commons.GrailsApplication
 
 class ConnectionService implements InitializingBean, DisposableBean, ConnectionParameterSupplier{
     boolean transactional = false
@@ -55,7 +56,10 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
     }
     public void afterPropertiesSet()
     {
-        ConnectionManager.initialize (Logger.getRootLogger(), this, this.getClass().getClassLoader());
+        String poolCheckIntervalStr = grailsApplication.config.getProperty("connection.pool.checker.interval");
+        if(poolCheckIntervalStr == null) poolCheckIntervalStr = "10000"
+        long poolCheckInterval = Long.parseLong(String.valueOf(poolCheckIntervalStr));
+        ConnectionManager.initialize (Logger.getRootLogger(), this, this.getClass().getClassLoader(), poolCheckInterval);
     }
 
     public void destroy()

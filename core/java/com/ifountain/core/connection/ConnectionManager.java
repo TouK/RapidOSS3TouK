@@ -44,7 +44,9 @@ public class ConnectionManager
     private static ConnectionParameterSupplier paramSupplier;
     private static Map<String, ObjectPool> pools;
     private static Logger logger;
+    private static long poolConnectionCheckerInterval;
     private static ClassLoader classLoader;
+    private static Class timeoutStrategyClass;
     private static Map<ObjectPool, PoolableConnectionFactory> poolFactoryMap = new HashMap<ObjectPool, PoolableConnectionFactory>();
     private ConnectionManager()
     {
@@ -55,7 +57,7 @@ public class ConnectionManager
         boolean connected=false;
         try{
             IConnection conn = getConnection(connectionName);
-            if(conn.isConnected()){
+            if(conn.checkConnection()){
                 connected = true;
             }
             releaseConnection(conn);
@@ -63,7 +65,6 @@ public class ConnectionManager
         catch(Exception e){
              logger.warn("Exception in ConnectionManager checkConnection "+e, e);
         }
-
         return connected;
     }
     public static IConnection getConnection(String connectionName) throws ConnectionInitializationException, ConnectionPoolException, ConnectionException, UndefinedConnectionException
@@ -76,11 +77,9 @@ public class ConnectionManager
         ObjectPool pool = pools.get(connectionName);
         if(pool == null)
         {
-            PoolableConnectionFactory connectionFactory = new PoolableConnectionFactory(classLoader, param);
-            GenericObjectPool newPool = new GenericObjectPool(connectionFactory, param.getMaxNumberOfConnectionsInPool());
+            PoolableConnectionFactory connectionFactory = new PoolableConnectionFactory(classLoader, param, timeoutStrategyClass);
+            ConnectionPool newPool = new ConnectionPool(param.getConnectionName(), connectionFactory, param.getMaxNumberOfConnectionsInPool(), poolConnectionCheckerInterval);
             poolFactoryMap.put(newPool, connectionFactory);
-            newPool.setTestOnBorrow(true);
-            newPool.setTestOnReturn(true);
             pool = newPool;
             pools.put(connectionName, pool);
         }
@@ -109,7 +108,11 @@ public class ConnectionManager
         }
         return conn;
     }
-    
+
+    public static void setTimeoutStrategyClass(Class timeoutStrategyClass) {
+        ConnectionManager.timeoutStrategyClass = timeoutStrategyClass;
+    }
+
     public static void releaseConnection(IConnection connection) throws ConnectionInitializationException, ConnectionPoolException, ConnectionException
     {
         ObjectPool pool = pools.get(connection.getParameters().getConnectionName());
@@ -129,7 +132,7 @@ public class ConnectionManager
         }
     }
 
-    public static void initialize(Logger logger, ConnectionParameterSupplier paramSupplier, ClassLoader classLoader)
+    public static void initialize(Logger logger, ConnectionParameterSupplier paramSupplier, ClassLoader classLoader, long poolConnectionCheckerInterval)
     {
         if(!isInitialized)
         {
@@ -137,6 +140,7 @@ public class ConnectionManager
             ConnectionManager.paramSupplier = paramSupplier;
             ConnectionManager.pools = new HashMap<String, ObjectPool>();
             ConnectionManager.logger = logger;
+            ConnectionManager.poolConnectionCheckerInterval = poolConnectionCheckerInterval;
             logger.info("ConnectionManager is initialized");
             isInitialized = true;
         }

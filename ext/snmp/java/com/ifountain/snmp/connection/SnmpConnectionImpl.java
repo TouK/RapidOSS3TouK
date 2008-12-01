@@ -45,7 +45,7 @@ public class SnmpConnectionImpl extends BaseConnection{
          port = (Long)checkParam(PORT);       
     }
 
-    public boolean isConnected() {
+    public boolean checkConnection() {
         return true;
     }
 

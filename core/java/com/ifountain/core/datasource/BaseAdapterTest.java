@@ -21,9 +21,6 @@
  */
 package com.ifountain.core.datasource;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ifountain.comp.test.util.CommonTestUtils;
 import com.ifountain.comp.test.util.WaitAction;
 import com.ifountain.comp.test.util.threads.TestAction;
@@ -32,10 +29,13 @@ import com.ifountain.core.connection.ConnectionManager;
 import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.core.connection.exception.UndefinedConnectionException;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
-import com.ifountain.core.datasource.mocks.MockBaseAdapterImpl;
 import com.ifountain.core.datasource.mocks.MockActionImpl;
+import com.ifountain.core.datasource.mocks.MockBaseAdapterImpl;
 import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl;
 import com.ifountain.core.test.util.RapidCoreTestCase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class BaseAdapterTest extends RapidCoreTestCase
 {

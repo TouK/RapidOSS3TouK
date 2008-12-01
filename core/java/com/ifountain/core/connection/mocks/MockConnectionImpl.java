@@ -10,13 +10,14 @@ import com.ifountain.core.connection.BaseConnection;
 
 public class MockConnectionImpl extends BaseConnection
 {
-    
-    private boolean isConnected = false;
+    public static long defaultTimeout = 7777;
+    public static Exception globalConnectionException;
     private Exception connectionException = null;
     
     public void init(ConnectionParam param)
     {
         this.params = param;
+        this.timeout = defaultTimeout;
     }
     protected void connect() throws Exception
     {
@@ -24,15 +25,15 @@ public class MockConnectionImpl extends BaseConnection
         {
             throw connectionException;
         }
-        isConnected = true;
+        if(globalConnectionException != null) throw globalConnectionException;
     }
+
+    public boolean checkConnection() {
+        return isConnected();
+    }
+
     protected void disconnect()
     {
-        isConnected = false;
-    }
-    public boolean isConnected()
-    {
-        return isConnected;
     }
     public ConnectionParam getParam()
     {

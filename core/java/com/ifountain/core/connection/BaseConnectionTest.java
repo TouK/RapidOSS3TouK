@@ -40,8 +40,8 @@ public class BaseConnectionTest extends RapidCoreTestCase{
                  return null;
              }
 
-             public boolean isConnected() {
-                 return false;
+             public boolean checkConnection() {
+                 return true;
              }
 
              public void connect() throws Exception {
@@ -49,12 +49,12 @@ public class BaseConnectionTest extends RapidCoreTestCase{
              public void disconnect() {
              }
          };
-         assertFalse(conn.isConnectedOnce());
+         assertFalse(conn.isConnected());
          conn.init(new ConnectionParam("type", "name", "class", new HashMap()));
          conn._connect();
-         assertTrue(conn.isConnectedOnce());
+         assertTrue(conn.isConnected());
 
          conn._disconnect();
-         assertFalse(conn.isConnectedOnce());
+         assertFalse(conn.isConnected());
      }
 }

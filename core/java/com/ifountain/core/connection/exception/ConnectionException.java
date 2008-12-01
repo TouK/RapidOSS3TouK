@@ -26,9 +26,17 @@ import com.ifountain.comp.exception.RException;
 public class ConnectionException extends RException
 {
     private static final long serialVersionUID = 1L;
-
+    public ConnectionException(String message)
+    {
+        super(message);
+    }
     public ConnectionException(Throwable cause)
     {
         super("An exception occurred while connecting.", cause);
+    }
+
+    public static ConnectionException noConnectionException(String connectionName)
+    {
+        return new ConnectionException("Connection "+connectionName+" is lost.");
     }
 }

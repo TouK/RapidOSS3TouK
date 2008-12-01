@@ -10,7 +10,7 @@ public class RapidInsightConnectionImpl extends HttpConnectionImpl {
     private String password;
 
     public void connect() throws Exception {
-    	if(!isConnected()){
+    	if(!checkConnection()){
 	    	super.connect();
 	    	def completeUrl = getBaseUrl() + "/User/login";
 	    	def params = ["submission":"credentials", "login":username, "password":password];
@@ -36,7 +36,7 @@ public class RapidInsightConnectionImpl extends HttpConnectionImpl {
         this.password = checkParam(PASSWORD);
     }
 
-    public boolean isConnected() {
+    public boolean checkConnection() {
     	def completeUrl = getBaseUrl() + "/User/login";
     	def params = [:];
     	def response =  getHttpConnection().doGetRequest(completeUrl, params);

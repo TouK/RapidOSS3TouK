@@ -21,38 +21,61 @@
  */
 package com.ifountain.core.connection;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ifountain.core.connection.exception.ConnectionException;
 import com.ifountain.core.connection.exception.ConnectionInitializationException;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
 import com.ifountain.core.test.util.RapidCoreTestCase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PoolableConnectionFactoryTest extends RapidCoreTestCase
 {
      
-    public void testFactory() throws Exception
+    public void testMakeObject() throws Exception
     {
         String connectionName = "conn1";
         ConnectionParam param = createConnectionParam(connectionName);
-        PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), param);
+        PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), param, null);
         
         MockConnectionImpl conn = (MockConnectionImpl) factory.makeObject();
         assertTrue(conn.isConnected());
+        assertTrue(conn.checkConnection());
         assertEquals(param, conn.getParam());
-        conn._disconnect();
-        factory.activateObject(conn);
-        assertTrue(conn.isConnected());
         assertTrue(factory.validateObject(conn));
-        
+    }
+
+    public void testWithTimeoutValue() throws Exception
+    {
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), param, null);
+
+        long timeoutValue = 9999;
+        MockConnectionImpl conn = (MockConnectionImpl) factory._makeObject(timeoutValue);
+        assertEquals(timeoutValue, conn.getTimeout());
+        timeoutValue = 0;
+        conn = (MockConnectionImpl) factory._makeObject(timeoutValue);
+        assertEquals(MockConnectionImpl.defaultTimeout, conn.getTimeout());
+
+        timeoutValue = -1;
+        conn = (MockConnectionImpl) factory._makeObject(timeoutValue);
+        assertEquals(MockConnectionImpl.defaultTimeout, conn.getTimeout());
+
+    }
+
+
+    public void tesMakeObjectThrowsExceptionIfCanNotConnect() throws Exception
+    {
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), param, null);
         Exception expectedConnectionException = new Exception("Exception Occurred While Connecting");
-        conn.setConnectionException(expectedConnectionException);
-        conn._disconnect();
-        
+        MockConnectionImpl.globalConnectionException = expectedConnectionException;
+
         try
         {
-            factory.activateObject(conn);
+            factory.makeObject();
             fail("Should throw exception");
         }
         catch (ConnectionException e)
@@ -66,7 +89,7 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
         String connectionName = "conn1";
         ConnectionParam param = createConnectionParam(connectionName);
         param.setConnectionClass("unknownclass.unknownclass");
-        PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), param);
+        PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), param, null);
         
         try
         {
@@ -84,7 +107,7 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
         String connectionName = "conn1";
         ConnectionParam param = createConnectionParam(connectionName);
         param.setConnectionClass("java.lang.Object");
-        PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), param);
+        PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), param, null);
         
         try
         {
@@ -119,7 +142,7 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
         };
         String connectionName = "conn1";
         ConnectionParam param = createConnectionParam(connectionName);
-        PoolableConnectionFactory factory = new PoolableConnectionFactory(classLoader, param);
+        PoolableConnectionFactory factory = new PoolableConnectionFactory(classLoader, param, null);
         MockConnectionImpl conn = (MockConnectionImpl) factory.makeObject();
         
         wrongClassName.append(this.getClass().getName());
@@ -138,6 +161,18 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
         {
             assertEquals(ClassNotFoundException.class, e.getCause().getClass());
         }
+    }
+
+    public void testValidateReturnFalseIfConnectionIsNotConnected() throws Exception
+    {
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), param, null);
+
+        MockConnectionImpl conn = (MockConnectionImpl) factory.makeObject();
+        assertTrue(conn.isConnected());
+        conn._disconnect();
+        assertFalse(factory.validateObject(conn));
     }
     
     private ConnectionParam createConnectionParam(String connectionName)

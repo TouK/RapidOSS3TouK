@@ -24,7 +24,7 @@ public class HttpConnectionImpl extends BaseConnection{
         setHttpConnection();
     }
 
-    public boolean isConnected() {
+    public boolean checkConnection() {
         return true;
     }
     

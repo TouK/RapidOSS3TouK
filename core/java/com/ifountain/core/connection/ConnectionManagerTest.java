@@ -21,45 +21,88 @@
  */
 package com.ifountain.core.connection;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import com.ifountain.comp.test.util.logging.TestLogUtils;
+import com.ifountain.comp.test.util.threads.TestActionExecutorThread;
+import com.ifountain.comp.test.util.threads.TestAction;
 import com.ifountain.core.connection.exception.UndefinedConnectionException;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
 import com.ifountain.core.connection.mocks.NotConnectedConnection;
 import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl;
 import com.ifountain.core.test.util.RapidCoreTestCase;
+import org.apache.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ConnectionManagerTest extends RapidCoreTestCase
 {
+    long poolConnectionCheckingInterval;
     MockConnectionParameterSupplierImpl parameterSupplier;
     ClassLoader classLoader = ConnectionManagerTest.class.getClassLoader(); 
     @Override
     protected void setUp() throws Exception
     {
         super.setUp();
+        MockTimeoutStrategy.connectionParameterList.clear();;
         parameterSupplier = new MockConnectionParameterSupplierImpl();
         ConnectionManager.setParamSupplier(parameterSupplier);
+        poolConnectionCheckingInterval = 1000;
         
     }
+    public void testInitializingTimeoutMechanism() throws Exception
+    {
+        poolConnectionCheckingInterval = 100;
+        MockTimeoutStrategy.newTimeoutInterval = 100999;
+        MockTimeoutStrategy.shouldRecalculate= true;
 
+        ConnectionManager.destroy();
+        ConnectionManager.initialize(TestLogUtils.log, parameterSupplier, classLoader, poolConnectionCheckingInterval);
+        ConnectionManager.setTimeoutStrategyClass(MockTimeoutStrategy.class);
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        param.setMaxNumberOfConnectionsInPool(10);
+        parameterSupplier.setParam(param);
+
+        IConnection conn = ConnectionManager.getConnection(connectionName);
+        assertNotNull(conn);
+        Thread.sleep(500);
+        assertFalse(MockTimeoutStrategy.connectionParameterList.isEmpty());
+        conn = ConnectionManager.getConnection(connectionName);
+        conn = ConnectionManager.getConnection(connectionName);
+        conn = ConnectionManager.getConnection(connectionName);
+        assertEquals(MockTimeoutStrategy.newTimeoutInterval, conn.getTimeout());
+
+    }
     public void testcheckConnection() throws Exception
     {
         assertFalse(ConnectionManager.checkConnection("dx4545"));
 
-        String connectionName = "conn1";
+        final String connectionName = "conn1";
         ConnectionParam param = createConnectionParam(connectionName);
         param.setMaxNumberOfConnectionsInPool(1);
         parameterSupplier.setParam(param);
 
         //releases connection
-        // TODO it can stock here, check timout    
-        assertTrue(ConnectionManager.checkConnection(connectionName));
-        assertTrue(ConnectionManager.checkConnection(connectionName));
-        assertTrue(ConnectionManager.checkConnection(connectionName));
+        TestAction action = new TestAction(){
+            public void execute() throws Throwable {
+
+                ConnectionManager.checkConnection(connectionName);
+            }
+        };
+        TestActionExecutorThread t1 = new TestActionExecutorThread(action);
+        TestActionExecutorThread t2 = new TestActionExecutorThread(action);
+        TestActionExecutorThread t3 = new TestActionExecutorThread(action);
+        t1.start();
+        t2.start();
+        t3.start();
+        t1.join(1000);
+        t2.join(1000);
+        t3.join(1000);
+        assertTrue(t1.isExecutedSuccessfully());
+        assertTrue(t2.isExecutedSuccessfully());
+        assertTrue(t3.isExecutedSuccessfully());
 
         param = createConnectionParam(connectionName, NotConnectedConnection.class.getName());
         param.setMaxNumberOfConnectionsInPool(2);
@@ -68,6 +111,7 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         assertFalse(ConnectionManager.checkConnection(connectionName));
         
     }
+    
     public void testGetConnection() throws Exception
     {
         String connectionName = "conn1";
@@ -77,9 +121,12 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         
         MockConnectionImpl conn1 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertTrue(conn1.isConnected());
+        assertTrue(conn1.checkConnection());
         assertEquals(param, conn1.getParam());
         MockConnectionImpl conn2 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertTrue(conn2.isConnected());
+        assertTrue(conn2.checkConnection());
+
         assertNotSame(conn1, conn2);
         
         ConnectionManager.releaseConnection(conn1);
@@ -96,10 +143,12 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         
         MockConnectionImpl conn4 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertTrue(conn4.isConnected());
+        assertTrue(conn4.checkConnection());
         assertEquals(param2, conn4.getParam());
         
         MockConnectionImpl conn5 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertTrue(conn5.isConnected());
+        assertTrue(conn5.checkConnection());
     }
 
     public void testUpdatingMaxNumberOfConnections() throws Exception{
@@ -110,12 +159,14 @@ public class ConnectionManagerTest extends RapidCoreTestCase
 
         MockConnectionImpl conn1 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertTrue(conn1.isConnected());
+        assertTrue(conn1.checkConnection());
 
         param.setMaxNumberOfConnectionsInPool(2);
         parameterSupplier.setParam(param);
 
         MockConnectionImpl conn2 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertTrue(conn2.isConnected());
+        assertTrue(conn2.checkConnection());
 
         ConnectionManager.releaseConnection(conn1);
         ConnectionManager.releaseConnection(conn2);
@@ -142,7 +193,7 @@ public class ConnectionManagerTest extends RapidCoreTestCase
                 return super.loadClass(name);
             }
         };
-        ConnectionManager.initialize(TestLogUtils.log, parameterSupplier, classLoader);
+        ConnectionManager.initialize(TestLogUtils.log, parameterSupplier, classLoader, poolConnectionCheckingInterval);
         String connectionName = "conn1";
         ConnectionParam param = createConnectionParam(connectionName);
         param.setMaxNumberOfConnectionsInPool(2);
@@ -155,12 +206,15 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         wrongClassName.append("UnknownClassName");
         ConnectionManager.releaseConnection(conn1);
         assertFalse(conn1.isConnected());
+        assertFalse(conn1.checkConnection());
         assertTrue(conn2.isConnected());
-        
+        assertTrue(conn2.checkConnection());
+
         wrongClassName.delete(0, wrongClassName.length());
         
         ConnectionManager.releaseConnection(conn2);
         assertTrue(conn2.isConnected());
+        assertTrue(conn2.checkConnection());
         wrongClassName.append("UnknownClassName");
         try
         {
@@ -170,6 +224,7 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         {
         }
         assertFalse(conn2.isConnected());
+        assertFalse(conn2.checkConnection());
     }
     
     public void testRemoveConnection() throws Exception {
@@ -184,19 +239,19 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         parameterSupplier.setParam(param);
         
         MockConnectionImpl conn1 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
-        assertTrue(conn1.isConnected());
+        assertTrue(conn1.checkConnection());
         assertEquals(param, conn1.getParam());
         MockConnectionImpl conn2 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
-        assertTrue(conn2.isConnected());
+        assertTrue(conn2.checkConnection());
         
         ConnectionManager.releaseConnection(conn1);
         ConnectionManager.removeConnection(connectionName);
         
-        assertFalse(conn1.isConnected());
-        assertTrue(conn2.isConnected());
+        assertFalse(conn1.checkConnection());
+        assertTrue(conn2.checkConnection());
         
         ConnectionManager.releaseConnection(conn2);
-        assertFalse(conn2.isConnected());
+        assertFalse(conn2.checkConnection());
     }
     
     public void testThrowsExceptionIfParametersAreNull() throws Exception
@@ -236,7 +291,7 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         MockConnectionImpl conn1 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName1);
         ConnectionManager.releaseConnection(conn1);
         
-        ConnectionManager.initialize(Logger.getRootLogger(), parameterSupplier, classLoader);
+        ConnectionManager.initialize(Logger.getRootLogger(), parameterSupplier, classLoader, poolConnectionCheckingInterval);
         
         IConnection conn2 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName1);
         ConnectionManager.releaseConnection(conn2);
@@ -264,22 +319,22 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         assertNotSame(conn1, conn3);
         assertNotSame(conn2, conn3);
         
-        assertTrue(conn1.isConnected());
-        assertTrue(conn2.isConnected());
-        assertTrue(conn3.isConnected());
-        assertTrue(conn4.isConnected());
+        assertTrue(conn1.checkConnection());
+        assertTrue(conn2.checkConnection());
+        assertTrue(conn3.checkConnection());
+        assertTrue(conn4.checkConnection());
         
         ConnectionManager.destroy();
         ConnectionManager.releaseConnection(conn1);
         ConnectionManager.releaseConnection(conn2);
         ConnectionManager.releaseConnection(conn3);
         ConnectionManager.releaseConnection(conn4);
-        assertFalse(conn1.isConnected());
-        assertFalse(conn2.isConnected());
-        assertFalse(conn3.isConnected());
-        assertFalse(conn4.isConnected());
+        assertFalse(conn1.checkConnection());
+        assertFalse(conn2.checkConnection());
+        assertFalse(conn3.checkConnection());
+        assertFalse(conn4.checkConnection());
         
-        ConnectionManager.initialize(Logger.getRootLogger(), parameterSupplier, classLoader);
+        ConnectionManager.initialize(Logger.getRootLogger(), parameterSupplier, classLoader, poolConnectionCheckingInterval);
         
         IConnection ds1AfterReinitialize = (MockConnectionImpl) ConnectionManager.getConnection(connectionName1);
         
@@ -298,9 +353,7 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         ConnectionParam param = new ConnectionParam("Database", connectionName, className, optionalParams);
         return param;
     }
+
+
     
 }
-
-
-
-

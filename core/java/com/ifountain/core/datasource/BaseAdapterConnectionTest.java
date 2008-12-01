@@ -21,11 +21,6 @@
  */
 package com.ifountain.core.datasource;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.ifountain.comp.test.util.threads.TestAction;
 import com.ifountain.comp.test.util.threads.TestActionExecutorThread;
 import com.ifountain.core.connection.ConnectionManager;
@@ -38,6 +33,11 @@ import com.ifountain.core.datasource.mocks.MockActionImpl;
 import com.ifountain.core.datasource.mocks.MockBaseAdapterImpl;
 import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl;
 import com.ifountain.core.test.util.RapidCoreTestCase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BaseAdapterConnectionTest extends RapidCoreTestCase
 {

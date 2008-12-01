@@ -44,7 +44,7 @@ public class DatabaseConnectionImpl extends BaseConnection{
         return (String) params.getOtherParams().get(parameterName);
     }
 
-    public boolean isConnected() {
+    public boolean checkConnection() {
         if(connection == null) return false;
         DatabaseMetaData metaData = null;
         ResultSet set = null;

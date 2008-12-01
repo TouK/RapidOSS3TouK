@@ -28,7 +28,8 @@ public interface IConnection
     public ConnectionParam getParameters();
 	public void _disconnect();
 	public boolean isConnected();
-    public boolean isConnectedOnce();
-    public void setConnectedOnce(boolean isConnectedOnce);
-	public void _connect() throws Exception;
+    public boolean checkConnection();
+    public void setTimeout(long timeout);
+    public long getTimeout();
+    public void _connect() throws Exception;
 }

@@ -16,7 +16,7 @@ class HypericConnectionImpl extends HttpConnectionImpl {
 
     public void connect() throws Exception {
         super.connect();
-        if(!isConnected()){
+        if(!checkConnection()){
             throw new Exception("Could not connect to " + getBaseUrl())
         }
     }
@@ -36,7 +36,7 @@ class HypericConnectionImpl extends HttpConnectionImpl {
         this.password = checkParam(PASSWORD);
     }
 
-    public boolean isConnected() {
+    public boolean checkConnection() {
         def completeUrl = getBaseUrl() + "/j_security_check.do";
         def params = ["j_username": username, "j_password": password];
         def response = getHttpConnection().doGetRequest(completeUrl, params);

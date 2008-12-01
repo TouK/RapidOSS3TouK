@@ -88,10 +88,9 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
                             }
                             catch(Exception e)
                             {
-                                if (connection.isConnected()) {
+                                if (connection.checkConnection()) {
                                     throw e;
                                 } else {
-                                    connection.setConnectedOnce(false);
                                     if (reconnectInterval > 0) {
                                         Thread.sleep(reconnectInterval);
                                     } else {

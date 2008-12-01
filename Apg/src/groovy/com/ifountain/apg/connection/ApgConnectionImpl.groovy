@@ -27,7 +27,7 @@ public class ApgConnectionImpl extends BaseConnection{
 	    this.wsdlBaseUrl= checkParam(WSDL_BASE_URL);
     }
 
-    public boolean isConnected() {
+    public boolean checkConnection() {
         return true;
     }
     private String checkParam(String parameterName) throws UndefinedConnectionParameterException {

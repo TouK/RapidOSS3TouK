@@ -43,7 +43,7 @@ extends BaseController
                     for (metric in plat.enabledMetrics) {
                         if (metric.template.name == "Availability") {
                             if (metric.lastDataPoint != null) {
-                                last_timestamp = metric.lastDataPoint.timestamp.toString()
+                                last_timestamp = metric.lastDataPoint.timestamp
                                 status = metric.lastDataPoint.value
                             }
                             break;
@@ -61,7 +61,7 @@ extends BaseController
                     for (metric in serv.enabledMetrics) {
                         if (metric.template.name == "Availability") {
                             if (metric.lastDataPoint != null) {
-                                last_timestamp = metric.lastDataPoint.timestamp.toString()
+                                last_timestamp = metric.lastDataPoint.timestamp
                                 status = metric.lastDataPoint.value
                             }
                             break;
@@ -79,7 +79,7 @@ extends BaseController
                     for (metric in serv.enabledMetrics) {
                         if (metric.template.name == "Availability") {
                             if (metric.lastDataPoint != null) {
-                                last_timestamp = metric.lastDataPoint.timestamp.toString()
+                                last_timestamp = metric.lastDataPoint.timestamp
                                 status = metric.lastDataPoint.value
                             }
                             break;

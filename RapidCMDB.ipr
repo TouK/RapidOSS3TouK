@@ -88,6 +88,90 @@
               <file url="file://$PROJECT_DIR$/Hyperic/web-app/WEB-INF/applicationContext.xml" />
             </files>
           </module>
+          <module name="Smarts">
+            <files>
+              <file url="file://$PROJECT_DIR$/Smarts/web-app/WEB-INF/applicationContext.xml" />
+            </files>
+          </module>
+          <module name="Netcool">
+            <files>
+              <file url="file://$PROJECT_DIR$/../Netcool/web-app/WEB-INF/applicationContext.xml" />
+            </files>
+          </module>
+        </modules>
+      </facet-type>
+      <facet-type id="Grails">
+        <modules>
+          <module name="Smarts">
+            <files>
+              <file url="file://$PROJECT_DIR$/Smarts/applications/RapidInsightForSmarts/grails-app/controllers/connection/SmartsConnectionTemplateController.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/applications/RapidInsightForSmarts/grails-app/domain/connection/SmartsConnectionTemplate.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/applications/RapidInsightForSmarts/grails-app/domain/connector/SmartsConnector.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/applications/RapidInsightForSmarts/grails-app/domain/connector/SmartsListeningNotificationConnector.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/applications/RapidInsightForSmarts/grails-app/domain/connector/SmartsListeningTopologyConnector.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/applications/RapidInsightForSmarts/scripts/getGeocodes.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/grails-app/conf/SmartsSecurityFilters.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/grails-app/controllers/connection/SmartsConnectionController.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/grails-app/controllers/datasource/SmartsNotificationDatasourceController.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/grails-app/controllers/datasource/SmartsTopologyDatasourceController.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/grails-app/domain/connection/SmartsConnection.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/grails-app/domain/datasource/SmartsNotificationDatasource.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/grails-app/domain/datasource/SmartsTopologyDatasource.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/operations/datasource/SmartsNotificationDatasourceOperations.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/operations/datasource/SmartsTopologyDatasourceOperations.groovy" />
+              <file url="file://$PROJECT_DIR$/Smarts/scripts/_Upgrade.groovy" />
+            </files>
+          </module>
+          <module name="Netcool">
+            <files>
+              <file url="file://$PROJECT_DIR$/../Netcool/NetcoolGrailsPlugin.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/conf/NetcoolStartupScripts.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/conf/RiForNetcoolSecurityFilters.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/controllers/NetcoolEventController.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/controllers/NetcoolHistoricalEventController.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/controllers/NetcoolJournalController.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/controllers/connector/NetcoolConnectorController.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/domain/NetcoolEvent.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/domain/NetcoolHistoricalEvent.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/domain/NetcoolJournal.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/domain/connector/NetcoolConnector.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/grails-app/domain/connector/NetcoolLastRecordIdentifier.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/operations/NetcoolEventOperations.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/NetcoolColumnMapping.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/NetcoolDemoValues.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/NetcoolRealValues.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/NetcoolScriptConfigurationParams.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/createDefaultQueries.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/createNetcoolDefaults.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/demoGenerator.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/getConversionParameters.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/importUsers.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/netcoolDataGenerator.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/removeAll.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/severity.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/suppress.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/takeOwnership.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/scripts/taskList.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/src/groovy/connector/NetcoolConnectorFactory.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/applications/RapidInsightForNetcool/src/groovy/connector/NetcoolConnectorImpl.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/grails-app/conf/NetcoolSecurityFilters.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/grails-app/controllers/connection/NetcoolConnectionController.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/grails-app/controllers/datasource/NetcoolColumnController.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/grails-app/controllers/datasource/NetcoolConversionParameterController.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/grails-app/controllers/datasource/NetcoolDatasourceController.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/grails-app/domain/connection/NetcoolConnection.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/grails-app/domain/datasource/NetcoolColumn.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/grails-app/domain/datasource/NetcoolConversionParameter.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/grails-app/domain/datasource/NetcoolDatasource.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/operations/datasource/NetcoolConversionParameterOperations.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/operations/datasource/NetcoolDatasourceOperations.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/scripts/_Install.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/scripts/_Upgrade.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/src/groovy/com/ifountain/rcmdb/netcool/NetcoolConnectionImpl.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/test/integration/datasource/NetcoolDatasourceIntegrationTest.groovy" />
+              <file url="file://$PROJECT_DIR$/../Netcool/test/unit/netcool/connection/NetcoolConnectionImplTest.groovy" />
+            </files>
+          </module>
         </modules>
       </facet-type>
     </autodetection-disabled>
@@ -270,7 +354,7 @@
       <module fileurl="file://$PROJECT_DIR$/RapidTesting/RapidTesting.iml" filepath="$PROJECT_DIR$/RapidTesting/RapidTesting.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" filepath="$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" filepath="$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Smarts/Smarts.iml" filepath="$PROJECT_DIR$/Smarts/Smarts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Smarts/Smarts.iml" filepath="$PROJECT_DIR$/../Smarts/Smarts.iml" />
       <module fileurl="file://$PROJECT_DIR$/../ThirdParty/ThirdParty.iml" filepath="$PROJECT_DIR$/../ThirdParty/ThirdParty.iml" />
       <module fileurl="file://$PROJECT_DIR$/comp/comp.iml" filepath="$PROJECT_DIR$/comp/comp.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
@@ -494,6 +578,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/../Netcool" vcs="svn" />
     <mapping directory="$PROJECT_DIR$" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../Smarts" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../ThirdParty" vcs="svn" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />

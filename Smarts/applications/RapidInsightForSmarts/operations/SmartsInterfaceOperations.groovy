@@ -1,6 +1,0 @@
-
-    
-    class SmartsInterfaceOperations extends SmartsNetworkAdapterOperations
-    {
-    }
-    

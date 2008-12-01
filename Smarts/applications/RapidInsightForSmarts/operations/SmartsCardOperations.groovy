@@ -1,6 +1,0 @@
-
-    
-    class SmartsCardOperations extends SmartsComputerSystemComponentOperations
-    {
-    }
-    

@@ -1,6 +1,0 @@
-
-    
-    class SmartsPortOperations extends SmartsNetworkAdapterOperations
-    {
-    }
-    

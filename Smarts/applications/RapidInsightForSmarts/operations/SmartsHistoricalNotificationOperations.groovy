@@ -1,6 +1,0 @@
-
-    
-    class SmartsHistoricalNotificationOperations extends RsHistoricalEventOperations
-    {
-    }
-    

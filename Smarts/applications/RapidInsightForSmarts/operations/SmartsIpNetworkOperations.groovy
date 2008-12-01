@@ -1,6 +1,0 @@
-
-    
-    class SmartsIpNetworkOperations extends RsGroupOperations
-    {
-    }
-    

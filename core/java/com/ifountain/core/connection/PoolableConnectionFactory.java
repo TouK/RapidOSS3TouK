@@ -37,7 +37,7 @@ public class PoolableConnectionFactory extends BaseConnectionFactory
      */
     public PoolableConnectionFactory(ClassLoader classLoader, ConnectionParam param, Class timeoutStrategyClass)
     {
-        super(timeoutStrategyClass);
+        super(param.getConnectionName(), timeoutStrategyClass);
         this.classLoader = classLoader;
         this.param = param;
     }

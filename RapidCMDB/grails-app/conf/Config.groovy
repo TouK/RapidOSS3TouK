@@ -1,4 +1,5 @@
 import com.ifountain.rcmdb.domain.property.RapidCmdbDomainPropertyInterceptor
+import com.ifountain.core.connection.DefaultTimeoutStrategy
 
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
@@ -36,6 +37,7 @@ plugin {
     excludes = "hibernate"
 }
 connection.pool.checker.interval = 10000;
+connection.pool.timeout.strategy = DefaultTimeoutStrategy.name;
 rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/generatedModels".toString();
 rapidCMDB.base.dir = System.getProperty("base.dir");
 rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss";
@@ -97,6 +99,7 @@ log4j {
     additivity.StackTrace=false
     additivity.grails=false
     additivity.models=false
+    additivity.'com.ifountain.core.connection'=false
 }
 
 

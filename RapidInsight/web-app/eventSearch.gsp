@@ -55,5 +55,10 @@
         %{--<rui:esConversion property="clearedAt" type="date" format="d M H:i:s"></rui:esConversion>--}%
     </rui:esConversions>
 </rui:eventSearch>
+
+<rui:html id="objectDetailsmenuHtml" iframe="false"></rui:html>
+<rui:popupWindow componentId="objectDetailsmenuHtml" width="850" height="700" x="85" y="50" ></rui:popupWindow>
+
+
 </body>
 </html>

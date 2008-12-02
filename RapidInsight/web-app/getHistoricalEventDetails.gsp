@@ -3,11 +3,23 @@
     def componentId = params.componentId
     def notificationId = params.id;
     def domainObject = RsHistoricalEvent.get(id: notificationId);
-    def excludedProps = ["createdAt", "changedAt", "clearedAt"]
+
     if (domainObject != null) {
-        def propList = domainObject.getPropertiesList();
-        def allProperties = propList.findAll{!excludedProps.contains(it.name)}
+        def excludedProps = ["createdAt", "changedAt", "clearedAt"]
+        def allProperties = domainObject.getPropertiesList();
+        def filteredProps = allProperties.findAll{!excludedProps.contains(it.name)}
+        def propertiesLinkedToObject=["elementName":"elementId"];
 %>
+<script type="text/javascript">
+window.showTopologyObject = function (url, title){
+var objectDialog = YAHOO.rapidjs.Components['objectDetailsmenuHtml'];
+if(objectDialog.popupWindow){
+objectDialog.popupWindow.show();
+}
+objectDialog.show(url, title);
+}
+</script>
+
 <div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li class="selected">
@@ -52,14 +64,24 @@
                     <div class="ri-object-details" style="width:100%">
                         <table cellspacing="2" cellpadding="2" width="100%">
                             <tbody>
-
-                                <g:each var="property" status="i" in="${allProperties}">
-                                    <%
-                                            def propertyName = property.name;
-                                    %>
+                                <g:each var="property" status="i" in="${filteredProps}">
+                                    <g:def var="propertyName" value="${property.name}" />
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td style="font-weight:bold">${propertyName}</td>
-                                        <td>${domainObject[propertyName]}</td>
+                                        <td>
+                                            <g:if test="${propertiesLinkedToObject[propertyName]!=null}">
+                                               <g:def var="targetObject" value="${RsTopologyObject.get(id:domainObject[propertiesLinkedToObject[propertyName]])}" />
+                                               <g:if test="${targetObject!=null}">
+                                                    <a style="cursor:pointer;text-decoration:underline;color:#006DBA" onclick="showTopologyObject('getObjectDetails.gsp?name=' + encodeURIComponent('${targetObject.name}'),' Details of ${targetObject.className} ${targetObject.name} ') ">${domainObject[propertyName]}</a>
+                                               </g:if>
+                                                <g:else>
+                                                    ${domainObject[propertyName]}
+                                                </g:else>
+                                            </g:if>
+                                            <g:else>
+                                                ${domainObject[propertyName]}
+                                            </g:else>
+                                        </td>
                                     </tr>
                                 </g:each>
 

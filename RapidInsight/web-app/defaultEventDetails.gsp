@@ -8,16 +8,27 @@
 <%@ page import="com.ifountain.rcmdb.domain.util.DomainClassUtils; java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
 <%
     def componentId = params.componentId
-    def notificationName = params.name;
-    def allProperties;
-    def relations;
+    def notificationName = params.name;    
     def domainObject = RsEvent.get(name: notificationName);
+    
+    
     if (domainObject != null) {
-        allProperties = domainObject.getPropertiesList();
-        relations = DomainClassUtils.getRelations(domainObject.getClass().getName());
-        def excludedProps = ["id", "rsDatasource", "createdAt", "changedAt", "clearedAt"]
+        def allProperties = domainObject.getPropertiesList();
+        def relations = DomainClassUtils.getRelations(domainObject.getClass().getName());
+        def excludedProps = ["id", "rsDatasource", "createdAt", "changedAt", "clearedAt","elementId"]
         def filteredProps = allProperties.findAll {!excludedProps.contains(it.name) && !relations.containsKey(it.name)}
+        def propertiesLinkedToObject=["elementName":"elementId"];
 %>
+<script type="text/javascript">
+window.showTopologyObject = function (url, title){
+var objectDialog = YAHOO.rapidjs.Components['objectDetailsmenuHtml'];
+if(objectDialog.popupWindow){
+objectDialog.popupWindow.show();
+}
+objectDialog.show(url, title);
+}
+</script>
+
 <div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li class="selected">
@@ -62,10 +73,24 @@
                     <div class="ri-object-details" style="width:100%">
                         <table cellspacing="2" cellpadding="2" width="100%">
                             <tbody>
-                                <g:each var="prop" status="i" in="${filteredProps}">
+                                <g:each var="property" status="i" in="${filteredProps}">
+                                    <g:def var="propertyName" value="${property.name}" />
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                        <td style="font-weight:bold">${prop.name}</td>
-                                        <td>${domainObject[prop.name]}</td>
+                                        <td style="font-weight:bold">${propertyName}</td>
+                                        <td>
+                                            <g:if test="${propertiesLinkedToObject[propertyName]!=null}">
+                                               <g:def var="targetObject" value="${RsTopologyObject.get(id:domainObject[propertiesLinkedToObject[propertyName]])}" />
+                                               <g:if test="${targetObject!=null}">
+                                                    <a style="cursor:pointer;text-decoration:underline;color:#006DBA" onclick="showTopologyObject('getObjectDetails.gsp?name=' + encodeURIComponent('${targetObject.name}'),' Details of ${targetObject.className} ${targetObject.name} ') ">${domainObject[propertyName]}</a>
+                                               </g:if>
+                                                <g:else>
+                                                    ${domainObject[propertyName]}
+                                                </g:else>
+                                            </g:if>
+                                            <g:else>
+                                                ${domainObject[propertyName]}
+                                            </g:else>
+                                        </td>
                                     </tr>
                                 </g:each>
                             </tbody>

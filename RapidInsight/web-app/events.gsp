@@ -50,5 +50,9 @@
     </rui:evConversions>
 </rui:events>
 
+<rui:html id="objectDetailsmenuHtml" iframe="false"></rui:html>
+<rui:popupWindow componentId="objectDetailsmenuHtml" width="850" height="700" x="85" y="50" ></rui:popupWindow>
+
+
 </body>
 </html>

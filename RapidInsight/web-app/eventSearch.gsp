@@ -44,7 +44,7 @@
     </rui:esDefaultMenus>
     <rui:esSearchResults>
         <%
-            def eventFields = ["name", "eventName", "node","active", "owner", "acknowledged", "severity", "source",
+            def eventFields = ["name", "identifier", "node","active", "owner", "acknowledged", "severity", "source",
                     "changedAt", "visibility", "count"];
         %>
         <rui:esSearchResult alias="RsRiEvent" properties="${eventFields}" emphasizeds="${['name']}"></rui:esSearchResult>

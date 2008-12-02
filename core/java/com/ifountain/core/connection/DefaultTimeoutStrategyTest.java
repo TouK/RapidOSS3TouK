@@ -47,11 +47,11 @@ public class DefaultTimeoutStrategyTest extends RapidCoreTestCase
         assertFalse(strategy.shouldRecalculate(connections));
     }
 
-    public void testShouldRecalculateReturnsFalseIfNoConnectionsDefined() throws Exception
+    public void testShouldRecalculateReturnsTrueIfNoConnectionsDefined() throws Exception
     {
         DefaultTimeoutStrategy strategy = new DefaultTimeoutStrategy();
         List connections = new ArrayList();
-        assertFalse(strategy.shouldRecalculate(connections));
+        assertTrue(strategy.shouldRecalculate(connections));
     }
 
     public void testShouldRecalculateReturnsTrueIfNumberOfDisconnectedConnectionsIsLessThanDecreaseLimit() throws Exception
@@ -81,6 +81,8 @@ public class DefaultTimeoutStrategyTest extends RapidCoreTestCase
         {
             totalTimeout+=i;
             MockConnectionImpl conn = new MockConnectionImpl();
+            conn.setMaxTimeout(10000);
+            conn.setMinTimeout(0);
             conn.setTimeout(i);
             connections.add(conn);
         }
@@ -97,6 +99,8 @@ public class DefaultTimeoutStrategyTest extends RapidCoreTestCase
         {
             totalTimeout+=i;
             MockConnectionImpl conn = new MockConnectionImpl();
+            conn.setMaxTimeout(10000);
+            conn.setMinTimeout(0);
             conn.setTimeout(i);
             if(i >= numberOfConns* DefaultTimeoutStrategy.DECREASE_LIMIT -1)
             {

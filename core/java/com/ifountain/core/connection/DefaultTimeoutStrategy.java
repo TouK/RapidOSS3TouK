@@ -26,6 +26,7 @@ public class DefaultTimeoutStrategy implements TimeoutStrategy{
                 numberOfDisconnectedConnections++;
             }
         }
+        if(connections.isEmpty()) return true;
         double numberOfDiconnectedRatio = numberOfDisconnectedConnections/connections.size();
         return numberOfDiconnectedRatio >= INCREASE_LIMIT || numberOfDiconnectedRatio <= DECREASE_LIMIT;
     }

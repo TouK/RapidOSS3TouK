@@ -52,6 +52,22 @@ public abstract class BaseConnection implements IConnection {
         return params;
     }
 
+    public long getMinTimeout() {
+        return minTimeout;
+    }
+
+    public void setMinTimeout(long minTimeout) {
+        this.minTimeout = minTimeout;
+    }
+
+    public long getMaxTimeout() {
+        return maxTimeout;
+    }
+
+    public void setMaxTimeout(long maxTimeout) {
+        this.maxTimeout = maxTimeout;
+    }
+
     public void setTimeout(long timeout) {
         if(timeout < minTimeout)
         {

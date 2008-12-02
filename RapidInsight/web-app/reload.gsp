@@ -4,6 +4,7 @@
 </head>
 <body>
 <div class="nav">
+	<span class="menuButton"><a class="home" href="${createLinkTo(dir: 'admin.gsp')}">Home</a></span>
     <span class="menuButton"><g:link class="refresh" action="reload" controller="application" params="['targetURI':'/reload.gsp']">Reload App.</g:link></span>
     <span class="menuButton"><g:link class="refresh" action="reloadViewsAndControllers" controller="application" params="['targetURI':'/reload.gsp']">Reload Web UI</g:link></span>
 </div>

@@ -13,7 +13,7 @@
 </head>
 <body>
 <div class="nav">
-    &nbsp
+   	<span class="menuButton"><a class="home" href="${createLinkTo(dir: 'admin.gsp')}">Home</a></span>
 </div>
 <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
@@ -24,8 +24,8 @@
     </div>
 </g:hasErrors>
 <div class="body">
-    <br><br>
-    <div style="margin-top:20px;">
+    <br>
+    <div style="margin-top:0px;">
         <table style="width:900;">
             <tr>
                 <td>

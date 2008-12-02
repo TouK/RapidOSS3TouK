@@ -15,7 +15,7 @@ class RsRiEventOperations  extends RsEventOperations {
 		event = RsRiEvent.add(eventProps)
 		
 		if (!event.hasErrors()) {
-            RsEventJournal.add(eventId:event.id,eventName:event.eventName,rsTime:new Date(),details:"Created the event")
+            RsEventJournal.add(eventId:event.id,eventName:event.identifier,rsTime:new Date(),details:"Created the event")
 		}
 		else
         {

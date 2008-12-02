@@ -128,6 +128,7 @@ class SearchableExtensionGrailsPlugin {
         def addMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
         def removeAllMatchingMethod = new RemoveAllMatchingMethod(mc, relations);
         def getPropertyValuesMethod = new GetPropertyValuesMethod(mc, relations);
+        def getRelatedModelPropertyValuesMethod = new GetRelatedObjectPropertyValuesMethod(mc, relations);
         def removeMethod = new RemoveMethod(mc, relations);
         def updateMethod = new UpdateMethod(mc, dc.validator, persProps, relations);
         def addRelationMethod = new AddRelationMethod(mc, relations);
@@ -154,6 +155,10 @@ class SearchableExtensionGrailsPlugin {
         }
         mc.'static'.removeAll = {->
             removeAllMatchingMethod.invoke(mc.theClass, ["alias:*"] as Object[]);
+        }
+
+        mc.getRelatedModelPropertyValues = {String relationName, Collection propertyList->
+            getRelatedModelPropertyValuesMethod.invoke(delegate, [relationName, propertyList] as Object[])
         }
 
         mc.'static'.getPropertyValues = {String query, Collection propertyList->

@@ -205,7 +205,7 @@ class MockTimeoutStrategy implements TimeoutStrategy
         return shouldRecalculate;
     }
 
-    public long calculateNewTimeout(List<IConnection> connections)
+    public long calculateNewTimeout(long oldTimeout, List<IConnection> connections)
     {
         connectionParameterList.add(connections);
         return newTimeoutInterval;   

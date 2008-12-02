@@ -84,7 +84,7 @@ public class DefaultTimeoutStrategyTest extends RapidCoreTestCase
             conn.setTimeout(i);
             connections.add(conn);
         }
-        assertEquals((int)(totalTimeout/numberOfConns*2), strategy.calculateNewTimeout(connections));
+        assertEquals((int)(totalTimeout/numberOfConns*2), strategy.calculateNewTimeout(5, connections));
     }
 
     public void testCalculateTimeoutWithNumberOfDisconnectedIsLessThanDecreaseLimit()  throws Exception
@@ -104,7 +104,14 @@ public class DefaultTimeoutStrategyTest extends RapidCoreTestCase
             }
             connections.add(conn);
         }
-        assertEquals((int)(totalTimeout/numberOfConns/2), strategy.calculateNewTimeout(connections));
+        assertEquals((int)(totalTimeout/numberOfConns/2), strategy.calculateNewTimeout(5, connections));
+    }
+
+    public void testCalculateTimeoutWithNoConnections()  throws Exception
+    {
+        DefaultTimeoutStrategy strategy = new DefaultTimeoutStrategy();
+        long oldTimeout = 10;
+        assertEquals(oldTimeout*2, strategy.calculateNewTimeout(oldTimeout, new ArrayList()));
     }
 
 

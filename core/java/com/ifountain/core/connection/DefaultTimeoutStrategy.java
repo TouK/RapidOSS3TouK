@@ -1,5 +1,7 @@
 package com.ifountain.core.connection;
 
+import org.apache.log4j.Logger;
+
 import java.util.List;
 import java.util.Iterator;
 
@@ -11,6 +13,7 @@ import java.util.Iterator;
  * To change this template use File | Settings | File Templates.
  */
 public class DefaultTimeoutStrategy implements TimeoutStrategy{
+    Logger logger = Logger.getLogger(DefaultTimeoutStrategy.class);
     public static final double INCREASE_LIMIT = 0.4;
     public static final double DECREASE_LIMIT = 0.1;
     public boolean shouldRecalculate(List<IConnection> connections) {
@@ -27,7 +30,7 @@ public class DefaultTimeoutStrategy implements TimeoutStrategy{
         return numberOfDiconnectedRatio >= INCREASE_LIMIT || numberOfDiconnectedRatio <= DECREASE_LIMIT;
     }
 
-    public long calculateNewTimeout(List<IConnection> connections) {
+    public long calculateNewTimeout(long oldTimeout, List<IConnection> connections) {
         double numberOfDisconnectedConnections = 0;
         int totalTimeout = 0;
         for(Iterator it=connections.iterator(); it.hasNext();)
@@ -39,13 +42,25 @@ public class DefaultTimeoutStrategy implements TimeoutStrategy{
                 numberOfDisconnectedConnections++;
             }
         }
-        if(numberOfDisconnectedConnections/connections.size() >= INCREASE_LIMIT)
+        if(connections.size() == 0)
         {
-            return totalTimeout/connections.size()*2;
+            long newTimeoutInterval = oldTimeout*2;
+            logger.debug("No connections defined increasing timeout interval from " + oldTimeout + " to "+newTimeoutInterval);
+            return newTimeoutInterval;    
+        }
+        else if(numberOfDisconnectedConnections/connections.size() >= INCREASE_LIMIT)
+        {
+            long newTimeoutInterval = totalTimeout/connections.size()*2;
+            if(logger.isDebugEnabled())
+            logger.debug("Increasing timeout interval from " + oldTimeout + " to "+newTimeoutInterval);
+            return newTimeoutInterval;
         }
         else
         {
-            return totalTimeout/connections.size()/2;
+            long newTimeoutInterval = totalTimeout/connections.size()/2;
+            if(logger.isDebugEnabled())
+            logger.debug("Decreasing timeout interval from " + oldTimeout + " to "+newTimeoutInterval);
+            return newTimeoutInterval;
         }
     }
 }

@@ -12,5 +12,5 @@ import java.util.List;
 public interface TimeoutStrategy
 {
     abstract public boolean shouldRecalculate(List<IConnection> connections);
-    abstract public long calculateNewTimeout(List<IConnection> connections);
+    abstract public long calculateNewTimeout(long oldTimeout, List<IConnection> connections);
 }

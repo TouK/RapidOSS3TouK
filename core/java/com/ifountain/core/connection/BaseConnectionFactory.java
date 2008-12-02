@@ -16,7 +16,7 @@ import java.util.Iterator;
  */
 public abstract class BaseConnectionFactory implements PoolableObjectFactory
 {
-    Logger logger = Logger.getLogger(ConnectionPool.class);
+    Logger logger = Logger.getLogger(BaseConnectionFactory.class);
     private List connections = new ArrayList();
     private TimeoutManager timeoutManager;
     protected String name;
@@ -80,7 +80,7 @@ public abstract class BaseConnectionFactory implements PoolableObjectFactory
             {
                 if(timeoutStrategy.shouldRecalculate(connections))
                 {
-                    timeout = timeoutStrategy.calculateNewTimeout(connections);
+                    timeout = timeoutStrategy.calculateNewTimeout(timeout, connections);
                     logger.debug("New timeout interval for connection"+ name + " is "+ timeout);
                 }
                 else

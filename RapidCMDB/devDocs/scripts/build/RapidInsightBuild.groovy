@@ -30,11 +30,21 @@ class RapidInsightBuild extends Build {
         makeEnterprise();
     }
     
+    def getSmartsPluginName(){
+        def path = new File(env.distribution);
+        def SPName;
+        path.eachFile{
+            if(it.name.indexOf("SmartsPlugin") != -1) SPName = it.name;
+        }
+        return SPName;
+    }
+    
     def testBuild() {
         TEST = true;
         createDirectories("Unix", false);
         smartsBuild.build();
-        ant.unzip(src:"$env.distribution/SmartsPlugin.zip", dest:env.dist_rapid_server);
+        def SPName = getSmartsPluginName();
+        ant.unzip(src:"$env.distribution/$SPName", dest:env.dist_rapid_server);
         ant.copy(tofile: "$env.dist_rapid_suite/../conf/groovy-starter.conf", file:"${env.dev_docs}/groovy-starter-for-tests.conf", overwrite:"true")
         ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {

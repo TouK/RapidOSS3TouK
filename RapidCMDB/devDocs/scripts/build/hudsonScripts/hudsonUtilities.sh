@@ -14,6 +14,9 @@ tagSvn() {
     svn copy http://dev.ifountain.org/repos/os/LicencedJars http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging LicencedJars"    
     svn copy http://dev.ifountain.org/repos/os/Netcool http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Netcool"    
     svn copy http://dev.ifountain.org/repos/os/Smarts http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Smarts"    
+    svn copy http://dev.ifountain.org/repos/os/Hyperic http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Hyperic"    
+    svn copy http://dev.ifountain.org/repos/os/Apg http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Apg"    
+    svn copy http://dev.ifountain.org/repos/os/OpenNms http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging OpenNms"    
 }
 
 checkOutTag() {
@@ -35,6 +38,9 @@ checkOutTag() {
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/LicencedJars ./LicencedJars
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/Netcool ./Netcool
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/Smarts ./Smarts
+    svn checkout file:///var/www/svn/os/tags/$TAG_NAME/Hyperic ./Hyperic
+    svn checkout file:///var/www/svn/os/tags/$TAG_NAME/Apg ./Apg
+    svn checkout file:///var/www/svn/os/tags/$TAG_NAME/OpenNms ./OpenNms
 }
 runTestBuildAndJavaTests() {
     rm -rf TestResults/

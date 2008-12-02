@@ -19,7 +19,7 @@ public class HttpConnectionImpl extends BaseConnection{
 
    
     public void init(ConnectionParam param) throws Exception {
-        this.params = param;
+        super.init (param);
         this.baseUrl = checkParam(BASE_URL);
         setHttpConnection();
     }

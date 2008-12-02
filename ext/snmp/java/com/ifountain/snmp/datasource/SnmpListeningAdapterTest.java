@@ -227,7 +227,7 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
         Map<String, Object> otherParams = new HashMap<String, Object>();
         otherParams.put(SnmpConnectionImpl.HOST, host);
         otherParams.put(SnmpConnectionImpl.PORT, port);
-        return new ConnectionParam("SnmpConnection", SNMP_TEST_CONNECTION_NAME, SnmpConnectionImpl.class.getName(), otherParams, 10);
+        return new ConnectionParam("SnmpConnection", SNMP_TEST_CONNECTION_NAME, SnmpConnectionImpl.class.getName(), otherParams, 10, 1000, 6000);
     }
 
     class MockSnmpObserverImpl implements Observer {

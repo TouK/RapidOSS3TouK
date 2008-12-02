@@ -10,6 +10,8 @@ class Connection {
     String rsOwner = "p"
     String connectionClass = "";
     Long maxNumberOfConnections = 10;
+    Long minTimeout = 5;
+    Long maxTimeout = 20;
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;

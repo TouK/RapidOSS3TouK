@@ -30,23 +30,43 @@ public class ConnectionParam
     private String connectionName;
     private String connectionClass;
     private int maxNumberOfConnectionsInPool;
+    private int minTimeout;
+    private int maxTimeout;
     private Map<String, Object> otherParams;
     
     public ConnectionParam(String type, String name, String connClass,
             Map<String, Object> otherParams)
     {
-        this(type, name, connClass, otherParams, 1);
+        this(type, name, connClass, otherParams, 1, 1000, 6000);
     }
     public ConnectionParam(String datasourceType, String datasourceName, String datasourceClass,
-            Map<String, Object> otherParams, int maxNumberOfDatasourceInPool)
+            Map<String, Object> otherParams, int maxNumberOfDatasourceInPool, int minTimeout, int maxTimeout)
     {
+        this.minTimeout = minTimeout;
+        this.maxTimeout = maxTimeout;
         this.maxNumberOfConnectionsInPool = maxNumberOfDatasourceInPool;
         this.connectionName = datasourceName;
         this.connectionType = datasourceType;
         this.connectionClass = datasourceClass;
         this.otherParams = otherParams;
     }
-    
+
+    public int getMinTimeout() {
+        return minTimeout;
+    }
+
+    public void setMinTimeout(int minTimeout) {
+        this.minTimeout = minTimeout;
+    }
+
+    public int getMaxTimeout() {
+        return maxTimeout;
+    }
+
+    public void setMaxTimeout(int maxTimeout) {
+        this.maxTimeout = maxTimeout;
+    }
+
     public String getConnectionName()
     {
         return connectionName;
@@ -84,7 +104,7 @@ public class ConnectionParam
     @Override
     protected Object clone() throws CloneNotSupportedException
     {
-        return new ConnectionParam(connectionType, connectionName, connectionClass, new HashMap<String, Object>(otherParams));
+        return new ConnectionParam(connectionType, connectionName, connectionClass, new HashMap<String, Object>(otherParams), maxNumberOfConnectionsInPool, minTimeout, maxTimeout);
     }
     
     @Override

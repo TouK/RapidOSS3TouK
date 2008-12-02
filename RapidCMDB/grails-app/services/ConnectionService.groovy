@@ -15,7 +15,7 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
     boolean transactional = false
     def grailsApplication
     public ConnectionParam getConnectionParam(String connConfigName) {
-        def connection = Connection.findByName(connConfigName);
+        Connection connection = Connection.findByName(connConfigName);
         if(connection){
             def excludedProps = ['version',
                                 'id',
@@ -44,8 +44,7 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
             {
                 optProps.put ("password","");                
             }
-            return new ConnectionParam(connection.getClass().getName(), connection.name,
-                    connection.connectionClass,optProps, connection.maxNumberOfConnections.intValue())
+            return new ConnectionParam(connection.getClass().getName(), connection.name, connection.connectionClass, optProps, connection.maxNumberOfConnections.intValue(), connection.minTimeout.intValue(), connection.maxTimeout.intValue())
         }
         return null;
 

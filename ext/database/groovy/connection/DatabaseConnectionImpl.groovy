@@ -18,6 +18,7 @@ public class DatabaseConnectionImpl extends BaseConnection{
     private java.sql.Connection connection;
 
     protected void connect() throws Exception {
+        DriverManager.setLoginTimeout ((int)(getTimeout()/1000));
         connection = DriverManager.getConnection(url,username,password);
     }
 
@@ -29,7 +30,7 @@ public class DatabaseConnectionImpl extends BaseConnection{
         }
     }
     public void init(ConnectionParam param) throws Exception{
-        this.params = param;
+        super.init(param)
         this.driver = checkParam(DRIVER);
         this.url = checkParam(URL);
         this.username = checkParam(USERNAME);

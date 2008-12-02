@@ -27,6 +27,8 @@ package com.ifountain.core.connection;
 public abstract class BaseConnection implements IConnection {
     protected boolean isConnected = false;
     protected ConnectionParam params;
+    protected long minTimeout;
+    protected long maxTimeout;
     protected long timeout;
     public final void _connect() throws Exception {
         connect();
@@ -38,12 +40,31 @@ public abstract class BaseConnection implements IConnection {
         isConnected = false;
     }
 
+    public void init(ConnectionParam param) throws Exception
+    {
+        this.params = param;
+        this.minTimeout = params.getMinTimeout();
+        this.maxTimeout = params.getMaxTimeout();
+        this.timeout = minTimeout;
+    }
+
     public ConnectionParam getParameters() {
         return params;
     }
 
     public void setTimeout(long timeout) {
-        this.timeout = timeout;
+        if(timeout < minTimeout)
+        {
+            this.timeout = this.minTimeout;
+        }
+        else if(timeout > maxTimeout)
+        {
+            this.timeout = maxTimeout;
+        }
+        else
+        {
+            this.timeout = timeout;
+        }
     }
     public final boolean isConnected() {
         return isConnected;

@@ -345,8 +345,8 @@
   <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Apg/Apg.iml" filepath="$PROJECT_DIR$/Apg/Apg.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Hyperic/Hyperic.iml" filepath="$PROJECT_DIR$/Hyperic/Hyperic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Apg/Apg.iml" filepath="$PROJECT_DIR$/../Apg/Apg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Hyperic/Hyperic.iml" filepath="$PROJECT_DIR$/../Hyperic/Hyperic.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Netcool/Netcool.iml" filepath="$PROJECT_DIR$/../Netcool/Netcool.iml" />
       <module fileurl="file://$PROJECT_DIR$/../OpenNms/OpenNms.iml" filepath="$PROJECT_DIR$/../OpenNms/OpenNms.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" />
@@ -577,6 +577,8 @@
     </option>
   </component>
   <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/../Apg" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../Hyperic" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../Netcool" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../OpenNms" vcs="svn" />
     <mapping directory="$PROJECT_DIR$" vcs="svn" />
@@ -641,11 +643,11 @@
     </library>
     <library name="apg">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/Apg/lib" />
+        <root url="file://$PROJECT_DIR$/../Apg/lib" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/Apg/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../Apg/lib" recursive="false" />
     </library>
   </component>
 </project>

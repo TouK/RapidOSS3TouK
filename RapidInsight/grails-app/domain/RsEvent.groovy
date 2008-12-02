@@ -39,6 +39,8 @@ class RsEvent {
     
     String elementName ="";
     
+    Long elementId =0;
+    
     Long count =1;
     
     Long id ;
@@ -79,6 +81,8 @@ class RsEvent {
         
      elementName(blank:true,nullable:true)
         
+     elementId(nullable:true)
+        
      count(nullable:true)
         
      __operation_class__(nullable:true)
@@ -102,6 +106,8 @@ class RsEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
 
 
 

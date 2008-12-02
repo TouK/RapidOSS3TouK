@@ -77,6 +77,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">elementId:</td>
+                    
+                    <td valign="top" class="value">${rsRiHistoricalEvent.elementId}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">elementName:</td>
                     
                     <td valign="top" class="value">${rsRiHistoricalEvent.elementName}</td>

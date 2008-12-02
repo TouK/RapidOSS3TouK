@@ -89,6 +89,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="elementId">elementId:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'elementId','errors')}">
+                            <input type="text" id="elementId" name="elementId" value="${fieldValue(bean:rsEvent,field:'elementId')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="elementName">elementName:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsEvent,field:'elementName','errors')}">

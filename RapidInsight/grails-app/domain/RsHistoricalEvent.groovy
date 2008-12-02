@@ -37,6 +37,8 @@ class RsHistoricalEvent {
     
     String elementName ="";
     
+    Long elementId =0;
+    
     Long count =1;
     
     Long id ;
@@ -77,6 +79,8 @@ class RsHistoricalEvent {
         
      elementName(blank:true,nullable:true)
         
+     elementId(nullable:true)
+        
      count(nullable:true)
         
      __operation_class__(nullable:true)
@@ -100,6 +104,8 @@ class RsHistoricalEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
 
 
 

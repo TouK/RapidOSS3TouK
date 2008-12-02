@@ -17,6 +17,7 @@
     </div>
 </g:hasErrors>
 <div class="body">
+	<br>
     <g:form method="post" controller="script">
         <input type="hidden" name="id" value="reloadOperations"/>
         <input type="hidden" name="targetURI" value="/reload.gsp"/>

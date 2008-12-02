@@ -74,6 +74,11 @@ log4j {
     appender.'errorLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
     appender.'errorLog.File'="logs/RapidServerErr.log"
 
+    appender.connectionLog = "org.apache.log4j.DailyRollingFileAppender"
+    appender.'connectionLog.datePattern'="'.'yyyy-MM-dd"
+    appender.'connectionLog.layout'="org.apache.log4j.PatternLayout"
+    appender.'connectionLog.layout.ConversionPattern'='%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n'
+    appender.'connectionLog.File'="logs/Connection.log"
     rootLogger="warn,rapidServerLog"
 
 
@@ -81,7 +86,7 @@ log4j {
     logger {
         // COPY THE FOLLOWING LINE TO DEFINE A NEW LOGGER THAT WILL USE THE NEW APPENDER CREATED ABOVE
         models="info,modelsLog"
-
+        com.ifountain.core.connection="info,connectionLog"
         grails="warn,rapidServerLog"
         StackTrace="warn,errorLog"
         org {

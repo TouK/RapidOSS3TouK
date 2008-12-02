@@ -57,7 +57,7 @@ public class ConnectionPool extends GenericObjectPool
     private Object _borrowObject() throws Exception {
         if(logger.isDebugEnabled())
         {
-            logger.debug("Barrowing connection from "+connectionName + " pool");
+            logger.debug("Borrowing connection from "+connectionName + " pool");
         }
         try
         {
@@ -68,7 +68,7 @@ public class ConnectionPool extends GenericObjectPool
             }
             if(logger.isDebugEnabled())
             {
-                logger.debug("Barrowed connection from "+connectionName + " pool");
+                logger.debug("Borrowed connection from "+connectionName + " pool");
             }
             return borrowedConnection;
         }
@@ -145,7 +145,16 @@ public class ConnectionPool extends GenericObjectPool
         {
             logger.info("Checking status of connections in pool "+connectionName);
             List allConnections = poolableObjectFactory.getAllConnections();
-            if(allConnections.isEmpty())
+            List validConnections = new ArrayList();
+            for(Iterator it=allConnections.iterator(); it.hasNext();)
+            {
+                IConnection conn = (IConnection)it.next();
+                if(poolableObjectFactory.validateObject(conn))
+                {
+                    validConnections.add(conn);
+                }
+            }
+            if(validConnections.isEmpty())
             {
                 try
                 {
@@ -154,7 +163,7 @@ public class ConnectionPool extends GenericObjectPool
                         logger.debug("Currently no connection exists in pool "+connectionName+". Trying to get one");
                     }
                     IConnection connection = (IConnection)_borrowObject();
-                    allConnections.add(connection);
+                    validConnections.add(connection);
                     returnObject(connection);
                 }
                 catch(Exception e)
@@ -165,15 +174,15 @@ public class ConnectionPool extends GenericObjectPool
                     }
                 }
             }
-            if(allConnections.isEmpty())
+            if(validConnections.isEmpty())
             {
                 setPoolConnectionStatus(false);
             }
             else
             {
                 List tasks = new ArrayList();
-                logger.info("Will check "+allConnections.size() +" number of connections in pool "+connectionName);
-                for(Iterator it = allConnections.iterator();it.hasNext();)
+                logger.info("Will check "+validConnections.size() +" number of connections in pool "+connectionName);
+                for(Iterator it = validConnections.iterator();it.hasNext();)
                 {
                     IConnection conn = (IConnection)it.next();
                     tasks.add(new CheckSingleConnection(conn));
@@ -194,7 +203,10 @@ public class ConnectionPool extends GenericObjectPool
                         }
                         catch(ExecutionException ex)
                         {
-
+                            if(logger.isDebugEnabled())
+                            {
+                                logger.debug("An exception occcurred while checking connection status of "+connectionName, ex);
+                            }
                         }
                     }
                     setPoolConnectionStatus(!willDisconnectPool);

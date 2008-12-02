@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.ifountain.core.datasource.BaseAdapter;
+import org.apache.log4j.Logger;
 
 public class MockBaseAdapterImpl extends BaseAdapter
 {
     public MockBaseAdapterImpl(String connConfigName, int reconnectInterval)
     {
-        super(connConfigName, reconnectInterval, null);
+        super(connConfigName, reconnectInterval, Logger.getRootLogger());
     }
 
     public MockBaseAdapterImpl(String connConfigName)

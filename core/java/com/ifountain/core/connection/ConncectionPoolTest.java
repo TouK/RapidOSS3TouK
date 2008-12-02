@@ -132,8 +132,6 @@ public class ConncectionPoolTest extends RapidCoreTestCase
         conn2.privateCheckConnectionResult = false;
         conn3.privateCheckConnectionResult = true;
         pool.returnObject(conn1);
-        MockConnection.isConnected = true;
-        MockConnection.checkConnectionResult = false;
         Thread.sleep(500);
         assertTrue(pool.isPoolConnected());
         assertTrue(MockConnection.disconnectCalledFor.get(conn1.id) > 0);
@@ -177,6 +175,25 @@ public class ConncectionPoolTest extends RapidCoreTestCase
         conn =  (MockConnection)pool.borrowObject();
         assertEquals(0, conn.getTimeout());
     }
+    public void testIfObjectIsNotValidPoolWillNotUseThatObjectToCheckConnectionStatus() throws Exception
+    {
+        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(MockTimeoutStrategy.class);
+        String connectionName = "con1";
+        MockConnection.isConnected = true;
+        MockConnection.checkConnectionResult = true;
+        pool = new ConnectionPool(connectionName, fact, 10, 100);
+        MockConnection conn = (MockConnection)pool.borrowObject();
+        pool.returnObject(conn);
+        List availableConns = fact.getAllConnections();
+        for(Iterator it=availableConns.iterator();it.hasNext();)
+        {
+            ((MockConnection)it.next()).privateCheckConnectionResult = false;
+        }
+        fact.invalidConnections.addAll(fact.getAllConnections());
+        Thread.sleep(500);
+        assertTrue(pool.isPoolConnected());
+    }
+
 }
 
 class MockTimeoutStrategy implements TimeoutStrategy
@@ -197,7 +214,7 @@ class MockTimeoutStrategy implements TimeoutStrategy
 class MockPoolableObjectFactory extends BaseConnectionFactory
 {
     int connectionId = 0;
-    boolean objectsValid = true;
+    List invalidConnections = new ArrayList();
     MockPoolableObjectFactory(Class timeoutStrategyClass) {
         super(timeoutStrategyClass);
     }
@@ -212,7 +229,7 @@ class MockPoolableObjectFactory extends BaseConnectionFactory
     }
 
     public boolean validateObject(Object o) {
-        return objectsValid;
+        return !invalidConnections.contains(o);
     }
 
     public void activateObject(Object o) throws Exception {
@@ -224,12 +241,12 @@ class MockPoolableObjectFactory extends BaseConnectionFactory
 
 class MockConnection implements IConnection
 {
-    public static boolean isConnected = false;
-    public static boolean checkConnectionResult = false;
+    public static boolean isConnected = true;
+    public static boolean checkConnectionResult = true;
     public static Map<Integer, Integer> disconnectCalledFor = new HashMap<Integer, Integer>();
     int id;
-    boolean privateIsConnected = false;
-    boolean privateCheckConnectionResult = false;
+    boolean privateIsConnected = true;
+    boolean privateCheckConnectionResult = true;
     long timeout;
     public MockConnection(int id) {
         this.id = id;
@@ -245,14 +262,15 @@ class MockConnection implements IConnection
 
     public void _disconnect() {
         disconnectCalledFor.put(id, disconnectCalledFor.get(id)+1);
+        privateIsConnected = false;
     }
 
     public boolean isConnected() {
-        return isConnected || privateIsConnected;  //To change body of implemented methods use File | Settings | File Templates.
+        return isConnected && privateIsConnected;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public boolean checkConnection() {
-        return checkConnectionResult || privateCheckConnectionResult;  //To change body of implemented methods use File | Settings | File Templates.
+        return checkConnectionResult && privateCheckConnectionResult;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void setTimeout(long timeout) {

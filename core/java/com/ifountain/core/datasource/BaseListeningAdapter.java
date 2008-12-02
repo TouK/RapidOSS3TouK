@@ -73,27 +73,51 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
 
     private void subscribeInternally() throws Exception {
         if (!isSubscribed()) {
+            logger.info("Subscribing to connection with name "+ connectionName);
+            boolean isPrintedConnectionExceptionOnce = false;
             while (true) {
                 try {
                     synchronized (subscriptionLock)
                     {
                         if(!stoppedByUser)
                         {
+                            if(logger.isDebugEnabled())
+                            {
+                                logger.debug("Getting connection "+connectionName + " from pool");
+                            }
                             connection = ConnectionManager.getConnection(connectionName);
+                            if(logger.isDebugEnabled())
+                            {
+                                logger.debug("Got connection "+connectionName + " from pool");
+                            }
                             try
                             {
                                 _subscribe();
                                 isSubscribed = true;
+                                logger.info("Subscribed to connection with name "+ connectionName);
                                 break;
                             }
                             catch(Exception e)
                             {
                                 if (connection.checkConnection()) {
+                                    if(logger.isDebugEnabled())
+                                    {
+                                        logger.debug("Exception occurred while getting connection "+connectionName + " from pool.", e);
+                                    }
                                     throw e;
                                 } else {
                                     if (reconnectInterval > 0) {
+                                        if(!isPrintedConnectionExceptionOnce)
+                                        {
+                                            isPrintedConnectionExceptionOnce = true;
+                                            logger.warn("Exception occurred while getting connection "+connectionName + " from pool. Trying to reconnect.", e);
+                                        }
                                         Thread.sleep(reconnectInterval);
                                     } else {
+                                        if(logger.isDebugEnabled())
+                                        {
+                                            logger.debug("Exception occurred while getting connection "+connectionName + " from pool.", e);
+                                        }
                                         throw new ConnectionException(e);
                                     }
                                 }
@@ -101,14 +125,24 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
                         }
                         else
                         {
+                            logger.info("Stopped by user cannot subscribe to connection "+connectionName);
                             throw new Exception("Stopped by user cannot subscribe");
                         }
                     }
                 }
                 catch (ConnectionException e) {
                     if (reconnectInterval > 0) {
+                        if(!isPrintedConnectionExceptionOnce)
+                        {
+                            isPrintedConnectionExceptionOnce = true;
+                            logger.warn("Exception occurred while getting connection "+connectionName + " from pool. Trying to reconnect.", e);
+                        }
                         Thread.sleep(reconnectInterval);
                     } else {
+                        if(logger.isDebugEnabled())
+                        {
+                            logger.debug("Exception occurred while getting connection "+connectionName + " from pool.", e);
+                        }
                         throw e;
                     }
                 }
@@ -138,6 +172,10 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
 
     private synchronized void releaseConnection() throws ConnectionInitializationException, ConnectionPoolException, ConnectionException {
         if (connection != null) {
+            if(logger.isDebugEnabled())
+            {
+                logger.debug("Released connection "+connectionName);
+            }
             ConnectionManager.releaseConnection(connection);
             connection = null;
         }

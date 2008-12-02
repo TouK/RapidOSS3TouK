@@ -25,11 +25,12 @@ package com.ifountain.core.datasource.mocks;
 import java.util.Observable;
 
 import com.ifountain.core.datasource.BaseListeningAdapter;
+import org.apache.log4j.Logger;
 
 public class MockBaseListeningAdapter extends BaseListeningAdapter {
 
     public MockBaseListeningAdapter(String connectionName, long reconnectInterval) {
-        super(connectionName, reconnectInterval, null);
+        super(connectionName, reconnectInterval, Logger.getRootLogger());
     }
 
     public MockBaseListeningAdapter(String connectionName){

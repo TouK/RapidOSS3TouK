@@ -51,46 +51,80 @@ public abstract class BaseAdapter implements Adapter
     
     public void executeAction(Action action) throws Exception
     {
-        
+
+        boolean isPrintedConnectionExceptionOnce = false;
         while(true)
         {
                 IConnection conn;
                 try
                 {
+                    if(logger.isDebugEnabled())
+                    {
+                        logger.debug("Getting connection "+connectionName + " from pool");
+                    }
                     conn = ConnectionManager.getConnection(connectionName);
                 }
                 catch (ConnectionException e)
                 {
                     if(reconnectInterval > 0)
                     {
+                        if(!isPrintedConnectionExceptionOnce)
+                        {
+                            isPrintedConnectionExceptionOnce = true;
+                            logger.warn("Exception occurred while getting connection "+connectionName + " from pool. Trying to reconnect.", e);
+                        }
                         Thread.sleep(reconnectInterval);
                         continue;
                     }
                     else
                     {
+                        if(logger.isDebugEnabled())
+                        {
+                            logger.debug("Exception occurred while getting connection "+connectionName + " from pool.", e);
+                        }
                         throw e;
                     }
                 }
                 try
                 {
+                    if(logger.isDebugEnabled())
+                    {
+                        logger.debug("Executing action with "+connectionName);
+                    }
                     action.execute(conn);
+                    if(logger.isDebugEnabled())
+                    {
+                        logger.debug("Executed action with "+connectionName);
+                    }
                     break;
                     
                 }
                 catch (Exception e) {
                     if(conn.checkConnection())
                     {
+                        if(logger.isDebugEnabled())
+                        {
+                            logger.debug("Exception occurred while executing action with connection "+connectionName, e);
+                        }
                         throw e;
                     }
                     else
                     {
-//                        conn.setConnectedOnce(false);
                         if(reconnectInterval > 0)
                         {
+                            if(!isPrintedConnectionExceptionOnce)
+                            {
+                                isPrintedConnectionExceptionOnce = true;
+                                logger.warn("Exception occurred while executing action "+connectionName + ". Trying to reconnect.", e);
+                            }
                             Thread.sleep(reconnectInterval);
                         }
                         else
                         {
+                            if(logger.isDebugEnabled())
+                            {
+                                logger.debug("Exception occurred while executing action with connection "+connectionName, e);
+                            }
                             throw new ConnectionException(e);
                         }
                     }
@@ -98,6 +132,10 @@ public abstract class BaseAdapter implements Adapter
                 finally
                 {
                     ConnectionManager.releaseConnection(conn);
+                    if(logger.isDebugEnabled())
+                    {
+                        logger.debug("Released connection "+connectionName);
+                    }
                 }
             
             

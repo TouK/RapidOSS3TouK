@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsManagementSystem 
-{
-    
+class RsManagementSystem {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -57,4 +56,5 @@ class RsManagementSystem
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

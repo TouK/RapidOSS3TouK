@@ -105,7 +105,7 @@
         {
             Collections.sort (datsourceKeys);
             datsourceKeys.each{key->
-                strBuffer.append(key).append(":\$${key}, ");
+                strBuffer.append(key).append(":\${getProperty(\"").append(key).append("\")}, ");
             }
             strBuffer = strBuffer.substring(0, strBuffer.length()-2);
         }

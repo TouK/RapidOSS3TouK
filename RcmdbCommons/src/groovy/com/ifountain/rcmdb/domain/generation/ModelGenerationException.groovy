@@ -102,4 +102,13 @@ class ModelGenerationException extends Exception{
     {
         return new ModelGenerationException("Invalid storageType ${storageType} for model ${modelName}.");
     }
+
+    public static ModelGenerationException duplicateRelation(String modelName, String relationName)
+    {
+        return new ModelGenerationException("Duplicate relation ${relationName} in model ${modelName}.");
+    }
+    public static ModelGenerationException duplicateProperty(String modelName, String propertyName)
+    {
+        return new ModelGenerationException("Duplicate property ${propertyName} in model ${modelName}.");
+    }
 }

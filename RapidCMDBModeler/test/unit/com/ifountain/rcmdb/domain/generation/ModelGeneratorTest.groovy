@@ -1,20 +1,19 @@
 package com.ifountain.rcmdb.domain.generation
 
+import com.ifountain.compass.CompositeDirectoryWrapperProvider
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 import com.ifountain.rcmdb.domain.converter.DateConverter
 import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 import model.*
 import org.apache.commons.io.FileUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.validation.ConstrainedPropertyBuilder
-import com.ifountain.rcmdb.util.RapidCMDBConstants
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.springframework.validation.Errors
-import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
-import org.codehaus.groovy.grails.commons.GrailsClassUtils
-import com.ifountain.compass.CompositeDirectoryWrapperProvider
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -537,8 +536,6 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
     {
         def model1 = new MockModel(name:"Class1");
         def model2 = new MockModel(name:"Class2");
-
-        addMasterDatasource(model1);
         addMasterDatasource(model2);
 
         def modelFileContent = """import java.util.net.*;
@@ -726,8 +723,6 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
 
     public void testThrowsExceptionIfSameDatasourceDefined()
     {
-
-
         def childModel = new MockModel(name:"Child");
         def datasourceChild1 = new DatasourceName(name:"RCMDB");
         def datasourceChild2 = new DatasourceName(name:"RCMDB");
@@ -755,9 +750,12 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue(object.propertyConfiguration instanceof Map);
         assertTrue(object.propertyConfiguration.isEmpty());
         assertTrue(object.transients instanceof List);
-        assertTrue(object.transients.contains("errors"));
-        assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
-        assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+        if(object.class.superclass.name == Object.class.name)
+        {
+          assertTrue(object.transients.contains("errors"));
+          assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
+          assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+        }
         assertTrue(object.relations instanceof Map);
         assertTrue(object.relations.isEmpty());
     }

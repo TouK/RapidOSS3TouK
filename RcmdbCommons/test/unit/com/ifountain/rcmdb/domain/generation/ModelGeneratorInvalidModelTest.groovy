@@ -66,7 +66,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         String modelName = "ChildModel";
         String modelName2 = "ParentModel";
         def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:modelName2, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
-        def modelXml = createModel (modelName, null, [prop1, prop2], [], [rel1]);
+        def modelXml = createModel (modelName, null, [prop1, prop2], [prop1], [rel1]);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
@@ -74,6 +74,96 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }catch(ModelGenerationException e)
         {
             assertEquals (ModelGenerationException.undefinedRelatedModel(modelName, rel1.name, modelName2).getMessage(), e.getMessage());
+        }
+    }
+
+    public void testThrowsExceptionIfDuplicateRelationsDefined()
+    {
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+
+        String parentModelName = "ParentModel";
+        String childModelName = "ChildModel";
+        String relatedModelName = "RelatedModel";
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:childModelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:false];
+        def modelXml1 = createModel (parentModelName, null, [prop1], [prop1], [rel1]);
+        def modelXml2 = createModel (childModelName, parentModelName, [], [], [rel1]);
+        def modelXml3 = createModel (relatedModelName, null, [prop1], [prop1], [revrel1]);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml1, modelXml2, modelXml3])
+            fail("Should throw exception since duplicate relations defined");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.duplicateRelation(childModelName, rel1.name).getMessage(), e.getMessage());
+        }
+
+        String subChildModelName = "SubChild"
+        modelXml1 = createModel (parentModelName, null, [prop1], [prop1], [rel1]);
+        modelXml2 = createModel (childModelName, parentModelName, [], [], []);
+        modelXml3 = createModel (relatedModelName, null, [prop1], [prop1], [revrel1]);
+        def modelXml4 = createModel (subChildModelName, childModelName, [], [], [rel1]);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml1, modelXml2, modelXml3, modelXml4])
+            fail("Should throw exception since duplicate relations defined");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.duplicateRelation(subChildModelName, rel1.name).getMessage(), e.getMessage());
+        }
+
+
+        modelXml1 = createModel (childModelName, null, [prop1], [prop1], [rel1, rel1]);
+        modelXml2 = createModel (relatedModelName, null, [prop1], [prop1], [revrel1]);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml1, modelXml2])
+            fail("Should throw exception since duplicate relations defined");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.duplicateRelation(childModelName, rel1.name).getMessage(), e.getMessage());
+        }
+    }
+
+    public void testThrowsExceptionIfDuplicatePropertyDefined()
+    {
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+
+        String parentModelName = "ParentModel";
+        String childModelName = "ChildModel";
+        def modelXml1 = createModel (parentModelName, null, [prop1], [prop1], []);
+        def modelXml2 = createModel (childModelName, parentModelName, [prop1], [], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml1, modelXml2])
+            fail("Should throw exception since duplicate property defined");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.duplicateProperty(childModelName, prop1.name).getMessage(), e.getMessage());
+        }
+
+        String subChildModelName = "SubChild"
+        modelXml1 = createModel (parentModelName, null, [prop1], [prop1], []);
+        modelXml2 = createModel (childModelName, parentModelName, [], [], []);
+        def modelXml3 = createModel (subChildModelName, childModelName, [prop1], [], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml1, modelXml2, modelXml3])
+            fail("Should throw exception since duplicate properties defined");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.duplicateProperty(subChildModelName, prop1.name).getMessage(), e.getMessage());
+        }
+
+//
+        modelXml1 = createModel (childModelName, null, [prop1, prop1], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml1])
+            fail("Should throw exception since duplicate properties defined");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.duplicateProperty(childModelName, prop1.name).getMessage(), e.getMessage());
         }
     }
 
@@ -98,7 +188,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
     {
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
         String modelName = "aBCD";
-        def modelXml = createModel (modelName, null, [prop1], [], []);
+        def modelXml = createModel (modelName, null, [prop1], [prop1], []);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
@@ -109,7 +199,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
 
         modelName = "AABCD";
-        modelXml = createModel (modelName, null, [prop1], [], []);
+        modelXml = createModel (modelName, null, [prop1], [prop1], []);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
@@ -120,7 +210,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
 
         modelName = "A_bB90CCC";
-        modelXml = createModel (modelName, null, [prop1], [], []);
+        modelXml = createModel (modelName, null, [prop1], [prop1], []);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
@@ -135,7 +225,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
     {
         def prop1 = [name:"Abaassadas", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
         String modelName = "Model1";
-        def modelXml = createModel (modelName, null, [prop1], [], []);
+        def modelXml = createModel (modelName, null, [prop1], [prop1], []);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
@@ -146,7 +236,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
 
         prop1 = [name:"aBBBCC", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
-        modelXml = createModel (modelName, null, [prop1], [], []);
+        modelXml = createModel (modelName, null, [prop1], [prop1], []);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
@@ -156,7 +246,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
             assertEquals (ModelGenerationException.invalidModelPropertyName(modelName, prop1.name).getMessage(), e.getMessage());
         }
         prop1 = [name:"_bBBBB", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
-        modelXml = createModel (modelName, null, [prop1], [], []);
+        modelXml = createModel (modelName, null, [prop1], [prop1], []);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
@@ -166,7 +256,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
             fail("Should not throw exception");
         }
         prop1 = [name:"b_BBBB99", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
-        modelXml = createModel (modelName, null, [prop1], [], []);
+        modelXml = createModel (modelName, null, [prop1], [prop1], []);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
@@ -177,7 +267,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
 
         prop1 = [name:"bbBBBB99", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
-        modelXml = createModel (modelName, null, [prop1], [], []);
+        modelXml = createModel (modelName, null, [prop1], [prop1], []);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
@@ -190,7 +280,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         ModelGenerator.getInstance().invalidNames = ["invalidName"]
 
         prop1 = [name:"invalidName", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
-        modelXml = createModel (modelName, null, [prop1], [], []);
+        modelXml = createModel (modelName, null, [prop1], [prop1], []);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml])
@@ -209,8 +299,8 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         String modelName2 = "Model2";
         def rel1 = [name:"Abaassadas",  reverseName:"revrel1", toModel:modelName2, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
         def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:false];
-        def modelXml = createModel (modelName, null, [prop1], [], [rel1]);
-        def modelXml2 = createModel (modelName2, null, [prop1], [], [revrel1]);
+        def modelXml = createModel (modelName, null, [prop1], [prop1], [rel1]);
+        def modelXml2 = createModel (modelName2, null, [prop1], [prop1], [revrel1]);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml, modelXml2])
@@ -220,7 +310,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
             assertEquals (ModelGenerationException.invalidModelRelationName(modelName, rel1.name).getMessage(), e.getMessage());
         }
         rel1.name = "aBBBCC"
-        modelXml = createModel (modelName, null, [prop1], [], [rel1]);
+        modelXml = createModel (modelName, null, [prop1], [prop1], [rel1]);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml, modelXml2])
@@ -231,7 +321,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
 
         rel1.name = "_bBBBB"
-        modelXml = createModel (modelName, null, [prop1], [], [rel1]);
+        modelXml = createModel (modelName, null, [prop1], [prop1], [rel1]);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml, modelXml2])
@@ -241,7 +331,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
             fail("Should not throw exception");
         }
         rel1.name = "b_BBBB99"
-        modelXml = createModel (modelName, null, [prop1], [], [rel1]);
+        modelXml = createModel (modelName, null, [prop1], [prop1], [rel1]);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml, modelXml2])
@@ -252,7 +342,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
 
         rel1.name = "bbBBBB99"
-        modelXml = createModel (modelName, null, [prop1], [], [rel1]);
+        modelXml = createModel (modelName, null, [prop1], [prop1], [rel1]);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml, modelXml2])
@@ -266,7 +356,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         ModelGenerator.getInstance().invalidNames = ["invalidName"]
 
         rel1.name = "invalidName"
-        modelXml = createModel (modelName, null, [prop1], [], [rel1]);
+        modelXml = createModel (modelName, null, [prop1], [prop1], [rel1]);
         try
         {
             ModelGenerator.getInstance().generateModels([modelXml, modelXml2])
@@ -283,7 +373,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
 
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
         def ds1 = [name:"ds1",keyMappings:[[propertyName:prop1.name, nameInDatasource:prop1.name]]]
-        def prop2 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:ds1.name, lazy:false]
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:ds1.name, lazy:false]
         String modelName = "Model1";
         def modelXml = createModel (modelName, null, [], [prop1, prop2], [prop1], []);
         try
@@ -328,9 +418,12 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         modelProps["storageType"] = storageType;
         modelbuilder.Model(modelProps){
             modelbuilder.Datasources(){
-                modelbuilder.Datasource(name:"RCMDB"){
-                    keyProperties.each{Map keyPropConfig->
-                        modelbuilder.Key(propertyName:keyPropConfig.name)
+                if(!keyProperties.isEmpty())
+                {
+                    modelbuilder.Datasource(name:"RCMDB"){
+                        keyProperties.each{Map keyPropConfig->
+                            modelbuilder.Key(propertyName:keyPropConfig.name)
+                        }
                     }
                 }
             }

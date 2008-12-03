@@ -130,12 +130,32 @@ class ModelGenerator
                 {
                     throw ModelGenerationException.invalidModelRelationName(modelName, relname);
                 }
+                def parentModelName = modelMetaData.parentModelName;
+                while(parentModelName != null && parentModelName != "")
+                {
+                    def parentModelMetaData = modelMetaDatas[parentModelName];
+                    if(parentModelMetaData.relations[relname] != null)
+                    {
+                        throw ModelGenerationException.duplicateRelation(modelName, relname)
+                    }
+                    parentModelName = parentModelMetaData.parentModelName;
+                }
             }
 
             modelMetaData.propertyList.each{propConf->
                 if(invalidNames.contains(propConf.name) || !propConf.name.matches(validPropertyNameExpression))
                 {
                     throw ModelGenerationException.invalidModelPropertyName(modelName, propConf.name);
+                }
+                def parentModelName = modelMetaData.parentModelName;
+                while(parentModelName != null && parentModelName != "")
+                {
+                    def parentModelMetaData = modelMetaDatas[parentModelName];
+                    if(parentModelMetaData.propertyMap.containsKey(propConf.name))
+                    {
+                        throw ModelGenerationException.duplicateProperty(modelName, propConf.name)
+                    }
+                    parentModelName = parentModelMetaData.parentModelName;
                 }
             }
 
@@ -257,6 +277,7 @@ class ModelMetaData
     def transientProps = [];
     def constraints = [:];
     def propertyList = [];
+    def propertyMap = [:];
     def numberOfDatasources
     def ModelMetaData(String modelXml)
     {
@@ -298,12 +319,17 @@ class ModelMetaData
 
     def processProperties(GPathResult model)
     {
+        def processedProperties = [:]
         def masterKeyPropName = null;
         model.Properties.Property.each{GPathResult property->
             def generalPropConfig = [:];
             def propertyName = property.@name.text();
+            if(propertyMap.containsKey(propertyName)){
+                throw ModelGenerationException.duplicateProperty(modelName, propertyName);
+            }
             generalPropConfig["type"] =getRealType(property.@type.text());
             generalPropConfig["name"] = propertyName;
+            propertyMap[propertyName] = generalPropConfig;
             propertyList += generalPropConfig;
             constraints[propertyName] = [:];
             generalPropConfig["defaultValue"] = getDefaultValue(property);
@@ -361,17 +387,20 @@ class ModelMetaData
             constraints[masterKeyPropName][KeyConstraint.KEY_CONSTRAINT] = uniqueKeys;
         }
 
-        propertyList += [type:Long.simpleName, name:GrailsDomainClassProperty.IDENTITY];
-        propertyList += [type:Long.simpleName, name:GrailsDomainClassProperty.VERSION];
-        propertyList += [type:Errors.name, name:com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME];
-        propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME];
-        propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
-        constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
-        constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
-        constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
-        transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME;
-        transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME;
-        transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED;
+        if(parentModelName == null || parentModelName == "")
+        {
+            propertyList += [type:Long.simpleName, name:GrailsDomainClassProperty.IDENTITY];
+            propertyList += [type:Long.simpleName, name:GrailsDomainClassProperty.VERSION];
+            propertyList += [type:Errors.name, name:com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME];
+            propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME];
+            propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
+            constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
+            constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
+            constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
+            transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME;
+            transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME;
+            transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED;
+        }
     }
 
     private def processRelation(cardinality, oppositeCardinality, name, oppositeName, oppositeType, isOwner)
@@ -408,7 +437,14 @@ class ModelMetaData
         }
         relationConfig["reverseName"] = oppositeName;
         relationConfig["type"] = oppositeType;
-        relations[name] = relationConfig;
+        if(relations[name]  == null)
+        {
+            relations[name] = relationConfig;
+        }
+        else
+        {
+            throw ModelGenerationException.duplicateRelation(modelName, name);
+        }
     }
     
     def processRelations(xmlModel)

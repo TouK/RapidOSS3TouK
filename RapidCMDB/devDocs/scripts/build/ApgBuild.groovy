@@ -24,6 +24,9 @@ class ApgBuild extends Build{
         ant.copy(todir: "$env.dist_modules_rapid_suite/operations") {
             ant.fileset(dir: "$env.rapid_apg/operations")
         }
+        ant.copy(todir: "$env.dist_modules_rapid_suite/lib") {
+            ant.fileset(dir: "$env.rapid_apg/lib")
+        }
         ant.copy(todir: "$env.dist_modules_rapid_suite/src/groovy") {
             ant.fileset(dir: "$env.rapid_apg/src/groovy")
         }

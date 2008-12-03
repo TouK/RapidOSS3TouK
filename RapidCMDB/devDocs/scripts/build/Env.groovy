@@ -43,6 +43,7 @@ class Env {
     static def rapid_netcool = "$basedir/Netcool"
     static def rapid_smarts = "$basedir/Smarts"
     static def rapid_hyperic = "$basedir/Hyperic"
+    static def rapid_apg = "$basedir/Apg"
     static def rapid_ui = "$rapid_modules/RapidUiPlugin"
 
     static def rapid_cmdb_src = "$rapid_cmdb_cvs/src/java"

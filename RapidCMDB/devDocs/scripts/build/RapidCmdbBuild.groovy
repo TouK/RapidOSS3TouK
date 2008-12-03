@@ -42,6 +42,7 @@ class RapidCmdbBuild extends Build {
 	def osType; 
     def rapidUiBuild = new RapidUiPluginBuild();
     def hypericBuild = new HypericBuild();
+    def apgBuild = new ApgBuild();
     def riBuild = new RapidInsightPluginBuild();
     static void main(String[] args) {
         RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();
@@ -344,6 +345,7 @@ class RapidCmdbBuild extends Build {
     	rapidUiBuild.run([]);
     	riBuild.run([]);
     	hypericBuild.run([]);
+    	apgBuild.run([]);
     }
     
     def buildModules(){

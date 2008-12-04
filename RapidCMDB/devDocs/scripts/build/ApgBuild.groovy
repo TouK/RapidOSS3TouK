@@ -6,6 +6,9 @@ package build
  * Time: 2:00:12 PM
  */
 class ApgBuild extends Build{
+	def version = "$env.rapid_hyperic/RIApgVersion.txt";
+	def versionInBuild = "$env.dist_modules_rapid_suite/RIHypericVersion.txt";
+	
    static void main(String[] args) {
         ApgBuild apgBuild = new ApgBuild();
         apgBuild.run(args);
@@ -17,7 +20,9 @@ class ApgBuild extends Build{
     }
     def build() {
         clean();
-
+        ant.copy(file: version, tofile: versionInBuild);
+        setVersionAndBuildNumber(versionInBuild);
+        def versionDate = getVersionWithDate();
         ant.copy(todir: "$env.dist_modules_rapid_suite/grails-app") {
             ant.fileset(dir: "$env.rapid_apg/grails-app")
         }
@@ -37,7 +42,7 @@ class ApgBuild extends Build{
             ant.fileset(dir: "$env.rapid_apg/applications/RapidInsight")
         }
 
-        ant.zip(destfile: "$env.distribution/ApgPlugin.zip") {
+        ant.zip(destfile: "$env.distribution/ApgPlugin_$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }
     }

@@ -7,6 +7,9 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class HypericBuild extends Build {
+	def version = "$env.rapid_apg/RIApgVersion.txt";
+	def versionInBuild = "$env.dist_modules_rapid_suite/RIApgVersion.txt"; 
+	
     static void main(String[] args) {
         HypericBuild hypericBuild = new HypericBuild();
         hypericBuild.run(args);
@@ -18,7 +21,9 @@ class HypericBuild extends Build {
     }
     def build() {
         clean();
-
+        ant.copy(file: version, tofile: versionInBuild);
+        setVersionAndBuildNumber(versionInBuild);
+        def versionDate = getVersionWithDate();
         ant.copy(todir: "$env.dist_modules_rapid_suite/grails-app") {
             ant.fileset(dir: "$env.rapid_hyperic/grails-app")
         }
@@ -36,10 +41,11 @@ class HypericBuild extends Build {
         }
 
         ant.copy(file: "${env.dist_modules_rapid_suite}/web-app/hypericAdmin.gsp", toFile: "${env.dist_modules_rapid_suite}/grails-app/views/hypericConnection/list.gsp", overwrite: true); 
-        ant.zip(destfile: "$env.distribution/HypericPlugin.zip") {
+        
+        ant.zip(destfile: "$env.distribution/HypericPlugin_$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }
-        ant.zip(destfile: "${env.distribution}/hyperic-rcmdb-plugin.zip"){
+        ant.zip(destfile: "${env.distribution}/hyperic-RI-plugin_$versionDate" + ".zip"){
             ant.zipfileset(dir:"${env.rapid_hyperic}/integration/hyperic/plugin")
         }
     }

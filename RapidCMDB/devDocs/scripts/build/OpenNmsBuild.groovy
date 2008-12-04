@@ -7,6 +7,9 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class OpenNmsBuild extends Build{
+	def version = "$env.rapid_opennms/RIOpenNmsVersion.txt";
+	def versionInBuild = "$env.dist_modules_rapid_suite/RIOpenNmsVersion.txt"; 
+	
    static void main(String[] args) {
         OpenNmsBuild openNmsBuild = new OpenNmsBuild();
         openNmsBuild.run(args);
@@ -18,7 +21,9 @@ class OpenNmsBuild extends Build{
     }
     def build() {
         clean();
-
+        ant.copy(file: version, tofile: versionInBuild);
+        setVersionAndBuildNumber(versionInBuild);
+        def versionDate = getVersionWithDate();
         ant.copy(todir: "$env.dist_modules_rapid_suite/grails-app") {
             ant.fileset(dir: "$env.rapid_opennms/grails-app")
         }
@@ -35,11 +40,10 @@ class OpenNmsBuild extends Build{
             ant.fileset(dir: "$env.rapid_opennms/applications/RapidInsight")
         }
 
-        
-        ant.zip(destfile: "$env.distribution/OpenNmsPlugin.zip") {
+        ant.zip(destfile: "$env.distribution/OpenNmsPlugin_$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }
-        ant.zip(destfile: "${env.distribution}/opennms-rcmdb-plugin.zip"){
+        ant.zip(destfile: "${env.distribution}/opennms-RI-plugin_$versionDate" + ".zip"){
             ant.zipfileset(dir:"${env.rapid_opennms}/integration")
         }
     }

@@ -11,6 +11,9 @@ class RapidInsightBuild extends Build {
     def rapidCMDBBuild = new RapidCmdbBuild();
     def smartsBuild = new SmartsModuleBuild();
     def netcoolBuild = new NetcoolModuleBuild();
+    def hypericBuild = new HypericBuild();
+    def apgBuild = new ApgBuild();
+    def openNmsBuild = new OpenNmsBuild();
 
     static void main(String[] args) {
         RapidInsightBuild rapidInsightBuilder = new RapidInsightBuild();
@@ -130,12 +133,16 @@ class RapidInsightBuild extends Build {
         ant.zip(destfile: zipFileName) {
             ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
         }
-        netcoolBuild.versionNo = versionNo;
-        netcoolBuild.buildNo = buildNo;
+        //netcoolBuild.versionNo = versionNo;
+        //netcoolBuild.buildNo = buildNo;
         netcoolBuild.build();
-        smartsBuild.versionNo = versionNo;
-        smartsBuild.buildNo = buildNo
+        //smartsBuild.versionNo = versionNo;
+        //smartsBuild.buildNo = buildNo
         smartsBuild.build();
+        
+    	hypericBuild.run([]);
+    	apgBuild.run([]);
+    	openNmsBuild.run([]);
     }
     
     def makeEnterprise(){

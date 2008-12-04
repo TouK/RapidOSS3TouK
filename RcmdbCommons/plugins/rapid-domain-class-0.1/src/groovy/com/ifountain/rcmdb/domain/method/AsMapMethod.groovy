@@ -34,15 +34,9 @@ class AsMapMethod extends AbstractRapidDomainMethod{
     public AsMapMethod(MetaClass mc, GrailsDomainClass domainClass, Logger logger, Map relations) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
         this.logger = logger;
-         def excludedProps = ['version',
-                                     'id',
-                                       ClosureEventTriggeringInterceptor.ONLOAD_EVENT,
-                                       ClosureEventTriggeringInterceptor.BEFORE_DELETE_EVENT,
-                                       ClosureEventTriggeringInterceptor.BEFORE_INSERT_EVENT,
-                                       ClosureEventTriggeringInterceptor.BEFORE_UPDATE_EVENT]
-        def props = domainClass.getProperties().findAll { !excludedProps.contains(it.name) }
+        def props = domainClass.clazz.'getPropertiesList'();
         for(prop in props){
-            if(!relations.containsKey(prop.name)){
+            if(!prop.isRelation && !prop.isOperationProperty){
                 allProperties += prop.name;
             }
         }

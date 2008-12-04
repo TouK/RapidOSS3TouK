@@ -7,6 +7,7 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import java.lang.reflect.Modifier
 import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,7 +34,10 @@ class GetPropertiesMethod
                 RelationMetaData relation = relations.get(prop.name);
                 if(relation == null)
                 {
-                    allDomainClassProperties.add(new RapidDomainClassProperty(name:prop.name, isOperationProperty:false, isKey:isKey))
+                    if(ModelGenerator.VALID_PROPERTY_TYPE_CLASSES.contains(prop.getType()))
+                    {
+                      allDomainClassProperties.add(new RapidDomainClassProperty(name:prop.name, isOperationProperty:false, isKey:isKey))
+                    }
                 }
                 else
                 {

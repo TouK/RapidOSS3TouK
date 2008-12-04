@@ -14,6 +14,7 @@ import com.ifountain.compass.CompositeDirectoryWrapperProvider
 class ModelGenerator 
 {
     public static final String VALID_DIR_TYPES = [CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, CompositeDirectoryWrapperProvider.RAM_DIR_TYPE, CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE]
+    public static final List VALID_PROPERTY_TYPE_CLASSES = [String, Double, Date, Boolean, Long]
     private static final String validModelNameExpression = "[A-Z][a-z_][A-Za-z_0-9]*"
     private static final String validPropertyNameExpression = "[a-z_][a-z_][A-Za-z_0-9]*"
     public static final String NUMBER_TYPE = "number"

@@ -118,7 +118,32 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         allProperties = method.getDomainObjectProperties();
         assertEquals (6, allProperties.size())
     }
+    public void testGetPropertyIgnoresPropertyWithInvalidType()
+    {
+      ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+      GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodDomainObjectWithInvalidProperties);
+      GetPropertiesMethod method = new GetPropertiesMethod(cls);
+      def allProperties = method.getDomainObjectProperties();
+      assertEquals (6, allProperties.size())
+      RapidDomainClassProperty prop = allProperties[0]
+      assertEquals("id", prop.name);
 
+      prop = allProperties[1]
+      assertEquals("prop1", prop.name);
+
+      prop = allProperties[2]
+      assertEquals("prop2", prop.name);
+
+      prop = allProperties[3]
+      assertEquals("prop3", prop.name);
+
+      prop = allProperties[4]
+      assertEquals("rel1", prop.name);
+
+      prop = allProperties[5]
+      assertEquals("rel2", prop.name);
+
+    }
     public void testGetPropertiesWithHidepropertyAnnotation()
     {
         fail("Should be implemented later");
@@ -159,6 +184,12 @@ class GetPropertiesMethodDomainObject
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     //AUTO_GENERATED_CODE
+}
+
+class GetPropertiesMethodDomainObjectWithInvalidProperties extends GetPropertiesMethodDomainObject
+{
+  Object invalidProp1;
+  Observer invalidProp2;
 }
 
 class GetPropertiesMethodParentDomainObjectOperations extends AbstractDomainOperation

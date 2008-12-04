@@ -1,5 +1,6 @@
-baseDir = "D:/tempworkspace/IdeaWorkspace/RapidModules/";
-OODirList = [baseDir+"Apg"];
+baseDir = "D:/tempworkspace/IdeaWorkspace/";
+OODirList = [baseDir+"RapidModules/RcmdbCommons"];
+
 IFDirList = []
 //OODirList = [baseDir+"Apg/src/groovy", baseDir+"Hyperic"];
 //IFDirList = [baseDir+"Smarts",baseDir+"Netcool" ];
@@ -11,6 +12,19 @@ OO_FLAG = 0;
 IF_FLAG = 1;
 copyrightDetectionStr1 = "copyright";
 copyrightDetectionStr2 = "iFountain";
+
+exceptListPattern=[]
+exceptListPattern.add(".*Code licensed under the BSD License")
+exceptListPattern.add(".*Licensed under the Apache License")
+exceptListPattern.add(".*Jack Slocum")
+exceptListPattern.add(".*Thomas Fuchs")
+exceptListPattern.add(".*MIT-style license")
+
+
+
+
+
+
 
 IFLicenseText = "/*\r\n" +
 "* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be\r\n" +
@@ -35,6 +49,8 @@ OOLicenseText = "/* \r\n" +
 "* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307\r\n" +
 "* USA.\r\n" +
 "*/\r\n";
+
+
 
 OODirList.each{
     println("Open Source");
@@ -72,17 +88,34 @@ def editFiles(pathStr, flag, pattern){
     path.eachFileMatch(pattern) {fname->        
 		content = fname.text;
 		if((content.indexOf(copyrightDetectionStr1)==-1) || (content.indexOf(copyrightDetectionStr2)==-1)){
-			if(flag == OO_FLAG){
-				println("\t    will add OO license comment to ${fname}");
-				fname.write(OOLicenseText + content);
-			}
-			else{
-				println("\t    will add IF license comment to ${fname}");
-				fname.write(IFLicenseText + content);
-			}
+            def skipFile=false
+            exceptListPattern.each{ exceptPattern ->
+               def matcher= ( content =~ exceptPattern )               
+               if(matcher.size()>0)
+               {
+                   skipFile=true
+                   return;
+               }
+               
+            }
+            if(skipFile)
+            {
+                println("    Skipping file, because its in exceptList ${fname}");
+            }
+            else{
+                if(flag == OO_FLAG){
+                    println("\t    will add OO license comment to ${fname}");
+                    //fname.write(OOLicenseText + content);
+                }
+                else{
+                    println("\t    will add IF license comment to ${fname}");
+                    //fname.write(IFLicenseText + content);
+                }
+            }
+
 		}
 		else{
-			println("\t License comment already exists in ${fname}");
+			println("    License comment already exists in ${fname}");
 		}
     }
 }

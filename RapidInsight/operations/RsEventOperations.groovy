@@ -5,7 +5,6 @@ class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDo
 		props.remove('__is_federated_properties_loaded__');
 		props.remove('errors');
 		props.clearedAt = Date.now()
-		props.active = "false"
 		RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date())
 		def historicalEvent = RsHistoricalEvent.add(props)
 		

@@ -6,8 +6,8 @@ package build
  * Time: 2:00:12 PM
  */
 class ApgBuild extends Build{
-	def version = "$env.rapid_hyperic/RIApgVersion.txt";
-	def versionInBuild = "$env.dist_modules_rapid_suite/RIHypericVersion.txt";
+	def version = "$env.rapid_apg/RIApgVersion.txt";
+	def versionInBuild = "$env.dist_modules_rapid_suite/RIApgVersion.txt";
 	
    static void main(String[] args) {
         ApgBuild apgBuild = new ApgBuild();

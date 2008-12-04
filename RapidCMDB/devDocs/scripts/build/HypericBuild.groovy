@@ -7,8 +7,8 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class HypericBuild extends Build {
-	def version = "$env.rapid_apg/RIApgVersion.txt";
-	def versionInBuild = "$env.dist_modules_rapid_suite/RIApgVersion.txt"; 
+	def version = "$env.rapid_hyperic/RIHypericVersion.txt";
+	def versionInBuild = "$env.dist_modules_rapid_suite/RIHypericVersion.txt"; 
 	
     static void main(String[] args) {
         HypericBuild hypericBuild = new HypericBuild();

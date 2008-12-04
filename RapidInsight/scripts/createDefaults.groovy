@@ -16,6 +16,8 @@ CmdbScript.addScript(name: "editQuery");
 CmdbScript.addScript(name: "reloadOperations");
 CmdbScript.addScript(name: "getViewFields");
 
+CmdbScript.addScript(name: "importSampleRiData");
+
 // topology scripts
 CmdbScript.addScript(name: "createMap");
 CmdbScript.addScript(name: "editMap");

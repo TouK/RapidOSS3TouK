@@ -57,12 +57,14 @@ class RsEventJournal {
     
     public String toString()
     {
-    	return "${getClass().getName()}[id:$id]";
+    	return "${getClass().getName()}[id:${getProperty("id")}]";
     }
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
     
 }

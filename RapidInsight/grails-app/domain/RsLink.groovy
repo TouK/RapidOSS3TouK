@@ -6,7 +6,7 @@ class RsLink  extends RsTopologyObject {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["connectedSystem"];
+        except = ["connectedSystems"];
     
     
     };
@@ -21,12 +21,12 @@ class RsLink  extends RsTopologyObject {
     
     String z_Name ="";
     
-    List connectedSystem =[];
+    List connectedSystems =[];
     
     
     static relations = [
     
-        connectedSystem:[type:RsComputerSystem, reverseName:"connectedVia", isMany:true]
+        connectedSystems:[type:RsComputerSystem, reverseName:"connectedVia", isMany:true]
     
     ]
     
@@ -43,11 +43,13 @@ class RsLink  extends RsTopologyObject {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["connectedSystem"];
+    static transients = ["connectedSystems"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
     
 }

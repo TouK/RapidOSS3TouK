@@ -33,5 +33,7 @@ class RsGroup  extends RsTopologyObject {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
     
 }

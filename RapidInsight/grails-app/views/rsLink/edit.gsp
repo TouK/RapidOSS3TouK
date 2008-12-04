@@ -71,19 +71,19 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="connectedSystem">connectedSystem:</label>
+                            <label for="connectedSystems">connectedSystems:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'connectedSystem','errors')}">
+                        <td valign="top" class="value ${hasErrors(bean:rsLink,field:'connectedSystems','errors')}">
                             
 <ul>
-<g:each var="c" in="${rsLink?.connectedSystem?}">
+<g:each var="c" in="${rsLink?.connectedSystems?}">
     <li style="margin-bottom:3px;">
         <g:link controller="rsComputerSystem" action="show" id="${c.id}">${c}</g:link>
-        <g:link class="delete" action="removeRelation" params="['id':rsLink?.id, 'relationName':'connectedSystem', 'relatedObjectId':c.id]"></g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsLink?.id, 'relationName':'connectedSystems', 'relatedObjectId':c.id]"></g:link>
     </li>
 </g:each>
 </ul>
-<g:link params="['id':rsLink?.id, 'relationName':'connectedSystem']" action="addTo">Add RsComputerSystem</g:link>
+<g:link params="['id':rsLink?.id, 'relationName':'connectedSystems']" action="addTo">Add RsComputerSystem</g:link>
 
                         </td>
                     </tr>

@@ -63,11 +63,11 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">connectedSystem:</td>
+                    <td valign="top" class="name">connectedSystems:</td>
                     
                     <td valign="top" style="text-align:left;" class="value">
                         <ul>
-                            <g:each var="c" in="${rsLink.connectedSystem}">
+                            <g:each var="c" in="${rsLink.connectedSystems}">
                                 <li><g:link controller="rsComputerSystem" action="show" id="${c.id}">${c}</g:link></li>
                             </g:each>
                         </ul>

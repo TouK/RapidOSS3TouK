@@ -35,5 +35,7 @@ class RsRiHistoricalEvent  extends RsHistoricalEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
     
 }

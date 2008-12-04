@@ -110,7 +110,7 @@
 		</Model>
 	</Models>
 	<Relations>
-		<Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystem" Type="ManyToMany"></Relation>
+		<Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>
 		<Relation From="RsGroup" To="RsTopologyObject" Name="consistsOf" ReverseName="memberOfGroup" Type="ManyToMany"></Relation>
 	</Relations>
 </Rsmodel>

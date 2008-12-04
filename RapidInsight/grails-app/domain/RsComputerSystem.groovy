@@ -40,7 +40,7 @@ class RsComputerSystem  extends RsTopologyObject {
     
     static relations = [
     
-        connectedVia:[type:RsLink, reverseName:"connectedSystem", isMany:true]
+        connectedVia:[type:RsLink, reverseName:"connectedSystems", isMany:true]
     
     ]
     
@@ -77,5 +77,7 @@ class RsComputerSystem  extends RsTopologyObject {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
     
 }

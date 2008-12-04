@@ -49,12 +49,14 @@ class RsManagementSystem {
     
     public String toString()
     {
-    	return "${getClass().getName()}[name:$name]";
+    	return "${getClass().getName()}[name:${getProperty("name")}]";
     }
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
     
 }

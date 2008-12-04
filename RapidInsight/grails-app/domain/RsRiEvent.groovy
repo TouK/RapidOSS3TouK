@@ -37,5 +37,7 @@ class RsRiEvent  extends RsEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+
     
 }

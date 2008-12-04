@@ -4,7 +4,6 @@
     def domainObject = RsTopologyObject.get(name: objectName);
     if (domainObject != null) {
         request.getRequestDispatcher("defaultObjectDetails.gsp").forward(request, response);
-//        response.sendRedirect("defaultObjectDetails.gsp?name=${objectName}&componentId=${params.componentId}")
     }
     else {
       if(notExistGsp != null)

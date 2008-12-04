@@ -14,11 +14,14 @@ copyrightDetectionStr1 = "copyright";
 copyrightDetectionStr2 = "iFountain";
 
 exceptListPattern=[]
-exceptListPattern.add(".*Code licensed under the BSD License")
-exceptListPattern.add(".*Licensed under the Apache License")
-exceptListPattern.add(".*Jack Slocum")
-exceptListPattern.add(".*Thomas Fuchs")
-exceptListPattern.add(".*MIT-style license")
+exceptListPattern.add("Code licensed under the BSD License")
+exceptListPattern.add("Licensed under the Apache License")
+exceptListPattern.add("Jack Slocum")
+exceptListPattern.add("Thomas Fuchs")
+exceptListPattern.add("MIT-style license")
+exceptListPattern.add("www.apache.org/licenses")
+
+
 
 
 
@@ -90,8 +93,9 @@ def editFiles(pathStr, flag, pattern){
 		if((content.indexOf(copyrightDetectionStr1)==-1) || (content.indexOf(copyrightDetectionStr2)==-1)){
             def skipFile=false
             exceptListPattern.each{ exceptPattern ->
-               def matcher= ( content =~ exceptPattern )               
-               if(matcher.size()>0)
+               //def matcher= ( content =~ exceptPattern )
+               //if(matcher.size()>0)
+               if(content.indexOf(exceptPattern)>=0)
                {
                    skipFile=true
                    return;

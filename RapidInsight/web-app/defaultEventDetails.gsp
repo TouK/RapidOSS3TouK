@@ -65,6 +65,15 @@ objectDialog.show(url, title);
                 else {
                     severityClass = "event-details-severity-normal";
                 }
+                
+                /*
+                  0 normal green
+                1 indeterminate purple
+                2 warning blue
+                3 minor yellow
+                4 major orange
+                5 critical red
+                */
 
         %>
         <table>

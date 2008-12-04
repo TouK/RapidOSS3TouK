@@ -79,6 +79,7 @@ class RapidInsightBuild extends Build {
     def createDirectories(osType){
        createDirectories(osType, true);
     }
+    
     def createDirectories(osType, willDeleteModeler) {
         if(osType == "Windows"){
             rapidCMDBBuild.buildWindowsWithPlugins();    
@@ -103,6 +104,9 @@ class RapidInsightBuild extends Build {
 
     def buildPerOS(osType) {
         createDirectories(osType)
+        // copy xml file for sample data to be imported
+        ant.copy(file: "$env.rapid_insight/sampleRiData.xml", tofile: "$env.dist_rapid_suite/sampleRiData.xml");
+        
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
@@ -133,11 +137,7 @@ class RapidInsightBuild extends Build {
         ant.zip(destfile: zipFileName) {
             ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
         }
-        //netcoolBuild.versionNo = versionNo;
-        //netcoolBuild.buildNo = buildNo;
         netcoolBuild.build();
-        //smartsBuild.versionNo = versionNo;
-        //smartsBuild.buildNo = buildNo
         smartsBuild.build();
         
     	hypericBuild.run([]);

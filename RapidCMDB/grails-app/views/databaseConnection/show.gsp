@@ -63,6 +63,19 @@
 
                 </tr>
 
+                <tr class="prop">
+                    <td valign="top" class="name">Min Timeout:</td>
+
+                    <td valign="top" class="value">${databaseConnection?.minTimeout}</td>
+
+                </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Max Timeout:</td>
+
+                    <td valign="top" class="value">${databaseConnection?.maxTimeout}</td>
+
+                </tr>
+
               </tbody>
         </table>
     </div>

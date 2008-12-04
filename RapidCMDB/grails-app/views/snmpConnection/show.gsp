@@ -51,6 +51,18 @@
                     <td valign="top" class="value">${snmpConnection.port}</td>
 
                 </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Min Timeout:</td>
+
+                    <td valign="top" class="value">${snmpConnection?.minTimeout}</td>
+
+                </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Max Timeout:</td>
+
+                    <td valign="top" class="value">${snmpConnection?.maxTimeout}</td>
+
+                </tr>
 
             </tbody>
         </table>

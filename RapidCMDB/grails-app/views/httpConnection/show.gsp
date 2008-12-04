@@ -50,6 +50,18 @@
                     <td valign="top" class="value">${httpConnection.baseUrl}</td>
 
                 </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Min Timeout:</td>
+
+                    <td valign="top" class="value">${httpConnection?.minTimeout}</td>
+
+                </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Max Timeout:</td>
+
+                    <td valign="top" class="value">${httpConnection?.maxTimeout}</td>
+
+                </tr>
 
             </tbody>
         </table>

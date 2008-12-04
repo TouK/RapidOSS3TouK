@@ -52,7 +52,25 @@
                                 <td valign="top" class="value ${hasErrors(bean:snmpConnection,field:'port','errors')}">
                                     <input type="text" class="inputtextfield" id="port" name="port" value="${fieldValue(bean:snmpConnection,field:'port')}" />
                                 </td>
-                            </tr> 
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="minTimeout">Min Timeout:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:snmpConnection,field:'minTimeout','errors')}">
+                                    <input type="text" class="inputtextfield" id="minTimeout" name="minTimeout" value="${fieldValue(bean:snmpConnection,field:'minTimeout')}"/>
+                                </td>
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="maxTimeout">Max Timeout:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:snmpConnection,field:'maxTimeout','errors')}">
+                                    <input type="maxTimeout" class="inputtextfield" id="maxTimeout" name="maxTimeout" value="${fieldValue(bean:snmpConnection,field:'maxTimeout')}"/>
+                                </td>
+                            </tr>
                         
                         </tbody>
                     </table>

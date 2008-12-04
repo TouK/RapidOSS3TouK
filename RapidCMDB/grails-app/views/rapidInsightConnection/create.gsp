@@ -69,7 +69,25 @@
                                 <td valign="top" class="value ${hasErrors(bean:rapidInsightConnection,field:'userPassword','errors')}">
                                     <input type="password" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:rapidInsightConnection,field:'userPassword')}"/>
                                 </td>
-                            </tr> 
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="minTimeout">Min Timeout:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:rapidInsightConnection,field:'minTimeout','errors')}">
+                                    <input type="text" class="inputtextfield" id="minTimeout" name="minTimeout" value="${fieldValue(bean:rapidInsightConnection,field:'minTimeout')}"/>
+                                </td>
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="maxTimeout">Max Timeout:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:rapidInsightConnection,field:'maxTimeout','errors')}">
+                                    <input type="maxTimeout" class="inputtextfield" id="maxTimeout" name="maxTimeout" value="${fieldValue(bean:rapidInsightConnection,field:'maxTimeout')}"/>
+                                </td>
+                            </tr>
                         
                         </tbody>
                     </table>

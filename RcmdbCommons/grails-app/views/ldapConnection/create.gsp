@@ -71,6 +71,24 @@
                                 </td>
                             </tr>
 
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="minTimeout">Min Timeout:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:ldapConnection,field:'minTimeout','errors')}">
+                                    <input type="text" class="inputtextfield" id="minTimeout" name="minTimeout" value="${fieldValue(bean:ldapConnection,field:'minTimeout')}"/>
+                                </td>
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="maxTimeout">Max Timeout:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:ldapConnection,field:'maxTimeout','errors')}">
+                                    <input type="maxTimeout" class="inputtextfield" id="maxTimeout" name="maxTimeout" value="${fieldValue(bean:ldapConnection,field:'maxTimeout')}"/>
+                                </td>
+                            </tr>
+
                         </tbody>
                     </table>
                 </div>

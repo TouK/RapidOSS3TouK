@@ -33,19 +33,19 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         this.body = dh.append(document.body, {tag: 'div'});
         this.bodyEl = YAHOO.ext.Element.get(this.body);
         this.footer = dh.append(document.body, {tag: 'div', style:'text-align:right;'});
-
         var panelConfig = {
             draggable: true,
             constraintoviewport: true,
             fixedcenter:this.fixedcenter,
             visible:false,
             close:this.close,
-            width:this.width + "px",
-            height:this.height + "px",
+            width:this.width,
+            height:this.height,
             autofillheight:false,
             x:this.x,
             y:this.y
         };
+
 
         this.panel = new YAHOO.widget.Panel(this.container, panelConfig);
         this.panel.setHeader(this.title);
@@ -133,9 +133,27 @@ YAHOO.rapidjs.component.Dialog.prototype = {
 
     show: function(url)
     {
-        var y = this.y || 0
-        YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "" + y);
+        var y=0;
+        if(this.y)
+        {
+            y = this.y;
+        }
+        var y = this.panel.cfg.setProperty("y", y);
+        var newWidth = this.panel.cfg.getProperty("width");
+        if(this.panel.cfg.getProperty("x")+this.panel.cfg.getProperty("width") > document.body.clientWidth)
+        {
+            newWidth =document.body.clientWidth-this.panel.cfg.getProperty("x");
+        }
+        var newHeight = this.panel.cfg.getProperty("height");
+        if(this.panel.cfg.getProperty("y")+this.panel.cfg.getProperty("height") > document.body.clientHeight)
+        {
+            newHeight = document.body.clientHeight-this.panel.cfg.getProperty("y");
+        }
+        this.panel.cfg.setProperty("height", newHeight);
+        this.panel.cfg.setProperty("width", newWidth);
+        this.func.createDelegate(this, {width: newWidth, height: newHeight }, true).call({width: newWidth, height: newHeight});
         this.panel.show();
+
         YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.panel);
     },
     hide: function()

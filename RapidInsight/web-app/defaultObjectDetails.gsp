@@ -17,7 +17,7 @@
         def propertyNames = ["className", "name"];
         allProperties.each{
             def propName = it.name
-            if(propName != "className" || propName != "name"){
+            if(propName != "className" && propName != "name"){
                 propertyNames.add(propName)
             }
         }

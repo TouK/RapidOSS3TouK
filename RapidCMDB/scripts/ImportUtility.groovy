@@ -136,7 +136,9 @@ def importRenamedRelations(web, Map changedRelationNameMap, fname){
 		def toModel = web.grailsApplication.getDomainClass(toModelName).clazz;
 		def toObj = toModel.get(id:to);
 		def fromObj = fromModel.get(id:from);
-		fromObj.addRelation(relName:toObj);
+		def relMap = [:];
+		relMap.put(relName,toObj);
+		fromObj.addRelation(relMap);
 	}	
 }
 

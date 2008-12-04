@@ -161,6 +161,7 @@ compileBuildFiles() {
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleBuild.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/HypericBuild.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/ApgBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/OpenNmsBuild.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/NetcoolModuleBuild.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidInsightPluginBuild.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidCompBuild.groovy

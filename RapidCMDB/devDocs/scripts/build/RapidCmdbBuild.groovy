@@ -41,9 +41,11 @@ class RapidCmdbBuild extends Build {
 	def WINDOWS = "Windows";
 	def osType; 
     def rapidUiBuild = new RapidUiPluginBuild();
+    def riBuild = new RapidInsightPluginBuild();
     def hypericBuild = new HypericBuild();
     def apgBuild = new ApgBuild();
-    def riBuild = new RapidInsightPluginBuild();
+    def openNmsBuild = new OpenNmsBuild();
+
     static void main(String[] args) {
         RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();
         rapidCmdbBuilder.run(args);
@@ -346,6 +348,7 @@ class RapidCmdbBuild extends Build {
     	riBuild.run([]);
     	hypericBuild.run([]);
     	apgBuild.run([]);
+    	openNmsBuild.run([]);
     }
     
     def buildModules(){

@@ -42,7 +42,7 @@ class ApgBuild extends Build{
             ant.fileset(dir: "$env.rapid_apg/applications/RapidInsight")
         }
 
-        ant.zip(destfile: "$env.distribution/ApgPlugin_$versionDate" + ".zip") {
+        ant.zip(destfile: "$env.distribution/ApgPlugin$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }
     }

@@ -81,7 +81,7 @@ class SmartsModuleBuild extends Build {
                 ant.classpath(refid: "classpath");
         }
         ant.move(file: "${env.dist_modules_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
-        ant.zip(destfile: "$env.distribution/SmartsPlugin_$versionDate" + ".zip") {
+        ant.zip(destfile: "$env.distribution/SmartsPlugin$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }
     }

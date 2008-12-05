@@ -51,7 +51,7 @@ public class DefaultTimeoutStrategy implements TimeoutStrategy{
 
     public long calculateNewTimeout(long oldTimeout, List<IConnection> connections) {
         double numberOfDisconnectedConnections = 0;
-        int totalTimeout = 0;
+        long totalTimeout = oldTimeout;
         for(Iterator it=connections.iterator(); it.hasNext();)
         {
             IConnection conn = (IConnection)it.next();
@@ -69,16 +69,16 @@ public class DefaultTimeoutStrategy implements TimeoutStrategy{
         }
         else if(numberOfDisconnectedConnections/connections.size() >= INCREASE_LIMIT)
         {
-            long newTimeoutInterval = totalTimeout/connections.size()*2;
+            long newTimeoutInterval = totalTimeout/(connections.size()+1)*2;
             if(logger.isDebugEnabled())
-            logger.debug("Increasing timeout interval from " + oldTimeout + " to "+newTimeoutInterval);
+            logger.debug("Connection status is :(. Changing timeout interval from " + oldTimeout + " to "+newTimeoutInterval);
             return newTimeoutInterval;
         }
         else
         {
-            long newTimeoutInterval = totalTimeout/connections.size()/2;
+            long newTimeoutInterval = totalTimeout/(connections.size()+1)/2;
             if(logger.isDebugEnabled())
-            logger.debug("Decreasing timeout interval from " + oldTimeout + " to "+newTimeoutInterval);
+            logger.debug("Connection status is :).Changing timeout interval from " + oldTimeout + " to "+newTimeoutInterval);
             return newTimeoutInterval;
         }
     }

@@ -19,6 +19,11 @@
 package application
 
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.SuffixFileFilter
+import org.apache.commons.io.filefilter.FalseFileFilter
+import org.apache.commons.lang.StringUtils
+import com.ifountain.comp.utils.CaseInsensitiveMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,6 +33,11 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatistics
  * To change this template use File | Settings | File Templates.
  */
 class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
+    public static final String VERSION_FILE_SUFFIX = "Version.txt";
+    public static final String ENTERPRISE_LICENCE_FILE = "IFountain End User License Agreement.pdf";
+    public static final String COMMUNITY_PRODUCT = "community";
+    public static final String ENTERPRISE_PRODUCT = "enterprise";
+    public static final String PRODUCT_TYPE = "productType";
     public static String getCompassStatistics()
     {
         return OperationStatistics.getInstance().getGlobalStatistics();
@@ -36,5 +46,48 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     public static void resetCompassStatistics()
     {
         OperationStatistics.getInstance().reset();
+    }
+
+    public static Map applicationInfo()
+    {
+      def appInfo = new CaseInsensitiveMap()
+      def files = FileUtils.listFiles(new File(System.getProperty("base.dir")), new SuffixFileFilter(VERSION_FILE_SUFFIX), new FalseFileFilter());
+      files.each{File versionFile->
+        String productName = StringUtils.substringBefore(versionFile.getName(), VERSION_FILE_SUFFIX);
+        List lines = versionFile.readLines();
+        def productInfo = new CaseInsensitiveMap()
+        boolean isValid = true;
+        lines.each{String line->
+          def parts = line.split(":", -1);
+          if(parts.length == 2)
+          {
+            String infoType = parts[0].trim().toLowerCase()
+            String infoValue = parts[1].trim()
+            productInfo[infoType] = infoValue;
+          }
+          else
+          {
+            isValid = false;
+            return;
+          }
+        }
+        if(isValid)
+        {
+          appInfo[productName] = productInfo;
+        }
+      }
+      if(appInfo.RI != null)
+      {
+        def lincenceFile = new File("${System.getProperty("base.dir")}/../${ENTERPRISE_LICENCE_FILE}")
+        if(lincenceFile.exists())
+        {
+          appInfo.RI[PRODUCT_TYPE] = ENTERPRISE_PRODUCT;
+        }
+        else
+        {
+          appInfo.RI[PRODUCT_TYPE] = COMMUNITY_PRODUCT;
+        }
+      }
+      return appInfo;
     }
 }

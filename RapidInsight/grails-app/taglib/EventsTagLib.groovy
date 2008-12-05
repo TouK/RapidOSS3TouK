@@ -31,6 +31,7 @@ class EventsTagLib {
         def configXML = "<Notifications>${body()}</Notifications>";
         def searchGridPollInterval = attrs["searchResultsPollingInterval"] ? attrs["searchResultsPollingInterval"] : "0";
         def treeGridPollInterval = attrs["queriesPollingInterval"] ? attrs["queriesPollingInterval"] : "0";
+        def searchIn = attrs["searchIn"] ? attrs["searchIn"] : "RsEvent";
         def rowMenus = [];
         def actions = [];
         def htmlDialogs = [];
@@ -131,7 +132,7 @@ class EventsTagLib {
         ntXML.Images.Image.each{
             searchGridImagesTagList+=SearchGridTagLib.fSgImage(visible: it.@visible.toString(), src: it.@src.toString(), "");
         }
-        out << SearchGridTagLib.fSearchGrid(id: "searchGrid", url: "search?format=xml&searchIn=RsEvent", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
+        out << SearchGridTagLib.fSearchGrid(id: "searchGrid", url: "search?format=xml&searchIn=${searchIn}", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
                 keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", title: "Events", onSaveQueryClick: "saveQueryAction",
                 pollingInterval: searchGridPollInterval, fieldsUrl: "script/run/getViewFields?format=xml",
                 SearchGridTagLib.fSgMenuItems([:],

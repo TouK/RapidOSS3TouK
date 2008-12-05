@@ -32,6 +32,7 @@ class HistoricalEventsTagLib {
         def treeGridPollInterval = attrs["queriesPollingInterval"] ? attrs["queriesPollingInterval"] : "0";
         def lineSize = attrs["numberOfLines"] ? attrs["numberOfLines"] : "3";
         def defaultFields = attrs["defaultFields"] ? attrs["defaultFields"] : [];
+        def searchIn = attrs["searchIn"] ? attrs["searchIn"] : "RsHistoricalEvent";
         def rowMenus = [];
         def propertyMenus = [];
         def actions = [];
@@ -181,7 +182,7 @@ class HistoricalEventsTagLib {
         hnXML.Images.Image.each{
             searchGridImagesTagList+=SearchGridTagLib.fSgImage(visible: it.@visible.toString(), src: it.@src.toString(), "");
         }
-        out << SearchListTagLib.fSearchList(id: "searchList", url: "search?format=xml&searchIn=RsHistoricalEvent", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
+        out << SearchListTagLib.fSearchList(id: "searchList", url: "search?format=xml&searchIn=${searchIn}", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
                 keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", lineSize: "3", title: "Historical Events",
                 defaultFields: defaultFields, onSaveQueryClick: "saveQueryAction",
                 pollingInterval: searchListPollInterval, lineSize: lineSize,

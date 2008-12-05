@@ -52,7 +52,6 @@ mapDataBuilder.graphData {
         	links = RsLink.searchEvery( "a_ComputerSystemName:${target} z_ComputerSystemName: ${source}");
 
         if( links.size() != 0 )
-
         {
             mapDataBuilder.edge( source : source, target : target, state : links[0].getState());
         }

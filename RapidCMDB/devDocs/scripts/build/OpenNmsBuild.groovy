@@ -59,8 +59,8 @@ class OpenNmsBuild extends Build{
         }
 
         // copy integration files to be copied into OpenNMS server 
-        ant.copy(todir: "$env.dist_modules/OpenNMS") {
-            ant.fileset(dir: "$env.rapid_opennms/applications/RapidInsight")
+        ant.copy(todir: "$env.dist_modules") {
+            ant.fileset(dir: "${env.rapid_opennms}/integration")
         }
         
         ant.zip(destfile: "$env.distribution/OpenNmsPlugin$versionDate" + ".zip") {

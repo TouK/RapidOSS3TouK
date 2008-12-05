@@ -17,8 +17,20 @@
 * USA.
 */
 
+/* WARNINGS
+*  Before running the commenter take a backup of the workspace
+*  Run commenter by giving path of the backup workspace
+*  Dont forget to add new third party license comment keys to  exceptListPattern
+*  From the plugins directory we only add comments to  rapiddomainclass and searchable-extension
+*  We dont touch the other plugins for comments
+*  Set the paths OODirList and IFDirList
+*  Copy the files from backup to original workspace by neglecting plugins other than rapiddomainclass and searchable-extension
+*  and also by neglecting files which are not source like .iml file, only copy source file directories
+*/
+
 baseDir = "D:/tempworkspace/IdeaWorkspace/";
-OODirList = [baseDir+"RapidModules/RapidUiPlugin"];
+//OODirList = [baseDir+"RapidModules/comp",baseDir+"RapidModules/core",baseDir+"RapidModules/ext"];
+OODirList = [baseDir+"RapidModules/RcmdbCommons/plugins"];
 
 IFDirList = []
 //OODirList = [baseDir+"Apg/src/groovy", baseDir+"Hyperic"];

@@ -35,7 +35,7 @@
     </rui:esMenus>
     <rui:esDefaultMenus>
         <rui:esDefaultMenu id="sortAsc" label="Sort Asc"></rui:esDefaultMenu>
-        <rui:esDefaultMenu id="sortDesc" label="Sort desc"></rui:esDefaultMenu>
+        <rui:esDefaultMenu id="sortDesc" label="Sort Desc"></rui:esDefaultMenu>
         <rui:esDefaultMenu id="except" label="Except"></rui:esDefaultMenu>
         <rui:esDefaultMenu id="greaterThan" label="Greater Than"></rui:esDefaultMenu>
         <rui:esDefaultMenu id="lessThan" label="Less Than"></rui:esDefaultMenu>

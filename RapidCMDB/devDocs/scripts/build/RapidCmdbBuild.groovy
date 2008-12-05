@@ -59,7 +59,7 @@ class RapidCmdbBuild extends Build {
 
     def buildSample(sampleName) {
     	if(versionNo == null) {
-    		ant.copy(todir: "$env.dist_rapid_server", file: env.version)
+    		ant.copy(todir: "$env.dist_rapid_suite", file: env.version)
     		setVersionAndBuildNumber(env.versionInBuild);
     	}
         ant.delete(dir: env.distribution + "/RapidServer");
@@ -302,7 +302,7 @@ class RapidCmdbBuild extends Build {
     
     def buildPerOS(type) {
         osType = type;
-        ant.copy(todir: "$env.dist_rapid_server", file: env.version)
+        ant.copy(todir: "$env.dist_rapid_suite", file: env.version)
         setVersionAndBuildNumber(env.versionInBuild);
 
         buildRCMDB();

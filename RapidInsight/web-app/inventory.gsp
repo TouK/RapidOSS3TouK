@@ -18,7 +18,7 @@
     </rui:inMenus>
     <rui:inDefaultMenus>
         <rui:inDefaultMenu id="sortAsc" label="Sort Asc"></rui:inDefaultMenu>
-        <rui:inDefaultMenu id="sortDesc" label="Sort desc"></rui:inDefaultMenu>
+        <rui:inDefaultMenu id="sortDesc" label="Sort Desc"></rui:inDefaultMenu>
         <rui:inDefaultMenu id="except" label="Except"></rui:inDefaultMenu>
         <rui:inDefaultMenu id="greaterThan" label="Greater Than"></rui:inDefaultMenu>
         <rui:inDefaultMenu id="lessThan" label="Less Than"></rui:inDefaultMenu>

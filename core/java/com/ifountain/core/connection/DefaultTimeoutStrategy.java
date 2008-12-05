@@ -76,7 +76,7 @@ public class DefaultTimeoutStrategy implements TimeoutStrategy{
         }
         else
         {
-            long newTimeoutInterval = totalTimeout/(connections.size()+1)/2;
+            long newTimeoutInterval = (totalTimeout/(connections.size()+1))/2;
             if(logger.isDebugEnabled())
             logger.debug("Connection status is :).Changing timeout interval from " + oldTimeout + " to "+newTimeoutInterval);
             return newTimeoutInterval;

@@ -106,7 +106,21 @@ public abstract class BaseConnectionFactory implements PoolableObjectFactory
                 if(timeoutStrategy.shouldRecalculate(connections))
                 {
                     timeout = timeoutStrategy.calculateNewTimeout(timeout, connections);
+                    if(timeout > getConnectionParameter().getMaxTimeout())
+                    {
+                        if(logger.isDebugEnabled())
+                        logger.debug("New timeout interval " + timeout + " is greater than max timeout interval of "+name + ". It will be assigned to min timeout");
+                        timeout = getConnectionParameter().getMaxTimeout();
+                    }
+                    else if(timeout < getConnectionParameter().getMinTimeout())
+                    {
+                        if(logger.isDebugEnabled())
+                        logger.debug("New timeout interval " + timeout + " is less than min timeout interval of "+name + ". It will be assigned to min timeout");
+                        timeout = getConnectionParameter().getMinTimeout();
+                    }
+                    if(logger.isDebugEnabled())
                     logger.debug("New timeout interval for connection"+ name + " is "+ timeout);
+
                 }
                 else
                 {

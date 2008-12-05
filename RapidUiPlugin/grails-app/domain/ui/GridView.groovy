@@ -41,7 +41,7 @@ class GridView {
 
     static constraints = {
         name(blank: false, nullable: false, key: ["username"])
-        username(blank: true, nullable: true)
+        username(blank: false, nullable: false)
         defaultSortColumn(blank:true, nullable: true)
         sortOrder(inList:["asc","desc"]);
         __operation_class__(nullable:true)

@@ -63,12 +63,12 @@ objectDialog.show(url, title);
                         <table cellspacing="2" cellpadding="2" width="100%">
                             <tbody>
                                 <g:each var="property" status="i" in="${filteredProps}">
-                                    <g:def var="propertyName" value="${property.name}" />
+                                    <g:set var="propertyName" value="${property.name}" />
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td style="font-weight:bold">${propertyName}</td>
                                         <td>
                                             <g:if test="${propertiesLinkedToObject[propertyName]!=null}">
-                                               <g:def var="targetObject" value="${RsTopologyObject.get(id:domainObject[propertiesLinkedToObject[propertyName]])}" />
+                                               <g:set var="targetObject" value="${RsTopologyObject.get(id:domainObject[propertiesLinkedToObject[propertyName]])}" />
                                                <g:if test="${targetObject!=null}">
                                                     <a style="cursor:pointer;text-decoration:underline;color:#006DBA" onclick="showTopologyObject('getObjectDetails.gsp?name=' + encodeURIComponent('${targetObject.name}'),' Details of ${targetObject.className} ${targetObject.name} ') ">${domainObject[propertyName]}</a>
                                                </g:if>

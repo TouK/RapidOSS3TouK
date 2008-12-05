@@ -84,6 +84,7 @@ public abstract class BaseConnectionFactory implements PoolableObjectFactory
                 try
                 {
                     this.timeoutStrategy = (TimeoutStrategy)timeoutStrategyClass.newInstance();
+                    timeout = getConnectionParameter().getMinTimeout();
                     logger.info("Initialized timeout manager with timeout strategy class "+ timeoutStrategyClass.getName() + " for connection "+ name);
                 }
                 catch(Exception e)

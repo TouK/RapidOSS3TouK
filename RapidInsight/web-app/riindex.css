@@ -59,15 +59,24 @@
     background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -220px;
 }
 
+.event-details-severity-normal {
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -240px;
+}
+
+.event-details-severity-warning {
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -260px;
+}
+
 .event-details-severity-minor {
     background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -280px;
 }
 
 .event-details-severity-unknown {
-    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -260px;
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -300px;
 }
 
-.event-details-severity-normal {
-    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -240px;
+.event-details-severity-invalid {
+    background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -320px;
 }
+
 

@@ -50,22 +50,20 @@ objectDialog.show(url, title);
                 def clearedAt = domainObject.clearedAt == 0 ? "never" : format.format(new Timestamp(domainObject.clearedAt));
                 def severityClass;
                 def severity = domainObject.severity;
-                if (severity == 1) {
-                    severityClass = "event-details-severity-critical";
-                }
-                else if (severity == 2) {
-                    severityClass = "event-details-severity-major";
-                }
-                else if (severity == 3) {
-                    severityClass = "event-details-severity-minor";
-                }
-                else if (severity == 4) {
-                    severityClass = "event-details-severity-unknown";
-                }
-                else {
-                    severityClass = "event-details-severity-normal";
-                }
-                
+                def severityClassMap=[:];
+                severityClassMap["5"]="event-details-severity-critical";
+                severityClassMap["4"]="event-details-severity-major";
+                severityClassMap["3"]="event-details-severity-minor";
+                severityClassMap["2"]="event-details-severity-warning";
+                severityClassMap["1"]="event-details-severity-unknown";
+                severityClassMap["0"]="event-details-severity-normal";
+
+               
+                severityClass=severityClassMap[String.valueOf(severity)];
+                if(!severityClass)
+                {
+                    severityClass="event-details-severity-invalid";                
+                }                 
                 /*
                   0 normal green
                 1 indeterminate purple

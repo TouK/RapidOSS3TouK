@@ -50,6 +50,14 @@
         %{--<rui:heConversion property="severity" type="mapping" mapping="['1':'Critical', '2':'Major', '3':'Minor', '4':'Unknown', '5':'Normal']"></rui:heConversion>--}%
         %{--<rui:heConversion property="clearedAt" type="date" format="d M H:i:s"></rui:heConversion>--}%
     </rui:heConversions>
+    <rui:heImages>
+        <rui:heImage visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/red.png"></rui:heImage>
+        <rui:heImage visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/orange.png"></rui:heImage>
+        <rui:heImage visible="params.data.severity == '3'" src="images/rapidjs/component/searchlist/yellow.png"></rui:heImage>
+        <rui:heImage visible="params.data.severity == '2'" src="images/rapidjs/component/searchlist/blue.png"></rui:heImage>
+        <rui:heImage visible="params.data.severity == '1'" src="images/rapidjs/component/searchlist/purple.png"></rui:heImage>
+        <rui:heImage visible="params.data.severity == '0'" src="images/rapidjs/component/searchlist/green.png"></rui:heImage>
+    </rui:heImages>
 </rui:historicalEvents>
 
 

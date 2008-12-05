@@ -177,6 +177,10 @@ class HistoricalEventsTagLib {
                 </div>
                 """
         )
+        def searchGridImagesTagList=""
+        hnXML.Images.Image.each{
+            searchGridImagesTagList+=SearchGridTagLib.fSgImage(visible: it.@visible.toString(), src: it.@src.toString(), "");
+        }
         out << SearchListTagLib.fSearchList(id: "searchList", url: "search?format=xml&searchIn=RsHistoricalEvent", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
                 keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", lineSize: "3", title: "Historical Events",
                 defaultFields: defaultFields, onSaveQueryClick: "saveQueryAction",
@@ -194,13 +198,7 @@ class HistoricalEventsTagLib {
                                         SearchListTagLib.fSlMenuItem(id: "lessThanOrEqualTo", label: defaultMenus.lessThanOrEqualTo.label, action: "lessThanOrEqualToAction", visible: getLessThanOrEqualVisibility(defaultMenus), "") +
                                         getMenuXml(propertyMenus)
                         ) +
-                        SearchListTagLib.fSlImages([:],
-                                SearchListTagLib.fSlImage(visible: "params.data.severity == '1'", src: "images/rapidjs/component/searchlist/red.png", "") +
-                                        SearchListTagLib.fSlImage(visible: "params.data.severity == '2'", src: "images/rapidjs/component/searchlist/orange.png", "") +
-                                        SearchListTagLib.fSlImage(visible: "params.data.severity == '3'", src: "images/rapidjs/component/searchlist/yellow.png", "") +
-                                        SearchListTagLib.fSlImage(visible: "params.data.severity == '4'", src: "images/rapidjs/component/searchlist/blue.png", "") +
-                                        SearchListTagLib.fSlImage(visible: "params.data.severity == '5'", src: "images/rapidjs/component/searchlist/green.png", "")
-                        ) +
+                        SearchListTagLib.fSlImages([:], searchGridImagesTagList) +
                         SearchListTagLib.fSlFields([:], getFieldsXml(fields))
 
         )
@@ -356,6 +354,23 @@ class HistoricalEventsTagLib {
     def heConversion = {attrs, body ->
         def validAttrs = ["type", "format", "property", "function", "mapping"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnConversion", attrs, validAttrs);
+    }
+
+
+    def heImages = {attrs, body ->
+        out << fHeImages(attrs, body())
+    }
+    static def fHeImages(attrs, bodyString) {
+        return com.ifountain.rui.util.TagLibUtils.getConfigAsXml("Images", attrs, [], bodyString)
+    }
+
+    def heImage = {attrs, body ->
+        out << fHeImage(attrs, "")
+    }
+
+    static def fHeImage(attrs, bodyString) {
+        def validAttrs = ["src", "visible"];
+        return com.ifountain.rui.util.TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
     }
 
     def getMenuXml(menus) {

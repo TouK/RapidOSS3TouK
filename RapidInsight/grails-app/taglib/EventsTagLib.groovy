@@ -1,4 +1,5 @@
-/* 
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -35,7 +36,7 @@ class EventsTagLib {
         def htmlDialogs = [];
         def fields = [];
         def columns = [];
-
+        
         def ntXML = new XmlSlurper().parseText(configXML);
         def ntMenus = ntXML.NtMenus.NtMenu;
         ntMenus.each {menuItem ->
@@ -67,6 +68,8 @@ class EventsTagLib {
         }
 
 
+
+        
         out << TreeGridTagLib.fTreeGrid(id: "filterTree", url: "script/run/queryList?format=xml&type=event", rootTag: "Filters",
                 keyAttribute: "id", contentPath: "Filter", title: "Saved Queries", expanded: "true", onNodeClick: "setQueryAction", pollingInterval: treeGridPollInterval,
                 TreeGridTagLib.fTgColumns([:],
@@ -123,20 +126,19 @@ class EventsTagLib {
                 </div>
                 """
         )
+
+        def searchGridImagesTagList=""
+        ntXML.Images.Image.each{
+            searchGridImagesTagList+=SearchGridTagLib.fSgImage(visible: it.@visible.toString(), src: it.@src.toString(), "");
+        }
         out << SearchGridTagLib.fSearchGrid(id: "searchGrid", url: "search?format=xml&searchIn=RsEvent", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
                 keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", title: "Events", onSaveQueryClick: "saveQueryAction",
                 pollingInterval: searchGridPollInterval, fieldsUrl: "script/run/getViewFields?format=xml",
                 SearchGridTagLib.fSgMenuItems([:],
                         getMenuXml(rowMenus)
                 ) +
-                        SearchGridTagLib.fSgImages([:],
-                                SearchGridTagLib.fSgImage(visible: "params.data.severity == '1'", src: "images/rapidjs/component/searchlist/red.png", "") +
-                                        SearchGridTagLib.fSgImage(visible: "params.data.severity == '2'", src: "images/rapidjs/component/searchlist/orange.png", "") +
-                                        SearchGridTagLib.fSgImage(visible: "params.data.severity == '3'", src: "images/rapidjs/component/searchlist/yellow.png", "") +
-                                        SearchGridTagLib.fSgImage(visible: "params.data.severity == '4'", src: "images/rapidjs/component/searchlist/blue.png", "") +
-                                        SearchGridTagLib.fSgImage(visible: "params.data.severity == '5'", src: "images/rapidjs/component/searchlist/green.png", "")
-                        ) +
-                        SearchGridTagLib.fSgColumns([:], columnsStr)
+                  SearchGridTagLib.fSgImages([:],searchGridImagesTagList)+
+                  SearchGridTagLib.fSgColumns([:], columnsStr)
 
         )
         out << getHtmlDialogsXml(htmlDialogs)
@@ -256,6 +258,23 @@ class EventsTagLib {
     def evColumn = {attrs, body ->
         out << SearchGridTagLib.fSgColumn(attrs, "")
     }
+
+    def evImages = {attrs, body ->
+        out << fEvImages(attrs, body())
+    }
+    static def fEvImages(attrs, bodyString) {
+        return com.ifountain.rui.util.TagLibUtils.getConfigAsXml("Images", attrs, [], bodyString)
+    }
+    
+    def evImage = {attrs, body ->
+        out << fEvImage(attrs, "")
+    }
+
+    static def fEvImage(attrs, bodyString) {
+        def validAttrs = ["src", "visible"];
+        return com.ifountain.rui.util.TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
+    }
+
 
     def getMenuXml(menus) {
         def output = "";

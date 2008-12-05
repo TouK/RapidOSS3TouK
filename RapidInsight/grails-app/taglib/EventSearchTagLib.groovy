@@ -177,6 +177,10 @@ class EventSearchTagLib {
                 </div>
                 """
         )
+        def searchGridImagesTagList=""
+        nsXML.Images.Image.each{
+            searchGridImagesTagList+=SearchGridTagLib.fSgImage(visible: it.@visible.toString(), src: it.@src.toString(), "");
+        }
         out << SearchListTagLib.fSearchList(id: "searchList", url: "search?format=xml&searchIn=RsEvent", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
                 keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", lineSize: "3", title: "Event Search",
                 defaultFields: defaultFields, onSaveQueryClick: "saveQueryAction",
@@ -194,13 +198,7 @@ class EventSearchTagLib {
                                         SearchListTagLib.fSlMenuItem(id: "lessThanOrEqualTo", label: defaultMenus.lessThanOrEqualTo.label, action: "lessThanOrEqualToAction", visible: getLessThanOrEqualVisibility(defaultMenus), "") +
                                         getMenuXml(propertyMenus)
                         ) +
-                        SearchListTagLib.fSlImages([:],
-                           SearchListTagLib.fSlImage(visible:"params.data.severity == '1'", src:"images/rapidjs/component/searchlist/red.png", "") +
-                           SearchListTagLib.fSlImage(visible:"params.data.severity == '2'", src:"images/rapidjs/component/searchlist/orange.png", "") +
-                           SearchListTagLib.fSlImage(visible:"params.data.severity == '3'", src:"images/rapidjs/component/searchlist/yellow.png", "") +
-                           SearchListTagLib.fSlImage(visible:"params.data.severity == '4'", src:"images/rapidjs/component/searchlist/blue.png", "") +
-                           SearchListTagLib.fSlImage(visible:"params.data.severity == '5'", src:"images/rapidjs/component/searchlist/green.png", "")
-                        ) +
+                        SearchGridTagLib.fSgImages([:],searchGridImagesTagList) +
                         SearchListTagLib.fSlFields([:], getFieldsXml(fields))
 
         )
@@ -355,6 +353,23 @@ class EventSearchTagLib {
     def esConversion = {attrs, body ->
         def validAttrs = ["type", "format", "property", "function", "mapping"]
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NsConversion", attrs, validAttrs);
+    }
+
+
+    def esImages = {attrs, body ->
+        out << fEsImages(attrs, body())
+    }
+    static def fEsImages(attrs, bodyString) {
+        return com.ifountain.rui.util.TagLibUtils.getConfigAsXml("Images", attrs, [], bodyString)
+    }
+
+    def esImage = {attrs, body ->
+        out << fEsImage(attrs, "")
+    }
+
+    static def fEsImage(attrs, bodyString) {
+        def validAttrs = ["src", "visible"];
+        return com.ifountain.rui.util.TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
     }
 
     def getMenuXml(menus) {

@@ -47,6 +47,14 @@
         %{--<rui:evConversion property="severity" type="mapping" mapping="['1':'Critical', '2':'Major', '3':'Minor', '4':'Unknown', '5':'Normal']"></rui:evConversion>--}%
         %{--<rui:evConversion property="clearedAt" type="date" format="d M H:i:s"></rui:evConversion>--}%
     </rui:evConversions>
+    <rui:evImages>
+        <rui:evImage visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/red.png"></rui:evImage>
+        <rui:evImage visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/orange.png"></rui:evImage>
+        <rui:evImage visible="params.data.severity == '3'" src="images/rapidjs/component/searchlist/yellow.png"></rui:evImage>
+        <rui:evImage visible="params.data.severity == '2'" src="images/rapidjs/component/searchlist/blue.png"></rui:evImage>
+        <rui:evImage visible="params.data.severity == '1'" src="images/rapidjs/component/searchlist/purple.png"></rui:evImage>
+        <rui:evImage visible="params.data.severity == '0'" src="images/rapidjs/component/searchlist/green.png"></rui:evImage>
+    </rui:evImages>
 </rui:events>
 
 <rui:html id="objectDetailsmenuHtml" iframe="false"></rui:html>

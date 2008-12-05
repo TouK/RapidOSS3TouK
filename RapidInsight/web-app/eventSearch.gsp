@@ -54,6 +54,14 @@
         <rui:esConversion property="severity" type="mapping" mapping="['0':'Clear', '1':'Critical', '2':'Major', '3':'Minor', '4':'Unknown', '5':'Normal']"></rui:esConversion>
         %{--<rui:esConversion property="clearedAt" type="date" format="d M H:i:s"></rui:esConversion>--}%
     </rui:esConversions>
+    <rui:esImages>
+        <rui:esImage visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/red.png"></rui:esImage>
+        <rui:esImage visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/orange.png"></rui:esImage>
+        <rui:esImage visible="params.data.severity == '3'" src="images/rapidjs/component/searchlist/yellow.png"></rui:esImage>
+        <rui:esImage visible="params.data.severity == '2'" src="images/rapidjs/component/searchlist/blue.png"></rui:esImage>
+        <rui:esImage visible="params.data.severity == '1'" src="images/rapidjs/component/searchlist/purple.png"></rui:esImage>
+        <rui:esImage visible="params.data.severity == '0'" src="images/rapidjs/component/searchlist/green.png"></rui:esImage>
+    </rui:esImages>
 </rui:eventSearch>
 
 <rui:html id="objectDetailsmenuHtml" iframe="false"></rui:html>

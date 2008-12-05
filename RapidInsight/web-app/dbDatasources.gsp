@@ -28,9 +28,15 @@
     <div style="margin-top:0px;">
         <table style="width:900;">
             <tr>
+              <td>
+                <div>
+                  <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Database Connections</span>
+                  <span class="menuButton"><g:link class="create" controller="databaseConnection" action="create">New Database Connection</g:link></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
                 <td>
-                    <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Database Connections</span>
-                    <span class="menuButton"><g:link class="create" controller="databaseConnection" action="create">New Database Connection</g:link></span>
                     <div class="list">
                         <table>
                             <thead>
@@ -60,9 +66,13 @@
     <div style="margin-top:20px;">
         <table style="width:900;">
             <tr>
+              <td>
+                <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Database Datasource List</span>
+                    <span class="menuButton"><g:link class="create" controller="databaseDatasource" action="create">New DatabaseDatasource</g:link></span>                
+              </td>
+            </tr>
+            <tr>
                 <td>
-                    <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Database Datasource List</span>
-                    <span class="menuButton"><g:link class="create" controller="databaseDatasource" action="create">New DatabaseDatasource</g:link></span>
                     <div class="list">
                         <table>
                             <thead>
@@ -88,9 +98,13 @@
     <div style="margin-top:20px;">
         <table style="width:900;">
             <tr>
+              <td>
+                <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Single Table Database Datasource List</span>
+                    <span class="menuButton"><g:link class="create" controller="singleTableDatabaseDatasource" action="create">New SingleTableDatabaseDatasource</g:link></span>                
+              </td>
+            </tr>
+            <tr>
                 <td>
-                    <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Single Table Database Datasource List</span>
-                    <span class="menuButton"><g:link class="create" controller="singleTableDatabaseDatasource" action="create">New SingleTableDatabaseDatasource</g:link></span>
                     <div class="list">
                         <table>
                             <thead>

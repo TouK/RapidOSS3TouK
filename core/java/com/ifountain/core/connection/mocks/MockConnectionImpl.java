@@ -32,9 +32,9 @@ public class MockConnectionImpl extends BaseConnection
     public static Exception globalConnectionException;
     private Exception connectionException = null;
     
-    public void init(ConnectionParam param)
+    public void init(ConnectionParam param)throws Exception
     {
-        this.params = param;
+        super.init(param);
         this.timeout = defaultTimeout;
     }
     protected void connect() throws Exception

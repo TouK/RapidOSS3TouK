@@ -104,7 +104,19 @@ public class ConnectionParam
     @Override
     protected Object clone() throws CloneNotSupportedException
     {
-        return new ConnectionParam(connectionType, connectionName, connectionClass, new HashMap<String, Object>(otherParams), maxNumberOfConnectionsInPool, minTimeout, maxTimeout);
+        try{
+            Map newOtherParams = otherParams.getClass().newInstance();
+            newOtherParams.putAll(otherParams);
+            return new ConnectionParam(connectionType, connectionName, connectionClass, newOtherParams, maxNumberOfConnectionsInPool, minTimeout, maxTimeout);
+        }
+        catch(IllegalAccessException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        catch(InstantiationException ex)
+        {
+            throw new RuntimeException(ex);
+        }
     }
     
     @Override

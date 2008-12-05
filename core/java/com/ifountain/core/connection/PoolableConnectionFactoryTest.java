@@ -25,6 +25,7 @@ import com.ifountain.core.connection.exception.ConnectionException;
 import com.ifountain.core.connection.exception.ConnectionInitializationException;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
 import com.ifountain.core.test.util.RapidCoreTestCase;
+import com.ifountain.comp.utils.CaseInsensitiveMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +50,7 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
     {
         String connectionName = "conn1";
         ConnectionParam param = createConnectionParam(connectionName);
+        param.setMaxTimeout(30000);
         PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), param, null);
 
         long timeoutValue = 9999;
@@ -151,7 +153,7 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
         wrongClassName.delete(0, wrongClassName.length());
         wrongClassName.append("UnknownClassName");
         assertFalse(factory.validateObject(conn));
-        
+
         try
         {
             factory.makeObject();
@@ -161,6 +163,10 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
         {
             assertEquals(ClassNotFoundException.class, e.getCause().getClass());
         }
+
+        wrongClassName.delete(0, wrongClassName.length());
+        conn.getParameters().getOtherParams().put("OptParam1", "OptParam1changed");
+        assertFalse(factory.validateObject(conn));
     }
 
     public void testValidateReturnFalseIfConnectionIsNotConnected() throws Exception
@@ -177,7 +183,7 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
     
     private ConnectionParam createConnectionParam(String connectionName)
     {
-        Map<String, Object> optionalParams = new HashMap<String, Object>();
+        Map optionalParams = new CaseInsensitiveMap();
         optionalParams.put("OptParam1", "optvalue1");
         ConnectionParam param = new ConnectionParam("Database", connectionName, MockConnectionImpl.class.getName(), optionalParams);
         return param;

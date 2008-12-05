@@ -42,7 +42,7 @@ public class ConnectionManager
 {
     private static boolean isInitialized = false;
     private static ConnectionParameterSupplier paramSupplier;
-    private static Map<String, ObjectPool> pools;
+    private static Map<String, ConnectionPool> pools;
     private static Logger logger;
     private static long poolConnectionCheckerInterval;
     private static ClassLoader classLoader;
@@ -67,6 +67,16 @@ public class ConnectionManager
         }
         return connected;
     }
+
+    public static boolean isPoolConnected(String connName)
+    {
+        ConnectionPool pool =pools.get(connName);
+        if(pool != null)
+        {
+            return pool.isPoolConnected();
+        }
+        return false;
+    }
     public static IConnection getConnection(String connectionName) throws ConnectionInitializationException, ConnectionPoolException, ConnectionException, UndefinedConnectionException
     {
         ConnectionParam param = paramSupplier.getConnectionParam(connectionName);
@@ -74,20 +84,17 @@ public class ConnectionManager
         {
             throw new UndefinedConnectionException(connectionName);
         }
-        ObjectPool pool = pools.get(connectionName);
+        ConnectionPool pool = pools.get(connectionName);
         if(pool == null)
         {
-            PoolableConnectionFactory connectionFactory = new PoolableConnectionFactory(classLoader, param, timeoutStrategyClass);
+            PoolableConnectionFactory connectionFactory = new PoolableConnectionFactory(classLoader, connectionName, paramSupplier, timeoutStrategyClass);
             ConnectionPool newPool = new ConnectionPool(param.getConnectionName(), connectionFactory, param.getMaxNumberOfConnectionsInPool(), poolConnectionCheckerInterval);
             poolFactoryMap.put(newPool, connectionFactory);
             pool = newPool;
             pools.put(connectionName, pool);
         }
         else{
-            PoolableConnectionFactory connectionFactory = poolFactoryMap.get(pool);
-            connectionFactory.setParam(param);
-            ((GenericObjectPool)pool).setMaxActive(param.getMaxNumberOfConnectionsInPool());
-            
+            pool.setMaxActive(param.getMaxNumberOfConnectionsInPool());
         }
         IConnection conn;
         try
@@ -138,7 +145,7 @@ public class ConnectionManager
         {
             ConnectionManager.classLoader = classLoader;
             ConnectionManager.paramSupplier = paramSupplier;
-            ConnectionManager.pools = new HashMap<String, ObjectPool>();
+            ConnectionManager.pools = new HashMap<String, ConnectionPool>();
             ConnectionManager.logger = logger;
             ConnectionManager.poolConnectionCheckerInterval = poolConnectionCheckerInterval;
             logger.info("ConnectionManager is initialized");
@@ -159,11 +166,11 @@ public class ConnectionManager
     public static void destroy()
     {
         logger.info("Destroying ConnectionManager having " + pools.size() + " number of pools.");
-        Set<Entry<String, ObjectPool>> values = pools.entrySet();
-        for (Iterator<Entry<String, ObjectPool>> iterator = values.iterator(); iterator.hasNext();)
+        Set<Entry<String, ConnectionPool>> values = pools.entrySet();
+        for (Iterator<Entry<String, ConnectionPool>> iterator = values.iterator(); iterator.hasNext();)
         {
             
-            Entry<String, ObjectPool> poolEntry = iterator.next();
+            Entry<String, ConnectionPool> poolEntry = iterator.next();
             String connectionName = poolEntry.getKey();
             ObjectPool connectionPool = poolEntry.getValue();
             logger.info("Destroying ConnectionPool of " + connectionName + " having "+ connectionPool.getNumActive() + " active connections.");

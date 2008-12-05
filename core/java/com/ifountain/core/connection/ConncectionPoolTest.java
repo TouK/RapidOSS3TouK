@@ -234,7 +234,7 @@ class MockPoolableObjectFactory extends BaseConnectionFactory
     int connectionId = 0;
     List invalidConnections = new ArrayList();
     MockPoolableObjectFactory(Class timeoutStrategyClass) {
-        super("factory1", timeoutStrategyClass);
+        super("factory1", null, timeoutStrategyClass);
     }
 
     public IConnection _makeObject(long timeout) throws Exception {

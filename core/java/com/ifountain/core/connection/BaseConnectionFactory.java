@@ -38,13 +38,19 @@ public abstract class BaseConnectionFactory implements PoolableObjectFactory
     private List connections = new ArrayList();
     private TimeoutManager timeoutManager;
     protected String name;
+    protected ConnectionParameterSupplier paramSupplier;
 
-    protected BaseConnectionFactory(String name, Class timeoutStrategyClass)
+    protected BaseConnectionFactory(String name, ConnectionParameterSupplier paramSupplier, Class timeoutStrategyClass)
     {
         this.name = name;
+        this.paramSupplier = paramSupplier;
         this.timeoutManager = new TimeoutManager(timeoutStrategyClass);
     }
 
+    public ConnectionParam getConnectionParameter()
+    {
+        return paramSupplier.getConnectionParam(name);
+    }
     public Object makeObject() throws Exception
     {
         IConnection conn = _makeObject(timeoutManager.timeout);

@@ -118,7 +118,20 @@ public class ConnectionParam
             throw new RuntimeException(ex);
         }
     }
-    
+
+    @Override
+    public String toString() {
+        return "ConnectionParam{" +
+                "connectionType='" + connectionType + '\'' +
+                ", connectionName='" + connectionName + '\'' +
+                ", connectionClass='" + connectionClass + '\'' +
+                ", maxNumberOfConnectionsInPool=" + maxNumberOfConnectionsInPool +
+                ", minTimeout=" + minTimeout +
+                ", maxTimeout=" + maxTimeout +
+                ", otherParams=" + otherParams +
+                '}';
+    }
+
     @Override
     public boolean equals(Object obj)
     {

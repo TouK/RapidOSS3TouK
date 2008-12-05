@@ -30,7 +30,6 @@ public class MockConnectionParameterSupplierImpl implements ConnectionParameterS
     String passedConnConfigName;
     ConnectionParam param;
     
-    @Override
     public ConnectionParam getConnectionParam(String connName)
     {
         return param;

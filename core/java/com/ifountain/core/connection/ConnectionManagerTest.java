@@ -25,6 +25,7 @@ import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.comp.test.util.threads.TestActionExecutorThread;
 import com.ifountain.comp.test.util.threads.TestAction;
 import com.ifountain.core.connection.exception.UndefinedConnectionException;
+import com.ifountain.core.connection.exception.ConnectionException;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
 import com.ifountain.core.connection.mocks.NotConnectedConnection;
 import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl;
@@ -65,10 +66,12 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         param.setMaxNumberOfConnectionsInPool(10);
         parameterSupplier.setParam(param);
 
+        //we get first connection to initialize pool
         IConnection conn = ConnectionManager.getConnection(connectionName);
         assertNotNull(conn);
         Thread.sleep(500);
         assertFalse(MockTimeoutStrategy.connectionParameterList.isEmpty());
+        //all subsequent connections will get new timeout value
         conn = ConnectionManager.getConnection(connectionName);
         conn = ConnectionManager.getConnection(connectionName);
         conn = ConnectionManager.getConnection(connectionName);
@@ -149,6 +152,36 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         MockConnectionImpl conn5 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertTrue(conn5.isConnected());
         assertTrue(conn5.checkConnection());
+    }
+
+    public void testConnectionCheckerMechnism() throws Exception
+    {
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        param.setMaxNumberOfConnectionsInPool(2);
+        param.setConnectionClass(NotConnectedConnection.class.getName());
+        parameterSupplier.setParam(param);
+        ConnectionManager.destroy();
+        ConnectionManager.initialize(TestLogUtils.log, parameterSupplier, classLoader, 100);
+        try
+        {
+            ConnectionManager.getConnection(connectionName);
+            fail("Should throw exception cince connection does not exist");
+        }
+        catch(ConnectionException e)
+        {
+        }
+
+        Thread.sleep(500);
+        assertFalse(ConnectionManager.isPoolConnected(connectionName));
+
+        param = (ConnectionParam)param.clone();
+        param.setConnectionClass(MockConnectionImpl.class.getName());
+        parameterSupplier.setParam(param);
+
+        Thread.sleep(500);
+        assertTrue(ConnectionManager.isPoolConnected(connectionName));
+
     }
 
     public void testUpdatingMaxNumberOfConnections() throws Exception{
@@ -350,7 +383,7 @@ public class ConnectionManagerTest extends RapidCoreTestCase
     {
         Map<String, Object> optionalParams = new HashMap<String, Object>();
         optionalParams.put("OptParam1", "optvalue1");
-        ConnectionParam param = new ConnectionParam("Database", connectionName, className, optionalParams);
+        ConnectionParam param = new ConnectionParam("Database", connectionName, className, optionalParams, 1, 1000, 100000000);
         return param;
     }
 

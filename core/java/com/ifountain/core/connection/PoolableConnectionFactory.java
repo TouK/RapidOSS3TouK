@@ -22,24 +22,20 @@
 package com.ifountain.core.connection;
 
 import org.apache.commons.pool.PoolableObjectFactory;
+import org.apache.log4j.Logger;
 
 import com.ifountain.core.connection.exception.ConnectionException;
 import com.ifountain.core.connection.exception.ConnectionInitializationException;
  
 public class PoolableConnectionFactory extends BaseConnectionFactory
 {
-
-    private ConnectionParam param;
+    Logger logger = Logger.getLogger(PoolableConnectionFactory.class); 
     private ClassLoader classLoader;
     
-    /**
-     * @param param
-     */
-    public PoolableConnectionFactory(ClassLoader classLoader, ConnectionParam param, Class timeoutStrategyClass)
+    public PoolableConnectionFactory(ClassLoader classLoader, String connectionName, ConnectionParameterSupplier paramSupplier, Class timeoutStrategyClass)
     {
-        super(param.getConnectionName(), timeoutStrategyClass);
+        super(connectionName, paramSupplier, timeoutStrategyClass);
         this.classLoader = classLoader;
-        this.param = param;
     }
 
     public void activateObject(Object arg0) throws Exception
@@ -53,11 +49,20 @@ public class PoolableConnectionFactory extends BaseConnectionFactory
 
     protected IConnection _makeObject(long timeout) throws Exception
     {
+        ConnectionParam param = getConnectionParameter();
         String className = param.getConnectionClass();
         IConnection conn;
         try
         {
+            if(logger.isDebugEnabled())
+            {
+                logger.debug("Creating a new instance for connection " + param.getConnectionName()+ " from Class:" + className + " with Timeout:" + timeout + " with Parameters:"+ param);
+            }
             conn = (IConnection) classLoader.loadClass(className).newInstance();
+            if(logger.isDebugEnabled())
+            {
+                logger.debug("Created a new instance for connection " + param.getConnectionName());
+            }
         }
         catch (Exception e)
         {
@@ -70,7 +75,15 @@ public class PoolableConnectionFactory extends BaseConnectionFactory
         }
         try
         {
+            if(logger.isDebugEnabled())
+            {
+                logger.debug("Connecting instance of " + param.getConnectionName());
+            }
             conn._connect();
+            if(logger.isDebugEnabled())
+            {
+                logger.debug("Connected instance of " + param.getConnectionName());
+            }
         }
         catch (Throwable e)
         {
@@ -85,21 +98,35 @@ public class PoolableConnectionFactory extends BaseConnectionFactory
 
     public boolean validateObject(Object arg0)
     {
+        ConnectionParam param = getConnectionParameter();
         try
         {
             IConnection conn = (IConnection)arg0;
-            boolean result1 = (conn.getClass() == classLoader.loadClass(conn.getClass().getName())); 
+
+            if(logger.isDebugEnabled())
+            {
+                logger.debug("Validating connection instance of " + param.getConnectionName());
+            }
+            boolean result1 = (conn.getClass() == classLoader.loadClass(conn.getClass().getName()));
+            if(logger.isDebugEnabled() && !result1)
+            {
+                logger.debug("Invalid connection instance of " + param.getConnectionName()+". Connection classes are not same");
+            }
             boolean result2 = conn.getParameters().equals(param);
-            return result1 && result2 && conn.isConnected();
+            if(logger.isDebugEnabled() && !result2)
+            {
+                logger.debug("Invalid connection instance of " + param.getConnectionName()+". Connection parameters are not equals. Pool params:"+param+" Connection Params:"+conn.getParameters());
+            }
+            boolean finalResult = result1 && result2 && conn.isConnected();
+            if(logger.isDebugEnabled() && !finalResult)
+            {
+                logger.debug("Connection instance " + param.getConnectionName()+" is not valid");
+            }
+            return finalResult;
         }
         catch (ClassNotFoundException e)
         {
             return false;
         }
     }
-
-    public void setParam(ConnectionParam param) {
-        this.param = param;
-    }
-
 }

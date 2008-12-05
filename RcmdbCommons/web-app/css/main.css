@@ -80,6 +80,7 @@ input:focus, select:focus, textarea:focus {
 .nav {
 background:#FDF2E4 url(../images/skin/shadow.jpg) repeat-x scroll center bottom;
 border-color:#CFB39B;
+height:15px;
 border-style:solid none;
 border-width:1px;
 margin-top:5px;

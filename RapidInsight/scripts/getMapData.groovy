@@ -40,7 +40,7 @@ mapDataBuilder.graphData {
 
     nodes.each {
         def device = RsComputerSystem.get( name : it);
-        mapDataBuilder.node( id : it, state : device.getState(), type:device.className);
+        mapDataBuilder.node( id : device.name, state : device.getState(), type:device.className);
     }
 
     edges.each {

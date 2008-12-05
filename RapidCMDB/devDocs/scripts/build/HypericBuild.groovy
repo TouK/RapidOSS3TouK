@@ -60,12 +60,17 @@ class HypericBuild extends Build {
 
         ant.copy(file: "${env.dist_modules_rapid_suite}/web-app/hypericAdmin.gsp", toFile: "${env.dist_modules_rapid_suite}/grails-app/views/hypericConnection/list.gsp", overwrite: true); 
         
+        // copy integration files to be copied into Hyperic server 
+        ant.copy(todir: "$env.dist_modules/Hyperic") {
+            ant.fileset(dir: "${env.rapid_hyperic}/integration/hyperic/plugin")
+        }
+        
         ant.zip(destfile: "$env.distribution/HypericPlugin$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }
-        ant.zip(destfile: "${env.distribution}/hyperic-RI-plugin$versionDate" + ".zip"){
-            ant.zipfileset(dir:"${env.rapid_hyperic}/integration/hyperic/plugin")
-        }
+        //ant.zip(destfile: "${env.distribution}/hyperic-RI-plugin$versionDate" + ".zip"){
+        //    ant.zipfileset(dir:"${env.rapid_hyperic}/integration/hyperic/plugin")
+        //}
     }
 
 }

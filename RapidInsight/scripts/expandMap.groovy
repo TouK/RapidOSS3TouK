@@ -44,7 +44,7 @@ nodes.each{node->
         {
             isExpanded = "true";
         }
-        deviceMap[device.name] = [ "id" : deviceName, "model" : device.model, "type": device.className, "gauged" : "true", "expanded" : isExpanded, x:x, y:y];
+        deviceMap[device.name] = [ "id" : device.name, "model" : device.model, "type": device.className, "gauged" : "true", "expanded" : isExpanded, x:x, y:y];
     }
 
 }

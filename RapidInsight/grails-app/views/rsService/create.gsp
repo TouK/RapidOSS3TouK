@@ -42,6 +42,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="derivedStatus">derivedStatus:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'derivedStatus','errors')}">
+                            <input type="text" id="derivedStatus" name="derivedStatus" value="${fieldValue(bean:rsService,field:'derivedStatus')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="interval">interval:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsService,field:'interval','errors')}">
@@ -60,10 +69,10 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="status">status:</label>
+                            <label for="observedStatus">observedStatus:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'status','errors')}">
-                            <input type="text" id="status" name="status" value="${fieldValue(bean:rsService,field:'status')}"/>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'observedStatus','errors')}">
+                            <input type="text" id="observedStatus" name="observedStatus" value="${fieldValue(bean:rsService,field:'observedStatus')}"/>
                         </td>
                     </tr>
                     

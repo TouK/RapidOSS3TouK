@@ -31,12 +31,6 @@
                     
                     <g:sortableColumn property="name" title="name"/>
                     
-                    <g:sortableColumn property="interval" title="interval"/>
-                    
-                    <g:sortableColumn property="lastChangedAt" title="lastChangedAt"/>
-                    
-                    <g:sortableColumn property="status" title="status"/>
-                    
                 </tr>
             </thead>
             <tbody>
@@ -46,12 +40,6 @@
                         <td><g:link action="show" id="${rsService.id}">${rsService.id?.encodeAsHTML()}</g:link></td>
                         
                         <td>${rsService.name?.encodeAsHTML()}</td>
-                        
-                        <td>${rsService.interval?.encodeAsHTML()}</td>
-                        
-                        <td>${rsService.lastChangedAt?.encodeAsHTML()}</td>
-                        
-                        <td>${rsService.status?.encodeAsHTML()}</td>
                         
                     </tr>
                 </g:each>

@@ -42,6 +42,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">derivedStatus:</td>
+                    
+                    <td valign="top" class="value">${rsService.derivedStatus}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">interval:</td>
                     
                     <td valign="top" class="value">${rsService.interval}</td>
@@ -56,9 +63,9 @@
                 </tr>
                 
                 <tr class="prop">
-                    <td valign="top" class="name">status:</td>
+                    <td valign="top" class="name">observedStatus:</td>
                     
-                    <td valign="top" class="value">${rsService.status}</td>
+                    <td valign="top" class="value">${rsService.observedStatus}</td>
                     
                 </tr>
                 

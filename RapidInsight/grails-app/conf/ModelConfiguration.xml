@@ -65,7 +65,8 @@
 		<Model Name="RsService" StorageType="FileAndMemory">
 			<Properties>
 				<Property Name="name" Type="string" IsKey="true" />
-				<Property Name="status" Type="string" />
+				<Property Name="observedStatus" Type="string" />
+				<Property Name="derivedStatus" Type="string" />
 				<Property Name="lastChangedAt" Type="number" />
 				<Property Name="interval" Type="number" />
 			</Properties>

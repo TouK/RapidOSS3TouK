@@ -35,7 +35,9 @@ class RsService {
     
     String name ="";
     
-    String status ="";
+    String observedStatus ="";
+    
+    String derivedStatus ="";
     
     Long lastChangedAt =0;
     
@@ -57,7 +59,9 @@ class RsService {
     static constraints={
     name(blank:false,nullable:false,key:[])
         
-     status(blank:true,nullable:true)
+     observedStatus(blank:true,nullable:true)
+        
+     derivedStatus(blank:true,nullable:true)
         
      lastChangedAt(nullable:true)
         
@@ -84,6 +88,7 @@ class RsService {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
     

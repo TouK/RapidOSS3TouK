@@ -46,6 +46,7 @@
 .ri-object-details .odd td {
     background: #EDF5FF;
 }
+
 .event-details-severity {
     width: 18px;
     height: 18px;
@@ -77,6 +78,36 @@
 
 .event-details-severity-invalid {
     background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0px -320px;
+}
+
+.ri-report-zoom-link {
+    color: blue;
+    text-decoration: underline;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.ri-report-redraw-link {
+    color: blue;
+    text-decoration: underline;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.ri-report-next-range {
+    width: 16px;
+    height: 16px;
+    background: transparent url( images/rapidjs/component/tools/page-next.gif ) no-repeat center;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.ri-report-previous-range {
+    width: 16px;
+    height: 16px;
+    background: transparent url( images/rapidjs/component/tools/page-prev.gif ) no-repeat center;
+    cursor: pointer;
+    margin-right: 5px;
 }
 
 

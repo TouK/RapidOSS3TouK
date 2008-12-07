@@ -38,13 +38,17 @@ import org.compass.core.Compass
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
-import com.ifountain.rcmdb.scripting.ScriptingUtils;
+import com.ifountain.rcmdb.scripting.ScriptingUtils
+import com.ifountain.rcmdb.domain.DomainLockManager
+import org.apache.log4j.Logger
+import com.ifountain.rcmdb.domain.DomainMethodExecutor;
 
 class BootStrap {
     def quartzScheduler;
 
     Thread listeningScriptInitializerThread;
     def init = {servletContext ->
+        initializeLockManager();
         registerUtilities();
         registerDefaultConverters();
         initializeModelGenerator();
@@ -53,7 +57,11 @@ class BootStrap {
         corrrectModelData();
         initializeScripting();
     }
-
+    def initializeLockManager()
+    {
+        DomainLockManager.initialize(30000, Logger.getLogger(DomainLockManager.class));
+        DomainMethodExecutor.setMaxNumberOfRetries(20); 
+    }
     def initializeModelGenerator()
     {
         String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];

@@ -49,7 +49,7 @@ abstract class AbstractRapidDomainStaticMethod{
 
     public String getLockName(Object[]arguments)
     {
-        return "";
+        return null;
     }
     abstract boolean isWriteOperation();
     abstract protected Object _invoke(Class clazz, Object[] arguments);

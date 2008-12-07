@@ -19,6 +19,7 @@
 package com.ifountain.rcmdb.domain.method
 
 import org.codehaus.groovy.grails.commons.metaclass.AbstractStaticMethodInvocation
+import com.ifountain.rcmdb.domain.DomainMethodExecutor
 
 /**
 * Created by IntelliJ IDEA.
@@ -34,18 +35,21 @@ abstract class AbstractRapidDomainStaticMethod{
     }
 
     public Object invoke(Class clazz, Object[] arguments) {
-//        if(isWriteOperation())
-//        {
-//            synchronized (WriteOperationSynchronizer.writeOperationLock)
-//            {
-//                return _invoke(clazz, arguments);
-//            }
-//        }
-//        else
-//        {
+        if (isWriteOperation()) {
+            String lockName = getLockName(arguments);
+            def executionClosure = {
+                return _invoke(clazz, arguments);
+            }
+            return DomainMethodExecutor.executeAction(Thread.currentThread(), lockName, executionClosure)
+        }
+        else {
             return _invoke(clazz, arguments);
-//        }
+        }
+    }
 
+    public String getLockName(Object[]arguments)
+    {
+        return "";
     }
     abstract boolean isWriteOperation();
     abstract protected Object _invoke(Class clazz, Object[] arguments);

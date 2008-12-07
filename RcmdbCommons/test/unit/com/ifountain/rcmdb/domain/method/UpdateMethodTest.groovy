@@ -44,6 +44,17 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         AddMethodDomainObject1.query = null;
         AddMethodDomainObject1.indexList = [];
         AddMethodDomainObject1.reindexList = [];
+        AddMethodDomainObject1.metaClass.'static'.keySet = {
+            return []
+        }
+
+        AddMethodDomainObjectWithEvents.metaClass.'static'.keySet = {
+            return []
+        }
+
+        ChildAddMethodDomainObject.metaClass.'static'.keySet = {
+            return []
+        }
     }
 
     protected void tearDown() {

@@ -81,6 +81,21 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals (prevId+1, addedObject.id);
     }
 
+    public void testGetLockName()
+    {
+        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+        String lockName = add.getLockName ([[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
+        assertEquals(AddMethodDomainObject1.name+"prop1Value", lockName);
+        add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1", "prop2"]);
+        lockName = add.getLockName ([[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
+        assertEquals(AddMethodDomainObject1.name+"prop1Value"+"prop2Value", lockName);
+
+        add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], []);
+        lockName = add.getLockName ([[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
+        assertEquals(null, lockName);
+    }
+
     public void testAddMethodForAChildClass()
     {
         ChildAddMethodDomainObject expectedDomainObject1 = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop6:"object1Prop6Value");

@@ -37,6 +37,12 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
         RemoveMethodDomainObject.existingInstanceCount = 0;
         RemoveMethodDomainObject.countQuery = null;
         RemoveMethodDomainObject.relatedInstancesShouldBeReturnedFromRemoveRelationMethod = [:]
+        RemoveMethodDomainObject.metaClass.'static'.keySet = {
+            return []
+        }
+        RemoveMethodDomainObjectWithEvents.metaClass.'static'.keySet = {
+            return []
+        }
     }
 
     public void tearDown() {

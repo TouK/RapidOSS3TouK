@@ -38,8 +38,10 @@ class AddMethod extends AbstractRapidDomainStaticMethod
     def fieldTypes = [:]
     Validator validator;
     Class rootDomainClass;
+    List keys;
     public AddMethod(MetaClass mc, Class rootDomainClass, Validator validator, Map allFields, Map relations, List keys) {
         super(mc);
+        this.keys = keys;
         this.validator = validator;
         allFields.each{String fieldName, field->
             fieldTypes[fieldName] = field.type;
@@ -51,6 +53,16 @@ class AddMethod extends AbstractRapidDomainStaticMethod
 
     public boolean isWriteOperation() {
         return true;
+    }
+
+    public String getLockName(Object[] args) {
+        if(keys.isEmpty()) return null;
+        Map params = args[0];
+        StringBuffer bf = new StringBuffer(rootDomainClass.name);
+        keys.each{keyPropName->
+            bf.append(params[keyPropName]);
+        }
+        return bf.toString();
     }
 
 

@@ -17,6 +17,7 @@ public class DomainMethodExecutor
     static Logger logger = Logger.getLogger(DomainMethodExecutor.class);
     public static Object executeAction(Object owner, String lockName, Closure action)
     {
+        if(lockName == null) return action();
         int numberOfRetries = 0;
         while(true)
         {

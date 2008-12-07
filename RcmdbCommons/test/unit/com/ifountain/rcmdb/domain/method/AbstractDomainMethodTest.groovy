@@ -155,6 +155,47 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
         assertEquals(2, thread2State);
     }
 
+
+    public void testSynchronizationWillNotBeAppliedToMethodsReturningLockKeyAsNull()
+    {
+        Object waitLock = new Object();
+        Class modelClass = createModels()[0];
+        AbstractRapidDomainMethodImpl impl1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        impl1.closureToBeInvoked ={domainObject, arguments->
+            synchronized (waitLock)
+            {
+                waitLock.wait();
+            }
+        }
+        AbstractRapidDomainMethodImpl impl2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        impl2.lockKeyClosure = {
+            return null;
+        }
+
+        def instance1 = modelClass.newInstance();
+        def instance2 = modelClass.newInstance();
+        instance1["keyProp"] = "keyvalue1"
+        instance2["keyProp"] = "keyvalue1"
+        int thread1State = 0;
+        def t1 = Thread.start {
+            thread1State = 1;
+            impl1.invoke(instance1, null)
+            thread1State = 2;
+        }
+        Thread.sleep(300);
+        assertEquals(1, thread1State)
+
+        int thread2State = 0;
+        def t2 = Thread.start {
+            thread2State = 1;
+            impl2.invoke(instance2, null)
+            thread2State = 2;
+        }
+
+        Thread.sleep(400);
+        assertEquals(2, thread2State);
+    }
+
     public void testSynchronizationWithAThreadRequestingSameLock()
     {
         Object waitLock = new Object();

@@ -30,6 +30,11 @@ public class DomainLockManager
         lockManager.release(owner, lockName)
     }
 
+    public static Set getLocks(Object owner)
+    {
+        return lockManager.getAll(owner)
+    }
+
     public static boolean hasLock(Object owner, String lockName)
     {
         return lockManager.hasLock(owner, lockName, WRITE_LOCK);

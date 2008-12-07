@@ -182,6 +182,7 @@ class Build extends Parent{
 			ant.pathelement(location : (String)classpath.getProperty("derbyclient_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("derbynet_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("javax_servlet_jar"));	
+			ant.pathelement(location : (String)classpath.getProperty("commons-transaction-1_2_jar"));	
 			ant.pathelement(location : (String)classpath.getProperty("jakarta-oro-2_0_8_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("jdom_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("js_jar"));

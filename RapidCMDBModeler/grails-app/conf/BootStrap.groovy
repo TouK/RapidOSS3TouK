@@ -34,10 +34,13 @@ import com.ifountain.rcmdb.util.RapidDateUtilities
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.springframework.web.context.support.WebApplicationContextUtils
 import com.ifountain.rcmdb.scripting.ScriptingUtils
+import com.ifountain.rcmdb.domain.DomainLockManager
+import com.ifountain.rcmdb.domain.DomainMethodExecutor
 
 class BootStrap {
     def quartzScheduler;
     def init = {servletContext ->
+        initializeLockManager();
         registerUtilities();
         registerDefaultConverters();
         initializeModelGenerator();
@@ -45,7 +48,11 @@ class BootStrap {
         registerDefaultDatasourceNames();
         initializeScripting();
     }
-
+    def initializeLockManager()
+    {
+        DomainLockManager.initialize(30000, Logger.getLogger(DomainLockManager.class));
+        DomainMethodExecutor.setMaxNumberOfRetries(20); 
+    }
     def registerUtilities()
     {
         RapidStringUtilities.registerStringUtils();

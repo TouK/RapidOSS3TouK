@@ -48,6 +48,9 @@ class OpenNmsBuild extends Build{
         ant.copy(todir: "$env.dist_modules_rapid_suite/operations") {
             ant.fileset(dir: "$env.rapid_opennms/operations")
         }
+        ant.copy(todir: "$env.dist_modules_rapid_suite/lib") {
+            ant.fileset(dir: "$env.rapid_opennms/lib")
+        }
         ant.copy(todir: "$env.dist_modules_rapid_suite/src/groovy") {
             ant.fileset(dir: "$env.rapid_opennms/src/groovy")
         }

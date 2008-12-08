@@ -178,6 +178,7 @@ class Build extends Parent{
 			ant.pathelement(location : (String)classpath.getProperty("commons-logging_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("commons-pool-1_4_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("commons-io-1_4_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("commons-transaction-1_2_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("derby_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("derbyclient_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("derbynet_jar"));

@@ -37,8 +37,11 @@ Ant.move(toDir:"$baseDir/web-app")
     }
 
 }
-Ant.move(toDir:"$baseDir/src")
+if(new File("$baseDir/plugins/rapid-ui-0.1/src").exists())
 {
-    Ant.fileset(dir: "$baseDir/plugins/rapid-ui-0.1/src")
+    Ant.move(toDir:"$baseDir/src")
+    {
+        Ant.fileset(dir: "$baseDir/plugins/rapid-ui-0.1/src")
+    }
 }
 

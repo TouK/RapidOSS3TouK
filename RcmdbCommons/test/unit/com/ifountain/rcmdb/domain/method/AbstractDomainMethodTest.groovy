@@ -427,7 +427,8 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
             instance1Request2.invoke(instance1Clone, null)
         }
 
-
+        int maxRetry = 3;
+        DomainMethodExecutor.setMaxNumberOfRetries(maxRetry);
 
         def thread1State = 0;
         def t1 = Thread.start {
@@ -442,8 +443,8 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
                 thread1State = 3;
             }
         }
-        int maxRetry = 3;
-        DomainMethodExecutor.setMaxNumberOfRetries(maxRetry);
+
+
         for(int i=0; i < maxRetry; i++)
         {
             int thread2State = 0;

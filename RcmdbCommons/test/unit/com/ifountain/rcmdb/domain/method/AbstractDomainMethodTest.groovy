@@ -466,13 +466,13 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
             {
                 waitLock1.notifyAll();
             }
-            Thread.sleep(100);
+            Thread.sleep(300);
 
             synchronized (waitLock2)
             {
                 waitLock2.notifyAll();
             }
-            Thread.sleep(500);
+            Thread.sleep(1000);
             if(i != maxRetry-1)
             {
                 assertEquals(1, thread1State);

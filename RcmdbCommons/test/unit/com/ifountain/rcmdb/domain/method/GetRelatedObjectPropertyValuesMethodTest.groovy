@@ -43,8 +43,8 @@ class GetRelatedObjectPropertyValuesMethodTest extends RapidCmdbWithCompassTestC
 
     public void testGetRelatedObjectProperties()
     {
-        def modelName = "ChildModel";
-        def relatedModelName = "RelatedModel";
+        def modelName = "ChildModel"+GetRelatedObjectPropertyValuesMethodTest.simpleName;
+        def relatedModelName = "RelatedModel"+GetRelatedObjectPropertyValuesMethodTest.simpleName;
         def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false];
         def prop2 = [name:"prop2", type:ModelGenerator.NUMBER_TYPE, blank:false];

@@ -26,6 +26,7 @@ import com.ifountain.rcmdb.scripting.ScriptScheduler
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import model.DatasourceName
+import org.apache.log4j.Logger;
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.jsecurity.crypto.hash.Sha1Hash

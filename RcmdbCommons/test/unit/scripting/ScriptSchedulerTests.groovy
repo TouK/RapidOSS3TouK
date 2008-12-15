@@ -76,7 +76,7 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
         Thread.sleep(200);
         assertEquals(1, executionCount);
         Thread.sleep(1000);
-        assertEquals(2, executionCount);
+        assertTrue(executionCount >= 2 && executionCount <= 3 );
     }
 
     public void testScheduleScriptWithCronExpressionAndStartDelay()
@@ -85,7 +85,7 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
         Thread.sleep(200);
         assertEquals(0, executionCount);
         Thread.sleep(1000);
-        assertEquals(1, executionCount);
+        assertTrue(executionCount >= 1 && executionCount <= 2 );
     }
 
     public void testScheduleScriptWithTheSameNameThrowsException()

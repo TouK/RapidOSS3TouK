@@ -70,21 +70,6 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
         assertEquals(1, executionCount);
     }
 
-//    public void testScheduleScriptWithCronExpression()
-//    {
-//        //Wait for next turn
-//        long threeSecsInNano = (long)(Math.pow(10,9)*3);
-//        while(System.nanoTime()%threeSecsInNano >= (long)(Math.pow(10,9)*0.5) || System.nanoTime()%threeSecsInNano <= (long)(Math.pow(10,9)*0.1))
-//        {
-//
-//        }
-//        scriptScheduler.scheduleScript("myScript", 0, "0/3 * * * * ?");
-//        Thread.sleep(200);
-//        assertEquals(1, executionCount);
-//        Thread.sleep(3000);
-//        assertTrue(executionCount >= 2 && executionCount <= 3 );
-//    }
-
     public void testScheduleScriptWithCronExpressionAndStartDelay()
     {
         //Wait for next turn

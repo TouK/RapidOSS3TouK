@@ -256,7 +256,7 @@ class RapidDomainClassGrailsPlugin {
     def addUtilityMetods(dc, application, ctx)
     {
         def mc = dc.metaClass;
-        def asMapMethod = new AsMapMethod(mc, dc, logger, DomainClassUtils.getRelations(dc));
+        def asMapMethod = new AsMapMethod(mc, dc.clazz, logger, DomainClassUtils.getRelations(dc));
         mc.asMap = {->
             return asMapMethod.invoke(delegate, null);
         };

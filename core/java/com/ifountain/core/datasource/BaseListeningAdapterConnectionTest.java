@@ -210,7 +210,7 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
         listeningAdapter = new MockBaseListeningAdapter(connectionName, 0){
             @Override
             protected void _subscribe() throws Exception {
-                ((MockConnectionImpl)connection)._disconnect();
+                ((MockConnectionImpl)connection).setConnectionException(connectionException);
                 throw connectionException;
             }
         };

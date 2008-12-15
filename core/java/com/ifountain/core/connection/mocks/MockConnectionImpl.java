@@ -47,7 +47,11 @@ public class MockConnectionImpl extends BaseConnection
     }
 
     public boolean checkConnection() {
-        return isConnected();
+        if(connectionException != null)
+        {
+            return false;
+        }
+        return true;
     }
 
     protected void disconnect()

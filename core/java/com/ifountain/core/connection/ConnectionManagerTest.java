@@ -22,10 +22,10 @@
 package com.ifountain.core.connection;
 
 import com.ifountain.comp.test.util.logging.TestLogUtils;
-import com.ifountain.comp.test.util.threads.TestActionExecutorThread;
 import com.ifountain.comp.test.util.threads.TestAction;
-import com.ifountain.core.connection.exception.UndefinedConnectionException;
+import com.ifountain.comp.test.util.threads.TestActionExecutorThread;
 import com.ifountain.core.connection.exception.ConnectionException;
+import com.ifountain.core.connection.exception.UndefinedConnectionException;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
 import com.ifountain.core.connection.mocks.NotConnectedConnection;
 import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl;
@@ -34,8 +34,6 @@ import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
 
 public class ConnectionManagerTest extends RapidCoreTestCase
 {

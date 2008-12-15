@@ -21,14 +21,13 @@
  */
 package com.ifountain.core.connection;
 
+import com.ifountain.comp.utils.CaseInsensitiveMap;
 import com.ifountain.core.connection.exception.ConnectionException;
 import com.ifountain.core.connection.exception.ConnectionInitializationException;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
-import com.ifountain.core.test.util.RapidCoreTestCase;
 import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl;
-import com.ifountain.comp.utils.CaseInsensitiveMap;
+import com.ifountain.core.test.util.RapidCoreTestCase;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class PoolableConnectionFactoryTest extends RapidCoreTestCase

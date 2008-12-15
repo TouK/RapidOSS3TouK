@@ -18,11 +18,11 @@
 */
 package com.ifountain.core.connection;
 
-import com.ifountain.core.test.util.RapidCoreTestCase;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
+import com.ifountain.core.test.util.RapidCoreTestCase;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

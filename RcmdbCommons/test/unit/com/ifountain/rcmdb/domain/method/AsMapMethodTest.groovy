@@ -19,7 +19,9 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
+import org.apache.log4j.Logger
 /**
  * Created by IntelliJ IDEA.
  * User: Administrator
@@ -30,11 +32,154 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 class AsMapMethodTest extends RapidCmdbTestCase{
     public void testAsMap()
     {
-        fail("implement");
+        def modelName = "BookModel";
+        def keyProp = [name:"name", type:ModelGenerator.STRING_TYPE, blank:false];
+
+        def modelMetaProps = [name:modelName]
+        def keyPropList = [keyProp];
+        def modelProps = [keyProp];
+        modelProps.add([name:"pagecount", type:ModelGenerator.NUMBER_TYPE, blank:false]);
+        modelProps.add([name:"isForChildren", type:ModelGenerator.BOOLEAN_TYPE, blank:false]);
+
+
+
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
+        GroovyClassLoader gcl = new GroovyClassLoader();
+        gcl.parseClass(modelString);
+        Class modelClass = gcl.loadClass(modelName);
+
+        def propList=[]
+        propList.add(new RapidDomainClassProperty(name:"name",isRelation:false,isKey:true,isOperationProperty:false))
+        propList.add(new RapidDomainClassProperty(name:"pagecount",isRelation:false,isKey:false,isOperationProperty:false))
+        propList.add(new RapidDomainClassProperty(name:"isForChildren",isRelation:false,isKey:false,isOperationProperty:false))
+
+        modelClass.metaClass.'static'.getPropertiesList = {->
+            return propList
+        };
+
+        def instance = modelClass.newInstance();
+        instance.name="testcraft"
+        instance.pagecount=888
+        instance.isForChildren=true
+
+        
+
+        AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger(), [:]);
+        def instanceAsMap=asMap._invoke(instance,null);
+        
+
+        assertEquals(propList.size(),instanceAsMap.size())
+        for(prop in propList){
+            assertTrue(instanceAsMap.containsKey(prop.name))
+        }
+        assertEquals(instanceAsMap.name,"testcraft")
+        assertEquals(instanceAsMap.pagecount,888)
+        assertEquals(instanceAsMap.isForChildren,true)
     }
 
+    public void testAsMapExcludesRelationAndOperationProperties()
+    {
+        def modelName = "BookModel";
+        def keyProp = [name:"name", type:ModelGenerator.STRING_TYPE, blank:false];
+
+        def modelMetaProps = [name:modelName]
+        def keyPropList = [keyProp];
+        def modelProps = [keyProp];
+
+        def excludeProps=[]
+        excludeProps.add([name:"pagecount", type:ModelGenerator.NUMBER_TYPE, blank:false]);
+        excludeProps.add([name:"isForChildren", type:ModelGenerator.BOOLEAN_TYPE, blank:false]);
+
+        modelProps.addAll(excludeProps);
+
+
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
+        GroovyClassLoader gcl = new GroovyClassLoader();
+        gcl.parseClass(modelString);
+        Class modelClass = gcl.loadClass(modelName);
+
+        def propList=[]
+        propList.add(new RapidDomainClassProperty(name:"name",isRelation:false,isKey:true,isOperationProperty:false))
+        propList.add(new RapidDomainClassProperty(name:"pagecount",isRelation:true,isKey:false,isOperationProperty:false))
+        propList.add(new RapidDomainClassProperty(name:"isForChildren",isRelation:false,isKey:false,isOperationProperty:true))
+
+        modelClass.metaClass.'static'.getPropertiesList = {->
+            return propList
+        };
+
+        def instance = modelClass.newInstance();
+        instance.name="testcraft"
+        instance.pagecount=888
+        instance.isForChildren=true
+
+        
+
+        AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger(), [:]);
+        def instanceAsMap=asMap._invoke(instance,null);
+
+
+        assertEquals(propList.size()-excludeProps.size(),instanceAsMap.size())
+        for(prop in propList){
+            if(!prop.isRelation && !prop.isOperationProperty){
+                assertTrue(instanceAsMap.containsKey(prop.name))
+            }
+            else{
+                if(instanceAsMap.containsKey(prop.name))
+                {
+                    fail("Relation or Operation Property found in default as map results");
+                }                    
+            }
+        }
+        assertEquals(instanceAsMap.name,"testcraft")
+        
+    }
     public void testAsMapWithProperties()
     {
-        fail("implement");
+        def modelName = "BookModel";
+        def keyProp = [name:"name", type:ModelGenerator.STRING_TYPE, blank:false];
+
+        def modelMetaProps = [name:modelName]
+        def keyPropList = [keyProp];
+        def modelProps = [keyProp];
+        modelProps.add([name:"pagecount", type:ModelGenerator.NUMBER_TYPE, blank:false]);
+        modelProps.add([name:"isForChildren", type:ModelGenerator.BOOLEAN_TYPE, blank:false]);
+
+
+
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
+        GroovyClassLoader gcl = new GroovyClassLoader();
+        gcl.parseClass(modelString);
+        Class modelClass = gcl.loadClass(modelName);
+
+        def propList=[]
+        propList.add(new RapidDomainClassProperty(name:"name",isRelation:false,isKey:true,isOperationProperty:false))
+        propList.add(new RapidDomainClassProperty(name:"pagecount",isRelation:true,isKey:false,isOperationProperty:false))
+        propList.add(new RapidDomainClassProperty(name:"isForChildren",isRelation:false,isKey:false,isOperationProperty:true))
+
+        modelClass.metaClass.'static'.getPropertiesList = {->
+            return propList
+        };
+
+        def instance = modelClass.newInstance();
+        instance.name="testcraft"
+        instance.pagecount=888
+        instance.isForChildren=true
+
+        
+
+        AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger(), [:]);
+        def requestedProps=["name","pagecount"]
+        def instanceAsMap=asMap._invoke(instance,requestedProps);
+
+        assertEquals(requestedProps.size(),instanceAsMap.size())
+        for(prop in requestedProps){
+            assertTrue(instanceAsMap.containsKey(prop))
+        }
+        assertEquals(instanceAsMap.name,"testcraft")
+        assertEquals(instanceAsMap.pagecount,888)
+        
     }
+   
+
+    
 }

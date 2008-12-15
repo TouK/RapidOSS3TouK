@@ -31,10 +31,10 @@ import org.apache.log4j.Logger
 class AsMapMethod extends AbstractRapidDomainMethod{
     def allProperties = [];
     Logger logger;
-    public AsMapMethod(MetaClass mc, GrailsDomainClass domainClass, Logger logger, Map relations) {
+    public AsMapMethod(MetaClass mc, Class domainClass, Logger logger, Map relations) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
         this.logger = logger;
-        def props = domainClass.clazz.'getPropertiesList'();
+        def props = domainClass.'getPropertiesList'();
         for(prop in props){
             if(!prop.isRelation && !prop.isOperationProperty){
                 allProperties += prop.name;

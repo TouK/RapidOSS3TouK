@@ -148,7 +148,7 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
             fail("Should not throw exception");
         }
 
-        assertFalse(ip.hasErrors());
+        assertTrue(ip.hasErrors());
         assertNull(ip.layeredOver)
 
     }
@@ -347,19 +347,31 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     
     void testAddOneToManyRelationWithInvalidObjectType() {
         def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
+        def link2 = Link.add(name: "myLink2", creationClassName: "Link", smartsDs: "smartsDs")
 
         def device = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
                 location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
 
         try {
-            link1.addRelation(connectedTo: device);
+            device.addRelation(connectedVia:[link1, link2]);
         }
         catch (e) {
             fail("Should not throw exception");
         }
 
-        assertFalse(link1.hasErrors());
-        assertNull(link1.connectedTo)
+        assertTrue(device.hasErrors());
+        assertTrue(device.connectedVia.isEmpty())
+
+
+        try {
+            link.addRelation(connectedTo:device);
+        }
+        catch (e) {
+            fail("Should not throw exception");
+        }
+
+        assertTrue(link.hasErrors());
+        assertTrue(link.connectedTo.isEmpty())
     }
     
     void testRemoveOneToManyRelation() {
@@ -641,8 +653,8 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
             fail("Should not throw exception");
         }
 
-        assertFalse(link1.hasErrors());
-        assertNull(link1.connectedSystems)
+        assertTrue(link1.hasErrors());
+        assertTrue(link1.connectedSystems.isEmpty())
 
     }
     
@@ -747,36 +759,4 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
          assertEquals(0, Link.get(name: "myLink1", creationClassName: "Link").connectedSystems.size())
          assertFalse(link1.connectedSystems.contains(device2))
     }
-
-    void testUpdateManyToManyRelationObjectKeepsExistingRelations() {
-    	def device1 = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
-                location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
-
-        def device2 = Device.add(name: "myDevice2", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
-                location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
-
-        assertFalse(device1.hasErrors())
-        assertFalse(device2.hasErrors())
-
-        def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
-        assertFalse(link1.hasErrors())
-
-        
-        device1.addRelation(connectedVia: link1)
-        
-        def mylinks=device1.connectedVia;
-    	
-    	mylinks.each{
-    		assertEquals("myLink1",it.name)
-    	}
-    	
-    	link1.name="myLink"
-    	
-    	mylinks.each{
-    		assertEquals("myLink",it.name)
-    	}
-    	
-
-    }
-    
 }

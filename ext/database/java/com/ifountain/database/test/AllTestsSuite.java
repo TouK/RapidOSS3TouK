@@ -26,10 +26,10 @@ import com.ifountain.core.test.util.RapidCoreTestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class AllTests extends RapidCoreTestCase {
+public class AllTestsSuite extends RapidCoreTestCase {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(AllTests.class);
+        junit.textui.TestRunner.run(AllTestsSuite.class);
     }
 
 
@@ -40,10 +40,10 @@ public class AllTests extends RapidCoreTestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-    
+
     public static Test suite()
     {
-        TestSuite suite = new TestSuite(AllTests.class.getName());
+        TestSuite suite = new TestSuite(AllTestsSuite.class.getName());
         suite.addTestSuite(TestInclusionTest.class);
         suite.addTest(AllUnitTests.suite());
         return suite;

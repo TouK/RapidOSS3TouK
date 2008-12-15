@@ -1,6 +1,6 @@
 //////////PART 1 - OFFICE////////////////////////////////////////////////////////////////////////////////////////
 
-TAG_NAME="RCMDB_v0_5_b"
+TAG_NAME="RI_v3_0_b"
 CURRENT_DATE=$(date +%y%m%d%H)
 TAG_NAME=$TAG_NAME$CURRENT_DATE
 
@@ -13,24 +13,24 @@ tagSvn $TAG_NAME
 LATEST_TAG_FILE="latesttag.txt"
 rm -f $LATEST_TAG_FILE
 echo $TAG_NAME >> $LATEST_TAG_FILE
-scp $LATEST_TAG_FILE root@dev.ifountain.org:/root/.hudson/jobs/RapidCMDBRelease/workspace
+scp $LATEST_TAG_FILE root@dev.ifountain.org:/root/.hudson/jobs/RIRelease/workspace
 
 compileBuildFiles
 
-runTestBuildAndJavaTestsForRCMDB
+runTestBuildAndJavaTests
 
-rsHome=/root/.hudson/jobs/RapidCMDBRelease/workspace/Distribution/RapidServer
+rsHome=/root/.hudson/jobs/RIRelease/workspace/Distribution/RapidServer
 generateTestDomainClasses $rsHome
 
 runGrailsTests
 
 zip -r latesttests TestResults
-scp latesttests.zip root@dev.ifountain.org:/root/.hudson/jobs/RapidCMDBRelease/workspace
-wget "http://www.ifountain.org:7171/job/RapidCMDBRelease/build?token=sezgin"
-
+scp latesttests.zip root@dev.ifountain.org:/root/.hudson/jobs/RIRelease/workspace
+wget "http://www.ifountain.org:7171/job/RIRelease/build?token=sezgin"
 
 //////////PART 2 - SERVER////////////////////////////////////////////////////////////////////////////////////////
 
+rm -f hudsonUtilities.sh
 svn checkout file:///var/www/svn/os/RapidModules/RapidCMDB/devDocs/scripts/build/hudsonScripts .
 dos2unix hudsonUtilities.sh
 . ./hudsonUtilities.sh
@@ -49,7 +49,7 @@ rm -rf Artifacts/
 mkdir Artifacts/
 
 cd RapidModules/
-groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild buildWithPluginsAndModules
+groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild build
 mv ../Distribution/*.zip ../Artifacts
 
 rm -f latesttag.txt

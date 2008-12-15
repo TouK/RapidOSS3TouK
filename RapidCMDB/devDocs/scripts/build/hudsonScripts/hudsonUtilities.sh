@@ -55,6 +55,17 @@ runTestBuildAndJavaTests() {
     cd $WORKSPACE
 }
 
+runTestBuildAndJavaTestsForRCMDB() {
+    rm -rf TestResults/
+    mkdir TestResults
+    cd RapidModules/
+    groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild testBuild
+    cp $WORKSPACE/LicencedJars/lib/jdbc/*.jar $WORKSPACE/Distribution/RapidServer/lib
+    groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
+    groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
+    cd $WORKSPACE
+}
+
 runGrailsTests() {
 
     cd $WORKSPACE/Distribution/RapidServer/Modeler/

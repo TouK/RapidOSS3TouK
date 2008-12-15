@@ -274,9 +274,9 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
 
     }
 
-    def static addScriptMessage(String message)
+    public static void addScriptMessage(String message)
     {
-        scriptResultList += message;    
+        scriptResultList.add(message);    
     }
     def createStartupScriptScript(scriptName)
     {

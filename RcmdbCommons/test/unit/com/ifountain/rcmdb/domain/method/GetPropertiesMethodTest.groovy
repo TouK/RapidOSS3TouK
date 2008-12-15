@@ -162,11 +162,6 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
       assertEquals("rel2", prop.name);
 
     }
-    public void testGetPropertiesWithHidepropertyAnnotation()
-    {
-        fail("Should be implemented later");
-    }
-
 }
 
 class GetPropertiesMethodDomainObject

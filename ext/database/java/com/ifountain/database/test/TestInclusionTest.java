@@ -28,7 +28,7 @@ public class TestInclusionTest extends AbstractTestInclusionTestCase {
 
     @Override
     public Class[] getAllTestSuiteClasses() {
-        return new Class[]{AllTests.class};
+        return new Class[]{AllTestsSuite.class};
     }
 
     @Override

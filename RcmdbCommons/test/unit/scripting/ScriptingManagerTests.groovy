@@ -281,6 +281,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
     def createStartupScriptScript(scriptName)
     {
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.delete()
         scriptFile.write (""" ${ScriptingManagerTests.class.name}.addScriptMessage("$expectedScriptMessage") """);
     }
 

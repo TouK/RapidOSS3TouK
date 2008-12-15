@@ -52,10 +52,10 @@ class ModelTests extends RapidCmdbIntegrationTestCase {
 
     public void testAddWithNullAttribute() {
         Developer addedDeveloper = Developer.add(name: "nurullah", bday: null);
-        assertFalse("Should return errors because attribute is null.", addedDeveloper.hasErrors());
+        assertFalse(addedDeveloper.hasErrors());
 
         Developer returnedDeveloper = Developer.get(name: "nurullah");
-        assertEquals("Expected null but was ${returnedDeveloper.bday}", null, returnedDeveloper.bday);
+        assertEquals("", returnedDeveloper.bday);
     }
 
     public void testUpdate() {
@@ -102,7 +102,7 @@ class ModelTests extends RapidCmdbIntegrationTestCase {
         assertFalse(dev.hasErrors());
 
         Developer returnedDev = Developer.get(name: "nurullah");
-        assertEquals("Expected null but was ${returnedDev.bday}", null, returnedDev.bday);
+        assertEquals("", returnedDev.bday);
     }
 
     public void testList() {

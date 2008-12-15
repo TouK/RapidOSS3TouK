@@ -65,7 +65,7 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
     public void testReloadOperationsWithSubClasses()
     {
         String reloadOpMessage = "reloadOperations called"
-        GroovyClassLoader classLoader = new GroovyClassLoader();
+        GroovyClassLoader classLoader = new GroovyClassLoader(this.class.classLoader);
         def subClass1 = classLoader.parseClass("""
             class SubDomainClass1
             {

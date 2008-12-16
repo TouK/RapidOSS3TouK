@@ -26,7 +26,9 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import com.ifountain.rcmdb.test.util.TestDatastore
+
 /**
 * Created by IntelliJ IDEA.
 * User: Administrator
@@ -37,13 +39,12 @@ import org.apache.log4j.Logger;
 class ScriptingManagerTests extends RapidCmdbTestCase{
     def expectedScriptMessage = "script executed successfully";
     def static base_directory = "../testoutput/";
-    def static scriptResultList;
     ScriptManager manager;
     Logger testLogger;
+    static String dsKey = ScriptingManagerTests.name;
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        scriptResultList = [];
-        println "CLEARED RESULT LIST"
+        TestDatastore.put(dsKey, []);
         manager = ScriptManager.getInstance();
         if(new File(base_directory).exists())
         {
@@ -56,6 +57,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        TestDatastore.clear();
         manager.destroy();
         FileUtils.deleteDirectory(new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
     }
@@ -275,15 +277,14 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         createErrornousScript (script2)
         createStartupScriptScript(script3);
         manager.initialize(ScriptingManagerTests.classLoader, base_directory, ["script1", "script2", "script3.groovy"]);
-        println "Messages after execution :" + scriptResultList;
-        assertEquals (2, scriptResultList.size());
+        assertEquals (2, TestDatastore.get(dsKey).size());
 
 
     }
 
     public static void addScriptMessage(String message)
     {
-        scriptResultList.add(message);    
+        TestDatastore.get(dsKey).add(message);
     }
     def createStartupScriptScript(scriptName)
     {
@@ -291,7 +292,6 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
         scriptFile.delete()
         scriptFile.write (""" ${ScriptingManagerTests.class.name}.addScriptMessage("$expectedScriptMessage");
-            println "Messages:"+${ScriptingManagerTests.class.name}.scriptResultList
         """);
     }
 

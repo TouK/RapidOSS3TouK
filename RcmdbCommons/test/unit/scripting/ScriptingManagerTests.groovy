@@ -45,6 +45,10 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         scriptResultList = [];
         println "CLEARED RESULT LIST"
         manager = ScriptManager.getInstance();
+        if(new File(base_directory).exists())
+        {
+            FileUtils.deleteDirectory (new File(base_directory));
+        }
         manager.initialize(this.class.getClassLoader(), base_directory, []);
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
         testLogger=Logger.getLogger("scriptingtestlogger");

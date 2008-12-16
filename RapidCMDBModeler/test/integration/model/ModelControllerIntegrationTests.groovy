@@ -61,7 +61,7 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         }
         if(!deletedAllModels) throw lastException;
         DatasourceName.list()*.remove();
-        generatedModelDir = ConfigurationHolder.config.toProperties()["rapidCMDB.temp.dir"];
+        generatedModelDir = ConfigurationHolder.config.flatten()["rapidCMDB.temp.dir"];
     }
 
     public void tearDown() {
@@ -101,6 +101,8 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         def mdc = new ModelController();
         mdc.generate();
         assertEquals("/model/list", mdc.response.redirectedUrl);
+        println "GENERATED MODELS DIR:"+generatedModelDir
+        println "FILES IN GENERATED MODELS DIR:"+generatedModelDir+"${new File(generatedModelDir + "/grails-app/domain/").listFiles()}"
         assertTrue(String.valueOf(mdc.flash.message), new File(generatedModelDir + "/grails-app/domain/${model.name}.groovy").exists());
     }
 

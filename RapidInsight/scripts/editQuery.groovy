@@ -20,7 +20,8 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import search.SearchQuery
 import search.SearchQueryGroup
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
-import ui.GridView;
+import ui.GridView
+import auth.RsUser;
 
 /**
 * Created by IntelliJ IDEA.
@@ -39,7 +40,7 @@ else {
     def userName = web.session.username;
     def queryType = params.queryType;
     def extraFilteredProps = ["rsDatasource"];
-    def gridViews = GridView.searchEvery("username:\"${userName}\"", [sort: "name"]);
+    def gridViews = GridView.searchEvery("username:\"${userName}\" OR (username:\"${RsUser.RSADMIN}\" AND isPublic:true)", [sort: "name"]);
     if (queryType == "event" || queryType == "historicalEvent") {
         def className = queryType == "notification" ? "RsEvent" : "RsHistoricalEvent";
         def allProps = [];

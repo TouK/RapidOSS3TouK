@@ -17,11 +17,6 @@
 * USA.
 */
 package ui
-
-import java.util.regex.Pattern
-import java.util.regex.Matcher
-import grails.converters.deep.XML
-
 /**
 * Created by IntelliJ IDEA.
 * User: Sezgin Kucukkaraaslan
@@ -29,20 +24,20 @@ import grails.converters.deep.XML
 * Time: 2:50:18 PM
 */
 class GridViewController {
-    private static final Pattern COLUMN_PROPERTY_PATTERN = Pattern.compile("column(\\d+)(attributeName|header|width)");
     def index = {redirect(action: list, params: params)}
 
     // the delete, save and update actions only accept POST requests
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 
     def list = {
-        def gridViews = GridView.search("username:\"${session.username}\"", params).results;
+        def isAdmin = org.jsecurity.SecurityUtils.subject.hasRole(auth.Role.ADMINISTRATOR)
+        def gridViews = GridView.searchEvery("username:\"${session.username}\" OR (username:\"${auth.RsUser.RSADMIN}\" AND isPublic:true)", params);
         withFormat {
             xml {
                 render(contentType: 'text/xml') {
                     Views {
                         for (view in gridViews) {
-                            View(id: view.id, name: view.name, defaultSortColumn: view.defaultSortColumn, sortOrder: view.sortOrder) {
+                            View(id: view.id, name: view.name, defaultSortColumn: view.defaultSortColumn, sortOrder: view.sortOrder, isPublic: view.isPublic, updateAllowed: (!view.isPublic || isAdmin)) {
                                 view.gridColumns.each {GridColumn gridColumn ->
                                     Column(attributeName: gridColumn.attributeName, header: gridColumn.header, width: gridColumn.width, columnIndex: gridColumn.columnIndex);
                                 }
@@ -83,7 +78,15 @@ class GridViewController {
     }
 
     def delete = {
+        def isAdmin = org.jsecurity.SecurityUtils.subject.hasRole(auth.Role.ADMINISTRATOR)
         def gridView = GridView.get([id: params.id]);
+        if (!isAdmin && gridView.isPublic) {
+            addError("gridview.not.authorized", []);
+            withFormat {
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+            }
+            return;
+        }
         if (gridView) {
             gridView.remove()
             withFormat {
@@ -155,8 +158,18 @@ class GridViewController {
     }
 
     def add = {
-        params.username = session.username;
-        def gridView = GridView.add([name: params.name, username: session.username, defaultSortColumn: params.defaultSortColumn, sortOrder: params.sortOrder]);
+        def isPublic = params.isPublic;
+        params.username = isPublic == "true" ? auth.RsUser.RSADMIN : session.username;
+        def isAdmin = org.jsecurity.SecurityUtils.subject.hasRole(auth.Role.ADMINISTRATOR)
+        def gridView = GridView.get(name: params.name, username: auth.RsUser.RSADMIN);
+        if (!isAdmin && ((gridView && gridView.isPublic) || isPublic == "true")) {
+            addError("gridview.not.authorized", []);
+            withFormat {
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+            }
+            return;
+        }
+        gridView = GridView.add([name: params.name, username: session.username, defaultSortColumn: params.defaultSortColumn, sortOrder: params.sortOrder, isPublic: params.isPublic]);
         if (!gridView.hasErrors()) {
             gridView.gridColumns.each {
                 it.remove();

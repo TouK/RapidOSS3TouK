@@ -34,6 +34,7 @@ class GridView {
     String sortOrder = "asc";
     String username = "";
     List gridColumns = [];
+    Boolean isPublic = false;
 
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
@@ -44,6 +45,7 @@ class GridView {
         username(blank: false, nullable: false)
         defaultSortColumn(blank:true, nullable: true)
         sortOrder(inList:["asc","desc"]);
+        isPublic(blank:false, nullable:false)
         __operation_class__(nullable:true)
         __is_federated_properties_loaded__(nullable:true)
         errors(nullable:true)

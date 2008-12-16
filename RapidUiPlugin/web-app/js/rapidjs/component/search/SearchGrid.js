@@ -392,7 +392,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     },
     viewChanged: function(newQuery, willSaveHistory) {
         var view = this.viewInput.options[this.viewInput.selectedIndex].value;
-        if (view == 'default') {
+        var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
+        if (view == 'default' || (viewNode && viewNode.getAttribute("updateAllowed") == "false")) {
             this.updateViewButton.disable();
             this.removeViewButton.disable();
         }
@@ -473,7 +474,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             sortAtt = column['attributeName'];
             sortOrder = column['sortOrder'] || 'asc';
         }
-        this._setQuery(newQuery || this.currentlyExecutingQuery, sortAtt, sortOrder);
+        this._setQuery(newQuery || this.currentlyExecutingQuery || '', sortAtt, sortOrder);
         this.handleSearch(null, willSaveHistory);
     },
     getColumnConfigFromViewNode: function(viewNode) {

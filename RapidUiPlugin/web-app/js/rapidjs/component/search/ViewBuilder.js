@@ -44,8 +44,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         var wrp = dh.append(this.dialog.body, {tag:'div', cls:'rcmdb-searchgrid-view-wrp'});
         var nameView = dh.append(wrp, {tag:'div',
             html:'<table><tbody><tr><td><div class="rcmdb-searchgrid-view-text">View Name:</div></td>' +
-                 '<td><div class="rcmdb-searchgrid-view-inputwrp"><input class="rcmdb-searchgrid-view-input"></input></div></td></tr></tbody></table>'});
-        this.nameInput = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchgrid-view-input', 'input', nameView)[0];
+                 '<td><div class="rcmdb-searchgrid-view-inputwrp"><input class="rcmdb-searchgrid-view-input"></input></div></td>' +
+                 '<td><div style="margin-left:25px;">Public:</div></td>' +
+                 '<td><div class="rcmdb-searchgrid-view-inputwrp"><input type="checkbox" style="height:20px"></input></div></td></tr></tbody></table>'});
+        var inputs = nameView.getElementsByTagName("input");
+        this.nameInput = inputs[0];
+        this.isPublicInput = inputs[1];
 
         var columnView = dh.append(wrp, {tag:'div',
             html:'<table><tbody>' +
@@ -110,6 +114,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         var parameters = {};
         var url = 'gridView/add';
         parameters['name'] = this.nameInput.value;
+        parameters['isPublic'] = this.isPublicInput.checked;
         var defaultSortColumn = this.defaultSortInput.options[this.defaultSortInput.selectedIndex].value;
         var sortOrder = this.sortOrderInput.options[this.sortOrderInput.selectedIndex].value;
         parameters['defaultSortColumn'] = defaultSortColumn;
@@ -189,6 +194,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         SelectUtils.addOption(this.defaultSortInput, '', '');
         SelectUtils.selectTheValue(this.sortOrderInput, 'asc', 0);
         this.nameInput.value = '';
+        this.isPublicInput.checked = false;
         this.nameInput.readOnly = false;
         this.attInput.readOnly = false;
         this.headerInput.readOnly = false;
@@ -229,7 +235,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
     },
     populateFieldsForUpdate: function() {
         var viewName = this.currentNode.getAttribute('name');
+        var isPublic = this.currentNode.getAttribute('isPublic');
         this.nameInput.value = viewName;
+        if(isPublic == "true"){
+            this.isPublicInput.checked = true;
+        }
         this.nameInput.readOnly = true;
         var defaultSortColumn = this.currentNode.getAttribute('defaultSortColumn');
         var sortOrder = this.currentNode.getAttribute('sortOrder');

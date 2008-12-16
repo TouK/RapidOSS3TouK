@@ -19,6 +19,7 @@
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import search.SearchQueryGroup
+import auth.RsUser
 
 /**
 * Created by IntelliJ IDEA.
@@ -30,7 +31,7 @@ import search.SearchQueryGroup
 def userName = web.session.username;
 def queryType = params.queryType;
 def extraFilteredProps = ["rsDatasource"];
-def gridViews = ui.GridView.searchEvery("username:\"${userName}\"", [sort: "name"]);
+def gridViews = ui.GridView.searchEvery("username:\"${userName}\" OR (username:\"${RsUser.RSADMIN}\" AND isPublic:true)", [sort: "name"]);
 if (queryType == "event" || queryType == "historicalEvent") {
     def className = queryType == "notification" ? "RsEvent" : "RsHistoricalEvent";
     def allProps = [];

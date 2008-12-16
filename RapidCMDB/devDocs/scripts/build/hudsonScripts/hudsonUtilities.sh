@@ -71,6 +71,7 @@ runGrailsTests() {
     cd $WORKSPACE/Distribution/RapidServer/Modeler/
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
     ./rsmodeler.sh -test
+    sleep 5
     rm -r test/reports/TESTS-TestSuites.xml
     if [ ! -d $WORKSPACE/TestResults/Modeler ]
       then

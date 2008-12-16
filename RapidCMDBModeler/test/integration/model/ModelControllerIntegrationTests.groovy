@@ -7,6 +7,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import com.ifountain.rcmdb.domain.generation.ModelGenerationUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -102,6 +103,10 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         mdc.generate();
         assertEquals("/model/list", mdc.response.redirectedUrl);
         println "GENERATED MODELS DIR:"+generatedModelDir
+        println "MODELGNERATOR TEMP BASE DIR:"+ModelGenerator.getInstance().tempBaseDir
+        println "MODELGNERATOR TEMP GENERATED MODELS DIR:"+ModelGenerator.getInstance().tempModelDir
+        println "MODELGNERATOR WORKING BASE DIR:"+ModelGenerator.getInstance().workingBaseDir
+        println "MODELGNERATOR WORKING MODELS DIR:"+ModelGenerator.getInstance().workingModelDir
         println "FILES IN GENERATED MODELS DIR:"+generatedModelDir+"${new File(generatedModelDir + "/grails-app/domain/").listFiles()}"
         assertTrue(String.valueOf(mdc.flash.message), new File(generatedModelDir + "/grails-app/domain/${model.name}.groovy").exists());
     }

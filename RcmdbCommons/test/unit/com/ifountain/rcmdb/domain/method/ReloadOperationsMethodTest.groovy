@@ -31,11 +31,12 @@ import org.apache.log4j.Logger
  * To change this template use File | Settings | File Templates.
  */
 class ReloadOperationsMethodTest extends RapidCmdbTestCase{
-    def static reloadOperationsMessages = [];
+    def static reloadOperationsMessages;
     def baseDir = "../testOutput";
 
     protected void setUp() {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
+        reloadOperationsMessages = [];
         reloadOperationsMessages.clear();
     }
 
@@ -67,7 +68,7 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
         String reloadOpMessage = "reloadOperations called"
         GroovyClassLoader classLoader = new GroovyClassLoader(this.class.classLoader);
         def subClass1 = classLoader.parseClass("""
-            class SubDomainClass1
+            class SubDomainClass1ReloadOperationsMethodTest
             {
                 def static reloadOperations(boolean reloadSubClasses)
                 {
@@ -76,7 +77,7 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
             }
         """);
         def subClass2 = classLoader.parseClass("""
-            class SubDomainClass2
+            class SubDomainClass2ReloadOperationsMethodTest
             {
                 def static reloadOperations(boolean reloadSubClasses)
                 {

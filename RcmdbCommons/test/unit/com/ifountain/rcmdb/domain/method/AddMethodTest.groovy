@@ -160,19 +160,6 @@ class AddMethodTest extends RapidCmdbTestCase{
     }
 
 
-    public void testIfKeyIsNullReturnsError()
-    {
-        fail("Implement later");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-        def props = [:];
-        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertTrue (addedObject.hasErrors());
-
-        props = [prop1:"   "];
-        addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertTrue (addedObject.hasErrors());
-    }
-
     public void testAddMethodWithStringProperties()
     {
         def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);

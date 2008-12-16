@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 class TestDeployer {
    def buildBasePath="http://192.168.1.130:8080/job/ManualTestingBuild/ws/Distribution/";
    def deploymentBasePath="d:"+File.separator+"manualTestingSpace"+File.separator;
+   def smartsJarBasePath="http://192.168.1.130:8080/job/ManualTestingBuild/ws/LicencedJars/lib/smarts/";
    def ant;
    def manualTestingTempPath;
    
@@ -17,7 +18,7 @@ class TestDeployer {
        TestDeployer deployer=new TestDeployer();
 
        //deployer.run(args);
-       deployer.run(["deployModelOperations"]);
+       deployer.run(["deploySmartsNotificationThreadSearch"]);
 
     }
     void run(args) {
@@ -69,18 +70,20 @@ class TestDeployer {
     void deployModelOperations()
     {
 
-       File riTarget=new File(deploymentBasePath+"RI_Windows.zip");
-       FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}RI_Windows.zip"),riTarget);
+        File riTarget=new File(deploymentBasePath+"RI_Windows.zip");
+        FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}RI_Windows.zip"),riTarget);
 
-       File manualTestingTarget=new File(deploymentBasePath+"ManualTesting.zip");
-       FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}ManualTesting.zip"),manualTestingTarget);
+        ant.unzip(src:riTarget.getPath(), dest:deploymentBasePath);
+        
+        File manualTestingTarget=new File(deploymentBasePath+"ManualTesting.zip");
+        FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}ManualTesting.zip"),manualTestingTarget);
 
-       ant.unzip(src:riTarget.getPath(), dest:deploymentBasePath);
-       ant.unzip(src:manualTestingTarget.getPath(), dest:manualTestingTempPath);
-       ant.copy(todir: deploymentBasePath) {
+        ant.unzip(src:manualTestingTarget.getPath(), dest:manualTestingTempPath);
+        
+        ant.copy(todir: deploymentBasePath) {
             ant.fileset(dir: "${manualTestingTempPath}default") {
             }
-       }
+        }
         ant.copy(todir: deploymentBasePath) {
             ant.fileset(dir: "${manualTestingTempPath}ModelOperations") {
             }
@@ -89,5 +92,75 @@ class TestDeployer {
 
        
   
+    }
+    void deploySmartsNotificationOperations()
+    {
+
+        File riTarget=new File(deploymentBasePath+"RI_Windows.zip");
+        FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}RI_Windows.zip"),riTarget);
+
+        ant.unzip(src:riTarget.getPath(), dest:deploymentBasePath);
+
+
+        File smartsTarget=new File(deploymentBasePath+"SmartsPlugin.zip");
+        FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}SmartsPlugin.zip"),smartsTarget);
+
+        ant.unzip(src:smartsTarget.getPath(), dest:deploymentBasePath+"RapidServer");
+
+        FileUtils.copyURLToFile(new java.net.URL("${smartsJarBasePath}net.jar"),new File(deploymentBasePath+"RapidServer/RapidSuite/lib/net.jar"));
+        FileUtils.copyURLToFile(new java.net.URL("${smartsJarBasePath}skclient.jar"),new File(deploymentBasePath+"RapidServer/RapidSuite/lib/skclient.jar"));
+
+        
+        File manualTestingTarget=new File(deploymentBasePath+"ManualTesting.zip");
+        FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}ManualTesting.zip"),manualTestingTarget);
+
+        ant.unzip(src:manualTestingTarget.getPath(), dest:manualTestingTempPath);
+        ant.copy(todir: deploymentBasePath) {
+            ant.fileset(dir: "${manualTestingTempPath}default") {
+            }
+        }
+        ant.copy(todir: deploymentBasePath) {
+            ant.fileset(dir: "${manualTestingTempPath}SmartsNotificationOperations") {
+            }
+        }
+
+
+        ant.delete(dir:manualTestingTempPath)
+
+    }
+    void deploySmartsNotificationThreadSearch()
+    {
+
+        File riTarget=new File(deploymentBasePath+"RI_Windows.zip");
+        FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}RI_Windows.zip"),riTarget);
+
+        ant.unzip(src:riTarget.getPath(), dest:deploymentBasePath);
+
+
+        File smartsTarget=new File(deploymentBasePath+"SmartsPlugin.zip");
+        FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}SmartsPlugin.zip"),smartsTarget);
+
+        ant.unzip(src:smartsTarget.getPath(), dest:deploymentBasePath+"RapidServer");
+
+        FileUtils.copyURLToFile(new java.net.URL("${smartsJarBasePath}net.jar"),new File(deploymentBasePath+"RapidServer/RapidSuite/lib/net.jar"));
+        FileUtils.copyURLToFile(new java.net.URL("${smartsJarBasePath}skclient.jar"),new File(deploymentBasePath+"RapidServer/RapidSuite/lib/skclient.jar"));
+
+
+        File manualTestingTarget=new File(deploymentBasePath+"ManualTesting.zip");
+        FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}ManualTesting.zip"),manualTestingTarget);
+
+        ant.unzip(src:manualTestingTarget.getPath(), dest:manualTestingTempPath);
+        ant.copy(todir: deploymentBasePath) {
+            ant.fileset(dir: "${manualTestingTempPath}default") {
+            }
+        }
+        ant.copy(todir: deploymentBasePath) {
+            ant.fileset(dir: "${manualTestingTempPath}SmartsNotificationThreadSearch") {
+            }
+        }
+
+
+        ant.delete(dir:manualTestingTempPath)
+
     }
 }

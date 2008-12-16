@@ -101,7 +101,7 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         def mdc = new ModelController();
         mdc.generate();
         assertEquals("/model/list", mdc.response.redirectedUrl);
-        assertTrue(new File(generatedModelDir + "/grails-app/domain/${model.name}.groovy").exists());
+        assertTrue(String.valueOf(mdc.flash.message), new File(generatedModelDir + "/grails-app/domain/${model.name}.groovy").exists());
     }
 
     void testPrintsExceptionIfMasterDatasourceDoesnotExist() {

@@ -62,13 +62,16 @@ class ScriptManager {
             {}
         }
         startupScriptList.each{
+            println "Executing for "+it
             try
             {
                 addScript(it);
                 runScript(it, [:],Logger.getRootLogger());
             }
-            catch (t)
+            catch (Throwable t)
             {
+                println t.toString()
+                t.printStackTrace();
                 logger.warn ("An exception occurred while executing startup script ${it}.", t);    
             }
 

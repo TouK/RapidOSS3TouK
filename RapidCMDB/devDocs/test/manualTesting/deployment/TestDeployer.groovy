@@ -8,7 +8,7 @@
 import org.apache.commons.io.FileUtils;
 class TestDeployer {
    def buildBasePath="http://192.168.1.130:8080/job/ManualTestingBuild/ws/Distribution/";
-   def deploymentBasePath="d:"+File.separator;
+   def deploymentBasePath="d:"+File.separator+"manualTestingSpace"+File.separator;
    def ant;
    def manualTestingTempPath;
    
@@ -25,11 +25,9 @@ class TestDeployer {
         manualTestingTempPath=deploymentBasePath+"manualTesting/";
        
         executeOnServer(" -stop");
-        executeOnServer(" -uninstall");
-        executeOnServer(" -install");
 
-        
-        
+        ant.delete(dir:deploymentBasePath)
+
         if(args.size() >0){
 			println "Running target " + args[0];
 			invokeMethod(args[0], null);
@@ -37,12 +35,18 @@ class TestDeployer {
 		else{
 			println "No targets found";
 		}
-		println "Done";
+
+        executeOnServer(" -stop");
+        executeOnServer(" -uninstall");
+        executeOnServer(" -install");
 		executeOnServer(" -start");
+        println "Done";
+				
     }
     void executeOnServer(args)
     {
         println "Call to rs.exe with args ${args}";
+        try{
         ant.exec(
              outputproperty:"cmdOut",
              errorproperty: "cmdErr",
@@ -52,7 +56,11 @@ class TestDeployer {
              {
                  arg(line:args)
              }
-             
+        }
+        catch(e)
+        {
+            println "Exception occured while calling rs.exe with args ${args}. Reason:"+e;
+        }
 
 //        println "return code:  ${ant.project.properties.cmdExit}"
 //        println "stderr:         ${ant.project.properties.cmdErr}"

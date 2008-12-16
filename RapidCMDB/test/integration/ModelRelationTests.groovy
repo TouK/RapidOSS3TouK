@@ -352,16 +352,6 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
         def device = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
                 location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
 
-        try {
-            device.addRelation(connectedVia:[link1, link2]);
-        }
-        catch (e) {
-            fail("Should not throw exception");
-        }
-
-        assertTrue(device.hasErrors());
-        assertTrue(device.connectedVia.isEmpty())
-
 
         try {
             link.addRelation(connectedTo:device);

@@ -22,6 +22,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,9 +64,9 @@ class GetRelatedObjectPropertyValuesMethodTest extends RapidCmdbWithCompassTestC
         Class relatedModelClass = this.gcl.loadClass(relatedModelName);
         initialize([modelClass, relatedModelClass], [])
 
-        def relatedModelInstance1 = relatedModelClass.'add'(keyProp:"relatedModel1", prop1:"instance1Prop1Value", prop2:"instance1Prop2Value", prop3:"instance1Prop3Value");
-        def relatedModelInstance2 = relatedModelClass.'add'(keyProp:"relatedModel2", prop1:"instance2Prop1Value", prop2:"instance2Prop2Value", prop3:"instance2Prop3Value");
-        def relatedModelInstance3 = relatedModelClass.'add'(keyProp:"relatedModel3", prop1:"instance3Prop1Value", prop2:"instance3Prop2Value", prop3:"instance3Prop3Value");
+        def relatedModelInstance1 = relatedModelClass.'add'(keyProp:"relatedModel1", prop1:"instance1Prop1Value", prop2:5, prop3:"instance1Prop3Value");
+        def relatedModelInstance2 = relatedModelClass.'add'(keyProp:"relatedModel2", prop1:"instance2Prop1Value", prop2:7, prop3:"instance2Prop3Value");
+        def relatedModelInstance3 = relatedModelClass.'add'(keyProp:"relatedModel3", prop1:"instance3Prop1Value", prop2:8, prop3:"instance3Prop3Value");
         def modelInstance1 = modelClass.'add'(keyProp:"model1", rel1:[relatedModelInstance1, relatedModelInstance2]);
         def modelInstance2 = modelClass.'add'(keyProp:"model2", rel1:[relatedModelInstance3]);
         def modelInstance3 = modelClass.'add'(keyProp:"model2");

@@ -52,6 +52,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        manager.destroy();
         FileUtils.deleteDirectory(new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
     }
 

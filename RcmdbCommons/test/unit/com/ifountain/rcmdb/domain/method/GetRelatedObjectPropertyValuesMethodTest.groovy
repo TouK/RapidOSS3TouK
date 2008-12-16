@@ -76,6 +76,8 @@ class GetRelatedObjectPropertyValuesMethodTest extends RapidCmdbWithCompassTestC
         assertFalse (modelInstance2.hasErrors());
         assertFalse (modelInstance3.hasErrors());
 
+        println   "RELATED MODELS:"+modelInstance1.rel1;
+
         List results = modelInstance1.getRelatedModelPropertyValues("rel1", ["prop1", "prop3"]);
         assertEquals (2, results.size());
         def result = results.find {it.prop1 == "instance1Prop1Value"}

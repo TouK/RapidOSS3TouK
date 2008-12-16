@@ -455,7 +455,7 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
                     instance2Request1.invoke(instance2, null)
                     thread2State = 2;
                 }
-                catch(org.apache.commons.transaction.locking.LockException ex)
+                catch(Throwable ex)
                 {
                     thread2State = 3;
                 }

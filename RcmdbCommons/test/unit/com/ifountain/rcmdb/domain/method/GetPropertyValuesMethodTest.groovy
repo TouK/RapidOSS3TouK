@@ -192,65 +192,6 @@ class GetPropertyValuesMethodTest extends RapidCmdbWithCompassTestCase{
         assertEquals (modelInstance1.prop2, res[2].prop2);
     }
 
-    public void testGetPropertyValuesWithRelations()
-    {
-        fail("Will be implemented later");
-        def parentModelName = "ParentModel";
-        def model1Name = "Model1";
-        def model2Name = "Model2";
-        def relatedModelName = "RelatedModel";
-        def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
-        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false];
-        def model1MetaProps = [name:model1Name, parentModel:parentModelName]
-        def model2MetaProps = [name:model2Name, parentModel:parentModelName]
-        def parentModelProps = [name:parentModelName]
-        def relatedModelMetaProps = [name:relatedModelName]
-        def modelProps = [keyProp, prop1];
-        def keyPropList = [keyProp];
-        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
-        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:model1Name, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
 
-        String model1String = ModelGenerationTestUtils.getModelText(model1MetaProps, [prop1], keyPropList, [rel1])
-        String model2String = ModelGenerationTestUtils.getModelText(model2MetaProps, [prop1], keyPropList, [])
-        String parentModelString = ModelGenerationTestUtils.getModelText(parentModelProps, [prop1], keyPropList, [])
-        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, [prop1], keyPropList, [revrel1])
-
-        this.gcl.parseClass(model1String+model2String+relatedModelString+parentModelString);
-        Class model1Class = this.gcl.loadClass(model1Name);
-        Class model2Class = this.gcl.loadClass(model2Name);
-        Class parentClass = this.gcl.loadClass(parentModelName);
-        Class relatedModelClass = this.gcl.loadClass(relatedModelName);
-        initialize([model1Class, model2Class, parentClass, relatedModelClass], [])
-        def model1Instance1 = model1Class.'add'(keyProp:"obj1", prop1:"prop1Value1");
-        def model1Instance2 = model1Class.'add'(keyProp:"obj1", prop1:"prop1Value1");
-        def model2Instance1 = model2Class.'add'(keyProp:"obj2", prop1:"prop1Value2");
-        def relatedModelInstance = relatedModelClass.'add'(keyProp:"obj3", prop1:"prop1Value1", revrel1:[model1Instance1]);
-        assertFalse (model1Instance1.hasErrors());
-        assertFalse (model1Instance2.hasErrors());
-        assertFalse (model2Instance1.hasErrors());
-        assertFalse (relatedModelInstance.hasErrors());
-
-        def res = parentClass.'getPropertyValues'("alias:*", ["prop1", "undefined", "rel1"]);
-        assertEquals (3, res.size());
-        assertEquals (4, res[0].size())
-        assertEquals (4, res[0].size())
-        assertEquals (3, res[1].size())
-        assertEquals (model1Class.name, res[0].alias);
-        assertEquals (model1Class.name, res[0].alias);
-        assertEquals (model2Class.name, res[1].alias);
-
-        assertEquals (model1Instance1.id, res[0].id);
-        assertEquals (model1Instance2.id, res[1].id);
-        assertEquals (model2Instance1.id, res[2].id);
-
-        assertEquals (model1Instance1.prop1, res[0].prop1);
-        assertEquals (model1Instance2.prop1, res[1].prop1);
-        assertEquals (model2Instance1.prop1, res[2].prop1);
-
-        assertEquals (1, res[0].rel1.size());
-        assertEquals (relatedModelInstance.id, res[0].rel1[0].id);
-        assertEquals (0, res[1].rel1.size());
-
-    }
 
 }

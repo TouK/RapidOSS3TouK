@@ -274,8 +274,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         createStartupScriptScript (script1)
         createErrornousScript (script2)
         createStartupScriptScript(script3);
-
-        manager.initialize(this.class.classLoader, base_directory, ["script1", "script2", "script3.groovy"]);
+        manager.initialize(ScriptingManagerTests.classLoader, base_directory, ["script1", "script2", "script3.groovy"]);
         println "Messages after execution :" + scriptResultList;
         assertEquals (2, scriptResultList.size());
 
@@ -288,6 +287,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
     }
     def createStartupScriptScript(scriptName)
     {
+        
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
         scriptFile.delete()
         scriptFile.write (""" ${ScriptingManagerTests.class.name}.addScriptMessage("$expectedScriptMessage");

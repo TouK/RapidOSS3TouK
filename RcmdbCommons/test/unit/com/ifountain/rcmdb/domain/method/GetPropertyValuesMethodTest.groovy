@@ -192,7 +192,7 @@ class GetPropertyValuesMethodTest extends RapidCmdbWithCompassTestCase{
         assertEquals (modelInstance1.prop2, res[2].prop2);
     }
 
-     public void testGetPropertyValuesWithRelations()
+    public void testGetPropertyValuesWithRelations()
     {
         fail("Will be implemented later");
         def parentModelName = "ParentModel";

@@ -346,22 +346,21 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
     }
     
     void testAddOneToManyRelationWithInvalidObjectType() {
-        def link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
-        def link2 = Link.add(name: "myLink2", creationClassName: "Link", smartsDs: "smartsDs")
+        Link link1 = Link.add(name: "myLink1", creationClassName: "Link", smartsDs: "smartsDs")
 
         def device = Device.add(name: "myDevice1", creationClassName: "Device", smartsDs: "smartsDs", ipAddress: "192.168.1.1",
                 location: "myLocation", model: "myModel", snmpReadCommunity: "mysnmpReadCommunity", vendor: "myVendor")
 
 
         try {
-            link.addRelation(connectedTo:device);
+            link1.addRelation(connectedTo:device);
         }
         catch (e) {
             fail("Should not throw exception");
         }
 
-        assertTrue(link.hasErrors());
-        assertTrue(link.connectedTo.isEmpty())
+        assertTrue(link1.hasErrors());
+        assertTrue(link1.connectedTo.isEmpty())
     }
     
     void testRemoveOneToManyRelation() {

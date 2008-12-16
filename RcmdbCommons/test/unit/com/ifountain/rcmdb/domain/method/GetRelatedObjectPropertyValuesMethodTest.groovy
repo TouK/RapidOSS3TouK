@@ -69,7 +69,8 @@ class GetRelatedObjectPropertyValuesMethodTest extends RapidCmdbWithCompassTestC
         def modelInstance1 = modelClass.'add'(keyProp:"model1", rel1:[relatedModelInstance1, relatedModelInstance2]);
         def modelInstance2 = modelClass.'add'(keyProp:"model2", rel1:[relatedModelInstance3]);
         def modelInstance3 = modelClass.'add'(keyProp:"model2");
-        assertFalse (relatedModelInstance1.hasErrors());
+        println "REL MODEL ERRORS:"+relatedModelInstance1.errors
+        assertFalse (relatedModelInstance1.errors, relatedModelInstance1.hasErrors());
         assertFalse (relatedModelInstance2.hasErrors());
         assertFalse (relatedModelInstance3.hasErrors());
         assertFalse (modelInstance1.hasErrors());

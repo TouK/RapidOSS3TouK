@@ -22,6 +22,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.domain.operation.DomainOperationManager
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import org.apache.log4j.Logger
+import com.ifountain.rcmdb.test.util.TestDatastore
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,13 +32,11 @@ import org.apache.log4j.Logger
  * To change this template use File | Settings | File Templates.
  */
 class ReloadOperationsMethodTest extends RapidCmdbTestCase{
-    def static reloadOperationsMessages;
     def baseDir = "../testOutput";
-
+    public static dsKey = ReloadOperationsMethodTest.name;
     protected void setUp() {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
-        reloadOperationsMessages = [];
-        reloadOperationsMessages.clear();
+        TestDatastore.put (dsKey, [])
     }
 
 
@@ -104,20 +103,20 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
 
         Class classAfterFirstReload = manager.getOperationClass()
         assertNotSame (classBeforeReload, classAfterFirstReload);
-        assertEquals(0, reloadOperationsMessages.size());
+        assertEquals(0, TestDatastore.get(dsKey).size());
 
         method.invoke(domainClass, [true] as Object[]);
 
         assertNotSame (classAfterFirstReload, manager.getOperationClass());
-        assertEquals(2, reloadOperationsMessages.size());
-        assertTrue (reloadOperationsMessages.contains(reloadOpMessage+"SubDomainClass1"+"false"));
-        assertTrue (reloadOperationsMessages.contains(reloadOpMessage+"SubDomainClass2"+"false"));
+        assertEquals(2, TestDatastore.get(dsKey).size());
+        assertTrue (TestDatastore.get(dsKey).contains(reloadOpMessage+"SubDomainClass1"+"false"));
+        assertTrue (TestDatastore.get(dsKey).contains(reloadOpMessage+"SubDomainClass2"+"false"));
     }
     
 
     def static addOperationMessage(message)
     {
-        reloadOperationsMessages += message;        
+        TestDatastore.get(dsKey).add(message);
     }
     def createSimpleDomainClass()
     {

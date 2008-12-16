@@ -106,12 +106,6 @@ class ModelControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         def mdc = new ModelController();
         mdc.generate();
         assertEquals("/model/list", mdc.response.redirectedUrl);
-        println "GENERATED MODELS DIR:"+generatedModelDir
-        println "MODELGNERATOR TEMP BASE DIR:"+ModelGenerator.getInstance().tempBaseDir
-        println "MODELGNERATOR TEMP GENERATED MODELS DIR:"+ModelGenerator.getInstance().tempModelDir
-        println "MODELGNERATOR WORKING BASE DIR:"+ModelGenerator.getInstance().workingBaseDir
-        println "MODELGNERATOR WORKING MODELS DIR:"+ModelGenerator.getInstance().workingModelDir
-        println "FILES IN GENERATED MODELS DIR:"+generatedModelDir+"${new File(generatedModelDir + "grails-app/domain/").listFiles()}"
         assertTrue(String.valueOf(mdc.flash.message), new File(generatedModelDir + "grails-app/domain/${model.name}.groovy").exists());
     }
 

@@ -7,10 +7,11 @@
 
 <%@ page import="com.ifountain.rcmdb.domain.util.DomainClassUtils; java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
 <%
+    def dateProperties = [];
+    SimpleDateFormat format = new SimpleDateFormat("dd MMM HH:mm:ss")
     def componentId = params.componentId
     def notificationName = params.name;    
     def domainObject = RsEvent.get(name: notificationName);
-    
     
     if (domainObject != null) {
         def allProperties = domainObject.getPropertiesList();
@@ -44,7 +45,6 @@ objectDialog.show(url, title);
     </ul>
     <div style="display:block;margin-top:10px;">
         <%
-                SimpleDateFormat format = new SimpleDateFormat("dd MMM HH:mm:ss")
                 def createdAt = domainObject.createdAt == 0 ? "never" : format.format(new Timestamp(domainObject.createdAt));
                 def changedAt = domainObject.changedAt == 0 ? "never" : format.format(new Timestamp(domainObject.changedAt));
                 def clearedAt = domainObject.clearedAt == 0 ? "never" : format.format(new Timestamp(domainObject.clearedAt));
@@ -82,20 +82,31 @@ objectDialog.show(url, title);
                             <tbody>
                                 <g:each var="property" status="i" in="${filteredProps}">
                                     <g:set var="propertyName" value="${property.name}" />
+                                    <g:set var="propertyValue" value="" />
+                                    <g:if test="${dateProperties.contains(propertyName)}">
+                                        <%
+                                            propertyValue = format.format(new Timestamp(domainObject[propertyName]));    
+                                        %>
+                                    </g:if>
+                                    <g:else>
+                                        <%
+                                             propertyValue = domainObject[propertyName]
+                                        %>
+                                    </g:else>
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td style="font-weight:bold">${propertyName}</td>
                                         <td>
                                             <g:if test="${propertiesLinkedToObject[propertyName]!=null}">
                                                <g:set var="targetObject" value="${RsTopologyObject.get(id:domainObject[propertiesLinkedToObject[propertyName]])}" />
                                                <g:if test="${targetObject!=null}">
-                                                    <a style="cursor:pointer;text-decoration:underline;color:#006DBA" onclick="showTopologyObject('getObjectDetails.gsp?name=' + encodeURIComponent('${targetObject.name}'),' Details of ${targetObject.className} ${targetObject.name} ') ">${domainObject[propertyName]}</a>
+                                                    <a style="cursor:pointer;text-decoration:underline;color:#006DBA" onclick="showTopologyObject('getObjectDetails.gsp?name=' + encodeURIComponent('${targetObject.name}'),' Details of ${targetObject.className} ${targetObject.name} ') ">${propertyValue}</a>
                                                </g:if>
                                                 <g:else>
-                                                    ${domainObject[propertyName]}
+                                                    ${propertyValue}
                                                 </g:else>
                                             </g:if>
                                             <g:else>
-                                                ${domainObject[propertyName]}
+                                                ${propertyValue}
                                             </g:else>
                                         </td>
                                     </tr>

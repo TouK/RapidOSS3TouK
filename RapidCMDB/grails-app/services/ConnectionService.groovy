@@ -75,13 +75,22 @@ class ConnectionService implements InitializingBean, DisposableBean, ConnectionP
     {
         def poolCheckIntervalStr = ((GrailsApplication)grailsApplication).config.flatten()["connection.pool.checker.interval"];
         String timeoutStrategyClassName = ((GrailsApplication)grailsApplication).config.flatten()["connection.pool.timeout.strategy"];
-        if(poolCheckIntervalStr == null || !poolCheckIntervalStr instanceof String)
+        long poolCheckInterval = 10000;
+        if(poolCheckIntervalStr == null)
         {
-            def defaultValue = "10000"
-            log.info("Invalid connection.pool.checker.interval property. it will be assigned to default value ${defaultValue}.");
-            poolCheckIntervalStr = defaultValue
+            log.info("No connection.pool.checker.interval property is defined. it will be assigned to default value ${poolCheckInterval}.");
         }
-        long poolCheckInterval = Long.parseLong(String.valueOf(poolCheckIntervalStr));
+        else
+        {
+            try
+            {
+                poolCheckInterval = Long.parseLong(String.valueOf(poolCheckIntervalStr));
+            }
+            catch(Throwable t)
+            {
+                log.info("Invalid connection.pool.checker.interval property ${poolCheckIntervalStr}. it will be assigned to default value ${poolCheckInterval}.");
+            }
+        }
         ConnectionManager.initialize (Logger.getRootLogger(), this, this.getClass().getClassLoader(), poolCheckInterval);
         if(timeoutStrategyClassName != null)
         {

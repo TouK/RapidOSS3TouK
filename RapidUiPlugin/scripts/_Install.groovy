@@ -37,6 +37,10 @@ Ant.move(toDir:"$baseDir/web-app")
     }
 
 }
+Ant.move(toDir:"$baseDir/grails-app/i18n")
+{
+    Ant.fileset(dir: "$baseDir/plugins/rapid-ui-0.1/grails-app/i18n")
+}
 if(new File("$baseDir/plugins/rapid-ui-0.1/src").exists())
 {
     Ant.move(toDir:"$baseDir/src")

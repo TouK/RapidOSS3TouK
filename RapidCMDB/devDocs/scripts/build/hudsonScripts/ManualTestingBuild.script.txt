@@ -1,0 +1,33 @@
+cp -f RapidModules/RapidCMDB/devDocs/scripts/build/hudsonScripts/hudsonUtilities.sh .
+dos2unix hudsonUtilities.sh
+. ./hudsonUtilities.sh
+
+compileBuildFiles
+
+cd RapidModules/
+
+#### RI TARGETS
+#groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild buildUnix
+#groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild buildWindows
+groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild build
+groovy RapidCMDB/devDocs/scripts/build/ManualTestingBuild build
+
+cd ..
+cd Distribution/
+
+FILE="RI_Windows_*.zip"
+
+if [ -f $FILE ];
+then
+   mv RI_Windows_*.zip RI_Windows.zip
+fi
+
+FILE="SmartsPlugin_*.zip"
+
+if [ -f $FILE ];
+then
+   mv SmartsPlugin_*.zip SmartsPlugin.zip
+fi
+
+
+

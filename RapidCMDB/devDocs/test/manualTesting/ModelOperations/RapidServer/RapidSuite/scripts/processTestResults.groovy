@@ -41,14 +41,54 @@ reportsMap.each{  operation, report ->
 */
 
 checkLessThen(reportsMap,"Add",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06)
+checkMoreThen(reportsMap,"Add",["Fiction","ScienceFiction","Author","Person"],"NumberOfOperations",0)
+
+checkLessThen(reportsMap,"Update",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06)
+checkMoreThen(reportsMap,"Update",["Fiction","ScienceFiction","Author","Person"],"NumberOfOperations",0)
+
+checkLessThen(reportsMap,"Remove",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.04)
+checkMoreThen(reportsMap,"Remove",["Fiction","ScienceFiction","Author","Person"],"NumberOfOperations",0)
+
+checkLessThen(reportsMap,"AddRelation",["Author","Person"],"AvarageDuration",0.06)
+checkMoreThen(reportsMap,"AddRelation",["Author","Person"],"NumberOfOperations",0)
+
+checkLessThen(reportsMap,"RemoveRelation",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.015)
+checkMoreThen(reportsMap,"RemoveRelation",["Fiction","ScienceFiction","Author","Person"],"NumberOfOperations",0)
+
+checkLessThen(reportsMap,"Search",["Book","Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.03)
+checkMoreThen(reportsMap,"Search",["Book","Fiction","ScienceFiction","Author","Person"],"NumberOfOperations",0)
 
 def checkLessThen(reports,operation,modelList,property,value)
 {
 	for(model in modelList){
-		if(Double.valueOf(reports[operation]['modelReports'][model][property])>value)
+		def modelValue=reports.get(operation)?.get("modelReports")?.get(model)?.get(property)
+
+		if(modelValue!=null)
 		{
-			println "${operation} Operation statistics for ${model}.${property} value is larger than ${value}"
+			if(Double.valueOf(reports[operation]['modelReports'][model][property])>value)
+			{
+				println "${operation}Operation.${model}.${property} value ${modelValue} is larger than ${value}"
+			}
+
 		}
+
+	}
+
+}
+def checkMoreThen(reports,operation,modelList,property,value)
+{
+	for(model in modelList){
+		def modelValue=reports.get(operation)?.get("modelReports")?.get(model)?.get(property)
+
+		if(modelValue!=null)
+		{
+			if(Double.valueOf(reports[operation]['modelReports'][model][property])<value)
+			{
+				println "${operation}Operation.${model}.${property} value ${modelValue} is smaller than ${value}"
+			}
+
+		}
+
 	}
 
 }

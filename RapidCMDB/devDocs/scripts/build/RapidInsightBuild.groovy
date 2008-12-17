@@ -51,11 +51,11 @@ class RapidInsightBuild extends Build {
         makeEnterprise();
     }
     
-    def getSmartsPluginName(){
+    def getPluginName(prefix){
         def path = new File(env.distribution);
         def SPName;
         path.eachFile{
-            if(it.name.indexOf("SmartsPlugin") != -1) SPName = it.name;
+            if(it.name.indexOf(prefix) != -1) SPName = it.name;
         }
         return SPName;
     }
@@ -63,9 +63,27 @@ class RapidInsightBuild extends Build {
     def testBuild() {
         TEST = true;
         createDirectories("Unix", false);
+
         smartsBuild.build();
-        def SPName = getSmartsPluginName();
+        def SPName = getPluginName("SmartsPlugin");
         ant.unzip(src:"$env.distribution/$SPName", dest:env.dist_rapid_server);
+
+        netcoolBuild.build();
+        def NPName = getPluginName("NetcoolPlugin");
+        ant.unzip(src:"$env.distribution/$NPName", dest:env.dist_rapid_server);
+
+        hypericBuild.build();
+        def HPName = getPluginName("HypericPlugin");
+        ant.unzip(src:"$env.distribution/$HPName", dest:env.dist_rapid_server);
+
+        apgBuild.build();
+        def APGPName = getPluginName("ApgPlugin");
+        ant.unzip(src:"$env.distribution/$APGPName", dest:env.dist_rapid_server);
+
+        openNmsBuild.build();
+        def OPPName = getPluginName("OpenNmsPlugin");
+        ant.unzip(src:"$env.distribution/$OPPName", dest:env.dist_rapid_server);
+
         ant.copy(tofile: "$env.dist_rapid_suite/../conf/groovy-starter.conf", file:"${env.dev_docs}/groovy-starter-for-tests.conf", overwrite:"true")
         ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {

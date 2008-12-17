@@ -67,7 +67,7 @@ class ListeningAdapterManagerTest extends GroovyTestCase{
         CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
 
         CompassForTests.initialize([CmdbScript]);
-        CompassForTests.setAddObjects([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFile:logFile,logLevel:logLevel.toString())]);
+        CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFile:logFile,logLevel:logLevel.toString())]);
         def script=CmdbScript.addScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript");
 
         def ds=new BaseListeningDatasourceMock();
@@ -89,7 +89,7 @@ class ListeningAdapterManagerTest extends GroovyTestCase{
         
         
         CompassForTests.initialize([CmdbScript]);
-        CompassForTests.setAddObjects([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",staticParam:"x:5")]);
+        CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",staticParam:"x:5")]);
         def script=CmdbScript.addScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript");
 
         def ds=new BaseListeningDatasourceMock();
@@ -131,7 +131,7 @@ class ListeningAdapterManagerTest extends GroovyTestCase{
 
 
         CompassForTests.initialize([CmdbScript]);
-        CompassForTests.setAddObjects([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFileOwn:true)]);
+        CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFileOwn:true)]);
         def script=CmdbScript.addScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFileOwn:true);
 
         def ds=new BaseListeningDatasourceMock();

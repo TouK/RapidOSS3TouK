@@ -29,13 +29,18 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
  */
 class CompassForTests {
 //    static List classesToBeInitialized;
-    static Map addMethodData = [:]
+    static MockOperationData addOperationData = new MockOperationData();
+    static MockOperationData getOperationData = new MockOperationData();
     public static void initialize(List classesToBeInitialized)
     {
+         addOperationData.initialize(classesToBeInitialized);
+         getOperationData.initialize(classesToBeInitialized);
         classesToBeInitialized.each{Class domainClass->
-
             domainClass.metaClass.static.add = {Map props->
-                return addMethodData[domainClass.name]?.getAt(0);
+                return addOperationData.getReturnObject(domainClass, new HashMap(props));
+            }
+            domainClass.metaClass.static.get = {Map props->
+                return getOperationData.getReturnObject(domainClass, new HashMap(props));
             }
             domainClass.metaClass.hasErrors = {
                 return false;
@@ -79,22 +84,48 @@ class CompassForTests {
             }
         }
     }
+}
 
-    public static void setAddObjects(List objects)
+class MockOperationData{
+    static Map operationData = [:]
+    static Map operationParams = [:]
+    static Map numberOfAddMethodCalls = [:]
+    List classesToBeInitialized;
+    public void initialize(List classesToBeInitialized)
     {
+        this.classesToBeInitialized = classesToBeInitialized;
+        clearAll();
+    }
+
+    public void setObjectsWillBeReturned(List objects)
+    {
+        clearAll();
         objects.each{Object domainObject->
-            def addObjects = addMethodData[domainObject.class.name]
-            if(addObjects == null)
-            {
-                addObjects = [];
-                addMethodData[domainObject.class.name] = addObjects;
-            }
+            def addObjects = operationData[domainObject.class.name]
             addObjects.add(domainObject);
         }
     }
-}
 
-class MethodData{
-    List params;
-    Object returnedData;
+    public List getParams(Class domainClass)
+    {
+        return operationParams[domainClass.name];        
+    }
+
+    public Object getReturnObject(Class domainClass, Object params)
+    {
+        def currentOperationNumber = numberOfAddMethodCalls[domainClass.name];
+        operationParams[domainClass.name].add(params);
+        Object res = operationData[domainClass.name][currentOperationNumber];
+        numberOfAddMethodCalls[domainClass.name] = currentOperationNumber+1;
+        return res;
+    }
+
+    private void clearAll()
+    {
+       classesToBeInitialized.each{Class domainClass->
+            numberOfAddMethodCalls[domainClass.name] = 0;
+            operationParams[domainClass.name] = [];
+            operationData[domainClass.name] = [];
+        }
+    }
 }

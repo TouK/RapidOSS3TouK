@@ -29,7 +29,9 @@ class RsUser {
     List groups = [];
     List permissionRelations = [];
     RsUserInformation userInformation;
-
+    org.springframework.validation.Errors errors ;
+    Object __operation_class__ ;
+    Object __is_federated_properties_loaded__ ;
     static cascaded = ["permissionRelations":true]
     static relations = [
             groups:[type:Group, reverseName:"users", isMany:true],
@@ -39,6 +41,9 @@ class RsUser {
     static constraints = {
         username(key: [], nullable: false, blank: false)
         userInformation(nullable:true)
+        __operation_class__(nullable:true)
+        __is_federated_properties_loaded__(nullable:true)
+        errors(nullable:true)
     }
 
     String toString(){

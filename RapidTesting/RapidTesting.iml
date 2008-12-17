@@ -5,7 +5,13 @@
       <configuration />
     </facet>
     <facet type="Spring" name="Spring">
-      <configuration />
+      <configuration>
+        <options>
+          <option name="enableValidation" value="true" />
+          <option name="reportErrorsAsWarnings" value="true" />
+        </options>
+        <customNs />
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -38,6 +44,7 @@
     </orderEntry>
     <orderEntry type="library" name="GRAILS" level="application" />
     <orderEntry type="module" module-name="comp" />
+    <orderEntryProperties />
   </component>
 </module>
 

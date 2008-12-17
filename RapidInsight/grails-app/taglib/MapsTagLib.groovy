@@ -109,8 +109,8 @@ class MapsTagLib {
                         )
         )
 
-        out << RFormTagLib.fForm(id: "mapDialog", width: "35em", createUrl:"script/run/createMap", editUrl:"script/run/editMap",
-                updateUrl:"topoMap/update?format=xml", saveUrl:"script/run/saveMap", submitAction:"POST", onSuccess: "refreshMapsAction",
+        out << RFormTagLib.fForm(id: "mapDialog", width: "35em", createUrl:"script/run/createMap?format=xml", editUrl:"script/run/editMap?format=xml",
+                updateUrl:"script/run/saveMap?format=xml", saveUrl:"script/run/saveMap?format=xml", submitAction:"POST", onSuccess: "refreshMapsAction",
                 """
                   <div >
                     <div class="hd">Save Map</div>
@@ -176,7 +176,8 @@ class MapsTagLib {
                         ActionsTagLib.fFunctionArg([:], "{groupName:params.data.name, id:params.data.id}")
         )
         out << ActionsTagLib.fAction(id: "requestMapAction", type: "request", url: "script/run/getMap?format=xml", onSuccess: "loadMapAction",
-                ActionsTagLib.fRequestParam(key: "mapName", value: "params.data.name", "")
+                ActionsTagLib.fRequestParam(key: "mapName", value: "params.data.name", "") +
+                ActionsTagLib.fRequestParam(key: "isPublic", value:"params.data.isPublic", "")
         )
         out << ActionsTagLib.fAction(id: "loadMapAction", type: "function", componentId: "topoMap", function: "loadMap",
                 ActionsTagLib.fFunctionArg([:], "params.response")

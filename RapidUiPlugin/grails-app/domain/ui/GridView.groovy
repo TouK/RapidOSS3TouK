@@ -45,7 +45,7 @@ class GridView {
         username(blank: false, nullable: false)
         defaultSortColumn(blank:true, nullable: true)
         sortOrder(inList:["asc","desc"]);
-        isPublic(blank:false, nullable:false)
+        isPublic(nullable:false)
         __operation_class__(nullable:true)
         __is_federated_properties_loaded__(nullable:true)
         errors(nullable:true)

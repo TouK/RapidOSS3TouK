@@ -35,9 +35,7 @@ if (!topoMap) {
 }
 else {
     def userName = web.session.username;
-    def mapGroups = MapGroup.list().findAll {
-        it.username == userName
-    };
+    def mapGroups = MapGroup.searchEvery("username:\"${userName}\" AND isPublic:false")
     def rsTopologyObjectProp = DomainClassUtils.getFilteredProperties("RsTopologyObject")
     web.render(contentType: 'text/xml') {
         Edit {

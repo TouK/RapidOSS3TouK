@@ -28,9 +28,7 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils;
 * To change this template use File | Settings | File Templates.
 */
 def userName = web.session.username;
-def mapGroups = MapGroup.list().findAll {mapGroup ->
-    mapGroup.username == userName
-};
+def mapGroups = MapGroup.searchEvery("username:\"${userName}\" AND isPublic:false")
 def netcoolEventProps = DomainClassUtils.getFilteredProperties("RsTopologyObject")
 web.render(contentType: 'text/xml') {
     Create {

@@ -16,31 +16,29 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
+
 import auth.RsUser
 import groovy.xml.MarkupBuilder
 import ui.map.*
 
 def user = RsUser.findByUsername(web.session.username);
-if(user == null){
+if (user == null) {
     throw new Exception("User ${web.session.username} does not exist");
 }
 
 def writer = new StringWriter();
 def mapBuilder = new MarkupBuilder(writer);
 
-MapGroup.add(groupName:"Default", username:web.session.username);
-def mapGroups = MapGroup.list();
+MapGroup.add(groupName: "Default", username: web.session.username);
+def mapGroups = MapGroup.searchEvery("username:\"${web.session.username}\" OR (username:\"${RsUser.RSADMIN}\" AND isPublic:true)");
 
 mapBuilder.Maps
 {
     mapGroups.each {MapGroup group ->
-        def userName = group.username;
-        if( userName.equals(user.username)){
-           mapBuilder.Map(id: group.id, name: group.groupName, nodeType: "group",  isPublic:"false") {
-              group.maps.each {TopoMap topoMap ->
-                  mapBuilder.Map (id: topoMap.id, name: topoMap.mapName, nodeType: "map", isPublic:"false", layout:topoMap.layout)
-              }
-           }
+        mapBuilder.Map(id: group.id, name: group.groupName, nodeType: "group", isPublic: group.isPublic) {
+            group.maps.each {TopoMap topoMap ->
+                mapBuilder.Map(id: topoMap.id, name: topoMap.mapName, nodeType: "map", isPublic: topoMap.isPublic, layout: topoMap.layout)
+            }
         }
     }
 }

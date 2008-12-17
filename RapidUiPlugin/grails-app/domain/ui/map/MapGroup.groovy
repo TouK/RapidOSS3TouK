@@ -33,6 +33,7 @@ class MapGroup {
     String username ="";
     
     String groupName ="";
+    Boolean isPublic = false;
     
     Long id ;
     
@@ -49,6 +50,7 @@ class MapGroup {
     static relations = [maps:[reverseName:"group", isMany:true, type:TopoMap]]
     static constraints={
     username(blank:false,nullable:false)
+    isPublic(nullable:true)
         
      groupName(blank:false,nullable:false,key:["username"])
         

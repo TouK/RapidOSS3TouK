@@ -28,8 +28,9 @@ if(user == null){
 
 def username2 = web.session.username;
 def mapName2 = params.mapName;
+def isPublic = params.isPublic;
 
-def map = TopoMap.get( mapName : mapName2, username : username2)
+def map = TopoMap.get( mapName : mapName2, username : isPublic == "true"? RsUser.RSADMIN: username2)
 
 def deviceMap = [:];
 

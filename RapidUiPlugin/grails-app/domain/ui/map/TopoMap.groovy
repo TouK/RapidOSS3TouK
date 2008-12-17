@@ -34,6 +34,7 @@ class TopoMap
     String mapName ="";
     
     String username ="";
+    Boolean isPublic = false;
     Long layout;
     String rsOwner = "p"
     Long id ;
@@ -58,7 +59,7 @@ class TopoMap
     mapName(blank:false,nullable:false)
         
      username(blank:false,nullable:false,key:["mapName"])
-        
+      isPublic(nullable:true)  
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)

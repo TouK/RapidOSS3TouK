@@ -20,17 +20,21 @@ import auth.RsUser
 import ui.map.*;
 
 def groupName =  params.groupName
+if(!groupName || groupName == ""){
+    groupName = "Default";
+}
 def mapName =  params.mapName
 def layout =  params.layout
 def nodes =  params.nodes.splitPreserveAllTokens(";").findAll {it != ""};
 
-
-
-
+def map = TopoMap.get(mapName:mapName, username:RsUser.RSADMIN, isPublic:true);
+if(map){
+    throw new Exception("There is a public map with name ${mapName}. Save is not allowed.")
+}
 def user = RsUser.findByUsername(web.session.username);
 
 def group = MapGroup.add( groupName : groupName, username : user );
-def map = TopoMap.add( mapName : mapName, username : user, layout : layout);
+map = TopoMap.add( mapName : mapName, username : user, layout : layout);
 
 group.addRelation( maps : map);
 

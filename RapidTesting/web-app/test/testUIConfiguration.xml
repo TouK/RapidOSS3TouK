@@ -10,7 +10,7 @@
 
             <Tree Id="testTree" Url="getTestData" RefreshRate="30" RootTag="Tests" KeyAttributeName="name" ContentPath="Test" Title="All Tests">
                 <Columns>
-                    <Column Type="Link" Header="Name" Width="150" AttributeName="displayName" Align = "left" ActionId="runTestAction"/>
+                    <Column Type="Text" Header="Name" Width="150" AttributeName="displayName" Align = "left"/>
                 </Columns>
                 <Tools>
                     <PollingTool/>
@@ -30,12 +30,7 @@
         </Dialogs>
 
         <Links>
-            <Link From="testTree" To="resultHtml" DynamicTitleAttribute="name">
-                <Params>
-                    <Param Name="name" AttributeName="name"/>
-                    <Param Name="type" AttributeName="type"/>
-                </Params>
-            </Link>
+            
         </Links>
 
         <Tabs>
@@ -64,10 +59,12 @@
                     <Param Name="type" AttributeName="type"/>
                 </Params>
             </WindowAction>
+
+
         </Actions>
 
         <ContextMenu>
-
+            <MenuItem Label="Run" Expression='data["WindowId"] == "testTree"'  ActionId="runTestAction"></MenuItem>
         </ContextMenu>
     </UiConfiguration>
 </TestPluginConfig>

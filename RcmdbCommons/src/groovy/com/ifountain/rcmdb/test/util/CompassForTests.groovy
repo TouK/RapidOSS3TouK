@@ -87,9 +87,9 @@ class CompassForTests {
 }
 
 class MockOperationData{
-    static Map operationData = [:]
-    static Map operationParams = [:]
-    static Map numberOfAddMethodCalls = [:]
+    Map operationData = [:]
+    Map operationParams = [:]
+    Map numberOfAddMethodCalls = [:]
     List classesToBeInitialized;
     public void initialize(List classesToBeInitialized)
     {

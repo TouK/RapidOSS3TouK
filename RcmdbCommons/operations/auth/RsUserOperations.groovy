@@ -13,14 +13,19 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         return createUser(params, []);
     }
 
-    public static RsUser createUser(Map params, List groupNames)
+    public static RsUser createUser(Map params, List groups)
     {
         if(params == null)
         {
-            throw new Exception("Null user props specified");
+            throw new Exception("No user props specified");
         }
         def groupsToBeAssigned = [];
-        groupNames.each{String groupName->
+        groups.each{groupObject->
+            def groupName = groupObject;
+            if(groupObject instanceof Group)
+            {
+                groupName = groupObject.name;
+            }
             Group group = Group.get(name:groupName);
             if(group == null)
             {

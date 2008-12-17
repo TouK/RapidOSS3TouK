@@ -32,12 +32,14 @@ class RsUserTest extends RapidCmdbTestCase{
         CompassForTests.addOperationSupport (RsUser, RsUserOperations);
 
         def userShouldBeReturned = new RsUser();
-        def groupShouldBeReturned = new Group();
+        def groupShouldBeReturned1 = new Group(name:"group1");
+        def groupShouldBeReturned2 = new Group(name:"group2");
 
-        CompassForTests.addOperationData.setObjectsWillBeReturned([userShouldBeReturned, groupShouldBeReturned]);
+        CompassForTests.addOperationData.setObjectsWillBeReturned([userShouldBeReturned]);
+        CompassForTests.getOperationData.setObjectsWillBeReturned([groupShouldBeReturned1, groupShouldBeReturned2]);
         def userProps = [username:"user1", passwordHash:"password"];
-        def groupsToBeCreated = ["group1"]
-        RsUser user = RsUser.createUser(userProps, groupsToBeCreated);
+        def groupsToBeAdded = ["group1", groupShouldBeReturned2]
+        RsUser user = RsUser.createUser(userProps, groupsToBeAdded);
 
         assertSame (userShouldBeReturned, user);
         def addMethodParams = CompassForTests.addOperationData.getParams(RsUser);
@@ -46,10 +48,17 @@ class RsUserTest extends RapidCmdbTestCase{
             assertEquals (addMethodParams[0][propName], propValue);
         }
 
-        assertEquals (1, addMethodParams[0].groups.size())
-        assertSame(groupShouldBeReturned, addMethodParams[0].groups[0])
+        assertEquals (2, addMethodParams[0].groups.size())
+        assertSame(groupShouldBeReturned1, addMethodParams[0].groups[0])
+        assertSame(groupShouldBeReturned2, addMethodParams[0].groups[1])
 
+        def getMethodParams = CompassForTests.getOperationData.getParams(Group);
+        assertEquals(2, getMethodParams.size());
+        assertEquals (groupsToBeAdded[0], getMethodParams[0].name)
+        assertEquals (groupsToBeAdded[1].name, getMethodParams[1].name)
     }
+
+
     
     public void testCreateUserThrowsExceptionIfGroupDoesNotExist()
     {
@@ -93,7 +102,7 @@ class RsUserTest extends RapidCmdbTestCase{
         }
         catch(Exception e)
         {
-            assertEquals ("Null user props specified", e.getMessage());
+            assertEquals ("No user props specified", e.getMessage());
         }
     }
 

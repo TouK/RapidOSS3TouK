@@ -27,6 +27,7 @@ import script.CmdbScript
 CmdbScript.addScript(name: "modelCreator");
 CmdbScript.addScript(name: "removeAll");
 CmdbScript.addScript(name: "acknowledge");
+CmdbScript.addScript([name: "clearExpiredEvents", type:"Scheduled", enabled:true,period:60]);
 CmdbScript.addScript(name: "setOwnership");
 CmdbScript.addScript(name: "queryList");
 CmdbScript.addScript(name: "createQuery");

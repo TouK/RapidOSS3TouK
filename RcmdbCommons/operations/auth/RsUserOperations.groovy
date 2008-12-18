@@ -19,6 +19,15 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         {
             throw new Exception("No user props specified");
         }
+
+        List groupsToBeAssigned = getGroupsFromRepository(groups)
+        params["groups"] = groupsToBeAssigned;
+        RsUser rsUser = RsUser.add(params);
+        return rsUser;
+    }
+
+    private static List getGroupsFromRepository(List groups)
+    {
         def groupsToBeAssigned = [];
         groups.each{groupObject->
             def groupName = groupObject;
@@ -33,8 +42,18 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             }
             groupsToBeAssigned.add(group);
         }
-        params["groups"] = groupsToBeAssigned;
-        RsUser rsUser = RsUser.add(params);
-        return rsUser;
+        return groupsToBeAssigned;
+    }
+
+    public void addToGroups(List groups)
+    {
+        List groupsToBeAssigned = getGroupsFromRepository(groups)
+        addRelation(groups:groupsToBeAssigned);
+    }
+
+    public void removeFromGroups(List groups)
+    {
+        List groupsToBeAssigned = getGroupsFromRepository(groups)
+        removeRelation(groups:groupsToBeAssigned);
     }
 }

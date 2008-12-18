@@ -31,16 +31,26 @@ class CompassForTests {
 //    static List classesToBeInitialized;
     static MockOperationData addOperationData = new MockOperationData();
     static MockOperationData getOperationData = new MockOperationData();
+    static MockOperationData addRelationOperationData = new MockOperationData();
+    static MockOperationData removeRelationOperationData = new MockOperationData();
     public static void initialize(List classesToBeInitialized)
     {
          addOperationData.initialize(classesToBeInitialized);
          getOperationData.initialize(classesToBeInitialized);
+         addRelationOperationData.initialize(classesToBeInitialized);
+         removeRelationOperationData.initialize(classesToBeInitialized);
         classesToBeInitialized.each{Class domainClass->
             domainClass.metaClass.static.add = {Map props->
                 return addOperationData.getReturnObject(domainClass, new HashMap(props));
             }
             domainClass.metaClass.static.get = {Map props->
                 return getOperationData.getReturnObject(domainClass, new HashMap(props));
+            }
+            domainClass.metaClass.static.addRelation = {Map props->
+                return addRelationOperationData.getReturnObject(domainClass, new HashMap(props));
+            }
+            domainClass.metaClass.static.removeRelation = {Map props->
+                return removeRelationOperationData.getReturnObject(domainClass, new HashMap(props));
             }
             domainClass.metaClass.hasErrors = {
                 return false;

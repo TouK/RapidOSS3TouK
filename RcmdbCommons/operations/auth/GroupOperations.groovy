@@ -18,6 +18,13 @@ class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomai
         {
             throw new Exception("No group props specified");
         }
+        List usersToBeAdded = getUsersFromRepository(users);
+        groupProps.users = usersToBeAdded;
+        return Group.add(groupProps);    
+    }
+
+    private static List getUsersFromRepository(List users)
+    {
         def usersToBeAdded = [];
         users.each{userObject->
             def username = userObject;
@@ -32,7 +39,43 @@ class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomai
             }
             usersToBeAdded.add(rsUser);
         }
-        groupProps.users = usersToBeAdded;
-        return Group.add(groupProps);    
+        return usersToBeAdded;
+    }
+
+    public void addUsers(List userList)
+    {
+        List usersToBeAdded = getUsersFromRepository(userList);
+        addRelation(users:usersToBeAdded);
+    }
+
+    public void removeUsers(List userList)
+    {
+        List usersToBeRemoved = getUsersFromRepository(userList);
+        removeRelation(users:usersToBeRemoved);
+    }
+
+    public void assignRole(role)
+    {
+        addRelation(role:getRole(role));
+    }
+
+    public void removeRole(role)
+    {
+        removeRelation(role:getRole(role));
+    }
+
+    private static getRole(role)
+    {
+        String roleName = role;
+        if(role instanceof Role)
+        {
+            roleName = role.name;
+        }
+        def roleFromRi = Role.get(name:roleName);
+        if(roleFromRi == null)
+        {
+            throw new Exception("Role ${roleName} does not exist");
+        }
+        return roleFromRi;
     }
 }

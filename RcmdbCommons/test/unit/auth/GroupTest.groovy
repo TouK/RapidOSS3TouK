@@ -86,4 +86,94 @@ class GroupTest extends RapidCmdbTestCase{
         }
     }
 
+    public void testAddUsers()
+    {
+        CompassForTests.initialize ([Group, RsUser]);
+        CompassForTests.addOperationSupport (Group, GroupOperations);
+
+        def groupShouldBeReturned = new Group();
+        def userShouldBeReturned1 = new RsUser(username:"user1");
+        def userShouldBeReturned2 = new RsUser(username:"user2");
+        CompassForTests.getOperationData.setObjectsWillBeReturned([groupShouldBeReturned, userShouldBeReturned1, userShouldBeReturned2]);
+        def usersToBeAdded = [userShouldBeReturned1.username, userShouldBeReturned2]
+        groupShouldBeReturned.addUsers(usersToBeAdded);
+
+        def addRelMethodParams = CompassForTests.addRelationOperationData.getParams(Group);
+        assertEquals(1, addRelMethodParams.size());
+        assertEquals(1, addRelMethodParams[0].size());
+        assertEquals(2, addRelMethodParams[0].users.size());
+        assertEquals (userShouldBeReturned1.username, addRelMethodParams[0].users[0].username)
+        assertEquals (userShouldBeReturned2.username, addRelMethodParams[0].users[1].username)
+
+        def getMethodParams = CompassForTests.getOperationData.getParams(RsUser);
+        assertEquals(2, getMethodParams.size());
+        assertEquals (userShouldBeReturned1.username, getMethodParams[0].username)
+        assertEquals (userShouldBeReturned2.username, getMethodParams[1].username)
+    }
+
+    public void testRemoveUsers()
+    {
+        CompassForTests.initialize ([Group, RsUser]);
+        CompassForTests.addOperationSupport (Group, GroupOperations);
+
+        def groupShouldBeReturned = new Group();
+        def userShouldBeReturned1 = new RsUser(username:"user1");
+        def userShouldBeReturned2 = new RsUser(username:"user2");
+        CompassForTests.getOperationData.setObjectsWillBeReturned([groupShouldBeReturned, userShouldBeReturned1, userShouldBeReturned2]);
+        def usersToBeRemoved = [userShouldBeReturned1.username, userShouldBeReturned2]
+        groupShouldBeReturned.removeUsers(usersToBeRemoved);
+
+        def removeRelMethodParams = CompassForTests.removeRelationOperationData.getParams(Group);
+        assertEquals(1, removeRelMethodParams.size());
+        assertEquals(1, removeRelMethodParams[0].size());
+        assertEquals(2, removeRelMethodParams[0].users.size());
+        assertEquals (userShouldBeReturned1.username, removeRelMethodParams[0].users[0].username)
+        assertEquals (userShouldBeReturned2.username, removeRelMethodParams[0].users[1].username)
+
+        def getMethodParams = CompassForTests.getOperationData.getParams(RsUser);
+        assertEquals(2, getMethodParams.size());
+        assertEquals (userShouldBeReturned1.username, getMethodParams[0].username)
+        assertEquals (userShouldBeReturned2.username, getMethodParams[1].username)
+    }
+    public void testAssignRole()
+    {
+        CompassForTests.initialize ([Group, Role]);
+        CompassForTests.addOperationSupport (Group, GroupOperations);
+
+        def groupShouldBeReturned = new Group();
+        def role = new Role(name:"role1");
+        CompassForTests.getOperationData.setObjectsWillBeReturned([groupShouldBeReturned, role]);
+        groupShouldBeReturned.assignRole(role);
+
+        def addRelMethodParams = CompassForTests.addRelationOperationData.getParams(Group);
+        assertEquals(1, addRelMethodParams.size());
+        assertEquals(1, addRelMethodParams[0].size());
+        assertEquals (role.name, addRelMethodParams[0].role.name)
+
+        def getMethodParams = CompassForTests.getOperationData.getParams(Role);
+        assertEquals(1, getMethodParams.size());
+        assertEquals (role.name, getMethodParams[0].name)
+    }
+
+    public void testRemoveRole()
+    {
+        CompassForTests.initialize ([Group, Role]);
+        CompassForTests.addOperationSupport (Group, GroupOperations);
+
+        def groupShouldBeReturned = new Group();
+        def role = new Role(name:"role1");
+        CompassForTests.getOperationData.setObjectsWillBeReturned([groupShouldBeReturned, role]);
+        groupShouldBeReturned.removeRole(role);
+
+        def removeRelMethodParams = CompassForTests.removeRelationOperationData.getParams(Group);
+        assertEquals(1, removeRelMethodParams.size());
+        assertEquals(1, removeRelMethodParams[0].size());
+        assertEquals (role.name, removeRelMethodParams[0].role.name)
+
+        def getMethodParams = CompassForTests.getOperationData.getParams(Role);
+        assertEquals(1, getMethodParams.size());
+        assertEquals (role.name, getMethodParams[0].name)
+    }
+
+
 }

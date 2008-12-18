@@ -112,8 +112,8 @@ else{
         else{
             logger.warn("Created smartsConnection for test");
 
-
-            def staticParam="notificationList:${smartsConnector.notificationList},tailMode:${String.valueOf(smartsConnector.tailMode)}";
+            def staticParam="connectorName:${smartsConnector.name}";
+            
             smartsScriptParams.name=smartsConnector.getScriptName(smartsConnector.name);
             smartsScriptParams.staticParam=staticParam;
             smartsScriptParams.type=CmdbScript.LISTENING

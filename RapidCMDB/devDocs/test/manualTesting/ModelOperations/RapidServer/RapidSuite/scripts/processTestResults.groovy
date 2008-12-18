@@ -29,47 +29,40 @@ for(report in stats.Report){
 
 }
 
-/*
-reportsMap.each{  operation, report ->
-	println "report ${report}"
 
-	report.modelReports.each{ model, modelReport ->
-		println "inreport ${modelReport}"
-	}
 
-}
-*/
+checkLessThen(reportsMap,"Add",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06,true)
+checkLessThen(reportsMap,"Update",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06,true)
+checkLessThen(reportsMap,"Remove",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.04,true)
+checkLessThen(reportsMap,"AddRelation",["Author","Person"],"AvarageDuration",0.06,true)
+checkLessThen(reportsMap,"RemoveRelation",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.015,true)
+checkLessThen(reportsMap,"Search",["Book","Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.03,true)
 
-checkLessThen(reportsMap,"Add",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06)
-checkMoreThen(reportsMap,"Add",["Fiction","ScienceFiction","Author","Person"],"NumberOfOperations",0)
 
-checkLessThen(reportsMap,"Update",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06)
-checkMoreThen(reportsMap,"Update",["Fiction","ScienceFiction","Author","Person"],"NumberOfOperations",0)
 
-checkLessThen(reportsMap,"Remove",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.04)
-checkMoreThen(reportsMap,"Remove",["Fiction","ScienceFiction","Author","Person"],"NumberOfOperations",0)
-
-checkLessThen(reportsMap,"AddRelation",["Author","Person"],"AvarageDuration",0.06)
-checkMoreThen(reportsMap,"AddRelation",["Author","Person"],"NumberOfOperations",0)
-
-checkLessThen(reportsMap,"RemoveRelation",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.015)
-checkMoreThen(reportsMap,"RemoveRelation",["Fiction","ScienceFiction","Author","Person"],"NumberOfOperations",0)
-
-checkLessThen(reportsMap,"Search",["Book","Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.03)
-checkMoreThen(reportsMap,"Search",["Book","Fiction","ScienceFiction","Author","Person"],"NumberOfOperations",0)
-
-def checkLessThen(reports,operation,modelList,property,value)
+def checkLessThen(reports,operation,modelList,property,value,checkExistance)
 {
 	for(model in modelList){
 		def modelValue=reports.get(operation)?.get("modelReports")?.get(model)?.get(property)
 
 		if(modelValue!=null)
 		{
-			if(Double.valueOf(reports[operation]['modelReports'][model][property])>value)
+			if(Double.valueOf(modelValue)>value)
 			{
 				println "${operation}Operation.${model}.${property} value ${modelValue} is larger than ${value}"
 			}
 
+			if(reports.get(operation)?.get("modelReports")?.get(model)?.get("NumberOfOperations")=="0")
+			{
+				println "${operation}Operation.${model}.NumberOfOperations value is equal to zero"
+			}
+
+		}
+		else{
+			if(checkExistance)
+			{
+				println "Statistics value for ${operation}Operation.${model}.${property} does not exist"
+			}
 		}
 
 	}
@@ -82,11 +75,22 @@ def checkMoreThen(reports,operation,modelList,property,value)
 
 		if(modelValue!=null)
 		{
-			if(Double.valueOf(reports[operation]['modelReports'][model][property])<value)
+			if(Double.valueOf(modelValue)<value)
 			{
 				println "${operation}Operation.${model}.${property} value ${modelValue} is smaller than ${value}"
 			}
 
+			if(reports.get(operation)?.get("modelReports")?.get(model)?.get("NumberOfOperations")=="0")
+			{
+				println "${operation}Operation.${model}.NumberOfOperations value is equal to zero"
+			}
+
+		}
+		else{
+			if(checkExistance)
+			{
+				println "Statistics value for ${operation}Operation.${model}.${property} does not exist"
+			}
 		}
 
 	}

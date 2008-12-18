@@ -27,46 +27,56 @@ class NetcoolModuleBuild extends Build {
 	 
     static void main(String[] args) {
         NetcoolModuleBuild netcoolModuleBuild = new NetcoolModuleBuild();
-        netcoolModuleBuild.run(args);
+        netcoolModuleBuild.build();
     }
-    def clean() {
-        ant.delete(dir: env.dist_modules);
-        ant.mkdir(dir: env.dist_modules);
+    def clean(distDir) {
+    	if(distDir.equals(env.dist_modules)){
+	        ant.delete(dir: env.dist_modules);
+	        ant.mkdir(dir: env.dist_modules);
+    	}
     }
+    
     def build() {
-        clean();
+    	build(env.dist_modules);
+    }
+    
+    def build(distDir) {
+    	def rapidSuiteDir = "${distDir}/RapidSuite";
+        clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
-        ant.copy(todir: "$env.dist_modules_rapid_suite/grails-app") {
+        ant.copy(todir: "$rapidSuiteDir/grails-app") {
             ant.fileset(dir: "$env.rapid_netcool/grails-app")
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite/operations") {
+        ant.copy(todir: "$rapidSuiteDir/operations") {
             ant.fileset(dir: "$env.rapid_netcool/operations")
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite/src/groovy") {
+        ant.copy(todir: "$rapidSuiteDir/src/groovy") {
             ant.fileset(dir: "$env.rapid_netcool/src/groovy")
         }
-        ant.copy(toDir: "${env.dist_modules_rapid_suite}/generatedModels/grails-app/domain") {
+        ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
             ant.fileset(file: "${env.rapid_netcool}/applications/RapidInsightForNetcool/grails-app/domain/*.groovy");
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite") {
+        ant.copy(todir: rapidSuiteDir) {
             ant.fileset(dir: "$env.rapid_netcool/applications/RapidInsightForNetcool")
         }
         ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
             ant.arg(value: "-file");
-            ant.arg(value: "${env.dist_modules_rapid_suite}/grails-app/views/layouts/indexLayout.gsp");
+            ant.arg(value: "${rapidSuiteDir}/grails-app/views/layouts/indexLayout.gsp");
             ant.arg(value: "-applicationPath");
             ant.arg(value: "${env.dist_rapid_suite}/web-app");
             ant.arg(value: "-target");
-            ant.arg(value: "${env.dist_modules_rapid_suite}/web-app");
+            ant.arg(value: "${rapidSuiteDir}/web-app");
             ant.arg(value: "-suffix");
             ant.arg(value: "${versionDate}");
                 ant.classpath(refid: "classpath");
         }
-        ant.move(file: "${env.dist_modules_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
-        ant.zip(destfile: "$env.distribution/NetcoolPlugin$versionDate" + ".zip") {
-            ant.zipfileset(dir: "$env.dist_modules")
+        ant.move(file: "${rapidSuiteDir}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
+        if(distDir.equals(env.dist_modules)){
+	        ant.zip(destfile: "$env.distribution/NetcoolPlugin$versionDate" + ".zip") {
+	            ant.zipfileset(dir: "$env.dist_modules")
+	        }
         }
     }
 

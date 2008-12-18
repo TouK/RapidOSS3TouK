@@ -30,34 +30,42 @@ class OpenNmsBuild extends Build{
 	
    static void main(String[] args) {
         OpenNmsBuild openNmsBuild = new OpenNmsBuild();
-        openNmsBuild.run(args);
+        openNmsBuild.build();
     }
 
-    def clean() {
-        ant.delete(dir: env.dist_modules);
-        ant.mkdir(dir: env.dist_modules);
+    def clean(distDir) {
+    	if(distDir.equals(env.dist_modules)){
+	        ant.delete(dir: env.dist_modules);
+	        ant.mkdir(dir: env.dist_modules);
+    	}
     }
+    
     def build() {
-        clean();
+    	build(env.dist_modules);
+    }
+    
+    def build(distDir) {
+    	def rapidSuiteDir = "${distDir}/RapidSuite";
+        clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
-        ant.copy(todir: "$env.dist_modules_rapid_suite/grails-app") {
+        ant.copy(todir: "${rapidSuiteDir}/grails-app") {
             ant.fileset(dir: "$env.rapid_opennms/grails-app")
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite/operations") {
+        ant.copy(todir: "${rapidSuiteDir}/operations") {
             ant.fileset(dir: "$env.rapid_opennms/operations")
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite/lib") {
+        ant.copy(todir: "${rapidSuiteDir}/lib") {
             ant.fileset(dir: "$env.rapid_opennms/lib")
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite/src/groovy") {
+        ant.copy(todir: "${rapidSuiteDir}/src/groovy") {
             ant.fileset(dir: "$env.rapid_opennms/src/groovy")
         }
-        ant.copy(toDir: "${env.dist_modules_rapid_suite}/generatedModels/grails-app/domain") {
+        ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
             ant.fileset(file: "${env.rapid_opennms}/applications/RapidInsight/grails-app/domain/*.groovy");
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite") {
+        ant.copy(todir: rapidSuiteDir) {
             ant.fileset(dir: "$env.rapid_opennms/applications/RapidInsight")
         }
 
@@ -65,12 +73,10 @@ class OpenNmsBuild extends Build{
         ant.copy(todir: "$env.dist_modules") {
             ant.fileset(dir: "${env.rapid_opennms}/integration")
         }
-        
-        ant.zip(destfile: "$env.distribution/OpenNmsPlugin$versionDate" + ".zip") {
-            ant.zipfileset(dir: "$env.dist_modules")
+        if(distDir.equals(env.dist_modules)){
+	        ant.zip(destfile: "$env.distribution/OpenNmsPlugin$versionDate" + ".zip") {
+	            ant.zipfileset(dir: "$env.dist_modules")
+	        }
         }
-        //ant.zip(destfile: "${env.distribution}/opennms-RI-plugin$versionDate" + ".zip"){
-        //    ant.zipfileset(dir:"${env.rapid_opennms}/integration")
-        //}
     }
 }

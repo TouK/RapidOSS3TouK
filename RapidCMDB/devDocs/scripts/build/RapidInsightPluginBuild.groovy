@@ -29,6 +29,6 @@ class RapidInsightPluginBuild extends Build{
         rapidInsightPluginBuild.run(args);
     }
     def build() {
-        createPlugin(env.rapid_insight, ["applications/**", "operations/**", "rs.exe"]);
+        //createPlugin(env.rapid_insight, ["applications/**", "operations/**", "rs.exe"]);
     }
 }

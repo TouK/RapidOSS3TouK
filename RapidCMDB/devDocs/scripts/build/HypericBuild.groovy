@@ -25,58 +25,66 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class HypericBuild extends Build {
-    def version = "$env.rapid_hyperic/RIHypericVersion.txt";
-    def versionInBuild = "$env.dist_modules_rapid_suite/RIHypericVersion.txt";
-
+	def version = "$env.rapid_hyperic/RIHypericVersion.txt";
+	def versionInBuild = "$env.dist_modules_rapid_suite/RIHypericVersion.txt"; 
+	
     static void main(String[] args) {
         HypericBuild hypericBuild = new HypericBuild();
-        hypericBuild.run(args);
+        hypericBuild.build();
     }
 
-    def clean() {
-        ant.delete(dir: env.dist_modules);
-        ant.mkdir(dir: env.dist_modules);
+    def clean(distDir) {
+    	if(distDir.equals(env.dist_modules)){
+	        ant.delete(dir: env.dist_modules);
+	        ant.mkdir(dir: env.dist_modules);
+    	}
     }
+    
     def build() {
-        clean();
+    	build(env.dist_modules);
+    }
+    
+    def build(distDir) {
+    	def rapidSuiteDir = "${distDir}/RapidSuite";
+        clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
-        ant.copy(todir: "$env.dist_modules_rapid_suite/grails-app") {
+        ant.copy(todir: "${rapidSuiteDir}/grails-app") {
             ant.fileset(dir: "$env.rapid_hyperic/grails-app")
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite/operations") {
+        ant.copy(todir: "${rapidSuiteDir}/operations") {
             ant.fileset(dir: "$env.rapid_hyperic/operations")
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite/src/groovy") {
+        ant.copy(todir: "${rapidSuiteDir}/src/groovy") {
             ant.fileset(dir: "$env.rapid_hyperic/src/groovy")
         }
         if (TEST) {
-            ant.copy(todir: "$env.dist_modules_rapid_suite/test") {
+            ant.copy(todir: "${rapidSuiteDir}/test") {
                 ant.fileset(dir: "$env.rapid_hyperic/test")
             }
         }
-        ant.copy(toDir: "${env.dist_modules_rapid_suite}/generatedModels/grails-app/domain") {
+        ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
             ant.fileset(file: "${env.rapid_hyperic}/applications/RapidInsight/grails-app/domain/*.groovy");
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite") {
+        ant.copy(todir: rapidSuiteDir) {
             ant.fileset(dir: "$env.rapid_hyperic/applications/RapidInsight")
         }
 
-        ant.copy(file: "${env.dist_modules_rapid_suite}/web-app/hypericAdmin.gsp", toFile: "${env.dist_modules_rapid_suite}/grails-app/views/hypericConnection/list.gsp", overwrite: true);
+        ant.copy(file: "${rapidSuiteDir}/web-app/hypericAdmin.gsp", toFile: "${rapidSuiteDir}/grails-app/views/hypericConnection/list.gsp", overwrite: true); 
+        
+        if(distDir.equals(env.dist_modules)){
+	        ant.zip(destfile: "${env.distribution}/hyperic.zip"){
+	            ant.zipfileset(dir:"${env.rapid_hyperic}/integration/hyperic/plugin")
+	        }
+	        ant.move(todir: "$env.dist_modules") {
+	            ant.fileset(file: "${env.distribution}/hyperic.zip")
+	        }
 
-
-        ant.zip(destfile: "${env.distribution}/hyperic.zip") {
-            ant.zipfileset(dir: "${env.rapid_hyperic}/integration/hyperic/plugin")
+	        ant.zip(destfile: "$env.distribution/HypericPlugin$versionDate" + ".zip") {
+	            ant.zipfileset(dir: "$env.dist_modules")
+	        }
         }
-        ant.copy(todir: "$env.dist_modules") {
-            ant.fileset(file: "${env.distribution}/hyperic.zip")
-        }
-
-        ant.zip(destfile: "$env.distribution/HypericPlugin$versionDate" + ".zip") {
-            ant.zipfileset(dir: "$env.dist_modules")
-        }
-
     }
 
 }

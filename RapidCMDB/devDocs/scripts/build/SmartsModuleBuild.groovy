@@ -28,13 +28,15 @@ class SmartsModuleBuild extends Build {
 
     static void main(String[] args) {
         SmartsModuleBuild smartsModuleBuild = new SmartsModuleBuild();
-        smartsModuleBuild.run(args);
+        smartsModuleBuild.build();
     }
-    def clean() {
+    def clean(distDir) {
         ant.delete(dir: env.rapid_smarts_build);
         ant.mkdir(dir: env.rapid_smarts_build);
-        ant.delete(dir: env.dist_modules);
-        ant.mkdir(dir: env.dist_modules);
+    	if(distDir.equals(env.dist_modules)){
+	        ant.delete(dir: env.dist_modules);
+	        ant.mkdir(dir: env.dist_modules);
+    	}
     }
     def String getExcludedClasses() {
         if (!TEST) {
@@ -44,7 +46,12 @@ class SmartsModuleBuild extends Build {
     }
 
     def build() {
-        clean();
+    	build(env.dist_modules);
+    }
+    
+    def build(distDir) {
+    	def rapidSuiteDir = "${distDir}/RapidSuite";
+        clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
@@ -53,36 +60,38 @@ class SmartsModuleBuild extends Build {
         }
         ant.jar(destfile: env.rapid_rssmarts_jar, basedir: env.rapid_smarts_build);
         ant.copy(file: env.rapid_rssmarts_jar, toDir: "$env.dist_modules_rapid_suite/lib");
-        ant.copy(todir: "$env.dist_modules_rapid_suite/grails-app") {
+        ant.copy(todir: "$rapidSuiteDir/grails-app") {
             ant.fileset(dir: "$env.rapid_smarts/grails-app")
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite/operations") {
+        ant.copy(todir: "$rapidSuiteDir/operations") {
             ant.fileset(dir: "$env.rapid_smarts/operations")
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite/src/groovy") {
+        ant.copy(todir: "$rapidSuiteDir/src/groovy") {
             ant.fileset(dir: "$env.rapid_smarts/src/groovy")
         }
-        ant.copy(toDir:"${env.dist_modules_rapid_suite}/generatedModels/grails-app/domain")
+        ant.copy(toDir:"${rapidSuiteDir}/generatedModels/grails-app/domain")
         {
             ant.fileset(file:"${env.rapid_smarts}/applications/RapidInsightForSmarts/grails-app/domain/*.groovy");
         }
-        ant.copy(todir: "$env.dist_modules_rapid_suite") {
+        ant.copy(todir: rapidSuiteDir) {
             ant.fileset(dir: "$env.rapid_smarts/applications/RapidInsightForSmarts")
         }
         ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
             ant.arg(value: "-file");
-            ant.arg(value: "${env.dist_modules_rapid_suite}/grails-app/views/layouts/indexLayout.gsp");
+            ant.arg(value: "${rapidSuiteDir}/grails-app/views/layouts/indexLayout.gsp");
             ant.arg(value: "-applicationPath");
             ant.arg(value: "${env.dist_rapid_suite}/web-app");
             ant.arg(value: "-target");
-            ant.arg(value: "${env.dist_modules_rapid_suite}/web-app");
+            ant.arg(value: "${rapidSuiteDir}/web-app");
             ant.arg(value: "-suffix");
             ant.arg(value: "${versionDate}");
                 ant.classpath(refid: "classpath");
         }
-        ant.move(file: "${env.dist_modules_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
-        ant.zip(destfile: "$env.distribution/SmartsPlugin$versionDate" + ".zip") {
-            ant.zipfileset(dir: "$env.dist_modules")
+        ant.move(file: "${rapidSuiteDir}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
+        if(distDir.equals(env.dist_modules)){
+	        ant.zip(destfile: "$env.distribution/SmartsPlugin$versionDate" + ".zip") {
+	            ant.zipfileset(dir: "$env.dist_modules")
+	        }
         }
     }
 }

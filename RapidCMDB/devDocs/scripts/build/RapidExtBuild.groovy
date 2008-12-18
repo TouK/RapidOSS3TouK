@@ -25,9 +25,10 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class RapidExtBuild extends Build {
+	
     public static void main(String[] args) {
         RapidExtBuild rapidExtBuilder = new RapidExtBuild();
-        rapidExtBuilder.run(args);
+        rapidExtBuilder.build();
     }
     def String getExcludedClasses() {
         if (!TEST) {

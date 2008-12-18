@@ -16,130 +16,74 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
+
+//SAMPLE OPTIONS FILE: (if omitted, defaults in constructor will be used)
+//--------------------	
+//RI_UNIX=true
+//RI_WINDOWS=false
+//RCMDB_UNIX=true
+//RCMDB_WINDOWS=false
+//SAMPLE1=false
+//SAMPLE2=false
+//ZIP=false
+//APG=false
+//OPENNMS=false
+//HYPERIC=false
+//NETCOOL=false
+//SMARTS=false
+//E_WINDOWS=false
+//E_UNIX=false
+//TEST=false
+
 package build
-/**
- * Created by IntelliJ IDEA.
- * User: Sezgin Kucukkaraaslan
- * Date: Nov 12, 2008
- * Time: 9:41:55 AM
- */
+
 class RapidInsightBuild extends Build {
-    def version = "$env.rapid_insight/RIVersion.txt";
+	boolean RI_UNIX_OPT, RI_WINDOWS_OPT, APG_OPT, OPENNMS_OPT, NETCOOL_OPT, SMARTS_OPT, HYPERIC_OPT, ENTERPRISE_WINDOWS_OPT, ENTERPRISE_UNIX_OPT, ZIP_OPT, TEST_OPT;
+	def version = "$env.rapid_insight/RIVersion.txt";
     def versionInBuild = "$env.dist_rapid_suite/RIVersion.txt";
-    def rapidCMDBBuild = new RapidCmdbBuild();
-    def smartsBuild = new SmartsModuleBuild();
-    def netcoolBuild = new NetcoolModuleBuild();
-    def hypericBuild = new HypericBuild();
-    def apgBuild = new ApgBuild();
-    def openNmsBuild = new OpenNmsBuild();
-
+    static def optFile;
+    
+    def setOptions(options){
+    	if (options!=null){
+    		RI_UNIX_OPT = Boolean.parseBoolean(options.get("RI_UNIX", "false"));
+    		RI_WINDOWS_OPT = Boolean.parseBoolean(options.get("RI_WINDOWS", "true"));
+    		OPENNMS_OPT = Boolean.parseBoolean(options.get("OPENNMS", "false"));
+    		APG_OPT = Boolean.parseBoolean(options.get("APG", "false"));
+    		NETCOOL_OPT = Boolean.parseBoolean(options.get("NETCOOL", "false"));
+    		SMARTS_OPT = Boolean.parseBoolean(options.get("SMARTS", "false"));
+    		HYPERIC_OPT = Boolean.parseBoolean(options.get("HYPERIC", "false"));
+    		ENTERPRISE_WINDOWS_OPT = Boolean.parseBoolean(options.get("E_WINDOWS", "false"));
+    		ENTERPRISE_UNIX_OPT = Boolean.parseBoolean(options.get("E_UNIX", "false"));
+    		ZIP_OPT = Boolean.parseBoolean(options.get("ZIP", "false"));
+    		TEST_OPT = Boolean.parseBoolean(options.get("TEST", "false"));
+    	}    	
+    }
+    
     static void main(String[] args) {
+    	optFile = args[0];
         RapidInsightBuild rapidInsightBuilder = new RapidInsightBuild();
-        rapidInsightBuilder.run(args);
+        rapidInsightBuilder.setOptions(Build.getBuildOptions(optFile));
+        rapidInsightBuilder.build();
     }
 
-    def String getExcludedClasses() {
-        if (!TEST) {
-            return "**/*Test*, **/*Mock*, **/test/**";
-        }
-        return "";
-    }
+//    def String getExcludedClasses() {
+//        if (!TEST) {
+//            return "**/*Test*, **/*Mock*, **/test/**";
+//        }
+//        return "";
+//    }
 
     def build() {
         buildUnix();
-        addJreOnTopOfUnixAndZip();
-        makeEnterprise();
+        if(RI_WINDOWS_OPT) addJreOnTopOfUnixAndZip("RI");
+        if(ENTERPRISE_WINDOWS_OPT) makeWindowsEnterprise();
+        if(ENTERPRISE_UNIX_OPT) makeUnixEnterprise();
+        println "RIBuild Done";
     }
     
-    def getPluginName(prefix){
-        def path = new File(env.distribution);
-        def SPName;
-        path.eachFile{
-            if(it.name.indexOf(prefix) != -1) SPName = it.name;
-        }
-        return SPName;
-    }
-    
-    def testBuild() {
-        TEST = true;
-        createDirectories("Unix", false);
-
-        smartsBuild.build();
-        def SPName = getPluginName("SmartsPlugin");
-        ant.unzip(src:"$env.distribution/$SPName", dest:env.dist_rapid_server);
-
-        netcoolBuild.build();
-        def NPName = getPluginName("NetcoolPlugin");
-        ant.unzip(src:"$env.distribution/$NPName", dest:env.dist_rapid_server);
-
-        hypericBuild.build();
-        def HPName = getPluginName("HypericPlugin");
-        ant.unzip(src:"$env.distribution/$HPName", dest:env.dist_rapid_server);
-
-        apgBuild.build();
-        def APGPName = getPluginName("ApgPlugin");
-        ant.unzip(src:"$env.distribution/$APGPName", dest:env.dist_rapid_server);
-
-        openNmsBuild.build();
-        def OPPName = getPluginName("OpenNmsPlugin");
-        ant.unzip(src:"$env.distribution/$OPPName", dest:env.dist_rapid_server);
-
-        ant.copy(tofile: "$env.dist_rapid_suite/../conf/groovy-starter.conf", file:"${env.dev_docs}/groovy-starter-for-tests.conf", overwrite:"true")
-        ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
-            ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {
-                ant.include(name: "*.groovy")
-                ant.include(name: "test/*")
-            }
-        }
-    }
-
-    def addJreOnTopOfUnixAndZip() {
-        ant.copy(todir: "$env.dist_rapid_server/jre") {
-            ant.fileset(dir: "$env.jreDir")
-        }
-        def versionDate = getVersionWithDate();
-        def zipFileName = "$env.distribution/RI_Windows$versionDate" + ".zip"
-        ant.zip(destfile: zipFileName) {
-            ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
-        }
-    }
-
-    def buildWindows() {
-        buildPerOS("Windows");
-    }
-
+   
     def buildUnix() {
-        buildPerOS("Unix");
-    }
-
-    def createDirectories(osType){
-       createDirectories(osType, true);
-    }
-    
-    def createDirectories(osType, willDeleteModeler) {
-        if(osType == "Windows"){
-            rapidCMDBBuild.buildWindowsWithPlugins();    
-        }
-        else{
-            rapidCMDBBuild.buildUnixWithPlugins();
-        }
-        ant.delete(dir: env.dist_rapid_server);    
-
-        def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB");
-        ant.unzip(src: rapidCmdb.absolutePath, dest: env.distribution);
-        if(willDeleteModeler){
-            ant.delete(dir: env.dist_modeler);
-        }
-
-        def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
-        installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant: ant], [:]);
-
-        def rapidInsightPlugin = listFiles(new File(env.distribution), "grails-rapid-insight");
-        installPlugin(rapidInsightPlugin, env.dist_rapid_suite, [Ant: ant], [:]);
-    }
-
-    def buildPerOS(osType) {
-        createDirectories(osType)
+        prepareRCMDB();
         // copy xml file for sample data to be imported
         ant.copy(file: "$env.rapid_insight/sampleRiData.xml", tofile: "$env.dist_rapid_suite/sampleRiData.xml");
         
@@ -169,35 +113,65 @@ class RapidInsightBuild extends Build {
         dbViews.each{
            ant.copy(file: "${env.dist_rapid_suite}/web-app/dbDatasources.gsp", toFile: "${env.dist_rapid_suite}/grails-app/views/${it}/list.gsp", overwrite: true); 
         }
-        def zipFileName = "${env.distribution}/RI_$osType$versionDate" + ".zip"
-        ant.zip(destfile: zipFileName) {
-            ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
+        if(ZIP_OPT){
+	        def zipFileName = "${env.distribution}/RI_Unix$versionDate" + ".zip"
+	        ant.zip(destfile: zipFileName) {
+	            ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
+	        }
         }
-        netcoolBuild.build();
-        smartsBuild.build();
-        
-    	hypericBuild.run([]);
-    	apgBuild.run([]);
-    	openNmsBuild.run([]);
+        buildIntegrationPlugins();
     }
     
-    def makeEnterprise(){
+    def prepareRCMDB() {
+    	def rapidCMDBBuild = new RapidCmdbBuild();
+    	rapidCMDBBuild.setOptions(Build.getBuildOptions(optFile));
+        rapidCMDBBuild.build();
+//        ant.delete(dir: env.dist_rapid_server);    
+//
+//        def rapidCmdb = listFiles(new File(env.distribution), "RapidCMDB");
+//        ant.unzip(src: rapidCmdb.absolutePath, dest: env.distribution);
+//        if(willDeleteModeler){
+//            ant.delete(dir: env.dist_modeler);
+//        }
+		
+		createPlugin(env.rapid_ui,[]);
+        def rapidUiPlugin = listFiles(new File(env.distribution), "grails-rapid-ui");
+        installPlugin(rapidUiPlugin, env.dist_rapid_suite, [Ant: ant], [:]);
+
+        createPlugin(env.rapid_insight, ["applications/**", "operations/**", "rs.exe"]);
+        def rapidInsightPlugin = listFiles(new File(env.distribution), "grails-rapid-insight");
+        installPlugin(rapidInsightPlugin, env.dist_rapid_suite, [Ant: ant], [:]);
+    }
+
+    def buildIntegrationPlugins(){
+    	def distDir = env.dist_modules;
+    	if(TEST_OPT) distDir = env.dist;
+    	if(SMARTS_OPT) new SmartsModuleBuild().build(distDir);
+    	if(NETCOOL_OPT) new NetcoolModuleBuild().build(distDir);
+    	if(HYPERIC_OPT) new HypericBuild().build(distDir);
+    	if(APG_OPT) new ApgBuild().build(distDir);
+    	if(OPENNMS_OPT) new OpenNmsBuild().build(distDir);
+    }
+    
+    def makeWindowsEnterprise(){
     	def versionDate = getVersionWithDate();
     	ant.unzip(src: "${env.distribution}/RI_Windows$versionDate" + ".zip", dest: env.distribution + "/WEnt");
-    	ant.unzip(src: "${env.distribution}/RI_Unix$versionDate" + ".zip", dest: env.distribution + "/UEnt");
-    	
     	ant.delete(file: env.distribution + "/WEnt/RapidServer/licenses/RapidInsightCommunityLicense.txt");
-    	ant.delete(file: env.distribution + "/UEnt/RapidServer/licenses/RapidInsightCommunityLicense.txt");
     	ant.copy(file: "$env.rapid_cmdb_cvs/licenses/IFountain End User License Agreement.pdf", toDir: env.distribution + "/WEnt/RapidServer/licenses", overwrite: true);
-    	ant.copy(file: "$env.rapid_cmdb_cvs/licenses/IFountain End User License Agreement.pdf", toDir: env.distribution + "/UEnt/RapidServer/licenses", overwrite: true);
-    	
         ant.zip(destfile: "${env.distribution}/RIE_Windows$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.distribution/WEnt")
         }
+    }
+    
+    def makeUnixEnterprise(){
+    	def versionDate = getVersionWithDate();
+    	ant.unzip(src: "${env.distribution}/RI_Unix$versionDate" + ".zip", dest: env.distribution + "/UEnt");
+    	ant.delete(file: env.distribution + "/UEnt/RapidServer/licenses/RapidInsightCommunityLicense.txt");
+    	ant.copy(file: "$env.rapid_cmdb_cvs/licenses/IFountain End User License Agreement.pdf", toDir: env.distribution + "/UEnt/RapidServer/licenses", overwrite: true);
         ant.zip(destfile: "${env.distribution}/RIE_Unix$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.distribution/UEnt")
         }        
-    }
+    }    
 
     def listFiles(File rootDir, String regexp)
     {
@@ -212,4 +186,45 @@ class RapidInsightBuild extends Build {
         return file;
     }
 
+//    def getPluginName(prefix){
+//        def path = new File(env.distribution);
+//        def PName;
+//        path.eachFile{
+//            if(it.name.indexOf(prefix) != -1) PName = it.name;
+//        }
+//        return PName;
+//    }
+    
+//    def testBuild() {
+//        TEST = true;
+//        createDirectories();
+//
+//        smartsBuild.build();
+//        def SPName = getPluginName("SmartsPlugin");
+//        ant.unzip(src:"$env.distribution/$SPName", dest:env.dist_rapid_server);
+//
+//        netcoolBuild.build();
+//        def NPName = getPluginName("NetcoolPlugin");
+//        ant.unzip(src:"$env.distribution/$NPName", dest:env.dist_rapid_server);
+//
+//        hypericBuild.build();
+//        def HPName = getPluginName("HypericPlugin");
+//        ant.unzip(src:"$env.distribution/$HPName", dest:env.dist_rapid_server);
+//
+//        apgBuild.build();
+//        def APGPName = getPluginName("ApgPlugin");
+//        ant.unzip(src:"$env.distribution/$APGPName", dest:env.dist_rapid_server);
+//
+//        openNmsBuild.build();
+//        def OPPName = getPluginName("OpenNmsPlugin");
+//        ant.unzip(src:"$env.distribution/$OPPName", dest:env.dist_rapid_server);
+//
+//        ant.copy(tofile: "$env.dist_rapid_suite/../conf/groovy-starter.conf", file:"${env.dev_docs}/groovy-starter-for-tests.conf", overwrite:"true")
+//        ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
+//            ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {
+//                ant.include(name: "*.groovy")
+//                ant.include(name: "test/*")
+//            }
+//        }
+//    }    
 }

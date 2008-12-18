@@ -31,6 +31,6 @@ class RapidUiPluginBuild extends Build{
 	}
 
     def build(){
-        createPlugin(env.rapid_ui,[]);
+        //createPlugin(env.rapid_ui,[]);
     }
 }

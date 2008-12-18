@@ -16,46 +16,128 @@ package build;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA.
  */
-/**
- * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: Mar 18, 2008
- * Time: 4:45:18 PM
- * To change this template use File | Settings | File Templates.
- */
 
-
-// SUPPORTED TARGETS:
-// ------------------	
-// build						: builds RapidCMDB for Unix AND Windows only, no plugins or modules included
-// buildWithPlugins				: builds RapidCMDB for Unix AND Windows WITH plugins
-// buildWithPluginsAndModules	: builds RapidCMDB for Unix AND Windows WITH plugins and modules (samples included)
-// buildUnix					: builds RapidCMDB for Unix, no plugins or modules included
-// buildUnixWithPlugins			: builds RapidCMDB for Unix WITH plugins
-// buildWindows					: builds RapidCMDB for Windows, no plugins or modules included
-// buildWindowsWithPlugins		: builds RapidCMDB for Windows WITH plugins
-// buildModules					: build samples
+// SAMPLE OPTIONS FILE: (if omitted, defaults in constructor will be used)
+// --------------------	
+//RCMDB_UNIX=true
+//RCMDB_WINDOWS=false
+//SAMPLE1=false
+//SAMPLE2=false
+//ZIP=false
+//MODELER=true
+//TEST=false
 
 class RapidCmdbBuild extends Build {
-    def UNIX = "Unix";
-    def WINDOWS = "Windows";
-    def osType;
-    def rapidUiBuild = new RapidUiPluginBuild();
-    def riBuild = new RapidInsightPluginBuild();
-
+	boolean RCMDB_UNIX_OPT, RCMDB_WINDOWS_OPT, SAMPLE1_OPT, SAMPLE2_OPT, ZIP_OPT, MODELER_OPT, TEST_OPT;
+    
+    def setOptions(options){
+    	if (options!=null){
+    		RCMDB_UNIX_OPT = Boolean.parseBoolean(options.get("UNIX", "true"));
+    		RCMDB_WINDOWS_OPT = Boolean.parseBoolean(options.get("WINDOWS", "false"));
+    		SAMPLE1_OPT = Boolean.parseBoolean(options.get("SAMPLE1", "false"));
+    		SAMPLE2_OPT = Boolean.parseBoolean(options.get("SAMPLE2", "false"));
+    		ZIP_OPT = Boolean.parseBoolean(options.get("ZIP", "false"));
+    		MODELER_OPT = Boolean.parseBoolean(options.get("MODELER", "false"));
+    		TEST_OPT = Boolean.parseBoolean(options.get("TEST", "false"));
+    	}    	
+    }
+    
     static void main(String[] args) {
         RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();
-        rapidCmdbBuilder.run(args);
-
+        rapidCmdbBuilder.setOptions(Build.getBuildOptions(args[0]));
+        rapidCmdbBuilder.build();
     }
-
-    def String getExcludedClasses() {
-        if (!TEST) {
-            return "**/*Test*, **/*Mock*, **/test/**";
+    
+    def build() {
+        clean();
+        if(TEST_OPT) TEST = true;
+        if(RCMDB_UNIX_OPT || RCMDB_WINDOWS_OPT) {
+        	buildUnix();
+//        	createPlugin(env.rapid_ui,[]);
+        	if(RCMDB_WINDOWS_OPT){
+        		addJreOnTopOfUnixAndZip("RCMDB");
+        	}
         }
-        return "";
+        if(TEST_OPT)copyForTesting();
+        if(SAMPLE1_OPT) buildSample("Sample1");
+        if(SAMPLE2_OPT) buildSample("Sample2");
+        println "RCMDB Build Done";
+    }
+    
+//    def String getExcludedClasses() {
+//        if (!TEST) {
+//            return "**/*Test*, **/*Mock*, **/test/**";
+//        }
+//        return "";
+//    }
+
+    def buildUnix() {
+        ant.copy(todir: "$env.dist_rapid_suite", file: env.version)
+        setVersionAndBuildNumber(env.versionInBuild);
+
+        buildDependent();
+        buildRCMDB();
+        if(MODELER_OPT) buildRCMDBModeler();
+//        copyDependentJars();
+        unzipGrails();
+
+        ant.copy(todir: "${env.dist_rapid_server}/bin", file: "${env.rapid_cmdb_commons_cvs}/rsbatch.sh")
+        if ((System.getProperty("os.name").indexOf("Windows") < 0))
+        {
+            def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
+            process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
+            process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
+            process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
+            process = "dos2unix ${env.distribution}/RapidServer/bin/rsbatch.sh".execute();
+            process = "dos2unix ${env.dist_rapid_suite}/rs.sh".execute();
+            process = "dos2unix ${env.dist_modeler}/rsmodeler.sh".execute();
+        }
+        if (ZIP_OPT && RCMDB_UNIX_OPT){
+	        def versionDate = getVersionWithDate();
+	        def zipFileName = "$env.distribution/RapidCMDB_Unix$versionDate" + ".zip"
+	        ant.zip(destfile: zipFileName) {
+	            ant.zipfileset(dir: "$env.distribution") {
+	                ant.exclude(name: ".project");
+	            }
+	        }
+        } 
     }
 
+    def buildDependent() {
+        new RapidCompBuild().build();
+        new RapidCoreBuild().build();
+        new RapidExtBuild().build();
+    }
+
+    def copyDependentJars(dirToCopyTo) {
+        ant.copy(file: (String) classpath.getProperty("commons-transaction-1_2_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("commons-betwixt-0_8_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("commons-digester-1_7_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("commons-configuration-1_2_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("commons-collections-3_2_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("commons-codec-1_3_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("SNMP4J_jar"), toDir: dirToCopyTo);
+        ant.copy(file : env.rapid_comp_jar, toDir : dirToCopyTo);
+        ant.copy(file : env.rapid_core_jar, toDir : dirToCopyTo);
+    }
+
+    def unzipGrails() {
+        ant.unzip(src: (String) classpath.getProperty("grails-1_0_3_zip"), dest: env.distribution);
+        ant.copy(file: (String) classpath.getProperty("runner_jar"), toDir: env.distribution + "/RapidServer/lib");
+        ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/RunApp.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)
+        ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/TestApp.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)
+        ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/PackagePlugin.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)
+        ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/Init.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)
+        ant.move(file: env.dist_rapid_server + "/LICENSE", tofile: env.dist_rapid_server + "/licenses/GRAILS_LICENSE");
+        ant.delete(file: env.dist_rapid_server + "/INSTALL");
+        ant.delete(file: env.dist_rapid_server + "/README");
+    }
+
+    def clean() {
+        ant.delete(dir: env.distribution);
+        ant.delete(dir: "$env.basedir/build");
+    }
 
     def buildSample(sampleName) {
         if (versionNo == null) {
@@ -84,27 +166,6 @@ class RapidCmdbBuild extends Build {
         }
     }
 
-    def testBuild() {
-        TEST = true;
-        buildWithPluginsAndModules();
-        def versionDate = getVersionWithDate();
-        ant.delete(dir: env.distribution + "/RapidServer");
-        if (System.getProperty("os.name").indexOf("Windows") < 0) {
-            ant.unzip(src: "$env.distribution/RapidCMDB_Unix$versionDate" + ".zip", dest: env.distribution);
-        }
-        else {
-            ant.unzip(src: "$env.distribution/RapidCMDB_Windows$versionDate" + ".zip", dest: env.distribution);
-        }
-
-        ant.copy(tofile: "$env.dist_rapid_suite/../conf/groovy-starter.conf", file: "${env.dev_docs}/groovy-starter-for-tests.conf", overwrite: "true")
-        ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
-            ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {
-                ant.include(name: "*.groovy")
-                ant.include(name: "test/*")
-            }
-        }
-    }
-
     def buildRCMDB() {
         ant.copy(todir: "$env.dist_rapid_suite") {
             ant.fileset(file: "$env.rapid_cmdb_cvs/application.properties");
@@ -121,7 +182,6 @@ class RapidCmdbBuild extends Build {
             }
         }
         ant.copy(todir: "$env.dist_rapid_suite/grails-app") {
-
             ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app") {
                 if (!TEST) {
                     ant.exclude(name: "**/test/**")
@@ -176,11 +236,13 @@ class RapidCmdbBuild extends Build {
         }
 
         copyCommons(env.dist_rapid_suite, true);
-        if (osType == WINDOWS) {
-            ant.copy(todir: "$env.dist_rapid_server/jre") {
-                ant.fileset(dir: "$env.jreDir")
-            }
-        }
+//        if (osType == WINDOWS) {
+//            ant.copy(todir: "$env.dist_rapid_server/jre") {
+//                ant.fileset(dir: "$env.jreDir")
+//            }
+//        }
+        copyDependentJars(env.dist_rapid_suite_lib);
+        ant.copy(file: (String) classpath.getProperty("tools_jar"), toDir: env.dist_rapid_server_lib);
     }
 
     def buildRCMDBModeler() {
@@ -226,13 +288,13 @@ class RapidCmdbBuild extends Build {
             }
         }
         copyCommons(env.dist_modeler, false);
+        copyDependentJars(env.dist_modeler_lib);
     }
 
     def copyCommons(toDir, copyTests) {
         ant.copy(todir: toDir) {
             ant.fileset(dir: "$env.rapid_cmdb_commons_cvs") {
-                if (TEST && copyTests)
-                {
+                if (TEST && copyTests){
                     ant.include(name: "**/test/**")
                 }
                 else if (TEST && !copyTests)
@@ -252,156 +314,25 @@ class RapidCmdbBuild extends Build {
         }
     }
 
-    def build() {
-        clean();
-        buildPerOS(UNIX);
-        addJreOnTopOfUnixAndZip();
-    }
-
-    def buildWithPlugins() {
-        clean();
-        buildPerOSWithPlugins(UNIX);
-        addJreOnTopOfUnixAndZip();
-    }
-
-    def buildWithPluginsAndModules() {
-        clean();
-        buildPerOSWithPlugins(UNIX);
-        addJreOnTopOfUnixAndZip();
-        buildModules();
-    }
-
-    def addJreOnTopOfUnixAndZip() {
-        ant.copy(todir: "$env.dist_rapid_server/jre") {
-            ant.fileset(dir: "$env.jreDir")
-        }
-        def versionDate = getVersionWithDate();
-        def zipFileName = "$env.distribution/RapidCMDB_Windows$versionDate" + ".zip"
-        ant.zip(destfile: zipFileName) {
-            ant.zipfileset(dir: "$env.distribution") {
-                ant.exclude(name: ".project");
-                ant.exclude(name: "*.zip");
-                ant.exclude(name: "**/temp/**");
-            }
-        }
-    }
-
-    def buildUnix() {
-        clean();
-        buildPerOS(UNIX);
-    }
-
-    def buildUnixWithPlugins() {
-        clean();
-        buildPerOSWithPlugins(UNIX);
-    }
-
-    def buildWindows() {
-        clean();
-        buildPerOS(WINDOWS);
-    }
-
-    def buildWindowsWithPlugins() {
-        clean();
-        buildPerOSWithPlugins(WINDOWS);
-    }
-
-    def buildPerOS(type) {
-        osType = type;
-        ant.copy(todir: "$env.dist_rapid_suite", file: env.version)
-        setVersionAndBuildNumber(env.versionInBuild);
-
-        buildRCMDB();
-        buildRCMDBModeler();
-
-        buildDependent();
-        copyDependentJars();
-        unzipGrails();
-
-        ant.copy(todir: "${env.dist_rapid_server}/bin", file: "${env.rapid_cmdb_commons_cvs}/rsbatch.sh")
-        if ((System.getProperty("os.name").indexOf("Windows") < 0))
-        {
-            def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/rsbatch.sh".execute();
-            process = "dos2unix ${env.dist_rapid_suite}/rs.sh".execute();
-            process = "dos2unix ${env.dist_modeler}/rsmodeler.sh".execute();
-        }
-        def versionDate = getVersionWithDate();
-        def zipFileName = "$env.distribution/RapidCMDB_$osType$versionDate" + ".zip"
-        ant.zip(destfile: zipFileName) {
-            ant.zipfileset(dir: "$env.distribution") {
-                ant.exclude(name: ".project");
-            }
-        }
-
-        return zipFileName;
-    }
-
-    def buildPerOSWithPlugins(type) {
-        def zipFileName = buildPerOS(type);
-        buildAdditionalPlugins();
-        return zipFileName;
-    }
-
-    def buildAdditionalPlugins() {
-        rapidUiBuild.run([]);
-        riBuild.run([]);
-    }
-
-    def buildModules() {
-        buildSample("Sample1");
-        buildSample("Sample2");
-    }
-
-    def getVersionWithDate() {
-        return "_$versionNo" + "_" + "$buildNo";
-    }
-
-    def buildDependent() {
-        new RapidCompBuild().run([]);
-        new RapidCoreBuild().run([]);
-        new RapidExtBuild().run([]);
-    }
-
-    def copyDependentJars() {
-        ant.copy(file: (String) classpath.getProperty("commons-transaction-1_2_jar"), toDir: env.dist_rapid_suite_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-transaction-1_2_jar"), toDir: env.dist_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-betwixt-0_8_jar"), toDir: env.dist_rapid_suite_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-betwixt-0_8_jar"), toDir: env.dist_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-digester-1_7_jar"), toDir: env.dist_rapid_suite_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-digester-1_7_jar"), toDir: env.dist_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-configuration-1_2_jar"), toDir: env.dist_rapid_suite_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-configuration-1_2_jar"), toDir: env.dist_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-collections-3_2_jar"), toDir: env.dist_rapid_suite_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-collections-3_2_jar"), toDir: env.dist_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-codec-1_3_jar"), toDir: env.dist_rapid_suite_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-codec-1_3_jar"), toDir: env.dist_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir: env.dist_rapid_suite_lib);
-        ant.copy(file: (String) classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir: env.dist_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("SNMP4J_jar"), toDir: env.dist_rapid_suite_lib);
-        ant.copy(file: (String) classpath.getProperty("SNMP4J_jar"), toDir: env.dist_modeler_lib);
-        ant.copy(file: (String) classpath.getProperty("tools_jar"), toDir: env.dist_rapid_server_lib);
-    }
-
-    def unzipGrails() {
-        ant.unzip(src: (String) classpath.getProperty("grails-1_0_3_zip"), dest: env.distribution);
-        ant.copy(file: (String) classpath.getProperty("runner_jar"), toDir: env.distribution + "/RapidServer/lib");
-        ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/RunApp.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)
-        ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/TestApp.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)
-        ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/PackagePlugin.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)
-        ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/Init.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)
-        ant.move(file: env.dist_rapid_server + "/LICENSE", tofile: env.dist_rapid_server + "/licenses/GRAILS_LICENSE");
-        ant.delete(file: env.dist_rapid_server + "/INSTALL");
-        ant.delete(file: env.dist_rapid_server + "/README");
-    }
-
-    def clean() {
-        ant.delete(dir: env.save);
-        ant.delete(dir: env.distribution);
-        ant.delete(dir: "$env.basedir/build");
-    }
+//    def copyForTesting() {
+//        TEST = true;
+//        build();
+//        def versionDate = getVersionWithDate();
+//        ant.delete(dir: env.distribution + "/RapidServer");
+//        if (System.getProperty("os.name").indexOf("Windows") < 0) {
+//            ant.unzip(src: "$env.distribution/RapidCMDB_Unix$versionDate" + ".zip", dest: env.distribution);
+//        }
+//        else {
+//            ant.unzip(src: "$env.distribution/RapidCMDB_Windows$versionDate" + ".zip", dest: env.distribution);
+//        }
+//
+//        ant.copy(tofile: "$env.dist_rapid_suite/../conf/groovy-starter.conf", file: "${env.dev_docs}/groovy-starter-for-tests.conf", overwrite: "true")
+//        ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
+//            ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {
+//                ant.include(name: "*.groovy")
+//                ant.include(name: "test/*")
+//            }
+//        }
+//    }
 
 }

@@ -32,27 +32,36 @@ class Build extends Parent{
 		setClasspathForBuild();
 	}
 	
-	void run(args){
-		if(args.size() >0){
-			println "Running target " + args[0];
-			invokeMethod(args[0], null);
-		}
-		else{
-			println "Running default target";
-			build();
-		}
-		println "Done";
-	}                                    
-	
-
-	
-	def cleanDistribution(){
-		ant.delete(dir : env.dist_rapid_suite);
-		ant.delete(){
-			ant.fileset(dir : env.distribution, excludes : "*.project*, *.classpath");
-		}
+	static def getBuildOptions(String file){
+		Properties options = new Properties();
+	    try {
+	    	options.load(new FileInputStream(file));
+	    } catch (IOException e) {
+	    	println "using default options";
+	    }
+	    return options;
 	}
 	
+//	void run(args){
+//		if(args.size() >0){
+//			println "Running target " + args[0];
+//			invokeMethod(args[0], null);
+//		}
+//		else{
+//			println "Running default target";
+//			build();
+//		}
+//		println "Done";
+//	}                                    
+	
+//	def cleanDistribution(){
+//		ant.delete(dir : env.dist_rapid_suite);
+//		ant.delete(){
+//			ant.fileset(dir : env.distribution, excludes : "*.project*, *.classpath");
+//		}
+//	}
+
+
 	def getVersionWithDate(){
         return "_$versionNo" + "_" + "$buildNo";
     }
@@ -255,5 +264,44 @@ class Build extends Parent{
             return command;
         }
     }
+    
+    def addJreOnTopOfUnixAndZip(jarNamePrepend) {
+        ant.copy(todir: "$env.dist_rapid_server/jre") {
+            ant.fileset(dir: "$env.jreDir")
+        }
+        def versionDate = getVersionWithDate();
+        if (ZIP_OPT){
+	        def zipFileName = "${env.distribution}/${jarNamePrepend}_Windows$versionDate" + ".zip"
+	        ant.zip(destfile: zipFileName) {
+	        	ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
+//	            ant.zipfileset(dir: "$env.distribution") {
+//	                ant.exclude(name: ".project");
+//	                ant.exclude(name: "*.zip");
+//	                ant.exclude(name: "**/temp/**");
+//	            }
+	        }
+        }
+    }    
+    
+    def copyForTesting() {
+//      TEST = true;
+//      build();
+//      def versionDate = getVersionWithDate();
+//      ant.delete(dir: env.distribution + "/RapidServer");
+//      if (System.getProperty("os.name").indexOf("Windows") < 0) {
+//          ant.unzip(src: "$env.distribution/RapidCMDB_Unix$versionDate" + ".zip", dest: env.distribution);
+//      }
+//      else {
+//          ant.unzip(src: "$env.distribution/RapidCMDB_Windows$versionDate" + ".zip", dest: env.distribution);
+//      }
+
+      ant.copy(tofile: "$env.dist_rapid_suite/../conf/groovy-starter.conf", file: "${env.dev_docs}/groovy-starter-for-tests.conf", overwrite: "true")
+      ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
+          ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {
+              ant.include(name: "*.groovy")
+              ant.include(name: "test/*")
+          }
+      }
+  }
 
 }

@@ -18,7 +18,7 @@ class TestDeployer {
        TestDeployer deployer=new TestDeployer();
 
        //deployer.run(args);
-       deployer.run(["deploySmartsNotificationThreadSearch"]);
+       deployer.run(["deploySmartsNotificationOperations"]);
 
     }
     void run(args) {

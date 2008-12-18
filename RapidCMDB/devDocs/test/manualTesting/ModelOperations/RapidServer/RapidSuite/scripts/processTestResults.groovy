@@ -6,95 +6,20 @@
  * To change this template use File | Settings | File Templates.
  */
 
-def statsXml=application.RsApplication.getCompassStatistics()
+import utils.TestResultsProcessor;
 
-def parser = new XmlParser()
-def stats = parser.parseText(statsXml)
+def processor=new TestResultsProcessor("ModelOperations");
 
-println  "**************************"
-
-def reportsMap=[:]
-for(report in stats.Report){
-
-	reportsMap[report.@Operation]=[:];
-	reportsMap[report.@Operation]['report']=report.attributes()
-
-	reportsMap[report.@Operation]['modelReports']=[:]
-
-	for(modelReport in report.ModelReport)
-	{
-		reportsMap[report.@Operation]['modelReports'][modelReport.@ModelName]=modelReport.attributes()
-	}
-
-
-}
+processor.checkOperationLessThen("Add",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06,true)
+processor.checkOperationLessThen("Update",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06,true)
+processor.checkOperationLessThen("Remove",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.04,true)
+processor.checkOperationLessThen("AddRelation",["Author","Person"],"AvarageDuration",0.06,true)
+processor.checkOperationLessThen("RemoveRelation",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.015,true)
+processor.checkOperationLessThen("Search",["Book","Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.03,true)
 
 
 
-checkLessThen(reportsMap,"Add",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06,true)
-checkLessThen(reportsMap,"Update",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06,true)
-checkLessThen(reportsMap,"Remove",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.04,true)
-checkLessThen(reportsMap,"AddRelation",["Author","Person"],"AvarageDuration",0.06,true)
-checkLessThen(reportsMap,"RemoveRelation",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.015,true)
-checkLessThen(reportsMap,"Search",["Book","Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.03,true)
 
+processor.generateResultsXml()
+processor.transferResultsToHudson()
 
-
-def checkLessThen(reports,operation,modelList,property,value,checkExistance)
-{
-	for(model in modelList){
-		def modelValue=reports.get(operation)?.get("modelReports")?.get(model)?.get(property)
-
-		if(modelValue!=null)
-		{
-			if(Double.valueOf(modelValue)>value)
-			{
-				println "${operation}Operation.${model}.${property} value ${modelValue} is larger than ${value}"
-			}
-
-			if(reports.get(operation)?.get("modelReports")?.get(model)?.get("NumberOfOperations")=="0")
-			{
-				println "${operation}Operation.${model}.NumberOfOperations value is equal to zero"
-			}
-
-		}
-		else{
-			if(checkExistance)
-			{
-				println "Statistics value for ${operation}Operation.${model}.${property} does not exist"
-			}
-		}
-
-	}
-
-}
-def checkMoreThen(reports,operation,modelList,property,value)
-{
-	for(model in modelList){
-		def modelValue=reports.get(operation)?.get("modelReports")?.get(model)?.get(property)
-
-		if(modelValue!=null)
-		{
-			if(Double.valueOf(modelValue)<value)
-			{
-				println "${operation}Operation.${model}.${property} value ${modelValue} is smaller than ${value}"
-			}
-
-			if(reports.get(operation)?.get("modelReports")?.get(model)?.get("NumberOfOperations")=="0")
-			{
-				println "${operation}Operation.${model}.NumberOfOperations value is equal to zero"
-			}
-
-		}
-		else{
-			if(checkExistance)
-			{
-				println "Statistics value for ${operation}Operation.${model}.${property} does not exist"
-			}
-		}
-
-	}
-
-}
-
-return statsXml

@@ -1,3 +1,5 @@
+mkdir -p ManualTestResults
+
 cp -f RapidModules/RapidCMDB/devDocs/scripts/build/hudsonScripts/hudsonUtilities.sh .
 dos2unix hudsonUtilities.sh
 . ./hudsonUtilities.sh

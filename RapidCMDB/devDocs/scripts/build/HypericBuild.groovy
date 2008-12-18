@@ -25,9 +25,9 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class HypericBuild extends Build {
-	def version = "$env.rapid_hyperic/RIHypericVersion.txt";
-	def versionInBuild = "$env.dist_modules_rapid_suite/RIHypericVersion.txt"; 
-	
+    def version = "$env.rapid_hyperic/RIHypericVersion.txt";
+    def versionInBuild = "$env.dist_modules_rapid_suite/RIHypericVersion.txt";
+
     static void main(String[] args) {
         HypericBuild hypericBuild = new HypericBuild();
         hypericBuild.run(args);
@@ -51,6 +51,11 @@ class HypericBuild extends Build {
         ant.copy(todir: "$env.dist_modules_rapid_suite/src/groovy") {
             ant.fileset(dir: "$env.rapid_hyperic/src/groovy")
         }
+        if (TEST) {
+            ant.copy(todir: "$env.dist_modules_rapid_suite/test") {
+                ant.fileset(dir: "$env.rapid_hyperic/test")
+            }
+        }
         ant.copy(toDir: "${env.dist_modules_rapid_suite}/generatedModels/grails-app/domain") {
             ant.fileset(file: "${env.rapid_hyperic}/applications/RapidInsight/grails-app/domain/*.groovy");
         }
@@ -58,16 +63,16 @@ class HypericBuild extends Build {
             ant.fileset(dir: "$env.rapid_hyperic/applications/RapidInsight")
         }
 
-        ant.copy(file: "${env.dist_modules_rapid_suite}/web-app/hypericAdmin.gsp", toFile: "${env.dist_modules_rapid_suite}/grails-app/views/hypericConnection/list.gsp", overwrite: true); 
-        
-       
-        ant.zip(destfile: "${env.distribution}/hyperic.zip"){
-            ant.zipfileset(dir:"${env.rapid_hyperic}/integration/hyperic/plugin")
-        } 
+        ant.copy(file: "${env.dist_modules_rapid_suite}/web-app/hypericAdmin.gsp", toFile: "${env.dist_modules_rapid_suite}/grails-app/views/hypericConnection/list.gsp", overwrite: true);
+
+
+        ant.zip(destfile: "${env.distribution}/hyperic.zip") {
+            ant.zipfileset(dir: "${env.rapid_hyperic}/integration/hyperic/plugin")
+        }
         ant.copy(todir: "$env.dist_modules") {
             ant.fileset(file: "${env.distribution}/hyperic.zip")
         }
-        
+
         ant.zip(destfile: "$env.distribution/HypericPlugin$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.dist_modules")
         }

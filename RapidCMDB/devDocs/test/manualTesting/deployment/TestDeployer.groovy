@@ -10,6 +10,7 @@ class TestDeployer {
    def buildBasePath="http://192.168.1.130:8080/job/ManualTestingBuild/ws/Distribution/";
    def deploymentBasePath="d:"+File.separator+"manualTestingSpace"+File.separator;
    def smartsJarBasePath="http://192.168.1.130:8080/job/ManualTestingBuild/ws/LicencedJars/lib/smarts/";
+   def scpJarBasePath="http://192.168.1.130:8080/job/ManualTestingBuild/ws/ThirdParty/lib/antscp/";
    def ant;
    def manualTestingTempPath;
    
@@ -74,6 +75,9 @@ class TestDeployer {
         FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}RI_Windows.zip"),riTarget);
 
         ant.unzip(src:riTarget.getPath(), dest:deploymentBasePath);
+
+        FileUtils.copyURLToFile(new java.net.URL("${scpJarBasePath}ant-jsch.jar"),new File(deploymentBasePath+"RapidServer/lib/ant-jsch.jar"));
+        FileUtils.copyURLToFile(new java.net.URL("${scpJarBasePath}jsch-0.1.40.jar"),new File(deploymentBasePath+"RapidServer/lib/jsch-0.1.40.jar"));
         
         File manualTestingTarget=new File(deploymentBasePath+"ManualTesting.zip");
         FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}ManualTesting.zip"),manualTestingTarget);
@@ -100,6 +104,9 @@ class TestDeployer {
         FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}RI_Windows.zip"),riTarget);
 
         ant.unzip(src:riTarget.getPath(), dest:deploymentBasePath);
+
+        FileUtils.copyURLToFile(new java.net.URL("${scpJarBasePath}ant-jsch.jar"),new File(deploymentBasePath+"RapidServer/lib/ant-jsch.jar"));
+        FileUtils.copyURLToFile(new java.net.URL("${scpJarBasePath}jsch-0.1.40.jar"),new File(deploymentBasePath+"RapidServer/lib/jsch-0.1.40.jar"));
 
 
         File smartsTarget=new File(deploymentBasePath+"SmartsPlugin.zip");
@@ -135,6 +142,10 @@ class TestDeployer {
         FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}RI_Windows.zip"),riTarget);
 
         ant.unzip(src:riTarget.getPath(), dest:deploymentBasePath);
+
+
+        FileUtils.copyURLToFile(new java.net.URL("${scpJarBasePath}ant-jsch.jar"),new File(deploymentBasePath+"RapidServer/lib/ant-jsch.jar"));
+        FileUtils.copyURLToFile(new java.net.URL("${scpJarBasePath}jsch-0.1.40.jar"),new File(deploymentBasePath+"RapidServer/lib/jsch-0.1.40.jar"));
 
 
         File smartsTarget=new File(deploymentBasePath+"SmartsPlugin.zip");

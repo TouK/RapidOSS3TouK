@@ -48,6 +48,7 @@ runTestBuildAndJavaTests() {
     mkdir TestResults
     if [ -d ManualTestResults ];
     then
+       echo "Copying ManualTestResults to TestResults"
        cp -rf ManualTestResults/ TestResults/
     fi
     

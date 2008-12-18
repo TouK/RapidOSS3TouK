@@ -9,6 +9,9 @@
 
 println  "**************************"
 
+import junit.framework.Test
+import junit.framework.TestResult
+
 def processor=new TestResultsProcessor();
 
 
@@ -16,13 +19,16 @@ processor.checkOperationLessThen("Add",["SmartsNotification","SmartsHistoricalNo
 processor.checkOperationLessThen("Remove",["SmartsNotification"],"AvarageDuration",0.04,true)
 processor.checkOperationLessThen("Search",["SmartsNotification"],"AvarageDuration",0.03,true)
 
+println processor.tests;
 return processor.statsXml;
 
-public class TestResultsProcessor{
+class TestResultsProcessor{
     def reportsMap;
     def statsXml;
+    def tests;
     public TestResultsProcessor(){
-       reportsMap=[:];       
+       reportsMap=[:];
+       tests=[];
        generateCompassStatisticsMap();
     }
     private void generateCompassStatisticsMap(){
@@ -54,11 +60,13 @@ public class TestResultsProcessor{
             {
                 if(Double.valueOf(modelValue)>value)
                 {
+                    tests.add(new ManualTestUnit("${operation}Operation.${model}.${property}","${operation}Operation.${model}.${property} value ${modelValue} is larger than ${value}"));
                     println "${operation}Operation.${model}.${property} value ${modelValue} is larger than ${value}"
                 }
 
                 if(reportsMap.get(operation)?.get("modelReports")?.get(model)?.get("NumberOfOperations")==0)
                 {
+                    
                     println "${operation}Operation.${model}.NumberOfOperations value is equal to zero"
                 }
 
@@ -100,6 +108,32 @@ public class TestResultsProcessor{
 
         }
 
+    }
+}
+
+class ManualTestUnit implements Test {
+    def name;
+    def exception;
+    public ManualTestUnit(String name) {
+        this.name = name;
+        exception=null;
+    }
+    public ManualTestUnit(String name,String errorMessage) {
+        this.name = name;
+        exception=new Exception(errorMessage);
+    }
+
+    public int countTestCases() {
+        return 0;
+    }
+    public void run(TestResult arg0) {
+    }
+
+    public String getName() {
+        return name;
+    }
+    public String name() {
+        return name;
     }
 }
 

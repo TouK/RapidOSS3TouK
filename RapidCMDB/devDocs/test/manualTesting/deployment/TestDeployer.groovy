@@ -37,10 +37,10 @@ class TestDeployer {
 			println "No targets found";
 		}
 
-        executeOnServer(" -stop");
         executeOnServer(" -uninstall");
         executeOnServer(" -install");
-		executeOnServer(" -start");
+		executeOnServer(" -stop");
+        executeOnServer(" -start");
         println "Done";
 				
     }

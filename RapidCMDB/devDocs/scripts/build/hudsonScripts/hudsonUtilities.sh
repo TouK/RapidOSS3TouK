@@ -43,8 +43,14 @@ checkOutTag() {
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/OpenNms ./OpenNms
 }
 runTestBuildAndJavaTests() {
+
     rm -rf TestResults/
     mkdir TestResults
+    if [ -d ManualTestResults ];
+    then
+       cp -rf ManualTestResults/ TestResults/
+    fi
+    
     cd RapidModules/
     groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild testBuild
     cp $WORKSPACE/LicencedJars/lib/jdbc/*.jar $WORKSPACE/Distribution/RapidServer/lib

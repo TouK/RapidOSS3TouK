@@ -10,7 +10,7 @@ import utils.TestResultsProcessor;
 
 def processor=new TestResultsProcessor("SmartsNotificationOperations");
 
-processor.checkOperationLessThen("Add",["SmartsNotification","SmartsHistoricalNotification","RsEventJournal",],"AvarageDuration",0.06,true)
+processor.checkOperationLessThen("Add",["SmartsNotification","SmartsHistoricalNotification","RsEventJournal",],"AvarageDuration",0.07,true)
 processor.checkOperationLessThen("Remove",["SmartsNotification"],"AvarageDuration",0.04,true)
 processor.checkOperationLessThen("Search",["SmartsNotification"],"AvarageDuration",0.03,true)
 

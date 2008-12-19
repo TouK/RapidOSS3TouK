@@ -10,8 +10,8 @@ import utils.TestResultsProcessor;
 
 def processor=new TestResultsProcessor("ModelOperations");
 
-processor.checkOperationLessThen("Add",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06,true)
-processor.checkOperationLessThen("Update",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.06,true)
+processor.checkOperationLessThen("Add",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.07,true)
+processor.checkOperationLessThen("Update",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.07,true)
 processor.checkOperationLessThen("Remove",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.04,true)
 processor.checkOperationLessThen("AddRelation",["Author","Person"],"AvarageDuration",0.06,true)
 processor.checkOperationLessThen("RemoveRelation",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.015,true)

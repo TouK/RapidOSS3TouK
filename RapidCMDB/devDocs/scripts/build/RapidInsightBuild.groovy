@@ -41,7 +41,7 @@ class RapidInsightBuild extends Build {
 	boolean RI_UNIX_OPT, RI_WINDOWS_OPT, APG_OPT, OPENNMS_OPT, NETCOOL_OPT, SMARTS_OPT, HYPERIC_OPT, ENTERPRISE_WINDOWS_OPT, ENTERPRISE_UNIX_OPT, ZIP_OPT, TEST_OPT;
 	def version = "$env.rapid_insight/RIVersion.txt";
     def versionInBuild = "$env.dist_rapid_suite/RIVersion.txt";
-    static def optFile;
+    static def optFile = "";
     
     def setOptions(options){
     	if (options!=null){
@@ -60,7 +60,9 @@ class RapidInsightBuild extends Build {
     }
     
     static void main(String[] args) {
-    	optFile = args[0];
+        if(args.length > 0){
+            optFile = args[0];    
+        }
         RapidInsightBuild rapidInsightBuilder = new RapidInsightBuild();
         rapidInsightBuilder.setOptions(Build.getBuildOptions(optFile));
         rapidInsightBuilder.build();

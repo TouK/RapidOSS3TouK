@@ -31,10 +31,7 @@ class TestResultsProcessor{
     }
     public static void recordFirstMemory()
     {
-        if(firstMemoryUsed==null)
-        {
-            firstMemoryUsed=getUsedMemory();
-        }
+        firstMemoryUsed=getUsedMemory();
     }
     public static long getUsedMemory()
     {

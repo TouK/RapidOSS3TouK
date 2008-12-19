@@ -29,13 +29,12 @@ import script.CmdbScript;
 
 def logLevel=org.apache.log4j.Level.DEBUG.toString();
 def testScriptParamsList=[]
-testScriptParamsList.add([name:"addInstances",period:60,startDelay:0,logLevel:logLevel,logFileOwn:true]);
-testScriptParamsList.add([name:"addRelations",period:60,startDelay:15,logLevel:logLevel,logFileOwn:true]);
-testScriptParamsList.add([name:"removeRelations",period:60,startDelay:30,logLevel:logLevel,logFileOwn:true]);
-testScriptParamsList.add([name:"removeInstances",period:60,startDelay:45,logLevel:logLevel,logFileOwn:true]);
-testScriptParamsList.add([name:"searchInstances",period:60,startDelay:50,logLevel:logLevel,logFileOwn:true]);
-
-
+testScriptParamsList.add([name:"addInstances",period:60,startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
+testScriptParamsList.add([name:"addRelations",period:60,startDelay:15,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
+testScriptParamsList.add([name:"removeRelations",period:60,startDelay:30,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
+testScriptParamsList.add([name:"removeInstances",period:60,startDelay:45,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
+testScriptParamsList.add([name:"searchInstances",period:60,startDelay:50,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
+testScriptParamsList.add([name:"processTestResults",cronExpression:"0 30 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
 
 
 //script to initalize the scheduled testscripts that will run during test
@@ -44,7 +43,7 @@ testScriptParamsList.add([name:"searchInstances",period:60,startDelay:50,logLeve
 for (scriptParams in testScriptParamsList)
 {
     scriptParams.type=CmdbScript.SCHEDULED;
-    scriptParams.scheduleType=CmdbScript.PERIODIC;
+
     scriptParams.enabled=false;
 
     CmdbScript testScript = CmdbScript.addScript(scriptParams, true);

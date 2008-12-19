@@ -18,9 +18,7 @@ class TestDeployer {
 
        TestDeployer deployer=new TestDeployer();
 
-       //deployer.run(args);
-       deployer.run(["deploySmartsNotificationOperations"]);
-
+       deployer.run(args);
     }
     void run(args) {
         ant=new AntBuilder();

@@ -149,7 +149,7 @@ class RapidInsightBuild extends Build {
 
     def buildIntegrationPlugins() {
         def distDir = env.dist_modules;
-        if (TEST_OPT) distDir = env.dist;
+        if (TEST_OPT) distDir = env.distribution;
         if (SMARTS_OPT) new SmartsModuleBuild().build(distDir);
         if (NETCOOL_OPT) new NetcoolModuleBuild().build(distDir);
         if (HYPERIC_OPT) new HypericBuild().build(distDir);

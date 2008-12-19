@@ -41,10 +41,32 @@ class RapidCmdbBuild extends Build {
     		TEST_OPT = Boolean.parseBoolean(options.get("TEST", "false"));
     	}    	
     }
+
+    static def getTestOptions(){
+       Properties options = new Properties();
+       options.put("RCMDB_UNIX", "false")
+       options.put("RCMDB_WINDOWS", "true")
+       options.put("SAMPLE1", "false")
+       options.put("SAMPLE2", "false")
+       options.put("ZIP", "false")
+       options.put("MODELER", "true")
+       options.put("TEST", "true")
+        return options;
+    }
     
     static void main(String[] args) {
+        def options;
+        if (args.length > 0) {
+            if(args[0] == "test"){
+               options = getTestOptions();
+            }
+            else{
+                optFile = args[0];
+                options = Build.getBuildOptions(optFile);
+            }
+        }
         RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();
-        rapidCmdbBuilder.setOptions(Build.getBuildOptions(args[0]));
+        rapidCmdbBuilder.setOptions(options);
         rapidCmdbBuilder.build();
     }
     

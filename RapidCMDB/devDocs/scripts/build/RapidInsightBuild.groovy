@@ -59,12 +59,39 @@ class RapidInsightBuild extends Build {
         }
     }
 
+    static def getTestOptions(){
+       Properties options = new Properties();
+       options.put("RI_UNIX", "false")
+       options.put("RI_WINDOWS", "true")
+       options.put("RCMDB_UNIX", "true")
+       options.put("RCMDB_WINDOWS", "false")
+       options.put("OPENNMS", "true")
+       options.put("APG", "true")
+       options.put("NETCOOL", "true")
+       options.put("SMARTS", "true")
+       options.put("HYPERIC", "true")
+       options.put("E_WINDOWS", "false")
+       options.put("E_UNIX", "false")
+       options.put("ZIP", "false")
+       options.put("TEST", "true")
+        return options;
+    }
+
     static void main(String[] args) {
+        def options;
         if (args.length > 0) {
-            optFile = args[0];
+            if(args[0] == "test"){
+               options = getTestOptions();
+            }
+            else{
+                optFile = args[0];
+                options = Build.getBuildOptions(optFile);
+            }
+
+
         }
         RapidInsightBuild rapidInsightBuilder = new RapidInsightBuild();
-        rapidInsightBuilder.setOptions(Build.getBuildOptions(optFile));
+        rapidInsightBuilder.setOptions(options);
         rapidInsightBuilder.build();
     }
 

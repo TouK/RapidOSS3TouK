@@ -53,7 +53,7 @@ runTestBuildAndJavaTests() {
     fi
     
     cd RapidModules/
-    groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild testBuild
+    groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild test
     cp $WORKSPACE/LicencedJars/lib/jdbc/*.jar $WORKSPACE/Distribution/RapidServer/lib
     cp $WORKSPACE/LicencedJars/lib/smarts/*.jar $WORKSPACE/Distribution/RapidServer/lib
     groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
@@ -66,7 +66,7 @@ runTestBuildAndJavaTestsForRCMDB() {
     rm -rf TestResults/
     mkdir TestResults
     cd RapidModules/
-    groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild testBuild
+    groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild test
     cp $WORKSPACE/LicencedJars/lib/jdbc/*.jar $WORKSPACE/Distribution/RapidServer/lib
     groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
     groovy RapidCMDB/devDocs/scripts/build/CompModuleTest

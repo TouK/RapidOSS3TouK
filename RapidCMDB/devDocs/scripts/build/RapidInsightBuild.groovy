@@ -77,6 +77,7 @@ class RapidInsightBuild extends Build {
 
     def build() {
         buildUnix();
+        if(RI_UNIX_OPT || RI_WINDOWS_OPT) buildIntegrationPlugins();
         if (RI_WINDOWS_OPT) addJreOnTopOfUnixAndZip("RI");
         if (ENTERPRISE_WINDOWS_OPT) makeWindowsEnterprise();
         if (ENTERPRISE_UNIX_OPT) makeUnixEnterprise();
@@ -121,7 +122,6 @@ class RapidInsightBuild extends Build {
                 ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
             }
         }
-        buildIntegrationPlugins();
     }
 
     def prepareRCMDB() {
@@ -149,7 +149,7 @@ class RapidInsightBuild extends Build {
 
     def buildIntegrationPlugins() {
         def distDir = env.dist_modules;
-        if (TEST_OPT) distDir = env.distribution;
+        if (TEST_OPT) distDir = env.dist_rapid_server;
         if (SMARTS_OPT) new SmartsModuleBuild().build(distDir);
         if (NETCOOL_OPT) new NetcoolModuleBuild().build(distDir);
         if (HYPERIC_OPT) new HypericBuild().build(distDir);

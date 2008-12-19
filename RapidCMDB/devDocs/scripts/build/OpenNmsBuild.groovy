@@ -26,9 +26,8 @@ package build
  */
 class OpenNmsBuild extends Build{
 	def version = "$env.rapid_opennms/RIOpenNmsVersion.txt";
-	def versionInBuild = "$env.dist_modules_rapid_suite/RIOpenNmsVersion.txt"; 
 	
-   static void main(String[] args) {
+    static void main(String[] args) {
         OpenNmsBuild openNmsBuild = new OpenNmsBuild();
         openNmsBuild.build();
     }
@@ -46,7 +45,8 @@ class OpenNmsBuild extends Build{
     
     def build(distDir) {
     	def rapidSuiteDir = "${distDir}/RapidSuite";
-        clean(distDir);
+    	def versionInBuild = "${rapidSuiteDir}/RIOpenNmsVersion.txt";
+    	clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();

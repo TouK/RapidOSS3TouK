@@ -24,7 +24,6 @@ package build
  */
 class SmartsModuleBuild extends Build {
 	 def version = "$env.rapid_smarts/RISmartsVersion.txt";
-	 def versionInBuild = "$env.dist_modules_rapid_suite/RISmartsVersion.txt";
 
     static void main(String[] args) {
         SmartsModuleBuild smartsModuleBuild = new SmartsModuleBuild();
@@ -51,7 +50,8 @@ class SmartsModuleBuild extends Build {
     
     def build(distDir) {
     	def rapidSuiteDir = "${distDir}/RapidSuite";
-        clean(distDir);
+    	def versionInBuild = "${rapidSuiteDir}/RISmartsVersion.txt";
+    	clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();

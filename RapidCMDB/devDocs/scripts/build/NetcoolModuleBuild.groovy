@@ -23,7 +23,6 @@ package build;
  */
 class NetcoolModuleBuild extends Build {
 	def version = "$env.rapid_netcool/RINetcoolVersion.txt";
-	def versionInBuild = "$env.dist_modules_rapid_suite/RINetcoolVersion.txt"; 
 	 
     static void main(String[] args) {
         NetcoolModuleBuild netcoolModuleBuild = new NetcoolModuleBuild();
@@ -42,6 +41,7 @@ class NetcoolModuleBuild extends Build {
     
     def build(distDir) {
     	def rapidSuiteDir = "${distDir}/RapidSuite";
+    	def versionInBuild = "${rapidSuiteDir}/RINetcoolVersion.txt";
         clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);

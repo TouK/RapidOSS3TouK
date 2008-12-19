@@ -26,7 +26,6 @@ package build
  */
 class HypericBuild extends Build {
 	def version = "$env.rapid_hyperic/RIHypericVersion.txt";
-	def versionInBuild = "$env.dist_modules_rapid_suite/RIHypericVersion.txt"; 
 	
     static void main(String[] args) {
         HypericBuild hypericBuild = new HypericBuild();
@@ -46,7 +45,8 @@ class HypericBuild extends Build {
     
     def build(distDir) {
     	def rapidSuiteDir = "${distDir}/RapidSuite";
-        clean(distDir);
+    	def versionInBuild = "${rapidSuiteDir}/RIHypericVersion.txt";
+    	clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();

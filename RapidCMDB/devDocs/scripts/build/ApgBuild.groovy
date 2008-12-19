@@ -25,7 +25,6 @@ package build
  */
 class ApgBuild extends Build{
 	def version = "$env.rapid_apg/RIApgVersion.txt";
-	def versionInBuild = "$env.dist_modules_rapid_suite/RIApgVersion.txt";
 	
    static void main(String[] args) {
         ApgBuild apgBuild = new ApgBuild();
@@ -45,7 +44,8 @@ class ApgBuild extends Build{
     
     def build(distDir) {
     	def rapidSuiteDir = "${distDir}/RapidSuite";
-        clean(distDir);
+    	def versionInBuild = "${rapidSuiteDir}/RIApgVersion.txt";
+    	clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();

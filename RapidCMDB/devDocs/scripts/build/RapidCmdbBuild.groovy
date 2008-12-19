@@ -32,8 +32,8 @@ class RapidCmdbBuild extends Build {
     
     def setOptions(options){
     	if (options!=null){
-    		RCMDB_UNIX_OPT = Boolean.parseBoolean(options.get("UNIX", "true"));
-    		RCMDB_WINDOWS_OPT = Boolean.parseBoolean(options.get("WINDOWS", "false"));
+    		RCMDB_UNIX_OPT = Boolean.parseBoolean(options.get("RCMDB_UNIX", "true"));
+    		RCMDB_WINDOWS_OPT = Boolean.parseBoolean(options.get("RCMDB_WINDOWS", "false"));
     		SAMPLE1_OPT = Boolean.parseBoolean(options.get("SAMPLE1", "false"));
     		SAMPLE2_OPT = Boolean.parseBoolean(options.get("SAMPLE2", "false"));
     		ZIP_OPT = Boolean.parseBoolean(options.get("ZIP", "false"));

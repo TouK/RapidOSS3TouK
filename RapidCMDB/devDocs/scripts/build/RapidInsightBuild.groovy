@@ -56,6 +56,7 @@ class RapidInsightBuild extends Build {
             ENTERPRISE_UNIX_OPT = Boolean.parseBoolean(options.get("E_UNIX", "false"));
             ZIP_OPT = Boolean.parseBoolean(options.get("ZIP", "false"));
             TEST_OPT = Boolean.parseBoolean(options.get("TEST", "false"));
+            println "Test option ${TEST_OPT}"
         }
     }
 

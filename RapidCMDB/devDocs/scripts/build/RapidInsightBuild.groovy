@@ -81,6 +81,7 @@ class RapidInsightBuild extends Build {
         def options;
         if (args.length > 0) {
             if(args[0] == "test"){
+                println "Runnnig test build"
                options = getTestOptions();
             }
             else{

@@ -76,6 +76,10 @@ class SmartsModuleBuild extends Build {
         ant.copy(todir: rapidSuiteDir) {
             ant.fileset(dir: "$env.rapid_smarts/applications/RapidInsightForSmarts")
         }
+        if(TEST){
+            ant.copy(todir:"$env.dist_rapid_server_lib", file:(String)classpath.getProperty("skclient_jar"))
+            ant.copy(todir:"$env.dist_rapid_server_lib", file:(String)classpath.getProperty("net_jar"))
+        }
         ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
             ant.arg(value: "-file");
             ant.arg(value: "${rapidSuiteDir}/grails-app/views/layouts/indexLayout.gsp");

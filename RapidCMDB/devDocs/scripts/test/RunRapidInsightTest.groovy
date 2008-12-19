@@ -17,6 +17,7 @@
 * USA.
 */
 package test
+
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.NameFileFilter
 import org.apache.commons.io.filefilter.NotFileFilter
@@ -49,35 +50,35 @@ def watchConfig = [
         [new File("${workspaceDir}/RapidModules/RapidInsight/grails-app"), new File("${rootDir.absolutePath}/RapidSuite/grails-app"), ["taglib"]],
         [new File("${workspaceDir}/RapidModules/RapidInsight/operations"), new File("${rootDir.absolutePath}/RapidSuite/operations")],
         [new File("${workspaceDir}/RapidModules/RapidInsight/grails-app/taglib"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-insight-0.1/grails-app/taglib")],
-        [new File("${workspaceDir}/Hyperic"), new File("${rootDir.absolutePath}/RapidSuite"), ["applications", "integration", "application.properties"]], 
-        [new File("${workspaceDir}/Hyperic/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")], 
+        [new File("${workspaceDir}/Hyperic"), new File("${rootDir.absolutePath}/RapidSuite"), ["applications", "integration", "application.properties"]],
+        [new File("${workspaceDir}/Hyperic/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")],
         [new File("${workspaceDir}/Hyperic/test/integration"), new File("${rootDir.absolutePath}/RapidSuite/test/integration")]
 ]
 
 
 def dirListeners = [];
-def excludedDirs = [".svn","reports"]
+def excludedDirs = [".svn", "reports"]
 
 
 
 
-watchConfig.each{dirPairs ->
+watchConfig.each {dirPairs ->
     File srcDir = dirPairs[0]
     File destDir = dirPairs[1]
     def tmpExcludedDirs = [];
-    tmpExcludedDirs.addAll (excludedDirs);
-    if(dirPairs.size() > 2)
+    tmpExcludedDirs.addAll(excludedDirs);
+    if (dirPairs.size() > 2)
     {
-        tmpExcludedDirs.addAll (dirPairs[2]);
+        tmpExcludedDirs.addAll(dirPairs[2]);
     }
     def tmpExcludedDirsMap = [:];
-    tmpExcludedDirs.each{
-        tmpExcludedDirsMap[it] = it;        
+    tmpExcludedDirs.each {
+        tmpExcludedDirsMap[it] = it;
     }
     dirListeners += new BuildDirListener(srcDir, destDir, tmpExcludedDirsMap);
 }
 def envVars = getEnvVars(rootDir);
-if(!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.1").exists())
+if (!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.1").exists())
 {
     Properties props = new Properties();
     props.put("RI_UNIX", "false")
@@ -92,48 +93,47 @@ if(!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.1
     FileOutputStream out = new FileOutputStream("${workspaceDir}/Distribution/build.properties")
     props.store(out, "");
     out.close();
+
     def riBuild = new RapidInsightBuild();
     riBuild.main(["${workspaceDir}/Distribution/build.properties"] as String[]);
-    println "Installing testing plugin"
-    def path = "${getTestExecutableFileName(rootDir)} install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
-    println "Running command ${path} to install testing plugin"
-    proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidSuite"));
-    proc.consumeProcessOutput(System.out, System.err);
-    proc.waitFor();
+    ANT.unzip(src: "${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip", dest: rootDir.getAbsolutePath() + "/RapidSuite/plugins/rapid-testing-0.1");
+    ANT.move(toDir: "${rootDir.getAbsolutePath()}/RapidSuite/web-app/test") {
+        ANT.fileset(dir: "${rootDir.getAbsolutePath()}/RapidSuite/plugins/rapid-testing-0.1/web-app/test");
+    }
 }
 
 
 println "Stating Application"
 System.addShutdownHook {
-    dirListeners.each{BuildDirListener list->
+    dirListeners.each {BuildDirListener list ->
         list.destroy();
     }
-    if(proc)
+    if (proc)
     {
-        proc.waitForOrKill (1000);
+        proc.waitForOrKill(1000);
     }
 }
 
 path = "${getTestExecutableFileName(rootDir)} run-app".toString();
 println "Running command ${path} to run application"
-proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath()+"/RapidSuite"));
+proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath() + "/RapidSuite"));
 proc.consumeProcessOutput(System.out, System.err);
-println "TOOK ${System.currentTimeMillis() - t} secs to start testing application." 
+println "TOOK ${System.currentTimeMillis() - t} secs to start testing application."
 proc.waitFor();
 
 def getEnvVars(rootDir)
 {
     def tEnvVars = [];
-    System.getenv().each{key, value->
+    System.getenv().each {key, value ->
         tEnvVars += "${key}=${value}".toString()
     }
     tEnvVars.add("RS_HOME=${rootDir.getAbsolutePath()}".toString());
-    return  tEnvVars;
+    return tEnvVars;
 }
 
 def getTestExecutableFileName(File rootDir)
 {
-    if(System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0)
+    if (System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0)
     {
         return "${rootDir.getAbsolutePath()}/RapidSuite/test.bat";
     }

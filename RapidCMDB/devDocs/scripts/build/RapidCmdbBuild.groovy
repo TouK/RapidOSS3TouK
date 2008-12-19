@@ -61,8 +61,7 @@ class RapidCmdbBuild extends Build {
                options = getTestOptions();
             }
             else{
-                optFile = args[0];
-                options = Build.getBuildOptions(optFile);
+                options = Build.getBuildOptions(args[0]);
             }
         }
         RapidCmdbBuild rapidCmdbBuilder = new RapidCmdbBuild();

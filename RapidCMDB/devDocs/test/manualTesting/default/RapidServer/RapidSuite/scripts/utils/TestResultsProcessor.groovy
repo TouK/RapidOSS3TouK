@@ -16,12 +16,27 @@ class TestResultsProcessor{
     def statsXml;
     def tests;
     def testName;
+    public static long firstMemoryUsed;
     public TestResultsProcessor(testName){
        reportsMap=[:];
        tests=[];
        this.testName=testName;
+       firstMemory=null;
        generateCompassStatisticsMap();
 
+    }
+    public static void recordFirstMemory()
+    {
+        if(firstMemoryUsed==null)
+        {
+            firstMemoryUsed=getUsedMemory();
+        }
+    }
+    public static long getUsedMemory()
+    {
+        def total = Runtime.getRuntime().totalMemory() / Math.pow(2,20);
+        def free = Runtime.getRuntime().freeMemory() / Math.pow(2,20);
+        return total-free;
     }
     private void generateCompassStatisticsMap(){
         statsXml=application.RsApplication.getCompassStatistics()

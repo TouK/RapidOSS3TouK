@@ -81,7 +81,7 @@ class RapidInsightBuild extends Build {
         if (RI_WINDOWS_OPT) addJreOnTopOfUnixAndZip("RI");
         if (ENTERPRISE_WINDOWS_OPT) makeWindowsEnterprise();
         if (ENTERPRISE_UNIX_OPT) makeUnixEnterprise();
-        println "RIBuild Done";
+        println "RI Build Done";
     }
 
 

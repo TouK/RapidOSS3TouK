@@ -85,6 +85,7 @@ class HypericBuild extends Build {
 	            ant.zipfileset(dir: "$env.dist_modules")
 	        }
         }
+        println "Hyperic Build Done";
     }
 
 }

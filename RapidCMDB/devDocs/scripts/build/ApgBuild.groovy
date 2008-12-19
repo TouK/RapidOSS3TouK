@@ -72,5 +72,6 @@ class ApgBuild extends Build{
 	            ant.zipfileset(dir: "$env.dist_modules")
 	        }
         }
+        println "APG Build Done";
     }
 }

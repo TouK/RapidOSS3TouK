@@ -59,7 +59,7 @@ class SmartsModuleBuild extends Build {
             ant.classpath(refid: "classpath");
         }
         ant.jar(destfile: env.rapid_rssmarts_jar, basedir: env.rapid_smarts_build);
-        ant.copy(file: env.rapid_rssmarts_jar, toDir: "$env.dist_modules_rapid_suite/lib");
+        ant.copy(file: env.rapid_rssmarts_jar, toDir: "$rapidSuiteDir/lib");
         ant.copy(todir: "$rapidSuiteDir/grails-app") {
             ant.fileset(dir: "$env.rapid_smarts/grails-app")
         }
@@ -97,5 +97,6 @@ class SmartsModuleBuild extends Build {
 	            ant.zipfileset(dir: "$env.dist_modules")
 	        }
         }
+        println "Smarts Build Done";
     }
 }

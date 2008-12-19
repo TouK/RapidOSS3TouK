@@ -78,6 +78,7 @@ class NetcoolModuleBuild extends Build {
 	            ant.zipfileset(dir: "$env.dist_modules")
 	        }
         }
+        println "Netcool Build Done";
     }
 
 }

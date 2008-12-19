@@ -1,0 +1,9 @@
+<plugin name='rapid-insight' version='0.1'>
+  <author>Your name</author>
+  <title>Plugin summary/headline</title>
+  <description>Brief description of the plugin.
+</description>
+  <documentation>http://grails.org/RapidInsight+Plugin</documentation>
+  <resources>
+  </resources>
+</plugin>

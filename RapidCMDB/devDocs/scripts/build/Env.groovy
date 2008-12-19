@@ -57,11 +57,13 @@ class Env {
     static def rapid_smarts_build = basedir+"/build/smarts"
 
     static def rapid_insight = "$rapid_modules/RapidInsight"
+    static def dist_rapid_insight = "$dist_rapid_suite/plugins/rapid-insight-0.1"
     static def rapid_netcool = "$basedir/Netcool"
     static def rapid_smarts = "$basedir/Smarts"
     static def rapid_hyperic = "$basedir/Hyperic"
     static def rapid_opennms = "$basedir/OpenNms"
     static def rapid_apg = "$basedir/Apg"
+    static def dist_rapid_ui = "$dist_rapid_suite/plugins/rapid-ui-0.1"
     static def rapid_ui = "$rapid_modules/RapidUiPlugin"
 
     static def rapid_cmdb_src = "$rapid_cmdb_cvs/src/java"

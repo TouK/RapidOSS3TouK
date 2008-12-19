@@ -25,6 +25,10 @@ class TestResultsProcessor{
        generateCompassStatisticsMap();
 
     }
+    public static long getFirstMemory()
+    {
+        return firstMemoryUsed; 
+    }
     public static void recordFirstMemory()
     {
         if(firstMemoryUsed==null)

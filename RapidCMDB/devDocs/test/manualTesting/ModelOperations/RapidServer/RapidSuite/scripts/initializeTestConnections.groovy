@@ -27,6 +27,9 @@ import script.CmdbScript;
 
 
 
+
+
+
 def logLevel=org.apache.log4j.Level.DEBUG.toString();
 def testScriptParamsList=[]
 testScriptParamsList.add([name:"addInstances",period:60,startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
@@ -61,3 +64,4 @@ for (scriptParams in testScriptParamsList)
     }
 }
 
+utils.TestResultsProcessor.recordFirstMemory();

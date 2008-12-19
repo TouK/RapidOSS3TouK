@@ -45,12 +45,12 @@ import org.apache.lucene.store.LockFactory
 class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
     Compass compass;
 
-    protected void setUp() {
+    public void setUp() {
         super.setUp()
         FileUtils.deleteDirectory (new File(TestCompassFactory.indexDirectory));
     }
 
-    protected void tearDown() {
+    public void tearDown() {
         super.tearDown();
         if(compass)
         {

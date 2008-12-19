@@ -23,6 +23,7 @@ import grails.util.GrailsUtil
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.compass.analyzer.WhiteSpaceLowerCaseAnalyzer
 import com.ifountain.rcmdb.domain.converter.CompassBooleanConverter
+import com.ifountain.compass.index.WrapperIndexDeletionPolicy
 
 /**
 * Grails Searchable Plugin configuration
@@ -78,7 +79,9 @@ class SearchableConfiguration {
     "compass.engine.store.wrapper.wrapper1.type":"com.ifountain.compass.CompositeDirectoryWrapperProvider",
     "compass.engine.store.wrapper.wrapper1.awaitTermination":"10000000",
     "compass.cache.first":"org.compass.core.cache.first.NullFirstLevelCache",
-    "compass.transaction.lockTimeout":45];
+    "compass.transaction.lockTimeout":45,
+    "compass.engine.store.indexDeletionPolicy.type":WrapperIndexDeletionPolicy.name
+    ];
 
     /**
      * Default mapping property exclusions

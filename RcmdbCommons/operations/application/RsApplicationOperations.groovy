@@ -24,6 +24,12 @@ import org.apache.commons.io.filefilter.SuffixFileFilter
 import org.apache.commons.io.filefilter.FalseFileFilter
 import org.apache.commons.lang.StringUtils
 import com.ifountain.comp.utils.CaseInsensitiveMap
+import com.ifountain.compass.index.WrapperIndexDeletionPolicy
+import org.compass.core.impl.DefaultCompass
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
+import com.ifountain.rcmdb.domain.BackupAction
+import java.text.SimpleDateFormat
 
 /**
  * Created by IntelliJ IDEA.
@@ -89,5 +95,21 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         }
       }
       return appInfo;
+    }
+
+    public static void backup()
+    {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+        String directory = "backup/index/${df.format(new Date())}".toString();
+        backup (directory);
+    }
+
+    public static void backup(String directory)
+    {
+        DefaultCompass c = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("compass");
+        BackupAction action = new BackupAction(c, directory+"/index");
+        WrapperIndexDeletionPolicy.getPolicies().each{WrapperIndexDeletionPolicy policy->
+            policy.snapshot (action);
+        }
     }
 }

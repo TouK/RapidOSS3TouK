@@ -42,14 +42,14 @@ import com.ifountain.rcmdb.domain.generation.ModelGenerator
 class CompositeDirectoryWrapperProviderTest extends  AbstractSearchableCompassTests{
     Compass compass;
 
-    protected void setUp() {
+    public void setUp() {
         super.setUp()
         FileUtils.deleteDirectory (new File(TestCompassFactory.indexDirectory));
         System.setProperty("mirrorBufferUpperLimit", "128")
         System.setProperty("mirrorBufferLowerLimit", "64")
     }
 
-    protected void tearDown() {
+    public void tearDown() {
         super.tearDown();
         if(compass)
         {

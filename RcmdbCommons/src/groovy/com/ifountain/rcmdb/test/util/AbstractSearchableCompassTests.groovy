@@ -16,6 +16,7 @@
 package com.ifountain.rcmdb.test.util
 
 import com.ifountain.rcmdb.test.util.compass.TestCompassUtils
+import com.ifountain.compass.index.WrapperIndexDeletionPolicy
 
 /**
  * 
@@ -23,6 +24,16 @@ import com.ifountain.rcmdb.test.util.compass.TestCompassUtils
  * @author Maurice Nicholson
  */
 abstract class AbstractSearchableCompassTests extends GroovyTestCase {
+    
+    public void setUp() {
+        super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
+        WrapperIndexDeletionPolicy.clearPolicies();
+    }
+
+    public void tearDown() {
+        super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
+        WrapperIndexDeletionPolicy.clearPolicies();
+    }
 
     def withCompassQueryBuilder(closure) {
         TestCompassUtils.withCompassQueryBuilder(compass, closure)

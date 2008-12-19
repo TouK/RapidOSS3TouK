@@ -27,13 +27,13 @@ import org.compass.core.CompassSession
 import org.compass.core.CompassTemplate
 import org.compass.core.config.CompassConfiguration
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-
+import com.ifountain.compass.index.WrapperIndexDeletionPolicy;
 /**
  *
  * @author Maurice Nicholson
  */
 class TestCompassFactory {
-    static indexDirectory = "d:/testindex";
+    static indexDirectory = "../testindex";
     static getGrailsApplication(Collection classes) {
         def grailsApplication = new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader(Thread.currentThread().getContextClassLoader())) //new GroovyClassLoader())
         grailsApplication.initialise()
@@ -71,6 +71,7 @@ class TestCompassFactory {
         config.getSettings().setSetting ("compass.cache.first", "org.compass.core.cache.first.NullFirstLevelCache");
         config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.type", "com.ifountain.compass.CompositeDirectoryWrapperProvider");
         config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.awaitTermination", "10000000");
+        config.getSettings().setSetting ("compass.engine.store.indexDeletionPolicy.type", WrapperIndexDeletionPolicy.name);
         configurator.configure(config, [:])
         def compass = config.buildCompass()
 

@@ -61,4 +61,4 @@ for (scriptParams in testScriptParamsList)
 }
 
 utils.TestResultsProcessor.recordFirstMemory();
-println "Fist Memory recorded as utils.TestResultsProcessor.getFirstMemory()"
+println "Fist Memory recorded as ${utils.TestResultsProcessor.getFirstMemory()}"

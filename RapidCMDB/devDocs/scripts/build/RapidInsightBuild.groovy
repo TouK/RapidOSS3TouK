@@ -85,8 +85,7 @@ class RapidInsightBuild extends Build {
                buildOptions = getTestOptions();
             }
             else{
-                optFile = args[0];
-                buildOptions = Build.getBuildOptions(optFile);
+                buildOptions = Build.getBuildOptions(args[0]);
             }
 
 

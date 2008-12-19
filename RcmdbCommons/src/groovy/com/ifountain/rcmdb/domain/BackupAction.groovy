@@ -6,6 +6,7 @@ import org.apache.lucene.store.Directory
 import org.apache.lucene.store.IndexInput
 import org.compass.core.impl.DefaultCompass
 import org.compass.core.lucene.engine.LuceneSearchEngineFactory
+import org.apache.log4j.Logger
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,10 +17,12 @@ import org.compass.core.lucene.engine.LuceneSearchEngineFactory
  */
 class BackupAction implements IndexSnapshotAction{
 
+    Logger logger = Logger.getLogger(BackupAction.class) 
     private Map directoryToSubindexMap = [:]
     private String destinationDirectory;
     public BackupAction(DefaultCompass compass, String destinationDirectory)
     {
+        logger.info ("Initialized a backup action");
         this.destinationDirectory = new File(destinationDirectory).getCanonicalPath();
         LuceneSearchEngineFactory serachEngineFactory = (LuceneSearchEngineFactory)compass.getSearchEngineFactory();
         String[] subIndexes = serachEngineFactory.getLuceneIndexManager().getStore().getSubIndexes();
@@ -30,8 +33,11 @@ class BackupAction implements IndexSnapshotAction{
         }
     }
     public void execute(IndexCommitPoint commitPoint, Directory indexDir) {
+
         Collection<String> fileNames = commitPoint.getFileNames();
-        def dirDestFilePath = destinationDirectory+"/"+directoryToSubindexMap.get(indexDir)+"/"
+        String subIndex = directoryToSubindexMap.get(indexDir);
+        def dirDestFilePath = destinationDirectory+"/"+subIndex+"/"
+        logger.warn ("Executing backup action for ${subIndex} copying all files to ${dirDestFilePath}");
         for (Iterator<String> it = fileNames.iterator(); it.hasNext();) {
             String fileName = it.next();
             backupFile(indexDir, fileName, dirDestFilePath+fileName);

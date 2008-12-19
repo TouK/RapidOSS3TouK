@@ -100,7 +100,7 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     public static void backup()
     {
         SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-        String directory = "backup/index/${df.format(new Date())}".toString();
+        String directory = "backup/${df.format(new Date())}".toString();
         backup (directory);
     }
 

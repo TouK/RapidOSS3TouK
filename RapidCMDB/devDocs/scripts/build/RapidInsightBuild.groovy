@@ -66,6 +66,7 @@ class RapidInsightBuild extends Build {
        options.put("RI_WINDOWS", "true")
        options.put("RCMDB_UNIX", "true")
        options.put("RCMDB_WINDOWS", "false")
+       options.put("MODELER", "true")
        options.put("OPENNMS", "true")
        options.put("APG", "true")
        options.put("NETCOOL", "true")

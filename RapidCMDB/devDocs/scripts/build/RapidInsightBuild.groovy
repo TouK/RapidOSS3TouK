@@ -41,7 +41,7 @@ class RapidInsightBuild extends Build {
     boolean RI_UNIX_OPT, RI_WINDOWS_OPT, APG_OPT, OPENNMS_OPT, NETCOOL_OPT, SMARTS_OPT, HYPERIC_OPT, ENTERPRISE_WINDOWS_OPT, ENTERPRISE_UNIX_OPT, ZIP_OPT, TEST_OPT;
     def version = "$env.rapid_insight/RIVersion.txt";
     def versionInBuild = "$env.dist_rapid_suite/RIVersion.txt";
-    static def optFile = "";
+    static def buildOptions;
 
     def setOptions(options) {
         if (options != null) {
@@ -80,21 +80,19 @@ class RapidInsightBuild extends Build {
     }
 
     static void main(String[] args) {
-        def options;
         if (args.length > 0) {
             if(args[0] == "test"){
-                println "Runnnig test build"
-               options = getTestOptions();
+               buildOptions = getTestOptions();
             }
             else{
                 optFile = args[0];
-                options = Build.getBuildOptions(optFile);
+                buildOptions = Build.getBuildOptions(optFile);
             }
 
 
         }
         RapidInsightBuild rapidInsightBuilder = new RapidInsightBuild();
-        rapidInsightBuilder.setOptions(options);
+        rapidInsightBuilder.setOptions(buildOptions);
         rapidInsightBuilder.build();
     }
 
@@ -155,7 +153,7 @@ class RapidInsightBuild extends Build {
 
     def prepareRCMDB() {
         def rapidCMDBBuild = new RapidCmdbBuild();
-        rapidCMDBBuild.setOptions(Build.getBuildOptions(optFile));
+        rapidCMDBBuild.setOptions(buildOptions);
         rapidCMDBBuild.build();
         //        ant.delete(dir: env.dist_rapid_server);
         //

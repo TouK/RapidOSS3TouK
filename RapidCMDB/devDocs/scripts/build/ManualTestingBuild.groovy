@@ -10,7 +10,7 @@ class ManualTestingBuild extends Build{
 
     static void main(String[] args) {
         ManualTestingBuild manualTestingBuild = new ManualTestingBuild();
-        manualTestingBuild.run(args);
+        manualTestingBuild.build();
     }
     def build() {
         ant.zip(destfile: "$env.distribution/ManualTesting" + ".zip") {

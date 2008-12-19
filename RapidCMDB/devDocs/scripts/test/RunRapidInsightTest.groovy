@@ -79,8 +79,21 @@ watchConfig.each{dirPairs ->
 def envVars = getEnvVars(rootDir);
 if(!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.1").exists())
 {
+    Properties props = new Properties();
+    props.put("RI_UNIX", "false")
+    props.put("RCMDB_UNIX", "true")
+    props.put("RCMDB_WINDOWS", "true")
+    props.put("APG", "true")
+    props.put("OPENNMS", "true")
+    props.put("HYPERIC", "true")
+    props.put("NETCOOL", "true")
+    props.put("SMARTS", "true")
+    props.put("TEST", "true")
+    FileOutputStream out = new FileOutputStream("${workspaceDir}/Distribution/build.properties")
+    props.store(out, "");
+    out.close();
     def riBuild = new RapidInsightBuild();
-    riBuild.run(["testBuild"]);
+    riBuild.main(["${workspaceDir}/Distribution/build.properties"] as String[]);
     println "Installing testing plugin"
     def path = "${getTestExecutableFileName(rootDir)} install-plugin ${workspaceDirFile.getAbsolutePath()}/RapidModules/RapidTesting/grails-rapid-testing-0.1.zip".toString();
     println "Running command ${path} to install testing plugin"

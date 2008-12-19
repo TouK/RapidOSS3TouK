@@ -116,7 +116,7 @@ class TestResultsProcessor{
     {
         for(model in modelList){
             def modelValue=reportsMap.get(operation)?.get("modelReports")?.get(model)?.get(property)
-            def testUnit=new ManualTestUnit("${operation}Operation.${model}.${property}");
+            def testUnit=new ManualTestUnit("${testName}.${operation}Operation.${model}.${property}");
 
             if(modelValue!=null)
             {
@@ -146,7 +146,7 @@ class TestResultsProcessor{
     {
         for(model in modelList){
             def modelValue=reportsMap.get(operation)?.get("modelReports")?.get(model)?.get(property)
-            def testUnit=new ManualTestUnit("${operation}Operation.${model}.${property}");
+            def testUnit=new ManualTestUnit("${testName}.${operation}Operation.${model}.${property}");
 
             if(modelValue!=null)
             {

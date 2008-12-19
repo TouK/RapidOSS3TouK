@@ -204,12 +204,12 @@ class RapidInsightBuild extends Build {
         ant.copy(file: "$env.rapid_ui/RapidUiGrailsPlugin.groovy", toDir: "$env.dist_rapid_ui");
         ant.copy(file: "$env.rapid_ui/plugin.xml", toDir: "$env.dist_rapid_ui");
 
-        ant.copy(toDir: "$env.dist_rapid_suite/web-app") {
+        ant.copy(toDir: "$env.dist_rapid_suite/web-app",overwrite:"true") {
             ant.fileset(dir: "$env.rapid_ui/web-app") {
                 ant.exclude(name: "**/test/**")
             }
         }
-        ant.copy(toDir: "$env.dist_rapid_suite/grails-app/i18n") {
+        ant.copy(toDir: "$env.dist_rapid_suite/grails-app/i18n",overwrite:"true") {
             ant.fileset(dir: "$env.rapid_ui/grails-app/i18n")
         }
     }
@@ -223,37 +223,37 @@ class RapidInsightBuild extends Build {
         ant.copy(file: "$env.rapid_insight/RapidInsightGrailsPlugin.groovy", toDir: "$env.dist_rapid_insight");
         ant.copy(file: "$env.rapid_insight/plugin.xml", toDir: "$env.dist_rapid_insight");
 
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/conf") {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/conf",overwrite:"true") {
             ant.fileset(dir: "${env.rapid_insight}/grails-app/conf");
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/views/layouts") {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/views/layouts",overwrite:"true") {
             ant.fileset(dir: "${env.rapid_insight}/grails-app/views/layouts");
         }
 
-        ant.copy(toDir: "${env.dist_rapid_suite}/scripts") {
+        ant.copy(toDir: "${env.dist_rapid_suite}/scripts",overwrite:"true") {
             ant.fileset(file: "${env.rapid_insight}/scripts/**") {
                 ant.exclude(name: "_Install.groovy")
                 ant.exclude(name: "_Upgrade.groovy")
             }
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/web-app") {
+        ant.copy(toDir: "${env.dist_rapid_suite}/web-app",overwrite:"true") {
             ant.fileset(file: "${env.rapid_insight}/web-app/**");
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/controllers") {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/controllers",overwrite:"true") {
             ant.fileset(file: "${env.rapid_insight}/grails-app/controllers/**");
         }
 
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/views") {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/views",overwrite:"true") {
             ant.fileset(dir: "${env.rapid_insight}/grails-app/views")
         }
         ant.mkdir(dir: "${env.dist_rapid_suite}/generatedModels/grails-app/domain");
-        ant.copy(toDir: "${env.dist_rapid_suite}/generatedModels/grails-app/domain") {
+        ant.copy(toDir: "${env.dist_rapid_suite}/generatedModels/grails-app/domain",overwrite:"true") {
             ant.fileset(file: "${env.rapid_insight}/grails-app/domain/**");
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/domain") {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/domain",overwrite:"true") {
             ant.fileset(file: "${env.rapid_insight}/grails-app/domain/**");
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/operations") {
+        ant.copy(toDir: "${env.dist_rapid_suite}/operations",overwrite:"true") {
             ant.fileset(file: "${env.rapid_insight}/operations/**");
         }
 

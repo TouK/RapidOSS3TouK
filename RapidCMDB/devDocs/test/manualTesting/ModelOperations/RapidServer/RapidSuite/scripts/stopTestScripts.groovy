@@ -7,7 +7,7 @@
  */
 import script.CmdbScript
 
-def scriptsToStop=["addInstances","addRelations","removeRelations","removeInstances","searchInstances","processTestResults"]
+def scriptsToStop=["addInstances","addRelations","removeRelations","removeInstances","searchInstances","processTestResults"."garbageCollector"]
 
 scriptsToStop.each{ scriptName ->
     def script=CmdbScript.get(name:scriptName);

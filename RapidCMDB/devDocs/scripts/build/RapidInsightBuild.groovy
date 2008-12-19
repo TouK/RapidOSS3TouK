@@ -77,8 +77,8 @@ class RapidInsightBuild extends Build {
 
     def build() {
     	if(RI_UNIX_OPT || RI_WINDOWS_OPT) buildUnix();
-        buildIntegrationPlugins();
         if (RI_WINDOWS_OPT) addJreOnTopOfUnixAndZip("RI");
+        buildIntegrationPlugins();
         if (ENTERPRISE_WINDOWS_OPT) makeWindowsEnterprise();
         if (ENTERPRISE_UNIX_OPT) makeUnixEnterprise();
         println "RI Build Done";

@@ -115,7 +115,7 @@ class RapidCmdbBuild extends Build {
         }
         if (ZIP_OPT && RCMDB_UNIX_OPT){
 	        def versionDate = getVersionWithDate();
-	        def zipFileName = "$env.distribution/RapidCMDB_Unix$versionDate" + ".zip"
+	        def zipFileName = "$env.distribution/RCMDB_Unix$versionDate" + ".zip"
 	        ant.zip(destfile: zipFileName) {
 	            ant.zipfileset(dir: "$env.distribution") {
 	                ant.exclude(name: ".project");

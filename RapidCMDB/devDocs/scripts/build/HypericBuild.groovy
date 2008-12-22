@@ -57,7 +57,11 @@ class HypericBuild extends Build {
             ant.fileset(dir: "$env.rapid_hyperic/operations")
         }
         ant.copy(todir: "${rapidSuiteDir}/src/groovy") {
-            ant.fileset(dir: "$env.rapid_hyperic/src/groovy")
+            ant.fileset(dir: "$env.rapid_hyperic/src/groovy"){
+                if(!TEST){
+                    ant.exclude(name: "**/test/**")
+                }
+            }
         }
         if (TEST) {
             ant.copy(todir: "${rapidSuiteDir}/test") {

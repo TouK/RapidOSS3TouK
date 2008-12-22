@@ -7,9 +7,12 @@
  */
 import script.CmdbScript
 
+CmdbScript.stopListening(connector.SmartsConnector.get(name:"smnot").ds.listeningScript);
+
 def scriptsToStop=["notificationAdder","notificationDeleter","notificationSearcher","notificationWebSearcher"]
 
 scriptsToStop.each{ scriptName ->
     def script=CmdbScript.get(name:scriptName);
     CmdbScript.updateScript(script,[enabled:false],false);
 }
+

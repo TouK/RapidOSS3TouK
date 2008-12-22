@@ -69,10 +69,10 @@ httpDatasourceParams.name="localhttpds"
 
 def logLevel=org.apache.log4j.Level.DEBUG.toString();
 def testScriptParamsList=[]
-testScriptParamsList.add([name:"notificationAdder",period:60,startDelay:0,logLevel:logLevel,logFileOwn:true]);
-testScriptParamsList.add([name:"notificationDeleter",period:60,startDelay:15,logLevel:logLevel,logFileOwn:true]);
-testScriptParamsList.add([name:"notificationSearcher",period:60,startDelay:30,logLevel:logLevel,logFileOwn:true]);
-testScriptParamsList.add([name:"notificationWebSearcher",period:60,startDelay:45,logLevel:logLevel,logFileOwn:true]);
+testScriptParamsList.add([name:"notificationAdder",period:60,startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
+testScriptParamsList.add([name:"notificationDeleter",period:60,startDelay:15,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
+testScriptParamsList.add([name:"notificationSearcher",period:60,startDelay:30,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
+testScriptParamsList.add([name:"notificationWebSearcher",period:60,startDelay:45,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
 testScriptParamsList.add([name:"stopTestScripts",cronExpression:"0 0 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
 testScriptParamsList.add([name:"garbageCollector",cronExpression:"0 0/3 7,8 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
 testScriptParamsList.add([name:"processTestResults",cronExpression:"0 30 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
@@ -223,9 +223,9 @@ else
 for (scriptParams in testScriptParamsList)
 {
     scriptParams.type=CmdbScript.SCHEDULED;
-    scriptParams.scheduleType=CmdbScript.PERIODIC;
+
     scriptParams.enabled=false;
-    
+
     CmdbScript testScript = CmdbScript.addScript(scriptParams, true);
     if(testScript.hasErrors())
     {
@@ -238,3 +238,5 @@ for (scriptParams in testScriptParamsList)
     }
 }
 
+utils.TestResultsProcessor.recordFirstMemory();
+println "Fist Memory recorded as ${utils.TestResultsProcessor.getFirstMemory()}"

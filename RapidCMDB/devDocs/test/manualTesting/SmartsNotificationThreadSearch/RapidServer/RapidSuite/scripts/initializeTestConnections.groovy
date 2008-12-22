@@ -238,14 +238,13 @@ else
     }
 }
 
-
 //script to initalize the scheduled testscripts that will run during test
 //Note that addScript with enabled true will schedule the script, and then bootstrap will schedult and exception will be generated
 // so we addscripts with enabled false, then update them as enabled , so only bootstrap will schedule them
 for (scriptParams in testScriptParamsList)
 {
     scriptParams.type=CmdbScript.SCHEDULED;
-    scriptParams.scheduleType=CmdbScript.PERIODIC;
+
     scriptParams.enabled=false;
 
     CmdbScript testScript = CmdbScript.addScript(scriptParams, true);
@@ -259,3 +258,6 @@ for (scriptParams in testScriptParamsList)
         logger.warn("created testScript ${scriptParams.name} for test");
     }
 }
+
+utils.TestResultsProcessor.recordFirstMemory();
+println "Fist Memory recorded as ${utils.TestResultsProcessor.getFirstMemory()}"

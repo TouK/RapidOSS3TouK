@@ -23,7 +23,7 @@ class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDo
 		RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date())
 		def historicalEvent = RsHistoricalEvent.add(props)
 		
-		def journals = RsEventJournal.search("eventId:${id}").results
+		def journals = RsEventJournal.searchEvery("eventId:${id}")
 		journals.each{
 		    it.eventId = historicalEvent.id
 		}

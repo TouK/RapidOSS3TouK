@@ -27,13 +27,15 @@ import groovy.lang.Closure;
 public class WrapperIndexDeletionPolicy implements IndexDeletionPolicy, DirectoryConfigurable {
     private static Map<Directory, WrapperIndexDeletionPolicy> createdPolicies = new HashMap<Directory, WrapperIndexDeletionPolicy>();
     private Directory dir;
-
+    private static Object globalSanapshotLock = new Object();
+    private static boolean takingSnapshot = false;
     public static List<WrapperIndexDeletionPolicy> getPolicies() {
         synchronized (createdPolicies)
         {
             return new ArrayList<WrapperIndexDeletionPolicy>(createdPolicies.values());
         }
     }
+
     public static void clearPolicies() {
         synchronized (createdPolicies)
         {
@@ -41,13 +43,67 @@ public class WrapperIndexDeletionPolicy implements IndexDeletionPolicy, Director
         }
     }
 
+    public static void takeGlobalSnapshot(IndexSnapshotAction snapshotAction) throws IOException
+    {
+        List indexPointList = new ArrayList();
+        List policies = getPolicies();
+        List snapShotPolicies = new ArrayList();
+        try
+        {
+            synchronized (globalSanapshotLock)
+            {
+                takingSnapshot = true;
+                for(int i=0; i < policies.size(); i++)
+                {
+                    WrapperIndexDeletionPolicy policy = (WrapperIndexDeletionPolicy)policies.get(i);
+                    IndexCommitPoint commitPoint = policy.getWrappedPolicy().snapshot();
+                    indexPointList.add(commitPoint);
+                    snapShotPolicies.add(policy);
+                }
+                takingSnapshot = false;
+                globalSanapshotLock.notifyAll();
+            }
+            for(int i=0; i < indexPointList.size(); i++)
+            {
+                IndexCommitPoint commitPoint = (IndexCommitPoint)indexPointList.get(i);
+                WrapperIndexDeletionPolicy policy = (WrapperIndexDeletionPolicy)snapShotPolicies.get(i);
+                snapshotAction.execute(commitPoint, policy.dir);
+            }
+        }finally{
+            for(int i=0; i < snapShotPolicies.size(); i++)
+            {
+                WrapperIndexDeletionPolicy policy = (WrapperIndexDeletionPolicy)snapShotPolicies.get(i);
+                policy.getWrappedPolicy().release();
+            }
+        }
+    }
+
     private SnapshotIndexDeletionPolicy policy;
 
     public void onInit(List list) throws IOException {
+        checkGlobalSnapshotLock();
         policy.onInit(list);
     }
 
+    private static void checkGlobalSnapshotLock()
+    {
+        try
+        {
+            synchronized (globalSanapshotLock)
+            {
+                if(takingSnapshot)
+                {
+                    globalSanapshotLock.wait();
+                }
+        }
+        }
+        catch(InterruptedException e)
+        {
+        }   
+    }
+
     public void onCommit(List list) throws IOException {
+        checkGlobalSnapshotLock();
         policy.onCommit(list);
     }
 
@@ -55,7 +111,7 @@ public class WrapperIndexDeletionPolicy implements IndexDeletionPolicy, Director
     {
         return policy;
     }
-    public void snapshot(IndexSnapshotAction snapshotAction) throws IOException {
+    private void snapshot(IndexSnapshotAction snapshotAction) throws IOException {
         try {
 
             IndexCommitPoint commit = policy.snapshot();

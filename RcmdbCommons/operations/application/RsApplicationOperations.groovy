@@ -108,8 +108,6 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     {
         DefaultCompass c = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("compass");
         BackupAction action = new BackupAction(c, directory);
-        WrapperIndexDeletionPolicy.getPolicies().each{WrapperIndexDeletionPolicy policy->
-            policy.snapshot (action);
-        }
+        WrapperIndexDeletionPolicy.takeGlobalSnapshot(action); 
     }
 }

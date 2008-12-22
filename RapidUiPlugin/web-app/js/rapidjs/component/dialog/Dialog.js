@@ -46,7 +46,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
     render: function()
     {
         var dh = YAHOO.ext.DomHelper;
-        this.container = dh.append(document.body, {tag: 'div'});
+        this.container = dh.append(document.body, {tag: 'div', style:'overflow:hidden'});
         YAHOO.util.Dom.generateId(this.container, 'r-dialog-')
         this.body = dh.append(document.body, {tag: 'div'});
         this.bodyEl = YAHOO.ext.Element.get(this.body);

@@ -22,7 +22,7 @@
                         </li>
                         <li  class="selected">
                             <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventJournals.gsp?id=' + encodeURIComponent('${domainObject.id}&isHistorical=${isHistorical}'));">
-                                <em>Event Journals</em>
+                                <em>Journal</em>
                             </a>
                         </li>
                     </ul>
@@ -31,7 +31,7 @@
                     </div>
                 </div>
        <%
-        def journals = RsEventJournal.searchEvery("eventId:${eventId}")
+        def journals = RsEventJournal.searchEvery("eventId:${eventId}", [sort:"rsTime", order:"asc"])
          %>
             <script>
                  YAHOO.util.Event.onDOMReady(function() {

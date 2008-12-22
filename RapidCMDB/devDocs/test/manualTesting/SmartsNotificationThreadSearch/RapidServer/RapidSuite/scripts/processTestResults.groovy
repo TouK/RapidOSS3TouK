@@ -13,7 +13,10 @@ def processor=new TestResultsProcessor("SmartsNotificationOperations");
 processor.checkOperationLessThen("Add",["SmartsNotification"],"AvarageDuration",0.07,true)
 processor.checkOperationLessThen("Search",["RsEvent"],"AvarageDuration",0.03,true)
 
-processor.checkValueLessThen("UsedMemory",processor.getUsedMemory(),processor.getFirstMemory()+20,true)
+def memoryLimit=processor.getFirstMemory()+20
+memoryLimit+=RsEvent.countHits("alias:*")*0.002
+
+processor.checkValueLessThen("UsedMemory",processor.getUsedMemory(),memoryLimit,true)
 
 processor.generateResultsXml()
 processor.transferResultsToHudson()

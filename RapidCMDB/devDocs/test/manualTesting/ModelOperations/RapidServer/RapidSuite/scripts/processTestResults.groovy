@@ -17,8 +17,9 @@ processor.checkOperationLessThen("AddRelation",["Author","Person"],"AvarageDurat
 processor.checkOperationLessThen("RemoveRelation",["Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.015,true)
 processor.checkOperationLessThen("Search",["Book","Fiction","ScienceFiction","Author","Person"],"AvarageDuration",0.03,true)
 
+def memoryLimit=processor.getFirstMemory()+20
 
-processor.checkValueLessThen("UsedMemory",processor.getUsedMemory(),processor.getFirstMemory()+20,true)
+processor.checkValueLessThen("UsedMemory",processor.getUsedMemory(),memoryLimit,true)
 
 processor.generateResultsXml()
 processor.transferResultsToHudson()

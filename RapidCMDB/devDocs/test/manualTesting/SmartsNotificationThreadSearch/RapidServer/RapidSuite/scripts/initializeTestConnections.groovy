@@ -72,6 +72,14 @@ searcherScriptParams.name="startRequesters"
 searcherScriptParams.logLevel=org.apache.log4j.Level.DEBUG.toString()
 searcherScriptParams.logFileOwn=true
 
+//scheduled script configuration for tests
+def logLevel=org.apache.log4j.Level.DEBUG.toString();
+def testScriptParamsList=[]
+testScriptParamsList.add([name:"stopTestScripts",cronExpression:"0 0 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
+testScriptParamsList.add([name:"garbageCollector",cronExpression:"0 0/3 7,8 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
+testScriptParamsList.add([name:"processTestResults",cronExpression:"0 30 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
+
+
 //script to initialize and starts smarts notification connector
 
 def smartsConnectionTemplate = SmartsConnectionTemplate.add(smartsConnectionTemplateParams)
@@ -227,5 +235,27 @@ else
             }
 
         }
+    }
+}
+
+
+//script to initalize the scheduled testscripts that will run during test
+//Note that addScript with enabled true will schedule the script, and then bootstrap will schedult and exception will be generated
+// so we addscripts with enabled false, then update them as enabled , so only bootstrap will schedule them
+for (scriptParams in testScriptParamsList)
+{
+    scriptParams.type=CmdbScript.SCHEDULED;
+    scriptParams.scheduleType=CmdbScript.PERIODIC;
+    scriptParams.enabled=false;
+
+    CmdbScript testScript = CmdbScript.addScript(scriptParams, true);
+    if(testScript.hasErrors())
+    {
+        logger.warn("Can not create testScript ${scriptParams.name} for test. Reason : ${testScript.errors}");
+        testScript.remove();
+    }
+    else{
+        testScript.update(enabled:true);
+        logger.warn("created testScript ${scriptParams.name} for test");
     }
 }

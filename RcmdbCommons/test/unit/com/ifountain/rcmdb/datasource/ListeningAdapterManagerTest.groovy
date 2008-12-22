@@ -69,19 +69,17 @@ class ListeningAdapterManagerTest extends GroovyTestCase{
         CompassForTests.initialize([CmdbScript]);
         CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFile:logFile,logLevel:logLevel.toString())]);
         def script=CmdbScript.addScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript");
-
+        
         def ds=new BaseListeningDatasourceMock();
         ds.listeningScript=script;
 
         ListeningAdapterManager.getInstance().startAdapter(ds);
 
-        def logger=CmdbScript.getScriptLogger(ds.listeningScript);
-        assertEquals(logger.getLevel(),Level.DEBUG);
+        assertEquals(scriptMap.logger.getLevel(),Level.DEBUG)
 
     }
     void testAdapterRunsTheScript()
     {
-        
         ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
         ListeningAdapterManager.getInstance().initialize();
         CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
@@ -89,7 +87,7 @@ class ListeningAdapterManagerTest extends GroovyTestCase{
         
         
         CompassForTests.initialize([CmdbScript]);
-        CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",staticParam:"x:5")]);
+        CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",staticParam:"x:5" )]);
         def script=CmdbScript.addScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript");
 
         def ds=new BaseListeningDatasourceMock();

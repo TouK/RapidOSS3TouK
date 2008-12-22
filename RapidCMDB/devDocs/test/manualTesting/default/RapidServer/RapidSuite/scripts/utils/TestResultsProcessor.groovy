@@ -109,6 +109,42 @@ class TestResultsProcessor{
         def ant = new AntBuilder()
         ant.scp(file:"${testName}-results.xml",todir:"root@192.168.1.130:/root/.hudson/jobs/RapidCMDBTests/workspace/ManualTestResults/",password:"molkay01",trust:"true")
     }
+    def checkValueLessThen(paramName,paramValue,checkValue,checkExistance)
+    {
+        def testUnit=new ManualTestUnit("${testName}.${paramName}");
+        if(paramValue!=null)
+        {
+            if(paramValue>value)
+            {
+                testUnit.setError("${testName}.${paramName} value ${paramValue} is larger than ${checkValue}");
+            }
+        }
+        else{
+            if(checkExistance)
+            {
+                testUnit.setError("${testName}.${paramName} value is null");
+            }
+        }
+        tests.add(testUnit);
+    }
+    def checkValueMoreThen(paramName,paramValue,checkValue,checkExistance)
+    {
+        def testUnit=new ManualTestUnit("${testName}.${paramName}");
+        if(paramValue!=null)
+        {
+            if(paramValue<value)
+            {
+                testUnit.setError("${testName}.${paramName} value ${paramValue} is smaller than ${checkValue}");
+            }
+        }
+        else{
+            if(checkExistance)
+            {
+                testUnit.setError("${testName}.${paramName} value is null");
+            }
+        }
+        tests.add(testUnit);
+    }
     def checkOperationLessThen(operation,modelList,property,value,checkExistance)
     {
         for(model in modelList){

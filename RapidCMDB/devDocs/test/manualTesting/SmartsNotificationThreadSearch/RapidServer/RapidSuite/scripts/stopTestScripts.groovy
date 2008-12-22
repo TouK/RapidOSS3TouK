@@ -1,5 +1,7 @@
 import script.CmdbScript
 
+com.ifountain.rcmdb.util.RCMDBDataStore.put("SmartsNotificationThreadSearchStop",new Object())
+
 def scriptsToStop=[]
 
 scriptsToStop.each{ scriptName ->

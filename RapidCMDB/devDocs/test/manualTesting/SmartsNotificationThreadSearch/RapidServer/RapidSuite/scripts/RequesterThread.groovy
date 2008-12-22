@@ -22,7 +22,7 @@ import connection.*;
 class RequesterThread extends Thread{	
 	 public void run() {
        println "* "+getName()+" starts";
-        while(SnmpConnection.list().size() == 0){
+        while(com.ifountain.rcmdb.util.RCMDBDataStore.get("SmartsNotificationThreadSearchStop") == null){
             println "* "+getName()+" will do search";
             def ds = HttpDatasource.get(name:"localhttpds");
 	        def results=ds.doRequest("search", [query:"", searchIn:"RsEvent", login:"rsadmin", password:"changeme", max:"100"]);

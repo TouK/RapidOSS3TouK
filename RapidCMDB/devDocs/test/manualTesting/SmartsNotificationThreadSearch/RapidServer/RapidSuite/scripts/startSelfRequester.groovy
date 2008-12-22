@@ -17,11 +17,11 @@
 * USA.
 */
 import datasource.*;
-import connection.*;
+
 
 
 println "* RequesterSelf starts";
-while(SnmpConnection.list().size() == 0){
+while( com.ifountain.rcmdb.util.RCMDBDataStore.get("SmartsNotificationThreadSearchStop") == null){
     //println "* RequesterSelf will do search";
     def ds = HttpDatasource.get(name:"localhttpds");
     def output=ds.doRequest("search", [query:"", searchIn:"RsEvent", login:"rsadmin", password:"changeme", max:"100"]);

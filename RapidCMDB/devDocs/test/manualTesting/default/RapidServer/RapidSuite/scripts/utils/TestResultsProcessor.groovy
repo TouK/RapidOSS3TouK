@@ -21,7 +21,7 @@ class TestResultsProcessor{
        reportsMap=[:];
        tests=[];
        this.testName=testName;
-       firstMemory=null;
+       firstMemory=0;
        generateCompassStatisticsMap();
 
     }

@@ -40,10 +40,6 @@ class SearchableConfiguration {
     String compassConnection = System.getProperty("index.dir") != null?System.getProperty("index.dir"):new StringBuffer(System.getProperty("base.dir")).
                 append(File.separator).
                 append("data").
-                append(File.separator).
-                append("index").
-                append(File.separator).
-                append(GrailsUtil.getEnvironment()).
                 toString();
     int mirrorBufferUpperLimit = 64;
     int mirrorBufferLowerLimit = 32;

@@ -80,6 +80,7 @@ class RapidInsightBuild extends Build {
     }
 
     static void main(String[] args) {
+        long t = System.currentTimeMillis();
         if (args.length > 0) {
             if(args[0] == "test"){
                buildOptions = getTestOptions();
@@ -93,6 +94,7 @@ class RapidInsightBuild extends Build {
         RapidInsightBuild rapidInsightBuilder = new RapidInsightBuild();
         rapidInsightBuilder.setOptions(buildOptions);
         rapidInsightBuilder.build();
+        println "Build finished in ${(System.currentTimeMillis() - t)/1000} secs."
     }
 
     //    def String getExcludedClasses() {

@@ -14,6 +14,10 @@ processor.checkOperationLessThen("Add",["SmartsNotification","SmartsHistoricalNo
 processor.checkOperationLessThen("Remove",["SmartsNotification"],"AvarageDuration",0.04,true)
 processor.checkOperationLessThen("Search",["SmartsNotification"],"AvarageDuration",0.03,true)
 
+
+processor.checkValueLessThen("UsedMemory",processor.getFirstMemory(),processor.getFirstMemory()+20,true)
+
+
 processor.generateResultsXml()
 processor.transferResultsToHudson()
 

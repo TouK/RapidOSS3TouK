@@ -76,7 +76,7 @@ searcherScriptParams.logFileOwn=true
 def logLevel=org.apache.log4j.Level.DEBUG.toString();
 def testScriptParamsList=[]
 testScriptParamsList.add([name:"stopTestScripts",cronExpression:"0 0 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
-testScriptParamsList.add([name:"garbageCollector",cronExpression:"0 0/3 7,8 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
+testScriptParamsList.add([name:"garbageCollector",cronExpression:"0 0/3 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
 testScriptParamsList.add([name:"processTestResults",cronExpression:"0 30 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
 
 

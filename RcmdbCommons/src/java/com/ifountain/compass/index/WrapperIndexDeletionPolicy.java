@@ -29,13 +29,19 @@ public class WrapperIndexDeletionPolicy implements IndexDeletionPolicy, Director
     private Directory dir;
 
     public static List<WrapperIndexDeletionPolicy> getPolicies() {
-        return new ArrayList<WrapperIndexDeletionPolicy>(createdPolicies.values());
+        synchronized (createdPolicies)
+        {
+            return new ArrayList<WrapperIndexDeletionPolicy>(createdPolicies.values());
+        }
     }
     public static void clearPolicies() {
-        createdPolicies.clear();
+        synchronized (createdPolicies)
+        {
+            createdPolicies.clear();
+        }
     }
 
-    private SnapshotDeletionPolicy policy;
+    private SnapshotIndexDeletionPolicy policy;
 
     public void onInit(List list) throws IOException {
         policy.onInit(list);
@@ -45,7 +51,7 @@ public class WrapperIndexDeletionPolicy implements IndexDeletionPolicy, Director
         policy.onCommit(list);
     }
 
-    public SnapshotDeletionPolicy getWrappedPolicy()
+    public SnapshotIndexDeletionPolicy getWrappedPolicy()
     {
         return policy;
     }
@@ -70,9 +76,9 @@ public class WrapperIndexDeletionPolicy implements IndexDeletionPolicy, Director
             }
             else
             {
-                 policy = new SnapshotDeletionPolicy(new KeepOnlyLastCommitDeletionPolicy());
+                 policy = new SnapshotIndexDeletionPolicy(new KeepOnlyLastCommitDeletionPolicy());
             }
+            createdPolicies.put(directory, this);
         }
-        createdPolicies.put(directory, this);
     }
 }

@@ -116,13 +116,13 @@ class TestResultsProcessor{
         {
             if(paramValue>value)
             {
-                testUnit.setError("${testName}.${paramName} value ${paramValue} is larger than ${checkValue}");
+                testUnit.setError("${paramName} value ${paramValue} is larger than ${checkValue}");
             }
         }
         else{
             if(checkExistance)
             {
-                testUnit.setError("${testName}.${paramName} value is null");
+                testUnit.setError("${paramName} value is null");
             }
         }
         tests.add(testUnit);
@@ -134,13 +134,13 @@ class TestResultsProcessor{
         {
             if(paramValue<value)
             {
-                testUnit.setError("${testName}.${paramName} value ${paramValue} is smaller than ${checkValue}");
+                testUnit.setError("${paramName} value ${paramValue} is smaller than ${checkValue}");
             }
         }
         else{
             if(checkExistance)
             {
-                testUnit.setError("${testName}.${paramName} value is null");
+                testUnit.setError("${paramName} value is null");
             }
         }
         tests.add(testUnit);

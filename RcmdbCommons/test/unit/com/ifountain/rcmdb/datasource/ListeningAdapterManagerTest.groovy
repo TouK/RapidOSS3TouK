@@ -72,11 +72,12 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
         
         ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
         ListeningAdapterManager.getInstance().initialize();
+        CompassForTests.initialize([CmdbScript]);
         CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport (BaseListeningDatasource, BaseListeningDatasourceOperations);
         
         
-        CompassForTests.initialize([CmdbScript]);
+
         CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",staticParam:"x:5",logLevel:logLevel.toString())]);
         def script=CmdbScript.addScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript");
 
@@ -116,11 +117,13 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
     {
         ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
         ListeningAdapterManager.getInstance().initialize();
+
+        CompassForTests.initialize([CmdbScript]);
         CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport (BaseListeningDatasource, BaseListeningDatasourceOperations);
 
 
-        CompassForTests.initialize([CmdbScript]);
+
         CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFileOwn:true)]);
         def script=CmdbScript.addScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFileOwn:true);
 
@@ -147,11 +150,13 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
     {
         ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
         ListeningAdapterManager.getInstance().initialize();
+
+        CompassForTests.initialize([CmdbScript]);
         CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport (BaseListeningDatasource, BaseListeningDatasourceOperations);
 
 
-        CompassForTests.initialize([CmdbScript]);
+
         CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFileOwn:true)]);
         def script=CmdbScript.addScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFileOwn:true);
 
@@ -181,11 +186,14 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
     {
         ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
         ListeningAdapterManager.getInstance().initialize();
+
+        CompassForTests.initialize([CmdbScript]);
+        
         CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport (BaseListeningDatasource, BaseListeningDatasourceOperations);
 
 
-        CompassForTests.initialize([CmdbScript]);
+
         CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFileOwn:true)]);
         def script=CmdbScript.addScript(name:"dummysc",type:CmdbScript.LISTENING,scriptFile:"ListeningAdapterManagerTestScript",logFileOwn:true);
 

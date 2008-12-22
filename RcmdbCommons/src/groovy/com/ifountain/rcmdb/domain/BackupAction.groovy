@@ -37,7 +37,7 @@ class BackupAction implements IndexSnapshotAction{
         Collection<String> fileNames = commitPoint.getFileNames();
         String subIndex = directoryToSubindexMap.get(indexDir);
         def dirDestFilePath = destinationDirectory+"/"+subIndex+"/"
-        logger.warn ("Executing backup action for ${subIndex} copying all files to ${dirDestFilePath}");
+        logger.warn ("Executing backup action for ${subIndex} copying ${fileNames} to ${dirDestFilePath}");
         for (Iterator<String> it = fileNames.iterator(); it.hasNext();) {
             String fileName = it.next();
             backupFile(indexDir, fileName, dirDestFilePath+fileName);

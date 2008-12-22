@@ -16,14 +16,12 @@ class TestResultsProcessor{
     def statsXml;
     def tests;
     def testName;
-    public static long firstMemoryUsed;
+    public static long firstMemoryUsed=0;
     public TestResultsProcessor(testName){
        reportsMap=[:];
        tests=[];
-       this.testName=testName;
-       firstMemory=0;
+       this.testName=testName;       
        generateCompassStatisticsMap();
-
     }
     public static long getFirstMemory()
     {

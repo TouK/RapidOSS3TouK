@@ -10,13 +10,14 @@ import junit.framework.Test
 import junit.framework.TestResult
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
+import com.ifountain.rcmdb.util.RCMDBDataStore;
 
 class TestResultsProcessor{
     def reportsMap;
     def statsXml;
     def tests;
     def testName;
-    public static long firstMemoryUsed=0;
+    static String firstMemoryUsedKey="ManualTestingResultsFirstUsedMemory"
     public TestResultsProcessor(testName){
        reportsMap=[:];
        tests=[];
@@ -25,11 +26,19 @@ class TestResultsProcessor{
     }
     public static long getFirstMemory()
     {
-        return firstMemoryUsed; 
+        def firstMemory=RCMDBDataStore.get(firstMemoryUsedKey);
+        if(firstMemory!=null)
+        {
+            firstMemory=Long.valueOf(firstMemory);
+        }
+        else{
+           firstMemory=0; 
+        }
+        return firstMemory;
     }
     public static void recordFirstMemory()
     {
-        firstMemoryUsed=getUsedMemory();
+        RCMDBDataStore.put(firstMemoryUsedKey,getUsedMemory());
     }
     public static long getUsedMemory()
     {
@@ -112,7 +121,7 @@ class TestResultsProcessor{
         def testUnit=new ManualTestUnit("${testName}.${paramName}");
         if(paramValue!=null)
         {
-            if(paramValue>value)
+            if(paramValue>checkValue)
             {
                 testUnit.setError("${paramName} value ${paramValue} is larger than ${checkValue}");
             }
@@ -130,7 +139,7 @@ class TestResultsProcessor{
         def testUnit=new ManualTestUnit("${testName}.${paramName}");
         if(paramValue!=null)
         {
-            if(paramValue<value)
+            if(paramValue<checkValue)
             {
                 testUnit.setError("${paramName} value ${paramValue} is smaller than ${checkValue}");
             }

@@ -15,7 +15,7 @@ processor.checkOperationLessThen("Remove",["SmartsNotification"],"AvarageDuratio
 processor.checkOperationLessThen("Search",["SmartsNotification"],"AvarageDuration",0.03,true)
 
 
-processor.checkValueLessThen("UsedMemory",processor.getFirstMemory(),processor.getFirstMemory()+20,true)
+processor.checkValueLessThen("UsedMemory",processor.getUsedMemory(),processor.getFirstMemory()+20,true)
 
 
 processor.generateResultsXml()

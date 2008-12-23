@@ -40,11 +40,15 @@ class CompassForTests {
          addRelationOperationData.initialize(classesToBeInitialized);
          removeRelationOperationData.initialize(classesToBeInitialized);
         classesToBeInitialized.each{Class domainClass->
+
             domainClass.metaClass.static.add = {Map props->
                 return addOperationData.getReturnObject(domainClass, new HashMap(props));
             }
             domainClass.metaClass.static.get = {Map props->
                 return getOperationData.getReturnObject(domainClass, new HashMap(props));
+            }
+            domainClass.metaClass.static.get = {Long id->
+                return getOperationData.getReturnObject(domainClass, new HashMap(["id":id]));
             }
             domainClass.metaClass.static.addRelation = {Map props->
                 return addRelationOperationData.getReturnObject(domainClass, new HashMap(props));
@@ -55,6 +59,7 @@ class CompassForTests {
             domainClass.metaClass.hasErrors = {
                 return false;
             }
+
         }
     }
 

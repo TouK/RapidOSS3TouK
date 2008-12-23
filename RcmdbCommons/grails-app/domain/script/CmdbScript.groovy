@@ -35,6 +35,9 @@ class CmdbScript {
         except = ["listeningDatasource", "errors", "__operation_class__", "__is_federated_properties_loaded__","messageService"];
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
+    Long id;
+    Long version;
+
     Long startDelay = 0;
     String name = "";
     String scriptFile = "";

@@ -50,7 +50,7 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
 
 
         def ds=new BaseListeningDatasourceMock(name:"myds");
-        CmdbScript script=new CmdbScript(name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds);
+        CmdbScript script=new CmdbScript(id:0,name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds);
 
         CompassForTests.getOperationData.setObjectsWillBeReturned([script]);
 
@@ -69,7 +69,7 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
 
 
         def ds=new BaseListeningDatasourceMock(name:"myds");
-        CmdbScript script=new CmdbScript(name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds);
+        CmdbScript script=new CmdbScript(id:0,name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds);
 
         CompassForTests.getOperationData.setObjectsWillBeReturned([script]);
 

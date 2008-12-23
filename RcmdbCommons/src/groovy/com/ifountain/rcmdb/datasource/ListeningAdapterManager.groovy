@@ -55,7 +55,7 @@ class ListeningAdapterManager {
         observers = [:];
     }
 
-    public void destroy() {
+    private void destroy() {
         logger.debug("Destroying listening adapter manager.");
         listeningAdapters.each {String adapterName, BaseListeningAdapter adapter ->
             adapter.unsubscribe();

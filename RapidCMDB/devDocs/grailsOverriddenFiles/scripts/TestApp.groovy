@@ -356,6 +356,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
         if (app.parentContext == null) {
             app.applicationContext = appCtx
         }
+        ServletContextHolder.setServletContext (appCtx.servletContext);
         def classLoader = app.classLoader
 
         def suite = new TestSuite()

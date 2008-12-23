@@ -37,9 +37,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils
 import com.ifountain.rcmdb.scripting.ScriptingUtils
 import com.ifountain.rcmdb.domain.DomainLockManager
 import com.ifountain.rcmdb.domain.DomainMethodExecutor
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 
 class BootStrap {
-    def quartzScheduler;
     def init = {servletContext ->
         initializeLockManager();
         registerUtilities();
@@ -72,6 +72,7 @@ class BootStrap {
         def baseDir = System.getProperty("base.dir");
         def startupScripts = ScriptingUtils.getStartupScriptList(baseDir, ApplicationHolder.application.getClassLoader());
         ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), startupScripts);
+        def quartzScheduler = ServletContextHolder.servletContext.getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("quartzScheduler")
         ScriptScheduler.getInstance().initialize(quartzScheduler);
         CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {
             try {

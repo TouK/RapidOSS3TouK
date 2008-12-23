@@ -29,9 +29,9 @@
                         sortedModels = sortedModels.name;
                         java.util.Collections.sort(sortedModels);
                     %>
-                    <g:select class="inputtextfield" name="domainClassName" from="${sortedModels}" noSelection="['':'-Select A Model To Reload Operation-']" style="width:300px"></g:select>
+                    <g:select class="inputtextfield" name="domainClassName" from="${sortedModels}" noSelection="['':'-Select A Model To Reload Operation-']" style="width:300px" size="15"></g:select>
                 </td>
-                <td width="0%" align="center">
+                <td width="0%" align="center" valign="top">
                     <span class="button"><g:actionSubmit class="refresh" value="Reload" action="run"/></span>
                 </td>
                 <td width="100%">

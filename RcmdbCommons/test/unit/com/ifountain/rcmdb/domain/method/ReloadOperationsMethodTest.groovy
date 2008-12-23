@@ -23,6 +23,8 @@ import com.ifountain.rcmdb.domain.operation.DomainOperationManager
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import org.apache.log4j.Logger
 import com.ifountain.rcmdb.test.util.TestDatastore
+import org.apache.commons.io.FileUtils
+import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,6 +39,10 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
     protected void setUp() {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
         TestDatastore.put (dsKey, [])
+        def baseDirFile = new File(baseDir)
+        if(baseDirFile.exists())
+        FileUtils.deleteDirectory (baseDirFile)
+        baseDirFile.mkdirs();
     }
 
 
@@ -109,8 +115,97 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
 
         assertNotSame (classAfterFirstReload, manager.getOperationClass());
         assertEquals(2, TestDatastore.get(dsKey).size());
-        assertTrue (TestDatastore.get(dsKey).contains(reloadOpMessage+"SubDomainClass1"+"false"));
-        assertTrue (TestDatastore.get(dsKey).contains(reloadOpMessage+"SubDomainClass2"+"false"));
+        assertTrue (TestDatastore.get(dsKey).contains(reloadOpMessage+"SubDomainClass1"+"true"));
+        assertTrue (TestDatastore.get(dsKey).contains(reloadOpMessage+"SubDomainClass2"+"true"));
+    }
+
+    public void testReloadOperationsWithSubClassesThrowsExceptionIfChildOperationCouldNotBeReloaded()
+    {
+        String reloadOpMessage = "reloadOperations called"
+        GroovyClassLoader classLoader = new GroovyClassLoader(this.class.classLoader);
+        def subClass1 = classLoader.parseClass("""
+            class SubDomainClass1ReloadOperationsMethodTest
+            {
+                def static reloadOperations(boolean reloadSubClasses)
+                {
+                    ${this.class.name}.addOperationMessage("${reloadOpMessage}SubDomainClass1"+reloadSubClasses)
+                }
+            }
+        """);
+        def subClass2 = classLoader.parseClass("""
+            class SubDomainClass2ReloadOperationsMethodTest
+            {
+                def static reloadOperations(boolean reloadSubClasses)
+                {
+                    throw new ${DomainOperationLoadException.class.name}("SubDomainClass2ReloadOperationsMethodTest", null);
+                }
+            }
+        """);
+        def domainClass = createSimpleDomainClass();
+        DomainOperationManager manager = new DomainOperationManager(domainClass, baseDir);
+        manager.getOperationFile().setText (
+                """
+                    class  ${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}
+                    {
+                    }
+                """
+        )
+
+        Class classBeforeReload = manager.loadOperation();
+
+
+        ReloadOperationsMethod method = new ReloadOperationsMethod(domainClass.metaClass, [subClass1, subClass2], manager, Logger.getRootLogger());
+        try
+        {
+            method.invoke(domainClass, [true] as Object[]);
+            fail("Should throw exception since we cannot reload child class operations");
+        }
+        catch(Exception e)
+        {
+            assertEquals("SubDomainClass2ReloadOperationsMethodTest", e.getCause().getMessage())
+        }
+    }
+
+    public void testReloadOperationsWithSubClassesDoesNotThrowExceptionIfChildOperationFileDoesNotExist()
+    {
+        String reloadOpMessage = "reloadOperations called"
+        GroovyClassLoader classLoader = new GroovyClassLoader(this.class.classLoader);
+        def subClass1 = classLoader.parseClass("""
+            class SubDomainClass1ReloadOperationsMethodTest
+            {
+                def static reloadOperations(boolean reloadSubClasses)
+                {
+                    throw ${DomainOperationLoadException.class.name}.operationFileDoesnotExist("file1");
+                }
+            }
+        """);
+        def subClass2 = classLoader.parseClass("""
+            class SubDomainClass2ReloadOperationsMethodTest
+            {
+                def static reloadOperations(boolean reloadSubClasses)
+                {
+                    ${this.class.name}.addOperationMessage("${reloadOpMessage}SubDomainClass2"+reloadSubClasses)
+                }
+            }
+        """);
+        def domainClass = createSimpleDomainClass();
+        DomainOperationManager manager = new DomainOperationManager(domainClass, baseDir);
+        manager.getOperationFile().setText (
+                """
+                    class  ${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}
+                    {
+                    }
+                """
+        )
+
+        Class classBeforeReload = manager.loadOperation();
+
+
+        ReloadOperationsMethod method = new ReloadOperationsMethod(domainClass.metaClass, [subClass1, subClass2], manager, Logger.getRootLogger());
+        method.invoke(domainClass, [true] as Object[]);
+        assertEquals(1, TestDatastore.get(dsKey).size());
+        assertTrue (TestDatastore.get(dsKey).contains(reloadOpMessage+"SubDomainClass2"+"true"));
+
     }
     
 

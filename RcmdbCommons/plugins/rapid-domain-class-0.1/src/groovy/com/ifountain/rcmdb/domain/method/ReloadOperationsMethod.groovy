@@ -50,19 +50,22 @@ class ReloadOperationsMethod extends AbstractRapidDomainStaticMethod{
             manager.loadOperation();
             if(reloadSubclasses != false )
             {
-                def lastObjectNeedsToBeReloaded = null;
-                try
-                {
-                    subclasses.each{Class subClass->
-                        lastObjectNeedsToBeReloaded = subClass.name;
-                        subClass.metaClass.invokeStaticMethod (subClass, "reloadOperations", [false] as Object[]);
+                subclasses.each{Class subClass->
+                    String subClassNameNeedsToBeReloaded = subClass.name;
+                    try
+                    {
+                        subClass.metaClass.invokeStaticMethod (subClass, "reloadOperations", [true] as Object[]);
+                    }
+                    catch(DomainOperationLoadException exception)
+                    {
+                        if(exception.getCause() == null || !(exception.getCause() instanceof FileNotFoundException))
+                        {
+                            logger.info("Operations of child model ${subClassNameNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading.", exception);
+                            throw new RuntimeException("Operations of child model ${subClassNameNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading. Reason:${exception.toString()}", exception)
+                        }
                     }
                 }
-                catch(DomainOperationLoadException exception)
-                {
-                    logger.info("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading.", exception);
-                    throw new RuntimeException("Operations of child model ${lastObjectNeedsToBeReloaded} could not reloaded. Please fix the problem an retry reloading. Reason:${exception.toString()}", exception)
-                }
+
             }
             logger.warn("Operation for class ${mc.theClass.name} loaded successfully.");
         }

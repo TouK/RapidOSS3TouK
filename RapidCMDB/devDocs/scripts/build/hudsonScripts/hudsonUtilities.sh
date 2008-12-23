@@ -53,7 +53,26 @@ runTestBuildAndJavaTests() {
     fi
     
     cd RapidModules/
-    groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild test
+    optionsFile = test.options
+    rm -f $optionsFile
+    echo RI_UNIX=false >> $optionsFile
+    echo RI_WINDOWS=true >> $optionsFile
+    echo RCMDB_UNIX=true >> $optionsFile
+    echo RCMDB_WINDOWS=false >> $optionsFile
+    echo MODELER=true >> $optionsFile
+    echo SAMPLE1=false >> $optionsFile
+    echo SAMPLE2=false >> $optionsFile
+    echo ZIP=false>> $optionsFile
+    echo APG=true>> $optionsFile
+    echo OPENNMS=true >> $optionsFile
+    echo HYPERIC=true >> $optionsFile
+    echo NETCOOL=true >> $optionsFile
+    echo SMARTS=true >> $optionsFile
+    echo E_WINDOWS=false >> $optionsFile
+    echo E_UNIX=false >> $optionsFile
+    echo TEST=true >> $optionsFile
+    echo JREDIR=/opt/jre1.6.0_04 >> $optionsFile
+    groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild $optionsFile
     cp $WORKSPACE/LicencedJars/lib/jdbc/*.jar $WORKSPACE/Distribution/RapidServer/lib
     cp $WORKSPACE/LicencedJars/lib/smarts/*.jar $WORKSPACE/Distribution/RapidServer/lib
     groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
@@ -66,7 +85,17 @@ runTestBuildAndJavaTestsForRCMDB() {
     rm -rf TestResults/
     mkdir TestResults
     cd RapidModules/
-    groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild test
+    optionsFile = test.options
+    rm -f $optionsFile
+    echo RCMDB_UNIX=false >> $optionsFile
+    echo RCMDB_WINDOWS=true >> $optionsFile
+    echo MODELER=true >> $optionsFile
+    echo SAMPLE1=false >> $optionsFile
+    echo SAMPLE2=false >> $optionsFile
+    echo ZIP=false>> $optionsFile
+    echo TEST=true >> $optionsFile
+    echo JREDIR=/opt/jre1.6.0_04 >> $optionsFile
+    groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild $optionsFile
     cp $WORKSPACE/LicencedJars/lib/jdbc/*.jar $WORKSPACE/Distribution/RapidServer/lib
     groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
     groovy RapidCMDB/devDocs/scripts/build/CompModuleTest

@@ -47,7 +47,7 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
 
     public void testAddOperationPerformanceWithFileAndMemoryStorageType()
     {
-        _testAddOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 25);
+        _testAddOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 20);
     }
 
     private void _testAddOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
@@ -162,7 +162,7 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
 
     public void testAddWithUpdateOperationPerformanceWithFileAndMemoryStorageType()
     {
-        _testUpdateOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 30);
+        _testUpdateOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 20);
     }
 
     public void testRemoveOperationPerformanceWithFileStorageType()

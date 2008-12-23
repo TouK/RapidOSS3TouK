@@ -62,6 +62,7 @@ class Test extends Parent{
                         return;
                     }
                 }
+                println "new content for ${f.getCanonicalPath()} is ${strBuf.toString()}"
                 f.setText(strBuf.toString());
             }
         }

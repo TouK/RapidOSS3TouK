@@ -34,11 +34,13 @@
 //E_WINDOWS=false
 //E_UNIX=false
 //TEST=false
+//JREDIR=path to jre files on the build machine
 
 package build
 
 class RapidInsightBuild extends Build {
     boolean RI_UNIX_OPT, RI_WINDOWS_OPT, APG_OPT, OPENNMS_OPT, NETCOOL_OPT, SMARTS_OPT, HYPERIC_OPT, ENTERPRISE_WINDOWS_OPT, ENTERPRISE_UNIX_OPT, ZIP_OPT, TEST_OPT;
+    def JREDIR_OPT;
     def version = "$env.rapid_insight/RIVersion.txt";
     def versionInBuild = "$env.dist_rapid_suite/RIVersion.txt";
     static def buildOptions;
@@ -56,6 +58,8 @@ class RapidInsightBuild extends Build {
             ENTERPRISE_UNIX_OPT = Boolean.parseBoolean(options.get("E_UNIX", "false"));
             ZIP_OPT = Boolean.parseBoolean(options.get("ZIP", "false"));
             TEST_OPT = Boolean.parseBoolean(options.get("TEST", "false"));
+            JREDIR_OPT = options.get("JREDIR", null);
+            if(JREDIR_OPT!=null) env.jreDir = JREDIR_OPT; 
             TEST = TEST_OPT
         }
     }

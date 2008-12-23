@@ -26,10 +26,11 @@ package build;
 //ZIP=false
 //MODELER=true
 //TEST=false
+//JREDIR=path to jre files on the build machine
 
 class RapidCmdbBuild extends Build {
 	boolean RCMDB_UNIX_OPT, RCMDB_WINDOWS_OPT, SAMPLE1_OPT, SAMPLE2_OPT, ZIP_OPT, MODELER_OPT, TEST_OPT;
-    
+	def JREDIR_OPT;    
     def setOptions(options){
     	if (options!=null){
     		RCMDB_UNIX_OPT = Boolean.parseBoolean(options.get("RCMDB_UNIX", "true"));
@@ -39,6 +40,8 @@ class RapidCmdbBuild extends Build {
     		ZIP_OPT = Boolean.parseBoolean(options.get("ZIP", "false"));
     		MODELER_OPT = Boolean.parseBoolean(options.get("MODELER", "false"));
     		TEST_OPT = Boolean.parseBoolean(options.get("TEST", "false"));
+    		JREDIR_OPT = options.get("JREDIR", null);
+    		if(JREDIR_OPT!=null) env.jreDir = JREDIR_OPT;
     	}    	
     }
 

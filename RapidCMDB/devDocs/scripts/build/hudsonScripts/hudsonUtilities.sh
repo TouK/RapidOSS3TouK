@@ -53,7 +53,7 @@ runTestBuildAndJavaTests() {
     fi
     
     cd RapidModules/
-    optionsFile = test.options
+    optionsFile=test.options
     rm -f $optionsFile
     echo RI_UNIX=false >> $optionsFile
     echo RI_WINDOWS=true >> $optionsFile
@@ -85,7 +85,7 @@ runTestBuildAndJavaTestsForRCMDB() {
     rm -rf TestResults/
     mkdir TestResults
     cd RapidModules/
-    optionsFile = test.options
+    optionsFile=test.options
     rm -f $optionsFile
     echo RCMDB_UNIX=false >> $optionsFile
     echo RCMDB_WINDOWS=true >> $optionsFile

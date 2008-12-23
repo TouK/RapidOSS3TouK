@@ -33,6 +33,9 @@ checkOutTag() {
     rm -rf LicencedJars
     rm -rf Netcool
     rm -rf Smarts
+    rm -rf Hyperic
+    rm -rf Apg
+    rm -rf OpenNms
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/RapidModules ./RapidModules
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/ThirdParty ./ThirdParty
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/LicencedJars ./LicencedJars

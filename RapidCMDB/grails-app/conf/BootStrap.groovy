@@ -162,7 +162,7 @@ class BootStrap {
             listeningScriptInitializerThread.join();
             log.info("Stopped listening script initializer thread");
         }
-        ListeningAdapterManager.getInstance().destroy();
+        ListeningAdapterManager.destroyInstance();
         ScriptManager.getInstance().destroy();
         def servletCtx = ServletContextHolder.getServletContext()
         def webAppCtx = WebApplicationContextUtils.getWebApplicationContext(servletCtx)

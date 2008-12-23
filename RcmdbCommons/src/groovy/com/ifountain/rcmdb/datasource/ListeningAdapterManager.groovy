@@ -40,6 +40,13 @@ class ListeningAdapterManager {
         }
         return manager;
     }
+
+    public static void destroyInstance() {
+        if (manager != null) {
+            manager.destroy();
+            manager = null;
+        }
+    }
     private ListeningAdapterManager() {
     }
 

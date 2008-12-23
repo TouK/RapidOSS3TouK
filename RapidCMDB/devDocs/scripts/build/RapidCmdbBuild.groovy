@@ -40,7 +40,7 @@ class RapidCmdbBuild extends Build {
     		ZIP_OPT = Boolean.parseBoolean(options.get("ZIP", "false"));
     		MODELER_OPT = Boolean.parseBoolean(options.get("MODELER", "false"));
     		TEST_OPT = Boolean.parseBoolean(options.get("TEST", "false"));
-    		JREDIR_OPT = options.get("JREDIR", null);
+    		JREDIR_OPT = options.get("JREDIR");
     		if(JREDIR_OPT!=null) env.jreDir = JREDIR_OPT;
     	}    	
     }

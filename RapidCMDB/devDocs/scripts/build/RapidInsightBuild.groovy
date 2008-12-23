@@ -58,7 +58,7 @@ class RapidInsightBuild extends Build {
             ENTERPRISE_UNIX_OPT = Boolean.parseBoolean(options.get("E_UNIX", "false"));
             ZIP_OPT = Boolean.parseBoolean(options.get("ZIP", "false"));
             TEST_OPT = Boolean.parseBoolean(options.get("TEST", "false"));
-            JREDIR_OPT = options.get("JREDIR", null);
+            JREDIR_OPT = options.get("JREDIR");
             if(JREDIR_OPT!=null) env.jreDir = JREDIR_OPT; 
             TEST = TEST_OPT
         }

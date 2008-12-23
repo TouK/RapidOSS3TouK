@@ -44,6 +44,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.transaction.support.TransactionCallback
 import org.springframework.transaction.TransactionStatus
 import org.apache.commons.logging.LogFactory
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
 
 
 Ant.property(environment: "env")
@@ -362,7 +363,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
         populateTestSuite(suite, testFiles, classLoader, appCtx, "test/integration/")
         if (suite.testCount() > 0) {
             def bootStrapInstance = classLoader.loadClass("BootStrap").newInstance();
-            bootStrapInstance.init(null);
+            bootStrapInstance.init(ServletContextHolder.getServletContext());
             int testCases = suite.countTestCases()
             println "-------------------------------------------------------"
             println "Running ${testCases} Integration Test${testCases > 1 ? 's' : ''}..."

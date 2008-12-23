@@ -20,6 +20,11 @@ package script
 import com.ifountain.core.test.util.RapidCoreTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import org.apache.log4j.Level;
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager;
+import datasource.BaseListeningDatasource
+import com.ifountain.rcmdb.datasource.BaseListeningDatasourceMock;
+
+
 /**
  * Created by IntelliJ IDEA.
  * User: iFountain
@@ -28,6 +33,57 @@ import org.apache.log4j.Level;
  * To change this template use File | Settings | File Templates.
  */
 class CmdbScriptOperationsTest extends RapidCoreTestCase{
+
+    protected void setUp() {
+         super.setUp()
+
+     }
+     protected void tearDown() {
+        super.tearDown()
+        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)
+        ListeningAdapterManager.destroyInstance();
+     }
+
+     void testBeforeDelete(){
+        CompassForTests.initialize([CmdbScript]);
+        CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
+
+
+        def ds=new BaseListeningDatasourceMock(name:"myds");
+        CmdbScript script=new CmdbScript(name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds);
+
+        CompassForTests.getOperationData.setObjectsWillBeReturned([script]);
+
+        def stoppedDatasource=null;
+        ListeningAdapterManager.metaClass.stopAdapter= { BaseListeningDatasource listeningDatasource ->
+            stoppedDatasource = listeningDatasource;
+        }
+        assertNull(stoppedDatasource);
+        script.beforeDelete();
+        assertEquals(stoppedDatasource,ds);
+
+     }
+     void testBeforeUpdate(){
+        CompassForTests.initialize([CmdbScript]);
+        CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
+
+
+        def ds=new BaseListeningDatasourceMock(name:"myds");
+        CmdbScript script=new CmdbScript(name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds);
+
+        CompassForTests.getOperationData.setObjectsWillBeReturned([script]);
+
+        def stoppedDatasource=null;
+        ListeningAdapterManager.metaClass.stopAdapter= { BaseListeningDatasource listeningDatasource ->
+            stoppedDatasource = listeningDatasource;
+        }
+        assertNull(stoppedDatasource);
+        script.beforeUpdate();
+        assertEquals(stoppedDatasource,ds);
+
+     }
+
+
 
 
      void testCreateStaticParams(){
@@ -83,3 +139,4 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
      }
 
 }
+

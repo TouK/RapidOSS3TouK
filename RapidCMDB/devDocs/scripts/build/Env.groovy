@@ -26,7 +26,7 @@ class Env {
 // Common environment properties	
 	static def jreDir = basedir+"/jre1.6.0_04";
 	static def distribution = basedir+"/Distribution";
-	static def testresults = basedir+"/TestResultsTemp";
+	static def testresults = basedir+"/TestResults";
 	static def dist_rapid_server = "$distribution/RapidServer";
 	static def dist_rapid_suite = "$dist_rapid_server/RapidSuite";
 	static def dist_modules = "$distribution/Modules";

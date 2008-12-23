@@ -109,8 +109,14 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
                 OperationStatisticResult statistics = new OperationStatisticResult(model:delegate.name);
                 statistics.start();
                 def res = searchableMethodFactory.getMethod(delegate, "searchEvery").invoke(*args)
-                res?.each{result->
-                    EventTriggeringUtils.triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
+
+                //For search everies with raw option we should not call onload event since it can return any type of object
+                //However, onload event requires domain object
+                if(args.length != 2 || !(args[1] instanceof Map) || args[1].raw == null)
+                {
+                    res?.each{result->
+                        EventTriggeringUtils.triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
+                    }
                 }
                 statistics.stop();
                 OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);

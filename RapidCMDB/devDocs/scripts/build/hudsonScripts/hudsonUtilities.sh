@@ -48,7 +48,9 @@ checkOutTag() {
 runTestBuildAndJavaTests() {
 
     rm -rf TestResults/
+    rm -rf TestResultsTemp/
     mkdir TestResults
+    mkdir TestResultsTemp
     if [ -d ManualTestResults ];
     then
        echo "Copying ManualTestResults to TestResults"
@@ -81,6 +83,7 @@ runTestBuildAndJavaTests() {
     groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
     groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
     groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
+    cp -rf ../TestResultsTemp ../TestResults
     cd $WORKSPACE
 }
 

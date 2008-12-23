@@ -60,7 +60,7 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="protocol">protocol:</label>
+                            <label for="protocol">Protocol:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:emailConnection,field:'protocol','errors')}">
                             <input type="text" class="inputtextfield" id="protocol" name="protocol" value="${fieldValue(bean:emailConnection,field:'protocol')}"/>

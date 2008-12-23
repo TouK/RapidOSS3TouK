@@ -445,8 +445,16 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
         }
 
 
+
         for(int i=0; i < maxRetry; i++)
         {
+            int numberOfRetriesToFindNumberOfExecution = 0;
+            while(numberOfExecutionOfInvoke != i+1 && numberOfRetriesToFindNumberOfExecution < 1000)
+            {
+                Thread.sleep (1);
+                numberOfRetriesToFindNumberOfExecution++;
+            }
+            assertEquals (i+1, numberOfExecutionOfInvoke);
             int thread2State = 0;
             def t2 = Thread.start {
                 thread2State = 1;

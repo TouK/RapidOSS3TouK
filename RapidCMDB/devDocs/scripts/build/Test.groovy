@@ -59,6 +59,7 @@ class Test extends Parent{
                     else
                     {
                         strBuf.append (line.substring(0, line.indexOf(testSuiteString)+testSuiteString.length())).append("\n");
+                        break;
                     }
                 }
                 f.setText(strBuf.toString());

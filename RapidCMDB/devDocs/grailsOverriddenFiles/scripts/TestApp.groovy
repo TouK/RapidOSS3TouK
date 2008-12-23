@@ -350,15 +350,19 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
             loadApp()
         //}
         configureApp()
+
         def app = appCtx.getBean(GrailsApplication.APPLICATION_ID)
         if (app.parentContext == null) {
             app.applicationContext = appCtx
         }
         def classLoader = app.classLoader
+
         def suite = new TestSuite()
 
         populateTestSuite(suite, testFiles, classLoader, appCtx, "test/integration/")
         if (suite.testCount() > 0) {
+            def bootStrapInstance = classLoader.loadClass("BootStrap").newInstance();
+            bootStrapInstance.init(null);
             int testCases = suite.countTestCases()
             println "-------------------------------------------------------"
             println "Running ${testCases} Integration Test${testCases > 1 ? 's' : ''}..."
@@ -419,6 +423,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
             }
             finally {
                 interceptor?.destroy()
+                bootStrapInstance.destroy();
             }
         }
     }

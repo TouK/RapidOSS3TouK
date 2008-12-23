@@ -55,6 +55,11 @@ class ApgBuild extends Build{
         ant.copy(todir: "${rapidSuiteDir}/operations") {
             ant.fileset(dir: "$env.rapid_apg/operations")
         }
+        if (TEST) {
+            ant.copy(todir: "${rapidSuiteDir}/test") {
+                ant.fileset(dir: "$env.rapid_apg/test")
+            }
+        }
         ant.copy(todir: "${rapidSuiteDir}/lib") {
             ant.fileset(dir: "$env.rapid_apg/lib")
         }

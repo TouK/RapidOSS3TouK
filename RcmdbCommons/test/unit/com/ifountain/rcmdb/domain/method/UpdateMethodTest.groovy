@@ -106,6 +106,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
         assertEquals (objectBeforeAdd, addedObject);
         addedObject.isBeforeInsertCalled = false;
+        addedObject.isAfterInsertCalled = false;
         addedObject.isOnLoadCalled = false;
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value"];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
@@ -117,8 +118,11 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
         assertTrue (updatedObject.isOnLoadCalled);
         assertFalse (updatedObject.isBeforeInsertCalled);
+        assertFalse (updatedObject.isAfterInsertCalled);
         assertTrue (updatedObject.isBeforeUpdateCalled);
+        assertTrue (updatedObject.isAfterUpdateCalled);
         assertFalse (updatedObject.isBeforeDeleteCalled);
+        assertFalse (updatedObject.isAfterDeleteCalled);
     }
 
 

@@ -29,6 +29,9 @@ class EventTriggeringUtils {
     static final String BEFORE_INSERT_EVENT = 'beforeInsert'
     static final String BEFORE_UPDATE_EVENT = 'beforeUpdate'
     static final String BEFORE_DELETE_EVENT = 'beforeDelete'
+    static final String AFTER_INSERT_EVENT = 'afterInsert'
+    static final String AFTER_UPDATE_EVENT = 'afterUpdate'
+    static final String AFTER_DELETE_EVENT = 'afterDelete'
     public static void triggerEvent(entity, event) {
         try
         {

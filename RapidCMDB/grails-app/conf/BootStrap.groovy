@@ -1,4 +1,31 @@
-/* 
+import auth.Group
+import auth.Role
+import auth.RsUser
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager
+import com.ifountain.rcmdb.domain.DomainLockManager
+import com.ifountain.rcmdb.domain.DomainMethodExecutor
+import com.ifountain.rcmdb.domain.converter.*
+import com.ifountain.rcmdb.domain.generation.DataCorrectionUtilities
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.scripting.ScriptManager
+import com.ifountain.rcmdb.scripting.ScriptScheduler
+import com.ifountain.rcmdb.scripting.ScriptingUtils
+import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.util.RapidDateUtilities
+import com.ifountain.rcmdb.util.RapidStringUtilities
+import datasource.BaseListeningDatasource
+import datasource.RCMDBDatasource
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
+import org.compass.core.Compass
+import org.jsecurity.crypto.hash.Sha1Hash
+import org.springframework.web.context.support.WebApplicationContextUtils
+import script.CmdbScript
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -16,34 +43,6 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-import auth.Group
-import auth.Role
-import auth.RsUser
-import com.ifountain.rcmdb.datasource.ListeningAdapterManager
-import com.ifountain.rcmdb.domain.converter.*
-import com.ifountain.rcmdb.domain.generation.DataCorrectionUtilities
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import com.ifountain.rcmdb.scripting.ScriptManager
-import com.ifountain.rcmdb.scripting.ScriptScheduler
-import com.ifountain.rcmdb.util.RapidCMDBConstants
-import com.ifountain.rcmdb.util.RapidDateUtilities
-import com.ifountain.rcmdb.util.RapidStringUtilities
-import datasource.BaseListeningDatasource
-import datasource.RCMDBDatasource
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.jsecurity.crypto.hash.Sha1Hash
-import script.CmdbScript
-import org.compass.core.Compass
-import org.codehaus.groovy.grails.web.context.ServletContextHolder
-import org.springframework.web.context.support.WebApplicationContextUtils
-import script.CmdbScript
-import com.ifountain.rcmdb.scripting.ScriptingUtils
-import com.ifountain.rcmdb.domain.DomainLockManager
-import org.apache.log4j.Logger
-import com.ifountain.rcmdb.domain.DomainMethodExecutor
-import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes;
-
 class BootStrap {
     Thread listeningScriptInitializerThread;
     def init = {servletContext ->

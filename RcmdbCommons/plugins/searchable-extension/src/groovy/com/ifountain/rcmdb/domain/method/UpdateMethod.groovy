@@ -113,6 +113,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
             domainObject.removeRelation(relationToBeRemovedMap);
             domainObject.addRelation(relationToBeAddedMap);
             statistics.start();
+            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT);
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.ONLOAD_EVENT);
             OperationStatistics.getInstance().addStatisticResult (OperationStatistics.UPDATE_OPERATION_NAME, statistics);
         }

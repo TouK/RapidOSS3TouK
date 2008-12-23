@@ -147,6 +147,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
                 sampleBean.addRelation(relatedInstances);
                 statistics.start();
             }
+            EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.AFTER_INSERT_EVENT);
             EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.ONLOAD_EVENT);
             statistics.stop();
             OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, statistics);

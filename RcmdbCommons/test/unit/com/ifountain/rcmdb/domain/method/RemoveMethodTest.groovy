@@ -71,8 +71,11 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
         assertSame(objectToBeRemoved, RemoveMethodDomainObjectWithEvents.unIndexList[0][0]);
         assertNull (objectToBeRemoved.relationsToBeRemoved);
         assertTrue (objectToBeRemoved.isBeforeDeleteCalled);
+        assertTrue (objectToBeRemoved.isAfterDeleteCalled);
         assertFalse (objectToBeRemoved.isBeforeUpdateCalled);
+        assertFalse (objectToBeRemoved.isAfterUpdateCalled);
         assertFalse (objectToBeRemoved.isBeforeInsertCalled);
+        assertFalse (objectToBeRemoved.isAfterInsertCalled);
         assertFalse (objectToBeRemoved.isOnLoadCalled);
     }
 
@@ -155,8 +158,11 @@ class RemoveMethodDomainObjectWithEvents extends RemoveMethodDomainObject
 {
     boolean isOnLoadCalled = false;
     boolean isBeforeInsertCalled = false;
+    boolean isAfterInsertCalled = false;
     boolean isBeforeUpdateCalled = false;
+    boolean isAfterUpdateCalled = false;
     boolean isBeforeDeleteCalled = false;
+    boolean isAfterDeleteCalled = false;
     def onLoad = {
         isOnLoadCalled = true;
     }
@@ -169,6 +175,15 @@ class RemoveMethodDomainObjectWithEvents extends RemoveMethodDomainObject
     }
     def beforeDelete = {
         isBeforeDeleteCalled = true;
+    }
+    def afterInsert = {
+        isAfterInsertCalled = true;
+    }
+    def afterUpdate = {
+        isAfterUpdateCalled = true;
+    }
+    def afterDelete = {
+        isAfterDeleteCalled = true;
     }
 }
 

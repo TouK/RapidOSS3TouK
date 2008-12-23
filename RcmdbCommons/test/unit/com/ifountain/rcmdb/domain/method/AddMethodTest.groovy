@@ -143,8 +143,11 @@ class AddMethodTest extends RapidCmdbTestCase{
         def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
         assertTrue (addedObject.isOnLoadCalled);
         assertTrue (addedObject.isBeforeInsertCalled);
+        assertTrue (addedObject.isAfterInsertCalled);
         assertFalse (addedObject.isBeforeUpdateCalled);
+        assertFalse (addedObject.isAfterUpdateCalled);
         assertFalse (addedObject.isBeforeDeleteCalled);
+        assertFalse (addedObject.isAfterDeleteCalled);
         assertEquals (expectedDomainObject1, addedObject);
         assertTrue (AddMethodDomainObjectWithEvents.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
@@ -156,7 +159,9 @@ class AddMethodTest extends RapidCmdbTestCase{
 
         assertFalse (addedObject.isOnLoadCalled);
         assertFalse (addedObject.isBeforeInsertCalled);
+        assertFalse (addedObject.isAfterInsertCalled);
         assertFalse (addedObject.isBeforeDeleteCalled);
+        assertFalse (addedObject.isAfterDeleteCalled);
     }
 
 
@@ -442,8 +447,11 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
 {
     boolean isOnLoadCalled = false;
     boolean isBeforeInsertCalled = false;
+    boolean isAfterInsertCalled = false;
     boolean isBeforeUpdateCalled = false;
+    boolean isAfterUpdateCalled = false;
     boolean isBeforeDeleteCalled = false;
+    boolean isAfterDeleteCalled = false;
 
     def onLoad = {
         isOnLoadCalled = true;
@@ -457,6 +465,16 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
     }
     def beforeDelete = {
         isBeforeDeleteCalled = true;
+    }
+
+    def afterInsert = {
+        isAfterInsertCalled = true;
+    }
+    def afterUpdate = {
+        isAfterUpdateCalled = true;
+    }
+    def afterDelete = {
+        isAfterDeleteCalled = true;
     }
 }
 

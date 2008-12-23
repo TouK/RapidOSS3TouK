@@ -82,6 +82,7 @@ class RemoveMethod extends AbstractRapidDomainMethod{
             }
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
             CompassMethodInvoker.unindex(mc, domainObject);
+            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_DELETE_EVENT);            
             statistics.stop();
             OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_OPERATION_NAME, statistics);
             if(!relsToBeRemoved.isEmpty())

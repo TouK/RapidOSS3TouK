@@ -162,7 +162,7 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
 
     public void testAddWithUpdateOperationPerformanceWithFileAndMemoryStorageType()
     {
-        _testUpdateOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 20);
+        _testUpdateOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 10);
     }
 
     public void testRemoveOperationPerformanceWithFileStorageType()

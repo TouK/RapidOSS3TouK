@@ -594,10 +594,14 @@
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/jdbc" />
         <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/log4j-1.2.13.jar!/" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/snmp" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/javamail" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/commons" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/javamail" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/jdbc" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/snmp" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/testing" recursive="false" />

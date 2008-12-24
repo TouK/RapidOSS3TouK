@@ -53,6 +53,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     addTools: function() {
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SearchListSettingsTool(document.body, this));
+        this.toolbar.addTool(new YAHOO.rapidjs.component.search.ExportTool(document.body, this));
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
     },
 

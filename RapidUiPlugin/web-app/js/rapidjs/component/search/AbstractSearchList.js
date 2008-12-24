@@ -607,6 +607,31 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         return this.lastSortOrder;
     },
 
+    getVisibleDataQueryParams: function(){
+       var params = YAHOO.rapidjs.ObjectUtils.clone(this.params, true);
+       var indexOfQm = this.url.indexOf("?"); 
+       if(indexOfQm > -1 && this.url.length > indexOfQm + 1){
+           var postdata = this.url.substr(indexOfQm + 1)
+           var keyValues = postdata.split("&");
+           for (var index = 0; index < keyValues.length; index++) {
+               var keyValue = keyValues[index];
+               var keyValueArray = keyValue.split("=");
+               params[keyValueArray[0]] = keyValueArray[1];
+           }
+       }
+       var offset = 0;
+       var max = this.bufferView.rowEls.length;
+       if(this.bufferView.rowEls.length > 0){
+          offset = this.bufferView.rowEls[0].dom.rowIndex;
+       }
+       params['sort'] = this.getSortAttribute(); 
+       params['order'] = this.getSortOrder();
+       params['query'] = this.currentlyExecutingQuery || '';
+       params['offset'] = offset;
+       params['max'] = max; 
+       return params;
+    }, 
+
     showCurrentState: function() {
     },
     calculateRowHeight: function() {

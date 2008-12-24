@@ -234,6 +234,9 @@ class RapidInsightBuild extends Build {
         ant.copy(todir: "$env.dist_rapid_ui/scripts") {
             ant.fileset(dir: "$env.rapid_ui/scripts")
         }
+        ant.copy(todir: "$env.dist_rapid_ui/src/groovy") {
+            ant.fileset(dir: "$env.rapid_ui/src/groovy")
+        }
         ant.copy(file: "$env.rapid_ui/application.properties", toDir: "$env.dist_rapid_ui");
         ant.copy(file: "$env.rapid_ui/RapidUiGrailsPlugin.groovy", toDir: "$env.dist_rapid_ui");
         ant.copy(file: "$env.rapid_ui/plugin.xml", toDir: "$env.dist_rapid_ui");

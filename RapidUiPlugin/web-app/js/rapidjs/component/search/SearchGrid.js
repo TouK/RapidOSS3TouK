@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -243,6 +243,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     addTools: function() {
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SettingsTool(document.body, this));
+        this.toolbar.addTool(new YAHOO.rapidjs.component.search.ExportTool(document.body, this));
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
     },
 

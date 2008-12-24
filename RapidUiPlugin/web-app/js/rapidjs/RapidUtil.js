@@ -17,6 +17,31 @@
 * USA.
 */
 YAHOO.namespace('rapidjs');
+function createLink(url, params)
+{
+    if(params == null)
+    {
+        params = {};
+    }
+    var postData = "";
+    for(var paramName in params) {
+        postData = postData + paramName + "=" + encodeURIComponent(params[paramName])+"&";
+    }
+    if(postData != "")
+    {
+        postData = postData.substring(0, postData.length-1);
+        if(url.indexOf("?") >= 0)
+        {
+            url = url + "&" + postData;
+        }
+        else
+        {
+            url = url + "?" + postData;
+        }
+    }
+    return url;
+}
+
 String.prototype.trim = function() {
     var a = this.replace(/^\s+/, '');
     return a.replace(/\s+$/, '');

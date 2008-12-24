@@ -134,6 +134,10 @@ class MockOperationData{
         numberOfAddMethodCalls[domainClass.name] = currentOperationNumber+1;
         return res;
     }
+    public int getCallCount(Class domainClass)
+    {
+        return numberOfAddMethodCalls[domainClass.name];
+    }
 
     private void clearAll()
     {

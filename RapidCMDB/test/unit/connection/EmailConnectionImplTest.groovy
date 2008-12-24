@@ -14,7 +14,7 @@ import com.ifountain.core.test.util.RapidCoreTestCase
  */
 class EmailConnectionImplTest extends RapidCoreTestCase{
 
-     public void testConnect()
+     public void testConnectAndDisconnect()
      {
         Map params = EmailConnectionImplTestUtils.getConnectionParams();
         params.SmtpPort=Integer.valueOf(params.SmtpPort)

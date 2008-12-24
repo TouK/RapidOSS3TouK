@@ -132,7 +132,9 @@ class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
             output = wrapper.renameFile("3.cfs", "x.cfs");
         });
         createOutputThread.start();
+        Thread.sleep (200);
         deleteFileThread.start();
+        Thread.sleep (200);
         renameFileThread.start();
         Thread.sleep (1000);
         assertTrue (createOutputThread.isStarted);

@@ -49,7 +49,9 @@ class RapidDomainClassGrailsPlugin {
     def loadAfter = ['searchableExtension']
     def observe = ["controllers"]
     def domainClassMap;
+    def operationClassManagers;
     def doWithSpring = {
+        operationClassManagers = [:];
         ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
         domainPropertyInterceptor(DomainClassPropertyInterceptorFactoryBean) { bean ->
             propertyInterceptorClassName = ConfigurationHolder.getConfig().flatten().get(RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME);
@@ -185,19 +187,21 @@ class RapidDomainClassGrailsPlugin {
         }
         if(mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)
         {
-            DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString());
-
+            DomainOperationManager parentClassManager = operationClassManagers[dc.clazz.superclass.name];
+            DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString(), parentClassManager);
+            operationClassManagers[dc.clazz.name] = manager;
             ReloadOperationsMethod method = new ReloadOperationsMethod(dc.metaClass, DomainClassUtils.getSubClasses(dc), manager, logger);
             mc.methodMissing =  {String name, args ->
-                if(manager.operationClass != null)
+                Class operationClass = manager.getOperationClass();
+                if(operationClass != null)
                 {
-                    if(manager.operationClassMethods.containsKey(name))
+                    if(manager.getOperationClassMethods().containsKey(name))
                     {
                         def oprInstance = delegate[RapidCMDBConstants.OPERATION_PROPERTY_NAME];
                         if(oprInstance == null)
                         {
-                            oprInstance = manager.operationClass.newInstance() ;
-                            manager.operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
+                            oprInstance = operationClass.newInstance() ;
+                            operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
                             delegate.setProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME, oprInstance, false);
                         }
                         try {
@@ -213,14 +217,15 @@ class RapidDomainClassGrailsPlugin {
                 throw new MissingMethodException (name,  mc.theClass, args);
             }
             mc.'static'._methodMissing = {String methodName, args ->
-                if(manager.operationClass != null)
+                Class operationClass = manager.getOperationClass();
+                if(operationClass != null)
                 {
-                    if(manager.operationClassMethods.containsKey(methodName))
+                    if(manager.getOperationClassMethods().containsKey(methodName))
                     {
                         try {
-                            return manager.operationClass.metaClass.invokeStaticMethod(manager.operationClass, methodName, args);
+                            return operationClass.metaClass.invokeStaticMethod(operationClass, methodName, args);
                         } catch (MissingMethodException e) {
-                            if(e.getType().name != manager.operationClass.name || e.getMethod() != methodName)
+                            if(e.getType().name != operationClass.name || e.getMethod() != methodName)
                             {
                                 throw e;
                             }
@@ -235,7 +240,7 @@ class RapidDomainClassGrailsPlugin {
             }
             mc.'static'.reloadOperations = {reloadSubclasses->
                 method.invoke(mc.theClass, [reloadSubclasses] as Object[]);
-                getPropertiesMethod.setOperationClass (manager.operationClass);
+                getPropertiesMethod.setOperationClass (manager.getOperationClass());
             }
 
             try

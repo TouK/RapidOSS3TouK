@@ -60,7 +60,7 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
                     }
                 """
         )
-        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory, null);
         Class operationClass = manager.loadOperation();
         AbstractDomainOperation operInstance = operationClass.newInstance();
         assertEquals (stringWillBeReturned, operInstance.method1());
@@ -85,6 +85,44 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
         assertSame (reloadedOperationClass, manager.getOperationClass())
         assertFalse (manager.operationClassMethods.containsKey("method1"));
         assertTrue (manager.operationClassMethods.containsKey("method2"));
+    }
+
+
+    public void testGetOperationClassReturnsParentOperationClassIfItsOperationDoesNotExist()
+    {
+        GroovyClassLoader classLoader = new GroovyClassLoader();
+        Class parentDomainClass = classLoader.parseClass("""
+            class ParentDomainClass
+            {
+
+            }
+        """);
+        def stringWillBeReturned = "method1"
+        new File("$operationsDirectory/${parentDomainClass.name}${DomainOperationManager.OPERATION_SUFFIX}.groovy").setText (
+                """
+                    class  ${parentDomainClass.name}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}
+                    {
+                        def method1()
+                        {
+                            return "${stringWillBeReturned}";
+                        }
+                    }
+                """
+        )
+        DomainOperationManager parentManager = new DomainOperationManager(parentDomainClass, operationsDirectory, null);
+        Class parentOperationClass = parentManager.loadOperation();
+        Map methods = parentManager.getOperationClassMethods();
+
+        Class childDomainClass = classLoader.parseClass("""
+            class ChildDomainClass
+            {
+
+            }
+        """);
+        DomainOperationManager childManager = new DomainOperationManager(childDomainClass, operationsDirectory, parentManager);
+
+        assertSame(parentOperationClass, childManager.getOperationClass());
+        assertSame(methods, childManager.getOperationClassMethods());
     }
 
     public void testLoadOperationWithAClassWithPackagename()
@@ -112,7 +150,7 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
                     }
                 """
         )
-        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory, null);
         Class operationClass = manager.loadOperation();
         AbstractDomainOperation operInstance = operationClass.newInstance();
         assertEquals (stringWillBeReturned, operInstance.method1());
@@ -123,7 +161,23 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
     public void testLoadOperationThrowsExceptionIfOperationFileDoesnotExist()
     {
         Class domainClass = createSimpleDomainClass();
-        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory, null);
+        try
+        {
+            manager.loadOperation();
+            fail("Should throw exception");
+        }
+        catch(DomainOperationLoadException ex)
+        {
+            FileNotFoundException fex = ex.getCause();
+            assertEquals(manager.getOperationFile().path, fex.getMessage());
+        }
+    }
+
+    public void testLoadOperationThrowsExceptionIfOperationFileDoesnotExistButLoadsParentOperationFile()
+    {
+        Class domainClass = createSimpleDomainClass();
+        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory, null);
         try
         {
             manager.loadOperation();
@@ -139,7 +193,7 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
     public void testLoadOperationThrowsExceptionIfOperationIsNotInstanceOfAbstractOperation()
     {
         Class domainClass = createSimpleDomainClass();
-        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory, null);
         manager.getOperationFile().setText (
                 """
                     class  ${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX}
@@ -161,7 +215,7 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
     public void testLoadOperationThrowsExceptionIfOperationCannotBeCompiled()
     {
         Class domainClass = createSimpleDomainClass();
-        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory, null);
         manager.getOperationFile().setText (
                 """
                     class  ${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}

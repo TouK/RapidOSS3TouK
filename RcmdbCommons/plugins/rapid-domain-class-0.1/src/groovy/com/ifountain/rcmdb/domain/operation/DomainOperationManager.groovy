@@ -27,17 +27,40 @@ package com.ifountain.rcmdb.domain.operation
 class DomainOperationManager {
     public static final String OPERATION_SUFFIX = "Operations";
     Class domainClass;
-    String operationsDirectory;
-    Class operationClass;
-    Map operationClassMethods = [:];
-    public DomainOperationManager(Class domainClass, String operationsDirectory)
+    private String operationsDirectory;
+    private Class operationClass;
+    private Map operationClassMethods = [:];
+    private DomainOperationManager parentOperationManager;
+    public DomainOperationManager(Class domainClass, String operationsDirectory, DomainOperationManager parentOperationManager)
     {
         this.operationsDirectory = operationsDirectory;
         this.domainClass = domainClass;
+        this.parentOperationManager = parentOperationManager; 
     }
 
-
-    public Class loadOperation()
+    public synchronized Class getOperationClass()
+    {
+        if(operationClass == null && parentOperationManager != null)
+        {
+            return parentOperationManager.getOperationClass();
+        }
+        else
+        {
+            return operationClass;
+        }
+    }
+    public synchronized Map getOperationClassMethods()
+    {
+        if(operationClass == null && parentOperationManager != null)
+        {
+            return parentOperationManager.getOperationClassMethods();
+        }
+        else
+        {
+            return operationClassMethods;
+        }
+    }
+    public synchronized Class loadOperation()
     {
         def operationFile = getOperationFile()
         if(operationFile.exists())
@@ -75,7 +98,7 @@ class DomainOperationManager {
         return domainClass.name+OPERATION_SUFFIX
     }
 
-    public File getOperationFile()
+    public synchronized File getOperationFile()
     {
         def className = getOperationClassName();
         def fileName = className.replaceAll("\\.", "/")

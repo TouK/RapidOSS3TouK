@@ -18,7 +18,7 @@
 */
 package connection
 
-import com.ifountain.core.connection.ConnectionManager
+import com.ifountain.rcmdb.connection.RcmdbConnectionManagerAdapter
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +28,14 @@ import com.ifountain.core.connection.ConnectionManager
  * To change this template use File | Settings | File Templates.
  */
 class ConnectionOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
-    def beforeDelete(){
-          ConnectionManager.removeConnection(this.name);
+    def afterDelete(){
+          RcmdbConnectionManagerAdapter.getInstance().removeConnection(this.name);
+    }
+
+    def afterUpdate(){
+          RcmdbConnectionManagerAdapter.getInstance().addConnection(this.domainObject);
+    }
+    def afterInsert(){
+          RcmdbConnectionManagerAdapter.getInstance().addConnection(this.domainObject);
     }
 }

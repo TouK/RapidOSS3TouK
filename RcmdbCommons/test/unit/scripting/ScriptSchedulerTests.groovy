@@ -54,16 +54,16 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
 
     public void testScheduleScriptWithPeriod()
     {
-        scriptScheduler.scheduleScript("myScript", 0, 1);
+        scriptScheduler.scheduleScript("myScript", 0, 2);
         Thread.sleep(200);
         assertEquals(1, executionCount);
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         assertEquals(2, executionCount);
     }
 
     public void testScheduleScriptWithPeriodAndStartDelay()
     {
-        scriptScheduler.scheduleScript("myScript", 1, 1);
+        scriptScheduler.scheduleScript("myScript", 1, 3);
         Thread.sleep(200);
         assertEquals(0, executionCount);
         Thread.sleep(1000);

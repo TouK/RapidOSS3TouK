@@ -37,4 +37,30 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
          assertFalse(con.isConnected());
      }
 
+     public void testConnectThrowsExceptionWithWrongAccount(){
+        Map params = EmailConnectionImplTestUtils.getConnectionParams();
+        params.SmtpPort=Integer.valueOf(params.SmtpPort)
+        params.Password="xxxxxxxxxxx55555555yyyyyyyyyyyyyyyy"
+
+        def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
+
+        def con=new EmailConnectionImpl()
+        con.init(conParams)
+
+        assertFalse(con.checkConnection());
+        assertFalse(con.isConnected());
+        try {
+            con._connect();
+            fail("Should throw Exception");
+        }
+        catch(javax.mail.AuthenticationFailedException e)
+        {
+
+        }
+        assertFalse(con.checkConnection());
+        assertFalse(con.isConnected());
+
+
+     }
+
 }

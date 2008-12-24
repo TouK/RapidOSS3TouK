@@ -66,7 +66,7 @@ class EmailConnectionImpl extends BaseConnection{
         this.smtpPort = Integer.valueOf(checkParam(SMTPPORT));
         this.username = checkParam(USERNAME);
         this.password = checkParam(PASSWORD);
-        this.protocol = checkParam(PROTOCOL);
+        this.protocol = checkParam(PROTOCOL).toLowerCase();
     }
 
     public boolean checkConnection() {
@@ -75,9 +75,12 @@ class EmailConnectionImpl extends BaseConnection{
         {
             try
             {
-               if(transport.ehlo())
+               if(transport.isConnected())
                {
-                 result=true;
+                   if(transport.ehlo())
+                   {
+                     result=true;
+                   }
                }
             }
             catch (javax.mail.MessagingException e)
@@ -95,6 +98,13 @@ class EmailConnectionImpl extends BaseConnection{
             throw new UndefinedConnectionParameterException(parameterName);
         }
         return (String) params.getOtherParams().get(parameterName);
+    }
+
+    public SMTPTransport getEmailConnection(){
+        return transport;
+    }
+    public Session getEmailSession(){
+        return session;
     }
     
 }

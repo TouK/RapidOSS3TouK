@@ -23,6 +23,9 @@ import org.apache.log4j.Level;
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager;
 import datasource.BaseListeningDatasource
 import com.ifountain.rcmdb.datasource.BaseListeningDatasourceMock;
+import com.ifountain.rcmdb.scripting.ScriptManager
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.Errors
 
 
 /**
@@ -42,6 +45,7 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
         super.tearDown()
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)
         ListeningAdapterManager.destroyInstance();
+        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript)
      }
 
      void testBeforeDelete(){
@@ -83,7 +87,92 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
 
      }
 
+     void initializeForCmdbScript(){
+         ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
+         CompassForTests.initialize([CmdbScript]);
+         CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
+     }
+     void testAddScriptGeneratesScriptFileWhenMissing()
+     {
+        initializeForCmdbScript();
 
+        def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND]
+        def scriptToAdd=new CmdbScript(scriptFile:"CmdbScriptOperationsTestScript");
+        params.each{ key , val ->
+            scriptToAdd[key]=val
+        }
+        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
+        def script=CmdbScript.addScript(params)
+        def paramsAdded=CompassForTests.addOperationData.getParams(CmdbScript)[0];
+        assertEquals(paramsAdded.scriptFile,params.name)               
+                       
+     }
+     void testAddScriptGeneratesLogFileWhenMissing()
+     {
+        initializeForCmdbScript();
+
+        def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:"CmdbScriptOperationsTestScript"]
+        def scriptToAdd=new CmdbScript(logFile:"mylogfile");
+        params.each{ key , val ->
+            scriptToAdd[key]=val
+        }
+        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
+        def script=CmdbScript.addScript(params)
+        def paramsAdded=CompassForTests.addOperationData.getParams(CmdbScript)[0];
+        assertEquals(paramsAdded.logFile,params.name)
+
+     }
+     void testAddScriptsGeneratesExceptionWhenErrorOccurs()
+     {
+         initializeForCmdbScript();
+         CmdbScript.metaClass.hasErrors = {  return true;}
+
+         def sampleBean = CmdbScript.newInstance()
+         Errors errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
+         CmdbScript.metaClass.errors = errors
+        
+         
+         def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:"CmdbScriptOperationsTestScript"]
+         def scriptToAdd=new CmdbScript();
+         params.each{ key , val ->
+            scriptToAdd[key]=val
+         }
+         
+         def messageServiceClass=ClassLoader.getSystemClassLoader().loadClass("MessageService");
+         messageServiceClass.metaClass.getMessage = { param1 -> return "injectedTestMessage"}
+         
+         scriptToAdd.messageService=messageServiceClass.newInstance()
+         GroovySystem.metaClassRegistry.removeMetaClass(messageServiceClass)
+
+         CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
+         try{
+            CmdbScript.addScript(params);
+            fail("should throw exception")
+         }
+         catch(e)                                               
+         {
+             assertEquals(e.getMessage(),"injectedTestMessage");
+         }
+
+
+     }
+
+     void testAddScripts(){
+        initializeForCmdbScript();      
+        
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:"CmdbScriptOperationsTestScript"]
+        def scriptToAdd=new CmdbScript();
+        params.each{ key , val ->
+            scriptToAdd[key]=val
+        }
+        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
+
+        assertEquals(0,CompassForTests.addOperationData.getCallCount(CmdbScript));
+        def script=CmdbScript.addScript(params)
+        def paramsAdded=CompassForTests.addOperationData.getParams(CmdbScript)[0]
+
+        assertEquals(1,CompassForTests.addOperationData.getCallCount(CmdbScript));
+     }
 
 
      void testCreateStaticParams(){

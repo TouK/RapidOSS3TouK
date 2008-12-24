@@ -27,9 +27,9 @@
 <rui:maps nodeSize="60" mapPollingInterval="0" savedMapsPollingInterval="0">
     <rui:mpMenus>
         <rui:mpMenu id="objectDetails" label="Browse" location="node" actionType="htmlDialog" width="850" height="700" x="85" y="50"
-                url="'getObjectDetails.gsp?name=' + params.data.id" title="'Details of ' + params.data.type + ' ' + params.data.id"></rui:mpMenu>
+                url="createURL('getObjectDetails.gsp', {name:params.data.id})" title="'Details of ' + params.data.type + ' ' + params.data.id"></rui:mpMenu>
         <rui:mpMenu id="showEvents" label="Show Events" location="node" actionType="htmlDialog" width="850" height="700" x="100" y="80"
-                url="'showEvents.gsp?name=' + params.data.id" title="'Events of ' + params.data.type + ' ' + params.data.id"></rui:mpMenu>
+                url="createURL('showEvents.gsp', {name:params.data.id})" title="'Events of ' + params.data.type + ' ' + params.data.id"></rui:mpMenu>
     </rui:mpMenus>
     <rui:mpImages>
         <rui:mpImage id="status" x="70" y="40" width="30" height="30" dataKey="state" mapping="${stateMapping}"></rui:mpImage>

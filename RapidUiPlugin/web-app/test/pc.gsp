@@ -71,15 +71,15 @@
 <rui:html id="eventDetails" iframe="false"></rui:html>
 <rui:popupWindow componentId="eventDetails" width="850" height="500"></rui:popupWindow>
 <rui:action id="eventDetailsAction" type="function" function="show" componentId="eventDetails">
-    <rui:functionArg>'getEventDetails.gsp?name=' + params.data.name</rui:functionArg>
+    <rui:functionArg>createURL('getEventDetails.gsp', {name:params.data.name})</rui:functionArg>
     <rui:functionArg>'Details of ' + params.data.name</rui:functionArg>
 </rui:action>
 <rui:action id="browseInstanceAction" type="function" function="show" componentId="objectDetailsmenuHtml">
-    <rui:functionArg>'getObjectDetails.gsp?name=' + params.data.name</rui:functionArg>
+    <rui:functionArg>createURL('getObjectDetails.gsp', {name:params.data.name})</rui:functionArg>
     <rui:functionArg>'Details of ' + params.data.className + ' ' + params.data.instanceName</rui:functionArg>
 </rui:action>
 <rui:action id="browseElementAction" type="function" function="show" componentId="objectDetailsmenuHtml">
-    <rui:functionArg>'getObjectDetails.gsp?name=' + params.data.name</rui:functionArg>
+    <rui:functionArg>createURL('getObjectDetails.gsp', {name:params.data.name})</rui:functionArg>
     <rui:functionArg>'Details of ' + params.data.elementClassName + ' ' + params.data.elementName</rui:functionArg>
 </rui:action>
 <rui:action id="acknowledgeAction" type="merge" url="script/run/acknowledge" components="${['eventsGrid']}">

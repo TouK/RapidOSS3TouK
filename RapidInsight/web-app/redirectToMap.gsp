@@ -15,7 +15,7 @@
         if(object instanceof RsLink){
            relatedObject = object.a_ComputerSystemName; 
         }
-        response.sendRedirect("maps.gsp?name=${relatedObject}")
+        response.sendRedirect(URLUtils.createURL("maps.gsp", [name:relatedObject]))
     %>
      </head>
 </html>

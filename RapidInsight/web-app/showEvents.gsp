@@ -62,7 +62,7 @@
              dataTable.subscribe("rowDblclickEvent", function(args){
                  var record = dataTable.getRecord(args.target);
                  var name = record.getData('name')
-                 var url = 'getEventDetails.gsp?name=' + encodeURIComponent(name);
+                 var url = createURL('getEventDetails.gsp', {name:name});
                  var eventDetailsDialog = YAHOO.rapidjs.Components['eventDetails'];
                  if(eventDetailsDialog.popupWindow){
                     eventDetailsDialog.popupWindow.show()

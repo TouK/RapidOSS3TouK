@@ -58,7 +58,7 @@ cursor:pointer;
                                             if (sObj != null) {
                                 %>
                                 <td>
-                                    <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${sObj.name}'), 'Details of ${sObj.className} ${sObj.name}');">${sObj.className} ${sObj.name}<a>
+                                    <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${sObj.name}'}), 'Details of ${sObj.className} ${sObj.name}');">${sObj.className} ${sObj.name}<a>
                                 </td>
                                 <%
                                     }
@@ -77,7 +77,7 @@ cursor:pointer;
                                                 def sortedRelatedObjects = relatedObjects.sort{"${it.className}${it.name}"};
                                                 sortedRelatedObjects.each {
                                         %>
-                                        <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show('getObjectDetails.gsp?name=' + encodeURIComponent('${it.name}'), 'Details of ${it.className} ${it.name}');">${it.className} ${it.name}<a></li>
+                                        <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${it.name}'}), 'Details of ${it.className} ${it.name}');">${it.className} ${it.name}<a></li>
                                         <%
                                                 }
                                         %>

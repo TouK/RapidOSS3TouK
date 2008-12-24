@@ -17,7 +17,7 @@
 * USA.
 */
 YAHOO.namespace('rapidjs');
-function createLink(url, params)
+function createURL(url, params)
 {
     if(params == null)
     {

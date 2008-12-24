@@ -27,7 +27,7 @@
 <rui:historicalEvents queriesPollingInterval="0" searchResultsPollingInterval="0" numberOfLines="3" defaultFields="${['name']}">
     <rui:heMenus>
         <rui:heMenu id="eventDetails" label="Event Details" location="row" actionType="htmlDialog" width="850" height="500"
-                url="'getHistoricalEventDetails.gsp?id=' + params.data.id" title="'Details of ' + params.data.name"></rui:heMenu>
+                url="createURL('getHistoricalEventDetails.gsp', {id:params.data.id})" title="'Details of ' + params.data.name"></rui:heMenu>
     </rui:heMenus>
      <rui:heDefaultMenus>
         <rui:heDefaultMenu id="sortAsc" label="Sort Asc"></rui:heDefaultMenu>

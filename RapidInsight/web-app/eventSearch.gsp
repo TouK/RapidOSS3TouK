@@ -27,7 +27,7 @@
 <rui:eventSearch queriesPollingInterval="0" searchResultsPollingInterval="0" numberOfLines="3" defaultFields="${['name']}">
     <rui:esMenus>
         <rui:esMenu id="eventDetails" label="Event Details" location="row" actionType="htmlDialog" width="850" height="500"
-                url="'getEventDetails.gsp?name=' + params.data.name" title="'Details of ' + params.data.name"></rui:esMenu>
+                url="createURL('getEventDetails.gsp', {name:params.data.name})" title="'Details of ' + params.data.name"></rui:esMenu>
         <rui:esMenu id="acknowledge" label="Acknowledge" location="row" script="acknowledge" visible="params.data.acknowledged != 'true'" actionType="update" parameters="${[name:'params.data.name', acknowledged:'true']}"></rui:esMenu>
         <rui:esMenu id="unacknowledge" label="Unacknowledge" location="row" script="acknowledge" visible="params.data.acknowledged == 'true'" actionType="update" parameters="${[name:'params.data.name', acknowledged:'false']}"></rui:esMenu>
         <rui:esMenu id="takeOwnership" label="Take Ownership" location="row" script="setOwnership" actionType="update" parameters="${[name:'params.data.name', act:'true']}"></rui:esMenu>

@@ -228,6 +228,7 @@ class RapidInsightBuild extends Build {
                 ant.include(name: "domain/**/*")
                 ant.include(name: "controllers/**/*")
                 ant.include(name: "taglib/**/*")
+                ant.include(name: "utils/**/*")
             };
         }
         ant.copy(todir: "$env.dist_rapid_ui/scripts") {

@@ -33,12 +33,12 @@ objectDialog.show(url, title);
 <div class="yui-navset yui-navset-top" style="margin-top:5px">
     <ul class="yui-nav">
         <li class="selected">
-            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventDetails.gsp?name=' + encodeURIComponent('${domainObject.name}'));">
+            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getEventDetails.gsp', {name:'${domainObject.name}'}));">
                 <em>Properties</em>
             </a>
         </li>
         <li>
-            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventJournals.gsp?id=' + encodeURIComponent('${domainObject.id}') + '&isHistorical=false');">
+            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getEventJournals.gsp', {id:'${domainObject.id}', isHistorical:false}));">
                 <em>Journal</em>
             </a>
         </li>
@@ -99,7 +99,7 @@ objectDialog.show(url, title);
                                             <g:if test="${propertiesLinkedToObject[propertyName]!=null}">
                                                <g:set var="targetObject" value="${RsTopologyObject.get(id:domainObject[propertiesLinkedToObject[propertyName]])}" />
                                                <g:if test="${targetObject!=null}">
-                                                    <a style="cursor:pointer;text-decoration:underline;color:#006DBA" onclick="showTopologyObject('getObjectDetails.gsp?name=' + encodeURIComponent('${targetObject.name}'),' Details of ${targetObject.className} ${targetObject.name} ') ">${propertyValue}</a>
+                                                    <a style="cursor:pointer;text-decoration:underline;color:#006DBA" onclick="showTopologyObject(createURL('getObjectDetails.gsp', {name:'${targetObject.name}'}),' Details of ${targetObject.className} ${targetObject.name} ') ">${propertyValue}</a>
                                                </g:if>
                                                 <g:else>
                                                     ${propertyValue}

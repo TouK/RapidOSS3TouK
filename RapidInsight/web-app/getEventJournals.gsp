@@ -11,7 +11,7 @@
     def eventId = params.id;
     def domainObject = isHistorical == "true" ? RsHistoricalEvent.get(id:eventId): RsEvent.get(id:eventId);
     if (domainObject != null) {
-        def propertiesUrl = isHistorical == "false"? "getEventDetails.gsp?name=${domainObject.name}":"getHistoricalEventDetails.gsp?id=${domainObject.id}";
+        def propertiesUrl = isHistorical == "false"? createURL("getEventDetails.gsp", [name:domainObject.name]):createURL("getHistoricalEventDetails.gsp", [id:domainObject.id]);
         %>
              <div class="yui-navset yui-navset-top" style="margin-top:5px">
                     <ul class="yui-nav">
@@ -21,7 +21,7 @@
                             </a>
                         </li>
                         <li  class="selected">
-                            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show('getEventJournals.gsp?id=' + encodeURIComponent('${domainObject.id}&isHistorical=${isHistorical}'));">
+                            <a onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getEventJournals.gsp', {id:'${domainObject.id}', isHistorical:'${isHistorical}'}));">
                                 <em>Journal</em>
                             </a>
                         </li>

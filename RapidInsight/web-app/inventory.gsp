@@ -13,8 +13,8 @@
 <rui:inventory queriesPollingInterval="0" searchResultsPollingInterval="0" numberOfLines="3" defaultFields="${defaultFields}">
     <rui:inMenus>
         <rui:inMenu id="browse" label="Browse" location="row" actionType="htmlDialog" width="850" height="700" x="85" y="50"
-                url="'getObjectDetails.gsp?name=' + params.data.name" title="'Details of ' + params.data.className + ' ' + params.data.name"></rui:inMenu>
-        <rui:inMenu id="showMap" label="Show Map" location="row" actionType="link" url="'redirectToMap.gsp?name='+params.data.name" visible="params.data.rsAlias == 'RsComputerSystem' || params.data.rsAlias == 'RsLink'"></rui:inMenu>
+                url="createURL('getObjectDetails.gsp', {name:params.data.name})" title="'Details of ' + params.data.className + ' ' + params.data.name"></rui:inMenu>
+        <rui:inMenu id="showMap" label="Show Map" location="row" actionType="link" url="createURL('redirectToMap.gsp', {name:params.data.name})" visible="params.data.rsAlias == 'RsComputerSystem' || params.data.rsAlias == 'RsLink'"></rui:inMenu>
     </rui:inMenus>
     <rui:inDefaultMenus>
         <rui:inDefaultMenu id="sortAsc" label="Sort Asc"></rui:inDefaultMenu>

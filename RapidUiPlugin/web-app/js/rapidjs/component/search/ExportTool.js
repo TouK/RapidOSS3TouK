@@ -20,13 +20,11 @@ YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.search');
 YAHOO.rapidjs.component.search.ExportTool = function(container, component) {
     var config = {className:'rcmdb-search-exporttool', tooltip:'Export'};
     YAHOO.rapidjs.component.search.ExportTool.superclass.constructor.call(this, container, component, config);
+    this.render();
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.ExportTool, YAHOO.rapidjs.component.tool.BasicTool, {
     performAction : function() {
-        if (!this.dialog) {
-            this.render();
-        }
         this.clear();
         this.dialog.show();
     },

@@ -46,7 +46,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
     render: function()
     {
         var dh = YAHOO.ext.DomHelper;
-        this.container = dh.append(document.body, {tag: 'div', style:'overflow:hidden'});
+        this.container = dh.append(document.body, {tag: 'div'});
         YAHOO.util.Dom.generateId(this.container, 'r-dialog-')
         this.body = dh.append(document.body, {tag: 'div'});
         this.bodyEl = YAHOO.ext.Element.get(this.body);
@@ -66,7 +66,6 @@ YAHOO.rapidjs.component.Dialog.prototype = {
 
 
         this.panel = new YAHOO.widget.Panel(this.container, panelConfig);
-        this.panel.setHeader(this.title);
         this.panel.setBody(this.body);
         this.panel.setFooter(this.footer);
 
@@ -146,6 +145,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         }
         this.panel.hideEvent.subscribe(this.handleHide, this, true);
         YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
+        this.setTitle(this.title)
     },
 
     show: function(url)
@@ -184,7 +184,12 @@ YAHOO.rapidjs.component.Dialog.prototype = {
 
     setTitle: function(title) {
         this.title = title;
-        this.panel.setHeader(this.title);
+        this.panel.setHeader('<span style="overflow:hidden;white-space:nowrap">' + this.title + '</span>');
+        var headerEl = getEl(this.panel.header);
+        var bodyEl = getEl(this.panel.body);
+        if(headerEl.getWidth() > bodyEl.getWidth()){
+            headerEl.setWidth(bodyEl.getWidth());
+        }
     },
     getTitle: function() {
         return this.title;

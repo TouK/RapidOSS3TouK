@@ -84,6 +84,12 @@ class RapidExtBuild extends Build {
                     ant.exclude(name: "**/*Test*")
                 }
             };
+            ant.fileset(dir: "$env.rapid_ext/email/groovy") {
+                if (!TEST) {
+                    ant.exclude(name: "**/test/**")
+                    ant.exclude(name: "**/*Test*")
+                }
+            };
         }
     }
 }

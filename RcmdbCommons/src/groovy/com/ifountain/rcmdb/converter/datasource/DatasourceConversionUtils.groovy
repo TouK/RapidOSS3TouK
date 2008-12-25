@@ -10,7 +10,7 @@ import com.ifountain.comp.converter.Converter
  * Time: 2:56:44 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DatasourceConvertionUtils
+public class DatasourceConversionUtils
 {
 
     public static ConverterRegistry getRegistry()

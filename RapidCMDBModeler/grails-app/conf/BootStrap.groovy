@@ -20,6 +20,7 @@ import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.jsecurity.crypto.hash.Sha1Hash
 import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
+import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -41,6 +42,7 @@ import script.CmdbScript
 */
 class BootStrap {
     def init = {servletContext ->
+        registerDatasourceConverters();
         initializeLockManager();
         registerUtilities();
         registerDefaultConverters();
@@ -48,6 +50,10 @@ class BootStrap {
         registerDefaultUsers();
         registerDefaultDatasourceNames();
         initializeScripting();
+    }
+    def registerDatasourceConverters()
+    {
+        DatasourceConversionUtils.registerDefaultConverters();
     }
     def initializeLockManager()
     {

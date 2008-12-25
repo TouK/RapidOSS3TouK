@@ -15,11 +15,11 @@ import com.ifountain.comp.converter.Converter
  * Time: 10:27:09 AM
  * To change this template use File | Settings | File Templates.
  */
-public class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
+public class DatasourceConversionUtilsTest extends RapidCmdbTestCase
 {
     public void testDefaultConversionSettings()
     {
-        DatasourceConvertionUtils.registerDefaultConverters();
+        DatasourceConversionUtils.registerDefaultConverters();
         def objectsToBeConvertedToLong = [new Integer(100), 100, new Short((short)100), (short)100, (long)100, new Long(100), (byte)1, new Byte((byte)1)];
         def expectedLongValues = [new Long(100), new Long(100), new Long(100), new Long(100), new Long(100), new Long(100), new Long(1), new Long(1)];
         checkConversion(objectsToBeConvertedToLong, expectedLongValues, DefaultConverter);
@@ -37,7 +37,7 @@ public class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
         def expectedDateValues = [new Date(now), new Timestamp(now), new Time(now)];
         checkConversion(objectsToBeConvertedDate, expectedDateValues, com.ifountain.rcmdb.converter.datasource.NotConvertingConverter);
 
-        assertEquals(StringConverter.class, DatasourceConvertionUtils.getRegistry().lookup(Object).class);
+        assertEquals(StringConverter.class, DatasourceConversionUtils.getRegistry().lookup(Object).class);
     }
 
     public void testRegisterClosureConverter()
@@ -45,15 +45,15 @@ public class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
         Closure conversionClosure = {objectValue->
             return String.valueOf(objectValue);
         }
-        DatasourceConvertionUtils.register(Long, conversionClosure);
+        DatasourceConversionUtils.register(Long, conversionClosure);
     }
 
     public void testWithDefaultConverter()
     {
-        DatasourceConvertionUtils.registerDefaultConverters();
+        DatasourceConversionUtils.registerDefaultConverters();
         NotConvertingConverter defaultConverter = new NotConvertingConverter();
-        DatasourceConvertionUtils.getRegistry().setDefaultConverter(defaultConverter);
-        assertSame (defaultConverter, DatasourceConvertionUtils.getRegistry().lookup(Object));
+        DatasourceConversionUtils.getRegistry().setDefaultConverter(defaultConverter);
+        assertSame (defaultConverter, DatasourceConversionUtils.getRegistry().lookup(Object));
     }
 
 
@@ -64,7 +64,7 @@ public class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
         {
             Object objToBeConverted = objectsToCheckConversion.get(i);
             Object expectedConvertedObject = expectedConverionresults.get(i);
-            Converter converter = DatasourceConvertionUtils.getRegistry().lookup(objToBeConverted.getClass());
+            Converter converter = DatasourceConversionUtils.getRegistry().lookup(objToBeConverted.getClass());
             assertEquals (expectedConverter, converter.class);
             assertEquals(expectedConvertedObject.class.name, converter.convert(objToBeConverted).class.name);
             assertEquals(expectedConvertedObject, converter.convert(objToBeConverted));

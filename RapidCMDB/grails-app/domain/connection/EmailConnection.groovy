@@ -8,6 +8,9 @@ class EmailConnection extends Connection
 
     //AUTO_GENERATED_CODE
 
+    public static String SMTP = "Smtp";
+    public static String SMTPS = "Smtps";
+
     static searchable = {
         except = [ "emailDatasources"];
     };
@@ -26,15 +29,15 @@ class EmailConnection extends Connection
 
 
     static relations = [
-        emailDatasources:[type:EmailDatasource, reverseName:"connection", isMany:true]
+            emailDatasources:[type:EmailDatasource, reverseName:"connection", isMany:true]
     ]
 
     static constraints={
      smtpHost(blank:false,nullable:false)
-     smtpPort(blank:false,nullable:false)
+     smtpPort(nullable:false)
      username(blank:true,nullable:true)
-     userPassword(blank:true,nullable:true)
-     protocol(blank:true,nullable:true)   
+     userPassword(blank:true,nullable:true)     
+     protocol(inList:[SMTP, SMTPS]);
     }
 
     static propertyConfiguration= [:]

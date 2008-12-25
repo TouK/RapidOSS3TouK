@@ -1,7 +1,7 @@
-package com.ifountain.rcmdb.converter
+package com.ifountain.rcmdb.converter.datasource
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import com.ifountain.rcmdb.domain.converter.DatasourceConvertionUtils
+import com.ifountain.rcmdb.domain.converter.datasource.DatasourceConvertionUtils
 import com.ifountain.rcmdb.domain.converter.datasource.Converter
 import com.ifountain.rcmdb.domain.converter.datasource.DefaultConverter
 import java.sql.Timestamp

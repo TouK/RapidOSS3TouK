@@ -1,4 +1,4 @@
-package com.ifountain.rcmdb.domain.converter
+package com.ifountain.rcmdb.domain.converter.datasource
 
 import com.ifountain.rcmdb.domain.converter.datasource.Converter
 import com.ifountain.rcmdb.domain.converter.datasource.DefaultConverter

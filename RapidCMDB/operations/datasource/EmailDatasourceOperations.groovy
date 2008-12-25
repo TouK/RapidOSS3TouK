@@ -13,9 +13,9 @@ class EmailDatasourceOperations extends BaseDatasourceOperations{
        this.adapter = new EmailAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
     }
 
-    def sendEmail(String from,String to,String subject,String body)
+    def sendEmail(params)
     {
-        
+       this.adapter.sendEmail(params); 
     }
 
     def getAdapter()

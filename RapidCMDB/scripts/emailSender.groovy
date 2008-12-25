@@ -5,9 +5,15 @@
  * Time: 2:23:36 PM
  * To change this template use File | Settings | File Templates.
  */
-import datasource.EmailDatasource;
+import datasource.EmailDatasource
 
-def datasource=EmailDatasource.get(name:"emailds");
+def ds=EmailDatasource.get(name:"emailds")
+def adapter=ds.getAdapter();
 
+def params=[:]
+params.from="mustafa"
+params.subject="test subject"
+params.to="abdurrahim"
+params.body="test body"
 
-datasource.sendEmail("","","","");
+adapter.sendMail(params)

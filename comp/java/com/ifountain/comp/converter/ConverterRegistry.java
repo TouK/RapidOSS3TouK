@@ -13,7 +13,7 @@ import java.util.Map;
 public class ConverterRegistry
 {
     private Converter defaultConverter;
-    private Map<Class, Converter> converters = new HashMap<Class, Converter>();
+    private Map<Class, Converter> converters;
     private static ConverterRegistry conversionUtils;
     public static ConverterRegistry getInstance()
     {
@@ -26,8 +26,15 @@ public class ConverterRegistry
 
     private ConverterRegistry()
     {
+        converters = new HashMap<Class, Converter>();
+        unregisterAll();
     }
 
+    public void unregisterAll()
+    {
+        converters.clear();
+        defaultConverter = null;
+    }
     public void setDefaultConverter(Converter converter)
     {
         defaultConverter = converter;
@@ -35,6 +42,22 @@ public class ConverterRegistry
     public void register(Class cls, Converter converter)
     {
         converters.put(cls, converter);
+    }
+
+    public Object convert(Object objectToBeConverted) throws Exception {
+        Converter converter = defaultConverter;
+        if(objectToBeConverted != null)
+        {
+            converter = lookup(objectToBeConverted.getClass());
+        }
+        if(converter != null)
+        {
+            return converter.convert(objectToBeConverted);
+        }
+        else
+        {
+            throw new Exception("No converter is defined for "+objectToBeConverted.getClass());
+        }
     }
 
     public Converter lookup(Class classToBeConverted)

@@ -7,6 +7,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import java.sql.Time
 import java.sql.Timestamp
 import com.ifountain.comp.converter.Converter
+import com.ifountain.comp.converter.ConverterRegistry
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,6 +18,18 @@ import com.ifountain.comp.converter.Converter
  */
 public class DatasourceConversionUtilsTest extends RapidCmdbTestCase
 {
+
+    protected void setUp() {
+        super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
+        ConverterRegistry.getInstance().unregisterAll();
+    }
+
+    protected void tearDown() {
+        super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
+        ConverterRegistry.getInstance().unregisterAll();
+    }
+
+
     public void testDefaultConversionSettings()
     {
         DatasourceConversionUtils.registerDefaultConverters();
@@ -68,6 +81,7 @@ public class DatasourceConversionUtilsTest extends RapidCmdbTestCase
             assertEquals (expectedConverter, converter.class);
             assertEquals(expectedConvertedObject.class.name, converter.convert(objToBeConverted).class.name);
             assertEquals(expectedConvertedObject, converter.convert(objToBeConverted));
+            assertEquals(expectedConvertedObject, com.ifountain.comp.converter.ConverterRegistry.getInstance().convert(objToBeConverted));
         }
     }
 }

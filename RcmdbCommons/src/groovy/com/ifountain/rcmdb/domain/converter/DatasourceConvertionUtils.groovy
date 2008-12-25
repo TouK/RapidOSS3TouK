@@ -3,7 +3,8 @@ package com.ifountain.rcmdb.domain.converter
 import com.ifountain.rcmdb.domain.converter.datasource.Converter
 import com.ifountain.rcmdb.domain.converter.datasource.DefaultConverter
 import com.ifountain.rcmdb.domain.converter.datasource.NotConvertingConverter
-import com.ifountain.rcmdb.domain.converter.datasource.ClosureConverter;
+import com.ifountain.rcmdb.domain.converter.datasource.ClosureConverter
+import com.ifountain.rcmdb.domain.converter.datasource.StringConverter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,6 +15,7 @@ import com.ifountain.rcmdb.domain.converter.datasource.ClosureConverter;
  */
 class DatasourceConvertionUtils
 {
+    private Converter defaultConverter;
     private Map converters = new HashMap();
     private static DatasourceConvertionUtils conversionUtils;
     public static DatasourceConvertionUtils getInstance()
@@ -27,7 +29,7 @@ class DatasourceConvertionUtils
 
     private DatasourceConvertionUtils()
     {
-        registerDefaultSettings();        
+        registerDefaultSettings();
     }
     private void registerDefaultSettings()
     {
@@ -35,6 +37,7 @@ class DatasourceConvertionUtils
         registerDefaultConverters([float, Float, double, Double], Double);
         registerDefaultConverters([Boolean, boolean], Boolean);
         register (Date, new NotConvertingConverter());
+        defaultConverter = new StringConverter()
     }
 
     private registerDefaultConverters(List fromClasses, Class toClass)
@@ -44,6 +47,10 @@ class DatasourceConvertionUtils
         }
     }
 
+    public void setDefaultConverter(Converter converter)
+    {
+        defaultConverter = converter;
+    }
     public void register(Class cls, Converter converter)
     {
         converters[cls] =  converter;
@@ -61,6 +68,13 @@ class DatasourceConvertionUtils
             converter = converters[classToBeConverted];
             classToBeConverted = classToBeConverted.superclass;
         }
-        return converter;
+        if(converter == null)
+        {
+            return defaultConverter;
+        }
+        else
+        {
+            return converter;
+        }
     }
 }

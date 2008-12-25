@@ -6,6 +6,8 @@ import com.ifountain.rcmdb.domain.converter.datasource.Converter
 import com.ifountain.rcmdb.domain.converter.datasource.DefaultConverter
 import java.sql.Timestamp
 import java.sql.Time
+import com.ifountain.rcmdb.domain.converter.datasource.NotConvertingConverter
+import com.ifountain.rcmdb.domain.converter.datasource.StringConverter
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,6 +37,8 @@ class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
         def objectsToBeConvertedDate = [new Date(now), new Timestamp(now), new Time(now)];
         def expectedDateValues = [new Date(now), new Timestamp(now), new Time(now)];
         checkConversion(objectsToBeConvertedDate, expectedDateValues, com.ifountain.rcmdb.domain.converter.datasource.NotConvertingConverter);
+
+        assertEquals(StringConverter.class, DatasourceConvertionUtils.getInstance().lookup(Object).class);
     }
 
     public void testRegisterClosureConverter()
@@ -43,6 +47,13 @@ class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
             return String.valueOf(objectValue);
         }
         DatasourceConvertionUtils.getInstance().register(Long, conversionClosure);
+    }
+
+    public void testWithDefaultConverter()
+    {
+        NotConvertingConverter defaultConverter = new NotConvertingConverter();
+        DatasourceConvertionUtils.getInstance().setDefaultConverter(defaultConverter);
+        assertSame (defaultConverter, DatasourceConvertionUtils.getInstance().lookup(Object));        
     }
 
 

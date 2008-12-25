@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="main"/>
+    <meta name="layout" content="adminLayout" />
     <title>Create EmailConnection</title>
 </head>
 <body>
@@ -63,7 +63,7 @@
                             <label for="protocol">Protocol:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:emailConnection,field:'protocol','errors')}">
-                            <input type="text" class="inputtextfield" id="protocol" name="protocol" value="${fieldValue(bean:emailConnection,field:'protocol')}"/>
+                            <g:select id="protocol" name="protocol" from="${emailConnection.constraints.protocol.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:emailConnection,field:'protocol')}"></g:select>
                         </td>
                     </tr>
                     

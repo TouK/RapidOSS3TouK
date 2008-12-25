@@ -20,14 +20,17 @@ package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.MockIdGeneratorStrategy
-import com.ifountain.rcmdb.domain.converter.DateConverter
-import com.ifountain.rcmdb.domain.converter.DoubleConverter
-import com.ifountain.rcmdb.domain.converter.LongConverter
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.converter.DateConverter
+import com.ifountain.rcmdb.converter.DoubleConverter
+import com.ifountain.rcmdb.converter.LongConverter
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import java.text.SimpleDateFormat
-import com.ifountain.rcmdb.domain.converter.BooleanConverter
+import com.ifountain.rcmdb.converter.BooleanConverter
+import com.ifountain.rcmdb.converter.DateConverter
+import com.ifountain.rcmdb.converter.DoubleConverter
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.

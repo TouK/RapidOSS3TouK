@@ -1,13 +1,12 @@
 package com.ifountain.rcmdb.converter.datasource
 
+import com.ifountain.rcmdb.converter.datasource.DefaultConverter
+import com.ifountain.rcmdb.converter.datasource.NotConvertingConverter
+import com.ifountain.rcmdb.converter.datasource.StringConverter
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import com.ifountain.rcmdb.domain.converter.datasource.DatasourceConvertionUtils
-import com.ifountain.rcmdb.domain.converter.datasource.Converter
-import com.ifountain.rcmdb.domain.converter.datasource.DefaultConverter
-import java.sql.Timestamp
 import java.sql.Time
-import com.ifountain.rcmdb.domain.converter.datasource.NotConvertingConverter
-import com.ifountain.rcmdb.domain.converter.datasource.StringConverter
+import java.sql.Timestamp
+import com.ifountain.comp.converter.Converter
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,11 +15,11 @@ import com.ifountain.rcmdb.domain.converter.datasource.StringConverter
  * Time: 10:27:09 AM
  * To change this template use File | Settings | File Templates.
  */
-class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
+public class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
 {
     public void testDefaultConversionSettings()
     {
-
+        DatasourceConvertionUtils.registerDefaultConverters();
         def objectsToBeConvertedToLong = [new Integer(100), 100, new Short((short)100), (short)100, (long)100, new Long(100), (byte)1, new Byte((byte)1)];
         def expectedLongValues = [new Long(100), new Long(100), new Long(100), new Long(100), new Long(100), new Long(100), new Long(1), new Long(1)];
         checkConversion(objectsToBeConvertedToLong, expectedLongValues, DefaultConverter);
@@ -36,9 +35,9 @@ class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
         def now  = System.currentTimeMillis();
         def objectsToBeConvertedDate = [new Date(now), new Timestamp(now), new Time(now)];
         def expectedDateValues = [new Date(now), new Timestamp(now), new Time(now)];
-        checkConversion(objectsToBeConvertedDate, expectedDateValues, com.ifountain.rcmdb.domain.converter.datasource.NotConvertingConverter);
+        checkConversion(objectsToBeConvertedDate, expectedDateValues, com.ifountain.rcmdb.converter.datasource.NotConvertingConverter);
 
-        assertEquals(StringConverter.class, DatasourceConvertionUtils.getInstance().lookup(Object).class);
+        assertEquals(StringConverter.class, DatasourceConvertionUtils.getRegistry().lookup(Object).class);
     }
 
     public void testRegisterClosureConverter()
@@ -46,14 +45,15 @@ class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
         Closure conversionClosure = {objectValue->
             return String.valueOf(objectValue);
         }
-        DatasourceConvertionUtils.getInstance().register(Long, conversionClosure);
+        DatasourceConvertionUtils.register(Long, conversionClosure);
     }
 
     public void testWithDefaultConverter()
     {
+        DatasourceConvertionUtils.registerDefaultConverters();
         NotConvertingConverter defaultConverter = new NotConvertingConverter();
-        DatasourceConvertionUtils.getInstance().setDefaultConverter(defaultConverter);
-        assertSame (defaultConverter, DatasourceConvertionUtils.getInstance().lookup(Object));        
+        DatasourceConvertionUtils.getRegistry().setDefaultConverter(defaultConverter);
+        assertSame (defaultConverter, DatasourceConvertionUtils.getRegistry().lookup(Object));
     }
 
 
@@ -64,7 +64,7 @@ class DatasourceConvertionUtilsTest extends RapidCmdbTestCase
         {
             Object objToBeConverted = objectsToCheckConversion.get(i);
             Object expectedConvertedObject = expectedConverionresults.get(i);
-            Converter converter = DatasourceConvertionUtils.getInstance().lookup(objToBeConverted.getClass());
+            Converter converter = DatasourceConvertionUtils.getRegistry().lookup(objToBeConverted.getClass());
             assertEquals (expectedConverter, converter.class);
             assertEquals(expectedConvertedObject.class.name, converter.convert(objToBeConverted).class.name);
             assertEquals(expectedConvertedObject, converter.convert(objToBeConverted));

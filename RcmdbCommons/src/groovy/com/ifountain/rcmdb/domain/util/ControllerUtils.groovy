@@ -18,10 +18,11 @@
 */
 package com.ifountain.rcmdb.domain.util
 
-import com.ifountain.rcmdb.domain.converter.DateConverter
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.converter.DateConverter
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 import groovy.xml.MarkupBuilder
 import java.text.SimpleDateFormat
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
  * Created by IntelliJ IDEA.

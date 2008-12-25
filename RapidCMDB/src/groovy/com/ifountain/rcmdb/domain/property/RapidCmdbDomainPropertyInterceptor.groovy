@@ -18,18 +18,14 @@
 */
 package com.ifountain.rcmdb.domain.property
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import datasource.BaseDatasource
+import org.apache.commons.beanutils.ConversionException
+import org.apache.commons.beanutils.ConvertUtils
+import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.springframework.context.ApplicationContext
-import org.apache.commons.beanutils.ConversionException
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
-import org.apache.log4j.Logger
-import org.apache.commons.beanutils.ConvertUtilsBean
-import org.apache.commons.beanutils.ConvertUtils
-import org.apache.commons.beanutils.converters.DoubleConverter
 
 /**
  * Created by IntelliJ IDEA.

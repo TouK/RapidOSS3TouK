@@ -1,6 +1,6 @@
 package com.ifountain.rcmdb.domain.method
 
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.domain.util.ValidationUtils
 import org.apache.commons.beanutils.ConversionException
 import org.springframework.validation.BeanPropertyBindingResult

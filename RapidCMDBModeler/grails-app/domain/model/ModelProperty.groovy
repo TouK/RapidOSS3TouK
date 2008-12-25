@@ -18,9 +18,9 @@
 */
 package model
 
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class ModelProperty {
     static searchable = {

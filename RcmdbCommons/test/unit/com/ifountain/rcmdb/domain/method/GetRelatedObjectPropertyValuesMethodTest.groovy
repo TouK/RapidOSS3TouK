@@ -18,11 +18,9 @@
 */
 package com.ifountain.rcmdb.domain.method
 
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 
 /**
  * Created by IntelliJ IDEA.

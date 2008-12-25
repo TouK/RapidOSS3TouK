@@ -1,4 +1,4 @@
-<%@ page import="com.ifountain.rcmdb.domain.converter.RapidConvertUtils; org.apache.commons.beanutils.ConvertUtils; org.springframework.util.ClassUtils" %>
+<%@ page import="com.ifountain.rcmdb.converter.RapidConvertUtils; org.apache.commons.beanutils.ConvertUtils; org.springframework.util.ClassUtils" %>
 <%@ page import="org.codehaus.groovy.grails.plugins.searchable.SearchableUtils" %>
 <%@ page import="org.codehaus.groovy.grails.plugins.searchable.lucene.LuceneUtils" %>
 <html>

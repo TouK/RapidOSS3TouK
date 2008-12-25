@@ -19,8 +19,8 @@
 package com.ifountain.rcmdb.domain.generation
 
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
-import com.ifountain.rcmdb.domain.converter.DateConverter
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.rcmdb.converter.DateConverter
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 import groovy.text.SimpleTemplateEngine
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import groovy.util.slurpersupport.GPathResult
@@ -28,8 +28,9 @@ import org.springframework.validation.Errors
 import groovy.text.Template
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import com.ifountain.compass.CompositeDirectoryWrapperProvider
+import com.ifountain.rcmdb.converter.DateConverter
 
-class ModelGenerator 
+class ModelGenerator
 {
     public static final String VALID_DIR_TYPES = [CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, CompositeDirectoryWrapperProvider.RAM_DIR_TYPE, CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE]
     public static final List VALID_PROPERTY_TYPE_CLASSES = [String, Double, Date, Boolean, Long]

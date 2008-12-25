@@ -16,26 +16,39 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-package com.ifountain.rcmdb.domain.converter
+package com.ifountain.rcmdb.converter
 
+import java.text.SimpleDateFormat
+import org.apache.commons.beanutils.ConversionException
 import org.apache.commons.beanutils.Converter
 
 /**
- * Created by IntelliJ IDEA.
- * User: mustafa sener
- * Date: Aug 26, 2008
- * Time: 4:47:22 PM
- * To change this template use File | Settings | File Templates.
- */
-class BooleanConverter implements Converter{
-    org.apache.commons.beanutils.converters.BooleanConverter converter;
-    public BooleanConverter()
+* Created by IntelliJ IDEA.
+* User: Administrator
+* Date: May 22, 2008
+* Time: 10:04:30 AM
+* To change this template use File | Settings | File Templates.
+*/
+class DateConverter implements Converter{
+    SimpleDateFormat formater;
+    String format;
+    public DateConverter(String format)
     {
-        converter = new org.apache.commons.beanutils.converters.BooleanConverter();
+        this.format = format;
+        formater = new SimpleDateFormat(format);
     }
     public Object convert(Class aClass, Object o) {
+        if(o == null) return null;
+        if(o instanceof Date) return o;
         if(String.valueOf(o) == "") return null;
-        return converter.convert(aClass, o);
+        try
+        {
+            return formater.parse(o); //To change body of implemented methods use File | Settings | File Templates.
+        }
+        catch(java.text.ParseException e)
+        {
+            throw new ConversionException (e.getMessage()) ;          
+        }
     }
 
 }

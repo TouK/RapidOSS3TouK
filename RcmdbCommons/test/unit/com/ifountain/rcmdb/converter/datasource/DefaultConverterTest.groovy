@@ -1,10 +1,7 @@
 package com.ifountain.rcmdb.converter.datasource
 
+import com.ifountain.rcmdb.converter.datasource.DefaultConverter
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import com.ifountain.rcmdb.domain.converter.datasource.DefaultConverter
-import java.sql.Timestamp
-import java.sql.Time
-import java.sql.Connection
 import org.apache.commons.beanutils.ConversionException
 
 /**

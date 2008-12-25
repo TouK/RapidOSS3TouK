@@ -27,10 +27,9 @@
 </Data>
 */
 import groovy.xml.MarkupBuilder
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils 
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
-
-// Import Configuration data. 
+// Import Configuration data.
 // NOTE: This method removes the existing config data, and imports them from the xml file.
 def importConfigData(web, fname){
 	def slurper = new XmlSlurper();

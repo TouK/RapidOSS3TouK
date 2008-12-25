@@ -19,7 +19,7 @@
 package com.ifountain.rcmdb.converter
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import com.ifountain.rcmdb.domain.converter.BooleanConverter
+import com.ifountain.rcmdb.converter.BooleanConverter
 
 /**
  * Created by IntelliJ IDEA.

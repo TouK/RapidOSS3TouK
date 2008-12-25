@@ -16,10 +16,11 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-package com.ifountain.rcmdb.domain.converter
+package com.ifountain.rcmdb.converter
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.apache.commons.beanutils.converters.LongConverter
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.

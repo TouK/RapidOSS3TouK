@@ -1,10 +1,10 @@
 import auth.Group
 import auth.Role
 import auth.RsUser
+import com.ifountain.rcmdb.converter.*
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import com.ifountain.rcmdb.domain.DomainLockManager
 import com.ifountain.rcmdb.domain.DomainMethodExecutor
-import com.ifountain.rcmdb.domain.converter.*
 import com.ifountain.rcmdb.domain.generation.DataCorrectionUtilities
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.scripting.ScriptManager

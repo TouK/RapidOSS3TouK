@@ -1,6 +1,7 @@
-package com.ifountain.rcmdb.domain.converter.datasource
+package com.ifountain.rcmdb.converter.datasource
 
-import com.ifountain.rcmdb.domain.converter.RapidConvertUtils
+import com.ifountain.comp.converter.Converter
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
  * Created by IntelliJ IDEA.

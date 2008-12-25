@@ -1,4 +1,7 @@
-package com.ifountain.rcmdb.domain.converter.datasource
+package com.ifountain.rcmdb.converter.datasource
+
+import com.ifountain.comp.converter.Converter
+
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener

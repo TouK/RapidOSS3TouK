@@ -34,6 +34,8 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress
 import com.sun.mail.smtp.SMTPTransport;
 
+import com.ifountain.comp.exception.RapidMissingParameterException
+
 public class SendEmailAction implements Action {
 
     private Logger logger;
@@ -43,6 +45,7 @@ public class SendEmailAction implements Action {
     public SendEmailAction(Logger logger,  Map params) {
         this.logger = logger;
         this.params = params;
+        checkParams(["from","to","subject","body"]);
     }
 
     public void execute(IConnection conn) throws Exception {
@@ -53,7 +56,7 @@ public class SendEmailAction implements Action {
         
         Message m = new MimeMessage((Session)conn.getEmailSession());
 
-        String from=params.from;
+        String from=params.from;        
         m.setFrom(new InternetAddress(from,from));
 
         m.setSubject(params.subject);
@@ -66,6 +69,14 @@ public class SendEmailAction implements Action {
             
     }
 
+     protected String checkParams(parameterNames) throws RapidMissingParameterException {
+        for(parameterName in parameterNames)
+        {
+            if(!params.containsKey(parameterName)){
+                throw new RapidMissingParameterException("SendEmailAction.params."+parameterName);
+            }            
+        }
+    }
 
 }
 

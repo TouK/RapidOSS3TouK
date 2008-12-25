@@ -21,7 +21,6 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
         
          def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
 
-
          def con=new EmailConnectionImpl()
          con.init(conParams)
          

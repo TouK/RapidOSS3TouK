@@ -15,7 +15,18 @@ class EmailConnectionImplTestUtils {
         def paramMap=["SmtpHost":"Smtp.SmtpHost","SmtpPort":"Smtp.SmtpPort","Username":"Smtp.Username","Password":"Smtp.Password","Protocol":"Smtp.Protocol"]
 
         def params=[:]
-        paramMap.each{ key , propKey ->        
+        paramMap.each{ key , propKey ->
+            params[key]= CommonTestUtils.getTestProperty(propKey);
+        }
+
+        return params;
+    }
+
+    public static Map getSendEmailParams(){
+        def paramMap=["from":"SendEmail.from","to":"SendEmail.to","subject":"SendEmail.subject","body":"SendEmail.body"]
+
+        def params=[:]
+        paramMap.each{ key , propKey ->
             params[key]= CommonTestUtils.getTestProperty(propKey);
         }
 

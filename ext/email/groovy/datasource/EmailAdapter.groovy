@@ -22,10 +22,9 @@ public class EmailAdapter extends BaseAdapter{
         return null; //To change body of implemented methods use File | Settings | File Templates.
     }
 
-     public String sendMail(Map params) throws Exception{
+     public void sendEmail(Map params) throws Exception{
         SendEmailAction action = new SendEmailAction(logger,params);
-        executeAction(action);
-        return "";
+        executeAction(action);        
     }
 
 }

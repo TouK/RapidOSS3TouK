@@ -23,6 +23,8 @@
     <script type="text/javascript" src="js/yui/history/history-min.js"></script>
     <script type="text/javascript" src="js/yui/datasource/datasource-min.js"></script>
     <script type="text/javascript" src="js/yui/datatable/datatable-min.js"></script>
+    <script type="text/javascript" src="js/yui/autocomplete/autocomplete-min.js"></script>
+    <script type="text/javascript" src="js/yui/charts/charts-experimental-min.js"></script>
     <script type="text/javascript" src="js/ext/ext.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/ComponentContainer.js"></script>
@@ -53,9 +55,16 @@
     <script type="text/javascript" src="js/rapidjs/component/search/SearchList.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/search/ViewBuilder.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/search/SearchGrid.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/autocomplete/Autocomplete.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/pieChart/PieChart.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/map/GMap.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/simplewidgets/split.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/Tooltip.js"></script>
+
+    <script type="text/javascript" src="js/rapidjs/component/timeline/Timeline.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/timeline/Timelineext.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/timeline/TimelineWindow.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeNode.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeHeaderCell.js"></script>
@@ -73,6 +82,7 @@
     <link rel="stylesheet" type="text/css" href="js/yui/container/assets/skins/sam/container.css"/>
     <link rel="stylesheet" type="text/css" href="js/yui/datatable/assets/skins/sam/datatable.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/yuioverride.css"/>
+    <link rel="stylesheet" type="text/css" href="css/rapidjs/timeline/timeline.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/common.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/dialog.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/form.css"/>
@@ -83,6 +93,7 @@
     <link rel="stylesheet" type="text/css" href="css/rapidjs/simplewidgets/button.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/tools/tools.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/treegrid/treegrid.css"/>
+    <link rel="stylesheet" type="text/css" href="css/rapidjs/autocomplete/autocomplete.css"/>
     <link rel="stylesheet" type="text/css" href="riindex.css"/>
 
     <jsec:isNotLoggedIn>
@@ -124,7 +135,8 @@
                     <li class="${currentUrl.indexOf('historicalEvents.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'historicalEvents.gsp')}"><em>Historical Events</em></a></li>
                     <li class="${currentUrl.indexOf('inventory.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'inventory.gsp')}"><em>Inventory</em></a></li>
                     <li class="${currentUrl.indexOf('maps.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'maps.gsp')}"><em>Maps</em></a></li>
-
+                    %{--<li class="${currentUrl.indexOf('serviceView.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'serviceView.gsp')}"><em>Service View</em></a></li>--}%
+                    %{--<li class="${currentUrl.indexOf('deviceView.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'deviceView.gsp')}"><em>Device View</em></a></li>--}%
                 </ul>
             </div>
         </td>

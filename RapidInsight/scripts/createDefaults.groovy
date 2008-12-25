@@ -37,6 +37,13 @@ CmdbScript.addScript(name: "getViewFields");
 
 CmdbScript.addScript(name: "importSampleRiData");
 
+CmdbScript.addScript(name: "autocomplete");
+CmdbScript.addScript(name: "getHierarchy");
+CmdbScript.addScript(name: "getEventHistory");
+CmdbScript.addScript(name: "getSummaryData");
+CmdbScript.addScript(name: "getGeocodes");
+CmdbScript.addScript(name: "getDeviceLocations");
+
 // topology scripts
 CmdbScript.addScript(name: "createMap");
 CmdbScript.addScript(name: "editMap");

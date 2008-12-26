@@ -23,7 +23,7 @@ class EmailDatasourceOperations extends BaseDatasourceOperations{
        emailParams.putAll(params);
        if(params.containsKey("template"))
        {
-           def body=renderTemplate(emailParams["template"],emailParams["templateParameters"])
+           def body=renderTemplate(emailParams["template"],emailParams["templateParams"])
            emailParams["body"]=body;
        }
        this.adapter.sendEmail(emailParams);

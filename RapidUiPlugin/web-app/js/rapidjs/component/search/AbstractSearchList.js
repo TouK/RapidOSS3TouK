@@ -96,19 +96,24 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
 
     },
 
-    setQuery: function(queryString, sortAtt, sortOrder)
+    setQuery: function(queryString, sortAtt, sortOrder, extraParams)
     {
-        this._setQuery(queryString, sortAtt, sortOrder)
+        this._setQuery(queryString, sortAtt, sortOrder, extraParams)
         this.handleSearch();
     },
 
-    _setQuery: function(queryString, sortAtt, sortOrder)
+    _setQuery: function(queryString, sortAtt, sortOrder, extraParams)
     {
         this.currentlyExecutingQuery = queryString;
         this.searchInput.value = queryString;
         this.lastSortAtt = sortAtt || this.keyAttribute;
         this.lastSortOrder = sortOrder || 'asc';
         this.offset = 0;
+        if(extraParams){
+            for(var extraParam in extraParams){
+                this.params[extraParam] = extraParams[extraParam]
+            }
+        }
     },
 
     appendToQuery: function(query)

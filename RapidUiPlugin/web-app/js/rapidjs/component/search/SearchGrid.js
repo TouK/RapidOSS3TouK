@@ -550,7 +550,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         }
         YAHOO.rapidjs.component.search.SearchGrid.superclass._poll.call(this);
     },
-    setQueryWithView: function(queryString, view, title)
+    setQueryWithView: function(queryString, view, title, extraParams)
     {
         if (title) {
             this.setTitle(title);
@@ -561,7 +561,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.viewChanged(queryString);
         }
         else {
-            this._setQuery(queryString, this.lastSortAtt, this.lastSortOrder);
+            this._setQuery(queryString, this.lastSortAtt, this.lastSortOrder, extraParams);
             this.handleSearch();
         }
     },

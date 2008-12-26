@@ -26,6 +26,7 @@
                         <li class="controller"><g:link controller="databaseConnection">DatabaseConnection</g:link></li>
                         <li class="controller"><g:link controller="snmpConnection">SnmpConnection</g:link></li>
                         <li class="controller"><g:link controller="ldapConnection">LdapConnection</g:link></li>
+                        <li class="controller"><g:link controller="emailConnection">EmailConnection</g:link></li>
                     </ul>
                 </div>
             </td>
@@ -38,6 +39,7 @@
                         <li class="controller"><g:link controller="databaseDatasource">DatabaseDatasource</g:link></li>
                         <li class="controller"><g:link controller="singleTableDatabaseDatasource">SingleTableDatabaseDatasource</g:link></li>
                         <li class="controller"><g:link controller="snmpDatasource">SnmpDatasource</g:link></li>
+                        <li class="controller"><g:link controller="emailDatasource">EmailDatasource</g:link></li>
                     </ul>
                 </div>
             </td>

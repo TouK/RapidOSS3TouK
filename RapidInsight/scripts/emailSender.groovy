@@ -57,6 +57,10 @@ messages.each{ message ->
 		try{
 			ds.sendEmail(emailParams)
 			logger.debug("Sended email about RsEvent: ${eventParams}")
+            message.remove();
+            logger.debug("Deleted message with eventId ${message.eventId}")
+
+
 		}
 		catch(e)
 		{

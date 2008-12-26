@@ -11,7 +11,7 @@
     def eventId = params.id;
     def domainObject = isHistorical == "true" ? RsHistoricalEvent.get(id:eventId): RsEvent.get(id:eventId);
     if (domainObject != null) {
-        def propertiesUrl = isHistorical == "false"? createURL("getEventDetails.gsp", [name:domainObject.name]):createURL("getHistoricalEventDetails.gsp", [id:domainObject.id]);
+        def propertiesUrl = isHistorical == "false"? URLUtils.createURL("getEventDetails.gsp", [name:domainObject.name]):URLUtils.createURL("getHistoricalEventDetails.gsp", [id:domainObject.id]);
         %>
              <div class="yui-navset yui-navset-top" style="margin-top:5px">
                     <ul class="yui-nav">

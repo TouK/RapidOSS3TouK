@@ -103,7 +103,12 @@
 				<Property Name="z_Name" Type="string"/>
 			</Properties>
 		</Model>
-
+        <Model Name="RsMessage">
+			<Properties>
+				<Property Name='eventId' Type='string' IsKey="true"/>
+				<Property Name='to' Type='string' IsKey="true"/>
+			</Properties>
+		</Model>
 		<Model Name="RsGroup" Parent="RsTopologyObject">
 			<Properties>
 			</Properties>

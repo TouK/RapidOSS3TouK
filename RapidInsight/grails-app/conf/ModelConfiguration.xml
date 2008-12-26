@@ -62,9 +62,8 @@
 				<Property Name="lastPolledAt" Type="number" />
 			</Properties>
 		</Model>
-		<Model Name="RsService" StorageType="FileAndMemory">
+		<Model Name="RsService" Parent="RsGroup">
 			<Properties>
-				<Property Name="name" Type="string" IsKey="true" />
 				<Property Name="observedStatus" Type="string" />
 				<Property Name="derivedStatus" Type="string" />
 				<Property Name="lastChangedAt" Type="number" />

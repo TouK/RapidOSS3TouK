@@ -42,9 +42,43 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">className:</td>
+                    
+                    <td valign="top" class="value">${rsService.className}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">consistsOf:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="c" in="${rsService.consistsOf}">
+                                <li><g:link controller="rsTopologyObject" action="show" id="${c.id}">${c}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">derivedStatus:</td>
                     
                     <td valign="top" class="value">${rsService.derivedStatus}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">description:</td>
+                    
+                    <td valign="top" class="value">${rsService.description}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">displayName:</td>
+                    
+                    <td valign="top" class="value">${rsService.displayName}</td>
                     
                 </tr>
                 
@@ -56,6 +90,13 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">isManaged:</td>
+                    
+                    <td valign="top" class="value">${rsService.isManaged}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">lastChangedAt:</td>
                     
                     <td valign="top" class="value">${rsService.lastChangedAt}</td>
@@ -63,9 +104,29 @@
                 </tr>
                 
                 <tr class="prop">
+                    <td valign="top" class="name">memberOfGroup:</td>
+                    
+                    <td valign="top" style="text-align:left;" class="value">
+                        <ul>
+                            <g:each var="m" in="${rsService.memberOfGroup}">
+                                <li><g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link></li>
+                            </g:each>
+                        </ul>
+                    </td>
+                    
+                </tr>
+                
+                <tr class="prop">
                     <td valign="top" class="name">observedStatus:</td>
                     
                     <td valign="top" class="value">${rsService.observedStatus}</td>
+                    
+                </tr>
+                
+                <tr class="prop">
+                    <td valign="top" class="name">rsDatasource:</td>
+                    
+                    <td valign="top" class="value">${rsService.rsDatasource}</td>
                     
                 </tr>
                 

@@ -44,10 +44,56 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="className">className:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'className','errors')}">
+                            <input type="text" id="className" name="className" value="${fieldValue(bean:rsService,field:'className')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="consistsOf">consistsOf:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'consistsOf','errors')}">
+                            
+<ul>
+<g:each var="c" in="${rsService?.consistsOf?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsTopologyObject" action="show" id="${c.id}">${c}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsService?.id, 'relationName':'consistsOf', 'relatedObjectId':c.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsService?.id, 'relationName':'consistsOf']" action="addTo">Add RsTopologyObject</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="derivedStatus">derivedStatus:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsService,field:'derivedStatus','errors')}">
                             <input type="text" id="derivedStatus" name="derivedStatus" value="${fieldValue(bean:rsService,field:'derivedStatus')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="description">description:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'description','errors')}">
+                            <input type="text" id="description" name="description" value="${fieldValue(bean:rsService,field:'description')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="displayName">displayName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'displayName','errors')}">
+                            <input type="text" id="displayName" name="displayName" value="${fieldValue(bean:rsService,field:'displayName')}"/>
                         </td>
                     </tr>
                     
@@ -62,6 +108,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="isManaged">isManaged:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'isManaged','errors')}">
+                            <g:checkBox name="isManaged" value="${rsService?.isManaged}" ></g:checkBox>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="lastChangedAt">lastChangedAt:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsService,field:'lastChangedAt','errors')}">
@@ -71,10 +126,38 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="memberOfGroup">memberOfGroup:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'memberOfGroup','errors')}">
+                            
+<ul>
+<g:each var="m" in="${rsService?.memberOfGroup?}">
+    <li style="margin-bottom:3px;">
+        <g:link controller="rsGroup" action="show" id="${m.id}">${m}</g:link>
+        <g:link class="delete" action="removeRelation" params="['id':rsService?.id, 'relationName':'memberOfGroup', 'relatedObjectId':m.id]"></g:link>
+    </li>
+</g:each>
+</ul>
+<g:link params="['id':rsService?.id, 'relationName':'memberOfGroup']" action="addTo">Add RsGroup</g:link>
+
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="observedStatus">observedStatus:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsService,field:'observedStatus','errors')}">
                             <input type="text" id="observedStatus" name="observedStatus" value="${fieldValue(bean:rsService,field:'observedStatus')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsService,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

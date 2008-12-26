@@ -42,6 +42,15 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="className">className:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'className','errors')}">
+                            <input type="text" id="className" name="className" value="${fieldValue(bean:rsService,field:'className')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="derivedStatus">derivedStatus:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsService,field:'derivedStatus','errors')}">
@@ -51,10 +60,37 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="description">description:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'description','errors')}">
+                            <input type="text" id="description" name="description" value="${fieldValue(bean:rsService,field:'description')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="displayName">displayName:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'displayName','errors')}">
+                            <input type="text" id="displayName" name="displayName" value="${fieldValue(bean:rsService,field:'displayName')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="interval">interval:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsService,field:'interval','errors')}">
                             <input type="text" id="interval" name="interval" value="${fieldValue(bean:rsService,field:'interval')}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="isManaged">isManaged:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'isManaged','errors')}">
+                            <g:checkBox name="isManaged" value="${rsService?.isManaged}" ></g:checkBox>
                         </td>
                     </tr>
                     
@@ -73,6 +109,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsService,field:'observedStatus','errors')}">
                             <input type="text" id="observedStatus" name="observedStatus" value="${fieldValue(bean:rsService,field:'observedStatus')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="rsDatasource">rsDatasource:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:rsService,field:'rsDatasource','errors')}">
+                            <input type="text" id="rsDatasource" name="rsDatasource" value="${fieldValue(bean:rsService,field:'rsDatasource')}"/>
                         </td>
                     </tr>
                     

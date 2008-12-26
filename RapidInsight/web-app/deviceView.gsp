@@ -60,7 +60,7 @@
     <rui:functionArg>'Details of ' + params.data.name</rui:functionArg>
 </rui:action>
 <rui:action id="browseAction" type="function" function="show" componentId="objectDetailsmenuHtml">
-    <rui:functionArg>createURL('getObjectDetails.gsp', {name:params.data.elementName}</rui:functionArg>
+    <rui:functionArg>createURL('getObjectDetails.gsp', {name:params.data.elementName})</rui:functionArg>
     <rui:functionArg>'Details of '+ params.data.elementName</rui:functionArg>
 </rui:action>
 <rui:action id="acknowledgeAction" type="merge" url="script/run/acknowledge" components="${['eventsGrid']}">

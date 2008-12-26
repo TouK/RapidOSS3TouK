@@ -13,6 +13,10 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 class StringConverter implements Converter{
     org.apache.commons.beanutils.converters.StringConverter converter = RapidConvertUtils.getInstance().lookup(String.class);
     public Object convert(Object value) {
+        if(value == null)
+        {
+            return "";
+        }
         return converter.convert(String, value);
     }
 

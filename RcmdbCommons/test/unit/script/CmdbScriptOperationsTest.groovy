@@ -138,7 +138,8 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
             scriptToAdd[key]=val
          }
          
-         def messageServiceClass=ClassLoader.getSystemClassLoader().loadClass("MessageService");
+         //def messageServiceClass=ClassLoader.getSystemClassLoader().loadClass("MessageService");
+         def messageServiceClass=this.class.classLoader.loadClass("MessageService");
          messageServiceClass.metaClass.getMessage = { param1 -> return "injectedTestMessage"}
          
          scriptToAdd.messageService=messageServiceClass.newInstance()

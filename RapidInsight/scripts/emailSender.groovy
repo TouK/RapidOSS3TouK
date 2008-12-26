@@ -9,7 +9,7 @@ import connection.EmailConnection
 import datasource.EmailDatasource
 
 
-def templatePath="grails-app/views/emailTemplate.gsp";
+def templatePath="grails-app/templates/email/emailTemplate.gsp";
 def from="mustafa"
 
 def con=EmailConnection.add(name:"emailcon",smtpHost:"192.168.1.100",smtpPort:25,username:"testaccount",userPassword:"123",protocol:EmailConnection.SMTP)

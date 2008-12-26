@@ -123,7 +123,7 @@ public class HttpUtils {
         Iterator iterator = params.keySet().iterator();
         while (iterator.hasNext()) {
             String key = (String) iterator.next();
-            String value = (String) params.get(key);
+            String value = String.valueOf( params.get(key));
             nameValuePairs.add(new NameValuePair(key, value));
         }
         NameValuePair[] pairs = (NameValuePair[]) nameValuePairs.toArray(new NameValuePair[0]);

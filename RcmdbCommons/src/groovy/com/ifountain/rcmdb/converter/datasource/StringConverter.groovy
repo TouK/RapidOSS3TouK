@@ -15,9 +15,13 @@ class StringConverter implements Converter{
     public Object convert(Object value) {
         if(value == null)
         {
-            return "";
+            value = "";
         }
-        return converter.convert(String, value);
+        else
+        {
+            value = converter.convert(String, value);
+        }
+        return value.trim();
     }
 
 }

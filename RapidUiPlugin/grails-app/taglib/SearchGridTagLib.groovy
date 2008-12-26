@@ -103,6 +103,8 @@ class SearchGridTagLib {
         cArray.add("sortOrderAttribute: '${config["sortOrderAttribute"]}'")
         if (config["title"])
             cArray.add("title:'${config['title']}'")
+         if (config["queryEnabled"])
+            cArray.add("queryEnabled:${config['queryEnabled']}")
         if (config["pollingInterval"])
             cArray.add("pollingInterval:${config['pollingInterval']}")
         if (config["maxRowsDisplayed"])

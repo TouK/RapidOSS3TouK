@@ -21,6 +21,7 @@ YAHOO.rapidjs.component.search.SearchGrid = function(container, config) {
     this.columns = null;
     this.minColumnWidth = 30;
     this.fieldsUrl = null;
+    this.queryEnabled = true;
     YAHOO.rapidjs.component.search.SearchGrid.superclass.constructor.call(this, container, config);
 };
 
@@ -75,6 +76,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         new YAHOO.rapidjs.component.Button(wrps[6], {className:'rcmdb-searchgrid-searchButton', scope:this, click:this.handleSearch, tooltip: 'Search'});
         this.searchInput = searchInputWrp.getElementsByTagName('input')[0];
         YAHOO.util.Event.addListener(this.searchInput.form, 'keypress', this.handleInputEnter, this, true);
+        if(!this.queryEnabled){
+            YAHOO.util.Dom.setStyle(wrps[5], 'display', 'none')
+            YAHOO.util.Dom.setStyle(wrps[6], 'display', 'none')
+            YAHOO.util.Dom.setStyle(wrps[7], 'display', 'none')
+        }
         this.body.dom.id = this.bodyId;
         this.pwrap = dh.append(this.body.dom, {tag: 'div', cls: 'rcmdb-searchgrid-positioner'});
         this.hwrap = dh.append(this.pwrap, {tag: 'div', cls: 'rcmdb-searchgrid-wrap-headers'}, true);

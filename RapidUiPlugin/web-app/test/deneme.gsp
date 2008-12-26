@@ -14,7 +14,7 @@
     <rui:stylesheet dir="js/yui/container/assets/skins/sam" file="container.css"></rui:stylesheet>
 </head>
 <body class=" yui-skin-sam">
-     <rui:searchGrid id="searchGrid" url="res.xml?searchIn=RsEvent" queryParameter="query" rootTag="Results" contentPath="Result"
+     <rui:searchGrid id="searchGrid" url="res.xml?searchIn=RsEvent" queryParameter="query" rootTag="Results" contentPath="Result" queryEnabled="false"
                 keyAttribute="id" totalCountAttribute="Total" offsetAttribute="Offset" sortOrderAttribute="sortOrder" title="Events"
                 fieldsUrl="script/run/getViewFields?format=xml">
         <rui:sgColumns>

@@ -8,6 +8,10 @@
 import connection.EmailConnection
 import datasource.EmailDatasource
 
+
+def templatePath="grails-app/views/emailTemplate.gsp";
+def from="mustafa"
+
 def con=EmailConnection.add(name:"emailcon",smtpHost:"192.168.1.100",smtpPort:25,username:"testaccount",userPassword:"123",protocol:EmailConnection.SMTP)
 if(con.hasErrors())
 {
@@ -23,13 +27,41 @@ if(emailDs.hasErrors())
 def ds=EmailDatasource.get(name:"emailds")
 
 
-def params=[:]
-params.from="mustafa"
-params.subject="test subject"
-params.to="abdurrahim"
-params.body="test body"
+def messages=RsMessage.searchEvery("alias:*", [sort: "id"]);
 
-//params.template="email.gsp"
-//params.templateParams=[:]
+messages.each{ message ->
+	RsEvent event=RsEvent.get(id:message.eventId);
+	if(event!=null)
+	{
 
-ds.sendEmail(params)
+		def eventParams=event.asMap();
+		logger.debug("Will send email about RsEvent : ${eventParams}");
+
+		def templateParams=[eventParams:eventParams]
+		def emailParams=[:]
+		emailParams.from=from
+		emailParams.to=message.to
+		emailParams.subject= ( event.createdAt  == event.changedAt ? "Event Created" : "Event Updated" )
+		emailParams.template=templatePath
+		emailParams.templateParams=templateParams
+		emailParams.contentType="text/html"
+
+		try{
+			ds.sendEmail(emailParams)
+			logger.debug("Sended email about RsEvent: ${eventParams}")
+		}
+		catch(e)
+		{
+			logger.warn("Error occured while sending email.Reason ${e}",e);
+		}
+
+
+	}
+	else
+	{
+		logger.warn("RsEvent with id ${message.eventId} does not exist. Will not send email");
+	}
+
+}
+return "ended"
+

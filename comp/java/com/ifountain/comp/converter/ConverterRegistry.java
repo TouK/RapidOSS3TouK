@@ -1,6 +1,8 @@
 package com.ifountain.comp.converter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Map;
 public class ConverterRegistry
 {
     private Converter defaultConverter;
-    private Map<Class, Converter> converters;
+    private Map<Object, ConverterHolder> converters;
     private static ConverterRegistry conversionUtils;
     public static ConverterRegistry getInstance()
     {
@@ -26,10 +28,9 @@ public class ConverterRegistry
 
     private ConverterRegistry()
     {
-        converters = new HashMap<Class, Converter>();
+        converters = new HashMap<Object, ConverterHolder>();
         unregisterAll();
     }
-
     public void unregisterAll()
     {
         converters.clear();
@@ -41,7 +42,26 @@ public class ConverterRegistry
     }
     public void register(Class cls, Converter converter)
     {
-        converters.put(cls, converter);
+        ConverterHolder holder = (ConverterHolder)converters.get(cls);
+        if(holder == null || !holder.ownerClass.equals(cls))
+        {
+            List entrySet = new ArrayList(converters.entrySet());
+            for(int i=0; i < entrySet.size(); i++)
+            {
+                Map.Entry entry = (Map.Entry)entrySet.get(i);
+                Class registeredCls = (Class)entry.getKey();
+                ConverterHolder registeredHolder = (ConverterHolder)entry.getValue();
+                if(!registeredHolder.ownerClass.equals(registeredCls) && cls.isAssignableFrom(registeredCls))
+                {
+                    converters.remove(registeredCls);
+                }
+            }
+            converters.put(cls, new ConverterHolder(cls, converter));
+        }
+        else
+        {
+            holder.converter = converter;
+        }
     }
 
     public Object convert(Object objectToBeConverted) throws Exception {
@@ -62,19 +82,57 @@ public class ConverterRegistry
 
     public Converter lookup(Class classToBeConverted)
     {
-        Converter converter = converters.get(classToBeConverted);
-        while(converter == null  && classToBeConverted != null)
-        {
-            converter = converters.get(classToBeConverted);
-            classToBeConverted = classToBeConverted.getSuperclass();
-        }
-        if(converter == null)
+        ConverterHolder converterHolder = lookupParent(classToBeConverted, true);
+        if(converterHolder == null)
         {
             return defaultConverter;
         }
         else
         {
-            return converter;
+            return converterHolder.converter;
+        }
+    }
+
+    private ConverterHolder lookupParent(Class classToBeConverted, boolean isFirstLevel)
+    {
+        ConverterHolder converterHolder= converters.get(classToBeConverted);
+        if(converterHolder != null) return converterHolder;
+        Class parentClass = classToBeConverted.getSuperclass();
+        if(parentClass != null)
+        {
+            converterHolder = lookupParent(parentClass,false);
+        }
+        if(converterHolder == null)
+        {
+            Class[] interfaces = classToBeConverted.getInterfaces();
+            for(int i=0; i < interfaces.length && converterHolder == null; i++)
+            {
+                converterHolder = lookupParent(interfaces[i], false);
+            }
+        }
+        if(converterHolder != null && isFirstLevel)
+        {
+            converters.put(classToBeConverted, converterHolder);
+        }
+        else if(converterHolder == null && isFirstLevel && classToBeConverted.isArray())
+        {
+            converterHolder = converters.get(Object[].class);
+            if(converterHolder != null)
+            {
+                converters.put(classToBeConverted, converterHolder);
+            }
+        }
+        return converterHolder;
+    }
+
+    class ConverterHolder{
+        Converter converter;
+        Class ownerClass;
+        public ConverterHolder(Class ownerClass, Converter converter)
+        {
+            this.ownerClass = ownerClass;
+            this.converter = converter;
         }
     }
 }
+

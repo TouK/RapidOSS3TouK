@@ -17,7 +17,6 @@
 * USA.
 */
 package datasource
-import com.ifountain.comp.converter.ConverterRegistry;
 import com.ifountain.comp.utils.CaseInsensitiveMap
 import com.ifountain.core.datasource.BaseAdapter
 import java.sql.ResultSet
@@ -61,8 +60,8 @@ public class DatabaseAdapter extends BaseAdapter {
             def record = new CaseInsensitiveMap();
 	        for(int i=1; i <= colCount; i++)
 	        {
-                String fieldValue=rset.getObject(i);
-                record.put(metaData.getColumnName(i).toUpperCase(), ConverterRegistry.getInstance().convert(fieldValue));
+                Object fieldValue=rset.getObject(i);
+                record.put(metaData.getColumnName(i).toUpperCase(), fieldValue);
 	        }
 	        results += record;
 	    }

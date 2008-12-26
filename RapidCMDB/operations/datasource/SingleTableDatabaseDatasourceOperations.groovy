@@ -35,48 +35,44 @@ class SingleTableDatabaseDatasourceOperations extends BaseDatasourceOperations{
 
     def getProperty(Map keys, String propName){
         def props = adapter.getMultiKeyRecord(keys, [propName]);
-        if(props)
-        {
-            return props[propName];
-        }
-        return "";
+        return convert(props[propName]);
     }
 
     def getProperties(Map keys, List properties){
        def props = adapter.getMultiKeyRecord(keys, properties);
-       return props;
+       return convert(props);
     }
 
     def getRecord(keyValue){
-        return adapter.getRecord(keyValue);
+        return convert(adapter.getRecord(keyValue));
     }
 
     def getRecord(keyValue, columnList){
-	    return adapter.getRecord(keyValue, columnList);
+	    return convert(adapter.getRecord(keyValue, columnList));
     }
 
     def getMultiKeyRecord(keyMap){
-        return adapter.getMultiKeyRecord(keymap);
+        return convert(adapter.getMultiKeyRecord(keymap));
     }
 
     def getMultiKeyRecord(Map keyMap, columnList){
-        return adapter.getMultiKeyRecord(keymap, columnList);
+        return convert(adapter.getMultiKeyRecord(keymap, columnList));
     }
 
     def getRecords(){
-		return adapter.getRecords();
+		return convert(adapter.getRecords());
     }
 
     def getRecords(List columnList){
-          return adapter.getRecords(columnList);
+          return convert(adapter.getRecords(columnList));
     }
 
     def getRecords(String whereclause){
-        return adapter.getRecords(whereclause);
+        return convert(adapter.getRecords(whereclause));
     }
 
     def getRecords(whereClause, List columnList){
-        return adapter.getRecords(whereClause, columnList);
+        return convert(adapter.getRecords(whereClause, columnList));
     }
 
     def addRecord(Map fields){
@@ -96,22 +92,22 @@ class SingleTableDatabaseDatasourceOperations extends BaseDatasourceOperations{
 	}
 
 	def runUpdate(sql){
-        return this.adapter.executeUpdate(sql, []);
+        return convert(this.adapter.executeUpdate(sql, []));
     }
 
     def runUpdate(sql, queryParams){
-        return this.adapter.executeUpdate(sql, queryParams);
+        return convert(this.adapter.executeUpdate(sql, queryParams));
     }
 
     def runQuery(sql){
-        return this.adapter.executeQuery(sql, []);
+        return convert(this.adapter.executeQuery(sql, []));
     }
 
     def runQuery(sql,  queryParams){
-        return this.adapter.executeQuery(sql, queryParams);
+        return convert(this.adapter.executeQuery(sql, queryParams));
     }
 
     def runQuery(sql,  queryParams, fetchSize){
-        return this.adapter.executeQuery(sql, queryParams, fetchSize);
+        return convert(this.adapter.executeQuery(sql, queryParams, fetchSize));
     }
 }

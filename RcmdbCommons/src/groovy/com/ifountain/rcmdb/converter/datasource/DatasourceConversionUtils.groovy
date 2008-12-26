@@ -23,6 +23,10 @@ public class DatasourceConversionUtils
         registerDefaultConverters([float, Float, double, Double], Double);
         registerDefaultConverters([Boolean, boolean], Boolean);
         register (Date, new NotConvertingConverter());
+        register (List, new ListConverter());
+        register (Object[].class, new ListConverter());
+        register (Map, new MapConverter());
+
         ConverterRegistry.getInstance().setDefaultConverter(new StringConverter())
     }
     public static void register(Class cls, Converter converter)

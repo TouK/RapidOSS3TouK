@@ -20,6 +20,7 @@ package datasource
 
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import script.CmdbScript
+import com.ifountain.comp.converter.ConverterRegistry
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +31,10 @@ import script.CmdbScript
  */
 class BaseListeningDatasourceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
+    public static Object convert(Object value)
+    {
+        return ConverterRegistry.getInstance().convert(value)        
+    }
     def beforeDelete(){
         if(this.listeningScript && this.listeningScript.type == CmdbScript.LISTENING){
             ListeningAdapterManager.getInstance().stopAdapter(this);

@@ -106,5 +106,9 @@ class EmailConnectionImpl extends BaseConnection{
     public Session getEmailSession(){
         return session;
     }
+    //for testing
+    protected int getSmtpPort(){
+        return smtpPort;
+    }
     
 }

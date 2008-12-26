@@ -14,6 +14,9 @@ import org.apache.log4j.Logger
 
 public class EmailAdapter extends BaseAdapter{
 
+    public static final PLAIN="text/plain";
+    public static final HTML="text/html";
+    
     public EmailAdapter(connectionName, reconnectInterval, logger){
             super(connectionName, reconnectInterval, logger);
     }
@@ -26,5 +29,4 @@ public class EmailAdapter extends BaseAdapter{
         SendEmailAction action = new SendEmailAction(logger,params);
         executeAction(action);        
     }
-
 }

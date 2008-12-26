@@ -16,8 +16,7 @@ import org.apache.log4j.Logger
 class SendEmailActionTest extends RapidCoreTestCase{
 
     public void testExecute(){
-        Map params = EmailConnectionImplTestUtils.getConnectionParams();
-        params.SmtpPort=Integer.valueOf(params.SmtpPort)
+        Map params = EmailConnectionImplTestUtils.getConnectionParams();           
         
         def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
 
@@ -56,6 +55,14 @@ class SendEmailActionTest extends RapidCoreTestCase{
 
         }
 
+
+    }
+
+    public void testConstructorGeneratesContentTypeWhenMissing()
+    {
+        Map sendEmailParams = EmailConnectionImplTestUtils.getSendEmailParams();
+        def action=new SendEmailAction(Logger.getRootLogger(),sendEmailParams)
+        assertEquals(action.getParams().contentType,EmailAdapter.PLAIN)
 
     }
 

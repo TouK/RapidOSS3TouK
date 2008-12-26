@@ -17,8 +17,6 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
      public void testConnectAndDisconnect()
      {
         Map params = EmailConnectionImplTestUtils.getConnectionParams();
-        params.SmtpPort=Integer.valueOf(params.SmtpPort)
-        
          def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
 
          def con=new EmailConnectionImpl()
@@ -35,10 +33,8 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
          assertFalse(con.checkConnection());
          assertFalse(con.isConnected());
      }
-
      public void testConnectThrowsExceptionWithWrongAccount(){
         Map params = EmailConnectionImplTestUtils.getConnectionParams();
-        params.SmtpPort=Integer.valueOf(params.SmtpPort)
         params.Password="xxxxxxxxxxx55555555yyyyyyyyyyyyyyyy"
 
         def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
@@ -59,6 +55,19 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
         assertFalse(con.checkConnection());
         assertFalse(con.isConnected());
 
+
+     }
+     public void testInitConvertsSmtpPortToInt()
+     {
+        Map params = EmailConnectionImplTestUtils.getConnectionParams();
+        params.SmtpPort="66"
+
+        def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
+
+        def con=new EmailConnectionImpl()
+        con.init(conParams)
+
+        assertEquals(con.getSmtpPort(),66);
 
      }
 

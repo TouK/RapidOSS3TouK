@@ -36,16 +36,22 @@ import com.sun.mail.smtp.SMTPTransport;
 
 import com.ifountain.comp.exception.RapidMissingParameterException
 
+
 public class SendEmailAction implements Action {
 
     private Logger logger;
     private int type;
     private Map params;
 
+
     public SendEmailAction(Logger logger,  Map params) {
         this.logger = logger;
         this.params = params;
-        checkParams(["from","to","subject","body"]);
+        checkParams(["from","to","subject","body"]);        
+        if(!params.containsKey("contentType"))
+        {
+            params.contentType=EmailAdapter.PLAIN;
+        }
     }
 
     public void execute(IConnection conn) throws Exception {
@@ -61,7 +67,7 @@ public class SendEmailAction implements Action {
 
         m.setSubject(params.subject);
         m.addRecipient(Message.RecipientType.TO, new InternetAddress(params.to));
-        m.setContent(params.body, "text/plain");
+        m.setContent(params.body, params.contentType);
         m.setSentDate(new Date());
         m.saveChanges();
 
@@ -76,6 +82,12 @@ public class SendEmailAction implements Action {
                 throw new RapidMissingParameterException("SendEmailAction.params."+parameterName);
             }            
         }
+    }
+
+    //for testing
+    protected Map getParams()
+    {
+        return params;
     }
 
 }

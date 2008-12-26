@@ -219,7 +219,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         }
         else {
             if (this.currentNode) {
-                this.populateFieldsForUpdate();
+                this.populateFieldsForUpdate(this.currentNode);
+            }
+            else{
+                this.populateFieldsForAdd();
             }
             this.loadAvailableFields();
         }
@@ -228,22 +231,61 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         if (YAHOO.rapidjs.Connect.containsError(response) == false) {
             this.availableFields = response.responseXML.getElementsByTagName('Field');
             if (this.currentNode) {
-                this.populateFieldsForUpdate();
+                this.populateFieldsForUpdate(this.currentNode);
+            }
+            else{
+                this.populateFieldsForAdd();
             }
             this.loadAvailableFields();
         }
     },
-    populateFieldsForUpdate: function() {
-        var viewName = this.currentNode.getAttribute('name');
-        var isPublic = this.currentNode.getAttribute('isPublic');
+    populateFieldsForAdd: function(){
+        var viewInput = this.searchGrid.viewInput;
+        var currentView = viewInput.options[viewInput.selectedIndex].value;
+        if(currentView == 'default'){
+             this.populteFieldsFromDefaultView();
+        }
+        else{
+            var node = this.viewData.findChildNode('name', currentView, 'View')[0];
+            this.populateFieldsForUpdate(node);
+            this.nameInput.readOnly = false;
+            this.nameInput.value = '';
+        }
+    },
+    populteFieldsFromDefaultView: function(){
+        var columns = YAHOO.rapidjs.ObjectUtils.clone(this.searchGrid.defaultColumns, true);
+        var defaultSortColumn = '';
+        var sortOrder = 'asc';
+        for(var index = 0; index < columns.length; index++){
+             var column = columns[index]
+             var attName = column['attributeName'];
+             var header = column['colLabel'];
+             var width = column['width'];
+             if (column['sortBy'] == true) {
+                defaultSortColumn = attName;
+                if (columns['sortOrder']) {
+                    sortOrder = column['sortOrder'];
+                }
+            }
+            SelectUtils.addOption(this.colList, attName, attName);
+            SelectUtils.addOption(this.defaultSortInput, attName, attName);
+            this.columnsConfig[attName] = {header:header, width:width};
+        }
+        SelectUtils.selectTheValue(this.defaultSortInput, defaultSortColumn, 0);
+        SelectUtils.selectTheValue(this.sortOrderInput, sortOrder, 0);
+       
+    },
+    populateFieldsForUpdate: function(node) {
+        var viewName = node.getAttribute('name');
+        var isPublic = node.getAttribute('isPublic');
         this.nameInput.value = viewName;
         if(isPublic == "true"){
             this.isPublicInput.checked = true;
         }
         this.nameInput.readOnly = true;
-        var defaultSortColumn = this.currentNode.getAttribute('defaultSortColumn');
-        var sortOrder = this.currentNode.getAttribute('sortOrder');
-        var colNodes = this.currentNode.getElementsByTagName('Column');
+        var defaultSortColumn = node.getAttribute('defaultSortColumn');
+        var sortOrder = node.getAttribute('sortOrder');
+        var colNodes = node.getElementsByTagName('Column');
         var nOfColumns = colNodes.length;
         var orderedArray = new Array(nOfColumns);
         for (var index = 0; index < nOfColumns; index++) {

@@ -1,9 +1,10 @@
-package connection
+package email.connection
 
 
 import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.rcmdb.test.util.EmailConnectionImplTestUtils
 import com.ifountain.core.test.util.RapidCoreTestCase
+import connection.EmailConnectionImpl
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,7 +22,7 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
 
          def con=new EmailConnectionImpl()
          con.init(conParams)
-         
+
          assertFalse(con.checkConnection());
          assertFalse(con.isConnected());
 

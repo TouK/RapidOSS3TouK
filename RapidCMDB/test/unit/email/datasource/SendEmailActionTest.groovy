@@ -1,4 +1,4 @@
-package datasource
+package email.datasource
 /**
  * Created by IntelliJ IDEA.
  * User: iFountain
@@ -12,12 +12,15 @@ import com.ifountain.rcmdb.test.util.EmailConnectionImplTestUtils
 import connection.EmailConnectionImpl
 import com.ifountain.comp.exception.RapidMissingParameterException
 import org.apache.log4j.Logger
+import datasource.SendEmailAction
+import datasource.EmailAdapter
+
 
 class SendEmailActionTest extends RapidCoreTestCase{
 
     public void testExecute(){
-        Map params = EmailConnectionImplTestUtils.getConnectionParams();           
-        
+        Map params = EmailConnectionImplTestUtils.getConnectionParams();
+
         def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
 
         def con=new EmailConnectionImpl()
@@ -30,7 +33,7 @@ class SendEmailActionTest extends RapidCoreTestCase{
         Map sendEmailParams = EmailConnectionImplTestUtils.getSendEmailParams();
         SendEmailAction action=new SendEmailAction(Logger.getRootLogger(),sendEmailParams)
         action.execute(con)
-        
+
     }
 
 

@@ -29,4 +29,7 @@ params.subject="test subject"
 params.to="abdurrahim"
 params.body="test body"
 
+//params.template="email.gsp"
+//params.templateParams=[:]
+
 ds.sendEmail(params)

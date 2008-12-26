@@ -290,6 +290,9 @@ class RapidInsightBuild extends Build {
         ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/domain",overwrite:true) {
             ant.fileset(file: "${env.rapid_insight}/grails-app/domain/**");
         }
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/templates",overwrite:true) {
+            ant.fileset(file: "${env.rapid_insight}/grails-app/templates/**");
+        }
         ant.copy(toDir: "${env.dist_rapid_suite}/operations",overwrite:true) {
             ant.fileset(file: "${env.rapid_insight}/operations/**");
         }

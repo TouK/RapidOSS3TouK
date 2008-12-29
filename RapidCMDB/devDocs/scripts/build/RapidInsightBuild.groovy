@@ -98,7 +98,7 @@ class RapidInsightBuild extends Build {
         RapidInsightBuild rapidInsightBuilder = new RapidInsightBuild();
         rapidInsightBuilder.setOptions(buildOptions);
         rapidInsightBuilder.build();
-        println "Build finished in ${(System.currentTimeMillis() - t)/1000} secs."
+        println "Build finished in ${(System.currentTimeMillis() - t)/1000.0} secs."
     }
 
     //    def String getExcludedClasses() {
@@ -109,12 +109,13 @@ class RapidInsightBuild extends Build {
     //    }
 
     def build() {
-    	if(RI_UNIX_OPT || RI_WINDOWS_OPT) buildUnix();
+        def t = System.currentTimeMillis();
+        if(RI_UNIX_OPT || RI_WINDOWS_OPT) buildUnix();
         if (RI_WINDOWS_OPT) addJreOnTopOfUnixAndZip("RI");
         buildIntegrationPlugins();
         if (ENTERPRISE_WINDOWS_OPT) makeWindowsEnterprise();
         if (ENTERPRISE_UNIX_OPT) makeUnixEnterprise();
-        println "RI Build Done";
+        println "RI Build Done in ${(System.currentTimeMillis()-t)/1000.0} secs.";
     }
 
     def buildUnix() {

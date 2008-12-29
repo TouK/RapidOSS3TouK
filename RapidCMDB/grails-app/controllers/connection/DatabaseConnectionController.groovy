@@ -247,4 +247,26 @@ class DatabaseConnectionController {
             redirect(action:list)
         }
     }
+
+    def test = {
+        def databaseConnection = DatabaseConnection.get( [id:params.id] )
+
+        if(!databaseConnection) {
+            flash.message = "DatabaseConnection not found with id ${params.id}"
+            redirect(action:list)
+        }
+        else {
+            try
+            {
+                databaseConnection.checkConnection();
+                flash.message = "Successfully connected to server."
+            }catch(Throwable t)
+            {
+                addError("connection.test.exception", [databaseConnection.name, t.toString()]);
+                log.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+                flash.errors = this.errors;
+            }
+            redirect(action:list);
+        }
+    }
 }

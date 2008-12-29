@@ -45,6 +45,7 @@
                                     <th>Driver</th>
                                     <th>Url</th>
                                     <th>Username</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -54,6 +55,7 @@
                                         <td>${databaseConnection?.driver?.encodeAsHTML()}</td>
                                         <td>${databaseConnection?.url?.encodeAsHTML()}</td>
                                         <td>${databaseConnection?.username?.encodeAsHTML()}</td>
+                                        <td><g:link action="test" controller="databaseConnection" id="${databaseConnection.id}" class="testConnection">Test Connection</g:link></td>
                                     </tr>
                                 </g:each>
                             </tbody>

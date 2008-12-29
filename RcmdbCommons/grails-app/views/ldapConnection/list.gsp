@@ -16,6 +16,11 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
+            <g:hasErrors bean="${flash.errors}">
+                <div class="errors">
+                    <g:renderErrors bean="${flash.errors}"/>
+                </div>
+            </g:hasErrors>
             <div class="list">
                 <table>
                     <thead>
@@ -29,6 +34,7 @@
                    	        <g:sortableColumn property="url" title="Url" />
 
                    	        <g:sortableColumn property="username" title="Username" />
+                            <th></th>
 
                         </tr>
                     </thead>
@@ -43,6 +49,7 @@
                             <td>${ldapConnection.url?.encodeAsHTML()}</td>
 
                             <td>${ldapConnection.username?.encodeAsHTML()}</td>
+                            <td><g:link action="test" controller="ldapConnection" id="${ldapConnection.id}" class="testConnection">Test Connection</g:link></td>
 
                         </tr>
                     </g:each>

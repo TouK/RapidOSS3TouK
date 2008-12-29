@@ -245,4 +245,26 @@ class LdapConnectionController {
             redirect(action:list)
         }
     }
+
+    def test = {
+        def ldapConnection = LdapConnection.get( [id:params.id] )
+
+        if(!ldapConnection) {
+            flash.message = "LdapConnection not found with id ${params.id}"
+            redirect(action:list)
+        }
+        else {
+            try
+            {
+                ldapConnection.checkConnection();
+                flash.message = "Successfully connected to server."
+            }catch(Throwable t)
+            {
+                addError("connection.test.exception", [ldapConnection.name, t.toString()]);
+                log.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+                flash.errors = this.errors;
+            }
+            redirect(action:list);
+        }
+    }
 }

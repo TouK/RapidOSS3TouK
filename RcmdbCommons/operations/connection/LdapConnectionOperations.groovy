@@ -17,11 +17,9 @@
 * USA.
 */
 package connection
-import javax.naming.AuthenticationException
+
 import javax.naming.Context
 import javax.naming.NamingException
-import javax.naming.directory.BasicAttribute
-import javax.naming.directory.BasicAttributes
 import javax.naming.directory.InitialDirContext
 import javax.naming.directory.SearchControls
 
@@ -32,7 +30,7 @@ import javax.naming.directory.SearchControls
  * Time: 11:04:42 AM
  * To change this template use File | Settings | File Templates.
  */
-class LdapConnectionOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+class LdapConnectionOperations extends ConnectionOperations
 {
     def context;
     

@@ -23,9 +23,9 @@
 package com.ifountain.core.connection.mocks;
 
 public class NotConnectedConnection extends MockConnectionImpl {
-
+    public static Exception notConnectException = new Exception("connection lost");
     public NotConnectedConnection()
     {
-        setConnectionException(new Exception("connection lost"));
+        setConnectionException(notConnectException);
     }
 }

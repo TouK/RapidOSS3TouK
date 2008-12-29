@@ -160,14 +160,25 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         try
         {
             ConnectionManager.getConnection(connectionName);
-            fail("Should throw exception cince connection does not exist");
+            fail("Should throw exception since connection does not exist");
         }
         catch(ConnectionException e)
         {
+            assertSame(NotConnectedConnection.notConnectException, e.getCause());
         }
 
         Thread.sleep(500);
         assertFalse(ConnectionManager.isPoolConnected(connectionName));
+
+        try
+        {
+            ConnectionManager.getConnection(connectionName);
+            fail("Should throw exception since connection does not exist");
+        }
+        catch(ConnectionException e)
+        {
+            assertSame(NotConnectedConnection.notConnectException, e.getCause());
+        }
 
         param = (ConnectionParam)param.clone();
         param.setConnectionClass(MockConnectionImpl.class.getName());

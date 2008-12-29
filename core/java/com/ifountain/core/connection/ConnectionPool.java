@@ -39,6 +39,7 @@ public class ConnectionPool extends GenericObjectPool
 {
     Logger logger = Logger.getLogger(ConnectionPool.class);
     private boolean isPoolConnected = true;
+    private Exception poolConnectionException = null;
     private List borrowedObjects = new ArrayList();
     private String connectionName;
     private long connectionCheckerThreadInterval = 0;
@@ -67,7 +68,14 @@ public class ConnectionPool extends GenericObjectPool
     public Object borrowObject() throws Exception {
         if(!isPoolConnected)
         {
-            throw ConnectionException.noConnectionException(this.connectionName);
+            if(!(poolConnectionException instanceof ConnectionException))
+            {
+                throw ConnectionException.noConnectionException(this.connectionName, poolConnectionException);
+            }
+            else
+            {
+                throw poolConnectionException;
+            }
         }
         return _borrowObject();
     }
@@ -136,11 +144,16 @@ public class ConnectionPool extends GenericObjectPool
 
     public void setPoolConnectionStatus(boolean isConnected)
     {
+        setPoolConnectionStatus(isConnected, null);
+    }
+    public void setPoolConnectionStatus(boolean isConnected, Exception e)
+    {
         if(this.isPoolConnected != isConnected)
         {
             logger.warn("Changed connection status of pool "+connectionName+". IsConnected:"+isConnected);
         }
         isPoolConnected = isConnected;
+        poolConnectionException = e;
     }
 
     public boolean isPoolConnected() {
@@ -186,17 +199,14 @@ public class ConnectionPool extends GenericObjectPool
                 }
                 catch(Exception e)
                 {
+                    setPoolConnectionStatus(false, e);
                     if(logger.isDebugEnabled())
                     {
                         logger.debug("An exception occcurred while getting new connection from pool.", e);
                     }
                 }
             }
-            if(validConnections.isEmpty())
-            {
-                setPoolConnectionStatus(false);
-            }
-            else
+            if(!validConnections.isEmpty())
             {
                 List tasks = new ArrayList();
                 logger.info("Will check "+validConnections.size() +" number of connections in pool "+connectionName);

@@ -35,8 +35,13 @@ public class ConnectionException extends RException
         super("An exception occurred while connecting.", cause);
     }
 
-    public static ConnectionException noConnectionException(String connectionName)
+    public ConnectionException(String message, Throwable cause)
     {
-        return new ConnectionException("Connection "+connectionName+" is lost.");
+        super(message, cause);
+    }
+
+    public static ConnectionException noConnectionException(String connectionName, Throwable reason)
+    {
+        return new ConnectionException("Connection "+connectionName+" is lost.", reason);
     }
 }

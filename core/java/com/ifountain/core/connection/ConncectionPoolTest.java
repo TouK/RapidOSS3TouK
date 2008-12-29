@@ -20,6 +20,7 @@ package com.ifountain.core.connection;
 
 import com.ifountain.core.test.util.RapidCoreTestCase;
 import com.ifountain.core.connection.exception.ConnectionException;
+import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl;
 
 import java.util.*;
 
@@ -83,7 +84,31 @@ public class ConncectionPoolTest extends RapidCoreTestCase
         }
         catch(ConnectionException e)
         {
-            assertEquals(ConnectionException.noConnectionException(connectionName).getMessage(), e.getMessage());
+            assertEquals(ConnectionException.noConnectionException(connectionName, null).getMessage(), e.getMessage());
+        }
+
+        Exception rootException = new Exception("Root exception");
+        pool.setPoolConnectionStatus(false, rootException);
+        try
+        {
+            pool.borrowObject();
+            fail("Should throw connection exception since pool is disconnected");
+        }
+        catch(ConnectionException e)
+        {
+            assertSame(rootException, e.getCause());
+        }
+
+        rootException = new ConnectionException("Root exception");
+        pool.setPoolConnectionStatus(false, rootException);
+        try
+        {
+            pool.borrowObject();
+            fail("Should throw connection exception since pool is disconnected");
+        }
+        catch(ConnectionException e)
+        {
+            assertSame(e, e);
         }
 
         pool.setPoolConnectionStatus(true);
@@ -159,7 +184,12 @@ public class ConncectionPoolTest extends RapidCoreTestCase
 
     public void testTimeoutMechanism() throws Exception
     {
-        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(MockTimeoutStrategy.class);
+        MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
+        ConnectionParam connParam = new ConnectionParam("Mock", "con1" , MockConnection.class.getName(), new HashMap());
+        connParam.setMinTimeout(0);
+        connParam.setMaxTimeout(1000000000);
+        supp.setParam(connParam);
+        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(supp, MockTimeoutStrategy.class);
         String connectionName = "con1";
         pool = new ConnectionPool(connectionName, fact, 10, 100);
         MockTimeoutStrategy.shouldRecalculate = true;
@@ -178,7 +208,12 @@ public class ConncectionPoolTest extends RapidCoreTestCase
 
     public void testIfShouldRecalculateIsFalseTimeoutWillNotChange() throws Exception
     {
-        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(MockTimeoutStrategy.class);
+        MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
+        ConnectionParam connParam = new ConnectionParam("Mock", "con1" , MockConnection.class.getName(), new HashMap());
+        connParam.setMinTimeout(0);
+        connParam.setMaxTimeout(1000000000);
+        supp.setParam(connParam);
+        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(supp, MockTimeoutStrategy.class);
         String connectionName = "con1";
         MockTimeoutStrategy.shouldRecalculate = false;
         MockTimeoutStrategy.newTimeoutInterval = 100000;
@@ -195,7 +230,12 @@ public class ConncectionPoolTest extends RapidCoreTestCase
     }
     public void testIfObjectIsNotValidPoolWillNotUseThatObjectToCheckConnectionStatus() throws Exception
     {
-        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(MockTimeoutStrategy.class);
+        MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
+        ConnectionParam connParam = new ConnectionParam("Mock", "con1" , MockConnection.class.getName(), new HashMap());
+        connParam.setMinTimeout(0);
+        connParam.setMaxTimeout(1000000000);
+        supp.setParam(connParam);
+        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(supp, MockTimeoutStrategy.class);
         String connectionName = "con1";
         MockConnection.isConnected = true;
         MockConnection.checkConnectionResult = true;
@@ -235,6 +275,10 @@ class MockPoolableObjectFactory extends BaseConnectionFactory
     List invalidConnections = new ArrayList();
     MockPoolableObjectFactory(Class timeoutStrategyClass) {
         super("factory1", null, timeoutStrategyClass);
+    }
+
+    MockPoolableObjectFactory(ConnectionParameterSupplier paramSuplier, Class timeoutStrategyClass) {
+        super("factory1", paramSuplier, timeoutStrategyClass);
     }
 
     public IConnection _makeObject(long timeout) throws Exception {

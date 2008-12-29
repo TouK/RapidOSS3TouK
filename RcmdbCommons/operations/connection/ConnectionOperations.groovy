@@ -19,6 +19,7 @@
 package connection
 
 import com.ifountain.rcmdb.connection.RcmdbConnectionManagerAdapter
+import com.ifountain.core.connection.ConnectionManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,5 +38,10 @@ class ConnectionOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
     def afterInsert(){
           RcmdbConnectionManagerAdapter.getInstance().addConnection(this.domainObject);
+    }
+
+    public boolean checkConnection()
+    {
+        return ConnectionManager.checkConnection (name);   
     }
 }

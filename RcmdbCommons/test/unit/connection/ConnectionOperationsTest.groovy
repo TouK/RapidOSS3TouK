@@ -33,7 +33,17 @@ class ConnectionOperationsTest extends RapidCmdbTestCase{
         }
         catch(Exception e)
         {
-            assertSame (MockConnectionImpl.globalConnectionException , e.getCause());
+            assertSame (MockConnectionImpl.globalConnectionException , e);
+        }
+
+        try
+        {
+            conn.checkConnection()
+            fail("Should throw exception");
+        }
+        catch(Exception e)
+        {
+            assertSame (MockConnectionImpl.globalConnectionException , e);
         }
 
         ConnectionManager.destroy();

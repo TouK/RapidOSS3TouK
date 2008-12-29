@@ -20,19 +20,40 @@ class ConnectionOperationsTest extends RapidCmdbTestCase{
     {
         def supplier = new MockConnectionParameterSupplierImpl();
         ConnectionManager.initialize(TestLogUtils.log, supplier, this.class.classLoader, 1000);
-        supplier.setParam (new ConnectionParam("Mock", "con1", MockConnectionImpl.class.name, [:]));
+        ConnectionParam param = new ConnectionParam("Mock", "con1", MockConnectionImpl.class.name, [:]);
+        supplier.setParam (param);
         CompassForTests.addOperationSupport (Connection, ConnectionOperations);
         Connection conn = new Connection(name:"con1", connectionClass:MockConnectionImpl.class.name);
         MockConnectionImpl.globalConnectionException = new Exception("Connection lost");
-        
-        assertFalse(conn.checkConnection());
+
+        try
+        {
+            conn.checkConnection()
+            fail("Should throw exception");
+        }
+        catch(Exception e)
+        {
+
+        }
 
         ConnectionManager.destroy();
-
+        param.maxNumberOfConnectionsInPool = 1;
         MockConnectionImpl.globalConnectionException = null
         ConnectionManager.initialize(TestLogUtils.log, supplier, this.class.classLoader, 1000);
 
+
         assertTrue(conn.checkConnection());
+
+        int threadState = 0;
+        Thread t = Thread.start{
+            threadState = 1;
+            conn.checkConnection()
+            threadState = 2;
+        }
+
+        Thread.sleep (300);
+        assertEquals (2, threadState);
+
 
     }
 }

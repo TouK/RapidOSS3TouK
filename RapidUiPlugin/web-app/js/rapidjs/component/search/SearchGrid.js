@@ -230,7 +230,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var cell = rowEl.cells[colIndex];
             var valueEl = cell.firstChild;
             var value = dataNode.getAttribute(att);
-            valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) || "" : value || "");
+            var innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) || "" : value || "");
+            valueEl.innerHTML = colIndex == nOfColumns -1 ? innerHTML + '<br>' : innerHTML + '&nbsp'
             cell.propKey = att;
             cell.propValue = value;
         }

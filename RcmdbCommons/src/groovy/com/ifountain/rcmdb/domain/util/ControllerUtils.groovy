@@ -48,23 +48,27 @@ class ControllerUtils {
     def static getClassProperties(params, domainClass)
     {
         def returnedParams = [:]
-        params.each{propName, propValue->
-            if(!PROPS_TO_BE_EXCLUDED.containsKey(propName))
+        def domainObjectProps = [:];
+        domainClass.getPropertiesList().each{
+            if(!it.isOperationProperty)
             {
+                domainObjectProps[it.name] = it;
+            }
+        }
+        params.each{propName, propValue->
+            def metaProp = domainObjectProps[propName];
+            if(metaProp != null)
+            {
+                Class propType = domainClass.metaClass.getMetaProperty(metaProp.name).type
                 def indexOfDot = propName.indexOf(".");
                 if(indexOfDot < 0)
                 {
-                     if(propValue instanceof Map)
+                     if(metaProp.isRelation)
                     {
                         if(propValue["id"] != "null")
                         {
                             def id = propValue["id"] instanceof Long?propValue["id"]:Long.parseLong(propValue["id"]);
-                            def metaProp = domainClass.metaClass.getMetaProperty(propName);
-                            if(metaProp)
-                            {
-                                def fieldType = metaProp.type;
-                                returnedParams[propName] = fieldType.metaClass.invokeStaticMethod(fieldType, "get", [id] as Object[])
-                            }
+                            returnedParams[propName] = propType.metaClass.invokeStaticMethod(propType, "get", [id] as Object[])
                         }
                         else
                         {
@@ -73,37 +77,30 @@ class ControllerUtils {
                     }
                     else
                     {
-	                    
                         if(propValue.length() != 0)
                         {
-                            def metaProp = domainClass.metaClass.getMetaProperty(propName);
-                            if(metaProp)
+                            if(propType == Date.class)
                             {
-	                           
-                                if(metaProp.type == Date.class)
-                                {
-                                    def year = params[propName+"_year"];
-                                    def day = params[propName+"_day"];
-                                    def month = params[propName+"_month"];
-                                    def hour = params[propName+"_hour"];
-                                    def min = params[propName+"_minute"];
-                                    def date = dateFormat.parse("$year-$month-$day $hour:$min");
-                                    DateConverter converter = RapidConvertUtils.getInstance().lookup (Date.class);
-                                    propValue = converter.formater.format (date);
-                                }
-                                returnedParams[propName] = propValue;
+                                def year = params[propName+"_year"];
+                                def day = params[propName+"_day"];
+                                def month = params[propName+"_month"];
+                                def hour = params[propName+"_hour"];
+                                def min = params[propName+"_minute"];
+                                def date = dateFormat.parse("$year-$month-$day $hour:$min");
+                                DateConverter converter = RapidConvertUtils.getInstance().lookup (Date.class);
+                                propValue = converter.formater.format (date);
                             }
+                            returnedParams[propName] = propValue;
                         }
                         else{
 	                        if(propName.indexOf("_") == 0){
-		                        propName = propName.substring(1)
-		                    	def metaProp = domainClass.metaClass.getMetaProperty(propName)
-		                    	if(metaProp && (metaProp.type == boolean || metaProp.type == Boolean.class)){
-			                    	if(!returnedParams[propName]){
-				                    	returnedParams[propName] = false	
-				                    }
-			                    	
-			                    }  
+                                propName = propName.substring(1)
+                                if(propType == boolean || propType == Boolean.class){
+                                    if(!returnedParams[propName]){
+                                        returnedParams[propName] = false
+                                    }
+
+                                }
 		                    }
 		                    else{
 			                	returnedParams[propName] = null;

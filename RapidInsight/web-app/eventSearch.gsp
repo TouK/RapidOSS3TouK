@@ -44,10 +44,10 @@
     </rui:esDefaultMenus>
     <rui:esSearchResults>
         <%
-            def eventFields = ["name", "identifier", "node","active", "owner", "acknowledged", "severity", "source",
+            def eventFields = ["elementName", "identifier", "node","active", "owner", "acknowledged", "severity", "source",
                     "changedAt", "visibility", "count"];
         %>
-        <rui:esSearchResult alias="RsRiEvent" properties="${eventFields}" emphasizeds="${['name']}"></rui:esSearchResult>
+        <rui:esSearchResult alias="RsRiEvent" properties="${eventFields}" emphasizeds="${['elementName','identifier']}"></rui:esSearchResult>
     </rui:esSearchResults>
     <rui:esConversions>
         <rui:esConversion property="changedAt" type="function" function="formatChangedAt"></rui:esConversion>

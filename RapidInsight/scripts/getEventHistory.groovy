@@ -32,12 +32,13 @@ def formatter = new SimpleDateFormat(timeStampFormat);
 def nodeType = params.nodeType;
 def name = params.name;
 
+def searchParams = [max:"1000", sort:"clearedAt", order:"desc"];
 def historicalEvents = null;
 if(nodeType == "Container"){
-    historicalEvents = RsHistoricalEvent.searchEvery("${CONTAINER_PROPERTY}:\"${name}\"");
+    historicalEvents = RsHistoricalEvent.search("${CONTAINER_PROPERTY}:\"${name}\"", searchParams).results;
 }
 else{
-   historicalEvents = RsHistoricalEvent.searchEvery("elementName:\"${name}\"");
+   historicalEvents = RsHistoricalEvent.search("elementName:\"${name}\"", searchParams).results;
 }
 
 web.render(contentType: 'text/xml'){

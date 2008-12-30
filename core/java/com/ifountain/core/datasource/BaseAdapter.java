@@ -154,6 +154,10 @@ public abstract class BaseAdapter implements Adapter
     {
     	this.reconnectInterval = reconnectInterval;
     }
+
+    public long getReconnectInterval() {
+        return reconnectInterval;
+    }
     
     @Override
     public void setLogger(Logger logger)

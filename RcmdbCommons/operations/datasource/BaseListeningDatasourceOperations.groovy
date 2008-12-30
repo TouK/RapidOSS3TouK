@@ -29,12 +29,8 @@ import com.ifountain.comp.converter.ConverterRegistry
  * Time: 2:53:23 PM
  * To change this template use File | Settings | File Templates.
  */
-class BaseListeningDatasourceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+class BaseListeningDatasourceOperations extends BaseDatasourceOperations
 {
-    public static Object convert(Object value)
-    {
-        return ConverterRegistry.getInstance().convert(value)        
-    }
     def beforeDelete(){
         if(this.listeningScript && this.listeningScript.type == CmdbScript.LISTENING){
             ListeningAdapterManager.getInstance().stopAdapter(this);

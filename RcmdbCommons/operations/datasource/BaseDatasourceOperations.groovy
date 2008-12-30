@@ -32,4 +32,11 @@ class BaseDatasourceOperations  extends com.ifountain.rcmdb.domain.operation.Abs
     {
         return ConverterRegistry.getInstance().convert(value)        
     }
+    static def getOndemand(params){
+        def ds = BaseDatasource.get(params);
+        if(ds && ds.adapter){
+          ds.adapter.setReconnectInterval(0);
+        }
+        return ds;
+    }
 }

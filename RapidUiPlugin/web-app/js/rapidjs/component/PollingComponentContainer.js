@@ -42,7 +42,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
 
     refresh: function(params, title){
-       this.doRequest(this.url, params || this.params);
+       if(this.params && params){
+           for(param in params){
+               this.params[param] = params[param];
+           }
+       }
+       this.doRequest(this.url, this.params);
         if(title){
             this.setTitle(title);
         }

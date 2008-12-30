@@ -92,6 +92,7 @@ if (!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.
     props.put("NETCOOL", "true")
     props.put("SMARTS", "true")
     props.put("TEST", "true")
+    props.put("JREDIR", "C:\\Program Files\\Java\\jre1.6.0_04")
     FileOutputStream out = new FileOutputStream("${workspaceDir}/Distribution/build.properties")
     props.store(out, "");
     out.close();

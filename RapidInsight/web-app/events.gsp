@@ -36,8 +36,8 @@
     <rui:evColumns>
         <rui:evColumn attributeName="acknowledged" colLabel="Ack" width="50"></rui:evColumn>
         <rui:evColumn attributeName="owner" colLabel="Owner" width="100"></rui:evColumn>
-        <rui:evColumn attributeName="name" colLabel="Name" width="150"></rui:evColumn>
-        <rui:evColumn attributeName="identifier" colLabel="Event Name" width="150"></rui:evColumn>
+        <rui:evColumn attributeName="elementName" colLabel="Element Name" width="150"></rui:evColumn>
+        <rui:evColumn attributeName="identifier" colLabel="Event" width="150"></rui:evColumn>
         <rui:evColumn attributeName="count" colLabel="Count" width="50"></rui:evColumn>
         <rui:evColumn attributeName="source" colLabel="Source" width="100"></rui:evColumn>
         <rui:evColumn attributeName="changedAt" colLabel="Last Change" width="120"></rui:evColumn>

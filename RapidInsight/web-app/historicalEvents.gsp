@@ -40,10 +40,10 @@
     </rui:heDefaultMenus>
     <rui:heSearchResults>
         <%
-              def eventFields = ["name", "eventName", "node","active", "owner", "acknowledged", "severity", "source",
+              def eventFields = ["elementName", "identifier", "node","active", "owner", "acknowledged", "severity", "source",
                     "changedAt", "visibility", "count"];
         %>
-        <rui:heSearchResult alias="RsRiHistoricalEvent" properties="${eventFields}" emphasizeds="${['className', 'instanceName', 'eventName']}"></rui:heSearchResult>
+        <rui:heSearchResult alias="RsRiHistoricalEvent" properties="${eventFields}" emphasizeds="${['elementName', 'identifier']}"></rui:heSearchResult>
     </rui:heSearchResults>
     <rui:heConversions>
         <rui:heConversion property="changedAt" type="function" function="formatChangedAt"></rui:heConversion>

@@ -27,27 +27,32 @@ package com.ifountain.rcmdb.util
 class RCMDBDataStore {
     private static Map constants = new HashMap();
 
-    public static boolean containsKey(Object key) {
+    public static synchronized boolean containsKey(Object key) {
 
         return constants.containsKey(key);
     }
 
-    public static boolean containsValue(Object value) {
+    public static synchronized void clear() {
+
+        constants.clear();
+    }
+
+    public static synchronized boolean containsValue(Object value) {
 
         return constants.containsValue(value);
     }
 
-    public static Object remove(Object key) {
+    public static synchronized Object remove(Object key) {
 
         return constants.remove(key);
     }
 
-    public static Object get(Object key)
+    public static synchronized Object get(Object key)
     {
         return constants.get(key);
     }
 
-    public static void put(Object key, Object value)
+    public static synchronized void put(Object key, Object value)
     {
         constants.put(key, value);
     }

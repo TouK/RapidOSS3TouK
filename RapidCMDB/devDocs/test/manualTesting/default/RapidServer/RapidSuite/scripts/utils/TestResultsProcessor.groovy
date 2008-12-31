@@ -1,4 +1,11 @@
 package utils
+
+import com.ifountain.rcmdb.util.DataStore
+import junit.framework.Test
+import junit.framework.TestResult
+import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
+import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
+
 /**
  * Created by IntelliJ IDEA.
  * User: iFountain
@@ -6,12 +13,6 @@ package utils
  * Time: 4:19:04 PM
  * To change this template use File | Settings | File Templates.
  */
-import junit.framework.Test
-import junit.framework.TestResult
-import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
-import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
-import com.ifountain.rcmdb.util.RCMDBDataStore;
-
 class TestResultsProcessor{
     def reportsMap;
     def statsXml;
@@ -26,7 +27,7 @@ class TestResultsProcessor{
     }
     public static long getFirstMemory()
     {
-        def firstMemory=RCMDBDataStore.get(firstMemoryUsedKey);
+        def firstMemory=DataStore.get(firstMemoryUsedKey);
         if(firstMemory!=null)
         {
             firstMemory=Long.valueOf(firstMemory);
@@ -38,7 +39,7 @@ class TestResultsProcessor{
     }
     public static void recordFirstMemory()
     {
-        RCMDBDataStore.put(firstMemoryUsedKey,getUsedMemory());
+        DataStore.put(firstMemoryUsedKey,getUsedMemory());
     }
     public static long getUsedMemory()
     {

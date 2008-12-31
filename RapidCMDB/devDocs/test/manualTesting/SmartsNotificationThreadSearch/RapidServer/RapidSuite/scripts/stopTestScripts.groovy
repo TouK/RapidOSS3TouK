@@ -1,6 +1,6 @@
 import script.CmdbScript
 
-com.ifountain.rcmdb.util.RCMDBDataStore.put("SmartsNotificationThreadSearchStop",new Object())
+com.ifountain.rcmdb.util.DataStore.put("SmartsNotificationThreadSearchStop",new Object())
 
 CmdbScript.stopListening(connector.SmartsConnector.get(name:"smnot").ds.listeningScript);
 

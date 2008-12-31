@@ -1,4 +1,6 @@
-/* 
+import com.ifountain.rcmdb.util.DataStore
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -16,8 +18,6 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-import com.ifountain.rcmdb.util.RCMDBDataStore;
-
 public class RSFileReader{
 
 	def filePath, tailMode;
@@ -34,24 +34,24 @@ public class RSFileReader{
 		//def t3 = System.currentTimeMillis();
 		def raf = new RandomAccessFile(filePath, "r");
 		def fileLength = raf.length();
-		def previousFileLength = RCMDBDataStore.get(filePath);
+		def previousFileLength = DataStore.get(filePath);
 		def  lines = [];
 		def inputFile = new File(filePath);
 
 		if(previousFileLength == null){	// first time reading the file
 			if(tailMode){
-				RCMDBDataStore.put(filePath,fileLength);
+				DataStore.put(filePath,fileLength);
 				return lines;
 			}
 			else{
 				lines = inputFile.readLines();	
-				RCMDBDataStore.put(filePath,fileLength);
+				DataStore.put(filePath,fileLength);
 			}
 		}
 		else{
 			if(fileLength < previousFileLength){  // file rolled, we will read from the start
 				lines = inputFile.readLines();
-				RCMDBDataStore.put(filePath,fileLength);
+				DataStore.put(filePath,fileLength);
 			}
 			else if(fileLength == previousFileLength){ // no appends to the file
 				return lines;
@@ -61,7 +61,7 @@ public class RSFileReader{
 				while (raf.getFilePointer() < raf.length()) {
 					lines.add(raf.readLine());
 				}
-				RCMDBDataStore.put(filePath,fileLength);
+				DataStore.put(filePath,fileLength);
 			}
 		}
 		//def t4 = System.currentTimeMillis();

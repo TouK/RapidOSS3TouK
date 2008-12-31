@@ -1,6 +1,6 @@
 package application
 
-import com.ifountain.rcmdb.util.RCMDBDataStore
+import com.ifountain.rcmdb.util.DataStore
 
 /**
 * Created by IntelliJ IDEA.
@@ -12,21 +12,21 @@ import com.ifountain.rcmdb.util.RCMDBDataStore
 class CacheOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
     public static void store(Object key, Object value)
     {
-        com.ifountain.rcmdb.util.RCMDBDataStore.put(key, value);
+        com.ifountain.rcmdb.util.DataStore.put(key, value);
     }
 
     public static Object retrieve(Object key)
     {
-        com.ifountain.rcmdb.util.RCMDBDataStore.get(key);
+        com.ifountain.rcmdb.util.DataStore.get(key);
     }
 
     public static Object remove(Object key)
     {
-        com.ifountain.rcmdb.util.RCMDBDataStore.remove (key);
+        com.ifountain.rcmdb.util.DataStore.remove (key);
     }
 
     public static void clear()
     {
-        RCMDBDataStore.clear();           
+        DataStore.clear();
     }
 }

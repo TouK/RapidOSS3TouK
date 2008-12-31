@@ -1,4 +1,6 @@
-/* 
+import com.ifountain.rcmdb.util.DataStore
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -16,7 +18,6 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-import com.ifountain.rcmdb.util.RCMDBDataStore
 
 class RsComputerSystemOperations extends RsTopologyObjectOperations
 {
@@ -41,17 +42,17 @@ class RsComputerSystemOperations extends RsTopologyObjectOperations
                 minValue = propValue;
             }
         }
-        RCMDBDataStore.get (STATEINFORMATION_KEY)[name] = minValue;
+        DataStore.get (STATEINFORMATION_KEY)[name] = minValue;
         return minValue;
     }
 
     def stateInformation()
     {
-        def stateInformation = RCMDBDataStore.get(STATEINFORMATION_KEY)
+        def stateInformation = DataStore.get(STATEINFORMATION_KEY)
         if(stateInformation == null)
         {
             stateInformation = [:]
-            RCMDBDataStore.put (STATEINFORMATION_KEY, stateInformation);
+            DataStore.put (STATEINFORMATION_KEY, stateInformation);
         }
         return stateInformation[name];
     }

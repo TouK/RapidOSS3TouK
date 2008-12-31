@@ -1,4 +1,6 @@
-/* 
+import datasource.HttpDatasource
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -16,12 +18,8 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-import datasource.*;
-
-
-
 println "* RequesterSelf starts";
-while( com.ifountain.rcmdb.util.RCMDBDataStore.get("SmartsNotificationThreadSearchStop") == null){
+while( com.ifountain.rcmdb.util.DataStore.get("SmartsNotificationThreadSearchStop") == null){
     //println "* RequesterSelf will do search";
     def ds = HttpDatasource.get(name:"localhttpds");
     def output=ds.doRequest("search", [query:"", searchIn:"RsEvent", login:"rsadmin", password:"changeme", max:"100"]);

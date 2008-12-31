@@ -24,7 +24,7 @@ package com.ifountain.rcmdb.util
  * Time: 4:11:24 PM
  * To change this template use File | Settings | File Templates.
  */
-class RCMDBDataStore {
+class DataStore {
     private static Map constants = new HashMap();
 
     public static synchronized boolean containsKey(Object key) {

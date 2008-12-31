@@ -60,15 +60,39 @@
 </rui:timeline>
 <rui:popupWindow componentId="eventHistory" width="730" height="450"></rui:popupWindow>
 
-<rui:gmap id="deviceLocations" url="script/run/getDeviceLocations?format=xml" title="Devices Map" contentPath="Location"
+<rui:gmap id="deviceLocations" url="script/run/getDeviceLocations?format=xml" title="Devices Map" contentPath="Location" onMarkerClick="locationDevicesAction"
         timeout="120" latitudeField="Lat" longitudeField="Lng" addressField="Address" markerField="Marker" tooltipField="Tooltip"></rui:gmap>
 
 <rui:popupWindow componentId="deviceLocations" width="800" height="600"></rui:popupWindow>
+<rui:searchGrid id="devicesGrid" url="script/run/getDevicesByLocation?format=xml" queryParameter="query" rootTag="Objects" contentPath="Object"
+        keyAttribute="id" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" title="Device List"
+        pollingInterval="0" fieldsUrl="script/run/getViewFields?format=xml" queryEnabled="false">
+    <rui:sgColumns>
+        <rui:sgColumn attributeName="className" colLabel="Class" width="150"></rui:sgColumn>
+        <rui:sgColumn attributeName="displayName" colLabel="Name" width="150"></rui:sgColumn>
+    </rui:sgColumns>
+      <rui:sgImages>
+        <rui:sgImage visible="params.data.state == '5'" src="images/rapidjs/component/searchlist/red.png"></rui:sgImage>
+        <rui:sgImage visible="params.data.state == '4'" src="images/rapidjs/component/searchlist/orange.png"></rui:sgImage>
+        <rui:sgImage visible="params.data.state == '3'" src="images/rapidjs/component/searchlist/yellow.png"></rui:sgImage>
+        <rui:sgImage visible="params.data.state == '2'" src="images/rapidjs/component/searchlist/blue.png"></rui:sgImage>
+        <rui:sgImage visible="params.data.state == '1'" src="images/rapidjs/component/searchlist/purple.png"></rui:sgImage>
+        <rui:sgImage visible="params.data.state == '0'" src="images/rapidjs/component/searchlist/green.png"></rui:sgImage>
+    </rui:sgImages>
+</rui:searchGrid>
+<rui:popupWindow componentId="devicesGrid" width="400" height="450"></rui:popupWindow>
 
 <rui:html id="objectDetailsmenuHtml" iframe="false"></rui:html>
 <rui:popupWindow componentId="objectDetailsmenuHtml" width="850" height="700" x="85" y="50"></rui:popupWindow>
 <rui:html id="eventDetails" iframe="false"></rui:html>
 <rui:popupWindow componentId="eventDetails" width="850" height="500"></rui:popupWindow>
+
+<rui:action id="locationDevicesAction" type="function" function="setQueryWithView" componentId="devicesGrid">
+    <rui:functionArg>''</rui:functionArg>
+    <rui:functionArg>'default'</rui:functionArg>
+    <rui:functionArg>'Devices of ' + params.data.Address</rui:functionArg>
+    <rui:functionArg>{name:params.data.Name, nodeType:params.data.NodeType, location:params.data.Address}</rui:functionArg>
+</rui:action>
 <rui:action id="eventDetailsAction" type="function" function="show" componentId="eventDetails">
     <rui:functionArg>createURL('getEventDetails.gsp', {name:params.data.name})</rui:functionArg>
     <rui:functionArg>'Details of ' + params.data.name</rui:functionArg>

@@ -18,7 +18,6 @@ import com.ifountain.rcmdb.util.DataStore
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-
 class RsComputerSystemOperations extends RsTopologyObjectOperations
 {
     public static STATEINFORMATION_KEY = "stateInformationforcompsystem"
@@ -48,7 +47,7 @@ class RsComputerSystemOperations extends RsTopologyObjectOperations
 
     def stateInformation()
     {
-        def stateInformation = DataStore.get(STATEINFORMATION_KEY)
+        def stateInformation = RCMDBDataStore.get(STATEINFORMATION_KEY)
         if(stateInformation == null)
         {
             stateInformation = [:]

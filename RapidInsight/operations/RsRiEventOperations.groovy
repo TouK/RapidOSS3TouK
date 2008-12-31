@@ -38,7 +38,10 @@ class RsRiEventOperations  extends RsEventOperations {
         {
            Logger.getRootLogger().warn("Could not add RsRiEvent ${eventProps} (skipping RsEventJournal add), Reason ${event.errors}");           
         }
-
+        def element = RsComputerSystem.get(event.elementId);
+        if(element){
+            element.setState(event.severity);
+        }
 		return event;
 	}
 

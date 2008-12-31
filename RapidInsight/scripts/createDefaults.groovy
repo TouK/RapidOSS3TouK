@@ -43,6 +43,7 @@ CmdbScript.addScript(name: "getEventHistory");
 CmdbScript.addScript(name: "getSummaryData");
 CmdbScript.addScript(name: "getGeocodes");
 CmdbScript.addScript(name: "getDeviceLocations");
+CmdbScript.addScript(name: "getDevicesByLocation");
 
 // topology scripts
 CmdbScript.addScript(name: "createMap");

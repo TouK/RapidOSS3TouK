@@ -16,6 +16,7 @@
 <head>
     <title>iFountain - RapidInsight</title>
     <script type="text/javascript" src="js/yui/utilities/utilities.js"></script>
+     <script type="text/javascript" src="js/yui/json/json-min.js"></script>
     <script type="text/javascript" src="js/yui/container/container-min.js"></script>
     <script type="text/javascript" src="js/yui/menu/menu-min.js"></script>
     <script type="text/javascript" src="js/yui/resize/resize-min.js"></script>

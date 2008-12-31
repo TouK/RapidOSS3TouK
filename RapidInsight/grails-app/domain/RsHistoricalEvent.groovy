@@ -60,7 +60,8 @@ class RsHistoricalEvent {
     Long count =1;
     
     Long id ;
-    
+    Long activeId ;
+
     Long version ;
     
     org.springframework.validation.Errors errors ;

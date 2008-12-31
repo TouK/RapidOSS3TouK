@@ -18,17 +18,26 @@
 */
 class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 	public void clear() {
-		def props = asMap();
+		clear(true);
+	}
+
+	public void clear(boolean createJournal, Map extraProperties = [:]) {
+		Map props = asMap();
+		props.putAll (extraProperties)
 		props.clearedAt = Date.now()
-		RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date())
-		def historicalEvent = RsHistoricalEvent.add(props)
-		
-		def journals = RsEventJournal.searchEvery("eventId:${id}")
-		journals.each{
-		    it.eventId = historicalEvent.id
-		}
+		props.activeId = id;
+		if(createJournal)
+        {
+		    RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date())
+        }
+		def historicalEvent = getHistoricalEventModel().'add'(props)
 		remove()
-	}	
+	}
+
+	public Class getHistoricalEventModel()
+    {
+        return RsHistoricalEvent;    
+    }
 	
 	public void acknowledge(boolean action, userName){
 		if(acknowledged != action){

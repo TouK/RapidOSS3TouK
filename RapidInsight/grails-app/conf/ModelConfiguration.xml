@@ -35,6 +35,7 @@
 		<Model Name="RsHistoricalEvent">
 			<Properties>
 				<Property Name="name" Type="string"/>
+				<Property Name="activeId" Type="number"/>
 				<Property Name="owner" Type="string" />
 				<Property Name="acknowledged" Type="boolean" Default="false" />
 				<Property Name="severity" Type="number" Default="0"/>

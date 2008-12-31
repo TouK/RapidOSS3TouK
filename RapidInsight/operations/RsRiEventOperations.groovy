@@ -42,16 +42,9 @@ class RsRiEventOperations  extends RsEventOperations {
 		return event;
 	}
 
-	public void clear() {
-		def props = asMap();
-		props.clearedAt = Date.now()
-		RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date())
-		def historicalEvent = RsRiHistoricalEvent.add(props)
-		def journals = RsEventJournal.searchEvery("eventId:${id}")
-		journals.each{
-		    it.eventId = historicalEvent.id
-		}
-		remove()
-	}	
+	public Class getHistoricalEventModel()
+    {
+        return RsRiHistoricalEvent;
+    }
 
 }

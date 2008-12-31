@@ -34,9 +34,9 @@ class RsLinkOperations extends RsTopologyObjectOperations
     def calculateStateInformation()
     {
         def propSummary = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
-        def minValue = 5;
+        def minValue = 0;
         propSummary.severity.each{propValue, numberOfObjects->
-            if(propValue >= 0 && minValue > propValue)
+            if(propValue >= 0 && minValue < propValue)
             {
                 minValue = propValue;
             }
@@ -59,7 +59,7 @@ class RsLinkOperations extends RsTopologyObjectOperations
     int setState(state)
     {
         def stateInformation = stateInformation();
-        if(stateInformation == null || state < stateInformation)
+        if(stateInformation == null || state > stateInformation)
         {
             stateInformation = calculateStateInformation();
         }

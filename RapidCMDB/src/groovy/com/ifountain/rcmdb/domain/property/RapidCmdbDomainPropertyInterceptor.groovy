@@ -34,7 +34,7 @@ import org.springframework.context.ApplicationContext
  * Time: 3:15:14 PM
  * To change this template use File | Settings | File Templates.
  */
-class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassPropertyInterceptor {
+public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassPropertyInterceptor {
     def logger=Logger.getLogger(RapidCmdbDomainPropertyInterceptor.class);
     public Object getDomainClassProperty(Object domainObject, String propertyName) {
         if(ServletContextHolder.servletContext != null){

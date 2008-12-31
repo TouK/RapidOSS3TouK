@@ -22,7 +22,7 @@ class DefaultConverterTest extends RapidCmdbTestCase{
 
     public void testDefaultConverterThrowsExceptionIfNoApacheConverterExist()
     {
-        DefaultConverter converter = new DefaultConverter(Object, Long);
+        DefaultConverter converter = new DefaultConverter(Long, Object);
         try
         {
             converter.convert(new Object())

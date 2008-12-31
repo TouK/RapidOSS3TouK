@@ -33,7 +33,7 @@ class RsComputerSystemOperations extends RsTopologyObjectOperations
 
     def calculateStateInformation()
     {
-        def propSummary = RsRiEvent.propertySummary("elementName:\"${name}\"", "severity");
+        def propSummary = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
         def minValue = 5;
         propSummary.severity.each{propValue, numberOfObjects->
             if(propValue >= 0 && minValue > propValue)

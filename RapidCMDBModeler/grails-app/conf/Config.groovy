@@ -16,6 +16,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
+import com.ifountain.core.connection.DefaultTimeoutStrategy
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -51,6 +52,7 @@ plugin {
     excludes = "hibernate"
 }
 connection.pool.checker.interval = 10000;
+connection.pool.timeout.strategy = DefaultTimeoutStrategy.name;
 rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/../RapidSuite/generatedModels".toString();
 rapidCMDB.base.dir = "${System.getProperty("base.dir")}/../RapidSuite".toString();
 rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss";

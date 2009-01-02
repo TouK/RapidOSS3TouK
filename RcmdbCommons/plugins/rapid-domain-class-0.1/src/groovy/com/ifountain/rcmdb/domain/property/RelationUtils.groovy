@@ -36,7 +36,7 @@ import org.compass.core.CompassHits
 class RelationUtils
 {
     public static final String NULL_RELATION_NAME = "-"
-    public static final String DEFAULT_SOURCE_NAME = "¿u¿"
+    public static final String DEFAULT_SOURCE_NAME = "¿_u_u_¿"
 
     public static void addRelatedObjects(object, RelationMetaData relation, Collection relatedObjects, String source)
     {
@@ -124,15 +124,19 @@ class RelationUtils
             def sourceExpression = getSourceString(source)
             rels.each{Relation rel->
                 def relSource = rel.source;
-                relSource = relSource.replaceAll (sourceExpression, "");
-                if(relSource == "" || relSource == DEFAULT_SOURCE_NAME)
+                def containsSource = relSource.indexOf(sourceExpression) >= 0;
+                if(containsSource)
                 {
-                    relsToBeDeleted.add(rel);    
-                }
-                else
-                {
-                    rel.setProperty ("source", relSource, false);
-                    relsToBeUpdated.add(rel);
+                    relSource = relSource.replaceAll (sourceExpression, "");
+                    if(relSource == "" || relSource == DEFAULT_SOURCE_NAME)
+                    {
+                        relsToBeDeleted.add(rel);
+                    }
+                    else
+                    {
+                        rel.setProperty ("source", relSource, false);
+                        relsToBeUpdated.add(rel);
+                    }
                 }
             }
             if(!relsToBeDeleted.isEmpty())

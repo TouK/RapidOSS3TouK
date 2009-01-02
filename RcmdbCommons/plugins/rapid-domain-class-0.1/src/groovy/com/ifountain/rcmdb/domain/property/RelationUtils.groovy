@@ -24,6 +24,7 @@ import org.compass.core.CompassHit
 import org.compass.core.CompassSession
 import relation.Relation
 import com.ifountain.rcmdb.domain.IdGenerator
+import org.compass.core.CompassHits
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,7 +36,9 @@ import com.ifountain.rcmdb.domain.IdGenerator
 class RelationUtils
 {
     public static final String NULL_RELATION_NAME = "-"
-    public static void addRelatedObjects(object, RelationMetaData relation, Collection relatedObjects)
+    public static final String DEFAULT_SOURCE_NAME = "¿u¿"
+
+    public static void addRelatedObjects(object, RelationMetaData relation, Collection relatedObjects, String source)
     {
         def otherSideName = relation.otherSideName == null?NULL_RELATION_NAME:relation.otherSideName;
         def relationName = relation.name == null?NULL_RELATION_NAME:relation.name;
@@ -46,6 +49,7 @@ class RelationUtils
             def relationObject = new Relation();
             relationObject.setProperty ("id", relObjectId, false);
             relationObject.setProperty ("objectId", objId, false);
+            relationObject.setProperty ("source", getSourceString(source), false);
             relationObject.setProperty ("reverseObjectId", it.id, false);
             relationObject.setProperty ("name", relationName, false);
             relationObject.setProperty ("reverseName", otherSideName, false);
@@ -53,7 +57,37 @@ class RelationUtils
         }
         Relation.index(relationObjects);
     }
-    public static void removeRelations(object, RelationMetaData relation, Collection relatedObjects)
+    public static String getSourceString(String source)
+    {
+        if(source != null)
+        {
+            return "¿${source}¿";
+        }
+        else
+        {
+            return DEFAULT_SOURCE_NAME;
+        }
+    }
+    public static void updateSource(Collection relationObjectIdAndSource, String source)
+    {
+        if(relationObjectIdAndSource.isEmpty()) return;
+        StringBuffer bf = new StringBuffer();
+        def sourceExpression = getSourceString(source)
+        def relsToBeIndex = [];
+        relationObjectIdAndSource.each{Map relationProps->
+            def prevSources = relationProps.source;
+            if(prevSources.indexOf(sourceExpression) <0 )
+            {
+                def sources = "${prevSources}${sourceExpression}"
+                Relation rel = Relation.searchEvery("id:${relationProps.id}")[0];
+                relsToBeIndex.add(rel);
+                rel.setProperty ("source", sources, false);
+            }
+        }
+        if(!relsToBeIndex.isEmpty())
+        Relation.index(relsToBeIndex);
+    }
+    public static void removeRelations(object, RelationMetaData relation, Collection relatedObjects, String source)
     {
         if(relatedObjects.isEmpty()) return;
         def otherSideName = relation.otherSideName == null?NULL_RELATION_NAME:relation.otherSideName;
@@ -74,11 +108,42 @@ class RelationUtils
         }
         bf.delete(bf.length()-3, bf.length());
         bf.append("))");
-        Relation.searchEvery(bf.toString(), [raw:{hits, CompassSession session->
-            hits.each{CompassHit hit->
-                session.delete (hit.getResource());
+        if(source == null)
+        {
+            Relation.searchEvery(bf.toString(), [raw:{hits, CompassSession session->
+                hits.each{CompassHit hit->
+                    session.delete (hit.getResource());
+                }
+            }]);
+        }
+        else
+        {
+            def rels = Relation.searchEvery(bf.toString());
+            def relsToBeDeleted = [];
+            def relsToBeUpdated = [];
+            def sourceExpression = getSourceString(source)
+            rels.each{Relation rel->
+                def relSource = rel.source;
+                relSource = relSource.replaceAll (sourceExpression, "");
+                if(relSource == "" || relSource == DEFAULT_SOURCE_NAME)
+                {
+                    relsToBeDeleted.add(rel);    
+                }
+                else
+                {
+                    rel.setProperty ("source", relSource, false);
+                    relsToBeUpdated.add(rel);
+                }
             }
-        }]);
+            if(!relsToBeDeleted.isEmpty())
+            {
+                Relation.unindex(relsToBeDeleted);
+            }
+            if(!relsToBeUpdated.isEmpty())
+            {
+                Relation.index(relsToBeUpdated);
+            }
+        }
 
 
     }
@@ -123,9 +188,14 @@ class RelationUtils
         relationName = relationName == null?NULL_RELATION_NAME:relationName;
         def allRelatedObjectIds = [:];
         def query = "objectId:${objectId} AND name:\"${relationName}\" AND reverseName:\"${otherSideName}\"";
-        allRelatedObjectIds.putAll(Relation.propertySummary(query, "reverseObjectId").reverseObjectId);
+        Relation.getPropertyValues(query, ["reverseObjectId", "source"]).each{
+            allRelatedObjectIds.put(it.reverseObjectId, it);            
+        }
         query = "reverseObjectId:${objectId} AND reverseName:\"${relationName}\" AND name:\"${otherSideName}\"";
-        allRelatedObjectIds.putAll(Relation.propertySummary(query, "objectId").objectId);
+        Relation.getPropertyValues(query, ["objectId", "source"]).each{
+            allRelatedObjectIds.put(it.objectId, it);
+        }
+
         return allRelatedObjectIds;
     }
     public static Map getRelatedObjectsIds(object, String relationName, String otherSideName)

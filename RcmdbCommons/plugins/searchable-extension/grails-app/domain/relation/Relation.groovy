@@ -32,6 +32,7 @@ class Relation {
     Long objectId;
     Long reverseObjectId;
     String name = "";
+    String source;
     String reverseName = "";
     static relations = [:]
     static constraints = {

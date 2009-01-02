@@ -156,17 +156,25 @@ class SearchableExtensionGrailsPlugin {
             return updateMethod.invoke(delegate,  [props] as Object[])
         }
         mc.addRelation = {Map props->
-          return addRelationMethod.invoke(delegate,  [props] as Object[])
+          return addRelationMethod.invoke(delegate,  [props, null, true] as Object[])
+        }
+
+        mc.addRelation = {Map props, String source->
+          return addRelationMethod.invoke(delegate,  [props, source,  true] as Object[])
         }
         mc.addRelation = {Map props, boolean flush->
-          return addRelationMethod.invoke(delegate,  [props, flush] as Object[])
+          return addRelationMethod.invoke(delegate,  [props, null, flush] as Object[])
         }
         mc.removeRelation = {Map props->
-            return removeRelationMethod.invoke(delegate,  [props] as Object[])
+            return removeRelationMethod.invoke(delegate,  [props, null, true] as Object[])
+        }
+
+        mc.removeRelation = {Map props, String source->
+            return removeRelationMethod.invoke(delegate,  [props, source, true] as Object[])
         }
 
         mc.removeRelation = {Map props, boolean flush->
-            return removeRelationMethod.invoke(delegate,  [props, flush] as Object[])
+            return removeRelationMethod.invoke(delegate,  [props, null, flush] as Object[])
         }
         mc.remove = {->
             return removeMethod.invoke(delegate, null);

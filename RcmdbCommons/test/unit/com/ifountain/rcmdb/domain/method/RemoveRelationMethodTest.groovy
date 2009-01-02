@@ -115,6 +115,63 @@ class RemoveRelationMethodTest extends RapidCmdbWithCompassTestCase{
 
     }
 
+    public void testRemoveRelationWithDatasource()
+    {
+
+        initialize([RelationMethodDomainObject1, RelationMethodDomainObject2], []);
+        RelationMethodDomainObject1 expectedDomainObject1 = RelationMethodDomainObject1.add([:]);
+        RelationMethodDomainObject2 expectedDomainObject2 = RelationMethodDomainObject2.add([:]);
+
+        def props = [rel1:expectedDomainObject2];
+        expectedDomainObject1.addRelation(props, "ds1");
+
+        props = [rel1:expectedDomainObject2];
+        expectedDomainObject1.removeRelation(props, "ds1");
+
+        assertNull (expectedDomainObject1.rel1);
+        assertNull (expectedDomainObject2.revRel1);
+    }
+
+    public void testRemoveRelationWithSourceWillNotRemoveRelationUntillAllSourcesMarkedAsDeleted()
+    {
+        initialize([RelationMethodDomainObject1, RelationMethodDomainObject2], []);
+        RelationMethodDomainObject1 expectedDomainObject1 = RelationMethodDomainObject1.add([:]);
+        RelationMethodDomainObject2 expectedDomainObject2 = RelationMethodDomainObject2.add([:]);
+
+        def props = [rel1:expectedDomainObject2];
+        expectedDomainObject1.addRelation(props, "ds1");
+        expectedDomainObject1.addRelation(props, "ds1");
+        expectedDomainObject1.addRelation(props, "ds2");
+
+        assertEquals(expectedDomainObject2, expectedDomainObject1.rel1);
+
+        props = [rel1:expectedDomainObject2];
+        expectedDomainObject1.removeRelation(props, "ds1");
+
+        assertEquals(expectedDomainObject2, expectedDomainObject1.rel1);
+        assertEquals(expectedDomainObject1, expectedDomainObject2.revRel1);
+
+        expectedDomainObject1.removeRelation(props, "ds2");
+        assertNull(expectedDomainObject1.rel1);
+    }
+    
+
+    public void testRemoveRelationWithoutSourceWillRemoveRelationsWithSource()
+    {
+        initialize([RelationMethodDomainObject1, RelationMethodDomainObject2], []);
+        RelationMethodDomainObject1 expectedDomainObject1 = RelationMethodDomainObject1.add([:]);
+        RelationMethodDomainObject2 expectedDomainObject2 = RelationMethodDomainObject2.add([:]);
+        def props = [rel1:expectedDomainObject2];
+        expectedDomainObject1.addRelation(props, "ds1");
+        expectedDomainObject1.addRelation(props, "ds2");
+
+        assertEquals(expectedDomainObject2, expectedDomainObject1.rel1);
+
+        expectedDomainObject1.removeRelation(props);
+        assertNull(expectedDomainObject1.rel1);
+    }
+
+
     public void testRemoveRelationDiscardsObjectsWithUnknownObjectType()
     {
         initialize([RelationMethodDomainObject1, RelationMethodDomainObject2, RelationMethodDomainObject3, RelationMethodDomainObject4], []);

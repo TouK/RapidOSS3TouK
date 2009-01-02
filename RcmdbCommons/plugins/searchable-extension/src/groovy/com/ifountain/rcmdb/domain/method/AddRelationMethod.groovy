@@ -49,14 +49,8 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
         OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
         statistics.start();
         def props = arguments[0];
-        def flush = true;
-        if(arguments.length == 2)
-        {
-            if(arguments[1] == false)
-            {
-                flush = false;
-            }
-        }
+        def flush = arguments[2] != false;
+        def source = arguments[1];
 
         def relatedInstances = [:]
         props.each{key,value->
@@ -67,7 +61,24 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
                 {
                     def allRefRelationObjs = RelationUtils.getRelatedObjectsIds(domainObject, relation.name, relation.otherSideName);
                     value = value instanceof Collection?value:[value];
-                    value = value.findAll {!allRefRelationObjs.containsKey(it.id)}
+                    def newRelations = [];
+                    def updatedRelations = [];
+                    value.each{
+                        def relInfo = allRefRelationObjs.get(it.id);
+                        if(relInfo == null)
+                        {
+                            newRelations.add (it);    
+                        }
+                        else
+                        {
+                            updatedRelations.add(relInfo)
+                        }
+                    }
+                    if(source != null)
+                    {
+                        RelationUtils.updateSource(updatedRelations, source);
+                    }
+                    value = newRelations;                    
                     def validValues = [];
                     Errors errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
                     value.each{relatedObject->
@@ -111,7 +122,7 @@ class AddRelationMethod extends AbstractRapidDomainMethod{
 
 
                         }
-                        RelationUtils.addRelatedObjects(domainObject, relation, value);
+                        RelationUtils.addRelatedObjects(domainObject, relation, value, source);
                         statistics.stop();
                         statistics.numberOfOperations = value.size();
                         OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_RELATION_OPERATION_NAME, statistics);

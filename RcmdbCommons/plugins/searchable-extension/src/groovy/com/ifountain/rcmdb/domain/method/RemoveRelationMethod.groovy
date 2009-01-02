@@ -51,14 +51,8 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
         OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
         statistics.start();
         def props = arguments[0];
-        def flush = true;
-        if(arguments.length == 2)
-        {
-            if(arguments[1] == false)
-            {
-                flush = false;
-            }
-        }
+        def source = arguments[1];
+        def flush = arguments[2] != false;
         long numberOfRemovedRelations = 0;
         boolean isChanged = false;
         props.each{key,value->
@@ -91,7 +85,7 @@ class RemoveRelationMethod extends AbstractRapidDomainMethod{
                         domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
                     }
                     numberOfRemovedRelations += value.size();
-                    RelationUtils.removeRelations(domainObject, relation, value);
+                    RelationUtils.removeRelations(domainObject, relation, value, source);
                 }
             }
             statistics.stop();

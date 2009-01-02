@@ -59,6 +59,23 @@ class AddRelationMethodTest extends RapidCmdbWithCompassTestCase{
         assertNull(expectedDomainObject2.revRel1);
     }
 
+    public void testAddMethodWithDatasource()
+    {
+        initialize([RelationMethodDomainObject1, RelationMethodDomainObject2], []);
+        RelationMethodDomainObject1 expectedDomainObject1 = RelationMethodDomainObject1.add([:]);
+        RelationMethodDomainObject2 expectedDomainObject2 = RelationMethodDomainObject2.add([:]);
+        RelationMethodDomainObject2 expectedDomainObject3 = RelationMethodDomainObject2.add([:]);
+
+        expectedDomainObject1.addRelation(rel1:expectedDomainObject2, "ds1");
+        assertEquals(expectedDomainObject2, expectedDomainObject1.rel1);
+        assertEquals(expectedDomainObject1, expectedDomainObject2.revRel1);
+
+        expectedDomainObject1.addRelation(rel1:expectedDomainObject3, "ds1");
+        assertEquals(expectedDomainObject3, expectedDomainObject1.rel1);
+        assertEquals(expectedDomainObject1, expectedDomainObject3.revRel1);
+        assertNull(expectedDomainObject2.revRel1);
+    }
+
     public void testAddMethodDiscardsObjectsWithUnknownObjectType()
     {
         initialize([RelationMethodDomainObject1, RelationMethodDomainObject2, RelationMethodDomainObject3, RelationMethodDomainObject4], []);

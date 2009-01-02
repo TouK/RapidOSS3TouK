@@ -180,7 +180,7 @@
 	        url	  	: "chart.xml",
 	        title 	: "Flex Pie Chart",
 	        id 		: "chartComponent",
-	        chartSWF : "../images/rapidjs/component/flexPieChart/PieChart.swf",
+	        swfURL : "../images/rapidjs/component/flexPieChart/PieChart.swf",
 	        rootTag : "chart"
 
         };

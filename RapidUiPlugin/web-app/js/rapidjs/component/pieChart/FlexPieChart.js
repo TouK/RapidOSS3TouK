@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -17,65 +17,62 @@
 * USA.
 */
 YAHOO.namespace('rapidjs', 'rapidjs.component');
-
-var isIE  = (navigator.appVersion.indexOf("MSIE") != -1) ? true : false;
-var isWin = (navigator.appVersion.toLowerCase().indexOf("win") != -1) ? true : false;
-var isOpera = (navigator.userAgent.indexOf("Opera") != -1) ? true : false;
-
 YAHOO.rapidjs.component.FlexPieChart = function(container, config) {
     YAHOO.rapidjs.component.FlexPieChart.superclass.constructor.call(this, container, config);
+    this.swfURL = null;
     YAHOO.ext.util.Config.apply(this, config);
-
+    this.gradients = {};
     var events = {
-        'sliceClick' : new YAHOO.util.CustomEvent('sliceClick')
+        'itemClicked': new YAHOO.util.CustomEvent('itemClicked')
     };
     YAHOO.ext.util.Config.apply(this.events, events);
-
-    this.configureTimeout(config);
-    this.gradients = {};
-    this.renderTask = new YAHOO.ext.util.DelayedTask(this.render, this);
-    this.response = null;
-    this.eventListenerAdded = false;
-    this.initializeTask = new YAHOO.ext.util.DelayedTask(this.handleChart, this);
-   // this.freeTabLockTask = new YAHOO.ext.util.DelayedTask(this.freeTabLock, this);
-
-
     this.header = YAHOO.ext.DomHelper.append(this.container, {tag:'div'});
-    this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title: this.title});
+    this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title:this.title});
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SettingsTool(document.body, this));
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
     this.body = YAHOO.ext.DomHelper.append(this.container, {tag:'div'}, true);
+    this.renderTask = new YAHOO.ext.util.DelayedTask(this.render, this);
+    this.initializeTask = new YAHOO.ext.util.DelayedTask(this._handleSuccess, this);
+    var oSelf = this;
+    YAHOO.util.Event.onDOMReady(function() {
+        oSelf.renderTask.delay(500);
+    });
+}
+YAHOO.lang.extend(YAHOO.rapidjs.component.FlexPieChart, YAHOO.rapidjs.component.PollingComponentContainer, {
+    render: function() {
+        var requiredMajorVersion = 9;
+        var requiredMinorVersion = 0;
+        var requiredRevision = 0;
 
-    this.render();
-    this.tabLocked = false;//boolean used to wait 1 seconds during tab switching.
-    this.isRendered = false;
-};
-
-
-YAHOO.extend(YAHOO.rapidjs.component.FlexPieChart, YAHOO.rapidjs.component.PollingComponentContainer, {
-
-    handleSuccess: function(response) {
-	    this.response = response;
-        this.handleChart();
-
-            /*this.events["loadstatechanged"].fireDirect(this, false);
-            if (this.pollInterval > 0)
-            {
-                this.pollTask.delay(this.pollInterval * 1000);
-            }
-            */
-
-    },
-
-    handleChart : function()
-    {
-
-	    if (!FABridge[this.id] || this.tabLocked == true) {
-            this.initializeTask.delay(100);
+        var hasProductInstall = YAHOO.rapidjs.FlashUtils.DetectFlashVer(6, 0, 65);
+        var hasRequestedVersion = YAHOO.rapidjs.FlashUtils.DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
+        if (!hasProductInstall || !hasRequestedVersion)
+        {
+            this.body.dom.innerHTML = "This application requires Flash player version " + requiredMajorVersion + ". Click <a href='http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash'>here</a> to download";
         }
         else
         {
+            var sb = new Array();
+            sb[sb.length] = "<object id='flexApp_" + this.id + "' classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,5,0,0' height='100%' width='100%'>";
+            sb[sb.length] = "<param name='flashvars' value='bridgeName=" + this.id + "'/>";
+            sb[sb.length] = "<param name='wmode' value='transparent'/>";
+            sb[sb.length] = "<param name='src' value='" + this.swfURL + "'/>";
+            sb[sb.length] = "<embed name='flexApp' wmode='transparent' pluginspage='http://www.macromedia.com/go/getflashplayer' src='" + this.swfURL + "' height='100%' width='100%' flashvars='bridgeName=" + this.id + "'/>";
+            sb[sb.length] = "</object>";
+
+            var chartHtml = sb.join('');
+            this.body.dom.innerHTML = chartHtml;
+        }
+    },
+
+    handleSuccess: function (response)
+    {
+        this.lastResponse = response;
+        this._handleSuccess();
+    },
+    _handleSuccess: function() {
+        if (FABridge[this.id]) {
             if (this.eventListenerAdded == false)
             {
                 try
@@ -88,18 +85,24 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexPieChart, YAHOO.rapidjs.component.Polli
                     };
                     FABridge[this.id].root().getMyChart().addEventListener("itemClick", this.handlerFunc);
                     this.eventListenerAdded = true;
-
                 }
                 catch(e)
                 {
                     this.initializeTask.delay(10);
                 }
-
             }
-            this.processData(this.response);
+            try
+            {
+                this.processData(this.lastResponse);
+            }
+            catch(e)
+            {
+            }
+        }
+        else {
+            this.initializeTask.delay(50);
         }
     },
-
     handleItemClick: function(e)
     {
         var index = e.getHitData().getChartItem().getIndex();
@@ -128,11 +131,16 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexPieChart, YAHOO.rapidjs.component.Polli
 
         var dataProvider = e.bridge.root().getMyChart().getDataProvider();
         var selectedData = dataProvider.getItemAt(index);
-      	selectedData["chartId"] = this.id;
-
-        this.fireSliceClick( selectedData );
+        var dataToSend = new YAHOO.rapidjs.data.RapidXmlNode(null, null, 1, null);
+        dataToSend.attributes["chartId"] = this.id;
+        var tmpColData = this.columnData[selectedData["Label"]];
+        for (var propName in tmpColData)
+        {
+            var propValue = tmpColData[propName];
+            dataToSend.attributes[propName] = propValue;
+        }
+        this.events["itemClicked"].fireDirect(dataToSend);
     },
-
     processData: function(response) {
         var dataString = response.responseText;
         var dataTag = response.responseXML.getElementsByTagName(this.rootTag)[0];
@@ -162,10 +170,10 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexPieChart, YAHOO.rapidjs.component.Polli
         bridgeObj.root().getMySeries().setStyle("fills", arrayOfGradients);
         bridgeObj.root().getMyChart().setDataProvider(arrayOfSlices);
         var title = dataTag.getAttribute("Title");
-        /*if(title)
-          {
-              bridgeObj.root().getMyPanel().setTitle( title );
-          }*/
+        if (title)
+        {
+            bridgeObj.root().getMyPanel().setTitle(title);
+        }
     },
 
     getGradient: function(bridgeObj, colorStr)
@@ -199,68 +207,11 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexPieChart, YAHOO.rapidjs.component.Polli
                 return null;
             }
         }
-
     },
-
-    render : function() {
-
-        var requiredMajorVersion = 9;
-        var requiredMinorVersion = 0;
-        var requiredRevision = 0;
-
-        var hasProductInstall = YAHOO.rapidjs.FlashUtils.DetectFlashVer(6, 0, 65);
-        var hasRequestedVersion = YAHOO.rapidjs.FlashUtils.DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
-        var containerElement = this.body.dom;
-        if (!hasProductInstall || !hasRequestedVersion)
-        {
-            containerElement.innerHTML = "This application requires Flash player version " + requiredMajorVersion + ". Click <a href='http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash'>here</a> to download";
-        }
-        else
-        {
-            var sb = new Array();
-            sb[sb.length] = "<object id='flexApp_" + this.id + "' classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,5,0,0' height='100%' width='100%'>";
-            sb[sb.length] = "<param name='flashvars' value='bridgeName=" + this.id + "'/>";
-            sb[sb.length] = "<param name='wmode' value='transparent'/>";
-            sb[sb.length] = "<param name='src' value='" + this.chartSWF + "'/>";
-            sb[sb.length] = "<embed name='flexApp' wmode='transparent' pluginspage='http://www.macromedia.com/go/getflashplayer' src='" + this.chartSWF + "' height='100%' width='100%' flashvars='bridgeName=" + this.id + "'/>";
-            sb[sb.length] = "</object>";
-
-            var chartHtml = sb.join('');
-            containerElement.innerHTML = chartHtml;
-        }
-        this.isRendered = true;
-
-    },
-
-    clearData:function() {
-
-    },
-
-    handleVisible : function() {
-        this.gradients = {};
-        this.eventListenerAdded = false;
-        YAHOO.rapidjs.component.FlexPieChart.superclass.handleVisible.call(this);
-        this.tabLocked = true;
-        this.freeTabLockTask.delay(1000);//we need to wait some time. 1 second is secure enough.
-        //it is also possible to make a loop to check that accessing to the root of the bridge gives an error(for exp. bridgeObj.root().getMySeries()) or not and when the error
-        //is gone, break the loop. I tried this and it did not work. Sometimes it is OK, but sometimes the chart disappears.
-    },
-
-    freeTabLock: function()
-    {
-        this.tabLocked = false;
-    },
-
     resize : function(width, height) {
         this.body.setHeight(height - this.header.offsetHeight);
-        if( !this.isRendered )
-        	this.render();
-        this.poll();
-    },
-
-	fireSliceClick : function( data )
-	{
-		this.events['sliceClick'].fireDirect(data);
-	}
-
-});
+//        if( !this.isRendered )
+//        	this.render();
+//        this.poll();
+    }
+})

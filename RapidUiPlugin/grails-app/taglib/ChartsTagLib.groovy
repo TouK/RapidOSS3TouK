@@ -52,5 +52,45 @@ class ChartsTagLib {
             dataField:'${attrs["dataField"]}'
         }"""
     }
+    def flexPieChart = {attrs, body ->
+        out << fFlexPieChart(attrs, "");
+    }
+
+
+    static def fFlexPieChart(attrs, bodyString) {
+        def configStr = getFlexPieConfig(attrs);
+        def onItemClick = attrs["onItemClick"];
+        def itemClickJs;
+        if (onItemClick != null) {
+            itemClickJs = """
+               pieChart.events['itemClick'].subscribe(function(xmlData){
+                   var params = {data:xmlData.getAttributes()};
+                   YAHOO.rapidjs.Actions['${onItemClick}'].execute(params);
+                }, this, true);
+            """
+        }
+        return """
+           <script type="text/javascript">
+               var chartConfig = ${configStr};
+               var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
+               var pieChart = new YAHOO.rapidjs.component.FlexPieChart(container, chartConfig);
+               ${itemClickJs ? itemClickJs : ""}
+               if(pieChart.pollingInterval > 0){
+                   pieChart.poll();
+               }
+           </script>
+        """;
+    }
+
+    static def getFlexPieConfig(attrs) {
+        return """{
+            id:'${attrs["id"]}',
+            url:'${attrs["url"]}',
+            rootTag:'${attrs["rootTag"]}',
+            ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
+            ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
+            swfURL:'${attrs["swfURL"]}'
+        }"""
+    }
 
 }

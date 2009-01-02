@@ -58,7 +58,7 @@ class BootStrap {
     def initializeLockManager()
     {
         DomainLockManager.initialize(30000, Logger.getLogger(DomainLockManager.class));
-        DomainMethodExecutor.setMaxNumberOfRetries(20); 
+        DomainMethodExecutor.setMaxNumberOfRetries(20);
     }
     def registerUtilities()
     {
@@ -70,7 +70,7 @@ class BootStrap {
     {
         String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];
         String tempDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"];
-        ModelGenerator.getInstance().initialize (baseDirectory, tempDirectory, System.getProperty("base.dir"));
+        ModelGenerator.getInstance().initialize(baseDirectory, tempDirectory, System.getProperty("base.dir"));
     }
 
     def initializeScripting()
@@ -96,7 +96,7 @@ class BootStrap {
         }
     }
 
-    
+
     def registerDefaultDatasourceNames()
     {
         DatasourceName.add(name: RapidCMDBConstants.RCMDB)
@@ -116,9 +116,12 @@ class BootStrap {
         def userRole = Role.add(name: Role.USER);
         def adminRole = Role.add(name: Role.ADMINISTRATOR);
         def adminGroup = Group.add(name: RsUser.RSADMIN, role: adminRole);
-        def adminUser = RsUser.add(username: RsUser.RSADMIN, passwordHash: new Sha1Hash("changeme").toHex());
-        adminUser.addRelation(groups:adminGroup);
-        
+        def adminUser = RsUser.get(username: RsUser.RSADMIN);
+        if (!adminUser) {
+            RsUser.add(username: RsUser.RSADMIN, passwordHash: new Sha1Hash("changeme").toHex());
+        }
+        adminUser.addRelation(groups: adminGroup);
+
     }
 
 
@@ -127,7 +130,7 @@ class BootStrap {
         def servletCtx = ServletContextHolder.getServletContext()
         def webAppCtx = WebApplicationContextUtils.getWebApplicationContext(servletCtx)
         def compass = webAppCtx.getBean("compass")
-        if(compass)
+        if (compass)
         {
             compass.close();
         }

@@ -146,7 +146,10 @@ class BootStrap {
         def userRole = Role.add(name: Role.USER);
         def adminRole = Role.add(name: Role.ADMINISTRATOR);
         def adminGroup = Group.add(name: RsUser.RSADMIN, role: adminRole);
-        def adminUser = RsUser.add(username: RsUser.RSADMIN, passwordHash: new Sha1Hash("changeme").toHex());
+        def adminUser = RsUser.get(username:RsUser.RSADMIN);
+        if(!adminUser){
+            RsUser.add(username: RsUser.RSADMIN, passwordHash: new Sha1Hash("changeme").toHex());            
+        }
         adminUser.addRelation(groups:adminGroup);
 
     }

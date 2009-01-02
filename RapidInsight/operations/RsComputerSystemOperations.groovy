@@ -47,7 +47,7 @@ class RsComputerSystemOperations extends RsTopologyObjectOperations
 
     def stateInformation()
     {
-        def stateInformation = RCMDBDataStore.get(STATEINFORMATION_KEY)
+        def stateInformation = DataStore.get(STATEINFORMATION_KEY)
         if(stateInformation == null)
         {
             stateInformation = [:]

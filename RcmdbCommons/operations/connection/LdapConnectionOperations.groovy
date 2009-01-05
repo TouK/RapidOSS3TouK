@@ -122,4 +122,8 @@ class LdapConnectionOperations extends ConnectionOperations
         }
         */
     }
+    public boolean checkConnection()
+    {
+        return checkAuthentication(username,userPassword);
+    }
 }

@@ -18,7 +18,7 @@
 */
 
     
-    class RsHistoricalEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+    public class RsHistoricalEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
     {
     }
     

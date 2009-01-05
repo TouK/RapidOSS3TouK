@@ -18,7 +18,7 @@ import com.ifountain.rcmdb.util.DataStore
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-class RsLinkOperations extends RsTopologyObjectOperations
+public class RsLinkOperations extends RsTopologyObjectOperations
 {
     public static STATEINFORMATION_KEY = "stateInformationforlink"
     int getState()

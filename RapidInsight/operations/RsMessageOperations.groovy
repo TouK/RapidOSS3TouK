@@ -18,6 +18,6 @@
 */
 
 
-class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
 }

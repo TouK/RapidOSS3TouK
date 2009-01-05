@@ -18,7 +18,7 @@
 */
 import org.apache.log4j.Logger;
 
-class RsRiEventOperations  extends RsEventOperations {
+public class RsRiEventOperations  extends RsEventOperations {
 	static notify(Map originalEventProps) {
 		def eventProps = [:]
 		eventProps.putAll(originalEventProps)

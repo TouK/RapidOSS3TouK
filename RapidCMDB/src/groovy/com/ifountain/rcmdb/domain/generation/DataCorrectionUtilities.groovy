@@ -49,7 +49,7 @@ class DataCorrectionUtilities
                     {
                         if(it.action == ModelAction.GENERATE_RESOURCES)
                         {
-                            ModelUtils.generateModelArtefacts(newDomainClass, baseDir, baseDir);
+                            ModelUtils.createModelOperationsFile(newDomainClass.clazz, new File(baseDir+"/operations"), []);
                         }
                         else if(it.action == ModelAction.DELETE_ALL_INSTANCES)
                         {
@@ -69,7 +69,7 @@ class DataCorrectionUtilities
             }
             else
             {
-                ModelUtils.generateModelArtefacts(newDomainClass, baseDir, baseDir);
+                ModelUtils.createModelOperationsFile(newDomainClass.clazz, new File(baseDir+"/operations"), []);
             }
         }
 

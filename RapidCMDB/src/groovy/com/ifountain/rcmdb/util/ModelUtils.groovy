@@ -42,7 +42,7 @@ class ModelUtils {
     <%
     }
     %>
-    class \${name}Operations extends \${parentClassName}
+    public class \${name}Operations extends \${parentClassName}
     {
     }
     """
@@ -80,7 +80,7 @@ class ModelUtils {
 
 
 
-    def static createModelOperationsFile(Class modelClass, File workingOperationsDir, List defaultImports)
+    public def static createModelOperationsFile(Class modelClass, File workingOperationsDir, List defaultImports)
     {
         workingOperationsDir.mkdirs();
         def operationsFileToBeGenerated =  getOperationsModelFile(workingOperationsDir, modelClass.name)

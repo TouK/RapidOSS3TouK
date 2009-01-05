@@ -18,7 +18,7 @@
 */
 
     
-    class RsServiceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+    public class RsServiceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
     {
     }
     

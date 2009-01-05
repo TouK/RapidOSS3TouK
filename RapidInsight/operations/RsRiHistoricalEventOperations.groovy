@@ -18,7 +18,7 @@
 */
 
     
-    class RsRiHistoricalEventOperations extends RsHistoricalEventOperations
+    public class RsRiHistoricalEventOperations extends RsHistoricalEventOperations
     {
     }
     

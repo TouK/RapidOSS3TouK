@@ -16,7 +16,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 	public void clear() {
 		clear(true);
 	}

@@ -78,15 +78,11 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         model1 = createModel (model1Name, propList, [], []);
         ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
 
-        FileUtils.deleteDirectory (new File(base_directory+"grails-app/conrollers"))
-        FileUtils.deleteDirectory (new File(base_directory+"grails-app/views"))
         FileUtils.deleteDirectory (new File(base_directory+"operations"))
         def newClass1 = loadGrailsDomainClass(model1Name, temp_directory, true);
         def newDomainClasses = generateDomainClasses([newClass1])
         DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
         assertNull (oldClass1.'get'(prop1:"obj1"));
-        assertTrue (new File(base_directory+"grails-app/controllers/${model1Name}Controller.groovy").exists());
-        assertTrue (new File(base_directory+"grails-app/views/${model1Name.substring(0,1).toLowerCase()+model1Name.substring(1)}/list.gsp").exists());
         assertTrue (new File(base_directory+"operations/${model1Name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
     }
@@ -103,14 +99,10 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         String model1 = createModel (model1Name, propList, keyPropList, []);
         ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
 
-        FileUtils.deleteDirectory (new File(base_directory+"grails-app/conrollers"))
-        FileUtils.deleteDirectory (new File(base_directory+"grails-app/views"))
         FileUtils.deleteDirectory (new File(base_directory+"operations"))
         def newClass1 = loadGrailsDomainClass(model1Name, temp_directory, true);
         def newDomainClasses = generateDomainClasses([newClass1])
         DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), [:], new ArrayList(newDomainClasses.values()), newDomainClasses );
-        assertTrue (new File(base_directory+"grails-app/controllers/${model1Name}Controller.groovy").exists());
-        assertTrue (new File(base_directory+"grails-app/views/${model1Name.substring(0,1).toLowerCase()+model1Name.substring(1)}/list.gsp").exists());
         assertTrue (new File(base_directory+"operations/${model1Name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
     }
@@ -210,14 +202,10 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         println model1;
         ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
 
-        FileUtils.deleteDirectory (new File(base_directory+"grails-app/conrollers"))
-        FileUtils.deleteDirectory (new File(base_directory+"grails-app/views"))
         FileUtils.deleteDirectory (new File(base_directory+"operations"))
         def newClass1 = loadGrailsDomainClass(model1Name, temp_directory, true);
         def newDomainClasses = generateDomainClasses([newClass1])
         DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
-        assertTrue (new File(base_directory+"grails-app/controllers/${model1Name}Controller.groovy").exists());
-        assertTrue (new File(base_directory+"grails-app/views/${model1Name.substring(0,1).toLowerCase()+model1Name.substring(1)}/list.gsp").exists());
         assertTrue (new File(base_directory+"operations/${model1Name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
         assertEquals(1, PropertyAction.list().size());

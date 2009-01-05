@@ -66,7 +66,7 @@ public class PoolableConnectionFactory extends BaseConnectionFactory
         }
         catch (Exception e)
         {
-            throw new ConnectionInitializationException("Could not initialized connection " + param.getConnectionName(),e);
+            throw new ConnectionInitializationException("Could not initialize connection " + param.getConnectionName(),e);
         }
         conn.init((ConnectionParam)param.clone());
         if(timeout > 0)

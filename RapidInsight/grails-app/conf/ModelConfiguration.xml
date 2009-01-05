@@ -65,10 +65,11 @@
 		</Model>
 		<Model Name="RsService" Parent="RsGroup">
 			<Properties>
-				<Property Name="observedStatus" Type="string" />
-				<Property Name="derivedStatus" Type="string" />
+				<Property Name="observedState" Type="string" />
 				<Property Name="lastChangedAt" Type="number" />
 				<Property Name="interval" Type="number" />
+				<Property Name="consideredDownAt" Type="number" />
+				<Property Name="hasHeartbeat" Type="boolean" />
 			</Properties>
 		</Model>
 		<Model Name="RsTopologyObject">
@@ -116,7 +117,8 @@
 		</Model>
 	</Models>
 	<Relations>
-		<Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>
+        <Relation From="RsGroup" To="RsGroup" Name="childGroups" ReverseName="parentGroups" Type="ManyToMany"></Relation> 
+        <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>
 		<Relation From="RsGroup" To="RsTopologyObject" Name="consistsOf" ReverseName="memberOfGroup" Type="ManyToMany"></Relation>
 	</Relations>
 </Rsmodel>

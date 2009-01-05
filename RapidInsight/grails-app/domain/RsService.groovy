@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -17,46 +17,48 @@
 * USA.
 */
 
-import com.ifountain.core.domain.annotations.*;
-
 class RsService  extends RsGroup {
 
     //AUTO_GENERATED_CODE
 
     static searchable = {
         except = [];
-    
-    
+
+
     };
     static datasources = [:]
 
-    
-    String observedStatus ="";
-    
-    String derivedStatus ="";
-    
+
+    String observedState ="";
+
     Long lastChangedAt =0;
-    
+
     Long interval =0;
-    
-    
-    static relations = [:]    
-    
+
+    Long consideredDownAt =0;
+
+    Boolean hasHeartbeat =false;
+
+
+    static relations = [:]
+
     static constraints={
-    observedStatus(blank:true,nullable:true)
-        
-     derivedStatus(blank:true,nullable:true)
-        
+    observedState(blank:true,nullable:true)
+
      lastChangedAt(nullable:true)
-        
+
      interval(nullable:true)
-        
-     
+
+     consideredDownAt(nullable:true)
+
+     hasHeartbeat(nullable:true)
+
+
     }
 
     static propertyConfiguration= [:]
     static transients = [];
-    
+
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
@@ -65,5 +67,7 @@ class RsService  extends RsGroup {
 
 
 
-    
+
+
+
 }

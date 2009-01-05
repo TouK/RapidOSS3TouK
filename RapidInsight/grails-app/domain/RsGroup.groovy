@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -24,34 +24,44 @@ class RsGroup  extends RsTopologyObject {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["consistsOf"];
-    
-    
+        except = ["childGroups", "parentGroups", "consistsOf"];
+
+
     };
     static datasources = [:]
 
-    
+
+    List childGroups =[];
+
+    List parentGroups =[];
+
     List consistsOf =[];
-    
-    
+
+
     static relations = [
-    
-        consistsOf:[type:RsTopologyObject, reverseName:"memberOfGroup", isMany:true]
-    
+
+        childGroups:[type:RsGroup, reverseName:"parentGroups", isMany:true]
+
+        ,parentGroups:[type:RsGroup, reverseName:"childGroups", isMany:true]
+
+        ,consistsOf:[type:RsTopologyObject, reverseName:"memberOfGroup", isMany:true]
+
     ]
-    
+
     static constraints={
-    
+
     }
 
     static propertyConfiguration= [:]
-    static transients = ["consistsOf"];
-    
+    static transients = ["childGroups", "parentGroups", "consistsOf"];
+
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
 
 
-    
+
+
+
 }

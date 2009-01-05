@@ -18,11 +18,23 @@
 */
 class UrlMappings {
     static mappings = {
-      "/$controller/$action?/$id?"{
-	      constraints {
-			 // apply constraints here
-		  }
-	  }
-	  "500"(view:'/error')
-	}
+        "/rsBrowser/" {
+            controller = "rsBrowser"
+            action = "index";
+        }
+        "/rsBrowser/$domain/"{
+            controller = "rsBrowser"
+            action = "listDomain";
+        }
+        "/rsBrowser/$domain/$id" {
+           controller = "rsBrowser"
+            action = "show"; 
+        }
+        "/$controller/$action?/$id?" {
+            constraints {
+                // apply constraints here
+            }
+        }
+        "500"(view: '/error')
+    }
 }

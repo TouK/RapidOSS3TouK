@@ -45,21 +45,21 @@ class GetPropertiesMethod
         def relations = DomainClassUtils.getRelations(dc);
         def propsToBeFiltered = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME, RapidCMDBConstants.OPERATION_PROPERTY_NAME, RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED]
         def keyProps = DomainClassUtils.getKeys(dc);
-        grailsDomainClassProperties.each{GrailsDomainClassProperty prop->
-            if(!propsToBeFiltered.contains(prop.name))
+        grailsDomainClassProperties.each {GrailsDomainClassProperty prop ->
+            if (!propsToBeFiltered.contains(prop.name))
             {
                 def isKey = keyProps.contains(prop.name);
                 RelationMetaData relation = relations.get(prop.name);
-                if(relation == null)
+                if (relation == null)
                 {
-                    if(ModelGenerator.VALID_PROPERTY_TYPE_CLASSES.contains(prop.getType()))
+                    if (ModelGenerator.VALID_PROPERTY_TYPE_CLASSES.contains(prop.getType()))
                     {
-                      allDomainClassProperties.add(new RapidDomainClassProperty(name:prop.name, isOperationProperty:false, isKey:isKey))
+                        allDomainClassProperties.add(new RapidDomainClassProperty(name: prop.name, isOperationProperty: false, isKey: isKey))
                     }
                 }
                 else
                 {
-                    allDomainClassProperties.add(new RapidDomainClassRelation(name:prop.name, relatedModel:relation.otherSideCls, reverseName:relation.otherSideName, type:relation.getType(), isOperationProperty:false, isKey:isKey))
+                    allDomainClassProperties.add(new RapidDomainClassRelation(name: prop.name, relatedModel: relation.otherSideCls, reverseName: relation.otherSideName, type: relation.getType(), isOperationProperty: false, isKey: isKey))
                 }
 
             }
@@ -67,7 +67,7 @@ class GetPropertiesMethod
 
         allProperties = [];
         allProperties.addAll(allDomainClassProperties);
-        Collections.sort (allProperties);
+        Collections.sort(allProperties);
         allProperties = Collections.unmodifiableList(allProperties);
     }
 
@@ -75,29 +75,29 @@ class GetPropertiesMethod
     {
         allProperties = [];
         allProperties.addAll(allDomainClassProperties);
-        if(operationClass != null)
+        if (operationClass != null)
         {
             def propsToBefiltered = ["domainObject", "class", "properties", "metaClass"]
-            operationClass.metaClass.getProperties().each{MetaBeanProperty prop->
-                if(!propsToBefiltered.contains(prop.name))
+            operationClass.metaClass.getProperties().each {MetaBeanProperty prop ->
+                if (!propsToBefiltered.contains(prop.name))
                 {
                     def isPrivate = Modifier.isPrivate(prop.getModifiers())
                     def isMethodsPrivate = true;
-                    if(prop.getter != null)
+                    if (prop.getter != null)
                     {
                         isMethodsPrivate = isMethodsPrivate && Modifier.isPrivate(prop.getGetter().getModifiers())
                     }
-                    if(prop.setter != null)
+                    if (prop.setter != null)
                     {
                         isMethodsPrivate = isMethodsPrivate && Modifier.isPrivate(prop.getSetter().getModifiers())
                     }
-                    if(!isPrivate && !isMethodsPrivate)
+                    if (!isPrivate && !isMethodsPrivate)
                     {
-                        allProperties.add(new RapidDomainClassProperty(name:prop.name, isRelation:false, isOperationProperty:true));
+                        allProperties.add(new RapidDomainClassProperty(name: prop.name, isRelation: false, isOperationProperty: true));
                     }
                 }
             }
-            Collections.sort (allProperties);
+            Collections.sort(allProperties);
             allProperties = Collections.unmodifiableList(allProperties);
         }
     }
@@ -107,7 +107,7 @@ class GetPropertiesMethod
     }
 }
 
-class RapidDomainClassProperty  implements Comparable
+class RapidDomainClassProperty implements Comparable
 {
     String name;
     boolean isRelation;
@@ -131,5 +131,25 @@ class RapidDomainClassRelation extends RapidDomainClassProperty
     public RapidDomainClassRelation()
     {
         this.isRelation = true;
+    }
+
+    def isOneToOne()
+    {
+        return type == RelationMetaData.ONE_TO_ONE;
+    }
+
+    def isOneToMany()
+    {
+        return type == RelationMetaData.ONE_TO_MANY;
+    }
+
+    def isManyToOne()
+    {
+        return type == RelationMetaData.MANY_TO_ONE;
+    }
+
+    def isManyToMany()
+    {
+        return type == RelationMetaData.MANY_TO_MANY;
     }
 }

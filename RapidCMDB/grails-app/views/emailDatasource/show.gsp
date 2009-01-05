@@ -39,7 +39,7 @@
                 <tr class="prop">
                     <td valign="top" class="name">Connection:</td>
 
-                    <td valign="top" class="value"><g:link controller="httpConnection" action="show" id="${emailDatasource?.connection?.id}">${emailDatasource?.connection}</g:link></td>
+                    <td valign="top" class="value"><g:link controller="emailConnection" action="show" id="${emailDatasource?.connection?.id}">${emailDatasource?.connection}</g:link></td>
 
                 </tr>
 

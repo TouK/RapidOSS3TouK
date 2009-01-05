@@ -1,17 +1,15 @@
-<%@ page import="auth.Group" %>
-
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="adminLayout"/>
-    <title>Group List</title>
+    <meta name="layout" content="main"/>
+    <title>${domainName} List</title>
 </head>
 <body>
 <div class="nav">
     <span class="menuButton"><g:link class="home" action="index">Home</g:link></span>
 </div>
 <div class="body">
-    <h1>Group List</h1>
+    <h1>${domainName} List</h1>
     <g:if test="${flash.message}">
         <div class="message">${flash.message}</div>
     </g:if>

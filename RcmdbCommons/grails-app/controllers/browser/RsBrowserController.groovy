@@ -28,26 +28,25 @@ class RsBrowserController {
     }
 
     def listDomain = {
-        if(params.max == null){
+        if (params.max == null) {
             params.max = 20;
         }
         def domainClass = grailsApplication.getArtefactByLogicalPropertyName(DomainClassArtefactHandler.TYPE, params.domain)
         if (domainClass) {
-            def mc = domainClass.metaClass;
             def propertyList = [];
             def properties = domainClass.clazz."getPropertiesList"();
-            def propertiesCanBeListed = properties.findAll{it.name != "id" && !it.isKey && !it.isRelation && !it.isOperationProperty || (it.isRelation && it.isOneToOne() && it.isManyToOne())}
+            def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isKey && !it.isRelation && !it.isOperationProperty || (it.isRelation && it.isOneToOne() && it.isManyToOne())}
             def count = domainClass.clazz."count"();
             def keySet = domainClass.clazz."keySet"();
-            if(propertiesCanBeListed.size() + keySet.size() > 5){
+            if (propertiesCanBeListed.size() + keySet.size() > 5) {
                 propertyList = keySet;
             }
-            else{
+            else {
                 propertyList.addAll(keySet)
                 propertyList.addAll(propertiesCanBeListed)
             }
-            def objectList = mc.invokeStaticMethod(mc.theClass, "list", [params] as Object[])
-            return [objectList: objectList, propertyList: propertyList, count:count]
+            def objectList = domainClass.clazz."list"(params)
+            return [objectList: objectList, propertyList: propertyList, count: count, domainName: domainClass.fullName]
         }
         else {
             flash.message = "Domain class with name ${params.domain} does not exist"
@@ -57,6 +56,23 @@ class RsBrowserController {
     }
 
     def show = {
+        def domainClass = grailsApplication.getArtefactByLogicalPropertyName(DomainClassArtefactHandler.TYPE, params.domain)
+        if (domainClass) {
+            def domainObject = domainClass.clazz."get"(id: params.id);
+            if (domainObject) {
+                def properties = domainClass.clazz."getPropertiesList"();
+                def keySet = domainClass.clazz."keySet"();
+                return [keys: keySet, propertyList: properties, domainObject: domainObject]
+            }
+            else {
+                flash.message = "${domainClass.fullName} with id ${params.id} does not exist"
+                redirect(action: params.domain);
+            }
 
+        }
+        else {
+            flash.message = "Domain class with name ${params.domain} does not exist"
+            redirect(action: index);
+        }
     }
 }

@@ -16,7 +16,6 @@
 <head>
     <title>iFountain - RapidInsight</title>
     <script type="text/javascript" src="js/yui/utilities/utilities.js"></script>
-     <script type="text/javascript" src="js/yui/json/json-min.js"></script>
     <script type="text/javascript" src="js/yui/container/container-min.js"></script>
     <script type="text/javascript" src="js/yui/menu/menu-min.js"></script>
     <script type="text/javascript" src="js/yui/resize/resize-min.js"></script>
@@ -25,7 +24,6 @@
     <script type="text/javascript" src="js/yui/datasource/datasource-min.js"></script>
     <script type="text/javascript" src="js/yui/datatable/datatable-min.js"></script>
     <script type="text/javascript" src="js/yui/autocomplete/autocomplete-min.js"></script>
-    <script type="text/javascript" src="js/yui/charts/charts-experimental-min.js"></script>
     <script type="text/javascript" src="js/ext/ext.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/ComponentContainer.js"></script>
@@ -57,7 +55,8 @@
     <script type="text/javascript" src="js/rapidjs/component/search/ViewBuilder.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/search/SearchGrid.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/autocomplete/Autocomplete.js"></script>
-    <script type="text/javascript" src="js/rapidjs/component/pieChart/PieChart.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/pieChart/FABridge.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/pieChart/FlexPieChart.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/map/GMap.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/simplewidgets/split.js"></script>

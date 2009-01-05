@@ -35,17 +35,23 @@ if(nodeType == "Container"){
 else{
    severitySummary = RsEvent.propertySummary("elementName:\"${name}\"", ["severity"]);
 }
+def isAllZero = true;
  severitySummary.severity.each{propValue, numberOfObjects ->
+     if(numberOfObjects > 0){
+        isAllZero = false; 
+     }
      severityMap.put("" + propValue, numberOfObjects);
  }
-
+ if(isAllZero){
+     severityMap.put("0", 1);
+ }
 web.render(contentType: 'text/xml'){
-   Items(){
-      Item(severity:"Critical", count:severityMap.get("5"))
-      Item(severity:"Major", count:severityMap.get("4"))
-      Item(severity:"Minor", count:severityMap.get("3"))
-      Item(severity:"Warning", count:severityMap.get("2"))
-      Item(severity:"Indeterminate", count:severityMap.get("1"))
-      Item(severity:"Normal", count:severityMap.get("0"))
+   chart(){
+      set(label:"Critical", value:severityMap.get("5"), color:"0xff0000")
+      set(label:"Major", value:severityMap.get("4"), color:"0xff7514")
+      set(label:"Minor", value:severityMap.get("3"), color:"0xddc700")
+      set(label:"Warning", value:severityMap.get("2"), color:"0x2dbfcd")
+      set(label:"Indeterminate", value:severityMap.get("1"), color:"0xac6bac")
+      set(label:"Normal", value:severityMap.get("0"), color:"0x00ff00")
    }
 }

@@ -105,12 +105,18 @@
 				<Property Name="z_Name" Type="string"/>
 			</Properties>
 		</Model>
-        <Model Name="RsMessage">
-			<Properties>
-				<Property Name='eventId' Type='string' IsKey="true"/>
-				<Property Name='to' Type='string' IsKey="true"/>
-			</Properties>
-		</Model>
+       <Model Name="RsMessage">
+            <Properties>
+                <Property Name='eventId' Type='number' IsKey="true"/>
+                <Property Name='destination' Type='string' IsKey="true"/>
+                <Property Name='destinationType' Type='string' IsKey="true" />
+                <Property Name='action' Type='string' IsKey="true" />
+                <Property Name='insertedAt' Type='number' />
+                <Property Name='sendAfter' Type='number' />
+                <Property Name='sendAt' Type='number' />
+                <Property Name='state' Type='number' />
+            </Properties>
+        </Model>
 		<Model Name="RsGroup" Parent="RsTopologyObject">
 			<Properties>
 			</Properties>

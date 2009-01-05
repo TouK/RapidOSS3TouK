@@ -61,10 +61,14 @@
                                     </td>
                                 </g:if>
                                 <g:else>
-                                    <%
-                                        def relatedClass = grailsApplication.getDomainClass(domainObject[p.name].class.name);
-                                    %>
-                                    <td valign="top" class="value"><g:link action="${relatedClass.logicalPropertyName}" id="${domainObject[p.name]?.id}">${domainObject[p.name]}</g:link></td>
+                                    <g:set var="relatedObject" value="${domainObject[p.name]}"></g:set>
+                                    <g:if test="${relatedObject}">
+                                         <g:set var="relatedClass" value="${grailsApplication.getDomainClass(relatedObject.class.name)}"></g:set>
+                                         <td valign="top" class="value"><g:link action="${relatedClass.logicalPropertyName}" id="${relatedObject.id}">${relatedObject}</g:link></td>
+                                    </g:if>
+                                    <g:else>
+                                        <td></td>
+                                    </g:else>
                                 </g:else>
                             </g:else>
                         </g:if>

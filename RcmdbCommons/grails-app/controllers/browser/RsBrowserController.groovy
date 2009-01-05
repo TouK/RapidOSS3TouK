@@ -1,15 +1,12 @@
 package browser
 
-import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
-import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 /**
 * Created by IntelliJ IDEA.
-* User: admin
+* User: Sezgin Kucukkaraaslan
 * Date: Jan 5, 2009
 * Time: 10:40:01 AM
-* To change this template use File | Settings | File Templates.
 */
 class RsBrowserController {
 
@@ -35,7 +32,7 @@ class RsBrowserController {
         if (domainClass) {
             def propertyList = [];
             def properties = domainClass.clazz."getPropertiesList"();
-            def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isKey && !it.isRelation && !it.isOperationProperty || (it.isRelation && it.isOneToOne() && it.isManyToOne())}
+            def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isKey && !it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
             def count = domainClass.clazz."count"();
             def keySet = domainClass.clazz."keySet"();
             if (propertiesCanBeListed.size() + keySet.size() > 5) {

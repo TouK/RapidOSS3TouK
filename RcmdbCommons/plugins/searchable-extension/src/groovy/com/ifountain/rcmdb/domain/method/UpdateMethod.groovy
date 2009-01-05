@@ -108,7 +108,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
         if(!errors.hasErrors())
         {
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
-            domainObject.reindex(domainObject);
+            domainObject.index(domainObject);
             statistics.stop();
             domainObject.removeRelation(relationToBeRemovedMap);
             domainObject.addRelation(relationToBeAddedMap);

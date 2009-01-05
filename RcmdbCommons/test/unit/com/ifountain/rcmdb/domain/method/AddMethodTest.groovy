@@ -338,7 +338,6 @@ class AddMethodDomainObject1  extends GroovyObjectSupport
     def static searchResult = [total:0, results:[]];
     def static query;
     def static indexList = [];
-    def static reindexList = [];
     def relationsShouldBeAdded;
     def relationsShouldBeRemoved;
     def propertiesToBeUpdated;
@@ -368,10 +367,6 @@ class AddMethodDomainObject1  extends GroovyObjectSupport
         indexList.add(objectList);
     }
 
-    def static reindex(objectList)
-    {
-        reindexList.add(objectList);
-    }
 
     public boolean hasErrors()
     {

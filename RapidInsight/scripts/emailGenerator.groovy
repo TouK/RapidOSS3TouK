@@ -5,33 +5,61 @@
  * Time: 5:29:28 PM
  * To change this template use File | Settings | File Templates.
  */
-RsMessage.removeAll();
 
-def delay=6000;
-def lastMaxId=0
 
+def createIdLookup=RsLookup.get(name:"emailGeneratorMaxEventCreateId")
+if(createIdLookup==null)
+{
+    createIdLookup=RsLookup.add(name:"emailGeneratorMaxEventCreateId",value:0)
+}
+def maxCreateId=createIdLookup.value
+
+def delay=0;
 def queries=search.SearchQuery.searchEvery("id:38 OR id:40")
 def eventQuery="(id:0)  "
 
 queries.each {
     eventQuery +=  "OR (${it.query})"
 }
-eventQuery = " (${eventQuery}) AND id:[${lastMaxId} TO *]"
 
-logger.info("eventQuery is ${eventQuery}")
+//process Event Creates
+def createQuery = " (${eventQuery}) AND id:[${maxCreateId} TO *]"
 
-def events=RsEvent.searchEvery(eventQuery,[sort:"id", order:"asc"])
+logger.debug("createQuery is ${createQuery}")
+
+def createdEvents=RsEvent.searchEvery(createQuery,[sort:"id", order:"asc"])
 def date=new Date()
 def now=date.getTime();
 
-events.each{ event ->
-    now=date.getTime();
-    RsMessage.add(eventId:event.id,destination:"abdurrahim",destinationType:"email",insertedAt:now,sendAfter:now+delay,state:0,action:"create")
+createdEvents.each{ event ->
+    RsMessage.addEventCreateEmail(logger,event,"abdurrahim",delay);
+    maxCreateId=Long.valueOf(event.id)+1;
 }
 
-now=date.getTime();
-def delayingMessages=RsMessage.searchEvery("state:0 AND sendAfter:[0 TO ${now}]")
-delayingMessages.each{
-    it.update(state:1)
-    logger.debug("Updated delaying message with id ${it.id}, changed state to 1");
+createIdLookup.update(value:String.valueOf(maxCreateId))
+
+//process delayingMessages which has exceeded delay time
+RsMessage.processDelayedEmails(logger)
+
+
+//process Event Clears, HistoricalEvent Creates
+def clearIdLookup=RsLookup.get(name:"emailGeneratorMaxEventClearId")
+if(clearIdLookup==null)
+{
+    clearIdLookup=RsLookup.add(name:"emailGeneratorMaxEventClearId",value:0)
 }
+def maxClearId=clearIdLookup.value
+
+
+
+def clearQuery = " (${eventQuery}) AND id:[${maxClearId} TO *]"
+def clearedEvents=RsHistoricalEvent.searchEvery(clearQuery,[sort:"activeId", order:"asc"])
+
+logger.debug("clearQuery is ${createQuery}")
+
+clearedEvents.each{ event ->
+      RsMessage.addEventClearEmail(logger,event,"abdurrahim")
+      maxClearId=Long.valueOf(event.id)+1;
+}
+clearIdLookup.update(value:String.valueOf(maxClearId))
+

@@ -117,7 +117,13 @@
                 <Property Name='state' Type='number' />
             </Properties>
         </Model>
-		<Model Name="RsGroup" Parent="RsTopologyObject">
+        <Model Name="RsLookup">
+            <Properties>
+                <Property Name='name' Type='string' IsKey="true"/>
+                <Property Name='value' Type='string' />
+            </Properties>
+        </Model>
+        <Model Name="RsGroup" Parent="RsTopologyObject">
 			<Properties>
 			</Properties>
 		</Model>

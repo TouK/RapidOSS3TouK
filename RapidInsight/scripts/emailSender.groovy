@@ -40,7 +40,16 @@ def ds=EmailDatasource.get(name:"emailds")
 def messages=RsMessage.searchEvery('state:1 AND destinationType:"email"', [sort: "id"]);
 
 messages.each{ message ->
-	RsEvent event=RsEvent.get(id:message.eventId);
+	def event=null;
+	if(message.action=="create")
+    {
+        event=RsEvent.get(id:message.eventId);
+    }
+    else
+    {
+        event=RsHistoricalEvent.search("activeId:${message.eventId}").results[0];
+    }
+
 	if(event!=null)
 	{
 
@@ -61,19 +70,18 @@ messages.each{ message ->
 			logger.debug("Sended email about RsEvent: ${eventParams}")
             message.update(state:3,sendAt:date.getTime());
             logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
-
-
 		}
 		catch(e)
-		{
-			logger.warn("Error occured while sending email.Reason ${e}",e);
+		{               
+            logger.warn("Error occured while sending email.Reason ${e}",e);
 		}
 
 
 	}
 	else
 	{
-		logger.warn("RsEvent with id ${message.eventId} does not exist. Will not send email");
+        message.update(state:4,sendAt:date.getTime());
+        logger.warn("RsEvent/RsHistoricalEvent with eventId ${message.eventId} does not exist. Will not send email. Updated state of message as 4");
 	}
 
 }

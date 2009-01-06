@@ -28,28 +28,10 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
         return stateInformation;
     }
 
-    protected boolean willRecalculateState(oldState, newState)
-    {
-        return newState > oldState;
-    }
-
     def stateInformation()
     {
         def stateObj = RsObjectState.get(objectId:id);
         return stateObj?stateObj.state:null;
-    }
-
-    def calculateStateInformation()
-    {
-        def propSummary = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
-        def minValue = 0;
-        propSummary.severity.each{propValue, numberOfObjects->
-            if(propValue >= 0 && minValue < propValue)
-            {
-                minValue = propValue;
-            }
-        }
-        return minValue;
     }
 
     int setState(state)
@@ -61,6 +43,25 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
             RsObjectState.add(objectId:id, state:stateInformation);
         }
         return stateInformation;
+    }
+
+
+    def calculateStateInformation()
+    {
+        def propSummary = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
+        def maxValue = 0;
+        propSummary.severity.each{propValue, numberOfObjects->
+            if(propValue >= 0 && maxValue < propValue)
+            {
+                maxValue = propValue;
+            }
+        }
+        return maxValue;
+    }
+
+    protected boolean willRecalculateState(oldState, newState)
+    {
+        return newState > oldState;
     }
 }
     

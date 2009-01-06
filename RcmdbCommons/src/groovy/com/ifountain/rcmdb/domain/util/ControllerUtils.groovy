@@ -56,6 +56,10 @@ class ControllerUtils {
             }
         }
         params.each{propName, propValue->
+            def isCheckboxParam= ( propName.indexOf("_") == 0 ) && (propValue.length() == 0);
+            if(isCheckboxParam){
+               propName=propName.substring(1); 
+            }
             def metaProp = domainObjectProps[propName];
             if(metaProp != null)
             {
@@ -93,8 +97,7 @@ class ControllerUtils {
                             returnedParams[propName] = propValue;
                         }
                         else{
-	                        if(propName.indexOf("_") == 0){
-                                propName = propName.substring(1)
+	                        if(isCheckboxParam){
                                 if(propType == boolean || propType == Boolean.class){
                                     if(!returnedParams[propName]){
                                         returnedParams[propName] = false

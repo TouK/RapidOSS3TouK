@@ -22,13 +22,17 @@ class UrlMappings {
             controller = "rsBrowser"
             action = "index";
         }
-        "/rsBrowser/$domain/"{
+        "/rsBrowser/$domain/" {
             controller = "rsBrowser"
             action = "listDomain";
         }
+        "/rsBrowser/$domain/search/$query?" {
+            controller = "rsBrowser"
+            action = "search";
+        }
         "/rsBrowser/$domain/$id" {
-           controller = "rsBrowser"
-            action = "show"; 
+            controller = "rsBrowser"
+            action = "show";
         }
         "/$controller/$action?/$id?" {
             constraints {

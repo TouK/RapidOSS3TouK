@@ -6,6 +6,7 @@
 </head>
 <body>
 <div class="nav">
+    <span class="menuButton"><g:link class="home" action="index">Home</g:link></span>
     <span class="menuButton"><g:link class="list" action="${params.domain}">${domainObject.class.name} List</g:link></span>
 </div>
 <div class="body">

@@ -1,6 +1,8 @@
 package browser
 
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
+import search.SearchQuery
+import auth.RsUser
 
 /**
 * Created by IntelliJ IDEA.
@@ -44,18 +46,8 @@ class RsBrowserController {
         }
         def domainClass = grailsApplication.getArtefactByLogicalPropertyName(DomainClassArtefactHandler.TYPE, params.domain)
         if (domainClass) {
-            def propertyList = [];
-            def properties = domainClass.clazz."getPropertiesList"();
-            def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isKey && !it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
             def count = domainClass.clazz."count"();
-            def keySet = domainClass.clazz."keySet"();
-            if (propertiesCanBeListed.size() + keySet.size() > 5) {
-                propertyList = keySet;
-            }
-            else {
-                propertyList.addAll(keySet)
-                propertyList.addAll(propertiesCanBeListed)
-            }
+            def propertyList = getPropertiesWhichCanBeListed(domainClass);
             def objectList = domainClass.clazz."list"(params)
             withFormat {
                 html {
@@ -65,7 +57,7 @@ class RsBrowserController {
                     render(contentType: "text/xml") {
                         Objects(total: count, offset: params.offset ? params.offset : 0) {
                             objectList.each {object ->
-                                def props = ["id":object.id]
+                                def props = ["id": object.id]
                                 propertyList.each {p ->
                                     props.put(p.name, object[p.name])
                                 }
@@ -96,8 +88,9 @@ class RsBrowserController {
         if (domainClass) {
             def domainObject = domainClass.clazz."get"(id: params.id);
             if (domainObject) {
-                def properties = domainClass.clazz."getPropertiesList"();
-                def keySet = domainClass.clazz."keySet"();
+                def objectClass = grailsApplication.getDomainClass(domainObject.class.name)
+                def properties = objectClass.clazz."getPropertiesList"();
+                def keySet = objectClass.clazz."keySet"();
                 withFormat {
                     html {
                         render(view: "show", model: [keys: keySet, propertyList: properties, domainObject: domainObject])
@@ -163,5 +156,72 @@ class RsBrowserController {
                 }
             }
         }
+    }
+
+    def search = {
+        if (params.max == null) {
+            params.max = 20;
+        }
+        def domainClass = grailsApplication.getArtefactByLogicalPropertyName(DomainClassArtefactHandler.TYPE, params.domain)
+        if (domainClass) {
+            SearchQuery query = null;
+            def queryList = SearchQuery.searchEvery("name:\"${params.query}\" AND username:${RsUser.RSADMIN} AND isPusblic:true");
+            if (queryList.size() == 0) {
+                query = SearchQuery.get(name: params.query, username: session.username);
+            }
+            else {
+                query = queryList[0]
+            }
+            if (query) {
+                withFormat{
+                    html{
+                        def propertyList = getPropertiesWhichCanBeListed(domainClass);
+                        def searchResults = domainClass.clazz."search"(query.query, params);
+                        def objectList = searchResults.results
+                        render(view: "search", model: [objectList: objectList, propertyList: propertyList, count: searchResults.total, domainName: domainClass.fullName])
+                    }
+                }
+
+            }
+            else {
+                addError("default.query.not.found", [params.query]);
+                withFormat {
+                    html {
+                        flash.errors = errors
+                        redirect(action: params.domain);
+                    }
+                    xml {
+                        xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                    }
+                }
+            }
+        }
+        else {
+            addError("default.class.not.found", [params.domain]);
+            withFormat {
+                html {
+                    flash.errors = errors
+                    redirect(action: index);
+                }
+                xml {
+                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                }
+            }
+        }
+    }
+
+    def getPropertiesWhichCanBeListed(domainClass) {
+        def propertyList = [];
+        def properties = domainClass.clazz."getPropertiesList"();
+        def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isKey && !it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def keySet = domainClass.clazz."keySet"();
+        if (propertiesCanBeListed.size() + keySet.size() > 5) {
+            propertyList = keySet;
+        }
+        else {
+            propertyList.addAll(keySet)
+            propertyList.addAll(propertiesCanBeListed)
+        }
+        return propertyList;
     }
 }

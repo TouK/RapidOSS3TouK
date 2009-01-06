@@ -47,7 +47,13 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     }
 
 
-    //=====================================================================================================================================
+    /*=====================================================================================================================================
+    - It is expected that users will change only calculateState, propagateState methods according to their needs.
+    - In current implementation default state calculation strategy is specified as finding max severity of events.
+    - calculateState will be called for each setState call. currentState information and newState information
+    will be passed to this method.
+    - newState will be passed as -1 if state calculation is triggered because of first getState call.
+    =====================================================================================================================================*/
     def calculateState(currentState, newState)
     {
         return findMaxSeverity(currentState, newState);

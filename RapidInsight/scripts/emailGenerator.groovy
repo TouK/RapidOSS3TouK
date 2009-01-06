@@ -10,7 +10,13 @@
 def createIdLookup=RsLookup.get(name:"emailGeneratorMaxEventCreateId")
 if(createIdLookup==null)
 {
-    createIdLookup=RsLookup.add(name:"emailGeneratorMaxEventCreateId",value:0)
+    def maxEventId=0
+    def maxEvent=RsEvent.search("alias:*",[max:1,sort:"id",order:"desc"]).results[0]
+    if(maxEvent!=null)
+    {
+        maxEventId=Long.valueOf(maxEvent.id)+1
+    }
+    createIdLookup=RsLookup.add(name:"emailGeneratorMaxEventCreateId",value:maxEventId)
 }
 def maxCreateId=createIdLookup.value
 
@@ -46,7 +52,13 @@ RsMessage.processDelayedEmails(logger)
 def clearIdLookup=RsLookup.get(name:"emailGeneratorMaxEventClearId")
 if(clearIdLookup==null)
 {
-    clearIdLookup=RsLookup.add(name:"emailGeneratorMaxEventClearId",value:0)
+    def maxEventId=0
+    def maxEvent=RsHistoricalEvent.search("alias:*",[max:1,sort:"id",order:"desc"]).results[0]
+    if(maxEvent!=null)
+    {
+        maxEventId=Long.valueOf(maxEvent.id)+1
+    }
+    clearIdLookup=RsLookup.add(name:"emailGeneratorMaxEventClearId",value:maxEventId)
 }
 def maxClearId=clearIdLookup.value
 

@@ -32,10 +32,12 @@ if(emailDs.hasErrors())
 }
 
 
+def date=new Date();
+
 def ds=EmailDatasource.get(name:"emailds")
 
 
-def messages=RsMessage.searchEvery("alias:*", [sort: "id"]);
+def messages=RsMessage.searchEvery('state:1 AND destinationType:"email"', [sort: "id"]);
 
 messages.each{ message ->
 	RsEvent event=RsEvent.get(id:message.eventId);
@@ -48,8 +50,8 @@ messages.each{ message ->
 		def templateParams=[eventParams:eventParams]
 		def emailParams=[:]
 		emailParams.from=from
-		emailParams.to=message.to
-		emailParams.subject= ( event.createdAt  == event.changedAt ? "Event Created" : "Event Updated" )
+		emailParams.to=message.destination
+		emailParams.subject= ( message.action  == "create" ? "Event Created" : "Event Cleared" )
 		emailParams.template=templatePath
 		emailParams.templateParams=templateParams
 		emailParams.contentType="text/html"
@@ -57,8 +59,8 @@ messages.each{ message ->
 		try{
 			ds.sendEmail(emailParams)
 			logger.debug("Sended email about RsEvent: ${eventParams}")
-            message.remove();
-            logger.debug("Deleted message with eventId ${message.eventId}")
+            message.update(state:3,sendAt:date.getTime());
+            logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
 
 
 		}

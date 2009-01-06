@@ -31,7 +31,7 @@ class RsEventJournal {
     static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
 
     
-    Long eventId ="";
+    String eventId ="";
     
     Date rsTime =new Date(0);
     

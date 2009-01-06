@@ -173,12 +173,56 @@ class RsBrowserController {
                 query = queryList[0]
             }
             if (query) {
-                withFormat{
-                    html{
+                def searchResults = null;
+                try {
+                    searchResults = domainClass.clazz."search"(query.query, params);
+                }
+                catch (Throwable e) {
+                    addError("invalid.search.query", [query.query, e.getMessage()]);
+                    withFormat {
+                        html {
+                            flash.errors = errors
+                            redirect(action: params.domain);
+                        }
+                        xml {
+                            xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                        }
+                    }
+                    return;
+                }
+                def objectList = searchResults.results
+                withFormat {
+                    html {
                         def propertyList = getPropertiesWhichCanBeListed(domainClass);
-                        def searchResults = domainClass.clazz."search"(query.query, params);
-                        def objectList = searchResults.results
                         render(view: "search", model: [objectList: objectList, propertyList: propertyList, count: searchResults.total, domainName: domainClass.fullName])
+                    }
+                    xml {
+                        def grailsClassProperties = [:]
+                        render(contentType: "text/xml") {
+                            Objects(total: searchResults.total, offset: searchResults.offset) {
+                                searchResults.results.each {result ->
+                                    def className = result.getClass().name;
+                                    def grailsObjectProps = grailsClassProperties[className]
+                                    if (grailsObjectProps == null)
+                                    {
+                                        def objectDomainClass = grailsApplication.getDomainClass(className);
+                                        grailsObjectProps = objectDomainClass.clazz."getPropertiesList"();
+                                        def grailsObjectProperties = [];
+                                        grailsObjectProps.each {
+                                            if (!it.isRelation && !it.isOperationProperty) {
+                                                grailsObjectProperties.add(it);
+                                            }
+                                        }
+                                        grailsClassProperties[result.getClass().name] = grailsObjectProperties;
+                                    }
+                                    def props = [:];
+                                    grailsObjectProps.each {resultProperty ->
+                                        props[resultProperty.name] = result[resultProperty.name];
+                                    }
+                                    Object(props);
+                                }
+                            }
+                        }
                     }
                 }
 

@@ -24,41 +24,28 @@ class RsGroup  extends RsTopologyObject {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["childGroups", "parentGroups", "consistsOf"];
+        except = [];
 
 
     };
     static datasources = [:]
 
 
-    List childGroups =[];
 
-    List parentGroups =[];
-
-    List consistsOf =[];
-
-
-    static relations = [
-
-        childGroups:[type:RsGroup, reverseName:"parentGroups", isMany:true]
-
-        ,parentGroups:[type:RsGroup, reverseName:"childGroups", isMany:true]
-
-        ,consistsOf:[type:RsTopologyObject, reverseName:"memberOfGroup", isMany:true]
-
-    ]
+    static relations = [:]
 
     static constraints={
 
     }
 
     static propertyConfiguration= [:]
-    static transients = ["childGroups", "parentGroups", "consistsOf"];
+    static transients = [];
 
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
 

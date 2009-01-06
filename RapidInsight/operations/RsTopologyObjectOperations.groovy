@@ -19,35 +19,50 @@
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
     int getState()
     {
-        def stateInformation = stateInformation();
-        if(stateInformation == null)
+        def currentState = currentState();
+        if(currentState == null)
         {
-            stateInformation = calculateStateInformation();
-            RsObjectState.add(objectId:id, state:stateInformation);
+            currentState = calculateState(currentState, -1);
+            RsObjectState.add(objectId:id, state:currentState);
         }
-        return stateInformation;
+        return currentState;
     }
 
-    def stateInformation()
+    def currentState()
     {
         def stateObj = RsObjectState.get(objectId:id);
-        return stateObj?stateObj.state:null;
+        return stateObj?stateObj.state:5;
     }
 
-    int setState(state)
+    int setState(newState)
     {
-        def stateInformation = getState();
-        if(willRecalculateState(stateInformation, state))
+        def currentState = getState();
+        def calculatedState = calculateState(currentState, newState);
+        if(calculatedState != currentState)
         {
-            stateInformation = calculateStateInformation();
-            RsObjectState.add(objectId:id, state:stateInformation);
+            RsObjectState.add(objectId:id, state:calculatedState);
+            propagateState(calculatedState);
         }
-        return stateInformation;
+        return calculatedState;
     }
 
 
-    def calculateStateInformation()
+    //=====================================================================================================================================
+    def calculateState(currentState, newState)
     {
+        return findMaxSeverity(currentState, newState);
+    }
+
+    def propagateState(newStateInformation)
+    {
+        parentObjects.each{
+            it.setState(newStateInformation);    
+        }
+    }
+
+    public int findMaxSeverity(currentState, newState)
+    {
+        if(newState != -1 && newState <= currentState) return currentState;
         def propSummary = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
         def maxValue = 0;
         propSummary.severity.each{propValue, numberOfObjects->
@@ -56,12 +71,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
                 maxValue = propValue;
             }
         }
-        return maxValue;
-    }
-
-    protected boolean willRecalculateState(oldState, newState)
-    {
-        return newState > oldState;
+        return maxValue;   
     }
 }
     

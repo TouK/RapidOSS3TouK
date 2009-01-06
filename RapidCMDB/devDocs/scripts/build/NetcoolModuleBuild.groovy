@@ -59,7 +59,11 @@ class NetcoolModuleBuild extends Build {
             ant.fileset(file: "${env.rapid_netcool}/applications/RapidInsightForNetcool/grails-app/domain/*.groovy");
         }
         ant.copy(todir: rapidSuiteDir) {
-            ant.fileset(dir: "$env.rapid_netcool/applications/RapidInsightForNetcool")
+            ant.fileset(dir: "$env.rapid_netcool/applications/RapidInsightForNetcool"){
+                ant.exclude(name: "**/netcoolDataGenerator.groovy")
+                ant.exclude(name: "**/NetcoolDemoValues.groovy")
+                ant.exclude(name: "**/NetcoolRealValues.groovy")
+            }
         }
         ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
             ant.arg(value: "-file");

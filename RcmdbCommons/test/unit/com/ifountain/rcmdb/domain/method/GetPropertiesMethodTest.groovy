@@ -136,29 +136,35 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         allProperties = method.getDomainObjectProperties();
         assertEquals (6, allProperties.size())
     }
-    public void testGetPropertyIgnoresPropertyWithInvalidType()
+    public void testGetPropertyIgnoresPropertyWithNotPrimitivePropertiesAndInvalidTypesAccordingToModelGeneration()
     {
       ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
       GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodDomainObjectWithInvalidProperties);
       GetPropertiesMethod method = new GetPropertiesMethod(cls);
       def allProperties = method.getDomainObjectProperties();
-      assertEquals (6, allProperties.size())
+      assertEquals (8, allProperties.size())
       RapidDomainClassProperty prop = allProperties[0]
       assertEquals("id", prop.name);
 
       prop = allProperties[1]
-      assertEquals("prop1", prop.name);
+      assertEquals("notValidPropertyAccordingToModelGeneation1", prop.name);
 
       prop = allProperties[2]
-      assertEquals("prop2", prop.name);
+      assertEquals("notValidPropertyAccordingToModelGeneation2", prop.name);
 
-      prop = allProperties[3]
-      assertEquals("prop3", prop.name);
+        prop = allProperties[3]
+      assertEquals("prop1", prop.name);
 
       prop = allProperties[4]
-      assertEquals("rel1", prop.name);
+      assertEquals("prop2", prop.name);
 
       prop = allProperties[5]
+      assertEquals("prop3", prop.name);
+
+      prop = allProperties[6]
+      assertEquals("rel1", prop.name);
+
+      prop = allProperties[7]
       assertEquals("rel2", prop.name);
 
     }
@@ -203,6 +209,8 @@ class GetPropertiesMethodDomainObjectWithInvalidProperties extends GetProperties
 {
   Object invalidProp1;
   Observer invalidProp2;
+  int notValidPropertyAccordingToModelGeneation1;
+  boolean notValidPropertyAccordingToModelGeneation2;
 }
 
 class GetPropertiesMethodParentDomainObjectOperations extends AbstractDomainOperation

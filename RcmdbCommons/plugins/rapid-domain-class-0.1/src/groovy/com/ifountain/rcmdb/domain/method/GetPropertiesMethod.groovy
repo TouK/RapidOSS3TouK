@@ -52,7 +52,7 @@ class GetPropertiesMethod
                 RelationMetaData relation = relations.get(prop.name);
                 if (relation == null)
                 {
-                    if (ModelGenerator.VALID_PROPERTY_TYPE_CLASSES.contains(prop.getType()))
+                    if (ModelGenerator.VALID_PROPERTY_TYPE_CLASSES.contains(prop.getType()) || prop.getType().isPrimitive())
                     {
                         allDomainClassProperties.add(new RapidDomainClassProperty(name: prop.name, isOperationProperty: false, isKey: isKey))
                     }

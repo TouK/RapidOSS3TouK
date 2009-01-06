@@ -121,7 +121,13 @@
 			<Properties>
 			</Properties>
 		</Model>
-	</Models>
+        <Model Name="RsObjectState" StorageType="Memory">
+			<Properties>
+				<Property Name='objectId' Type='number' IsKey="true"/>
+				<Property Name='state' Type='number'/>
+			</Properties>
+		</Model>
+    </Models>
 	<Relations>
         <Relation From="RsGroup" To="RsGroup" Name="childGroups" ReverseName="parentGroups" Type="ManyToMany"></Relation> 
         <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>

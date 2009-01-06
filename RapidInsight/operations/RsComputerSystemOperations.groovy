@@ -20,51 +20,5 @@ import com.ifountain.rcmdb.util.DataStore
 */
 public class RsComputerSystemOperations extends RsTopologyObjectOperations
 {
-    public static STATEINFORMATION_KEY = "stateInformationforcompsystem"
-    int getState()
-    {
-        def stateInformation = stateInformation();
-        if(stateInformation == null)
-        {
-            stateInformation = calculateStateInformation();
-        }
-        return stateInformation;
-    }
-
-    def calculateStateInformation()
-    {
-        def propSummary = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
-        def minValue = 0;
-        propSummary.severity.each{propValue, numberOfObjects->
-            if(propValue >= 0 && minValue < propValue)
-            {
-                minValue = propValue;
-            }
-        }
-        DataStore.get (STATEINFORMATION_KEY)[name] = minValue;
-        return minValue;
-    }
-
-    def stateInformation()
-    {
-        def stateInformation = DataStore.get(STATEINFORMATION_KEY)
-        if(stateInformation == null)
-        {
-            stateInformation = [:]
-            DataStore.put (STATEINFORMATION_KEY, stateInformation);
-        }
-        return stateInformation[name];
-    }
-
-    int setState(state)
-    {
-        def stateInformation = stateInformation();
-        if(stateInformation == null || state > stateInformation)
-        {
-            stateInformation = calculateStateInformation();
-        }
-        return stateInformation;
-    }
-
 }
 

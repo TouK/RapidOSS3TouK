@@ -17,5 +17,50 @@
 * USA.
 */
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+    int getState()
+    {
+        def stateInformation = stateInformation();
+        if(stateInformation == null)
+        {
+            stateInformation = calculateStateInformation();
+            RsObjectState.add(objectId:id, state:stateInformation);
+        }
+        return stateInformation;
+    }
+
+    protected boolean willRecalculateState(oldState, newState)
+    {
+        return newState > oldState;
+    }
+
+    def stateInformation()
+    {
+        def stateObj = RsObjectState.get(objectId:id);
+        return stateObj?stateObj.state:null;
+    }
+
+    def calculateStateInformation()
+    {
+        def propSummary = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
+        def minValue = 0;
+        propSummary.severity.each{propValue, numberOfObjects->
+            if(propValue >= 0 && minValue < propValue)
+            {
+                minValue = propValue;
+            }
+        }
+        return minValue;
+    }
+
+    int setState(state)
+    {
+        def stateInformation = getState();
+        if(willRecalculateState(stateInformation, state))
+        {
+            stateInformation = calculateStateInformation();
+            RsObjectState.add(objectId:id, state:stateInformation);
+        }
+        return stateInformation;
+    }
 }
     

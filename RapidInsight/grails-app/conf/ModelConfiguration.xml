@@ -26,7 +26,7 @@
 		</Model>
 		<Model Name="RsEventJournal">
 			<Properties>
-				<Property Name='eventId' Type='string' />
+				<Property Name='eventId' Type='number' />
 				<Property Name='rsTime' Type='date' />
 				<Property Name='eventName' Type='string' />
 				<Property Name='details' Type='string' />
@@ -129,7 +129,7 @@
 		</Model>
     </Models>
 	<Relations>
-        <Relation From="RsGroup" To="RsGroup" Name="childGroups" ReverseName="parentGroups" Type="ManyToMany"></Relation> 
+        <Relation From="RsGroup" To="RsGroup" Name="childGroups" ReverseName="parentGroups" Type="ManyToMany"></Relation>
         <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>
 		<Relation From="RsGroup" To="RsTopologyObject" Name="consistsOf" ReverseName="memberOfGroup" Type="ManyToMany"></Relation>
 	</Relations>

@@ -1,8 +1,9 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsMessage {
-
+class RsMessageRule 
+{
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -10,24 +11,20 @@ class RsMessage {
     
     
     };
-    static datasources = ["RCMDB":["keys":["eventId":["nameInDs":"eventId"], "destination":["nameInDs":"destination"], "destinationType":["nameInDs":"destinationType"], "action":["nameInDs":"action"]]]]
+    static datasources = ["RCMDB":["keys":["searchQueryId":["nameInDs":"searchQueryId"], "userId":["nameInDs":"userId"], "destinationType":["nameInDs":"destinationType"]]]]
 
     
-    Long eventId =0;
+    Long searchQueryId =0;
     
-    String destination ="";
+    Long userId =0;
     
     String destinationType ="";
     
-    String action ="";
+    Long delay =0;
     
-    Long insertedAt =0;
+    Boolean createAction =false;
     
-    Long sendAfter =0;
-    
-    Long sendAt =0;
-    
-    Long state =0;
+    Boolean clearAction =false;
     
     Long id ;
     
@@ -43,21 +40,17 @@ class RsMessage {
     static relations = [:]    
     
     static constraints={
-    eventId(nullable:false)
+    searchQueryId(nullable:false)
         
-     destination(blank:false,nullable:false)
+     userId(nullable:false)
         
-     destinationType(blank:false,nullable:false)
+     destinationType(blank:false,nullable:false,key:["searchQueryId", "userId"])
         
-     action(blank:false,nullable:false,key:["eventId", "destination", "destinationType"])
+     delay(nullable:true)
         
-     insertedAt(nullable:true)
+     createAction(nullable:true)
         
-     sendAfter(nullable:true)
-        
-     sendAt(nullable:true)
-        
-     state(nullable:true)
+     clearAction(nullable:true)
         
      __operation_class__(nullable:true)
         
@@ -73,15 +66,11 @@ class RsMessage {
     
     public String toString()
     {
-    	return "${getClass().getName()}[action:${getProperty("action")}, destination:${getProperty("destination")}, destinationType:${getProperty("destinationType")}, eventId:${getProperty("eventId")}]";
+    	return "${getClass().getName()}[destinationType:${getProperty("destinationType")}, searchQueryId:${getProperty("searchQueryId")}, userId:${getProperty("userId")}]";
     }
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
-
-
-
-
 }

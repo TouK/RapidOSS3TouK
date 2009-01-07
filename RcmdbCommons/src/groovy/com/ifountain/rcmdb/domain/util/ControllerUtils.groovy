@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -45,6 +45,7 @@ class ControllerUtils {
         def returnedParams = [:]
         def instance = domainClass.newInstance();
         def domainObjectpropertyNames = [];
+        def relations = [];
         def clonedMap = new HashMap();
         params.each{String paramName, paramValue->
             if(paramName!="id" && paramName != "_id")
@@ -55,7 +56,15 @@ class ControllerUtils {
                 }
                 else if(paramName.indexOf(".") >= 0)
                 {
-                    paramValue = paramValue instanceof Long?paramValue:Long.parseLong(paramValue);
+                    relations.add(StringUtils.substringBefore(paramName,"."));
+                    if(paramValue == "null")
+                    {
+                        paramValue = -1l;
+                    }
+                    else if(!(paramValue instanceof Long))
+                    {
+                        paramValue = Long.parseLong(paramValue);
+                    }
                     domainObjectpropertyNames.add(StringUtils.substringBefore(paramName,"."));
                 }
                 else
@@ -68,7 +77,15 @@ class ControllerUtils {
         domainObjectpropertyNames = domainObjectpropertyNames.unique ().findAll {domainClass.metaClass.getMetaProperty(it) != null}
         DataBindingUtils.bindObjectToInstance (instance, clonedMap);
         domainObjectpropertyNames.each{
-            returnedParams[it] = instance.getProperty(it)
+            def propValue = instance.getProperty(it);
+            if(relations.contains(it) && propValue.id == -1l)
+            {
+                returnedParams.put (it, null);
+            }
+            else
+            {
+                returnedParams[it] = propValue
+            }
         }
         return returnedParams;
     }

@@ -80,7 +80,7 @@ class GetMethodTest extends RapidCmdbTestCase{
         GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, [:]);
         def result = get.invoke (GetMethodDomainObject, [1000] as Object[]);
         assertNull (result);
-        assertNotNull (GetMethodDomainObject.query);
+        assertEquals ("id:\"1000\"", GetMethodDomainObject.query);
 
         GetMethodDomainObject objectWillBeReturned = new GetMethodDomainObject(prop1:"prop1Value", prop2:"prop2Value")
         GetMethodDomainObject.searchResult = [total:1, results:[objectWillBeReturned]];

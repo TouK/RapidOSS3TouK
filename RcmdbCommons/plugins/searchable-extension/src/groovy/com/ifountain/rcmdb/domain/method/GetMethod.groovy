@@ -119,7 +119,7 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
         }
         else if(searchParams instanceof Number)
         {
-            searchParams = "id:${searchParams}".toString();
+            searchParams = "id:\"${searchParams}\"".toString();
             def result = CompassMethodInvoker.search (clazz.metaClass, searchParams, willTriggerOnLoad)
             return result.results[0];
         }

@@ -62,6 +62,14 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase{
         assertEquals (params.prop2, classProperties.prop2);
         assertEquals (relatedModelInstance1.id, classProperties.rel1.id);
 
+        //Test with null relation
+        params = [_prop1:"", prop2:"stringValue", "rel1.id":"null"]
+        classProperties = ControllerUtils.getClassProperties (params, modelClass);
+        assertEquals(3, classProperties.size());
+        assertEquals (false, classProperties.prop1);
+        assertEquals (params.prop2, classProperties.prop2);
+        assertNull(classProperties.rel1);
+
         //Test with undefined property
         params = [_prop1:"", prop2:"stringValue", "rel1.id":"${relatedModelInstance1.id}".toString(), undefinedProp:"as"]
         classProperties = ControllerUtils.getClassProperties (params, modelClass);

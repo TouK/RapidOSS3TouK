@@ -14,7 +14,7 @@
 
 <div id="ruleList">
        <div class="body">
-            <h1>Your RsMessageRule List</h1>
+            <h1>Your Notification List</h1>
             <div class="list">
                 <table>
                     <thead>
@@ -29,7 +29,7 @@
                       <%
                          def myRules= RsMessageRule.searchEvery("userId:4")
                       %>
-                    
+
                     <g:each in="${myRules}" status="i" var="rule">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                             <td>${search.SearchQuery.get(id:rule.searchQueryId)?.name?.encodeAsHTML()}</td>

@@ -3,6 +3,7 @@ package browser
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import search.SearchQuery
 import auth.RsUser
+import groovy.xml.MarkupBuilder
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,31 +14,64 @@ import auth.RsUser
 class RsBrowserController {
 
     def index = {
+        redirect(uri: "/browser.gsp")
+    }
+
+    def classes = {
         def domainClasses = grailsApplication.domainClasses;
-        def domainClassList = domainClasses;
-        if (params.sort && params.order == "desc") {
-            domainClassList = domainClasses.sort {first, second ->
-                return first.fullName < second.fullName ? 1 : -1;
-            }
-        }
-        else {
-            domainClassList = domainClasses.sort {it.fullName}
-        }
         withFormat {
-            html {
-                return [domainClassList: domainClassList]
-            }
             xml {
-                render(contentType: "text/xml") {
-                    Classes() {
-                        domainClassList.each {
-                            Class(name: it.fullName)
-                        }
+                def classesMap = [system: [:], application: [:]]
+                def domainClassesMap = [:]
+                domainClasses.each {domainClass ->
+                    domainClassesMap[domainClass.fullName] = domainClass;
+                    def classType = "system";
+                    if (domainClass.fullName.indexOf(".") < 0) {
+                        classType = "application"
                     }
+                    if (domainClass.clazz.superclass == Object.class) {
+                        _getChildClasses(domainClass, classesMap[classType])
+                    }
+                }
+                def sw = new StringWriter();
+                def builder = new MarkupBuilder(sw);
+                builder.Classes() {
+                    builder.Class(name: "System") {
+                        _getChildClasesXml(builder, classesMap["system"], domainClassesMap)
+                    }
+                    builder.Class(name: "Application") {
+                        _getChildClasesXml(builder, classesMap["application"], domainClassesMap)
+                    }
+                }
+                render(contentType: "text/xml", text: sw.toString())
+            }
+            html {
+                def domainClassList = domainClasses;
+                if (params.sort && params.order == "desc") {
+                    domainClassList = domainClasses.sort {first, second ->
+                        return first.fullName < second.fullName ? 1 : -1;
+                    }
+                }
+                else {
+                    domainClassList = domainClasses.sort {it.fullName}
+                    render(view: "classes", model: [domainClassList: domainClassList]);
                 }
             }
         }
-
+    }
+    def _getChildClasses(domainClass, parentMap) {
+        def classMap = [:]
+        parentMap.put(domainClass.fullName, classMap);
+        domainClass.subClasses.each {
+            _getChildClasses(it, classMap);
+        }
+    }
+    def _getChildClasesXml(builder, subclasses, domainClassesMap) {
+        subclasses.each {className, sclasses ->
+            builder.Class(name: className, logicalName: domainClassesMap[className].logicalPropertyName) {
+                _getChildClasesXml(builder, sclasses, domainClassesMap);
+            }
+        }
     }
 
     def listDomain = {
@@ -74,7 +108,7 @@ class RsBrowserController {
             withFormat {
                 html {
                     flash.errors = errors
-                    redirect(action: index);
+                    redirect(action: classes);
                 }
                 xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
@@ -137,9 +171,7 @@ class RsBrowserController {
                         flash.errors = errors
                         redirect(action: params.domain);
                     }
-                    xml {
-                        xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-                    }
+                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
                 }
             }
 
@@ -149,44 +181,53 @@ class RsBrowserController {
             withFormat {
                 html {
                     flash.errors = errors
-                    redirect(action: index);
+                    redirect(action: classes);
                 }
-                xml {
-                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-                }
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
         }
     }
 
+    def searchWithQuery = {
+        return search();
+    }
     def search = {
         if (params.max == null) {
             params.max = 20;
         }
         def domainClass = grailsApplication.getArtefactByLogicalPropertyName(DomainClassArtefactHandler.TYPE, params.domain)
         if (domainClass) {
-            SearchQuery query = null;
-            def queryList = SearchQuery.searchEvery("name:\"${params.query}\" AND username:${RsUser.RSADMIN} AND isPusblic:true");
-            if (queryList.size() == 0) {
-                query = SearchQuery.get(name: params.query, username: session.username);
+            def query = params.query;
+            if (query == null) {
+                SearchQuery searchQuery = null;
+                def queryList = SearchQuery.searchEvery("name:\"${params.searchQuery}\" AND username:${RsUser.RSADMIN} AND isPusblic:true");
+                if (queryList.size() == 0) {
+                    searchQuery = SearchQuery.get(name: params.searchQuery, username: session.username);
+                }
+                else {
+                    searchQuery = queryList[0]
+                }
+                if (searchQuery) {
+                    query = searchQuery.query;
+                }
             }
-            else {
-                query = queryList[0]
-            }
-            if (query) {
+            if (query != null) {
+                if (query == "")
+                {
+                    query = "alias:*";
+                }
                 def searchResults = null;
                 try {
-                    searchResults = domainClass.clazz."search"(query.query, params);
+                    searchResults = domainClass.clazz."search"(query, params);
                 }
                 catch (Throwable e) {
-                    addError("invalid.search.query", [query.query, e.getMessage()]);
+                    addError("invalid.search.query", [query, e.getMessage()]);
                     withFormat {
                         html {
                             flash.errors = errors
                             redirect(action: params.domain);
                         }
-                        xml {
-                            xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-                        }
+                        xml {render(text: errorsToXml(errors), contentType: "text/xml")}
                     }
                     return;
                 }
@@ -228,15 +269,13 @@ class RsBrowserController {
 
             }
             else {
-                addError("default.query.not.found", [params.query]);
+                addError("default.query.not.found", [params.searchQuery]);
                 withFormat {
                     html {
                         flash.errors = errors
                         redirect(action: params.domain);
                     }
-                    xml {
-                        xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-                    }
+                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
                 }
             }
         }
@@ -245,11 +284,9 @@ class RsBrowserController {
             withFormat {
                 html {
                     flash.errors = errors
-                    redirect(action: index);
+                    redirect(action: classes);
                 }
-                xml {
-                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-                }
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
         }
     }

@@ -16,7 +16,7 @@
         <div class="nav">
         </div>
         <div class="body">
-            <h1>LdapConnection List</h1>
+            <h1>Rapid Browser</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>

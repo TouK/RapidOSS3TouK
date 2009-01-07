@@ -44,6 +44,13 @@ class ScriptScheduler {
            return scheduler;
       }
 
+
+      public static void destroyInstance() {
+          if (scheduler != null) {              
+              scheduler = null;
+          }
+      }
+
       public void initialize(Scheduler qScheduler){
             this.qScheduler = qScheduler;          
       }

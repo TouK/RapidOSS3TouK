@@ -27,6 +27,7 @@ import com.ifountain.rcmdb.scripting.ScriptManager
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.apache.commons.io.FileUtils
+import com.ifountain.rcmdb.scripting.ScriptScheduler
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,7 +54,9 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
      protected void tearDown() {
         super.tearDown()
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)
+        GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)
         ListeningAdapterManager.destroyInstance();
+        ScriptScheduler.destroyInstance();
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript)
      }
 
@@ -171,7 +174,12 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
      void testAddScript(){
         initializeForCmdbScript();      
 
-        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def logLevel=Level.DEBUG;
+        def logParams=[:]
+        logParams["logLevel"]=logLevel.toString();
+        logParams["logFileOwn"]=true;
+
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,logLevel:logParams.logLevel,logFileOwn:logParams.logFileOwn]
         def scriptToAdd=new CmdbScript();
         params.each{ key , val ->
             scriptToAdd[key]=val
@@ -192,8 +200,72 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
         //tests the script file is really loaded and can be runned
         def scriptObject = scriptClass.newInstance();
         assertEquals (expectedScriptMessage, scriptObject.run())
+
+        //test the logger is configured
+        def logger=CmdbScript.getScriptLogger(script);
+        assertEquals(logger.getLevel(),logLevel);
+        assertTrue(logger.getAllAppenders().hasMoreElements());
+
+
+        
+
+
      }
 
+     void testAddScriptCallsSchedulerForPeriodicScript()
+     {
+        initializeForCmdbScript();
+
+        def params=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.PERIODIC,scriptFile:simpleScriptFile,enabled:true,startDelay:10,period:20]
+        def scriptToAdd=new CmdbScript();
+        params.each{ key , val ->
+            scriptToAdd[key]=val
+        }
+        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
+
+
+        def schedulerMap=[:];
+
+        ScriptScheduler.metaClass.scheduleScript= { String scriptName, long startDelay, long period ->
+            schedulerMap.scriptName=scriptName
+            schedulerMap.startDelay=startDelay
+            schedulerMap.period=period            
+        }
+
+        def script=CmdbScript.addScript(params)
+        def paramsAdded=CompassForTests.addOperationData.getParams(CmdbScript)[0]
+        assertEquals(script.name,schedulerMap.scriptName)
+        assertEquals(script.startDelay,schedulerMap.startDelay)
+        assertEquals(script.period,schedulerMap.period)
+
+     }
+     void testAddScriptCallsSchedulerForCronScript()
+     {
+        initializeForCmdbScript();
+
+        def params=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.CRON,scriptFile:simpleScriptFile,enabled:true,startDelay:10,cronExpression : "* * * * * ?"]
+        def scriptToAdd=new CmdbScript();
+        params.each{ key , val ->
+            scriptToAdd[key]=val
+        }
+        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
+
+
+        def schedulerMap=[:];
+
+        ScriptScheduler.metaClass.scheduleScript= { String scriptName, long startDelay, String cronExp ->
+            schedulerMap.scriptName=scriptName
+            schedulerMap.startDelay=startDelay
+            schedulerMap.cronExp=cronExp
+        }
+
+        def script=CmdbScript.addScript(params)
+        def paramsAdded=CompassForTests.addOperationData.getParams(CmdbScript)[0]
+        assertEquals(script.name,schedulerMap.scriptName)
+        assertEquals(script.startDelay,schedulerMap.startDelay)
+        assertEquals(script.cronExpression,schedulerMap.cronExp)
+
+     }
 
      void testCreateStaticParams(){
 

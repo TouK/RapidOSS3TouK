@@ -170,6 +170,27 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
 
 
      }
+     void testAddScriptDoesNotGenerateExceptionIfFromController()
+     {
+         initializeForCmdbScript();
+         CmdbScript.metaClass.hasErrors = {  return true;}
+         def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+         def scriptToAdd=new CmdbScript();
+         params.each{ key , val ->
+            scriptToAdd[key]=val
+         }
+         CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
+         
+         try{
+            def script=CmdbScript.addScript(params,true);
+            assertTrue(script.hasErrors());
+         }
+         catch(e)
+         {
+             println e
+             fail("should not throw exception")
+         }
+     }
 
      void testAddScript(){
         initializeForCmdbScript();      

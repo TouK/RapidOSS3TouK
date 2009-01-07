@@ -50,6 +50,7 @@ def watchConfig = [
         [new File("${workspaceDir}/RapidModules/RapidInsight/grails-app"), new File("${rootDir.absolutePath}/RapidSuite/grails-app"), ["taglib"]],
         [new File("${workspaceDir}/RapidModules/RapidInsight/operations"), new File("${rootDir.absolutePath}/RapidSuite/operations")],
         [new File("${workspaceDir}/RapidModules/RapidInsight/grails-app/taglib"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-insight-0.1/grails-app/taglib")],
+        [new File("${workspaceDir}/RapidModules/RapidInsight/test"), new File("${rootDir.absolutePath}/RapidSuite/test")],
         [new File("${workspaceDir}/Hyperic"), new File("${rootDir.absolutePath}/RapidSuite"), ["applications", "integration", "application.properties"]],
         [new File("${workspaceDir}/Hyperic/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")],
         [new File("${workspaceDir}/Hyperic/test/integration"), new File("${rootDir.absolutePath}/RapidSuite/test/integration")],

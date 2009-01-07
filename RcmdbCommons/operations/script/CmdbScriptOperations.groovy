@@ -72,10 +72,8 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         }
         def script = CmdbScript.add(params)
         if (!script.hasErrors()) {
-            if(ScriptManager.getInstance().getScript(script.scriptFile) == null)
-            {
-                ScriptManager.getInstance().addScript(script.scriptFile);
-            }
+            ScriptManager.getInstance().addScript(script.scriptFile);
+        
             if (script.type == CmdbScript.SCHEDULED && script.enabled) {
                 if (script.scheduleType == CmdbScript.CRON) {
                     ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)

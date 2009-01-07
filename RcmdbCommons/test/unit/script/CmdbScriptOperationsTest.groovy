@@ -26,7 +26,7 @@ import com.ifountain.rcmdb.datasource.BaseListeningDatasourceMock;
 import com.ifountain.rcmdb.scripting.ScriptManager
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
-
+import org.apache.commons.io.FileUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,9 +36,18 @@ import org.springframework.validation.Errors
  * To change this template use File | Settings | File Templates.
  */
 class CmdbScriptOperationsTest extends RapidCoreTestCase{
-
+    def expectedScriptMessage = "script executed successfully";
+    def static base_directory = "../testoutput/";
+    def simpleScriptFile="CmdbScriptOperationsTestScriptFile.groovy"
     protected void setUp() {
-         super.setUp()
+        super.setUp()
+        ScriptManager manager = ScriptManager.getInstance();
+        if(new File(base_directory).exists())
+        {
+            FileUtils.deleteDirectory (new File(base_directory));
+        }
+        manager.initialize(this.class.getClassLoader(), base_directory, []);
+        new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
 
      }
      protected void tearDown() {
@@ -88,16 +97,17 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
      }
 
      void initializeForCmdbScript(){
-         ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
+         createSimpleScript (simpleScriptFile);
+         
          CompassForTests.initialize([CmdbScript]);
          CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
      }
-     void testAddScriptGeneratesScriptFileWhenMissing()
+     void testAddScriptGeneratesScriptFileParamWhenMissing()
      {
         initializeForCmdbScript();
 
         def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND]
-        def scriptToAdd=new CmdbScript(scriptFile:"CmdbScriptOperationsTestScript");
+        def scriptToAdd=new CmdbScript(scriptFile:simpleScriptFile);
         params.each{ key , val ->
             scriptToAdd[key]=val
         }
@@ -107,11 +117,11 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
         assertEquals(paramsAdded.scriptFile,params.name)               
                        
      }
-     void testAddScriptGeneratesLogFileWhenMissing()
+     void testAddScriptGeneratesLogFileParamWhenMissing()
      {
         initializeForCmdbScript();
 
-        def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:"CmdbScriptOperationsTestScript"]
+        def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
         def scriptToAdd=new CmdbScript(logFile:"mylogfile");
         params.each{ key , val ->
             scriptToAdd[key]=val
@@ -132,7 +142,7 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
          CmdbScript.metaClass.errors = errors
         
          
-         def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:"CmdbScriptOperationsTestScript"]
+         def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
          def scriptToAdd=new CmdbScript();
          params.each{ key , val ->
             scriptToAdd[key]=val
@@ -158,10 +168,10 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
 
      }
 
-     void testAddScripts(){
+     void testAddScript(){
         initializeForCmdbScript();      
-        
-        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:"CmdbScriptOperationsTestScript"]
+
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
         def scriptToAdd=new CmdbScript();
         params.each{ key , val ->
             scriptToAdd[key]=val
@@ -173,6 +183,15 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
         def paramsAdded=CompassForTests.addOperationData.getParams(CmdbScript)[0]
 
         assertEquals(1,CompassForTests.addOperationData.getCallCount(CmdbScript));
+
+        //tests that ScriptManager.addScript() is called        
+        def scriptClass=ScriptManager.getInstance().getScript(script.scriptFile);
+        println scriptClass
+        assertNotNull(scriptClass);
+
+        //tests the script file is really loaded and can be runned
+        def scriptObject = scriptClass.newInstance();
+        assertEquals (expectedScriptMessage, scriptObject.run())
      }
 
 
@@ -227,6 +246,12 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
 
 
      }
+
+     def createSimpleScript(scriptName)
+    {
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write ("""return "$expectedScriptMessage" """);
+    }
 
 }
 

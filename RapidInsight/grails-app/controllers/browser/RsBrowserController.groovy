@@ -30,7 +30,7 @@ class RsBrowserController {
                         classType = "application"
                     }
                     if (domainClass.clazz.superclass == Object.class) {
-                        _getChildClasses(domainClass, classesMap[classType])
+                        _getChildClasses(domainClass, classesMap[classType], null)
                     }
                 }
                 def sw = new StringWriter();
@@ -54,16 +54,23 @@ class RsBrowserController {
                 }
                 else {
                     domainClassList = domainClasses.sort {it.fullName}
-                    render(view: "classes", model: [domainClassList: domainClassList]);
                 }
+                return [domainClassList: domainClassList];
             }
         }
     }
-    def _getChildClasses(domainClass, parentMap) {
+    def _getChildClasses(domainClass, parentMap, parentDomainClass) {
         def classMap = [:]
-        parentMap.put(domainClass.fullName, classMap);
+        if(parentDomainClass != null ){
+            if(domainClass.clazz.superclass == parentDomainClass.clazz){
+                parentMap.put(domainClass.fullName, classMap);
+            }
+        }
+        else{
+            parentMap.put(domainClass.fullName, classMap);    
+        }
         domainClass.subClasses.each {
-            _getChildClasses(it, classMap);
+            _getChildClasses(it, classMap, domainClass);
         }
     }
     def _getChildClasesXml(builder, subclasses, domainClassesMap) {

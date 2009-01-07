@@ -123,7 +123,6 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         controller.params["domain"] = "baseDatasource"
         controller.params["format"] = "xml"
         controller.listDomain();
-        println "response ${controller.response.contentAsString}"
         def objectsXml = new XmlSlurper().parseText(controller.response.contentAsString);
         def objects = objectsXml.Object;
         assertEquals(5, objects.size());

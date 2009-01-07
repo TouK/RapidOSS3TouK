@@ -62,6 +62,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         FileUtils.deleteDirectory(new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
     }
 
+
     public void testAddScript()
     {
         def scriptName = "script1.groovy";
@@ -75,7 +76,26 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         assertNotNull (manager.getScript(scriptName));
         assertEquals("script1", manager.getScript(scriptName).name);
     }
+    public void testAddScriptDoesNotAddIfScriptAlreadyExists()
+    {
+        def scriptName = "script1.groovy";
+        createSimpleScript(scriptName)
+        manager.addScript(scriptName)
+        def cls = manager.getScript(scriptName);
+        assertNotNull (cls);
+        def scriptObject = cls.newInstance();
+        assertEquals (expectedScriptMessage, scriptObject.run())
 
+        def changedMessage = "changed message";
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write ("return \"$changedMessage\"");
+        manager.addScript (scriptName);
+        
+        cls = manager.getScript(scriptName);
+        assertNotNull (cls);
+        scriptObject = cls.newInstance();
+        assertEquals (expectedScriptMessage, scriptObject.run())
+    }
     public void testAddScriptThrowsExceptionIfScriptDoesnotExist()
     {
         def scriptName = "script1.groovy";

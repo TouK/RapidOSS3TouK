@@ -76,6 +76,13 @@ class ScriptManager {
     }
     def addScript(String scriptPath) throws ScriptingException
     {
+        if(getScript(scriptPath) == null)
+        {
+            _addScript(scriptPath);
+        }
+    }
+    private def _addScript(String scriptPath) throws ScriptingException
+    {
         scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
         scripts[scriptPath] = getScriptClass(scriptPath);
     }
@@ -114,7 +121,7 @@ class ScriptManager {
 
     def reloadScript(String scriptPath) throws ScriptingException
     {
-        addScript(scriptPath);
+        _addScript(scriptPath);
     }
 
     def runScript(scriptPath, bindings,scriptLogger) throws ScriptingException

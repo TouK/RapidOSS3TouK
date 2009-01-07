@@ -92,9 +92,11 @@ class RsBrowserController {
             def objectList = domainClass.clazz."list"(params)
             withFormat {
                 html {
+                    println "in html"
                     render(view: "listDomain", model: [objectList: objectList, propertyList: propertyList, count: count, domainName: domainClass.fullName])
                 }
                 xml {
+                    println "in xml"
                     render(contentType: "text/xml") {
                         Objects(total: count, offset: params.offset ? params.offset : 0) {
                             objectList.each {object ->

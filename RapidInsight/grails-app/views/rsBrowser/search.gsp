@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="nav">
-    <span class="menuButton"><g:link class="home" action="index">Home</g:link></span>
+    <span class="menuButton"><g:link class="home" action="classes">Home</g:link></span>
 </div>
 <div class="body">
     <h1>${domainName} List</h1>

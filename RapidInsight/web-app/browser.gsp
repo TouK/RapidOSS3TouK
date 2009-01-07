@@ -17,7 +17,7 @@
         <rui:tgColumn attributeName="name" colLabel="Class Name" width="248" sortBy="true"></rui:tgColumn>
     </rui:tgColumns>
 </rui:treeGrid>
-<rui:searchList id="searchList" url="rsBrowser/searchWithQuery?format=xml" rootTag="Objects" contentPath="Object" keyAttribute="id"
+<rui:searchList id="searchList" url="rsBrowser/searchWithQuery?format=xml" rootTag="Objects" contentPath="Object" keyAttribute="id" showMax="6" 
         lineSize="3" title="Objects" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
         pollingInterval="0" defaultFields="${['id', 'name']}">
     <rui:slMenuItems>
@@ -76,6 +76,12 @@
     var classTree = YAHOO.rapidjs.Components["classTree"];
     classTree.poll();
     var searchList = YAHOO.rapidjs.Components["searchList"];
+    searchList.renderCellFunction = function(key, value, data, el){
+        if(key == "id"){
+           YAHOO.util.Dom.setStyle(el, 'color', 'blue');
+        }
+        return value;
+    }
     YAHOO.util.Event.onDOMReady(function() {
         var layout = new YAHOO.widget.Layout({
             units: [

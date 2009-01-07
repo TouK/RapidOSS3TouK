@@ -81,7 +81,7 @@ class RsBrowserController {
         def domainClass = grailsApplication.getArtefactByLogicalPropertyName(DomainClassArtefactHandler.TYPE, params.domain)
         if (domainClass) {
             def count = domainClass.clazz."count"();
-            def propertyList = getPropertiesWhichCanBeListed(domainClass);
+            def propertyList = getPropertiesWhichCanBeListed(domainClass, 5);
             def objectList = domainClass.clazz."list"(params)
             withFormat {
                 html {
@@ -234,7 +234,7 @@ class RsBrowserController {
                 def objectList = searchResults.results
                 withFormat {
                     html {
-                        def propertyList = getPropertiesWhichCanBeListed(domainClass);
+                        def propertyList = getPropertiesWhichCanBeListed(domainClass, 5);
                         render(view: "search", model: [objectList: objectList, propertyList: propertyList, count: searchResults.total, domainName: domainClass.fullName])
                     }
                     xml {
@@ -248,7 +248,8 @@ class RsBrowserController {
                                     if (grailsObjectProps == null)
                                     {
                                         def objectDomainClass = grailsApplication.getDomainClass(className);
-                                        grailsClassProperties[result.getClass().name] = getPropertiesWhichCanBeListed(objectDomainClass);
+                                        grailsObjectProps = getPropertiesWhichCanBeListed(objectDomainClass, 10)
+                                        grailsClassProperties[result.getClass().name] = grailsObjectProps;
                                     }
                                     def props = ["id":result.id];
                                     grailsObjectProps.each {resultProperty ->
@@ -289,12 +290,12 @@ class RsBrowserController {
         }
     }
 
-    def getPropertiesWhichCanBeListed(domainClass) {
+    def getPropertiesWhichCanBeListed(domainClass, max) {
         def propertyList = [];
         def properties = domainClass.clazz."getPropertiesList"();
         def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isKey && !it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
         def keySet = domainClass.clazz."keySet"();
-        if (propertiesCanBeListed.size() + keySet.size() > 5) {
+        if (propertiesCanBeListed.size() + keySet.size() > max) {
             propertyList = keySet;
         }
         else {

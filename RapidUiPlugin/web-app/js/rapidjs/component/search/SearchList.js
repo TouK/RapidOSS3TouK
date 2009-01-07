@@ -21,6 +21,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
     this.fields = null;
     this.defaultFields = null;
     this.lineSize = 4;
+    this.showMax = 0;
     this.maxRowCellLength = 0;
     this.rowHeaderAttribute = null;
     YAHOO.rapidjs.component.search.SearchList.superclass.constructor.call(this, container, config);
@@ -88,19 +89,25 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         YAHOO.util.Event.addListener(saveQueryButton.dom, 'click', this.handleSaveQueryClick, this, true);
         YAHOO.util.Event.addListener(this.searchInput.form, 'keypress', this.handleInputEnter, this, true);
 
-        if (this.fields)
-        {
-            for (var i = 0; i < this.fields.length; i++)
-                if (this.maxRowCellLength < this.fields[i]['fields'].length)
-                    this.maxRowCellLength = this.fields[i]['fields'].length;
-            if (this.defaultFields && this.maxRowCellLength < this.defaultFields.length)
-                this.maxRowCellLength = this.defaultFields.length;
+        if (this.showMax > 0) {
+            this.maxRowCellLength = this.showMax;
         }
-        else
-        {
-            this.fields = {exp:"true", fields:this.defaultFields};
-            this.maxRowCellLength = this.defaultFields? this.defaultFields.length: 0;
+        else {
+            if (this.fields)
+            {
+                for (var i = 0; i < this.fields.length; i++)
+                    if (this.maxRowCellLength < this.fields[i]['fields'].length)
+                        this.maxRowCellLength = this.fields[i]['fields'].length;
+                if (this.defaultFields && this.maxRowCellLength < this.defaultFields.length)
+                    this.maxRowCellLength = this.defaultFields.length;
+            }
+            else
+            {
+                this.fields = {exp:"true", fields:this.defaultFields};
+                this.maxRowCellLength = this.defaultFields ? this.defaultFields.length : 0;
+            }
         }
+
         this.cellMenu = new YAHOO.widget.Menu(this.id + '_cellMenu', {position: "dynamic", autofillheight:false});
 
         for (var i in this.propertyMenuItems) {
@@ -160,21 +167,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             var insertedFields = null;
             var searchNode = this.searchData[rowEl.dom.rowIndex - this.lastOffset];
             var dataNode = searchNode.xmlData;
-            var params = {data:dataNode.getAttributes()};
-            if (this.fields != null)
-            {
-                for (var i = 0; i < this.fields.length; i++)
-                {
-                    var currentExpressionStr = this.fields[i]['exp'];
-                    var evaluationResult = eval(currentExpressionStr);
-                    if (evaluationResult)
-                        insertedFields = this.fields[i]['fields'];
-                }
-                if (!insertedFields)
-                    insertedFields = this.defaultFields || [];
-            }
-            else
-                insertedFields = [];
+            var data = dataNode.getAttributes()
+            var params = {data:data};
             if (this.images) {
                 var evaluationResult = false;
                 var imageSrc;
@@ -184,7 +178,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                     var currentExpressionStr = this.images[i]['visible'];
                     try {
                         evaluationResult = eval(currentExpressionStr);
-                        if(evaluationResult){
+                        if (evaluationResult) {
                             break;
                         }
                     }
@@ -192,29 +186,71 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                     }
                 }
                 var menuEl = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-row-headermenu', 'div', rowEl.dom)[0]
-                menuEl.style.backgroundImage = evaluationResult ? 'url("' + imageSrc + '")': '';
+                menuEl.style.backgroundImage = evaluationResult ? 'url("' + imageSrc + '")' : '';
             }
-            var nOfFields = insertedFields.length;
             if (this.rowHeaderAttribute != null)
             {
                 rowEl.header.innerHTML = dataNode.getAttribute(this.rowHeaderAttribute);
             }
-            for (var fieldIndex = 0; fieldIndex < nOfFields; fieldIndex++) {
-                var att = insertedFields[fieldIndex];
-                var cell = rowEl.cells[fieldIndex];
-                var keyEl = cell.firstChild;
-                var valueEl = keyEl.nextSibling;
-                var value = dataNode.getAttribute(att);
-                valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode, valueEl) || "" : value || "");
-                keyEl.innerHTML = att + '=';
-                cell.propKey = att;
-                cell.propValue = value;
-                YAHOO.util.Dom.setStyle(cell, 'display', 'inline');
+            if (!this.showMax) {
+                if (this.fields != null)
+                {
+                    for (var i = 0; i < this.fields.length; i++)
+                    {
+                        var currentExpressionStr = this.fields[i]['exp'];
+                        var evaluationResult = eval(currentExpressionStr);
+                        if (evaluationResult)
+                            insertedFields = this.fields[i]['fields'];
+                    }
+                    if (!insertedFields)
+                        insertedFields = this.defaultFields || [];
+                }
+                else {
+                    insertedFields = [];
+                }
+                var nOfFields = insertedFields.length;
+                for (var fieldIndex = 0; fieldIndex < nOfFields; fieldIndex++) {
+                    var att = insertedFields[fieldIndex];
+                    var cell = rowEl.cells[fieldIndex];
+                    var keyEl = cell.firstChild;
+                    var valueEl = keyEl.nextSibling;
+                    var value = dataNode.getAttribute(att);
+                    valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode, valueEl) || "" : value || "");
+                    keyEl.innerHTML = att + '=';
+                    cell.propKey = att;
+                    cell.propValue = value;
+                    YAHOO.util.Dom.setStyle(cell, 'display', 'inline');
+                }
+                for (var fieldIndex = insertedFields.length; fieldIndex < this.maxRowCellLength; fieldIndex++)
+                {
+                    var cell = rowEl.cells[fieldIndex];
+                    YAHOO.util.Dom.setStyle(cell, 'display', 'none');
+                }
             }
-            for (var fieldIndex = insertedFields.length; fieldIndex < this.maxRowCellLength; fieldIndex++)
-            {
-                var cell = rowEl.cells[fieldIndex];
-                YAHOO.util.Dom.setStyle(cell, 'display', 'none');
+            else {
+                var tempIndex = 0;
+                for (var att in data) {
+                    if(tempIndex == this.showMax){
+                        break;
+                    }
+                    if (att != this.sortOrderAttribute) {
+                        var cell = rowEl.cells[tempIndex];
+                        var keyEl = cell.firstChild;
+                        var valueEl = keyEl.nextSibling;
+                        var value = data[att];
+                        valueEl.innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode, valueEl) || "" : value || "");
+                        keyEl.innerHTML = att + '=';
+                        cell.propKey = att;
+                        cell.propValue = value;
+                        YAHOO.util.Dom.setStyle(cell, 'display', 'inline');
+                        tempIndex ++;
+                    }
+                }
+                for (var fieldIndex = tempIndex; fieldIndex < this.maxRowCellLength; fieldIndex++)
+                {
+                    var cell = rowEl.cells[fieldIndex];
+                    YAHOO.util.Dom.setStyle(cell, 'display', 'none');
+                }
             }
 
         }

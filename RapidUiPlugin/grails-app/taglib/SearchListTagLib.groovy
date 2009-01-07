@@ -135,6 +135,8 @@ class SearchListTagLib {
         }
         if (config["maxRowsDisplayed"])
             cArray.add("maxRowsDisplayed:${config['maxRowsDisplayed']}")
+        if (config["showMax"])
+            cArray.add("showMax:${config['showMax']}")
         if (config["defaultFilter"])
             cArray.add("defaultFilter:'${config['defaultFilter']}'")
         if (config["lineSize"])

@@ -25,7 +25,7 @@ cursor:pointer;
     %>
     <g:if test="${domainObject}">
         <%
-            def properties = domainObject.getPropertiesList();
+            def properties = domainObject.getPropertiesList().findAll{!it.isKey};
             def keySet = domainObject.keySet();
         %>
         <div class="yui-navset yui-navset-top ri-object-details" style="margin-top:5px">

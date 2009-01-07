@@ -239,6 +239,7 @@ class RsBrowserController {
                     }
                     xml {
                         def grailsClassProperties = [:]
+                        def sortOrder = 0;
                         render(contentType: "text/xml") {
                             Objects(total: searchResults.total, offset: searchResults.offset) {
                                 searchResults.results.each {result ->
@@ -247,19 +248,16 @@ class RsBrowserController {
                                     if (grailsObjectProps == null)
                                     {
                                         def objectDomainClass = grailsApplication.getDomainClass(className);
-                                        grailsObjectProps = objectDomainClass.clazz."getPropertiesList"();
-                                        def grailsObjectProperties = [];
-                                        grailsObjectProps.each {
-                                            if (!it.isRelation && !it.isOperationProperty) {
-                                                grailsObjectProperties.add(it);
-                                            }
-                                        }
-                                        grailsClassProperties[result.getClass().name] = grailsObjectProperties;
+                                        grailsClassProperties[result.getClass().name] = getPropertiesWhichCanBeListed(objectDomainClass);
                                     }
-                                    def props = [:];
+                                    def props = ["id":result.id];
                                     grailsObjectProps.each {resultProperty ->
-                                        props[resultProperty.name] = result[resultProperty.name];
+                                        if(resultProperty.name != "id"){
+                                            props[resultProperty.name] = result[resultProperty.name];    
+                                        }
                                     }
+                                    props.put("rsAlias", className)
+                                    props.put("sortOrder", sortOrder ++)
                                     Object(props);
                                 }
                             }

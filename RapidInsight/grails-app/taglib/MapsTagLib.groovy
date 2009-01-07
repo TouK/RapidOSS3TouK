@@ -31,7 +31,7 @@ class MapsTagLib {
         def topoMapPollInterval = attrs["mapPollingInterval"] ? attrs["mapPollingInterval"] : "0";
         def treeGridPollInterval = attrs["savedMapsPollingInterval"] ? attrs["savedMapsPollingInterval"] : "0";
         def nodeSize = attrs["nodeSize"] ? attrs["nodeSize"] : "60";
-        def edgeColors = ["1" : "0xffde2c26","2":"0xfff79229","3": "0xfffae500", "4" :  "0xff20b4e0","5": "0xff62b446", "default":"0xff62b446" ]
+        def edgeColors = ["1" : "0xffde2c26","2":"0xfff79229","3": "0xfffae500", "4" :  "0xff20b4e0","5": "0xff62b446", "0":"0xff62b446", "default":"0xff62b446" ]
         def nodeMenus = [];
         def toolbarMenus = ["Map":[[id:"saveMap", label:"Save Map", action:"saveMapAction"]]];
         def actions = [];

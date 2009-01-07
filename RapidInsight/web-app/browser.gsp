@@ -20,6 +20,9 @@
 <rui:searchList id="searchList" url="rsBrowser/searchWithQuery?format=xml" rootTag="Objects" contentPath="Object" keyAttribute="id"
         lineSize="3" title="Objects" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
         pollingInterval="0" defaultFields="${['id', 'name']}">
+    <rui:slMenuItems>
+        <rui:slMenuItem id="browse" label="Browse" action="browseAction"></rui:slMenuItem>
+    </rui:slMenuItems>
     <rui:slPropertyMenuItems>
         <rui:slMenuItem id="sortAsc" label="Sort Asc" action="sortAscAction"></rui:slMenuItem>
         <rui:slMenuItem id="sortDesc" label="Sort Desc" action="sortDescAction"></rui:slMenuItem>
@@ -32,6 +35,13 @@
         <rui:slMenuItem id="except" label="Except" action="exceptAction"></rui:slMenuItem>
     </rui:slPropertyMenuItems>
 </rui:searchList>
+<rui:html id="objectDetails" iframe="false"></rui:html>
+<rui:popupWindow componentId="objectDetails" width="850" height="500"></rui:popupWindow>
+
+<rui:action id="browseAction" type="function" componentId="objectDetails" function="show">
+   <rui:functionArg>createURL('browserObjectDetails.gsp', {id:params.data.id, domain:params.data.rsAlias})</rui:functionArg>
+   <rui:functionArg>'Details of ' + params.data.rsAlias + ' ' + params.data.id</rui:functionArg>
+</rui:action>
 <rui:action id="greaterThanAction" type="function" componentId="searchList" function="appendToQuery">
     <rui:functionArg>params.key + ':{' + params.value + ' TO *}'</rui:functionArg>
 </rui:action>

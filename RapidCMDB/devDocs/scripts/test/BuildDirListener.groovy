@@ -48,10 +48,16 @@ class BuildDirListener extends DirListener{
 
     public void fileChanged(File file)
     {
-        def destFile = getDestFile(file);
-        if(destFile.exists() && destFile.lastModified() == file.lastModified()) return;
-        println "COPYING ${file}"
-        destFile.getParentFile().mkdirs();
-        FileUtils.copyFile (file, destFile);
+        try
+        {
+            def destFile = getDestFile(file);
+            if(destFile.exists() && destFile.lastModified() == file.lastModified()) return;
+            println "COPYING ${file}"
+            destFile.getParentFile().mkdirs();
+            FileUtils.copyFile (file, destFile);
+        }catch(Throwable t)
+        {
+            t.printStackTrace();            
+        }
     }
 }

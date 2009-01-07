@@ -55,7 +55,9 @@ def watchConfig = [
         [new File("${workspaceDir}/Hyperic/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")],
         [new File("${workspaceDir}/Hyperic/test/integration"), new File("${rootDir.absolutePath}/RapidSuite/test/integration")],
         [new File("${workspaceDir}/Apg"), new File("${rootDir.absolutePath}/RapidSuite"), ["applications", "application.properties"]],
-        [new File("${workspaceDir}/Apg/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")]
+        [new File("${workspaceDir}/Apg/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")],
+        [new File("${workspaceDir}/Smarts"), new File("${rootDir.absolutePath}/RapidSuite"), ["applications", "application.properties"]],
+        [new File("${workspaceDir}/Smarts/applications/RapidInsightForSmarts"), new File("${rootDir.absolutePath}/RapidSuite")]
 ]
 
 
@@ -65,21 +67,7 @@ def excludedDirs = [".svn", "reports"]
 
 
 
-watchConfig.each {dirPairs ->
-    File srcDir = dirPairs[0]
-    File destDir = dirPairs[1]
-    def tmpExcludedDirs = [];
-    tmpExcludedDirs.addAll(excludedDirs);
-    if (dirPairs.size() > 2)
-    {
-        tmpExcludedDirs.addAll(dirPairs[2]);
-    }
-    def tmpExcludedDirsMap = [:];
-    tmpExcludedDirs.each {
-        tmpExcludedDirsMap[it] = it;
-    }
-    dirListeners += new BuildDirListener(srcDir, destDir, tmpExcludedDirsMap);
-}
+
 def envVars = getEnvVars(rootDir);
 if (!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.1").exists())
 {
@@ -105,6 +93,23 @@ if (!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.
         ANT.fileset(dir: "${rootDir.getAbsolutePath()}/RapidSuite/plugins/rapid-testing-0.1/web-app/test");
     }
 }
+
+watchConfig.each {dirPairs ->
+    File srcDir = dirPairs[0]
+    File destDir = dirPairs[1]
+    def tmpExcludedDirs = [];
+    tmpExcludedDirs.addAll(excludedDirs);
+    if (dirPairs.size() > 2)
+    {
+        tmpExcludedDirs.addAll(dirPairs[2]);
+    }
+    def tmpExcludedDirsMap = [:];
+    tmpExcludedDirs.each {
+        tmpExcludedDirsMap[it] = it;
+    }
+    dirListeners += new BuildDirListener(srcDir, destDir, tmpExcludedDirsMap);
+}
+
 
 
 println "Stating Application"

@@ -48,13 +48,8 @@ public class DefaultSearchableCompassQueryBuilder extends AbstractSearchableComp
     public DefaultSearchableCompassQueryBuilder(Compass compass) {
         super(compass);
         stringQueryBuilder = new DefaultStringQuerySearchableCompassQueryBuilder(getCompass());
-        String name = "org.codehaus.groovy.grails.plugins.searchable.compass.search.GroovyCompassQueryBuilder";
-        try {
-            closureQueryBuilderClass = ClassUtils.forName(name);
-        } catch (Exception ex) {
-            LOG.error("Class not found [" + name + "]", ex);
-            throw new IllegalStateException("Class not found [" + name + "]");
-        }
+        //TODO:This part is changed. In original code it was loaded dynamically.
+        closureQueryBuilderClass = GroovyCompassQueryBuilder.class;
     }
 
     public CompassQuery buildQuery(GrailsApplication grailsApplication, CompassSession compassSession, Map options, Object query) {

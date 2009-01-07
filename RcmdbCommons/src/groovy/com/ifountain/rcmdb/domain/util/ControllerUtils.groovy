@@ -18,11 +18,9 @@
 */
 package com.ifountain.rcmdb.domain.util
 
-import com.ifountain.rcmdb.converter.DateConverter
-import com.ifountain.rcmdb.converter.RapidConvertUtils
 import groovy.xml.MarkupBuilder
-import java.text.SimpleDateFormat
-import com.ifountain.rcmdb.converter.RapidConvertUtils
+import org.apache.commons.lang.StringUtils
+import org.codehaus.groovy.grails.web.binding.DataBindingUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,9 +30,6 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
  * To change this template use File | Settings | File Templates.
  */
 class ControllerUtils {
-	def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
-    def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
-
     def static convertSuccessToXml(String successMessage)
     {
         StringWriter writer = new StringWriter();
@@ -45,74 +40,35 @@ class ControllerUtils {
 
     }
 
-    def static getClassProperties(params, domainClass)
+    def static getClassProperties(Map params, Class domainClass)
     {
         def returnedParams = [:]
-        def domainObjectProps = [:];
-        domainClass.getPropertiesList().each{
-            if(!it.isOperationProperty)
+        def instance = domainClass.newInstance();
+        def domainObjectpropertyNames = [];
+        def clonedMap = new HashMap();
+        params.each{String paramName, paramValue->
+            if(paramName!="id" && paramName != "_id")
             {
-                domainObjectProps[it.name] = it;
+                if(paramName.startsWith("_"))
+                {
+                    domainObjectpropertyNames.add(paramName.substring(1));
+                }
+                else if(paramName.indexOf(".") >= 0)
+                {
+                    paramValue = paramValue instanceof Long?paramValue:Long.parseLong(paramValue);
+                    domainObjectpropertyNames.add(StringUtils.substringBefore(paramName,"."));
+                }
+                else
+                {
+                    domainObjectpropertyNames.add(paramName);
+                }
+                clonedMap.put (paramName, paramValue);
             }
         }
-        params.each{propName, propValue->
-            def isCheckboxParam= ( propName.indexOf("_") == 0 ) && (propValue.length() == 0);
-            if(isCheckboxParam){
-               propName=propName.substring(1); 
-            }
-            def metaProp = domainObjectProps[propName];
-            if(metaProp != null)
-            {
-                Class propType = domainClass.metaClass.getMetaProperty(metaProp.name).type
-                def indexOfDot = propName.indexOf(".");
-                if(indexOfDot < 0)
-                {
-                     if(metaProp.isRelation)
-                    {
-                        if(propValue["id"] != "null")
-                        {
-                            def id = propValue["id"] instanceof Long?propValue["id"]:Long.parseLong(propValue["id"]);
-                            returnedParams[propName] = propType.metaClass.invokeStaticMethod(propType, "get", [id] as Object[])
-                        }
-                        else
-                        {
-                            returnedParams[propName] = null;
-                        }
-                    }
-                    else
-                    {
-                        if(propValue.length() != 0)
-                        {
-                            if(propType == Date.class)
-                            {
-                                def year = params[propName+"_year"];
-                                def day = params[propName+"_day"];
-                                def month = params[propName+"_month"];
-                                def hour = params[propName+"_hour"];
-                                def min = params[propName+"_minute"];
-                                def date = dateFormat.parse("$year-$month-$day $hour:$min");
-                                DateConverter converter = RapidConvertUtils.getInstance().lookup (Date.class);
-                                propValue = converter.formater.format (date);
-                            }
-                            returnedParams[propName] = propValue;
-                        }
-                        else{
-	                        if(isCheckboxParam){
-                                if(propType == boolean || propType == Boolean.class){
-                                    if(!returnedParams[propName]){
-                                        returnedParams[propName] = false
-                                    }
-
-                                }
-		                    }
-		                    else{
-			                	returnedParams[propName] = null;
-			                }
-                            
-                        }
-                    }
-                }
-            }
+        domainObjectpropertyNames = domainObjectpropertyNames.unique ().findAll {domainClass.metaClass.getMetaProperty(it) != null}
+        DataBindingUtils.bindObjectToInstance (instance, clonedMap);
+        domainObjectpropertyNames.each{
+            returnedParams[it] = instance.getProperty(it)
         }
         return returnedParams;
     }

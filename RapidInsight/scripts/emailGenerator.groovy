@@ -41,65 +41,75 @@ users.each{ user ->
     def destination="abdurrahim";
     logger.debug("Searching RsMessageRule for userId:${userId}, destination is:${destination}");
     
-    def createSearchQueryIds="(id:0)";
-    def clearSearchQueryIds="(id:0)";
-    def userRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"email\"")
-    userRules.each{
-        createSearchQueryIds +=  "OR (id:${it.searchQueryId})"
-        if(it.clearAction==true)
+    
+    //processing for RsEvent creates
+    //note that we use maxCreateId for search , and use newMaxCreateId to save the last processed Event
+    def newMaxCreateId=maxCreateId;
+    def createRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"email\"")
+    createRules.each{ rule ->
+        def delay=rule.delay
+        def searchQuery=SearchQuery.get(id:rule.searchQueryId)
+        if(searchQuery)
         {
-            clearSearchQueryIds +=  "OR (id:${it.searchQueryId})"
+            def createQuery = " (${searchQuery.query}) AND id:[${maxCreateId} TO *]"
+
+            logger.debug("Seaching RsEvent, for userid: ${userId}  with createQuery : ${createQuery}")
+            def createdEvents=RsEvent.searchEvery(createQuery,[sort:"id", order:"asc"])
+            def date=new Date()
+            def now=date.getTime();
+
+            createdEvents.each{ event ->
+                RsMessage.addEventCreateEmail(logger,event,destination,delay);
+                newMaxCreateId=Long.valueOf(event.id)+1;
+            }
         }
+        else
+        {
+            logger.debug("SearchQuery with id ${it.searchQueryId} does not exist")
+        }
+
     }
-
-    def delay=0;
-    def createQueries=SearchQuery.searchEvery(createSearchQueryIds)
-    def createEventQuery="(id:0)  "
-
-    createQueries.each {
-        createEventQuery +=  "OR (${it.query})"
+    if(newMaxCreateId>maxCreateId)
+    {
+        createIdLookup.update(value:String.valueOf(maxCreateId))
     }
-
-    //process Event Creates
-    def createQuery = " (${createEventQuery}) AND id:[${maxCreateId} TO *]"
-
-    logger.debug("Seaching RsEvent, for userid: ${userId}  with createQuery : ${createQuery}")
-
-    def createdEvents=RsEvent.searchEvery(createQuery,[sort:"id", order:"asc"])
-    def date=new Date()
-    def now=date.getTime();
-
-    createdEvents.each{ event ->
-        RsMessage.addEventCreateEmail(logger,event,destination,delay);
-        maxCreateId=Long.valueOf(event.id)+1;
-    }
-
-    createIdLookup.update(value:String.valueOf(maxCreateId))
 
     //process delayingMessages which has exceeded delay time
     RsMessage.processDelayedEmails(logger)
 
-
+    
 
     //process Event Clears, HistoricalEvent Creates
+    //note that we use maxClearId for search , and use newMaxClearId to save the last processed Event
+    def newMaxClearId=maxClearId;
+    def clearRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"email\" AND clearAction:true")   
+    clearRules.each{ rule ->        
+        def searchQuery=SearchQuery.get(id:rule.searchQueryId)
+        if(searchQuery)
+        {
+            def clearQuery = " (${searchQuery.query}) AND id:[${maxClearId} TO *]"
+            
+            logger.debug("Searching RsHistoricalEvent, for userid: ${userId} with clearQuery : ${clearQuery}")
+            def clearedEvents=RsHistoricalEvent.searchEvery(clearQuery,[sort:"id", order:"asc"])
+            def date=new Date()
+            def now=date.getTime();
 
-    def clearQueries=SearchQuery.searchEvery(clearSearchQueryIds)
-    def clearEventQuery="(id:0)  "
+            clearedEvents.each{ event ->
+                  RsMessage.addEventClearEmail(logger,event,destination)
+                  newMaxClearId=Long.valueOf(event.id)+1;
+            }
+        }
+        else
+        {
+            logger.debug("SearchQuery with id ${it.searchQueryId} does not exist")
+        }
 
-    clearQueries.each {
-        clearEventQuery +=  "OR (${it.query})"
+    }
+    if(newMaxClearId>maxClearId)
+    {
+        clearIdLookup.update(value:String.valueOf(newMaxClearId))
     }
 
 
 
-    def clearQuery = " (${clearEventQuery}) AND id:[${maxClearId} TO *]"
-    def clearedEvents=RsHistoricalEvent.searchEvery(clearQuery,[sort:"activeId", order:"asc"])
-
-    logger.debug("Searching RsHistoricalEvent, for userid: ${userId} with clearQuery : ${clearQuery}")
-
-    clearedEvents.each{ event ->
-          RsMessage.addEventClearEmail(logger,event,destination)
-          maxClearId=Long.valueOf(event.id)+1;
-    }
-    clearIdLookup.update(value:String.valueOf(maxClearId))
 }

@@ -129,7 +129,6 @@
                 <Property Name='userId' Type='number' IsKey="true"/>
                 <Property Name='destinationType' Type='string' IsKey="true"/>
                 <Property Name='delay' Type='number'/>
-                <Property Name='createAction' Type='boolean'/>
                 <Property Name='clearAction' Type='boolean'/>
             </Properties>
         </Model>

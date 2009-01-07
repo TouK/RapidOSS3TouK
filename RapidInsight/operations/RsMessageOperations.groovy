@@ -27,7 +27,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         def delayingMessages=RsMessage.searchEvery("state:0 AND sendAfter:[0 TO ${now}] AND destinationType:\"email\"")
         delayingMessages.each{
             it.update(state:1)            
-            externalLogger.info("Updated delaying message with id ${it.id}, changed state to 1");
+            externalLogger.info("Updated delaying message with id ${it.id}, changed state to 1. Message : ${it.asMap()}");
         }
     }
     static void addEventCreateEmail(Logger externalLogger,RsEvent event,String destination,Long delay)
@@ -45,7 +45,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         }
         else
         {
-            externalLogger.info("Added create message for event with id ${event.id}");
+            externalLogger.info("Added create message for event with id ${event.id}. Message: ${message.asMap()}");
         }
 
     }
@@ -64,7 +64,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
           if(createMessage.state==0)
           {
             createMessage.update(state:2)
-            externalLogger.debug("Skipped clear message, Updated create message state as 2, for event ${event.activeId} since cleared happened before create delay exceeded.");
+            externalLogger.debug("Skipped clear message, Updated create message state as 2, for event ${event.activeId} since cleared happened before create delay exceeded. CreateMessage: ${createMessage.asMap()}");
           }
           else
           {
@@ -75,7 +75,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
             }
             else
             {
-                externalLogger.info("Added clear message for event with id ${event.activeId}");
+                externalLogger.info("Added clear message for event with id ${event.activeId}. Message: ${message.asMap()}");
             } 
           }
 

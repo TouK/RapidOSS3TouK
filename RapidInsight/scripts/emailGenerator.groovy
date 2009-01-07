@@ -54,7 +54,7 @@ users.each{ user ->
             def createQuery = " (${searchQuery.query}) AND id:[${maxCreateId} TO *]"
 
             logger.debug("Seaching RsEvent, for userid: ${userId}  with createQuery : ${createQuery}")
-            def createdEvents=RsEvent.searchEvery(createQuery,[sort:"id", order:"asc"])
+            def createdEvents=RsEvent.getPropertyValues(createQuery,["id"],[sort:"id", order:"asc",max:1000])
             def date=new Date()
             def now=date.getTime();
 
@@ -90,7 +90,7 @@ users.each{ user ->
             def clearQuery = " (${searchQuery.query}) AND id:[${maxClearId} TO *]"
             
             logger.debug("Searching RsHistoricalEvent, for userid: ${userId} with clearQuery : ${clearQuery}")
-            def clearedEvents=RsHistoricalEvent.searchEvery(clearQuery,[sort:"id", order:"asc"])
+            def clearedEvents=RsHistoricalEvent.getPropertyValues(clearQuery,["id","activeId"],[sort:"id", order:"asc",max:1000])
             def date=new Date()
             def now=date.getTime();
 

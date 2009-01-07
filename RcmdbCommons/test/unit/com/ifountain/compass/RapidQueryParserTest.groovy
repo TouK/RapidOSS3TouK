@@ -67,6 +67,16 @@ class RapidQueryParserTest extends RapidCmdbTestCase
         
         assertTrue ("${interval} should be greater than or equal ${expectedInterval}", interval >= expectedInterval);
 
+        Thread.sleep (200);
+        //Assert time changes after each call according to current time
+        q = qp.parse ("${field}:[${start} TO ${end}]");
+        fieldQuery = q.toString(field);
+        String fromTimeAfterSecondCall = StringUtils.substringBetween(fieldQuery, "[", "TO").trim();
+        String toTimeAfterSecondCall = StringUtils.substringBetween(fieldQuery, "TO", "]").trim();
+
+        assertTrue (fromTimeAfterSecondCall.toLong() > fromTime.toLong());
+        assertTrue (toTimeAfterSecondCall.toLong() > toTime.toLong());
+
         //Test if range query checks whether it started with currentTime
         String aStringWithSameLengthWithCurrentTime = QueryParserUtils.CURRENT_TIME_PREFIX.replaceAll(".", "c");
         start = aStringWithSameLengthWithCurrentTime+"-1day"

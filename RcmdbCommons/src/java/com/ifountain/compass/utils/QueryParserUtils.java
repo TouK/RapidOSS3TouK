@@ -14,12 +14,13 @@ import java.util.Locale;
  * To change this template use File | Settings | File Templates.
  */
 public class QueryParserUtils {
-    private final static DateMathParser parser = new DateMathParser(TimeZone.getDefault(), Locale.getDefault());
     public final static String CURRENT_TIME_PREFIX = "currenttime";
-    public static String getCurrentTime(String queryString)
+    public static String getCurrentTime(String queryString, Date now)
     {
         if(queryString.toLowerCase().startsWith(CURRENT_TIME_PREFIX))
         {
+            DateMathParser parser = new DateMathParser(TimeZone.getDefault(), Locale.getDefault());
+            parser.setNow(now);
             try
             {
                 Date startDate = parser.parseMath(queryString.substring(CURRENT_TIME_PREFIX.length()));

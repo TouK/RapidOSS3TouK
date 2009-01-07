@@ -26,8 +26,9 @@ public class RapidQueryParser extends CompassQueryParser{
     }
 
     protected Query getRangeQuery(String field, String start, String end, boolean inclusive) throws ParseException {
-        start = QueryParserUtils.getCurrentTime(start);
-        end = QueryParserUtils.getCurrentTime(end);
+        Date now = new Date();
+        start = QueryParserUtils.getCurrentTime(start, now);
+        end = QueryParserUtils.getCurrentTime(end, now);
         return super.getRangeQuery(field, start, end, inclusive);
     }
 

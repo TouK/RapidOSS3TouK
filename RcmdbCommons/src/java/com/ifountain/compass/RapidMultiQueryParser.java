@@ -8,6 +8,8 @@ import org.compass.core.mapping.CompassMapping;
 import org.compass.core.engine.SearchEngineFactory;
 import com.ifountain.compass.utils.QueryParserUtils;
 
+import java.util.Date;
+
 /**
  * Created by IntelliJ IDEA.
  * User: admin
@@ -22,8 +24,9 @@ public class RapidMultiQueryParser extends CompassMultiFieldQueryParser
     }
 
     protected Query getRangeQuery(String field, String start, String end, boolean inclusive) throws ParseException {
-        start = QueryParserUtils.getCurrentTime(start);
-        end = QueryParserUtils.getCurrentTime(end);
+        Date now = new Date();
+        start = QueryParserUtils.getCurrentTime(start, now);
+        end = QueryParserUtils.getCurrentTime(end, now);
         return super.getRangeQuery(field, start, end, inclusive);
     }
     

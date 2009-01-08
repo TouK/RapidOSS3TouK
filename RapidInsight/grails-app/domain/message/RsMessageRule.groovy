@@ -23,6 +23,7 @@ class RsMessageRule {
     Long delay =0;
 
     Boolean clearAction =false;
+    Boolean enabled = false;
 
     Long id ;
 

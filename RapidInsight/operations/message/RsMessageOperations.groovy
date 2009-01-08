@@ -24,7 +24,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
     static void processDelayedEmails(Logger externalLogger)
     {
         def now=(new Date()).getTime();
-        def delayingMessages=RsMessage.searchEvery("state:0 AND sendAfter:[0 TO ${now}] AND destinationType:\"email\"")
+        def delayingMessages=RsMessage.searchEvery("state:0 AND sendAfter:[${now} TO *] AND destinationType:\"email\"")
         delayingMessages.each{
             it.update(state:1)
             externalLogger.info("Updated delaying message with id ${it.id}, changed state to 1. Message : ${it.asMap()}");
@@ -68,7 +68,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
           }
           else
           {
-            message=RsMessage.add(eventId:historicalEvent.activeId,destination:"abdurrahim",destinationType:"email",insertedAt:now,state:state,action:"clear")
+            message=RsMessage.add(eventId:historicalEvent.activeId,destination:destination,destinationType:"email",insertedAt:now,state:state,action:"clear")
             if(message.hasErrors())
             {
                 externalLogger.warn("Error occured while adding RsMessage. Reason : ${message.errors}")

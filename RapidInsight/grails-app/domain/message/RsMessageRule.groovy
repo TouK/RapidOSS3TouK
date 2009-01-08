@@ -5,7 +5,8 @@ import com.ifountain.core.domain.annotations.*;
 class RsMessageRule {
 
     //AUTO_GENERATED_CODE
-
+    public static String EMAIL = "email";    
+    
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
 
@@ -23,7 +24,7 @@ class RsMessageRule {
     Long delay =0;
 
     Boolean clearAction =false;
-    Boolean enabled = false;
+    Boolean enabled = true;
 
     Long id ;
 
@@ -39,13 +40,14 @@ class RsMessageRule {
     static relations = [:]
 
     static constraints={
-    searchQueryId(nullable:false)
+    searchQueryId(nullable:false,key:["destinationType", "userId"])
 
      userId(nullable:false)
 
-     destinationType(blank:false,nullable:false,key:["searchQueryId", "userId"])
+     destinationType(blank:false,nullable:false,inList:[EMAIL])
 
-     delay(nullable:true)
+
+     delay(nullable:false)
 
      clearAction(nullable:true)
 

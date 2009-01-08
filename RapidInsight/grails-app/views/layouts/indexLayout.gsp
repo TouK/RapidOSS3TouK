@@ -101,7 +101,7 @@
     </jsec:isNotLoggedIn>
     <g:layoutHead/>
 </head>
-<body class=" yui-skin-sam">
+<body class=" yui-skin-sam rimain">
 <rui:form  id="changePassDialog" width="35em" saveUrl="rsUser/changePassword?format=xml">
     <div>
         <div class="hd">Change Password</div>

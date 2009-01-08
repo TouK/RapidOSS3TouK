@@ -21,7 +21,7 @@ if(createIdLookup==null)
     }
     createIdLookup=RsLookup.add(name:"emailGeneratorMaxEventCreateId",value:maxEventId)
 }
-def maxCreateId=createIdLookup.value
+def maxCreateId=Long.valueOf(createIdLookup.value)
 
 
 def clearIdLookup=RsLookup.get(name:"emailGeneratorMaxEventClearId")
@@ -35,7 +35,7 @@ if(clearIdLookup==null)
     }
     clearIdLookup=RsLookup.add(name:"emailGeneratorMaxEventClearId",value:maxEventId)
 }
-def maxClearId=clearIdLookup.value
+def maxClearId=Long.valueOf(clearIdLookup.value)
 
 def users=RsUser.list()
 users.each{ user ->
@@ -47,7 +47,7 @@ users.each{ user ->
     //processing for RsEvent creates
     //note that we use maxCreateId for search , and use newMaxCreateId to save the last processed Event
     def newMaxCreateId=maxCreateId;
-    def createRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"email\"")
+    def createRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"email\" AND enabled:true")
     createRules.each{ rule ->
         def delay=rule.delay
         def searchQuery=SearchQuery.get(id:rule.searchQueryId)
@@ -73,7 +73,7 @@ users.each{ user ->
     }
     if(newMaxCreateId>maxCreateId)
     {
-        createIdLookup.update(value:String.valueOf(maxCreateId))
+        createIdLookup.update(value:String.valueOf(newMaxCreateId))
     }
 
     //process delayingMessages which has exceeded delay time
@@ -84,7 +84,7 @@ users.each{ user ->
     //process Event Clears, HistoricalEvent Creates
     //note that we use maxClearId for search , and use newMaxClearId to save the last processed Event
     def newMaxClearId=maxClearId;
-    def clearRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"email\" AND clearAction:true")   
+    def clearRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"email\" AND clearAction:true AND enabled:true")
     clearRules.each{ rule ->        
         def searchQuery=SearchQuery.get(id:rule.searchQueryId)
         if(searchQuery)

@@ -74,6 +74,8 @@ class NetcoolModuleBuild extends Build {
             ant.arg(value: "${rapidSuiteDir}/web-app");
             ant.arg(value: "-suffix");
             ant.arg(value: "${versionDate}");
+            ant.arg(value: "-webBasePrefix");
+            ant.arg(value: "${getWebBasePath()}");
                 ant.classpath(refid: "classpath");
         }
         ant.move(file: "${rapidSuiteDir}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");

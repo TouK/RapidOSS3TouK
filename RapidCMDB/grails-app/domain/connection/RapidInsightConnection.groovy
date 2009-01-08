@@ -20,7 +20,7 @@ package connection
 
 import datasource.RapidInsightDatasource;
 
-class RapidInsightConnection extends Connection{
+public class RapidInsightConnection extends Connection{
    
     
     

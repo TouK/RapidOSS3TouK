@@ -3,7 +3,7 @@ import datasource.EmailDatasource
 
 import com.ifountain.core.domain.annotations.*;
 
-class EmailConnection extends Connection
+public class EmailConnection extends Connection
 {
 
     //AUTO_GENERATED_CODE

@@ -19,7 +19,7 @@
 package connection
 
 import datasource.SnmpDatasource;
-class SnmpConnection extends Connection{
+public class SnmpConnection extends Connection{
     static searchable = {
         except = ["snmpDatasources"];
     };

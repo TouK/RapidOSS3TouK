@@ -19,7 +19,7 @@
 package connection
 
 import datasource.HttpDatasource;
-class HttpConnection extends Connection{
+public class HttpConnection extends Connection{
      
 
     static searchable = {

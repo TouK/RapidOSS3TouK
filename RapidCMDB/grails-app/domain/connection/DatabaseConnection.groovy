@@ -20,7 +20,7 @@ package connection
 
 import datasource.DatabaseDatasource
 import datasource.SingleTableDatabaseDatasource;
-class DatabaseConnection extends Connection{
+public class DatabaseConnection extends Connection{
 
     static searchable = {
         except = ["singleTableDatabaseDatasources", "databaseDatasources"];

@@ -14,7 +14,7 @@
 
 <div id="ruleList">
        <div class="body">
-            <h1>Your Notification List</h1>
+            <h1>Your Notification List</h1>  <g:link class="create" action="create" controller="rsMessageRule">New Notification Rule</g:link>
             <div class="list">
                 <table>
                     <thead>
@@ -27,7 +27,7 @@
                     </thead>
                     <tbody>
                       <%
-                         def myRules= RsMessageRule.searchEvery("userId:4")
+                         def myRules= message.RsMessageRule.searchEvery("userId:4")
                       %>
 
                     <g:each in="${myRules}" status="i" var="rule">

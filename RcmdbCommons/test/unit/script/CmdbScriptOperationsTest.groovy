@@ -323,6 +323,42 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
         
 
     }
+    void testReloadScript()
+    {
+        initializeForCmdbScript();
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def scriptToAdd=new CmdbScript();
+        params.each{ key , val ->
+            scriptToAdd[key]=val
+        }
+        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
+
+        def script=CmdbScript.addScript(params);
+        
+
+        //tests the script file is really loaded and can be runned
+        def scriptClass=ScriptManager.getInstance().getScript(script.scriptFile);
+        def scriptObject = scriptClass.newInstance();
+        assertEquals (expectedScriptMessage, scriptObject.run())
+
+        def newScriptMessage="new_script_message"
+        createSimpleScript(simpleScriptFile,newScriptMessage)
+
+        //we overwrited the script file test that the old one is working, because no reload done
+        scriptClass=ScriptManager.getInstance().getScript(script.scriptFile);
+        scriptObject = scriptClass.newInstance();
+        assertEquals (expectedScriptMessage, scriptObject.run())
+
+        //now we reload the script and test that the new one is working
+        script.reload()
+        scriptClass=ScriptManager.getInstance().getScript(script.scriptFile);
+        scriptObject = scriptClass.newInstance();
+        assertEquals (newScriptMessage, scriptObject.run())
+        
+                        
+
+
+    }
      void testUpdateScriptLoadsNewScriptFileAndRemovesOldIfNotUsedAndDoesNotRemoveOldIfUsed()
      {
 

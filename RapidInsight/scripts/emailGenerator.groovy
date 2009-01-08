@@ -7,6 +7,8 @@
  */
 import auth.RsUser
 import search.SearchQuery
+import message.RsMessageRule
+import message.RsMessage
 
 def createIdLookup=RsLookup.get(name:"emailGeneratorMaxEventCreateId")
 if(createIdLookup==null)

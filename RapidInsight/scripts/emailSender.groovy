@@ -7,7 +7,7 @@
  */
 import connection.EmailConnection
 import datasource.EmailDatasource
-
+import message.RsMessage
 
 def templatePath="grails-app/templates/email/emailTemplate.gsp";
 def from="mustafa"

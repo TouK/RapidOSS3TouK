@@ -76,6 +76,18 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         assertNotNull (manager.getScript(scriptName));
         assertEquals("script1", manager.getScript(scriptName).name);
     }
+    public void testRemoveScript()
+    {
+        def scriptName = "script1.groovy";
+        createSimpleScript (scriptName)
+        manager.addScript(scriptName);
+        assertNotNull (manager.getScript(scriptName));
+        assertEquals("script1", manager.getScript(scriptName).name);
+
+        manager.removeScript(scriptName)
+        assertNull (manager.getScript(scriptName));
+
+    }
     public void testAddScriptDoesNotAddIfScriptAlreadyExists()
     {
         def scriptName = "script1.groovy";

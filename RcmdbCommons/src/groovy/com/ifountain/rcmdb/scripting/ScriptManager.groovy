@@ -89,6 +89,7 @@ class ScriptManager {
 
     def removeScript(String scriptPath)
     {
+        scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
         scripts.remove(scriptPath)
     }
 

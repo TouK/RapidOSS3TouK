@@ -376,12 +376,13 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
             if (beanNames.size() > 0) interceptor = appCtx.getBean(beanNames[0])
 
 
+            def savedOut = System.out
             try {
                 interceptor?.init()
 
                 def start = new Date()
 
-                def savedOut = System.out
+
                 runTests(suite, result) {test, invocation ->
                     name = test.name[0..-6]
                     def webRequest = GWU.bindMockWebRequest(appCtx)
@@ -430,6 +431,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
         }
     }
     catch (Throwable e) {
+        System.out = savedOut;
         event("StatusUpdate", ["Error executing tests ${e.message}"])
         e.printStackTrace(System.out)
         event("StatusFinal", ["Error running tests: ${e.toString()}"])

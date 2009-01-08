@@ -189,9 +189,13 @@ class RsBrowserController {
     }
 
     def searchWithQuery = {
-        return search();
+        return _search(params);
     }
     def search = {
+        return _search(params)
+    }
+
+    def _search(params) {
         if (params.max == null) {
             params.max = 20;
         }
@@ -200,7 +204,7 @@ class RsBrowserController {
             def query = params.query;
             if (query == null) {
                 SearchQuery searchQuery = null;
-                def queryList = SearchQuery.searchEvery("name:\"${params.searchQuery}\" AND username:${RsUser.RSADMIN} AND isPusblic:true");
+                def queryList = SearchQuery.searchEvery("name:\"${params.searchQuery}\" AND username:${RsUser.RSADMIN} AND isPublic:true");
                 if (queryList.size() == 0) {
                     searchQuery = SearchQuery.get(name: params.searchQuery, username: session.username);
                 }
@@ -209,6 +213,12 @@ class RsBrowserController {
                 }
                 if (searchQuery) {
                     query = searchQuery.query;
+                    if(params.sort == null){
+                        params.sort = searchQuery.sortProperty
+                    }
+                    if(params.order == null){
+                        params.order = searchQuery.sortOrder;
+                    }
                 }
             }
             if (query != null) {

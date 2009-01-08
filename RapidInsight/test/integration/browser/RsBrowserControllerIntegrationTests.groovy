@@ -1,9 +1,12 @@
 package browser
 
+import auth.RsUser
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import connection.Connection
 import datasource.BaseDatasource
-import com.ifountain.rcmdb.test.util.IntegrationTestUtils
+import search.SearchQuery
+import search.SearchQueryGroup
+import connection.SnmpConnection
 
 /**
 * Created by IntelliJ IDEA.
@@ -18,6 +21,8 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         super.setUp();
         BaseDatasource.removeAll();
         Connection.removeAll();
+        SearchQuery.removeAll();
+        SearchQueryGroup.removeAll();
     }
 
     void tearDown() throws Exception {
@@ -217,9 +222,6 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         def objectXml = new XmlSlurper().parseText(controller.response.contentAsString);
 
         def allNodes = objectXml.depthFirst().collect{ it }
-        allNodes.each{
-            println it.name();
-        }
         assertEquals((props.size() + keySet.size() + 1), allNodes.size() -1) //all nodes includes the root node
 
         assertEquals("id", allNodes[1].name())
@@ -233,6 +235,134 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
            assertEquals(p.name, allNodes[keySet.size() + i+2].name())
             assertEquals("${connection[p.name]}", allNodes[keySet.size()+i+2].text()) 
         }
+    }
+
+    void testSearchWithPublicSearchQuery(){
+        Connection.add(name:"a1")       
+        Connection.add(name:"a2")
+        Connection.add(name:"a3")
+        Connection.add(name:"b1")
+        Connection.add(name:"b2")
+        Connection.add(name:"b3");
+        def searchQueryGroup = SearchQueryGroup.add(name:"querygroup", username:RsUser.RSADMIN, type:"connection")
+        def searchQuery = SearchQuery.add(name:"myConnections", username:RsUser.RSADMIN, isPublic:true, sortProperty:"name",
+                sortOrder:"desc", query:"name:a*", group:searchQueryGroup);
+        assertFalse(searchQuery.hasErrors())
+
+        def controller = new RsBrowserController();
+        def params = [:]
+        params["domain"] = "connection"
+        params["max"] = "2"
+        params["searchQuery"] = searchQuery.name;
+        controller._search(params);
+
+        def model = controller.modelAndView.model;
+        def objectList = model.objectList;
+        assertEquals(2, objectList.size());
+        assertEquals("a3", objectList[0].name)
+        assertEquals("a2", objectList[1].name)
+        assertEquals(3, model.count);
+    }
+
+    void testSearchWithUserSearchQuery(){
+        def username = "newuser"
+        Connection.add(name:"a1")
+        Connection.add(name:"a2")
+        Connection.add(name:"a3")
+        Connection.add(name:"b1")
+        Connection.add(name:"b2")
+        Connection.add(name:"b3");
+        def searchQueryGroup = SearchQueryGroup.add(name:"querygroup", username:username, type:"connection")
+        def searchQuery = SearchQuery.add(name:"myConnections", username:username, sortProperty:"id",
+                sortOrder:"asc", query:"name:b*", group:searchQueryGroup);
+        assertFalse(searchQuery.hasErrors())
+
+        def controller = new RsBrowserController();
+        controller.session.username = username;
+        def params = [:]
+        params["domain"] = "connection"
+        params["max"] = "2"
+        params["searchQuery"] = searchQuery.name;
+        params["sort"] = "name"; //if sort property is given it overrides searchQuery sortProperty
+        params["order"] = "desc";
+        controller._search(params);
+
+        def model = controller.modelAndView.model;
+        def objectList = model.objectList;
+        assertEquals(2, objectList.size());
+        assertEquals("b3", objectList[0].name)
+        assertEquals("b2", objectList[1].name)
+        assertEquals(3, model.count);      
+    }
+
+    void testSearchWithOpenQuery(){
+        def username = "newuser"
+        Connection.add(name:"a1")
+        Connection.add(name:"a2")
+        Connection.add(name:"a3")
+        Connection.add(name:"b1")
+        Connection.add(name:"b2")
+        Connection.add(name:"b3");
+        def searchQueryGroup = SearchQueryGroup.add(name:"querygroup", username:username, type:"connection")
+        def searchQuery = SearchQuery.add(name:"myConnections", username:username, sortProperty:"id",
+                sortOrder:"asc", query:"name:b*", group:searchQueryGroup);
+        assertFalse(searchQuery.hasErrors())
+
+        def controller = new RsBrowserController();
+        controller.session.username = username;
+        def params = [:]
+        params["domain"] = "connection"
+        params["max"] = "2"
+        params["searchQuery"] = searchQuery.name;
+        params["query"] = "alias:*";   //if query is given does not look given searchQuery
+        params["sort"] = "name"; //if sort property is given it overrides searchQuery sortProperty
+        params["order"] = "asc";
+        controller._search(params);
+
+        def model = controller.modelAndView.model;
+        def objectList = model.objectList;
+        assertEquals(2, objectList.size());
+        assertEquals("a1", objectList[0].name)
+        assertEquals("a2", objectList[1].name)
+        assertEquals(6, model.count);
+    }
+
+
+    void testSearchWithXml(){
+        Connection.add(name:"a1")
+        Connection.add(name:"a2")
+        Connection.add(name:"a3")
+        SnmpConnection.add(name:"b1", host:"0.0.0.0")
+        SnmpConnection.add(name:"b2", host:"0.0.0.0")
+        SnmpConnection.add(name:"b3", host:"0.0.0.0");
+
+        def controller = new RsBrowserController();
+        def params = [:]
+        params["domain"] = "connection"
+        params["query"] = "alias:*";
+        params["sort"] = "name"; 
+        params["order"] = "asc";
+        params["format"] = "xml";
+        controller._search(params);
+
+        def objectsXml = new XmlSlurper().parseText(controller.response.contentAsString);
+        def objects = objectsXml.Object;
+        assertEquals(6, objects.size());
+        for(i in 0..2){
+            def object = objects[i];
+            assertEquals("a${i+1}", object.@name.toString())
+            assertEquals(Connection.class.name, object.@rsAlias.toString())
+            assertEquals("${i}", object.@sortOrder.toString())
+        }
+
+        for(i in 3..5){
+           def object = objects[i];
+           assertEquals("b${i-2}", object.@name.toString())
+           assertEquals(SnmpConnection.class.name, object.@rsAlias.toString())
+           assertEquals("${i}", object.@sortOrder.toString()) 
+           assertEquals("0.0.0.0", object.@host.toString()) 
+        }
+        
     }
 
 }

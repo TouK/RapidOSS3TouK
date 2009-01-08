@@ -35,6 +35,7 @@ class CompassForTests {
     static MockOperationData updateOperationData = new MockOperationData();
     static MockOperationData addRelationOperationData = new MockOperationData();
     static MockOperationData removeRelationOperationData = new MockOperationData();
+    static Integer countHitsValue= null;
     public static void initialize(List classesToBeInitialized)
     {
          ExpandoMetaClass.enableGlobally();
@@ -94,6 +95,9 @@ class CompassForTests {
             }
             domainClass.metaClass.static.removeRelation = {Map props->
                 return removeRelationOperationData.getReturnObject(domainClass, new HashMap(props));
+            }
+            domainClass.metaClass.static.countHits = { String query ->
+                return countHitsValue;
             }
             domainClass.metaClass.hasErrors = {
                 return false;

@@ -100,7 +100,7 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
      }
 
      void initializeForCmdbScript(){
-         createSimpleScript (simpleScriptFile);
+         createSimpleScript (simpleScriptFile,expectedScriptMessage);
          
          CompassForTests.initialize([CmdbScript]);
          CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
@@ -288,6 +288,136 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
 
      }
 
+    public void testUpdateScript()
+    {
+        initializeForCmdbScript();
+        def params=[name:"myscript2",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def scriptToUpdate=new CmdbScript(name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile);
+
+        ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
+
+        }
+
+        def script=CmdbScript.updateScript(scriptToUpdate,params,false);
+        assertEquals(script.name,params.name)
+    }
+     void testUpdateScriptLoadsNewScriptFileAndRemovesOldIfNotUsedAndDoesNotRemoveOldIfUsed()
+     {
+
+        initializeForCmdbScript();
+        ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
+
+        }
+
+        ScriptManager.getInstance().addScript(simpleScriptFile);
+        assertNotNull(ScriptManager.getInstance().getScript(simpleScriptFile));
+
+        def newScriptFile="CmdbScriptOperationsTestScriptFile2.groovy";
+        def newScriptMessage="new script message"
+        createSimpleScript (newScriptFile,newScriptMessage);
+
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def script=new CmdbScript();
+        params.each{ key , val ->
+            script[key]=val
+        }
+        def updateParams=[name:"myscript2",type:CmdbScript.ONDEMAND,scriptFile:newScriptFile]
+
+         //we test that old script is removed from ScriptManager
+        CompassForTests.countHitsValue=0
+
+        def updatedScript=CmdbScript.updateScript(script,updateParams,false);
+        assertEquals(updatedScript.name,updateParams.name)
+        assertEquals(updatedScript.scriptFile,updateParams.scriptFile)
+
+        assertNull(ScriptManager.getInstance().getScript(params.scriptFile));
+        def scriptClass=ScriptManager.getInstance().getScript(updateParams.scriptFile)
+        assertNotNull(scriptClass);
+
+        //tests the new script file is really loaded and can be runned
+        def scriptObject = scriptClass.newInstance();
+        assertEquals (newScriptMessage, scriptObject.run())
+
+        //we test that old script is not removed from ScriptManager
+        ScriptManager.getInstance().addScript(simpleScriptFile);
+        ScriptManager.getInstance().removeScript(newScriptFile);
+        assertNotNull(ScriptManager.getInstance().getScript(simpleScriptFile));
+        assertNull(ScriptManager.getInstance().getScript(newScriptFile));
+        params.each{ key , val ->
+            script[key]=val
+        }
+        CompassForTests.countHitsValue=5
+
+        updatedScript=CmdbScript.updateScript(script,updateParams,false);
+        assertEquals(updatedScript.name,updateParams.name)
+        assertEquals(updatedScript.scriptFile,updateParams.scriptFile)
+
+        assertNotNull(ScriptManager.getInstance().getScript(params.scriptFile));
+        scriptClass=ScriptManager.getInstance().getScript(updateParams.scriptFile)
+        assertNotNull(scriptClass);
+
+        //tests the new script file is really loaded and can be runned
+        scriptObject = scriptClass.newInstance();
+        assertEquals (newScriptMessage, scriptObject.run())
+        
+     }    
+     void testUpdateScriptsGeneratesExceptionWhenErrorOccurs()
+     {
+         initializeForCmdbScript();
+         CmdbScript.metaClass.hasErrors = {  return true;}
+
+         def sampleBean = CmdbScript.newInstance()
+         Errors errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
+         CmdbScript.metaClass.errors = errors
+
+
+         def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+         def scriptToUpdate=new CmdbScript();
+         params.each{ key , val ->
+            scriptToUpdate[key]=val
+         }
+
+
+         //def messageServiceClass=ClassLoader.getSystemClassLoader().loadClass("MessageService");
+         def messageServiceClass=this.class.classLoader.loadClass("MessageService");
+         messageServiceClass.metaClass.getMessage = { param1 -> return "injectedTestMessage"}
+
+         scriptToUpdate.messageService=messageServiceClass.newInstance()
+         GroovySystem.metaClassRegistry.removeMetaClass(messageServiceClass)
+
+
+         try{
+            CmdbScript.updateScript(scriptToUpdate,params,false);
+            fail("should throw exception")
+         }
+         catch(e)
+         {
+             assertEquals(e.getMessage(),"injectedTestMessage");
+         }
+
+
+     }
+     void testUpdateScriptDoesNotGenerateExceptionIfFromController()
+     {
+         initializeForCmdbScript();
+         CmdbScript.metaClass.hasErrors = {  return true;}
+         def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+         def scriptToUpdate=new CmdbScript();
+         params.each{ key , val ->
+            scriptToUpdate[key]=val
+         }
+
+
+         try{
+            def script=CmdbScript.updateScript(scriptToUpdate,params,true);
+            assertTrue(script.hasErrors());
+         }
+         catch(e)
+         {
+             println e
+             fail("should not throw exception")
+         }
+     }
      void testCreateStaticParams(){
 
          CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
@@ -340,10 +470,10 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
 
      }
 
-     def createSimpleScript(scriptName)
+     def createSimpleScript(scriptName,scriptMessage)
     {
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
-        scriptFile.write ("""return "$expectedScriptMessage" """);
+        scriptFile.write ("""return "$scriptMessage" """);
     }
 
 }

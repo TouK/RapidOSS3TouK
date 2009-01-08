@@ -122,7 +122,7 @@
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
         <td width="0%" style="padding-left:10px;padding-top:5px;padding-right:60px;">
-            <img src="images/RapidInsight-blue.png">
+            <img src="/RapidSuite/images/RapidInsight-blue.png">
         </td>
         <td width="100%" style="vertical-align: bottom;;">
             <div class="yui-navset">

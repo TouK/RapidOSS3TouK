@@ -136,6 +136,8 @@ class RapidInsightBuild extends Build {
             ant.arg(value: "${env.dist_rapid_suite}/web-app");
             ant.arg(value: "-suffix");
             ant.arg(value: "${versionDate}");
+            ant.arg(value: "-webBasePrefix");
+            ant.arg(value: "${getWebBasePath()}");
             ant.classpath() {
                 ant.pathelement(location: "${env.dist_rapid_suite_lib}/comp.jar");
                 ant.pathelement(location: "${env.dist_rapid_server_lib}/commons-cli-1.0.jar");

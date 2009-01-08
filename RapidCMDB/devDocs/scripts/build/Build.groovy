@@ -65,6 +65,9 @@ class Build extends Parent{
 	def getVersionWithDate(){
         return "_$versionNo" + "_" + "$buildNo";
     }
+    def getWebBasePath(){
+        return "/RapidSuite/"
+    }
 	
 	def setVersionAndBuildNumber(versionInBuild){
 		def verFile = new File (versionInBuild);

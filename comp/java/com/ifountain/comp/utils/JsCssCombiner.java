@@ -48,12 +48,15 @@ public class JsCssCombiner extends CommandLineUtility {
     public static final String ROOT_PATH_OPTION = "rootPath";
     public static final String SUFFIX_OPTION = "suffix";
     public static final String MEDIA_PATH_OPTION = "mediaPath";
+    public static final String WEB_BASE_PREFIX_OPTION = "webBasePrefix";
 
     private String rootPath = "";
     private String appPath = "";
     private String targetPath = "";
     private String filePath = "";
     private String suffix = "";
+    private String webBasePrefix = "";
+
     private String mediaPath = "images";
 
 
@@ -96,6 +99,12 @@ public class JsCssCombiner extends CommandLineUtility {
         OptionBuilder.withDescription("Suffix to append generated file's names to prevent caching.");
         Option suffix = OptionBuilder.create(SUFFIX_OPTION);
 
+        OptionBuilder.withArgName(WEB_BASE_PREFIX_OPTION);
+        OptionBuilder.hasArg();
+        OptionBuilder.isRequired(false);
+        OptionBuilder.withDescription("Web Base Prefix for prefix CSS and JS paths to generate an absolute path");
+        Option webBasePrefix = OptionBuilder.create(WEB_BASE_PREFIX_OPTION);
+
         OptionBuilder.withArgName(MEDIA_PATH_OPTION);
         OptionBuilder.hasArg();
         OptionBuilder.isRequired(false);
@@ -109,6 +118,7 @@ public class JsCssCombiner extends CommandLineUtility {
         options.addOption(rootPath);
         options.addOption(suffix);
         options.addOption(media);
+        options.addOption(webBasePrefix);
 
         return options;
     }
@@ -126,6 +136,9 @@ public class JsCssCombiner extends CommandLineUtility {
             this.suffix = getRequiredOptionValue(option);
         } else if (option.getOpt().equals(MEDIA_PATH_OPTION)) {
             this.mediaPath = getRequiredOptionValue(option);
+        }
+        else if (option.getOpt().equals(WEB_BASE_PREFIX_OPTION)) {
+            this.webBasePrefix = getRequiredOptionValue(option);
         }
     }
 
@@ -188,8 +201,8 @@ public class JsCssCombiner extends CommandLineUtility {
 
     public void writeModifiedHTML(String htmlWithNoScripts, File file) throws Exception {
         String fileName = getFileName(file);
-        String combinedJSName = fileName + suffix + ".js";
-        String combinedCSSName = fileName + suffix + ".css";
+        String combinedJSName = webBasePrefix + fileName + suffix + ".js";
+        String combinedCSSName = webBasePrefix +  fileName + suffix + ".css";
         String replace = "<head>\n\t<script src=\"" + combinedJSName + "\"></script>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"" + combinedCSSName + "\"/>\n";
         String htmlWithScriptsInserted = htmlWithNoScripts.replaceFirst("<head>", replace);
         createFile(htmlWithScriptsInserted, targetPath + "/" + file.getName());

@@ -225,6 +225,43 @@ public class JsCssCombinerTest extends TestCase {
         assertTrue(new TestFile("test_v0-3-1.js").exists());
         assertTrue(new TestFile("test_v0-3-1.css").exists());
     }
+     public void testWebBasePrefixWillBeAppendedToFilesIfProvided() throws Exception {
+        File file = new TestFile("webapp/test.html");
+        FileTestUtils.deleteFile(file);
+        String html = "<html>\n\t" +
+                         "<head>\n\t" +
+                         "<script src=\"jslib/rapidjs/TreeGrid.js\"/>\n\t" +
+                         "<link rel=\"stylesheet\" type=\"text/css\" href=\"css/rapidjs/treegrid.css\"/>\n\t" +
+                         "</head>\n\t" +
+                         "<body>\n\t" +
+                         "<div>sezgin</div>\n\t" +
+                         "</body>\n\t</html>";
+        FileTestUtils.generateFile("webapp/jslib/rapidjs/TreeGrid.js", "");
+        FileTestUtils.generateFile("webapp/css/rapidjs/treegrid.css", "");
+        FileTestUtils.generateFile(file.getPath(), html);
+
+        args = new String[]{"-" + JsCssCombiner.FILE_PATH_OPTION, file.getPath(),
+                "-" + JsCssCombiner.TARGET_PATH_OPTION, targetPath,
+                "-" + JsCssCombiner.WEB_BASE_PREFIX_OPTION, "/Rapid-Suite/",
+                "-" + JsCssCombiner.APP_PATH_OPTION, new TestFile("webapp").getPath()};
+
+        combiner.run(args);
+
+        File modifiedFile = new TestFile("test.html");
+        assertTrue(modifiedFile.exists());
+        String expectedHtml = "<html>\n\t" +
+                         "<head>\n\t" +
+                         "<script src=\"/Rapid-Suite/test.js\"></script>\n\t" +
+                         "<link rel=\"stylesheet\" type=\"text/css\" href=\"/Rapid-Suite/test.css\"/>\n" +
+                         "</head>\n\t" +
+                         "<body>\n\t" +
+                         "<div>sezgin</div>\n\t" +
+                         "</body>\n\t</html>\n";
+
+        assertEquals(expectedHtml, FileUtils.readFileToString(modifiedFile));
+        assertTrue(new TestFile("test_v0-3-1.js").exists());
+        assertTrue(new TestFile("test_v0-3-1.css").exists());
+    }
 
     public void testModifiedImageUrlsInCssFiles() throws Exception {
         File file = new TestFile("webapp/test.html");

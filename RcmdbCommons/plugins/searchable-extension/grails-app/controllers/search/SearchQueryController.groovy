@@ -149,6 +149,7 @@ class SearchQueryController {
                 group = SearchQueryGroup.add(name: params.group, username: session.username, type:groupType);
             }
             params["group"] = ["id": group.id];
+            params["group.id"] = "${group.id}".toString();
             searchQuery.update(ControllerUtils.getClassProperties(params, SearchQuery));
             if (!searchQuery.hasErrors()) {
                 withFormat {
@@ -222,6 +223,7 @@ class SearchQueryController {
             group = SearchQueryGroup.add(name: params.group, username: session.username, type:groupType);
         }
         params["group"] = ["id": group.id];
+        params["group.id"] = "${group.id}".toString();
         def searchQuery = SearchQuery.add(ControllerUtils.getClassProperties(params, SearchQuery))
         if (!searchQuery.hasErrors()) {
             withFormat {

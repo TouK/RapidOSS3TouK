@@ -21,7 +21,6 @@ package search
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import grails.converters.XML;
 class SearchQueryGroupController {
-    def final static PROPS_TO_BE_EXCLUDED = ["id": "id", "_action_Update": "_action_Update", "controller": "controller", "action": "action"]
     def index = {redirect(action: list, params: params)}
     def allowedMethods = [delete: ['POST', 'GET'], save: ['POST', 'GET'], update: ['POST', 'GET']]
     def list = {

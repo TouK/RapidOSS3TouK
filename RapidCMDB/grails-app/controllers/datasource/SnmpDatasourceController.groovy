@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat
 
 class SnmpDatasourceController {
     def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
-    def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
+
     def index = { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests

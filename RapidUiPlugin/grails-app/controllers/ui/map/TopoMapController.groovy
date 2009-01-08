@@ -20,7 +20,6 @@ package ui.map
 import grails.converters.XML
 
 class TopoMapController {
-    def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
     def index = {}
 
     // the delete, save and update actions only accept POST requests

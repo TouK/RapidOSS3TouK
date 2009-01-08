@@ -22,7 +22,7 @@ package model;
 import com.ifountain.rcmdb.domain.util.ControllerUtils;
 
 class DatasourceNameController {
-    def final static PROPS_TO_BE_EXCLUDED = ["id":"id","_action_Update":"_action_Update","controller":"controller", "action":"action"]
+
     def index = { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests

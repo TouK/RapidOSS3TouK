@@ -335,6 +335,7 @@ target(runUnitTests: "Run Grails' unit tests under the test/unit directory") {
 }
 
 target(runIntegrationTests: "Runs Grails' tests under the test/integration directory") {
+    def savedOut = System.out
     try {
         // allow user to specify test to run like this...
         //   grails test-app Author
@@ -376,7 +377,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
             if (beanNames.size() > 0) interceptor = appCtx.getBean(beanNames[0])
 
 
-            def savedOut = System.out
+
             try {
                 interceptor?.init()
 

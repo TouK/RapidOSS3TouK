@@ -13,18 +13,19 @@
 <body>
 <%
        def stateMapping = ["0":"../states/green.png",
-                    "1":"../states/red.png",
-                    "2":"../states/orange.png",
+                    "5":"../states/red.png",
+                    "4":"../states/orange.png",
                     "3":"../states/yellow.png",
-                    "4":"../states/blue.png",
-                    "5":"../states/green.png",
+                    "2":"../states/blue.png",
+                    "1":"../states/purple.png",
                     "default":"../states/green.png"]
         def typeMapping = ["Host":"server_icon.png",
                     "Router":"router_icon.png",
                     "Switch":"switch_icon.png"]
+        def edgeMapping = ["5" : "0xffde2c26","4":"0xfff79229","3": "0xfffae500", "2":"0xff20b4e0","1": "0xffac6bac", "0":"0xff62b446", "default":"0xff62b446" ]                    
    %>
 
-<rui:maps nodeSize="60" mapPollingInterval="0" savedMapsPollingInterval="0">
+<rui:maps nodeSize="60" mapPollingInterval="0" savedMapsPollingInterval="0" edgeColors="${edgeMapping}">
     <rui:mpMenus>
         <rui:mpMenu id="objectDetails" label="Browse" location="node" actionType="htmlDialog" width="850" height="700" x="85" y="50"
                 url="createURL('getObjectDetails.gsp', {name:params.data.id})" title="'Details of ' + params.data.type + ' ' + params.data.id"></rui:mpMenu>

@@ -19,55 +19,54 @@ class RsBrowserController {
 
     def classes = {
         def domainClasses = grailsApplication.domainClasses;
-        withFormat {
-            xml {
-                def classesMap = [system: [:], application: [:]]
-                def domainClassesMap = [:]
-                domainClasses.each {domainClass ->
-                    domainClassesMap[domainClass.fullName] = domainClass;
-                    def classType = "system";
-                    if (domainClass.fullName.indexOf(".") < 0) {
-                        classType = "application"
-                    }
-                    if (domainClass.clazz.superclass == Object.class) {
-                        _getChildClasses(domainClass, classesMap[classType], null)
-                    }
+        if (params.format == 'xml') {
+            def classesMap = [system: [:], application: [:]]
+            def domainClassesMap = [:]
+            domainClasses.each {domainClass ->
+                domainClassesMap[domainClass.fullName] = domainClass;
+                def classType = "system";
+                if (domainClass.fullName.indexOf(".") < 0) {
+                    classType = "application"
                 }
-                def sw = new StringWriter();
-                def builder = new MarkupBuilder(sw);
-                builder.Classes() {
-                    builder.Class(name: "System") {
-                        _getChildClasesXml(builder, classesMap["system"], domainClassesMap)
-                    }
-                    builder.Class(name: "Application") {
-                        _getChildClasesXml(builder, classesMap["application"], domainClassesMap)
-                    }
+                if (domainClass.clazz.superclass == Object.class) {
+                    _getChildClasses(domainClass, classesMap[classType], null)
                 }
-                render(contentType: "text/xml", text: sw.toString())
             }
-            html {
-                def domainClassList = domainClasses;
-                if (params.sort && params.order == "desc") {
-                    domainClassList = domainClasses.sort {first, second ->
-                        return first.fullName < second.fullName ? 1 : -1;
-                    }
+            def sw = new StringWriter();
+            def builder = new MarkupBuilder(sw);
+            builder.Classes() {
+                builder.Class(name: "System") {
+                    _getChildClasesXml(builder, classesMap["system"], domainClassesMap)
                 }
-                else {
-                    domainClassList = domainClasses.sort {it.fullName}
+                builder.Class(name: "Application") {
+                    _getChildClasesXml(builder, classesMap["application"], domainClassesMap)
                 }
-                return [domainClassList: domainClassList];
             }
+            render(contentType: "text/xml", text: sw.toString())
         }
+        else {
+            def domainClassList = domainClasses;
+            if (params.sort && params.order == "desc") {
+                domainClassList = domainClasses.sort {first, second ->
+                    return first.fullName < second.fullName ? 1 : -1;
+                }
+            }
+            else {
+                domainClassList = domainClasses.sort {it.fullName}
+            }
+            return [domainClassList: domainClassList];
+        }
+
     }
     def _getChildClasses(domainClass, parentMap, parentDomainClass) {
         def classMap = [:]
-        if(parentDomainClass != null ){
-            if(domainClass.clazz.superclass == parentDomainClass.clazz){
+        if (parentDomainClass != null) {
+            if (domainClass.clazz.superclass == parentDomainClass.clazz) {
                 parentMap.put(domainClass.fullName, classMap);
             }
         }
-        else{
-            parentMap.put(domainClass.fullName, classMap);    
+        else {
+            parentMap.put(domainClass.fullName, classMap);
         }
         domainClass.subClasses.each {
             _getChildClasses(it, classMap, domainClass);
@@ -90,36 +89,32 @@ class RsBrowserController {
             def count = domainClass.clazz."count"();
             def propertyList = getPropertiesWhichCanBeListed(domainClass, 5);
             def objectList = domainClass.clazz."list"(params)
-            withFormat {
-                html {
-                    render(view: "listDomain", model: [objectList: objectList, propertyList: propertyList, count: count, domainName: domainClass.fullName])
-                }
-                xml {
-                    render(contentType: "text/xml") {
-                        Objects(total: count, offset: params.offset ? params.offset : 0) {
-                            objectList.each {object ->
-                                def props = ["id": object.id]
-                                propertyList.each {p ->
-                                    props.put(p.name, object[p.name])
-                                }
-                                Object(props)
+            if (params.format == 'xml') {
+                render(contentType: "text/xml") {
+                    Objects(total: count, offset: params.offset ? params.offset : 0) {
+                        objectList.each {object ->
+                            def props = ["id": object.id]
+                            propertyList.each {p ->
+                                props.put(p.name, object[p.name])
                             }
+                            Object(props)
                         }
                     }
                 }
             }
-
+            else {
+                render(view: "listDomain", model: [objectList: objectList, propertyList: propertyList, count: count, domainName: domainClass.fullName])
+            }
         }
         else {
             addError("default.class.not.found", [params.domain]);
-            withFormat {
-                html {
-                    flash.errors = errors
-                    redirect(action: classes);
-                }
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+            if (params.format == 'xml') {
+                render(text: errorsToXml(errors), contentType: "text/xml")
             }
-
+            else {
+                flash.errors = errors
+                redirect(action: classes);
+            }
         }
 
     }
@@ -132,37 +127,32 @@ class RsBrowserController {
                 def objectClass = grailsApplication.getDomainClass(domainObject.class.name)
                 def properties = objectClass.clazz."getPropertiesList"();
                 def keySet = objectClass.clazz."keySet"();
-                withFormat {
-                    html {
-                        render(view: "show", model: [keys: keySet, propertyList: properties, domainObject: domainObject])
-                    }
-                    xml {
-                        render(contentType: "text/xml") {
-                            Object() {
-                                id(domainObject.id)
-                                keySet.each {key ->
-                                    if (key.name != "id") {
-                                        "${key.name}"(domainObject[key.name])
-                                    }
+                if (params.format == 'xml') {
+                    render(contentType: "text/xml") {
+                        Object() {
+                            id(domainObject.id)
+                            keySet.each {key ->
+                                if (key.name != "id") {
+                                    "${key.name}"(domainObject[key.name])
                                 }
-                                properties.each {p ->
-                                    if (p.name != "id" && !p.isKey) {
-                                        if (!p.isRelation) {
-                                            "${p.name}"(domainObject[p.name])
-                                        }
-                                        else {
-                                            if (p.isOneToMany() || p.isManyToMany()) {
-                                                "${p.name}"() {
-                                                    def relatedObjects = domainObject[p.name];
-                                                    relatedObjects.each {relatedObject ->
-                                                        Object(relatedObject)
-                                                    }
+                            }
+                            properties.each {p ->
+                                if (p.name != "id" && !p.isKey) {
+                                    if (!p.isRelation) {
+                                        "${p.name}"(domainObject[p.name])
+                                    }
+                                    else {
+                                        if (p.isOneToMany() || p.isManyToMany()) {
+                                            "${p.name}"() {
+                                                def relatedObjects = domainObject[p.name];
+                                                relatedObjects.each {relatedObject ->
+                                                    Object(relatedObject)
                                                 }
                                             }
-                                            else {
-                                                def relatedObject = domainObject[p.name]
-                                                "${p.name}"(relatedObject ? relatedObject : "")
-                                            }
+                                        }
+                                        else {
+                                            def relatedObject = domainObject[p.name]
+                                            "${p.name}"(relatedObject ? relatedObject : "")
                                         }
                                     }
                                 }
@@ -170,27 +160,30 @@ class RsBrowserController {
                         }
                     }
                 }
+                else {
+                    render(view: "show", model: [keys: keySet, propertyList: properties, domainObject: domainObject])
+                }
             }
             else {
                 addError("default.object.not.found", [domainClass.fullName, params.id]);
-                withFormat {
-                    html {
-                        flash.errors = errors
-                        redirect(action: params.domain);
-                    }
-                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                if (params.format == 'xml') {
+                    render(text: errorsToXml(errors), contentType: "text/xml")
+                }
+                else {
+                    flash.errors = errors
+                    redirect(action: params.domain);
                 }
             }
 
         }
         else {
             addError("default.class.not.found", [params.domain]);
-            withFormat {
-                html {
-                    flash.errors = errors
-                    redirect(action: classes);
-                }
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+            if (params.format == 'xml') {
+                render(text: errorsToXml(errors), contentType: "text/xml")
+            }
+            else {
+                flash.errors = errors
+                redirect(action: classes);
             }
         }
     }
@@ -229,70 +222,67 @@ class RsBrowserController {
                 }
                 catch (Throwable e) {
                     addError("invalid.search.query", [query, e.getMessage()]);
-                    withFormat {
-                        html {
-                            flash.errors = errors
-                            redirect(action: params.domain);
-                        }
-                        xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                    if (params.format == 'xml') {
+                        render(text: errorsToXml(errors), contentType: "text/xml")
+                    }
+                    else {
+                        flash.errors = errors
+                        redirect(action: params.domain);
                     }
                     return;
                 }
                 def objectList = searchResults.results
-                withFormat {
-                    html {
-                        def propertyList = getPropertiesWhichCanBeListed(domainClass, 5);
-                        render(view: "search", model: [objectList: objectList, propertyList: propertyList, count: searchResults.total, domainName: domainClass.fullName])
-                    }
-                    xml {
-                        def grailsClassProperties = [:]
-                        def sortOrder = 0;
-                        render(contentType: "text/xml") {
-                            Objects(total: searchResults.total, offset: searchResults.offset) {
-                                searchResults.results.each {result ->
-                                    def className = result.getClass().name;
-                                    def grailsObjectProps = grailsClassProperties[className]
-                                    if (grailsObjectProps == null)
-                                    {
-                                        def objectDomainClass = grailsApplication.getDomainClass(className);
-                                        grailsObjectProps = getPropertiesWhichCanBeListed(objectDomainClass, 10)
-                                        grailsClassProperties[result.getClass().name] = grailsObjectProps;
-                                    }
-                                    def props = ["id":result.id];
-                                    grailsObjectProps.each {resultProperty ->
-                                        if(resultProperty.name != "id"){
-                                            props[resultProperty.name] = result[resultProperty.name];    
-                                        }
-                                    }
-                                    props.put("rsAlias", className)
-                                    props.put("sortOrder", sortOrder ++)
-                                    Object(props);
+                if (params.format == 'xml') {
+                    def grailsClassProperties = [:]
+                    def sortOrder = 0;
+                    render(contentType: "text/xml") {
+                        Objects(total: searchResults.total, offset: searchResults.offset) {
+                            searchResults.results.each {result ->
+                                def className = result.getClass().name;
+                                def grailsObjectProps = grailsClassProperties[className]
+                                if (grailsObjectProps == null)
+                                {
+                                    def objectDomainClass = grailsApplication.getDomainClass(className);
+                                    grailsObjectProps = getPropertiesWhichCanBeListed(objectDomainClass, 10)
+                                    grailsClassProperties[result.getClass().name] = grailsObjectProps;
                                 }
+                                def props = ["id": result.id];
+                                grailsObjectProps.each {resultProperty ->
+                                    if (resultProperty.name != "id") {
+                                        props[resultProperty.name] = result[resultProperty.name];
+                                    }
+                                }
+                                props.put("rsAlias", className)
+                                props.put("sortOrder", sortOrder++)
+                                Object(props);
                             }
                         }
                     }
                 }
-
+                else {
+                    def propertyList = getPropertiesWhichCanBeListed(domainClass, 5);
+                    render(view: "search", model: [objectList: objectList, propertyList: propertyList, count: searchResults.total, domainName: domainClass.fullName])
+                }
             }
             else {
                 addError("default.query.not.found", [params.searchQuery]);
-                withFormat {
-                    html {
-                        flash.errors = errors
-                        redirect(action: params.domain);
-                    }
-                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                if (params.format == 'xml') {
+                    render(text: errorsToXml(errors), contentType: "text/xml")
+                }
+                else {
+                    flash.errors = errors
+                    redirect(action: params.domain);
                 }
             }
         }
         else {
             addError("default.class.not.found", [params.domain]);
-            withFormat {
-                html {
-                    flash.errors = errors
-                    redirect(action: classes);
-                }
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+            if (params.format == 'xml') {
+                render(text: errorsToXml(errors), contentType: "text/xml")
+            }
+            else {
+                flash.errors = errors
+                redirect(action: classes);
             }
         }
     }

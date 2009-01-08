@@ -14,7 +14,7 @@
 <rui:treeGrid id="classTree" url="rsBrowser/classes?format=xml" rootTag="Classes" pollingInterval="0"
         keyAttribute="name" contentPath="Class" title="Classes" onNodeClick="setQueryAction">
     <rui:tgColumns>
-        <rui:tgColumn attributeName="name" colLabel="Class Name" width="248" sortBy="true"></rui:tgColumn>
+        <rui:tgColumn attributeName="name" colLabel="Class Name" width="300" sortBy="true"></rui:tgColumn>
     </rui:tgColumns>
     <rui:tgRootImages>
         <rui:tgRootImage expanded="images/rapidjs/component/tools/class.png" collapsed="images/rapidjs/component/tools/class.png" visible="params.data.name != 'System' && params.data.name != 'Application'"></rui:tgRootImage>
@@ -92,7 +92,7 @@
             units: [
                 { position: 'top', body: 'top', resize: false, height:40},
                 { position: 'center', body: searchList.container.id, resize: false, gutter: '1px' },
-                { position: 'left', width: 250, resize: true, body: classTree.container.id, scroll: false}
+                { position: 'left', width: 340, resize: true, body: classTree.container.id, scroll: false}
             ]
         });
 

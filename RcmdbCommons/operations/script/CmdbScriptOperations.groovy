@@ -125,7 +125,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
 
         if (!script.hasErrors()) {
 
-            if(scriptFileBeforeUpdate != script.scriptFile && ScriptManager.getInstance().getScript(script.scriptFile) == null)
+            if(scriptFileBeforeUpdate != script.scriptFile )
             {
                 if(CmdbScript.countHits("scriptFile:"+scriptFileBeforeUpdate) == 0)
                 {

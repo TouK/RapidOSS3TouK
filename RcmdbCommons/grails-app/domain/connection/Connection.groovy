@@ -23,7 +23,8 @@ public class Connection {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
-
+    Long id;
+    Long version=0;
     String name = "";
     String rsOwner = "p"
     String connectionClass = "";

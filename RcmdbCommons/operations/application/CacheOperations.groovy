@@ -9,7 +9,7 @@ import com.ifountain.rcmdb.util.DataStore
 * Time: 10:50:51 AM
 * To change this template use File | Settings | File Templates.
 */
-class CacheOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+public class CacheOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
     public static void store(Object key, Object value)
     {
         com.ifountain.rcmdb.util.DataStore.put(key, value);

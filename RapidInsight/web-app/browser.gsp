@@ -16,6 +16,11 @@
     <rui:tgColumns>
         <rui:tgColumn attributeName="name" colLabel="Class Name" width="248" sortBy="true"></rui:tgColumn>
     </rui:tgColumns>
+    <rui:tgRootImages>
+        <rui:tgRootImage expanded="images/rapidjs/component/tools/class.png" collapsed="images/rapidjs/component/tools/class.png" visible="params.data.name != 'System' && params.data.name != 'Application'"></rui:tgRootImage>
+        <rui:tgRootImage expanded="images/rapidjs/component/tools/application.png" collapsed="images/rapidjs/component/tools/application.png" visible="params.data.name == 'Application'"></rui:tgRootImage>
+        <rui:tgRootImage expanded="images/rapidjs/component/tools/configure.png" collapsed="images/rapidjs/component/tools/configure.png" visible="params.data.name == 'System'"></rui:tgRootImage>
+    </rui:tgRootImages>
 </rui:treeGrid>
 <rui:searchList id="searchList" url="rsBrowser/searchWithQuery?format=xml" rootTag="Objects" contentPath="Object" keyAttribute="id" showMax="6" 
         lineSize="3" title="Objects" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"

@@ -34,6 +34,7 @@ class IntegrationTestUtils {
         controller.request.removeAllParameters()
         controller.response.setCommitted(false)
         controller.response.reset()
+        controller.response.redirectedUrl = null;
         controller.flash.message = ""
         controller.flash.errors = [];
         controller.params.clear()

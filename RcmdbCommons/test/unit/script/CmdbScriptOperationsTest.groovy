@@ -233,16 +233,9 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
 
      }
 
-     void testAddScriptCallsSchedulerForPeriodicScript()
+     void testAddScriptCallsSchedulerForScheduledScripts()
      {
         initializeForCmdbScript();
-
-        def params=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.PERIODIC,scriptFile:simpleScriptFile,enabled:true,startDelay:10,period:20]
-        def scriptToAdd=new CmdbScript();
-        params.each{ key , val ->
-            scriptToAdd[key]=val
-        }
-        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
 
 
         def schedulerMap=[:];
@@ -250,44 +243,46 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
         ScriptScheduler.metaClass.scheduleScript= { String scriptName, long startDelay, long period ->
             schedulerMap.scriptName=scriptName
             schedulerMap.startDelay=startDelay
-            schedulerMap.period=period            
+            schedulerMap.period=period
         }
-
-        def script=CmdbScript.addScript(params)
-
-        assertEquals(params.name,schedulerMap.scriptName)
-        assertEquals(params.startDelay,schedulerMap.startDelay)
-        assertEquals(params.period,schedulerMap.period)
-
-     }
-     void testAddScriptCallsSchedulerForCronScript()
-     {
-        initializeForCmdbScript();
-
-        def params=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.CRON,scriptFile:simpleScriptFile,enabled:true,startDelay:10,cronExpression : "* * * * * ?"]
-        def scriptToAdd=new CmdbScript();
-        params.each{ key , val ->
-            scriptToAdd[key]=val
-        }
-        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
-
-
-        def schedulerMap=[:];
 
         ScriptScheduler.metaClass.scheduleScript= { String scriptName, long startDelay, String cronExp ->
             schedulerMap.scriptName=scriptName
             schedulerMap.startDelay=startDelay
             schedulerMap.cronExp=cronExp
         }
+        
+
+        //testing for periodic script
+        def params=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.PERIODIC,scriptFile:simpleScriptFile,enabled:true,startDelay:10,period:20]
+        def scriptToAdd=new CmdbScript();
+        params.each{ key , val ->
+            scriptToAdd[key]=val
+        }
+        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
 
         def script=CmdbScript.addScript(params)
-        
+        println schedulerMap
+        assertEquals(params.name,schedulerMap.scriptName)
+        assertEquals(params.startDelay,schedulerMap.startDelay)
+        assertEquals(params.period,schedulerMap.period)
+
+        //testing for cron script
+        schedulerMap=[:];
+        params=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.CRON,scriptFile:simpleScriptFile,enabled:true,startDelay:3,cronExpression : "* * * * * ?"]
+        scriptToAdd=new CmdbScript();
+        params.each{ key , val ->
+            scriptToAdd[key]=val
+        }
+        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToAdd]);
+
+        script=CmdbScript.addScript(params)
+        println schedulerMap
         assertEquals(params.name,schedulerMap.scriptName)
         assertEquals(params.startDelay,schedulerMap.startDelay)
         assertEquals(params.cronExpression,schedulerMap.cronExp)
-
      }
-
+     
     public void testUpdateScript()
     {
         initializeForCmdbScript();
@@ -445,20 +440,12 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
              fail("should not throw exception")
          }
      }
-     void testUpdateScriptCallsSchedulerForPeriodicScript()
+     void testUpdateScriptCallsSchedulerForScheduledScripts()
      {
         initializeForCmdbScript();
         ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
 
         }
-        def updateParams=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.PERIODIC,scriptFile:simpleScriptFile,enabled:true,startDelay:10,period:20]
-        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
-        def scriptToUpdate=new CmdbScript();
-        params.each{ key , val ->
-            scriptToUpdate[key]=val
-        }
-        CompassForTests.addOperationData.setObjectsWillBeReturned([scriptToUpdate]);
-
 
         def schedulerMap=[:];
 
@@ -468,13 +455,46 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
             schedulerMap.period=period
         }
 
+        ScriptScheduler.metaClass.scheduleScript= { String scriptName, long startDelay, String cronExp ->
+            schedulerMap.scriptName=scriptName
+            schedulerMap.startDelay=startDelay
+            schedulerMap.cronExp=cronExp
+        }
+
+
+        //testing for periodic script
+        def updateParams=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.PERIODIC,scriptFile:simpleScriptFile,enabled:true,startDelay:10,period:20]
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def scriptToUpdate=new CmdbScript();
+        params.each{ key , val ->
+            scriptToUpdate[key]=val
+        }
+
+
         def script=CmdbScript.updateScript(scriptToUpdate,updateParams,false)
-        
+        println schedulerMap
         assertEquals(updateParams.name,schedulerMap.scriptName)
         assertEquals(updateParams.startDelay,schedulerMap.startDelay)
         assertEquals(updateParams.period,schedulerMap.period)
 
-     }
+        //testing for cron script
+        schedulerMap=[:];
+        updateParams=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.CRON,scriptFile:simpleScriptFile,enabled:true,startDelay:10,cronExpression : "* * * * * ?"]
+        params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        scriptToUpdate=new CmdbScript();
+        params.each{ key , val ->
+            scriptToUpdate[key]=val
+        }
+
+         script=CmdbScript.updateScript(scriptToUpdate,updateParams,false)
+         println schedulerMap
+         assertEquals(updateParams.name,schedulerMap.scriptName)
+         assertEquals(updateParams.startDelay,schedulerMap.startDelay)
+         assertEquals(updateParams.period,schedulerMap.period)
+
+
+
+     }     
      void testCreateStaticParams(){
 
          CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);

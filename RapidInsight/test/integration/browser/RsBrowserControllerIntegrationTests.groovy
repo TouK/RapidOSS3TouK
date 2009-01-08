@@ -16,7 +16,7 @@ import connection.SnmpConnection
 * To change this template use File | Settings | File Templates.
 */
 class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
-
+    static transactional = false;
     void setUp() throws Exception {
         super.setUp();
         BaseDatasource.removeAll();

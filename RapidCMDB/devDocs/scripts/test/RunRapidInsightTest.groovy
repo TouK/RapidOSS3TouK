@@ -57,7 +57,9 @@ def watchConfig = [
         [new File("${workspaceDir}/Apg"), new File("${rootDir.absolutePath}/RapidSuite"), ["applications", "application.properties"]],
         [new File("${workspaceDir}/Apg/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")],
         [new File("${workspaceDir}/Smarts"), new File("${rootDir.absolutePath}/RapidSuite"), ["applications", "application.properties"]],
-        [new File("${workspaceDir}/Smarts/applications/RapidInsightForSmarts"), new File("${rootDir.absolutePath}/RapidSuite")]
+        [new File("${workspaceDir}/Smarts/applications/RapidInsightForSmarts"), new File("${rootDir.absolutePath}/RapidSuite")],
+        [new File("${workspaceDir}/OpenNms"), new File("${rootDir.absolutePath}/RapidSuite"), ["applications", "application.properties"]],
+        [new File("${workspaceDir}/OpenNms/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")]
 ]
 
 

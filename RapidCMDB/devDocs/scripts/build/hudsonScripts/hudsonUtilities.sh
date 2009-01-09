@@ -109,7 +109,16 @@ runGrailsTests() {
 
     cd $WORKSPACE/Distribution/RapidServer/Modeler/
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
-    ./rsmodeler.sh -test
+    ./rsmodeler.sh -testUnit
+    sleep 5
+    rm -r test/reports/TESTS-TestSuites.xml
+    if [ ! -d $WORKSPACE/TestResults/Modeler ]
+      then
+        mkdir $WORKSPACE/TestResults/Modeler
+    fi
+    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
+
+    ./rsmodeler.sh -testIntegration
     sleep 5
     rm -r test/reports/TESTS-TestSuites.xml
     if [ ! -d $WORKSPACE/TestResults/Modeler ]
@@ -121,7 +130,15 @@ runGrailsTests() {
     cd ../RapidSuite
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
     chmod +x rs.sh
-    ./rs.sh -test
+    ./rs.sh -testUnit
+    rm -r test/reports/TESTS-TestSuites.xml
+    if [ ! -d $WORKSPACE/TestResults/RapidSuite ]
+      then
+        mkdir $WORKSPACE/TestResults/RapidSuite
+    fi
+    mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+
+    ./rs.sh -testIntegration
     rm -r test/reports/TESTS-TestSuites.xml
     if [ ! -d $WORKSPACE/TestResults/RapidSuite ]
       then

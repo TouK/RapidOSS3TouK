@@ -53,9 +53,13 @@ start() {
   echo "AlreadyRunning"
  fi
 }
-testApp() {
+testAppUnit() {
    	. $GRAILS_HOME/bin/startGrails test-app
-	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app
+	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app -unit
+}
+testAppIntegration() {
+   	. $GRAILS_HOME/bin/startGrails test-app
+	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app -integration
 }
 stop(){
 
@@ -144,9 +148,13 @@ case "$1" in
      '-start')
       start
   ;;
-  
-   '-test')
-      testApp
+
+   '-testUnit')
+      testAppUnit
+  ;;
+
+   '-testIntegration')
+      testAppIntegration
   ;;
 
      '-stop')

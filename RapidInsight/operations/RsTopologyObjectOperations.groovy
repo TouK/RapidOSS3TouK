@@ -31,7 +31,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     def currentState()
     {
         def stateObj = RsObjectState.get(objectId:id);
-        return stateObj?stateObj.state:5;
+        return stateObj?stateObj.state:null;
     }
 
     int setState(newState)

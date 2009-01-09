@@ -20,6 +20,18 @@
     
 public class RsServiceOperations extends RsGroupOperations
 {
-
+    public int findMaxSeverity(currentState, newState)
+    {
+        if(newState != -1 && newState <= currentState) return currentState;
+        def maxValue = 0;
+        childObjects.each{
+            def childState = it.getState();
+            if(childState >= 0 && maxValue < childState)
+            {
+                maxValue = childState;
+            }
+        }
+        return maxValue;
+    }
 }
     

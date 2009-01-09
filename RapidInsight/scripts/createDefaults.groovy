@@ -27,13 +27,16 @@ import script.CmdbScript
 CmdbScript.addScript(name: "modelCreator");
 CmdbScript.addScript(name: "removeAll");
 CmdbScript.addScript(name: "acknowledge");
-CmdbScript.addScript([name: "clearExpiredEvents", type:"Scheduled", enabled:true,period:60]);
+CmdbScript.addScript([name: "clearExpiredEvents", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:true,period:60]);
 CmdbScript.addScript(name: "setOwnership");
 CmdbScript.addScript(name: "queryList");
 CmdbScript.addScript(name: "createQuery");
 CmdbScript.addScript(name: "editQuery");
 CmdbScript.addScript(name: "reloadOperations");
 CmdbScript.addScript(name: "getViewFields");
+
+CmdbScript.addScript([name: "emailGenerator", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60]);
+CmdbScript.addScript([name: "emailSender", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60]);
 
 CmdbScript.addScript(name: "importSampleRiData");
 

@@ -118,16 +118,42 @@ class TreeGridTagLib {
         columns.each {column ->
             def sortBy = column.@sortBy.toString().trim();
             def type = column.@type.toString().trim();
+            def images = [];
+            if(type == 'image' || type == "Image"){
+                images = getColumnImages(column);
+            }
             columnArray.add("""{
                     attributeName:'${column.@attributeName}',
                     colLabel:'${column.@colLabel}',
                     ${sortBy != "" ? "sortBy:${sortBy}," : ""}
                     ${type != "" ? "type:'${type}'," : ""}
+                    ${images.size() > 0 ? "images:[${images.join(',\n')}]," : ""}
                     width:${column.@width}
                 }""")
         }
         cArray.add("columns:[${columnArray.join(',\n')}]")
         return "{${cArray.join(',\n')}}"
+    }
+
+    static def getColumnImages(columnNode){
+        def imagesArray = [];
+        def images = columnNode.Images?.Image;
+        images.each{image->
+            def imageArray = [];
+            def src = image.@src.toString().trim(); 
+            def visible = image.@visible.toString().trim(); 
+            def align = image.@align.toString().trim();
+            imageArray.add("src:'${src}'");
+            if(visible != ""){
+                imageArray.add("visible:\"${visible}\"")
+            }
+            if(align != ""){
+                imageArray.add("align:'${align}'")
+            }
+            imagesArray.add("{${imageArray.join(',')}}")
+        }
+
+        return imagesArray;
     }
 
     static def processMenuItem(menuItem, eventMap) {
@@ -172,10 +198,10 @@ class TreeGridTagLib {
     }
     static def fTgColumn(attrs, bodyString) {
         def validAttrs = ["attributeName", "colLabel", "sortBy", "type", "width"];
-        return TagLibUtils.getConfigAsXml("Column", attrs, validAttrs)
+        return TagLibUtils.getConfigAsXml("Column", attrs, validAttrs, bodyString)
     }
     def tgColumn = {attrs, body ->
-        out << fTgColumn(attrs, "");
+        out << fTgColumn(attrs, body());
     }
     static def fTgRootImages(attrs, bodyString) {
         return TagLibUtils.getConfigAsXml("RootImages", attrs, [], bodyString)
@@ -190,6 +216,21 @@ class TreeGridTagLib {
 
     def tgRootImage = {attrs, body ->
         out << fTgRootImage(attrs, "");
+    }
+
+    static def fTgImages(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("Images", attrs, [], bodyString)
+    }
+    def tgImages = {attrs, body ->
+        out << fTgImages(attrs, body());
+    }
+    static def fTgImage(attrs, bodyString) {
+        def validAttrs = ["visible", "src", "align"];
+        return TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
+    }
+
+    def tgImage = {attrs, body ->
+        out << fTgImage(attrs, "");
     }
 
     static def fTgMenuItems(attrs, bodyString) {

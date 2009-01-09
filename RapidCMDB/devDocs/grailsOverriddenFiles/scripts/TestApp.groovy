@@ -118,7 +118,7 @@ target(testApp: "The test app implementation target") {
             defaultSystemProps[propName] = propValue;
         }
         if(!integrationOnly) {
-//            runUnitTests()
+            runUnitTests()
         }
         defaultSystemProps.each{propName, propValue->
             System.setProperty(propName, propValue);

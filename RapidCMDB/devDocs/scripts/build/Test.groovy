@@ -33,39 +33,39 @@ class Test extends Parent{
 	}
 	
 	def runTests(String testClass, String outputXmlDir, String outputXmlFile, String htmlDir){
-		ant.echo(message : "Running all tests for test class " + testClass + " and will output xml results to " + outputXmlDir + "/" + outputXmlFile);
-		ant.mkdir(dir :  outputXmlDir);
-		ant.junit(printsummary : "yes", haltonfailure : "no", fork : "yes", showoutput : "true"){
-			ant.classpath(refid : "testexecutionclasspath");
-			ant.jvmarg(value : "-Xmx512m");
-			ant.jvmarg(value : "-DWORKSPACE=.");
-			ant.formatter(type :  "xml");
-			ant.test(name : testClass, haltonfailure : "no",  outfile : outputXmlDir + "/" + outputXmlFile){
-				ant.formatter(type : "xml");
-			}
-		}
-        def testSuiteString = "</testsuite>";
-        def xmlFiles = new File(outputXmlDir).listFiles();
-        xmlFiles.each{File f->
-            if(f.getName().endsWith(".xml"))
-            {
-                def lines = f.readLines();
-                def strBuf = new StringBuffer();
-                lines.each{String line->
-                    if(line.indexOf("</testsuite>") < 0)
-                    {
-                        strBuf.append (line).append("\n");
-                    }
-                    else
-                    {
-                        strBuf.append (line.substring(0, line.indexOf(testSuiteString)+testSuiteString.length())).append("\n");
-                        return;
-                    }
-                }
-                println "new content for ${f.getCanonicalPath()} is ${strBuf.toString()}"
-                f.setText(strBuf.toString());
-            }
-        }
+//		ant.echo(message : "Running all tests for test class " + testClass + " and will output xml results to " + outputXmlDir + "/" + outputXmlFile);
+//		ant.mkdir(dir :  outputXmlDir);
+//		ant.junit(printsummary : "yes", haltonfailure : "no", fork : "yes", showoutput : "true"){
+//			ant.classpath(refid : "testexecutionclasspath");
+//			ant.jvmarg(value : "-Xmx512m");
+//			ant.jvmarg(value : "-DWORKSPACE=.");
+//			ant.formatter(type :  "xml");
+//			ant.test(name : testClass, haltonfailure : "no",  outfile : outputXmlDir + "/" + outputXmlFile){
+//				ant.formatter(type : "xml");
+//			}
+//		}
+//        def testSuiteString = "</testsuite>";
+//        def xmlFiles = new File(outputXmlDir).listFiles();
+//        xmlFiles.each{File f->
+//            if(f.getName().endsWith(".xml"))
+//            {
+//                def lines = f.readLines();
+//                def strBuf = new StringBuffer();
+//                lines.each{String line->
+//                    if(line.indexOf("</testsuite>") < 0)
+//                    {
+//                        strBuf.append (line).append("\n");
+//                    }
+//                    else
+//                    {
+//                        strBuf.append (line.substring(0, line.indexOf(testSuiteString)+testSuiteString.length())).append("\n");
+//                        return;
+//                    }
+//                }
+//                println "new content for ${f.getCanonicalPath()} is ${strBuf.toString()}"
+//                f.setText(strBuf.toString());
+//            }
+//        }
 //		ant.mkdir(dir :  htmlDir);
 //		ant.junitreport(todir : htmlDir ){
 //			ant.fileset(dir : outputXmlDir){

@@ -215,14 +215,14 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
         // Configuration
 
         config = getConfiguration(parentCtx)
+        // Compass
+        LOG.debug("Defining Compass and Compass::GPS beans")
         if(config)
         {
             System.setProperty("mirrorBufferUpperLimit", ""+config.mirrorBufferUpperLimit)
             System.setProperty("mirrorBufferLowerLimit", ""+config.mirrorBufferLowerLimit)
+            config?.compassSettings["compass.transaction.disableThreadBoundLocalTransaction"] = "true"
         }
-        // Compass
-        LOG.debug("Defining Compass and Compass::GPS beans")
-        config?.compassSettings["compass.transaction.disableThreadBoundLocalTransaction"] = "true"
         compass(DefaultSearchableCompassFactoryBean) { bean ->
             grailsApplication = application
             compassConnection = config?.compassConnection

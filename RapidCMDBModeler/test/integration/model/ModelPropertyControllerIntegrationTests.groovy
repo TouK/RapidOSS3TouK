@@ -48,7 +48,7 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         mpc.params["model.id"] = "" + model.id;
         mpc.params["type"] = ModelProperty.stringType;
         mpc.params["name"] = "prop1";
-        mpc.params["lazy"] = "false";
+        mpc.params["_lazy"] = "";
         mpc.save();
         def modelDatasources = ModelDatasource.list();
         assertEquals(1, modelDatasources.size());
@@ -60,8 +60,8 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(1, modelProps.size());
         def modelProp = modelProps[0];
         assertEquals("prop1", modelProp.name);
-        assertEquals(model.id, modelProp.model?.id);
-        assertEquals(rcmdbModelDatasource.id, modelProp.propertyDatasource?.id);
+        assertEquals(model.id, modelProp.model.id);
+        assertEquals(rcmdbModelDatasource.id, modelProp.propertyDatasource.id);
 
         mpc = new ModelPropertyController();
         resetController(mpc);

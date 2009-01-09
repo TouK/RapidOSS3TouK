@@ -83,10 +83,12 @@ class ModelPropertyController {
                 }
                 modelDatasource = ModelDatasource.add(model: currentModel, datasource: datasourceName);
             }
+            params["propertyDatasource.id"] = ""+modelDatasource.id;
             params["propertyDatasource"] = ["id":modelDatasource.id];
         }
         else
         {
+            params["propertyDatasource.id"] = "null";
             params["propertyDatasource"] = ["id":"null"];
         }
         def modelProperty = ModelProperty.add(ControllerUtils.getClassProperties(params, ModelProperty))

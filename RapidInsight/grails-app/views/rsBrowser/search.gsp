@@ -55,7 +55,13 @@
         </table>
     </div>
      <div class="paginateButtons">
-        <g:paginate total="${count}" action="${params.domain}" id="search" params="${[query:params.query, searchQuery:params.searchQuery]}"/>
+         <%
+             def paginateParams = [searchQuery:params.searchQuery];
+             if(params.query){
+                 paginateParams.put("query", params.query)
+             }
+         %>
+        <g:paginate total="${count}" action="${params.domain}" id="search" params="${paginateParams}"/>
     </div>
 </div>
 </body>

@@ -65,11 +65,11 @@ start() {
  fi
 }
 testAppUnit() {
-   	. $GRAILS_HOME/bin/startGrails test-app
+   	. $GRAILS_HOME/bin/startGrails test-app -unit
 	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app -unit
 }
 testAppIntegration() {
-   	. $GRAILS_HOME/bin/startGrails test-app
+   	. $GRAILS_HOME/bin/startGrails test-app -integration
 	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app -integration
 }
 stop(){

@@ -62,7 +62,7 @@ users.each{ user ->
 
             createdEvents.each{ event ->
                 RsMessage.addEventCreateEmail(logger,event,destination,delay);
-                if(nexMaxCreateId<Long.valueOf(event.id)+1)
+                if(newMaxCreateId<Long.valueOf(event.id)+1)
                 {
                     newMaxCreateId=Long.valueOf(event.id)+1;
                 }

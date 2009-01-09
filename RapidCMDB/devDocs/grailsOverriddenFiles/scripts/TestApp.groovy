@@ -235,6 +235,7 @@ def runTests = {suite, TestResult result, Closure callback ->
                     def junitTest = new JUnitTest(test.name)
                     plainOutput.startTestSuite(junitTest)
                     xmlOutput.startTestSuite(junitTest)
+                    savedOut.println "Running test ${test.name}..."
                     def start = System.currentTimeMillis()
                     def runCount = 0
                     def failureCount = 0

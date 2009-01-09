@@ -35,8 +35,8 @@ CmdbScript.addScript(name: "editQuery");
 CmdbScript.addScript(name: "reloadOperations");
 CmdbScript.addScript(name: "getViewFields");
 
-CmdbScript.addScript([name: "emailGenerator", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60]);
-CmdbScript.addScript([name: "emailSender", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60]);
+CmdbScript.addScript([name: "emailGenerator", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
+CmdbScript.addScript([name: "emailSender", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
 
 CmdbScript.addScript(name: "importSampleRiData");
 

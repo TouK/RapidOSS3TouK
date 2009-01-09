@@ -1,8 +1,8 @@
-//package com.ifountain.rcmdb.domain.util
+package com.ifountain.rcmdb.domain.util
 //
 //import com.ifountain.rcmdb.domain.generation.ModelGenerator
 //import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
-//import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 //
 ///**
 //* Created by IntelliJ IDEA.
@@ -11,9 +11,9 @@
 //* Time: 9:00:20 AM
 //* To change this template use File | Settings | File Templates.
 //*/
-//class ControllerUtilsTest extends RapidCmdbWithCompassTestCase{
-//    public void testGetClassProperties()
-//    {
+class ControllerUtilsTest extends RapidCmdbWithCompassTestCase{
+    public void testGetClassProperties()
+    {
 //        def modelName = "ChildModel";
 //        def relatedModelName = "RelatedModel";
 //        def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
@@ -77,14 +77,14 @@
 //        assertEquals (false, classProperties.prop1);
 //        assertEquals (params.prop2, classProperties.prop2);
 //        assertEquals (relatedModelInstance1.id, classProperties.rel1.id);
-//    }
-//
-//    public void testConvertToSuccessfulXML()
-//    {
+    }
+
+    public void testConvertToSuccessfulXML()
+    {
 //        String message = "message1";
 //        def xml = ControllerUtils.convertSuccessToXml(message);
 //        def xmlNode = new XmlParser().parseText(xml);
 //        assertEquals(message, xmlNode.text());
 //        assertEquals("Successful", xmlNode.name());
-//    }
-//}
+    }
+}

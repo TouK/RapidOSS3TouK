@@ -493,7 +493,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             {
                 var imageSrc = expressionsArray[i]['src'];
                 htmlEl.style.backgroundImage = 'url("' + imageSrc + '")';
-                htmlEl.style.backgroundPosition = columnConfig['align'] || 'left';
+                YAHOO.util.Dom.setStyle(htmlEl, "background-position", expressionsArray[i]['align'] ? 'center ' + expressionsArray[i]['align'] : 'center left')
             }
         }
     },

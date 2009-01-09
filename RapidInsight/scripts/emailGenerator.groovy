@@ -41,84 +41,91 @@ def users=RsUser.list()
 users.each{ user ->
     def userId=user.id;
     def destination=user.email;
-    logger.debug("Searching RsMessageRule for userId:${userId}, destination is:${destination}");
-    
-    
-    //processing for RsEvent creates
-    //note that we use maxCreateId for search , and use newMaxCreateId to save the last processed Event
-    def newMaxCreateId=maxCreateId;
-    def createRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"${RsMessage.EMAIL}\" AND enabled:true")
-    createRules.each{ rule ->
-        def delay=rule.delay
-        def searchQuery=SearchQuery.get(id:rule.searchQueryId)
-        if(searchQuery)
-        {
-            def createQuery = " (${searchQuery.query}) AND id:[${maxCreateId} TO *]"
+    logger.debug("Going to search RsMessageRule for userId:${userId}");
+    if(destination!=null && destination!="")
+    {
+        logger.debug("Searching RsMessageRule for userId:${userId}, destination is:${destination}");
 
-            logger.debug("Seaching RsEvent, for userid: ${userId}  with createQuery : ${createQuery}")
-            def createdEvents=RsEvent.getPropertyValues(createQuery,["id"],[sort:"id", order:"asc",max:1000])
-            def date=new Date()
-            def now=date.getTime();
 
-            createdEvents.each{ event ->
-                RsMessage.addEventCreateEmail(logger,event,destination,delay);
-                if(newMaxCreateId<Long.valueOf(event.id)+1)
-                {
-                    newMaxCreateId=Long.valueOf(event.id)+1;
+        //processing for RsEvent creates
+        //note that we use maxCreateId for search , and use newMaxCreateId to save the last processed Event
+        def newMaxCreateId=maxCreateId;
+        def createRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"${RsMessage.EMAIL}\" AND enabled:true")
+        createRules.each{ rule ->
+            def delay=rule.delay
+            def searchQuery=SearchQuery.get(id:rule.searchQueryId)
+            if(searchQuery)
+            {
+                def createQuery = " (${searchQuery.query}) AND id:[${maxCreateId} TO *]"
+
+                logger.debug("Seaching RsEvent, for userid: ${userId}  with createQuery : ${createQuery}")
+                def createdEvents=RsEvent.getPropertyValues(createQuery,["id"],[sort:"id", order:"asc",max:1000])
+                def date=new Date()
+                def now=date.getTime();
+
+                createdEvents.each{ event ->
+                    RsMessage.addEventCreateEmail(logger,event,destination,delay);
+                    if(newMaxCreateId<Long.valueOf(event.id)+1)
+                    {
+                        newMaxCreateId=Long.valueOf(event.id)+1;
+                    }
                 }
             }
-        }
-        else
-        {
-            logger.debug("SearchQuery with id ${it.searchQueryId} does not exist")
-        }
-
-    }
-    if(newMaxCreateId>maxCreateId)
-    {
-        createIdLookup.update(value:String.valueOf(newMaxCreateId))
-    }
-
-    //process delayingMessages which has exceeded delay time
-    RsMessage.processDelayedEmails(logger)
-
-    
-
-    //process Event Clears, HistoricalEvent Creates
-    //note that we use maxClearId for search , and use newMaxClearId to save the last processed Event
-    def newMaxClearId=maxClearId;
-    def clearRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"${RsMessage.EMAIL}\" AND clearAction:true AND enabled:true")
-    clearRules.each{ rule ->        
-        def searchQuery=SearchQuery.get(id:rule.searchQueryId)
-        if(searchQuery)
-        {
-            def clearQuery = " (${searchQuery.query}) AND id:[${maxClearId} TO *]"
-            
-            logger.debug("Searching RsHistoricalEvent, for userid: ${userId} with clearQuery : ${clearQuery}")
-            def clearedEvents=RsHistoricalEvent.getPropertyValues(clearQuery,["id","activeId"],[sort:"id", order:"asc",max:1000])
-            def date=new Date()
-            def now=date.getTime();
-
-            clearedEvents.each{ event ->
-                  RsMessage.addEventClearEmail(logger,event,destination)
-                    if(newMaxClearId<Long.valueOf(event.id)+1)
-                    {
-                        newMaxClearId=Long.valueOf(event.id)+1;
-                    }
-                  
+            else
+            {
+                logger.debug("SearchQuery with id ${it.searchQueryId} does not exist")
             }
+
         }
-        else
+        if(newMaxCreateId>maxCreateId)
         {
-            logger.debug("SearchQuery with id ${it.searchQueryId} does not exist")
+            createIdLookup.update(value:String.valueOf(newMaxCreateId))
+        }
+
+        //process delayingMessages which has exceeded delay time
+        RsMessage.processDelayedEmails(logger)
+
+
+
+        //process Event Clears, HistoricalEvent Creates
+        //note that we use maxClearId for search , and use newMaxClearId to save the last processed Event
+        def newMaxClearId=maxClearId;
+        def clearRules=RsMessageRule.searchEvery("userId:${userId} AND destinationType:\"${RsMessage.EMAIL}\" AND clearAction:true AND enabled:true")
+        clearRules.each{ rule ->
+            def searchQuery=SearchQuery.get(id:rule.searchQueryId)
+            if(searchQuery)
+            {
+                def clearQuery = " (${searchQuery.query}) AND id:[${maxClearId} TO *]"
+
+                logger.debug("Searching RsHistoricalEvent, for userid: ${userId} with clearQuery : ${clearQuery}")
+                def clearedEvents=RsHistoricalEvent.getPropertyValues(clearQuery,["id","activeId"],[sort:"id", order:"asc",max:1000])
+                def date=new Date()
+                def now=date.getTime();
+
+                clearedEvents.each{ event ->
+                      RsMessage.addEventClearEmail(logger,event,destination)
+                        if(newMaxClearId<Long.valueOf(event.id)+1)
+                        {
+                            newMaxClearId=Long.valueOf(event.id)+1;
+                        }
+
+                }
+            }
+            else
+            {
+                logger.debug("SearchQuery with id ${it.searchQueryId} does not exist")
+            }
+
+        }
+        if(newMaxClearId>maxClearId)
+        {
+            clearIdLookup.update(value:String.valueOf(newMaxClearId))
         }
 
     }
-    if(newMaxClearId>maxClearId)
+    else
     {
-        clearIdLookup.update(value:String.valueOf(newMaxClearId))
+        logger.warn("Skipping search RsMessageRule for userId:${userId}. User does not have an email");
     }
-
-
 
 }

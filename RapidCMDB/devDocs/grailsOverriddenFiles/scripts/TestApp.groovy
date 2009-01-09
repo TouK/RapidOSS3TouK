@@ -436,6 +436,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
         event("StatusUpdate", ["Error executing tests ${e.message}"])
 
         e.printStackTrace(System.out)
+        println "STACK TRACE:"+e.stackTrace
         e.stackTrace.each {StackTraceElement el->
             System.out.println(""+el.getClassName()+":"+el.getMethodName()+" line :"+el.getLineNumber()+" col "+el.getFileName());
         }

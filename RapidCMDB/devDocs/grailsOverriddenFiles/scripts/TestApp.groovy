@@ -431,20 +431,21 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
             }
         }
     }
-    catch (Throwable e) {
-        System.out = savedOut;
-        event("StatusUpdate", ["Error executing tests ${e.message}"])
-        FileOutputStream fo = new FileOutputStream("/root/exception.txt");
-        PrintStream st = new PrintStream(new FileOutputStream("/root/exception.txt"))
-        e.printStackTrace(st)
-        st.flush();
-        st.close();
-        fo.flush();
-        fo.close();
-        event("StatusFinal", ["Error running tests: ${e.toString()}"])
-        exit(1)
-    }
+//    catch (Throwable e) {
+//        System.out = savedOut;
+//        event("StatusUpdate", ["Error executing tests ${e.message}"])
+//        FileOutputStream fo = new FileOutputStream("/root/exception.txt");
+//        PrintStream st = new PrintStream(new FileOutputStream("/root/exception.txt"))
+//        e.printStackTrace(st)
+//        st.flush();
+//        st.close();
+//        fo.flush();
+//        fo.close();
+//        event("StatusFinal", ["Error running tests: ${e.toString()}"])
+//        exit(1)
+//    }
     finally {
+        System.out = savedOut;
         shutdownApp()
     }
 }

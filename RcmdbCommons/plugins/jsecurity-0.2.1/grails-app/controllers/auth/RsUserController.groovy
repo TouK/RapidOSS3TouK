@@ -182,7 +182,7 @@ class RsUserController {
             def password1 = params["password1"];
             def password2 = params["password2"];
             if (password1 != password2) {
-                def errors = [message(code: "default.passwords.dont.match", args: [])]
+                addError("default.passwords.dont.match",[])                
                 flash.errors = errors;
                 render(view: 'edit', model: [rsUser: rsUser])
                 return;

@@ -29,12 +29,22 @@ class SearchGridTagLib {
         def searchGridId = attrs["id"];
         def configXML = "<SearchGrid>${bodyString}</SearchGrid>";
         def onSaveQueryClick = attrs["onSaveQueryClick"];
+        def onRowDoubleClick = attrs["onRowDoubleClick"];
         def saveQueryClickJs;
+        def rowDoubleClickJs;
         if (onSaveQueryClick != null) {
             saveQueryClickJs = """
                ${searchGridId}sg.events['saveQueryClicked'].subscribe(function(query){
                    var params = {query:query};
                    YAHOO.rapidjs.Actions['${onSaveQueryClick}'].execute(params);
+                }, this, true);
+            """
+        }
+        if (onRowDoubleClick != null) {
+            rowDoubleClickJs = """
+               ${searchGridId}sg.events['rowDoubleClicked'].subscribe(function(xmlData, event){
+                   var params = {data:xmlData.getAttributes(), event:event};
+                   YAHOO.rapidjs.Actions['${onRowDoubleClick}'].execute(params);
                 }, this, true);
             """
         }
@@ -77,6 +87,7 @@ class SearchGridTagLib {
                var ${searchGridId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var ${searchGridId}sg = new YAHOO.rapidjs.component.search.SearchGrid(${searchGridId}container, ${searchGridId}c);
                ${saveQueryClickJs ? saveQueryClickJs : ""}
+               ${rowDoubleClickJs ? rowDoubleClickJs : ""}
                ${menuEventsJs ? menuEventsJs : ""}
                if(${searchGridId}sg.pollingInterval > 0){
                    ${searchGridId}sg.poll();

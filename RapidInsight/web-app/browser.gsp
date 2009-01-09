@@ -24,7 +24,7 @@
 </rui:treeGrid>
 <rui:searchList id="searchList" url="rsBrowser/searchWithQuery?format=xml" rootTag="Objects" contentPath="Object" keyAttribute="id" showMax="6" 
         lineSize="3" title="Objects" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
-        pollingInterval="0" defaultFields="${['id', 'name']}">
+        pollingInterval="0" defaultFields="${['id', 'name']}" onRowDoubleClick="browseAction">
     <rui:slMenuItems>
         <rui:slMenuItem id="browse" label="Browse" action="browseAction"></rui:slMenuItem>
     </rui:slMenuItems>

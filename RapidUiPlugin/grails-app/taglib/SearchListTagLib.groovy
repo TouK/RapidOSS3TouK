@@ -29,12 +29,22 @@ class SearchListTagLib {
         def searchListId = attrs["id"];
         def configXML = "<SearchList>${bodyString}</SearchList>";
         def onSaveQueryClick = attrs["onSaveQueryClick"];
+        def onRowDoubleClick = attrs["onRowDoubleClick"];
         def saveQueryClickJs;
+        def rowDoubleClickJs;
         if (onSaveQueryClick != null) {
             saveQueryClickJs = """
                ${searchListId}sl.events['saveQueryClicked'].subscribe(function(query){
                    var params = {query:query};
                    YAHOO.rapidjs.Actions['${onSaveQueryClick}'].execute(params);
+                }, this, true);
+            """
+        }
+        if (onRowDoubleClick != null) {
+            rowDoubleClickJs = """
+               ${searchListId}sl.events['rowDoubleClicked'].subscribe(function(xmlData, event){
+                   var params = {data:xmlData.getAttributes(), event:event};
+                   YAHOO.rapidjs.Actions['${onRowDoubleClick}'].execute(params);
                 }, this, true);
             """
         }
@@ -98,6 +108,7 @@ class SearchListTagLib {
                var ${searchListId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var ${searchListId}sl = new YAHOO.rapidjs.component.search.SearchList(${searchListId}container, ${searchListId}c);
                ${saveQueryClickJs ? saveQueryClickJs : ""}
+               ${rowDoubleClickJs ? rowDoubleClickJs : ""}
                ${menuEventsJs ? menuEventsJs : ""}
                ${propMenuEventsJs ? propMenuEventsJs : ""}
                if(${searchListId}sl.pollingInterval > 0){
@@ -256,12 +267,12 @@ class SearchListTagLib {
     def slImages = {attrs, body ->
         out << fSlImages(attrs, body())
     }
-    static def fSlImage(attrs, bodyString){
+    static def fSlImage(attrs, bodyString) {
         def validAttrs = ["src", "visible"];
         return TagLibUtils.getConfigAsXml("Image", attrs, validAttrs);
     }
     def slImage = {attrs, body ->
-        out << fSlImage(attrs,"")
+        out << fSlImage(attrs, "")
     }
     static def fSlFields(attrs, bodyString) {
         return TagLibUtils.getConfigAsXml("Fields", attrs, [], bodyString);
@@ -269,7 +280,7 @@ class SearchListTagLib {
     def slFields = {attrs, body ->
         out << fSlFields(attrs, body());
     }
-    static def fSlField(attrs, bodyString){
+    static def fSlField(attrs, bodyString) {
         def validAttrs = ["exp", "fields"];
         return TagLibUtils.getConfigAsXml("Field", attrs, validAttrs)
     }

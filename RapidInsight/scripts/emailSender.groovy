@@ -12,24 +12,6 @@ import message.RsMessage
 def templatePath="grails-app/templates/email/emailTemplate.gsp";
 def from="mustafa"
 
-def connectionParams=[:]
-connectionParams.name="emailcon"
-connectionParams.smtpHost="192.168.1.100"
-connectionParams.smtpPort=25
-connectionParams.username="testaccount"
-connectionParams.userPassword="123"
-connectionParams.protocol=EmailConnection.SMTP
-
-def con=EmailConnection.add(connectionParams)
-if(con.hasErrors())
-{
-    return "Error occured. Reason"+ con.errors
-}
-def emailDs=EmailDatasource.add(name:"emailds",connection:con)
-if(emailDs.hasErrors())
-{
-    return "Error occured. Reason"+ emailDs.errors
-}
 
 
 def date=new Date();

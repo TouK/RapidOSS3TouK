@@ -37,7 +37,7 @@ def date=new Date();
 def ds=EmailDatasource.get(name:"emailds")
 if(ds!=null)
 {
-    def messages=RsMessage.searchEvery("state:1 AND destinationType:\"${RsMessage.EMAIL}\"", [sort: "id",order:"asc",max:1000]);
+    def messages=RsMessage.search("state:1 AND destinationType:\"${RsMessage.EMAIL}\"", [sort: "id",order:"asc",max:100]);
 
     messages.each{ message ->
         def event=null;
@@ -53,10 +53,10 @@ if(ds!=null)
         if(event!=null)
         {
 
-            def eventParams=event.asMap();
+
             logger.debug("Will send email about RsEvent : ${eventParams}");
 
-            def templateParams=[eventParams:eventParams]
+            def templateParams=[event:event]
             def emailParams=[:]
             emailParams.from=from
             emailParams.to=message.destination

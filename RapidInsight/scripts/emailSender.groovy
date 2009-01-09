@@ -5,8 +5,8 @@
  * Time: 2:23:36 PM
  * To change this template use File | Settings | File Templates.
  */
-import connection.EmailConnection
-import datasource.EmailDatasource
+
+import connection.EmailConnectionTemplate
 import message.RsMessage
 
 def templatePath="grails-app/templates/email/emailTemplate.gsp";
@@ -16,12 +16,14 @@ def from="mustafa"
 
 def date=new Date();
 
-def ds=EmailDatasource.get(name:"emailds")
+
+def ds=EmailConnectionTemplate.get(name:"emailTemplate").emailDatasource
 if(ds!=null)
 {
-    def messages=RsMessage.search("state:1 AND destinationType:\"${RsMessage.EMAIL}\"", [sort: "id",order:"asc",max:100]);
+    def messages=RsMessage.search("state:1 AND destinationType:\"${RsMessage.EMAIL}\"", [sort: "id",order:"asc",max:100]).results;
 
     messages.each{ message ->
+        
         def event=null;
         if(message.action=="create")
         {
@@ -35,10 +37,10 @@ if(ds!=null)
         if(event!=null)
         {
 
-
+            def eventParams=event.asMap();
             logger.debug("Will send email about RsEvent : ${eventParams}");
 
-            def templateParams=[event:event]
+            def templateParams=[eventParams:eventParams]
             def emailParams=[:]
             emailParams.from=from
             emailParams.to=message.destination

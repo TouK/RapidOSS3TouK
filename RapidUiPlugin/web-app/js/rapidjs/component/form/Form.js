@@ -138,7 +138,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
                 }
             }
             else {
-                formElement.value = xmlNode.firstChild.nodeValue
+                formElement.value = xmlNode.firstChild ? xmlNode.firstChild.nodeValue : "";
             }
         }
     },

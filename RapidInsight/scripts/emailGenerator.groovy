@@ -40,7 +40,7 @@ def maxClearId=Long.valueOf(clearIdLookup.value)
 def users=RsUser.list()
 users.each{ user ->
     def userId=user.id;
-    def destination="abdurrahim";
+    def destination=user.email;
     logger.debug("Searching RsMessageRule for userId:${userId}, destination is:${destination}");
     
     

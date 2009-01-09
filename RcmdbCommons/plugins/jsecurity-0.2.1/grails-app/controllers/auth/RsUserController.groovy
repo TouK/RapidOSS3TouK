@@ -151,26 +151,26 @@ class RsUserController {
 
             def password1 = params["password1"];
             def password2 = params["password2"];
-
-            def oldPassword = params["oldPassword"];
-            if (new Sha1Hash(oldPassword).toHex() != rsUser.passwordHash) {
-                addError("default.oldpassword.dont.match", []);
-                withFormat {
-                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-                }
-                return;
-            }
-
+            
             if (password1 != password2) {
                 addError("default.passwords.dont.match", []);
                 withFormat {
                     xml {render(text: errorsToXml(errors), contentType: "text/xml")}
                 }
                 return;
-            }
-            if (password1 && password1 != "") {                
+            }            
+            if (password1 && password1 != "") {
+                def oldPassword = params["oldPassword"];
+                if (new Sha1Hash(oldPassword).toHex() != rsUser.passwordHash) {
+                    addError("default.oldpassword.dont.match", []);
+                    withFormat {
+                        xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                    }
+                    return;
+                }
                 updateParams.passwordHash=new Sha1Hash(password1).toHex();
             }
+            
             
             updateParams.email=params["email"]
             rsUser.update(updateParams)

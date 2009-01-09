@@ -10,15 +10,8 @@
  * To change this template use File | Settings | File Templates.
  */
 
-RsTopologyObject.list().each{
-    it.remove();
-}
-RsEvent.list().each{
-    it.remove();
-}
-RsHistoricalEvent.list().each{
-    it.remove();
-}
-RsManagementSystem.list().each{
-    it.remove();
-}
+RsTopologyObject.removeAll();
+RsEvent.removeAll();
+RsHistoricalEvent.removeAll();
+RsManagementSystem.removeAll();
+RsObjectState.removeAll();

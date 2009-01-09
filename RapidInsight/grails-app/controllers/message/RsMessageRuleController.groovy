@@ -98,6 +98,15 @@ class RsMessageRuleController {
     def update = {
         def rsMessageRule = RsMessageRule.get( [id:params.id] )
         if(rsMessageRule) {
+            def user=auth.RsUser.get(username:session.username)
+            if(user.email == null || user.email=="")
+            {
+                addError("default.couldnot.create", [RsMessageRule, "Your email address is not entered"])
+                flash.errors = this.errors;
+                render(view:'create',model:[rsMessageRule:rsMessageRule])
+                return;
+            }
+        
             rsMessageRule.update(ControllerUtils.getClassProperties(params, RsMessageRule));
             if(!rsMessageRule.hasErrors()) {
                 flash.message = "RsMessageRule ${params.id} updated"
@@ -120,7 +129,15 @@ class RsMessageRuleController {
     }
 
     def save = {
-        params.userId=auth.RsUser.get(username:session.username)?.id
+        def user=auth.RsUser.get(username:session.username)
+        if(user.email == null || user.email=="")
+        {
+            addError("default.couldnot.create", [RsMessageRule, "Your email address is not entered"])
+            flash.errors = this.errors;
+            render(view:'create',model:[rsMessageRule:new RsMessageRule()])
+            return;
+        }
+        params.userId=user.id
         if(params.userId!=null)
         {
            params.userId=String.valueOf(params.userId) 

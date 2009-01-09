@@ -102,7 +102,7 @@
     <g:layoutHead/>
 </head>
 <body class=" yui-skin-sam rimain">
-<rui:form  id="changeProfileDialog" width="35em" saveUrl="rsUser/changeProfile?format=xml" createUrl="rsUser/changeProfileData?format=xml&username=${session.username}">
+<rui:form  id="changeProfileDialog" width="35em" saveUrl="/RapidSuite/rsUser/changeProfile?format=xml" createUrl="/RapidSuite/rsUser/changeProfileData?format=xml&username=${session.username}">
     <div>
         <div class="hd">Change My Profile</div>
         <div class="bd">
@@ -149,7 +149,7 @@
         <td width="0%">
             <div style="vertical-align:bottom">
                 <span id="rsUser" style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;cursor:pointer">${session.username}</span>
-                <a href="auth/logout" style="font-size:13px;font-weight:bold;color:#083772;text-align:right;text-decoration:none">Logout</a>
+                <a href="/RapidSuite/auth/logout" style="font-size:13px;font-weight:bold;color:#083772;text-align:right;text-decoration:none">Logout</a>
             </div>
         </td>
     </tr>

@@ -37,7 +37,7 @@ def date=new Date();
 def ds=EmailDatasource.get(name:"emailds")
 
 
-def messages=RsMessage.searchEvery('state:1 AND destinationType:"${RsMessage.EMAIL}"', [sort: "id"]);
+def messages=RsMessage.searchEvery("state:1 AND destinationType:\"${RsMessage.EMAIL}\"", [sort: "id",order:"asc",max:1000]);
 
 messages.each{ message ->
 	def event=null;

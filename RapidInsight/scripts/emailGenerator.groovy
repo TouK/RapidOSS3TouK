@@ -62,7 +62,10 @@ users.each{ user ->
 
             createdEvents.each{ event ->
                 RsMessage.addEventCreateEmail(logger,event,destination,delay);
-                newMaxCreateId=Long.valueOf(event.id)+1;
+                if(nexMaxCreateId<Long.valueOf(event.id)+1)
+                {
+                    newMaxCreateId=Long.valueOf(event.id)+1;
+                }
             }
         }
         else
@@ -98,7 +101,11 @@ users.each{ user ->
 
             clearedEvents.each{ event ->
                   RsMessage.addEventClearEmail(logger,event,destination)
-                  newMaxClearId=Long.valueOf(event.id)+1;
+                    if(newMaxClearId<Long.valueOf(event.id)+1)
+                    {
+                        newMaxClearId=Long.valueOf(event.id)+1;
+                    }
+                  
             }
         }
         else

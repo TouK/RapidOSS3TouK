@@ -10,7 +10,16 @@
     <span class="menuButton"><g:link class="create" action="create">New RsMessageRule</g:link></span>
 </div>
        <div class="body">
-            <h1>Your Notification List</h1>  
+            <h1>Your Notification List</h1>
+
+        <g:if test="${flash.message}">
+            <div class="message">${flash.message}</div>
+        </g:if>
+        <g:hasErrors bean="${flash.errors}">
+            <div class="errors">
+                <g:renderErrors bean="${flash.errors}"/>
+            </div>
+        </g:hasErrors>
             <div class="list">
                 <table>
                     <thead>
@@ -36,15 +45,15 @@
                             <td>${rule.destinationType?.encodeAsHTML()}</td>
                             
                             <%
-                                def isSubscribed = ListeningAdapterManager.getInstance().isSubscribed(smartsConnector.ds);
-                                if (isSubscribed) {
+                                
+                                if (rule.enabled) {
                             %>
-                            <td><g:link action="stopConnector" controller="smartsConnector" id="${smartsConnector.id}" class="stop">Stop</g:link></td>
+                            <td><g:link action="disableRule" controller="rsMessageRule" id="${rule.id}" class="stop">Disable</g:link></td>
                             <%
                                 }
                                 else {
                             %>
-                            <td><g:link action="startConnector" controller="smartsConnector" id="${smartsConnector.id}" class="start">Start</g:link></td>
+                            <td><g:link action="enableRule" controller="rsMessageRule" id="${rule.id}" class="start">Enable</g:link></td>
                             <%
                                 }
                             %>

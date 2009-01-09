@@ -30,8 +30,7 @@ class RsMessageRuleController {
     def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
     def list = {
-        if(!params.max) params.max = 10
-        [ rsMessageRuleList: RsMessageRule.list( params ) ]
+
     }
 
     def show = {
@@ -136,7 +135,40 @@ class RsMessageRuleController {
             render(view:'create',model:[rsMessageRule:rsMessageRule])
         }
     }
-
+    def enableRule = {
+        def rsMessageRule = RsMessageRule.get( [id:params.id] )
+        if(rsMessageRule) {
+            rsMessageRule.update(enabled:true);
+            if(!rsMessageRule.hasErrors()) {
+                flash.message = "RsMessageRule ${params.id} enabled"
+                redirect(action:list,id:rsMessageRule.id)
+            }
+            else {
+                render(view:'list',model:[rsMessageRule:rsMessageRule])
+            }
+        }
+        else {
+            flash.message = "RsMessageRule not found with id ${params.id}"
+            redirect(action:edit,id:params.id)
+        }
+    }
+    def disableRule = {
+        def rsMessageRule = RsMessageRule.get( [id:params.id] )
+        if(rsMessageRule) {
+            rsMessageRule.update(enabled:false);
+            if(!rsMessageRule.hasErrors()) {
+                flash.message = "RsMessageRule ${params.id} disabled"
+                redirect(action:list,id:rsMessageRule.id)
+            }
+            else {
+                render(view:'list',model:[rsMessageRule:rsMessageRule])
+            }
+        }
+        else {
+            flash.message = "RsMessageRule not found with id ${params.id}"
+            redirect(action:edit,id:params.id)
+        }
+    }
     def addTo = {
         def rsMessageRule = RsMessageRule.get( [id:params.id] )
         if(!rsMessageRule){

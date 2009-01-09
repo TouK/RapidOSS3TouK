@@ -4,6 +4,8 @@ import com.ifountain.core.domain.annotations.*;
 
 class RsMessage {
 
+    public static String EMAIL = "email";
+    
     //AUTO_GENERATED_CODE
 
     static searchable = {

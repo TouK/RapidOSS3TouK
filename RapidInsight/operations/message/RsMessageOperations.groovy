@@ -24,7 +24,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
     static void processDelayedEmails(Logger externalLogger)
     {
         def now=(new Date()).getTime();
-        def delayingMessages=RsMessage.searchEvery("state:0 AND sendAfter:[${now} TO *] AND destinationType:\"email\"")
+        def delayingMessages=RsMessage.searchEvery("state:0 AND sendAfter:[${now} TO *] AND destinationType:\"${RsMessage.EMAIL}\"")
         delayingMessages.each{
             it.update(state:1)
             externalLogger.info("Updated delaying message with id ${it.id}, changed state to 1. Message : ${it.asMap()}");
@@ -38,7 +38,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         {
            state=1;
         }
-        def message=RsMessage.add(eventId:event.id,destination:destination,insertedAt:now,sendAfter:now+delay,state:state,destinationType:"email",action:"create")
+        def message=RsMessage.add(eventId:event.id,destination:destination,insertedAt:now,sendAfter:now+delay,state:state,destinationType:RsMessage.EMAIL,action:"create")
         if(message.hasErrors())
         {
             externalLogger.warn("Error occured while adding RsMessage. Reason : ${message.errors}")
@@ -55,7 +55,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         def state=1
         def message=null;
 
-        def createMessage=RsMessage.get([eventId:historicalEvent.activeId,action:"create",destination:destination,destinationType:"email"])
+        def createMessage=RsMessage.get([eventId:historicalEvent.activeId,action:"create",destination:destination,destinationType:RsMessage.EMAIL])
         externalLogger.debug("Checking whether create event exists");
         // if there is no create message then we will skip the clear message
         if(createMessage != null ){
@@ -68,7 +68,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
           }
           else
           {
-            message=RsMessage.add(eventId:historicalEvent.activeId,destination:destination,destinationType:"email",insertedAt:now,state:state,action:"clear")
+            message=RsMessage.add(eventId:historicalEvent.activeId,destination:destination,destinationType:RsMessage.EMAIL,insertedAt:now,state:state,action:"clear")
             if(message.hasErrors())
             {
                 externalLogger.warn("Error occured while adding RsMessage. Reason : ${message.errors}")

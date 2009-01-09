@@ -5,7 +5,7 @@ import com.ifountain.core.domain.annotations.*;
 class RsMessageRule {
 
     //AUTO_GENERATED_CODE
-    public static String EMAIL = "email";    
+    
     
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
@@ -44,7 +44,7 @@ class RsMessageRule {
 
      userId(nullable:false)
 
-     destinationType(blank:false,nullable:false,inList:[EMAIL])
+     destinationType(blank:false,nullable:false,inList:[RsMessage.EMAIL])
 
 
      delay(nullable:false)

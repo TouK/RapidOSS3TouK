@@ -235,7 +235,6 @@ def runTests = {suite, TestResult result, Closure callback ->
                     def junitTest = new JUnitTest(test.name)
                     plainOutput.startTestSuite(junitTest)
                     xmlOutput.startTestSuite(junitTest)
-                    savedOut.println "Running test ${test.name}..."
                     def start = System.currentTimeMillis()
                     def runCount = 0
                     def failureCount = 0
@@ -336,7 +335,6 @@ target(runUnitTests: "Run Grails' unit tests under the test/unit directory") {
 
 target(runIntegrationTests: "Runs Grails' tests under the test/integration directory") {
     def savedOut = System.out
-    savedOut.println("Started");
     try {
         // allow user to specify test to run like this...
         //   grails test-app Author
@@ -348,32 +346,22 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
             event("StatusUpdate", ["No tests found in test/integration to execute"])
             return
         }
-        savedOut.println("Loading application");
         //if(integrationOnly) {
             loadApp()
         //}
-        savedOut.println("Configuring application");
         configureApp()
-        savedOut.println("Configured application");
         def app = appCtx.getBean(GrailsApplication.APPLICATION_ID)
         if (app.parentContext == null) {
             app.applicationContext = appCtx
         }
-        savedOut.println("Set parent context of application");
         ServletContextHolder.setServletContext (appCtx.servletContext);
         def classLoader = app.classLoader
-        savedOut.println("Set servlet context of application");
         def suite = new TestSuite()
-        savedOut.println("Suite created");
         populateTestSuite(suite, testFiles, classLoader, appCtx, "test/integration/")
-        savedOut.println("Suite pulated ${suite}".toString());
         if (suite.testCount() > 0) {
-            savedOut.println("Number of tests is ${suite.testCount()}".toString());
             def bootStrapInstance = classLoader.loadClass("BootStrap").newInstance();
             bootStrapInstance.init(ServletContextHolder.getServletContext());
-            savedOut.println("bootstrap initialized");
             int testCases = suite.countTestCases()
-            savedOut.println("Running ${testCases} Integration Test${testCases > 1 ? 's' : ''}...".toString());
             println "-------------------------------------------------------"
             println "Running ${testCases} Integration Test${testCases > 1 ? 's' : ''}..."
 

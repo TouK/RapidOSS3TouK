@@ -367,6 +367,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
             def bootStrapInstance = classLoader.loadClass("BootStrap").newInstance();
             bootStrapInstance.init(ServletContextHolder.getServletContext());
             int testCases = suite.countTestCases()
+            savedOut.println("Running ${testCases} Integration Test${testCases > 1 ? 's' : ''}...".toString());
             println "-------------------------------------------------------"
             println "Running ${testCases} Integration Test${testCases > 1 ? 's' : ''}..."
 

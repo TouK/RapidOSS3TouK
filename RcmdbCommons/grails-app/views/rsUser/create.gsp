@@ -60,7 +60,16 @@
                                 <td valign="top" class="value ${hasErrors(bean:rsUser,field:'passwordHash','errors')}">
                                     <input type="password" id="password2" name="password2" value=""/>
                                 </td>
-                            </tr>                             
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="email">Email:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: rsUser, field: 'email', 'errors')}">
+                                    <input type="text" id="email" name="email" value="${fieldValue(bean: rsUser, field: 'email')}"/>
+                                </td>
+                            </tr>
                         
                         </tbody>
                     </table>

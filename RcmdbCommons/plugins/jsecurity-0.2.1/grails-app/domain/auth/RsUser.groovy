@@ -26,6 +26,7 @@ class RsUser {
     String username
     String rsOwner = "p"
     String passwordHash
+    String email
     List groups = [];
     List permissionRelations = [];
     RsUserInformation userInformation;
@@ -44,6 +45,7 @@ class RsUser {
         __operation_class__(nullable:true)
         __is_federated_properties_loaded__(nullable:true)
         errors(nullable:true)
+        email(nullable:true)
     }
 
     String toString(){

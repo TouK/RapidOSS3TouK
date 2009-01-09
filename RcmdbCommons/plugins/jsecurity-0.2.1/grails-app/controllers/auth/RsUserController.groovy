@@ -122,22 +122,45 @@ class RsUserController {
            render(view: 'edit', model: [rsUser: rsUser])
         }
     }
-
-    def changePassword = {
+    def changeProfileData = {
         def rsUser = RsUser.get(username: params.username)
         if (rsUser) {
-            def password1 = params["password1"];
-            def password2 = params["password2"];
-            if (!SecurityUtils.subject.hasRole("Administrator")) {
-                def oldPassword = params["oldPassword"];
-                if (new Sha1Hash(oldPassword).toHex() != rsUser.passwordHash) {
-                    addError("default.oldpassword.dont.match", []);
-                    withFormat {
-                        xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+            
+            withFormat {
+                xml {
+                    render(contentType: "text/xml"){
+                        Edit {
+                            email(rsUser.email)
+                        }
                     }
-                    return;
+
                 }
             }
+        }
+        else {
+            addError("default.object.not.found", [RsUser.class.name, params.username]);
+            withFormat {
+                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+            }
+        }
+    }
+    def changeProfile = {
+        def rsUser = RsUser.get(username: params.username)
+        if (rsUser) {
+            def updateParams=[:]
+
+            def password1 = params["password1"];
+            def password2 = params["password2"];
+
+            def oldPassword = params["oldPassword"];
+            if (new Sha1Hash(oldPassword).toHex() != rsUser.passwordHash) {
+                addError("default.oldpassword.dont.match", []);
+                withFormat {
+                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                }
+                return;
+            }
+
             if (password1 != password2) {
                 addError("default.passwords.dont.match", []);
                 withFormat {
@@ -145,27 +168,22 @@ class RsUserController {
                 }
                 return;
             }
-            if (password1 && password1 != "") {
-                def passHash = new Sha1Hash(password1).toHex();
-                rsUser.update(passwordHash: passHash);
-                if (!rsUser.hasErrors()) {
-                    withFormat {
-                        xml {render(text: ControllerUtils.convertSuccessToXml("Password changed."), contentType: "text/xml")}
-                    }
-                }
-                else {
-                    withFormat {
-                        xml {render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")}
-                    }
+            if (password1 && password1 != "") {                
+                updateParams.passwordHash=new Sha1Hash(password1).toHex();
+            }
+            
+            updateParams.email=params["email"]
+            rsUser.update(updateParams)
+            if (!rsUser.hasErrors()) {
+                withFormat {
+                    xml {render(text: ControllerUtils.convertSuccessToXml("Profile changed."), contentType: "text/xml")}
                 }
             }
             else {
-                addError("default.null.message", ["passwordHash", RsUser.class.getName()]);
                 withFormat {
-                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                    xml {render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")}
                 }
-                return;
-            }
+            }           
         }
         else {
             addError("default.object.not.found", [RsUser.class.name, params.username]);
@@ -179,6 +197,7 @@ class RsUserController {
         def rsUser = RsUser.get(id: params.id)
 
         if (rsUser) {
+            def updateParams=[:]
             def password1 = params["password1"];
             def password2 = params["password2"];
             if (password1 != password2) {
@@ -188,9 +207,12 @@ class RsUserController {
                 return;
             }
             if (password1 && password1 != "") {
-                rsUser.passwordHash = new Sha1Hash(password1).toHex();
+                updateParams.passwordHash=new Sha1Hash(password1).toHex();                
             }
-            rsUser.update([username: params["username"]])
+            updateParams.username=params["username"]
+            updateParams.email=params["email"]
+            
+            rsUser.update(updateParams)
             if (!rsUser.hasErrors()) {
                 flash.message = "User ${params.id} updated"
                 redirect(action: list)
@@ -221,7 +243,7 @@ class RsUserController {
             return;
         }
 
-        def rsUser = RsUser.add(username: params["username"], passwordHash: new Sha1Hash(password1).toHex());
+        def rsUser = RsUser.add(username: params["username"], passwordHash: new Sha1Hash(password1).toHex(),email:params["email"]);
         if (!rsUser.hasErrors()) {
             flash.message = "User ${rsUser.id} created"
             redirect(action: show, id: rsUser.id)

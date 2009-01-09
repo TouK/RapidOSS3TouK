@@ -102,15 +102,16 @@
     <g:layoutHead/>
 </head>
 <body class=" yui-skin-sam rimain">
-<rui:form  id="changePassDialog" width="35em" saveUrl="rsUser/changePassword?format=xml">
+<rui:form  id="changeProfileDialog" width="35em" saveUrl="rsUser/changeProfile?format=xml" createUrl="rsUser/changeProfileData?format=xml&username=${session.username}">
     <div>
-        <div class="hd">Change Password</div>
+        <div class="hd">Change My Profile</div>
         <div class="bd">
             <form method="POST" action="javascript://nothing">
                 <table>
                     <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
                     <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
                     <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
+                    <tr><td width="50%"><label>Email:</label></td><td width="50%"><input type="text" name="email" style="width:175px"/></td></tr>
                 </table>
                 <input type="hidden" name="username">
             </form>
@@ -161,9 +162,9 @@
         YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
     }, this, true);
 
-     var changePassDialog = YAHOO.rapidjs.Components['changePassDialog']
+     var changeProfileDialog = YAHOO.rapidjs.Components['changeProfileDialog']
      YAHOO.util.Event.addListener(document.getElementById('rsUser'), 'click', function(){
-         changePassDialog.show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {username:"${session.username}"});
+         changeProfileDialog.show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {username:"${session.username}"});
     },this, true)
 </script>
 <g:layoutBody/>

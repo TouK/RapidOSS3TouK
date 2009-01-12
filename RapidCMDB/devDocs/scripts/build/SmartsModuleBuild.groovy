@@ -60,7 +60,7 @@ class SmartsModuleBuild extends Build {
         }
         ant.jar(destfile: env.rapid_rssmarts_jar, basedir: env.rapid_smarts_build);
         ant.copy(file: env.rapid_rssmarts_jar, toDir: "$rapidSuiteDir/lib");
-        ant.copy(todir: "$rapidSuiteDir/grails-app") {
+        ant.copy(todir: "$rapidSuiteDir/grails-app",overwrite:true) {
             ant.fileset(dir: "$env.rapid_smarts/grails-app")
         }
         ant.copy(todir: "$rapidSuiteDir/operations") {
@@ -82,7 +82,7 @@ class SmartsModuleBuild extends Build {
         }
         ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
             ant.arg(value: "-file");
-            ant.arg(value: "${rapidSuiteDir}/grails-app/views/layouts/indexLayout.gsp");
+            ant.arg(value: "${env.rapid_smarts}/applications/RapidInsightForSmarts/grails-app/views/layouts/indexLayout.gsp");
             ant.arg(value: "-applicationPath");
             ant.arg(value: "${env.dist_rapid_suite}/web-app");
             ant.arg(value: "-target");

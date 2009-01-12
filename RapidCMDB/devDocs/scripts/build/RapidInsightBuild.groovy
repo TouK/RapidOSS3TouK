@@ -129,7 +129,7 @@ class RapidInsightBuild extends Build {
 
         ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
             ant.arg(value: "-file");
-            ant.arg(value: "${env.dist_rapid_suite}/grails-app/views/layouts/indexLayout.gsp");
+            ant.arg(value: "$env.rapid_insight/grails-app/views/layouts/indexLayout.gsp");
             ant.arg(value: "-applicationPath");
             ant.arg(value: "${env.dist_rapid_suite}/web-app");
             ant.arg(value: "-target");
@@ -226,7 +226,7 @@ class RapidInsightBuild extends Build {
     }
 
     def createRapidUiPlugin() {
-        ant.copy(todir: "$env.dist_rapid_ui/grails-app") {
+        ant.copy(todir: "$env.dist_rapid_ui/grails-app",overwrite:true) {
             ant.fileset(dir: "$env.rapid_ui/grails-app") {
                 ant.include(name: "domain/**/*")
                 ant.include(name: "controllers/**/*")

@@ -46,7 +46,7 @@ class NetcoolModuleBuild extends Build {
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
-        ant.copy(todir: "$rapidSuiteDir/grails-app") {
+        ant.copy(todir: "$rapidSuiteDir/grails-app",overwrite:true) {
             ant.fileset(dir: "$env.rapid_netcool/grails-app")
         }
         ant.copy(todir: "$rapidSuiteDir/operations") {
@@ -67,7 +67,7 @@ class NetcoolModuleBuild extends Build {
         }
         ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
             ant.arg(value: "-file");
-            ant.arg(value: "${rapidSuiteDir}/grails-app/views/layouts/indexLayout.gsp");
+            ant.arg(value: "${env.rapid_netcool}/applications/RapidInsightForNetcool/grails-app/views/layouts/indexLayout.gsp");
             ant.arg(value: "-applicationPath");
             ant.arg(value: "${env.dist_rapid_suite}/web-app");
             ant.arg(value: "-target");

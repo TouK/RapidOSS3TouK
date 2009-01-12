@@ -23,6 +23,8 @@ class RsUser {
     static searchable = {
         except:["groups", "permissionRelations"]
      };
+    Long id; 
+    Long version;
     String username
     String rsOwner = "p"
     String passwordHash

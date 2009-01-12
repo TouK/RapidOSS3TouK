@@ -203,8 +203,8 @@ def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
                 endIndex = -6
             }
             def className = fileName[fileName.indexOf(base) + base.size()..endIndex].replace('/' as char, '.' as char)
-            def c = classLoader.loadClass(className)
-            if (TestCase.isAssignableFrom(c) && !Modifier.isAbstract(c.modifiers)) {
+            Class c = classLoader.loadClass(className)
+            if (TestCase.isAssignableFrom(c) && !Modifier.isAbstract(c.modifiers) && !(c.name.toLowerCase().endsWith("alltests") || c.name.toLowerCase().endsWith("alltest"))) {
                 suite.addTest(new GrailsTestSuite(ctx, c))
             }
             else {

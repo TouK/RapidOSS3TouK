@@ -24,6 +24,8 @@ class Role {
     static searchable = {
         except:["permissionRelations", "groups"]
      };
+    Long id; 
+    Long version;
     String name
     String rsOwner = "p"
     List permissionRelations = [];

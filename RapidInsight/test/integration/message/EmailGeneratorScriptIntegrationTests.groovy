@@ -37,12 +37,25 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         RsMessageRule.removeAll();
         classes.RsLookup.removeAll();
     }
-    void addEvents()
+    def addEvents(prefix,count)
     {
-        classes.RsEvent.add(name:"ev1",severity:1)
-        classes.RsEvent.add(name:"ev2",severity:2)
-        classes.RsEvent.add(name:"ev3",severity:3)
-        classes.RsEvent.add(name:"ev4",severity:4)
+        def events=[]
+        count.times{
+            def event=classes.RsEvent.add(name:"${prefix}${it}",severity:it)
+            assertFalse(event.hasErrors())
+            events.add(event)
+        }
+        return events;
+    }
+    def addHistoricalEvents(prefix,count)
+    {
+        def events=[]
+        count.times{
+            def event=classes.RsHistoricalEvent.add(name:"${prefix}${it}",severity:it,activeId:it)            
+            assertFalse(event.hasErrors())
+            events.add(event)
+        }
+        return events;
     }
     void loadClasses(classList)
     {
@@ -51,7 +64,7 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
             classes[loadedClass.getSimpleName()]=loadedClass
         }
     }
-    void testDummy()
+    void testEmailGeneratorDoesNotProcessOldEvents()
     {
         def user=RsUser.get(username:"rsadmin");
         user.update(email:destination)
@@ -64,7 +77,7 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         
         def searchQuery=SearchQuery.searchEvery("name:All Events")[0]
 
-        def rule=RsMessageRule.add(userId:user.id,searchQueryId:searchQuery.id,destinationType:RsMessage.EMAIL,enabled:true)
+        def rule=RsMessageRule.add(userId:user.id,searchQueryId:searchQuery.id,destinationType:RsMessage.EMAIL,enabled:true,clearAction:true)
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"),1)
 
@@ -72,21 +85,65 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         CmdbScript.updateScript(script,[logLevel:org.apache.log4j.Level.DEBUG],false)
         assertNotNull (script)
 
-
-
-        CmdbScript.runScript(script,[:])
-        assertEquals(RsMessage.countHits("alias:*"),0)
-        
-        addEvents()
+        // add old events
+        addEvents("oldevents",4)
         assertEquals(classes.RsEvent.countHits("alias:*"),4)
 
-        CmdbScript.runScript(script,[:])
-        assertEquals(RsMessage.countHits("alias:*"),4)
-        RsMessage.list().each{ mes ->
-            assertEquals(mes.destination,destination)
-            assertNotNull(classes.RsEvent.get(id:mes.eventId))
+
+        //add old historical events
+        addHistoricalEvents("oldclearevents",4)
+        assertEquals(classes.RsHistoricalEvent.countHits("alias:*"),4)
+
+        def maxEventId=0
+        def maxEvent=classes.RsEvent.search("alias:*",[max:1,sort:"id",order:"desc"]).results[0]
+        if(maxEvent!=null)
+        {
+            maxEventId=Long.valueOf(maxEvent.id)+1
         }
         
+        def maxEventClearId=0
+        def maxClearEvent=classes.RsHistoricalEvent.search("alias:*",[max:1,sort:"id",order:"desc"]).results[0]
+        if(maxClearEvent!=null)
+        {
+            maxEventClearId=Long.valueOf(maxClearEvent.id)+1
+        }
+
+
+
+        //run the script
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),0)
+
+        //add new events
+        def newEvents=addEvents("newevents",4)
+        assertEquals(classes.RsEvent.countHits("alias:*"),8)
+
+        //run the script and check that only new events are processed
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),4)
+        assertEquals(RsMessage.countHits("action:create"),4)
+        RsMessage.searchEvery("action:create").each{ mes ->
+            assertEquals(mes.destination,destination)
+            def event=classes.RsEvent.get(id:mes.eventId)
+            assertNotNull(event)            
+            assertTrue(event.id>maxEventId)
+        }
         
+        //now clear the events 
+        newEvents.each{
+            it.clear();
+        }
+        assertEquals(classes.RsHistoricalEvent.countHits("alias:*"),8)
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),8)
+        assertEquals(RsMessage.countHits("action:clear"),4)
+        RsMessage.searchEvery("action:clear").each{ mes ->
+            assertEquals(mes.destination,destination)
+            def event=classes.RsHistoricalEvent.search("activeId:${mes.eventId}").results[0]
+            assertNotNull(event)
+            assertTrue(event.id>maxEventClearId)
+        }
+
     }
 }

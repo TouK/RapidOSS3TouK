@@ -168,6 +168,7 @@ class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         originalHandler = null
         ApplicationHolder.application = previousGrailsApp;
         PluginManagerHolder.pluginManager = null;
+        ServletContextHolder.servletContext = null;
         this.loadedClasses.each{
             GroovySystem.metaClassRegistry.removeMetaClass (it);
         }

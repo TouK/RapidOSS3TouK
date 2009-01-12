@@ -395,9 +395,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic", autofillheight:false});
 
         for (var i in this.menuItems) {
+            var subMenu = null;
             if (this.menuItems[i].submenuItems)
             {
-                var subMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderSubmenu_' + i, {position: "dynamic"});
+                subMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderSubmenu_' + i, {position: "dynamic"});
                 for (var j in this.menuItems[i].submenuItems)
                 {
 

@@ -3,6 +3,8 @@ package com.ifountain.rcmdb.domain.util
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 //
 ///**
 //* Created by IntelliJ IDEA.
@@ -14,6 +16,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
 {
 
+    def controllerUtilsClass;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
     }
@@ -41,32 +44,33 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
         Class modelClass = this.gcl.loadClass(modelName);
         Class relatedModelClass = this.gcl.loadClass(relatedModelName);
         initialize([modelClass, relatedModelClass], [])
+        controllerUtilsClass = ApplicationHolder.application.classLoader.loadClass("com.ifountain.rcmdb.domain.util.ControllerUtils");
 
         //Test with true boolean and string
         def relatedModelInstance1 = modelClass.'add'(keyProp:"relatedModelInstance1");
         def params = [_prop1:"", prop1:"on", prop2:"stringValue"]
-        def classProperties = ControllerUtils.getClassProperties (params, modelClass);
+        def classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
         assertEquals(2, classProperties.size());
         assertEquals (true, classProperties.prop1);
         assertEquals (params.prop2, classProperties.prop2);
 
         //Test with false boolean
         params = [_prop1:"", prop2:"stringValue"]
-        classProperties = ControllerUtils.getClassProperties (params, modelClass);
+        classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
         assertEquals(2, classProperties.size());
         assertEquals (false, classProperties.prop1);
         assertEquals (params.prop2, classProperties.prop2);
 
         //Test ignores id
         params = [_prop1:"", prop2:"stringValue", id:"100", _id:"100"]
-        classProperties = ControllerUtils.getClassProperties (params, modelClass);
+        classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
         assertEquals(2, classProperties.size());
         assertEquals (false, classProperties.prop1);
         assertEquals (params.prop2, classProperties.prop2);
 
         //Test with relation
         params = [_prop1:"", prop2:"stringValue", "rel1.id":"${relatedModelInstance1.id}".toString()]
-        classProperties = ControllerUtils.getClassProperties (params, modelClass);
+        classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
         assertEquals(3, classProperties.size());
         assertEquals (false, classProperties.prop1);
         assertEquals (params.prop2, classProperties.prop2);
@@ -74,7 +78,7 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
 
         //Test with null relation
         params = [_prop1:"", prop2:"stringValue", "rel1.id":"null"]
-        classProperties = ControllerUtils.getClassProperties (params, modelClass);
+        classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
         assertEquals(3, classProperties.size());
         assertEquals (false, classProperties.prop1);
         assertEquals (params.prop2, classProperties.prop2);
@@ -82,7 +86,7 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
 
         //Test with undefined property
         params = [_prop1:"", prop2:"stringValue", "rel1.id":"${relatedModelInstance1.id}".toString(), undefinedProp:"as"]
-        classProperties = ControllerUtils.getClassProperties (params, modelClass);
+        classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
         assertEquals(3, classProperties.size());
         assertEquals (false, classProperties.prop1);
         assertEquals (params.prop2, classProperties.prop2);

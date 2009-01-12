@@ -20,7 +20,7 @@ package com.ifountain.rcmdb.domain.util
 
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.web.binding.DataBindingUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -75,7 +75,7 @@ class ControllerUtils {
             }
         }
         domainObjectpropertyNames = domainObjectpropertyNames.unique ().findAll {domainClass.metaClass.getMetaProperty(it) != null}
-        ApplicationHolder.getApplication().getClassLoader().loadClass("org.codehaus.groovy.grails.web.binding.DataBindingUtils").bindObjectToInstance (instance, clonedMap);
+        DataBindingUtils.bindObjectToInstance (instance, clonedMap);
         domainObjectpropertyNames.each{
             def propValue = instance.getProperty(it);
             if(relations.contains(it) && propValue.id == -1l)

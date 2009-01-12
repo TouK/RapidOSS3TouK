@@ -6,7 +6,6 @@
     <meta name="layout" content="adminLayout"/>
 </head>
 <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'admin.gsp')}">Home</a></span>
     <span class="menuButton"><g:link class="create" action="create">New EmailConnector</g:link></span>
 </div>
 <body class="body">

@@ -76,6 +76,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(RsMessage.list().size(),1)
         assertEquals(undelayedMessage.state,1)
         assertEquals(undelayedMessage.insertedAt,undelayedMessage.sendAfter)
+        assertEquals(undelayedMessage.eventId,1)
 
         Long delay2=2000
         def delayedMessage=RsMessage.addEventCreateEmail(Logger.getRootLogger(),[id:2],"xxx",delay2)
@@ -83,6 +84,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(RsMessage.list().size(),2)
         assertEquals(delayedMessage.state,0)
         assertEquals(delayedMessage.sendAfter,delayedMessage.insertedAt+delay2)
+        assertEquals(delayedMessage.eventId,2)
 
 
     }
@@ -127,12 +129,14 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertFalse(createMessage.hasErrors())
         assertEquals(RsMessage.list().size(),1)
         assertEquals(createMessage.state,1)
+        assertEquals(createMessage.eventId,params.id)
 
 
         def clearMessage=RsMessage.addEventClearEmail(Logger.getRootLogger(),[activeId:params.id],params.destination)
         assertFalse(clearMessage.hasErrors())
         assertEquals(RsMessage.list().size(),2)
         assertEquals(clearMessage.state,1)
+        assertEquals(clearMessage.eventId,params.id)
         
         
     }

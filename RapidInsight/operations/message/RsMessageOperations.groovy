@@ -21,7 +21,7 @@ import org.apache.log4j.Logger
 
 public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-    static void processDelayedEmails(Logger externalLogger)
+    public static void processDelayedEmails(Logger externalLogger)
     {
         def now=(new Date()).getTime();
         def delayingMessages=RsMessage.searchEvery("state:0 AND sendAfter:[0 TO ${now}] AND destinationType:\"${RsMessage.EMAIL}\"")
@@ -30,7 +30,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
             externalLogger.info("Updated delaying message with id ${it.id}, changed state to 1. Message : ${it.asMap()}");
         }
     }
-    static void addEventCreateEmail(Logger externalLogger,Map event,String destination,Long delay)
+    public static RsMessage addEventCreateEmail(Logger externalLogger,Map event,String destination,Long delay)
     {
         def now=(new Date()).getTime();
         def state=0
@@ -47,9 +47,10 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         {
             externalLogger.info("Added create message for event with id ${event.id}. Message: ${message.asMap()}");
         }
+        return message
 
     }
-    static void addEventClearEmail(Logger externalLogger,Map historicalEvent,String destination)
+    public static RsMessage addEventClearEmail(Logger externalLogger,Map historicalEvent,String destination)
     {
         def now=(new Date()).getTime();
         def state=1
@@ -83,5 +84,6 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         else{
             externalLogger.debug("Skipped clear message for event with id ${historicalEvent.activeId} . No create message exists for event ")
         }
+        return message
     }
 }

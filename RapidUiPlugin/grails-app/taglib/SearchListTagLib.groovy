@@ -30,8 +30,10 @@ class SearchListTagLib {
         def configXML = "<SearchList>${bodyString}</SearchList>";
         def onSaveQueryClick = attrs["onSaveQueryClick"];
         def onRowDoubleClick = attrs["onRowDoubleClick"];
+        def onRowClick = attrs["onRowClick"];
         def saveQueryClickJs;
         def rowDoubleClickJs;
+        def rowClickJs;
         if (onSaveQueryClick != null) {
             saveQueryClickJs = """
                ${searchListId}sl.events['saveQueryClicked'].subscribe(function(query){
@@ -48,6 +50,14 @@ class SearchListTagLib {
                 }, this, true);
             """
         }
+         if (onRowClick != null) {
+            rowClickJs = """
+               ${searchListId}sl.events['rowClicked'].subscribe(function(xmlData, event){
+                   var params = {data:xmlData.getAttributes(), event:event};
+                   YAHOO.rapidjs.Actions['${onRowClick}'].execute(params);
+                }, this, true);
+            """
+        } 
         def menuEvents = [:]
         def subMenuEvents = [:]
         def propertyMenuEvents = [:]
@@ -109,6 +119,7 @@ class SearchListTagLib {
                var ${searchListId}sl = new YAHOO.rapidjs.component.search.SearchList(${searchListId}container, ${searchListId}c);
                ${saveQueryClickJs ? saveQueryClickJs : ""}
                ${rowDoubleClickJs ? rowDoubleClickJs : ""}
+               ${rowClickJs ? rowClickJs : ""}
                ${menuEventsJs ? menuEventsJs : ""}
                ${propMenuEventsJs ? propMenuEventsJs : ""}
                if(${searchListId}sl.pollingInterval > 0){

@@ -54,7 +54,7 @@ class TreeGridTagLib {
             }
             menuEventsJs = """
                ${treeGridId}tg.events['rowMenuClick'].subscribe(function(xmlData, id, parentId){
-                   var params = {data:xmlData.getAttributes(), id:id, parentId:parentId};
+                   var params = {data:xmlData.getAttributes(), menuId:id, parentId:parentId};
                    ${innerJs}
                 }, this, true);
             """

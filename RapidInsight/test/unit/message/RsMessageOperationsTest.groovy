@@ -48,12 +48,12 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
             fail("Message should be added successfully")
         }
 
-        RsMessage.processDelayedEmails(Logger.getLogger("yyy"))
+        RsMessage.processDelayedEmails(Logger.getRootLogger())
 
         def mes=RsMessage.get(id:message.id)
         assertEquals(mes.state,0)
         Thread.sleep(delay+1000)
-        RsMessage.processDelayedEmails(Logger.getLogger("yyy"))
+        RsMessage.processDelayedEmails(Logger.getRootLogger())
         mes=RsMessage.get(id:message.id)
         assertEquals(mes.state,1)
 

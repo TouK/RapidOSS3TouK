@@ -12,9 +12,6 @@
     <meta name="layout" content="adminLayout"/>
 </head>
 <body>
-<div class="nav">
-   	<span class="menuButton"><a class="home" href="${createLinkTo(dir: 'admin.gsp')}">Home</a></span>
-</div>
 <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
 </g:if>

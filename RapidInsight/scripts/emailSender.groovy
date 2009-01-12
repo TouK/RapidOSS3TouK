@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-import connection.EmailConnectionTemplate
+import connector.EmailConnector
 import message.RsMessage
 
 def templatePath="grails-app/templates/email/emailTemplate.gsp";
@@ -17,7 +17,7 @@ def from="mustafa"
 def date=new Date();
 
 
-def ds=EmailConnectionTemplate.get(name:"emailTemplate").emailDatasource
+def ds=EmailConnector.get(name:"emailConnector").emailDatasource
 if(ds!=null)
 {
     def messages=RsMessage.search("state:1 AND destinationType:\"${RsMessage.EMAIL}\"", [sort: "id",order:"asc",max:100]).results;

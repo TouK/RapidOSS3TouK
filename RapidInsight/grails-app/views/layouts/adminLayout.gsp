@@ -36,7 +36,7 @@
         <li class="${currentUrl.matches('.*/group/.*') ? "selected" : ""}"><g:link action="list" controller="group"><em>Groups</em></g:link></li>
         <li class="${(currentUrl.indexOf('dbDatasources.gsp') > -1 || currentUrl.matches('.*/.*([dD]atabase).*/.*')) ? "selected" : ""}"><a href="${createLinkTo(file: 'dbDatasources.gsp')}"><em>Database</em></a></li>
         <li class="${currentUrl.matches('.*/snmpConnector/.*') ? "selected" : ""}"><g:link action="list" controller="snmpConnector"><em>SNMP</em></g:link></li>
-        <li class="${currentUrl.matches('.*/emailConnectionTemplate/.*') ? "selected" : ""}"><g:link action="list" controller="emailConnectionTemplate"><em>Email</em></g:link></li>
+        <li class="${currentUrl.matches('.*/emailConnector/.*') ? "selected" : ""}"><g:link action="list" controller="emailConnector"><em>Email</em></g:link></li>
         <li class="${currentUrl.matches('.*/ldapConnection/.*') ? "selected" : ""}"><g:link action="list" controller="ldapConnection"><em>LDAP</em></g:link></li>
         %{--<li class="${(currentUrl.indexOf('datasources.gsp') > -1 || currentUrl.matches('.*/.*^([dD]atabase).*(Datasource|Connection)/.*')) ? "selected" : ""}"><a href="${createLinkTo(file: 'datasources.gsp')}"><em>Datasources</em></a></li>--}%
     </ul>

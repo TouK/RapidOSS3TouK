@@ -1,4 +1,4 @@
-<%@ page import="connection.EmailConnectionTemplate" %>
+<%@ page import="connector.EmailConnector" %>
 
 <html>
 <head>
@@ -7,10 +7,10 @@
 </head>
 <div class="nav">
     <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'admin.gsp')}">Home</a></span>
-    <span class="menuButton"><g:link class="create" action="create">New EmailConnectionTemplate</g:link></span>
+    <span class="menuButton"><g:link class="create" action="create">New EmailConnector</g:link></span>
 </div>
 <body class="body">
-<h1>EmailConnectionTemplate List</h1>
+<h1>EmailConnector List</h1>
 <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
 </g:if>
@@ -31,11 +31,11 @@
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${EmailConnectionTemplate.list()}" status="i" var="emailConnectionTemplate">
+                <g:each in="${EmailConnector.list()}" status="i" var="emailConnector">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                        <td><g:link action="edit" controller="emailConnectionTemplate" id="${emailConnectionTemplate.id}">${emailConnectionTemplate.name?.encodeAsHTML()}</g:link></td>
-                        <td>${emailConnectionTemplate?.emailConnection?.smtpHost?.encodeAsHTML()}</td>
-                        <td>${emailConnectionTemplate?.emailConnection?.username?.encodeAsHTML()}</td>
+                        <td><g:link action="edit" controller="emailConnector" id="${emailConnector.id}">${emailConnector.name?.encodeAsHTML()}</g:link></td>
+                        <td>${emailConnector?.emailConnection?.smtpHost?.encodeAsHTML()}</td>
+                        <td>${emailConnector?.emailConnection?.username?.encodeAsHTML()}</td>
                     </tr>
                 </g:each>
             </tbody>

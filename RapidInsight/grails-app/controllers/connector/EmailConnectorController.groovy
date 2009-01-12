@@ -60,7 +60,7 @@ class EmailConnectorController {
             def emailConnection = EmailConnection.add(ControllerUtils.getClassProperties(params, EmailConnection));
             if (!emailConnection.hasErrors()) {
                 emailConnector.addRelation(emailConnection:emailConnection)
-                def emailDatasource = EmailDatasource.add(name:emailConnection.name + "templateDs", connection:emailConnection);
+                def emailDatasource = EmailDatasource.add(name:emailConnection.name + "connectorDs", connection:emailConnection);
                 if(!emailDatasource.hasErrors()){
                     emailConnector.addRelation(emailDatasource:emailDatasource)
                     flash.message = "EmailConnector ${emailConnector.name} created"
@@ -109,9 +109,9 @@ class EmailConnectorController {
                     emailConnection.update(name:params.name); //this update will generate error if connection with this name exists
                     willSendError = true;
                 }
-                def emailDs = BaseDatasource.get(name:params.name + "templateDs");
+                def emailDs = BaseDatasource.get(name:params.name + "connectorDs");
                 if(emailDs){
-                    emailDatasource.update(name:params.name + "templateDs") //this update will generate error if connection with this name exists
+                    emailDatasource.update(name:params.name + "connectorDs") //this update will generate error if connection with this name exists
                     willSendError = true;
                 }
 
@@ -125,7 +125,7 @@ class EmailConnectorController {
             emailConnection.update(ControllerUtils.getClassProperties(params, EmailConnection))
             if(!emailConnection.hasErrors()){
                emailConnector.update(ControllerUtils.getClassProperties(params, EmailConnector));
-               emailConnector.emailDatasource.update(name:emailConnection.name + "templateDs");
+               emailConnector.emailDatasource.update(name:emailConnection.name + "connectorDs");
 
                flash.message = "EmailConnector ${params.id} updated"
                redirect(action: list);

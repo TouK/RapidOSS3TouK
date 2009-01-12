@@ -30,8 +30,12 @@ class SearchGridTagLib {
         def configXML = "<SearchGrid>${bodyString}</SearchGrid>";
         def onSaveQueryClick = attrs["onSaveQueryClick"];
         def onRowDoubleClick = attrs["onRowDoubleClick"];
+        def onRowClick = attrs["onRowClick"];
+        def onSelectionChange = attrs["onSelectionChange"];
         def saveQueryClickJs;
         def rowDoubleClickJs;
+        def rowClickJs;
+        def selectionChangeJs;
         if (onSaveQueryClick != null) {
             saveQueryClickJs = """
                ${searchGridId}sg.events['saveQueryClicked'].subscribe(function(query){
@@ -45,6 +49,22 @@ class SearchGridTagLib {
                ${searchGridId}sg.events['rowDoubleClicked'].subscribe(function(xmlData, event){
                    var params = {data:xmlData.getAttributes(), event:event};
                    YAHOO.rapidjs.Actions['${onRowDoubleClick}'].execute(params);
+                }, this, true);
+            """
+        }
+        if (onRowClick != null) {
+            rowClickJs = """
+               ${searchGridId}sg.events['rowClicked'].subscribe(function(xmlData, event){
+                   var params = {data:xmlData.getAttributes(), event:event};
+                   YAHOO.rapidjs.Actions['${onRowClick}'].execute(params);
+                }, this, true);
+            """
+        }
+        if (onSelectionChange != null) {
+            selectionChangeJs = """
+               ${searchGridId}sg.events['selectionChanged'].subscribe(function(xmlData, event){
+                   var params = {data:xmlData.getAttributes(), event:event};
+                   YAHOO.rapidjs.Actions['${onSelectionChange}'].execute(params);
                 }, this, true);
             """
         }
@@ -88,6 +108,8 @@ class SearchGridTagLib {
                var ${searchGridId}sg = new YAHOO.rapidjs.component.search.SearchGrid(${searchGridId}container, ${searchGridId}c);
                ${saveQueryClickJs ? saveQueryClickJs : ""}
                ${rowDoubleClickJs ? rowDoubleClickJs : ""}
+               ${rowClickJs ? rowClickJs : ""}
+               ${selectionChangeJs ? selectionChangeJs : ""}
                ${menuEventsJs ? menuEventsJs : ""}
                if(${searchGridId}sg.pollingInterval > 0){
                    ${searchGridId}sg.poll();
@@ -120,8 +142,8 @@ class SearchGridTagLib {
             cArray.add("pollingInterval:${config['pollingInterval']}")
         if (config["maxRowsDisplayed"])
             cArray.add("maxRowsDisplayed:${config['maxRowsDisplayed']}")
-        if (config["defaultFilter"])
-            cArray.add("defaultFilter:'${config['defaultFilter']}'")
+        if (config["defaultQuery"])
+            cArray.add("defaultFilter:'${config['defaultQuery']}'")
 
         def menuItems = xml.MenuItems?.MenuItem;
         def menuItemArray = [];

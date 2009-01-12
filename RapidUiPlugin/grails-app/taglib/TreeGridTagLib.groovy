@@ -253,11 +253,4 @@ class TreeGridTagLib {
     def tgSubmenuItems = {attrs, body ->
         out << fTgSubmenuItems(attrs, body());
     }
-    static def fTgSubmenuItem(attrs, bodyString) {
-        def validAttrs = ["id", "label", "visible", "action"];
-        return TagLibUtils.getConfigAsXml("SubmenuItem", attrs, validAttrs)
-    }
-    def tgSubmenuItem = {attrs, body ->
-        out << fTgSubmenuItem(attrs, "");
-    }
 }

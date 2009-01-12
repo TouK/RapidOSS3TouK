@@ -2,6 +2,7 @@ package message
 
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import search.SearchQuery
+import search.SearchQueryGroup
 import script.CmdbScript
 import auth.RsUser
 
@@ -64,18 +65,17 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
             classes[loadedClass.getSimpleName()]=loadedClass
         }
     }
-    void testEmailGeneratorDoesNotProcessOldEvents()
+    void testEmailGeneratorDoesNotProcessIfUserDoesNotHaveEmail()
     {
         def user=RsUser.get(username:"rsadmin");
-        user.update(email:destination)
+        user.update(email:null)
+        assertFalse(user.hasErrors())
 
-        
-        assertEquals(user.email,destination)
+        def adminUser = RsUser.RSADMIN;
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username:adminUser, isPublic:true, type:"event");
 
-        def testUser=RsUser.get(username:"rsadmin")
-        assertEquals(testUser.email,destination)
-        
-        def searchQuery=SearchQuery.searchEvery("name:All Events")[0]
+        def searchQuery=SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"event");
+
 
         def rule=RsMessageRule.add(userId:user.id,searchQueryId:searchQuery.id,destinationType:RsMessage.EMAIL,enabled:true,clearAction:true)
         assertFalse(rule.hasErrors())
@@ -83,7 +83,103 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
         def script=CmdbScript.get(name:"emailGenerator")
         CmdbScript.updateScript(script,[logLevel:org.apache.log4j.Level.DEBUG],false)
-        assertNotNull (script)
+        assertFalse (script.hasErrors())
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),0)
+        
+        
+        def newEvents=addEvents("newevents",4)
+        assertEquals(classes.RsEvent.countHits("alias:*"),4)
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),0)
+    }
+    void testEmailGeneratorDoesNotProcessDisabledRules()
+    {
+        def user=RsUser.get(username:"rsadmin");
+        user.update(email:destination)
+        assertFalse(user.hasErrors())
+
+        def adminUser = RsUser.RSADMIN;
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username:adminUser, isPublic:true, type:"event");
+
+        def searchQuery=SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"event");
+
+        def rule=RsMessageRule.add(userId:user.id,searchQueryId:searchQuery.id,destinationType:RsMessage.EMAIL,enabled:false,clearAction:true)
+        assertFalse(rule.hasErrors())
+        assertEquals(RsMessageRule.countHits("alias:*"),1)
+
+        def script=CmdbScript.get(name:"emailGenerator")
+        CmdbScript.updateScript(script,[logLevel:org.apache.log4j.Level.DEBUG],false)
+        assertFalse (script.hasErrors())
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),0)
+
+
+        addEvents("newevents",4)
+        assertEquals(classes.RsEvent.countHits("alias:*"),4)
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),0)
+    }
+    void testEmailGeneratorDoesNotProcessClearEventsForClearDisabledRules()
+    {
+        def user=RsUser.get(username:"rsadmin");
+        user.update(email:destination)
+        assertFalse(user.hasErrors())
+
+        def adminUser = RsUser.RSADMIN;
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username:adminUser, isPublic:true, type:"event");
+
+        def searchQuery=SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"event");
+
+        def rule=RsMessageRule.add(userId:user.id,searchQueryId:searchQuery.id,destinationType:RsMessage.EMAIL,enabled:true,clearAction:false)
+        assertFalse(rule.hasErrors())
+        assertEquals(RsMessageRule.countHits("alias:*"),1)
+
+        def script=CmdbScript.get(name:"emailGenerator")
+        CmdbScript.updateScript(script,[logLevel:org.apache.log4j.Level.DEBUG],false)
+        assertFalse (script.hasErrors())
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),0)
+
+
+        def newEvents=addEvents("newevents",4)
+        assertEquals(classes.RsEvent.countHits("alias:*"),4)
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),4)
+
+        newEvents.each{
+            it.clear();
+        }
+        assertEquals(classes.RsHistoricalEvent.countHits("alias:*"),4)
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),4)
+    }
+    void testEmailGeneratorProcessNewEventsAndDoesNotProcessOldEvents()
+    {
+        def user=RsUser.get(username:"rsadmin");
+        user.update(email:destination)
+        assertFalse(user.hasErrors())
+       
+
+        def adminUser = RsUser.RSADMIN;
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username:adminUser, isPublic:true, type:"event");
+
+        def searchQuery=SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"event");
+
+
+        def rule=RsMessageRule.add(userId:user.id,searchQueryId:searchQuery.id,destinationType:RsMessage.EMAIL,enabled:true,clearAction:true)
+        assertFalse(rule.hasErrors())
+        assertEquals(RsMessageRule.countHits("alias:*"),1)
+
+        def script=CmdbScript.get(name:"emailGenerator")
+        CmdbScript.updateScript(script,[logLevel:org.apache.log4j.Level.DEBUG],false)
+        assertFalse (script.hasErrors())
 
         // add old events
         addEvents("oldevents",4)
@@ -145,5 +241,36 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
             assertTrue(event.id>maxEventClearId)
         }
 
+    }
+    void testEmailGeneratorProcessDelayedEmails()
+    {
+        assertEquals(RsMessage.list().size(),0)
+        def date=new Date();
+        def delay=5000
+        def params=[:]
+        params.eventId=1
+        params.state=0
+        params.destination="xxx"
+        params.destinationType=RsMessage.EMAIL
+        params.action="create"
+        params.sendAfter=date.getTime()+delay
+
+
+        def script=CmdbScript.get(name:"emailGenerator")
+        CmdbScript.updateScript(script,[logLevel:org.apache.log4j.Level.DEBUG],false)
+        assertFalse (script.hasErrors())
+        
+        def message=RsMessage.add(params)
+        assertFalse(message.hasErrors())        
+        
+
+        CmdbScript.runScript(script,[:])
+        def mes=RsMessage.get(id:message.id)
+        assertEquals(mes.state,0)
+        Thread.sleep(delay+1000)
+
+        CmdbScript.runScript(script,[:])
+        mes=RsMessage.get(id:message.id)
+        assertEquals(mes.state,1)
     }
 }

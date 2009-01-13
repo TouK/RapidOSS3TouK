@@ -106,7 +106,6 @@
         </div>
         <div class="buttons">
             <g:form style="display:inline">
-	            <input type="hidden" name="id" value="${snmpConnector?.id}"/>
 	            <span class="button"><g:actionSubmit class="save" value="Update"/></span>
 	            <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
 	            <%

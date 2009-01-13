@@ -57,10 +57,12 @@ class EmailConnectorController {
     def save = {
         def emailConnector = EmailConnector.add(ControllerUtils.getClassProperties(params, EmailConnector))
         if (!emailConnector.hasErrors()) {
-            def emailConnection = EmailConnection.add(ControllerUtils.getClassProperties(params, EmailConnection));
+            def emailConnectionParams=ControllerUtils.getClassProperties(params, EmailConnection);
+            emailConnectionParams.name=EmailConnector.getEmailConnectionName(emailConnector.name)
+            def emailConnection = EmailConnection.add(emailConnectionParams);
             if (!emailConnection.hasErrors()) {
                 emailConnector.addRelation(emailConnection:emailConnection)
-                def emailDatasource = EmailDatasource.add(name:emailConnection.name + "connectorDs", connection:emailConnection);                
+                def emailDatasource = EmailDatasource.add(name:EmailConnector.getEmailDatasourceName(emailConnector.name), connection:emailConnection);
                 if(!emailDatasource.hasErrors()){
                     emailConnector.addRelation(emailDatasource:emailDatasource)
                     flash.message = "EmailConnector ${emailConnector.name} created"                    
@@ -104,14 +106,16 @@ class EmailConnectorController {
                 def emailConnection = emailConnector.emailConnection;
                 def emailDatasource = emailConnector.emailDatasource;
 
-                def conn = Connection.get(name:params.name);
+
+                
+                def conn = Connection.get(name:EmailConnector.getEmailConnectionName(params.name));
                 if(conn){
-                    emailConnection.update(name:params.name); //this update will generate error if connection with this name exists
+                    emailConnection.update(name:EmailConnector.getEmailConnectionName(params.name)); //this update will generate error if connection with this name exists
                     willSendError = true;
                 }
-                def emailDs = BaseDatasource.get(name:params.name + "connectorDs");
+                def emailDs = BaseDatasource.get(name:EmailConnector.getEmailDatasourceName(params.name));
                 if(emailDs){
-                    emailDatasource.update(name:params.name + "connectorDs") //this update will generate error if connection with this name exists
+                    emailDatasource.update(name:EmailConnector.getEmailDatasourceName(params.name)) //this update will generate error if connection with this name exists
                     willSendError = true;
                 }
 
@@ -122,10 +126,12 @@ class EmailConnectorController {
             }
 
             def emailConnection = emailConnector.emailConnection;
-            emailConnection.update(ControllerUtils.getClassProperties(params, EmailConnection))
+            def emailConnectionParams=ControllerUtils.getClassProperties(params, EmailConnection)
+            emailConnectionParams.name=EmailConnector.getEmailConnectionName(params.name)
+            emailConnection.update(emailConnectionParams)
             if(!emailConnection.hasErrors()){
                emailConnector.update(ControllerUtils.getClassProperties(params, EmailConnector));
-               emailConnector.emailDatasource.update(name:emailConnection.name + "connectorDs");
+               emailConnector.emailDatasource.update(name:EmailConnector.getEmailDatasourceName(params.name));
 
                flash.message = "EmailConnector ${params.id} updated"
                redirect(uri:"emailConnector");

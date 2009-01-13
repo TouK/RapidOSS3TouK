@@ -130,7 +130,7 @@ class EmailConnectorController {
                 def emailConnection = emailConnector.emailConnection;
                 def emailConnectionParams=ControllerUtils.getClassProperties(params, EmailConnection)
                 emailConnectionParams.name=EmailConnector.getEmailConnectionName(params.name)
-                emailConnection.update(emailConnectionParams)
+                emailConnection.update(emailConnectionParams)                
                 if(!emailConnection.hasErrors()){                   
                    emailConnector.emailDatasource.update(name:EmailConnector.getEmailDatasourceName(params.name));
                    if(!emailConnector.emailDatasource.hasErrors()){
@@ -139,11 +139,11 @@ class EmailConnectorController {
                    }
                    else
                    {
-                      render(view: 'edit', model: [emailConnector: emailConnector, emailConnection:emailConnector.emailConnection, emailDatasource:emailConnector.emailDatasource]) 
+                      render(view: 'edit', model: [emailConnector: emailConnector, emailConnection:emailConnection, emailDatasource:emailConnector.emailDatasource]) 
                    }
                 }
                 else{
-                    render(view: 'edit', model: [emailConnector: emailConnector, emailConnection:emailConnector.emailConnection, emailDatasource:emailConnector.emailDatasource])
+                    render(view: 'edit', model: [emailConnector: emailConnector, emailConnection:emailConnection, emailDatasource:emailConnector.emailDatasource])
                 }
             }
             else

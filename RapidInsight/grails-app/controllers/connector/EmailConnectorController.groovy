@@ -131,12 +131,16 @@ class EmailConnectorController {
                 def emailConnectionParams=ControllerUtils.getClassProperties(params, EmailConnection)
                 emailConnectionParams.name=EmailConnector.getEmailConnectionName(params.name)
                 emailConnection.update(emailConnectionParams)
-                if(!emailConnection.hasErrors()){
-                   emailConnector.update(ControllerUtils.getClassProperties(params, EmailConnector));
+                if(!emailConnection.hasErrors()){                   
                    emailConnector.emailDatasource.update(name:EmailConnector.getEmailDatasourceName(params.name));
-
-                   flash.message = "EmailConnector ${params.id} updated"
-                   redirect(uri:"emailConnector");
+                   if(!emailConnector.emailDatasource.hasErrors()){
+                       flash.message = "EmailConnector ${params.id} updated"
+                       redirect(uri:"emailConnector");
+                   }
+                   else
+                   {
+                      render(view: 'edit', model: [emailConnector: emailConnector, emailConnection:emailConnector.emailConnection, emailDatasource:emailConnector.emailDatasource]) 
+                   }
                 }
                 else{
                     render(view: 'edit', model: [emailConnector: emailConnector, emailConnection:emailConnector.emailConnection, emailDatasource:emailConnector.emailDatasource])

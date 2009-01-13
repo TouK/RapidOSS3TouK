@@ -124,7 +124,7 @@ class ScriptController {
             }
             else {
                 flash.message = "Script ${params.id} updated"
-                redirect(action: show, id: script.id)
+                redirect(action:list)
             }
         }
         else {
@@ -145,7 +145,7 @@ class ScriptController {
                     redirect(uri:params.targetURI);
                 }
                 else{
-                    redirect(action: show, controller: 'script', id: script.id);    
+                    redirect(action: list);    
                 }
 
             }

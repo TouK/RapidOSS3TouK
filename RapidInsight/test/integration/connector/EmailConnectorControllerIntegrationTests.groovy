@@ -312,4 +312,49 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals(EmailConnector.getEmailDatasourceName(params.name), emailConnector.emailDatasource.name)
 
     }
+     void testIfConnectorHasErrorsConnectorIsNotUpdated(){
+        def params=[:]
+        params.putAll(connectorParams)
+
+        def controller = new EmailConnectorController();
+        params.each{ key , val ->
+            controller.params[key] = val;
+        }
+
+        controller.save();
+
+        assertEquals(1, EmailConnector.list().size())
+        assertEquals(1, EmailConnection.list().size())
+        assertEquals(1, EmailDatasource.list().size())
+        
+
+
+        def updateParams=[:]
+        updateParams.putAll(params)
+        updateParams["smtpHost"] ="192.168.1.101";
+        updateParams["smtpPort"] = 26;
+        updateParams["username"] = "testaccoun2t";
+        updateParams["userPassword"] = "13600";
+        updateParams["protocol"] = EmailConnection.SMTPS;        
+        updateParams["name"]=null        
+        updateParams["id"]=EmailConnector.list()[0].id
+
+        IntegrationTestUtils.resetController(controller);
+        updateParams.each{ key , val ->
+            controller.params[key] = val;
+        }
+
+        controller.update();
+        
+        assertEquals(1, EmailConnector.list().size())
+        assertEquals(1, EmailConnection.list().size())
+        assertEquals(1, EmailDatasource.list().size())
+
+        println controller.modelAndView
+        println controller.flash
+        def model = controller.modelAndView.model;
+        def modelItem = model.emailConnector;
+        assertTrue(modelItem.hasErrors())
+        assertEquals("nullable", modelItem.errors.allErrors[0].code)
+    }
 }

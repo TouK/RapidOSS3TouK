@@ -125,20 +125,28 @@ class EmailConnectorController {
                 }
             }
 
-            def emailConnection = emailConnector.emailConnection;
-            def emailConnectionParams=ControllerUtils.getClassProperties(params, EmailConnection)
-            emailConnectionParams.name=EmailConnector.getEmailConnectionName(params.name)
-            emailConnection.update(emailConnectionParams)
-            if(!emailConnection.hasErrors()){
-               emailConnector.update(ControllerUtils.getClassProperties(params, EmailConnector));
-               emailConnector.emailDatasource.update(name:EmailConnector.getEmailDatasourceName(params.name));
+            emailConnector.update(ControllerUtils.getClassProperties(params, EmailConnector));
+            if(!emailConnector.hasErrors()){
+                def emailConnection = emailConnector.emailConnection;
+                def emailConnectionParams=ControllerUtils.getClassProperties(params, EmailConnection)
+                emailConnectionParams.name=EmailConnector.getEmailConnectionName(params.name)
+                emailConnection.update(emailConnectionParams)
+                if(!emailConnection.hasErrors()){
+                   emailConnector.update(ControllerUtils.getClassProperties(params, EmailConnector));
+                   emailConnector.emailDatasource.update(name:EmailConnector.getEmailDatasourceName(params.name));
 
-               flash.message = "EmailConnector ${params.id} updated"
-               redirect(uri:"emailConnector");
+                   flash.message = "EmailConnector ${params.id} updated"
+                   redirect(uri:"emailConnector");
+                }
+                else{
+                    render(view: 'edit', model: [emailConnector: emailConnector, emailConnection:emailConnector.emailConnection, emailDatasource:emailConnector.emailDatasource])
+                }
             }
-            else{
-                render(view: 'edit', model: [emailConnector: emailConnector, emailConnection:emailConnection, emailDatasource:emailConnector.emailDatasource])
+            else
+            {
+                 render(view: 'edit', model: [emailConnector: emailConnector, emailConnection:emailConnector.emailConnection, emailDatasource:emailConnector.emailDatasource])
             }
+
         }
         else {
             flash.message = "EmailConnector not found with id ${params.id}"

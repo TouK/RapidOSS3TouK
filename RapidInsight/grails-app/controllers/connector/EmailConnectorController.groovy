@@ -60,7 +60,7 @@ class EmailConnectorController {
             def emailConnection = EmailConnection.add(ControllerUtils.getClassProperties(params, EmailConnection));
             if (!emailConnection.hasErrors()) {
                 emailConnector.addRelation(emailConnection:emailConnection)
-                def emailDatasource = EmailDatasource.add(name:emailConnection.name + "connectorDs", connection:emailConnection);
+                def emailDatasource = EmailDatasource.add(name:emailConnection.name + "connectorDs", connection:emailConnection);                
                 if(!emailDatasource.hasErrors()){
                     emailConnector.addRelation(emailDatasource:emailDatasource)
                     flash.message = "EmailConnector ${emailConnector.name} created"                    
@@ -70,13 +70,13 @@ class EmailConnectorController {
                 else{
                     emailConnection.remove();
                     emailConnector.remove();
-                    render(view: 'create', model: [emailConnector: emailConnector, emailConnection:emailConnection, emailDatasouce:new EmailDatasource()])
+                    render(view: 'create', model: [emailConnector: emailConnector, emailConnection:emailConnection, emailDatasource:emailDatasource])
                 }
 
             }
             else {
                emailConnector.remove();
-               render(view: 'create', model: [emailConnector: emailConnector, emailConnection:EmailConnection(), emailDatasouce:new EmailDatasource()])
+               render(view: 'create', model: [emailConnector: emailConnector, emailConnection:emailConnection, emailDatasouce:new EmailDatasource()])
             }
         }
         else {
@@ -128,7 +128,7 @@ class EmailConnectorController {
                emailConnector.emailDatasource.update(name:emailConnection.name + "connectorDs");
 
                flash.message = "EmailConnector ${params.id} updated"
-               redirect(action: list);
+               redirect(uri:"emailConnector");
             }
             else{
                 render(view: 'edit', model: [emailConnector: emailConnector, emailConnection:emailConnection, emailDatasource:emailConnector.emailDatasource])

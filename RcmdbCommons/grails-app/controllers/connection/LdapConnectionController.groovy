@@ -99,7 +99,7 @@ class LdapConnectionController {
             ldapConnection.update(ControllerUtils.getClassProperties(params, LdapConnection));
             if(!ldapConnection.hasErrors()) {
                 flash.message = "LdapConnection ${params.id} updated"
-                redirect(action:show,id:ldapConnection.id)
+                redirect(action:list)
             }
             else {
                 render(view:'edit',model:[ldapConnection:ldapConnection])

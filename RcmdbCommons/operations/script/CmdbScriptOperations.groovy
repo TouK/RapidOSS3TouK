@@ -175,12 +175,9 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
 
     static def runScript(CmdbScript script, Map params) throws Exception {
+        params.staticParam=script.staticParam;
+        params.staticParamMap=CmdbScript.getStaticParamMap(script);
 
-        if(script.type==CmdbScript.SCHEDULED)
-        {
-            params.staticParam=script.staticParam;
-            params.staticParamMap=CmdbScript.getStaticParamMap(script);
-        }    
         return ScriptManager.getInstance().runScript(script.scriptFile, params,getScriptLogger(script));
     }
 

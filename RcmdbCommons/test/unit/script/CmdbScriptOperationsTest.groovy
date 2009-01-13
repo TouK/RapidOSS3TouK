@@ -578,15 +578,48 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
           logger=CmdbScript.getScriptLogger(script);
           assertEquals(logger.getLevel(),Level.INFO);
           assertTrue(logger.getAllAppenders().hasMoreElements());
+     }
 
+     void testRunScriptPassesStaticParamAndStaticParamMapToScript()
+     {
+         initializeForCmdbScript();
+
+         def scriptFile="mytestscriptfile.groovy"
+         def scriptContent="return [staticParam:staticParam,staticParamMap:staticParamMap]"
+         createScript(scriptFile,scriptContent);
+         ScriptManager.getInstance().addScript (scriptFile)
+         
+         def onDemandScript=new CmdbScript(name:"testscript",type:CmdbScript.ONDEMAND,scriptFile:scriptFile,staticParam:"x:5,y:6");
+         def params=[:]
+
+         def result=CmdbScript.runScript(onDemandScript,params)
+         assertEquals(result.staticParam,onDemandScript.staticParam)
+         assertEquals(result.staticParamMap.x,"5")
+         assertEquals(result.staticParamMap.y,"6")
+
+         def scheduledScript=new CmdbScript(name:"testscript",type:CmdbScript.SCHEDULED,scriptFile:scriptFile,staticParam:"x:7,y:8");
+         result=CmdbScript.runScript(scheduledScript,params)
+         assertEquals(result.staticParam,scheduledScript.staticParam)
+         assertEquals(result.staticParamMap.x,"7")
+         assertEquals(result.staticParamMap.y,"8")
+
+         def listeningScript=new CmdbScript(name:"testscript",type:CmdbScript.LISTENING,scriptFile:scriptFile,staticParam:"x:10,y:11");
+         result=CmdbScript.runScript(listeningScript,params)
+         assertEquals(result.staticParam,listeningScript.staticParam)
+         assertEquals(result.staticParamMap.x,"10")
+         assertEquals(result.staticParamMap.y,"11")
 
 
      }
-
      def createSimpleScript(scriptName,scriptMessage)
     {
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
         scriptFile.write ("""return "$scriptMessage" """);
+    }
+    def createScript(scriptName,scriptContent)
+    {
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write (scriptContent);
     }
 
 }

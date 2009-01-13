@@ -58,6 +58,12 @@
 
                     <td valign="top" class="value">${cmdbScript.logFileOwn}</td>
                 </tr>
+                 <tr class="prop">
+                    <td valign="top" class="name">Static Parameter:</td>
+
+                    <td valign="top" class="value">${cmdbScript.staticParam}</td>
+
+                </tr>
                 <tr class="prop">
                     <td valign="top" class="name">Type:</td>
 
@@ -111,12 +117,7 @@
                     <td valign="top" class="value">${cmdbScript.enabled}</td>
 
                 </tr>
-                <tr class="prop">
-                    <td valign="top" class="name">Static Parameter:</td>
 
-                    <td valign="top" class="value">${cmdbScript.staticParam}</td>
-
-                </tr>
                 <%
                     }
                     else if (cmdbScript.type == CmdbScript.LISTENING) {
@@ -126,13 +127,7 @@
 
                     <td valign="top" class="value">${cmdbScript.listeningDatasource}</td>
 
-                </tr>
-                <tr class="prop">
-                    <td valign="top" class="name">Static Parameter:</td>
-
-                    <td valign="top" class="value">${cmdbScript.staticParam}</td>
-
-                </tr>
+                </tr>               
                 <tr class="prop">
                     <td valign="top" class="name">Log File:</td>
 

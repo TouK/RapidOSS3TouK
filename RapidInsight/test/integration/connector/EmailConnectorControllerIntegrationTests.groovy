@@ -34,6 +34,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 
     public void tearDown() {
         super.tearDown();
+        
     }
 
     public void testSuccessfulSave()
@@ -63,8 +64,12 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals(emailConnection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
         assertEquals(emailConnection.id,emailConnector.emailConnection.id);
         assertEquals (emailConnection.emailDatasources.size(), 1);
+
+        def paramsToCheck=[:]
+        paramsToCheck.putAll(params)
+        paramsToCheck.remove("name");
         
-        params.each{ key , val ->
+        paramsToCheck.each{ key , val ->
             assertEquals(val,emailConnection[key])
         }
 
@@ -350,11 +355,78 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals(1, EmailConnection.list().size())
         assertEquals(1, EmailDatasource.list().size())
 
-        println controller.modelAndView
-        println controller.flash
+
         def model = controller.modelAndView.model;
         def modelItem = model.emailConnector;
         assertTrue(modelItem.hasErrors())
         assertEquals("nullable", modelItem.errors.allErrors[0].code)
+
+        def emailConnector=EmailConnector.list()[0]
+        assertEquals(emailConnector.name,params.name)
+        assertEquals(emailConnector.emailConnection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
+        assertEquals(emailConnector.emailDatasource.name,EmailConnector.getEmailDatasourceName(emailConnector.name));
+        
+        def paramsToCheck=[:]
+        paramsToCheck.putAll(params)
+        paramsToCheck.remove("name");
+
+        paramsToCheck.each{ key , val ->
+            assertEquals(val,emailConnector.emailConnection[key])
+        }
+        
+    }
+    void testIfConnectionHasErrorsConnectorIsNotUpdated(){
+        fail("Needs implementation of pre-validation of parameters. can not be tested otherwise")
+       def params=[:]
+        params.putAll(connectorParams)
+
+        def controller = new EmailConnectorController();
+        params.each{ key , val ->
+            controller.params[key] = val;
+        }
+
+        controller.save();
+
+        assertEquals(1, EmailConnector.list().size())
+        assertEquals(1, EmailConnection.list().size())
+        assertEquals(1, EmailDatasource.list().size())
+
+
+
+        def updateParams=[:]
+        updateParams.putAll(params)
+        updateParams["name"] = "testConnectorrrx";
+        updateParams["smtpPort"] = 26;
+        updateParams["username"] = "testaccoun2t";
+        updateParams["userPassword"] = "13600";
+        updateParams["protocol"] = EmailConnection.SMTPS;            
+        updateParams["smtpHost"] =null;
+        updateParams["id"]=EmailConnector.list()[0].id
+
+        IntegrationTestUtils.resetController(controller);
+        updateParams.each{ key , val ->
+            controller.params[key] = val;
+        }
+
+        controller.update();
+
+        
+        def model = controller.modelAndView.model;
+        def modelItem = model.emailConnection;        
+        assertTrue(modelItem.hasErrors())
+        assertEquals("nullable", modelItem.errors.allErrors[0].code)
+
+        def emailConnector=EmailConnector.list()[0]
+        assertEquals(emailConnector.name,params.name)
+        assertEquals(emailConnector.emailConnection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
+        assertEquals(emailConnector.emailDatasource.name,EmailConnector.getEmailDatasourceName(emailConnector.name));
+
+        def paramsToCheck=[:]
+        paramsToCheck.putAll(params)
+        paramsToCheck.remove("name");
+
+        paramsToCheck.each{ key , val ->
+            assertEquals(val,emailConnector.emailConnection[key])
+        }
     }
 }

@@ -15,6 +15,15 @@
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
+            <g:if test="${flash.errors}">
+		        <div class="errors">
+		            <ul>
+		                <g:each var="error" in="${flash?.errors}">
+		                    <li>${error}</li>
+		                </g:each>
+		            </ul>
+		        </div>
+		    </g:if>
             <div class="list">
                 <table>
                     <thead>

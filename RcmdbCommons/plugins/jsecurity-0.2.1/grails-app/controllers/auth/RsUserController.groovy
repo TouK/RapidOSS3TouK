@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -47,16 +47,28 @@ class RsUserController {
     def delete = {
         def rsUser = RsUser.get(id: params.id)
         if (rsUser) {
-            try {
-                rsUser.remove()
-                flash.message = "User ${params.id} deleted"
+            if(session.username!=rsUser.username)
+            {
+                try {
+                    rsUser.remove()
+                    flash.message = "User ${params.id} deleted"
+                    redirect(action: list)
+                }
+                catch (e) {
+                    def errors = [message(code: "default.couldnot.delete", args: [RsUser.class.getName(), rsUser])]
+                    flash.errors = errors;
+                    redirect(action: show, id: rsUser.id)
+                }
+            }
+            else{
+                def errors = [message(code: "default.custom.error", args: ["Can not delete your own account"])]
+                flash.errors = errors;
+
                 redirect(action: list)
             }
-            catch (e) {
-                def errors = [message(code: "default.couldnot.delete", args: [RsUser.class.getName(), rsUser])]
-                flash.errors = errors;
-                redirect(action: show, id: rsUser.id)
-            }
+
+
+
         }
         else {
             flash.message = "User not found with id ${params.id}"
@@ -125,7 +137,7 @@ class RsUserController {
     def changeProfileData = {
         def rsUser = RsUser.get(username: params.username)
         if (rsUser) {
-            
+
             withFormat {
                 xml {
                     render(contentType: "text/xml"){
@@ -151,14 +163,14 @@ class RsUserController {
 
             def password1 = params["password1"];
             def password2 = params["password2"];
-            
+
             if (password1 != password2) {
                 addError("default.passwords.dont.match", []);
                 withFormat {
                     xml {render(text: errorsToXml(errors), contentType: "text/xml")}
                 }
                 return;
-            }            
+            }
             if (password1 && password1 != "") {
                 def oldPassword = params["oldPassword"];
                 if (new Sha1Hash(oldPassword).toHex() != rsUser.passwordHash) {
@@ -170,8 +182,8 @@ class RsUserController {
                 }
                 updateParams.passwordHash=new Sha1Hash(password1).toHex();
             }
-            
-            
+
+
             updateParams.email=params["email"]
             rsUser.update(updateParams)
             if (!rsUser.hasErrors()) {
@@ -183,7 +195,7 @@ class RsUserController {
                 withFormat {
                     xml {render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")}
                 }
-            }           
+            }
         }
         else {
             addError("default.object.not.found", [RsUser.class.name, params.username]);
@@ -201,17 +213,17 @@ class RsUserController {
             def password1 = params["password1"];
             def password2 = params["password2"];
             if (password1 != password2) {
-                addError("default.passwords.dont.match",[])                
+                addError("default.passwords.dont.match",[])
                 flash.errors = errors;
                 render(view: 'edit', model: [rsUser: rsUser])
                 return;
             }
             if (password1 && password1 != "") {
-                updateParams.passwordHash=new Sha1Hash(password1).toHex();                
+                updateParams.passwordHash=new Sha1Hash(password1).toHex();
             }
             updateParams.username=params["username"]
             updateParams.email=params["email"]
-            
+
             rsUser.update(updateParams)
             if (!rsUser.hasErrors()) {
                 flash.message = "User ${params.id} updated"

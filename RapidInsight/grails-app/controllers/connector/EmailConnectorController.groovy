@@ -63,8 +63,8 @@ class EmailConnectorController {
                 def emailDatasource = EmailDatasource.add(name:emailConnection.name + "connectorDs", connection:emailConnection);
                 if(!emailDatasource.hasErrors()){
                     emailConnector.addRelation(emailDatasource:emailDatasource)
-                    flash.message = "EmailConnector ${emailConnector.name} created"
-                    redirect(action: 'list');
+                    flash.message = "EmailConnector ${emailConnector.name} created"                    
+                    redirect(uri: 'emailConnector');
 
                 }
                 else{

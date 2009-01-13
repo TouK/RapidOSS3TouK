@@ -24,7 +24,7 @@
         periodRow.style.display = (scriptType == "Scheduled"? "":"none");
         cronRow.style.display = (scriptType == "Scheduled"? "":"none");
         enabledRow.style.display = (scriptType == "Scheduled"? "":"none");
-        staticParamRow.style.display = (scriptType != "OnDemand"? "":"none");
+
         scheduleTypeChanged();
     }
 
@@ -111,6 +111,14 @@
                             <g:checkBox name="logFileOwn" value="${cmdbScript?.logFileOwn}"></g:checkBox>
                         </td>
                     </tr>
+                    <tr class="prop" id="staticParamRow">
+                        <td valign="top" class="name">
+                            <label for="staticParam">Static Parameter:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'staticParam', 'errors')}">
+                            <input type="text" id="staticParam" name="staticParam" value="${fieldValue(bean: cmdbScript, field: 'staticParam')}"/>
+                        </td>
+                    </tr>
                     <tr class="prop">
                         <td valign="top" class="name">
                             <label for="type">Type:</label>
@@ -175,14 +183,7 @@
                         </td>
                     </tr>
 
-                    <tr class="prop" id="staticParamRow">
-                        <td valign="top" class="name">
-                            <label for="staticParam">Static Parameter:</label>
-                        </td>
-                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'staticParam', 'errors')}">
-                            <input type="text" id="staticParam" name="staticParam" value="${fieldValue(bean: cmdbScript, field: 'staticParam')}"/>
-                        </td>
-                    </tr>
+
                 </tbody>
             </table>
         </div>

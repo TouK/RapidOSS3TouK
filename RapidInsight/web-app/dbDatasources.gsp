@@ -83,7 +83,7 @@
                             <tbody>
                                 <g:each in="${DatabaseDatasource.list()}" status="i" var="databaseDatasource">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                        <td><g:link action="show" controller="databaseDatasource" id="${databaseDatasource.id}">${databaseDatasource.name?.encodeAsHTML()}</g:link></td>
+                                        <td><g:link action="edit" controller="databaseDatasource" id="${databaseDatasource.id}">${databaseDatasource.name?.encodeAsHTML()}</g:link></td>
                                         <td>${databaseDatasource.reconnectInterval.encodeAsHTML()}</td>
                                     </tr>
                                 </g:each>
@@ -117,7 +117,7 @@
                             <tbody>
                                 <g:each in="${SingleTableDatabaseDatasource.list()}" status="i" var="singleTableDatabaseDatasource">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                        <td><g:link action="show" controller="singleTableDatabaseDatasource" id="${singleTableDatabaseDatasource.id}">${singleTableDatabaseDatasource.name?.encodeAsHTML()}</g:link></td>
+                                        <td><g:link action="edit" controller="singleTableDatabaseDatasource" id="${singleTableDatabaseDatasource.id}">${singleTableDatabaseDatasource.name?.encodeAsHTML()}</g:link></td>
                                         <td>${singleTableDatabaseDatasource.tableName.encodeAsHTML()}</td>
                                         <td>${singleTableDatabaseDatasource.tableKeys.encodeAsHTML()}</td>
                                         <td>${singleTableDatabaseDatasource.reconnectInterval.encodeAsHTML()}</td>

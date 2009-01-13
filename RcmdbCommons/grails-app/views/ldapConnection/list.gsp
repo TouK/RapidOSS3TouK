@@ -41,7 +41,7 @@
                     <g:each in="${ldapConnectionList}" status="i" var="ldapConnection">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-                            <td><g:link action="show" id="${ldapConnection.id}">${ldapConnection.name?.encodeAsHTML()}</g:link></td>
+                            <td><g:link action="edit" id="${ldapConnection.id}">${ldapConnection.name?.encodeAsHTML()}</g:link></td>
 
                             <td>${ldapConnection.contextFactory?.encodeAsHTML()}</td>
 

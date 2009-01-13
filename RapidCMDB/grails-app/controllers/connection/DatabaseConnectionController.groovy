@@ -101,7 +101,7 @@ class DatabaseConnectionController {
             databaseConnection.update(ControllerUtils.getClassProperties(params, DatabaseConnection));
             if(!databaseConnection.hasErrors()) {
                 flash.message = "DatabaseConnection ${params.id} updated"
-                redirect(action:show,id:databaseConnection.id)
+                redirect(action:list);
             }
             else {
                 render(view:'edit',model:[databaseConnection:databaseConnection])

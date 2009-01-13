@@ -105,22 +105,29 @@
             </table>
         </div>
         <div class="buttons">
-            <span class="button"><g:actionSubmit class="save" value="Update"/></span>
-            <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
-            <%
-                def isSubscribed = ListeningAdapterManager.getInstance().isSubscribed(snmpConnector.script.listeningDatasource);
-                if (isSubscribed) {
-            %>
-            <td><g:link action="stopConnector" controller="snmpConnector" id="${snmpConnector.id}" class="stop">Stop</g:link></td>
-            <%
-                }
-                else {
-            %>
-            <td><g:link action="startConnector" controller="snmpConnector" id="${snmpConnector.id}" class="start">Start</g:link></td>
-            <%
-                }
-            %>
-            <span class="button"><g:actionSubmit class="refresh" value="Reload Script"/></span>
+            <g:form style="display:inline">
+	            <input type="hidden" name="id" value="${snmpConnector?.id}"/>
+	            <span class="button"><g:actionSubmit class="save" value="Update"/></span>
+	            <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+	            <%
+	                def isSubscribed = ListeningAdapterManager.getInstance().isSubscribed(snmpConnector.script.listeningDatasource);
+	                if (isSubscribed) {
+	            %>
+	            <td><g:link action="stopConnector" controller="snmpConnector" id="${snmpConnector.id}" class="stop">Stop</g:link></td>
+	            <%
+	                }
+	                else {
+	            %>
+	            <td><g:link action="startConnector" controller="snmpConnector" id="${snmpConnector.id}" class="start">Start</g:link></td>
+	            <%
+	                }
+	            %>
+	        </g:form>
+            <g:form style="display:inline" controller="script">
+	            <input type="hidden" name="id" value="${snmpConnector?.script?.name}"/>
+	            <input type="hidden" name="targetURI" value="/snmpConnector/show/${snmpConnector.id}"/>
+	            <span class="button"><g:actionSubmit class="refresh" value="Reload Script" action="Reload"/></span>
+        	</g:form>
         </div>
     </g:form>
 </div>

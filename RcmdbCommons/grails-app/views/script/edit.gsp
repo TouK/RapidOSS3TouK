@@ -1,4 +1,4 @@
-<%@ page import="datasource.BaseListeningDatasource; script.CmdbScript" %>
+<%@ page import="datasource.BaseListeningDatasource; com.ifountain.rcmdb.datasource.ListeningAdapterManager; script.CmdbScript" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -183,18 +183,38 @@
                             <input type="text" id="staticParam" name="staticParam" value="${fieldValue(bean: cmdbScript, field: 'staticParam')}"/>
                         </td>
                     </tr>
-
-                                       
-                    
-
-
-
                 </tbody>
             </table>
         </div>
         <div class="buttons">
-            <span class="button"><g:actionSubmit class="save" value="Update"/></span>
-            <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+            <g:form style="display:inline">
+		        <input type="hidden" name="id" value="${cmdbScript?.id}"/>
+		    	<span class="button"><g:actionSubmit class="save" value="Update"/></span>
+		        <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+		    </g:form>
+		    <g:form style="display:inline">
+		        <input type="hidden" name="id" value="${cmdbScript?.name}"/>
+		        <span class="button"><g:actionSubmit class="refresh" value="Reload"/></span>
+		        <%
+		            if (cmdbScript.type == CmdbScript.LISTENING && cmdbScript.listeningDatasource) {
+		                if (ListeningAdapterManager.getInstance().isSubscribed(cmdbScript.listeningDatasource)) {
+		        %>
+		        <span class="button"><g:actionSubmit class="close" value="Stop"/></span>
+		        <%
+		            }
+		            else {
+		        %>
+		        <span class="button"><g:actionSubmit class="run" value="Start"/></span>
+		        <%
+		                }
+		            }
+		            else {
+		        %>
+		        <span class="button"><g:actionSubmit class="run" value="Run"/></span>
+		        <%
+		            }
+		        %>
+		    </g:form>
         </div>
     </g:form>
 </div>

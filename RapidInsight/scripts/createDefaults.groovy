@@ -17,6 +17,7 @@
 * USA.
 */
 import script.CmdbScript
+import org.apache.log4j.Logger
 
 /**
 * Created by IntelliJ IDEA.
@@ -24,37 +25,72 @@ import script.CmdbScript
 * Date: Nov 12, 2008
 * Time: 10:50:03 AM
 */
-CmdbScript.addScript(name: "modelCreator");
-CmdbScript.addScript(name: "removeAll");
-CmdbScript.addScript(name: "acknowledge");
-CmdbScript.addScript([name: "clearExpiredEvents", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:true,period:60]);
-CmdbScript.addScript(name: "setOwnership");
-CmdbScript.addScript(name: "queryList");
-CmdbScript.addScript(name: "createQuery");
-CmdbScript.addScript(name: "editQuery");
-CmdbScript.addScript(name: "reloadOperations");
-CmdbScript.addScript(name: "getViewFields");
 
-CmdbScript.addScript([name: "emailGenerator", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
-CmdbScript.addScript([name: "emailSender", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
 
-CmdbScript.addScript(name: "importSampleRiData");
+def scriptsToAdd=[]
+scriptsToAdd.add([name:"modelCreator"])
+scriptsToAdd.add([name:"removeAll"])
+scriptsToAdd.add([name:"acknowledge"])
+scriptsToAdd.add([name: "clearExpiredEvents", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:true,period:60])
+scriptsToAdd.add([name:"setOwnership"])
+scriptsToAdd.add([name:"queryList"])
+scriptsToAdd.add([name:"createQuery"])
+scriptsToAdd.add([name:"editQuery"])
+scriptsToAdd.add([name:"reloadOperations"])
+scriptsToAdd.add([name:"getViewFields"])
 
-CmdbScript.addScript(name: "autocomplete");
-CmdbScript.addScript(name: "getHierarchy");
-CmdbScript.addScript(name: "getEventHistory");
-CmdbScript.addScript(name: "getSummaryData");
-CmdbScript.addScript(name: "getGeocodes");
-CmdbScript.addScript(name: "getDeviceLocations");
-CmdbScript.addScript(name: "getDevicesByLocation");
+scriptsToAdd.add([name: "emailGenerator", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
+scriptsToAdd.add([name: "emailSender", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:emailConnector"]);
+
+scriptsToAdd.add([name: "importSampleRiData"]);
+
+scriptsToAdd.add([name:"autocomplete"])
+scriptsToAdd.add([name:"getHierarchy"])
+scriptsToAdd.add([name:"getEventHistory"])
+scriptsToAdd.add([name:"getSummaryData"])
+scriptsToAdd.add([name:"getGeocodes"])
+scriptsToAdd.add([name:"getDeviceLocations"])
+scriptsToAdd.add([name:"getDevicesByLocation"])
+
+
+
 
 // topology scripts
-CmdbScript.addScript(name: "createMap");
-CmdbScript.addScript(name: "editMap");
-CmdbScript.addScript(name: "expandMap");
-CmdbScript.addScript(name: "getMap");
-CmdbScript.addScript(name: "mapList");
-CmdbScript.addScript(name: "saveMap");
-CmdbScript.addScript(name: "getMapData");
-CmdbScript.addScript(name: "createDefaultQueries");
-CmdbScript.runScript("createDefaultQueries");
+scriptsToAdd.add([name:"createMap"])
+scriptsToAdd.add([name:"editMap"])
+scriptsToAdd.add([name:"expandMap"])
+scriptsToAdd.add([name:"getMap"])
+scriptsToAdd.add([name:"mapList"])
+scriptsToAdd.add([name:"saveMap"])
+scriptsToAdd.add([name:"getMapData"])
+scriptsToAdd.add([name:"createDefaultQueries"])
+
+scriptsToAdd.each{  scriptParams ->
+
+    try{
+        CmdbScript.addScript(scriptParams)
+    }
+    catch(e)
+    {
+       Logger.getRootLogger().warn("createDefaults: Could not add script with params : ${scriptParams}.Reason:${e}",e)
+    }
+}
+
+
+def scriptsToRun=[]
+scriptsToRun.add("createDefaultQueries")
+
+scriptsToRun.each{  scriptName ->
+
+    try{
+        CmdbScript.runScript(scriptName);
+    }
+    catch(e)
+    {
+       Logger.getRootLogger().warn("createDefaults:  Could not run script ${scriptName}.Reason:${e}",e)
+    }
+}
+
+
+
+

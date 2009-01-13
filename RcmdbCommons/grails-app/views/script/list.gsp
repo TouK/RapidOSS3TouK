@@ -15,6 +15,15 @@
         <div class="message">${flash.message}</div>
     </g:if>
     <div class="list">
+        <%
+            def currentUrl=request.request.uri.toString().replace("/RapidSuite","");
+            def startIndex=currentUrl.indexOf("script")
+            if(script>=0)
+            {
+                currentUrl=currentUrl.substring(startIndex)
+            }
+            
+        %>
         <table>
             <thead>
                 <tr>
@@ -22,6 +31,7 @@
                     <g:sortableColumn property="name" title="Name"/>
                     <g:sortableColumn property="scriptFile" title="File"/>
                     <g:sortableColumn property="type" title="Type"/>
+                    <th></th>
                     <th></th>
                 </tr>
             </thead>
@@ -31,15 +41,19 @@
                         <td><g:link action="edit" id="${cmdbScript.id}">${cmdbScript.name?.encodeAsHTML()}</g:link></td>
                         <td>${cmdbScript.scriptFile?.encodeAsHTML()}</td>
                         <td>${cmdbScript.type?.encodeAsHTML()}</td>
+                        <td>                            
+                            <g:link action="reload" id="${cmdbScript.name}" targetURI="cmdbScript" params="[id:cmdbScript.name,targetURI:currentUrl]">Reload</g:link>
+                        </td>
                         <td>
                             <%
                                 if (cmdbScript.type != CmdbScript.LISTENING) {
                             %>
-                            <g:link action="run" id="${cmdbScript.name}">Run</g:link>
+                            <g:link action="run" id="${cmdbScript.name}" targetURI="cmdbScript">Run</g:link>
                             <%
                                 }
                             %>
                         </td>
+
                     </tr>
                 </g:each>
             </tbody>

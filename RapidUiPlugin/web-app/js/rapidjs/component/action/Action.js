@@ -21,6 +21,7 @@ YAHOO.rapidjs.component.action.RequestAction = function(config, requestParams, c
 {
     this.url = config.url;
     this.id = config.id;
+    this.condition = config.condition;
     this.components = components;
     this.allowMultipleRequests = config.allowMultipleRequests;
     this.events = {

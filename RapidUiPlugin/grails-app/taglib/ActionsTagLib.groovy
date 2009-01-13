@@ -74,6 +74,7 @@ class ActionsTagLib {
                var ${actionId}config = {
                  id:'${actionId}',
                  ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
+                 ${attrs["condition"] ? "condition:\"${attrs["condition"]}\"," : ""}
                  url:'${attrs["url"]}'
                }
                var ${actionId}action = new YAHOO.rapidjs.component.action.RequestAction( ${actionId}config, {${requestParams.join(",")}}, [${cList.join(",")}]);
@@ -99,6 +100,7 @@ class ActionsTagLib {
                var ${actionId}config = {
                  id:'${actionId}',
                  ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
+                 ${attrs["condition"] ? "condition:\"${attrs["condition"]}\"," : ""}
                  ${attrs["removeAttribute"] ? "removeAttribute:'${attrs["removeAttribute"]}'," : ""}
                  url:'${attrs["url"]}'
                }

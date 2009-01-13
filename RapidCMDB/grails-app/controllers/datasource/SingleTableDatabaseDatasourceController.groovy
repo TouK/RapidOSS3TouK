@@ -101,7 +101,7 @@ class SingleTableDatabaseDatasourceController {
             singleTableDatabaseDatasource.update(ControllerUtils.getClassProperties(params, SingleTableDatabaseDatasource));
             if(!singleTableDatabaseDatasource.hasErrors()) {
                 flash.message = "SingleTableDatabaseDatasource ${params.id} updated"
-                redirect(action:show,id:singleTableDatabaseDatasource.id)
+                redirect(action:list)
             }
             else {
                 render(view:'edit',model:[singleTableDatabaseDatasource:singleTableDatabaseDatasource])

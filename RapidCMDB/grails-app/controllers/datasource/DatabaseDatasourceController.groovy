@@ -101,7 +101,7 @@ class DatabaseDatasourceController {
             databaseDatasource.update(ControllerUtils.getClassProperties(params, DatabaseDatasource));
             if(!databaseDatasource.hasErrors()) {
                 flash.message = "DatabaseDatasource ${params.id} updated"
-                redirect(action:show,id:databaseDatasource.id)
+                redirect(action:list)
             }
             else {
                 render(view:'edit',model:[databaseDatasource:databaseDatasource])

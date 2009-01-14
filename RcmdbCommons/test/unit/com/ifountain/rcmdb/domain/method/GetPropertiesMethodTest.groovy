@@ -59,17 +59,20 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         RapidDomainClassProperty prop = allProperties[0]//propsMap["declaredProp1"];
         assertEquals("declaredProp1", prop.name);
         assertFalse(prop.isRelation);
+        assertEquals (Object, prop.type);
         assertTrue(prop.isOperationProperty);
 
         prop = allProperties[1]//propsMap["declaredProp2"];
         assertEquals("declaredProp2", prop.name);
         assertFalse(prop.isRelation);
         assertFalse (prop.isKey);
+        assertEquals (Object, prop.type);
         assertTrue(prop.isOperationProperty);
 
         prop = allProperties[2];
         assertEquals("id", prop.name);
         assertFalse (prop.isRelation);
+        assertEquals (Long, prop.type);
         assertFalse (prop.isKey);
         assertFalse (prop.isOperationProperty);
 
@@ -77,30 +80,35 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         assertEquals("oprProp2", prop.name);
         assertFalse (prop.isKey);
         assertFalse(prop.isRelation);
+        assertEquals (Object, prop.type);
         assertTrue(prop.isOperationProperty);
 
         prop = allProperties[4]//propsMap["oprProp3"];
         assertEquals("oprProp3", prop.name);
         assertFalse (prop.isKey);
         assertFalse(prop.isRelation);
+        assertEquals (Object, prop.type);
         assertTrue(prop.isOperationProperty);
 
         prop = allProperties[5]//propsMap["prop1"];
         assertEquals("prop1", prop.name);
         assertTrue (prop.isKey);
         assertFalse (prop.isRelation);
+        assertEquals (String, prop.type);
         assertFalse (prop.isOperationProperty);
 
         prop = allProperties[6]//propsMap["prop1"];
         assertEquals("prop2", prop.name);
         assertTrue (prop.isKey);
         assertFalse (prop.isRelation);
+        assertEquals (String, prop.type);
         assertFalse (prop.isOperationProperty);
 
         prop = allProperties[7]//propsMap["prop1"];
         assertEquals("prop3", prop.name);
         assertFalse (prop.isKey);
         assertFalse (prop.isRelation);
+        assertEquals (String, prop.type);
         assertFalse (prop.isOperationProperty);
 
         prop = allProperties[8]//propsMap["rel1"];

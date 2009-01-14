@@ -54,7 +54,7 @@ class GetPropertiesMethod
                 {
                     if (ModelGenerator.VALID_PROPERTY_TYPE_CLASSES.contains(prop.getType()) || prop.getType().isPrimitive())
                     {
-                        allDomainClassProperties.add(new RapidDomainClassProperty(name: prop.name, isOperationProperty: false, isKey: isKey))
+                        allDomainClassProperties.add(new RapidDomainClassProperty(name: prop.name, isOperationProperty: false, isKey: isKey, type:prop.getType()))
                     }
                 }
                 else
@@ -93,7 +93,7 @@ class GetPropertiesMethod
                     }
                     if (!isPrivate && !isMethodsPrivate)
                     {
-                        allProperties.add(new RapidDomainClassProperty(name: prop.name, isRelation: false, isOperationProperty: true));
+                        allProperties.add(new RapidDomainClassProperty(name: prop.name, isRelation: false, isOperationProperty: true, type:prop.getType()));
                     }
                 }
             }
@@ -111,6 +111,7 @@ class RapidDomainClassProperty implements Comparable
 {
     String name;
     boolean isRelation;
+    Object type;
     boolean isKey;
     boolean isOperationProperty;
 
@@ -124,7 +125,6 @@ class RapidDomainClassProperty implements Comparable
 class RapidDomainClassRelation extends RapidDomainClassProperty
 {
     String reverseName;
-    int type;
     Class relatedModel;
     boolean isMany;
 

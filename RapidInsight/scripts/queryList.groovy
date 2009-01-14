@@ -37,12 +37,11 @@ def writer = new StringWriter();
 def queryBuilder = new MarkupBuilder(writer);
 
 SearchQueryGroup.add(name:"My Queries", username:web.session.username, type:"default");
-def queryGroups = SearchQueryGroup.searchEvery("type:\"${filterType}\" OR type:\"default\"");
+def queryGroups = SearchQueryGroup.searchEvery("( type:\"${filterType}\" OR type:\"default\" ) AND  ( ( username:\"${RsUser.RSADMIN}\" AND isPublic:true) OR (username:\"${user.username}\") )");
 queryBuilder.Filters
 {
     queryGroups.each {SearchQueryGroup group ->
         def userName = group.username;
-        if((userName.equals(RsUser.RSADMIN) && group.isPublic) || userName.equals(user.username)){
            queryBuilder.Filter(id: group.id, name: group.name, nodeType: "group",  isPublic:group.isPublic) {
               group.queries.each {SearchQuery query ->
                   if(query.type == filterType || query.type == ""){
@@ -52,7 +51,7 @@ queryBuilder.Filters
 
               }
            }
-        }
+
     }
 }
 return writer.toString();

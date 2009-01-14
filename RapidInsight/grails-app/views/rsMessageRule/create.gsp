@@ -71,7 +71,7 @@
                             <label for="delay">Delay:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsMessageRule,field:'delay','errors')}">
-                            <input type="text" class="inputtextfield" id="delay" name="delay" value="${fieldValue(bean:rsMessageRule,field:'delay')}"/>
+                            <input type="text" class="inputtextfield" id="delay" name="delay" value="${fieldValue(bean:rsMessageRule,field:'delay')}"/> seconds
                         </td>
                     </tr>
                     

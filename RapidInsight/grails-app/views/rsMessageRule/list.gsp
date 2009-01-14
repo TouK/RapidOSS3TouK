@@ -46,7 +46,7 @@
                                 <g:else>id:${rule.searchQueryId}</g:else>
                             </g:link>
                             </td>
-                            <td>${rule.delay?.encodeAsHTML()}</td>
+                            <td>${rule.delay?.encodeAsHTML()} seconds</td>
                             <td>${rule.clearAction?.encodeAsHTML()}</td>
                             <td>${rule.destinationType?.encodeAsHTML()}</td>
                             

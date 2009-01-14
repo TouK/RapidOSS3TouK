@@ -31,7 +31,7 @@ def scriptsToAdd=[]
 scriptsToAdd.add([name:"modelCreator"])
 scriptsToAdd.add([name:"removeAll"])
 scriptsToAdd.add([name:"acknowledge"])
-scriptsToAdd.add([name: "clearExpiredEvents", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:true,period:60])
+scriptsToAdd.add([name: "clearExpiredEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60])
 scriptsToAdd.add([name:"setOwnership"])
 scriptsToAdd.add([name:"queryList"])
 scriptsToAdd.add([name:"createQuery"])
@@ -39,8 +39,8 @@ scriptsToAdd.add([name:"editQuery"])
 scriptsToAdd.add([name:"reloadOperations"])
 scriptsToAdd.add([name:"getViewFields"])
 
-scriptsToAdd.add([name: "emailGenerator", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
-scriptsToAdd.add([name: "emailSender", type:"Scheduled", scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:emailConnector"]);
+scriptsToAdd.add([name: "emailGenerator", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
+scriptsToAdd.add([name: "emailSender", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:emailConnector"]);
 
 scriptsToAdd.add([name: "importSampleRiData"]);
 

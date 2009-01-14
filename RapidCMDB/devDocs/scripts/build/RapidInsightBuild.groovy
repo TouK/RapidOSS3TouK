@@ -301,6 +301,11 @@ class RapidInsightBuild extends Build {
         }
 
         ant.copy(file: "${env.rapid_insight}/rs.exe", toDir: "${env.dist_rapid_suite}",overwrite:true)
+        if (TEST) {
+            ant.copy(todir: "${env.dist_rapid_suite}/test") {
+                ant.fileset(dir: "$env.rapid_insight/test")
+            }
+        }
     }
 
     //    def getPluginName(prefix){

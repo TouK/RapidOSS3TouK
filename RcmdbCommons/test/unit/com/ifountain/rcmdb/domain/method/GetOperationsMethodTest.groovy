@@ -94,4 +94,105 @@ class GetOperationsMethodTest extends RapidCmdbTestCase{
         {
         }
     }
+
+    public void testGetOperationsWithAnnotation()
+    {
+        String operationClassName = "${GetOperationsMethodTest.simpleName}Operation1";
+        String description = """
+        /*
+        This is a comment
+        */
+        """
+        def operationsClassText = """
+        import com.ifountain.annotations.*;
+        class ${operationClassName}{
+            @Description(\"\"\"${description}\"\"\")
+            def method1()
+            {
+            }
+
+            def method2()
+            {
+            }
+        }
+        """
+        GroovyClassLoader gcl = new GroovyClassLoader();
+        Class operationClass = gcl.parseClass(operationsClassText);
+        Class domainClass = gcl.parseClass("class DomainClass{}");
+
+        //Test with null domain class
+        GetOperationsMethod getOperationsMethod = new GetOperationsMethod(domainClass.metaClass);
+        getOperationsMethod.setOperationClass (operationClass);
+        def operationList = getOperationsMethod.getOperations();
+        assertEquals (2, operationList.size());
+        OperationMethod method = operationList[0];
+        assertEquals ("method1", method.name);
+        assertEquals (0, method.parameters.size());
+        assertEquals (Object.name, method.returnType.name);
+        assertEquals (description, method.description);
+
+        method = operationList[1];
+        assertEquals ("method2", method.name);
+        assertEquals (0, method.parameters.size());
+        assertEquals (Object.name, method.returnType.name);
+        assertEquals ("", method.description);
+
+    }
+
+    public void testGetOperationsWithParentClass()
+    {
+        String operationClassName = "${GetOperationsMethodTest.simpleName}Operation1";
+        String parentClassName = "${GetOperationsMethodTest.simpleName}Operation1Parent";
+        String description = """
+        /*
+        This is a comment
+        */
+        """
+        def operationsClassText = """
+        import com.ifountain.annotations.*;
+        class ${operationClassName} extends ${parentClassName}{
+            def method2()
+            {
+            }
+        }
+        class ${parentClassName}
+        {
+            @Description(\"\"\"${description}\"\"\")
+            def method1()
+            {
+            }
+            def method3()
+            {
+            }
+        }
+        """
+        GroovyClassLoader gcl = new GroovyClassLoader();
+        gcl.parseClass(operationsClassText);
+        def operationClass = gcl.getLoadedClasses().findAll{it.name == operationClassName}[0];
+        Class domainClass = gcl.parseClass("class DomainClass{}");
+
+        //Test with null domain class
+        GetOperationsMethod getOperationsMethod = new GetOperationsMethod(domainClass.metaClass);
+        getOperationsMethod.setOperationClass (operationClass);
+        def operationList = getOperationsMethod.getOperations();
+        assertEquals (3, operationList.size());
+        OperationMethod method = operationList[0];
+        assertEquals ("method1", method.name);
+        assertEquals (0, method.parameters.size());
+        assertEquals (Object.name, method.returnType.name);
+        assertEquals (description, method.description);
+
+        method = operationList[1];
+        assertEquals ("method2", method.name);
+        assertEquals (0, method.parameters.size());
+        assertEquals (Object.name, method.returnType.name);
+        assertEquals ("", method.description);
+
+        method = operationList[2];
+        assertEquals ("method3", method.name);
+        assertEquals (0, method.parameters.size());
+        assertEquals (Object.name, method.returnType.name);
+        assertEquals ("", method.description);
+
+    }
 }

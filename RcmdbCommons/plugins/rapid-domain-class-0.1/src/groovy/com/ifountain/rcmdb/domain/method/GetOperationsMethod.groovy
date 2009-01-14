@@ -3,6 +3,8 @@ package com.ifountain.rcmdb.domain.method
 import com.ifountain.rcmdb.domain.operation.DomainOperationManager
 import java.lang.reflect.Method
 import org.codehaus.groovy.runtime.InvokerHelper
+import org.codehaus.groovy.reflection.CachedMethod
+import com.ifountain.annotations.Description
 
 /**
 * Created by IntelliJ IDEA.
@@ -31,10 +33,12 @@ public class GetOperationsMethod {
             mc.getMethods().each{
                 domainMethods[it.name] = it.name;
             }
-            operationClass.getMetaClass().getMethods().each{method->
+
+            operationClass.getMethods().each{Method method->
                 if(!domainMethods.containsKey(method.name))
                 {
-                    operationList.add(new OperationMethod(name:method.name, parameters:method.getParameterTypes(), returnType:method.getReturnType()));
+                    Description annotation = method.getAnnotation(Description);
+                    operationList.add(new OperationMethod(name:method.name, parameters:method.getParameterTypes(), returnType:method.getReturnType(), description:annotation?annotation.value():""));
                 }
             }
         }
@@ -53,8 +57,14 @@ class OperationMethod{
     String name;
     List parameters;
     Class returnType;
+    String description;
 
     public void setProperty(String s, Object o) {
     }
-    
+
+    public String toString() {
+        return name; //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+
 }

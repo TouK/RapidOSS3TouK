@@ -123,7 +123,7 @@ class SingleTableDatabaseDatasourceController {
         def singleTableDatabaseDatasource = SingleTableDatabaseDatasource.add(ControllerUtils.getClassProperties(params, SingleTableDatabaseDatasource))
         if(!singleTableDatabaseDatasource.hasErrors()) {
             flash.message = "SingleTableDatabaseDatasource ${singleTableDatabaseDatasource.id} created"
-            redirect(action:show,id:singleTableDatabaseDatasource.id)
+            redirect(action:list)
         }
         else {
             render(view:'create',model:[singleTableDatabaseDatasource:singleTableDatabaseDatasource])

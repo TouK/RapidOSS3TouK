@@ -101,7 +101,7 @@ class SnmpConnectionController {
             snmpConnection.update(ControllerUtils.getClassProperties(params, SnmpConnection));
             if(!snmpConnection.hasErrors()) {
                 flash.message = "SnmpConnection ${params.id} updated"
-                redirect(action:show,id:snmpConnection.id)
+                redirect(action:list)
             }
             else {
                 render(view:'edit',model:[snmpConnection:snmpConnection])
@@ -123,7 +123,7 @@ class SnmpConnectionController {
         def snmpConnection = SnmpConnection.add(ControllerUtils.getClassProperties(params, SnmpConnection))
         if(!snmpConnection.hasErrors()) {
             flash.message = "SnmpConnection ${snmpConnection.id} created"
-            redirect(action:show,id:snmpConnection.id)
+            redirect(action:list)
         }
         else {
             render(view:'create',model:[snmpConnection:snmpConnection])

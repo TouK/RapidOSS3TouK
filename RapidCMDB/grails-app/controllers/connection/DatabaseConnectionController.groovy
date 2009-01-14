@@ -123,7 +123,7 @@ class DatabaseConnectionController {
         def databaseConnection = DatabaseConnection.add(ControllerUtils.getClassProperties(params, DatabaseConnection))
         if(!databaseConnection.hasErrors()) {
             flash.message = "DatabaseConnection ${databaseConnection.id} created"
-            redirect(action:show,id:databaseConnection.id)
+            redirect(action:list)
         }
         else {
             render(view:'create',model:[databaseConnection:databaseConnection])

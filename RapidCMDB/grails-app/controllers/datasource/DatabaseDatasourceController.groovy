@@ -123,7 +123,7 @@ class DatabaseDatasourceController {
         def databaseDatasource = DatabaseDatasource.add(ControllerUtils.getClassProperties(params, DatabaseDatasource))
         if(!databaseDatasource.hasErrors()) {
             flash.message = "DatabaseDatasource ${databaseDatasource.id} created"
-            redirect(action:show,id:databaseDatasource.id)
+            redirect(action:list)
         }
         else {
             render(view:'create',model:[databaseDatasource:databaseDatasource])

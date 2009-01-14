@@ -22,6 +22,9 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         super.setUp();
         loadClasses(["RsEvent","RsHistoricalEvent","RsLookup"])
         clearAll();
+        def generatorScript=CmdbScript.addScript([name:"emailGenerator"])
+        assertFalse(generatorScript.hasErrors())
+
         
     }
 
@@ -81,7 +84,7 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"),1)
 
-        def script=CmdbScript.get(name:"emailGenerator")
+        def script=CmdbScript.get(name:"emailGenerator")        
         CmdbScript.updateScript(script,[logLevel:org.apache.log4j.Level.DEBUG],false)
         assertFalse (script.hasErrors())
 

@@ -174,7 +174,7 @@ class GroupController {
         def group = Group.add(ControllerUtils.getClassProperties(params, Group))
         if (!group.hasErrors()) {
             flash.message = "Group ${group.id} created"
-            redirect(action: show, id: group.id)
+            redirect(action: list)
         }
         else {
             render(view: 'create', model: [group: group])

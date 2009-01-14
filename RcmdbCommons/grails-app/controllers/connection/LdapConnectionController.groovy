@@ -121,7 +121,7 @@ class LdapConnectionController {
         def ldapConnection = LdapConnection.add(ControllerUtils.getClassProperties(params, LdapConnection))
         if(!ldapConnection.hasErrors()) {
             flash.message = "LdapConnection ${ldapConnection.id} created"
-            redirect(action:show,id:ldapConnection.id)
+            redirect(action:list)
         }
         else {
             render(view:'create',model:[ldapConnection:ldapConnection])

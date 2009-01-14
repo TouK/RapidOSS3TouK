@@ -258,7 +258,7 @@ class RsUserController {
         def rsUser = RsUser.add(username: params["username"], passwordHash: new Sha1Hash(password1).toHex(),email:params["email"]);
         if (!rsUser.hasErrors()) {
             flash.message = "User ${rsUser.id} created"
-            redirect(action: show, id: rsUser.id)
+            redirect(action: list)
         }
         else {
             render(view: 'create', model: [rsUser: rsUser])

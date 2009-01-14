@@ -85,7 +85,7 @@ class ScriptController {
         }
         else {
             flash.message = SUCCESSFULLY_CREATED
-            redirect(action: show, controller: 'script', id: script.id)
+            redirect(action: list)
         }
     }
 

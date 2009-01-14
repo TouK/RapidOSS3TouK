@@ -21,6 +21,7 @@ package com.ifountain.comp.file;
 import java.util.Map;
 import java.util.List;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,14 +32,14 @@ import java.io.File;
  */
 public abstract class DirListener {
     ThreadGroup allThreads = new ThreadGroup("DirListener");
-    Map exludedDirs;
+    Map exludedFiles;
     public DirListener()
     {
     }
 
-    public void initialize(List<File> dirsToWatch, Map exludedDirs)
+    public void initialize(List<File> dirsToWatch, Map exludedFiles)
     {
-        this.exludedDirs = exludedDirs;
+        this.exludedFiles = exludedFiles;
         for(int i=0; i < dirsToWatch.size(); i++)
         {
             File dir = dirsToWatch.get(i);
@@ -48,10 +49,16 @@ public abstract class DirListener {
     }
     public void createNewWatcherThread(File dir)
     {
-        if(exludedDirs.containsKey(dir.getName())) return;
-        FileWatcher watcher = new FileWatcher(dir, this);
-        Thread t = new Thread(allThreads, watcher);
-        t.start();
+        try
+        {
+            if(!exludedFiles.containsKey(dir.getCanonicalPath()) && !exludedFiles.containsKey(dir.getName())){
+                FileWatcher watcher = new FileWatcher(dir, this, exludedFiles);
+                Thread t = new Thread(allThreads, watcher);
+                t.start();
+            }
+        }catch(IOException e)
+        {
+        }
     }
     abstract public void fileChanged(File file);
 

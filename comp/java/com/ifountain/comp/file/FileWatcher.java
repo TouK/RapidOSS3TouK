@@ -19,6 +19,7 @@
 package com.ifountain.comp.file;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -35,7 +36,9 @@ public class FileWatcher implements Runnable{
     Map dirs = new HashMap();
     long lastChangedFile = 0;
     DirListener listener;
-    public FileWatcher(File dirToWatch, DirListener listener) {
+    Map exludedFiles;
+    public FileWatcher(File dirToWatch, DirListener listener, Map exludedFiles) {
+        this.exludedFiles = exludedFiles;
         this.dirToWatch = dirToWatch;
         this.listener = listener;
     }
@@ -52,19 +55,28 @@ public class FileWatcher implements Runnable{
                 long tmpLastModified = lastChangedFile;
                 for(int i=0; i < currentFiles.length; i++)
                 {
+
                     File file = currentFiles[i];
-                    long lastMod = file.lastModified();
-                    if(lastMod > lastChangedFile)
+                    try
                     {
-                        if(lastMod > tmpLastModified) tmpLastModified = lastMod;
-                        if(!file.isDirectory())
+                        if(!exludedFiles.containsKey(file.getCanonicalPath()) && !exludedFiles.containsKey(file.getName()))
                         {
-                            listener.fileChanged (file);
+                            long lastMod = file.lastModified();
+                            if(lastMod > lastChangedFile)
+                            {
+                                if(lastMod > tmpLastModified) tmpLastModified = lastMod;
+                                if(!file.isDirectory())
+                                {
+                                    listener.fileChanged (file);
+                                }
+                                else
+                                {
+                                    listener.createNewWatcherThread (file);
+                                }
+                            }
                         }
-                        else
-                        {
-                            listener.createNewWatcherThread (file);
-                        }
+                    }catch(IOException e)
+                    {
                     }
                 }
 

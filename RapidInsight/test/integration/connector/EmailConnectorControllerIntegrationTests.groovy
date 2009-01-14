@@ -50,7 +50,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         
         controller.save();
 
-        assertEquals(String.valueOf(controller.response.redirectedUrl),"emailConnector")
+        assertEquals(String.valueOf(controller.response.redirectedUrl),"/emailConnector")
 
         def emailConnectors = EmailConnector.list();
         assertEquals(1, emailConnectors.size());
@@ -161,7 +161,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         }
 
         controller.save();
-        assertEquals(String.valueOf(controller.response.redirectedUrl),"emailConnector")
+        assertEquals(String.valueOf(controller.response.redirectedUrl),"/emailConnector")
 
         def oldEmailConnectors = EmailConnector.list();
         assertEquals(1, oldEmailConnectors.size());
@@ -184,7 +184,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
             controller.params[key] = val;
         }
         controller.update();
-        assertEquals(String.valueOf(controller.response.redirectedUrl),"emailConnector")
+        assertEquals(String.valueOf(controller.response.redirectedUrl),"/emailConnector")
 
         def emailConnectors = EmailConnector.list();
         assertEquals(1, emailConnectors.size());

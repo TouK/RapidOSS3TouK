@@ -105,7 +105,7 @@
     <g:layoutHead/>
 </head>
 <body class=" yui-skin-sam rimain">
-<rui:form  id="changeProfileDialog" width="35em" saveUrl="/RapidSuite/rsUser/changeProfile?format=xml" createUrl="/RapidSuite/rsUser/changeProfileData?format=xml&username=${session.username}">
+<rui:form id="changeProfileDialog" width="35em" saveUrl="/RapidSuite/rsUser/changeProfile?format=xml" createUrl="/RapidSuite/rsUser/changeProfileData?format=xml&username=${session.username}">
     <div>
         <div class="hd">Change My Profile</div>
         <div class="bd">
@@ -134,15 +134,17 @@
                     <%
                         def currentUrl = request.uri.toString();
                     %>
-                    <li class="${currentUrl.indexOf('events.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'events.gsp')}"><em>Events</em></a></li>
-                    <li class="${currentUrl.indexOf('eventSearch.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'eventSearch.gsp')}"><em>Event Search</em></a></li>
-                    <li class="${currentUrl.indexOf('historicalEvents.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'historicalEvents.gsp')}"><em>Historical Events</em></a></li>
-                    <li class="${currentUrl.indexOf('inventory.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'inventory.gsp')}"><em>Inventory</em></a></li>
-                    <li class="${currentUrl.indexOf('maps.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'maps.gsp')}"><em>Maps</em></a></li>
+                    <li class="${currentUrl.indexOf('events.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'events.gsp')}"><em>Events</em></a></li>
+                    <li class="${currentUrl.indexOf('eventSearch.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'eventSearch.gsp')}"><em>Event Search</em></a></li>
+                    <li class="${currentUrl.indexOf('historicalEvents.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'historicalEvents.gsp')}"><em>Historical Events</em></a></li>
+                    <li class="${currentUrl.indexOf('inventory.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'inventory.gsp')}"><em>Inventory</em></a></li>
+                    <li class="${currentUrl.indexOf('maps.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'maps.gsp')}"><em>Maps</em></a></li>
                     %{--<li class="${currentUrl.indexOf('serviceView.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'serviceView.gsp')}"><em>Service View</em></a></li>--}%
                     %{--<li class="${currentUrl.indexOf('deviceView.gsp') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'deviceView.gsp')}"><em>Device View</em></a></li>--}%
-                    <li class="${currentUrl.indexOf('rsMessageRule') > -1 ? "selected":""}"><a href="${createLinkTo(file: 'rsMessageRule')}"><em>Notifications</em></a></li>
-                    <li class="${currentUrl.indexOf('browser.gsp') > -1  ? "selected" : ""}"><a href="${createLinkTo(file: 'rsBrowser')}"><em>Rapid Browser</em></a></li>
+                    <li class="${currentUrl.indexOf('rsMessageRule') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'rsMessageRule')}"><em>Notifications</em></a></li>
+                    <jsec:hasRole name="Administrator">
+                        <li class="${currentUrl.indexOf('browser.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'rsBrowser')}"><em>Repository Browser</em></a></li>
+                    </jsec:hasRole>
                 </ul>
             </div>
         </td>
@@ -160,17 +162,17 @@
     </tbody></table>
 </div>
 <script>
-    YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
-        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
-    }, this, true);
-    YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
-        YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
-    }, this, true);
+YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
+YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
+}, this, true);
+YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
+YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
+}, this, true);
 
-     var changeProfileDialog = YAHOO.rapidjs.Components['changeProfileDialog']
-     YAHOO.util.Event.addListener(document.getElementById('rsUser'), 'click', function(){
-         changeProfileDialog.show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {username:"${session.username}"});
-    },this, true)
+var changeProfileDialog = YAHOO.rapidjs.Components['changeProfileDialog']
+YAHOO.util.Event.addListener(document.getElementById('rsUser'), 'click', function(){
+changeProfileDialog.show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {username:"${session.username}"});
+},this, true)
 </script>
 <g:layoutBody/>
 </body>

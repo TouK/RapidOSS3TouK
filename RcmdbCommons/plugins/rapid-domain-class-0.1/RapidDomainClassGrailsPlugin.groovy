@@ -41,6 +41,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.domain.method.GetPropertiesMethod
 import com.ifountain.rcmdb.domain.method.KeySetMethod
+import com.ifountain.rcmdb.domain.method.GetOperationsMethod
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors", "__is_federated_properties_loaded__":RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, "__operation_class__":RapidCMDBConstants.OPERATION_PROPERTY_NAME]
@@ -177,10 +178,15 @@ class RapidDomainClassGrailsPlugin {
     def addOperationsSupport(GrailsDomainClass dc, application, ctx)
     {
         GetPropertiesMethod getPropertiesMethod = new GetPropertiesMethod(dc);
+
         KeySetMethod keySetMethod = new KeySetMethod(dc);
         MetaClass mc = dc.metaClass;
+        GetOperationsMethod getOperationsMethod = new GetOperationsMethod(mc);
         mc.static.getPropertiesList = {->
             return getPropertiesMethod.getDomainObjectProperties();
+        }
+        mc.static.getOperations = {->
+            return getOperationsMethod.getOperations();
         }
         mc.static.keySet= {->
             return keySetMethod.getKeys();
@@ -241,6 +247,7 @@ class RapidDomainClassGrailsPlugin {
             mc.'static'.reloadOperations = {reloadSubclasses->
                 method.invoke(mc.theClass, [reloadSubclasses] as Object[]);
                 getPropertiesMethod.setOperationClass (manager.getOperationClass());
+                getOperationsMethod.setOperationClass (manager.getOperationClass());
             }
 
             try

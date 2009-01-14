@@ -76,9 +76,12 @@ class SmartsModuleBuild extends Build {
         ant.copy(todir: rapidSuiteDir) {
             ant.fileset(dir: "$env.rapid_smarts/applications/RapidInsightForSmarts")
         }
-        if(TEST){
+       if(TEST){
             ant.copy(todir:"$env.dist_rapid_server_lib", file:(String)classpath.getProperty("skclient_jar"))
             ant.copy(todir:"$env.dist_rapid_server_lib", file:(String)classpath.getProperty("net_jar"))
+            ant.copy(todir: "${rapidSuiteDir}/test") {
+                ant.fileset(dir: "$env.rapid_smarts/test")
+            }
         }
         if(distDir.equals(env.dist_modules)){
 	        ant.zip(destfile: "$env.distribution/SmartsPlugin$versionDate" + ".zip") {

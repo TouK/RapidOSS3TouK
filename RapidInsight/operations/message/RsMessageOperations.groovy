@@ -38,7 +38,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         {
            state=1;
         }
-        def message=RsMessage.add(eventId:event.id,destination:destination,insertedAt:now,sendAfter:now+delay,state:state,destinationType:RsMessage.EMAIL,action:"create")
+        def message=RsMessage.add(eventId:event.id,destination:destination,insertedAt:now,sendAfter:now+(delay*1000),state:state,destinationType:RsMessage.EMAIL,action:"create")
         if(message.hasErrors())
         {
             externalLogger.warn("Error occured while adding RsMessage. Reason : ${message.errors}")

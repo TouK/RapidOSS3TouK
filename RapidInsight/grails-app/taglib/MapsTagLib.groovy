@@ -147,7 +147,7 @@ class MapsTagLib {
                 """
         )
 
-        out << ObjectMapTagLib.fObjectMap(id:"topoMap", dataTag:"device", expandURL:"script/run/expandMap", dataURL:"script/run/getMapData",
+        out << ObjectMapTagLib.fObjectMap(id:"topoMap", expandURL:"script/run/expandMap", dataURL:"script/run/getMapData",
             nodeSize:nodeSize, edgeColors:edgeColors, pollingInterval:topoMapPollInterval, 
             ObjectMapTagLib.fOmMenuItems([:], getMenuXml(nodeMenus)) +
                     ObjectMapTagLib.fOmToolbarMenus([:], getToolbarMenuXml(toolbarMenus)) +

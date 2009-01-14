@@ -60,8 +60,6 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.height = config.height || 540;
     this.width = config.width || 680;
     this.wMode = config.wMode;
-    this.nodeTag = config.nodeTag;
-    this.dataTag = config.dataTag;
     this.dataURL = config.dataURL;
     this.expandURL = config.expandURL;
     if(!config.nodeSize)

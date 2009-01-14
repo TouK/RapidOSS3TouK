@@ -104,7 +104,6 @@ class ObjectMapTagLib {
         def xml = new XmlSlurper().parseText(configXML);
         def cArray = [];
         cArray.add("id: '${config["id"]}'")
-        cArray.add("dataTag: '${config["dataTag"]}'")
         cArray.add("expandURL: '${config["expandURL"]}'")
         cArray.add("dataURL: '${config["dataURL"]}'")
         if (config["title"])

@@ -22,7 +22,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
         def currentState = currentState();
         if(currentState == null)
         {
-            currentState = calculateState(currentState, -1);
+            currentState = calculateState(currentState, -1, -1);
             RsObjectState.add(objectId:id, state:currentState);
         }
         return currentState;
@@ -33,15 +33,15 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
         def stateObj = RsObjectState.get(objectId:id);
         return stateObj?stateObj.state:null;
     }
-
-    int setState(newState)
+    
+    int setState(newPropagatedState, oldPropagatedState = -1)
     {
         def currentState = getState();
-        def calculatedState = calculateState(currentState, newState);
+        def calculatedState = calculateState(currentState, oldPropagatedState, newPropagatedState);
         if(calculatedState != currentState)
         {
             RsObjectState.add(objectId:id, state:calculatedState);
-            propagateState(calculatedState);
+            propagateState(currentState, calculatedState);
         }
         return calculatedState;
     }
@@ -50,34 +50,37 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     /*=====================================================================================================================================
     - It is expected that users will change only calculateState, propagateState methods according to their needs.
     - In current implementation default state calculation strategy is specified as finding max severity of events.
-    - calculateState will be called for each setState call. currentState information and newState information
-    will be passed to this method.
-    - newState will be passed as -1 if state calculation is triggered because of first getState call.
+    - calculateState will be called for each setState call. oldPropagatedState and newPropagatedState refers the states of triggering objects.
+    - oldPropagatedState and newPropagatedState will be passed as -1 if state calculation is triggered because of first getState call.
     =====================================================================================================================================*/
-    def calculateState(currentState, newState)
+    def calculateState(currentState, oldPropagatedState, newPropagatedState)
     {
-        return findMaxSeverity(currentState, newState);
+        return findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState);
     }
 
-    def propagateState(newStateInformation)
+    def propagateState(oldState, newState)
     {
         parentObjects.each{
-            it.setState(newStateInformation);    
+            it.setState(newState, oldState);    
         }
     }
 
-    public int findMaxSeverity(currentState, newState)
+    public int findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState)
     {
-        if(newState != -1 && newState <= currentState) return currentState;
-        def propSummary = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
-        def maxValue = 0;
-        propSummary.severity.each{propValue, numberOfObjects->
-            if(propValue >= 0 && maxValue < propValue)
-            {
-                maxValue = propValue;
+        if(newPropagatedState == -1 && oldPropagatedState == -1 || newPropagatedState > currentState
+                || currentState == oldPropagatedState && newPropagatedState < currentState)
+        {
+            def propSummary = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
+            def maxValue = 0;
+            propSummary.severity.each{propValue, numberOfObjects->
+                if(propValue >= 0 && maxValue < propValue)
+                {
+                    maxValue = propValue;
+                }
             }
+            return maxValue;
         }
-        return maxValue;   
+        return currentState;
     }
 }
     

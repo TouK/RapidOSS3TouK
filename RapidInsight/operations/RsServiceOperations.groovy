@@ -17,21 +17,26 @@
 * USA.
 */
 
-    
+
 public class RsServiceOperations extends RsGroupOperations
 {
-    public int findMaxSeverity(currentState, newState)
+    public int findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState)
     {
-        if(newState != -1 && newState <= currentState) return currentState;
-        def maxValue = 0;
-        childObjects.each{
-            def childState = it.getState();
-            if(childState >= 0 && maxValue < childState)
-            {
-                maxValue = childState;
+        if (newPropagatedState == -1 && oldPropagatedState == -1 || newPropagatedState > currentState
+                || currentState == oldPropagatedState && newPropagatedState < currentState)
+        {
+            def maxValue = 0;
+            childObjects.each {
+                def childState = it.getState();
+                if (childState >= 0 && maxValue < childState)
+                {
+                    maxValue = childState;
+                }
             }
+            return maxValue;
         }
-        return maxValue;
+        return currentState;
     }
+
 }
     

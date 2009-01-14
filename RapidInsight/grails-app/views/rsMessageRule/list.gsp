@@ -39,7 +39,13 @@
 
                     <g:each in="${myRules}" status="i" var="rule">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                            <td><g:link action="edit" id="${rule.id}">${search.SearchQuery.get(id:rule.searchQueryId)?.name?.encodeAsHTML()}</g:link></td>
+                            <td>
+                            <g:link action="edit" id="${rule.id}">
+                                <g:set var="queryName" value="${search.SearchQuery.get(id:rule.searchQueryId)?.name}"/>
+                                <g:if test="${queryName}">${queryName?.encodeAsHTML()}</g:if>
+                                <g:else>id:${rule.searchQueryId}</g:else>
+                            </g:link>
+                            </td>
                             <td>${rule.delay?.encodeAsHTML()}</td>
                             <td>${rule.clearAction?.encodeAsHTML()}</td>
                             <td>${rule.destinationType?.encodeAsHTML()}</td>

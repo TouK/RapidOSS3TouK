@@ -1,4 +1,8 @@
 <%@ page import="message.RsMessageRule" %>
+<%@ page import="auth.RsUser" %>
+<%@ page import="search.SearchQueryGroup" %>
+<%@ page import="search.SearchQuery" %>
+
 <g:render template="header" model="[:]"/>
 
 <div class="nav">    
@@ -31,12 +35,24 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:rsMessageRule,field:'searchQueryId','errors')}">
                             <%
-                                def searchQueryList=[];
-                                search.SearchQuery.list().each{
-                                    searchQueryList.add([id:it.id,name:it.name])
-                                }
+                                def username = session.username;
+                                def filterType="event";
+                                def queryGroups = SearchQueryGroup.searchEvery("( type:\"${filterType}\" OR type:\"default\" ) AND  ( ( username:\"${RsUser.RSADMIN}\" AND isPublic:true) OR (username:\"${username}\") )");
                             %>
-                            <g:select class="inputtextfield1" optionKey="id" optionValue="name" from="${searchQueryList}"  name="searchQueryId" value="${rsMessageRule.searchQueryId}"></g:select>
+                            <select name="searchQueryId" class="inputtextfield1">
+                               <g:each in="${queryGroups}" var="group">
+                                     <optgroup label="${group.name}">
+                                      <g:each in="${group.queries}" var="query">
+                                     <g:if test="${rsMessageRule.searchQueryId==query.id}">
+                                        <option value="${query.id}" selected="selected">${query.name}</option>
+                                     </g:if>
+                                      <g:else>
+                                          <option value="${query.id}">${query.name}</option>
+                                      </g:else>
+                                      </g:each>
+                                     </optgroup>
+                               </g:each>
+                            </select>                            
                         </td>
                     </tr>
 

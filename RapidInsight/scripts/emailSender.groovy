@@ -12,12 +12,9 @@ import message.RsMessage
 def templatePath="grails-app/templates/email/emailTemplate.gsp";
 def from="mustafa"
 
-
-
 def date=new Date();
 
-
-def ds=EmailConnector.get(name:staticParamMap.connectorName).emailDatasource
+def ds=EmailConnector.get(name:staticParamMap?.connectorName)?.emailDatasource
 if(ds!=null)
 {
     def messages=RsMessage.search("state:1 AND destinationType:\"${RsMessage.EMAIL}\"", [sort: "id",order:"asc",max:100]).results;

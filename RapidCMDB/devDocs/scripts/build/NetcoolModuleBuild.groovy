@@ -71,6 +71,11 @@ class NetcoolModuleBuild extends Build {
 	            ant.zipfileset(dir: "$env.dist_modules")
 	        }
         }
+        if (TEST) {
+            ant.copy(todir: "${rapidSuiteDir}/test") {
+                ant.fileset(dir: "$env.rapid_netcool/test")
+            }
+        }
         println "Netcool Build Done";
     }
 

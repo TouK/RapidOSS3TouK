@@ -7,10 +7,10 @@
 --%>
 <g:render template="header" model="[:]"/>
 <div class="nav">
-    <span class="menuButton"><g:link class="create" action="create">New RsMessageRule</g:link></span>
+    <span class="menuButton"><g:link class="create" action="create">New Notification Rule</g:link></span>
 </div>
        <div class="body">
-            <h1>Your Notification List</h1>
+            <h1>Your Notification Rule List</h1>
 
         <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>

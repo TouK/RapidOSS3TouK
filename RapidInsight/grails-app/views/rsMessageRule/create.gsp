@@ -6,10 +6,10 @@
 <g:render template="header" model="[:]"/>
 
 <div class="nav">    
-    <span class="menuButton"><g:link class="list" action="list">RsMessageRule List</g:link></span>
+    <span class="menuButton"><g:link class="list" action="list">Notification Rule List</g:link></span>
 </div>
 <div class="body">
-    <h1>Create RsMessageRule</h1>
+    <h1>Create Notification Rule</h1>
     <g:if test="${flash.message}">
         <div class="message">${flash.message}</div>
     </g:if>

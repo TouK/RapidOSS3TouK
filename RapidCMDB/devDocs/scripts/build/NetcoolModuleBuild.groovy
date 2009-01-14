@@ -65,20 +65,7 @@ class NetcoolModuleBuild extends Build {
                 ant.exclude(name: "**/NetcoolRealValues.groovy")
             }
         }
-        ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
-            ant.arg(value: "-file");
-            ant.arg(value: "${env.rapid_netcool}/applications/RapidInsightForNetcool/grails-app/views/layouts/indexLayout.gsp");
-            ant.arg(value: "-applicationPath");
-            ant.arg(value: "${env.dist_rapid_suite}/web-app");
-            ant.arg(value: "-target");
-            ant.arg(value: "${rapidSuiteDir}/web-app");
-            ant.arg(value: "-suffix");
-            ant.arg(value: "${versionDate}");
-            ant.arg(value: "-webBasePrefix");
-            ant.arg(value: "${getWebBasePath()}");
-                ant.classpath(refid: "classpath");
-        }
-        ant.move(file: "${rapidSuiteDir}/web-app/indexLayout.gsp", todir: "${env.dist_modules_rapid_suite}/grails-app/views/layouts");
+        replaceJavascriptAndCss("${rapidSuiteDir}/grails-app/views/layouts/indexLayout.gsp", "indexLayout_${buildNo}.js", "indexLayout_${buildNo}.css")
         if(distDir.equals(env.dist_modules)){
 	        ant.zip(destfile: "$env.distribution/NetcoolPlugin$versionDate" + ".zip") {
 	            ant.zipfileset(dir: "$env.dist_modules")

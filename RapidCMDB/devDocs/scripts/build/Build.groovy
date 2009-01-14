@@ -18,11 +18,17 @@
 */
 package build
 
+import java.util.regex.Pattern
+import java.util.regex.Matcher
+
+
 
 class Build extends Parent{
 	
 	def versionNo; 
 	def buildNo;
+	public final static String JSPATTERN = "\\s*<\\s*script[^>]*src=\\s*\"([^http][^\\s]*)\"[^>]*(/>|>[^<]*</\\s*script>)\\s*";
+    public final static String CSSPATTERN = "\\s*<\\s*link[^>]*href=\"([^\\s]*)\"[^>]*(/>|>[^<]*</\\s*link>)\\s*";
 	
 	Build(){
 //		if(System.getProperty("os.name").toLowerCase().indexOf("windows") > -1){
@@ -41,7 +47,19 @@ class Build extends Parent{
 	    }
 	    return options;
 	}
-	
+
+	static def replaceJavascriptAndCss(String file, String jsFile, String cssFile){
+         String htmlText = clearPattern(new File(file).getText(), JSPATTERN);
+         htmlText = clearPattern(htmlText, CSSPATTERN);
+         htmlText = htmlText.replaceFirst("<head>", "<head>\n<script type=\"text/javascript\" src=\"${jsFile}\"></script>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"${cssFile}\"></link>")
+         new File(file).setText(htmlText);
+    }
+
+    static def clearPattern(wholeHTML, patternString){
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(wholeHTML);
+        return matcher.replaceAll("");        
+    }
 //	void run(args){
 //		if(args.size() >0){
 //			println "Running target " + args[0];

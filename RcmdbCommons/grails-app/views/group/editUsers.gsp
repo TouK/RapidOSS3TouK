@@ -75,8 +75,8 @@
 
 </script>
 <div class="nav">
-    <span class="menuButton"><g:link class="list" action="list">User List</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create">New User</g:link></span>
+    <span class="menuButton"><g:link class="list" action="list">Group List</g:link></span>
+    <span class="menuButton"><g:link class="create" action="create">New Group</g:link></span>
 </div>
 <div class="body">
     <h1>Edit Group Users</h1>

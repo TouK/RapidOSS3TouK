@@ -18,6 +18,7 @@ public class GroovyPagesServlet extends org.codehaus.groovy.grails.web.pages.Gro
     public void doPage(HttpServletRequest request, HttpServletResponse response) throws ServletException , IOException {
         try
         {
+            SessionManager.getInstance().startSession((String)request.getSession().getAttribute("username"));
             super.doPage(request, response);
         }finally {
             SessionManager.getInstance().endSession();    

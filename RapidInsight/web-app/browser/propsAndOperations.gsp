@@ -69,7 +69,7 @@
                                     <div style="font-weight:bold">${op.name} ( ${op.parameters.name.join(', ')} )</div>
                                     <div style="padding-left:20px">
                                         <div>${op.description}</div>
-                                        <div><span style="font-style:italic">Returns: </span><span>${op.returnType}</span></div>
+                                        <div style="padding:3px 0px 0px 0px"><span style="font-style:italic">Returns: </span><span>${op.returnType}</span></div>
                                     </div>
                                 </td>
                             </tr>

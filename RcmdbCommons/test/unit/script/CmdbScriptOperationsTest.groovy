@@ -51,13 +51,16 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
      }
      private void clearMetaClasses()
      {
+
         ListeningAdapterManager.destroyInstance();
         ScriptScheduler.destroyInstance();
         ScriptManager.destroyInstance();
+        ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager)
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript)
+        ExpandoMetaClass.enableGlobally();
      }
      void testBeforeDelete(){
         CompassForTests.initialize([CmdbScript]);
@@ -324,7 +327,7 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
         assertEquals(script.name,updateParams.name)
         assertEquals(unscheduleScriptName,params.name)
 
-        logger==CmdbScript.getScriptLogger(script);
+        logger=CmdbScript.getScriptLogger(script);
         assertEquals(logger.getLevel(),logLevel);
         assertTrue(logger.getAllAppenders().hasMoreElements());
         

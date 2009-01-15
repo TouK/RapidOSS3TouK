@@ -641,14 +641,14 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         def script=CmdbScriptOperations.addScript(scriptParams);
         assertFalse(script.hasErrors());
 
-        CmdbScriptOperations.updateScript(updateParams);
+        CmdbScriptOperations.updateScript(scriptParams);
         
         assertEquals(callParams.fromController,false);
         assertEquals(callParams.params,scriptParams);
         assertEquals(callParams.script.id,script.id);
     }
     void testRunScriptWithOnlyNameCallsBase(){
-        
+
         def callParams=[:]
         CmdbScriptOperations.metaClass.static.runScript= { String scriptName, Map params ->
             callParams.scriptName=scriptName
@@ -690,6 +690,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
        catch(e)
        {
           println e
+          assertTrue(e.getMessage().indexOf("does not exist")>0)
        }
                
     }
@@ -703,10 +704,267 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
        catch(e)
        {
           println e
+          assertTrue(e.getMessage().indexOf("does not exist")>0)
        }
     }
+    void testStartAndStopListeningWithNameGeneratesExceptionWhenScriptIsMissing(){
+        initialize([CmdbScript],[])
+       assertEquals(CmdbScript.list().size(),0)
+       try{
+        CmdbScriptOperations.startListening([name:"testscript"]);
+        fail("should throw exception")
+       }
+       catch(e)
+       {
+          println e
+          assertTrue(e.getMessage().indexOf("does not exist")>0)
+       }
+
+       try{
+        CmdbScriptOperations.stopListening([name:"testscript"]);
+        fail("should throw exception")
+       }
+       catch(e)
+       {
+          println e
+          assertTrue(e.getMessage().indexOf("does not exist")>0)
+       }
+    }
+    void testStartAndStopListeningWithNameAndParamsCallsBase(){
+        initialize([CmdbScript],[])
+        initializeScriptManager()
+
+        def callParams=[:]
+        CmdbScriptOperations.metaClass.static.startListening= { CmdbScript script ->
+            callParams.script=script
+
+        }
+
+        def callParams2=[:]
+        CmdbScriptOperations.metaClass.static.stopListening= { CmdbScript script ->
+            callParams2.script=script
+
+        }
+        
+        def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def script=CmdbScriptOperations.addScript(scriptParams);
+        assertFalse(script.hasErrors())
+
+        CmdbScriptOperations.startListening(script.name);
+
+        assertEquals(callParams.script.name,script.name)
+        assertEquals(callParams.script.id,script.id)
+
+        CmdbScriptOperations.stopListening(script.name);
+
+        assertEquals(callParams2.script.name,script.name)
+        assertEquals(callParams2.script.id,script.id)
+    }
+
+     void testStartAndStopListeningGeneratesExceptionIfListeningDatasourceIsMissing()
+     {
+        initialize([CmdbScript],[])
+        initializeScriptManager()
+
+        def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def script=CmdbScriptOperations.addScript(scriptParams);
+        assertFalse(script.hasErrors())
+        assertNull(script.listeningDatasource)
+
+        try{
+            CmdbScriptOperations.startListening(script);
+            fail("should throw exception")
+        }
+        catch(e)
+        {
+            println e
+            assertEquals(e.getMessage(),"No listening datasource defined")
+        }
+
+        try{
+            CmdbScriptOperations.stopListening(script);
+            fail("should throw exception")
+        }
+        catch(e)
+        {
+            println e
+            assertEquals(e.getMessage(),"No listening datasource defined")
+        }
+
+     }
+     void testStartListening()
+     {
+         initialize([CmdbScript,BaseListeningDatasource],[])
+         initializeForCmdbScript();
+
+         def datasourceFromParam=null;
+        ListeningAdapterManager.metaClass.startAdapter= { BaseListeningDatasource listeningDatasource ->
+            datasourceFromParam = listeningDatasource;
+        }
+
+         def ds=BaseListeningDatasource.add(name:"baseds",isSubscribed:false);
+         assertFalse(ds.hasErrors())
+         assertFalse(ds.isSubscribed)
+
+         def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,listeningDatasource:ds]
+         def script=CmdbScriptOperations.addScript(scriptParams);
+         assertFalse(script.hasErrors());
+         assertNotNull(script.listeningDatasource);
+
+         CmdbScriptOperations.startListening(script);
+         assertEquals(script.listeningDatasource.id,datasourceFromParam.id)
+
+         def updatedDs=BaseListeningDatasource.get(name:ds.name)
+         assertTrue(updatedDs.isSubscribed)
 
 
+     }
+     void testStopListening()
+     {
+         initialize([CmdbScript,BaseListeningDatasource],[])
+         initializeForCmdbScript();
+
+         def datasourceFromParam=null;
+        ListeningAdapterManager.metaClass.stopAdapter= { BaseListeningDatasource listeningDatasource ->
+            datasourceFromParam = listeningDatasource;
+        }
+
+         def ds=BaseListeningDatasource.add(name:"baseds",isSubscribed:true);
+         assertFalse(ds.hasErrors())
+         assertTrue(ds.isSubscribed)
+
+         def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,listeningDatasource:ds]
+         def script=CmdbScriptOperations.addScript(scriptParams);
+         assertFalse(script.hasErrors());
+         assertNotNull(script.listeningDatasource);
+
+         CmdbScriptOperations.stopListening(script);
+         assertEquals(script.listeningDatasource.id,datasourceFromParam.id)
+
+         def updatedDs=BaseListeningDatasource.get(name:ds.name)
+         assertFalse(updatedDs.isSubscribed)
+
+
+     }
+     void testDeleteScriptWithNameGeneratesExceptionWhenScriptIsMissing(){
+       initialize([CmdbScript],[])
+       assertEquals(CmdbScript.list().size(),0)
+       try{
+        CmdbScriptOperations.deleteScript("testscript");
+        fail("should throw exception")
+       }
+       catch(e)
+       {
+          println e
+          assertTrue(e.getMessage().indexOf("does not exist")>0)
+       }
+
+    }
+    void testDeleteScriptWithNameAndParamsCallsBase(){
+        initialize([CmdbScript],[])
+        initializeScriptManager()
+
+        def callParams=[:]
+        CmdbScriptOperations.metaClass.static.deleteScript= { CmdbScript script ->
+            callParams.script=script
+
+        }
+
+
+        def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def script=CmdbScriptOperations.addScript(scriptParams);
+        assertFalse(script.hasErrors())
+
+
+        CmdbScriptOperations.deleteScript(script.name);
+
+        assertEquals(callParams.script.name,script.name)
+        assertEquals(callParams.script.id,script.id)
+    }
+    void testDeleteScript()
+    {
+        initialize([CmdbScript,BaseListeningDatasource],[])
+        initializeScriptManager()
+        def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def scriptInstance=CmdbScriptOperations.addScript(scriptParams);
+        assertFalse(scriptInstance.hasErrors())
+
+        def unscheduleScriptName=null;
+        ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
+            unscheduleScriptName=scriptName
+        }
+
+        def callParams=[:]
+        CmdbScriptOperations.metaClass.static.stopListening= { CmdbScript script ->
+            callParams.script=script
+
+        }
+
+        //we test that the script is deleted and unschedule called
+        assertEquals(CmdbScript.list().size(),1);
+        CmdbScriptOperations.deleteScript(scriptInstance);
+        assertEquals(CmdbScript.list().size(),0);
+        assertEquals(unscheduleScriptName,scriptInstance.name);
+
+
+        //we test here if there is a listening datasource stopListening is called
+        def ds=BaseListeningDatasource.add(name:"baseds",isSubscribed:true);
+        assertFalse(ds.hasErrors())
+        assertTrue(ds.isSubscribed)
+
+        scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,listeningDatasource:ds]
+        scriptInstance=CmdbScriptOperations.addScript(scriptParams);
+        assertFalse(scriptInstance.hasErrors());
+        assertNotNull(scriptInstance.listeningDatasource);
+
+        unscheduleScriptName=null;
+
+        assertEquals(CmdbScript.countHits("scriptFile:${scriptInstance.scriptFile}"),1)
+        assertEquals(CmdbScript.list().size(),1);
+        assertNotNull(ScriptManager.getInstance().getScript(scriptInstance.scriptFile))
+        CmdbScriptOperations.deleteScript(scriptInstance);
+        assertEquals(CmdbScript.list().size(),0);
+        assertEquals(unscheduleScriptName,scriptInstance.name);
+        assertEquals(callParams.script.id,scriptInstance.id);
+
+        //Now we also test that script is removed from script Manager
+        assertEquals(CmdbScript.countHits("scriptFile:${scriptInstance.scriptFile}"),0)
+        assertNull(ScriptManager.getInstance().getScript(scriptInstance.scriptFile))
+
+
+    }
+    void testDeleteScriptDoesNotRemoveScriptFromScriptManagerIfUsed()
+    {
+        initialize([CmdbScript,BaseListeningDatasource],[])
+        initializeScriptManager()
+        def unscheduleScriptName=null;
+        ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
+            unscheduleScriptName=scriptName
+        }
+        
+        def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def scriptParams2=[name:"myscript2",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def scriptInstance=CmdbScriptOperations.addScript(scriptParams);
+        def scriptInstance2=CmdbScriptOperations.addScript(scriptParams2);
+        assertFalse(scriptInstance.hasErrors())
+        assertFalse(scriptInstance2.hasErrors())
+
+        assertEquals(CmdbScript.list().size(),2);
+        assertNotNull(ScriptManager.getInstance().getScript(scriptInstance.scriptFile))
+        assertEquals(CmdbScript.countHits("scriptFile:${scriptInstance.scriptFile}"),2)
+        CmdbScriptOperations.deleteScript(scriptInstance);
+        assertEquals(unscheduleScriptName,scriptInstance.name);
+        assertEquals(CmdbScript.list().size(),1);
+
+
+        //Now we also test that script is not removed from script Manager because its used
+        assertEquals(CmdbScript.countHits("scriptFile:${scriptInstance.scriptFile}"),1)
+        assertNotNull(ScriptManager.getInstance().getScript(scriptInstance.scriptFile))
+
+
+
+
+    }
      def createSimpleScript(scriptName,scriptMessage)
     {
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");

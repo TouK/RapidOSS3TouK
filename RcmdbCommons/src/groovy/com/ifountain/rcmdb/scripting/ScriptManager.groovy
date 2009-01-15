@@ -45,7 +45,12 @@ class ScriptManager {
         }
         return manager;
     }
-
+    public static void destroyInstance() {
+        if (manager != null) {
+            manager.destroy();
+            manager = null;
+        }
+    }
     public void initialize(ClassLoader parentClassLoader, String baseDir, List startupScriptList) {
         scripts = [:];
         classLoader = parentClassLoader;
@@ -177,7 +182,7 @@ class ScriptManager {
         }
     }
 
-    public void destroy() {
+    private void destroy() {
         clearScripts();
     }
 

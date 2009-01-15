@@ -126,7 +126,7 @@ class BootStrap {
 
 
     def destroy = {
-        ScriptManager.getInstance().destroy();
+        ScriptManager.destroyInstance();
         def servletCtx = ServletContextHolder.getServletContext()
         def webAppCtx = WebApplicationContextUtils.getWebApplicationContext(servletCtx)
         def compass = webAppCtx.getBean("compass")

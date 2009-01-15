@@ -174,7 +174,7 @@ class BootStrap {
             log.info("Stopped listening script initializer thread");
         }
         ListeningAdapterManager.destroyInstance();
-        ScriptManager.getInstance().destroy();
+        ScriptManager.destroyInstance();
         def servletCtx = ServletContextHolder.getServletContext()
         def webAppCtx = WebApplicationContextUtils.getWebApplicationContext(servletCtx)
         Compass compass = webAppCtx.getBean("compass")

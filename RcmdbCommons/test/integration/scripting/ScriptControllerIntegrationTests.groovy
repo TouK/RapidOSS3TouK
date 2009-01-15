@@ -47,7 +47,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     }
 
     public void tearDown() {
-        ScriptManager.getInstance().destroy();
+        ScriptManager.destroyInstance();
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
 

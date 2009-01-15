@@ -46,7 +46,7 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
     }
      protected void tearDown() {
         super.tearDown()
-        clearMetaClasses();
+
 
      }
      private void clearMetaClasses()

@@ -54,13 +54,13 @@
                         <g:each var="rel" in="${relations}">
                             <tr class="${(status % 2) == 0 ? 'odd' : 'even'}">
                                 <td width="0%" style="font-weight:bold">${rel.name}</td>
-                                <td>${rel.type.name}</td>
+                                <td>${rel.relatedModel.name}</td>
                             </tr>
                             <% status++ %>
                         </g:each>
                     </tbody>
                 </table>
-                <div><h3 style="color:#083772">Operations:</h3></div>
+                <div style="margin-top:10px;"><h3 style="color:#083772">Operations:</h3></div>
                 <table width="100%" cellspacing="1" cellpadding="1">
                     <tbody>
                         <g:each var="op" in="${operations}" status="i">

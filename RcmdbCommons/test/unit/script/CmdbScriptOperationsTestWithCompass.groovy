@@ -45,20 +45,25 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager)
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript)
+        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScriptOperations)
         ExpandoMetaClass.enableGlobally();
      }
      void initializeForCmdbScript(){
-         ScriptManager manager = ScriptManager.getInstance();
+        initializeScriptManager();
+
+        CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
+
+     }
+     void initializeScriptManager()
+     {
+        ScriptManager manager = ScriptManager.getInstance();
         if(new File(base_directory).exists())
         {
             FileUtils.deleteDirectory (new File(base_directory));
         }
         manager.initialize(this.class.getClassLoader(), base_directory, []);
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
-
         createSimpleScript (simpleScriptFile,expectedScriptMessage);
-        CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
-
      }
      
     void testBeforeDelete(){              
@@ -606,6 +611,102 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
          }
 
      }
+    void testAddScriptCallsBaseWithFromControllerFalse()
+    {
+        def callParams=[:]
+        CmdbScriptOperations.metaClass.static.addScript={ Map params, boolean fromController ->
+            callParams.params=params
+            callParams.fromController=fromController
+        }
+        def scriptParams=["x":"a","y":"b"]
+        CmdbScriptOperations.addScript(scriptParams);
+
+        assertEquals(callParams.fromController,false);
+        assertEquals(callParams.params,scriptParams);
+    }
+    void testUpdateScriptWithOnlyParamsCallsBaseWithFromControllerFalse()
+    {
+        initialize([CmdbScript],[])
+        initializeScriptManager()
+
+        
+        def callParams=[:]
+        CmdbScriptOperations.metaClass.static.updateScript= { CmdbScript script, Map params, boolean fromController ->
+            callParams.params=params
+            callParams.fromController=fromController
+            callParams.script=script
+        }
+        
+        def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def script=CmdbScriptOperations.addScript(scriptParams);
+        assertFalse(script.hasErrors());
+
+        CmdbScriptOperations.updateScript(updateParams);
+        
+        assertEquals(callParams.fromController,false);
+        assertEquals(callParams.params,scriptParams);
+        assertEquals(callParams.script.id,script.id);
+    }
+    void testRunScriptWithOnlyNameCallsBase(){
+        
+        def callParams=[:]
+        CmdbScriptOperations.metaClass.static.runScript= { String scriptName, Map params ->
+            callParams.scriptName=scriptName
+            callParams.params=params
+        }
+        def scriptName="testscript";
+        CmdbScriptOperations.runScript (scriptName);
+        assertEquals(callParams.scriptName,scriptName)
+        assertEquals(callParams.params.size(),0)
+    }
+    void testRunScriptWithNameAndParamsCallsBase(){
+        initialize([CmdbScript],[])
+        initializeScriptManager()
+        
+        def callParams=[:]
+        CmdbScriptOperations.metaClass.static.runScript= { CmdbScript script, Map params ->
+            callParams.script=script
+            callParams.params=params
+        }
+
+        def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def script=CmdbScriptOperations.addScript(scriptParams);
+        assertFalse(script.hasErrors())
+
+        CmdbScriptOperations.runScript(script.name,scriptParams);
+        
+        assertEquals(callParams.script.name,script.name)
+        assertEquals(callParams.script.id,script.id)
+        assertEquals(callParams.params,scriptParams)
+        
+    }
+    void testRunScriptWithNameAndParamsGeneratesExceptionWhenScriptIsMissing(){
+       initialize([CmdbScript],[])
+       assertEquals(CmdbScript.list().size(),0)
+       try{
+        CmdbScriptOperations.runScript("testscript",[:]);
+        fail("should throw exception")
+       }
+       catch(e)
+       {
+          println e
+       }
+               
+    }
+    void testUpdateScriptWithOnlyParamsGeneratesExceptionWhenScriptIsMissing(){
+          initialize([CmdbScript],[])
+       assertEquals(CmdbScript.list().size(),0)
+       try{
+        CmdbScriptOperations.updateScript([name:"testscript"]);
+        fail("should throw exception")
+       }
+       catch(e)
+       {
+          println e
+       }
+    }
+
+
      def createSimpleScript(scriptName,scriptMessage)
     {
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");

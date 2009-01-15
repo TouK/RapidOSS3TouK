@@ -18,6 +18,8 @@
 */
 package com.ifountain.compass.search;
 
+import com.ifountain.session.SessionManager;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
@@ -32,22 +34,31 @@ import java.util.List;
  */
 public class FilterManager
 {
-    private static FilterStorage filterStorage = new FilterStorage();
-
+    public static String SESSION_FILTER_KEY = "searchfilters";
     public static void addFilter(String filter)
     {
-        ((List)filterStorage.get()).add(filter);
+        getFiltersList().add(filter);
+    }
+
+    private static List getFiltersList()
+    {
+        List filterList = (List)SessionManager.getInstance().getSession().get(SESSION_FILTER_KEY);
+        if(filterList == null)
+        {
+            filterList = new ArrayList();
+            SessionManager.getInstance().getSession().put(SESSION_FILTER_KEY, filterList);
+        }
+        return filterList;
     }
 
     public static void clearFilters()
     {
-        ((List)filterStorage.get()).clear();
+        getFiltersList().clear();
     }
 
     public static String getQuery(String query)
     {
-
-        List filterList = (List)filterStorage.get();
+        List filterList = getFiltersList();
         if(filterList.isEmpty()) return query;
 
         StringBuffer bf = new StringBuffer("(");
@@ -60,12 +71,5 @@ public class FilterManager
         bf.delete(bf.length()-4, bf.length());
         bf.append(")");
         return bf.toString();
-    }
-}
-
-class FilterStorage extends InheritableThreadLocal
-{
-    protected Object initialValue() {
-        return new ArrayList();
     }
 }

@@ -154,6 +154,7 @@ class RapidCmdbBuild extends Build {
     def unzipGrails() {
         ant.unzip(src: (String) classpath.getProperty("grails-1_0_3_zip"), dest: env.distribution);
         ant.copy(file: (String) classpath.getProperty("runner_jar"), toDir: env.distribution + "/RapidServer/lib");
+        ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/files/src/war/WEB-INF/web2.4.template.xml", todir: "$env.dist_rapid_server/src/war/WEB-INF", overwrite: true)
         ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/RunApp.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)
         ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/TestApp.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)
         ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/grailsOverriddenFiles/scripts/PackagePlugin.groovy", todir: "$env.dist_rapid_server/scripts", overwrite: true)

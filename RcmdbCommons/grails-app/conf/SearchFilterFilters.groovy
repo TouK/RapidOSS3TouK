@@ -19,6 +19,7 @@
 import auth.RsUser
 import auth.Group
 import com.ifountain.compass.search.FilterManager
+import com.ifountain.session.SessionManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,30 +32,10 @@ class SearchFilterFilters {
     def filters = {
         allURIs(uri:'/**') {
 			before = {
-				FilterManager.clearFilters();
-                if(session.username != null)
-                {
-                    RsUser user = RsUser.get(username:session.username);
-                    if(user)
-                    {
-                        def groups = user.groups;
-                        if(!groups.isEmpty())
-                        {
-                            def willAddRsOwner = false;
-                            groups.each{Group group->
-                                if(group.segmentFilter != null && group.segmentFilter != "")
-                                {
-                                    FilterManager.addFilter (group.segmentFilter);
-                                    willAddRsOwner = true;
-                                }
-                            }
-                            if(willAddRsOwner)
-                            {
-                                FilterManager.addFilter ("rsOwner:p");
-                            }
-                        }
-                    }
-                }
+                SessionManager.getInstance().startSession(session.username);
+            }
+            afterView = {
+                SessionManager.getInstance().endSession();
             }
 		}
     }

@@ -16,6 +16,9 @@
     <rui:tgColumns>
         <rui:tgColumn attributeName="name" colLabel="Class Name" width="300" sortBy="true"></rui:tgColumn>
     </rui:tgColumns>
+    <rui:tgMenuItems>
+        <rui:tgMenuItem id="propsAndOperations" label="Get Properties and Operations" visible="params.data.name != 'System' && params.data.name != 'Application'" action="propsAndOperationsAction"></rui:tgMenuItem>
+    </rui:tgMenuItems>
     <rui:tgRootImages>
         <rui:tgRootImage expanded="images/rapidjs/component/tools/class.png" collapsed="images/rapidjs/component/tools/class.png" visible="params.data.name != 'System' && params.data.name != 'Application'"></rui:tgRootImage>
         <rui:tgRootImage expanded="images/rapidjs/component/tools/application.png" collapsed="images/rapidjs/component/tools/application.png" visible="params.data.name == 'Application'"></rui:tgRootImage>
@@ -42,10 +45,16 @@
 </rui:searchList>
 <rui:html id="objectDetails" iframe="false"></rui:html>
 <rui:popupWindow componentId="objectDetails" width="850" height="500"></rui:popupWindow>
+<rui:html id="propsAndOperations" iframe="false"></rui:html>
+<rui:popupWindow componentId="objectDetails" width="550" height="600"></rui:popupWindow>
 
 <rui:action id="browseAction" type="function" componentId="objectDetails" function="show">
-   <rui:functionArg>createURL('browserObjectDetails.gsp', {id:params.data.id, domain:params.data.rsAlias})</rui:functionArg>
+   <rui:functionArg>createURL('browser/browserObjectDetails.gsp', {id:params.data.id, domain:params.data.rsAlias})</rui:functionArg>
    <rui:functionArg>'Details of ' + params.data.rsAlias + ' ' + params.data.id</rui:functionArg>
+</rui:action>
+<rui:action id="propsAndOperationsAction" type="function" componentId="objectDetails" function="show">
+   <rui:functionArg>createURL('browser/propsAndOperations.gsp', {className:params.data.name})</rui:functionArg>
+   <rui:functionArg>'Properties and Operations of ' + params.data.name</rui:functionArg>
 </rui:action>
 <rui:action id="greaterThanAction" type="function" componentId="searchList" function="appendToQuery">
     <rui:functionArg>params.key + ':{' + params.value + ' TO *}'</rui:functionArg>

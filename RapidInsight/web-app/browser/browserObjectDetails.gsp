@@ -61,7 +61,7 @@ cursor:pointer;
                                                 <ul style="margin-left: 10px;">
                                                     <g:each var="relatedObject" in="${domainObject[p.name]}">
                                                        <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;"
-                                                    onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('browserObjectDetails.gsp', {id:'${relatedObject.id}', domain:'${relatedObject.class.name}'}), 'Details of ${relatedObject.class.name} ${relatedObject.id}');">${relatedObject}<a></li>
+                                                    onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('browser/browserObjectDetails.gsp', {id:'${relatedObject.id}', domain:'${relatedObject.class.name}'}), 'Details of ${relatedObject.class.name} ${relatedObject.id}');">${relatedObject}<a></li>
                                                     </g:each>
                                                 </ul>
                                             </td>
@@ -71,7 +71,7 @@ cursor:pointer;
                                                 <g:set var="relatedObject" value="${domainObject[p.name]}"></g:set>
                                                 <g:if test="${relatedObject}">
                                                     <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;"
-                                                    onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('browserObjectDetails.gsp', {id:'${relatedObject.id}', domain:'${relatedObject.class.name}'}), 'Details of ${relatedObject.class.name} ${relatedObject.id}');">${relatedObject}<a>
+                                                    onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('browser/browserObjectDetails.gsp', {id:'${relatedObject.id}', domain:'${relatedObject.class.name}'}), 'Details of ${relatedObject.class.name} ${relatedObject.id}');">${relatedObject}<a>
                                                 </g:if>
                                             </td>
                                         </g:else>

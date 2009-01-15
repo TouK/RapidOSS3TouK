@@ -21,6 +21,8 @@ package com.ifountain.compass.search
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.test.util.ClosureRunnerThread
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.session.SessionManager
+import com.ifountain.session.Session
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,54 +36,38 @@ class FilterManagerTest extends RapidCmdbWithCompassTestCase
 
     public void setUp() {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
-        FilterManager.clearFilters();
+        SessionManager.destroyInstance();
     }
 
     public void tearDown() {
         super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
-        FilterManager.clearFilters();
+        SessionManager.destroyInstance();
     }
 
     public void testFilterManager()
     {
         String filterQuery1 = "prop1:prop1Value";
-        FilterManager.addFilter (filterQuery1);
-        
+        Session session = SessionManager.getInstance().startSession ("user1");
+        session.put (FilterManager.SESSION_FILTER_KEY, [filterQuery1]);
+
         String query = "prop2:prop2Value";
         String filteredQuery = FilterManager.getQuery(query);
         assertEquals ("(${query}) AND ((${filterQuery1}))", filteredQuery);
 
         String filterQuery2 = "prop3:prop1Value";
-        FilterManager.addFilter (filterQuery2);
+        session.put (FilterManager.SESSION_FILTER_KEY, [filterQuery1, filterQuery2]);
         filteredQuery = FilterManager.getQuery(query);
         assertEquals ("(${query}) AND ((${filterQuery1}) OR (${filterQuery2}))", filteredQuery);
-        FilterManager.clearFilters();
+        session.get (FilterManager.SESSION_FILTER_KEY).clear();
         filteredQuery = FilterManager.getQuery(query);
         assertEquals ("${query}", filteredQuery);
     }
 
-    public void testFilterManagerWithThreading()
-    {
-        final String filterQuery1 = "prop1:prop1Value";
-        final String query = "prop2:prop2Value";
-        ClosureRunnerThread thread = new ClosureRunnerThread();
-        thread.closure = {
-            FilterManager.addFilter (filterQuery1);
-            ClosureRunnerThread thread2 = new ClosureRunnerThread();
-            thread2.closure = {
-                return FilterManager.getQuery(query)    
-            }
-            thread2.start();
-            thread2.join ();
-            return thread2.result
-        }
-        thread.start();
-        thread.join ();
-        assertEquals ("(${query}) AND ((${filterQuery1}))", thread.result);
-    }
 
     public void testFilterManagerWithCompass()
     {
+        Session session = SessionManager.getInstance().startSession ("user1");
+
         final String filterQuery1 = "rsOwner:p OR owner:owner1";
         initialize([FilterManagerTestDomainObject1, FilterManagerTestDomainObject2], []);
 
@@ -104,7 +90,7 @@ class FilterManagerTest extends RapidCmdbWithCompassTestCase
         assertEquals (obj2Inst2, res[0].rel2)
         assertEquals (obj2Inst4, res[0].rel3)
 
-        FilterManager.addFilter (filterQuery1);
+        session.put (FilterManager.SESSION_FILTER_KEY, [filterQuery1]);
 
         res = FilterManagerTestDomainObject1.search("alias:*").results;
         assertEquals (1, res.size());

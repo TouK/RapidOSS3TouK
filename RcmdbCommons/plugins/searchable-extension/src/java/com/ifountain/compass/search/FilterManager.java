@@ -35,31 +35,11 @@ import java.util.List;
 public class FilterManager
 {
     public static String SESSION_FILTER_KEY = "searchfilters";
-    public static void addFilter(String filter)
-    {
-        getFiltersList().add(filter);
-    }
-
-    private static List getFiltersList()
-    {
-        List filterList = (List)SessionManager.getInstance().getSession().get(SESSION_FILTER_KEY);
-        if(filterList == null)
-        {
-            filterList = new ArrayList();
-            SessionManager.getInstance().getSession().put(SESSION_FILTER_KEY, filterList);
-        }
-        return filterList;
-    }
-
-    public static void clearFilters()
-    {
-        getFiltersList().clear();
-    }
 
     public static String getQuery(String query)
     {
-        List filterList = getFiltersList();
-        if(filterList.isEmpty()) return query;
+        List filterList = (List)SessionManager.getInstance().getSession().get(SESSION_FILTER_KEY);
+        if(filterList == null || filterList.isEmpty()) return query;
 
         StringBuffer bf = new StringBuffer("(");
         bf.append(query).append(") AND (");

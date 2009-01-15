@@ -13,9 +13,10 @@ import auth.Group;
  * To change this template use File | Settings | File Templates.
  */
 public class FilterSessionListener implements SessionListener{
+    public static final String DEFAULT_FILTER = "rsOwner:p";
     public void sessionEnded(Session session)
     {
-        FilterManager.clearFilters();
+        session.get (FilterManager.SESSION_FILTER_KEY)?.clear();        
     }
 
     public void sessionStarted(Session session)
@@ -28,18 +29,20 @@ public class FilterSessionListener implements SessionListener{
                 def groups = user.groups;
                 if(!groups.isEmpty())
                 {
+                    def filters = [];
                     def willAddRsOwner = false;
                     groups.each{Group group->
                         if(group.segmentFilter != null && group.segmentFilter != "")
                         {
-                            FilterManager.addFilter (group.segmentFilter);
+                            filters.add(group.segmentFilter);
                             willAddRsOwner = true;
                         }
                     }
                     if(willAddRsOwner)
                     {
-                        FilterManager.addFilter ("rsOwner:p");
+                        filters.add(DEFAULT_FILTER);
                     }
+                    session.put (FilterManager.SESSION_FILTER_KEY, filters);
                 }
             }
         }

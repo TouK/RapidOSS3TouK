@@ -1,0 +1,619 @@
+package script
+/**
+ * Created by IntelliJ IDEA.
+ * User: admin
+ * Date: Jan 15, 2009
+ * Time: 1:11:52 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
+
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager;
+import datasource.BaseListeningDatasource
+import com.ifountain.rcmdb.datasource.BaseListeningDatasourceMock;
+import com.ifountain.rcmdb.scripting.ScriptManager
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.Errors
+import org.apache.commons.io.FileUtils
+import com.ifountain.rcmdb.scripting.ScriptScheduler
+import org.codehaus.groovy.grails.plugins.services.ServicesGrailsPlugin
+
+class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
+    def expectedScriptMessage = "script executed successfully";
+    def static base_directory = "../testoutput/";
+    def simpleScriptFile="CmdbScriptOperationsTestScriptFile.groovy"
+    public void setUp() {
+        super.setUp();
+        clearMetaClasses();
+    }
+
+    public void tearDown() {
+        super.tearDown();
+    }
+    private void clearMetaClasses()
+     {
+
+        ListeningAdapterManager.destroyInstance();
+        ScriptScheduler.destroyInstance();
+        ScriptManager.destroyInstance();
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)
+        GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)
+        GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager)
+        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript)
+        ExpandoMetaClass.enableGlobally();
+     }
+     void initializeForCmdbScript(){
+         ScriptManager manager = ScriptManager.getInstance();
+        if(new File(base_directory).exists())
+        {
+            FileUtils.deleteDirectory (new File(base_directory));
+        }
+        manager.initialize(this.class.getClassLoader(), base_directory, []);
+        new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
+
+        createSimpleScript (simpleScriptFile,expectedScriptMessage);
+        CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
+
+     }
+     
+    void testBeforeDelete(){              
+        initialize([CmdbScript,BaseListeningDatasource], []);
+        initializeForCmdbScript();
+
+        def ds=BaseListeningDatasource.add(name:"myds")
+        assertFalse(ds.hasErrors())
+        
+        CmdbScript script=CmdbScript.add(name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds,scriptFile:simpleScriptFile)        
+        assertFalse(script.hasErrors())
+        assertEquals(script.listeningDatasource.id,ds.id)
+
+
+        def stoppedDatasource=null;
+        ListeningAdapterManager.metaClass.stopAdapter= { BaseListeningDatasource listeningDatasource ->
+            println "stopAdapter in beforedelete";
+            stoppedDatasource = listeningDatasource;
+        }
+        assertNull(stoppedDatasource);
+        script.beforeDelete();
+        assertEquals(stoppedDatasource.id,ds.id);
+        assertEquals(stoppedDatasource.name,ds.name);
+
+     }
+      void testBeforeUpdate(){
+        initialize([CmdbScript,BaseListeningDatasource], []);
+        initializeForCmdbScript();
+
+
+        def ds=BaseListeningDatasource.add(name:"myds")
+        assertFalse(ds.hasErrors())
+
+        CmdbScript script=CmdbScript.add(name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds,scriptFile:simpleScriptFile)
+        assertFalse(script.hasErrors())
+        assertEquals(script.listeningDatasource.id,ds.id)
+
+        def stoppedDatasource=null;
+        ListeningAdapterManager.metaClass.stopAdapter= { BaseListeningDatasource listeningDatasource ->
+            println "stopAdapter in beforeupdate";
+            stoppedDatasource = listeningDatasource;
+        }
+        assertNull(stoppedDatasource);
+        script.beforeUpdate();
+        assertEquals(stoppedDatasource.id,ds.id);
+        assertEquals(stoppedDatasource.name,ds.name);
+
+     }
+     void testAddScriptGeneratesScriptFileParamWhenMissing()
+     {
+        initialize([CmdbScript], []);
+        initializeForCmdbScript();
+
+        def params=[name:simpleScriptFile.replace(".groovy",""),type:CmdbScript.ONDEMAND]       
+       
+        
+        def script=CmdbScript.addScript(params)
+        assertEquals(script.scriptFile,params.name)
+     }
+     void testAddScriptGeneratesLogFileParamWhenMissing()
+     {
+        initialize([CmdbScript], []);
+        initializeForCmdbScript();
+
+        def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+
+        def script=CmdbScript.addScript(params)
+        assertEquals(script.logFile,params.name)
+
+     }
+//     void testAddScriptsGeneratesExceptionWhenErrorOccurs()
+//     {
+//         initialize([CmdbScript], [ServicesGrailsPlugin]);
+//         initializeForCmdbScript();
+//
+//
+//         CmdbScript.addScript(name:null);
+//
+//         try{
+//            CmdbScript.addScript(name:null);
+//            fail("should throw exception")
+//         }
+//         catch(e)
+//         {
+//             println e;
+//             //assertEquals(e.getMessage(),"injectedTestMessage");
+//         }
+//
+//
+//     }
+
+    void testAddScriptDoesNotGenerateExceptionIfFromController()
+     {
+         initialize([CmdbScript], []);
+         initializeForCmdbScript();
+         
+
+         try{
+            def script=CmdbScript.addScript([name:null],true);
+            assertTrue(script.hasErrors());
+         }
+         catch(e)
+         {
+             println e
+             fail("should not throw exception")
+         }
+     }
+     void testAddScript(){
+        initialize([CmdbScript], []);
+        initializeForCmdbScript();
+                     
+
+        def logLevel=Level.DEBUG;
+        def logParams=[:]
+        logParams["logLevel"]=logLevel.toString();
+        logParams["logFileOwn"]=true;
+
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,logLevel:logParams.logLevel,logFileOwn:logParams.logFileOwn]
+
+        assertEquals(0,CmdbScript.list().size());
+        def script=CmdbScript.addScript(params)
+        assertFalse(script.hasErrors())
+
+        assertEquals(1,CmdbScript.list().size());
+
+        //tests that ScriptManager.addScript() is called
+        def scriptClass=ScriptManager.getInstance().getScript(script.scriptFile);
+        println scriptClass
+        assertNotNull(scriptClass);
+
+        //tests the script file is really loaded and can be runned
+        def scriptObject = scriptClass.newInstance();
+        assertEquals (expectedScriptMessage, scriptObject.run())
+
+        //test the logger is configured
+        def logger=CmdbScript.getScriptLogger(script);
+        assertEquals(logger.getLevel(),logLevel);
+        assertTrue(logger.getAllAppenders().hasMoreElements());
+     }
+    void testAddScriptCallsSchedulerForScheduledScripts()
+     {
+        initialize([CmdbScript], []);
+        initializeForCmdbScript();
+
+
+        def schedulerMap=[:];
+
+        ScriptScheduler.metaClass.scheduleScript= { String scriptName, long startDelay, long period ->
+            schedulerMap.scriptName=scriptName
+            schedulerMap.startDelay=startDelay
+            schedulerMap.period=period
+        }
+
+        ScriptScheduler.metaClass.scheduleScript= { String scriptName, long startDelay, String cronExp ->
+            schedulerMap.scriptName=scriptName
+            schedulerMap.startDelay=startDelay
+            schedulerMap.cronExp=cronExp
+        }
+
+
+        //testing for periodic script
+        def params=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.PERIODIC,scriptFile:simpleScriptFile,enabled:true,startDelay:10,period:20]
+       
+
+        def script=CmdbScript.addScript(params)
+        assertFalse(script.hasErrors())
+        println schedulerMap
+        assertEquals(params.name,schedulerMap.scriptName)
+        assertEquals(params.startDelay,schedulerMap.startDelay)
+        assertEquals(params.period,schedulerMap.period)
+
+        //testing for cron script
+        schedulerMap=[:];
+        params=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.CRON,scriptFile:simpleScriptFile,enabled:true,startDelay:3,cronExpression : "* * * * * ?"]
+
+
+        script=CmdbScript.addScript(params)
+        assertFalse(script.hasErrors())
+        println schedulerMap
+        assertEquals(params.name,schedulerMap.scriptName)
+        assertEquals(params.startDelay,schedulerMap.startDelay)
+        assertEquals(params.cronExpression,schedulerMap.cronExp)
+     }
+     public void testUpdateScript()
+    {
+        initialize([CmdbScript], []);
+        initializeForCmdbScript();
+        def logLevel=Level.DEBUG;
+        def oldLogLevel=Level.WARN;
+        def logParams=[:]
+        logParams["logLevel"]=logLevel.toString();        
+        logParams["logFileOwn"]=true;
+        logParams["oldLogLevel"]=oldLogLevel.toString();
+        logParams["oldLogFileOwn"]=false;
+
+        def updateParams=[name:"myscript333",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,logLevel:logParams.logLevel,logFileOwn:logParams.logFileOwn]
+        updateParams.logFile=updateParams.name
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,logLevel:logParams.oldLogLevel,logFileOwn:logParams.oldLogFileOwn]
+        assertEquals(CmdbScript.list().size(),0)
+
+        def scriptToUpdate=CmdbScript.addScript(params);
+
+        assertFalse(scriptToUpdate.hasErrors())
+        assertEquals(CmdbScript.list().size(),1)
+        
+        def unscheduleScriptName=null;
+        ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
+            unscheduleScriptName=scriptName
+        }
+         
+
+        def oldLogger=CmdbScript.getScriptLogger(scriptToUpdate);
+        assertEquals(oldLogger.getLevel(),oldLogLevel);
+        assertFalse(oldLogger.getAllAppenders().hasMoreElements());
+
+        def script=CmdbScript.updateScript(scriptToUpdate,updateParams,false);
+        assertFalse(script.hasErrors())
+        assertFalse(scriptToUpdate.hasErrors())
+        assertEquals(script.name,updateParams.name)
+        assertEquals(unscheduleScriptName,params.name)
+
+        def logger=CmdbScript.getScriptLogger(script);
+        assertEquals(logger.getLevel(),logLevel);
+        assertTrue(logger.getAllAppenders().hasMoreElements());
+
+
+    }
+    void testReloadScript()
+    {
+        initialize([CmdbScript], []);
+        initializeForCmdbScript();
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+
+
+        def script=CmdbScript.addScript(params);
+        
+
+        //tests the script file is really loaded and can be runned
+        def scriptClass=ScriptManager.getInstance().getScript(script.scriptFile);
+        def scriptObject = scriptClass.newInstance();
+        assertEquals (expectedScriptMessage, scriptObject.run())
+
+        def newScriptMessage="new_script_message"
+        createSimpleScript(simpleScriptFile,newScriptMessage)
+
+        //we overwrited the script file test that the old one is working, because no reload done
+        scriptClass=ScriptManager.getInstance().getScript(script.scriptFile);
+        scriptObject = scriptClass.newInstance();
+        assertEquals (expectedScriptMessage, scriptObject.run())
+
+        //now we reload the script and test that the new one is working
+        script.reload()
+        scriptClass=ScriptManager.getInstance().getScript(script.scriptFile);
+        scriptObject = scriptClass.newInstance();
+        assertEquals (newScriptMessage, scriptObject.run())
+
+
+
+
+    }
+
+    void testUpdateScriptLoadsNewScriptFileAndRemovesOldIfNotUsedAndDoesNotRemoveOldIfUsed()
+     {
+        initialize([CmdbScript], []);
+        initializeForCmdbScript();
+        ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
+
+        }
+
+        ScriptManager.getInstance().addScript(simpleScriptFile);
+        assertNotNull(ScriptManager.getInstance().getScript(simpleScriptFile));
+
+        def newScriptFile="CmdbScriptOperationsTestScriptFile2.groovy";
+        def newScriptMessage="new script message"
+        createSimpleScript (newScriptFile,newScriptMessage);
+
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def updateParams=[name:"myscript2",type:CmdbScript.ONDEMAND,scriptFile:newScriptFile]
+
+        def script=CmdbScript.addScript(params);
+        assertFalse(script.hasErrors())
+
+        assertEquals(CmdbScript.countHits("scriptFile:${params.scriptFile}"),1)
+        assertEquals(CmdbScript.countHits("scriptFile:${updateParams.scriptFile}"),0)
+
+
+
+         //we test that old script is removed from ScriptManager
+        
+
+        def updatedScript=CmdbScript.updateScript(script,updateParams,false);
+        assertFalse(updatedScript.hasErrors())
+        assertEquals(updatedScript.name,updateParams.name)
+        assertEquals(updatedScript.scriptFile,updateParams.scriptFile)
+
+        assertNull(ScriptManager.getInstance().getScript(params.scriptFile));
+        def scriptClass=ScriptManager.getInstance().getScript(updateParams.scriptFile)
+        assertNotNull(scriptClass);
+
+        //tests the new script file is really loaded and can be runned
+        def scriptObject = scriptClass.newInstance();
+        assertEquals (newScriptMessage, scriptObject.run())
+
+        assertEquals(CmdbScript.countHits("scriptFile:${params.scriptFile}"),0)
+        assertEquals(CmdbScript.countHits("scriptFile:${updateParams.scriptFile}"),1)
+
+
+
+     }
+     void testUpdateScriptLoadsNewScriptFileAndUpdateScriptDoesNotRemoveOldScriptFileIfUsed()
+    {
+        initialize([CmdbScript], []);
+        initializeForCmdbScript();
+        ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
+
+        }
+
+        ScriptManager.getInstance().addScript(simpleScriptFile);
+        assertNotNull(ScriptManager.getInstance().getScript(simpleScriptFile));
+
+        def newScriptFile="CmdbScriptOperationsTestScriptFile2.groovy";
+        def newScriptMessage="new script message"
+        createSimpleScript (newScriptFile,newScriptMessage);
+
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def updateParams=[name:"myscript2",type:CmdbScript.ONDEMAND,scriptFile:newScriptFile]
+
+        def params1=[:]
+        params1.putAll(params);
+        params1.name=params.name+"oldfile1";
+
+        def params2=[:]
+        params2.putAll(params);
+        params2.name=params.name+"oldfile2";
+
+        def scriptUsesOldFile=CmdbScript.addScript(params1);
+        assertFalse(scriptUsesOldFile.hasErrors())
+        def scriptUsesOldFile2=CmdbScript.addScript(params2);
+        assertFalse(scriptUsesOldFile2.hasErrors())
+
+        assertEquals(CmdbScript.countHits("scriptFile:${params.scriptFile}"),2)
+        assertEquals(CmdbScript.countHits("scriptFile:${updateParams.scriptFile}"),0)
+
+        def updatedScript=CmdbScript.updateScript(scriptUsesOldFile,updateParams,false);
+        assertEquals(updatedScript.name,updateParams.name)
+        assertEquals(updatedScript.scriptFile,updateParams.scriptFile)
+
+        assertNotNull(ScriptManager.getInstance().getScript(params.scriptFile));
+        def scriptClass=ScriptManager.getInstance().getScript(updateParams.scriptFile)
+        assertNotNull(scriptClass);
+
+        //tests the new script file is really loaded and can be runned
+        def scriptObject = scriptClass.newInstance();
+        assertEquals (newScriptMessage, scriptObject.run())
+
+        assertEquals(CmdbScript.countHits("scriptFile:${params.scriptFile}"),1)
+        assertEquals(CmdbScript.countHits("scriptFile:${updateParams.scriptFile}"),1)
+
+    }
+     void testUpdateScriptDoesNotGenerateExceptionIfFromController()
+     {
+         initialize([CmdbScript], []);
+         initializeForCmdbScript();
+
+         def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+         def updateParams=[name:null]
+         
+         def scriptToUpdate=CmdbScript.addScript(params)
+         assertFalse(scriptToUpdate.hasErrors())
+
+         try{
+            def script=CmdbScript.updateScript(scriptToUpdate,updateParams,true);
+            assertTrue(script.hasErrors());
+         }
+         catch(e)
+         {
+             println e
+             fail("should not throw exception")
+         }
+     }
+     void testUpdateScriptCallsSchedulerForScheduledScripts()
+     {
+        initialize([CmdbScript], []);
+        initializeForCmdbScript();
+        ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
+
+        }
+
+        def schedulerMap=[:];
+
+        ScriptScheduler.metaClass.scheduleScript= { String scriptName, long startDelay, long period ->
+            schedulerMap.scriptName=scriptName
+            schedulerMap.startDelay=startDelay
+            schedulerMap.period=period
+        }
+
+        ScriptScheduler.metaClass.scheduleScript= { String scriptName, long startDelay, String cronExp ->
+            schedulerMap.scriptName=scriptName
+            schedulerMap.startDelay=startDelay
+            schedulerMap.cronExp=cronExp
+        }
+
+
+        //testing for periodic script
+        def updateParams=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.PERIODIC,scriptFile:simpleScriptFile,enabled:true,startDelay:10,period:20]
+        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        def scriptToUpdate=CmdbScript.addScript(params);
+        assertFalse(scriptToUpdate.hasErrors())
+
+
+        def script=CmdbScript.updateScript(scriptToUpdate,updateParams,false)
+        assertFalse(script.hasErrors())
+        println schedulerMap
+        assertEquals(updateParams.name,schedulerMap.scriptName)
+        assertEquals(updateParams.startDelay,schedulerMap.startDelay)
+        assertEquals(updateParams.period,schedulerMap.period)
+
+        //testing for cron script
+        schedulerMap=[:];
+        updateParams=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.CRON,scriptFile:simpleScriptFile,enabled:true,startDelay:10,cronExpression : "* * * * * ?"]
+        params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+        scriptToUpdate=CmdbScript.addScript(params);
+        assertFalse(scriptToUpdate.hasErrors())
+
+
+         script=CmdbScript.updateScript(scriptToUpdate,updateParams,false)
+         assertFalse(script.hasErrors())
+         println schedulerMap
+         assertEquals(updateParams.name,schedulerMap.scriptName)
+         assertEquals(updateParams.startDelay,schedulerMap.startDelay)
+         assertEquals(updateParams.period,schedulerMap.period)
+
+
+
+     }
+     void testCreateStaticParams(){
+
+         CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
+
+         CmdbScript script=new CmdbScript(staticParam:"x:5,y:6");
+         def mapParams=CmdbScript.getStaticParamMap(script);
+         assertEquals(mapParams.x,"5");
+         assertEquals(mapParams.y,"6");
+         assertEquals(mapParams.size(),2);
+
+         CmdbScript scriptWithNoStaticParam=new CmdbScript();
+         def mapParams2=CmdbScript.getStaticParamMap(scriptWithNoStaticParam);
+         assertEquals(mapParams2.size(),0);
+
+         CmdbScript scriptWithCustomParam=new CmdbScript(staticParam:"xyz-dsfdfdf");
+         def mapParams3=CmdbScript.getStaticParamMap(scriptWithCustomParam);
+         assertEquals(mapParams3.size(),0);
+
+
+     }
+
+     void testConfigureScriptLogger()
+     {
+          CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
+
+          def logLevel=Level.DEBUG;
+          def scriptParams=[:]
+          scriptParams["name"]="testscript";
+          scriptParams["logFile"]="testscript";
+          scriptParams["logLevel"]=logLevel.toString();
+          scriptParams["logFileOwn"]=false;
+
+          CmdbScript script=new CmdbScript(name:scriptParams.name,logFile:scriptParams.logFile,logFileOwn:scriptParams.logFileOwn,logLevel:scriptParams.logLevel);
+
+          def logger=null;
+
+          CmdbScript.configureScriptLogger(script);
+          logger=CmdbScript.getScriptLogger(script);
+          assertEquals(logger.getLevel(),logLevel);
+          assertFalse(logger.getAllAppenders().hasMoreElements());
+
+          script.logFileOwn=true;
+          script.logLevel=Level.INFO.toString();
+          CmdbScript.configureScriptLogger(script);
+          logger=CmdbScript.getScriptLogger(script);
+          assertEquals(logger.getLevel(),Level.INFO);
+          assertTrue(logger.getAllAppenders().hasMoreElements());
+     }
+     void testRunScriptPassesStaticParamAndStaticParamMapToScript()
+     {
+         initializeForCmdbScript();
+
+         def scriptFile="mytestscriptfile.groovy"
+         def scriptContent="return [staticParam:staticParam,staticParamMap:staticParamMap]"
+         createScript(scriptFile,scriptContent);
+         ScriptManager.getInstance().addScript (scriptFile)
+
+         def onDemandScript=new CmdbScript(name:"testscript",type:CmdbScript.ONDEMAND,scriptFile:scriptFile,staticParam:"x:5,y:6");
+         def params=[:]
+
+         def result=CmdbScript.runScript(onDemandScript,params)
+         assertEquals(result.staticParam,onDemandScript.staticParam)
+         assertEquals(result.staticParamMap.x,"5")
+         assertEquals(result.staticParamMap.y,"6")
+
+         def scheduledScript=new CmdbScript(name:"testscript",type:CmdbScript.SCHEDULED,scriptFile:scriptFile,staticParam:"x:7,y:8");
+         result=CmdbScript.runScript(scheduledScript,params)
+         assertEquals(result.staticParam,scheduledScript.staticParam)
+         assertEquals(result.staticParamMap.x,"7")
+         assertEquals(result.staticParamMap.y,"8")
+
+         def listeningScript=new CmdbScript(name:"testscript",type:CmdbScript.LISTENING,scriptFile:scriptFile,staticParam:"x:10,y:11");
+         result=CmdbScript.runScript(listeningScript,params)
+         assertEquals(result.staticParam,listeningScript.staticParam)
+         assertEquals(result.staticParamMap.x,"10")
+         assertEquals(result.staticParamMap.y,"11")
+
+
+     }
+     void testRunScriptPassesParametersToScriptManager()
+     {
+
+         def managerParams=[:]
+         ScriptManager.metaClass.runScript={ scriptPath, bindings,scriptLogger ->
+            managerParams.scriptPath=scriptPath
+            managerParams.bindings=bindings
+            managerParams.scriptLogger=scriptLogger
+            return "myrunscript";
+         }
+
+         initializeForCmdbScript();
+
+         ScriptManager.getInstance().addScript (simpleScriptFile);
+
+         def script=new CmdbScript(name:"testscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile);
+         def params=["param1":"1","param2":"a"]
+         def oldParams=[:]
+         oldParams.putAll(params);
+
+
+         def result=CmdbScript.runScript(script,params)
+         assertEquals(result,"myrunscript")
+         assertEquals(managerParams.scriptPath,script.scriptFile)
+         assertEquals(managerParams.scriptLogger,CmdbScript.getScriptLogger(script))
+         assertEquals(managerParams.bindings.staticParam,script.staticParam)
+         assertEquals(managerParams.bindings.staticParamMap,CmdbScript.getStaticParamMap(script))
+         assertEquals(managerParams.bindings.size(),oldParams.size()+2)
+         oldParams.each{  key , val ->
+             assertEquals(val,managerParams.bindings[key])
+         }
+
+     }
+     def createSimpleScript(scriptName,scriptMessage)
+    {
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write ("""return "$scriptMessage" """);
+    }
+    def createScript(scriptName,scriptContent)
+    {
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write (scriptContent);
+    }
+}

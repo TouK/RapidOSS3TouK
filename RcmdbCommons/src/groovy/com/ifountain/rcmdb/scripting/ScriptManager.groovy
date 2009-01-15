@@ -36,6 +36,7 @@ class ScriptManager {
     private def scripts;
     private def classLoader;
     private def baseDirectory;
+    private Map defaultSupportedMethods;
     private ScriptManager() {
     }
 
@@ -51,8 +52,9 @@ class ScriptManager {
             manager = null;
         }
     }
-    public void initialize(ClassLoader parentClassLoader, String baseDir, List startupScriptList) {
+    public void initialize(ClassLoader parentClassLoader, String baseDir, List startupScriptList, Map defaultSupportedMethods) {
         scripts = [:];
+        this.defaultSupportedMethods = defaultSupportedMethods;
         classLoader = parentClassLoader;
         baseDirectory = baseDir;
         File scriptDirFile = new File(baseDirectory + "/${SCRIPT_DIRECTORY}");
@@ -112,7 +114,11 @@ class ScriptManager {
         scriptClassLoader.addClasspath(baseDirectory + "/${SCRIPT_DIRECTORY}");
         try
         {
-            return scriptClassLoader.loadClass(scriptPath);
+            Class cls = scriptClassLoader.loadClass(scriptPath);
+            defaultSupportedMethods.each{String methodName, methodClosure->
+                cls.metaClass."${methodName}" = methodClosure;                
+            }
+            return cls;
         }
         catch (Throwable t)
         {

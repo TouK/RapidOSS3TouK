@@ -21,13 +21,10 @@ package scripting
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.scripting.ScriptingException
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import org.apache.commons.io.FileUtils
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger
 import com.ifountain.rcmdb.test.util.TestDatastore
+import org.apache.commons.io.FileUtils
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
 
 /**
 * Created by IntelliJ IDEA.
@@ -50,7 +47,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         {
             FileUtils.deleteDirectory (new File(base_directory));
         }
-        manager.initialize(this.class.getClassLoader(), base_directory, []);
+        manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
         testLogger=Logger.getLogger("scriptingtestlogger");
     }
@@ -65,6 +62,8 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
 
     public void testAddScript()
     {
+        ScriptManager.getInstance().destroy();
+        manager.initialize(this.class.getClassLoader(), base_directory, [], [method1:{param1-> return param1;}, method2:{param1, param2-> return param1+param2}]);
         def scriptName = "script1.groovy";
         createSimpleScript (scriptName)
         manager.addScript(scriptName);
@@ -75,6 +74,23 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         manager.addScript("script1");
         assertNotNull (manager.getScript(scriptName));
         assertEquals("script1", manager.getScript(scriptName).name);
+        def instance = manager.getScript(scriptName).newInstance();
+        String param1 = "param1";
+        String param2 = "param2";
+        assertEquals (param1, instance.method1(param1));
+        assertEquals (param1+param2, instance.method2(param1, param2));
+
+        //TODO:This test case could not passed if a method has single parameter, can it be called with no parameter?
+//        try
+//        {
+//            println instance.method1()
+//            fail("Should throw exception");
+//        }catch(groovy.lang.MissingMethodException e){}
+        try
+        {
+            instance.method2()
+            fail("Should throw exception");
+        }catch(groovy.lang.MissingMethodException e){e.printStackTrace()}
     }
     public void testRemoveScript()
     {
@@ -289,11 +305,21 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         createSimpleScript (script2)
         createErrornousScript(script3);
         createSimpleScript (notScript)
-        manager.initialize(this.class.classLoader, base_directory, []);
+        String expectedStringFromDefaultMethod = "expected";
+        manager.initialize(this.class.classLoader, base_directory, [], [method1:{param1-> return param1+expectedStringFromDefaultMethod;}]);
         assertNotNull (manager.getScript(script1));
         assertEquals ("script1", manager.getScript(script1).name);
+        
+        def scriptInstance = manager.getScript(script1).newInstance();
+        String parameter = "param1";
+        assertEquals (parameter+expectedStringFromDefaultMethod, scriptInstance.method1(parameter));
+
         assertNotNull (manager.getScript(script2));
         assertEquals ("script2", manager.getScript(script2).name);
+        scriptInstance = manager.getScript(script2).newInstance();
+        parameter = "param1";
+        assertEquals (parameter+expectedStringFromDefaultMethod, scriptInstance.method1(parameter));
+
         assertNull ("Should not load scripts containing syntax errors", manager.getScript(script3));
         assertNull ("Should not load files other than groovy", manager.getScript("notScript"));
 
@@ -308,7 +334,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         createStartupScriptScript (script1)
         createErrornousScript (script2)
         createStartupScriptScript(script3);
-        manager.initialize(ScriptingManagerTests.classLoader, base_directory, ["script1", "script2", "script3.groovy"]);
+        manager.initialize(ScriptingManagerTests.classLoader, base_directory, ["script1", "script2", "script3.groovy"], [:]);
         assertEquals (2, TestDatastore.get(dsKey).size());
 
 

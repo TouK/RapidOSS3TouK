@@ -23,6 +23,7 @@ import script.CmdbScript
 import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
 import com.ifountain.compass.search.FilterSessionListener
 import com.ifountain.session.SessionManager
+import com.ifountain.rcmdb.scripting.methods.WithSessionDefaultMethod
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -82,9 +83,15 @@ class BootStrap {
 
     def initializeScripting()
     {
+        def defaultMethods = [
+            withSession:{String username, Closure codeToBeExecuted->
+                def method = new WithSessionDefaultMethod(username, codeToBeExecuted);
+                method.run();
+            }
+        ]
         def baseDir = System.getProperty("base.dir");
         def startupScripts = ScriptingUtils.getStartupScriptList(baseDir, ApplicationHolder.application.getClassLoader());
-        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), startupScripts);
+        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), startupScripts, defaultMethods);
         def quartzScheduler = ServletContextHolder.servletContext.getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("quartzScheduler")
         ScriptScheduler.getInstance().initialize(quartzScheduler);
         CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {

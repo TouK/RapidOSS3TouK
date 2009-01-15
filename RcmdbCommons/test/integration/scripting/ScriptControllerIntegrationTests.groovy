@@ -43,7 +43,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         CmdbScript.list().each{
             it.remove();
         }
-        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), []);
+        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), [], [:]);
     }
 
     public void tearDown() {

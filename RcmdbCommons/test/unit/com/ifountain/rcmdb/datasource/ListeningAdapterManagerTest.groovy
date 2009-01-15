@@ -70,7 +70,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
     {
         def logLevel=Level.DEBUG;
         
-        ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
+        ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), [], [:]);
         ListeningAdapterManager.getInstance().initialize();
         CompassForTests.initialize([CmdbScript]);
         CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
@@ -115,7 +115,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
 
     void testStopAdapter()
     {
-        ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
+        ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), [], [:]);
         ListeningAdapterManager.getInstance().initialize();
 
         CompassForTests.initialize([CmdbScript]);
@@ -148,7 +148,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
     }
     void testStartAdapterCallsStopAdapter()
     {
-        ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
+        ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), [], [:]);
         ListeningAdapterManager.getInstance().initialize();
 
         CompassForTests.initialize([CmdbScript]);
@@ -184,7 +184,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
     }
     void testIsSubscribed()
     {
-        ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), []);
+        ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), [], [:]);
         ListeningAdapterManager.getInstance().initialize();
 
         CompassForTests.initialize([CmdbScript]);

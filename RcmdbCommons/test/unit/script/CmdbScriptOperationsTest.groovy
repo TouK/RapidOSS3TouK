@@ -42,24 +42,23 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
     def simpleScriptFile="CmdbScriptOperationsTestScriptFile.groovy"
     protected void setUp() {
         super.setUp()
-        ScriptManager manager = ScriptManager.getInstance();
-        if(new File(base_directory).exists())
-        {
-            FileUtils.deleteDirectory (new File(base_directory));
-        }
-        manager.initialize(this.class.getClassLoader(), base_directory, []);
-        new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
-
-     }
+        clearMetaClasses();
+    }
      protected void tearDown() {
         super.tearDown()
-        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)
-        GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)
+        clearMetaClasses();
+
+     }
+     private void clearMetaClasses()
+     {
         ListeningAdapterManager.destroyInstance();
         ScriptScheduler.destroyInstance();
+        ScriptManager.destroyInstance();
+        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)
+        GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)
+        GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager)
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript)
      }
-
      void testBeforeDelete(){
         CompassForTests.initialize([CmdbScript]);
         CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
@@ -100,6 +99,14 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
      }
 
      void initializeForCmdbScript(){
+         ScriptManager manager = ScriptManager.getInstance();
+        if(new File(base_directory).exists())
+        {
+            FileUtils.deleteDirectory (new File(base_directory));
+        }
+        manager.initialize(this.class.getClassLoader(), base_directory, []);
+        new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
+        
          createSimpleScript (simpleScriptFile,expectedScriptMessage);
          
          CompassForTests.initialize([CmdbScript]);
@@ -610,6 +617,39 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
          assertEquals(result.staticParamMap.y,"11")
 
 
+     }
+     void testRunScriptPassesParametersToScriptManager()
+     {
+
+         def managerParams=[:]
+         ScriptManager.metaClass.runScript={ scriptPath, bindings,scriptLogger ->            
+            managerParams.scriptPath=scriptPath
+            managerParams.bindings=bindings
+            managerParams.scriptLogger=scriptLogger
+            return "myrunscript";
+         }
+
+         initializeForCmdbScript();
+
+         ScriptManager.getInstance().addScript (simpleScriptFile);
+
+         def script=new CmdbScript(name:"testscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile);
+         def params=["param1":"1","param2":"a"]
+         def oldParams=[:]
+         oldParams.putAll(params);
+         
+
+         def result=CmdbScript.runScript(script,params)
+         assertEquals(result,"myrunscript")
+         assertEquals(managerParams.scriptPath,script.scriptFile)
+         assertEquals(managerParams.scriptLogger,CmdbScript.getScriptLogger(script))
+         assertEquals(managerParams.bindings.staticParam,script.staticParam)
+         assertEquals(managerParams.bindings.staticParamMap,CmdbScript.getStaticParamMap(script))
+         assertEquals(managerParams.bindings.size(),oldParams.size()+2)
+         oldParams.each{  key , val ->
+             assertEquals(val,managerParams.bindings[key])
+         }
+         
      }
      def createSimpleScript(scriptName,scriptMessage)
     {

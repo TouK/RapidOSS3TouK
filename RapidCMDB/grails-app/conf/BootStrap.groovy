@@ -26,6 +26,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
 import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
 import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
+import com.ifountain.session.SessionManager
+import com.ifountain.compass.search.FilterSessionListener
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -49,6 +51,7 @@ class BootStrap {
     Thread listeningScriptInitializerThread;
     def init = {servletContext ->
         registerDatasourceConverters();
+        initializeSessionManager();
         initializeLockManager();
         registerUtilities();
         registerDefaultConverters();
@@ -57,6 +60,11 @@ class BootStrap {
         registerDefaultDatasources();
         corrrectModelData();
         initializeScripting();
+    }
+
+    def initializeSessionManager()
+    {
+        SessionManager.getInstance().addSessionListener (new FilterSessionListener());
     }
 
     def registerDatasourceConverters()
@@ -175,6 +183,7 @@ class BootStrap {
         }
         ListeningAdapterManager.destroyInstance();
         ScriptManager.destroyInstance();
+        SessionManager.destroyInstance();
         def servletCtx = ServletContextHolder.getServletContext()
         def webAppCtx = WebApplicationContextUtils.getWebApplicationContext(servletCtx)
         Compass compass = webAppCtx.getBean("compass")

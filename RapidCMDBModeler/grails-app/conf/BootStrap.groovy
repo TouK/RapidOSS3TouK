@@ -21,6 +21,8 @@ import org.jsecurity.crypto.hash.Sha1Hash
 import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
 import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
+import com.ifountain.compass.search.FilterSessionListener
+import com.ifountain.session.SessionManager
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -43,6 +45,7 @@ import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
 class BootStrap {
     def init = {servletContext ->
         registerDatasourceConverters();
+        initializeSessionManager();
         initializeLockManager();
         registerUtilities();
         registerDefaultConverters();
@@ -50,6 +53,10 @@ class BootStrap {
         registerDefaultUsers();
         registerDefaultDatasourceNames();
         initializeScripting();
+    }
+    def initializeSessionManager()
+    {
+        SessionManager.getInstance().addSessionListener (new FilterSessionListener());
     }
     def registerDatasourceConverters()
     {
@@ -127,6 +134,7 @@ class BootStrap {
 
     def destroy = {
         ScriptManager.destroyInstance();
+        SessionManager.destroyInstance();
         def servletCtx = ServletContextHolder.getServletContext()
         def webAppCtx = WebApplicationContextUtils.getWebApplicationContext(servletCtx)
         def compass = webAppCtx.getBean("compass")

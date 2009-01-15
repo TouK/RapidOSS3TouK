@@ -22,18 +22,18 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
-import com.ifountain.core.domain.annotations.HideProperty
+import com.ifountain.annotations.HideProperty
 import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 
 /**
- * Created by IntelliJ IDEA.
- * User: mustafa sener
- * Date: Sep 12, 2008
- * Time: 1:27:43 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: mustafa sener
+* Date: Sep 12, 2008
+* Time: 1:27:43 PM
+* To change this template use File | Settings | File Templates.
+*/
 class GetPropertiesMethodTest extends RapidCmdbTestCase{
 
     protected void setUp() {

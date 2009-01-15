@@ -27,6 +27,7 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
 
     public void testGetClassProperties()
     {
+        fail("Should be reimplemented with mock version since it causes failure of other test ");
         def modelName = "ChildModel";
         def relatedModelName = "RelatedModel";
         def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];

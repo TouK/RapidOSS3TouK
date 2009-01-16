@@ -124,7 +124,7 @@
 	        </g:form>
             <g:form style="display:inline" controller="script">
 	            <input type="hidden" name="id" value="${snmpConnector?.script?.name}"/>
-	            <input type="hidden" name="targetURI" value="/snmpConnector/list"/>
+	            <input type="hidden" name="targetURI" value="/snmpConnector/edit/${snmpConnector.id}"/>
 	            <span class="button"><g:actionSubmit class="refresh" value="Reload Script" action="Reload"/></span>
         	</g:form>
         </div>

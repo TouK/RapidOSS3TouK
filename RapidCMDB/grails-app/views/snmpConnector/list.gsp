@@ -30,13 +30,14 @@
                     <th>Script File</th>
                     <th>Log Level</th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${snmpConnectorList}" status="i" var="snmpConnector">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-                        <td><g:link action="edit" id="${snmpConnector.id}">${snmpConnector.name?.encodeAsHTML()}</g:link></td>
+                        <td><g:link action="show" id="${snmpConnector.id}">${snmpConnector.name?.encodeAsHTML()}</g:link></td>
 
                         <td>${snmpConnector.connection?.host?.encodeAsHTML()}</td>
 
@@ -56,6 +57,7 @@
                         <%
                             }
                         %>
+                         <td><g:link action="edit" id="${snmpConnector.id}" class="Edit">Edit</g:link></td>
                     </tr>
                 </g:each>
             </tbody>

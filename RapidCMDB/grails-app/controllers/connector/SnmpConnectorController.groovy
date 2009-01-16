@@ -122,7 +122,7 @@ class SnmpConnectorController {
                         CmdbScript.stopListening(snmpConnector.script.name)
                     }
                     flash.message = "SnmpConnector with id ${params.id} successfully updated."
-                    redirect(action: list)
+                    redirect(action: show, id:snmpConnector.id)
                 }
                 else {
                    render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
@@ -164,7 +164,7 @@ class SnmpConnectorController {
                     snmpConnector.addRelation(script: script);
                     if (!datasource.hasErrors())
                     {
-                        redirect(action: list)
+                        redirect(action: show, id:snmpConnector.id)
                     }
                     else
                     {

@@ -422,8 +422,12 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
 
             }
             finally {
-                interceptor?.destroy()
-                bootStrapInstance.destroy();
+                try{
+                    interceptor?.destroy()
+                }catch(Exception e){}
+                try{
+                    bootStrapInstance.destroy();
+                }catch(Exception e){}
             }
         }
     }

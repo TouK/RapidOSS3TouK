@@ -1,4 +1,4 @@
-package com.ifountain.rcmdb.scripting.methods
+package com.ifountain.rcmdb.methods
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.session.SessionManager

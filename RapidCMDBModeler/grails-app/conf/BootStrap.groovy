@@ -1,7 +1,9 @@
 import auth.Group
 import auth.Role
 import auth.RsUser
+import com.ifountain.compass.search.FilterSessionListener
 import com.ifountain.rcmdb.converter.*
+import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
 import com.ifountain.rcmdb.domain.DomainLockManager
 import com.ifountain.rcmdb.domain.DomainMethodExecutor
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
@@ -11,6 +13,7 @@ import com.ifountain.rcmdb.scripting.ScriptingUtils
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.util.RapidDateUtilities
 import com.ifountain.rcmdb.util.RapidStringUtilities
+import com.ifountain.session.SessionManager
 import model.DatasourceName
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.ApplicationHolder
@@ -20,10 +23,8 @@ import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.jsecurity.crypto.hash.Sha1Hash
 import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
-import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
-import com.ifountain.compass.search.FilterSessionListener
-import com.ifountain.session.SessionManager
-import com.ifountain.rcmdb.scripting.methods.WithSessionDefaultMethod
+import com.ifountain.rcmdb.methods.WithSessionDefaultMethod
+import com.ifountain.rcmdb.methods.MethodFactory
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -84,10 +85,7 @@ class BootStrap {
     def initializeScripting()
     {
         def defaultMethods = [
-            withSession:{String username, Closure codeToBeExecuted->
-                def method = new WithSessionDefaultMethod(username, codeToBeExecuted);
-                method.run();
-            }
+            "${MethodFactory.WITH_SESSION_METHOD}":MethodFactory.createMethod(MethodFactory.WITH_SESSION_METHOD)
         ]
         def baseDir = System.getProperty("base.dir");
         def startupScripts = ScriptingUtils.getStartupScriptList(baseDir, ApplicationHolder.application.getClassLoader());

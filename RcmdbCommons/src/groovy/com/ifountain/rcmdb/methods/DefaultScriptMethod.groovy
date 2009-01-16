@@ -1,4 +1,4 @@
-package com.ifountain.rcmdb.scripting.methods
+package com.ifountain.rcmdb.methods
 /**
  * Created by IntelliJ IDEA.
  * User: admin

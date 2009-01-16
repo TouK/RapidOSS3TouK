@@ -31,8 +31,10 @@ class DomainOperationManager {
     private Class operationClass;
     private Map operationClassMethods = [:];
     private DomainOperationManager parentOperationManager;
-    public DomainOperationManager(Class domainClass, String operationsDirectory, DomainOperationManager parentOperationManager)
+    private Map defaultMethods;
+    public DomainOperationManager(Class domainClass, String operationsDirectory, DomainOperationManager parentOperationManager, Map defaultMethods)
     {
+        this.defaultMethods = defaultMethods;
         this.operationsDirectory = operationsDirectory;
         this.domainClass = domainClass;
         this.parentOperationManager = parentOperationManager; 
@@ -72,6 +74,9 @@ class DomainOperationManager {
             try
             {
                 cls = gcl.loadClass (operationName);
+                defaultMethods.each{String methodName, method->
+                    cls.metaClass."${methodName}" = method;                    
+                }
             }
             catch(Throwable t)
             {

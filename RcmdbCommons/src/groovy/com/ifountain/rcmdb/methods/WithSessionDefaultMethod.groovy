@@ -1,4 +1,4 @@
-package com.ifountain.rcmdb.scripting.methods
+package com.ifountain.rcmdb.methods
 
 import com.ifountain.session.Session
 import com.ifountain.session.SessionManager;

@@ -96,6 +96,7 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
 
     public void testConvertToSuccessfulXML()
     {
+        fail("Should be reimplemented with mock version since it causes failure of other test ");
         String message = "message1";
         def xml = ControllerUtils.convertSuccessToXml(message);
         def xmlNode = new XmlParser().parseText(xml);

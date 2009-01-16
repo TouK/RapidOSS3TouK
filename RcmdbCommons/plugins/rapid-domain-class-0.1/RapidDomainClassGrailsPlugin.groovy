@@ -42,6 +42,7 @@ import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.domain.method.GetPropertiesMethod
 import com.ifountain.rcmdb.domain.method.KeySetMethod
 import com.ifountain.rcmdb.domain.method.GetOperationsMethod
+import com.ifountain.rcmdb.methods.MethodFactory
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors", "__is_federated_properties_loaded__":RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, "__operation_class__":RapidCMDBConstants.OPERATION_PROPERTY_NAME]
@@ -86,20 +87,20 @@ class RapidDomainClassGrailsPlugin {
             registerDynamicMethods(dc, application, ctx);
         }
         for (GrailsClass controller in application.controllerClasses) {
-            addErrorsSupportToControllers(controller, ctx);
+            addControllerMethods(controller, ctx);
         }
     }
 
     def onChange = { event ->
         if (application.isArtefactOfType(ControllerArtefactHandler.TYPE, event.source)) {
-            addErrorsSupportToControllers(event.source, event.ctx);   
+            addControllerMethods(event.source, event.ctx);
         }
     }
 
     def onApplicationChange = { event ->
     }
 
-    def addErrorsSupportToControllers(controller, ctx)
+    def addControllerMethods(controller, ctx)
     {
         MetaClass mc = controller.metaClass
         mc.addError = {String messageCode->
@@ -112,6 +113,9 @@ class RapidDomainClassGrailsPlugin {
             delegate.addError(messageCode, params, "")
 
         }
+
+        mc."${MethodFactory.WITH_SESSION_METHOD}" = MethodFactory.getMethod(MethodFactory.WITH_SESSION_METHOD);
+
         mc.addError = {String messageCode, List params, String defaultMessage->
             if(!delegate.hasErrors())
             {
@@ -194,7 +198,8 @@ class RapidDomainClassGrailsPlugin {
         if(mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)
         {
             DomainOperationManager parentClassManager = operationClassManagers[dc.clazz.superclass.name];
-            DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString(), parentClassManager);
+            def defaultOperationsMethods = ["${MethodFactory.WITH_SESSION_METHOD}":MethodFactory.getMethod(MethodFactory.WITH_SESSION_METHOD)]
+            DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString(), parentClassManager, defaultOperationsMethods);
             operationClassManagers[dc.clazz.name] = manager;
             ReloadOperationsMethod method = new ReloadOperationsMethod(dc.metaClass, DomainClassUtils.getSubClasses(dc), manager, logger);
             mc.methodMissing =  {String name, args ->

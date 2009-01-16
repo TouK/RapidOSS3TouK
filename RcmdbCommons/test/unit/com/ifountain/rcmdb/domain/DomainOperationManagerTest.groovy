@@ -60,7 +60,7 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
                     }
                 """
         )
-        def defaultMethods = [defaultMethod1:{param1-> return param1}, defaultMethod2:{param1, param2-> return param1+param2}];
+        def defaultMethods = [defaultMethod1:[method:{param1-> return param1}, isStatic:false], defaultMethod2:[method:{param1, param2-> return param1+param2}, isStatic:true]];
         DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory, null, defaultMethods);
         Class operationClass = manager.loadOperation();
         AbstractDomainOperation operInstance = operationClass.newInstance();
@@ -72,6 +72,17 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
         String defaultMethodParam2 = "param2";
         assertEquals (defaultMethodParam1, operInstance.defaultMethod1(defaultMethodParam1));
         assertEquals (defaultMethodParam1+defaultMethodParam2, operInstance.defaultMethod2(defaultMethodParam1, defaultMethodParam2));
+        assertEquals (defaultMethodParam1, operInstance.defaultMethod1(defaultMethodParam1));
+
+        try{
+            operationClass.defaultMethod1(defaultMethodParam1);
+            fail("Should throw exception because defaultMethod1 is not static");
+        }
+        catch(MissingMethodException e)
+        {
+        }
+
+        assertEquals (defaultMethodParam1+defaultMethodParam2, operationClass.defaultMethod2(defaultMethodParam1, defaultMethodParam2));
 
         new File("$operationsDirectory/${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX}.groovy").setText (
                 """
@@ -93,7 +104,16 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
         assertTrue (manager.operationClassMethods.containsKey("method2"));
 
         assertEquals (defaultMethodParam1, operInstance.defaultMethod1(defaultMethodParam1));
-        assertEquals (defaultMethodParam1+defaultMethodParam2, operInstance.defaultMethod2(defaultMethodParam1, defaultMethodParam2));
+
+        try{
+            reloadedOperationClass.defaultMethod1(defaultMethodParam1);
+            fail("Should throw exception because defaultMethod1 is not static");
+        }
+        catch(MissingMethodException e)
+        {
+        }
+
+        assertEquals (defaultMethodParam1+defaultMethodParam2, reloadedOperationClass.defaultMethod2(defaultMethodParam1, defaultMethodParam2));
 
     }
 

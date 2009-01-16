@@ -74,8 +74,13 @@ class DomainOperationManager {
             try
             {
                 cls = gcl.loadClass (operationName);
-                defaultMethods.each{String methodName, method->
-                    cls.metaClass."${methodName}" = method;                    
+                defaultMethods.each{String methodName, Map methodConfig->
+                    boolean isStatic = methodConfig.isStatic;
+                    def method = methodConfig.method;
+                    if(!isStatic)
+                    cls.metaClass."${methodName}" = method;
+                    else
+                    cls.metaClass.'static'."${methodName}" = method;                    
                 }
             }
             catch(Throwable t)

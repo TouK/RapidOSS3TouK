@@ -484,6 +484,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
 
     setImageSource: function(columnConfig, dataNode, htmlEl) {
         var expressionsArray = columnConfig['images'];
+        var isImageSet = false;
         for (var i = 0; i < expressionsArray.length; i++)
         {
             var currentExpressionStr = expressionsArray[i]['visible'];
@@ -491,10 +492,14 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             var evaluationResult = eval(currentExpressionStr);
             if (evaluationResult == true)
             {
+                isImageSet = true
                 var imageSrc = expressionsArray[i]['src'];
                 htmlEl.style.backgroundImage = 'url("' + imageSrc + '")';
                 YAHOO.util.Dom.setStyle(htmlEl, "background-position", expressionsArray[i]['align'] ? 'center ' + expressionsArray[i]['align'] : 'center left')
             }
+        }
+        if(!isImageSet){
+           htmlEl.style.backgroundImage = ''; 
         }
     },
     setRootImage: function(imageEl, dataNode, isExpanded) {

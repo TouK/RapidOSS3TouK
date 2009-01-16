@@ -194,6 +194,7 @@
 		    </g:form>
 		    <g:form style="display:inline">
 		        <input type="hidden" name="id" value="${cmdbScript?.name}"/>
+		        <input type="hidden" name="targetURI" value="/script/edit/${cmdbScript.id}"/>
 		        <span class="button"><g:actionSubmit class="refresh" value="Reload"/></span>
 		        <%
 		            if (cmdbScript.type == CmdbScript.LISTENING && cmdbScript.listeningDatasource) {

@@ -38,7 +38,7 @@
             <tbody>
                 <g:each in="${cmdbScriptList}" status="i" var="cmdbScript">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                        <td><g:link action="edit" id="${cmdbScript.id}">${cmdbScript.name?.encodeAsHTML()}</g:link></td>
+                        <td><g:link action="show" id="${cmdbScript.id}">${cmdbScript.name?.encodeAsHTML()}</g:link></td>
                         <td>${cmdbScript.scriptFile?.encodeAsHTML()}</td>
                         <td>${cmdbScript.type?.encodeAsHTML()}</td>
                         <td>                            

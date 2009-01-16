@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -18,14 +18,12 @@
 */
 package script
 
+import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.scripting.ScriptManager
 import junit.framework.Test
 import junit.framework.TestResult
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
-import com.ifountain.rcmdb.domain.util.ControllerUtils
-import com.ifountain.rcmdb.datasource.ListeningAdapterManager
-import com.ifountain.comp.utils.CaseInsensitiveMap
 
 class ScriptController {
     public static final String SUCCESSFULLY_CREATED = "Script created";
@@ -85,7 +83,7 @@ class ScriptController {
         }
         else {
             flash.message = SUCCESSFULLY_CREATED
-            redirect(action: list)
+            redirect(action: show, id:script.id)
         }
     }
 
@@ -124,7 +122,7 @@ class ScriptController {
             }
             else {
                 flash.message = "Script ${params.id} updated"
-                redirect(action:list)
+                redirect(action: show, id:script.id)
             }
         }
         else {
@@ -145,7 +143,7 @@ class ScriptController {
                     redirect(uri:params.targetURI);
                 }
                 else{
-                    redirect(action: list);    
+                    redirect(action: show, id: script.id);
                 }
 
             }
@@ -156,7 +154,7 @@ class ScriptController {
                     redirect(uri:params.targetURI);
                 }
                 else{
-                    redirect(action: show, controller: 'script', id: script.id);    
+                    redirect(action: show, controller: 'script', id: script.id);
                 }
 
             }
@@ -214,13 +212,23 @@ class ScriptController {
             try {
                 CmdbScript.startListening(script);
                 flash.message = "Script ${params.id} started to listen"
-                redirect(action: show, id: script.id)
+                if(params.targetURI){
+                    redirect(uri:params.targetURI);
+                }
+                else{
+                    redirect(action: show, id: script.id)    
+                }
             }
             catch (e) {
                 log.warn("Exception occurred while starting script", e);
                 def errors = [e.getMessage()]
                 flash.errors = errors;
-                redirect(action: show, id: script.id)
+                if(params.targetURI){
+                    redirect(uri:params.targetURI);
+                }
+                else{
+                    redirect(action: show, id: script.id)    
+                }
             }
         }
         else
@@ -237,13 +245,24 @@ class ScriptController {
             try {
                 CmdbScript.stopListening(script);
                 flash.message = "Script ${params.id} started to listen"
-                redirect(action: show, id: script.id)
+                if(params.targetURI){
+                    redirect(uri:params.targetURI);
+                }
+                else{
+                    redirect(action: show, id: script.id)    
+                }
             }
             catch (e) {
                 log.warn("Exception occurred while stopping script", e);
                 def errors = [e.getMessage()]
                 flash.errors = errors;
-                redirect(action: show, id: script.id)
+                if(params.targetURI){
+                    redirect(uri:params.targetURI);
+                }
+                else{
+                    redirect(action: show, id: script.id)    
+                }
+
             }
         }
         else

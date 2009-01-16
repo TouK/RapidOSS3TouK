@@ -79,27 +79,23 @@ class InventoryTagLib {
             def location = menuItem.@location.toString().trim();
             def id = menuItem.@id;
             if (location == "row") {
-                rowMenus.add([id: id, label: menuItem.@label, visible: menuItem.@visible, action: "${id}menuAction"])
+                 def subMenuItemsArray = [];
+                def subMenuItems = menuItem.TsSubMenus?.TsMenu;
+                if (subMenuItems) {
+                      subMenuItems.each {subMenuItem ->
+                            def subMenuItemId = subMenuItem.@id;
+                            subMenuItemsArray.add([id: subMenuItemId, label: subMenuItem.@label, visible: subMenuItem.@visible, action: "${subMenuItemId}menuAction"]);
+                            processMenuItem(subMenuItem,actions,htmlDialogs);
+
+                      }
+                }
+
+                rowMenus.add([id: id, label: menuItem.@label, visible: menuItem.@visible, action: "${id}menuAction",subMenuItems:subMenuItemsArray])
             }
             else if (location == "property") {
                 propertyMenus.add([id: id, label: menuItem.@label, visible: menuItem.@visible, action: "${id}menuAction"])
             }
-            def actionType = menuItem.@actionType.toString().trim();
-            if (actionType == "htmlDialog") {
-                htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
-                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
-            }
-            else if(actionType == "link"){
-                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString()])
-            }
-            else if (actionType == "update" || actionType == "execute") {
-                def params = menuItem.parameters.Item;
-                def pMap = [:]
-                params.each {
-                    pMap.put(it.@key.toString(), it.@value.toString())
-                }
-                actions.add([id: "${id}menuAction", type: actionType, script: menuItem.@script.toString(), parameters: pMap]);
-            }
+            processMenuItem(menuItem,actions,htmlDialogs)
         }
         def searchResults = tsXML.TsSearchResults.TsSearchResult;
         searchResults.each {searchResult ->
@@ -315,13 +311,35 @@ class InventoryTagLib {
                 </script>
                 """
     }
-
+    def processMenuItem(menuItem,actions,htmlDialogs)
+    {
+        def id = menuItem.@id;
+        def actionType = menuItem.@actionType.toString().trim();
+        if (actionType == "htmlDialog") {
+            htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
+            actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
+        }
+        else if(actionType == "link"){
+            actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString()])
+        }
+        else if (actionType == "update" || actionType == "execute") {
+            def params = menuItem.parameters.Item;
+            def pMap = [:]
+            params.each {
+                pMap.put(it.@key.toString(), it.@value.toString())
+            }
+            actions.add([id: "${id}menuAction", type: actionType, script: menuItem.@script.toString(), parameters: pMap]);
+        }
+    }
     def inMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsMenus", attrs, [], body());
     }
     def inMenu = {attrs, body ->
         def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "x", "y"]
-        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsMenu", attrs, validAttrs);
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsMenu", attrs, validAttrs,body());
+    }
+    def inSubMenus = {attrs, body ->
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("TsSubMenus", attrs, [], body());
     }
     def inDefaultMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("DefaultMenus", attrs, [], body());
@@ -348,12 +366,23 @@ class InventoryTagLib {
     }
 
     def getMenuXml(menus) {
-        def output = "";
-        menus.each {
-            output += SearchListTagLib.fSlMenuItem(it, "")
+            def output = "";
+
+            menus.each {
+
+                def subMenuItemsBody=""
+                if(it.subMenuItems?.size()>0)
+                {
+                   subMenuItemsBody+=SearchListTagLib.fSlSubmenuItems([:],getMenuXml(it.subMenuItems))
+                }
+
+                output += SearchListTagLib.fSlMenuItem(it, subMenuItemsBody)
+
+
+            }
+            return output;
         }
-        return output;
-    }
+
 
     def getActionXml(actions) {
         def output = ""

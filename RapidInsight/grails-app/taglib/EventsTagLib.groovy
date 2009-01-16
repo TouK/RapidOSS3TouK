@@ -43,23 +43,20 @@ class EventsTagLib {
         ntMenus.each {menuItem ->
             def location = menuItem.@location.toString().trim();
             def id = menuItem.@id;
-            rowMenus.add([id: id, label: menuItem.@label, visible: menuItem.@visible, action: "${id}menuAction"])
-            def actionType = menuItem.@actionType.toString().trim();
-            if (actionType == "htmlDialog") {
-                htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
-                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
+
+            def subMenuItemsArray = [];
+            def subMenuItems = menuItem.NtSubMenus?.NtMenu;            
+            if (subMenuItems) {
+                  subMenuItems.each {subMenuItem ->
+                        def subMenuItemId = subMenuItem.@id;                        
+                        subMenuItemsArray.add([id: subMenuItemId, label: subMenuItem.@label, visible: subMenuItem.@visible, action: "${subMenuItemId}menuAction"]);
+                        processMenuItem(subMenuItem,actions,htmlDialogs);
+
+                  }
             }
-            else if(actionType == "link"){
-                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString()])
-            }
-            else if (actionType == "update" || actionType == "execute") {
-                def params = menuItem.parameters.Item;
-                def pMap = [:]
-                params.each {
-                    pMap.put(it.@key.toString(), it.@value.toString())
-                }
-                actions.add([id: "${id}menuAction", type: actionType, script: menuItem.@script.toString(), parameters: pMap]);
-            }
+            
+            rowMenus.add([id: id, label: menuItem.@label, visible: menuItem.@visible, action: "${id}menuAction",subMenuItems:subMenuItemsArray])
+            processMenuItem(menuItem,actions,htmlDialogs);
         }
         def ntColumns = ntXML.Columns.Column;
         def columnsStr = "";
@@ -237,15 +234,36 @@ class EventsTagLib {
                 </script>
                 """
     }
-
+    def processMenuItem(menuItem,actions,htmlDialogs)
+    {
+        def id = menuItem.@id;
+        def actionType = menuItem.@actionType.toString().trim();
+        if (actionType == "htmlDialog") {
+            htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
+            actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
+        }
+        else if(actionType == "link"){
+            actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString()])
+        }
+        else if (actionType == "update" || actionType == "execute") {
+            def params = menuItem.parameters.Item;
+            def pMap = [:]
+            params.each {
+                pMap.put(it.@key.toString(), it.@value.toString())
+            }
+            actions.add([id: "${id}menuAction", type: actionType, script: menuItem.@script.toString(), parameters: pMap]);
+        }
+    }
     def evMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NtMenus", attrs, [], body());
     }
     def evMenu = {attrs, body ->
         def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "x", "y"]
-        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NtMenu", attrs, validAttrs);
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NtMenu", attrs, validAttrs,body());
     }
-
+    def evSubMenus = {attrs, body ->
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NtSubMenus", attrs, [], body());
+    }    
     def evConversions = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("NtConversions", attrs, [], body());
     }
@@ -279,8 +297,16 @@ class EventsTagLib {
 
     def getMenuXml(menus) {
         def output = "";
+
         menus.each {
-            output += SearchGridTagLib.fSgMenuItem(it, "")
+
+            def subMenuItemsBody=""
+            if(it.subMenuItems?.size()>0)
+            {
+               subMenuItemsBody+=SearchGridTagLib.fSgSubmenuItems([:],getMenuXml(it.subMenuItems)) 
+            }
+
+            output += SearchGridTagLib.fSgMenuItem(it, subMenuItemsBody)
         }
         return output;
     }

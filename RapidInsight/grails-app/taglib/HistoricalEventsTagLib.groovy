@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -82,27 +82,23 @@ class HistoricalEventsTagLib {
             def location = menuItem.@location.toString().trim();
             def id = menuItem.@id;
             if (location == "row") {
-                rowMenus.add([id: id, label: menuItem.@label, visible: menuItem.@visible, action: "${id}menuAction"])
+                def subMenuItemsArray = [];
+                def subMenuItems = menuItem.HnSubMenus?.HnMenu;
+                if (subMenuItems) {
+                      subMenuItems.each {subMenuItem ->
+                            def subMenuItemId = subMenuItem.@id;
+                            subMenuItemsArray.add([id: subMenuItemId, label: subMenuItem.@label, visible: subMenuItem.@visible, action: "${subMenuItemId}menuAction"]);
+                            processMenuItem(subMenuItem,actions,htmlDialogs);
+
+                      }
+                }
+                rowMenus.add([id: id, label: menuItem.@label, visible: menuItem.@visible, action: "${id}menuAction",subMenuItems:subMenuItemsArray])
             }
             else if (location == "property") {
                 propertyMenus.add([id: id, label: menuItem.@label, visible: menuItem.@visible, action: "${id}menuAction"])
             }
-            def actionType = menuItem.@actionType.toString().trim();
-            if (actionType == "htmlDialog") {
-                htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
-                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
-            }
-             else if(actionType == "link"){
-                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString()])
-            }
-            else if (actionType == "update" || actionType == "execute") {
-                def params = menuItem.parameters.Item;
-                def pMap = [:]
-                params.each {
-                    pMap.put(it.@key.toString(), it.@value.toString())
-                }
-                actions.add([id: "${id}menuAction", type: actionType, script: menuItem.@script.toString(), parameters: pMap]);
-            }
+            processMenuItem(menuItem,actions,htmlDialogs);
+
         }
         def searchResults = hnXML.HnSearchResults.HnSearchResult;
         searchResults.each {searchResult ->
@@ -323,15 +319,36 @@ class HistoricalEventsTagLib {
                 </script>
                 """
     }
-
+    def processMenuItem(menuItem,actions,htmlDialogs)
+    {
+        def id = menuItem.@id;
+        def actionType = menuItem.@actionType.toString().trim();
+            if (actionType == "htmlDialog") {
+                htmlDialogs.add([id: "${id}menuHtml", width: menuItem.@width.toString(), height: menuItem.@height.toString(), x:menuItem.@x.toString(), y:menuItem.@y.toString()])
+                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString(), title: menuItem.@title.toString(), component: "${id}menuHtml"])
+            }
+             else if(actionType == "link"){
+                actions.add([id: "${id}menuAction", type: actionType, url: menuItem.@url.toString()])
+            }
+            else if (actionType == "update" || actionType == "execute") {
+                def params = menuItem.parameters.Item;
+                def pMap = [:]
+                params.each {
+                    pMap.put(it.@key.toString(), it.@value.toString())
+                }
+                actions.add([id: "${id}menuAction", type: actionType, script: menuItem.@script.toString(), parameters: pMap]);
+            }
+    }
     def heMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnMenus", attrs, [], body());
     }
     def heMenu = {attrs, body ->
         def validAttrs = ["id", "label", "actionType", "script", "width", "height", "url", "title", "location", "parameters", "visible", "x", "y"]
-        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnMenu", attrs, validAttrs);
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnMenu", attrs, validAttrs,body());
     }
-
+    def heSubMenus = {attrs, body ->
+        out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("HnSubMenus", attrs, [], body());
+    }
     def heDefaultMenus = {attrs, body ->
         out << com.ifountain.rui.util.TagLibUtils.getConfigAsXml("DefaultMenus", attrs, [], body());
     }
@@ -373,14 +390,22 @@ class HistoricalEventsTagLib {
         def validAttrs = ["src", "visible"];
         return com.ifountain.rui.util.TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
     }
-
-    def getMenuXml(menus) {
+     def getMenuXml(menus) {
         def output = "";
+
         menus.each {
-            output += SearchListTagLib.fSlMenuItem(it, "")
+
+            def subMenuItemsBody=""
+            if(it.subMenuItems?.size()>0)
+            {
+               subMenuItemsBody+=SearchListTagLib.fSlSubmenuItems([:],getMenuXml(it.subMenuItems))
+            }
+
+            output += SearchListTagLib.fSlMenuItem(it, subMenuItemsBody)
         }
         return output;
     }
+
 
     def getActionXml(actions) {
         def output = ""

@@ -15,27 +15,18 @@ class RsMessage {
     };
     static datasources = ["RCMDB":["keys":["eventId":["nameInDs":"eventId"], "destination":["nameInDs":"destination"], "destinationType":["nameInDs":"destinationType"], "action":["nameInDs":"action"]]]]
 
-
+    String rsOwner = "p"
     Long eventId =0;
-
     String destination ="";
-
     String destinationType ="";
-
     String action ="";
-
     Long insertedAt =0;
-
     Long sendAfter =0;
-
     Long sendAt =0;
-
     Long state =0;
-
     Long id ;
-
     Long version ;
-
+    
     org.springframework.validation.Errors errors ;
 
     Object __operation_class__ ;

@@ -14,15 +14,11 @@ class RsMessageRule {
     };
     static datasources = ["RCMDB":["keys":["searchQueryId":["nameInDs":"searchQueryId"], "userId":["nameInDs":"userId"], "destinationType":["nameInDs":"destinationType"]]]]
 
-
+    String rsOwner = "p"
     Long searchQueryId =0;
-
     Long userId =0;
-
     String destinationType ="";
-
     Long delay =0;
-
     Boolean clearAction =false;
     Boolean enabled = true;
 

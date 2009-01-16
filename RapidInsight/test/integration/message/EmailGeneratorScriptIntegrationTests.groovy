@@ -5,6 +5,8 @@ import search.SearchQuery
 import search.SearchQueryGroup
 import script.CmdbScript
 import auth.RsUser
+import auth.Group
+import auth.Role
 
 
 /**
@@ -275,5 +277,59 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         CmdbScript.runScript(script,[:])
         mes=RsMessage.get(id:message.id)
         assertEquals(mes.state,1)
+    }
+    void testEmailGeneratorUsesWithSessionToApplySegmentation()
+    {
+        def userRole = Role.get(name: Role.USER);
+        assertNotNull(userRole);
+        def userGroup = Group.add(name: "testusergroup", role: userRole,segmentFilter:"severity:2");
+        assertFalse(userGroup.hasErrors());
+        def user=RsUser.add(username: "testuser", passwordHash: "xxx");
+        assertFalse(user.hasErrors());
+
+        user.addRelation(groups:userGroup);
+        assertFalse(user.hasErrors());        
+        assertEquals(user.groups.size(),1);
+
+
+
+        
+        user.update(email:destination)
+        assertFalse(user.hasErrors())
+
+
+        
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username:user.username, isPublic:false, type:"event");
+        assertFalse(defaultEventGroup.hasErrors())
+        def searchQuery=SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username:user.username, isPublic:false, type:"event");
+        assertFalse(searchQuery.hasErrors())
+
+        def rule=RsMessageRule.add(userId:user.id,searchQueryId:searchQuery.id,destinationType:RsMessage.EMAIL,enabled:true,clearAction:true)
+        assertFalse(rule.hasErrors())
+        assertEquals(RsMessageRule.countHits("alias:*"),1)
+
+        def script=CmdbScript.get(name:"emailGenerator")
+        CmdbScript.updateScript(script,[logLevel:org.apache.log4j.Level.DEBUG],false)
+        assertFalse (script.hasErrors())
+
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),0)
+
+        def newEvents=addEvents("testevents",4)
+        assertEquals(classes.RsEvent.countHits("alias:*"),4)
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),1)
+        assertEquals(RsMessage.countHits("action:create"),1)
+
+        newEvents.each{
+            it.clear();
+        }
+        assertEquals(classes.RsHistoricalEvent.countHits("alias:*"),4)
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("action:clear"),1)
     }
 }

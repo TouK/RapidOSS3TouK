@@ -25,6 +25,16 @@ class EmailConnectorController {
 
     }
 
+    def show = {
+        EmailConnector emailConnector = EmailConnector.get([id: params.id])
+        if (!emailConnector) {
+            flash.message = "EmailConnector not found with id ${params.id}"
+            redirect(action: list)
+        }
+        else {
+            return [emailConnector: emailConnector]
+        }
+    }
 
     def delete = {
         def emailConnector = EmailConnector.get([id: params.id])

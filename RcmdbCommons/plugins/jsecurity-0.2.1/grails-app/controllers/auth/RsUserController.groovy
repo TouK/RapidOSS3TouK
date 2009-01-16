@@ -131,7 +131,7 @@ class RsUserController {
                }
            }
            flash.message = "User groups successfully updated."
-           render(view: 'edit', model: [rsUser: rsUser])
+           render(view: 'show', model: [rsUser: rsUser])
         }
     }
     def changeProfileData = {
@@ -227,7 +227,7 @@ class RsUserController {
             rsUser.update(updateParams)
             if (!rsUser.hasErrors()) {
                 flash.message = "User ${params.id} updated"
-                redirect(action: list)
+                redirect(action: show, id:rsUser.id)
             }
             else {
                 render(view: 'edit', model: [rsUser: rsUser])
@@ -258,7 +258,7 @@ class RsUserController {
         def rsUser = RsUser.add(username: params["username"], passwordHash: new Sha1Hash(password1).toHex(),email:params["email"]);
         if (!rsUser.hasErrors()) {
             flash.message = "User ${rsUser.id} created"
-            redirect(action: list)
+            redirect(action: show, id:rsUser.id)
         }
         else {
             render(view: 'create', model: [rsUser: rsUser])

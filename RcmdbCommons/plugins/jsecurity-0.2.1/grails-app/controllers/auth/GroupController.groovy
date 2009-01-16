@@ -141,7 +141,7 @@ class GroupController {
                 }
             }
             flash.message = "Group users successfully updated."
-            render(view: 'edit', model: [group: group])
+            render(view: 'show', model: [group: group])
         }
     }
 
@@ -152,7 +152,7 @@ class GroupController {
             group.update(ControllerUtils.getClassProperties(params, Group));
             if (!group.hasErrors()) {
                 flash.message = "Group ${params.id} updated"
-                redirect(action: list)
+                redirect(action: show, id:group.id)
             }
             else {
                 render(view: 'edit', model: [group: group])
@@ -174,7 +174,7 @@ class GroupController {
         def group = Group.add(ControllerUtils.getClassProperties(params, Group))
         if (!group.hasErrors()) {
             flash.message = "Group ${group.id} created"
-            redirect(action: list)
+            redirect(action: show, id:group.id)
         }
         else {
             render(view: 'create', model: [group: group])

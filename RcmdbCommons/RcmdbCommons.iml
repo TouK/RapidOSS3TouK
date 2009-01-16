@@ -21,6 +21,7 @@
       <sourceFolder url="file://$MODULE_DIR$/grails-app/controllers" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/taglib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/views" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/operations" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/grails-app/conf" isTestSource="false" />

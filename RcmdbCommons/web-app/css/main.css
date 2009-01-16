@@ -241,6 +241,10 @@ th.desc a {
 .list th:hover {
 	background: #f7e3b1 url(../images/skin/shadowhover.jpg);
 }
+.list .edit{
+   background:transparent url(../images/skin/database_edit.png) no-repeat scroll 5px 50%;
+    padding-left:28px;
+}
 
 /* PAGINATION */
 

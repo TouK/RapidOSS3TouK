@@ -33,6 +33,7 @@
                     <g:sortableColumn property="type" title="Type"/>
                     <th></th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -53,7 +54,9 @@
                                 }
                             %>
                         </td>
-
+                        <td>
+                           <g:link action="edit" id="${cmdbScript.id}" class="edit">Edit</g:link> 
+                        </td>
                     </tr>
                 </g:each>
             </tbody>

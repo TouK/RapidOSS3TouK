@@ -102,7 +102,7 @@ class EmailConnectionController {
             emailConnection.update(ControllerUtils.getClassProperties(params, EmailConnection));
             if(!emailConnection.hasErrors()) {
                 flash.message = "EmailConnection ${params.id} updated"
-                redirect(action:list)
+                redirect(action:show, id:emailConnection.id)
             }
             else {
                 render(view:'edit',model:[emailConnection:emailConnection])
@@ -124,7 +124,7 @@ class EmailConnectionController {
         def emailConnection = EmailConnection.add(ControllerUtils.getClassProperties(params, EmailConnection))
         if(!emailConnection.hasErrors()) {
             flash.message = "EmailConnection ${emailConnection.id} created"
-            redirect(action:list)
+            redirect(action:show, id:emailConnection.id)
         }
         else {
             render(view:'create',model:[emailConnection:emailConnection])

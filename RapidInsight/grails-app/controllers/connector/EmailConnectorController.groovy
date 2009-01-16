@@ -66,7 +66,7 @@ class EmailConnectorController {
                 if(!emailDatasource.hasErrors()){
                     emailConnector.addRelation(emailDatasource:emailDatasource)
                     flash.message = "EmailConnector ${emailConnector.name} created"                    
-                    redirect(uri: '/emailConnector');
+                    redirect(action:show, id:emailConnector.id);
                 }
                 else{
                     emailConnection.remove();
@@ -134,7 +134,7 @@ class EmailConnectorController {
                    emailConnector.emailDatasource.update(name:EmailConnector.getEmailDatasourceName(params.name));
                    if(!emailConnector.emailDatasource.hasErrors()){
                        flash.message = "EmailConnector ${params.id} updated"
-                       redirect(uri: '/emailConnector');
+                       redirect(action:show, id:emailConnector.id);
                    }
                    else
                    {

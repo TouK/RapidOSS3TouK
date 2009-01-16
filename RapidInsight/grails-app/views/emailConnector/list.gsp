@@ -27,14 +27,16 @@
                     <th>Name</th>
                     <th>Smtp Host</th>
                     <th>Username</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${EmailConnector.list()}" status="i" var="emailConnector">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                        <td><g:link action="edit" controller="emailConnector" id="${emailConnector.id}">${emailConnector.name?.encodeAsHTML()}</g:link></td>
+                        <td><g:link action="show" controller="emailConnector" id="${emailConnector.id}">${emailConnector.name?.encodeAsHTML()}</g:link></td>
                         <td>${emailConnector?.emailConnection?.smtpHost?.encodeAsHTML()}</td>
                         <td>${emailConnector?.emailConnection?.username?.encodeAsHTML()}</td>
+                        <td><g:link action="edit" controller="emailConnector" id="${emailConnector.id}" class="edit">Edit</g:link></td>
                     </tr>
                 </g:each>
             </tbody>

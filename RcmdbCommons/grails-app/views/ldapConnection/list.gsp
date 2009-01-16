@@ -34,6 +34,7 @@
 
                    	        <g:sortableColumn property="username" title="Username" />
                             <th></th>
+                            <th></th>
 
                         </tr>
                     </thead>
@@ -41,7 +42,7 @@
                     <g:each in="${ldapConnectionList}" status="i" var="ldapConnection">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-                            <td><g:link action="edit" id="${ldapConnection.id}">${ldapConnection.name?.encodeAsHTML()}</g:link></td>
+                            <td><g:link action="show" id="${ldapConnection.id}">${ldapConnection.name?.encodeAsHTML()}</g:link></td>
 
                             <td>${ldapConnection.contextFactory?.encodeAsHTML()}</td>
 
@@ -49,6 +50,7 @@
 
                             <td>${ldapConnection.username?.encodeAsHTML()}</td>
                             <td><g:link action="test" controller="ldapConnection" id="${ldapConnection.id}" class="testConnection">Test Connection</g:link></td>
+                            <td><g:link action="edit" controller="ldapConnection" id="${ldapConnection.id}" class="edit">Edit</g:link></td>
 
                         </tr>
                     </g:each>

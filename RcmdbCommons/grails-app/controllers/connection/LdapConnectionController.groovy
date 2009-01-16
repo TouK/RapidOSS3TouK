@@ -99,7 +99,7 @@ class LdapConnectionController {
             ldapConnection.update(ControllerUtils.getClassProperties(params, LdapConnection));
             if(!ldapConnection.hasErrors()) {
                 flash.message = "LdapConnection ${params.id} updated"
-                redirect(action:list)
+                redirect(action:show, id:ldapConnection.id)
             }
             else {
                 render(view:'edit',model:[ldapConnection:ldapConnection])
@@ -121,7 +121,7 @@ class LdapConnectionController {
         def ldapConnection = LdapConnection.add(ControllerUtils.getClassProperties(params, LdapConnection))
         if(!ldapConnection.hasErrors()) {
             flash.message = "LdapConnection ${ldapConnection.id} created"
-            redirect(action:list)
+            redirect(action:show, id:ldapConnection.id)
         }
         else {
             render(view:'create',model:[ldapConnection:ldapConnection])

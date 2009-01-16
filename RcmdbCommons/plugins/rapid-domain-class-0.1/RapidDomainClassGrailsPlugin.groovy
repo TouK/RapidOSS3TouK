@@ -114,7 +114,7 @@ class RapidDomainClassGrailsPlugin {
 
         }
 
-        mc."${MethodFactory.WITH_SESSION_METHOD}" = MethodFactory.getMethod(MethodFactory.WITH_SESSION_METHOD);
+        mc."${MethodFactory.WITH_SESSION_METHOD}" = MethodFactory.createMethod(MethodFactory.WITH_SESSION_METHOD);
 
         mc.addError = {String messageCode, List params, String defaultMessage->
             if(!delegate.hasErrors())
@@ -198,7 +198,7 @@ class RapidDomainClassGrailsPlugin {
         if(mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)
         {
             DomainOperationManager parentClassManager = operationClassManagers[dc.clazz.superclass.name];
-            def defaultOperationsMethods = ["${MethodFactory.WITH_SESSION_METHOD}":MethodFactory.getMethod(MethodFactory.WITH_SESSION_METHOD)]
+            def defaultOperationsMethods = ["${MethodFactory.WITH_SESSION_METHOD}":MethodFactory.createMethod(MethodFactory.WITH_SESSION_METHOD)]
             DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString(), parentClassManager, defaultOperationsMethods);
             operationClassManagers[dc.clazz.name] = manager;
             ReloadOperationsMethod method = new ReloadOperationsMethod(dc.metaClass, DomainClassUtils.getSubClasses(dc), manager, logger);

@@ -85,15 +85,23 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
         assertTrue(executionCount >= 1 && executionCount <= 2 );
     }
 
-    public void testScheduleScriptWithTheSameNameThrowsException()
+
+    public void testScheduleScriptWithTheSameNameReschedules()
     {
-        scriptScheduler.scheduleScript("myScript", 0, 1);
-        try {
-            scriptScheduler.scheduleScript("myScript", 0, 2);
-            fail("should throw exception");
-        }
-        catch (org.quartz.ObjectAlreadyExistsException e) {
-        }
+        scriptScheduler.scheduleScript("myScript", 0, 2);
+        Thread.sleep(200);
+        assertEquals(1, executionCount);
+        Thread.sleep(2000);
+        assertEquals(2, executionCount);
+
+        scriptScheduler.scheduleScript("myScript", 0, 4);
+        Thread.sleep(200);
+        assertEquals(3, executionCount);
+        Thread.sleep(2000);
+        assertEquals(3, executionCount);
+        Thread.sleep(2000);
+        assertEquals(4, executionCount);
+
     }
 
     public void testUnscheduleScript()
@@ -130,4 +138,5 @@ class MockQuartzJob implements StatefulJob {
         ScriptSchedulerTests.executionCount++;
     }
 }
+
 

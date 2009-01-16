@@ -1,5 +1,6 @@
 package com.ifountain.rcmdb.scripting
 
+import org.quartz.Trigger
 import org.quartz.CronTrigger
 import org.quartz.JobDetail
 import org.quartz.Scheduler
@@ -63,7 +64,7 @@ class ScriptScheduler {
                                             null,
                                             SimpleTrigger.REPEAT_INDEFINITELY,
                                             period * 1000);
-            qScheduler.scheduleJob(jobDetail, trigger);
+            scheduleJob(jobDetail,trigger);
       }
 
       public void scheduleScript(String scriptName, long startDelay, String cronExp){
@@ -71,11 +72,23 @@ class ScriptScheduler {
             long startTime = System.currentTimeMillis() + (startDelay * 1000);
             CronTrigger cronTrigger = new CronTrigger(scriptName, null, cronExp);
             cronTrigger.setStartTime(new Date(startTime));
-            qScheduler.scheduleJob(jobDetail, cronTrigger);
-      }
+            scheduleJob(jobDetail,cronTrigger);
 
+      }
+      private void scheduleJob(JobDetail jobDetail,Trigger trigger)
+      {
+          //qScheduler.scheduleJob(jobDetail, trigger);
+            try{
+                qScheduler.scheduleJob(jobDetail, trigger);
+            }
+            catch(org.quartz.ObjectAlreadyExistsException e)
+            {
+                qScheduler.rescheduleJob (trigger.getName(),null,trigger)
+            }
+      }
       public void unscheduleScript(String scriptName){
            qScheduler.deleteJob(scriptName, null);
+           
       }
 
       public void setScriptExecutorClass(Class newScriptExecutorClass){

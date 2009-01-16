@@ -4,7 +4,7 @@
 </head>
 <body>
 <div class="nav">
-    <span class="menuButton"><g:link class="refresh" action="reload" controller="application" params="['targetURI':'/reload.gsp']">Reload App.</g:link></span>
+    <span class="menuButton"><g:link class="refresh" action="reload" controller="application" params="['targetURI':'/reload.gsp']" onclick="return confirm('Are you sure?');">Reload App.</g:link></span>
     <span class="menuButton"><g:link class="refresh" action="reloadViewsAndControllers" controller="application" params="['targetURI':'/reload.gsp']">Reload Web UI</g:link></span>
 </div>
 <g:if test="${flash.message}">

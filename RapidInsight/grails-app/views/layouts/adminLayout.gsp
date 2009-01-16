@@ -1,3 +1,8 @@
+<jsec:lacksRole name="Administrator">
+    <%
+        response.redirect(createLinkTo(dir: 'auth/unauthorized'));
+    %>
+</jsec:lacksRole>
 <%--
   Created by IntelliJ IDEA.
   User: Sezgin Kucukkaraaslan
@@ -12,12 +17,6 @@
     <link rel="stylesheet" href="${createLinkTo(dir: 'css/rapidjs', file: 'yuioverride.css')}"/>
     <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
     <link rel="stylesheet" href="${createLinkTo(file: 'rimain.css')}"/>
-    <jsec:isNotLoggedIn>
-        <g:javascript>window.location='auth/login?targetUri=/admin.gsp'</g:javascript>
-    </jsec:isNotLoggedIn>
-    <jsec:lacksRole name="Administrator">
-        <meta http-equiv="REFRESH" content="0;url=${createLinkTo(dir: 'auth/unauthorized')}">
-    </jsec:lacksRole>
     <g:layoutHead/>
 </head>
 <body onload="${pageProperty(name: 'body.onload')}" class="yui-skin-sam rimain">

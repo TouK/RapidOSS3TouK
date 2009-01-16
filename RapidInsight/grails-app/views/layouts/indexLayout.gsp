@@ -99,9 +99,6 @@
     <link rel="stylesheet" type="text/css" href="css/rapidjs/autocomplete/autocomplete.css"/>
     <link rel="stylesheet" type="text/css" href="riindex.css"/>
 
-    <jsec:isNotLoggedIn>
-        <g:javascript>window.location='auth/login?targetUri=/index.gsp'</g:javascript>
-    </jsec:isNotLoggedIn>
     <g:layoutHead/>
 </head>
 <body class=" yui-skin-sam rimain">

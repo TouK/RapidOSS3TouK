@@ -45,12 +45,14 @@
                                <g:each in="${queryGroups}" var="group">
                                      <optgroup label="${group.name}">
                                       <g:each in="${group.queries}" var="query">
-                                     <g:if test="${rsMessageRule.searchQueryId==query.id}">
-                                        <option value="${query.id}" selected="selected">${query.name}</option>
-                                     </g:if>
-                                      <g:else>
-                                          <option value="${query.id}">${query.name}</option>
-                                      </g:else>
+                                          <g:if test="${query.type==filterType}">
+                                             <g:if test="${rsMessageRule.searchQueryId==query.id && query.type==filterType}">
+                                                <option value="${query.id}" selected="selected">${query.name}</option>
+                                             </g:if>
+                                              <g:else>
+                                                  <option value="${query.id}">${query.name}</option>
+                                              </g:else>
+                                           </g:if>
                                       </g:each>
                                      </optgroup>
                                </g:each>

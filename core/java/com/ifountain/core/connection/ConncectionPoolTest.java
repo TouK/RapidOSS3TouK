@@ -134,6 +134,24 @@ public class ConncectionPoolTest extends RapidCoreTestCase
 
     }
 
+
+    public void testRunConnectionChecker() throws Exception
+    {
+        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(null);
+        String connectionName = "con1";
+        MockConnection.checkConnectionResult = true;
+        MockConnection.isConnected = true;
+        pool = new ConnectionPool(connectionName, fact, 10, 1000000);
+        Thread.sleep(500);
+        assertTrue(pool.isPoolConnected());
+
+        MockConnection.checkConnectionResult = false;
+        MockConnection.isConnected = false;
+
+        pool.runConnectionChecker();
+        assertFalse(pool.isPoolConnected());
+    }
+
     public void testAllOfTheConnectionsAreDisconnectedPoolWillBeMarkedAsDisconnected() throws Exception
     {
         MockPoolableObjectFactory fact = new MockPoolableObjectFactory(null);

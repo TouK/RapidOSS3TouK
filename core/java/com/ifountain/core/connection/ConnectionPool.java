@@ -107,7 +107,19 @@ public class ConnectionPool extends GenericObjectPool
             throw e;
         }
     }
-
+    public void runConnectionChecker() throws InterruptedException
+    {
+        Callable callable = new Callable(){
+            public Object call()
+            {
+                connectionChecker.run();
+                return null;
+            }
+        };
+        List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
+        tasks.add(callable);
+        connectionCheckerService.invokeAll(tasks);
+    }
     public List getBorrowedConnections(){
         synchronized (borrowedConnectionLock)
         {

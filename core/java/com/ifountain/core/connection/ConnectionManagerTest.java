@@ -76,6 +76,7 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         assertEquals(MockTimeoutStrategy.newTimeoutInterval, conn.getTimeout());
 
     }
+
     public void testcheckConnection() throws Exception
     {
         assertFalse(ConnectionManager.checkConnection("dx4545"));

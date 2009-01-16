@@ -43,16 +43,18 @@
                                     <th>Url</th>
                                     <th>Username</th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <g:each in="${DatabaseConnection.list()}" status="i" var="databaseConnection">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                        <td><g:link action="edit" controller="databaseConnection" id="${databaseConnection.id}">${databaseConnection.name?.encodeAsHTML()}</g:link></td>
+                                        <td><g:link action="show" controller="databaseConnection" id="${databaseConnection.id}">${databaseConnection.name?.encodeAsHTML()}</g:link></td>
                                         <td>${databaseConnection?.driver?.encodeAsHTML()}</td>
                                         <td>${databaseConnection?.url?.encodeAsHTML()}</td>
                                         <td>${databaseConnection?.username?.encodeAsHTML()}</td>
                                         <td><g:link action="test" controller="databaseConnection" id="${databaseConnection.id}" class="testConnection">Test Connection</g:link></td>
+                                        <td><g:link action="edit" controller="databaseConnection" id="${databaseConnection.id}" class="edit">Edit</g:link></td>
                                     </tr>
                                 </g:each>
                             </tbody>
@@ -78,13 +80,15 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>ReconnectInterval</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <g:each in="${DatabaseDatasource.list()}" status="i" var="databaseDatasource">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                        <td><g:link action="edit" controller="databaseDatasource" id="${databaseDatasource.id}">${databaseDatasource.name?.encodeAsHTML()}</g:link></td>
+                                        <td><g:link action="show" controller="databaseDatasource" id="${databaseDatasource.id}">${databaseDatasource.name?.encodeAsHTML()}</g:link></td>
                                         <td>${databaseDatasource.reconnectInterval.encodeAsHTML()}</td>
+                                        <td><g:link action="edit" controller="databaseDatasource" id="${databaseDatasource.id}" class="edit">Edit</g:link></td>
                                     </tr>
                                 </g:each>
                             </tbody>
@@ -112,15 +116,17 @@
                                     <th>Table Name</th>
                                     <th>Table Keys</th>
                                     <th>ReconnectInterval</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <g:each in="${SingleTableDatabaseDatasource.list()}" status="i" var="singleTableDatabaseDatasource">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                        <td><g:link action="edit" controller="singleTableDatabaseDatasource" id="${singleTableDatabaseDatasource.id}">${singleTableDatabaseDatasource.name?.encodeAsHTML()}</g:link></td>
+                                        <td><g:link action="show" controller="singleTableDatabaseDatasource" id="${singleTableDatabaseDatasource.id}">${singleTableDatabaseDatasource.name?.encodeAsHTML()}</g:link></td>
                                         <td>${singleTableDatabaseDatasource.tableName.encodeAsHTML()}</td>
                                         <td>${singleTableDatabaseDatasource.tableKeys.encodeAsHTML()}</td>
                                         <td>${singleTableDatabaseDatasource.reconnectInterval.encodeAsHTML()}</td>
+                                        <td><g:link action="edit" controller="singleTableDatabaseDatasource" id="${singleTableDatabaseDatasource.id}" class="edit">Edit</g:link></td>
                                     </tr>
                                 </g:each>
                             </tbody>

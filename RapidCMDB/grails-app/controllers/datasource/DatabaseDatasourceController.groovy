@@ -101,7 +101,7 @@ class DatabaseDatasourceController {
             databaseDatasource.update(ControllerUtils.getClassProperties(params, DatabaseDatasource));
             if(!databaseDatasource.hasErrors()) {
                 flash.message = "DatabaseDatasource ${params.id} updated"
-                redirect(action:list)
+                redirect(action:show, id:databaseDatasource.id)
             }
             else {
                 render(view:'edit',model:[databaseDatasource:databaseDatasource])
@@ -123,7 +123,7 @@ class DatabaseDatasourceController {
         def databaseDatasource = DatabaseDatasource.add(ControllerUtils.getClassProperties(params, DatabaseDatasource))
         if(!databaseDatasource.hasErrors()) {
             flash.message = "DatabaseDatasource ${databaseDatasource.id} created"
-            redirect(action:list)
+            redirect(action:show, id:databaseDatasource.id)
         }
         else {
             render(view:'create',model:[databaseDatasource:databaseDatasource])

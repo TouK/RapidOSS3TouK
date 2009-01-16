@@ -101,7 +101,7 @@ class DatabaseConnectionController {
             databaseConnection.update(ControllerUtils.getClassProperties(params, DatabaseConnection));
             if(!databaseConnection.hasErrors()) {
                 flash.message = "DatabaseConnection ${params.id} updated"
-                redirect(action:list);
+                redirect(action:show, id:databaseConnection.id);
             }
             else {
                 render(view:'edit',model:[databaseConnection:databaseConnection])
@@ -123,7 +123,7 @@ class DatabaseConnectionController {
         def databaseConnection = DatabaseConnection.add(ControllerUtils.getClassProperties(params, DatabaseConnection))
         if(!databaseConnection.hasErrors()) {
             flash.message = "DatabaseConnection ${databaseConnection.id} created"
-            redirect(action:list)
+            redirect(action:show, id:databaseConnection.id)
         }
         else {
             render(view:'create',model:[databaseConnection:databaseConnection])

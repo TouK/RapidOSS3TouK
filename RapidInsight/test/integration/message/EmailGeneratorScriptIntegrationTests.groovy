@@ -331,5 +331,37 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         CmdbScript.runScript(script,[:])
         assertEquals(RsMessage.countHits("alias:*"),2)
         assertEquals(RsMessage.countHits("action:clear"),1)
+
+        //now we change the segment filter and test again
+        classes.RsEvent.removeAll();
+        classes.RsHistoricalEvent.removeAll();
+        RsMessage.removeAll();
+        
+
+        userGroup.update(segmentFilter:"severity:[2 TO 3]")
+        assertFalse(userGroup.hasErrors())
+        
+        def newEvents2=addEvents("testevents2",4)
+        assertEquals(classes.RsEvent.countHits("alias:*"),4)
+        
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("action:create"),2)
+
+        //now we remove the segment filter and test again
+        classes.RsEvent.removeAll();
+        classes.RsHistoricalEvent.removeAll();
+        RsMessage.removeAll();
+
+
+        userGroup.update(segmentFilter:"")
+        assertFalse(userGroup.hasErrors())
+        
+        def newEvents3=addEvents("testevents2",4)
+        assertEquals(classes.RsEvent.countHits("alias:*"),4)
+
+        CmdbScript.runScript(script,[:])
+        assertEquals(RsMessage.countHits("alias:*"),4)
+        assertEquals(RsMessage.countHits("action:create"),4)
     }
 }

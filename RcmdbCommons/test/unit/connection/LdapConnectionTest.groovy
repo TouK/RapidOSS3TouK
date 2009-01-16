@@ -18,11 +18,12 @@
 */
 package connection
 
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+
 import org.apache.log4j.Logger
 import com.ifountain.rcmdb.test.util.LdapConnectionTestUtils
 import com.ifountain.core.test.util.RapidCoreTestCase
-//import connection.LdapConnectionOperations
+import javax.naming.NamingException
+
 /**
 * Created by IntelliJ IDEA.
 * User: deneme
@@ -68,6 +69,7 @@ class LdapConnectionTest extends RapidCoreTestCase{
 
         assertTrue(oper.checkAuthentication(params.username,params.userPassword))
     }
+
     public void testAuthenticationFailsWhenParametersInvalid()
     {
         Map params = LdapConnectionTestUtils.getAuthorizationParams();
@@ -120,6 +122,27 @@ class LdapConnectionTest extends RapidCoreTestCase{
         assertTrue(result.hasMore());
         oper.disconnect();
         assertFalse (oper.isConnected());
+    }
+    public void testCheckConnection()
+    {
+        Map params = LdapConnectionTestUtils.getAuthorizationParams();
+        LdapConnectionOperationsMock oper = new LdapConnectionOperationsMock(url:params.url,username:params.username,userPassword:params.userPassword)
+
+        assertTrue(oper.checkConnection())
+    }
+     public void testCheckConnectionGeneratesExceptionWhenParametersInvalid()
+    {
+        Map params = LdapConnectionTestUtils.getAuthorizationParams();
+        LdapConnectionOperationsMock oper = new LdapConnectionOperationsMock(url:params.url,username:params.username,userPassword:params.userPassword+"extra")
+
+        try{
+            oper.checkConnection()
+            fail("Should throw Exception")
+        }
+        catch(NamingException e)
+        {
+            println e
+        }
     }
 }
 

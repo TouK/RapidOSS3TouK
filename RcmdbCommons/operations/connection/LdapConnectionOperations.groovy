@@ -124,6 +124,16 @@ class LdapConnectionOperations extends ConnectionOperations
     }
     public boolean checkConnection()
     {
-        return checkAuthentication(username,userPassword);
+        try{
+            def ctx=_connect(username, userPassword)
+            ctx.close()
+            return true;
+        }
+        catch(NamingException e)
+        {
+            log.error "Could not connect to LDAP for checkConnection : ${e}"
+            throw e
+        }
+
     }
 }

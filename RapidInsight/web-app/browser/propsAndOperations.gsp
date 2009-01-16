@@ -36,7 +36,12 @@
                         <g:each var="key" in="${keys}">
                             <tr class="${(status % 2) == 0 ? 'odd' : 'even'}">
                                 <td width="0%" style="font-weight:bold">${key.name}</td>
-                                <td>${key.type.name}</td>
+                                <g:if test="${key.isRelation}">
+                                   <td>${key.relatedModel.name}</td>
+                                </g:if>
+                                <g:else>
+                                    <td>${key.type.name}</td>
+                                </g:else>
                             </tr>
                             <% status++ %>
                         </g:each>

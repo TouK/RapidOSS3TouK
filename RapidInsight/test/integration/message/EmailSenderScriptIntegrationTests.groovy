@@ -80,7 +80,7 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         EmailConnection.removeAll();
         EmailDatasource.removeAll();
         CmdbScript.list().each{
-            it.remove();
+            CmdbScript.deleteScript(it);
         }
         ScriptManager.getInstance().removeScript ("emailSender")
         

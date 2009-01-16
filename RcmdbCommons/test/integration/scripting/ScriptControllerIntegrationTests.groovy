@@ -41,13 +41,11 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         expectedScriptMessage = "script successfully executed";
         CmdbScript.reloadOperations();
         CmdbScript.list().each{
-            it.remove();
+            CmdbScript.deleteScript(it)
         }
-        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), [], [:]);
     }
 
     public void tearDown() {
-        ScriptManager.destroyInstance();
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
 

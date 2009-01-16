@@ -29,7 +29,7 @@ import org.apache.log4j.Logger
  * Date: May 20, 2008
  * Time: 2:07:57 PM
  */
-class ScriptManager {
+public class ScriptManager {
     Logger logger = Logger.getLogger("scripting");
     public static final String SCRIPT_DIRECTORY = "scripts";
     private static ScriptManager manager;

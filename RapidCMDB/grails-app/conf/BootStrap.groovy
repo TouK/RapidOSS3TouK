@@ -111,12 +111,7 @@ class BootStrap {
 
         CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {
             try {
-                if (it.scheduleType == CmdbScript.PERIODIC) {
-                    ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.period)
-                }
-                else {
-                    ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.cronExpression)
-                }
+                CmdbScript.scheduleScript(it);                
             }
             catch (e) {
                 log.warn("Error scheduling script ${it.name}: ${e.getMessage()}");

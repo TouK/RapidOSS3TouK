@@ -60,7 +60,16 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     {
         ScriptManager.getInstance().reloadScript(scriptFile);
     }
-
+    static def scheduleScript(CmdbScript script)     {
+        if (script.type == CmdbScript.SCHEDULED && script.enabled) {
+            if (script.scheduleType == CmdbScript.CRON) {
+                ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
+            }
+            else {
+                ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
+            }
+        }
+    }
     static def addScript(Map params, boolean fromController) throws Exception {        
         if(!params.get("scriptFile") || params.get("scriptFile").trim() == "")
         {
@@ -73,15 +82,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         def script = CmdbScript.add(params)
         if (!script.hasErrors()) {
             ScriptManager.getInstance().addScript(script.scriptFile);
-        
-            if (script.type == CmdbScript.SCHEDULED && script.enabled) {
-                if (script.scheduleType == CmdbScript.CRON) {
-                    ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
-                }
-                else {
-                    ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
-                }
-            }
+            scheduleScript(script);
             configureScriptLogger(script);
         }
         if (!fromController && script.hasErrors()) {
@@ -134,14 +135,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
                 ScriptManager.getInstance().addScript(script.scriptFile);
             }
             ScriptScheduler.getInstance().unscheduleScript(scriptNameBeforeUpdate)
-            if (script.type == CmdbScript.SCHEDULED && script.enabled) {
-                if (script.scheduleType == CmdbScript.CRON) {
-                    ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
-                }
-                else {
-                    ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
-                }
-            }
+            scheduleScript(script)
             configureScriptLogger(script);
         }
         if (!fromController && script.hasErrors()) {

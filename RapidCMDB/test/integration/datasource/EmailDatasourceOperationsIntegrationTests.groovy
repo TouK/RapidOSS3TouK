@@ -15,7 +15,7 @@ import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine;
 * Time: 10:27:52 AM
 * To change this template use File | Settings | File Templates.
 */
-class EmailDatasourceOperationsTest extends RapidCoreTestCase{
+class EmailDatasourceOperationsIntegrationTests extends RapidCoreTestCase{
     static transactional = false;
     public void testRenderTemplate(){
 

@@ -24,19 +24,19 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
     public static void processDelayedEmails(Logger externalLogger)
     {
         def now=(new Date()).getTime();
-        def delayingMessages=RsMessage.searchEvery("state:0 AND sendAfter:[0 TO ${now}] AND destinationType:\"${RsMessage.EMAIL}\"")
+        def delayingMessages=RsMessage.searchEvery("state:${RsMessage.STATE_IN_DELAY} AND sendAfter:[0 TO ${now}] AND destinationType:\"${RsMessage.EMAIL}\"")
         delayingMessages.each{
-            it.update(state:1)
+            it.update(state:RsMessage.STATE_READY)
             externalLogger.info("Updated delaying message with id ${it.id}, changed state to 1. Message : ${it.asMap()}");
         }
     }
     public static RsMessage addEventCreateEmail(Logger externalLogger,Map event,String destination,Long delay)
     {
         def now=(new Date()).getTime();
-        def state=0
+        def state=RsMessage.STATE_IN_DELAY
         if(delay<1)
         {
-           state=1;
+           state=RsMessage.STATE_READY;
         }
         def message=RsMessage.add(eventId:event.id,destination:destination,insertedAt:now,sendAfter:now+(delay*1000),state:state,destinationType:RsMessage.EMAIL,action:"create")
         if(message.hasErrors())
@@ -53,7 +53,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
     public static RsMessage addEventClearEmail(Logger externalLogger,Map historicalEvent,String destination)
     {
         def now=(new Date()).getTime();
-        def state=1
+        def state=RsMessage.STATE_READY;
         def message=null;
 
         def createMessage=RsMessage.get([eventId:historicalEvent.activeId,action:"create",destination:destination,destinationType:RsMessage.EMAIL])

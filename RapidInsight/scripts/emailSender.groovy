@@ -17,7 +17,7 @@ def date=new Date();
 def ds=EmailConnector.get(name:staticParamMap?.connectorName)?.emailDatasource
 if(ds!=null)
 {
-    def messages=RsMessage.search("state:1 AND destinationType:\"${RsMessage.EMAIL}\"", [sort: "id",order:"asc",max:100]).results;
+    def messages=RsMessage.search("state:${RsMessage.STATE_READY} AND destinationType:\"${RsMessage.EMAIL}\"", [sort: "id",order:"asc",max:100]).results;
 
     messages.each{ message ->
         
@@ -49,7 +49,7 @@ if(ds!=null)
             try{
                 ds.sendEmail(emailParams)
                 logger.debug("Sended email about RsEvent: ${eventParams}")
-                message.update(state:3,sendAt:date.getTime());
+                message.update(state:RsMessage.STATE_SENDED,sendAt:date.getTime());
                 logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
             }
             catch(e)
@@ -61,7 +61,7 @@ if(ds!=null)
         }
         else
         {
-            message.update(state:4,sendAt:date.getTime());
+            message.update(state:RsMessage.STATE_NOT_EXISTS,sendAt:date.getTime());
             logger.warn("RsEvent/RsHistoricalEvent with eventId ${message.eventId} does not exist. Will not send email. Updated state of message as 4");
         }
 

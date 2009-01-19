@@ -254,7 +254,7 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         def delay=5000
         def params=[:]
         params.eventId=1
-        params.state=0
+        params.state=RsMessage.STATE_IN_DELAY
         params.destination="xxx"
         params.destinationType=RsMessage.EMAIL
         params.action="create"
@@ -271,12 +271,12 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
         CmdbScript.runScript(script,[:])
         def mes=RsMessage.get(id:message.id)
-        assertEquals(mes.state,0)
+        assertEquals(mes.state,RsMessage.STATE_IN_DELAY)
         Thread.sleep(delay+1000)
 
         CmdbScript.runScript(script,[:])
         mes=RsMessage.get(id:message.id)
-        assertEquals(mes.state,1)
+        assertEquals(mes.state,RsMessage.STATE_READY)
     }
     void testEmailGeneratorUsesWithSessionToApplySegmentation()
     {

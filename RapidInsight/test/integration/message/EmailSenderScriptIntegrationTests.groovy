@@ -127,18 +127,18 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:RsMessage.EMAIL,action:"create",state:1);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:RsMessage.EMAIL,action:"create",state:RsMessage.STATE_READY);
         }
         assertEquals(classes.RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:1"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         def historicalEvents=addHistoricalEvents("testhistev1",4)
         historicalEvents.each{ event ->
-            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:RsMessage.EMAIL,action:"clear",state:1);
+            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:RsMessage.EMAIL,action:"clear",state:RsMessage.STATE_READY);
         }
         assertEquals(classes.RsHistoricalEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:1"),8)
-        assertEquals(RsMessage.countHits("state:1 AND action:clear"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:clear"),4)
 
 
         def senderScript=CmdbScript.addScript([name: "emailSender", type:CmdbScript.ONDEMAND,logFileOwn:true,staticParam:"connectorName:${connectorParams.name}"]);
@@ -149,8 +149,8 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertNotNull(connector);
 
         CmdbScript.runScript(senderScript,[:])
-        assertEquals(RsMessage.countHits("state:1"),0)
-        assertEquals(RsMessage.countHits("state:3"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED}"),8)
     }
      void testSenderDoesNotProcessMessagesIfSendGeneratesException()
     {
@@ -163,18 +163,18 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:RsMessage.EMAIL,action:"create",state:1);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:RsMessage.EMAIL,action:"create",state:RsMessage.STATE_READY);
         }
         assertEquals(classes.RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:1"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         def historicalEvents=addHistoricalEvents("testhistev1",4)
         historicalEvents.each{ event ->
-            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:RsMessage.EMAIL,action:"clear",state:1);
+            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:RsMessage.EMAIL,action:"clear",state:RsMessage.STATE_READY);
         }
         assertEquals(classes.RsHistoricalEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:1"),8)
-        assertEquals(RsMessage.countHits("state:1 AND action:clear"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:clear"),4)
 
 
         def senderScript=CmdbScript.addScript([name: "emailSender", type:CmdbScript.ONDEMAND,logFileOwn:true,staticParam:"connectorName:${connectorParams.name}"]);
@@ -185,7 +185,7 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertNotNull(connector);
 
         CmdbScript.runScript(senderScript,[:])
-        assertEquals(RsMessage.countHits("state:1"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
         
     }
      void testSenderProcessesMessagesAddedByRsMessageOperations()
@@ -201,7 +201,7 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
             RsMessage.addEventCreateEmail(Logger.getRootLogger(),[id:event.id],destination,0)            
         }
         assertEquals(classes.RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:1"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
 
         def senderScript=CmdbScript.addScript([name: "emailSender", type:CmdbScript.ONDEMAND,logFileOwn:true,staticParam:"connectorName:${connectorParams.name}"]);
@@ -212,8 +212,8 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertNotNull(connector);
 
         CmdbScript.runScript(senderScript,[:])
-        assertEquals(RsMessage.countHits("state:1"),0)
-        assertEquals(RsMessage.countHits("state:3"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED}"),4)
 
         events.each{
             it.clear();
@@ -221,19 +221,19 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         
         assertEquals(classes.RsEvent.countHits("alias:*"),0)
         assertEquals(classes.RsHistoricalEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:1"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
         classes.RsHistoricalEvent.list().each{ event ->
             RsMessage.addEventClearEmail(Logger.getRootLogger(),[activeId:event.activeId],destination)            
         }
         assertEquals(RsMessage.countHits("alias:*"),8)
-        assertEquals(RsMessage.countHits("state:1 AND action:clear"),4)
-        assertEquals(RsMessage.countHits("state:3 AND action:create"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:clear"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED} AND action:create"),4)
         
         CmdbScript.runScript(senderScript,[:])
         assertEquals(RsMessage.countHits("alias:*"),8)
-        assertEquals(RsMessage.countHits("state:3"),8)
-        assertEquals(RsMessage.countHits("state:3 AND action:clear"),4)
-        assertEquals(RsMessage.countHits("state:3 AND action:create"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED} AND action:clear"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED} AND action:create"),4)
         
         
     }
@@ -247,10 +247,10 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:RsMessage.EMAIL,action:"create",state:1);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:RsMessage.EMAIL,action:"create",state:RsMessage.STATE_READY);
         }
         assertEquals(classes.RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:1"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         def senderScript=CmdbScript.addScript([name: "emailSender", type:CmdbScript.ONDEMAND,logFileOwn:true,staticParam:"connectorName:${connectorParams.name}"]);
         assertFalse(senderScript.hasErrors());
@@ -260,19 +260,19 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertNotNull(connector);
 
         CmdbScript.runScript(senderScript,[:])
-        assertEquals(RsMessage.countHits("state:1"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
 
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:RsMessage.EMAIL,action:"create",state:1);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:RsMessage.EMAIL,action:"create",state:RsMessage.STATE_READY);
         }
         assertEquals(classes.RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:1"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         connector.remove();
         connector=EmailConnector.get(name:connectorParams.name);
         assertNull(connector);
         CmdbScript.runScript(senderScript,[:])
-        assertEquals(RsMessage.countHits("state:1"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
     }
     void testSenderChangesMessageStateWhenEventsAreMissing(){
@@ -285,15 +285,15 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
 
 
         4.times{ eventId ->
-            RsMessage.add(eventId:eventId,destination:destination,destinationType:RsMessage.EMAIL,action:"create",state:1);
+            RsMessage.add(eventId:eventId,destination:destination,destinationType:RsMessage.EMAIL,action:"create",state:RsMessage.STATE_READY);
         }
         4.times{ eventId ->
-            RsMessage.add(eventId:eventId,destination:destination,destinationType:RsMessage.EMAIL,action:"clear",state:1);
+            RsMessage.add(eventId:eventId,destination:destination,destinationType:RsMessage.EMAIL,action:"clear",state:RsMessage.STATE_READY);
         }
         
-        assertEquals(RsMessage.countHits("state:1"),8)
-        assertEquals(RsMessage.countHits("state:1 AND action:create"),4)
-        assertEquals(RsMessage.countHits("state:1 AND action:create"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:create"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:create"),4)
 
         def senderScript=CmdbScript.addScript([name: "emailSender", type:CmdbScript.ONDEMAND,logFileOwn:true,staticParam:"connectorName:${connectorParams.name}"]);
         assertFalse(senderScript.hasErrors());
@@ -303,12 +303,12 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertNotNull(connector);
 
         CmdbScript.runScript(senderScript,[:])
-        assertEquals(RsMessage.countHits("state:1"),0)
-        assertEquals(RsMessage.countHits("state:1 AND action:create"),0)
-        assertEquals(RsMessage.countHits("state:1 AND action:create"),0)
-        assertEquals(RsMessage.countHits("state:4"),8)
-        assertEquals(RsMessage.countHits("state:4 AND action:create"),4)
-        assertEquals(RsMessage.countHits("state:4 AND action:create"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:create"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:create"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS} AND action:create"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS} AND action:create"),4)
     }
     void addEmailConnectorViaController()
     {
@@ -320,7 +320,8 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         params.putAll(connectorParams)
 
 
-        def controller = new EmailConnectorController();
+        EmailConnectorController controller = new EmailConnectorController();
+        
         params.each{ key , val ->
             controller.params[key] = val;
         }

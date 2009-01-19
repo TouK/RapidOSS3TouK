@@ -37,7 +37,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         params.state=RsMessage.STATE_IN_DELAY
         params.destination="xxx"
         params.destinationType=RsMessage.EMAIL
-        params.action="create"
+        params.action=RsMessage.ACTION_CREATE
         params.sendAfter=date.getTime()+delay
 
 
@@ -77,6 +77,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(undelayedMessage.state,RsMessage.STATE_READY)
         assertEquals(undelayedMessage.insertedAt,undelayedMessage.sendAfter)
         assertEquals(undelayedMessage.eventId,1)
+        assertEquals(undelayedMessage.action,RsMessage.ACTION_CREATE)
 
         Long delay2=2
         def delayedMessage=RsMessage.addEventCreateEmail(Logger.getRootLogger(),[id:2],"xxx",delay2)
@@ -85,6 +86,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(delayedMessage.state,RsMessage.STATE_IN_DELAY)
         assertEquals(delayedMessage.sendAfter,delayedMessage.insertedAt+(delay2*1000))
         assertEquals(delayedMessage.eventId,2)
+        assertEquals(delayedMessage.action,RsMessage.ACTION_CREATE)
 
 
     }
@@ -130,6 +132,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(RsMessage.list().size(),1)
         assertEquals(createMessage.state,RsMessage.STATE_READY)
         assertEquals(createMessage.eventId,params.id)
+        assertEquals(createMessage.action,RsMessage.ACTION_CREATE)
 
 
         def clearMessage=RsMessage.addEventClearEmail(Logger.getRootLogger(),[activeId:params.id],params.destination)
@@ -137,6 +140,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(RsMessage.list().size(),2)
         assertEquals(clearMessage.state,RsMessage.STATE_READY)
         assertEquals(clearMessage.eventId,params.id)
+        assertEquals(clearMessage.action,RsMessage.ACTION_CLEAR)
         
         
     }

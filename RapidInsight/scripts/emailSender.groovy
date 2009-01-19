@@ -22,7 +22,7 @@ if(ds!=null)
     messages.each{ message ->
         
         def event=null;
-        if(message.action=="create")
+        if(message.action==RsMessage.ACTION_CREATE )
         {
             event=RsEvent.get(id:message.eventId);
         }
@@ -41,7 +41,7 @@ if(ds!=null)
             def emailParams=[:]
             emailParams.from=from
             emailParams.to=message.destination
-            emailParams.subject= ( message.action  == "create" ? "Event Created" : "Event Cleared" )
+            emailParams.subject= ( message.action  == RsMessage.ACTION_CREATE ? "Event Created" : "Event Cleared" )
             emailParams.template=templatePath
             emailParams.templateParams=templateParams
             emailParams.contentType="text/html"

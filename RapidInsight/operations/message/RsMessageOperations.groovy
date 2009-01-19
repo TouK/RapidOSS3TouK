@@ -38,7 +38,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         {
            state=RsMessage.STATE_READY;
         }
-        def message=RsMessage.add(eventId:event.id,destination:destination,insertedAt:now,sendAfter:now+(delay*1000),state:state,destinationType:RsMessage.EMAIL,action:"create")
+        def message=RsMessage.add(eventId:event.id,destination:destination,insertedAt:now,sendAfter:now+(delay*1000),state:state,destinationType:RsMessage.EMAIL,action:RsMessage.ACTION_CREATE)
         if(message.hasErrors())
         {
             externalLogger.warn("Error occured while adding RsMessage. Reason : ${message.errors}")
@@ -56,7 +56,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         def state=RsMessage.STATE_READY;
         def message=null;
 
-        def createMessage=RsMessage.get([eventId:historicalEvent.activeId,action:"create",destination:destination,destinationType:RsMessage.EMAIL])
+        def createMessage=RsMessage.get([eventId:historicalEvent.activeId,action:RsMessage.ACTION_CREATE,destination:destination,destinationType:RsMessage.EMAIL])
         externalLogger.debug("Checking whether create event exists");
         // if there is no create message then we will skip the clear message
         if(createMessage != null ){
@@ -69,7 +69,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
           }
           else
           {
-            message=RsMessage.add(eventId:historicalEvent.activeId,destination:destination,destinationType:RsMessage.EMAIL,insertedAt:now,state:state,action:"clear")
+            message=RsMessage.add(eventId:historicalEvent.activeId,destination:destination,destinationType:RsMessage.EMAIL,insertedAt:now,state:state,action:RsMessage.ACTION_CLEAR)
             if(message.hasErrors())
             {
                 externalLogger.warn("Error occured while adding RsMessage. Reason : ${message.errors}")

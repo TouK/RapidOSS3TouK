@@ -38,9 +38,18 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
     static def scriptMap;
      protected void setUp() {          
           scriptMap=[:];
+          clearMetaClasses();
      }
      protected void tearDown() {          
           
+     }
+     private void clearMetaClasses()
+     {
+
+        ListeningAdapterManager.destroyInstance();
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager);        
+        ExpandoMetaClass.enableGlobally();
      }
     void testStartAdapterThrowsExceptionWhenNoListeningScriptIsDefined(){
         def ds=new BaseListeningDatasource();
@@ -208,6 +217,35 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
         ListeningAdapterManager.getInstance().stopAdapter(ds);
         assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds))
     }
+    void testInitializedIsUpdatedByConstructorAndInitializeAndDestoryInstance()
+    {
+         def manager=ListeningAdapterManager.getInstance();
+         assertFalse(manager.isInitialized());
+         manager.initialize();
+         assertTrue(manager.isInitialized());
+
+         ListeningAdapterManager.destroyInstance();
+         assertFalse(ListeningAdapterManager.getInstance().isInitialized());
+    }    
+    void testDestoryInstanceCallsDestroyIfInitialized()
+    {
+        boolean destroyCalled=false;
+        ListeningAdapterManager.metaClass.destroy =  { ->            
+            destroyCalled=true;
+        }
+         
+         destroyCalled=false;
+
+         def manager=ListeningAdapterManager.getInstance();
+         assertFalse(manager.isInitialized());
+         manager.initialize();
+         assertTrue(manager.isInitialized());
+
+         ListeningAdapterManager.destroyInstance()
+         assertTrue(destroyCalled);
+
+    }
+
 }
 
 

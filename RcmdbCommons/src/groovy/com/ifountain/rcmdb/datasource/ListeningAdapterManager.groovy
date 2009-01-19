@@ -33,30 +33,43 @@ class ListeningAdapterManager {
     private static ListeningAdapterManager manager;
     private def listeningAdapters;
     private def observers;
+    private boolean initialized;
+    
     Logger logger = Logger.getLogger("scripting");
     public static ListeningAdapterManager getInstance() {
         if (manager == null) {
             manager = new ListeningAdapterManager();
+
         }
         return manager;
     }
 
     public static void destroyInstance() {
+
         if (manager != null) {
-            manager.destroy();
+            if(manager.initialized)
+            {
+                manager.destroy();
+                manager.initialized=false;
+            }
             manager = null;
         }
     }
     private ListeningAdapterManager() {
+        initialized=false;
     }
-
+    public boolean isInitialized()
+    {
+        return initialized;
+    }
     public void initialize() {
         listeningAdapters = [:];
         observers = [:];
+        initialized=true;
     }
 
-    private void destroy() {
-        logger.debug("Destroying listening adapter manager.");
+    private void destroy() {        
+        logger.debug("Destroying listening adapter manager.");        
         listeningAdapters.each {String adapterName, BaseListeningAdapter adapter ->
             adapter.unsubscribe();
             adapter.deleteObservers();
@@ -67,7 +80,7 @@ class ListeningAdapterManager {
             catch (e) {
                 logger.warn("Error during script ${observer.scriptInstance} clean up . Reason: ${e.getMessage()}", e)
             }
-        }
+        }        
         logger.info("Destroyed listening adapter manager.");
     }
 

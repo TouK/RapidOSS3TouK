@@ -287,4 +287,36 @@ class EmailConnectorController {
             redirect(action: list)
         }
     }
+
+    def test = {
+        def emailConnector = EmailConnector.get( [id:params.id] )
+
+        if(!emailConnector) {            
+            flash.message = "EmailConnector not found with id ${params.id}"
+            redirect(action:list)
+        }        
+        else {
+            def emailConnection=emailConnector.emailConnection;
+            if(!emailConnection)
+            {
+                flash.message = "emailConnection of emailConnector not found"
+                redirect(action:list)
+            }
+            else{
+                try
+                {
+                    emailConnection.checkConnection();
+                    flash.message = "Successfully connected to server."
+                }catch(Throwable t)
+                {
+                    addError("connection.test.exception", [emailConnection.name, t.toString()]);
+                    log.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+                    flash.errors = this.errors;
+                }
+                redirect(action:list);
+            }
+            
+
+        }
+    }
 }

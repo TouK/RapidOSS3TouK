@@ -222,8 +222,8 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         //run the script and check that only new events are processed
         CmdbScript.runScript(script,[:])
         assertEquals(RsMessage.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("action:create"),4)
-        RsMessage.searchEvery("action:create").each{ mes ->
+        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CREATE}"),4)
+        RsMessage.searchEvery("action:${RsMessage.ACTION_CREATE}").each{ mes ->
             assertEquals(mes.destination,destination)
             def event=classes.RsEvent.get(id:mes.eventId)
             assertNotNull(event)            
@@ -238,8 +238,8 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
         CmdbScript.runScript(script,[:])
         assertEquals(RsMessage.countHits("alias:*"),8)
-        assertEquals(RsMessage.countHits("action:clear"),4)
-        RsMessage.searchEvery("action:clear").each{ mes ->
+        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CLEAR}"),4)
+        RsMessage.searchEvery("action:${RsMessage.ACTION_CLEAR}").each{ mes ->
             assertEquals(mes.destination,destination)
             def event=classes.RsHistoricalEvent.search("activeId:${mes.eventId}").results[0]
             assertNotNull(event)
@@ -257,7 +257,7 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         params.state=RsMessage.STATE_IN_DELAY
         params.destination="xxx"
         params.destinationType=RsMessage.EMAIL
-        params.action="create"
+        params.action=RsMessage.ACTION_CREATE
         params.sendAfter=date.getTime()+delay
 
 
@@ -321,7 +321,7 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
         CmdbScript.runScript(script,[:])
         assertEquals(RsMessage.countHits("alias:*"),1)
-        assertEquals(RsMessage.countHits("action:create"),1)
+        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CREATE}"),1)
 
         newEvents.each{
             it.clear();
@@ -330,7 +330,7 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
         CmdbScript.runScript(script,[:])
         assertEquals(RsMessage.countHits("alias:*"),2)
-        assertEquals(RsMessage.countHits("action:clear"),1)
+        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CLEAR}"),1)
 
         //now we change the segment filter and test again
         classes.RsEvent.removeAll();
@@ -346,7 +346,7 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         
         CmdbScript.runScript(script,[:])
         assertEquals(RsMessage.countHits("alias:*"),2)
-        assertEquals(RsMessage.countHits("action:create"),2)
+        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CREATE}"),2)
 
         //now we remove the segment filter and test again
         classes.RsEvent.removeAll();
@@ -362,6 +362,6 @@ class EmailGeneratorScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
         CmdbScript.runScript(script,[:])
         assertEquals(RsMessage.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("action:create"),4)
+        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CREATE}"),4)
     }
 }

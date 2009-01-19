@@ -14,6 +14,14 @@ import connection.EmailConnectionImpl
  * To change this template use File | Settings | File Templates.
  */
 class EmailConnectionImplTest extends RapidCoreTestCase{
+    protected void setUp() throws Exception {
+        super.setUp();
+
+    }
+
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
      public void testConnectAndDisconnect()
      {

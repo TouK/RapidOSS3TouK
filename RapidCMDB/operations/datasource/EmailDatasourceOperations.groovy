@@ -4,20 +4,22 @@ import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.support.*
 import org.codehaus.groovy.grails.web.context.*
+import com.ifountain.core.datasource.BaseAdapter
+
 /**
- * Created by IntelliJ IDEA.
- * User: iFountain
- * Date: Dec 23, 2008
- * Time: 4:49:02 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: iFountain
+* Date: Dec 23, 2008
+* Time: 4:49:02 PM
+* To change this template use File | Settings | File Templates.
+*/
 class EmailDatasourceOperations extends BaseDatasourceOperations{
     def adapter;
     def onLoad(){
        this.adapter = new EmailAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
     }
 
-    def sendEmail(params)
+    public void sendEmail(params)
     {
        def emailParams=[:]
        emailParams.putAll(params);
@@ -29,17 +31,15 @@ class EmailDatasourceOperations extends BaseDatasourceOperations{
        this.adapter.sendEmail(emailParams);
     }
 
-    def getAdapter()
+    public EmailAdapter getAdapter()
     {
         return adapter;
     }
+    public void setAdapter(EmailAdapter adapter){
+        this.adapter=adapter;        
+    }
 
     public String renderTemplate(templatePath,parameters){
-//        def engine=new GroovyPagesTemplateEngine()
-//        def template= engine.createTemplate(new File(templatePath));
-//        StringWriter writer=new StringWriter();
-//        template.make(parameters).writeTo(writer);
-//        return writer.toString();
         def engine=new GroovyPagesTemplateEngine()
         def template= engine.createTemplate(new File(templatePath));
 

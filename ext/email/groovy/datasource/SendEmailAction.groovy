@@ -85,9 +85,13 @@ public class SendEmailAction implements Action {
     }
 
     //for testing
-    protected Map getParams()
+    public Map getParams()
     {
         return params;
+    }
+    public Logger getLogger()
+    {
+        return logger;
     }
 
 }

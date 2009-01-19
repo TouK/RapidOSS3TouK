@@ -17,7 +17,14 @@ import datasource.EmailAdapter
 
 
 class SendEmailActionTest extends RapidCoreTestCase{
+    protected void setUp() throws Exception {
+        super.setUp();
 
+    }
+
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
     public void testExecute(){
         Map params = EmailConnectionImplTestUtils.getConnectionParams();
 

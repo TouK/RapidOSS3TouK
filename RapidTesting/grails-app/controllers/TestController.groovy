@@ -37,6 +37,7 @@ import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
 import grails.util.GrailsWebUtil
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
 
 class TestController implements ApplicationContextAware{
     ApplicationContext applicationContext
@@ -158,7 +159,26 @@ class TestController implements ApplicationContextAware{
                             tests.add(test);    
                         }
                         for (t in tests) {
-                            GrailsWebUtil.bindMockWebRequest(appCtx);
+                            String name = String.valueOf(t);
+                            name = name.substring(name.indexOf("(")+1)
+                            name = name.substring(0, name.indexOf(")"))
+                            def stripWord = ["IntegrationTest", "IntegrationTests", "Test", "Tests"];
+                            stripWord.each{
+                                if(name.endsWith(it))
+                                {
+                                    name = name.substring(0, name.length() - it.length());
+                                    return;
+                                }
+                            }
+                            def webRequest = GrailsWebUtil.bindMockWebRequest(appCtx);
+                            webRequest.getServletContext().setAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT, appCtx)
+                            if (name.endsWith("Controller")) {
+                                webRequest.controllerName = GrailsClassUtils.getLogicalPropertyName(name, "Controller")
+                            }
+                            else {
+                                // Provide a default 'current' controller name.
+                                webRequest.controllerName = "test"
+                            }
                             def thisTest = new TestResult()
                             thisTest.addListener(xmlOutput)
                             thisTest.addListener(plainOutput)

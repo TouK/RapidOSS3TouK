@@ -38,19 +38,11 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
     static def scriptMap;
      protected void setUp() {          
           scriptMap=[:];
-          clearMetaClasses();
      }
-     protected void tearDown() {          
+     protected void tearDown() {        
           
      }
-     private void clearMetaClasses()
-     {
 
-        ListeningAdapterManager.destroyInstance();
-        ExpandoMetaClass.disableGlobally();
-        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager);        
-        ExpandoMetaClass.enableGlobally();
-     }
     void testStartAdapterThrowsExceptionWhenNoListeningScriptIsDefined(){
         def ds=new BaseListeningDatasource();
         try {
@@ -217,33 +209,21 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
         ListeningAdapterManager.getInstance().stopAdapter(ds);
         assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds))
     }
-    void testInitializedIsUpdatedByConstructorAndInitializeAndDestoryInstance()
-    {
-         def manager=ListeningAdapterManager.getInstance();
-         assertFalse(manager.isInitialized());
-         manager.initialize();
-         assertTrue(manager.isInitialized());
-
-         ListeningAdapterManager.destroyInstance();
-         assertFalse(ListeningAdapterManager.getInstance().isInitialized());
-    }    
-    void testDestoryInstanceCallsDestroyIfInitialized()
-    {
-        boolean destroyCalled=false;
-        ListeningAdapterManager.metaClass.destroy =  { ->            
-            destroyCalled=true;
+    void testCallingDestroyInstanceWithoutInitializeDoesNotGenerateException(){
+        //we should disgard previous initializes
+        try{
+            ListeningAdapterManager.destroyInstance();
+        }catch(e){;}
+        
+        def testManager=ListeningAdapterManager.getInstance();
+        assertNotNull(testManager);
+        try{
+            ListeningAdapterManager.destroyInstance();    
         }
-         
-         destroyCalled=false;
-
-         def manager=ListeningAdapterManager.getInstance();
-         assertFalse(manager.isInitialized());
-         manager.initialize();
-         assertTrue(manager.isInitialized());
-
-         ListeningAdapterManager.destroyInstance()
-         assertTrue(destroyCalled);
-
+        catch(e)
+        {
+            fail("Should Not Throw Exception")
+        }
     }
 
 }

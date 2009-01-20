@@ -339,6 +339,22 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
 
 
     }
+    void testCallingDestroyInstanceWithoutInitializeDoesNotGenerateException(){
+        //we should disgard previous initializes
+        try{
+            ScriptManager.destroyInstance();
+        }catch(e){;}
+
+        def testManager=ScriptManager.getInstance();
+        assertNotNull(testManager);
+        try{
+            ScriptManager.destroyInstance();
+        }
+        catch(e)
+        {
+            fail("Should Not Throw Exception")
+        }
+    }
 
     public static void addScriptMessage(String message)
     {

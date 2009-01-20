@@ -33,7 +33,6 @@ class ListeningAdapterManager {
     private static ListeningAdapterManager manager;
     private def listeningAdapters;
     private def observers;
-    private boolean initialized;
     
     Logger logger = Logger.getLogger("scripting");
     public static ListeningAdapterManager getInstance() {
@@ -45,42 +44,38 @@ class ListeningAdapterManager {
     }
 
     public static void destroyInstance() {
-
         if (manager != null) {
-            if(manager.initialized)
-            {
-                manager.destroy();
-                manager.initialized=false;
-            }
+            manager.destroy();
             manager = null;
         }
     }
-    private ListeningAdapterManager() {
-        initialized=false;
+    private ListeningAdapterManager() {     
     }
-    public boolean isInitialized()
-    {
-        return initialized;
-    }
+
     public void initialize() {
         listeningAdapters = [:];
-        observers = [:];
-        initialized=true;
+        observers = [:];         
     }
 
     private void destroy() {        
-        logger.debug("Destroying listening adapter manager.");        
-        listeningAdapters.each {String adapterName, BaseListeningAdapter adapter ->
-            adapter.unsubscribe();
-            adapter.deleteObservers();
-            ListeningAdapterObserver observer = observers.remove(adapter);
-            try {
-                observer.scriptInstance.cleanUp();
-            }
-            catch (e) {
-                logger.warn("Error during script ${observer.scriptInstance} clean up . Reason: ${e.getMessage()}", e)
-            }
-        }        
+        logger.debug("Destroying listening adapter manager.");
+        if(listeningAdapters!=null)
+        {
+            listeningAdapters.each {String adapterName, BaseListeningAdapter adapter ->
+                adapter.unsubscribe();
+                adapter.deleteObservers();
+                if(observers!=null)
+                {
+                    ListeningAdapterObserver observer = observers.remove(adapter);
+                    try {
+                        observer.scriptInstance.cleanUp();
+                    }
+                    catch (e) {
+                        logger.warn("Error during script ${observer.scriptInstance} clean up . Reason: ${e.getMessage()}", e)
+                    }
+                }
+            } 
+        }
         logger.info("Destroyed listening adapter manager.");
     }
 

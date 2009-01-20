@@ -193,7 +193,10 @@ public class ScriptManager {
     }
 
     public void clearScripts(){
-       scripts.clear(); 
+       if(scripts!=null)
+       {
+            scripts.clear();
+       }
     }
 
     public void setClassLoader(classLoader){

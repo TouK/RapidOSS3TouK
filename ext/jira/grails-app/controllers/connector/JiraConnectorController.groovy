@@ -34,13 +34,9 @@ class JiraConnectorController {
             try {
                 def connectionName = JiraConnector.getConnectionName(jiraConnector.name)
                 def datasourceName = JiraConnector.getDatasourceName(jiraConnector.name)
-                def scriptName = JiraConnector.getScriptName(jiraConnector.name)
-                def script = CmdbScript.get(name: scriptName)
-                CmdbScript.deleteScript(script);
-                new File("${System.getProperty("base.dir")}/scripts/${scriptName}.groovy").delete();
-                NetcoolConnection.get(name: connectionName)?.remove();
-                NetcoolDatasource.get(name: datasourceName)?.remove();
                 jiraConnector.remove()
+                JiraDatasource.get(name: datasourceName)?.remove();
+                JiraConnection.get(name: connectionName)?.remove();
                 flash.message = "JiraConnector ${jiraConnector.name} deleted"
                 redirect(action: list)
             }

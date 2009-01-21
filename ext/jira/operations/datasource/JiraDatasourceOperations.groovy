@@ -17,4 +17,9 @@ class JiraDatasourceOperations extends BaseDatasourceOperations {
     def closeIssue(String issueId, String resolution) {
     	def issue = this.adapter.closeIssue(issueId, resolution)
     }
+    
+    def retrieveDetails(String issueId) {
+    	def issue = this.adapter.retrieveDetails(issueId)
+    	return issue;
+    }
 }

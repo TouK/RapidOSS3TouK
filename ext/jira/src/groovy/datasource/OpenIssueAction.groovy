@@ -11,18 +11,19 @@ import connection.JiraConnectionImpl;
 public class OpenIssueAction implements Action {
 
     private Logger logger;
-    private Map issuePropsMap;
+    private issuePropsMap = [:];
     private RemoteIssue issue;
     private localIssue = [:];
     
     public OpenIssueAction(Logger logger, Map issuePropsMap) {
         this.logger = logger;
-        this.issuePropsMap = issuePropsMap;
+        this.issuePropsMap.putAll(issuePropsMap);
     }
 
     private checkAndReturnIssueProp(Map issuePropsMap, String propKey) throws Exception{
     	if (issuePropsMap.containsKey(propKey)){
-    		return issuePropsMap(propKey);
+    		def value = issuePropsMap.get(propKey);
+    		return value;
     	}
     	else{
     		throw new Exception("$propKey is required to create an issue!")
@@ -51,7 +52,7 @@ public class OpenIssueAction implements Action {
     		issue.setReporter(issuePropsMap.reporter);
     	}
     	else{
-    		localIssue.reporter = ((JiraConnectionImpl)conn).getUsername;
+    		localIssue.reporter = ((JiraConnectionImpl)conn).getUsername();
     	}
     	if (issuePropsMap.containsKey("assignee")){
     		localIssue.assignee = issuePropsMap.assignee;
@@ -62,7 +63,7 @@ public class OpenIssueAction implements Action {
     		issue.setDescription(issuePropsMap.description);
     	}
     	
-    	if (issuePropsMap.containsKey("affectedVersions")){
+    	if (issuePropsMap.containsKey("affectsVersions")){
     		def versions = issuePropsMap.affectedVersions;
     		def versionsFromJira = jiraSoapService.getVersions(token,project);
     		RemoteVersion[] remoteVersions = new RemoteVersion[versions.size()];
@@ -77,8 +78,9 @@ public class OpenIssueAction implements Action {
     			}
     		}
     		if (versions.size()>0){
-    			throw new Exception("Non-existent affectedVersion: ${versions.toString()}!")
+    			throw new Exception("Non-existent affectsVersion: ${versions.toString()}!")
     		}
+    		issue.setAffectsVersions(remoteVersions);
     	}
     	
     	if (issuePropsMap.containsKey("fixVersions")){
@@ -98,6 +100,7 @@ public class OpenIssueAction implements Action {
     		if (versions.size()>0){
     			throw new Exception("Non-existent fixVersion: ${versions.toString()}!")
     		}
+    		issue.setFixVersions(remoteVersions);
     	}
     	
     	if (issuePropsMap.containsKey("components")){
@@ -117,6 +120,7 @@ public class OpenIssueAction implements Action {
     		if (components.size()>0){
     			throw new Exception("Non-existent component: ${components.toString()}!")
     		}
+    		issue.setComponents(remoteComponents);
     	}
     	if (issuePropsMap.containsKey("duedate")){
     		localIssue.duedate = issuePropsMap.duedate;
@@ -126,7 +130,11 @@ public class OpenIssueAction implements Action {
     		localIssue.updated = issuePropsMap.updated;
     		issue.setUpdated(issuePropsMap.updated);
     	}
-    	
+//    	 Run the create issue in Jira
+		RemoteIssue returnedIssue = jiraSoapService.createIssue(token, issue);
+		final String issueKey = returnedIssue.getKey();
+		localIssue.status = returnedIssue.getStatus();  // 1: open
+		localIssue.name = issueKey;
         logger.debug("Opened issue");
     }
     

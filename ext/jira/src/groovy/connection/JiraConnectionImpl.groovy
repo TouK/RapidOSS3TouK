@@ -51,7 +51,7 @@ public class JiraConnectionImpl extends BaseConnection{
     	return this.token;
     }
     
-    public String getJiraSoapService(){
+    public JiraSoapService getJiraSoapService(){
     	return this.jiraSoapService;
     }
     

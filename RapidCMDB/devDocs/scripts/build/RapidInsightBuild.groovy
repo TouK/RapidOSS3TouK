@@ -28,6 +28,7 @@
 //ZIP=false
 //APG=false
 //OPENNMS=false
+//JIRA=false
 //HYPERIC=false
 //NETCOOL=false
 //SMARTS=false
@@ -39,7 +40,7 @@
 package build
 
 class RapidInsightBuild extends Build {
-    boolean RI_UNIX_OPT, RI_WINDOWS_OPT, APG_OPT, OPENNMS_OPT, NETCOOL_OPT, SMARTS_OPT, HYPERIC_OPT, ENTERPRISE_WINDOWS_OPT, ENTERPRISE_UNIX_OPT, ZIP_OPT, TEST_OPT;
+    boolean RI_UNIX_OPT, RI_WINDOWS_OPT, APG_OPT, OPENNMS_OPT, JIRA_OPT, NETCOOL_OPT, SMARTS_OPT, HYPERIC_OPT, ENTERPRISE_WINDOWS_OPT, ENTERPRISE_UNIX_OPT, ZIP_OPT, TEST_OPT;
     def JREDIR_OPT;
     def version = "$env.rapid_insight/RIVersion.txt";
     def versionInBuild = "$env.dist_rapid_suite/RIVersion.txt";
@@ -50,6 +51,7 @@ class RapidInsightBuild extends Build {
             RI_UNIX_OPT = Boolean.parseBoolean(options.get("RI_UNIX", "false"));
             RI_WINDOWS_OPT = Boolean.parseBoolean(options.get("RI_WINDOWS", "true"));
             OPENNMS_OPT = Boolean.parseBoolean(options.get("OPENNMS", "false"));
+            JIRA_OPT = Boolean.parseBoolean(options.get("JIRA", "false"));
             APG_OPT = Boolean.parseBoolean(options.get("APG", "false"));
             NETCOOL_OPT = Boolean.parseBoolean(options.get("NETCOOL", "false"));
             SMARTS_OPT = Boolean.parseBoolean(options.get("SMARTS", "false"));
@@ -65,22 +67,23 @@ class RapidInsightBuild extends Build {
     }
 
     static def getTestOptions(){
-       Properties options = new Properties();
-       options.put("RI_UNIX", "false")
-       options.put("RI_WINDOWS", "true")
-       options.put("RCMDB_UNIX", "true")
-       options.put("RCMDB_WINDOWS", "false")
-       options.put("MODELER", "true")
-       options.put("OPENNMS", "true")
-       options.put("APG", "true")
-       options.put("NETCOOL", "true")
-       options.put("SMARTS", "true")
-       options.put("HYPERIC", "true")
-       options.put("E_WINDOWS", "false")
-       options.put("E_UNIX", "false")
-       options.put("ZIP", "false")
-       options.put("TEST", "true")
-        return options;
+	   Properties options = new Properties();
+	   options.put("RI_UNIX", "false")
+	   options.put("RI_WINDOWS", "true")
+	   options.put("RCMDB_UNIX", "true")
+	   options.put("RCMDB_WINDOWS", "false")
+	   options.put("MODELER", "true")
+	   options.put("OPENNMS", "true")
+	   options.put("JIRA", "true")
+	   options.put("APG", "true")
+	   options.put("NETCOOL", "true")
+	   options.put("SMARTS", "true")
+	   options.put("HYPERIC", "true")
+	   options.put("E_WINDOWS", "false")
+	   options.put("E_UNIX", "false")
+	   options.put("ZIP", "false")
+	   options.put("TEST", "true")
+	   return options;
     }
 
     static void main(String[] args) {
@@ -190,6 +193,7 @@ class RapidInsightBuild extends Build {
         if (HYPERIC_OPT) new HypericBuild().build(distDir);
         if (APG_OPT) new ApgBuild().build(distDir);
         if (OPENNMS_OPT) new OpenNmsBuild().build(distDir);
+        if (JIRA_OPT) new JiraPluginBuild().build(distDir);
     }
 
     def makeWindowsEnterprise() {

@@ -54,9 +54,9 @@ class JiraPluginBuild extends Build{
             ant.fileset(dir: "$env.rapid_jira/lib")
         }
         
-        copyDependentJars();
+        copyDependentJars(rapidSuiteDir);
         
-        ant.copy(todir: "${rapidSuiteDir}/src/groovy") {
+        ant.copy(todir: "${rapidSuiteDir}/grails-app/ext") {
             ant.fileset(dir: "$env.rapid_jira/src/groovy")
         }
 //        ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
@@ -79,10 +79,10 @@ class JiraPluginBuild extends Build{
         println "JiraPlugin Build Done";
     }
 
-    def copyDependentJars() {
+    def copyDependentJars(rapidSuiteDir) {
         ant.copy(file: (String) classpath.getProperty("axis_jar"), toDir: "${rapidSuiteDir}/lib");
-        ant.copy(file: (String) classpath.getProperty("jaxrpc_jar"), toDir: dirToCopyTo);
-        ant.copy(file: (String) classpath.getProperty("commons-discovery-0_2_jar"), toDir: dirToCopyTo);
-        ant.copy(file: (String) classpath.getProperty("wsdl4j-1_5_1_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("jaxrpc_jar"), toDir: "${rapidSuiteDir}/lib");
+        ant.copy(file: (String) classpath.getProperty("commons-discovery-0_2_jar"), toDir: "${rapidSuiteDir}/lib");
+        ant.copy(file: (String) classpath.getProperty("wsdl4j-1_5_1_jar"), toDir: "${rapidSuiteDir}/lib");
     }
 }

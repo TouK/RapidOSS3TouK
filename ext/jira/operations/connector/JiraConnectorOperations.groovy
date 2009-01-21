@@ -39,6 +39,7 @@ class JiraConnectorOperations  extends com.ifountain.rcmdb.domain.operation.Abst
             if(!oldConnectionProps.equals(connectionParams) || isConnectorNameChanged) {
                 if(isConnectorNameChanged){
                     jiraConnector.ds.update(name:JiraConnector.getDatasourceName(jiraConnector.name));
+                    jiraConnector.ds.connection.update(name:JiraConnector.getDatasourceName(jiraConnector.name));
                 }
             }
         }

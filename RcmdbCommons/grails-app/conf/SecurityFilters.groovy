@@ -65,7 +65,7 @@ class SecurityFilters {
         }
         rsUserAuthorization(controller: "rsUser", action: "*") {
             before = {
-                if (actionName == "changePassword") {
+                if (actionName == "changeProfile" || actionName == "changeProfileData" ) {
                     accessControl {
                         role(Role.ADMINISTRATOR) || role(Role.USER)
                     }

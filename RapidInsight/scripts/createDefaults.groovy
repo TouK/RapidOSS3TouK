@@ -43,6 +43,7 @@ scriptsToAdd.add([name: "emailGenerator", type:CmdbScript.SCHEDULED, scheduleTyp
 scriptsToAdd.add([name: "emailSender", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:emailConnector"]);
 
 scriptsToAdd.add([name: "importSampleRiData"]);
+scriptsToAdd.add([name: "getUIHierarchy"]);
 
 scriptsToAdd.add([name:"autocomplete"])
 scriptsToAdd.add([name:"getHierarchy"])

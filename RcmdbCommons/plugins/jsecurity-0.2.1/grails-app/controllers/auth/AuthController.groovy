@@ -94,6 +94,11 @@ class AuthController {
     }
 
     def unauthorized = {
-        render 'You do not have permission to access this page.'
+        addError("not.authorized");
+        withFormat {
+            html{render 'You do not have permission to access this page.'}
+            xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+
+        }
     }
 }

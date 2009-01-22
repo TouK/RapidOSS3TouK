@@ -1,4 +1,15 @@
 package script
+
+import auth.Group
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager
+import com.ifountain.rcmdb.scripting.ScriptManager
+import com.ifountain.rcmdb.scripting.ScriptScheduler
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import datasource.BaseListeningDatasource
+import org.apache.commons.io.FileUtils
+import org.apache.log4j.Level
+
 /**
  * Created by IntelliJ IDEA.
  * User: admin
@@ -7,20 +18,6 @@ package script
  * To change this template use File | Settings | File Templates.
  */
 
-
-import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import org.apache.log4j.Logger
-import org.apache.log4j.Level
-import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.datasource.ListeningAdapterManager;
-import datasource.BaseListeningDatasource
-import com.ifountain.rcmdb.datasource.BaseListeningDatasourceMock;
-import com.ifountain.rcmdb.scripting.ScriptManager
-import org.springframework.validation.BeanPropertyBindingResult
-import org.springframework.validation.Errors
-import org.apache.commons.io.FileUtils
-import com.ifountain.rcmdb.scripting.ScriptScheduler
-import org.codehaus.groovy.grails.plugins.services.ServicesGrailsPlugin
 
 class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
     def expectedScriptMessage = "script executed successfully";
@@ -137,7 +134,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
     void testAddScriptDoesNotGenerateExceptionIfFromController()
      {
-         initialize([CmdbScript], []);
+         initialize([CmdbScript, Group], []);
          initializeForCmdbScript();
          
 
@@ -152,22 +149,36 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
          }
      }
      void testAddScript(){
-        initialize([CmdbScript], []);
+        initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
                      
+        Group gr1 = Group.add(name:"group1");
+        Group gr2 = Group.add(name:"group2");
+        Group gr3 = Group.add(name:"group3");
+        assertFalse (gr1.hasErrors());
+        assertFalse (gr2.hasErrors());
+        assertFalse (gr3.hasErrors());
 
         def logLevel=Level.DEBUG;
         def logParams=[:]
         logParams["logLevel"]=logLevel.toString();
         logParams["logFileOwn"]=true;
 
-        def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,logLevel:logParams.logLevel,logFileOwn:logParams.logFileOwn]
+
+        def params=[name:"myscript", allowedGroups:[gr1, gr2], enabledForAllGroups:true, type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,logLevel:logParams.logLevel,logFileOwn:logParams.logFileOwn]
 
         assertEquals(0,CmdbScript.list().size());
-        def script=CmdbScript.addScript(params)
+        CmdbScript script=CmdbScript.addScript(params)
         assertFalse(script.hasErrors())
 
         assertEquals(1,CmdbScript.list().size());
+
+        assertTrue (script.enabledForAllGroups);
+        def groups = script.allowedGroups;
+        assertEquals (2, groups.size());
+        groups = groups.sort {it.name}
+        assertEquals (gr1.name, groups[0].name);
+        assertEquals (gr2.name, groups[1].name);
 
         //tests that ScriptManager.addScript() is called
         def scriptClass=ScriptManager.getInstance().getScript(script.scriptFile);
@@ -183,8 +194,10 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         assertEquals(logger.getLevel(),logLevel);
         assertTrue(logger.getAllAppenders().hasMoreElements());
      }
+
+
      void testScheduleScriptCallsSchedulerForScheduledScriptsAndDoesNotCallForOthers(){
-        initialize([CmdbScript], []);
+        initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
 
 
@@ -246,7 +259,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
      }
      void testAddScriptCallsScheduleScript()
      {
-        initialize([CmdbScript], []);
+        initialize([CmdbScript, Group], []);
         initializeScriptManager()
 
         def callParams=[:]
@@ -276,7 +289,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
      }
      public void testUpdateScript()
     {
-        initialize([CmdbScript], []);
+        initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
         def logLevel=Level.DEBUG;
         def oldLogLevel=Level.WARN;
@@ -320,7 +333,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
     }
     void testReloadScript()
     {
-        initialize([CmdbScript], []);
+        initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
         def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
 
@@ -354,7 +367,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
     void testUpdateScriptLoadsNewScriptFileAndRemovesOldIfNotUsedAndDoesNotRemoveOldIfUsed()
      {
-        initialize([CmdbScript], []);
+        initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
         ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
 
@@ -402,7 +415,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
      }
      void testUpdateScriptLoadsNewScriptFileAndUpdateScriptDoesNotRemoveOldScriptFileIfUsed()
     {
-        initialize([CmdbScript], []);
+        initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
         ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
 
@@ -452,7 +465,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
     }
      void testUpdateScriptDoesNotGenerateExceptionIfFromController()
      {
-         initialize([CmdbScript], []);
+         initialize([CmdbScript, Group], []);
          initializeForCmdbScript();
 
          def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
@@ -473,7 +486,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
      }
      void testUpdateScriptCallsSchedulerUnscheduleAndThenScheduleScript()
      {
-        initialize([CmdbScript], []);
+        initialize([CmdbScript, Group], []);
         initializeScriptManager()
 
         def callParams=[:]
@@ -521,7 +534,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         assertTrue(unscheduleCallParams.time<callParams.time)
      }
      void testCreateStaticParamMap(){
-         initialize([CmdbScript], []);
+         initialize([CmdbScript, Group], []);
          initializeForCmdbScript();
 
 
@@ -552,7 +565,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
      void testConfigureScriptLogger()
      {
-        initialize([CmdbScript], []);
+        initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
 
         def logLevel=Level.DEBUG;
@@ -582,7 +595,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
      }
      void testRunScriptPassesStaticParamAndStaticParamMapToScript()
      {
-         initialize([CmdbScript], []);
+         initialize([CmdbScript, Group], []);
          initializeForCmdbScript();
 
          def scriptFile="mytestscriptfile.groovy"
@@ -618,7 +631,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
      }
      void testRunScriptPassesParametersToScriptManager()
      {
-         initialize([CmdbScript], []);
+         initialize([CmdbScript, Group], []);
          initializeForCmdbScript();
          
          def managerParams=[:]
@@ -668,7 +681,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
     }
     void testUpdateScriptWithOnlyParamsCallsBaseWithFromControllerFalse()
     {
-        initialize([CmdbScript],[])
+        initialize([CmdbScript, Group],[])
         initializeScriptManager()
 
         
@@ -702,7 +715,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         assertEquals(callParams.params.size(),0)
     }
     void testRunScriptWithNameAndParamsCallsBase(){
-        initialize([CmdbScript],[])
+        initialize([CmdbScript, Group],[])
         initializeScriptManager()
         
         def callParams=[:]
@@ -723,7 +736,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         
     }
     void testRunScriptWithNameAndParamsGeneratesExceptionWhenScriptIsMissing(){
-       initialize([CmdbScript],[])
+       initialize([CmdbScript, Group],[])
        assertEquals(CmdbScript.list().size(),0)
        try{
         CmdbScriptOperations.runScript("testscript",[:]);
@@ -737,7 +750,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
                
     }
     void testUpdateScriptWithOnlyParamsGeneratesExceptionWhenScriptIsMissing(){
-          initialize([CmdbScript],[])
+          initialize([CmdbScript, Group],[])
        assertEquals(CmdbScript.list().size(),0)
        try{
         CmdbScriptOperations.updateScript([name:"testscript"]);
@@ -750,7 +763,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
        }
     }
     void testStartAndStopListeningWithNameGeneratesExceptionWhenScriptIsMissing(){
-        initialize([CmdbScript],[])
+        initialize([CmdbScript, Group],[])
        assertEquals(CmdbScript.list().size(),0)
        try{
         CmdbScriptOperations.startListening([name:"testscript"]);
@@ -773,7 +786,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
        }
     }
     void testStartAndStopListeningWithNameAndParamsCallsBase(){
-        initialize([CmdbScript],[])
+        initialize([CmdbScript, Group],[])
         initializeScriptManager()
 
         def callParams=[:]
@@ -805,7 +818,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
      void testStartAndStopListeningGeneratesExceptionIfListeningDatasourceIsMissing()
      {
-        initialize([CmdbScript],[])
+        initialize([CmdbScript, Group],[])
         initializeScriptManager()
 
         def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
@@ -889,7 +902,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
      }
      void testDeleteScriptWithNameGeneratesExceptionWhenScriptIsMissing(){
-       initialize([CmdbScript],[])
+       initialize([CmdbScript, Group],[])
        assertEquals(CmdbScript.list().size(),0)
        try{
         CmdbScriptOperations.deleteScript("testscript");
@@ -903,7 +916,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
     }
     void testDeleteScriptWithNameAndParamsCallsBase(){
-        initialize([CmdbScript],[])
+        initialize([CmdbScript, Group],[])
         initializeScriptManager()
 
         def callParams=[:]

@@ -24,6 +24,7 @@ import junit.framework.Test
 import junit.framework.TestResult
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
+import auth.Group
 
 class ScriptController {
     public static final String SUCCESSFULLY_CREATED = "Script created";
@@ -72,7 +73,8 @@ class ScriptController {
     def create = {
         def cmdbScript = new CmdbScript()
         cmdbScript.properties = params
-        return ['cmdbScript': cmdbScript]
+        def availableGroups = Group.list();
+        return ['cmdbScript': cmdbScript, availableGroups:availableGroups]
     }
 
     def save = {
@@ -101,14 +103,18 @@ class ScriptController {
     }
 
     def edit = {
-        def cmdbScript = CmdbScript.get([id: params.id])
+        CmdbScript cmdbScript = CmdbScript.get([id: params.id])
 
         if (!cmdbScript) {
             flash.message = "CmdbScript not found with id ${params.id}"
             redirect(action: list)
         }
         else {
-            return [cmdbScript: cmdbScript]
+            List availableGroups = Group.list();
+            Map currentAllowedGroups = [:]
+            cmdbScript.allowedGroups.each{currentAllowedGroups[it.name] = it.name}
+            availableGroups = availableGroups.findAll {!currentAllowedGroups.containsKey (it.name)}
+            return [cmdbScript: cmdbScript, availableGroups:availableGroups]
         }
     }
 

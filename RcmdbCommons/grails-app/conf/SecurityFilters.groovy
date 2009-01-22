@@ -1,4 +1,5 @@
 import auth.Role
+import script.CmdbScript
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -34,16 +35,16 @@ class SecurityFilters {
 
                 // This just means that the user must be authenticated. He does
                 // not need any particular role or permission.
-                accessControl {
-                    role(Role.ADMINISTRATOR) || role(Role.USER)
+                return accessControl {
+                    return role(Role.ADMINISTRATOR) || role(Role.USER)
                 }
             }
         }
         def adminControllers = ["group"];
         adminAuthorization(controller: "(" + adminControllers.join("|") + ")", action: "*") {
             before = {
-                accessControl {
-                    role(Role.ADMINISTRATOR)
+                return accessControl {
+                    return role(Role.ADMINISTRATOR)
                 }
 
             }
@@ -51,14 +52,36 @@ class SecurityFilters {
 
         scriptAuthorization(controller: "script", action: "*") {
            before = {
-                if (actionName == "run") {
-                    accessControl {
-                        role(Role.ADMINISTRATOR) || role(Role.USER)
+                if (actionName == "run" || actionName == "remove" || actionName == "update") {
+                    CmdbScript script = null;
+                    try{
+                        script = CmdbScript.get(id:Long.parseLong(params.id));
+                    }
+                    catch(Throwable t)
+                    {
+                        script = CmdbScript.get(name:params.id);
+                    }
+                    if(script)
+                    {
+                        return accessControl {
+                            def isOk = script.enabledForAllGroups;
+                            if(!script.enabledForAllGroups)
+                            {
+                                script.allowedGroups.each{
+                                    isOk = isOk || group(it.name)
+                                }
+                            }
+                            return role(Role.ADMINISTRATOR) || isOk && role(Role.USER);
+                        }
+                    }
+                    else
+                    {
+                        return false;
                     }
                 }
                 else {
-                    accessControl {
-                        role(Role.ADMINISTRATOR)
+                    return accessControl {
+                        return role(Role.ADMINISTRATOR)
                     }
                 }
             }
@@ -66,13 +89,13 @@ class SecurityFilters {
         rsUserAuthorization(controller: "rsUser", action: "*") {
             before = {
                 if (actionName == "changeProfile" || actionName == "changeProfileData" ) {
-                    accessControl {
-                        role(Role.ADMINISTRATOR) || role(Role.USER)
+                    return accessControl {
+                        return role(Role.ADMINISTRATOR) || role(Role.USER)
                     }
                 }
                 else {
-                    accessControl {
-                        role(Role.ADMINISTRATOR)
+                    return accessControl {
+                        return role(Role.ADMINISTRATOR)
                     }
                 }
             }

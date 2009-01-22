@@ -25,6 +25,7 @@ import script.CmdbScript
 import script.ScriptController
 import grails.util.GrailsWebUtil
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import auth.Group
 
 /**
 * Created by IntelliJ IDEA.
@@ -81,6 +82,39 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             CmdbScript script = CmdbScript.findByName(scriptName);
             assertNotNull (script);
             assertEquals (scriptName, script.scriptFile);
+            assertEquals("/script/show/" + script.id, scriptController.response.redirectedUrl);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
+
+    public void testSaveWithGroups()
+    {
+        String scriptName = "script1"
+        createSimpleScript(scriptName);
+        try
+        {
+            def gr1 = Group.add(name:"gr1")
+            def gr2 = Group.add(name:"gr2")
+            def gr3 = Group.add(name:"gr3")
+            assertFalse (gr1.hasErrors());
+            assertFalse (gr2.hasErrors());
+            assertFalse (gr3.hasErrors());
+            def scriptController = new ScriptController();
+            scriptController.params["name"] = scriptName;
+            scriptController.params["allowedGroups.id"] = "${gr1.id},${gr2.id}";
+            scriptController.save();
+
+            CmdbScript script = CmdbScript.findByName(scriptName);
+            assertNotNull (script);
+            assertEquals (scriptName, script.scriptFile);
+            def groups = script.allowedGroups.sort{it.name}
+            assertEquals (2, groups.size());
+            assertEquals (gr1.name, groups[0].name);
+            assertEquals (gr2.name, groups[1].name);
+
             assertEquals("/script/show/" + script.id, scriptController.response.redirectedUrl);
         }
         finally

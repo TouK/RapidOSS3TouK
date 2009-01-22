@@ -238,6 +238,7 @@ class RapidInsightBuild extends Build {
                 ant.include(name: "utils/**/*")
             };
         }
+
         ant.copy(todir: "$env.dist_rapid_ui/scripts") {
             ant.fileset(dir: "$env.rapid_ui/scripts")
         }
@@ -252,6 +253,11 @@ class RapidInsightBuild extends Build {
             ant.fileset(dir: "$env.rapid_ui/web-app") {
                 ant.exclude(name: "**/test/**")
             }
+        }
+        ant.copy(todir: "$env.dist_rapid_suite/grails-app",overwrite:true) {
+            ant.fileset(dir: "$env.rapid_ui/grails-app") {
+                ant.include(name: "views/**/*")
+            };
         }
         ant.copy(toDir: "$env.dist_rapid_suite/grails-app/i18n",overwrite:true) {
             ant.fileset(dir: "$env.rapid_ui/grails-app/i18n")

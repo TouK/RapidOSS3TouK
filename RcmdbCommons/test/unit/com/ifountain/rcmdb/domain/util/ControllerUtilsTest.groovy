@@ -34,13 +34,15 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
         def prop1 = [name:"prop1", type:ModelGenerator.BOOLEAN_TYPE, blank:false, defaultValue:"false"];
         def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"stringDefault"];
         def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
+        def rel2 = [name:"rel2",  reverseName:"revrel2", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
         def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+        def revrel2 = [name:"revrel2",  reverseName:"rel2", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
 
         def modelMetaProps = [name:modelName]
         def relatedModelMetaProps = [name:relatedModelName]
         def keyPropList = [keyProp];
-        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, [keyProp, prop1,prop2], keyPropList, [rel1])
-        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, [keyProp], keyPropList, [revrel1])
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, [keyProp, prop1,prop2], keyPropList, [rel1, rel2])
+        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, [keyProp], keyPropList, [revrel1, revrel2])
         this.gcl.parseClass(modelString+relatedModelString);
         Class modelClass = this.gcl.loadClass(modelName);
         Class relatedModelClass = this.gcl.loadClass(relatedModelName);
@@ -48,7 +50,10 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
         controllerUtilsClass = ApplicationHolder.application.classLoader.loadClass("com.ifountain.rcmdb.domain.util.ControllerUtils");
 
         //Test with true boolean and string
-        def relatedModelInstance1 = modelClass.'add'(keyProp:"relatedModelInstance1");
+        def relatedModelInstance1 = relatedModelClass.'add'(keyProp:"relatedModelInstance1");
+        def relatedModelInstance2 = relatedModelClass.'add'(keyProp:"relatedModelInstance2");
+        assertFalse (relatedModelInstance1.hasErrors());
+        assertFalse (relatedModelInstance2.hasErrors());
         def params = [_prop1:"", prop1:"on", prop2:"stringValue"]
         def classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
         assertEquals(2, classProperties.size());
@@ -76,6 +81,36 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
         assertEquals (false, classProperties.prop1);
         assertEquals (params.prop2, classProperties.prop2);
         assertEquals (relatedModelInstance1.id, classProperties.rel1.id);
+        assertEquals ("relatedModelInstance1", classProperties.rel1.keyProp);
+
+        //Test with undefined relation
+        params = [_prop1:"", prop2:"stringValue", "rel3.id":"${relatedModelInstance1.id}".toString()]
+        classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
+        assertEquals(2, classProperties.size());
+        assertEquals (false, classProperties.prop1);
+        assertEquals (params.prop2, classProperties.prop2);
+        assertFalse (classProperties.containsKey("rel3"));
+        assertFalse (classProperties.containsKey("rel3.id"));
+
+        //Test with multiple relations
+        params = [_prop1:"", prop2:"stringValue", "rel2.id":"${relatedModelInstance1.id},${relatedModelInstance2.id}".toString(), rel2:[id:"${relatedModelInstance1.id},${relatedModelInstance2.id}".toString()]]
+        classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
+        assertEquals(3, classProperties.size());
+        assertEquals (false, classProperties.prop1);
+        assertEquals (params.prop2, classProperties.prop2);
+        def relations = classProperties.rel2.sort{it.keyProp};
+        assertEquals (2, relations.size());
+        assertEquals (relatedModelInstance1.keyProp, relations[0].keyProp);
+        assertEquals (relatedModelInstance2.keyProp, relations[1].keyProp);
+
+        //Test with many type relations and one instance
+        params = [_prop1:"", prop2:"stringValue", "rel2.id":"${relatedModelInstance1.id}".toString(), rel2:[id:"${relatedModelInstance1.id}".toString()]]
+        classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
+        assertEquals(3, classProperties.size());
+        assertEquals (false, classProperties.prop1);
+        assertEquals (params.prop2, classProperties.prop2);
+        assertEquals (1, classProperties.rel2.size());
+        assertEquals (relatedModelInstance1.keyProp, classProperties.rel2[0].keyProp);
 
         //Test with null relation
         params = [_prop1:"", prop2:"stringValue", "rel1.id":"null"]

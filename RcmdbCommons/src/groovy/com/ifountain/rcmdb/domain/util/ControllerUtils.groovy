@@ -40,47 +40,93 @@ class ControllerUtils {
 
     }
 
+    def static List getMultipleRelations(String relString, Class relType)
+    {
+        def relatedInstances = [];
+        if (relString != null)
+        {
+            relString.split(",").each {
+                def relatedInstance = relType.'searchEvery'("id:\"${it}\"")[0];
+                if (relatedInstance != null)
+                {
+                    relatedInstances.add(relatedInstance);
+                }
+            }
+        }
+        return relatedInstances;
+    }
     def static getClassProperties(Map params, Class domainClass)
     {
+        def relations = [:];
+        def domainProperties = [:];
+        domainClass.getPropertiesList().each {
+            if (it.isRelation)
+            {
+                relations[it.name] = it;
+            }
+            else if(!it.isOperationProperty)
+            {
+                domainProperties[it.name] = it;    
+            }
+        }
         def returnedParams = [:]
         def instance = domainClass.newInstance();
         def domainObjectpropertyNames = [];
-        def relations = [];
         def clonedMap = new HashMap();
-        params.each{String paramName, paramValue->
-            if(paramName!="id" && paramName != "_id")
+        params.each {String paramName, paramValue ->
+            boolean willBeAdded = true;
+            if (paramName != "id" && paramName != "_id")
             {
-                if(paramName.startsWith("_"))
+                if (paramName.startsWith("_"))
                 {
                     domainObjectpropertyNames.add(paramName.substring(1));
                 }
-                else if(paramName.indexOf(".") >= 0)
+                else if (paramName.indexOf(".") >= 0)
                 {
-                    relations.add(StringUtils.substringBefore(paramName,"."));
-                    if(paramValue == "null")
+                    def relName = StringUtils.substringBefore(paramName, ".id");
+                    def relMetaData = relations[relName];
+                    if (relMetaData != null)
                     {
-                        paramValue = -1l;
+                        if (relMetaData.isManyToOne() || relMetaData.isOneToOne())
+                        {
+                            if (paramValue == "null")
+                            {
+                                paramValue = -1l;
+                            }
+                            else if (!(paramValue instanceof Long))
+                            {
+                                paramValue = Long.parseLong(paramValue);
+                            }
+                            domainObjectpropertyNames.add(StringUtils.substringBefore(paramName, "."));
+                        }
+                        else {
+                            returnedParams[relName] = getMultipleRelations(paramValue, relations[relName].relatedModel);
+                            willBeAdded = false;
+                        }
+
                     }
-                    else if(!(paramValue instanceof Long))
+                    else
                     {
-                        paramValue = Long.parseLong(paramValue);
+                        willBeAdded = false;
                     }
-                    domainObjectpropertyNames.add(StringUtils.substringBefore(paramName,"."));
                 }
                 else
                 {
                     domainObjectpropertyNames.add(paramName);
                 }
-                clonedMap.put (paramName, paramValue);
+                if(willBeAdded && !returnedParams.containsKey(paramName))
+                {
+                    clonedMap.put(paramName, paramValue);
+                }
             }
         }
-        domainObjectpropertyNames = domainObjectpropertyNames.unique ().findAll {domainClass.metaClass.getMetaProperty(it) != null}
-        DataBindingUtils.bindObjectToInstance (instance, clonedMap);
-        domainObjectpropertyNames.each{
+        domainObjectpropertyNames = domainObjectpropertyNames.unique().findAll {(domainProperties.containsKey (it) || relations.containsKey(it)) && !returnedParams.containsKey(it)}
+        DataBindingUtils.bindObjectToInstance(instance, clonedMap);
+        domainObjectpropertyNames.each {
             def propValue = instance.getProperty(it);
-            if(relations.contains(it) && propValue.id == -1l)
+            if (relations.containsKey(it) && !(propValue instanceof Collection) && propValue.id == -1l)
             {
-                returnedParams.put (it, null);
+                returnedParams.put(it, null);
             }
             else
             {

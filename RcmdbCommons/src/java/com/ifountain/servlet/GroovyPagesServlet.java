@@ -32,23 +32,31 @@ public class GroovyPagesServlet extends org.codehaus.groovy.grails.web.pages.Gro
             for(int i=0; i < filters.size(); i++)
             {
                 FilterToHandlerAdapter adapter = filters.get(i);
-                adapter.preHandle(request, response, null);
+                if(!adapter.preHandle(request, response, null))
+                {
+                    return;   
+                }
             }
             super.doPage(request, response);
         }finally {
-            for(int i=0; i < filters.size(); i++)
-            {
-                FilterToHandlerAdapter adapter = filters.get(i);
-                try
-                {
-                    adapter.afterCompletion(request, response, null, null);
-                }catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
+            triggerAfterCompletion(request, response, filters);
         }
 
+    }
+
+    private void triggerAfterCompletion(HttpServletRequest request, HttpServletResponse response, List<FilterToHandlerAdapter> filters)
+    {
+        for(int i=0; i < filters.size(); i++)
+        {
+            FilterToHandlerAdapter adapter = filters.get(i);
+            try
+            {
+                adapter.afterCompletion(request, response, null, null);
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     private List<FilterToHandlerAdapter> getFilters()

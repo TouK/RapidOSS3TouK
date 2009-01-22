@@ -622,7 +622,11 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="file://$PROJECT_DIR$/../../Documents and Settings/Administrator/Desktop/compass-2.0.0/src/main/src" />
+        <root url="file://$PROJECT_DIR$/../../FrameworkSources/compass-2.0.0/src/sandbox/test" />
+        <root url="file://$PROJECT_DIR$/../../FrameworkSources/compass-2.0.0/src/main/test" />
+        <root url="file://$PROJECT_DIR$/../../FrameworkSources/compass-2.0.0/src/main/src" />
+        <root url="file://$PROJECT_DIR$/../../FrameworkSources/compass-2.0.0/src/sandbox/src" />
+        <root url="file://$PROJECT_DIR$/../../FrameworkSources/compass-2.0.0/src/main/load" />
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/searchable-0.5-SNAPSHOT/lib" recursive="false" />

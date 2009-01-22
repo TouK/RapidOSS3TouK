@@ -22,6 +22,7 @@ import com.ifountain.rcmdb.scripting.ScriptManager
 import datasource.BaseListeningDatasource
 import org.quartz.CronTrigger
 import org.apache.log4j.Level
+import auth.Group
 
 class CmdbScript {
     def messageService;
@@ -32,7 +33,7 @@ class CmdbScript {
     public static String SCHEDULED = "Scheduled";
     public static String LISTENING = "Listening";
     static searchable = {
-        except = ["listeningDatasource", "errors", "__operation_class__", "__is_federated_properties_loaded__","messageService"];
+        except = ["listeningDatasource", "errors", "__operation_class__", "__is_federated_properties_loaded__","messageService", "allowedGroups"];
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
     Long id;
@@ -44,6 +45,7 @@ class CmdbScript {
     String rsOwner = "p"
     String type = ONDEMAND;
     boolean enabled = false;
+    boolean enabledForAllGroups = false;
     String scheduleType = PERIODIC;
     String cronExpression = "* * * * * ?";
     Long period = 1;
@@ -53,11 +55,13 @@ class CmdbScript {
     boolean logFileOwn=false;
     
     BaseListeningDatasource listeningDatasource;
+    List allowedGroups = [];
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;
     static relations = [
-            listeningDatasource:[type:BaseListeningDatasource, reverseName:"listeningScript", isMany:false]
+            listeningDatasource:[type:BaseListeningDatasource, reverseName:"listeningScript", isMany:false],
+            allowedGroups:[type:Group, isMany:true]
     ]
 
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "messageService"];

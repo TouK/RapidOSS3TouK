@@ -111,6 +111,25 @@
                             <g:checkBox name="logFileOwn" value="${cmdbScript?.logFileOwn}"></g:checkBox>
                         </td>
                     </tr>
+                    <tr class="prop" id="enabledForAllGroups">
+                        <td valign="top" class="name">
+                            <label for="enabledForAllGroups">Allow All To Execute:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'enabledForAllGroups', 'errors')}">
+                            <g:checkBox name="enabledForAllGroups" value="${cmdbScript?.enabledForAllGroups}"></g:checkBox>
+                        </td>
+                    </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name" colspan="2">
+                            Allowed Groups:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" class="name" colspan="2">
+                            <g:render template="/common/listToList" model="[id:'allowedGroups', inputName:'allowedGroups.id', valueProperty:'id', displayProperty:'name', fromListTitle:'Available Groups', toListTitle:'Allowed Groups', fromListContent:availableGroups, toListContent:cmdbScript?.allowedGroups]"></g:render>
+                        </td>
+                    </tr>
                     <tr class="prop" id="staticParamRow">
                         <td valign="top" class="name">
                             <label for="staticParam">Static Parameter:</label>

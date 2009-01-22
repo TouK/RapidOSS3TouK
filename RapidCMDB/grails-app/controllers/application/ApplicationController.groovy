@@ -150,6 +150,17 @@ class ApplicationController {
         }
     }
 
+    def reloadFilters = {
+        org.codehaus.groovy.grails.plugins.PluginManagerHolder.getPluginManager().getGrailsPlugin("filters").checkForChanges()
+        flash.message = "Filters reloaded successfully."
+        if (params.targetURI) {
+            redirect(uri: params.targetURI);
+        }
+        else {
+            render(view: "application", controller: "application");
+        }
+    }
+
     def reloadViewsAndControllers = {
         org.codehaus.groovy.grails.plugins.PluginManagerHolder.getPluginManager().getGrailsPlugin("controllers").checkForChanges()
         GroovyPagesTemplateEngine.pageCache.clear();

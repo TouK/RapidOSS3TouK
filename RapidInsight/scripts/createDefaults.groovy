@@ -30,14 +30,14 @@ import org.apache.log4j.Logger
 def scriptsToAdd=[]
 scriptsToAdd.add([name:"modelCreator"])
 scriptsToAdd.add([name:"removeAll"])
-scriptsToAdd.add([name:"acknowledge"])
+scriptsToAdd.add([name:"acknowledge", enabledForAllGroups:true])
 scriptsToAdd.add([name: "clearExpiredEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true])
-scriptsToAdd.add([name:"setOwnership"])
-scriptsToAdd.add([name:"queryList"])
-scriptsToAdd.add([name:"createQuery"])
-scriptsToAdd.add([name:"editQuery"])
-scriptsToAdd.add([name:"reloadOperations"])
-scriptsToAdd.add([name:"getViewFields"])
+scriptsToAdd.add([name:"setOwnership", enabledForAllGroups:true])
+scriptsToAdd.add([name:"queryList", enabledForAllGroups:true])
+scriptsToAdd.add([name:"createQuery", enabledForAllGroups:true])
+scriptsToAdd.add([name:"editQuery", enabledForAllGroups:true])
+scriptsToAdd.add([name:"reloadOperations", enabledForAllGroups:true])
+scriptsToAdd.add([name:"getViewFields", enabledForAllGroups:true])
 
 scriptsToAdd.add([name: "emailGenerator", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
 scriptsToAdd.add([name: "emailSender", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:emailConnector"]);
@@ -45,25 +45,25 @@ scriptsToAdd.add([name: "emailSender", type:CmdbScript.SCHEDULED, scheduleType:C
 scriptsToAdd.add([name: "importSampleRiData"]);
 scriptsToAdd.add([name: "getUIHierarchy"]);
 
-scriptsToAdd.add([name:"autocomplete"])
+scriptsToAdd.add([name:"autocomplete", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getHierarchy"])
-scriptsToAdd.add([name:"getEventHistory"])
-scriptsToAdd.add([name:"getSummaryData"])
+scriptsToAdd.add([name:"getEventHistory", enabledForAllGroups:true])
+scriptsToAdd.add([name:"getSummaryData", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getGeocodes"])
-scriptsToAdd.add([name:"getDeviceLocations"])
-scriptsToAdd.add([name:"getDevicesByLocation"])
+scriptsToAdd.add([name:"getDeviceLocations", enabledForAllGroups:true])
+scriptsToAdd.add([name:"getDevicesByLocation", enabledForAllGroups:true])
 
 
 
 
 // topology scripts
-scriptsToAdd.add([name:"createMap"])
-scriptsToAdd.add([name:"editMap"])
-scriptsToAdd.add([name:"expandMap"])
-scriptsToAdd.add([name:"getMap"])
-scriptsToAdd.add([name:"mapList"])
-scriptsToAdd.add([name:"saveMap"])
-scriptsToAdd.add([name:"getMapData"])
+scriptsToAdd.add([name:"createMap", enabledForAllGroups:true])
+scriptsToAdd.add([name:"editMap", enabledForAllGroups:true])
+scriptsToAdd.add([name:"expandMap", enabledForAllGroups:true])
+scriptsToAdd.add([name:"getMap", enabledForAllGroups:true])
+scriptsToAdd.add([name:"mapList", enabledForAllGroups:true])
+scriptsToAdd.add([name:"saveMap", enabledForAllGroups:true])
+scriptsToAdd.add([name:"getMapData", enabledForAllGroups:true])
 scriptsToAdd.add([name:"createDefaultQueries"])
 
 scriptsToAdd.each{  scriptParams ->

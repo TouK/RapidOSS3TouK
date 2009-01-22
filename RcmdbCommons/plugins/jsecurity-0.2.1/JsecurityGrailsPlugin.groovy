@@ -11,6 +11,8 @@ import org.jsecurity.web.DefaultWebSecurityManager
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean
 import org.jsecurity.authc.UsernamePasswordToken
 import org.jsecurity.authc.AuthenticationException
+import auth.Group
+import auth.RsUser
 
 /*
 * Copyright 2007 Peter Ledbrook.
@@ -119,6 +121,25 @@ protect pages based on a user's roles and/or permissions.
             }
         }
 
+        //TODO:Added group checking method
+        FilterAccessControlBuilder.metaClass.group = {String groupName->
+            def username = delegate.subject.principal;
+            RsUser user = RsUser.get(username:username);
+            if(user != null)
+            {
+                boolean groupFound = false;
+                user.groups.each{
+                    if(it.name == groupName)
+                    {
+                        groupFound = true;
+                        return;
+                    }
+                }
+
+                return groupFound;
+            }
+            return false;
+        }
         application.filtersClasses.each {filterClass ->
             filterClass.clazz.metaClass.getRoleMap = {String controller -> return roleMaps[controller]}
             filterClass.clazz.metaClass.getPermissionMap = {String controller -> return permMaps[controller]}
@@ -153,6 +174,7 @@ protect pages based on a user's roles and/or permissions.
 
             }
             subject = SecurityUtils.subject
+
             if (!subject.authenticated) {
                 // User is not authenticated, so deal with it.
                 if (filtersClass.metaClass.respondsTo(filtersClass, 'onNotAuthenticated')) {

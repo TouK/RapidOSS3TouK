@@ -28,6 +28,7 @@ JAVA_OPTS=" -Dgrails.env=production $JAVA_OPTS"
 JAVA_OPTS=" -Dtools.jar=$RS_HOME/lib/tools.jar $JAVA_OPTS"
 JAVA_OPTS=" -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., $JAVA_OPTS"
 JAVA_OPTS=" -Dgroovy.full.stacktrace=false $JAVA_OPTS"
+JAVA_OPTS=" -Dcom.smarts.disable_keepalives=1 $JAVA_OPTS"
 
 
 

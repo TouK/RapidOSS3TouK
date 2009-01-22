@@ -145,7 +145,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 
     },
 
-    getRootNode: function(data, responseText){
+    getRootNode: function(data){
 		var node = data.getRootNode(this.rootTag);
 		if(!node){
 			this.clearData();
@@ -173,7 +173,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
             postData = postData.substring(0, postData.length-1);
         }
 
-        var callback = {
+        var cb = {
             success: this.processSuccess,
             failure: this.processFailure,
             timeout: this.timeout,
@@ -192,7 +192,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
                 url = url + "?" + postData;
             }
         }
-        this.lastConnection = YAHOO.util.Connect.asyncRequest('GET',url , callback, null);
+        this.lastConnection = YAHOO.util.Connect.asyncRequest('GET',url , cb, null);
         this.events["loadstatechanged"].fireDirect(this, true);
     },
     doGetRequest : function(url, params, callback)

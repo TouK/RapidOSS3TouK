@@ -1,0 +1,50 @@
+.r-designer-property-toolbar {
+    padding: 5 200 5 10;
+    background: transparent url( ../../../images/rapidjs/component/tools/toolbar.gif ) repeat-x scroll;
+    border-top: 1px solid #8EAACF;
+}
+
+.r-designer-property-delete {
+    display: block;
+    background: url( ../../../images/rapidjs/component/tools/cross.png ) no-repeat;
+    overflow: hidden;
+    padding-left: 20px;
+    color: #222222;
+    display: block;
+    line-height: 16px;
+    outline-color: invert;
+    outline-style: none;
+    outline-width: 0pt;
+    font-style: normal;
+    font-size: 11px;
+}
+
+.r-designer-tools {
+    padding-right: 2px;
+    padding-top: 2px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+.r-designer-tools .wrp {
+    padding: 0px 1px;
+}
+
+.r-designer-tools .r-button {
+    padding: 2px;
+}
+
+.r-designer-tools .r-button-over {
+    background-color: white;
+    border: 1px solid #98C0F4;
+    padding: 1px;
+}
+
+.r-designer-saveButton {
+    background: transparent url( ../../../images/rapidjs/component/tools/save.gif ) no-repeat scroll 0% 50%;
+    padding-left: 20px;
+}
+.r-buttontoolbar-tools .r-buttontoolbar-button{
+    display:none;
+}

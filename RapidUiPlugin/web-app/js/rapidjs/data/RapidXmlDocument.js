@@ -482,8 +482,9 @@ YAHOO.rapidjs.data.Node.prototype=
 		 	this.fireDataChanged(attributeName, attributeValue);
  		}
 	 },
-	 
-	 getAttribute: function(attributeName)
+
+
+     getAttribute: function(attributeName)
 	 {
 	 	
 	 	return this.attributes[attributeName];

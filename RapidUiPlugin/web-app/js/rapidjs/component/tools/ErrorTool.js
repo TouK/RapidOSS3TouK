@@ -41,7 +41,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.tool.ErrorTool, YAHOO.rapidjs.componen
        YAHOO.util.Dom.setStyle(this.button.el.dom.parentNode, 'display', 'none');
     },
     error: function(component, errors, willShow){
-        YAHOO.util.Dom.setStyle(this.button.el.dom.parentNode, 'display', '');
+        YAHOO.util.Dom.setStyle(this.button.el.dom.parentNode, 'display', 'block');
         if(this.dialog){
             this.appendErrors(errors);
         }

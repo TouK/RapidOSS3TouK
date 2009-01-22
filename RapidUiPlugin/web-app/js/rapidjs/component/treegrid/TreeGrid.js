@@ -18,9 +18,9 @@
 */
 YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.TreeGrid = function(container, config) {
-    YAHOO.rapidjs.component.TreeGrid.superclass.constructor.call(this,container, config);
-	this.keyAttribute = config.keyAttribute;
-	this.rootTag = config.rootTag;
+    YAHOO.rapidjs.component.TreeGrid.superclass.constructor.call(this, container, config);
+    this.keyAttribute = config.keyAttribute;
+    this.rootTag = config.rootTag;
     this.expanded = config.expanded;
     var events = {
         'selectionChange' : new YAHOO.util.CustomEvent('selectionChange'),
@@ -35,48 +35,52 @@ YAHOO.rapidjs.component.TreeGrid = function(container, config) {
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
     this.body = YAHOO.ext.DomHelper.append(this.container, {tag:'div'}, true);
     this.treeGridView = new YAHOO.rapidjs.component.treegrid.TreeGridView(this.body.dom, config);
-	this.treeGridView.render();
+    this.treeGridView.render();
     this.treeGridView.events['selectionchanged'].subscribe(this.fireSelectionChange, this, true);
-	this.treeGridView.events['rowMenuClick'].subscribe(this.fireRowMenuClick, this, true);
-	this.treeGridView.events['treenodeclicked'].subscribe(this.fireTreeNodeClick, this, true);
+    this.treeGridView.events['rowMenuClick'].subscribe(this.fireRowMenuClick, this, true);
+    this.treeGridView.events['treenodeclicked'].subscribe(this.fireTreeNodeClick, this, true);
 }
 YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.PollingComponentContainer, {
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
-        var data = new YAHOO.rapidjs.data.RapidXmlDocument(response,[this.keyAttribute]);
-		var node = this.getRootNode(data, response.responseText);
-		if(node){
-			if(!this.rootNode || keepExisting == false){
-				this.rootNode = node;
-				this.treeGridView.handleData(this.rootNode, this.expanded);
-			}
-			else
-			{
-				this.treeGridView.isSortingDisabled = true;
-				this.rootNode.mergeData(node, this.keyAttribute, keepExisting, removeAttribute);
-				this.treeGridView.refreshData();
-				this.treeGridView.isSortingDisabled = false;
-			}
-		}
+        var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
+        this.loadData(data);
+    },
+
+    loadData: function(data, keepExisting, removeAttribute) {
+        var node = this.getRootNode(data);
+        if (node) {
+            if (!this.rootNode || keepExisting == false) {
+                this.rootNode = node;
+                this.treeGridView.handleData(this.rootNode, this.expanded);
+            }
+            else
+            {
+                this.treeGridView.isSortingDisabled = true;
+                this.rootNode.mergeData(node, this.keyAttribute, keepExisting, removeAttribute);
+                this.treeGridView.refreshData();
+                this.treeGridView.isSortingDisabled = false;
+            }
+        }
     },
 
     clearData: function() {
         this.treeGridView.clear();
     },
 
-    resize: function(width, height){
-        var bodyHeight =  height-this.header.offsetHeight;
+    resize: function(width, height) {
+        var bodyHeight = height - this.header.offsetHeight;
         this.body.setHeight(bodyHeight);
-        this.treeGridView.resize(width,bodyHeight);
+        this.treeGridView.resize(width, bodyHeight);
     },
 
-    fireSelectionChange: function(treeNode){
+    fireSelectionChange: function(treeNode) {
         this.events['selectionChange'].fireDirect(treeNode.xmlData);
     },
-    fireRowMenuClick: function(xmlData, id, parentId){
+    fireRowMenuClick: function(xmlData, id, parentId) {
         this.events['rowMenuClick'].fireDirect(xmlData, id, parentId);
     },
-    fireTreeNodeClick: function(treeNode){
+    fireTreeNodeClick: function(treeNode) {
         this.events['treeNodeClick'].fireDirect(treeNode.xmlData);
     }
 });

@@ -234,11 +234,11 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             cache:false,
             argument:[this.saveSuccess]
         }
-        var postData = 'data='+this.data.firstChild().toString();
+        var postData = 'data=' + this.data.firstChild().toString();
         YAHOO.util.Connect.asyncRequest('POST', this.saveUrl, callback, postData);
     },
-    saveSuccess: function(response){
-      alert("Save is successfull")
+    saveSuccess: function(response) {
+        alert("Save is successfull")
     },
     render: function() {
         var dh = YAHOO.ext.DomHelper;
@@ -338,6 +338,47 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.propertyGrid.subscribe("cellMouseoverEvent", highlightEditableCell);
         this.propertyGrid.subscribe("cellMouseoutEvent", this.propertyGrid.onEventUnhighlightCell);
         this.propertyGrid.subscribe("cellClickEvent", this.propertyGrid.onEventShowCellEditor);
+
+        var addTooltip = function() {
+            var showTimer,hideTimer;
+            var tt = new YAHOO.widget.Tooltip("propertyTooltip");
+
+            this.propertyGrid.on('cellMouseoverEvent', function (oArgs) {
+                if (showTimer) {
+                    window.clearTimeout(showTimer);
+                    showTimer = 0;
+                }
+
+                var target = oArgs.target;
+                var record = this.propertyGrid.getRecord(target);
+                var prop = record.getData("name")
+                var metaConfig = YAHOO.rapidjs.designer.Config[this.currentDisplayedItemData.getAttribute(this.treeTypeAttribute)];
+                var descr = metaConfig["properties"][prop]["descr"]
+                var xy = [parseInt(oArgs.event.clientX, 10) + 10 ,parseInt(oArgs.event.clientY, 10) + 10 ];
+
+                showTimer = window.setTimeout(function() {
+                    tt.setBody(descr);
+                    tt.cfg.setProperty('xy', xy);
+                    tt.show();
+                    hideTimer = window.setTimeout(function() {
+                        tt.hide();
+                    }, 5000);
+                }, 500);
+            }, this, true);
+            this.propertyGrid.on('cellMouseoutEvent', function (oArgs) {
+                if (showTimer) {
+                    window.clearTimeout(showTimer);
+                    showTimer = 0;
+                }
+                if (hideTimer) {
+                    window.clearTimeout(hideTimer);
+                    hideTimer = 0;
+                }
+                tt.hide();
+            });
+        }
+
+        addTooltip.call(this);
 
         var myContextMenu = new YAHOO.widget.ContextMenu("propcontextmenu", {trigger:this.propertyGrid.getTbodyEl()});
         myContextMenu.addItem({text:'<em class="r-designer-property-delete">Delete property</em>'});

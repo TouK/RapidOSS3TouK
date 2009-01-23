@@ -232,10 +232,13 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             failure: this.handleFailure,
             scope:this,
             cache:false,
-            argument:[this.getData]
+            argument:[this.saveSuccess]
         }
         var postData = 'data='+this.data.firstChild().toString();
         YAHOO.util.Connect.asyncRequest('POST', this.saveUrl, callback, postData);
+    },
+    saveSuccess: function(response){
+      alert("Save is successfull")
     },
     render: function() {
         var dh = YAHOO.ext.DomHelper;

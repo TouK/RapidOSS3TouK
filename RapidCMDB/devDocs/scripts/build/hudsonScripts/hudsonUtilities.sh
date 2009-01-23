@@ -21,10 +21,10 @@ tagSvn() {
 
 tagSvnForRapidBrowser() {
     tagname=$1
-    taglist=`svn list http://dev.ifountain.org/repos/os/tags`
+    taglist=`svn list file:///var/www/svn/os/tags`
     if [ "$taglist" != "${taglist#*$tagname}" ]
       then
-         svn delete -m "Deleting obsolete tag" http://dev.ifountain.org/repos/os/tags/$tagname
+         svn delete -m "Deleting obsolete tag" file:///var/www/svn/os/tags/$tagname
     fi
 
     svn mkdir -m "Creating tag $tagname" file:///var/www/svn/os/tags/$tagname

@@ -94,7 +94,10 @@ if (!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.
     ANT.move(toDir: "${rootDir.getAbsolutePath()}/RapidSuite/web-app/test") {
         ANT.fileset(dir: "${rootDir.getAbsolutePath()}/RapidSuite/plugins/rapid-testing-0.1/web-app/test");
     }
+
+    ANT.copy(file : "${workspaceDir}/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties", toDir : "${rootDir.getAbsolutePath()}/RapidSuite/");
 }
+
 
 watchConfig.each {dirPairs ->
     File srcDir = dirPairs[0]

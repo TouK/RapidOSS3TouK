@@ -381,10 +381,12 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
 
 
                 runTests(suite, result) {test, invocation ->
-                savedOut.println( "TEST:"+String.valueOf(test));
                     String name = String.valueOf(test);
-                    name = name.substring(name.indexOf("(")+1)
-                    name = name.substring(0, name.indexOf(")"))
+                    if(name.indexOf("(") >= 0)
+                    {
+                        name = name.substring(name.indexOf("(")+1)
+                        name = name.substring(0, name.indexOf(")"))
+                    }
                     def stripWord = ["IntegrationTest", "IntegrationTests", "Test", "Tests"];
                     stripWord.each{
                         if(name.endsWith(it))

@@ -76,7 +76,9 @@ class SecurityFilters {
                     }
                     else
                     {
-                        return false;
+                        return accessControl{
+                            return role(Role.ADMINISTRATOR);
+                        }
                     }
                 }
                 else {

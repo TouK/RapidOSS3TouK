@@ -7,10 +7,16 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class RapidBrowserBuild extends Build  {
-    def version = "$env.rapid_browser/RapidBrowserVersion.txt";
+    def version;
     static void main(String[] args) {
         RapidBrowserBuild rapidBrowserBuild = new RapidBrowserBuild();
         rapidBrowserBuild.build();
+    }
+
+    public RapidBrowserBuild()
+    {
+        super();
+        version = "$env.rapid_browser/RapidBrowserVersion.txt";
     }
 
     def clean(distDir) {

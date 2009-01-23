@@ -381,7 +381,17 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
 
 
                 runTests(suite, result) {test, invocation ->
-                    name = test.name[0..-6]
+                    String name = String.valueOf(t);
+                    name = name.substring(name.indexOf("(")+1)
+                    name = name.substring(0, name.indexOf(")"))
+                    def stripWord = ["IntegrationTest", "IntegrationTests", "Test", "Tests"];
+                    stripWord.each{
+                        if(name.endsWith(it))
+                        {
+                            name = name.substring(0, name.length() - it.length());
+                            return;
+                        }
+                    }
                     def webRequest = GWU.bindMockWebRequest(appCtx)
                     webRequest.getServletContext().setAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT, appCtx)
 

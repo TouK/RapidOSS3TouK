@@ -1,5 +1,4 @@
 YAHOO.namespace('rapidjs', 'rapidjs.designer');
-
 YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.rootTag = null;
     this.contentPath = null;
@@ -31,10 +30,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 if (itemType == "Tab") {
                     tabId = childNode.getAttribute(this.keyAttribute);
                 }
-                var display = YAHOO.rapidjs.designer.Config[itemType]["display"];
-                var displayName = typeof display == "object" ? childNode.getAttribute(display["from"]) : display;
+                var displayName = UIConfig.getDisplayName(itemType, childNode)
                 childNode.setAttribute(this.treeDisplayAttribute, displayName);
-                if (YAHOO.rapidjs.designer.Config[itemType]["canBeDeleted"]) {
+                if (UIConfig.canBeDeleted(itemType)) {
                     childNode.setAttribute("canBeDeleted", "true");
                 }
                 if (tabId != null) {
@@ -104,14 +102,12 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     displayItemProperties: function(xmlData) {
         this.currentDisplayedItemData = xmlData;
         var itemType = xmlData.getAttribute(this.treeTypeAttribute);
-        var itemMetaConfig = YAHOO.rapidjs.designer.Config[itemType];
-        var properties = itemMetaConfig['properties'];
+        var properties = UIConfig.getProperties(itemType)
         var data = [];
         SelectUtils.clear(this.propertySelect);
         SelectUtils.addOption(this.propertySelect, '', '');
         for (var prop in properties) {
-            var propConfig = properties[prop]
-            if (propConfig.required) {
+            if (UIConfig.isPropertyRequired(itemType, prop)) {
                 data[data.length] = {name:prop, value:xmlData.getAttribute(prop) || prop}
             }
             else {
@@ -180,16 +176,14 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     treeMenuClicked: function(xmlData, id, parentId) {
 
         var createTreeNode = function(parentNode, itemType) {
-            var itemMetaConfig = YAHOO.rapidjs.designer.Config[itemType];
             var id = YAHOO.util.Dom.generateId(null, itemType);
             var newNode = xmlData.createChildNode(null, 1, this.contentPath);
             newNode.setAttribute(this.keyAttribute, id);
             newNode.setAttribute(this.treeTypeAttribute, itemType);
-            var itemMetaProperties = itemMetaConfig['properties'];
-            var display = itemMetaConfig["display"];
+            var itemMetaProperties = UIConfig.getProperties(itemType);
             for (var prop in itemMetaProperties) {
-                if (itemMetaProperties[prop]['required']) {
-                    if (typeof display == "object" && display["from"] == prop) {
+                if (UIConfig.isPropertyRequired(itemType, prop)) {
+                    if (UIConfig.isDisplayProperty(itemType,prop)) {
                         newNode.setAttribute(prop, itemType);
                     }
                     else {
@@ -198,10 +192,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 }
             }
             parentNode.appendChild(newNode);
-            var metaChildren = itemMetaConfig['children'];
+            var metaChildren = UIConfig.getChildren(itemType)
             for (var i = 0; i < metaChildren.length; i++) {
-                var childMetaConfig = YAHOO.rapidjs.designer.Config[metaChildren[i]];
-                if (!childMetaConfig["canBeDeleted"] || (itemType == "Tab" && metaChildren[i] == "Layout")) {
+                if (!UIConfig.canBeDeleted(metaChildren[i]) || (itemType == "Tab" && metaChildren[i] == "Layout")) {
                     createTreeNode.call(this, newNode, metaChildren[i]);
                 }
             }
@@ -242,8 +235,6 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     },
     render: function() {
         var dh = YAHOO.ext.DomHelper;
-        var Config = YAHOO.rapidjs.designer.Config;
-
         var getTreeConfig = function() {
             var pathName = window.location.pathname;
             var splits = pathName.split('/');
@@ -254,22 +245,20 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
             var rootImages = [];
             var menuItems = [];
-            for (var item in Config) {
-                var configItem = YAHOO.rapidjs.designer.Config[item];
-                var imageConfig = configItem['image'];
+            var configItems = UIConfig.getConfig()
+            for (var item in configItems) {
+                var imageConfig = UIConfig.getImageConfig(item);
                 if (imageConfig) {
                     var expanded = stringToAddToUrl + imageConfig['expanded']
                     var collapsed = stringToAddToUrl + imageConfig['collapsed']
                     rootImages.push({visible:"params.data." + this.treeTypeAttribute + " == '" + item + "'", expanded:expanded, collapsed:collapsed})
                 }
-                var children = configItem["children"];
+                var children = UIConfig.getChildren(item);
                 if (children) {
                     for (var i = 0; i < children.length; i++) {
                         var child = children[i];
-                        var childConfig = Config[child]
-                        if (childConfig["canBeDeleted"]) {
-                            var display = childConfig['display']
-                            var displayName = typeof display == 'object' ? child : display;
+                        if (UIConfig.canBeDeleted(child)) {
+                            var displayName = UIConfig.getDisplayName(child);
                             menuItems.push({id:'add_' + child, label:'Add New ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "'"});
                         }
                     }
@@ -306,9 +295,8 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             var propName = record.getData("name")
             var propValue = record.getData("value")
             this.currentDisplayedItemData.setAttribute(propName, propValue);
-            var itemMetaConfig = YAHOO.rapidjs.designer.Config[this.currentDisplayedItemData.getAttribute(this.treeTypeAttribute)];
-            var display = itemMetaConfig['display'];
-            if (typeof display == "object" && display["from"] == propName) {
+            var itemType = this.currentDisplayedItemData.getAttribute(this.treeTypeAttribute)
+            if (UIConfig.isDisplayProperty(itemType, propName)) {
                 this.currentDisplayedItemData.setAttribute(this.treeDisplayAttribute, propValue);
             }
             this.refreshTree();
@@ -352,8 +340,8 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 var target = oArgs.target;
                 var record = this.propertyGrid.getRecord(target);
                 var prop = record.getData("name")
-                var metaConfig = YAHOO.rapidjs.designer.Config[this.currentDisplayedItemData.getAttribute(this.treeTypeAttribute)];
-                var descr = metaConfig["properties"][prop]["descr"]
+                var itemType = this.currentDisplayedItemData.getAttribute(this.treeTypeAttribute);
+                var descr = UIConfig.getPropertyDescription(itemType, prop);
                 var xy = [parseInt(oArgs.event.clientX, 10) + 10 ,parseInt(oArgs.event.clientY, 10) + 10 ];
 
                 showTimer = window.setTimeout(function() {
@@ -389,8 +377,8 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             if (elRow) {
                 var oRecord = this.propertyGrid.getRecord(elRow);
                 var prop = oRecord.getData("name");
-                var metaConfig = YAHOO.rapidjs.designer.Config[this.currentDisplayedItemData.getAttribute(this.treeTypeAttribute)];
-                if (metaConfig['properties'][prop].required) {
+                var itemType = this.currentDisplayedItemData.getAttribute(this.treeTypeAttribute) 
+                if (UIConfig.isPropertyRequired(itemType, prop)) {
                     this.propertyContextMenu.hide();
                 }
             }

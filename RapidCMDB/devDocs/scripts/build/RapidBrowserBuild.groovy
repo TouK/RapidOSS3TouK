@@ -7,7 +7,7 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class RapidBrowserBuild extends Build  {
-    def version = "${Env.rapid_browser}/RapidBrowserVersion.txt";
+
     static void main(String[] args) {
         RapidBrowserBuild rapidBrowserBuild = new RapidBrowserBuild();
         rapidBrowserBuild.build();
@@ -24,6 +24,7 @@ class RapidBrowserBuild extends Build  {
     }
     def build(distDir) {
         println "Starting Build RapidBrowser";
+        def version = "${Env.rapid_browser}/RapidBrowserVersion.txt";
         def versionInBuild = "${env.dist_rapid_browser}/RapidBrowserVersion.txt";
     	clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);

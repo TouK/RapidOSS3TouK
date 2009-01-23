@@ -56,6 +56,17 @@
                             <input type="text" id="segmentFilter" name="segmentFilter" value="${fieldValue(bean:group,field:'segmentFilter')}"/>
                         </td>
                     </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name" colspan="2">
+                            Users:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" class="name" colspan="2">
+                            <g:render template="/common/listToList" model="[id:'users', inputName:'users.id', valueProperty:'id', displayProperty:'username', fromListTitle:'Available Users', toListTitle:'Group Users', fromListContent:availableUsers, toListContent:group?.users]"></g:render>
+                        </td>
+                    </tr>
                     
                 </tbody>
             </table>

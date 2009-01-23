@@ -161,7 +161,12 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
 
         assertEquals(1, updatedObject.relationsShouldBeAdded.size());
+        assertEquals(2, updatedObject.relationsShouldBeRemoved.size());
+        assertEquals(relatedObject4, updatedObject.relationsShouldBeAdded.get("rel2"));
         assertEquals(relatedObject1, updatedObject.relationsShouldBeRemoved.get("rel1"));
+        assertEquals(2, updatedObject.relationsShouldBeRemoved.get("rel2").size());
+        assertEquals(relatedObject2, updatedObject.relationsShouldBeRemoved.get("rel2")[0]);
+        assertEquals(relatedObject3, updatedObject.relationsShouldBeRemoved.get("rel2")[1]);
         assertEquals (1, AddMethodDomainObject1.indexList.size())
         assertSame (updatedObject, AddMethodDomainObject1.indexList[0]);
         assertNull(validator.validatedObject.rel1);

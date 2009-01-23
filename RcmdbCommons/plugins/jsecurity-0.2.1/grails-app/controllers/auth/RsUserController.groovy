@@ -84,7 +84,13 @@ class RsUserController {
             redirect(action: list)
         }
         else {
-            return [rsUser: rsUser]
+            def availableGroups = Group.list();
+            def userGroups = [:];
+            rsUser.groups.each{
+                userGroups[it.name]  = it;
+            };
+            availableGroups = availableGroups .findAll {!userGroups.containsKey (it.name)}
+            return [rsUser: rsUser, availableGroups:availableGroups]
         }
     }
 
@@ -219,12 +225,10 @@ class RsUserController {
                 return;
             }
             if (password1 && password1 != "") {
-                updateParams.passwordHash=new Sha1Hash(password1).toHex();
+                params.passwordHash=new Sha1Hash(password1).toHex();
             }
-            updateParams.username=params["username"]
-            updateParams.email=params["email"]
-
-            rsUser.update(updateParams)
+            def returnedProps = ControllerUtils.getClassProperties (params, RsUser);
+            rsUser.update(returnedProps)
             if (!rsUser.hasErrors()) {
                 flash.message = "User ${params.id} updated"
                 redirect(action: show, id:rsUser.id)
@@ -242,7 +246,7 @@ class RsUserController {
     def create = {
         def rsUser = new RsUser()
         rsUser.properties = params
-        return ['rsUser': rsUser]
+        return ['rsUser': rsUser, availableGroups:Group.list()]
     }
 
     def save = {
@@ -254,8 +258,9 @@ class RsUserController {
             render(view: 'create', model: [rsUser: new RsUser(username: params["username"])])
             return;
         }
-
-        def rsUser = RsUser.add(username: params["username"], passwordHash: new Sha1Hash(password1).toHex(),email:params["email"]);
+        params.passwordHash = new Sha1Hash(password1).toHex();
+        def returnedProps = ControllerUtils.getClassProperties (params, RsUser);
+        def rsUser = RsUser.add(returnedProps);
         if (!rsUser.hasErrors()) {
             flash.message = "User ${rsUser.id} created"
             redirect(action: show, id:rsUser.id)

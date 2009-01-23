@@ -86,17 +86,14 @@ class UpdateMethod extends AbstractRapidDomainMethod{
             }
             else
             {
+                def currentRelatedObjects = domainObject[key];
+                if(currentRelatedObjects)
+                {
+                    relationToBeRemovedMap[key] = currentRelatedObjects;
+                }
                 if(value)
                 {
                     relationToBeAddedMap[key] = value;
-                }
-                else
-                {
-                    def currentRelatedObjects = domainObject[key];
-                    if(currentRelatedObjects)
-                    {
-                        relationToBeRemovedMap[key] = currentRelatedObjects;
-                    }
                 }
             }
         }

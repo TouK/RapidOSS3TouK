@@ -58,6 +58,17 @@
                             <input type="text" id="segmentFilter" name="segmentFilter" value="${fieldValue(bean:group,field:'segmentFilter')}"/>
                         </td>
                     </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name" colspan="2">
+                            Users:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" class="name" colspan="2">
+                            <g:render template="/common/listToList" model="[id:'users', inputName:'users.id', valueProperty:'id', displayProperty:'username', fromListTitle:'Available Users', toListTitle:'Group Users', fromListContent:availableUsers, toListContent:group?.users]"></g:render>
+                        </td>
+                    </tr>
                     
                 </tbody>
             </table>
@@ -67,26 +78,6 @@
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
         </div>
     </g:form>
-    <div class="list" style="margin-top:20px;">
-        <span style="color:#233D5F;font-size:16px;font-weight:bold;margin:0.8em 0pt 0.3em;">Users</span>
-        <span class="menuButton"><g:link class="create" action="editUsers" id="${group?.id}">Edit Users</g:link></span>
-        <table>
-            <thead>
-                <tr>
-                    <th>name</th>
-                </tr>
-            </thead>
-            <tbody>
-                <g:each in="${group.users}" status="i" var="rsUser">
-                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-
-                        <td><g:link action="edit" controller="rsUser" id="${rsUser.id}">${rsUser.username?.encodeAsHTML()}</g:link></td>
-
-                    </tr>
-                </g:each>
-            </tbody>
-        </table>
-    </div>
 </div>
 </body>
 </html>

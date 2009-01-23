@@ -95,55 +95,16 @@ class GroupController {
             redirect(action: list)
         }
         else {
-            return [group: group]
+            def availableUsers = RsUser.list();
+            def groupUsers = [:];
+            group.users.each{
+                groupUsers[it.username]  = it;
+            };
+            availableUsers = availableUsers .findAll {!groupUsers.containsKey (it.username)}
+            return [group: group, availableUsers:availableUsers]
         }
     }
 
-    def editUsers = {
-        def group = Group.get([id: params.id])
-        if (!group) {
-            flash.message = "Group not found with id ${params.id}"
-            redirect(action: list)
-        }
-        else {
-            def groupUsersMap = [:];
-            group.users.each {
-                groupUsersMap.put(it.username, it.username);
-            }
-            def users = RsUser.list();
-            def availableUsers = users.findAll {!groupUsersMap.containsKey(it.username)};
-            return [group: group, availableUsers: availableUsers]
-        }
-    }
-
-    def updateUsers = {
-        def group = Group.get([id: params.id])
-
-        if (!group) {
-            flash.message = "Group not found with id ${params.id}"
-            redirect(action: list)
-        }
-        else {
-            def users = [];
-            users.addAll(Arrays.asList(params.users.split(",")));
-            group.users.each {
-                if (!users.contains(it.username)) {
-                    group.removeRelation(users: it);
-                }
-                else {
-                    users.remove(it.username)
-                }
-            }
-            users.each {
-                def rsUser = RsUser.get(username: it);
-                if (rsUser) {
-                    group.addRelation(users: rsUser);
-                }
-            }
-            flash.message = "Group users successfully updated."
-            render(view: 'show', model: [group: group])
-        }
-    }
 
 
     def update = {
@@ -167,7 +128,7 @@ class GroupController {
     def create = {
         def group = new Group()
         group.properties = params
-        return ['group': group]
+        return ['group': group, availableUsers:RsUser.list()]
     }
 
     def save = {
@@ -181,103 +142,6 @@ class GroupController {
         }
     }
 
-    def addTo = {
-        def group = Group.get([id: params.id])
-        if (!group) {
-            flash.message = "Group not found with id ${params.id}"
-            redirect(action: list)
-        }
-        else {
-            def relationName = params.relationName;
-            if (relationName) {
-                def otherClass = DomainClassUtils.getStaticMapVariable(Group, "relations")[relationName].type;
-                def relatedObjectList = [];
-                if (otherClass) {
-                    relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
-                }
-                return [group: group, relationName: relationName, relatedObjectList: relatedObjectList]
-            }
-            else {
-                flash.message = "No relation name specified for add relation action"
-                redirect(action: edit, id: group.id)
-            }
-        }
-    }
-
-
-
-    def addRelation = {
-        def group = Group.get([id: params.id])
-        if (!group) {
-            flash.message = "Group not found with id ${params.id}"
-            redirect(action: list)
-        }
-        else {
-            def relationName = params.relationName;
-            def otherClass = DomainClassUtils.getStaticMapVariable(Group, "relations")[relationName].type;
-            if (otherClass) {
-                def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
-                if (res) {
-                    def relationMap = [:];
-                    relationMap[relationName] = res;
-                    group.addRelation(relationMap);
-                    if (group.hasErrors()) {
-                        def relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
-                        render(view: 'addTo', model: [group: group, relationName: relationName, relatedObjectList: relatedObjectList])
-                    }
-                    else {
-                        flash.message = "Group ${params.id} updated"
-                        redirect(action: edit, id: group.id)
-                    }
-
-                }
-                else {
-                    flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
-                    redirect(action: addTo, id: params.id, relationName: relationName)
-                }
-            }
-            else {
-                flash.message = "No relation exist with name ${relationName}"
-                redirect(action: addTo, id: params.id, relationName: relationName)
-            }
-        }
-    }
-
-    def removeRelation = {
-        def group = Group.get([id: params.id])
-        if (!group) {
-            flash.message = "Group not found with id ${params.id}"
-            redirect(action: list)
-        }
-        else {
-            def relationName = params.relationName;
-
-            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(Group, "relations")[relationName].type;
-            if (otherClass) {
-                def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
-                if (res) {
-                    def relationMap = [:];
-                    relationMap[relationName] = res;
-                    group.removeRelation(relationMap);
-                    if (group.hasErrors()) {
-                        render(view: 'edit', model: [group: group])
-                    }
-                    else {
-                        flash.message = "Group ${params.id} updated"
-                        redirect(action: edit, id: group.id)
-                    }
-                }
-                else {
-                    flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
-                    redirect(action: edit, id: group.id)
-                }
-            }
-            else {
-                flash.message = "No relation exist with name ${relationName}"
-                redirect(action: edit, id: group.id)
-            }
-        }
-    }
 
     def reloadOperations = {
         def modelClass = grailsApplication.getClassForName("Group")

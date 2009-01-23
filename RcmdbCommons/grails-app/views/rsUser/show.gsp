@@ -31,6 +31,18 @@
                             <td valign="top" class="name">Username:</td>
                             <td valign="top" class="value">${rsUser.username}</td>
                         </tr>
+                        <tr class="prop">
+                            <td valign="top" class="name">Groups:</td>
+
+                            <td valign="top" style="text-align:left;" class="value">
+                                <ul>
+                                    <g:each var="group" in="${rsUser?.groups}">
+                                        <li><g:link controller="group" action="show" id="${group.id}">${group}</g:link></li>
+                                    </g:each>
+                                </ul>
+                            </td>
+
+                        </tr>
                     </tbody>
                 </table>
             </div>

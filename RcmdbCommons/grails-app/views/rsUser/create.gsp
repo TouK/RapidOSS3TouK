@@ -69,6 +69,17 @@
                                     <input type="text" id="email" name="email" value="${fieldValue(bean: rsUser, field: 'email')}"/>
                                 </td>
                             </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name" colspan="2">
+                                    Groups:
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top" class="name" colspan="2">
+                                    <g:render template="/common/listToList" model="[id:'groups', inputName:'groups.id', valueProperty:'id', displayProperty:'name', fromListTitle:'Available Groups', toListTitle:'User Groups', fromListContent:availableGroups, toListContent:rsUser?.groups]"></g:render>
+                                </td>
+                            </tr>
                         
                         </tbody>
                     </table>

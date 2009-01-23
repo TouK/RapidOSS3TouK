@@ -66,6 +66,17 @@
                             <input type="text" id="email" name="email" value="${fieldValue(bean: rsUser, field: 'email')}"/>
                         </td>
                     </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name" colspan="2">
+                            Groups:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" class="name" colspan="2">
+                            <g:render template="/common/listToList" model="[id:'groups', inputName:'groups.id', valueProperty:'id', displayProperty:'name', fromListTitle:'Available Groups', toListTitle:'User Groups', fromListContent:availableGroups, toListContent:rsUser?.groups]"></g:render>
+                        </td>
+                    </tr>
                     
                 </tbody>
             </table>
@@ -75,26 +86,6 @@
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
         </div>
     </g:form>
-    <div class="list" style="margin-top:20px;">
-        <span style="color:#233D5F;font-size:16px;font-weight:bold;margin:0.8em 0pt 0.3em;">Groups</span>
-        <span class="menuButton"><g:link class="create" action="editGroups" id="${rsUser?.id}">Edit Groups</g:link></span>
-        <table>
-            <thead>
-                <tr>
-                    <th>name</th>
-                </tr>
-            </thead>
-            <tbody>
-                <g:each in="${rsUser.groups}" status="i" var="group">
-                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-
-                        <td><g:link action="edit" controller="group" id="${group.id}">${group.name?.encodeAsHTML()}</g:link></td>
-
-                    </tr>
-                </g:each>
-            </tbody>
-        </table>
-    </div>
 </div>
 </body>
 </html>

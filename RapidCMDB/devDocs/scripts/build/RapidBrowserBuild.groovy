@@ -23,8 +23,8 @@ class RapidBrowserBuild extends Build  {
     	build(env.distribution);
     }
     def build(distDir) {
-        println "Starting Build RapidBrowser";
-        def version = "${Env.rapid_browser}/RapidBrowserVersion.txt";
+        println "Starting Build RapidBrowser in ${distDir}";
+        def version = "${env.rapid_browser_svn}/RapidBrowserVersion.txt";
         def versionInBuild = "${env.dist_rapid_browser}/RapidBrowserVersion.txt";
     	clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
@@ -32,21 +32,21 @@ class RapidBrowserBuild extends Build  {
 
         def versionDate = getVersionWithDate();
         ant.copy(todir: "${env.dist_rapid_browser}/conf") {
-            ant.fileset(dir: "$env.rapid_browser/conf", excludes:".svn");
+            ant.fileset(dir: "$env.rapid_browser_svn/conf", excludes:".svn");
         }
         ant.copy(todir: "${env.dist_rapid_browser}/lib") {
-            ant.fileset(dir: "$env.rapid_browser/lib", excludes:".svn");
+            ant.fileset(dir: "$env.rapid_browser_svn/lib", excludes:".svn");
         }
         ant.copy(todir: "${env.dist_rapid_browser}") {
-            ant.fileset(file: "$env.rapid_browser/rapidbrowser.bat")
-            ant.fileset(file: "$env.rapid_browser/rapidbrowser.sh")
-            ant.fileset(file: "$env.rapid_browser/readme.txt")
+            ant.fileset(file: "$env.rapid_browser_svn/rapidbrowser.bat")
+            ant.fileset(file: "$env.rapid_browser_svn/rapidbrowser.sh")
+            ant.fileset(file: "$env.rapid_browser_svn/readme.txt")
         }
         ant.copy(todir: "${env.dist_rapid_browser}/webapps") {
-            ant.fileset(dir: "$env.rapid_browser/webapps", excludes:".svn")
+            ant.fileset(dir: "$env.rapid_browser_svn/webapps", excludes:".svn")
         }
         ant.mkdir(dir:env.rapid_browser_build);
-        ant.javac(srcdir:"${env.rapid_browser}/src", destdir:env.rapid_browser_build){
+        ant.javac(srcdir:"${env.rapid_browser_svn}/src", destdir:env.rapid_browser_build){
             ant.classpath(refid : "classpath");
         }
 

@@ -56,7 +56,7 @@ class Env {
     static def rapid_ext_build = basedir+"/build/ext"
     static def rapid_smarts_build = basedir+"/build/smarts"
 
-    static def rapid_browser = basedir+"/SmartsBrowser"
+    static def rapid_browser_svn = basedir+"/SmartsBrowser"
     static def rapid_browser_build = basedir+"/build/RapidBrowser"
     static def dist_rapid_browser = "$distribution/RapidBrowser"
 

@@ -50,13 +50,14 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         
         controller.save();
 
-        assertEquals(String.valueOf(controller.response.redirectedUrl),"/emailConnector")
-
         def emailConnectors = EmailConnector.list();
         assertEquals(1, emailConnectors.size());
         EmailConnector emailConnector = emailConnectors[0]
         assertEquals(params.name, emailConnector.name);
 
+        assertEquals(String.valueOf(controller.response.redirectedUrl),"/emailConnector/show/${emailConnector.id}");
+
+        
 
         def emailConnections=EmailConnection.list();
         assertEquals(1,emailConnections.size());
@@ -161,12 +162,15 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         }
 
         controller.save();
-        assertEquals(String.valueOf(controller.response.redirectedUrl),"/emailConnector")
-
+        
         def oldEmailConnectors = EmailConnector.list();
         assertEquals(1, oldEmailConnectors.size());
         EmailConnector oldEmailConnector = oldEmailConnectors[0]
         assertEquals(oldParams.name, oldEmailConnector.name);
+
+        assertEquals(String.valueOf(controller.response.redirectedUrl),"/emailConnector/show/${oldEmailConnector.id}")
+
+
         
         IntegrationTestUtils.resetController (controller);
 
@@ -184,12 +188,15 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
             controller.params[key] = val;
         }
         controller.update();
-        assertEquals(String.valueOf(controller.response.redirectedUrl),"/emailConnector")
 
         def emailConnectors = EmailConnector.list();
         assertEquals(1, emailConnectors.size());
         EmailConnector emailConnector = emailConnectors[0]
         assertEquals(params.name, emailConnector.name);
+
+        assertEquals(String.valueOf(controller.response.redirectedUrl),"/emailConnector/show/${emailConnector.id}")
+
+
         
         def emailConnections=EmailConnection.list();
         assertEquals(1,emailConnections.size());

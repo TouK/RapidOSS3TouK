@@ -56,6 +56,10 @@ class Env {
     static def rapid_ext_build = basedir+"/build/ext"
     static def rapid_smarts_build = basedir+"/build/smarts"
 
+    static def rapid_browser = basedir+"/SmartsBrowser"
+    static def rapid_browser_build = basedir+"/build/RapidBrowser"
+    static def dist_rapid_browser = "$distribution/RapidBrowser"
+
     static def rapid_insight = "$rapid_modules/RapidInsight"
     static def dist_rapid_insight = "$dist_rapid_suite/plugins/rapid-insight-0.1"
     static def rapid_netcool = "$basedir/Netcool"

@@ -19,6 +19,20 @@ tagSvn() {
     svn copy http://dev.ifountain.org/repos/os/OpenNms http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging OpenNms"    
 }
 
+tagSvnForRapidBrowser() {
+    tagname=$1
+    taglist=`svn list http://dev.ifountain.org/repos/os/tags`
+    if [ "$taglist" != "${taglist#*$tagname}" ]
+      then
+         svn delete -m "Deleting obsolete tag" http://dev.ifountain.org/repos/os/tags/$tagname
+    fi
+
+    svn mkdir -m "Creating tag $tagname" http://dev.ifountain.org/repos/os/tags/$tagname
+    svn copy http://dev.ifountain.org/repos/os/ThirdParty http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging ThirdParty"
+    svn copy http://dev.ifountain.org/repos/os/LicencedJars http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging LicencedJars"
+    svn copy http://dev.ifountain.org/repos/os/SmartsBrowser http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging SmartsBrowser"
+}
+
 checkOutTag() {
    LATEST_TAG_FILE="latesttag.txt"
     if [ -f $LATEST_TAG_FILE ]
@@ -242,5 +256,6 @@ compileBuildFiles() {
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleTest.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CoreModuleTest.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CompModuleTest.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidBrowserBuild.groovy
 
 }

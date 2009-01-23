@@ -44,6 +44,7 @@ scriptsToAdd.add([name: "emailSender", type:CmdbScript.SCHEDULED, scheduleType:C
 
 scriptsToAdd.add([name: "importSampleRiData"]);
 scriptsToAdd.add([name: "getUIHierarchy"]);
+scriptsToAdd.add([name: "saveUIHierarchy"]);
 
 scriptsToAdd.add([name:"autocomplete", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getHierarchy"])

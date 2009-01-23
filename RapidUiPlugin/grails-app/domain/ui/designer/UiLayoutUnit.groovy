@@ -5,7 +5,11 @@ class UiLayoutUnit
 {
     
     //AUTO_GENERATED_CODE
-
+   public static final String CENTER = "center";
+   public static final String TOP = "top";
+   public static final String LEFT = "left";
+   public static final String BOTTOM = "bottom";
+   public static final String RIGHT = "right";
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "parentLayout", "childLayout", "component"];
     
@@ -48,7 +52,7 @@ class UiLayoutUnit
     ]
     
     static constraints={
-    type(blank:false,nullable:false,key:["parentLayout"])
+    type(blank:false,nullable:false,key:["parentLayout"], inList:[CENTER, TOP, LEFT, BOTTOM, RIGHT])
         
      htmlContent(blank:true,nullable:true)
         

@@ -6,6 +6,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.keyAttribute = null
     this.treeTypeAttribute = null;
     this.url = null
+    this.saveUrl = null
     YAHOO.ext.util.Config.apply(this, config);
     this.treeDisplayAttribute = 'designer_name'
     this.itemTabAtt = 'designer_item_tab';
@@ -45,45 +46,54 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
     },
     getData: function() {
-
-        var loadData = function(response) {
-            YAHOO.rapidjs.ErrorManager.serverUp();
-            this.data = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
-            var rootNode = this.data.getRootNode(this.rootTag)
-            this.addExtraAttributesToChildNodes(rootNode);
-            try
-            {
-
-                if (YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
-                {
-                    return;
-                }
-                else if (YAHOO.rapidjs.Connect.containsError(response) == false)
-                {
-                    this.tree.events["success"].fireDirect(this.tree);
-                    this.tree.loadData(this.data);
-                }
-                else
-                {
-                    this.tree.handleErrors(response);
-                }
-
-            }
-            catch(e)
-            {
-            }
-            this.tree.events["loadstatechanged"].fireDirect(this.tree, false);
-        };
-
-        var handleFailure = function(response) {
-            this.tree.processFailure(response)
-        }
         var callback = {
-            success: loadData,
-            failure: handleFailure,
-            scope:this
+            success: this.processSuccess,
+            failure: this.handleFailure,
+            scope:this,
+            cache:false,
+            argument:[this.loadData]
         }
         YAHOO.util.Connect.asyncRequest('GET', this.url, callback);
+    },
+
+    loadData: function(response) {
+        var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
+        var rootNode = data.getRootNode(this.rootTag)
+        this.addExtraAttributesToChildNodes(rootNode);
+        this.data = data;
+        this.tree.loadData(this.data);
+    },
+
+    processSuccess: function(response) {
+        YAHOO.rapidjs.ErrorManager.serverUp();
+        try
+        {
+            if (YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
+            {
+                return;
+            }
+            else if (YAHOO.rapidjs.Connect.containsError(response) == false)
+            {
+                this.tree.events["success"].fireDirect(this.tree);
+                var callback = response.argument[0];
+                if (callback) {
+                    callback.call(this, response);
+                }
+            }
+            else
+            {
+                this.tree.handleErrors(response);
+            }
+
+        }
+        catch(e)
+        {
+        }
+        this.tree.events["loadstatechanged"].fireDirect(this.tree, false);
+    },
+
+    handleFailure: function(response) {
+        this.tree.processFailure(response)
     },
 
     treeSelectionChanged:function(xmlData) {
@@ -217,7 +227,15 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     },
 
     save : function() {
-        alert(this.data.firstChild().toString())
+        var callback = {
+            success: this.processSuccess,
+            failure: this.handleFailure,
+            scope:this,
+            cache:false,
+            argument:[this.getData]
+        }
+        var postData = 'data='+this.data.firstChild().toString();
+        YAHOO.util.Connect.asyncRequest('POST', this.saveUrl, callback, postData);
     },
     render: function() {
         var dh = YAHOO.ext.DomHelper;

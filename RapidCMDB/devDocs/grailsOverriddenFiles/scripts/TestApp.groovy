@@ -381,7 +381,7 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
 
 
                 runTests(suite, result) {test, invocation ->
-                println "TEST:"+String.valueOf(test);
+                savedOut.println( "TEST:"+String.valueOf(test));
                     String name = String.valueOf(test);
                     name = name.substring(name.indexOf("(")+1)
                     name = name.substring(0, name.indexOf(")"))

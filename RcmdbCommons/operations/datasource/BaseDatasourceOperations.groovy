@@ -27,16 +27,26 @@ import com.ifountain.comp.converter.ConverterRegistry
  * Time: 5:52:01 PM
  * To change this template use File | Settings | File Templates.
  */
-class BaseDatasourceOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
+class BaseDatasourceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
     public static Object convert(Object value)
     {
-        return ConverterRegistry.getInstance().convert(value)        
+        return ConverterRegistry.getInstance().convert(value)
     }
-    static def getOndemand(params){
+    static def getOndemand(params) {
         def ds = BaseDatasource.get(params);
-        if(ds && ds.adapter){
-          ds.adapter.setReconnectInterval(0);
+        if (ds && ds.adapter) {
+            ds.adapter.setReconnectInterval(0);
         }
         return ds;
+    }
+
+    def getProperty(Map keys, String propName)
+    {
+        return null;
+    }
+
+    def getProperties(Map keys, List properties)
+    {
+        return null;
     }
 }

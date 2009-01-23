@@ -27,10 +27,10 @@ tagSvnForRapidBrowser() {
          svn delete -m "Deleting obsolete tag" http://dev.ifountain.org/repos/os/tags/$tagname
     fi
 
-    svn mkdir -m "Creating tag $tagname" http://dev.ifountain.org/repos/os/tags/$tagname
-    svn copy http://dev.ifountain.org/repos/os/ThirdParty http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging ThirdParty"
-    svn copy http://dev.ifountain.org/repos/os/LicencedJars http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging LicencedJars"
-    svn copy http://dev.ifountain.org/repos/os/SmartsBrowser http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging SmartsBrowser"
+    svn mkdir -m "Creating tag $tagname" file:///var/www/svn/os/tags/$tagname
+    svn copy file:///var/www/svn/os/ThirdParty file:///var/www/svn/os/$tagname -m "Tagging ThirdParty"
+    svn copy file:///var/www/svn/os/LicencedJars file:///var/www/svn/os/tags/$tagname -m "Tagging LicencedJars"
+    svn copy file:///var/www/svn/os/SmartsBrowser file:///var/www/svn/os/tags/$tagname -m "Tagging SmartsBrowser"
 }
 
 checkOutTag() {

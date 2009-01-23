@@ -22,7 +22,8 @@ class RapidBrowserBuild extends Build  {
     	build(env.distribution);
     }
     def build(distDir) {
-    	def versionInBuild = "${env.dist_rapid_browser}/RapidBrowserVersion.txt";
+        println "Starting Build RapidBrowser";
+        def versionInBuild = "${env.dist_rapid_browser}/RapidBrowserVersion.txt";
     	clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);

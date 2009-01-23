@@ -25,55 +25,37 @@ import org.springframework.context.ApplicationContext;
  */
 public class GroovyPagesServlet extends org.codehaus.groovy.grails.web.pages.GroovyPagesServlet  {
     public void doPage(HttpServletRequest request, HttpServletResponse response) throws ServletException , IOException {
-        List<FilterToHandlerAdapter> filters = getFilters();
+        CompositeInterceptor interceptor = getFilterInterceptor();
         try
         {
 
-            for(int i=0; i < filters.size(); i++)
-            {
-                FilterToHandlerAdapter adapter = filters.get(i);
-                if(!adapter.preHandle(request, response, null))
-                {
-                    return;   
-                }
-            }
+            if(interceptor != null && !interceptor.preHandle(request, response, null)) return;
             super.doPage(request, response);
         }finally {
-            triggerAfterCompletion(request, response, filters);
-        }
-
-    }
-
-    private void triggerAfterCompletion(HttpServletRequest request, HttpServletResponse response, List<FilterToHandlerAdapter> filters)
-    {
-        for(int i=0; i < filters.size(); i++)
-        {
-            FilterToHandlerAdapter adapter = filters.get(i);
-            try
+            if(interceptor != null)
             {
-                adapter.afterCompletion(request, response, null, null);
-            }catch(Exception e)
-            {
-                e.printStackTrace();
+                try
+                {
+                    interceptor.afterCompletion(request, response, null, null);
+                }catch(Exception e)
+                {
+                }
             }
         }
+
     }
 
-    private List<FilterToHandlerAdapter> getFilters()
+    private CompositeInterceptor getFilterInterceptor()
     {
         if(ServletContextHolder.getServletContext() != null)
         {
             ApplicationContext context = (ApplicationContext)ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT);
             if(context != null)
             {
-                CompositeInterceptor interceptor = (CompositeInterceptor)context.getBean("filterInterceptor");
-                if(interceptor != null)
-                {
-                    return (List)interceptor.getHandlers();
+                return (CompositeInterceptor)context.getBean("filterInterceptor");
 
-                }
             }
         }
-        return new ArrayList();
+        return null;
     }
 }

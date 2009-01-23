@@ -200,6 +200,9 @@ class Build extends Parent{
 			ant.pathelement(location : (String)classpath.getProperty("commons-beanutils_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("commons-cli-1_0_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("commons-codec-1_3_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("core-3_1_1_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("jsp-2_1_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("jsp-api-2_1_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("commons-collections-3_2_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("commons-configuration-1_2_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("commons-digester-1_7_jar"));

@@ -151,7 +151,7 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         CmdbScript.runScript(senderScript,[:])
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),8)
     }
      void testSenderDoesNotProcessMessagesIfSendGeneratesException()
     {
@@ -215,7 +215,7 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         CmdbScript.runScript(senderScript,[:])
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),4)
 
         events.each{
             it.clear();
@@ -229,13 +229,13 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         }
         assertEquals(RsMessage.countHits("alias:*"),8)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CLEAR}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED} AND action:${RsMessage.ACTION_CREATE}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND action:${RsMessage.ACTION_CREATE}"),4)
         
         CmdbScript.runScript(senderScript,[:])
         assertEquals(RsMessage.countHits("alias:*"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED} AND action:${RsMessage.ACTION_CLEAR}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENDED} AND action:${RsMessage.ACTION_CREATE}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND action:${RsMessage.ACTION_CLEAR}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND action:${RsMessage.ACTION_CREATE}"),4)
         
         
     }

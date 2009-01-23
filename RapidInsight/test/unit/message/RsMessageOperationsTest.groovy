@@ -116,7 +116,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(RsMessage.list().size(),1)
 
         def crateMessage=RsMessage.get(id:delayingMessage.id)
-        assertEquals(crateMessage.state,RsMessage.STATE_DELAY_EXPIRED)
+        assertEquals(crateMessage.state,RsMessage.STATE_ABORT)
     }
     public void testAddEventClearEmail()
     {

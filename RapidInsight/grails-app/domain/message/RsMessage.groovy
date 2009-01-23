@@ -11,8 +11,8 @@ class RsMessage {
 
     public static Long STATE_IN_DELAY=0
     public static Long STATE_READY=1
-    public static Long STATE_DELAY_EXPIRED=2
-    public static Long STATE_SENDED=3
+    public static Long STATE_ABORT=2
+    public static Long STATE_SENT=3
     public static Long STATE_NOT_EXISTS=4
     
     //AUTO_GENERATED_CODE

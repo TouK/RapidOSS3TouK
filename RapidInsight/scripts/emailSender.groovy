@@ -49,7 +49,7 @@ if(ds!=null)
             try{
                 ds.sendEmail(emailParams)
                 logger.debug("Sended email about RsEvent: ${eventParams}")
-                message.update(state:RsMessage.STATE_SENDED,sendAt:date.getTime());
+                message.update(state:RsMessage.STATE_SENT,sendAt:date.getTime());
                 logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
             }
             catch(e)

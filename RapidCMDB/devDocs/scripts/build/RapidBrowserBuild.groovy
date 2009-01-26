@@ -59,7 +59,7 @@ class RapidBrowserBuild extends Build  {
             ant.fileset(file:"../ThirdParty/lib/jetty/start-6.1.7.jar")
             ant.fileset(dir:"../ThirdParty/lib/jsp")
         }
-        ant.zip(zipfile:"${env.distribution}/RapidBrowser.zip"){
+        ant.zip(zipfile:"${env.distribution}/RapidBrowser${versionDate}.zip"){
             ant.zipfileset(dir:"${env.dist_rapid_browser}", prefix:"RapidBrowser");
         }
 

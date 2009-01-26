@@ -28,7 +28,7 @@ tagSvnForRapidBrowser() {
     fi
 
     svn mkdir -m "Creating tag $tagname" file:///var/www/svn/os/tags/$tagname
-    svn copy file:///var/www/svn/os/ThirdParty file:///var/www/svn/os/$tagname -m "Tagging ThirdParty"
+    svn copy file:///var/www/svn/os/ThirdParty file:///var/www/svn/os/tags/$tagname -m "Tagging ThirdParty"
     svn copy file:///var/www/svn/os/LicencedJars file:///var/www/svn/os/tags/$tagname -m "Tagging LicencedJars"
     svn copy file:///var/www/svn/os/SmartsBrowser file:///var/www/svn/os/tags/$tagname -m "Tagging SmartsBrowser"
 }

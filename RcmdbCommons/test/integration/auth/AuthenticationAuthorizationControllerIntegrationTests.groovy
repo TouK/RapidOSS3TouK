@@ -19,6 +19,8 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
 * To change this template use File | Settings | File Templates.
 */
 class AuthenticationAuthorizationControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
+    def transactional = false
+
     public void testAuth()
     {
         CompositeInterceptor interceptor = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean('filterInterceptor')

@@ -96,6 +96,16 @@ if (!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.
     }
 
     ANT.copy(file : "${workspaceDir}/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties", toDir : "${rootDir.getAbsolutePath()}/RapidSuite/");
+
+}
+
+if(System.getProperty("debug") == "true")
+{
+    ANT.copy(file : "${workspaceDir}/RapidModules/RapidCMDB/devDocs/grailsOverriddenFiles/bin/startGrailsDebuggingForTests.bat", toFile : "${rootDir.getAbsolutePath()}/bin/startGrails.bat", overwrite:"true");
+}
+else
+{
+    ANT.copy(file : "${workspaceDir}/RapidModules/RapidCMDB/devDocs/grailsOverriddenFiles/bin/startGrailsForTests.bat", toFile : "${rootDir.getAbsolutePath()}/bin/startGrails.bat", overwrite:"true");    
 }
 
 

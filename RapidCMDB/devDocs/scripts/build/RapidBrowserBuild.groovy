@@ -17,8 +17,6 @@ class RapidBrowserBuild extends Build  {
     def clean(distDir) {
         ant.delete(dir: env.distribution);
         ant.mkdir(dir: env.distribution);
-        ant.delete(dir:env.rapid_browser_build);
-        ant.mkdir(dir:env.rapid_browser_build);
     }
 
     def build() {
@@ -26,7 +24,6 @@ class RapidBrowserBuild extends Build  {
     }
     def build(distDir) {
         println "Starting Build RapidBrowser";
-        println System.getProperties();
         def versionInBuild = "${env.dist_rapid_browser}/RapidBrowserVersion.txt";
     	clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);

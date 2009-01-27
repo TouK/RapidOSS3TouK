@@ -17,6 +17,8 @@ class RapidBrowserBuild extends Build  {
     def clean(distDir) {
         ant.delete(dir: env.distribution);
         ant.mkdir(dir: env.distribution);
+        ant.delete(dir:env.rapid_browser_build);
+        ant.mkdir(dir:env.rapid_browser_build);
     }
 
     def build() {
@@ -45,8 +47,7 @@ class RapidBrowserBuild extends Build  {
         ant.copy(todir: "${env.dist_rapid_browser}/webapps") {
             ant.fileset(dir: "$env.rapid_browser_svn/webapps", excludes:".svn")
         }
-        ant.delete(dir:env.rapid_browser_build);
-        ant.mkdir(dir:env.rapid_browser_build);
+
 
         ant.javac(srcdir:"${env.rapid_browser_svn}/src", destdir:env.rapid_browser_build){
             ant.classpath(refid : "classpath");

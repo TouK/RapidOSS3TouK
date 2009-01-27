@@ -27,7 +27,7 @@ class Parent {
 	public Parent()
     {
         AntBuilder.metaClass.javac = {java.util.Map map, java.lang.Object o1->
-            if(map.destdir != null)
+            if(map.destdir != null && map.cleanDestination != false)
             {
                 delegate.delete(dir:map.destdir);
                 delegate.mkdir(dir:map.destdir);
@@ -36,7 +36,7 @@ class Parent {
         }
         AntBuilder.metaClass.javac = { java.util.Map map->
 
-            if(map.destdir != null)
+            if(map.destdir != null && map.cleanDestination != false)
             {
                 delegate.delete(dir:map.destdir);
                 delegate.mkdir(dir:map.destdir);

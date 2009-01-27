@@ -99,11 +99,13 @@ class CreateMetaDataScriptTest extends RapidCmdbWithCompassTestCase
         assertEquals ("List", uiMetaDatasForUiModel1[5].type);
         assertEquals ("String", uiMetaDatasForUiModel1[6].type);
 
+        //prop1 is key prop and it could not be null or blank so it is a required property
         assertEquals (true, uiMetaDatasForUiModel1[0].required);
         assertEquals (false, uiMetaDatasForUiModel1[1].required);
         assertEquals (false, uiMetaDatasForUiModel1[2].required);
         assertEquals (false, uiMetaDatasForUiModel1[3].required);
         assertEquals (false, uiMetaDatasForUiModel1[4].required);
+        //prop6 is specified as required property
         assertEquals (true, uiMetaDatasForUiModel1[5].required);
         assertEquals (false, uiMetaDatasForUiModel1[6].required);
 

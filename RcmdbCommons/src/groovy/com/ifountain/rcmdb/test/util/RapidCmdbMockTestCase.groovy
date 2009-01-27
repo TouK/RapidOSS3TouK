@@ -53,7 +53,7 @@ import org.compass.core.Compass
  * Time: 4:28:15 PM
  * To change this template use File | Settings | File Templates.
  */
-class RapidCmdbMockTestCase extends RapidCmdbTestCase{
+public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     def servletContext
 	def webRequest
 	def request

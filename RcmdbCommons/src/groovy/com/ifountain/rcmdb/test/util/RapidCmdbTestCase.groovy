@@ -29,7 +29,7 @@ import org.apache.log4j.Logger
 * Time: 2:26:55 PM
 * To change this template use File | Settings | File Templates.
 */
-class RapidCmdbTestCase extends RapidTestCase{
+public class RapidCmdbTestCase extends RapidTestCase{
     def defaultBaseDir;
     protected void setUp() {
         defaultBaseDir = System.getProperty("base.dir", ".");

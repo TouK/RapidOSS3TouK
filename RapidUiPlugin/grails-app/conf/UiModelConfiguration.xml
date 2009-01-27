@@ -1,37 +1,48 @@
 <Rsmodel>
     <Models>
         <!-- -->
-        <Model Name="UiUrl" StorageType="FileAndMemory">
+        <Model Name="UiUrl" StorageType="File">
             <Properties>
                 <Property Name='url' Type='string' IsKey="true"/>
             </Properties>
         </Model>
 
-        <Model Name="UiTab" StorageType="FileAndMemory">
+        <Model Name="UiMetaData" StorageType="File">
+            <Properties>
+                <Property Name='name' Type='string' IsKey="true"/>
+                <Property Name='componentName' Type='string' IsKey="true"/>
+                <Property Name='type' Type='string'/>
+                <Property Name='required' Type='boolean'/>
+                <Property Name='description' Type='string'/>
+                <Property Name='inList' Type='string'/>
+            </Properties>
+        </Model>
+
+        <Model Name="UiTab" StorageType="File">
             <Properties>
                 <!-- Add url relation to keys -->
                 <Property Name='name' Type='string' IsKey="true"/>
             </Properties>
         </Model>
-        <Model Name="UiLayout" StorageType="FileAndMemory">
+        <Model Name="UiLayout" StorageType="File">
             <Properties>
             </Properties>
         </Model>
-        <Model Name="UiLayoutUnit" StorageType="FileAndMemory">
+        <Model Name="UiLayoutUnit" StorageType="File">
             <Properties>
                  <!-- Add parentLayout relation to keys -->
                 <Property Name='type' Type='string' IsKey="true"/>
                 <Property Name='htmlContent' Type='string'/>
             </Properties>
         </Model>
-        <Model Name="UiComponent" StorageType="FileAndMemory">
+        <Model Name="UiComponent" StorageType="File">
             <Properties>
                 <!-- Add tab relation to keys -->
                 <Property Name='name' Type='string' IsKey="true"/>
                 <Property Name='title' Type='string'/>
             </Properties>
         </Model>
-        <Model Name="UiDialog" StorageType="FileAndMemory">
+        <Model Name="UiDialog" StorageType="File">
             <Properties>
                 <!-- Add tab and component relation to keys -->
                 <Property Name='width' Type='number'/>
@@ -43,7 +54,7 @@
                 <Property Name='title' Type='string'/>
             </Properties>
         </Model>
-        <Model Name="UiForm" StorageType="FileAndMemory">
+        <Model Name="UiForm" StorageType="File">
             <Properties>
                 <!-- Add tab relation to keys -->
                 <!-- submitAction is inList([GET, POST]) -->
@@ -58,14 +69,14 @@
             </Properties>
         </Model>
         <!-- Define actions as sub classes -->
-         <Model Name="UiAction" StorageType="FileAndMemory">
+         <Model Name="UiAction" StorageType="File">
             <Properties>
                 <!-- Add tab relation to keys -->
                 <Property Name='name' Type='string' IsKey="true"/>
                 <Property Name='condition' Type='string'/>
             </Properties>
         </Model>
-        <Model Name="UiJavaScript" StorageType="FileAndMemory">
+        <Model Name="UiJavaScript" StorageType="File">
             <Properties>
                 <Property Name='content' Type='string'/>
             </Properties>

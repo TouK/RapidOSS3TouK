@@ -30,7 +30,7 @@ import relation.Relation
  * Time: 6:28:03 PM
  * To change this template use File | Settings | File Templates.
  */
-class RapidCmdbWithCompassTestCase extends RapidCmdbMockTestCase{
+public class RapidCmdbWithCompassTestCase extends RapidCmdbMockTestCase{
     def initialize(List classesToBeLoaded, List pluginsToLoad, boolean isPersistant)
     {
         IdGenerator.initialize(new MockIdGeneratorStrategy());

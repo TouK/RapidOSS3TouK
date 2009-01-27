@@ -14,7 +14,17 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.currentLayout = null;
     this.currentLayoutNode = null;
     this.data = null;
-
+    this.editors = {
+        String: new YAHOO.widget.TextboxCellEditor({disableBtns:true}),
+        Number:new YAHOO.widget.TextboxCellEditor({disableBtns:true, validator:function (val) {
+            val = parseFloat(val);
+            if (YAHOO.lang.isNumber(val)) {
+                return val;
+            }
+            return 0;
+        }}),
+        InList: new YAHOO.widget.DropdownCellEditor({disableBtns:true})
+    };
     this.render();
     this.getData();
 }
@@ -96,14 +106,21 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
 
     treeSelectionChanged:function(xmlData) {
         this.displayItemProperties(xmlData);
-        this.changeLayout(xmlData);
+//        this.changeLayout(xmlData);
+    },
+
+    getItemType : function(xmlData){
+       return xmlData.getAttribute(this.treeTypeAttribute);
     },
 
     displayItemProperties: function(xmlData) {
         this.currentDisplayedItemData = xmlData;
-        var itemType = xmlData.getAttribute(this.treeTypeAttribute);
+        var itemType = this.getItemType(xmlData);
         var properties = UIConfig.getProperties(itemType)
         var data = [];
+        if(itemType == "Layout" && this.getItemType(xmlData.parentNode()) == "Tab"){
+            data[data.length] = {name:"type", value:xmlData.getAttribute("type") || ""}
+        }
         SelectUtils.clear(this.propertySelect);
         SelectUtils.addOption(this.propertySelect, '', '');
         for (var prop in properties) {
@@ -141,8 +158,8 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         var curLay = new YAHOO.widget.Layout(centerUnit.get('wrap'), {
             parent: this.layout,
             units: [
-                { position: 'center', body:dh.append(document.body, {tag:'div', html:'sezgin', id:YAHOO.util.Dom.generateId(null, 'layoutUnit')}).id},
-                { position: 'bottom',height: 200, resize: true, body:dh.append(document.body, {tag:'div', html:'sezgin2', id:YAHOO.util.Dom.generateId(null, 'layoutUnit')}).id},
+                { position: 'center', resize: true, body:dh.append(document.body, {tag:'div', html:'sezgin', id:YAHOO.util.Dom.generateId(null, 'layoutUnit')}).id},
+                { position: 'bottom',height: 200 , body:dh.append(document.body, {tag:'div', html:'sezgin2', id:YAHOO.util.Dom.generateId(null, 'layoutUnit')}).id},
             ]
         });
         curLay.render();
@@ -173,37 +190,92 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         return null;
     },
-    treeMenuClicked: function(xmlData, id, parentId) {
 
-        var createTreeNode = function(parentNode, itemType) {
-            var id = YAHOO.util.Dom.generateId(null, itemType);
-            var newNode = xmlData.createChildNode(null, 1, this.contentPath);
-            newNode.setAttribute(this.keyAttribute, id);
-            newNode.setAttribute(this.treeTypeAttribute, itemType);
-            var itemMetaProperties = UIConfig.getProperties(itemType);
-            for (var prop in itemMetaProperties) {
-                if (UIConfig.isPropertyRequired(itemType, prop)) {
-                    if (UIConfig.isDisplayProperty(itemType,prop)) {
-                        newNode.setAttribute(prop, itemType);
-                    }
-                    else {
-                        newNode.setAttribute(prop, prop);
-                    }
+    getComponentNamesOfCurrentTab: function(xmlData){
+        var compNames = []; 
+        var currentTabNode = this.getTabNodeFromNode(xmlData);
+        if (currentTabNode) {
+             var componentsNode;
+             var childNodes = currentTabNode.childNodes();
+             for(var i=0; i< childNodes.length; i++){
+                 if(this.getItemType(childNodes[i]) == "Components"){
+                     componentsNode = childNodes[i];
+                     break;
+                 }
+             }
+             childNodes = componentsNode.childNodes()
+             for(var i=0; i< childNodes.length; i++){
+                 compNames[compNames.length] = childNodes[i].getAttribute("name");
+             }
+        }
+        return compNames;
+    },
+
+    createTreeNode: function(parentNode, itemType) {
+        var id = YAHOO.util.Dom.generateId(null, itemType);
+        var newNode = parentNode.createChildNode(null, 1, this.contentPath);
+        newNode.setAttribute(this.keyAttribute, id);
+        newNode.setAttribute(this.treeTypeAttribute, itemType);
+        var itemMetaProperties = UIConfig.getProperties(itemType);
+        for (var prop in itemMetaProperties) {
+            if (UIConfig.isPropertyRequired(itemType, prop)) {
+                if (UIConfig.isDisplayProperty(itemType, prop)) {
+                    newNode.setAttribute(prop, itemType);
+                }
+                else {
+                    newNode.setAttribute(prop, prop);
                 }
             }
-            parentNode.appendChild(newNode);
-            var metaChildren = UIConfig.getChildren(itemType)
-            for (var i = 0; i < metaChildren.length; i++) {
-                if (!UIConfig.canBeDeleted(metaChildren[i]) || (itemType == "Tab" && metaChildren[i] == "Layout")) {
-                    createTreeNode.call(this, newNode, metaChildren[i]);
+        }
+        parentNode.appendChild(newNode);
+        var metaChildren = UIConfig.getChildren(itemType)
+        for (var i = 0; i < metaChildren.length; i++) {
+            if (!UIConfig.canBeDeleted(metaChildren[i]) || (itemType == "Tab" && metaChildren[i] == "Layout")) {
+                this.createTreeNode( newNode, metaChildren[i]);
+            }
+        }
+        return newNode;
+    },
+
+    createLayoutNode: function(layoutType){
+        var childNodes = this.currentDisplayedItemData.childNodes();
+        for(var i=childNodes.length-1; i >= 0; i--){
+            var unitNode = childNodes[i]
+            var nodeType = this.getItemType(unitNode);
+            if(nodeType != "Layout_Center"){
+                this.currentDisplayedItemData.removeChild(unitNode);
+            }
+            else{
+                var childLayoutNode = unitNode.firstChild();
+                if(childLayoutNode){
+                    unitNode.removeChild(childLayoutNode);
                 }
             }
-            return newNode;
-        };
+        }
+        var _populateLayoutNode = function(layoutNode, lConf){
+            var centerUnitNode = layoutNode.firstChild();
+            for(var unitType in lConf){
+                var unitNode;
+                if(unitType != "Layout_Center"){
+                    unitNode = this.createTreeNode(layoutNode, unitType);
+                }
+                else{
+                    unitNode = centerUnitNode;
+                }
+                if(typeof lConf[unitType] == 'object'){
+                    var childLayoutNode = this.createTreeNode(unitNode, "Layout");
+                    _populateLayoutNode.call(this, childLayoutNode, lConf[unitType])
+                }
+            }
+        }
+        var layoutConfig = UIConfig.getLayoutType(layoutType);
+        _populateLayoutNode.call(this, this.currentDisplayedItemData, layoutConfig);
+    },
+    treeMenuClicked: function(xmlData, id, parentId) {
 
         if (id.indexOf("add_") == 0) {
             var itemType = id.substr(4);
-            var newNode = createTreeNode.call(this, xmlData, itemType);
+            var newNode = this.createTreeNode(xmlData, itemType);
             var currentTab = xmlData.getAttribute(this.itemTabAtt);
             this.addExtraAttributesToChildNodes(xmlData, currentTab);
             this.refreshTree();
@@ -288,19 +360,25 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.tree.events["selectionChange"].subscribe(this.treeSelectionChanged, this, true);
         this.tree.events["rowMenuClick"].subscribe(this.treeMenuClicked, this, true);
 
-
-        var editor = new YAHOO.widget.TextboxCellEditor({disableBtns:true});
-        editor.subscribe('saveEvent', function(oArgs) {
+        var propertySavedFunc = function(oArgs) {
             var record = oArgs.editor.getRecord();
             var propName = record.getData("name")
             var propValue = record.getData("value")
             this.currentDisplayedItemData.setAttribute(propName, propValue);
-            var itemType = this.currentDisplayedItemData.getAttribute(this.treeTypeAttribute)
+            var itemType = this.getItemType(this.currentDisplayedItemData);
             if (UIConfig.isDisplayProperty(itemType, propName)) {
                 this.currentDisplayedItemData.setAttribute(this.treeDisplayAttribute, propValue);
             }
+            if(itemType == "Layout" && propName == "type"){
+                this.createLayoutNode(propValue);
+                var currentTab = this.currentDisplayedItemData.getAttribute(this.itemTabAtt);
+                this.addExtraAttributesToChildNodes(this.currentDisplayedItemData, currentTab)
+            }
             this.refreshTree();
-        }, this, true);
+        }
+        for (var editor in this.editors) {
+            this.editors[editor].subscribe('saveEvent', propertySavedFunc, this, true);
+        }
         var myColumnDefs = [
             {key:"name", label:"Name", sortable:true, width:150},
             {key:"value", label:"Value", sortable:true, width:250, editor:editor}
@@ -325,7 +403,33 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         };
         this.propertyGrid.subscribe("cellMouseoverEvent", highlightEditableCell);
         this.propertyGrid.subscribe("cellMouseoutEvent", this.propertyGrid.onEventUnhighlightCell);
-        this.propertyGrid.subscribe("cellClickEvent", this.propertyGrid.onEventShowCellEditor);
+        this.propertyGrid.subscribe("cellClickEvent", function (oArgs) {
+            var target = oArgs.target,
+                    record = this.propertyGrid.getRecord(target),
+                    column = this.propertyGrid.getColumn(target),
+                    propertyName = record.getData("name");
+
+            var itemType = this.getItemType(this.currentDisplayedItemData);
+            var editor;
+            if(itemType == "Layout" && this.getItemType(this.currentDisplayedItemData.parentNode()) == "Tab"){
+                editor = this.editors["InList"];
+                editor.dropdownOptions = UIConfig.getLayoutTypeNames();
+                editor.renderForm();
+            }
+            else if(propertyName == "component" && (itemType == "Layout_Center" ||  itemType == "Layout_Left" ||
+                                                    itemType == "Layout_Top" || itemType == "Layout_Right" ||
+                                                    itemType == "Layout_Bottom" || itemType == "Dialogs")){
+                editor = this.editors["InList"];
+                editor.dropdownOptions = this.getComponentNamesOfCurrentTab(this.currentDisplayedItemData);
+                editor.renderForm();
+            }
+            else{
+               var propertyType = UIConfig.getPropertyType(itemType, propertyName)
+               editor = this.editors[propertyType];
+            }
+            column.editor = editor;
+            this.propertyGrid.showCellEditor(target);
+        }, this, true);
 
         var addTooltip = function() {
             var showTimer,hideTimer;
@@ -377,7 +481,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             if (elRow) {
                 var oRecord = this.propertyGrid.getRecord(elRow);
                 var prop = oRecord.getData("name");
-                var itemType = this.currentDisplayedItemData.getAttribute(this.treeTypeAttribute) 
+                var itemType = this.currentDisplayedItemData.getAttribute(this.treeTypeAttribute)
                 if (UIConfig.isPropertyRequired(itemType, prop)) {
                     this.propertyContextMenu.hide();
                 }

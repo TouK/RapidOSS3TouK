@@ -1,6 +1,6 @@
 YAHOO.namespace("rapidjs", "rapidjs.designer");
 
-YAHOO.rapidjs.designer.Config = new function(){
+YAHOO.rapidjs.designer.Config = new function() {
     this.get = function(itemType) {
         return this.config[itemType];
     };
@@ -32,19 +32,74 @@ YAHOO.rapidjs.designer.Config = new function(){
     this.getChildren = function(itemType) {
         return this.get(itemType)["children"]
     };
-    this.getPropertyDescription =function(itemType, propertyName) {
+    this.getPropertyDescription = function(itemType, propertyName) {
+        if(itemType == "Layout" && propertyName == "type"){
+            return "Type of the layout"
+        }
         return this.get(itemType)["properties"][propertyName]["descr"]
     };
-    this.isPropertyRequired =function(itemType, propertyName) {
+    this.isPropertyRequired = function(itemType, propertyName) {
         return this.get(itemType)["properties"][propertyName]["required"]
     };
+    this.getPropertyType = function(itemType, propertyName) {
+        return this.get(itemType)["properties"][propertyName]["type"]
+    };
+
     this.getImageConfig = function(itemType) {
         return this.get(itemType)["image"];
     };
-    this.getConfig = function(){
-       return this.config;
+    this.getConfig = function() {
+        return this.config;
     };
-    this.config =  {
+    this.getLayoutTypeNames = function() {
+        var names = [];
+        for (var layoutType in this.layoutTypes) {
+            names[names.length] = layoutType
+        }
+        return names;
+    };
+    this.getLayoutType = function(layoutType) {
+        return this.layoutTypes[layoutType];
+    }
+    this.layoutTypes = {
+        "TwoColumns":{"Layout_Center":'', "Layout_Left":''},
+        "TwoColumnsWithHeader":{"Layout_Center":'',"Layout_Left":'',"Layout_Top":''},
+        "TwoColumnsWithFooter":{"Layout_Center":'',"Layout_Left":'',"Layout_Bottom":''},
+        "TwoColumnsWithHeaderAndFooter":{"Layout_Center":'',"Layout_Left":'',"Layout_Top":'',"Layout_Bottom":''},
+        "TwoColumnsLeftDivided":{"Layout_Center":'',
+            "Layout_Left":{"Layout_Top":'',"Layout_Center":''}
+        },
+        "TwoColumnsRightDivided":{"Layout_Left":'',
+            "Layout_Center":{"Layout_Top":'',"Layout_Center":''}
+        },
+        "TwoColumnsAllDivided":{
+            "Layout_Left":{"Layout_Top":'',"Layout_Center":''},
+            "Layout_Center":{"Layout_Top":'',"Layout_Center":''}
+        },
+        "ThreeColumns":{"Layout_Center":'',"Layout_Left":'',"Layout_Right":''},
+        "ThreeColumnsWithHeader":{"Layout_Center":'',"Layout_Left":'',"Layout_Top":'', "Layout_Right":''},
+        "ThreeColumnsWithFooter":{"Layout_Center":'',"Layout_Left":'',"Layout_Bottom":'', "Layout_Right":''},
+        "ThreeColumnsWithHeaderAndFooter":{"Layout_Center":'',"Layout_Left":'',"Layout_Bottom":'', "Layout_Right":'', "Layout_Top":''},
+        "ThreeColumnsLeftDivided":{"Layout_Center":'',"Layout_Right":'',
+            "Layout_Left":{"Layout_Top":'',"Layout_Center":''}
+        },
+        "ThreeColumnsRightDivided":{"Layout_Center":'',"Layout_Left":'',
+            "Layout_Right":{"Layout_Top":'',"Layout_Center":''}
+        },
+        "ThreeColumnsLeftAndRightDivided":{
+            "Layout_Left":{"Layout_Top":'',"Layout_Center":''},
+            "Layout_Center":'',
+            "Layout_Right":{"Layout_Top":'',"Layout_Center":''}
+        },
+        "ThreeColumnsAllDivided":{
+            "Layout_Left":{"Layout_Top":'',"Layout_Center":''},
+            "Layout_Center":{"Layout_Top":'',"Layout_Center":''},
+            "Layout_Right":{"Layout_Top":'',"Layout_Center":''}
+        }
+
+    }
+
+    this.config = {
         'Root':{
             display:'Urls', properties:{}, children:['Url'],
             image:{expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'}
@@ -78,16 +133,64 @@ YAHOO.rapidjs.designer.Config = new function(){
             image:{expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'},
             children:['Layout_Center', 'Layout_Top', 'Layout_Bottom', 'Layout_Left', 'Layout_Right']
         },
-        'Layout_Center':{display:'Center', properties:{}, children:['Layout'],
+        'Layout_Center':{
+            display:'Center',
+            properties:{
+                "htmlContent":"",
+                "component":{type:"String", descr:"RapidInsight component that will be displayed in the unit"},
+                "gutter": {type:"String", descr:"The gutter applied to the unit's wrapper, before the content."},
+                "scroll": {type:"Boolean", descr:"Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."}
+            },
+            children:['Layout'],
             image:{expanded:'images/rapidjs/designer/layout_content.png', collapsed:'images/rapidjs/designer/layout_content.png'}
         },
-        'Layout_Top':{display:'Top', canBeDeleted:true, properties:{}, children:['Layout'],
+        'Layout_Top':{
+            display:'Top',
+            canBeDeleted:true,
+            properties:{
+                "height": {type:"Number", descr:"The height (in pixels) that the unit will take up in the layout", required:true},
+                "component":{type:"String", descr:"RapidInsight component that will be displayed in the unit"},
+                "resize": {type:"Boolean", descr:"Boolean indicating whether this unit is resizeable."},
+                "gutter": {type:"String", descr:"The gutter applied to the unit's wrapper, before the content."},
+                "scroll": {type:"Boolean", descr:"Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."}
+            },
+            children:['Layout'],
             image:{expanded:'images/rapidjs/designer/layout_content.png', collapsed:'images/rapidjs/designer/layout_content.png'}},
-        'Layout_Bottom':{display:'Bottom', canBeDeleted:true, properties:{}, children:['Layout'],
+        'Layout_Bottom':{
+            display:'Bottom',
+            canBeDeleted:true,
+            properties:{
+                "height": {type:"Number", descr:"The height (in pixels) that the unit will take up in the layout.", required:true},
+                "component":{type:"String", descr:"RapidInsight component that will be displayed in the unit"},
+                "resize": {type:"Boolean", descr:"Boolean indicating whether this unit is resizeable."},
+                "gutter": {type:"String", descr:"The gutter applied to the unit's wrapper, before the content."},
+                "scroll": {type:"Boolean", descr:"Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."}
+            },
+            children:['Layout'],
             image:{expanded:'images/rapidjs/designer/layout_content.png', collapsed:'images/rapidjs/designer/layout_content.png'}},
-        'Layout_Left':{display:'Left', canBeDeleted:true, properties:{}, children:['Layout'],
+        'Layout_Left':{
+            display:'Left',
+            canBeDeleted:true,
+            properties:{
+                "width": {type:"Number", descr:"The width  pixels) that the unit will take up in the layout.", required:true},
+                "component":{type:"String", descr:"RapidInsight component that will be displayed in the unit"},
+                "resize": {type:"Boolean", descr:"Boolean indicating whether this unit is resizeable."},
+                "gutter": {type:"String", descr:"The gutter applied to the unit's wrapper, before the content."},
+                "scroll": {type:"Boolean", descr:"Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."}
+            },
+            children:['Layout'],
             image:{expanded:'images/rapidjs/designer/layout_content.png', collapsed:'images/rapidjs/designer/layout_content.png'}},
-        'Layout_Right':{display:'Right', canBeDeleted:true, properties:{}, children:['Layout'],
+        'Layout_Right':{
+            display:'Right',
+            canBeDeleted:true,
+            properties:{
+                "width": {type:"Number", descr:"The width  pixels) that the unit will take up in the layout.", required:true},
+                "component":{type:"String", descr:"RapidInsight component that will be displayed in the unit"},
+                "resize": {type:"Boolean", descr:"Boolean indicating whether this unit is resizeable."},
+                "gutter": {type:"String", descr:"The gutter applied to the unit's wrapper, before the content."},
+                "scroll": {type:"Boolean", descr:"Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."}
+            },
+            children:['Layout'],
             image:{expanded:'images/rapidjs/designer/layout_content.png', collapsed:'images/rapidjs/designer/layout_content.png'}},
         'Components':{display:'Components', properties:{}, children:["FlexPieChart"],
             image:{expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'}
@@ -109,7 +212,7 @@ YAHOO.rapidjs.designer.Config = new function(){
                 'title':{type:'String', descr:'Title of the dialog'}
             },
             image:{expanded:'images/rapidjs/designer/application_double.png', collapsed:'images/rapidjs/designer/application_double.png'},
-            children:{}
+            children:[]
         },
         'Forms':{display:'Forms', properties:{}, children:["Form"],
             image:{expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'}
@@ -127,7 +230,7 @@ YAHOO.rapidjs.designer.Config = new function(){
                 'submitAction':{type:{inList:['GET', 'POST']}, descr:'Action type of the form. Available properties are "GET" and "POST". Default is "GET"'}
             },
             image:{expanded:'images/rapidjs/designer/application_form.png', collapsed:'images/rapidjs/designer/application_form.png'},
-            children:{}
+            children:[]
         },
         'Actions':{display:'Actions', properties:{}, children:[],
             image:{expanded:'images/rapidjs/component/tools/folder_open.gif', collapsed:'images/rapidjs/component/tools/folder.gif'}
@@ -137,10 +240,10 @@ YAHOO.rapidjs.designer.Config = new function(){
         },
 
         'FlexPieChart':{
-            display:{from:'id'},
+            display:{from:'name'},
             canBeDeleted:true,
             properties:{
-                'id':{type:'String', descr:'The unique id of the component which is stored in the global JavaScript object YAHOO.rapidjs.Components', required:true},
+                'name':{type:'String', descr:'The unique id of the component which is stored in the global JavaScript object YAHOO.rapidjs.Components', required:true},
                 'url':{type:'String', descr:'The default URL to be used for requests to the server to retrieve the data', required:true},
                 'rootTag':{type:'String', descr:'The root node name of AJAX response which FlexPieChart takes as starting point to get its data', required:true},
                 'swfURL':{type:'String', descr:'The url to the .swf flash file', required:true},
@@ -148,7 +251,7 @@ YAHOO.rapidjs.designer.Config = new function(){
                 'pollingInterval':{type:'Number', descr:'Time delay between two server requests'}
             },
             image:{expanded:'images/rapidjs/designer/component.gif', collapsed:'images/rapidjs/designer/component.gif'},
-            children:{}
+            children:[]
         }
     }
 }

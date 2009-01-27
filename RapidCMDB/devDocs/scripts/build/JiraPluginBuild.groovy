@@ -59,9 +59,9 @@ class JiraPluginBuild extends Build{
         ant.copy(todir: "${rapidSuiteDir}/grails-app/ext") {
             ant.fileset(dir: "$env.rapid_jira/src/groovy")
         }
-//        ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
-//            ant.fileset(file: "${env.rapid_jira}/applications/RapidInsight/grails-app/domain/*.groovy");
-//        }
+        ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
+            ant.fileset(file: "${env.rapid_jira}/generatedModels/grails-app/domain/*.groovy");
+        }
 //        ant.copy(todir: rapidSuiteDir) {
 //            ant.fileset(dir: "$env.rapid_jira/applications/RapidInsight")
 //        }

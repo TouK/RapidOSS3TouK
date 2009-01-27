@@ -46,7 +46,7 @@ class RapidBrowserBuild extends Build  {
             ant.fileset(dir: "$env.rapid_browser_svn/webapps", excludes:".svn")
         }
         ant.mkdir(dir:env.rapid_browser_build);
-        ant.delete(dir:rapid_browser_build);
+        ant.delete(dir:env.rapid_browser_build);
         ant.javac(srcdir:"${env.rapid_browser_svn}/src", destdir:env.rapid_browser_build){
             ant.classpath(refid : "classpath");
         }

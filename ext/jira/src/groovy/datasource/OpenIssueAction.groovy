@@ -132,8 +132,8 @@ public class OpenIssueAction implements Action {
     	}
 //    	 Run the create issue in Jira
 		RemoteIssue returnedIssue = jiraSoapService.createIssue(token, issue);
-		final String issueKey = returnedIssue.getKey();
-		localIssue.status = returnedIssue.getStatus();  // 1: open
+		final String issueKey = returnedIssue["key"];
+		localIssue.status = returnedIssue["status"];  // 1: open
 		localIssue.name = issueKey;
         logger.debug("Opened issue");
     }

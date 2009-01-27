@@ -23,19 +23,19 @@ public class RetrieveDetailsAction implements Action {
     	JiraSoapService jiraSoapService = ((JiraConnectionImpl)conn).getJiraSoapService();
 		RemoteIssue issue = jiraSoapService.getIssue(token, issueId);
 		
-	    detailMap.name = issue.getKey();
-	    detailMap.assignee = issue.getAssignee();
-	    detailMap.created = issue.getCreated();
-	    detailMap.description = issue.getDescription();
-	    detailMap.dueDate = issue.getDuedate();
-	    detailMap.priority = issue.getPriority();
-	    detailMap.project = issue.getProject();
-	    detailMap.reporter = issue.getReporter();
+	    detailMap.name = issue["key"];//.getKey();
+	    detailMap.assignee = issue["assignee"];//.getAssignee();
+	    detailMap.created = issue["create"];//.getCreated();
+	    detailMap.description = issue["description"];//.getDescription();
+	    detailMap.dueDate = issue["duedate"];//.getDuedate();
+	    detailMap.priority = issue["priority"];//.getPriority();
+	    detailMap.project = issue["project"];//.getProject();
+	    detailMap.reporter = issue["reporter"];//.getReporter();
 //	     detailMap.resolution = issue.getResolution();
-	    detailMap.status = issue.getStatus();
-	    detailMap.summary = issue.getSummary();
-	    detailMap.type = issue.getType();
-	    detailMap.updated = issue.getUpdated();
+	    detailMap.status = issue["status"];//.getStatus();
+	    detailMap.summary = issue["summary"];//.getSummary();
+	    detailMap.type = issue["type"];//.getType();
+	    detailMap.updated = issue["updated"];//.getUpdated();
 	}
     public Map getIssue() {
         return detailMap;

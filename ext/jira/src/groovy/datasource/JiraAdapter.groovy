@@ -25,9 +25,15 @@ public class JiraAdapter extends BaseAdapter{
 	    executeAction(action);        
 	} 
 	
-	public RetrieveDetails(String issueId) throws Exception{
+	public retrieveDetails(String issueId) throws Exception{
 	    RetrieveDetailsAction action = new RetrieveDetailsAction(logger,issueId);
 	    executeAction(action);        
 	    return action.getIssue();
 	} 
+	
+	public getProp(String issueId, List props){
+		RetrievePropsAction action = new RetrievePropsAction(logger,issueId);
+	    executeAction(action);        
+	    return action.getProps();
+	}
 }

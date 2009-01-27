@@ -59,7 +59,13 @@ def watchConfig = [
         [new File("${workspaceDir}/Smarts"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Smarts/applications").canonicalPath, new File("${workspaceDir}/Smarts/application.properties").canonicalPath]],
         [new File("${workspaceDir}/Smarts/applications/RapidInsightForSmarts"), new File("${rootDir.absolutePath}/RapidSuite")],
         [new File("${workspaceDir}/OpenNms"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/OpenNms/applications").canonicalPath, new File("${workspaceDir}/OpenNms/application.properties").canonicalPath]],
-        [new File("${workspaceDir}/OpenNms/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")]
+        [new File("${workspaceDir}/OpenNms/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")],
+        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/grails-app"), [new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app/conf").canonicalPath]],
+        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/src"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/src")],
+        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/RapidUiGrailsPlugin.groovy"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/RapidUiGrailsPlugin.groovy")],
+        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/scripts"), new File("${rootDir.absolutePath}/RapidSuite/scripts")],
+        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/operations"), new File("${rootDir.absolutePath}/RapidSuite/operations")],
+        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/test"), new File("${rootDir.absolutePath}/RapidSuite/test")]
 ]
 
 

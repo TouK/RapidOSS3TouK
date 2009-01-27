@@ -24,7 +24,7 @@ class RsEvent {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedTicket"];
     
     
         storageType "FileAndMemory"
@@ -71,8 +71,14 @@ class RsEvent {
     
     Object __is_federated_properties_loaded__ ;
     
+    RsTicket relatedTicket ;
     
-    static relations = [:]    
+    
+    static relations = [
+    
+        relatedTicket:[type:RsTicket, reverseName:"relatedEvent", isMany:false]
+    
+    ]
     
     static constraints={
     name(blank:false,nullable:false,key:[])
@@ -109,11 +115,13 @@ class RsEvent {
         
      errors(nullable:true)
         
+     relatedTicket(nullable:true)
+        
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedTicket"];
     
     public String toString()
     {
@@ -124,6 +132,7 @@ class RsEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
     

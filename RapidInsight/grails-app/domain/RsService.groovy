@@ -17,52 +17,60 @@
 * USA.
 */
 
+import com.ifountain.core.domain.annotations.*;
 class RsService  extends RsGroup {
 
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = [];
-
-
+        except = ["relatedServiceTickets"];
+    
+    
     };
     static datasources = [:]
 
-
+    
     String observedState ="";
-
+    
     Long lastChangedAt =0;
-
+    
     Long interval =0;
-
+    
     Long consideredDownAt =0;
-
+    
     Boolean hasHeartbeat =false;
-
-
-    static relations = [:]
-
+    
+    List relatedServiceTickets =[];
+    
+    
+    static relations = [
+    
+        relatedServiceTickets:[type:RsTicket, reverseName:"relatedServices", isMany:true]
+    
+    ]
+    
     static constraints={
     observedState(blank:true,nullable:true)
-
+        
      lastChangedAt(nullable:true)
-
+        
      interval(nullable:true)
-
+        
      consideredDownAt(nullable:true)
-
+        
      hasHeartbeat(nullable:true)
-
-
+        
+     
     }
 
     static propertyConfiguration= [:]
-    static transients = [];
-
+    static transients = ["relatedServiceTickets"];
+    
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
 

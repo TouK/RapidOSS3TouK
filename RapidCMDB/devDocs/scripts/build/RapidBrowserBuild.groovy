@@ -36,6 +36,11 @@ class RapidBrowserBuild extends Build  {
         ant.copy(todir: "${env.dist_rapid_browser}/lib") {
             ant.fileset(dir: "$env.rapid_browser_svn/lib", excludes:".svn");
         }
+        
+        ant.copy(todir: "${env.dist_rapid_browser}/licenses") {
+            ant.fileset(dir: "$env.rapid_browser_svn/licenses", excludes:".svn");
+        }
+        
         ant.copy(todir: "${env.dist_rapid_browser}") {
             ant.fileset(file: "$env.rapid_browser_svn/rapidbrowser.bat")
             ant.fileset(file: "$env.rapid_browser_svn/rapidbrowser.sh")

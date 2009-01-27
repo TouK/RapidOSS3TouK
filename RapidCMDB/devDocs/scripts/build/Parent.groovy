@@ -19,9 +19,33 @@
 package build;
 
 class Parent {
-	AntBuilder ant = new AntBuilder();
-	Env env = new Env(ant);
-	Properties classpath = env.thirdPartyJars;	
+    
+    AntBuilder ant;
+	Env env;
+	Properties classpath;
 	public static boolean TEST = false;
+	public Parent()
+    {
+        AntBuilder.metaClass.javac = {java.util.Map map, java.lang.Object o1->
+            if(map.destdir != null)
+            {
+                delegate.delete(dir:map.destdir);
+                delegate.mkdir(dir:map.destdir);
+            }
+            delegate.invokeMethod("javac", [map, o1] as Object[]);
+        }
+        AntBuilder.metaClass.javac = { java.util.Map map->
+
+            if(map.destdir != null)
+            {
+                delegate.delete(dir:map.destdir);
+                delegate.mkdir(dir:map.destdir);
+            }
+            delegate.invokeMethod("javac", [map, null] as Object[]);
+        }
+        ant = new AntBuilder();
+	    env = new Env(ant);
+	    classpath = env.thirdPartyJars;	   
+    }
 
 }

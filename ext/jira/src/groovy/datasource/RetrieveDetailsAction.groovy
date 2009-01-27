@@ -13,7 +13,7 @@ public class RetrieveDetailsAction implements Action {
     private issueId;
     private detailMap = [:];
     
-    public CloseIssueAction(Logger logger, String issueId, String resolution) {
+    public RetrieveDetailsAction(Logger logger, String issueId) {
         this.logger = logger;
         this.issueId = issueId;
     }

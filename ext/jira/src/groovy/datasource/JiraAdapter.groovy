@@ -31,9 +31,24 @@ public class JiraAdapter extends BaseAdapter{
 	    return action.getIssue();
 	} 
 	
-	public getProp(String issueId, List props){
+	public getProps(String issueId, List props){
 		RetrievePropsAction action = new RetrievePropsAction(logger,issueId);
 	    executeAction(action);        
 	    return action.getProps();
+	}
+	
+	public resolveIssue(String issueId, String resolution){
+		ResolveIssueAction action = new ResolveIssueAction(logger,issueId, resolution);
+	    executeAction(action);        
+	}
+	
+	public updateIssue(String issueId, Map props){
+		UpdateJiraIssueAction action = new UpdateJiraIssueAction(logger,issueId, props);
+	    executeAction(action);        
+	}
+	
+	public addCommentToIssue(String issueId, String comment){
+		AddCommentAction action = new AddCommentAction(logger,issueId, comment);
+	    executeAction(action);        
 	}
 }

@@ -138,7 +138,7 @@
 		<Relation From="RsTopologyObject" To="RsTopologyObject" Name="childObjects" ReverseName="parentObjects" Type="ManyToMany"></Relation>
 		<Relation From="RsTicket" To="RsTopologyObject" Name="relatedObjects" ReverseName="relatedTickets" Type="ManyToMany"></Relation>
 		<Relation From="RsTicket" To="RsService" Name="relatedServices" ReverseName="relatedServiceTickets" Type="ManyToMany"></Relation>
-		<Relation From="RsTicket" To="RsEvent" Name="relatedEvents" ReverseName="relatedEventTickets" Type="ManyToMany"></Relation>
-		<Relation From="RsTicket" To="RsTicket" Name="subTickets" ReverseName="parentTicket" Type="OneToMany"></Relation>		
+		<Relation From="RsTicket" To="RsEvent" Name="relatedEvents" ReverseName="relatedEventTickets" Type="ManyToMany"></Relation>		
+		<Relation From="RsTicket" To="RsTicket" Name="subTickets" ReverseName="parentTicket" Type="OneToMany"></Relation>
     </Relations>
 </Rsmodel>

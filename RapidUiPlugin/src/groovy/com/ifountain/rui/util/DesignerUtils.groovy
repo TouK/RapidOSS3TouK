@@ -13,7 +13,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 class DesignerUtils {
     public static Map addConfigurationParametersFromModel(Map componentMetaPropertiesConfiguration, org.codehaus.groovy.grails.commons.GrailsDomainClass domainClass)
     {
-        def clonedPropertiesConfiguration = componentMetaPropertiesConfiguration.clone();
+        def clonedPropertiesConfiguration = componentMetaPropertiesConfiguration != null?componentMetaPropertiesConfiguration.clone():[:];
         def constrainedProps = domainClass.getConstrainedProperties();
         def domainPropertiesList = domainClass.clazz.'getPropertiesList'();
         for(int i=0; i < domainPropertiesList.size(); i++){
@@ -29,13 +29,23 @@ class DesignerUtils {
                 }
                 config.name = propName;
                 config.type = config.type == null ? getType(domainProperty) : config.type
-                def isRequired = config.required != null ? config.required : !(constrainedProps[propName].isBlank() || constrainedProps[propName].isNullable())
-                config.required = isRequired;
-                config.description = config.description != null ? config.description : "";
-                //TODO: could not tested taking inList from constraints will be tested if an appropriate model is constructed
-                def inlistConstraint = constrainedProps[propName].getInList();
-                if (inlistConstraint == null) inlistConstraint = [];
-                config.inList = config.inList != null ? config.inList : inlistConstraint.join(",")
+
+                if(constrainedProps[propName] != null)
+                {
+                    def isRequired = config.required != null ? config.required : !(constrainedProps[propName].isBlank() || constrainedProps[propName].isNullable())
+                    config.required = isRequired;
+                    config.descr = config.descr != null ? config.descr : "";
+                    //TODO: could not tested taking inList from constraints will be tested if an appropriate model is constructed
+                    def inlistConstraint = constrainedProps[propName].getInList();
+                    if (inlistConstraint == null) inlistConstraint = [];
+                    config.inList = config.inList != null ? config.inList : inlistConstraint.join(",")
+                }
+                else
+                {
+                    config.required = true;
+                    config.descr = "";
+                    config.inList = "";
+                }
             }
         }
 

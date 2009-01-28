@@ -60,8 +60,8 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
         def model2Class = gcl.getLoadedClasses().findAll {it.name == relatedModelName}[0];
 
         //Configured values will overwrite values defined in model. If no configuration exist description field be left empty
-        def model1Prop1ConfigurationProps = [description:"desc1"];
-        def model1Prop6ConfigurationProps = [description:"desc2", type:"List", inList:"x,y,z", required:true];
+        def model1Prop1ConfigurationProps = [descr:"desc1"];
+        def model1Prop6ConfigurationProps = [descr:"desc2", type:"List", inList:"x,y,z", required:true];
         def metaDataConfiguration  = [
                 "prop1":model1Prop1ConfigurationProps,
                 "prop6":model1Prop6ConfigurationProps
@@ -98,13 +98,13 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
         assertEquals (false, uiPropertyMetaDatasForUiModel1[6].required);
 
 
-        assertEquals ("desc1", uiPropertyMetaDatasForUiModel1[0].description);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[1].description);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[2].description);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[3].description);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[4].description);
-        assertEquals ("desc2", uiPropertyMetaDatasForUiModel1[5].description);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[6].description);
+        assertEquals ("desc1", uiPropertyMetaDatasForUiModel1[0].descr);
+        assertEquals ("", uiPropertyMetaDatasForUiModel1[1].descr);
+        assertEquals ("", uiPropertyMetaDatasForUiModel1[2].descr);
+        assertEquals ("", uiPropertyMetaDatasForUiModel1[3].descr);
+        assertEquals ("", uiPropertyMetaDatasForUiModel1[4].descr);
+        assertEquals ("desc2", uiPropertyMetaDatasForUiModel1[5].descr);
+        assertEquals ("", uiPropertyMetaDatasForUiModel1[6].descr);
 
         assertEquals ("", uiPropertyMetaDatasForUiModel1[0].inList);
         assertEquals ("", uiPropertyMetaDatasForUiModel1[1].inList);

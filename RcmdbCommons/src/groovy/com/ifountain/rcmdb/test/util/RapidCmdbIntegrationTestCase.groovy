@@ -24,7 +24,7 @@ package com.ifountain.rcmdb.test.util
  * Time: 9:58:10 AM
  * To change this template use File | Settings | File Templates.
  */
-class RapidCmdbIntegrationTestCase extends RapidCmdbTestCase{
+public class RapidCmdbIntegrationTestCase extends RapidCmdbTestCase{
 
     void setUp(){
     }

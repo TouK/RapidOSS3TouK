@@ -20,6 +20,11 @@
 
 public class RsServiceOperations extends RsGroupOperations
 {
+    def calculateState(currentState, oldPropagatedState, newPropagatedState)
+    {
+        return findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState);
+    }
+    
     public int findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState)
     {
         if (newPropagatedState == -1 && oldPropagatedState == -1 || newPropagatedState > currentState

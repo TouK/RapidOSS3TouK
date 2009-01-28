@@ -23,8 +23,10 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
             }
             return 0;
         }}),
-        InList: new YAHOO.widget.DropdownCellEditor({disableBtns:true})
+        InList: new YAHOO.widget.DropdownCellEditor({}),
+        Boolean: new YAHOO.widget.DropdownCellEditor({dropdownOptions:['true', 'false']})
     };
+    this.actionDlg = new YAHOO.rapidjs.designer.ActionDefinitionDialog(this);
     this.render();
     this.getData();
 }
@@ -109,23 +111,23 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
 //        this.changeLayout(xmlData);
     },
 
-    getItemType : function(xmlData){
-       return xmlData.getAttribute(this.treeTypeAttribute);
-    },
-
     displayItemProperties: function(xmlData) {
         this.currentDisplayedItemData = xmlData;
-        var itemType = this.getItemType(xmlData);
+        var itemType = DesignerUtils.getItemType(this, xmlData);
         var properties = UIConfig.getProperties(itemType)
         var data = [];
-        if(itemType == "Layout" && this.getItemType(xmlData.parentNode()) == "Tab"){
+        if (itemType == "Layout" && DesignerUtils.getItemType(this, xmlData.parentNode()) == "Tab") {
             data[data.length] = {name:"type", value:xmlData.getAttribute("type") || ""}
         }
         SelectUtils.clear(this.propertySelect);
         SelectUtils.addOption(this.propertySelect, '', '');
         for (var prop in properties) {
+            var propValue = xmlData.getAttribute(prop);
             if (UIConfig.isPropertyRequired(itemType, prop)) {
-                data[data.length] = {name:prop, value:xmlData.getAttribute(prop) || prop}
+                data[data.length] = {name:prop, value:propValue || prop}
+            }
+            else if (propValue) {
+                data[data.length] = {name:prop, value:propValue}
             }
             else {
                 SelectUtils.addOption(this.propertySelect, prop, prop)
@@ -134,9 +136,17 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         var length = this.propertyGrid.getRecordSet().getLength()
         this.propertyGrid.deleteRows(0, length)
         this.propertyGrid.addRows(data)
+        this.closeCellEditor();
+    },
+    closeCellEditor: function() {
+        var column = this.propertyGrid.getColumn("value");
+        var editor = column.editor;
+        if (editor) {
+            editor.cancel();
+        }
     },
     changeLayout: function(xmlData) {
-        var layoutNode = this.getCurrentLayoutNode(xmlData);
+        var layoutNode = DesignerUtils.getCurrentLayoutNode(this, xmlData);
         if ((!layoutNode && this.currentLayout) || layoutNode != this.currentLayoutNode) {
             if (this.currentLayout) {
                 this.currentLayout.destroy();
@@ -167,49 +177,6 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.currentLayoutNode = layoutNode;
         this.layout.resize();
     },
-    getCurrentLayoutNode: function(xmlData) {
-        var currentTabNode = this.getTabNodeFromNode(xmlData);
-        if (currentTabNode) {
-            var childNodes = currentTabNode.childNodes();
-            for (var i = 0; i < childNodes.length; i++) {
-                if (childNodes[i].getAttribute(this.treeTypeAttribute) == "Layout") {
-                    return childNodes[i]
-                }
-            }
-        }
-        return null;
-    },
-
-    getTabNodeFromNode: function(xmlData) {
-        var currentTab = xmlData.getAttribute(this.itemTabAtt);
-        if (currentTab) {
-            var tabNodes = this.data.findAllObjects(this.keyAttribute, currentTab, this.contentPath);
-            if (tabNodes.length > 0) {
-                return tabNodes[0];
-            }
-        }
-        return null;
-    },
-
-    getComponentNamesOfCurrentTab: function(xmlData){
-        var compNames = []; 
-        var currentTabNode = this.getTabNodeFromNode(xmlData);
-        if (currentTabNode) {
-             var componentsNode;
-             var childNodes = currentTabNode.childNodes();
-             for(var i=0; i< childNodes.length; i++){
-                 if(this.getItemType(childNodes[i]) == "Components"){
-                     componentsNode = childNodes[i];
-                     break;
-                 }
-             }
-             childNodes = componentsNode.childNodes()
-             for(var i=0; i< childNodes.length; i++){
-                 compNames[compNames.length] = childNodes[i].getAttribute("name");
-             }
-        }
-        return compNames;
-    },
 
     createTreeNode: function(parentNode, itemType) {
         var id = YAHOO.util.Dom.generateId(null, itemType);
@@ -231,38 +198,38 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         var metaChildren = UIConfig.getChildren(itemType)
         for (var i = 0; i < metaChildren.length; i++) {
             if (!UIConfig.canBeDeleted(metaChildren[i]) || (itemType == "Tab" && metaChildren[i] == "Layout")) {
-                this.createTreeNode( newNode, metaChildren[i]);
+                this.createTreeNode(newNode, metaChildren[i]);
             }
         }
         return newNode;
     },
 
-    createLayoutNode: function(layoutType){
+    createLayoutNode: function(layoutType) {
         var childNodes = this.currentDisplayedItemData.childNodes();
-        for(var i=childNodes.length-1; i >= 0; i--){
+        for (var i = childNodes.length - 1; i >= 0; i--) {
             var unitNode = childNodes[i]
-            var nodeType = this.getItemType(unitNode);
-            if(nodeType != "Layout_Center"){
+            var nodeType = DesignerUtils.getItemType(this, unitNode);
+            if (nodeType != "Layout_Center") {
                 this.currentDisplayedItemData.removeChild(unitNode);
             }
-            else{
+            else {
                 var childLayoutNode = unitNode.firstChild();
-                if(childLayoutNode){
+                if (childLayoutNode) {
                     unitNode.removeChild(childLayoutNode);
                 }
             }
         }
-        var _populateLayoutNode = function(layoutNode, lConf){
+        var _populateLayoutNode = function(layoutNode, lConf) {
             var centerUnitNode = layoutNode.firstChild();
-            for(var unitType in lConf){
+            for (var unitType in lConf) {
                 var unitNode;
-                if(unitType != "Layout_Center"){
+                if (unitType != "Layout_Center") {
                     unitNode = this.createTreeNode(layoutNode, unitType);
                 }
-                else{
+                else {
                     unitNode = centerUnitNode;
                 }
-                if(typeof lConf[unitType] == 'object'){
+                if (typeof lConf[unitType] == 'object') {
                     var childLayoutNode = this.createTreeNode(unitNode, "Layout");
                     _populateLayoutNode.call(this, childLayoutNode, lConf[unitType])
                 }
@@ -275,15 +242,24 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
 
         if (id.indexOf("add_") == 0) {
             var itemType = id.substr(4);
-            var newNode = this.createTreeNode(xmlData, itemType);
-            var currentTab = xmlData.getAttribute(this.itemTabAtt);
-            this.addExtraAttributesToChildNodes(xmlData, currentTab);
-            this.refreshTree();
+            if (itemType == "Action") {
+                this.actionDlg.show(YAHOO.rapidjs.designer.ActionDefinitionDialog.CREATE_MODE, xmlData);
+            }
+            else {
+                var newNode = this.createTreeNode(xmlData, itemType);
+                var currentTab = xmlData.getAttribute(this.itemTabAtt);
+                this.addExtraAttributesToChildNodes(xmlData, currentTab);
+                this.refreshTree();
+            }
+
         }
         else if (id == "delete") {
             xmlData.parentNode().removeChild(xmlData);
             this.refreshTree();
             //TODO: destroy layout if needed.
+        }
+        else if (id == "edit_Action") {
+            this.actionDlg.show(YAHOO.rapidjs.designer.ActionDefinitionDialog.EDIT_MODE, xmlData);
         }
     },
 
@@ -325,16 +301,28 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     var collapsed = stringToAddToUrl + imageConfig['collapsed']
                     rootImages.push({visible:"params.data." + this.treeTypeAttribute + " == '" + item + "'", expanded:expanded, collapsed:collapsed})
                 }
-                var children = UIConfig.getChildren(item);
-                if (children) {
-                    for (var i = 0; i < children.length; i++) {
-                        var child = children[i];
-                        if (UIConfig.canBeDeleted(child)) {
-                            var displayName = UIConfig.getDisplayName(child);
-                            menuItems.push({id:'add_' + child, label:'Add New ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "'"});
+                if (item == "Actions") {
+                    menuItems.push({id:'add_Action', label:'Add New Action', visible:"params.data." + this.treeTypeAttribute + " =='" + item + "'"});
+                    menuItems.push({id:'edit_Action', label:'Edit',
+                        visible:"params.data." + this.treeTypeAttribute + " =='FunctionAction' || " +
+                                "params.data." + this.treeTypeAttribute + " =='RequestAction' || " +
+                                "params.data." + this.treeTypeAttribute + " =='MergeAction' || " +
+                                "params.data." + this.treeTypeAttribute + " =='CombinedAction' || " +
+                                "params.data." + this.treeTypeAttribute + " =='LinkAction'"});
+                }
+                else {
+                    var children = UIConfig.getChildren(item);
+                    if (children) {
+                        for (var i = 0; i < children.length; i++) {
+                            var child = children[i];
+                            if (UIConfig.canBeDeleted(child)) {
+                                var displayName = UIConfig.getDisplayName(child);
+                                menuItems.push({id:'add_' + child, label:'Add New ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "'"});
+                            }
                         }
                     }
                 }
+
             }
             menuItems.push({id:"delete", label:"Delete", visible:"params.data.canBeDeleted"});
             var treeConfig = {
@@ -353,8 +341,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         var treeConfig = getTreeConfig.call(this);
         this.tree = new YAHOO.rapidjs.component.TreeGrid(dh.append(document.body, {tag:'div'}), treeConfig);
-        var toolsWrp = dh.append(this.tree.toolbar.el, {tag:'div', class:'r-designer-tools',
-            html:'<div class="wrp"></div>'}) ;
+        var toolsWrp = dh.append(this.tree.toolbar.el, {tag:'div', class:'r-designer-tools', html:'<div class="wrp"></div>'});
         var wrps = YAHOO.util.Dom.getElementsByClassName('wrp', 'div', toolsWrp);
         new YAHOO.rapidjs.component.Button(wrps[0], {className:'r-designer-saveButton', scope:this, click:this.save, text:'Save'});
         this.tree.events["selectionChange"].subscribe(this.treeSelectionChanged, this, true);
@@ -365,11 +352,11 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             var propName = record.getData("name")
             var propValue = record.getData("value")
             this.currentDisplayedItemData.setAttribute(propName, propValue);
-            var itemType = this.getItemType(this.currentDisplayedItemData);
+            var itemType = DesignerUtils.getItemType(this, this.currentDisplayedItemData);
             if (UIConfig.isDisplayProperty(itemType, propName)) {
                 this.currentDisplayedItemData.setAttribute(this.treeDisplayAttribute, propValue);
             }
-            if(itemType == "Layout" && propName == "type"){
+            if (itemType == "Layout" && propName == "type") {
                 this.createLayoutNode(propValue);
                 var currentTab = this.currentDisplayedItemData.getAttribute(this.itemTabAtt);
                 this.addExtraAttributesToChildNodes(this.currentDisplayedItemData, currentTab)
@@ -381,7 +368,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         var myColumnDefs = [
             {key:"name", label:"Name", sortable:true, width:150},
-            {key:"value", label:"Value", sortable:true, width:250, editor:editor}
+            {key:"value", label:"Value", sortable:true, width:250}
         ];
 
 
@@ -408,27 +395,28 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     record = this.propertyGrid.getRecord(target),
                     column = this.propertyGrid.getColumn(target),
                     propertyName = record.getData("name");
-
-            var itemType = this.getItemType(this.currentDisplayedItemData);
-            var editor;
-            if(itemType == "Layout" && this.getItemType(this.currentDisplayedItemData.parentNode()) == "Tab"){
-                editor = this.editors["InList"];
-                editor.dropdownOptions = UIConfig.getLayoutTypeNames();
-                editor.renderForm();
+            if (column.getKey() == "value") {
+                var itemType = DesignerUtils.getItemType(this, this.currentDisplayedItemData);
+                var editor;
+                if (itemType == "Layout" && DesignerUtils.getItemType(this, this.currentDisplayedItemData.parentNode()) == "Tab") {
+                    editor = this.editors["InList"];
+                    editor.dropdownOptions = UIConfig.getLayoutTypeNames();
+                    editor.renderForm();
+                }
+                else if (propertyName == "component" && (itemType == "Layout_Center" || itemType == "Layout_Left" ||
+                                                         itemType == "Layout_Top" || itemType == "Layout_Right" ||
+                                                         itemType == "Layout_Bottom" || itemType == "Dialogs")) {
+                    editor = this.editors["InList"];
+                    editor.dropdownOptions = DesignerUtils.getComponentNamesOfCurrentTab(this, this.currentDisplayedItemData);
+                    editor.renderForm();
+                }
+                else {
+                    var propertyType = UIConfig.getPropertyType(itemType, propertyName)
+                    editor = this.editors[propertyType];
+                }
+                column.editor = editor;
+                this.propertyGrid.showCellEditor(target);
             }
-            else if(propertyName == "component" && (itemType == "Layout_Center" ||  itemType == "Layout_Left" ||
-                                                    itemType == "Layout_Top" || itemType == "Layout_Right" ||
-                                                    itemType == "Layout_Bottom" || itemType == "Dialogs")){
-                editor = this.editors["InList"];
-                editor.dropdownOptions = this.getComponentNamesOfCurrentTab(this.currentDisplayedItemData);
-                editor.renderForm();
-            }
-            else{
-               var propertyType = UIConfig.getPropertyType(itemType, propertyName)
-               editor = this.editors[propertyType];
-            }
-            column.editor = editor;
-            this.propertyGrid.showCellEditor(target);
         }, this, true);
 
         var addTooltip = function() {
@@ -497,6 +485,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     var oRecord = this.propertyGrid.getRecord(elRow);
                     var prop = oRecord.getData("name");
                     this.propertyGrid.deleteRow(elRow);
+                    this.closeCellEditor();
                     SelectUtils.addOption(this.propertySelect, prop, prop);
                     this.currentDisplayedItemData.setAttribute(prop, null);
                 }

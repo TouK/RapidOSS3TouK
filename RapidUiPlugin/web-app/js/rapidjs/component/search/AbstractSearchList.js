@@ -51,8 +51,8 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.scrollPollTask = new YAHOO.ext.util.DelayedTask(this.scrollPoll, this);
     var events = {
-        'rowHeaderMenuClick' : new YAHOO.util.CustomEvent('rowHeaderMenuClick'),
-        'propertyClick' : new YAHOO.util.CustomEvent('propertyClick'),
+        'rowHeaderMenuClicked' : new YAHOO.util.CustomEvent('rowHeaderMenuClicked'),
+        'propertyClicked' : new YAHOO.util.CustomEvent('propertyClicked'),
         'rowDoubleClicked' : new YAHOO.util.CustomEvent('rowDoubleClicked'),
         'rowClicked' : new YAHOO.util.CustomEvent('rowClicked'),
         'selectionChanged' : new YAHOO.util.CustomEvent('selectionChanged'),
@@ -592,7 +592,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.events['rowHeaderMenuClick'].fireDirect(data, id, parentId);
     },
     firePropertyClick: function(key, value, data) {
-        this.events['propertyClick'].fireDirect(key, value, data);
+        this.events['propertyClicked'].fireDirect(key, value, data);
     },
     fireRowDoubleClick: function(data, event) {
         this.events['rowDoubleClicked'].fireDirect(data, event);

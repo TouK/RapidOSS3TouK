@@ -44,9 +44,11 @@ public class OpenIssueAction implements Action {
     	localIssue.summary = checkAndReturnIssueProp(issuePropsMap, "summary");
     	issue.setSummary(localIssue.summary)
     	
-    	localIssue.priority = checkAndReturnIssueProp(issuePropsMap, "priority") 
-    	issue.setPriority(localIssue.priority);
-    	
+    	if (issuePropsMap.containsKey("priority")){
+    		localIssue.priority = issuePropsMap.priority;
+    		issue.setPriority(issuePropsMap.priority);
+    	}
+
     	if (issuePropsMap.containsKey("reporter")){
     		localIssue.reporter = issuePropsMap.reporter;
     		issue.setReporter(issuePropsMap.reporter);

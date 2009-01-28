@@ -1,4 +1,4 @@
-<%@ page import="connector.JiraConnector;connection.JiraConnection" %><html>
+<%@ page import="connector.JiraConnector;connection.JiraConnection;datasource.JiraDatasource" %><html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="adminLayout"/>
@@ -24,6 +24,7 @@
         <tr>
             <th>Name</th>
             <th>Username</th>
+            <th>Reconnect Interval</th>
             <th></th>
             <th></th>
         </tr>
@@ -35,9 +36,12 @@
                 <%
                 	def name = JiraConnector.getConnectionName(jiraConnector.name);
                     def jiraConnection = JiraConnection.get(name: name);
+                    name = JiraConnector.getDatasourceName(jiraConnector.name);
+                    def jiraDatasource = JiraDatasource.get(name: name);
                 %>
                 <td><g:link action="show" controller="jiraConnector" id="${jiraConnector.id}">${jiraConnector.name?.encodeAsHTML()}</g:link></td>
 				<td>${jiraConnection?.username?.encodeAsHTML()}</td>
+				<td>${jiraDatasource?.reconnectInterval?.encodeAsHTML()}</td>
                 <td><g:link action="testConnection" controller="jiraConnector" id="${jiraConnector.id}" class="testConnection">Test Connection</g:link></td>
                 <td><g:link action="edit" controller="jiraConnector" id="${jiraConnector.id}" class="edit">Edit</g:link></td>
             </tr>

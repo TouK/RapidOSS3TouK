@@ -12,6 +12,7 @@ class JiraConnector {
     String name ="";
     String rsOwner = "p"
     JiraDatasource ds;
+    Long reconnectInterval = 0;
     org.springframework.validation.Errors errors ;
 
     Object __operation_class__ ;

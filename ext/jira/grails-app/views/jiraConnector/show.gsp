@@ -1,4 +1,4 @@
-<%@ page import="connector.JiraConnector" %><html>
+<%@ page import="connector.JiraConnector;connection.JiraConnection;datasource.JiraDatasource" %><html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="adminLayout"/>
@@ -25,23 +25,19 @@
 
                 <tr class="prop">
                     <td valign="top" class="name">Name:</td>
-
                     <td valign="top" class="value">${jiraConnector.name}</td>
-
                 </tr>
-
                 <tr class="prop">
                     <td valign="top" class="name">Username:</td>
-
                     <td valign="top" class="value">${jiraConnection?.username}</td>
-
                 </tr>
-
                 <tr class="prop">
                     <td valign="top" class="name">Password:</td>
-
                     <td valign="top" class="value">${jiraConnection?.userPassword}</td>
-
+                </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">Reconnect Interval:</td>
+                    <td valign="top" class="value">${jiraDatasource?.reconnectInterval} sec.</td>
                 </tr>
             </tbody>
         </table>

@@ -23,6 +23,11 @@
             <g:renderErrors bean="${jiraConnection}" as="list"/>
         </div>
     </g:hasErrors>
+    <g:hasErrors bean="${jiraDatasource}">
+        <div class="errors">
+            <g:renderErrors bean="${jiraDatasource}" as="list"/>
+        </div>
+    </g:hasErrors>
     <g:hasErrors bean="${flash.errors}">
         <div class="errors">
             <g:renderErrors bean="${flash.errors}"/>
@@ -57,6 +62,15 @@
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: jiraConnection, field: 'userPassword', 'errors')}">
                             <input type="password" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean: jiraConnection, field: 'userPassword')}"/>
+                        </td>
+                    </tr>
+                    
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="reconnectInterval">Reconnect Interval:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(jiraConnection,field:'reconnectInterval','errors')}">
+                            <input type="text" class="inputtextfield" id="reconnectInterval" name="reconnectInterval" value="${fieldValue(jiraConnection,field:'reconnectInterval')}" />sec.
                         </td>
                     </tr>
                 </tbody>

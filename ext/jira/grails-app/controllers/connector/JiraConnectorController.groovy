@@ -24,7 +24,11 @@ class JiraConnectorController {
             redirect(action: list)
         }
         else {
-            return [jiraConnector: jiraConnector]
+        	def connectionName = JiraConnector.getConnectionName(jiraConnector.name);
+            def jiraConnection = JiraConnection.findByName(connectionName);
+            def dsName = JiraConnector.getDatasourceName(jiraConnector.name);
+            def jiraDatasource = JiraDatasource.findByName(dsName);
+            return [jiraConnector: jiraConnector, jiraDatasource:jiraDatasource, jiraConnection:jiraConnection ]
         }
     }
 
@@ -61,8 +65,10 @@ class JiraConnectorController {
         }
         else {
         	def connectionName = JiraConnector.getConnectionName(jiraConnector.name);
-            def jiraConnection = JiraConnection.findByName(connectionName)
-            return [jiraConnector: jiraConnector, jiraConnection:jiraConnection ]
+            def jiraConnection = JiraConnection.findByName(connectionName);
+            def dsName = JiraConnector.getDatasourceName(jiraConnector.name);
+            def jiraDatasource = JiraDatasource.findByName(dsName);
+            return [jiraConnector: jiraConnector, jiraDatasource:jiraDatasource, jiraConnection:jiraConnection ]
         }
     }
 
@@ -71,7 +77,8 @@ class JiraConnectorController {
         if (jiraConnector) {
             def connectorParams = ControllerUtils.getClassProperties(params, JiraConnector)
             def connectionParams = ControllerUtils.getClassProperties(params, JiraConnection)
-            def updatedObjects = JiraConnector.updateConnector(jiraConnector, connectorParams, connectionParams);
+            def datasourceParams = ControllerUtils.getClassProperties(params, JiraDatasource)
+            def updatedObjects = JiraConnector.updateConnector(jiraConnector, connectorParams, datasourceParams, connectionParams);
             if (updatedObjects.values().findAll {it.hasErrors()}.isEmpty()) {
                 if (ConnectionManager.checkConnection(connectionParams.name)) {
                     flash.message = "JiraConnector ${updatedObjects.jiraConnector.name} updated"
@@ -94,14 +101,15 @@ class JiraConnectorController {
     def create = {
         def jiraConnector = new JiraConnector();
         jiraConnector.properties = params
-        return [jiraConnector: jiraConnector, jiraConnection: new JiraConnection()]
+        return [jiraConnector: jiraConnector, jiraDatasource:new JiraDatasource(), jiraConnection: new JiraConnection()]
     }
 
     def save = {
         def connectorParams = ControllerUtils.getClassProperties(params, JiraConnector)
+        def datasourceParams = ControllerUtils.getClassProperties(params, JiraDatasource)
         def connectionParams = ControllerUtils.getClassProperties(params, JiraConnection)
-        def createdObjects = JiraConnector.addConnector(connectorParams, connectionParams)
-        if (!createdObjects.jiraConnector.hasErrors() && !createdObjects.jiraConnection.hasErrors()) {
+        def createdObjects = JiraConnector.addConnector(connectorParams, datasourceParams, connectionParams)
+        if (!createdObjects.jiraConnector.hasErrors() && !createdObjects.datasource.hasErrors() && !createdObjects.jiraConnection.hasErrors()) {
             if (ConnectionManager.checkConnection(connectionParams.name)) {
                 flash.message = "JiraConnector ${createdObjects.jiraConnector.name} created"
             }

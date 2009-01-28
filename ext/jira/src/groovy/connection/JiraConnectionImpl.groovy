@@ -6,6 +6,7 @@ import com.ifountain.core.connection.exception.UndefinedConnectionParameterExcep
 
 import org.ifountain.www.jira.rpc.soap.jirasoapservice_v2.*;
 import com.atlassian.jira.rpc.soap.beans.*;
+import com.atlassian.jira.rpc.exception.*;
 
 public class JiraConnectionImpl extends BaseConnection{
 
@@ -23,6 +24,7 @@ public class JiraConnectionImpl extends BaseConnection{
     }
 
     protected void disconnect() {
+    	if (token=="" || token==null) return;
     	jiraSoapService.logout(token);
     }
 
@@ -33,12 +35,14 @@ public class JiraConnectionImpl extends BaseConnection{
     }
 
     public boolean checkConnection() {
-    	if (token!=""){
+    	if (token=="" || token==null) return false;
+    	try{
+    		jiraSoapService.getServerInfo(token);
     		return true;
-    	}
-    	else{
+    	}catch (RemoteAuthenticationException e){
     		return false;
     	}
+    	
     }
     private String checkParam(String parameterName) throws UndefinedConnectionParameterException {
         if(!params.getOtherParams().containsKey(parameterName)){

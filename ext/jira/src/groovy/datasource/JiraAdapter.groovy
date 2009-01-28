@@ -43,7 +43,7 @@ public class JiraAdapter extends BaseAdapter{
 	}
 	
 	public updateIssue(String issueId, Map props){
-		UpdateJiraIssueAction action = new UpdateJiraIssueAction(logger,issueId, props);
+		UpdateIssueAction action = new UpdateIssueAction(logger,issueId, props);
 	    executeAction(action);        
 	}
 	

@@ -28,6 +28,6 @@ import org.apache.log4j.Logger
  */
 class SnmpDatasourceOperations extends BaseListeningDatasourceOperations{
     def getListeningAdapter(Map params){
-         return new SnmpListeningAdapter(getProperty("connection").name, 0, Logger.getRootLogger());
+         return new SnmpListeningAdapter(getProperty("connection").name, 0,  params.logger);
     }
 }

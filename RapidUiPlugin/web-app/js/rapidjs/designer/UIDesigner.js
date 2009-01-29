@@ -317,7 +317,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         else if (id == "delete") {
             xmlData.parentNode().removeChild(xmlData);
-            if (!this.currentDisplayedItemData.parentNode()) {
+            if (this.currentDisplayedItemData && !this.currentDisplayedItemData.parentNode()) {
                 this.currentDisplayedItemData = null;
                 var length = this.propertyGrid.getRecordSet().getLength()
                 this.propertyGrid.deleteRows(0, length)

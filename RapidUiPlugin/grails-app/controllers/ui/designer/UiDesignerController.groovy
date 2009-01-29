@@ -137,6 +137,11 @@ class UiDesignerController {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         builder.UiElements{
+            builder.UiElement(designerType:"Urls", display:"Urls"){
+                builder.Children{
+                    builder.Child(isMultiple:true, designerType:"Url")                    
+                }
+            }
             def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer")}
             uiDomainClasses.each{grailsDomainClass->
                 Class domainClass = grailsDomainClass.clazz;

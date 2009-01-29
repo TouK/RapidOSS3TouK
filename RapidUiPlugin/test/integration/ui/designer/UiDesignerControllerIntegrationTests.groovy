@@ -107,6 +107,12 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             def component = componentMap[StringUtils.substringAfter(domainClass.simpleName, "Ui")];
             assertNotNull ("Undefined for ${StringUtils.substringAfter(domainClass.simpleName, "Ui")} in ${componentMap}", component);
         }
+        def urlsComponent = componentMap["Urls"];
+        assertEquals("Urls", urlsComponent.'@designerType'.text());
+        assertEquals("Urls", urlsComponent.'@display'.text());
+        assertEquals(1, urlsComponent.Children.size());
+        assertEquals("Url", urlsComponent.Children[0].Child[0].'@designerType'.text());
+        assertEquals("true", urlsComponent.Children[0].Child[0].'@isMultiple'.text());
         def urlComponent = componentMap["Url"];
         def urlPropertyMetaData = urlComponent.Properties.Property;
         def xmlProperties = [:]

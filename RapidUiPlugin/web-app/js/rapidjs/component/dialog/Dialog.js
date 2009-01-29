@@ -189,7 +189,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         var totalHeight = getEl(this.panel.header).getHeight() +
                           getEl(this.panel.footer).getHeight() +
                           contentHeight +
-                          panelBodyEl.getHeight();
+                          panelBodyEl.getPadding('tb');
         this.panel.cfg.setProperty("height", totalHeight);
     },
     setTitle: function(title) {

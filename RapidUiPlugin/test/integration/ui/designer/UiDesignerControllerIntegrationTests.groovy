@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import groovy.xml.MarkupBuilder
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
+import org.apache.commons.io.FileUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -35,13 +36,13 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         }
     }
 
-    public void testSaveAndView()
+    public void testSaveAndViewAndGenerate()
     {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         def url1Props = [url:"myUrl1", designerType:"Url"]
         def url2Props = [url:"myUrl2", designerType:"Url"]
-        def tabsProps = [[name:"tab1", designerType:"Tab"], [name:"tab2", designerType:"Tab"]];
+        def tabsProps = [[name:"tab1", designerType:"Tab", javascriptFile:'x.gsp'], [name:"tab2", designerType:"Tab", javascriptFile:'y.gsp']];
         builder.UiConfig{
             builder.UiElement(designerType:"Urls"){
                 builder.UiElement(url1Props){
@@ -71,13 +72,32 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertTrue (!url1.tabs.findAll {it.name == "tab2"}.isEmpty());
         assertTrue (!url2.tabs.findAll {it.name == "tab1"}.isEmpty());
         assertTrue (!url2.tabs.findAll {it.name == "tab2"}.isEmpty());
+
         IntegrationTestUtils.resetController (controller);
-        controller.params.configuration = sw.toString()
         controller.view();
-
+        println sw.toString()
+        println controller.response.contentAsString
         assertEqualsXML(sw.toString(), controller.response.contentAsString);
-        
 
+        def baseDir =  System.getProperty("base.dir");
+        UiUrl.list().each{url->
+            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.url+"Layout.gsp");
+            urlLayoutFile.delete();
+            FileUtils.deleteDirectory (new File(baseDir + "/web-app/${url.url}"));
+        }
+
+        IntegrationTestUtils.resetController (controller);
+        controller.generate();
+
+
+        UiUrl.list().each{url->
+            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.url+"Layout.gsp");
+            assertTrue (urlLayoutFile.exists());
+            url.tabs.each{tab->
+                def url1WebAppDirectoryFile = new File(baseDir + "/web-app/${url.url}/${tab.name}.gsp");
+                assertTrue (url1WebAppDirectoryFile.exists());
+            }
+        }
     }
     public void testMetaData()
     {

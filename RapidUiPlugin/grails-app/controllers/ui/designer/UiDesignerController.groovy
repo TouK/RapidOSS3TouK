@@ -4,6 +4,7 @@ import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
 import com.ifountain.rui.util.DesignerUtils
 import groovy.util.slurpersupport.GPathResult
+import groovy.text.SimpleTemplateEngine
 
 /**
 * Created by IntelliJ IDEA.
@@ -29,6 +30,45 @@ class UiDesignerController {
         def xmlConfigurationString = params.configuration
         def xmlConfiguration = new XmlSlurper().parseText(xmlConfigurationString);
         processUiElement(xmlConfiguration);
+    }
+
+    def generate = {
+        def baseDir = System.getProperty("base.dir")
+        def templateEngine = new SimpleTemplateEngine();
+        def urlTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/Url.gsp"));
+        def tabTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/Tab.gsp"));
+        UiUrl.list().each{url->
+            def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.url}Layout.gsp");
+            def content = urlTemplate.make (url:url).toString()
+            urlLayoutFile.setText (content)
+            url.tabs.each{UiTab tab->
+                def tabOutputFile = new File("${baseDir}/web-app/${url.url}/${tab.name}.gsp");
+                tabOutputFile.parentFile.mkdirs();
+                StringBuffer tabContent = new StringBuffer();
+                tab.components.each{tabComponent->
+                    tabContent.append(generateTag (tabComponent, templateEngine));
+                }
+                tab.actions.each{tabComponent->
+                    tabContent.append(generateTag (tabComponent, templateEngine));
+                }
+                tab.dialogs.each{tabComponent->
+                    tabContent.append(generateTag (tabComponent, templateEngine));
+                }
+                if(tab.layout)
+                {
+                    tabContent.append(generateTag (tab.layout, templateEngine));
+                }
+                def tabString = tabTemplate.make (tab:tab, tabContent:tabContent).toString()
+                tabOutputFile.setText (tabString)
+            }
+        }
+    }
+
+    def generateTag(model, templateEngine)
+    {
+        def baseDir = System.getProperty("base.dir")
+        def tagTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/${model.metaData().designerType}.gsp"));
+        return tagTemplate.make(uiElement:model).toString();
     }
     def createXml(components, builder)
     {

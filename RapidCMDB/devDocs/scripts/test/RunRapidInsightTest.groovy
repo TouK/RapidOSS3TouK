@@ -102,11 +102,12 @@ if(testOptions.OPEN_NMS == "true")
 }
 if(testOptions.RAPID_UI == "true")
 {
-    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/grails-app"), [new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app/conf").canonicalPath]]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/grails-app"), [new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app/conf").canonicalPath, new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app/templates").canonicalPath]]);
     watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/src"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/src")]);
     watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/RapidUiGrailsPlugin.groovy"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/RapidUiGrailsPlugin.groovy")]);
     watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/scripts"), new File("${rootDir.absolutePath}/RapidSuite/scripts")]);
     watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/operations"), new File("${rootDir.absolutePath}/RapidSuite/operations")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app/templates"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/templates")]);
     watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/test"), new File("${rootDir.absolutePath}/RapidSuite/test")]);
 }
 

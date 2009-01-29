@@ -76,8 +76,9 @@
             keyAttribute : 'id',
             treeTypeAttribute : 'designerType',
             url : "uiDesigner/view",
-            saveUrl : "uiDesigner/view",
-            generateUrl : "uiDesigner/generate"
+            saveUrl : "uiDesigner/save",
+            generateUrl : "uiDesigner/generate",
+            metaDataUrl : "uiDesigner/metaData"
         }
         var uiDesigner = new YAHOO.rapidjs.designer.UIDesigner(config);
     </script>

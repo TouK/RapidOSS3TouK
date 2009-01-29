@@ -182,12 +182,22 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
     },
 
+    adjustHeight: function(contentHeight) {
+        this.bodyEl.setHeight(contentHeight);
+        var panelBodyEl = getEl(this.panel.body);
+        panelBodyEl.setHeight(contentHeight + panelBodyEl.getPadding('tb'));
+        var totalHeight = getEl(this.panel.header).getHeight() +
+                          getEl(this.panel.footer).getHeight() +
+                          contentHeight +
+                          panelBodyEl.getHeight();
+        this.panel.cfg.setProperty("height", totalHeight);
+    },
     setTitle: function(title) {
         this.title = title;
         this.panel.setHeader('<span style="overflow:hidden;white-space:nowrap">' + this.title + '</span>');
         var headerEl = getEl(this.panel.header);
         var bodyEl = getEl(this.panel.body);
-        if(headerEl.getWidth() > bodyEl.getWidth()){
+        if (headerEl.getWidth() > bodyEl.getWidth()) {
             headerEl.setWidth(bodyEl.getWidth());
         }
     },

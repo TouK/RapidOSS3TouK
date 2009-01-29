@@ -47,6 +47,8 @@
     <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeGridView.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeGrid.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/UIDesigner.js"></script>
+    <script type="text/javascript" src="js/rapidjs/designer/DesignerUtils.js"></script>
+    <script type="text/javascript" src="js/rapidjs/designer/ActionDefinitionDialog.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/Config.js"></script>
 
 
@@ -69,12 +71,13 @@
 <body class="yui-skin-sam">
     <script>
         var config = {
-            rootTag : "Items",
-            contentPath : "Item",
-            keyAttribute : 'designer_key',
-            treeTypeAttribute : 'designer_type',
-            url : "script/run/getUIHierarchy?format=xml",
-            saveUrl : "script/run/saveUIHierarchy"
+            rootTag : "UiConfig",
+            contentPath : "UiElement",
+            keyAttribute : 'id',
+            treeTypeAttribute : 'designerType',
+            url : "uiDesigner/view",
+            saveUrl : "uiDesigner/view",
+            generateUrl : "uiDesigner/generate"
         }
         var uiDesigner = new YAHOO.rapidjs.designer.UIDesigner(config);
     </script>

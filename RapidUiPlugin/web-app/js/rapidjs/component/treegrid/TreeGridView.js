@@ -82,7 +82,11 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             YAHOO.util.Event.addListener(this.treeBody.dom, 'mouseover', this.updateTooltip, this, true);
             Tooltip.add(this.treeBody.dom, '');
         }
+        this.setMenuItems(this.menuItems);
+    },
 
+    setMenuItems: function(menuItems) {
+        this.menuItems = menuItems;
         if (this.menuItems) {
             this.rowMenu = new YAHOO.widget.Menu(this.id + "_rowMenu", {position: "dynamic", autofillheight:false});
             for (var i in this.menuItems) {
@@ -498,8 +502,8 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                 YAHOO.util.Dom.setStyle(htmlEl, "background-position", expressionsArray[i]['align'] ? 'center ' + expressionsArray[i]['align'] : 'center left')
             }
         }
-        if(!isImageSet){
-           htmlEl.style.backgroundImage = ''; 
+        if (!isImageSet) {
+            htmlEl.style.backgroundImage = '';
         }
     },
     setRootImage: function(imageEl, dataNode, isExpanded) {

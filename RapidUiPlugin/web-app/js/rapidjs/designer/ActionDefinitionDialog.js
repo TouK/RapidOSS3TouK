@@ -23,6 +23,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
 
         var dh = YAHOO.ext.DomHelper;
         var wrp = dh.append(this.dialog.body, {tag:'div', cls:'r-designer-actdlg-wrp'});
+        this.wrpEl = getEl(wrp);
         var commonView = dh.append(wrp, {tag:'div', style:'padding:5 0 5 0;',
             html:'<form action="javascript:void(0)"><fieldset style="padding:5px;"><table><tbody>' +
                  '<tr><td>Name:</td><td><input style="width:200px"></input></td></tr>' +
@@ -87,7 +88,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }, scope:this},label: 'Add Request Parameter'});
 
         var compColumnDefs = [
-            {key:"component", label:"Component", sortable:true, width:420},
+            {key:"component", label:"Component", sortable:true, width:420}
         ];
         var compDs = new YAHOO.util.DataSource([]);
         compDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -227,6 +228,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }, this, true)
         this.contextMenu = myContextMenu;
     },
+    adjustHeight: function(){
+        this.dialog.adjustHeight(this.wrpEl.getHeight());
+    },
 
     componentChanged:function() {
         if (this.componentSelect.selectedIndex > -1) {
@@ -276,6 +280,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.methodDescrEl.innerHTML = '';
             this.argsEl.innerHTML = '';
         }
+        this.adjustHeight();
     },
     closeCellEditors: function(grid) {
         var columns = grid.getColumnSet().flat;
@@ -321,6 +326,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         else {
             YAHOO.util.Dom.setStyle(this.functionView, 'display', 'none');
         }
+        this.adjustHeight();
     },
     eventChanged : function() {
         var option = this.eventSelect.options[this.eventSelect.selectedIndex];
@@ -341,6 +347,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             paramsHtml[paramsHtml.length] = '</ul>'
         }
         this.eventDescrEl.innerHTML = '<p>' + eventDesc + (nOfParams > 0 ? (' Available parameters:</p><br>' + paramsHtml.join('')) : '');
+        this.adjustHeight();
     },
     show: function(mode, xmlData) {
         if (!this.dialog) {
@@ -368,6 +375,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         this.eventChanged();
         this.typeChanged();
         this.dialog.show();
+        this.adjustHeight();
     },
     populateFieldsForUpdate: function() {
         var itemType = DesignerUtils.getItemType(this.designer, this.currentActionNode);

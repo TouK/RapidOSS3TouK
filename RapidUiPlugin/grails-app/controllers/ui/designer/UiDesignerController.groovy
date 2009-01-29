@@ -17,8 +17,10 @@ class UiDesignerController {
         def sw = new StringWriter();
         def markupBuilder = new MarkupBuilder(sw);
         def urls = UiUrl.list();
-        markupBuilder.UiElement(designerType:"Urls"){
-            createXml (urls, markupBuilder);
+        markupBuilder.UiConfig{
+            markupBuilder.UiElement(designerType:"Urls"){
+                createXml (urls, markupBuilder);
+            }
         }
         render(text:sw.toString(), contentType:"text/xml");
     }
@@ -124,7 +126,7 @@ class UiDesignerController {
     }
     def processUiElement(GPathResult xmlConfiguration)
     {
-        walkXml (xmlConfiguration.UiElement[0], null, null);
+        walkXml (xmlConfiguration.UiConfig.UiElement[0], null, null);
     }
 
     def update= {

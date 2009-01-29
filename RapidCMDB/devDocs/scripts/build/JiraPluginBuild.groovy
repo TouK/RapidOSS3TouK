@@ -45,11 +45,26 @@ class JiraPluginBuild extends Build{
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
         ant.copy(todir: "${rapidSuiteDir}/grails-app") {
-            ant.fileset(dir: "$env.rapid_jira/grails-app")
+            ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app"){
+            	ant.include(name: "**/*Jira*.groovy")
+            	ant.include(name: "**/jiraConnector/*")
+            }
+        }
+        ant.copy(todir: "${rapidSuiteDir}/grails-app") {
+            ant.fileset(dir: "$env.rapid_insight/grails-app"){
+            	ant.include(name: "**/*Jira*.groovy")
+            }
+        }        
+        ant.copy(todir: "${rapidSuiteDir}/operations") {
+            ant.fileset(dir: "$env.rapid_cmdb_cvs/operations"){
+            	ant.include(name: "**/*Jira*.groovy")
+            }
         }
         ant.copy(todir: "${rapidSuiteDir}/operations") {
-            ant.fileset(dir: "$env.rapid_jira/operations")
-        }
+            ant.fileset(dir: "$env.rapid_insight/operations"){
+            	ant.include(name: "**/*Jira*.groovy")
+            }
+        }        
         ant.copy(todir: "${rapidSuiteDir}/lib") {
             ant.fileset(dir: "$env.rapid_jira/lib")
         }
@@ -59,12 +74,6 @@ class JiraPluginBuild extends Build{
         ant.copy(todir: "${rapidSuiteDir}/grails-app/ext") {
             ant.fileset(dir: "$env.rapid_jira/src/groovy")
         }
-//        ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
-//            ant.fileset(file: "${env.rapid_jira}/generatedModels/grails-app/domain/*.groovy");
-//        }
-//        ant.copy(todir: rapidSuiteDir) {
-//            ant.fileset(dir: "$env.rapid_jira/applications/RapidInsight")
-//        }
 
         if(distDir.equals(env.dist_modules)){
 	        ant.zip(destfile: "$env.distribution/JiraPluginPlugin$versionDate" + ".zip") {

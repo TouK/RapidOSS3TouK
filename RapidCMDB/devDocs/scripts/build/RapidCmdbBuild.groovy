@@ -213,6 +213,8 @@ class RapidCmdbBuild extends Build {
         }
         ant.copy(todir: "$env.dist_rapid_suite/grails-app") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app") {
+            	ant.exclude(name: "**/*Jira*")
+            	ant.exclude(name: "**/jiraConnector/**")
                 if (!TEST) {
                     ant.exclude(name: "**/test/**")
                     ant.exclude(name: "**/*Test*")
@@ -230,7 +232,9 @@ class RapidCmdbBuild extends Build {
         ant.copy(file: "$env.rapid_cmdb_cvs/scripts/modelCreator.groovy", toDir: "$env.dist_rapid_suite/scripts");
 
         ant.copy(todir: "$env.dist_rapid_suite/operations") {
-            ant.fileset(dir: "$env.rapid_cmdb_cvs/operations")
+            ant.fileset(dir: "$env.rapid_cmdb_cvs/operations"){
+            	ant.exclude(name: "**/*Jira*")
+            }
         }
 
         ant.copy(todir: "$env.dist_rapid_server/licenses") {

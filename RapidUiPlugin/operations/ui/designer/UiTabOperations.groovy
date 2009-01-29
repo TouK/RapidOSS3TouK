@@ -10,7 +10,8 @@ public class UiTabOperations extends AbstractDomainOperation
                 canBeDeleted: true,
                 displayFromProperty: "name",
                 propertyConfiguration: [
-                        name: [descr: 'Name of the tab']
+                        name: [descr: 'Name of the tab'],
+                        javascriptFile: [descr: 'The file path relative to web-app that will be embedded to tab, where you can write free form JavaScript']
                 ],
                 childrenConfiguration:[]
         ];

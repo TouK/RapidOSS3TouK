@@ -22,6 +22,7 @@
             <Properties>
                 <!-- Add url relation to keys -->
                 <Property Name='name' Type='string' IsKey="true"/>
+                <Property Name='javascriptFile' Type='string' IsKey="true"/>
             </Properties>
         </Model>
         <Model Name="UiLayout" StorageType="File">
@@ -54,20 +55,6 @@
                 <Property Name='title' Type='string'/>
             </Properties>
         </Model>
-        <Model Name="UiForm" StorageType="File">
-            <Properties>
-                <!-- Add tab relation to keys -->
-                <!-- submitAction is inList([GET, POST]) -->
-                <Property Name='name' Type='string' IsKey="true"/>
-                <Property Name='width' Type='number'/>
-                <Property Name='htmlContent' Type='string'/>
-                <Property Name='saveUrl' Type='string'/>
-                <Property Name='createUrl' Type='string'/>
-                <Property Name='editUrl' Type='string'/>
-                <Property Name='updateUrl' Type='string'/>
-                <Property Name='submitAction' Type='string' Default="GET"/>
-            </Properties>
-        </Model>
         <!-- Define actions as sub classes -->
          <Model Name="UiAction" StorageType="File">
             <Properties>
@@ -76,19 +63,12 @@
                 <Property Name='condition' Type='string'/>
             </Properties>
         </Model>
-        <Model Name="UiJavaScript" StorageType="File">
-            <Properties>
-                <Property Name='content' Type='string'/>
-            </Properties>
-        </Model>
     </Models>
     <Relations>
         <Relation From="UiUrl" To="UiTab" Name="tabs" ReverseName="url" Type="OneToMany"></Relation>
         <Relation From="UiTab" To="UiLayout" Name="layout" ReverseName="tab" Type="OneToOne"></Relation>
         <Relation From="UiTab" To="UiComponent" Name="components" ReverseName="tab" Type="OneToMany"></Relation>
-        <Relation From="UiTab" To="UiJavaScript" Name="javascript" ReverseName="tab" Type="OneToOne"></Relation>
         <Relation From="UiTab" To="UiDialog" Name="dialogs" ReverseName="tab" Type="OneToMany"></Relation>
-        <Relation From="UiTab" To="UiForm" Name="forms" ReverseName="tab" Type="OneToMany"></Relation>
         <Relation From="UiTab" To="UiAction" Name="actions" ReverseName="tab" Type="OneToMany"></Relation>
         <Relation From="UiLayout" To="UiLayoutUnit" Name="units" ReverseName="parentLayout" Type="OneToMany"></Relation>
         <Relation From="UiLayoutUnit" To="UiLayout" Name="childLayout" ReverseName="parentUnit" Type="OneToOne"></Relation>

@@ -7,7 +7,7 @@ class UiTab
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "url", "layout", "components", "javascript", "dialogs", "forms", "actions"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "url", "layout", "components", "dialogs", "actions"];
     
     
         storageType "FileAndMemory"
@@ -18,6 +18,8 @@ class UiTab
     
     String name ="";
     
+    String javascriptFile ="";
+
     Long id ;
     
     Long version ;
@@ -34,11 +36,7 @@ class UiTab
     
     List components =[];
     
-    UiJavaScript javascript ;
-    
     List dialogs =[];
-    
-    List forms =[];
     
     List actions =[];
     
@@ -51,32 +49,25 @@ class UiTab
     
         ,components:[type:UiComponent, reverseName:"tab", isMany:true]
     
-        ,javascript:[type:UiJavaScript, reverseName:"tab", isMany:false]
-    
         ,dialogs:[type:UiDialog, reverseName:"tab", isMany:true]
-    
-        ,forms:[type:UiForm, reverseName:"tab", isMany:true]
-    
+
         ,actions:[type:UiAction, reverseName:"tab", isMany:true]
     
     ]
     
     static constraints={
     name(blank:false,nullable:false,key:["url"])
-        
+    javascriptFile(blank:true,nullable:true)
+
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
         
      errors(nullable:true)
-        
-     javascript(nullable:true)
-        
-     
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "url", "layout", "components", "javascript", "dialogs", "forms", "actions"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "url", "layout", "components", "dialogs", "actions"];
     
     public String toString()
     {

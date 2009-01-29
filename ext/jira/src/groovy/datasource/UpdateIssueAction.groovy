@@ -22,10 +22,46 @@ public class UpdateIssueAction implements Action {
     public void execute(IConnection conn) throws Exception {
     	String token = ((JiraConnectionImpl)conn).getToken();
     	JiraSoapService jiraSoapService = ((JiraConnectionImpl)conn).getJiraSoapService();
-		RemoteIssue issue = jiraSoapService.getIssue(token, issueId);
-		
-		params.each{key,value->
-			issue[key] = value;
-		}
+    	def componentsFromJira = jiraSoapService.getComponents(token,project);
+    	
+    	def componentMap = [:];
+    	componentsFromJira.each{
+    		componentMap.put(it.getName(), it.getId())
+    	}
+    	def versionsFromJira = jiraSoapService.getVersions(token,project);
+    	def versionMap = [:];
+    	versionsFromJira.each{
+    		versionMap.put(it.getName(), it.getId())
+    	}
+    	RemoteFieldValue[] remoteFields = new RemoteFieldValue[params.size()];	
+    	def cntr = 0;
+    	params.each{key,value->
+    		if (key == "component"){
+    			if (componentMap.containsKey(value)){
+    				key = "components";
+    				value = componentMap[value];
+    			}
+    			else{
+    				throw new Exception("There is no such component: $value!")
+    			}
+    		}
+    		else {
+    			if (key == "affectsVersion" || key == "fixVersion"){
+    				if (versionMap.containsKey(value)){
+    					key = key+"s";
+    					value = versionMap[value];
+    					println "key:$key value:$value"
+    				}
+    				else{
+    					throw new Exception("There is no such version: $value!")
+    				}
+    			}
+    		}
+
+    		def propToBeUpdated = new RemoteFieldValue(key, value);
+    		remoteFields[cntr] = propToBeUpdated;
+    		cntr++;
+    	}
+    	jiraSoapService.updateIssue(token, issueId,remoteFields);
 	}
 }

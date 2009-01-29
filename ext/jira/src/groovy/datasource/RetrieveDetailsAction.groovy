@@ -39,9 +39,27 @@ public class RetrieveDetailsAction implements Action {
 	    detailMap.type = issue["type"];//.getType();
 	    detailMap.updated = issue["updated"];//.getUpdated();
 	    if (detailMap.updated!=null) detailMap.updated = detailMap.updated.time;
-	    detailMap.affectsVersions = issue["affectsVersions"];
-	    detailMap.fixVersions = issue["fixVersions"];
-	    detailMap.components = issue["components"];
+	    def remoteVersions = issue["affectsVersions"];
+	    def affectsVersions = [];
+	    remoteVersions.each{
+	    	affectsVersions.add(it.getName());
+	    }
+	    detailMap.affectsVersions = affectsVersions;
+	    
+	    def remoteFixVersions = issue["fixVersions"];
+	    def fixVersions = [];
+	    remoteFixVersions.each{
+	    	fixVersions.add(it.getName());
+	    }
+	    detailMap.fixVersions = fixVersions;
+	    
+
+	    def remoteComponents = issue["components"];
+	    def components = [];
+	    remoteComponents.each{
+	    	components.add(it.getName());
+	    }
+	    detailMap.components = components;
 	}
     public Map getIssue() {
         return detailMap;

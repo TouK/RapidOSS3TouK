@@ -18,14 +18,9 @@
 */
 package test
 
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.filefilter.NameFileFilter
-import org.apache.commons.io.filefilter.NotFileFilter
-import build.RapidCmdbBuild
-import test.BuildDirListener
-import org.apache.commons.io.filefilter.AndFileFilter
-import org.apache.commons.io.filefilter.PrefixFileFilter
+import build.Build
 import build.RapidInsightBuild
+import test.BuildDirListener
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,32 +36,79 @@ def workspaceDirFile = new File(workspaceDir);
 def rootDir = new File("${workspaceDir}/Distribution/RapidServer");
 Process proc = null;
 
-
-def watchConfig = [
-        [new File("${workspaceDir}/RapidModules/RapidCMDB"), new File("${rootDir.absolutePath}/RapidSuite")],
-        [new File("${workspaceDir}/RapidModules/RcmdbCommons"), new File("${rootDir.absolutePath}/RapidSuite")],
-        [new File("${workspaceDir}/RapidModules/ext/database/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/ext/http/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")],
-        [new File("${workspaceDir}/RapidModules/RapidInsight/grails-app"), new File("${rootDir.absolutePath}/RapidSuite/grails-app"), ["taglib"]],
-        [new File("${workspaceDir}/RapidModules/RapidInsight/operations"), new File("${rootDir.absolutePath}/RapidSuite/operations")],
-        [new File("${workspaceDir}/RapidModules/RapidInsight/grails-app/taglib"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-insight-0.1/grails-app/taglib")],
-        [new File("${workspaceDir}/RapidModules/RapidInsight/test"), new File("${rootDir.absolutePath}/RapidSuite/test")],
-        [new File("${workspaceDir}/Hyperic"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Hyperic/applications").canonicalPath, new File("${workspaceDir}/Hyperic/integration").canonicalPath, new File("${workspaceDir}/Hyperic/application.properties").canonicalPath]],
-        [new File("${workspaceDir}/Hyperic/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")],
-        [new File("${workspaceDir}/Hyperic/test/integration"), new File("${rootDir.absolutePath}/RapidSuite/test/integration")],
-        [new File("${workspaceDir}/Apg"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Apg/applications").canonicalPath, new File("${workspaceDir}/Apg/application.properties").canonicalPath]],
-        [new File("${workspaceDir}/Apg/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")],
-        [new File("${workspaceDir}/Smarts"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Smarts/applications").canonicalPath, new File("${workspaceDir}/Smarts/application.properties").canonicalPath]],
-        [new File("${workspaceDir}/Smarts/applications/RapidInsightForSmarts"), new File("${rootDir.absolutePath}/RapidSuite")],
-        [new File("${workspaceDir}/OpenNms"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/OpenNms/applications").canonicalPath, new File("${workspaceDir}/OpenNms/application.properties").canonicalPath]],
-        [new File("${workspaceDir}/OpenNms/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")],
-        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/grails-app"), [new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app/conf").canonicalPath]],
-        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/src"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/src")],
-        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/RapidUiGrailsPlugin.groovy"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/RapidUiGrailsPlugin.groovy")],
-        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/scripts"), new File("${rootDir.absolutePath}/RapidSuite/scripts")],
-        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/operations"), new File("${rootDir.absolutePath}/RapidSuite/operations")],
-        [new File("${workspaceDir}/RapidModules/RapidUiPlugin/test"), new File("${rootDir.absolutePath}/RapidSuite/test")]
-]
+/**
+RI=false
+RCMDB=false
+RCMDB_COMMONS=false
+APG=false
+OPENNMS=false
+HYPERIC=false
+NETCOOL=false
+SMARTS=false
+RAPID_UI=true
+**/
+def testOptions = Build.getBuildOptions("testopts.txt")
+def buildProperties = new Properties();
+buildProperties.put("RCMDB_UNIX", "true")
+buildProperties.put("RCMDB_WINDOWS", "true")
+buildProperties.put("TEST", "true")
+buildProperties.put("JREDIR", "C:\\Program Files\\Java\\jre1.6.0_04")
+def watchConfig = [];
+if(testOptions.RCMDB_COMMONS == "true")
+{
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RcmdbCommons"), new File("${rootDir.absolutePath}/RapidSuite")]);
+}
+if(testOptions.RCMDB == "true")
+{
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidCMDB"), new File("${rootDir.absolutePath}/RapidSuite")]);
+}
+if(testOptions.EXT == "true")
+{
+    watchConfig.add([new File("${workspaceDir}/RapidModules/ext/database/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/ext/http/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")]);
+}
+if(testOptions.RI == "true")
+{
+    buildProperties.put("RI_UNIX", "false")
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidInsight/grails-app"), new File("${rootDir.absolutePath}/RapidSuite/grails-app"), ["taglib"]]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidInsight/operations"), new File("${rootDir.absolutePath}/RapidSuite/operations")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidInsight/grails-app/taglib"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-insight-0.1/grails-app/taglib")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidInsight/test"), new File("${rootDir.absolutePath}/RapidSuite/test")]);
+}
+if(testOptions.HYPERIC == "true")
+{
+    buildProperties.put("HYPERIC", "false")
+    watchConfig.add([new File("${workspaceDir}/Hyperic"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Hyperic/applications").canonicalPath, new File("${workspaceDir}/Hyperic/integration").canonicalPath, new File("${workspaceDir}/Hyperic/application.properties").canonicalPath]]);
+    watchConfig.add([new File("${workspaceDir}/Hyperic/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")]);
+    watchConfig.add([new File("${workspaceDir}/Hyperic/test/integration"), new File("${rootDir.absolutePath}/RapidSuite/test/integration")]);
+}
+if(testOptions.APG == "true")
+{
+    buildProperties.put("APG", "false")
+    watchConfig.add([new File("${workspaceDir}/Apg"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Apg/applications").canonicalPath, new File("${workspaceDir}/Apg/application.properties").canonicalPath]]);
+    watchConfig.add([new File("${workspaceDir}/Apg/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")]);
+}
+if(testOptions.SMARTS == "true")
+{
+    buildProperties.put("SMARTS", "false")
+    watchConfig.add([new File("${workspaceDir}/Smarts"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Smarts/applications").canonicalPath, new File("${workspaceDir}/Smarts/application.properties").canonicalPath]]);
+    watchConfig.add([new File("${workspaceDir}/Smarts/applications/RapidInsightForSmarts"), new File("${rootDir.absolutePath}/RapidSuite")]);
+}
+if(testOptions.OPEN_NMS == "true")
+{
+    buildProperties.put("OPENNMS", "false")
+    watchConfig.add([new File("${workspaceDir}/OpenNms"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/OpenNms/applications").canonicalPath, new File("${workspaceDir}/OpenNms/application.properties").canonicalPath]]);
+    watchConfig.add([new File("${workspaceDir}/OpenNms/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")]);
+}
+if(testOptions.RAPID_UI == "true")
+{
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/grails-app"), [new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app/conf").canonicalPath]]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/src"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/src")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/RapidUiGrailsPlugin.groovy"), new File("${rootDir.absolutePath}/RapidSuite/plugins/rapid-ui-0.1/RapidUiGrailsPlugin.groovy")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/scripts"), new File("${rootDir.absolutePath}/RapidSuite/scripts")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/operations"), new File("${rootDir.absolutePath}/RapidSuite/operations")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/test"), new File("${rootDir.absolutePath}/RapidSuite/test")]);
+}
 
 
 def dirListeners = [];
@@ -79,19 +121,8 @@ def excludedDirs = [".svn", "reports"]
 def envVars = getEnvVars(rootDir);
 if (!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.1").exists())
 {
-    Properties props = new Properties();
-    props.put("RI_UNIX", "false")
-    props.put("RCMDB_UNIX", "true")
-    props.put("RCMDB_WINDOWS", "true")
-    props.put("APG", "true")
-    props.put("OPENNMS", "true")
-    props.put("HYPERIC", "true")
-    props.put("NETCOOL", "true")
-    props.put("SMARTS", "true")
-    props.put("TEST", "true")
-    props.put("JREDIR", "C:\\Program Files\\Java\\jre1.6.0_04")
     FileOutputStream out = new FileOutputStream("${workspaceDir}/Distribution/build.properties")
-    props.store(out, "");
+    buildProperties.store(out, "");
     out.close();
 
     def riBuild = new RapidInsightBuild();

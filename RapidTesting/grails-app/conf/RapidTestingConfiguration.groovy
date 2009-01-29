@@ -25,7 +25,5 @@
  */
 class RapidTestingConfiguration {
     def baseDir = System.getProperty("base.dir");
-    def testDirectories = [new File("${baseDir}/test/unit"),
-    new File("${baseDir}/test/integration")]
-    
+    def testDirectories = System.getProperty("includedTestDirs", "").split(",").findAll {it != ""};
 }

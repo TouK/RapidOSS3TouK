@@ -29,8 +29,6 @@ class UiDesignerController {
         def xmlConfigurationString = params.configuration
         def xmlConfiguration = new XmlSlurper().parseText(xmlConfigurationString);
         processUiElement(xmlConfiguration);
-
-
     }
     def createXml(components, builder)
     {

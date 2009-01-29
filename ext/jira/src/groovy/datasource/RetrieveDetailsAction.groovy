@@ -25,9 +25,11 @@ public class RetrieveDetailsAction implements Action {
 		
 	    detailMap.name = issue["key"];//.getKey();
 	    detailMap.assignee = issue["assignee"];//.getAssignee();
-	    detailMap.created = issue["create"];//.getCreated();
+	    detailMap.created = issue["created"];//.getCreated();
+	    if (detailMap.created!=null) detailMap.created = detailMap.created.time;
 	    detailMap.description = issue["description"];//.getDescription();
 	    detailMap.dueDate = issue["duedate"];//.getDuedate();
+	    if (detailMap.dueDate!=null) detailMap.dueDate = detailMap.dueDate.time;
 	    detailMap.priority = issue["priority"];//.getPriority();
 	    detailMap.project = issue["project"];//.getProject();
 	    detailMap.reporter = issue["reporter"];//.getReporter();
@@ -36,6 +38,10 @@ public class RetrieveDetailsAction implements Action {
 	    detailMap.summary = issue["summary"];//.getSummary();
 	    detailMap.type = issue["type"];//.getType();
 	    detailMap.updated = issue["updated"];//.getUpdated();
+	    if (detailMap.updated!=null) detailMap.updated = detailMap.updated.time;
+	    detailMap.affectsVersions = issue["affectsVersions"];
+	    detailMap.fixVersions = issue["fixVersions"];
+	    detailMap.components = issue["components"];
 	}
     public Map getIssue() {
         return detailMap;

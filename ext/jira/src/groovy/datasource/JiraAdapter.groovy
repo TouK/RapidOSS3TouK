@@ -51,4 +51,10 @@ public class JiraAdapter extends BaseAdapter{
 		AddCommentAction action = new AddCommentAction(logger,issueId, comment);
 	    executeAction(action);        
 	}
+	
+	public getComments(String issueId){
+		GetCommentsAction action = new GetCommentsAction(logger,issueId, comment);
+	    executeAction(action);        
+	    return action.getComments();
+	}
 }

@@ -39,13 +39,24 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        def urlProps = [url:"myUrl", designerType:"Url"]
+        def url1Props = [url:"myUrl1", designerType:"Url"]
+        def url2Props = [url:"myUrl2", designerType:"Url"]
         def tabsProps = [[name:"tab1", designerType:"Tab"], [name:"tab2", designerType:"Tab"]];
-        builder.UiElement(designerType:"Urls"){
-            builder.UiElement(urlProps){
-                builder.UiElement(designerType:"Tabs"){
-                    tabsProps.each{tab->
-                        builder.UiElement(tab){
+        builder.UiConfig{
+            builder.UiElement(designerType:"Urls"){
+                builder.UiElement(url1Props){
+                    builder.UiElement(designerType:"Tabs"){
+                        tabsProps.each{tab->
+                            builder.UiElement(tab){
+                            }
+                        }
+                    }
+                }
+                builder.UiElement(url2Props){
+                    builder.UiElement(designerType:"Tabs"){
+                        tabsProps.each{tab->
+                            builder.UiElement(tab){
+                            }
                         }
                     }
                 }
@@ -54,9 +65,12 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         UiDesignerController controller = new UiDesignerController();
         controller.params.configuration = sw.toString()
         controller.save();
-        def url = UiUrl.get(url:urlProps.url);
-        assertTrue (!url.tabs.findAll {it.name == "tab1"}.isEmpty());
-        assertTrue (!url.tabs.findAll {it.name == "tab2"}.isEmpty());
+        def url1 = UiUrl.get(url:url1Props.url);
+        def url2 = UiUrl.get(url:url2Props.url);
+        assertTrue (!url1.tabs.findAll {it.name == "tab1"}.isEmpty());
+        assertTrue (!url1.tabs.findAll {it.name == "tab2"}.isEmpty());
+        assertTrue (!url2.tabs.findAll {it.name == "tab1"}.isEmpty());
+        assertTrue (!url2.tabs.findAll {it.name == "tab2"}.isEmpty());
         IntegrationTestUtils.resetController (controller);
         controller.params.configuration = sw.toString()
         controller.view();

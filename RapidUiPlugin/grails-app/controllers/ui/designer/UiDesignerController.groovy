@@ -126,7 +126,9 @@ class UiDesignerController {
     }
     def processUiElement(GPathResult xmlConfiguration)
     {
-        walkXml (xmlConfiguration.UiConfig.UiElement[0], null, null);
+        xmlConfiguration.UiElement[0].childNodes().each{
+            walkXml (it, null, null);
+        }
     }
 
     def update= {

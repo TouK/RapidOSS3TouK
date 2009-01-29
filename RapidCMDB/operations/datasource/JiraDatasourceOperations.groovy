@@ -44,4 +44,8 @@ class JiraDatasourceOperations extends BaseDatasourceOperations {
     def addComment(String issueId, String comment) {
     	def issue = this.adapter.addCommentToIssue(issueId, comment)
     }
+    
+    def getComments(String issueId) {
+    	return this.adapter.getComments(issueId)
+    }
 }

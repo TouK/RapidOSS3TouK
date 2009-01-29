@@ -14,20 +14,21 @@ class DesignerUtils {
     public static Map addConfigurationParametersFromModel(Map componentMetaPropertiesConfiguration, org.codehaus.groovy.grails.commons.GrailsDomainClass domainClass)
     {
         def clonedPropertiesConfiguration = componentMetaPropertiesConfiguration != null?componentMetaPropertiesConfiguration.clone():[:];
-        def constrainedProps = domainClass.getConstrainedProperties();
-        def domainPropertiesList = domainClass.clazz.'getPropertiesList'();
-        for(int i=0; i < domainPropertiesList.size(); i++){
-            def domainProperty = domainPropertiesList[i]
-            String propName = domainProperty.name;
-            if (propName != "id" && (!domainProperty.isRelation || domainProperty.isOneToOne()))
+        def constrainedProps = domainClass.getConstrainedProperties();                                                       
+        def domainPropertiesMap = [:];
+        domainClass.clazz.'getPropertiesList'().each{
+            domainPropertiesMap[it.name] = it;    
+        }
+        componentMetaPropertiesConfiguration.each{String propName, Map config->
+            def domainProperty = domainPropertiesMap[propName]
+            if (config == null)
             {
-                Map config = clonedPropertiesConfiguration.get(propName);
-                if (config == null)
-                {
-                    config = [:];
-                    clonedPropertiesConfiguration.put(propName, config);
-                }
-                config.name = propName;
+                config = [:];
+                clonedPropertiesConfiguration.put(propName, config);
+            }
+            config.name = propName;
+            if(domainProperty != null)
+            {
                 config.type = config.type == null ? getType(domainProperty) : config.type
 
                 if(constrainedProps[propName] != null)

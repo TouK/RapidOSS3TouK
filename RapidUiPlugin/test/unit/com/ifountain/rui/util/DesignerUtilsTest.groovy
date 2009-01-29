@@ -33,8 +33,7 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
         def childModelName = "UiModel1";
         def relatedModelName = "UiModel2";
 
-        //All properties and only oneToOne relations will be configured as metadata
-        //So rel1 should be ignored since it is many-to-many
+        //All properties will be configured as metadata
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE];
         def prop2 = [name:"prop2", type:ModelGenerator.NUMBER_TYPE];
         def prop3 = [name:"prop3", type:ModelGenerator.BOOLEAN_TYPE];
@@ -61,10 +60,19 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
 
         //Configured values will overwrite values defined in model. If no configuration exist description field be left empty
         def model1Prop1ConfigurationProps = [descr:"desc1"];
-        def model1Prop6ConfigurationProps = [descr:"desc2", type:"List", inList:"x,y,z", required:true];
+        def model1Prop2ConfigurationProps = [descr:"desc2"];
+        def model1Prop3ConfigurationProps = [descr:"desc3"];
+        def model1Prop4ConfigurationProps = [descr:"desc4"];
+        def rel2ConfigurationProps = [descr:"rel2"];
+        def model1Prop6ConfigurationProps = [descr:"desc6", type:"List", inList:"x,y,z", required:true];
         def metaDataConfiguration  = [
                 "prop1":model1Prop1ConfigurationProps,
-                "prop6":model1Prop6ConfigurationProps
+                "prop2":model1Prop2ConfigurationProps,
+                "prop3":model1Prop3ConfigurationProps,
+                "prop4":model1Prop4ConfigurationProps,
+                "prop6":model1Prop6ConfigurationProps,
+                "rel2":rel2ConfigurationProps,
+                "undefinedProperty":[:]
         ]
         DefaultGrailsDomainClass grailsDomainClass = new DefaultGrailsDomainClass(model1Class);
         GetPropertiesMethod method = new GetPropertiesMethod(grailsDomainClass);
@@ -72,46 +80,42 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
             return method.getDomainObjectProperties();
         }
 
-        def uiPropertyMetaDatasForUiModel1 = DesignerUtils.addConfigurationParametersFromModel(metaDataConfiguration, grailsDomainClass).values().sort {it.name};
-        List propertyListForUiModel1 = model1Class.'getPropertiesList'().findAll {it.name != "id" && (!it.isRelation || it.isOneToOne())};
-        assertEquals (propertyListForUiModel1.size(), uiPropertyMetaDatasForUiModel1.size());
-        for(int i=0; i < propertyListForUiModel1.size(); i++){
-            def prop = propertyListForUiModel1[i];
-            assertEquals (prop.name, uiPropertyMetaDatasForUiModel1[i].name);
+        def expectedProperties = metaDataConfiguration.keySet().sort {it}
+        def uiPropertyMetaDatasForUiModel1 = DesignerUtils.addConfigurationParametersFromModel(metaDataConfiguration, grailsDomainClass).entrySet().sort {it.key}.value;
+        assertEquals (expectedProperties.size(), uiPropertyMetaDatasForUiModel1.size());
+        for(int i=0; i < expectedProperties.size(); i++){
+            assertEquals (expectedProperties[i], uiPropertyMetaDatasForUiModel1[i].name);
         }
         assertEquals ("String", uiPropertyMetaDatasForUiModel1[0].type);
         assertEquals ("Number", uiPropertyMetaDatasForUiModel1[1].type);
         assertEquals ("Boolean", uiPropertyMetaDatasForUiModel1[2].type);
         assertEquals ("Date", uiPropertyMetaDatasForUiModel1[3].type);
-        assertEquals ("Float", uiPropertyMetaDatasForUiModel1[4].type);
-        assertEquals ("List", uiPropertyMetaDatasForUiModel1[5].type);
-        assertEquals ("String", uiPropertyMetaDatasForUiModel1[6].type);
-
-        //prop1 is key prop and it could not be null or blank so it is a required property
+        assertEquals ("List", uiPropertyMetaDatasForUiModel1[4].type);
+        assertEquals ("String", uiPropertyMetaDatasForUiModel1[5].type);
+//
+//        //prop1 is key prop and it could not be null or blank so it is a required property
         assertEquals (true, uiPropertyMetaDatasForUiModel1[0].required);
         assertEquals (false, uiPropertyMetaDatasForUiModel1[1].required);
         assertEquals (false, uiPropertyMetaDatasForUiModel1[2].required);
         assertEquals (false, uiPropertyMetaDatasForUiModel1[3].required);
-        assertEquals (false, uiPropertyMetaDatasForUiModel1[4].required);
         //prop6 is specified as required property
-        assertEquals (true, uiPropertyMetaDatasForUiModel1[5].required);
-        assertEquals (false, uiPropertyMetaDatasForUiModel1[6].required);
-
-
+        assertEquals (true, uiPropertyMetaDatasForUiModel1[4].required);
+        assertEquals (false, uiPropertyMetaDatasForUiModel1[5].required);
+//
+//
         assertEquals ("desc1", uiPropertyMetaDatasForUiModel1[0].descr);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[1].descr);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[2].descr);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[3].descr);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[4].descr);
-        assertEquals ("desc2", uiPropertyMetaDatasForUiModel1[5].descr);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[6].descr);
+        assertEquals ("desc2", uiPropertyMetaDatasForUiModel1[1].descr);
+        assertEquals ("desc3", uiPropertyMetaDatasForUiModel1[2].descr);
+        assertEquals ("desc4", uiPropertyMetaDatasForUiModel1[3].descr);
+        assertEquals ("desc6", uiPropertyMetaDatasForUiModel1[4].descr);
+        assertEquals ("rel2", uiPropertyMetaDatasForUiModel1[5].descr);
+//
 
         assertEquals ("", uiPropertyMetaDatasForUiModel1[0].inList);
         assertEquals ("", uiPropertyMetaDatasForUiModel1[1].inList);
         assertEquals ("", uiPropertyMetaDatasForUiModel1[2].inList);
         assertEquals ("", uiPropertyMetaDatasForUiModel1[3].inList);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[4].inList);
-        assertEquals ("x,y,z", uiPropertyMetaDatasForUiModel1[5].inList);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[6].inList);
+        assertEquals ("x,y,z", uiPropertyMetaDatasForUiModel1[4].inList);
+        assertEquals ("", uiPropertyMetaDatasForUiModel1[5].inList);
     }
 }

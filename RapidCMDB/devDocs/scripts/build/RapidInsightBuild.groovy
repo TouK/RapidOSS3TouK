@@ -238,7 +238,7 @@ class RapidInsightBuild extends Build {
                 ant.include(name: "utils/**/*")
             };
         }
-        ant.copy(todir: "$env.dist_rapid_ui/operations") {
+        ant.copy(todir: "$env.dist_rapid_suite/operations") {
             ant.fileset(dir: "$env.rapid_ui/operations")
         }
         ant.copy(todir: "$env.dist_rapid_ui/scripts") {

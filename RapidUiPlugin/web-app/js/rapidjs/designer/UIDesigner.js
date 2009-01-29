@@ -80,6 +80,16 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
             var rootImages = [];
             var menuItems = [];
+            window.designerMenuEvaluate = function(dataNode, parentType, itemType, typeAttribute) {
+                var childNodes = dataNode.childNodes();
+                for (var i = 0; i < childNodes.length; i++) {
+                    var iType = childNodes[i].getAttribute(typeAttribute)
+                    if(iType == itemType && !UIConfig.isChildMultiple(parentType, itemType)){
+                        return false;
+                    }
+                }
+                return true;
+            }
             var configItems = UIConfig.getConfig()
             for (var item in configItems) {
                 var imageConfig = UIConfig.getImageConfig(item);
@@ -103,7 +113,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                         for (var childType in children) {
                             if (UIConfig.canBeDeleted(childType)) {
                                 var displayName = UIConfig.getDisplayName(childType);
-                                menuItems.push({id:'add_' + childType, label:'Add New ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "'"});
+
+                                var addExpr = "window.designerMenuEvaluate(params.dataNode, '" + item+"', '" + childType+"', '" + this.treeTypeAttribute+"')"
+                                menuItems.push({id:'add_' + childType, label:'Add New ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "' && " + addExpr});
                             }
                         }
                     }

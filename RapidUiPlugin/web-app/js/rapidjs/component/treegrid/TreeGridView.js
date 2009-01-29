@@ -564,7 +564,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             var evaluationResult = true;
             var menuItem = this.rowMenu.getItem(index);
             if (menuItemConfig['visible'] != null) {
-                var params = {data: dataNode.getAttributes(), label:menuItemConfig.label}
+                var params = {data: dataNode.getAttributes(), label:menuItemConfig.label, dataNode:dataNode}
                 evaluationResult = eval(menuItemConfig['visible']);
             }
             if (!evaluationResult)

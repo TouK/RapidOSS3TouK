@@ -76,6 +76,9 @@ YAHOO.rapidjs.designer.Config = new function() {
     this.getChildren = function(itemType) {
         return this.get(itemType)["children"]
     };
+    this.isChildMultiple = function(itemType, childType){
+        return this.get(itemType)['children'][childType]['isMultiple']
+    };
     this.getPropertyDescription = function(itemType, propertyName) {
         if (itemType == "Layout" && propertyName == "type") {
             return "Type of the layout"

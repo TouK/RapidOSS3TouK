@@ -86,7 +86,8 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEqualsXML ("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
         checkGeneratedFiles();
 
-
+        def tabsOfUrl1BeforeDelete = url1.tabs;
+        def tabsOfUrl2BeforeDelete = url2.tabs;
         //test deletes old models
         sw = new StringWriter();
         builder = new MarkupBuilder(sw);
@@ -118,8 +119,20 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         controller.generate();
         assertEqualsXML ("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
         checkGeneratedFiles();
-        def urlRedirectFile = new File(System.getProperty("base.dir") + "/web-app/${url1.url}.gsp");
+        def baseDir = System.getProperty("base.dir");
+        def urlRedirectFile = new File( baseDir + "/web-app/${url1.url}.gsp");
         assertEquals("", urlRedirectFile.getText());
+        def url2LayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url2.url+"Layout.gsp");
+        assertFalse (url2LayoutFile.exists());
+        assertFalse (new File(baseDir + "/web-app/${url2.url}.gsp").exists());
+        assertFalse (new File(baseDir + "/web-app/${url2.url}").exists());
+        tabsOfUrl2BeforeDelete.each{tab->
+            def tabFile = new File(baseDir + "/web-app/${url2.url}/${tab.name}.gsp");
+            assertFalse (tabFile.exists());
+        }
+
+        def url1Tab2File = new File(baseDir + "/web-app/${url1.url}/${tabsOfUrl1BeforeDelete[1].name}.gsp");
+        assertFalse (url1Tab2File.exists());
         
     }
     public void testMetaData()

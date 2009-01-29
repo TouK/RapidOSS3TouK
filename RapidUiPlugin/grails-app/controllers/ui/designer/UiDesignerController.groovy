@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils
 import com.ifountain.rui.util.DesignerUtils
 import groovy.util.slurpersupport.GPathResult
 import groovy.text.SimpleTemplateEngine
+import org.apache.commons.io.FileUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -14,6 +15,7 @@ import groovy.text.SimpleTemplateEngine
 * To change this template use File | Settings | File Templates.
 */
 class UiDesignerController {
+    def baseDir = System.getProperty("base.dir")
     def view= {
         def sw = new StringWriter();
         def markupBuilder = new MarkupBuilder(sw);
@@ -28,20 +30,68 @@ class UiDesignerController {
 
     def save= {
         def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer")}
+        def urlsBeforeDelete = [:];
+        def tabsBeforeDelete = [:]
+        UiUrl.list().each{urlBeforeDelete->
+            urlsBeforeDelete[urlBeforeDelete.url] = urlBeforeDelete;
+            tabsBeforeDelete[urlBeforeDelete.url] = [:]
+            urlBeforeDelete.tabs.each{tabBeforeDelete->
+                tabsBeforeDelete[urlBeforeDelete.url][tabBeforeDelete.name] = tabBeforeDelete;                
+            }
+        }
         uiDomainClasses.each{
             it.clazz.'removeAll'();
         }
         def xmlConfigurationString = params.configuration
         def xmlConfiguration = new XmlSlurper().parseText(xmlConfigurationString);
         processUiElement(xmlConfiguration);
+
+        def urlsAfterDelete = UiUrl.list();
+        urlsAfterDelete.each{urlAfterDelete->
+            urlsBeforeDelete.remove (urlsAfterDelete.url);
+            urlsAfterDelete.tabs.each{tabAfterDelete->
+                if(tabsBeforeDelete.containsKey(urlAfterDelete.url))
+                {
+                    tabsBeforeDelete[urlAfterDelete.url].remove(tabAfterDelete.name);
+                }
+            }
+        }
+        urlsBeforeDelete.each{String url, urlObject->
+            deleteUrlFiles(urlObject);
+        }
+        tabsBeforeDelete.each{String url, tabMap->
+            tabMap.each{String tabeName, tabObject->
+                deleteTabFile(url, tabObject);
+            }
+        }
+
+
         render(contentType:"text/xml")
         {
             Successful("UI configuration saved successfully")
         }
     }
 
+    def deleteUrlFiles(url)
+    {
+        def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.url}Layout.gsp");
+        def urlRedirectFile = new File("${baseDir}/web-app/${url.url}.gsp");
+        def tabsDir = new File("${baseDir}/web-app/${url.url}");
+        urlRedirectFile.delete();
+        urlLayoutFile.delete();
+        if(tabsDir.exists())
+        {
+            FileUtils.deleteDirectory (tabsDir)
+        }
+    }
+
+    def deleteTabFile(url, tab)
+    {
+        def tabFile = new File("${baseDir}/web-app/${url}/${tab.name}.gsp");
+        tabFile.delete();
+    }
+
     def generate = {
-        def baseDir = System.getProperty("base.dir")
         def templateEngine = new SimpleTemplateEngine();
         def urlTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/Url.gsp"));
         def tabTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/Tab.gsp"));

@@ -16,7 +16,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-import java.util.Calendar;
+	import java.util.Calendar;
     import java.util.Date;
     import connector.JiraConnector;
     import datasource.JiraDatasource;
@@ -103,7 +103,12 @@ import java.util.Calendar;
 
     	public addToLog(String comment){
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
-    	    return jiraDs.addComment(name, comment);
+    	    jiraDs.addComment(name, comment);
+    	}
+    	
+    	public getLogEntries(String comment){
+    		def jiraDs = JiraDatasource.get(name:rsDatasource);
+    	    return jiraDs.getComments(name);
     	}
     }
         

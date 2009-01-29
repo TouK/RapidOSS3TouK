@@ -15,9 +15,7 @@ public class UiUrlOperations extends AbstractDomainOperation
                 childrenConfiguration:[
                         [
                             designerType:"Tabs",
-                            isMultiple: false,
                             metaData: [
-                                    canBeDeleted: false,
                                     designerType:"Tabs",
                                     display: "Tabs",
                                     childrenConfiguration: [

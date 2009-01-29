@@ -6,14 +6,16 @@ public class UiTabOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
-                designerType:"Tab",
+                designerType: "Tab",
                 canBeDeleted: true,
                 displayFromProperty: "name",
+                imageExpanded: 'images/rapidjs/designer/page.png',
+                imageCollapsed: 'images/rapidjs/designer/page.png',
                 propertyConfiguration: [
                         name: [descr: 'Name of the tab'],
                         javascriptFile: [descr: 'The file path relative to web-app that will be embedded to tab, where you can write free form JavaScript']
                 ],
-                childrenConfiguration:[]
+                childrenConfiguration: []
         ];
         return metaData;
     }

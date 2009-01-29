@@ -202,7 +202,7 @@ class UiDesignerController {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         builder.UiElements{
-            builder.UiElement(designerType:"Urls", display:"Urls"){
+            builder.UiElement(designerType:"Urls", display:"Urls", imageExpanded:"images/rapidjs/component/tools/folder_open.gif", imageCollapsed:"images/rapidjs/component/tools/folder.gif"){
                 builder.Children{
                     builder.Child(isMultiple:true, designerType:"Url")                    
                 }

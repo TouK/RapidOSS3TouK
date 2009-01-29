@@ -8,7 +8,7 @@ public class UiUrlOperations extends AbstractDomainOperation
         Map metaData = [
                 designerType:"Url",
                 canBeDeleted: true,
-                display: "Url",
+                displayFromProperty: "url",
                 propertyConfiguration: [
                         url: [descr: 'Url of the page set']
                 ],

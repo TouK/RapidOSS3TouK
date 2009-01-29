@@ -8,7 +8,7 @@ public class UiTabOperations extends AbstractDomainOperation
         Map metaData = [
                 designerType:"Tab",
                 canBeDeleted: true,
-                display: "Tab",
+                displayFromProperty: "name",
                 propertyConfiguration: [
                         name: [descr: 'Name of the tab']
                 ],

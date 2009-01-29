@@ -72,32 +72,55 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertTrue (!url1.tabs.findAll {it.name == "tab2"}.isEmpty());
         assertTrue (!url2.tabs.findAll {it.name == "tab1"}.isEmpty());
         assertTrue (!url2.tabs.findAll {it.name == "tab2"}.isEmpty());
+        assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
 
+        //test view
         IntegrationTestUtils.resetController (controller);
         controller.view();
-        println sw.toString()
-        println controller.response.contentAsString
         assertEqualsXML(sw.toString(), controller.response.contentAsString);
 
-        def baseDir =  System.getProperty("base.dir");
-        UiUrl.list().each{url->
-            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.url+"Layout.gsp");
-            urlLayoutFile.delete();
-            FileUtils.deleteDirectory (new File(baseDir + "/web-app/${url.url}"));
-        }
-
+        //test generate gsp files 
+        deleteGeneratedFiles();
         IntegrationTestUtils.resetController (controller);
         controller.generate();
+        assertEqualsXML ("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
+        checkGeneratedFiles();
 
 
-        UiUrl.list().each{url->
-            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.url+"Layout.gsp");
-            assertTrue (urlLayoutFile.exists());
-            url.tabs.each{tab->
-                def url1WebAppDirectoryFile = new File(baseDir + "/web-app/${url.url}/${tab.name}.gsp");
-                assertTrue (url1WebAppDirectoryFile.exists());
+        //test deletes old models
+        sw = new StringWriter();
+        builder = new MarkupBuilder(sw);
+        builder.UiConfig{
+            builder.UiElement(designerType:"Urls"){
+                builder.UiElement(url1Props){
+                    builder.UiElement(designerType:"Tabs")
+                    {
+                        builder.UiElement(tabsProps[0])
+                    }
+                }
             }
         }
+        IntegrationTestUtils.resetController (controller);
+        controller.params.configuration = sw.toString()
+        controller.save();
+        assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
+        def urlsAfterReSave = UiUrl.list();
+        def tabsAfterReSave = UiTab.list();
+        assertEquals (1, urlsAfterReSave.size())
+        assertEquals (1, tabsAfterReSave.size())
+        assertEquals (url1Props.url, urlsAfterReSave[0].url)
+        assertEquals (tabsProps[0].name, tabsAfterReSave[0].name)
+
+        //Test if tab does not exist generate will create redirect url page  with no content
+        UiTab.removeAll();
+        deleteGeneratedFiles();
+        IntegrationTestUtils.resetController (controller);
+        controller.generate();
+        assertEqualsXML ("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
+        checkGeneratedFiles();
+        def urlRedirectFile = new File(System.getProperty("base.dir") + "/web-app/${url1.url}.gsp");
+        assertEquals("", urlRedirectFile.getText());
+        
     }
     public void testMetaData()
     {
@@ -163,6 +186,31 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals("Tab", tabsXmlChildren["Tab"].'@designerType'.text());
         assertEquals("true", tabsXmlChildren["Tab"].'@isMultiple'.text());
 
+    }
+
+    def checkGeneratedFiles()
+    {
+        def baseDir =  System.getProperty("base.dir");
+        UiUrl.list().each{url->
+            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.url+"Layout.gsp");
+            assertTrue (urlLayoutFile.exists());
+            def urlRedirectFile = new File(baseDir + "/web-app/${url.url}.gsp");
+            assertTrue (urlRedirectFile.exists());
+            url.tabs.each{tab->
+                def url1WebAppDirectoryFile = new File(baseDir + "/web-app/${url.url}/${tab.name}.gsp");
+                assertTrue (url1WebAppDirectoryFile.exists());
+            }
+        }        
+    }
+    def deleteGeneratedFiles()
+    {
+        def baseDir =  System.getProperty("base.dir");
+        UiUrl.list().each{url->
+            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.url+"Layout.gsp");
+            urlLayoutFile.delete();
+            FileUtils.deleteDirectory (new File(baseDir + "/web-app/${url.url}"));
+            new File(baseDir + "/web-app/${url.url}.gsp").delete();
+        }
     }
 
 }

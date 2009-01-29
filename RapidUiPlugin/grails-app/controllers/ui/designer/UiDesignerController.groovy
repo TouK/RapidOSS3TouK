@@ -27,9 +27,17 @@ class UiDesignerController {
     }
 
     def save= {
+        def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer")}
+        uiDomainClasses.each{
+            it.clazz.'removeAll'();
+        }
         def xmlConfigurationString = params.configuration
         def xmlConfiguration = new XmlSlurper().parseText(xmlConfigurationString);
         processUiElement(xmlConfiguration);
+        render(contentType:"text/xml")
+        {
+            Successful("UI configuration saved successfully")
+        }
     }
 
     def generate = {
@@ -41,6 +49,19 @@ class UiDesignerController {
             def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.url}Layout.gsp");
             def content = urlTemplate.make (url:url).toString()
             urlLayoutFile.setText (content)
+            def urlRedirectFile = new File("${baseDir}/web-app/${url.url}.gsp");
+            if(!url.tabs.isEmpty())
+            {
+                urlRedirectFile.setText ("""
+                    <%
+                        response.sendRedirect("${url.url}/${url.tabs[0].name}.gsp");
+                    %>
+                """)
+            }
+            else
+            {
+                urlRedirectFile.setText ("");    
+            }
             url.tabs.each{UiTab tab->
                 def tabOutputFile = new File("${baseDir}/web-app/${url.url}/${tab.name}.gsp");
                 tabOutputFile.parentFile.mkdirs();
@@ -61,6 +82,10 @@ class UiDesignerController {
                 def tabString = tabTemplate.make (tab:tab, tabContent:tabContent).toString()
                 tabOutputFile.setText (tabString)
             }
+        }
+        render(contentType:"text/xml")
+        {
+            Successful("UI generated successfully")
         }
     }
 

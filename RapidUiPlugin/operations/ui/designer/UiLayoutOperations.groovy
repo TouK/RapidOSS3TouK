@@ -9,7 +9,7 @@ public class UiLayoutOperations extends AbstractDomainOperation
                 designerType:"Layout",
                 canBeDeleted: true,
                 display: "Layout",
-                propertyConfiguration: [],
+                propertyConfiguration: [:],
                 childrenConfiguration:[
                     [designerType:"LayoutUnit", propertyName:"units", isMultiple: true]
                 ]

@@ -10,13 +10,12 @@ public class UiCenterUnitOperations extends UiLayoutUnitOperations
                 display: "Center",
                 imageExpanded:"images/rapidjs/designer/layout_content.png",
                 imageCollapsed:"images/rapidjs/designer/layout_content.png",
-                propertyConfiguration: [
-                ],
+                propertyConfiguration: [:],
                 childrenConfiguration:[]
         ];
         def parentMetaData = UiLayoutUnitOperations.metaData();
         metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
-        metaData.childrenConfiguration.putAll(parentMetaData.childrenConfiguration);
+        metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
     }
 

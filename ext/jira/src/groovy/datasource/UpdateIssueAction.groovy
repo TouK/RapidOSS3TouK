@@ -54,7 +54,6 @@ public class UpdateIssueAction implements Action {
     				if (versionMap.containsKey(value)){
     					key = key+"s";
     					value = versionMap[value];
-    					println "key:$key value:$value"
     				}
     				else{
     					throw new Exception("There is no such version: $value!")

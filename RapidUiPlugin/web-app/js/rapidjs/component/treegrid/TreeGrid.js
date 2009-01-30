@@ -77,8 +77,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.Poll
     fireSelectionChange: function(treeNode) {
         this.events['selectionChange'].fireDirect(treeNode.xmlData);
     },
-    fireRowMenuClick: function(xmlData, id, parentId) {
-        this.events['rowMenuClick'].fireDirect(xmlData, id, parentId);
+    fireRowMenuClick: function(xmlData, id, parentId, row) {
+        this.events['rowMenuClick'].fireDirect(xmlData, id, parentId, row);
     },
     fireTreeNodeClick: function(treeNode) {
         this.events['treeNodeClick'].fireDirect(treeNode.xmlData);

@@ -84,7 +84,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 var childNodes = dataNode.childNodes();
                 for (var i = 0; i < childNodes.length; i++) {
                     var iType = childNodes[i].getAttribute(typeAttribute)
-                    if(iType == itemType && !UIConfig.isChildMultiple(parentType, itemType)){
+                    if (iType == itemType && !UIConfig.isChildMultiple(parentType, itemType)) {
                         return false;
                     }
                 }
@@ -114,7 +114,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                             if (UIConfig.canBeDeleted(childType)) {
                                 var displayName = UIConfig.getDisplayName(childType);
 
-                                var addExpr = "window.designerMenuEvaluate(params.dataNode, '" + item+"', '" + childType+"', '" + this.treeTypeAttribute+"')"
+                                var addExpr = "window.designerMenuEvaluate(params.dataNode, '" + item + "', '" + childType + "', '" + this.treeTypeAttribute + "')"
                                 menuItems.push({id:'add_' + childType, label:'Add New ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "' && " + addExpr});
                             }
                         }
@@ -122,7 +122,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 }
 
             }
-            menuItems.push({id:"delete", label:"Delete", visible:"params.data.canBeDeleted"});
+            menuItems.push({id:"delete", label:"Delete", visible:"params.data.canBeDeleted && !(params.data." + this.treeTypeAttribute + " == 'Layout' && params.dataNode.parentNode().getAttribute('" + this.treeTypeAttribute + "') == 'Tab')"});
             this.tree.treeGridView.setMenuItems(menuItems);
             this.tree.treeGridView.rootImages = rootImages;
         }
@@ -146,6 +146,13 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.addExtraAttributesToChildNodes(rootNode);
         this.data = data;
         this.tree.loadData(this.data);
+        var defferedExpandNode = function(){
+           var rows = this.tree.treeGridView.bufferView.rows;
+           if(rows.length > 0){
+               this.expandTreeNode(rows[0])    
+           }
+        }
+        defferedExpandNode.defer(100, this, []);
     },
 
     processSuccess: function(response) {
@@ -312,7 +319,10 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         var layoutConfig = UIConfig.getLayoutType(layoutType);
         _populateLayoutNode.call(this, this.currentDisplayedItemData, layoutConfig);
     },
-    treeMenuClicked: function(xmlData, id, parentId) {
+    expandTreeNode: function(treeRow) {
+        this.tree.treeGridView.expandNode(treeRow)
+    },
+    treeMenuClicked: function(xmlData, id, parentId, row) {
 
         if (id.indexOf("add_") == 0) {
             var itemType = id.substr(4);
@@ -324,6 +334,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 var currentTab = xmlData.getAttribute(this.itemTabAtt);
                 this.addExtraAttributesToChildNodes(xmlData, currentTab);
                 this.refreshTree();
+                this.expandTreeNode(row)
             }
 
         }
@@ -333,6 +344,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 this.currentDisplayedItemData = null;
                 var length = this.propertyGrid.getRecordSet().getLength()
                 this.propertyGrid.deleteRows(0, length)
+                this.closeCellEditor();
             }
             this.refreshTree();
             //TODO: destroy layout if needed.
@@ -381,7 +393,6 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             title:'',
             rootTag:this.rootTag,
             contentPath:this.contentPath,
-            expanded:true,
             keyAttribute:this.keyAttribute,
             columns:[{colLabel:'', attributeName:this.treeDisplayAttribute, width:400}]
         }
@@ -452,7 +463,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 }
                 else if (propertyName == "component" && (itemType == "CenterUnit" || itemType == "LeftUnit" ||
                                                          itemType == "TopUnit" || itemType == "RightUnit" ||
-                                                         itemType == "BottomUnit" || itemType == "Dialogs")) {
+                                                         itemType == "BottomUnit" || itemType == "Dialog")) {
                     editor = this.editors["InList"];
                     editor.dropdownOptions = DesignerUtils.getComponentNamesOfCurrentTab(this, this.currentDisplayedItemData);
                     editor.renderForm();

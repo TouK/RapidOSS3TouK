@@ -154,12 +154,12 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             this.expandAll();
         }
         else {
-            this.expandNode(this.rootNode, null, -1);
+            this.expandNode();
         }
 
     },
 
-    expandAll : function() {
+    expandAll : function(treeRow) {
         this._expandNodes(this.rootNode, true);
         this.updateExpandedNodes(this.rootNode, -1, true);
         this.updateBodyHeight();
@@ -199,11 +199,23 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         this.selectedRow = row;
     },
 
-    expandNode : function(treeNode, treeRow, expandedRowIndex) {
-        this.updateIcon(treeRow, true);
-        treeNode.isExpanded = true;
-        this.updateExpandedNodes(treeNode, expandedRowIndex, true);
-        this.updateBodyHeight();
+    expandNode: function(treeRow) {
+        var treeNode;
+        var expandedRowIndex;
+        if (treeRow) {
+            treeNode = this.expandedNodes[treeRow.rowIndex]
+            expandedRowIndex = treeRow.rowIndex;
+        }
+        else {
+            treeNode = this.rootNode;
+            expandedRowIndex = -1;
+        }
+        if (!treeNode.isExpanded) {
+            this.updateIcon(treeRow, true);
+            treeNode.isExpanded = true;
+            this.updateExpandedNodes(treeNode, expandedRowIndex, true);
+            this.updateBodyHeight();
+        }
     },
 
     collapseNode : function(treeNode, treeRow, collapsedRowIndex) {
@@ -538,7 +550,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         if (row) {
             if (YAHOO.util.Dom.hasClass(target, "r-tree-treerowicon-collapsed"))
             {
-                this.expandNode(this.expandedNodes[row.rowIndex], row, row.rowIndex);
+                this.expandNode(row);
             }
             else if (YAHOO.util.Dom.hasClass(target, "r-tree-treerowicon-expanded")) {
                 this.collapseNode(this.expandedNodes[row.rowIndex], row, row.rowIndex);
@@ -614,7 +626,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         var row = this.rowMenu.row;
         this.rowMenu.row = null;
         var xmlData = this.expandedNodes[row.rowIndex].xmlData;
-        this.events['rowMenuClick'].fireDirect(xmlData, id, parentId);
+        this.events['rowMenuClick'].fireDirect(xmlData, id, parentId, row);
     },
     handleRightClick : function(event) {
         var target = YAHOO.util.Event.getTarget(event);
@@ -749,7 +761,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         this.sortState['header'] = header;
         this.sortState['direction'] = direction;
         this.expandedNodes = [];
-        this.expandNode(this.rootNode, null, -1);
+        this.expandNode();
         if (lastClicked && lastClicked != header) {
             lastClicked.updateSortState(null);
         }

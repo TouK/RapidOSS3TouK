@@ -64,7 +64,7 @@ YAHOO.rapidjs.designer.Config = new function() {
 
     };
     this.canBeDeleted = function(itemType) {
-        return this.get(itemType)["canBeDeleted"];
+        return this.get(itemType)["canBeDeleted"] == 'true';
     };
     this.getProperties = function(itemType) {
         return this.get(itemType)["properties"];
@@ -77,7 +77,7 @@ YAHOO.rapidjs.designer.Config = new function() {
         return this.get(itemType)["children"]
     };
     this.isChildMultiple = function(itemType, childType){
-        return this.get(itemType)['children'][childType]['isMultiple']
+        return this.get(itemType)['children'][childType]['isMultiple'] == 'true'
     };
     this.getPropertyDescription = function(itemType, propertyName) {
         if (itemType == "Layout" && propertyName == "type") {
@@ -86,7 +86,7 @@ YAHOO.rapidjs.designer.Config = new function() {
         return this.get(itemType)["properties"][propertyName]["descr"]
     };
     this.isPropertyRequired = function(itemType, propertyName) {
-        return this.get(itemType)["properties"][propertyName]["required"]
+        return this.get(itemType)["properties"][propertyName]["required"] == 'true'
     };
     this.getPropertyType = function(itemType, propertyName) {
         return this.get(itemType)["properties"][propertyName]["type"]

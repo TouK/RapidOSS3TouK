@@ -1,0 +1,26 @@
+{
+    "Items":[{
+        "Item":[{"key":"1", "designer_type":"Root",
+            "Item":[{"key":"2", "designer_type":"Url", "url":"index",
+                "Item":[{"key":"3", "designer_type":"Tabs",
+                    "Item":[{"key":"4", "designer_type":"Tab", "name":"Events",
+                        "Item":[
+                            {"key":"5", "designer_type":"Layout",
+                                "Item":[{"key":"6", "designer_type":"Layout_Center"}, {"key":"7", "designer_type":"Layout_Left"}]
+                            },
+                            {"key":"8", "designer_type":"Components",
+                                "Item":[{"key":"13", "designer_type":"FlexPieChart", "id":"summaryChart"}]},
+                            {"key":"9", "designer_type":"Dialogs",
+                                "Item":[{"key":"14", "designer_type":"Dialog", "component":"summaryChart"}]},
+                            {"key":"10", "designer_type":"Forms",
+                                "Item":[{"key":"15", "designer_type":"Form", "id":"saveQuery"}]},
+                            {"key":"11", "designer_type":"Actions"},
+                            {"key":"12", "designer_type":"JavaScript"}
+                        ]
+                        
+                    }]
+                }]
+            }]
+        }]
+    }]
+}

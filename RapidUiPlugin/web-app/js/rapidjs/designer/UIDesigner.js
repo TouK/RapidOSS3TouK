@@ -8,6 +8,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.saveUrl = null
     this.metaDataUrl = null
     this.generateUrl = null
+    this.treeHideAttribute = null;
     YAHOO.ext.util.Config.apply(this, config);
     this.treeDisplayAttribute = 'designer_name'
     this.itemTabAtt = 'designer_item_tab';
@@ -391,6 +392,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             id:'componentTree',
             url:'',
             title:'',
+            hideAttribute: this.treeHideAttribute,
             rootTag:this.rootTag,
             contentPath:this.contentPath,
             keyAttribute:this.keyAttribute,

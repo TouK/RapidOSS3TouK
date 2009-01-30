@@ -1,0 +1,267 @@
+<UiElements>
+    <UiElement designerType="Urls" display="Urls" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
+        <Properties/>
+        <Children>
+            <Child designerType="Url" propertyName="urls" isMultiple="true"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="Url" canBeDeleted="true" displayFromProperty="url" imageExpanded="images/rapidjs/designer/gsp_logo.png" imageCollapsed="images/rapidjs/designer/gsp_logo.png">
+        <Properties>
+            <Property descr="Url of the page set" name="url" type="String" required="true"/>
+        </Properties>
+        <Children>
+            <Child designerType="Tabs"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="Tabs" display="Tabs" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
+        <Properties/>
+        <Children>
+            <Child designerType="Tab" propertyName="tabs" isMultiple="true"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="Tab" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/page.png" imageCollapsed="images/rapidjs/designer/page.png">
+        <Properties>
+            <Property descr="Name of the tab" name="name" type="String" required="true"/>
+            <Property
+                    descr="The file path relative to web-app that will be embedded to tab, where you can write free form JavaScript"
+                    name="javascriptFile" type="String"/>
+        </Properties>
+        <Children>
+            <Child designerType="Layout"/>
+            <Child designerType="Components"/>
+            <Child designerType="Dialogs"/>
+            <Child designerType="Actions"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="Layout" display="Layout" canBeDeleted="true"
+               imageExpanded="images/rapidjs/component/tools/folder_open.gif"
+               imageCollapsed="images/rapidjs/component/tools/folder.gif">
+        <Properties/>
+        <Children>
+            <Child designerType="CenterUnit" propertyName="units"/>
+            <Child designerType="TopUnit" propertyName="units"/>
+            <Child designerType="BottomUnit" propertyName="units"/>
+            <Child designerType="LeftUnit" propertyName="units"/>
+            <Child designerType="RightUnit" propertyName="units"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="CenterUnit" display="Center" imageExpanded="images/rapidjs/designer/layout_content.png"
+               imageCollapsed="images/rapidjs/designer/layout_content.png">
+        <Properties>
+            <Property descr="RapidInsight component that will be displayed in the unit" name="component" type="String"/>
+            <Property descr="Html content file" name="contentFile" type="String"/>
+            <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter"
+                      type="String"/>
+            <Property
+                    descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."
+                    name="scroll" type="String"/>
+        </Properties>
+        <Children>
+            <Child designerType="Layout"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="LeftUnit" display="Left" canBeDeleted="true"
+               imageExpanded="images/rapidjs/designer/layout_content.png"
+               imageCollapsed="images/rapidjs/designer/layout_content.png">
+        <Properties>
+            <Property descr="The width (in pixels) that the unit will take up in the layout." name="width" type="Number"
+                      required="true"/>
+            <Property descr="RapidInsight component that will be displayed in the unit" name="component" type="String"/>
+            <Property descr="Html content file" name="contentFile" type="String"/>
+            <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter"
+                      type="String"/>
+            <Property
+                    descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."
+                    name="scroll" type="String"/>
+        </Properties>
+        <Children>
+            <Child designerType="Layout"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="RightUnit" display="Right" canBeDeleted="true"
+               imageExpanded="images/rapidjs/designer/layout_content.png"
+               imageCollapsed="images/rapidjs/designer/layout_content.png">
+        <Properties>
+            <Property descr="The width (in pixels) that the unit will take up in the layout." name="width" type="Number"
+                      required="true"/>
+            <Property descr="RapidInsight component that will be displayed in the unit" name="component" type="String"/>
+            <Property descr="Html content file" name="contentFile" type="String"/>
+            <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter"
+                      type="String"/>
+            <Property
+                    descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."
+                    name="scroll" type="String"/>
+        </Properties>
+        <Children>
+            <Child designerType="Layout"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="BottomUnit" display="Bottom" canBeDeleted="true"
+               imageExpanded="images/rapidjs/designer/layout_content.png"
+               imageCollapsed="images/rapidjs/designer/layout_content.png">
+        <Properties>
+            <Property descr="The height (in pixels) that the unit will take up in the layout." name="height"
+                      type="Number" required="true"/>
+            <Property descr="RapidInsight component that will be displayed in the unit" name="component" type="String"/>
+            <Property descr="Html content file" name="contentFile" type="String"/>
+            <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter"
+                      type="String"/>
+            <Property
+                    descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."
+                    name="scroll" type="String"/>
+        </Properties>
+        <Children>
+            <Child designerType="Layout"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="TopUnit" display="Top" canBeDeleted="true"
+               imageExpanded="images/rapidjs/designer/layout_content.png"
+               imageCollapsed="images/rapidjs/designer/layout_content.png">
+        <Properties>
+            <Property descr="The height (in pixels) that the unit will take up in the layout." name="height"
+                      type="Number" required="true"/>
+            <Property descr="RapidInsight component that will be displayed in the unit" name="component" type="String"/>
+            <Property descr="Html content file" name="contentFile" type="String"/>
+            <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter"
+                      type="String"/>
+            <Property
+                    descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."
+                    name="scroll" type="String"/>
+        </Properties>
+        <Children>
+            <Child designerType="Layout"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="Components" display="Components"
+               imageExpanded="images/rapidjs/component/tools/folder_open.gif"
+               imageCollapsed="images/rapidjs/component/tools/folder.gif">
+        <Properties>
+        </Properties>
+        <Children>
+            <Child designerType="FlexPieChart" isMultiple="true"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="Dialogs" display="Dialogs" imageExpanded="images/rapidjs/component/tools/folder_open.gif"
+               imageCollapsed="images/rapidjs/component/tools/folder.gif">
+        <Properties>
+        </Properties>
+        <Children>
+            <Child designerType="Dialog" isMultiple="true"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="Dialog" displayFromProperty="component" canBeDeleted="true"
+               imageExpanded="images/rapidjs/designer/application_double.png"
+               imageCollapsed="images/rapidjs/designer/application_double.png">
+        <Properties>
+            <Property descr="RapidInsight component that will be displayed as pop up dialog" name="component"
+                      type="String" required="true"/>
+        </Properties>
+        <Children>
+        </Children>
+    </UiElement>
+    <UiElement designerType="Actions" display="Actions"
+               imageExpanded="images/rapidjs/component/tools/folder_open.gif"
+               imageCollapsed="images/rapidjs/component/tools/folder.gif">
+        <Properties>
+        </Properties>
+        <Children>
+            <Child designerType="RequestAction" isMultiple="true"/>
+            <Child designerType="FunctionAction" isMultiple="true"/>
+            <Child designerType="LinkAction" isMultiple="true"/>
+            <Child designerType="MergeAction" isMultiple="true"/>
+            <Child designerType="CombinedAction" isMultiple="true"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="RequestAction" displayFromProperty="name" canBeDeleted="true" imageExpanded=""
+               imageCollapsed="">
+        <Properties>
+            <Property descr="" name="name" type="String" required="true"/>
+            <Property descr="" name="url" type="String" required="true"/>
+            <Property descr="" name="condition" type="String"/>
+            <Property descr="" name="timeout" type="Number"/>
+            <Property descr="" name="event" type="String" required="true"/>
+        </Properties>
+        <Children>
+            <Child designerType="RequestParameter" isMultiple="true"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="MergeAction" displayFromProperty="name" canBeDeleted="true" imageExpanded=""
+               imageCollapsed="">
+        <Properties>
+            <Property descr="" name="name" type="String" required="true"/>
+            <Property descr="" name="url" type="String" required="true"/>
+            <Property descr="" name="removeUrl" type="String"/>
+            <Property descr="" name="condition" type="String"/>
+            <Property descr="" name="timeout" type="Number"/>
+            <Property descr="" name="event" type="String" required="true"/>
+        </Properties>
+        <Children>
+            <Child designerType="RequestParameter" isMultiple="true"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="LinkAction" displayFromProperty="name" canBeDeleted="true" imageExpanded=""
+               imageCollapsed="">
+        <Properties>
+            <Property descr="" name="name" type="String" required="true"/>
+            <Property descr="" name="url" type="String" required="true"/>
+            <Property descr="" name="condition" type="String"/>
+            <Property descr="" name="event" type="String" required="true"/>
+        </Properties>
+        <Children>
+        </Children>
+    </UiElement>
+    <UiElement designerType="CombinedAction" displayFromProperty="name" canBeDeleted="true" imageExpanded=""
+               imageCollapsed="">
+        <Properties>
+            <Property descr="" name="name" type="String" required="true"/>
+            <Property descr="" name="condition" type="String"/>
+            <Property descr="" name="event" type="String" required="true"/>
+            <Property descr="" name="actions" type="String" required="true"/>
+        </Properties>
+        <Children>
+        </Children>
+    </UiElement>
+    <UiElement designerType="FunctionAction" displayFromProperty="name" canBeDeleted="true" imageExpanded=""
+               imageCollapsed="">
+        <Properties>
+            <Property descr="" name="name" type="String" required="true"/>
+            <Property descr="" name="condition" type="String"/>
+            <Property descr="" name="event" type="String" required="true"/>
+            <Property descr="" name="component" type="String" required="true"/>
+            <Property descr="" name="function" type="String" required="true"/>
+        </Properties>
+        <Children>
+            <Child designerType="FunctionArgument" isMultiple="true"/>
+        </Children>
+    </UiElement>
+    <UiElement designerType="RequestParameter" displayFromProperty="key" canBeDeleted="true" imageExpanded=""
+               imageCollapsed="">
+        <Properties>
+            <Property descr="" name="key" type="String" required="true"/>
+            <Property descr="" name="value" type="String" required="true"/>
+        </Properties>
+        <Children>
+        </Children>
+    </UiElement>
+    <UiElement designerType="FunctionArgument" display="FunctionArgument" canBeDeleted="true" imageExpanded=""
+               imageCollapsed="">
+        <Properties>
+            <Property descr="" name="value" type="String" required="true"/>
+        </Properties>
+        <Children>
+        </Children>
+    </UiElement>
+    <UiElement designerType="FlexPieChart" displayFromProperty="name" canBeDeleted="true" imageExpanded="images/rapidjs/designer/component.gif"
+               imageCollapsed="images/rapidjs/designer/component.gif">
+        <Properties>
+            <Property descr="The unique id of the component which is stored in the global JavaScript object YAHOO.rapidjs.Components" name="name" type="String" required="true"/>
+            <Property descr="The default URL to be used for requests to the server to retrieve the data" name="url" type="String" required="true"/>
+            <Property descr="The root node name of AJAX response which FlexPieChart takes as starting point to get its data" name="rootTag" type="String" required="true"/>
+            <Property descr="FlexPieChart title" name="title" type="String"/>
+            <Property descr="Time delay between two server requests" name="pollingInterval" type="Number"/>
+        </Properties>
+        <Children>
+        </Children>
+    </UiElement>
+
+</UiElements>

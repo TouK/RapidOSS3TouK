@@ -1,59 +1,16 @@
-<Objects>
-    <Object name="Index" id="1" type="url">
-        <Object name="Tabs" id="2" type="tabContainer">
-            <Object name="Events" id="3" type="tab">
-                <Object name="Layout" id="4"></Object>
-                <Object name="Components" id="5">
-                    <Object name="filterTree" id="6" type="component"></Object>
-                    <Object name="eventsGrid" id="7" type="component">
-                        <Object name="Columns" id="8">
-                            <Object name="Name" id="9"></Object>
-                            <Object name="Class Name" id="10"></Object>
-                            <Object name="Element Name" id="11"></Object>
-                        </Object>
-                         <Object name="Menus" id="12">
-                            <Object name="Browse" id="14"></Object>
-                            <Object name="Event Details" id="16"></Object>
-                            <Object name="Acknowledge" id="15"></Object>
-                        </Object>
-                        <Object name="Images" id="17">
-                            <Object name="critical" id="18"></Object>
-                            <Object name="major" id="19"></Object>
-                            <Object name="minor" id="20"></Object>
-                            <Object name="warning" id="21"></Object>
-                            <Object name="indeterminate" id="22"></Object>
-                            <Object name="normal" id="23"></Object>
-                        </Object>
-                    </Object>
-                    <Object name="eventDetails" id="24" type="component"></Object>
-                    <Object name="objectDetails" id="25" type="component"></Object>
-                </Object>
-                <Object name="Dialogs" id="26">
-                    <Object name="eventDetails" id="27" type="dialog"></Object>
-                    <Object name="objectDetails" id="28" type="dialog"></Object>
-                </Object>
-                <Object name="Forms" id="29">
-                    <Object name="saveQueryForm" id="30" type="form"></Object>
-                    <Object name="saveQueryGroupForm" id="31" type="form"></Object>
-                    <Object name="changePasswordForm" id="32" type="form"></Object>
-                </Object>
-                <Object name="Actions" id="33">
-                    <Object name="BrowseAction" id="35" type="action"></Object>
-                    <Object name="EventDetailsAction" id="34" type="action"></Object>
-                    <Object name="ShowMapAction" id="36" type="action"></Object>
-                </Object>
-                <Object name="JavaScript" id="37"></Object>
-            </Object>
-            <Object name="Inventory" id="38" type="tab">
-                <Object name="Bla bla" id="39"></Object>
-            </Object>
-            <Object name="Maps" id="40" type="tab">
-                <Object name="Bla bla" id="41"></Object>
-            </Object>
-        </Object>
-    </Object>
-    <Object name="AnotherUrl" id="42" type="url">
-        <Object name="Bla bla" id="43"></Object>
-    </Object>
-
-</Objects>
+<Items>
+    <Item designer_key="1000" designer_type="Urls">
+        <Item designer_key="1" designer_type="Url" url="index">
+            <Item designer_key="2" designer_type="Tabs">
+                <Item designer_key="3" designer_type="Tab" name="events">
+                    <Item  designer_key="4" designer_type="Layout">
+                        <Item designer_key="5" designer_type="CenterUnit"></Item>
+                    </Item>
+                    <Item designer_key="6" designer_type="Components"></Item>
+                    <Item designer_key="7" designer_type="Dialogs"></Item>
+                    <Item designer_key="9" designer_type="Actions" designer_hide="true"></Item>
+                </Item>
+            </Item>
+        </Item>
+    </Item>
+</Items>

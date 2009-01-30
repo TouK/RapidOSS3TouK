@@ -24,6 +24,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView = function(container, config) {
     this.rootNode = null;
     this.rootImages = null;
     this.contentPath = null;
+    this.hideAttribute = null;
     this.expandedNodes = [];
     this.events = {
         'selectionchanged' : new YAHOO.util.CustomEvent('selectionchanged'),
@@ -149,7 +150,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         if (this.rootNode) {
             this.rootNode.destroy();
         }
-        this.rootNode = new YAHOO.rapidjs.component.treegrid.TreeRootNode(data, this.contentPath);
+        this.rootNode = new YAHOO.rapidjs.component.treegrid.TreeRootNode(data, this.contentPath, this.hideAttribute);
         if (expandAll == true) {
             this.expandAll();
         }

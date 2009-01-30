@@ -42,7 +42,7 @@ class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractD
    		// project, type and summary are required to open a ticket.
    		// project is hard coded as DEMO in this method.
    		// summary is formed from the event description
-   		// type is assumed to be provided in the ticketProps as we need to support subtasks.  
+   		// type is assumed to be provided in the ticketProps  
     		def severityToPriority = ["5":"1","4":"2","3":"3","2":"4","1":"5"];
     		def connectorName = ticketProps.connectorName;
     		if (connectorName!=null && ticketProps.eventName!=null){
@@ -81,7 +81,7 @@ class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractD
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
     		jiraDs.closeIssue(name, "1"); // Default resolution is "Fixed"
     		def event = RsEvent.get(name:eventName);
-    		removeRelation("relatedEvent":event);
+    		removeRelation("relatedEvents":event);
     		
     		if (elementName!=""){
     			def topoObj = RsTopologyObject.get(name:elementName);
@@ -92,7 +92,11 @@ class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractD
     	}
     	
     	public updateTicket(Map props){
+    		def tempProps = [:];
+    		tempProps.putAll(props);
+    		tempProps.project = "DEMO"
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
+    		
     		jiraDs.updateIssue(name, props); 
     	}
     	

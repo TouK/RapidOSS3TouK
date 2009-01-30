@@ -36,7 +36,7 @@
     4: Improvement			4: Incomplete
     						5: Cannot Reproduce
 */		
-    public class RsTicketOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
     	
     	static openTicket(Map ticketProps){ 
    		// project, type and summary are required to open a ticket.
@@ -109,6 +109,12 @@
     	public getLogEntries(String comment){
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
     	    return jiraDs.getComments(name);
+    	}
+    	
+    	public reopenTicket(){
+    		def jiraDs = JiraDatasource.get(name:rsDatasource);
+    	    jiraDs.reopenIssue(name);
+    	    status = "4";
     	}
     }
         

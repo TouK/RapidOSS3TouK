@@ -1,5 +1,7 @@
 package ui.designer;
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import com.ifountain.rui.util.DesignerUtils
 
 public class UiLayoutUnitOperations extends AbstractDomainOperation
 {
@@ -16,5 +18,14 @@ public class UiLayoutUnitOperations extends AbstractDomainOperation
                 ]
         ];
         return metaData;
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = xmlNode.attributes();
+        attributes.parentLayout = parentElement;
+        def designerType = attributes.designerType;
+        def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui"+designerType).clazz;
+        return DesignerUtils.addUiObject(domainClass, attributes, xmlNode);
     }
 }

@@ -14,6 +14,7 @@ class UiLayoutUnit
     };
     static datasources = ["RCMDB":["keys":["type":["nameInDs":"type"]]]]
 
+    boolean isActive = true;
     String contentFile ="";
     String gutter ="";
     Boolean scroll =false;

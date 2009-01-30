@@ -25,7 +25,27 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
         ExpandoMetaClass.disableGlobally();
     }
 
-
+    public void test1()
+    {
+        def xml = """
+            <Urls>
+            <UiElement designerType="Url" url="myurl">
+                <UiElement designerType="Tabs">
+                    <UiElement designerType="Tab" name="mytab">
+                        <UiElement designerType="Layout">
+            
+                        </UiElement>
+                    </UiElement>
+                </UiElement>
+            </UiElement>
+            </Urls>
+        """
+        def xmlNode = new XmlSlurper().parseText (xml)
+        def els = xmlNode.UiElement
+        els.each{
+            println it.UiElement.size()    
+        }
+    }
     public void testAddConfigurationParametersFromModel()
     {
 

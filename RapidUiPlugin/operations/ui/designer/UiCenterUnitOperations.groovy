@@ -6,7 +6,6 @@ public class UiCenterUnitOperations extends UiLayoutUnitOperations
     {
         Map metaData = [
                 designerType:"CenterUnit",
-                canBeDeleted: true,
                 display: "Center",
                 imageExpanded:"images/rapidjs/designer/layout_content.png",
                 imageCollapsed:"images/rapidjs/designer/layout_content.png",

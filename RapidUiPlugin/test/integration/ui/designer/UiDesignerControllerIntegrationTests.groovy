@@ -49,6 +49,10 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
                     builder.UiElement(designerType:"Tabs"){
                         tabsProps.each{tab->
                             builder.UiElement(tab){
+                                builder.UiElement(designerType:'Layout')
+                                builder.UiElement(designerType:'Components')
+                                builder.UiElement(designerType:'Dialogs')
+                                builder.UiElement(designerType:'Actions')
                             }
                         }
                     }
@@ -57,6 +61,10 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
                     builder.UiElement(designerType:"Tabs"){
                         tabsProps.each{tab->
                             builder.UiElement(tab){
+                                builder.UiElement(designerType:'Layout')
+                                builder.UiElement(designerType:'Components')
+                                builder.UiElement(designerType:'Dialogs')
+                                builder.UiElement(designerType:'Actions')
                             }
                         }
                     }
@@ -66,8 +74,8 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         UiDesignerController controller = new UiDesignerController();
         controller.params.configuration = sw.toString()
         controller.save();
-        def url1 = UiUrl.get(url:url1Props.url);
-        def url2 = UiUrl.get(url:url2Props.url);
+        def url1 = UiUrl.get(url:url1Props.url, isActive:true);
+        def url2 = UiUrl.get(url:url2Props.url, isActive:true);
         assertTrue (!url1.tabs.findAll {it.name == "tab1"}.isEmpty());
         assertTrue (!url1.tabs.findAll {it.name == "tab2"}.isEmpty());
         assertTrue (!url2.tabs.findAll {it.name == "tab1"}.isEmpty());
@@ -77,6 +85,8 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         //test view
         IntegrationTestUtils.resetController (controller);
         controller.view();
+        println sw.toString()
+        println controller.response.contentAsString
         assertEqualsXML(sw.toString(), controller.response.contentAsString);
 
         //test generate gsp files 
@@ -96,7 +106,9 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
                 builder.UiElement(url1Props){
                     builder.UiElement(designerType:"Tabs")
                     {
-                        builder.UiElement(tabsProps[0])
+                        builder.UiElement(tabsProps[0]){
+                            builder.UiElement(designerType:"Layout");                            
+                        }
                     }
                 }
             }
@@ -135,6 +147,49 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertFalse (url1Tab2File.exists());
         
     }
+
+    public void testSaveWithErrors()
+    {
+        def sw = new StringWriter();
+        def builder = new MarkupBuilder(sw);
+        def url1Props = [url:"myUrl1", designerType:"Url"]
+        def url2Props = [url:"myUrl2", designerType:"Url"]
+        builder.UiConfig{
+            builder.UiElement(designerType:"Urls"){
+                builder.UiElement(url1Props)
+            }
+        }
+        UiDesignerController controller = new UiDesignerController();
+        controller.params.configuration = sw.toString()
+        controller.save();
+        assertEquals (1, UiUrl.count());
+        def url1BeforeTryingToSaveWithError = UiUrl.list()[0];
+
+        sw = new StringWriter();
+        builder = new MarkupBuilder(sw);
+        builder.UiConfig{
+            builder.UiElement(designerType:"Urls"){
+                builder.UiElement(url1Props){
+                    builder.UiElement(designerType:"Tabs"){
+                        builder.UiElement(designerType:"Tab")
+                    }
+                }
+                builder.UiElement(url2Props){
+                }
+            }
+        }
+        IntegrationTestUtils.resetController (controller);
+        controller.params.configuration = sw.toString()
+        controller.save();
+        assertEquals (1, UiUrl.count());
+        assertEquals (url1BeforeTryingToSaveWithError.id, UiUrl.list()[0].id);
+        assertEquals (true, UiUrl.list()[0].isActive);
+        assertEquals (0, UiTab.count());
+
+        def responseXml = new XmlSlurper().parseText(controller.response.contentAsString);
+        assertEquals(1, responseXml.Error.size());
+
+    }
     public void testMetaData()
     {
         UiDesignerController controller = new UiDesignerController();
@@ -157,11 +212,14 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         components.each{
             componentMap[it.'@designerType'.text()] = it;            
         }
-
+        def classToBeExcluded = [UiLayoutUnit.name, UiComponent.name]
         uiDomainClasses.each{grailsDomainClass->
             def domainClass = grailsDomainClass.clazz;
-            def component = componentMap[StringUtils.substringAfter(domainClass.simpleName, "Ui")];
-            assertNotNull ("Undefined for ${StringUtils.substringAfter(domainClass.simpleName, "Ui")} in ${componentMap}", component);
+            if(!classToBeExcluded.contains(domainClass.name))
+            {
+                def component = componentMap[StringUtils.substringAfter(domainClass.simpleName, "Ui")];
+                assertNotNull ("Undefined for ${StringUtils.substringAfter(domainClass.simpleName, "Ui")} in ${componentMap}", component);
+            }
         }
         def urlsComponent = componentMap["Urls"];
         assertEquals("Urls", urlsComponent.'@designerType'.text());

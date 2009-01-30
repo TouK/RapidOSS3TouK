@@ -11,12 +11,12 @@ class UiComponent
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "layoutUnit", "dialog"];
     
     
-        storageType "FileAndMemory"
+        storageType "File"
     
     };
-    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"], "tab":["nameInDs":"tab"]]]]
 
-    
+    boolean isActive = true;
     String name ="";
     
     String title ="";
@@ -49,7 +49,7 @@ class UiComponent
     ]
     
     static constraints={
-    name(blank:false,nullable:false,key:["tab"])
+    name(blank:false,nullable:false,key:["tab", "isActive"])
         
      title(blank:true,nullable:true)
         

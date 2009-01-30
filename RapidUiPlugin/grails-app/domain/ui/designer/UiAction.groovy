@@ -11,12 +11,12 @@ class UiAction
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab"];
     
     
-        storageType "FileAndMemory"
+        storageType "File"
     
     };
-    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"]]]]
 
-    
+    boolean isActive = true;
     String name ="";
     
     String condition ="";
@@ -41,7 +41,7 @@ class UiAction
     ]
     
     static constraints={
-    name(blank:false,nullable:false,key:["tab"])
+    name(blank:false,nullable:false,key:["tab", "isActive"])
         
      condition(blank:true,nullable:true)
         

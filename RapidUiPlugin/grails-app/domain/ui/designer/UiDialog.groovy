@@ -11,12 +11,12 @@ class UiDialog
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "component"];
 
 
-        storageType "FileAndMemory"
+        storageType "File"
 
     };
-    static datasources = ["RCMDB": ["keys": ["id": ["nameInDs": "id"]]]]
+    static datasources = ["RCMDB": ["keys": ["tab": ["nameInDs": "tab"], "isActive":["nameInDs":"isActive"], "component":["nameInDs":"component"]]]]
 
-
+    boolean isActive = true;
     Long width = 0;
 
     Long height = 0;
@@ -53,7 +53,7 @@ class UiDialog
     ]
 
     static constraints = {
-        tab(key: ["component"])
+        tab(key: ["component", "isActive"])
         width(nullable: true)
 
         height(nullable: true)

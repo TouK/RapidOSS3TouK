@@ -2,6 +2,10 @@ package com.ifountain.rui.util
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import groovy.util.slurpersupport.GPathResult
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
+import com.ifountain.rui.util.exception.UiElementCreationException
 
 /**
 * Created by IntelliJ IDEA.
@@ -62,5 +66,18 @@ class DesignerUtils {
         if (Boolean.class.isAssignableFrom(prop.type)) {return "Boolean"}
         if (Date.class.isAssignableFrom(prop.type)) {return "Date"}
 
+    }
+
+    public static Object addUiObject(Class uiElementClass, Map uiElementProperties, GPathResult xmlNode)
+    {
+        def res = uiElementClass.'add'(uiElementProperties);
+        if(res.hasErrors())
+        {
+            def messageSource = ServletContextHolder.getServletContext().getAttribute (GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("messageSource");
+            def errorMessage = messageSource.getMessage(res.errors.getAllErrors()[0], Locale.ENGLISH);
+            xmlNode.attributes().designerError = errorMessage;
+            throw new UiElementCreationException(uiElementClass, errorMessage);
+        }
+        return res;
     }
 }

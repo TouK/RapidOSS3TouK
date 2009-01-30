@@ -140,7 +140,7 @@ class ApplicationController {
     }
 
     def reloadControllers = {
-        org.codehaus.groovy.grails.plugins.PluginManagerHolder.getPluginManager().getGrailsPlugin("controllers").checkForChanges()
+        RsApplication.reloadControllers();
         flash.message = "Controllers reloaded successfully."
         if (params.targetURI) {
             redirect(uri: params.targetURI);
@@ -151,7 +151,7 @@ class ApplicationController {
     }
 
     def reloadFilters = {
-        org.codehaus.groovy.grails.plugins.PluginManagerHolder.getPluginManager().getGrailsPlugin("filters").checkForChanges()
+        RsApplication.reloadFilters();
         flash.message = "Filters reloaded successfully."
         if (params.targetURI) {
             redirect(uri: params.targetURI);
@@ -162,8 +162,7 @@ class ApplicationController {
     }
 
     def reloadViewsAndControllers = {
-        org.codehaus.groovy.grails.plugins.PluginManagerHolder.getPluginManager().getGrailsPlugin("controllers").checkForChanges()
-        GroovyPagesTemplateEngine.pageCache.clear();
+        RsApplication.reloadViewsAndControllers();
         flash.message = "Views and controllers reloaded successfully."
         if (params.targetURI) {
             redirect(uri: params.targetURI);
@@ -174,7 +173,7 @@ class ApplicationController {
     }
     
     def reloadViews = {
-        GroovyPagesTemplateEngine.pageCache.clear();
+        RsApplication.reloadViews();
         flash.message = "Views reloaded successfully."
         if (params.targetURI) {
             redirect(uri: params.targetURI);

@@ -10,12 +10,12 @@ class UiTab
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "url", "layout", "components", "dialogs", "actions"];
     
     
-        storageType "FileAndMemory"
+        storageType "File"
     
     };
-    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"], "url":["nameInDs":"url"]]]]
 
-    
+    boolean isActive = true;
     String name ="";
     
     String javascriptFile ="";
@@ -56,7 +56,7 @@ class UiTab
     ]
     
     static constraints={
-    name(blank:false,nullable:false,key:["url"])
+    name(blank:false,nullable:false,key:["url", "isActive"])
     javascriptFile(blank:true,nullable:true)
 
      __operation_class__(nullable:true)

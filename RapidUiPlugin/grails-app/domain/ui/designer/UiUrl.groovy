@@ -10,12 +10,12 @@ class UiUrl
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tabs"];
     
     
-        storageType "FileAndMemory"
+        storageType "File"
     
     };
-    static datasources = ["RCMDB":["keys":["url":["nameInDs":"url"]]]]
+    static datasources = ["RCMDB":["keys":["url":["nameInDs":"url"], "isActive":["nameInDs":"isActive"]]]]
 
-    
+    boolean isActive = true;
     String url ="";
     
     Long id ;
@@ -38,7 +38,7 @@ class UiUrl
     ]
     
     static constraints={
-    url(blank:false,nullable:false,key:[])
+    url(blank:false,nullable:false,key:["isActive"])
         
      __operation_class__(nullable:true)
         

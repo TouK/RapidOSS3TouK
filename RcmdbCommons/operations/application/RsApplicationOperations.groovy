@@ -30,6 +30,8 @@ import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import com.ifountain.rcmdb.domain.BackupAction
 import java.text.SimpleDateFormat
+import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
+import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 
 /**
  * Created by IntelliJ IDEA.
@@ -109,5 +111,22 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         DefaultCompass c = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("compass");
         BackupAction action = new BackupAction(c, directory);
         WrapperIndexDeletionPolicy.takeGlobalSnapshot(action); 
+    }
+
+    def static reloadControllers(){
+        PluginManagerHolder.getPluginManager().getGrailsPlugin("controllers").checkForChanges()
+    }
+
+    def static reloadFilters(){
+        PluginManagerHolder.getPluginManager().getGrailsPlugin("filters").checkForChanges()
+    }
+
+    def static reloadViewsAndControllers(){
+        reloadControllers();
+        reloadViews()
+    }
+
+    def static reloadViews(){
+        GroovyPagesTemplateEngine.pageCache.clear();
     }
 }

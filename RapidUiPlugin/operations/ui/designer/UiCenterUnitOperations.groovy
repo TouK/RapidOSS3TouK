@@ -8,8 +8,8 @@ public class UiCenterUnitOperations extends UiLayoutUnitOperations
                 designerType:"CenterUnit",
                 canBeDeleted: true,
                 display: "Center",
-                imageExpanded="images/rapidjs/designer/layout_content.png",
-                imageCollapsed="images/rapidjs/designer/layout_content.png",
+                imageExpanded:"images/rapidjs/designer/layout_content.png",
+                imageCollapsed:"images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
                 ],
                 childrenConfiguration:[]

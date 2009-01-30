@@ -144,6 +144,12 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             this.func.createDelegate(this, {width: this.width, height: this.height }, true).call({width: this.width, height: this.height});
         }
         this.panel.hideEvent.subscribe(this.handleHide, this, true);
+        this.panel.hideEvent.subscribe(function() {
+            YAHOO.util.Dom.setStyle(this.panel.body, 'overflow', 'hidden');
+        }, this, true)
+        this.panel.beforeShowEvent.subscribe(function() {
+            YAHOO.util.Dom.setStyle(this.panel.body, 'overflow', 'auto');
+        }, this, true)
         YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
         this.setTitle(this.title)
     },

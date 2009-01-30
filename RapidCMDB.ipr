@@ -599,6 +599,7 @@
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/javamail" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/antlr" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/webservices" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -609,6 +610,7 @@
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/jdbc" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/snmp" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/testing" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/webservices" recursive="false" />
     </library>
     <library name="LicencedJars">
       <CLASSES>

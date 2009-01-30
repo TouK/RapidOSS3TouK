@@ -62,4 +62,9 @@ public class JiraAdapter extends BaseAdapter{
 	    executeAction(action);        
 	    return action.getComments();
 	}
+	
+	public reopenIssue(String issueId){
+		ReopenIssueAction action = new ReopenIssueAction(logger,issueId);
+	    executeAction(action);        
+	}
 }

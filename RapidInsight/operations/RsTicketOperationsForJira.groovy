@@ -110,7 +110,7 @@ class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractD
     	    jiraDs.addComment(name, comment);
     	}
     	
-    	public getLogEntries(String comment){
+    	public getLogEntries(){
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
     	    return jiraDs.getComments(name);
     	}

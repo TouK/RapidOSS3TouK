@@ -32,7 +32,7 @@ public class JiraAdapter extends BaseAdapter{
 	} 
 	
 	public getProps(String issueId, List props){
-		RetrievePropsAction action = new RetrievePropsAction(logger,issueId);
+		RetrievePropsAction action = new RetrievePropsAction(logger,issueId,props);
 	    executeAction(action);        
 	    return action.getProps();
 	}

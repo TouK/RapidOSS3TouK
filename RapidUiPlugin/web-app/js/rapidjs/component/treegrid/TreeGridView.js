@@ -90,7 +90,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
     setMenuItems: function(menuItems) {
         this.menuItems = menuItems;
         if (this.menuItems) {
-            this.rowMenu = new YAHOO.widget.Menu(this.id + "_rowMenu", {position: "dynamic", autofillheight:false});
+            this.rowMenu = new YAHOO.widget.Menu(this.id + "_rowMenu", {position: "dynamic", autofillheight:false, minscrollheight:1000});
             for (var i in this.menuItems) {
                 if (this.menuItems[i].submenuItems)
                 {

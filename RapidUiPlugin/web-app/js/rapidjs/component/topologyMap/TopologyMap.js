@@ -91,7 +91,7 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
 
 
     this.body = YAHOO.ext.DomHelper.append(this.container, {tag:'div'}, true);
-	this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + 'menu', {position: "dynamic", autofillheight:false});
+	this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + 'menu', {position: "dynamic", autofillheight:false, minscrollheight:1000});
     this.rowHeaderMenu.addItems(config.nodeMenuItems)
     this.rowHeaderMenu.render(this.body.dom);
     this.rowHeaderMenu.subscribe("click", this.nodeMenuClicked, this, true);

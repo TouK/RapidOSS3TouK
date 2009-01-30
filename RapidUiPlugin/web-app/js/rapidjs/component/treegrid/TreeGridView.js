@@ -762,6 +762,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         this.sortState['header'] = header;
         this.sortState['direction'] = direction;
         this.expandedNodes = [];
+        this.rootNode.isExpanded = false;
         this.expandNode();
         if (lastClicked && lastClicked != header) {
             lastClicked.updateSortState(null);

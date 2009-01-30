@@ -331,9 +331,17 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
     eventChanged : function() {
         var option = this.eventSelect.options[this.eventSelect.selectedIndex];
         var compName = option.parentNode.label;
+        var compType;
+        if(compName == "Global"){
+            compType = "Global";
+        }
+        else{
+            compType= this.currentComponents[compName]    
+        }
+
         var eventName = option.value;
-        var eventDesc = UIConfig.getEventDescription(compName, eventName);
-        var eventParameters = UIConfig.getEventParameters(compName, eventName);
+        var eventDesc = UIConfig.getEventDescription(compType, eventName);
+        var eventParameters = UIConfig.getEventParameters(compType, eventName);
         var nOfParams = 0;
         var paramsHtml = []
         for (var eventParam in eventParameters) {

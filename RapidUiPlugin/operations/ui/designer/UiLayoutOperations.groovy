@@ -11,7 +11,11 @@ public class UiLayoutOperations extends AbstractDomainOperation
                 display: "Layout",
                 propertyConfiguration: [:],
                 childrenConfiguration:[
-                    [designerType:"LayoutUnit", propertyName:"units", isMultiple: true]
+                    [designerType:"CenterUnit", propertyName:"units"],
+                    [designerType:"TopUnit", propertyName:"units"],
+                    [designerType:"BottomUnit", propertyName:"units"],
+                    [designerType:"LeftUnit", propertyName:"units"],
+                    [designerType:"RightUnit", propertyName:"units"]
                 ]
         ];
         return metaData;

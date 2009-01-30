@@ -53,7 +53,7 @@ public class JiraAdapter extends BaseAdapter{
 	}
 	
 	public getComments(String issueId){
-		GetCommentsAction action = new GetCommentsAction(logger,issueId, comment);
+		GetCommentsAction action = new GetCommentsAction(logger,issueId);
 	    executeAction(action);        
 	    return action.getComments();
 	}

@@ -1,17 +1,16 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsTicket 
-{
-    
+class RsTicket {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["description", "errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedObjects", "relatedServices", "relatedEvent"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedObjects", "relatedServices", "relatedEvents"];
     
     
     };
-    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]], "jiraDs":["keys":["name":["nameInDs":"name"]]]]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
 
     
     String name ="";
@@ -28,8 +27,6 @@ class RsTicket
     
     String rsDatasource ="";
     
-    String description ="";
-    
     Long id ;
     
     Long version ;
@@ -44,7 +41,7 @@ class RsTicket
     
     List relatedServices =[];
     
-    RsEvent relatedEvent ;
+    List relatedEvents =[];
     
     
     static relations = [
@@ -53,7 +50,7 @@ class RsTicket
     
         ,relatedServices:[type:RsService, reverseName:"relatedServiceTickets", isMany:true]
     
-        ,relatedEvent:[type:RsEvent, reverseName:"relatedTicket", isMany:false]
+        ,relatedEvents:[type:RsEvent, reverseName:"relatedEventTickets", isMany:true]
     
     ]
     
@@ -72,21 +69,17 @@ class RsTicket
         
      rsDatasource(blank:true,nullable:true)
         
-     description(blank:true,nullable:true)
-        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
         
      errors(nullable:true)
         
-     relatedEvent(nullable:true)
-        
      
     }
 
-    static propertyConfiguration= ["description":["nameInDs":"description", "datasource":"jiraDs", "lazy":false]]
-    static transients = ["description", "errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedObjects", "relatedServices", "relatedEvent"];
+    static propertyConfiguration= [:]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedObjects", "relatedServices", "relatedEvents"];
     
     public String toString()
     {
@@ -97,4 +90,6 @@ class RsTicket
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+    
 }

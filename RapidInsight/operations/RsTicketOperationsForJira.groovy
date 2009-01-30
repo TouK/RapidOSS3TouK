@@ -97,7 +97,7 @@ class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractD
     		tempProps.project = "DEMO"
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
     		
-    		jiraDs.updateIssue(name, props); 
+    		jiraDs.updateIssue(name, tempProps); 
     	}
     	
     	public retrieveDetails(){

@@ -37,6 +37,14 @@ class JiraDatasourceOperations extends BaseDatasourceOperations {
     	def issue = this.adapter.resolveIssue(issueId, resolution)
     }
     
+    def closeIssue(String issueId, String resolution) {
+    	def issue = this.adapter.closeIssue(issueId, resolution)
+    }
+    
+    def reopenIssue(String issueId) {
+    	def issue = this.adapter.reopenIssue(issueId)
+    }
+    
     def updateIssue(String issueId, Map params) {
     	def issue = this.adapter.updateIssue(issueId, params)
     }

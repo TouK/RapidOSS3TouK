@@ -54,7 +54,8 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         for (var index = 0; index < numberOfCols; index++) {
             var colLabel = this.columns[index].colLabel;
             var colWidth = this.columns[index].width;
-            var headerCell = new YAHOO.rapidjs.component.treegrid.TreeHeaderCell(this, headerRow, colLabel, colWidth, index);
+            var isSortable = this.columns[index].sortable;
+            var headerCell = new YAHOO.rapidjs.component.treegrid.TreeHeaderCell(this, headerRow, colLabel, colWidth, index, isSortable);
             this.headers[index] = headerCell;
             this.headers[index].events["resize"].subscribe(this.onColumnSplitterMoved, this, true);
             this.headers[index].events["click"].subscribe(this.headerClicked, this, true);

@@ -396,7 +396,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             rootTag:this.rootTag,
             contentPath:this.contentPath,
             keyAttribute:this.keyAttribute,
-            columns:[{colLabel:'', attributeName:this.treeDisplayAttribute, width:400}]
+            columns:[{colLabel:'', attributeName:this.treeDisplayAttribute, width:400, sortable:false}]
         }
         this.tree = new YAHOO.rapidjs.component.TreeGrid(dh.append(document.body, {tag:'div'}), treeConfig);
         var toolsWrp = dh.append(this.tree.toolbar.el, {tag:'div', cls:'r-designer-tools',

@@ -10,6 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/database/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/email/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/http/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/jira/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/rapidinsight/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/smarts/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/snmp/java" isTestSource="false" />
@@ -21,6 +22,16 @@
     <orderEntry type="module" module-name="core" />
     <orderEntry type="library" name="ThirdParty" level="project" />
     <orderEntry type="library" name="LicencedJars" level="project" />
+    <orderEntry type="module-library">
+      <library name="jira">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/jira/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/jira/lib" recursive="false" />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>

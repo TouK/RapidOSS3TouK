@@ -18,7 +18,7 @@ public class UiBottomUnitOperations extends UiLayoutUnitOperations
         ];
         def parentMetaData = UiLayoutUnitOperations.metaData();
         metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
-        metaData.childrenConfiguration.putAll(parentMetaData.childrenConfiguration);
+        metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
     }
 

@@ -12,11 +12,15 @@ public class UpdateIssueAction implements Action {
 	private Logger logger;
     private issueId;
     private params = [:];
+    private project;
     
     public UpdateIssueAction(Logger logger, String issueId, Map params) {
         this.logger = logger;
         this.issueId = issueId;
+        this.project = params.project;
+        params.remove("project");
         this.params.putAll(params);
+        
     }
 
     public void execute(IConnection conn) throws Exception {

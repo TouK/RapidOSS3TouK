@@ -598,9 +598,11 @@
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/snmp" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/javamail" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/antlr" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antlr" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/commons" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/javamail" recursive="false" />

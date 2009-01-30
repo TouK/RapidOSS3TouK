@@ -8,8 +8,8 @@ public class UiBottomUnitOperations extends UiLayoutUnitOperations
                 designerType:"BottomUnit",
                 canBeDeleted: true,
                 display: "Bottom",
-                imageExpanded="images/rapidjs/designer/layout_content.png",
-                imageCollapsed="images/rapidjs/designer/layout_content.png",
+                imageExpanded:"images/rapidjs/designer/layout_content.png",
+                imageCollapsed:"images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
                         height:[descr:"The height (in pixels) that the unit will take up in the layout."],
                         resize:[descr:"Boolean indicating whether this unit is resizeable."],

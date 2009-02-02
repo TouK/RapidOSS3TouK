@@ -25,6 +25,7 @@ public class UiTabOperations extends AbstractDomainOperation
                                     designerType:"Components",
                                     display:"Components",
                                     childrenConfiguration: [
+                                        [designerType:"FlexPieChart", propertyName:"components", isMultiple:true]
                                     ]
                             ],
                             propertyName:"layout"

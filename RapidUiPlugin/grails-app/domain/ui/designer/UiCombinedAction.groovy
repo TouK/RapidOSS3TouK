@@ -12,13 +12,11 @@ class UiCombinedAction extends UiAction
 
     };
     List actions = [];
-    Long timeout = 60;
     static relations = [
             actions:[type:UiAction, isMany:true]
     ]
 
     static constraints={
-        timeout(nullable:true)
     }
 
     static propertyConfiguration= [:]

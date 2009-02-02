@@ -1,6 +1,8 @@
 package ui.designer
 
-import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation;
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rui.util.DesignerUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder;
 public class UiActionOperations extends AbstractDomainOperation
 {
 

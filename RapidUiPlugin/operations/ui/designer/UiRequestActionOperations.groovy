@@ -1,11 +1,15 @@
 package ui.designer
+
+import com.ifountain.rui.util.DesignerUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Feb 2, 2009
- * Time: 2:09:19 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Feb 2, 2009
+* Time: 2:09:19 PM
+* To change this template use File | Settings | File Templates.
+*/
 class UiRequestActionOperations extends UiActionOperations {
     public static Map metaData()
     {
@@ -29,5 +33,29 @@ class UiRequestActionOperations extends UiActionOperations {
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
 
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = [:];
+        attributes.putAll (xmlNode.attributes());
+        attributes.tab = parentElement;
+        def comps = [];
+        println attributes
+        if(attributes.components != null && attributes.components != "")
+        {
+            attributes.components.split(",").each{
+                if(it != "")
+                {
+                    def comp = UiComponent.get(name:it, tab:parentElement, isActive:true);
+                    if(comp)
+                    {
+                        comps.add(comp);
+                    }
+                }
+            }
+        }
+        attributes.components = comps;
+        return DesignerUtils.addUiObject(UiRequestAction, attributes, xmlNode);
     }
 }

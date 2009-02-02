@@ -184,6 +184,72 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEqualsXML (sw.toString(), controller.response.contentAsString);
     }
 
+    public void testSaveViewWithRelationProperty()
+    {
+        def sw = new StringWriter();
+        def builder = new MarkupBuilder(sw);
+        def url1Props = [url:"myUrl1", designerType:"Url"]
+        def chart1Props = [designerType:'FlexPieChart', rootTag:"rootTag", url:"url1", pollingInterval:"10", name:"chart1", title:"title"]
+        def chart2Props = [designerType:'FlexPieChart', rootTag:"rootTag", url:"url1", pollingInterval:"10", name:"chart2", title:"title"]
+        def tabsProps = [[name:"tab1", designerType:"Tab", javascriptFile:'x.gsp']];
+        builder.UiConfig{
+            builder.UiElement(designerType:"Urls"){
+                builder.UiElement(url1Props){
+                    builder.UiElement(designerType:"Tabs"){
+                        tabsProps.each{tab->
+                            builder.UiElement(tab){
+                                builder.UiElement(designerType:'Layout')
+                                {
+                                    builder.UiElement(designerType:'CenterUnit', component:'chart1', gutter:'', scroll:'false', useShim:'false');
+                                }
+                                builder.UiElement(designerType:'Components')
+                                {
+                                    builder.UiElement(chart1Props)
+                                    builder.UiElement(chart2Props)
+                                }
+                                builder.UiElement(designerType:'Dialogs')
+                                builder.UiElement(designerType:'Actions')
+                                {
+                                    builder.UiElement(designerType:'RequestAction', name:"action1", url:"url1", components:"${chart1Props.name},${chart2Props.name}", condition:"true", timeout:40)
+                                    {
+                                        builder.UiElement(designerType:'Events', designerHidden:"true")    
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        UiDesignerController controller = new UiDesignerController();
+        controller.params.configuration = sw.toString()
+        controller.save();
+        assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
+        def url1 = UiUrl.get(url:url1Props.url, isActive:true);
+        assertTrue (!url1.tabs.findAll {it.name == "tab1"}.isEmpty());
+        def tab = url1.tabs[0];
+        def tabComponents = tab.components;
+        assertEquals (2, tabComponents.size());
+        tabComponents = tabComponents.sort{it.name}
+        UiFlexPieChart component = tabComponents[0];
+
+        assertTrue (component instanceof UiFlexPieChart)
+        assertEquals(chart1Props.rootTag, component.rootTag);
+        assertEquals(chart1Props.url, component.url);
+        assertEquals(new Long(chart1Props.pollingInterval), component.pollingInterval);
+        assertEquals(chart1Props.name, component.name);
+        assertEquals(chart1Props.title, component.title);
+        assertEquals (UiCenterUnit.name, component.layoutUnit.class.name);
+        UiRequestAction requestAction = UiAction.get(name:"action1", tab:tab, isActive:true);
+        assertEquals (2, requestAction.components.size());
+
+        //here we are expecting saved xml and returned xml to be same
+        //also we are testing designerHidden property is added to Events tag which should not be visible in designer tree
+        IntegrationTestUtils.resetController (controller);
+        controller.view();
+        assertEqualsXML (sw.toString(), controller.response.contentAsString);
+    }
+
     public void testSaveWithErrors()
     {
         def sw = new StringWriter();

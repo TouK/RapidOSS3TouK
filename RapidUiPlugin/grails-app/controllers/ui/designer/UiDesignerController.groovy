@@ -178,7 +178,12 @@ class UiDesignerController {
             def uiElementProperties = [designerType:metaData.designerType];
             propsToBeSentToUi.each{String propName, propConfig->
                 try{
-                    uiElementProperties[propName] = component.getProperty (propName);
+                    def propValue = component.getProperty (propName);
+                    if(propValue instanceof Collection)
+                    {
+                        propValue = propValue.join(",");
+                    }
+                    uiElementProperties[propName] = propValue;
                 }catch(groovy.lang.MissingPropertyException e){}
             }
             builder.UiElement(uiElementProperties){
@@ -194,7 +199,11 @@ class UiDesignerController {
                     else
                     {
                         def designerType = child.designerType;
-                        builder.UiElement(designerType:designerType){
+                        def childProps = [designerType:designerType]
+                        child.metaData.propertyConfiguration.each{String propName, childProp->
+                            childProps[propName] = childProp.defaultValue;                            
+                        }
+                        builder.UiElement(childProps){
                             child.metaData.childrenConfiguration.each{realChild->
                                 def propName = realChild.propertyName;
                                 try{

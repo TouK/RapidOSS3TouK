@@ -27,6 +27,10 @@ public class UiLayoutUnitOperations extends AbstractDomainOperation
         attributes.parentLayout = parentElement;
         def designerType = attributes.designerType;
         def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui"+designerType).clazz;
+        if(attributes.component != null && attributes.component != "")
+        {
+            attributes.component=UiComponent.get(name:attributes.component, tab:parentElement.tab, isActive:true);
+        }
         return DesignerUtils.addUiObject(domainClass, attributes, xmlNode);
     }
 }

@@ -1,11 +1,14 @@
 package ui.designer
+
+import com.ifountain.rui.util.DesignerUtils
+
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Feb 2, 2009
- * Time: 3:37:33 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Feb 2, 2009
+* Time: 3:37:33 PM
+* To change this template use File | Settings | File Templates.
+*/
 class UiFlexPieChartOperations extends UiComponentOperations
 {
 
@@ -28,6 +31,14 @@ class UiFlexPieChartOperations extends UiComponentOperations
         metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = [:];
+        attributes.putAll (xmlNode.attributes());
+        attributes.tab = parentElement;
+        return DesignerUtils.addUiObject(UiFlexPieChart, attributes, xmlNode);
     }
 
 }

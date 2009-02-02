@@ -45,6 +45,7 @@ public class UiTabOperations extends AbstractDomainOperation
                                     designerType:"Actions",
                                     display:"Actions",
                                     childrenConfiguration: [
+                                        [designerType:"Action", isMultiple:true, propertyName:"actions"]
                                     ]
                             ],
                             propertyName:"layout"
@@ -67,13 +68,26 @@ public class UiTabOperations extends AbstractDomainOperation
         def componentsNode = xmlNode.UiElement.find{ it.@designerType == 'Components' }
         def dialogsNode = xmlNode.UiElement.find{ it.@designerType == 'Dialogs' }
         def actionsNode = xmlNode.UiElement.find{ it.@designerType == 'Actions' }
-        def components = [];
-        def dialogs = [];
         componentsNode.UiElement.each{componentNode->
             def designerType = componentNode.@designerType.text()
             def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui"+designerType);
             def component = domainClass.clazz.addUiElement(componentNode, uiTab);
-            components.add(component);
+        }
+
+        actionsNode.UiElement.each{actionNode->
+            if(actionNode.'@designerType'.text() != "CombinedAction")
+            {
+                def designerType = actionNode.@designerType.text()
+                def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui"+designerType);
+                domainClass.clazz.'addUiElement'(actionNode, uiTab);
+            }
+        }
+
+        actionsNode.UiElement.each{actionNode->
+            if(actionNode.'@designerType'.text() == "CombinedAction")
+            {
+                UiCombinedAction.addUiElement(actionNode, uiTab);
+            }
         }
 
         dialogsNode.UiElement.each{dialogNode->
@@ -87,7 +101,6 @@ public class UiTabOperations extends AbstractDomainOperation
                 def layoutUnit = UiLayoutUnit.addUiElement(layoutUnitNode, uiLayout);
             }
         }
-        uiTab.addRelation(dialogs:dialogs, components:components);
         return uiTab;
     }
 

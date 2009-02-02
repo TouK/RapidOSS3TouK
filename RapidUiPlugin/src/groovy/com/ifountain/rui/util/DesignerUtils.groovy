@@ -86,7 +86,14 @@ class DesignerUtils {
             def propMetaData = domainProps[propName];
             if( propMetaData != null && propMetaData.isRelation && propValue instanceof String)
             {
-                propValue = null;
+                if(propMetaData.isOneToOne() || propMetaData.isManyToOne())
+                {
+                    propValue = null;
+                }
+                else
+                {
+                    propValue = [];                    
+                }
             }
             propertiesToBeAdded[propName] = propValue;
         }

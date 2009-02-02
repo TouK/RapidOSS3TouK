@@ -16,7 +16,7 @@ class UiRequestAction extends UiAction
     List parameters = [];
     List components = [];
     static relations = [
-            parameters:[type:UiRequestAction, reverseName:"action", isMany:true],
+            parameters:[type:UiRequestParameter, reverseName:"action", isMany:true],
             components:[type:UiComponent, isMany:true]
     ]
 

@@ -8,11 +8,8 @@ class UiAction
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab"];
-    
-    
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "events", "menuItems"];
         storageType "File"
-    
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"]]]]
 
@@ -32,12 +29,14 @@ class UiAction
     Object __is_federated_properties_loaded__ ;
     
     UiTab tab ;
-    
+    List events = [];
+    List menuItems = [];
+
     
     static relations = [
-    
-        tab:[type:UiTab, reverseName:"actions", isMany:false]
-    
+        tab:[type:UiTab, reverseName:"actions", isMany:false],
+        menuItems:[type:UiMenuItem, reverseName:"action", isMany:true],
+        events:[type:UiEvent, reverseName:"action", isMany:true]
     ]
     
     static constraints={
@@ -56,7 +55,7 @@ class UiAction
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "events", "menuItems"];
     
     public String toString()
     {

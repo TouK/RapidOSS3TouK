@@ -36,7 +36,7 @@
     4: Improvement			4: Incomplete
     						5: Cannot Reproduce
 */		
-class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+class RsTicketOperationsForJira  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
     	
     	static openTicket(Map ticketProps){ 
    		// project, type and summary are required to open a ticket.

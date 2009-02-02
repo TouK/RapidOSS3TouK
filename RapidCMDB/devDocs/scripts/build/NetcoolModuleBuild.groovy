@@ -58,6 +58,8 @@ class NetcoolModuleBuild extends Build {
         ant.copy(todir: "$rapidSuiteDir/src/java") {
             ant.fileset(dir: "$env.rapid_netcool/src/java")
         }
+        copyDependentJars("$rapidSuiteDir/lib");
+        
         ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
             ant.fileset(file: "${env.rapid_netcool}/applications/RapidInsightForNetcool/grails-app/domain/*.groovy");
         }
@@ -80,6 +82,11 @@ class NetcoolModuleBuild extends Build {
             }
         }
         println "Netcool Build Done";
+    }
+
+     def copyDependentJars(dirToCopyTo) {
+        ant.copy(file: (String) classpath.getProperty("antlr-3_1_1-runtime_jar"), toDir: dirToCopyTo);
+        
     }
 
 }

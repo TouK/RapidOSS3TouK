@@ -34,7 +34,7 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
 		remove()
 		updateObjectState();
 	}
-	def updateObjectState()
+	public void updateObjectState()
     {
         def topologyObjectName = elementName;
         def rsTopologyObject = RsTopologyObject.get(name:topologyObjectName);

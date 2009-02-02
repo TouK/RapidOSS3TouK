@@ -241,8 +241,11 @@ class UiDesignerController {
                 if(domainClassMetaData)
                 {
                     def metaProperties = domainClassMetaData.propertyConfiguration?domainClassMetaData.propertyConfiguration:[:]
-                    domainClassMetaData.propertyConfiguration = DesignerUtils.addConfigurationParametersFromModel(metaProperties, grailsDomainClass);
-                    createMetaXml(builder, domainClassMetaData);
+                    if(domainClassMetaData.designerType != null)
+                    {
+                        domainClassMetaData.propertyConfiguration = DesignerUtils.addConfigurationParametersFromModel(metaProperties, grailsDomainClass);
+                        createMetaXml(builder, domainClassMetaData);
+                    }
                 }
             }
         }

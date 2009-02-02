@@ -248,7 +248,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         components.each{
             componentMap[it.'@designerType'.text()] = it;            
         }
-        def classToBeExcluded = [UiLayoutUnit.name, UiComponent.name]
+        def classToBeExcluded = [UiLayoutUnit.name, UiComponent.name, UiAction.name]
         uiDomainClasses.each{grailsDomainClass->
             def domainClass = grailsDomainClass.clazz;
             if(!classToBeExcluded.contains(domainClass.name))
@@ -292,6 +292,12 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals(1, tabsXmlChildren.size());
         assertEquals("Tab", tabsXmlChildren["Tab"].'@designerType'.text());
         assertEquals("true", tabsXmlChildren["Tab"].'@isMultiple'.text());
+
+        //Test will not send information about components whose meta data does not have designerType
+        assertNull (componentMap["Component"])
+        assertNull (componentMap["Action"])
+        assertNull (componentMap["LayoutUnit"])
+        assertNull (componentMap[""])
 
     }
 

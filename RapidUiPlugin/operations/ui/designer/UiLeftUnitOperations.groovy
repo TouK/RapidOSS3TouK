@@ -13,6 +13,8 @@ public class UiLeftUnitOperations extends UiLayoutUnitOperations
                 propertyConfiguration: [
                         width:[descr:"The width (in pixels) that the unit will take up in the layout."],
                         resize:[descr:"Boolean indicating whether this unit is resizeable."],
+                        minWidth:[descr:"The min width of unit."],
+                        maxWidth:[descr:"The max width of unit."]
                 ],
                 childrenConfiguration:[]
         ];

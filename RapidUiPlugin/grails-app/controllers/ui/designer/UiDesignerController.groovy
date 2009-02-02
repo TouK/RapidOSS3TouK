@@ -145,11 +145,12 @@ class UiDesignerController {
                     tab.dialogs.each{tabComponent->
                         tabContent.append(generateTag (tabComponent, templateEngine));
                     }
+                    def layoutContent = "";
                     if(tab.layout)
                     {
-                        tabContent.append(generateTag (tab.layout, templateEngine));
+                        layoutContent = generateTag (tab.layout, templateEngine);
                     }
-                    def tabString = tabTemplate.make (tab:tab, tabContent:tabContent).toString()
+                    def tabString = tabTemplate.make (tab:tab, tabContent:tabContent, layoutContent:layoutContent).toString()
                     tabOutputFile.setText (tabString)
                 }
             }
@@ -170,6 +171,7 @@ class UiDesignerController {
     def createViewXml(components, builder)
     {
         components.each{component->
+
             def metaData = component.metaData();
             def propsToBeSentToUi = metaData.propertyConfiguration
             def children = metaData.childrenConfiguration
@@ -185,7 +187,8 @@ class UiDesignerController {
                     {
                         def propName = child.propertyName;
                         try{
-                            createViewXml(component.getProperty (propName), builder);
+                            def childObjects = component.getProperty (propName).findAll {it.getClass().simpleName == "Ui"+child.designerType};
+                            createViewXml(childObjects, builder);
                         }catch(groovy.lang.MissingPropertyException e){}
                     }
                     else
@@ -195,6 +198,7 @@ class UiDesignerController {
                             child.metaData.childrenConfiguration.each{realChild->
                                 def propName = realChild.propertyName;
                                 try{
+                                    def childObjects = component.getProperty (propName).findAll {it.getClass().simpleName == "Ui"+child.designerType};
                                     createViewXml(component.getProperty (propName), builder);
                                 }catch(groovy.lang.MissingPropertyException e){}
                             }

@@ -11,7 +11,9 @@ class UiTopUnit extends UiLayoutUnit{
         storageType "File"
     };
     Long height = 200;
-    Boolean resize = false;
+    Boolean resize = true;
+    Long maxHeight = 0;
+    Long minHeight = 200;
     static datasources = [:]
     static relations = [:]
     static constraints={

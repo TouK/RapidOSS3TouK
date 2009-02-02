@@ -18,6 +18,7 @@ class UiLayoutUnit
     String contentFile ="";
     String gutter ="";
     Boolean scroll =false;
+    Boolean useShim =false;
 
     Long id ;
 

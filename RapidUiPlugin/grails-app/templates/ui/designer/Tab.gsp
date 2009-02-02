@@ -14,7 +14,10 @@
                 { position: 'center', resize: false, gutter: '1px' },
             ]
         });
-
+        layout.on('render', function() {
+            var el = layout.getUnitByPosition('center').get('wrap');
+            ${layoutContent}
+        });
         layout.render();
         window.layout = layout;
     })

@@ -148,6 +148,42 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         
     }
 
+    public void testViewWithMultipleChildUsingSameProperty()
+    {
+        def sw = new StringWriter();
+        def builder = new MarkupBuilder(sw);
+        def url1Props = [url:"myUrl1", designerType:"Url"]
+        def tabsProps = [[name:"tab1", designerType:"Tab", javascriptFile:'x.gsp']];
+        builder.UiConfig{
+            builder.UiElement(designerType:"Urls"){
+                builder.UiElement(url1Props){
+                    builder.UiElement(designerType:"Tabs"){
+                        tabsProps.each{tab->
+                            builder.UiElement(tab){
+                                builder.UiElement(designerType:'Layout')
+                                {
+                                    builder.UiElement(designerType:'CenterUnit', component:'', gutter:'', scroll:'false', useShim:'false');
+                                }
+                                builder.UiElement(designerType:'Components')
+                                builder.UiElement(designerType:'Dialogs')
+                                builder.UiElement(designerType:'Actions')
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        UiDesignerController controller = new UiDesignerController();
+        controller.params.configuration = sw.toString()
+        controller.save();
+        assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
+        IntegrationTestUtils.resetController (controller);
+        controller.view();
+        println sw.toString()
+        println  controller.response.contentAsString
+        assertEqualsXML (sw.toString(), controller.response.contentAsString);
+    }
+
     public void testSaveWithErrors()
     {
         def sw = new StringWriter();

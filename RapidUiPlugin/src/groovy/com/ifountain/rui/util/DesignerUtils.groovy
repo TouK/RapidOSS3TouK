@@ -23,6 +23,7 @@ class DesignerUtils {
         domainClass.clazz.'getPropertiesList'().each{
             domainPropertiesMap[it.name] = it;    
         }
+        def domainInstance = domainClass.clazz.newInstance();
         componentMetaPropertiesConfiguration.each{String propName, Map config->
             def domainProperty = domainPropertiesMap[propName]
             if (config == null)
@@ -40,6 +41,14 @@ class DesignerUtils {
                     def isRequired = config.required != null ? config.required : !(constrainedProps[propName].isBlank() || constrainedProps[propName].isNullable())
                     config.required = isRequired;
                     config.descr = config.descr != null ? config.descr : "";
+                    if(!domainPropertiesMap[propName].isRelation)
+                    {
+                        config.defaultValue = config.defaultValue != null ? config.defaultValue : String.valueOf(domainInstance[propName]);
+                    }
+                    else
+                    {
+                        config.defaultValue = config.defaultValue != null ? config.defaultValue : "";
+                    }
                     //TODO: could not tested taking inList from constraints will be tested if an appropriate model is constructed
                     def inlistConstraint = constrainedProps[propName].getInList();
                     if (inlistConstraint == null) inlistConstraint = [];
@@ -70,7 +79,19 @@ class DesignerUtils {
 
     public static Object addUiObject(Class uiElementClass, Map uiElementProperties, GPathResult xmlNode)
     {
-        def res = uiElementClass.'add'(uiElementProperties);
+        def domainProps = [:]
+        uiElementClass.getPropertiesList().each{domainProps[it.name] = it}
+        def propertiesToBeAdded = [:]
+        uiElementProperties.each{String propName, propValue->
+            def propMetaData = domainProps[propName];
+            if( propMetaData != null && propMetaData.isRelation && propValue instanceof String)
+            {
+                propValue = null;
+            }
+            propertiesToBeAdded[propName] = propValue;
+        }
+
+        def res = uiElementClass.'add'(propertiesToBeAdded);
         if(res.hasErrors())
         {
             def messageSource = ServletContextHolder.getServletContext().getAttribute (GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("messageSource");

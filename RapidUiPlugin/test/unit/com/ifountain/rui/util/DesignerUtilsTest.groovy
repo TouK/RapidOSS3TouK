@@ -84,7 +84,7 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
         def model1Prop3ConfigurationProps = [descr:"desc3"];
         def model1Prop4ConfigurationProps = [descr:"desc4"];
         def rel2ConfigurationProps = [descr:"rel2"];
-        def model1Prop6ConfigurationProps = [descr:"desc6", type:"List", inList:"x,y,z", required:true];
+        def model1Prop6ConfigurationProps = [descr:"desc6", type:"List", inList:"x,y,z", required:true, defaultValue:"defaultValue"];
         def metaDataConfiguration  = [
                 "prop1":model1Prop1ConfigurationProps,
                 "prop2":model1Prop2ConfigurationProps,
@@ -129,6 +129,13 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
         assertEquals ("desc4", uiPropertyMetaDatasForUiModel1[3].descr);
         assertEquals ("desc6", uiPropertyMetaDatasForUiModel1[4].descr);
         assertEquals ("rel2", uiPropertyMetaDatasForUiModel1[5].descr);
+
+        assertEquals ("", uiPropertyMetaDatasForUiModel1[0].defaultValue);
+        assertEquals ("0", uiPropertyMetaDatasForUiModel1[1].defaultValue);
+        assertEquals ("false", uiPropertyMetaDatasForUiModel1[2].defaultValue);
+        assertEquals (String.valueOf(new Date(0)), uiPropertyMetaDatasForUiModel1[3].defaultValue);
+        assertEquals ("defaultValue", uiPropertyMetaDatasForUiModel1[4].defaultValue);
+        assertEquals ("", uiPropertyMetaDatasForUiModel1[5].defaultValue);
 //
 
         assertEquals ("", uiPropertyMetaDatasForUiModel1[0].inList);

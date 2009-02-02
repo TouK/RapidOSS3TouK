@@ -11,7 +11,9 @@ class UiLeftUnit extends UiLayoutUnit{
         storageType "File"
     };
     Long width = 200;
-    Boolean resize = false;
+    Long minWidth = 200;
+    Long maxWidth = 0;
+    Boolean resize = true;
     static datasources = [:]
     static relations = [:]
     static constraints={

@@ -11,7 +11,8 @@ public class UiLayoutUnitOperations extends AbstractDomainOperation
                 propertyConfiguration: [
                         component:[descr:"RapidInsight component that will be displayed in the unit"],
                         gutter:[descr:"The gutter applied to the unit's wrapper, before the content."],
-                        scroll:[descr:"Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."]
+                        scroll:[descr:"Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."],
+                        useShim:[descr:"This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements"]
                 ],
                 childrenConfiguration:[
                     [designerType:"Layout", propertyName:"childLayout", isMultiple: false]

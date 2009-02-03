@@ -9,10 +9,11 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
 
     render: function() {
         var config = {
-            width:640,
+            width:800,
             height:700,
             minWidth:100,
             minHeight:100,
+            x:250,y:0,
             resizable: false,
             title: 'Configure Action',
             buttons:[
@@ -23,33 +24,39 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         this.combEditor = new YAHOO.widget.DropdownCellEditor({});
 
         var dh = YAHOO.ext.DomHelper;
-        var wrp = dh.append(this.dialog.body, {tag:'div', cls:'r-designer-actdlg-wrp'});
+        var wrp = dh.append(this.dialog.body, {tag:'div', cls:'r-designer-actdlg-wrp',
+            html:'<table border="2"><tbody><tr>' +
+                 '<td style="vertical-align:top"><div style="width:395px;overflow:hidden"></div></td>' +
+                 '<td style="vertical-align:top"><div style="width:355px;overflow:hidden"></div></td></tr></tbody></table>'});
+        var wrappers = wrp.getElementsByTagName('div');
+        var left = wrappers[0];
+        var right = wrappers[1];
         this.wrpEl = getEl(wrp);
-        var commonView = dh.append(wrp, {tag:'div', style:'padding:5 0 5 0;',
-            html:'<form action="javascript:void(0)"><fieldset style="padding:5px;"><table><tbody>' +
-                 '<tr><td>Name:</td><td><input style="width:200px"></input></td></tr>' +
-                 '<tr><td>Type:</td><td><select style="width:200px"><option name="request">request</option><option name="merge">merge</option>' +
+        var commonView = dh.append(left, {tag:'div', style:'padding:5 0 5 0;',
+            html:'<form action="javascript:void(0)"><div style="padding:5px;"><table><tbody>' +
+                 '<tr><td class="field-name">Name:</td><td><input style="width:200px"></input></td></tr>' +
+                 '<tr><td class="field-name">Type:</td><td><select style="width:200px"><option name="request">request</option><option name="merge">merge</option>' +
                  '<option name="link">link</option><option name="function">function</option><option name="combined">combined</option></select></td></tr>' +
-                 '<tr><td>Condition:</td><td><input style="width:400px;"></input></td></tr>' +
+                 '<tr><td class="field-name">Condition:</td><td><textarea cols="40"></textarea></td></tr>' +
                  '</tbody></table>' +
-                 '<div><div>Select a component or a global event to trigger your action.</div>' +
-                 '<div><table><tbody><tr>' +
-                 '<td>Component:</td><td><select style="width:200px;"></select></td>' +
-                 '<td>Event:</td><td><select style="width:200px;"></select></td>' +
+                 '<div><div style="font-family:verdana;padding:3px 5px;color:#0A52AF">Select a component or a global event to trigger your action.</div>' +
+                 '<div><table><tbody><tr><td><table><tbody>' +
+                 '<tr><td class="field-name">Component:</td><td><select style="width:150px;"></select></td></tr>' +
+                 '<tr><td class="field-name">Event:</td><td><select style="width:150px;"></select></td></tr>' +
+                 '</tbody></table></td>' +
                  '<td><div class="r-designer-actdlg-btnwrp"><div></div></div></td>' +
                  '</tr></tbody></table></div></div>' +
                  '<div class="r-designer-actdlg-eventdef"></div>' +
-                 '<div>Triggering Events:</div>' +
+                 '<div class="grid-def">Triggering Events:</div>' +
                  '<div class="r-designer-actdlg-gridwrp"></div>' +
-                 '</fieldset></form>'})
+                 '</div></form>'})
 
         var selects = commonView.getElementsByTagName('select');
         this.typeSelect = selects[0];
         this.eventCompSelect = selects[1];
         this.eventSelect = selects[2];
-        var commonInputs = commonView.getElementsByTagName('input');
-        this.nameInput = commonInputs[0];
-        this.conditionInput = commonInputs[1];
+        this.nameInput = commonView.getElementsByTagName('input')[0];
+        this.conditionInput = commonView.getElementsByTagName('textarea')[0];
         var btnwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-btnwrp", 'div', commonView);
         var gridwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-gridwrp", 'div', commonView);
 
@@ -61,7 +68,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
 
         var eventColumnDefs = [
             {key:"component", label:"Component", sortable:true, width:150, editor:this.combEditor},
-            {key:"event", label:"Event", sortable:true, width:250, editor:this.combEditor}
+            {key:"event", label:"Event", sortable:true, width:190, editor:this.combEditor}
         ];
         var eventDs = new YAHOO.util.DataSource([]);
         eventDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -119,16 +126,18 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.eventsGrid.addRow({component:comp, event:event})
         }, scope:this},label: 'Add Event'});
 
-        this.requestView = dh.append(wrp, {tag:'div', style:'padding:5 0 5 0;',
-            html:'<fieldset style="padding:5px;">' +
-                 '<div><table><tbody><tr><td>Url:</td><td><input style="width:200px;"></input></td></tr>' +
-                 '<tr><td>Timeout:</td><td><input style="width:200px;"></input></td></tr>' +
-                 '<tr><td>Remove Attribute:</td><td><input style="width:200px;"></input></td></tr></tbody></table></div>' +
-                 '<div>Request Attributes:</div>' +
-                 '<div><table style="width:100%"><tbody><tr><td width="450px"><div class="r-designer-actdlg-gridwrp"></div></td><td style="vertical-align:top"><div class="r-designer-actdlg-btnwrp"><div></div></div></td></tr></tbody></table></div>' +
-                 '<div>Components:</div>' +
-                 '<div><table style="width:100%"><tbody><tr><td width="450px"><div class="r-designer-actdlg-gridwrp"></div></td><td style="vertical-align:top"><div class="r-designer-actdlg-btnwrp"><div></div></div></td></tr></tbody></table></div>' +
-                 '</fieldset>'})
+        this.requestView = dh.append(right, {tag:'div', style:'padding:5 0 5 0;',
+            html:'<div style="padding:5px;">' +
+                 '<div><table><tbody><tr><td class="field-name">Url:</td><td><input style="width:200px;"></input></td></tr>' +
+                 '<tr><td class="field-name">Timeout:</td><td><input style="width:200px;"></input></td></tr>' +
+                 '<tr><td class="field-name">Remove Attribute:</td><td><input style="width:200px;"></input></td></tr></tbody></table></div>' +
+                 '<div style="margin-top:10px"><table><tbody><tr><td class="grid-def" width="100%">Request Attributes:</td>' +
+                 '<td width="0%"><div class="r-designer-actdlg-btnwrp"><div></div></div></td></tr></tbody></table></div>' +
+                 '<div class="r-designer-actdlg-gridwrp"></div>' +
+                 '<div style="margin-top:10px"><table><tbody><tr><td class="grid-def" width="100%">Components:</td>' +
+                 '<td width="0%"><div class="r-designer-actdlg-btnwrp"><div></div></div></td></tr></tbody></table></div>' +
+                 '<div class="r-designer-actdlg-gridwrp"></div>' +
+                 '</div>'})
         var trs = this.requestView.getElementsByTagName('tr');
         this.mergeView = trs[2];
         var requestInputs = this.requestView.getElementsByTagName('input');
@@ -140,7 +149,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
 
         var requestColumnDefs = [
             {key:"key", label:"Key", sortable:true, width:150, editor:new YAHOO.widget.TextboxCellEditor({disableBtns:true})},
-            {key:"value", label:"Value", sortable:true, width:250, editor:new YAHOO.widget.TextboxCellEditor({disableBtns:true})}
+            {key:"value", label:"Value", sortable:true, width:150, editor:new YAHOO.widget.TextboxCellEditor({disableBtns:true})}
         ];
         var requestDs = new YAHOO.util.DataSource([]);
         requestDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -157,14 +166,14 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }, scope:this},label: 'Add Request Parameter'});
 
         var compColumnDefs = [
-            {key:"component", label:"Component", sortable:true, width:420, editor:this.combEditor}
+            {key:"component", label:"Component", sortable:true, width:320, editor:this.combEditor}
         ];
         var compDs = new YAHOO.util.DataSource([]);
         compDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
         compDs.responseSchema = {
             fields: ["component"]
         };
-        this.compGrid = new YAHOO.widget.DataTable(gridwrps[1], compColumnDefs, compDs, {'MSG_EMPTY':'',scrollable:true, height:"50px"});
+        this.compGrid = new YAHOO.widget.DataTable(gridwrps[1], compColumnDefs, compDs, {'MSG_EMPTY':'',scrollable:true, height:"70px"});
         this.compGrid.subscribe("cellMouseoverEvent", highlightEditableCell);
         this.compGrid.subscribe("cellMouseoutEvent", this.compGrid.onEventUnhighlightCell);
         this.compGrid.subscribe("cellClickEvent", function (oArgs) {
@@ -194,21 +203,20 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.compGrid.addRow({component:'component'})
         }, scope:this},label: 'Add Component'});
 
-        this.linkView = dh.append(wrp, {tag:'div', style:'padding:5 0 5 0;',
-            html:'<fieldset style="padding:5px;">' +
-                 '<div><table><tbody><tr><td>Url:</td><td><input style="width:400px;"></input></td></tr></tbody></table></div></fieldset>'})
+        this.linkView = dh.append(right, {tag:'div', style:'padding:5 0 5 0;',
+            html:'<div style="padding:5px;">' +
+                 '<div><table><tbody><tr><td class="field-name">Url:</td><td><input style="width:200px;"></input></td></tr></tbody></table></div></div>'})
 
         this.linkUrlInput = this.linkView.getElementsByTagName('input')[0];
-        this.combinedView = dh.append(wrp, {tag:'div', style:'padding:5 0 5 0;',
-            html:'<fieldset style="padding:5px;">' +
-                 '<div>Actions:</div>' +
-                 '<div><table style="width:100%"><tbody><tr>' +
-                 '<td width="450px"><div class="r-designer-actdlg-gridwrp"></div></td>' +
-                 '<td style="vertical-align:top"><div class="r-designer-actdlg-btnwrp"><div></div></div></td></tr></tbody></table></div>' +
-                 '</fieldset>'})
+        this.combinedView = dh.append(right, {tag:'div', style:'padding:5 0 5 0;',
+            html:'<div style="padding:5px;">' +
+                 '<div style="margin-top:10px"><table><tbody><tr><td class="grid-def" width="100%">Actions:</td>' +
+                 '<td width="0%"><div class="r-designer-actdlg-btnwrp"><div></div></div></td></tr></tbody></table></div>' +
+                 '<div class="r-designer-actdlg-gridwrp"></div>' +
+                 '</div>'})
 
         var actionColumnDefs = [
-            {key:"action", label:"Action", sortable:true, width:420, editor:this.combEditor}
+            {key:"action", label:"Action", sortable:true, width:320, editor:this.combEditor}
         ];
         var actionDs = new YAHOO.util.DataSource([]);
         actionDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -249,13 +257,13 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
 
         }, this, true);
 
-        this.functionView = dh.append(wrp, {tag:'div', style:'padding:5 0 5 0;',
-            html:'<fieldset style="padding:5px;">' +
-                 '<div><table><tbody><tr><td>Component:</td><td><select style="width:200px;"></select></td></tr>' +
-                 '<tr><td>Method:</td><td><select style="width:200px;"></select></td></tr></tbody></table></div>' +
+        this.functionView = dh.append(right, {tag:'div', style:'padding:5 0 5 0;',
+            html:'<div style="padding:5px;">' +
+                 '<div><table><tbody><tr><td class="field-name">Component:</td><td><select style="width:200px;"></select></td></tr>' +
+                 '<tr><td class="field-name">Method:</td><td><select style="width:200px;"></select></td></tr></tbody></table></div>' +
                  '<div class="r-designer-actdlg-methoddef"></div>' +
                  '<div class="r-designer-actdlg-fncargs"></div>' +
-                 '</fieldset>'})
+                 '</div>'})
 
         selects = this.functionView.getElementsByTagName('select')
         this.componentSelect = selects[0]
@@ -389,7 +397,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                     argsHtml[argsHtml.length] = ["<table><tbody>"]
                 }
                 methodHtml[methodHtml.length] = '<li><span style="font-weight:bold;font-size:13px">' + methodArg + ':</span><span> ' + methodArgs[methodArg] + '</span></li>'
-                argsHtml[argsHtml.length] = '<tr><td>' + methodArg + ':</td><td><input style="width:400px;"></input></td></tr>'
+                argsHtml[argsHtml.length] = '<tr><td class="field-name">' + methodArg + ':</td><td><textarea cols="35"></textarea></td></tr>'
                 nOfArgs++;
             }
             if (nOfArgs > 0) {
@@ -414,7 +422,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }
     },
     typeChanged:function() {
-        var actionType = this.typeSelect.options[this.typeSelect.selectedIndex].value;
+        var actionType = this.typeSelect.options[this.typeSelect.selectedIndex].text;
         if (actionType == "request" || actionType == "merge") {
             YAHOO.util.Dom.setStyle(this.requestView, 'display', '');
             //grids will arrange their widths;
@@ -515,7 +523,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             var method = this.currentActionNode.getAttribute('function');
             SelectUtils.selectTheValue(this.methodSelect, method, 0);
             this.methodChanged();
-            var argInputs = this.argsEl.getElementsByTagName('input');
+            var argInputs = this.argsEl.getElementsByTagName('textarea');
             var childNodes = this.currentActionNode.childNodes();
             var argIndex = 0;
             for (var i = 0; i < childNodes.length; i++) {
@@ -593,7 +601,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             "name":this.nameInput.value,
             "condition":this.conditionInput.value
         };
-        var actionType = this.typeSelect.options[this.typeSelect.selectedIndex].value;
+        var actionType = this.typeSelect.options[this.typeSelect.selectedIndex].text;
         if (actionType == 'request' || actionType == 'merge') {
             actionAtts['url'] = this.requestUrlInput.value;
             actionAtts['timeout'] = this.timeoutInput.value;
@@ -656,7 +664,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             }
         }
         else if (actionType == 'function') {
-            var argInputs = this.argsEl.getElementsByTagName('input');
+            var argInputs = this.argsEl.getElementsByTagName('textarea');
             for (var i = 0; i < argInputs.length; i++) {
                 var argNode = this.designer.createTreeNode(actionNode, "FunctionArgument");
                 argNode.setAttribute('value', argInputs[i].value)

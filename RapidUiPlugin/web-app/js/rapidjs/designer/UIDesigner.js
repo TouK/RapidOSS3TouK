@@ -405,6 +405,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             title:'',
             hideAttribute: this.treeHideAttribute,
             rootTag:this.rootTag,
+            expanded:true,
             contentPath:this.contentPath,
             keyAttribute:this.keyAttribute,
             columns:[{colLabel:'', attributeName:this.treeDisplayAttribute, width:400, sortable:false}]

@@ -100,7 +100,7 @@ class BootStrap {
         }
         def baseDir = System.getProperty("base.dir");
 
-        //ScriptScheduler and ListeningAdapterManager should be initialized in order for the startup scripts to use them
+        //ListeningAdapterManager and  ScriptScheduler should be initialized in order for the startup scripts to use them
         def quartzScheduler = ServletContextHolder.servletContext.getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("quartzScheduler")
         ScriptScheduler.getInstance().initialize(quartzScheduler);
         ListeningAdapterManager.getInstance().initialize();

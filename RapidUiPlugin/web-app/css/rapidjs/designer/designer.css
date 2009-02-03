@@ -96,11 +96,22 @@
     margin: 1px 0pt;
     padding: 1px 1px;
 }
-.r-designer-actdlg-wrp .grid-def{
-    font-family:verdana;
-    padding:5px 5px
+
+.r-designer-actdlg-wrp .grid-def {
+    font-family: verdana;
+    padding: 5px 5px
 }
-.r-designer-actdlg-wrp textarea{
-    height:31px;
-    font-size:12px;
+
+.r-designer-actdlg-wrp textarea {
+    height: 31px;
+    font-size: 12px;
+}
+
+.r-designer-layout-top {
+    height: 100%;
+    padding: 3px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #083772;
+    background: transparent url( ../../../images/rapidjs/component/tools/toolbar.gif ) repeat-x scroll;
 }

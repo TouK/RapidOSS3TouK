@@ -192,7 +192,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
 
     treeSelectionChanged:function(xmlData) {
         this.displayItemProperties(xmlData);
-//        this.changeLayout(xmlData);
+        this.changeLayout(xmlData);
     },
 
     displayItemProperties: function(xmlData) {
@@ -229,33 +229,109 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             editor.cancel();
         }
     },
+    destroyCurrentLayout: function() {
+        if (this.currentLayout) {
+            this.currentLayout.destroy();
+                //destroying child layout removes parent layout's window resize subscription, I couldn't understand why
+            YAHOO.util.Event.on(window, 'resize', this.layout.resize, this.layout, true);
+        }
+        this.currentLayout = null;
+        this.currentLayoutNode = null;
+    },
+    refreshLayout: function(xmlData) {
+        var layoutNode = DesignerUtils.getCurrentLayoutNode(this, xmlData);
+        this.destroyCurrentLayout();
+        if (layoutNode) {
+            this.renderLayout(layoutNode)
+        }
+    },
     changeLayout: function(xmlData) {
         var layoutNode = DesignerUtils.getCurrentLayoutNode(this, xmlData);
         if ((!layoutNode && this.currentLayout) || layoutNode != this.currentLayoutNode) {
-            if (this.currentLayout) {
-                this.currentLayout.destroy();
-                //destroying child layout removes parent layout's window resize subscription, I couldn't understand why
-                YAHOO.util.Event.on(window, 'resize', this.layout.resize, this.layout, true);
-
-            }
-            this.currentLayout = null;
-            this.currentLayoutNode = null;
+            this.destroyCurrentLayout();
         }
         if (layoutNode && layoutNode != this.currentLayoutNode) {
             this.renderLayout(layoutNode)
         }
-
     },
     renderLayout:function(layoutNode) {
         var dh = YAHOO.ext.DomHelper;
-        var centerUnit = this.layout.getUnitByPosition('center');
+
+        var getLayoutUnits = function(lNode, wrpUnit) {
+
+            var getUnitHeight = function(node, wrapperUnit) {
+                var wrapperHeight = wrapperUnit.getSizes().body.h;
+                var browserHeight = YAHOO.util.Dom.getViewportHeight();
+                var unitHeight = 200;
+                try {
+                    unitHeight = parseInt(node.getAttribute('height') || 200, 10);
+                }
+                catch(e) {
+                }
+                return Math.floor(unitHeight * (wrapperHeight / browserHeight))
+            };
+            var getUnitWidth = function(node, wrapperUnit) {
+                var wrapperWidth = wrapperUnit.getSizes().body.w;
+                var browserWidth = YAHOO.util.Dom.getViewportWidth();
+                var unitWidth = 200;
+                try {
+                    unitWidth = parseInt(node.getAttribute('width') || 200, 10);
+                }
+                catch(e) {
+                }
+                return Math.floor(unitWidth * (wrapperWidth / browserWidth))
+            };
+            var units = [];
+            var unitNodes = lNode.childNodes();
+            for (var i = 0; i < unitNodes.length; i++) {
+                var unitConfig = {};
+                var unitNode = unitNodes[i];
+                var unitType = DesignerUtils.getItemType(this, unitNode);
+                var unitPosition = unitType.substring(0, unitType.length - 4).toLowerCase();
+                unitConfig['position'] = unitPosition;
+                unitConfig['height'] = getUnitHeight.call(this, unitNode, wrpUnit);
+                unitConfig['width'] = getUnitWidth.call(this, unitNode, wrpUnit);
+                if (unitNode.childNodes().length == 0) {
+                    var htmlEl = YAHOO.ext.DomHelper.append(document.body, {tag:'div', html:'<span style="position:absolute;top:50%;left:50%">' + unitPosition + '</span>', id:YAHOO.util.Dom.generateId(null, 'generatedLayoutUnit')});
+                    unitConfig['body'] = htmlEl.id;
+                }
+                units.push(unitConfig);
+            }
+            return units;
+        };
+        var renderLayoutToParent = function(lNode, parentLayout, position) {
+            parentLayout.on('render', function() {
+                var unit = parentLayout.getUnitByPosition(position);
+                var layout = new YAHOO.widget.Layout(unit.get('wrap'), {
+                    parent: parentLayout,
+                    units: getLayoutUnits.call(this, lNode, unit)
+                });
+                var childUnits = lNode.childNodes();
+                for (var i = 0; i < childUnits.length; i++) {
+                    var childUnitNode = childUnits[i];
+                    var unitType = DesignerUtils.getItemType(this, childUnitNode);
+                    var unitPosition = unitType.substring(0, unitType.length - 4).toLowerCase();
+                    if (childUnitNode.childNodes().length > 0) {
+                        renderLayoutToParent.call(this, childUnitNode.childNodes()[0], layout, unitPosition);
+                    }
+                }
+                layout.render();
+            }, this, true);
+        }
+        var centerUnit = this.leftLayout.getUnitByPosition('center');
         var curLay = new YAHOO.widget.Layout(centerUnit.get('wrap'), {
-            parent: this.layout,
-            units: [
-                { position: 'center', resize: true, body:dh.append(document.body, {tag:'div', html:'sezgin', id:YAHOO.util.Dom.generateId(null, 'layoutUnit')}).id},
-                { position: 'bottom',height: 200 , body:dh.append(document.body, {tag:'div', html:'sezgin2', id:YAHOO.util.Dom.generateId(null, 'layoutUnit')}).id},
-            ]
+            parent: this.leftLayout,
+            units: getLayoutUnits.call(this, layoutNode, centerUnit)
         });
+        var childUnitNodes = layoutNode.childNodes();
+        for (var i = 0; i < childUnitNodes.length; i++) {
+            var cUnitNode = childUnitNodes[i];
+            var uType = DesignerUtils.getItemType(this, cUnitNode);
+            var uPosition = uType.substring(0, uType.length - 4).toLowerCase();
+            if (cUnitNode.childNodes().length > 0) {
+                renderLayoutToParent.call(this, cUnitNode.childNodes()[0], curLay, uPosition);
+            }
+        }
         curLay.render();
         this.currentLayout = curLay;
         this.currentLayoutNode = layoutNode;
@@ -264,7 +340,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
 
     createTreeNode: function(parentNode, itemType, attributes) {
         var atts = attributes;
-        if(!atts){
+        if (!atts) {
             atts = {};
         }
         var id = YAHOO.util.Dom.generateId(null, itemType);
@@ -345,13 +421,29 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 var newNode = this.createTreeNode(xmlData, itemType);
                 var currentTab = xmlData.getAttribute(this.itemTabAtt);
                 this.addExtraAttributesToChildNodes(xmlData, currentTab);
+                if(id == "add_Layout" || id=="add_TopUnit" || id=="add_BottomUnit" || id=="add_LeftUnit" || id=="add_RightUnit"){
+                    this.refreshLayout(xmlData);
+                }
                 this.refreshTree();
                 this.expandTreeNode(row)
             }
 
         }
         else if (id == "delete") {
-            xmlData.parentNode().removeChild(xmlData);
+            var itemType = DesignerUtils.getItemType(this, xmlData);
+            if(this.currentDisplayedItemData){
+                var currentTabNode = DesignerUtils.getTabNodeFromNode(this, this.currentDisplayedItemData);
+                if((itemType == 'Url' && currentTabNode.parentNode().parentNode == xmlData)
+                        || (itemType == 'Tab' && currentTabNode == xmlData)){
+                     this.destroyCurrentLayout();
+                }
+            }
+            var parentNode = xmlData.parentNode();
+            parentNode.removeChild(xmlData);
+            if(this.currentDisplayedItemData &&
+               (itemType == 'Layout' || itemType == 'TopUnit' ||itemType == 'LeftUnit' ||itemType == 'BottomUnit' || itemType == 'RightUnit' )){
+                this.refreshLayout(parentNode)
+            }
             if (this.currentDisplayedItemData && !this.currentDisplayedItemData.parentNode()) {
                 this.currentDisplayedItemData = null;
                 var length = this.propertyGrid.getRecordSet().getLength()
@@ -359,7 +451,6 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 this.closeCellEditor();
             }
             this.refreshTree();
-            //TODO: destroy layout if needed.
         }
         else if (id == "edit_Action") {
             this.actionDlg.show(YAHOO.rapidjs.designer.ActionDefinitionDialog.EDIT_MODE, xmlData);
@@ -432,6 +523,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 this.createLayoutNode(propValue);
                 var currentTab = this.currentDisplayedItemData.getAttribute(this.itemTabAtt);
                 this.addExtraAttributesToChildNodes(this.currentDisplayedItemData, currentTab)
+                this.refreshLayout(this.currentDisplayedItemData);
             }
             this.refreshTree();
         }
@@ -604,7 +696,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         YAHOO.util.Event.onDOMReady(function() {
             var layout = new YAHOO.widget.Layout({
                 units: [
-                    { position: 'center', resize: false, gutter: '3px' },
+                    { position: 'center', resize: false},
                     { position: 'left', resize: true, gutter: '1px', width:450}
                 ]
             });
@@ -655,6 +747,22 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     this.propGridWrp.setHeight(gridHeight);
                     resizeGrid.call(this, centerUnit.getSizes().body.w, gridHeight)
                 }, this, true);
+
+                el = layout.getUnitByPosition('center').get('wrap');
+                var topHtml = YAHOO.ext.DomHelper.append(document.body, {tag:'div', cls:'r-designer-layout-top', html:'Your layout will look like:'})
+                YAHOO.util.Dom.generateId(topHtml, 'layouttop')
+                this.helpView = YAHOO.ext.DomHelper.append(document.body, {tag:'div'})
+                YAHOO.util.Dom.generateId(this.helpView, 'designer_help')
+                var layout3 = new YAHOO.widget.Layout(el, {
+                    parent: layout,
+                    units: [
+                        { position: 'center', gutter:"7px"},
+                        { position: 'bottom', body: this.helpView.id, height: 400},
+                        { position: 'top', body: topHtml.id, height: 25},
+                    ]
+                });
+                layout3.render();
+                this.leftLayout = layout3;
             }, this, true);
             layout.render();
             this.layout = layout;

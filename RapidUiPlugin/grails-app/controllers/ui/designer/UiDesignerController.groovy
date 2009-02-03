@@ -7,6 +7,7 @@ import groovy.util.slurpersupport.GPathResult
 import groovy.text.SimpleTemplateEngine
 import org.apache.commons.io.FileUtils
 import application.RsApplication
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
 * Created by IntelliJ IDEA.
@@ -112,7 +113,7 @@ class UiDesignerController {
     def generate = {
         synchronized (uiDefinitionLock)
         {
-            def templateEngine = new SimpleTemplateEngine();
+            def templateEngine = new SimpleTemplateEngine(ApplicationHolder.application.classLoader);
             def urlTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/Url.gsp"));
             def tabTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/Tab.gsp"));
             UiUrl.list().each{url->

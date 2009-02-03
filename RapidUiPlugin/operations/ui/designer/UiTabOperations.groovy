@@ -45,7 +45,11 @@ public class UiTabOperations extends AbstractDomainOperation
                                     designerType:"Actions",
                                     display:"Actions",
                                     childrenConfiguration: [
-                                        [designerType:"Action", isMultiple:true, propertyName:"actions"]
+                                        [designerType:"FunctionAction", isMultiple:true, propertyName:"actions"],
+                                        [designerType:"MergeAction", isMultiple:true, propertyName:"actions"],
+                                        [designerType:"RequestAction", isMultiple:true, propertyName:"actions"],
+                                        [designerType:"CombinedAction", isMultiple:true, propertyName:"actions"],
+                                        [designerType:"LinkAction", isMultiple:true, propertyName:"actions"]
                                     ]
                             ],
                             propertyName:"layout"

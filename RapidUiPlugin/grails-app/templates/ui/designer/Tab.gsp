@@ -5,6 +5,25 @@
 <body>
 <%
     print tabContent;
+    def contentFiles = com.ifountain.rui.util.DesignerTemplateUtils.getLayoutContentFiles (tab.layout);
+%>
+<%
+    contentFiles.each{contentFile->
+%>
+    <div id="${com.ifountain.rui.util.DesignerTemplateUtils.getContentDivId(contentFile)}">
+        ${contentFile.getText()}    
+    </div>
+<%
+    }
+%>
+<%
+    if(tab.javascriptFile != null && tab.javascriptFile != "")
+    {
+        def jsFile = new File("webapp/"+tab.javascriptFile);
+%>
+        ${jsFile.getText()}
+<%
+    }
 %>
 <script type="text/javascript">
     YAHOO.util.Event.onDOMReady(function() {

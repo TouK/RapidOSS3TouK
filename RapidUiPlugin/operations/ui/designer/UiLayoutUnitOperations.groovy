@@ -9,6 +9,7 @@ public class UiLayoutUnitOperations extends AbstractDomainOperation
     {
         Map metaData = [
                 propertyConfiguration: [
+                        contentFile:[descr:"Content file where the layout content will be got"],
                         component:[descr:"RapidInsight component that will be displayed in the unit"],
                         gutter:[descr:"The gutter applied to the unit's wrapper, before the content."],
                         scroll:[descr:"Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."],

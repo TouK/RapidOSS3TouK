@@ -17,73 +17,77 @@
 * USA.
 */
 YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.treegrid');
-YAHOO.rapidjs.component.treegrid.TreeNode = function(xmlData, contentPath,level, hideAttribute)
+YAHOO.rapidjs.component.treegrid.TreeNode = function(xmlData, contentPath, level, hideAttribute)
 {
-	YAHOO.rapidjs.component.treegrid.TreeNode.superclass.constructor.call(this, xmlData);
-	this.childNodes = [];
-	this.level = level; 
-	this.contentPath = contentPath;
-	this.isExpanded = false;
-	this.isSelected = false;
-	this.isRemoved = false;
-	this.indexInParent = null;
-    this.hideAttribute = hideAttribute;    
+    YAHOO.rapidjs.component.treegrid.TreeNode.superclass.constructor.call(this, xmlData);
+    this.childNodes = [];
+    this.level = level;
+    this.contentPath = contentPath;
+    this.isExpanded = false;
+    this.isSelected = false;
+    this.isRemoved = false;
+    this.indexInParent = null;
+    this.hideAttribute = hideAttribute;
     this.loadData();
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.treegrid.TreeNode, YAHOO.rapidjs.component.RapidElement, {
-	
-	loadData: function(){
-		var childData = this.xmlData.childNodes();
-		this.processChildNodes(0, childData);
-	},
-	childAdded : function(newChild){
-		if(this.childNodes.length == 0){
-			this.isExpanded = false;
-		}
-		var childNode = new YAHOO.rapidjs.component.treegrid.TreeNode(newChild, this.contentPath, this.level + 1, this.hideAttribute);
-		this.childNodes[this.childNodes.length] = childNode;
-	}, 
-	
-	dataDestroyed: function(){
-		this.isRemoved = true;
-	},
-	
-	destroy: function(){
-		this.childNodes = null;
-		this.xmlData = null;
-	},
-	
-	processChildNodes: function(lastIndex, childData)
-	{
-		if(childData)
-		{
-			var numberOfChilds = childData.length;
-			var childToBeProcessed = lastIndex + 100;
-			for(var index = lastIndex; index < childToBeProcessed && index < numberOfChilds; index++) {
-				var childDataNode = childData[index];
-				if(childDataNode.nodeType == 1 && childDataNode.nodeName == this.contentPath && !(this.hideAttribute && childDataNode.getAttribute(this.hideAttribute)))
-				{
-					var childLevel = this.level + 1;
-					var childNode = new YAHOO.rapidjs.component.treegrid.TreeNode(childDataNode, this.contentPath, childLevel, this.hideAttribute);
-					this.childNodes[this.childNodes.length] = childNode;
-					childNode.indexInParent = this.childNodes.length;
-				}
-			}
-			if(childToBeProcessed < numberOfChilds)
-			{
-				this.processChildNodes.defer(1, this, [childToBeProcessed, childData]);
-			}
-		}
-	}
+
+    loadData: function() {
+        var childData = this.xmlData.childNodes();
+        this.processChildNodes(0, childData);
+    },
+    childAdded : function(newChild) {
+        if (!this.hideAttribute || !newChild.getAttribute(this.hideAttribute)) {
+            if (this.childNodes.length == 0) {
+                this.isExpanded = false;
+            }
+            var childNode = new YAHOO.rapidjs.component.treegrid.TreeNode(newChild, this.contentPath, this.level + 1, this.hideAttribute);
+            this.childNodes[this.childNodes.length] = childNode;
+        }
+    },
+
+    dataDestroyed: function() {
+        this.isRemoved = true;
+    },
+
+    destroy: function() {
+        this.childNodes = null;
+        this.xmlData = null;
+    },
+
+    processChildNodes: function(lastIndex, childData)
+    {
+        if (childData)
+        {
+            var numberOfChilds = childData.length;
+            var childToBeProcessed = lastIndex + 100;
+            for (var index = lastIndex; index < childToBeProcessed && index < numberOfChilds; index++) {
+                var childDataNode = childData[index];
+                if (childDataNode.nodeType == 1 && childDataNode.nodeName == this.contentPath && !(this.hideAttribute && childDataNode.getAttribute(this.hideAttribute)))
+                {
+                    var childLevel = this.level + 1;
+                    var childNode = new YAHOO.rapidjs.component.treegrid.TreeNode(childDataNode, this.contentPath, childLevel, this.hideAttribute);
+                    this.childNodes[this.childNodes.length] = childNode;
+                    childNode.indexInParent = this.childNodes.length;
+                }
+            }
+            if (childToBeProcessed < numberOfChilds)
+            {
+                this.processChildNodes.defer(1, this, [childToBeProcessed, childData]);
+            }
+        }
+    }
 });
-YAHOO.rapidjs.component.treegrid.TreeRootNode = function(xmlData, contentPath, hideAttribute){
-	 YAHOO.rapidjs.component.treegrid.TreeRootNode.superclass.constructor.call(this, xmlData, contentPath, -1, hideAttribute);
+YAHOO.rapidjs.component.treegrid.TreeRootNode = function(xmlData, contentPath, hideAttribute) {
+    YAHOO.rapidjs.component.treegrid.TreeRootNode.superclass.constructor.call(this, xmlData, contentPath, -1, hideAttribute);
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.treegrid.TreeRootNode, YAHOO.rapidjs.component.treegrid.TreeNode, {
-	childAdded : function(newChild){
-		var childNode = new YAHOO.rapidjs.component.treegrid.TreeNode(newChild, this.contentPath, this.level + 1, this.hideAttribute);
-		this.childNodes[this.childNodes.length] = childNode;
-	}
+    childAdded : function(newChild) {
+        if (!this.hideAttribute || !newChild.getAttribute(this.hideAttribute)) {
+            var childNode = new YAHOO.rapidjs.component.treegrid.TreeNode(newChild, this.contentPath, this.level + 1, this.hideAttribute);
+            this.childNodes[this.childNodes.length] = childNode;
+        }
+    }
 });

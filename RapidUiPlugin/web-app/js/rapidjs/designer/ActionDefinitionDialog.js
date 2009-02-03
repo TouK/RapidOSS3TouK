@@ -20,6 +20,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                 {text:"Cancel", handler:this.hide, scope:this }]
         }
         this.dialog = new YAHOO.rapidjs.component.Dialog(config);
+        this.combEditor = new YAHOO.widget.DropdownCellEditor({});
 
         var dh = YAHOO.ext.DomHelper;
         var wrp = dh.append(this.dialog.body, {tag:'div', cls:'r-designer-actdlg-wrp'});
@@ -29,20 +30,94 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                  '<tr><td>Name:</td><td><input style="width:200px"></input></td></tr>' +
                  '<tr><td>Type:</td><td><select style="width:200px"><option name="request">request</option><option name="merge">merge</option>' +
                  '<option name="link">link</option><option name="function">function</option><option name="combined">combined</option></select></td></tr>' +
-                 '<tr><td>Triggering Event:</td><td><select style="width:200px;"></select></td></tr>' +
                  '<tr><td>Condition:</td><td><input style="width:400px;"></input></td></tr>' +
                  '</tbody></table>' +
-                 '<div class="r-designer-actdlg-eventdef"></div></fieldset></form>'})
+                 '<div><div>Select a component or a global event to trigger your action.</div>' +
+                 '<div><table><tbody><tr>' +
+                 '<td>Component:</td><td><select style="width:200px;"></select></td>' +
+                 '<td>Event:</td><td><select style="width:200px;"></select></td>' +
+                 '<td><div class="r-designer-actdlg-btnwrp"><div></div></div></td>' +
+                 '</tr></tbody></table></div></div>' +
+                 '<div class="r-designer-actdlg-eventdef"></div>' +
+                 '<div>Triggering Events:</div>' +
+                 '<div class="r-designer-actdlg-gridwrp"></div>' +
+                 '</fieldset></form>'})
 
         var selects = commonView.getElementsByTagName('select');
         this.typeSelect = selects[0];
-        this.eventSelect = selects[1];
+        this.eventCompSelect = selects[1];
+        this.eventSelect = selects[2];
         var commonInputs = commonView.getElementsByTagName('input');
         this.nameInput = commonInputs[0];
         this.conditionInput = commonInputs[1];
+        var btnwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-btnwrp", 'div', commonView);
+        var gridwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-gridwrp", 'div', commonView);
+
         this.eventDescrEl = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-eventdef", 'div', commonView)[0];
         YAHOO.util.Event.addListener(this.eventSelect, "change", this.eventChanged, this, true);
         YAHOO.util.Event.addListener(this.typeSelect, "change", this.typeChanged, this, true);
+        YAHOO.util.Event.addListener(this.eventCompSelect, "change", this.eventComponentChanged, this, true);
+
+
+        var eventColumnDefs = [
+            {key:"component", label:"Component", sortable:true, width:150, editor:this.combEditor},
+            {key:"event", label:"Event", sortable:true, width:250, editor:this.combEditor}
+        ];
+        var eventDs = new YAHOO.util.DataSource([]);
+        eventDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
+        eventDs.responseSchema = {
+            fields: ["component","event"]
+        };
+        this.eventsGrid = new YAHOO.widget.DataTable(gridwrps[0], eventColumnDefs, eventDs, {'MSG_EMPTY':'',scrollable:true, height:"70px"});
+
+        var highlightEditableCell = function(oArgs) {
+            var elCell = oArgs.target;
+            if (YAHOO.util.Dom.hasClass(elCell, "yui-dt-editable")) {
+                this.highlightCell(elCell);
+            }
+        };
+        this.eventsGrid.subscribe("cellMouseoverEvent", highlightEditableCell);
+        this.eventsGrid.subscribe("cellMouseoutEvent", this.eventsGrid.onEventUnhighlightCell);
+        this.eventsGrid.subscribe("cellClickEvent", function (oArgs) {
+            var target = oArgs.target,
+                    column = this.eventsGrid.getColumn(target),
+                    record = this.eventsGrid.getRecord(target)
+
+            var dropDownOptions = [];
+            if (column.getKey() == 'component') {
+                dropDownOptions.push('Global');
+                for (var compName in this.currentComponents) {
+                    dropDownOptions.push(compName);
+                }
+            }
+            else {
+                var component = record.getData("component");
+                var compType;
+                if (component == 'Global') {
+                    compType = 'Global';
+                }
+                else {
+                    compType = this.currentComponents[component];
+                }
+                if (compType) {
+                    var events = UIConfig.getComponentEvents(compType);
+                    for (var event in events) {
+                        dropDownOptions.push(event);
+                    }
+                }
+            }
+            this.combEditor.dropdownOptions = dropDownOptions;
+            this.combEditor.renderForm();
+            column.editor = this.combEditor;
+            this.eventsGrid.showCellEditor(target);
+
+        }, this, true);
+
+        new YAHOO.widget.Button(btnwrps[0].firstChild, {onclick:{fn:function() {
+            var comp = this.eventCompSelect.options[this.eventCompSelect.selectedIndex].value
+            var event = this.eventSelect.options[this.eventSelect.selectedIndex].value
+            this.eventsGrid.addRow({component:comp, event:event})
+        }, scope:this},label: 'Add Event'});
 
         this.requestView = dh.append(wrp, {tag:'div', style:'padding:5 0 5 0;',
             html:'<fieldset style="padding:5px;">' +
@@ -60,8 +135,8 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         this.requestUrlInput = requestInputs[0];
         this.timeoutInput = requestInputs[1];
         this.removeAttInput = requestInputs[2];
-        var gridwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-gridwrp", 'div', this.requestView);
-        var btnwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-btnwrp", 'div', this.requestView);
+        gridwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-gridwrp", 'div', this.requestView);
+        btnwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-btnwrp", 'div', this.requestView);
 
         var requestColumnDefs = [
             {key:"key", label:"Key", sortable:true, width:150, editor:new YAHOO.widget.TextboxCellEditor({disableBtns:true})},
@@ -72,13 +147,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         requestDs.responseSchema = {
             fields: ["key","value"]
         };
-        this.requestParamsGrid = new YAHOO.widget.DataTable(gridwrps[0], requestColumnDefs, requestDs, {'MSG_EMPTY':'',scrollable:true, height:"10em"});
-        var highlightEditableCell = function(oArgs) {
-            var elCell = oArgs.target;
-            if (YAHOO.util.Dom.hasClass(elCell, "yui-dt-editable")) {
-                this.highlightCell(elCell);
-            }
-        };
+        this.requestParamsGrid = new YAHOO.widget.DataTable(gridwrps[0], requestColumnDefs, requestDs, {'MSG_EMPTY':'',scrollable:true, height:"70px"});
         this.requestParamsGrid.subscribe("cellMouseoverEvent", highlightEditableCell);
         this.requestParamsGrid.subscribe("cellMouseoutEvent", this.requestParamsGrid.onEventUnhighlightCell);
         this.requestParamsGrid.subscribe("cellClickEvent", this.requestParamsGrid.onEventShowCellEditor);
@@ -88,17 +157,16 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }, scope:this},label: 'Add Request Parameter'});
 
         var compColumnDefs = [
-            {key:"component", label:"Component", sortable:true, width:420}
+            {key:"component", label:"Component", sortable:true, width:420, editor:this.combEditor}
         ];
         var compDs = new YAHOO.util.DataSource([]);
         compDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
         compDs.responseSchema = {
             fields: ["component"]
         };
-        this.compGrid = new YAHOO.widget.DataTable(gridwrps[1], compColumnDefs, compDs, {'MSG_EMPTY':'',scrollable:true, height:"10em"});
+        this.compGrid = new YAHOO.widget.DataTable(gridwrps[1], compColumnDefs, compDs, {'MSG_EMPTY':'',scrollable:true, height:"50px"});
         this.compGrid.subscribe("cellMouseoverEvent", highlightEditableCell);
         this.compGrid.subscribe("cellMouseoutEvent", this.compGrid.onEventUnhighlightCell);
-        this.combEditor = new YAHOO.widget.DropdownCellEditor({});
         this.compGrid.subscribe("cellClickEvent", function (oArgs) {
             var target = oArgs.target,
                     column = this.compGrid.getColumn(target)
@@ -140,7 +208,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                  '</fieldset>'})
 
         var actionColumnDefs = [
-            {key:"action", label:"Action", sortable:true, width:420}
+            {key:"action", label:"Action", sortable:true, width:420, editor:this.combEditor}
         ];
         var actionDs = new YAHOO.util.DataSource([]);
         actionDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -149,7 +217,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         };
         gridwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-gridwrp", 'div', this.combinedView);
         btnwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-btnwrp", 'div', this.combinedView);
-        this.actionsGrid = new YAHOO.widget.DataTable(gridwrps[0], actionColumnDefs, actionDs, {'MSG_EMPTY':'',scrollable:true, height:"10em"});
+        this.actionsGrid = new YAHOO.widget.DataTable(gridwrps[0], actionColumnDefs, actionDs, {'MSG_EMPTY':'',scrollable:true, height:"70px"});
         new YAHOO.widget.Button(btnwrps[0].firstChild, {onclick:{fn:function() {
             this.actionsGrid.addRow({action:'action'})
         }, scope:this},label: 'Add Action'});
@@ -199,6 +267,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
 
         var myContextMenu = new YAHOO.widget.ContextMenu("actcontextmenu",
         {zindex:10000,trigger:[
+            this.eventsGrid.getTbodyEl(),
             this.compGrid.getTbodyEl(),
             this.requestParamsGrid.getTbodyEl(),
             this.actionsGrid.getTbodyEl()]});
@@ -212,6 +281,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                 var grid;
                 if (tBodyEl == this.compGrid.getTbodyEl()) {
                     grid = this.compGrid;
+                }
+                else if (tBodyEl == this.eventsGrid.getTbodyEl()) {
+                    grid = this.eventsGrid;
                 }
                 else if (tBodyEl == this.requestParamsGrid.getTbodyEl()) {
                     grid = this.requestParamsGrid;
@@ -228,10 +300,60 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }, this, true)
         this.contextMenu = myContextMenu;
     },
-    adjustHeight: function(){
+    adjustHeight: function() {
         this.dialog.adjustHeight(this.wrpEl.getHeight());
     },
+    eventComponentChanged: function() {
+        SelectUtils.clear(this.eventSelect);
+        var component = this.eventCompSelect.options[this.eventCompSelect.selectedIndex].value
+        var compType;
+        if (component == "Global") {
+            compType = "Global";
+        }
+        else {
+            compType = this.currentComponents[component]
+        }
+        var events = UIConfig.getComponentEvents(compType)
+        for (var event in events) {
+            SelectUtils.addOption(this.eventSelect, event, event);
+        }
+        this.eventChanged();
+    },
+    eventChanged : function() {
+        if (this.eventSelect.selectedIndex > -1) {
+            var option = this.eventSelect.options[this.eventSelect.selectedIndex];
+            var compName = this.eventCompSelect.options[this.eventCompSelect.selectedIndex].value;
+            var compType;
+            if (compName == "Global") {
+                compType = "Global";
+            }
+            else {
+                compType = this.currentComponents[compName]
+            }
 
+            var eventName = option.value;
+            var eventDesc = UIConfig.getEventDescription(compType, eventName);
+            var eventParameters = UIConfig.getEventParameters(compType, eventName);
+            var nOfParams = 0;
+            var paramsHtml = []
+            for (var eventParam in eventParameters) {
+                if (nOfParams == 0) {
+                    paramsHtml[paramsHtml.length] = ['<ul style="padding-left:20px;">'];
+                }
+                paramsHtml[paramsHtml.length] = '<li><span style="font-weight:bold;font-size:13px">' + eventParam + ':</span><span> ' + eventParameters[eventParam] + '</span></li>'
+                nOfParams++;
+            }
+            if (nOfParams > 0) {
+                paramsHtml[paramsHtml.length] = '</ul>'
+            }
+            this.eventDescrEl.innerHTML = '<p>' + eventDesc + (nOfParams > 0 ? (' Available parameters:</p><br>' + paramsHtml.join('')) : '');
+        }
+        else {
+            this.eventDescrEl.innerHTML = ''
+        }
+
+        this.adjustHeight();
+    },
     componentChanged:function() {
         if (this.componentSelect.selectedIndex > -1) {
             YAHOO.util.Dom.setStyle(this.methodDescrEl, 'display', '')
@@ -250,6 +372,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             YAHOO.util.Dom.setStyle(this.argsEl, 'display', 'none')
         }
     },
+
     methodChanged: function() {
         if (this.methodSelect.selectedIndex > -1) {
             var method = this.methodSelect.options[this.methodSelect.selectedIndex].value;
@@ -294,6 +417,13 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         var actionType = this.typeSelect.options[this.typeSelect.selectedIndex].value;
         if (actionType == "request" || actionType == "merge") {
             YAHOO.util.Dom.setStyle(this.requestView, 'display', '');
+            //grids will arrange their widths;
+            this.requestParamsGrid.addRow({action:'dummy'});
+            var length = this.requestParamsGrid.getRecordSet().getLength();
+            this.requestParamsGrid.deleteRows(length - 1, length);
+            this.compGrid.addRow({action:'dummy'});
+            length = this.compGrid.getRecordSet().getLength();
+            this.compGrid.deleteRows(length - 1, length);
             if (actionType == "merge") {
                 YAHOO.util.Dom.setStyle(this.mergeView, 'display', '');
             }
@@ -328,35 +458,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }
         this.adjustHeight();
     },
-    eventChanged : function() {
-        var option = this.eventSelect.options[this.eventSelect.selectedIndex];
-        var compName = option.parentNode.label;
-        var compType;
-        if(compName == "Global"){
-            compType = "Global";
-        }
-        else{
-            compType= this.currentComponents[compName]    
-        }
 
-        var eventName = option.value;
-        var eventDesc = UIConfig.getEventDescription(compType, eventName);
-        var eventParameters = UIConfig.getEventParameters(compType, eventName);
-        var nOfParams = 0;
-        var paramsHtml = []
-        for (var eventParam in eventParameters) {
-            if (nOfParams == 0) {
-                paramsHtml[paramsHtml.length] = ['<ul style="padding-left:20px;">'];
-            }
-            paramsHtml[paramsHtml.length] = '<li><span style="font-weight:bold;font-size:13px">' + eventParam + ':</span><span> ' + eventParameters[eventParam] + '</span></li>'
-            nOfParams++;
-        }
-        if (nOfParams > 0) {
-            paramsHtml[paramsHtml.length] = '</ul>'
-        }
-        this.eventDescrEl.innerHTML = '<p>' + eventDesc + (nOfParams > 0 ? (' Available parameters:</p><br>' + paramsHtml.join('')) : '');
-        this.adjustHeight();
-    },
     show: function(mode, xmlData) {
         if (!this.dialog) {
             this.render();
@@ -372,15 +474,14 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.currentParentNode = xmlData.parentNode();
         }
         this.currentComponents = DesignerUtils.getComponentsOfCurrentTab(this.designer, this.currentParentNode);
-        this.populateEvents();
         this.populateComponents();
         if (this.mode == YAHOO.rapidjs.designer.ActionDefinitionDialog.EDIT_MODE) {
             this.populateFieldsForUpdate();
         }
-        else{
-            this.componentChanged();    
+        else {
+            this.componentChanged();
         }
-        this.eventChanged();
+        this.eventComponentChanged();
         this.typeChanged();
         this.dialog.show();
         this.adjustHeight();
@@ -389,20 +490,21 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         var itemType = DesignerUtils.getItemType(this.designer, this.currentActionNode);
         this.nameInput.value = this.currentActionNode.getAttribute('name') || ''
         this.conditionInput.value = this.currentActionNode.getAttribute('condition') || ''
-        var eventAndComp = this.currentActionNode.getAttribute('event');
-        if (eventAndComp) {
-            var evArray = eventAndComp.split(':');
-            var component = evArray[0];
-            var event = evArray[1];
-            var options = this.eventSelect.options;
-            for (var i = 0; i < options.length; i++)
-            {
-                var option = options[i];
-                if (option.value == event && option.parentNode.label == component)
-                {
-                    this.eventSelect.selectedIndex = i;
-                    break;
-                }
+        var eventsNode;
+        var childNodes = this.currentActionNode.childNodes();
+        for(var i=0; i<childNodes.length;i++){
+            if(childNodes[i].getAttribute(this.designer.treeTypeAttribute) == 'Events'){
+                eventsNode = childNodes[i];
+                break;
+            }
+        }
+        if(eventsNode){
+            var eventNodes = eventsNode.childNodes();
+            for(var i=0; i<eventNodes.length; i++){
+                var component = eventNodes[i].getAttribute('component');
+                var event = eventNodes[i].getAttribute('eventName');
+                component = !component  || component == ''? 'Global' : component;
+                this.eventsGrid.addRow({component:component, event:event});
             }
         }
         if (itemType == "FunctionAction") {
@@ -415,8 +517,12 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.methodChanged();
             var argInputs = this.argsEl.getElementsByTagName('input');
             var childNodes = this.currentActionNode.childNodes();
-            for (var i = 0; i < argInputs.length; i++) {
-                argInputs[i].value = childNodes[i].getAttribute('value');
+            var argIndex = 0;
+            for (var i = 0; i < childNodes.length; i++) {
+                if(DesignerUtils.getItemType(this.designer,childNodes[i]) == 'FunctionArgument'){
+                    argInputs[argIndex].value = childNodes[i].getAttribute('value');
+                    argIndex ++;
+                }
             }
         }
         else if (itemType == "LinkAction") {
@@ -441,7 +547,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.timeoutInput.value = this.currentActionNode.getAttribute('timeout') || '';
             var childNodes = this.currentActionNode.childNodes();
             for (var i = 0; i < childNodes.length; i++) {
-                this.requestParamsGrid.addRow({key:childNodes[i].getAttribute('key'), value:childNodes[i].getAttribute('value')})
+                if(DesignerUtils.getItemType(this.designer,childNodes[i]) == 'RequestParameter'){
+                    this.requestParamsGrid.addRow({key:childNodes[i].getAttribute('key'), value:childNodes[i].getAttribute('value')})    
+                }
             }
             if (itemType == "MergeAction") {
                 this.removeAttInput.value = this.currentActionNode.getAttribute('removeAttribute') || ''
@@ -459,6 +567,8 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         this.requestParamsGrid.deleteRows(0, length)
         length = this.compGrid.getRecordSet().getLength()
         this.compGrid.deleteRows(0, length);
+        length = this.eventsGrid.getRecordSet().getLength()
+        this.eventsGrid.deleteRows(0, length);
 
         this.nameInput.value = '';
         this.conditionInput.value = '';
@@ -470,30 +580,12 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
     },
     populateComponents: function() {
         SelectUtils.clear(this.componentSelect);
+        SelectUtils.clear(this.eventCompSelect);
+        SelectUtils.addOption(this.eventCompSelect, 'Global', 'Global');
         for (var compName in this.currentComponents) {
             SelectUtils.addOption(this.componentSelect, compName, compName)
+            SelectUtils.addOption(this.eventCompSelect, compName, compName)
         }
-    },
-
-    populateEvents: function() {
-        var htmlArray = ['<optgroup label="Global">']
-        this.eventSelect.innerHTML = '';
-        var globalEvents = UIConfig.getGlobalEvents();
-        for (var ev in globalEvents) {
-            htmlArray[htmlArray.length] = '<option name="' + ev + '">' + ev + '</option>'
-        }
-        htmlArray[htmlArray.length] = ['</optgroup>'];
-        var currentComponents = this.currentComponents;
-        for (var compName in currentComponents) {
-            htmlArray[htmlArray.length] = '<optgroup label="' + compName + '">'
-            var compType = currentComponents[compName];
-            var compEvents = UIConfig.getComponentEvents(compType);
-            for (var ev in compEvents) {
-                htmlArray[htmlArray.length] = '<option name="' + ev + '">' + ev + '</option>'
-            }
-            htmlArray[htmlArray.length] = '</optgroup>'
-        }
-        this.eventSelect.innerHTML = htmlArray.join('');
     },
 
     handleSave: function() {
@@ -502,16 +594,12 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             "condition":this.conditionInput.value
         };
         var actionType = this.typeSelect.options[this.typeSelect.selectedIndex].value;
-        var eventOption = this.eventSelect.options[this.eventSelect.selectedIndex];
-        var eventName = eventOption.value;
-        var eventComp = eventOption.parentNode.label;
-        actionAtts['event'] = eventComp + ':' + eventName
         if (actionType == 'request' || actionType == 'merge') {
             actionAtts['url'] = this.requestUrlInput.value;
             actionAtts['timeout'] = this.timeoutInput.value;
             actionAtts[this.designer.treeTypeAttribute] = "RequestAction";
             if (actionType == 'merge') {
-                actionAtts['removeAtt'] = this.removeAttInput.value;
+                actionAtts['removeAttribute'] = this.removeAttInput.value;
                 actionAtts[this.designer.treeTypeAttribute] = "MergeAction";
             }
             var records = this.compGrid.getRecordSet().getRecords(0);
@@ -551,10 +639,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             actionNode = this.currentActionNode;
         }
         else {
-            actionNode = this.designer.createTreeNode(this.currentParentNode, actionAtts[this.designer.treeTypeAttribute]);
-        }
-        for (var prop in actionAtts) {
-            actionNode.setAttribute(prop, actionAtts[prop])
+            actionNode = this.designer.createTreeNode(this.currentParentNode, actionAtts[this.designer.treeTypeAttribute], actionAtts);
         }
         actionNode.setAttribute(this.designer.treeDisplayAttribute, actionAtts["name"])
         var childNodes = actionNode.childNodes();
@@ -575,6 +660,21 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             for (var i = 0; i < argInputs.length; i++) {
                 var argNode = this.designer.createTreeNode(actionNode, "FunctionArgument");
                 argNode.setAttribute('value', argInputs[i].value)
+            }
+        }
+
+        var eventRecords = this.eventsGrid.getRecordSet().getRecords(0);
+        if(eventRecords.length > 0){
+            var atts = {};
+            atts[this.designer.treeHideAttribute] = 'true';
+            var eventsNode = this.designer.createTreeNode(actionNode, "Events", atts);
+            for(var i = 0; i < eventRecords.length; i++){
+                var eventNode = this.designer.createTreeNode(eventsNode, "Event");
+                var component = eventRecords[i].getData('component')
+                var eventName = eventRecords[i].getData('event')
+                component = component == 'Global'? '': component
+                eventNode.setAttribute('component', component)
+                eventNode.setAttribute('eventName', eventName)
             }
         }
         var currentTab = this.currentParentNode.getAttribute(this.designer.itemTabAtt);

@@ -147,11 +147,11 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.addExtraAttributesToChildNodes(rootNode);
         this.data = data;
         this.tree.loadData(this.data);
-        var defferedExpandNode = function(){
-           var rows = this.tree.treeGridView.bufferView.rows;
-           if(rows.length > 0){
-               this.expandTreeNode(rows[0])    
-           }
+        var defferedExpandNode = function() {
+            var rows = this.tree.treeGridView.bufferView.rows;
+            if (rows.length > 0) {
+                this.expandTreeNode(rows[0])
+            }
         }
         defferedExpandNode.defer(100, this, []);
     },
@@ -174,7 +174,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
             else
             {
-                this.tree.handleErrors(response);
+                var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
+                this.tree.events["error"].fireDirect(this.tree, errors);
+                YAHOO.rapidjs.ErrorManager.errorOccurred(this.tree, errors);
             }
 
         }
@@ -260,19 +262,28 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.layout.resize();
     },
 
-    createTreeNode: function(parentNode, itemType) {
+    createTreeNode: function(parentNode, itemType, attributes) {
+        var atts = attributes;
+        if(!atts){
+            atts = {};
+        }
         var id = YAHOO.util.Dom.generateId(null, itemType);
         var newNode = parentNode.createChildNode(null, 1, this.contentPath);
         newNode.setAttribute(this.keyAttribute, id);
         newNode.setAttribute(this.treeTypeAttribute, itemType);
+        for (var att in atts) {
+            newNode.setAttribute(att, atts[att])
+        }
         var itemMetaProperties = UIConfig.getProperties(itemType);
         for (var prop in itemMetaProperties) {
-            if (UIConfig.isPropertyRequired(itemType, prop)) {
-                if (UIConfig.isDisplayProperty(itemType, prop)) {
-                    newNode.setAttribute(prop, itemType);
-                }
-                else {
-                    newNode.setAttribute(prop, prop);
+            if (!atts[prop]) {
+                if (UIConfig.isPropertyRequired(itemType, prop)) {
+                    if (UIConfig.isDisplayProperty(itemType, prop)) {
+                        newNode.setAttribute(prop, itemType);
+                    }
+                    else {
+                        newNode.setAttribute(prop, prop);
+                    }
                 }
             }
         }
@@ -428,7 +439,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         var myColumnDefs = [
             {key:"name", label:"Name", sortable:true, width:150},
-            {key:"value", label:"Value", sortable:true, width:250}
+            {key:"value", label:"Value", sortable:true, width:270}
         ];
 
 
@@ -441,7 +452,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         var propWrpId = YAHOO.util.Dom.generateId(propWrp, "propertiesGrid");
         propWrp.id = propWrpId;
         var propGridWrp = dh.append(propWrp, {tag:'div'}, true);
-        this.propertyGrid = new YAHOO.widget.DataTable(propGridWrp.dom, myColumnDefs, myDataSource, {'MSG_EMPTY':''});
+        this.propertyGrid = new YAHOO.widget.DataTable(propGridWrp.dom, myColumnDefs, myDataSource, {'MSG_EMPTY':'', scrollable:true, width:'450px', height:'345px'});
         var highlightEditableCell = function(oArgs) {
             var elCell = oArgs.target;
             if (YAHOO.util.Dom.hasClass(elCell, "yui-dt-editable")) {
@@ -465,9 +476,26 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 }
                 else if (propertyName == "component" && (itemType == "CenterUnit" || itemType == "LeftUnit" ||
                                                          itemType == "TopUnit" || itemType == "RightUnit" ||
-                                                         itemType == "BottomUnit" || itemType == "Dialog")) {
+                                                         itemType == "BottomUnit" || itemType == "Dialog" || itemType == "FunctionAction")) {
                     editor = this.editors["InList"];
                     editor.dropdownOptions = DesignerUtils.getComponentNamesOfCurrentTab(this, this.currentDisplayedItemData);
+                    editor.renderForm();
+                }
+                else if (propertyName == "function" && itemType == "FunctionAction") {
+                    var componentName = this.currentDisplayedItemData.getAttribute('component')
+                    var comps = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
+                    editor = this.editors["InList"];
+                    if (comps[componentName]) {
+                        var events = UIConfig.getComponentEvents(comps[componentName]);
+                        var dOptions = [];
+                        for (var event in events) {
+                            dOptions.push(event);
+                        }
+                        editor.dropdownOptions = dOptions;
+                    }
+                    else {
+                        editor.dropdownOptions = [];
+                    }
                     editor.renderForm();
                 }
                 else {
@@ -580,6 +608,25 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 ]
             });
             layout.on('render', function() {
+                var resizeGrid = function(width, height) {
+                    var grid = this.propertyGrid;
+                    var theadEl = getEl(grid.getTheadEl())
+                    var bodyHeight = height - theadEl.getHeight()
+                    grid.set('height', '' + bodyHeight + 'px')
+                    grid.set('width', '' + width + 'px')
+                    var nameCol = grid.getColumn('name');
+                    var valueCol = grid.getColumn('value');
+                    var thEl = getEl(valueCol.getThEl());
+                    var linerEl = getEl(valueCol.getThLinerEl());
+                    var difBetweenThAndLinerWidths;
+                    if (YAHOO.env.ua.ie) {
+                        difBetweenThAndLinerWidths = thEl.getWidth() - linerEl.getWidth()
+                    }
+                    else {
+                        difBetweenThAndLinerWidths = thEl.getWidth() - linerEl.getWidth() + linerEl.getPadding('lr');
+                    }
+                    grid.setColumnWidth(valueCol, width - nameCol.width - 5 - difBetweenThAndLinerWidths * 2);
+                }
                 var el = layout.getUnitByPosition('left').get('wrap');
                 var layout2 = new YAHOO.widget.Layout(el, {
                     parent: layout,
@@ -597,12 +644,15 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 setTimeout(function() {
                     var gridHeight = bottomUnit.getSizes().body.h - getEl(self.propGridWrp.dom.nextSibling).getHeight();
                     self.propGridWrp.setHeight(gridHeight);
+                    resizeGrid.call(self, centerUnit.getSizes().body.w, gridHeight)
                 }, 50)
                 layout2.on('resize', function() {
                     this.tree.resize(centerUnit.getSizes().body.w, centerUnit.getSizes().body.h);
                     var bottomHeight = bottomUnit.getSizes().body.h;
                     var toolBarHeight = getEl(this.propGridWrp.dom.nextSibling).getHeight();
-                    this.propGridWrp.setHeight(bottomHeight - toolBarHeight);
+                    var gridHeight = bottomHeight - toolBarHeight
+                    this.propGridWrp.setHeight(gridHeight);
+                    resizeGrid.call(this, centerUnit.getSizes().body.w, gridHeight)
                 }, this, true);
             }, this, true);
             layout.render();

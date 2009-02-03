@@ -86,7 +86,7 @@ class SearchListTagLib {
                 }
             }
             menuEventsJs = """
-               ${searchListId}sl.events['rowHeaderMenuClick'].subscribe(function(xmlData, menuId, parentId){
+               ${searchListId}sl.events['rowHeaderMenuClicked'].subscribe(function(xmlData, menuId, parentId){
                    var params = {data:xmlData.getAttributes(), menuId:menuId, parentId:parentId};
                    ${innerJs}
                 }, this, true);
@@ -105,7 +105,7 @@ class SearchListTagLib {
                 index++;
             }
             propMenuEventsJs = """
-               ${searchListId}sl.events['cellMenuClick'].subscribe(function(key, value, xmlData, menuId){
+               ${searchListId}sl.events['cellMenuClicked'].subscribe(function(key, value, xmlData, menuId){
                    var params = {data:xmlData.getAttributes(), menuId:menuId, key:key, value:value};
                    ${innerJs}
                 }, this, true);

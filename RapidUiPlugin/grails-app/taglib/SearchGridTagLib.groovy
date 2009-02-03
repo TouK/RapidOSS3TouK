@@ -94,7 +94,7 @@ class SearchGridTagLib {
                 }
             }
             menuEventsJs = """
-               ${searchGridId}sg.events['rowHeaderMenuClick'].subscribe(function(xmlData, menuId, parentId){
+               ${searchGridId}sg.events['rowHeaderMenuClicked'].subscribe(function(xmlData, menuId, parentId){
                    var params = {data:xmlData.getAttributes(), menuId:menuId, parentId:parentId};
                    ${innerJs}
                 }, this, true);

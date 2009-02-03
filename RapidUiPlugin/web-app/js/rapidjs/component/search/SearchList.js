@@ -32,8 +32,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     init: function() {
         this.cellMenu = null;
         var events = {
-            'cellMenuClick' : new YAHOO.util.CustomEvent('cellMenuClick'),
-            'rowHeaderClick' : new YAHOO.util.CustomEvent('rowHeaderClick')
+            'cellMenuClicked' : new YAHOO.util.CustomEvent('cellMenuClicked'),
+            'rowHeaderClicked' : new YAHOO.util.CustomEvent('rowHeaderClicked')
         };
         YAHOO.ext.util.Config.apply(this.events, events);
     },
@@ -357,10 +357,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
     },
 
     fireCellMenuClick: function(key, value, data, id) {
-        this.events['cellMenuClick'].fireDirect(key, value, data, id);
+        this.events['cellMenuClicked'].fireDirect(key, value, data, id);
     },
     fireRowHeaderClicked: function(data) {
-        this.events['rowHeaderClick'].fireDirect(data);
+        this.events['rowHeaderClicked'].fireDirect(data);
     }
 
 });

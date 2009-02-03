@@ -26,6 +26,9 @@ public class UiTabOperations extends AbstractDomainOperation
                                     display:"Components",
                                     childrenConfiguration: [
                                         [designerType:"FlexPieChart", propertyName:"components", isMultiple:true]
+                                        ,[designerType:"SearchList", propertyName:"components", isMultiple:true]
+                                        ,[designerType:"SearchGrid", propertyName:"components", isMultiple:true]
+                                        ,[designerType:"TreeGrid", propertyName:"components", isMultiple:true]
                                     ]
                             ],
                             propertyName:"layout"

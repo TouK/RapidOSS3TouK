@@ -103,7 +103,19 @@ class DomainClassUtils
                 def otherSideClass = relationConfig.type;
                 def cls = relationConfig.cls;
                 def otherSideRelationConfiguration = getStaticMapVariable(otherSideClass, "relations");
-                def isOtherSideMany = otherSideName?otherSideRelationConfiguration[otherSideName].isMany:false;
+                def isOtherSideMany = false;
+                if(otherSideName)
+                {
+                    def otherSideConfig = otherSideRelationConfiguration[otherSideName];
+                    if(otherSideConfig != null)
+                    {
+                        isOtherSideMany = otherSideRelationConfiguration[otherSideName].isMany;
+                    }
+                    else
+                    {
+                        throw new Exception("Invalid relation configuration for domainclass ${dc.name} and for relation ${relationName}. Reverse relation ${otherSideName} does not exist".toString());
+                    }
+                }
                 def relType;
                 if(isMany && isOtherSideMany)
                 {

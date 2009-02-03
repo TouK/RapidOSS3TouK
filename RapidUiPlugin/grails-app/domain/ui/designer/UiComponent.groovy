@@ -8,7 +8,7 @@ class UiComponent
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "layoutUnit", "dialog", "events", "menuItems"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "layoutUnit", "dialog", "events", "menuItems", "images", "columns"];
     
     
         storageType "File"
@@ -38,6 +38,8 @@ class UiComponent
     UiDialog dialog ;
     List events = [];
     List menuItems = [];
+    List images = [];
+    List columns = [];
 
     
     static relations = [
@@ -47,6 +49,8 @@ class UiComponent
         ,dialog:[type:UiDialog, reverseName:"component", isMany:false]
         ,events:[type:UiEvent, reverseName:"component", isMany:true]
         ,menuItems:[type:UiMenuItem, reverseName:"component", isMany:true]
+        ,images:[type:UiImage, reverseName:"component", isMany:true]
+        ,columns:[type:UiColumn, reverseName:"component", isMany:true]
 
     ]
     
@@ -69,7 +73,7 @@ class UiComponent
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "layoutUnit", "dialog", "events", "menuItems"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "layoutUnit", "dialog", "events", "menuItems", "images", "columns"];
     
     public String toString()
     {

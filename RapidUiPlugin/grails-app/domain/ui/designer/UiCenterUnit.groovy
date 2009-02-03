@@ -16,5 +16,5 @@ class UiCenterUnit extends UiLayoutUnit{
     }
 
     static propertyConfiguration= [:]
-    static transients = [:];
+    static transients = [];
 }

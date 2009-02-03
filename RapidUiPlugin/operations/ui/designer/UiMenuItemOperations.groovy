@@ -16,6 +16,7 @@ class UiMenuItemOperations extends AbstractDomainOperation
     {
         Map metaData = [
                 designerType:"MenuItem",
+                displayFromProperty:"name",
                 canBeDeleted:"true",
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",

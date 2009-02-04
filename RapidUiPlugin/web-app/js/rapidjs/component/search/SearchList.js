@@ -257,13 +257,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
     },
 
-    appendExceptQuery: function(key, value) {
-        if (this.searchInput.value != "")
-            this.appendToQuery("NOT " + key + ": \"" + value + "\"");
-        else
-            this.appendToQuery("alias:* NOT " + key + ": \"" + value + "\"");
-    },
-
     cellClicked: function(cell, row, target, e, dataNode) {
         if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
             if (e.ctrlKey)

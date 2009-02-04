@@ -76,7 +76,7 @@ YAHOO.rapidjs.designer.Config = new function() {
     this.getChildren = function(itemType) {
         return this.get(itemType)["children"]
     };
-    this.isChildMultiple = function(itemType, childType){
+    this.isChildMultiple = function(itemType, childType) {
         return this.get(itemType)['children'][childType]['isMultiple'] == 'true'
     };
     this.getPropertyDescription = function(itemType, propertyName) {
@@ -140,7 +140,7 @@ YAHOO.rapidjs.designer.Config = new function() {
                 args:{}
             },
             "refresh":{
-                descr:"Refreshes component's data with the given request parameters",
+                descr:"Refreshes component's data with the given request parameters.",
                 args:{
                     "params":"JavaScript object containing request parameter key-value pairs",
                     "title":"Component's new title"
@@ -154,6 +154,26 @@ YAHOO.rapidjs.designer.Config = new function() {
                     "title":"Grid's new title",
                     "extraParams":"JavaScript object containing extra request parameters if needed"
                 }
+            },
+            "appendToQuery":{
+                descr:"Appends the given query to the current query of the grid and retreives the data from server with the combined query.",
+                args:{
+                    "query":"Query string to append"
+                }
+            },
+            "appendExceptQuery":{
+                descr:"Applies negation to the current query of the grid for given property and value.",
+                args:{
+                    "property":"The property to be negated.",
+                    "value":"Value of the property to be negated."
+                }
+            },
+            "sort":{
+                descr:"Sorts the grid with the given property and order.",
+                args:{
+                    "sortAttribute":"Property to sort the grid according to",
+                    "sortOrder":"The order of the sort. Possible values are 'asc' and 'desc'"
+                }
             }
         },
         "SearchList":{
@@ -166,6 +186,35 @@ YAHOO.rapidjs.designer.Config = new function() {
                 args:{
                     "params":"JavaScript object containing request parameter key-value pairs",
                     "title":"Component's new title"
+                }
+            },
+            "setQuery":{
+                descr:"Requests to server with the given query, sort property and sort order.",
+                args:{
+                    "queryString":"New query to get data from server",
+                    "sortAttribute":"Property to sort the search list according to",
+                    "sortOrder":"The order of the sort. Possible values are 'asc' and 'desc'",
+                    "extraParams":"JavaScript object containing extra request parameters if needed"
+                }
+            },
+            "appendToQuery":{
+                descr:"Appends the given query to the current query of the search list and retreives the data from server with the combined query.",
+                args:{
+                    "query":"Query string to append"
+                }
+            },
+            "appendExceptQuery":{
+                descr:"Applies negation to the current query of the search list for given property and value.",
+                args:{
+                    "property":"The property to be negated.",
+                    "value":"Value of the property to be negated."
+                }
+            },
+            "sort":{
+                descr:"Sorts the search list with the given property and order.",
+                args:{
+                    "sortAttribute":"Property to sort the search list according to",
+                    "sortOrder":"The order of the sort. Possible values are 'asc' and 'desc'"
                 }
             }
         },
@@ -345,7 +394,7 @@ YAHOO.rapidjs.designer.Config = new function() {
             }
         },
         "TreeGrid":{
-           "selectionChanged":{
+            "selectionChanged":{
                 descr:"Fired when row selection is changed.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
@@ -359,7 +408,7 @@ YAHOO.rapidjs.designer.Config = new function() {
             }
         },
         "Timeline":{
-           "tooltipClicked":{
+            "tooltipClicked":{
                 descr:"Fired when an event tooltip is clicked.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
@@ -378,7 +427,7 @@ YAHOO.rapidjs.designer.Config = new function() {
             }
         },
         "GMap":{
-           "markerClicked":{
+            "markerClicked":{
                 descr:"Fired when a location marker is clicked",
                 params:{
                     "params.data":"JavaScript object representing the location data"
@@ -389,7 +438,7 @@ YAHOO.rapidjs.designer.Config = new function() {
 
         },
         "AutoComplete":{
-           "submit":{
+            "submit":{
                 descr:"Fired when a suggestion is selected or \"search\" button is clicked",
                 params:{
                     "params.query":"Value in search input field"
@@ -397,7 +446,12 @@ YAHOO.rapidjs.designer.Config = new function() {
             }
         },
         "ObjectMap":{
-
+            "nodeClicked":{
+                descr:"Fired when a map node is clicked.",
+                params:{
+                    "params.data":"JavaScript object representing the node data"
+                }
+            }
         }
     }
 

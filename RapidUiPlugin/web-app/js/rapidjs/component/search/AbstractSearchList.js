@@ -109,8 +109,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.lastSortAtt = sortAtt || this.keyAttribute;
         this.lastSortOrder = sortOrder || 'asc';
         this.offset = 0;
-        if(extraParams){
-            for(var extraParam in extraParams){
+        if (extraParams) {
+            for (var extraParam in extraParams) {
                 this.params[extraParam] = extraParams[extraParam]
             }
         }
@@ -121,6 +121,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         var queryString = this.searchInput.value + " " + query;
         this.setQuery(queryString, this.lastSortAtt, this.lastSortOrder);
     },
+    appendExceptQuery: function(key, value) {
+        if (this.searchInput.value != "")
+            this.appendToQuery("NOT " + key + ": \"" + value + "\"");
+        else
+            this.appendToQuery("alias:* NOT " + key + ": \"" + value + "\"");
+    },
+
     handleInputEnter : function(e) {
         if ((e.type == "keypress" && e.keyCode == 13))
         {
@@ -613,30 +620,30 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         return this.lastSortOrder;
     },
 
-    getVisibleDataQueryParams: function(){
-       var params = YAHOO.rapidjs.ObjectUtils.clone(this.params, true);
-       var indexOfQm = this.url.indexOf("?"); 
-       if(indexOfQm > -1 && this.url.length > indexOfQm + 1){
-           var postdata = this.url.substr(indexOfQm + 1)
-           var keyValues = postdata.split("&");
-           for (var index = 0; index < keyValues.length; index++) {
-               var keyValue = keyValues[index];
-               var keyValueArray = keyValue.split("=");
-               params[keyValueArray[0]] = keyValueArray[1];
-           }
-       }
-       var offset = 0;
-       var max = this.bufferView.rowEls.length;
-       if(this.bufferView.rowEls.length > 0){
-          offset = this.bufferView.rowEls[0].dom.rowIndex;
-       }
-       params['sort'] = this.getSortAttribute(); 
-       params['order'] = this.getSortOrder();
-       params['query'] = this.currentlyExecutingQuery || '';
-       params['offset'] = offset;
-       params['max'] = max; 
-       return params;
-    }, 
+    getVisibleDataQueryParams: function() {
+        var params = YAHOO.rapidjs.ObjectUtils.clone(this.params, true);
+        var indexOfQm = this.url.indexOf("?");
+        if (indexOfQm > -1 && this.url.length > indexOfQm + 1) {
+            var postdata = this.url.substr(indexOfQm + 1)
+            var keyValues = postdata.split("&");
+            for (var index = 0; index < keyValues.length; index++) {
+                var keyValue = keyValues[index];
+                var keyValueArray = keyValue.split("=");
+                params[keyValueArray[0]] = keyValueArray[1];
+            }
+        }
+        var offset = 0;
+        var max = this.bufferView.rowEls.length;
+        if (this.bufferView.rowEls.length > 0) {
+            offset = this.bufferView.rowEls[0].dom.rowIndex;
+        }
+        params['sort'] = this.getSortAttribute();
+        params['order'] = this.getSortOrder();
+        params['query'] = this.currentlyExecutingQuery || '';
+        params['offset'] = offset;
+        params['max'] = max;
+        return params;
+    },
 
     showCurrentState: function() {
     },

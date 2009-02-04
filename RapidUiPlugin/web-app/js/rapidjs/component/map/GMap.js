@@ -22,7 +22,7 @@ YAHOO.rapidjs.component.GMap = function(container, config) {
     YAHOO.ext.util.Config.apply(this, config);
 
     var events = {
-        'markerClick' : new YAHOO.util.CustomEvent('markerClick')
+        'markerClicked' : new YAHOO.util.CustomEvent('markerClicked')
     };
     YAHOO.ext.util.Config.apply(this.events, events);
     this.configureTimeout(config);
@@ -120,7 +120,7 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
             if (component.tooltipAttributeName) {
                 marker.openInfoWindowHtml(loc.tooltip);
             }
-            mapEvents['markerClick'].fireDirect(node);
+            mapEvents['markerClicked'].fireDirect(node);
         });
 
         this.markers.push(marker);

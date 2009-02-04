@@ -21,7 +21,7 @@ YAHOO.rapidjs.component.TimelineWindow = function(container, config){
 	YAHOO.rapidjs.component.TimelineWindow.superclass.constructor.call(this,container, config);
 
     var events = {
-        'tooltipClick' : new YAHOO.util.CustomEvent('tooltipClick')
+        'tooltipClicked' : new YAHOO.util.CustomEvent('tooltipClicked')
     };
 
     this.eventSource = new Timeline.DefaultEventSource();
@@ -100,7 +100,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TimelineWindow, YAHOO.rapidjs.component.Pol
 		this.eventSource.clear();
 	},
 	fireTooltipClick : function(bubble, data){
-        this.events['tooltipClick'].fireDirect(bubble, data);
+        this.events['tooltipClicked'].fireDirect(bubble, data);
     },
     resize : function(width, height) {
 	    this.body.setHeight( height - this.header.offsetHeight);

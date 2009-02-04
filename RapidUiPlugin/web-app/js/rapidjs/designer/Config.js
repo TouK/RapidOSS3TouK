@@ -264,15 +264,15 @@ YAHOO.rapidjs.designer.Config = new function() {
                 }
             },
             "serverDown":{
-                descr:"Fired when the connection is lost with the server",params:{}
+                descr:"Fired when the connection is lost with the server.",params:{}
             },
             "serverUp":{
-                descr:"Fired when the connection is established with the server",params:{}
+                descr:"Fired when the connection is established with the server.",params:{}
             }
         },
         "SearchGrid":{
             "propertyClicked":{
-                descr:"Fired when a cell of the grid is clicked",
+                descr:"Fired when a cell of the grid is clicked.",
                 params:{
                     "params.key":"Name of the property",
                     "params.value":"Value of the property",
@@ -280,25 +280,25 @@ YAHOO.rapidjs.designer.Config = new function() {
                 }
             },
             "rowClicked":{
-                descr:"Fired when a row of the grid is clicked",
+                descr:"Fired when a row of the grid is clicked.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
                 }
             },
             "rowDoubleClicked":{
-                descr:"Fired when a row of the grid is double clicked",
+                descr:"Fired when a row of the grid is double clicked.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
                 }
             },
             "selectionChanged":{
-                descr:"Fired when the row selection is changed",
+                descr:"Fired when the row selection is changed.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
                 }
             },
             "saveQueryClicked":{
-                descr:"Fired when save query button is clicked",
+                descr:"Fired when save query button is clicked.",
                 params:{
                     "params.query":"Query written in search input field"
                 }
@@ -306,7 +306,7 @@ YAHOO.rapidjs.designer.Config = new function() {
         },
         "SearchList":{
             "propertyClicked":{
-                descr:"Fired when a cell of the grid is clicked",
+                descr:"Fired when a cell of the grid is clicked.",
                 params:{
                     "params.key":"Name of the property",
                     "params.value":"Value of the property",
@@ -314,31 +314,31 @@ YAHOO.rapidjs.designer.Config = new function() {
                 }
             },
             "rowClicked":{
-                descr:"Fired when a row of the grid is clicked",
+                descr:"Fired when a row of the grid is clicked.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
                 }
             },
             "rowDoubleClicked":{
-                descr:"Fired when a row of the grid is double clicked",
+                descr:"Fired when a row of the grid is double clicked.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
                 }
             },
             "selectionChanged":{
-                descr:"Fired when the row selection is changed",
+                descr:"Fired when the row selection is changed.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
                 }
             },
             "saveQueryClicked":{
-                descr:"Fired when save query button is clicked",
+                descr:"Fired when save query button is clicked.",
                 params:{
                     "params.query":"Query written in search input field"
                 }
             },
             "rowHeaderClick":{
-                descr:"Fired when row header is clicked",
+                descr:"Fired when row header is clicked.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
                 }
@@ -346,66 +346,55 @@ YAHOO.rapidjs.designer.Config = new function() {
         },
         "TreeGrid":{
            "selectionChanged":{
-                descr:"Fired when row selection is changed",
+                descr:"Fired when row selection is changed.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
                 }
             },
             "nodeClicked":{
-                descr:"Fired when a row of the treegrid is clicked",
+                descr:"Fired when a row of the treegrid is clicked.",
                 params:{
                     "params.data":"JavaScript object representing the row data"
                 }
             }
         },
         "Timeline":{
-
+           "tooltipClicked":{
+                descr:"Fired when an event tooltip is clicked.",
+                params:{
+                    "params.data":"JavaScript object representing the row data"
+                }
+            }
         },
         "PieChart":{
 
         },
         "FlexPieChart":{
-            "propertyClicked":{
-                descr:"Fired when a cell of the grid is clicked",
+            "itemClicked":{
+                descr:"Fired when a chart slice is clicked",
                 params:{
-                    "params.key":"Name of the property",
-                    "params.value":"Value of the property",
-                    "params.data":"JavaScript object representing the row data"
-                }
-            },
-            "rowClicked":{
-                descr:"Fired when a row of the grid is clicked",
-                params:{
-                    "params.data":"JavaScript object representing the row data"
-                }
-            },
-            "rowDoubleClicked":{
-                descr:"Fired when a row of the grid is double clicked",
-                params:{
-                    "params.data":"JavaScript object representing the row data"
-                }
-            },
-            "selectionChanged":{
-                descr:"Fired when the row selection is changed",
-                params:{
-                    "params.data":"JavaScript object representing the row data"
-                }
-            },
-            "saveQueryClicked":{
-                descr:"Fired when save query button is clicked",
-                params:{
-                    "params.query":"Query written in search input field"
+                    "params.data":"JavaScript object representing the slice data"
                 }
             }
         },
         "GMap":{
-
+           "markerClicked":{
+                descr:"Fired when a location marker is clicked",
+                params:{
+                    "params.data":"JavaScript object representing the location data"
+                }
+            }
         },
         "Html":{
 
         },
         "AutoComplete":{
-
+           "submit":{
+                descr:"Fired when a suggestion is selected or \"search\" button is clicked",
+                params:{
+                    "params.query":"Value in search input field"
+                }
+            }
         },
         "ObjectMap":{
 

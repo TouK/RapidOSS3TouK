@@ -63,7 +63,7 @@ class ChartsTagLib {
         def itemClickJs;
         if (onItemClick != null) {
             itemClickJs = """
-               pieChart.events['itemClick'].subscribe(function(xmlData){
+               pieChart.events['itemClicked'].subscribe(function(xmlData){
                    var params = {data:xmlData.getAttributes()};
                    YAHOO.rapidjs.Actions['${onItemClick}'].execute(params);
                 }, this, true);

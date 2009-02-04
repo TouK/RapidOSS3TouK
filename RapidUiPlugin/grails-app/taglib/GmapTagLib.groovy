@@ -30,7 +30,7 @@ class GmapTagLib {
         def markerClickJs;
         if (onMarkerClick != null) {
             markerClickJs = """
-               gmap.events['markerClick'].subscribe(function(xmlData){
+               gmap.events['markerClicked'].subscribe(function(xmlData){
                    var params = {data:xmlData.getAttributes()};
                    YAHOO.rapidjs.Actions['${onMarkerClick}'].execute(params);
                 }, this, true);

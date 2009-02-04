@@ -36,11 +36,11 @@ class RapidBrowserBuild extends Build  {
         ant.copy(todir: "${env.dist_rapid_browser}/lib") {
             ant.fileset(dir: "$env.rapid_browser_svn/lib", excludes:".svn");
         }
-        
+
         ant.copy(todir: "${env.dist_rapid_browser}/licenses") {
             ant.fileset(dir: "$env.rapid_browser_svn/licenses", excludes:".svn");
         }
-        
+
         ant.copy(todir: "${env.dist_rapid_browser}") {
             ant.fileset(file: "$env.rapid_browser_svn/rapidbrowser.bat")
             ant.fileset(file: "$env.rapid_browser_svn/rapidbrowser.sh")
@@ -58,6 +58,13 @@ class RapidBrowserBuild extends Build  {
         ant.mkdir(dir:"${env.dist_rapid_browser}/webapps/RapidBrowser/WEB-INF/lib/");
         ant.jar(basedir:env.rapid_browser_build, destfile:"${env.dist_rapid_browser}/webapps/RapidBrowser/WEB-INF/lib/RapidBrowser.jar");
         ant.copy(todir:"${env.dist_rapid_browser}/lib"){
+            ant.fileset(file:"../ThirdParty/lib/compass/compass.jar")
+            ant.fileset(file:"../ThirdParty/lib/compass/lucene-core.jar")
+            ant.fileset(file:"../ThirdParty/lib/compass/lucene-analyzers.jar")
+            ant.fileset(file:"../ThirdParty/lib/compass/lucene-highlighter.jar")
+            ant.fileset(file:"../ThirdParty/lib/compass/lucene-queries.jar")
+            ant.fileset(file:"../ThirdParty/lib/compass/lucene-snowball.jar")
+            ant.fileset(file:"../ThirdParty/lib/compass/lucene-spellchecker.jar")
             ant.fileset(file:"../ThirdParty/lib/log4j-1.2.13.jar")
             ant.fileset(file:"../ThirdParty/lib/jetty/jetty-6.1.7.jar")
             ant.fileset(file:"../ThirdParty/lib/jetty/jetty-util-6.1.7.jar")

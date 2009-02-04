@@ -250,6 +250,14 @@ class Build extends Parent{
 			ant.pathelement(location : (String)classpath.getProperty("DdlUtils-1_0_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("commons-betwixt-0_8_jar"));
 			ant.pathelement(location : (String)classpath.getProperty("SNMP4J_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("compass_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("easymock_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("lucene-analyzers_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("lucene-core_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("lucene-highlighter_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("lucene-queries_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("lucene-snowball_jar"));
+			ant.pathelement(location : (String)classpath.getProperty("lucene-spellchecker_jar"));
 
 			//Required for compiling test classes
 			ant.pathelement(location : (String)classpath.getProperty("junit_jar"));

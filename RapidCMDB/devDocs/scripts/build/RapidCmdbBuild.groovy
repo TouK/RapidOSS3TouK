@@ -247,6 +247,9 @@ class RapidCmdbBuild extends Build {
         ant.copy(todir: "$env.dist_rapid_suite/plugins") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/plugins")
         }
+        ant.copy(todir: "$env.dist_rapid_suite/plugins/searchable-0.5-SNAPSHOT/lib") {
+            ant.fileset(dir: "$env.third_party/lib/compass")
+        }
         ant.copy(todir: "$env.dist_rapid_suite/src") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/src") {
                 if (!TEST) {

@@ -624,7 +624,7 @@
     </library>
     <library name="compass">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/lib" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/compass" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -634,8 +634,8 @@
         <root url="file://$PROJECT_DIR$/../../FrameworkSources/compass-2.0.0/src/sandbox/src" />
         <root url="file://$PROJECT_DIR$/../../FrameworkSources/compass-2.0.0/src/main/load" />
       </SOURCES>
-      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/searchable-0.5-SNAPSHOT/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/compass" recursive="false" />
     </library>
     <library name="jsecurity">
       <CLASSES>

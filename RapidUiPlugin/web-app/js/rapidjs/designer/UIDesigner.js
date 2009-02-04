@@ -411,7 +411,14 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.tree.treeGridView.expandNode(treeRow)
     },
     treeMenuClicked: function(xmlData, id, parentId, row) {
-
+        var isClickedDataInCurrentTab = function(xmlData){
+            if(this.currentDisplayedItemData){
+                var currentTab = DesignerUtils.getTabNodeFromNode(this, this.currentDisplayedItemData)
+                var clickedTab = DesignerUtils.getTabNodeFromNode(this, xmlData)
+                return currentTab && currentTab == clickedTab;
+            }
+            return false;
+        }
         if (id.indexOf("add_") == 0) {
             var itemType = id.substr(4);
             if (itemType == "Action") {
@@ -421,7 +428,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 var newNode = this.createTreeNode(xmlData, itemType);
                 var currentTab = xmlData.getAttribute(this.itemTabAtt);
                 this.addExtraAttributesToChildNodes(xmlData, currentTab);
-                if(id == "add_Layout" || id=="add_TopUnit" || id=="add_BottomUnit" || id=="add_LeftUnit" || id=="add_RightUnit"){
+                if(isClickedDataInCurrentTab.call(this, xmlData) && (id == "add_Layout" || id=="add_TopUnit" || id=="add_BottomUnit" || id=="add_LeftUnit" || id=="add_RightUnit")){
                     this.refreshLayout(xmlData);
                 }
                 this.refreshTree();
@@ -440,7 +447,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
             var parentNode = xmlData.parentNode();
             parentNode.removeChild(xmlData);
-            if(this.currentDisplayedItemData &&
+            if(this.currentDisplayedItemData && isClickedDataInCurrentTab.call(this, parentNode) && 
                (itemType == 'Layout' || itemType == 'TopUnit' ||itemType == 'LeftUnit' ||itemType == 'BottomUnit' || itemType == 'RightUnit' )){
                 this.refreshLayout(parentNode)
             }

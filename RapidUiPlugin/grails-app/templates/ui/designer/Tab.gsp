@@ -39,7 +39,7 @@
         });
         layout.render();
         window.layout = layout;
-    })
+    });
 </script>
 </body>
 </html>

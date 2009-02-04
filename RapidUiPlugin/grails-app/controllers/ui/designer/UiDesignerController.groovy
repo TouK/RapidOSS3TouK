@@ -175,6 +175,7 @@ class UiDesignerController {
 
             def metaData = component.metaData();
             def propsToBeSentToUi = metaData.propertyConfiguration
+            propsToBeSentToUi.put("id", [:]);
             def children = metaData.childrenConfiguration
             def uiElementProperties = [designerType:metaData.designerType];
             propsToBeSentToUi.each{String propName, propConfig->

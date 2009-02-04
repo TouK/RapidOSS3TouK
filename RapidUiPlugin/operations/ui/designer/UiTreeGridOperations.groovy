@@ -19,7 +19,6 @@ class UiTreeGridOperations extends UiComponentOperations{
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
-                        id: [descr: "The unique name of the component which is stored in the global JavaScript object YAHOO.rapidjs.Components."],
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data."],
                         rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data."],
                         contentPath: [descr: "The node names of AJAX response which will be used as row data."],

@@ -18,8 +18,8 @@ class UiFlexPieChartOperations extends UiComponentOperations
                 designerType: "FlexPieChart",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/component.gif",
+                imageCollapsed: "images/rapidjs/designer/component.gif",
                 propertyConfiguration: [
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data. "],
                         rootTag: [descr: "The root node name of AJAX response which FlexPieChart takes as starting point to get its data."],

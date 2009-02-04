@@ -24,6 +24,8 @@ public class UiTabOperations extends AbstractDomainOperation
                             metaData:[
                                     designerType:"Components",
                                     display:"Components",
+                                    imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
+                                    imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
                                     childrenConfiguration: [
                                         [designerType:"FlexPieChart", propertyName:"components", isMultiple:true]
                                         ,[designerType:"SearchList", propertyName:"components", isMultiple:true]
@@ -37,6 +39,8 @@ public class UiTabOperations extends AbstractDomainOperation
                             metaData:[
                                     designerType:"Dialogs",
                                     display:"Dialogs",
+                                    imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
+                                    imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
                                     childrenConfiguration: [
                                         [designerType:"Dialog", isMultiple:true, propertyName:"dialogs"]
                                     ]
@@ -47,6 +51,8 @@ public class UiTabOperations extends AbstractDomainOperation
                             metaData:[
                                     designerType:"Actions",
                                     display:"Actions",
+                                    imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
+                                    imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
                                     childrenConfiguration: [
                                         [designerType:"FunctionAction", isMultiple:true, propertyName:"actions"],
                                         [designerType:"MergeAction", isMultiple:true, propertyName:"actions"],

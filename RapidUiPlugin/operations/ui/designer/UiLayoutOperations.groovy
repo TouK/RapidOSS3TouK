@@ -11,6 +11,8 @@ public class UiLayoutOperations extends AbstractDomainOperation
                 designerType:"Layout",
                 canBeDeleted: true,
                 display: "Layout",
+                imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
+                imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
                 propertyConfiguration: [:],
                 childrenConfiguration:[
                     [designerType:"CenterUnit", propertyName:"units"],

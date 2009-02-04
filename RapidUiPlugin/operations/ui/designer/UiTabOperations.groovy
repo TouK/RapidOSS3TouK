@@ -27,10 +27,10 @@ public class UiTabOperations extends AbstractDomainOperation
                                     imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
                                     imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
                                     childrenConfiguration: [
-                                        [designerType:"FlexPieChart", propertyName:"components", isMultiple:true]
-                                        ,[designerType:"SearchList", propertyName:"components", isMultiple:true]
-                                        ,[designerType:"SearchGrid", propertyName:"components", isMultiple:true]
-                                        ,[designerType:"TreeGrid", propertyName:"components", isMultiple:true]
+                                        [designerType:"FlexPieChart", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiFlexPieChart"}]
+                                        ,[designerType:"SearchList", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiSearchList"}]
+                                        ,[designerType:"SearchGrid", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiSearchGrid"}]
+                                        ,[designerType:"TreeGrid", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiTreeGrid"}]
                                     ]
                             ],
                             propertyName:"layout"
@@ -54,11 +54,11 @@ public class UiTabOperations extends AbstractDomainOperation
                                     imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
                                     imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
                                     childrenConfiguration: [
-                                        [designerType:"FunctionAction", isMultiple:true, propertyName:"actions"],
-                                        [designerType:"MergeAction", isMultiple:true, propertyName:"actions"],
-                                        [designerType:"RequestAction", isMultiple:true, propertyName:"actions"],
-                                        [designerType:"CombinedAction", isMultiple:true, propertyName:"actions"],
-                                        [designerType:"LinkAction", isMultiple:true, propertyName:"actions"]
+                                        [designerType:"FunctionAction", isMultiple:true, propertyName:"actions", isVisible:{component-> return component.class.simpleName == "UiFunctionAction"}],
+                                        [designerType:"MergeAction", isMultiple:true, propertyName:"actions", isVisible:{component-> return component.class.simpleName == "UiMergeAction"}],
+                                        [designerType:"RequestAction", isMultiple:true, propertyName:"actions", isVisible:{component-> return component.class.simpleName == "UiRequestAction"}],
+                                        [designerType:"CombinedAction", isMultiple:true, propertyName:"actions", isVisible:{component-> return component.class.simpleName == "UiCombinedAction"}],
+                                        [designerType:"LinkAction", isMultiple:true, propertyName:"actions", isVisible:{component-> return component.class.simpleName == "UiLinkAction"}]
                                     ]
                             ],
                             propertyName:"layout"

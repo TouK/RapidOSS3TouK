@@ -1,6 +1,7 @@
 package ui.designer
 
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rui.util.DesignerUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -43,6 +44,18 @@ class UiTreeGridColumnOperations extends UiColumnOperations
         metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = xmlNode.attributes();
+        attributes.component = parentElement
+        def treeGridColumn = DesignerUtils.addUiObject(UiTreeGridColumn, attributes, xmlNode);
+        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridColumnImages"};
+        imagesNode.UiElement.each{
+            UiImage.addUiElement(it, treeGridColumn);
+        }
+        return treeGridColumn;
     }
 
 }

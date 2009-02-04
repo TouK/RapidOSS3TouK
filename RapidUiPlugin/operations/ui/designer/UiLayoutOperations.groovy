@@ -15,11 +15,11 @@ public class UiLayoutOperations extends AbstractDomainOperation
                 imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
                 propertyConfiguration: [:],
                 childrenConfiguration:[
-                    [designerType:"CenterUnit", propertyName:"units"],
-                    [designerType:"TopUnit", propertyName:"units"],
-                    [designerType:"BottomUnit", propertyName:"units"],
-                    [designerType:"LeftUnit", propertyName:"units"],
-                    [designerType:"RightUnit", propertyName:"units"]
+                    [designerType:"CenterUnit", propertyName:"units", isVisible:{component-> return component.class.simpleName == "UiCenterUnit"}],
+                    [designerType:"TopUnit", propertyName:"units", isVisible:{component-> return component.class.simpleName == "UiTopUnit"}],
+                    [designerType:"BottomUnit", propertyName:"units",isVisible:{component-> return component.class.simpleName == "UiBottomUnit"}],
+                    [designerType:"LeftUnit", propertyName:"units",isVisible:{component-> return component.class.simpleName == "UiLeftUnit"}],
+                    [designerType:"RightUnit", propertyName:"units",isVisible:{component-> return component.class.simpleName == "UiRightUnit"}]
                 ]
         ];
         return metaData;

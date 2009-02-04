@@ -19,7 +19,7 @@
 <%
     if(tab.javascriptFile != null && tab.javascriptFile != "")
     {
-        def jsFile = new File("webapp/"+tab.javascriptFile);
+        def jsFile = new File("web-app/"+tab.javascriptFile);
 %>
         ${jsFile.getText()}
 <%

@@ -193,7 +193,7 @@ class UiDesignerController {
                     {
                         def propName = child.propertyName;
                         try{
-                            def childObjects = component.getProperty (propName).findAll {it.getClass().simpleName == "Ui"+child.designerType};
+                            def childObjects = component.getProperty (propName).findAll {return child.isVisible == null || child.isVisible(it)};
                             createViewXml(childObjects, builder);
                         }catch(groovy.lang.MissingPropertyException e){}
                     }
@@ -208,8 +208,8 @@ class UiDesignerController {
                             child.metaData.childrenConfiguration.each{realChild->
                                 def propName = realChild.propertyName;
                                 try{
-                                    def childObjects = component.getProperty (propName).findAll {it.getClass().simpleName == "Ui"+child.designerType};
-                                    createViewXml(component.getProperty (propName), builder);
+                                    def childObjects = component.getProperty (propName).findAll {return realChild.isVisible == null || realChild.isVisible(it)};
+                                    createViewXml(childObjects, builder);
                                 }catch(groovy.lang.MissingPropertyException e){}
                             }
                         }

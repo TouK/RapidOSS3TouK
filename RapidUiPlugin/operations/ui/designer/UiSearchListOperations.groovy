@@ -1,11 +1,14 @@
 package ui.designer
+
+import com.ifountain.rui.util.DesignerUtils
+
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Feb 3, 2009
- * Time: 10:40:44 AM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Feb 3, 2009
+* Time: 10:40:44 AM
+* To change this template use File | Settings | File Templates.
+*/
 class UiSearchListOperations extends UiComponentOperations{
     public static Map metaData()
     {
@@ -16,7 +19,6 @@ class UiSearchListOperations extends UiComponentOperations{
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
-                        id: [descr: "The unique name of the component which is stored in the global JavaScript object YAHOO.rapidjs.Components."],
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data."],
                         rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data."],
                         contentPath: [descr: "The node names of AJAX response which will be used as row data."],
@@ -70,7 +72,20 @@ class UiSearchListOperations extends UiComponentOperations{
                                         imageExpanded: 'images/rapidjs/designer/tab.png',
                                         imageCollapsed: 'images/rapidjs/designer/tab.png',
                                         childrenConfiguration: [
-                                                [designerType: "MenuItem", propertyName: "menuItems", isMultiple: true]
+                                                [designerType: "MenuItem", propertyName: "menuItems", isMultiple: true, isVisible:{component-> return component.type == "component"}]
+                                        ]
+                                ]
+                        ],
+                        [
+                                designerType: "SearchListPropertyMenuItems",
+                                isMultiple: false,
+                                metaData: [
+                                        designerType: "SearchListPropertyMenuItems",
+                                        display: "PropertyMenuItems",
+                                        imageExpanded: 'images/rapidjs/designer/tab.png',
+                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        childrenConfiguration: [
+                                                [designerType: "MenuItem", propertyName: "propertyMenuItems", isMultiple: true, isVisible:{component-> return component.type == "property"}]
                                         ]
                                 ]
                         ]
@@ -80,5 +95,34 @@ class UiSearchListOperations extends UiComponentOperations{
         metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = xmlNode.attributes();
+        attributes.tab = parentElement;
+        def searchList = DesignerUtils.addUiObject(UiSearchList, attributes, xmlNode);
+        
+        def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListFields"};
+        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListImages"};
+        def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListMenuItems"};
+        def propertyMenuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListPropertyMenuItems"};
+        columnsNode.UiElement.each{
+            UiSearchListField.addUiElement(it, searchList);
+        }
+        imagesNode.UiElement.each{
+            UiImage.addUiElement(it, searchList);
+        }
+        menuItemsNode.UiElement.each{
+            UiMenuItem.addUiElement(it, searchList);
+        }
+        def propMenuItems = [];
+        propertyMenuItemsNode.UiElement.each{
+            def propMenuItem = UiMenuItem.addUiElement(it, searchList);
+            propMenuItem.type = "property";
+            propMenuItems.add(propMenuItem);
+        }
+        searchList.addRelation(propertyMenuItems:propMenuItems);
+        return searchList;
     }
 }

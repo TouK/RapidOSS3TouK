@@ -36,8 +36,10 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         }
     }
 
-    public void testSaveAndViewAndGenerate()
+    public void testSaveViewAndGenerate()
     {
+        new File("${System.getProperty ("base.dir")}/web-app/x.gsp").setText ("");
+        new File("${System.getProperty ("base.dir")}/web-app/y.gsp").setText ("");
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         def url1Props = [url:"myUrl1", designerType:"Url"]
@@ -150,6 +152,8 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
     public void testViewWithMultipleChildUsingSameProperty()
     {
+        new File("${System.getProperty ("base.dir")}/web-app/x.gsp").setText ("");
+        new File("${System.getProperty ("base.dir")}/web-app/y.gsp").setText ("");
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         def url1Props = [url:"myUrl1", designerType:"Url"]
@@ -162,7 +166,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
                             builder.UiElement(tab){
                                 builder.UiElement(designerType:'Layout')
                                 {
-                                    builder.UiElement(designerType:'CenterUnit', component:'', gutter:'', scroll:'false', useShim:'false');
+                                    builder.UiElement(designerType:'CenterUnit', component:'', contentFile:'', gutter:'', scroll:'false', useShim:'false');
                                 }
                                 builder.UiElement(designerType:'Components')
                                 builder.UiElement(designerType:'Dialogs')
@@ -200,7 +204,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
                             builder.UiElement(tab){
                                 builder.UiElement(designerType:'Layout')
                                 {
-                                    builder.UiElement(designerType:'CenterUnit', component:'chart1', gutter:'', scroll:'false', useShim:'false');
+                                    builder.UiElement(designerType:'CenterUnit', component:'chart1', contentFile:'', gutter:'', scroll:'false', useShim:'false');
                                 }
                                 builder.UiElement(designerType:'Components')
                                 {
@@ -247,6 +251,8 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         //also we are testing designerHidden property is added to Events tag which should not be visible in designer tree
         IntegrationTestUtils.resetController (controller);
         controller.view();
+        println sw.toString();
+        println controller.response.contentAsString;
         assertEqualsXML (sw.toString(), controller.response.contentAsString);
     }
 
@@ -258,7 +264,11 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         def url2Props = [url:"myUrl2", designerType:"Url"]
         builder.UiConfig{
             builder.UiElement(designerType:"Urls"){
-                builder.UiElement(url1Props)
+                builder.UiElement(url1Props){
+                    builder.UiElement(designerType:"Tabs"){
+                        builder.UiElement(designerType:"Tab", name:"tab1")
+                    }
+                }
             }
         }
         UiDesignerController controller = new UiDesignerController();
@@ -286,7 +296,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals (1, UiUrl.count());
         assertEquals (url1BeforeTryingToSaveWithError.id, UiUrl.list()[0].id);
         assertEquals (true, UiUrl.list()[0].isActive);
-        assertEquals (0, UiTab.count());
+        assertEquals (1, UiTab.count());
 
         def responseXml = new XmlSlurper().parseText(controller.response.contentAsString);
         assertEquals(1, responseXml.Error.size());

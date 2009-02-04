@@ -1,11 +1,15 @@
 package ui.designer
+
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import com.ifountain.rui.util.DesignerUtils
+
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Feb 3, 2009
- * Time: 10:30:44 AM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Feb 3, 2009
+* Time: 10:30:44 AM
+* To change this template use File | Settings | File Templates.
+*/
 class UiSearchGridOperations extends UiComponentOperations {
     public static Map metaData()
     {
@@ -16,7 +20,6 @@ class UiSearchGridOperations extends UiComponentOperations {
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
-                        id: [descr: "The unique name of the component which is stored in the global JavaScript object YAHOO.rapidjs.Components."],
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data."],
                         rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data."],
                         contentPath: [descr: "The node names of AJAX response which will be used as row data."],
@@ -79,5 +82,25 @@ class UiSearchGridOperations extends UiComponentOperations {
         metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = xmlNode.attributes();
+        attributes.tab = parentElement;
+        def searchGrid = DesignerUtils.addUiObject(UiSearchGrid, attributes, xmlNode);
+        def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridColumns"};
+        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridImages"};
+        def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridMenuItems"};
+        columnsNode.UiElement.each{
+            UiColumn.addUiElement(it, searchGrid);
+        }
+        imagesNode.UiElement.each{
+            UiImage.addUiElement(it, searchGrid);
+        }
+        menuItemsNode.UiElement.each{
+            UiMenuItem.addUiElement(it, searchGrid);
+        }
+        return searchGrid;
     }
 }

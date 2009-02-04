@@ -1,11 +1,14 @@
 package ui.designer
+
+import com.ifountain.rui.util.DesignerUtils
+
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Feb 3, 2009
- * Time: 10:46:15 AM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Feb 3, 2009
+* Time: 10:46:15 AM
+* To change this template use File | Settings | File Templates.
+*/
 class UiTreeGridOperations extends UiComponentOperations{
     public static Map metaData()
     {
@@ -73,5 +76,26 @@ class UiTreeGridOperations extends UiComponentOperations{
         metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = xmlNode.attributes();
+        attributes.tab = parentElement;
+        def treeGrid = DesignerUtils.addUiObject(UiTreeGrid, attributes, xmlNode);
+
+        def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridColumns"};
+        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridRootImages"};
+        def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridMenuItems"};
+        columnsNode.UiElement.each{
+            UiTreeGridColumn.addUiElement(it, treeGrid);
+        }
+        imagesNode.UiElement.each{
+            UiRootImage.addUiElement(it, treeGrid);
+        }
+        menuItemsNode.UiElement.each{
+            UiMenuItem.addUiElement(it, treeGrid);
+        }
+        return treeGrid;
     }
 }

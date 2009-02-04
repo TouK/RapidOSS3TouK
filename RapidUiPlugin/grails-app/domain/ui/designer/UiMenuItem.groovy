@@ -21,6 +21,7 @@ class UiMenuItem {
     boolean isActive = true;
     String name ="";
     String label ="";
+    String type = "component";
     String visible;
     Long id ;
     Long version ;
@@ -43,6 +44,7 @@ class UiMenuItem {
     static constraints={
      name(blank:false,nullable:false,key:["component", "isActive"])
      label(blank:false,nullable:false);
+     type(blank:false,nullable:false, inList:["component", "property", "toolbar"]);
      action(nullable:true);
      visible(blank:true,nullable:true);
      __operation_class__(nullable:true)

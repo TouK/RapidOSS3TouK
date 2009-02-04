@@ -514,8 +514,8 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         var wrps = YAHOO.util.Dom.getElementsByClassName('wrp', 'div', toolsWrp);
         new YAHOO.rapidjs.component.Button(wrps[0], {className:'r-designer-saveButton', scope:this, click:this.save, text:'Save'});
         new YAHOO.rapidjs.component.Button(wrps[1], {className:'r-designer-generateButton', scope:this, click:this.generate, text:'Generate'});
-        this.tree.events["selectionChange"].subscribe(this.treeSelectionChanged, this, true);
-        this.tree.events["rowMenuClick"].subscribe(this.treeMenuClicked, this, true);
+        this.tree.events["selectionChanged"].subscribe(this.treeSelectionChanged, this, true);
+        this.tree.events["rowMenuClicked"].subscribe(this.treeMenuClicked, this, true);
 
         var propertySavedFunc = function(oArgs) {
             var record = oArgs.editor.getRecord();

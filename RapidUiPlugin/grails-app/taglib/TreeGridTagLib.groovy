@@ -32,7 +32,7 @@ class TreeGridTagLib {
         def menuEventsJs;
         if (onNodeClick != null) {
             nodeClickJs = """
-               ${treeGridId}tg.events['treeNodeClick'].subscribe(function(xmlData){
+               ${treeGridId}tg.events['nodeClicked'].subscribe(function(xmlData){
                    var params = {data:xmlData.getAttributes()};
                    YAHOO.rapidjs.Actions['${onNodeClick}'].execute(params);
                 }, this, true);
@@ -53,7 +53,7 @@ class TreeGridTagLib {
                 index++;
             }
             menuEventsJs = """
-               ${treeGridId}tg.events['rowMenuClick'].subscribe(function(xmlData, id, parentId){
+               ${treeGridId}tg.events['rowMenuClicked'].subscribe(function(xmlData, id, parentId){
                    var params = {data:xmlData.getAttributes(), menuId:id, parentId:parentId};
                    ${innerJs}
                 }, this, true);

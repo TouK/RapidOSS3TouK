@@ -23,9 +23,9 @@ YAHOO.rapidjs.component.TreeGrid = function(container, config) {
     this.rootTag = config.rootTag;
     this.expanded = config.expanded;
     var events = {
-        'selectionChange' : new YAHOO.util.CustomEvent('selectionChange'),
-        'treeNodeClick' : new YAHOO.util.CustomEvent('treeNodeClick'),
-        'rowMenuClick' : new YAHOO.util.CustomEvent('rowMenuClick')
+        'selectionChanged' : new YAHOO.util.CustomEvent('selectionChanged'),
+        'nodeClicked' : new YAHOO.util.CustomEvent('nodeClicked'),
+        'rowMenuClicked' : new YAHOO.util.CustomEvent('rowMenuClicked')
     };
     YAHOO.ext.util.Config.apply(this.events, events);
     this.header = YAHOO.ext.DomHelper.append(this.container, {tag:'div'});
@@ -75,12 +75,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.Poll
     },
 
     fireSelectionChange: function(treeNode) {
-        this.events['selectionChange'].fireDirect(treeNode.xmlData);
+        this.events['selectionChanged'].fireDirect(treeNode.xmlData);
     },
     fireRowMenuClick: function(xmlData, id, parentId, row) {
-        this.events['rowMenuClick'].fireDirect(xmlData, id, parentId, row);
+        this.events['rowMenuClicked'].fireDirect(xmlData, id, parentId, row);
     },
     fireTreeNodeClick: function(treeNode) {
-        this.events['treeNodeClick'].fireDirect(treeNode.xmlData);
+        this.events['nodeClicked'].fireDirect(treeNode.xmlData);
     }
 });

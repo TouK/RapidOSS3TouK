@@ -174,6 +174,12 @@ YAHOO.rapidjs.designer.Config = new function() {
                     "sortAttribute":"Property to sort the grid according to",
                     "sortOrder":"The order of the sort. Possible values are 'asc' and 'desc'"
                 }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
+                    "title":"Component's new title"
+                }
             }
         },
         "SearchList":{
@@ -216,6 +222,12 @@ YAHOO.rapidjs.designer.Config = new function() {
                     "sortAttribute":"Property to sort the search list according to",
                     "sortOrder":"The order of the sort. Possible values are 'asc' and 'desc'"
                 }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
+                    "title":"Component's new title"
+                }
             }
         },
         "TreeGrid":{
@@ -227,6 +239,12 @@ YAHOO.rapidjs.designer.Config = new function() {
                 descr:"Refreshes component's data with the given request parameters.",
                 args:{
                     "params":"JavaScript object containing request parameter key-value pairs",
+                    "title":"Component's new title"
+                }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
                     "title":"Component's new title"
                 }
             }
@@ -242,6 +260,12 @@ YAHOO.rapidjs.designer.Config = new function() {
                     "params":"JavaScript object containing request parameter key-value pairs",
                     "title":"Component's new title"
                 }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
+                    "title":"Component's new title"
+                }
             }
         },
         "PieChart":{
@@ -253,6 +277,12 @@ YAHOO.rapidjs.designer.Config = new function() {
                 descr:"Refreshes component's data with the given request parameters.",
                 args:{
                     "params":"JavaScript object containing request parameter key-value pairs",
+                    "title":"Component's new title"
+                }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
                     "title":"Component's new title"
                 }
             }
@@ -268,6 +298,12 @@ YAHOO.rapidjs.designer.Config = new function() {
                     "params":"JavaScript object containing request parameter key-value pairs",
                     "title":"Component's new title"
                 }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
+                    "title":"Component's new title"
+                }
             }
         },
         "GMap":{
@@ -281,13 +317,36 @@ YAHOO.rapidjs.designer.Config = new function() {
                     "params":"JavaScript object containing request parameter key-value pairs",
                     "title":"Component's new title"
                 }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
+                    "title":"Component's new title"
+                }
             }
         },
         "Html":{
-
+            "show":{
+                descr:"Retrieves the html content from the given url and changes the title.",
+                args:{
+                    "url":"Url to retrive html content.",
+                    "title":"Component's new title"
+                }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
+                    "title":"Component's new title"
+                }
+            }
         },
         "AutoComplete":{
-
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
+                    "title":"Component's new title"
+                }
+            }
         },
         "ObjectMap":{
             "poll":{
@@ -298,6 +357,12 @@ YAHOO.rapidjs.designer.Config = new function() {
                 descr:"Refreshes component's data with the given request parameters.",
                 args:{
                     "params":"JavaScript object containing request parameter key-value pairs",
+                    "title":"Component's new title"
+                }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
                     "title":"Component's new title"
                 }
             }
@@ -451,6 +516,10 @@ YAHOO.rapidjs.designer.Config = new function() {
                 params:{
                     "params.data":"JavaScript object representing the node data"
                 }
+            },
+            "mapInitialized":{
+                descr:"Fired when a map's flash object is initalized and ready to response to external calls.",
+                params:{}
             }
         }
     }

@@ -460,6 +460,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }
         if (actionType == "function") {
             YAHOO.util.Dom.setStyle(this.functionView, 'display', '');
+            this.componentChanged();
         }
         else {
             YAHOO.util.Dom.setStyle(this.functionView, 'display', 'none');

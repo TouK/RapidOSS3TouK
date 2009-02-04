@@ -1,6 +1,7 @@
 package ui.designer
 
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rui.util.DesignerUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -28,6 +29,13 @@ class UiRootImageOperations  extends AbstractDomainOperation
                 childrenConfiguration: [:]
         ];
         return metaData;
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = xmlNode.attributes();
+        attributes.component = parentElement
+        return DesignerUtils.addUiObject(UiRootImage, attributes, xmlNode);
     }
 
 }

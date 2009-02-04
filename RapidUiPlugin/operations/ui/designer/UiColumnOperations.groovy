@@ -1,6 +1,7 @@
 package ui.designer
 
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rui.util.DesignerUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -26,25 +27,16 @@ class UiColumnOperations extends AbstractDomainOperation
                         sortBy: [descr: "Parameter to render component whether sorted according to this column or not"],
                         colLabel: [descr: "Title of the column"]
                 ],
-                childrenConfiguration: [
-                        [
-                                designerType: "Events",
-                                metaData: [
-                                        designerType: "Events",
-                                        display: "Events",
-                                        canBeDeleted: false,
-                                        propertyConfiguration: [
-                                                designerHidden: [descr: "", type: "String", defaultValue: "true"]
-                                        ],
-                                        childrenConfiguration: [
-                                                [designerType: "Event", isMultiple: true, propertyName: "events"]
-                                        ]
-                                ],
-                                isMultiple: false
-                        ]
-                ]
+                childrenConfiguration: []
         ];
         return metaData;
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = xmlNode.attributes();
+        attributes.component = parentElement;
+        return DesignerUtils.addUiObject(UiColumn, attributes, xmlNode);
     }
 
 }

@@ -107,6 +107,7 @@ public class ScriptManager {
         return scripts[scriptPath];
     }
 
+    
     private Class getScriptClass(String scriptPath) throws ScriptingException
     {
         scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
@@ -115,9 +116,32 @@ public class ScriptManager {
         try
         {
             Class cls = scriptClassLoader.loadClass(scriptPath);
+
             defaultSupportedMethods.each{String methodName, methodClosure->
                 cls.metaClass."${methodName}" = methodClosure;                
             }
+            
+            cls.metaClass.operationInstance=null;
+            cls.metaClass.methodMissing = {String name, args ->
+                  def oprInstance=delegate.getProperty("operationInstance");
+                  if(oprInstance!=null)
+                  {
+                    oprInstance.domainObject=delegate;
+                    try {
+                        return oprInstance.invokeMethod(name, args)
+                    }
+                    catch (MissingMethodException e) {
+                        if (e.getType().name != oprInstance.class.name || e.getMethod() != name)
+                        {
+                            throw e;
+                        }
+                    }
+                     
+                  }
+                  throw new MissingMethodException(name, delegate.metaClass.theClass, args);
+            }
+
+            
             return cls;
         }
         catch (Throwable t)
@@ -135,8 +159,11 @@ public class ScriptManager {
     {
         _addScript(scriptPath);
     }
-
     def runScript(scriptPath, bindings,scriptLogger) throws ScriptingException
+    {
+        return runScript(scriptPath,bindings,scriptLogger,null);
+    }
+    def runScript(scriptPath, bindings,scriptLogger,operationClass) throws ScriptingException
     {
         scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
         def scriptClass = scripts[scriptPath];
@@ -148,6 +175,11 @@ public class ScriptManager {
                 scriptObject.setProperty(propName, propValue);
             }
             scriptObject.setProperty("logger", scriptLogger);
+            if(operationClass!=null)
+            {
+                scriptObject.setProperty ("operationInstance",operationClass.newInstance())    
+            }
+            
             try
             {
 

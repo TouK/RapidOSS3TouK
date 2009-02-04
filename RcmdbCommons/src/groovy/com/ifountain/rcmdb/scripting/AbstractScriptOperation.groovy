@@ -31,7 +31,7 @@ abstract class AbstractScriptOperation {
 
    public void setProperty(String propName, Object value)
    {
-           def prop = AbstractDomainOperation.metaClass.getMetaProperty(propName);
+           def prop = AbstractScriptOperation.metaClass.getMetaProperty(propName);
            if(prop != null && propName != "properties")
            {
                prop.setProperty(this, value);

@@ -148,15 +148,19 @@ YAHOO.rapidjs.data.Node.prototype=
            var APOS = "'"
            var LT = "<"
            var GT = ">"
+           var AMP = "&"
            var ESCAPED_APOS = '&apos;'
            var ESCAPED_LT = '&lt;'
            var ESCAPED_GT = '&gt;'
+           var ESCAPED_AMP = '&amp;'
            var aposRE = new RegExp(APOS,'g')
            var ltRE = new RegExp(LT,'g')
            var gtRE = new RegExp(GT,'g')
+           var ampRE = new RegExp(AMP,'g')
            att = att.replace(aposRE, ESCAPED_APOS)
            att = att.replace(LT, ESCAPED_LT)
            att = att.replace(GT, ESCAPED_GT)
+           att = att.replace(AMP, ESCAPED_AMP)
            return att;
         }
         var result = [];

@@ -6,13 +6,14 @@ package ui.designer
  * Time: 6:58:14 PM
  * To change this template use File | Settings | File Templates.
  */
-class UiEvent{
+class UiActionTrigger{
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action"];
         storageType "File"
     };
-    String eventName = "";
+    String name = "";
     Boolean isActive = true;
+    Boolean isMenuItem = false;
     static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
 
     UiComponent component ;
@@ -23,11 +24,11 @@ class UiEvent{
 
 
     static relations = [
-        component:[type:UiComponent, reverseName:"events", isMany:false]
-        ,action:[type:UiAction, reverseName:"events", isMany:false]
+        component:[type:UiComponent, reverseName:"triggers", isMany:false]
+        ,action:[type:UiAction, reverseName:"triggers", isMany:false]
     ]
     static constraints={
-        eventName(blank:false, nullable:false)
+        name(blank:false, nullable:false)
         action(nullable:false)
         component(nullable:true)
         __operation_class__(nullable:true)

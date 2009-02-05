@@ -36,7 +36,7 @@ class UiComponent
     UiLayoutUnit layoutUnit ;
     
     UiDialog dialog ;
-    List events = [];
+    List triggers = [];
     List menuItems = [];
     List images = [];
     List columns = [];
@@ -47,7 +47,7 @@ class UiComponent
         tab:[type:UiTab, reverseName:"components", isMany:false]
         ,layoutUnit:[type:UiLayoutUnit, reverseName:"component", isMany:false]
         ,dialog:[type:UiDialog, reverseName:"component", isMany:false]
-        ,events:[type:UiEvent, reverseName:"component", isMany:true]
+        ,triggers:[type:UiActionTrigger, reverseName:"component", isMany:true]
         ,menuItems:[type:UiMenuItem, reverseName:"component", isMany:true]
         ,images:[type:UiImage, reverseName:"component", isMany:true]
         ,columns:[type:UiColumn, reverseName:"component", isMany:true]

@@ -29,14 +29,14 @@ class UiAction
     Object __is_federated_properties_loaded__ ;
     
     UiTab tab ;
-    List events = [];
+    List triggers = [];
     List menuItems = [];
 
     
     static relations = [
         tab:[type:UiTab, reverseName:"actions", isMany:false],
         menuItems:[type:UiMenuItem, reverseName:"action", isMany:true],
-        events:[type:UiEvent, reverseName:"action", isMany:true]
+        triggers:[type:UiActionTrigger, reverseName:"action", isMany:true]
     ]
     
     static constraints={

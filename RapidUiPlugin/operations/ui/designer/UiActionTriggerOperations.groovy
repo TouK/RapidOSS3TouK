@@ -9,16 +9,17 @@ import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 * Time: 2:04:38 PM
 * To change this template use File | Settings | File Templates.
 */
-class UiEventOperations extends AbstractDomainOperation{
+class UiActionTriggerOperations extends AbstractDomainOperation{
     public static Map metaData()
     {
         Map metaData = [
-                designerType:"Event",
+                designerType:"ActionTrigger",
                 canBeDeleted: true,
-                display: "Event",
+                display: "ActionTrigger",
                 propertyConfiguration: [
-                        eventName:[descr:""],
-                        component:[descr:""]
+                        name:[descr:""],
+                        component:[descr:""],
+                        isMenuItem:[descr:""]
                 ],
                 childrenConfiguration:[]
         ];

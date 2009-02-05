@@ -15,16 +15,16 @@ public class UiActionOperations extends AbstractDomainOperation
                 ],
                 childrenConfiguration: [
                         [
-                                designerType: "Events",
+                                designerType: "ActionTriggers",
                                 metaData: [
-                                        designerType: "Events",
-                                        display: "Events",
+                                        designerType: "ActionTriggers",
+                                        display: "ActionTriggers",
                                         canBeDeleted: false,
                                         propertyConfiguration: [
                                                 designerHidden: [descr: "", type: "String", defaultValue: "true"]
                                         ],
                                         childrenConfiguration: [
-                                                [designerType: "Event", isMultiple: true, propertyName: "events"]
+                                                [designerType: "ActionTrigger", isMultiple: true, propertyName: "triggers"]
                                         ]
                                 ],
                                 isMultiple: false

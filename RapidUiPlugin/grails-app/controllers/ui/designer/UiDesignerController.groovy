@@ -152,7 +152,11 @@ class UiDesignerController {
                         layoutContent = generateTag (tab.layout, templateEngine);
                     }
                     def tabString = tabTemplate.make (tab:tab, tabContent:tabContent, layoutContent:layoutContent).toString()
-                    tabOutputFile.setText (tabString)
+                    def formattedStringWriter = new StringWriter()
+                    def parser = new XmlParser(false, false);
+                    def rootNode = parser.parseText(tabString);
+                    new XmlNodePrinter(new PrintWriter(formattedStringWriter)).print(rootNode)
+                    tabOutputFile.setText (formattedStringWriter.toString())
                 }
             }
             RsApplication.reloadViewsAndControllers();

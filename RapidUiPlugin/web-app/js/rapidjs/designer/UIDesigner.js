@@ -526,10 +526,10 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             var record = oArgs.editor.getRecord();
             var propName = record.getData("name")
             var propValue = record.getData("value")
-            this.currentDisplayedItemData.setAttribute(propName, propValue);
+            this.currentDisplayedItemData.setAttribute(propName, "" + propValue);
             var itemType = DesignerUtils.getItemType(this, this.currentDisplayedItemData);
             if (UIConfig.isDisplayProperty(itemType, propName)) {
-                this.currentDisplayedItemData.setAttribute(this.treeDisplayAttribute, propValue);
+                this.currentDisplayedItemData.setAttribute(this.treeDisplayAttribute, "" + propValue);
             }
             if (itemType == "Layout" && propName == "type") {
                 this.createLayoutNode(propValue);

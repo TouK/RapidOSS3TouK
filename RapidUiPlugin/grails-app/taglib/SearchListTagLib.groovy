@@ -28,9 +28,9 @@ class SearchListTagLib {
     static def fSearchList(attrs, bodyString) {
         def searchListId = attrs["id"];
         def configXML = "<SearchList>${bodyString}</SearchList>";
-        def onSaveQueryClick = attrs["onSaveQueryClick"];
-        def onRowDoubleClick = attrs["onRowDoubleClick"];
-        def onRowClick = attrs["onRowClick"];
+        def onSaveQueryClick = attrs["onSaveQueryClicked"];
+        def onRowDoubleClick = attrs["onRowDoubleClicked"];
+        def onRowClick = attrs["onRowClicked"];
         def saveQueryClickJs;
         def rowDoubleClickJs;
         def rowClickJs;

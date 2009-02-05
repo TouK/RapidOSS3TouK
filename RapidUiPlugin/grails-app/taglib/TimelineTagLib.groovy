@@ -30,11 +30,11 @@ class TimelineTagLib {
     static def fTimeline(attrs, bodyString){
         def configXML = "<Timeline>${bodyString}</Timeline>"
         def configStr = getConfig(attrs, configXML);
-        def onTooltipClick = attrs["onTooltipClick"];
+        def onTooltipClick = attrs["onTooltipClicked"];
         def tooltipClickJs;
         if (onTooltipClick != null) {
             tooltipClickJs = """
-               timeline.events['tooltipClick'].subscribe(function(buble, data){
+               timeline.events['tooltipClicked'].subscribe(function(buble, data){
                    var params = {data:data, buble:buble};
                    YAHOO.rapidjs.Actions['${onTooltipClick}'].execute(params);
                 }, this, true);

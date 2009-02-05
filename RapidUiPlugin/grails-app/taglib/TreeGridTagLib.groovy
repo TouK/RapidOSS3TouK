@@ -27,7 +27,7 @@ class TreeGridTagLib {
     static namespace = "rui"
     static def fTreeGrid(attrs, bodyString) {
         def treeGridId = attrs["id"];
-        def onNodeClick = attrs["onNodeClick"];
+        def onNodeClick = attrs["onNodeClicked"];
         def nodeClickJs;
         def menuEventsJs;
         if (onNodeClick != null) {

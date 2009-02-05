@@ -30,7 +30,7 @@ class ObjectMapTagLib {
     static def fObjectMap(attrs, bodyString) {
         def topoMapId = attrs["id"];
         def configXML = "<ObjectMap>${bodyString}</ObjectMap>";
-        def onNodeClick = attrs["onNodeClick"];
+        def onNodeClick = attrs["onNodeClicked"];
 
         def nodeClickJs;
         if (onNodeClick != null) {

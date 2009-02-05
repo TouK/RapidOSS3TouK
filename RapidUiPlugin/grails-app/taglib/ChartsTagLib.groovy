@@ -59,7 +59,7 @@ class ChartsTagLib {
 
     static def fFlexPieChart(attrs, bodyString) {
         def configStr = getFlexPieConfig(attrs);
-        def onItemClick = attrs["onItemClick"];
+        def onItemClick = attrs["onItemClicked"];
         def itemClickJs;
         if (onItemClick != null) {
             itemClickJs = """

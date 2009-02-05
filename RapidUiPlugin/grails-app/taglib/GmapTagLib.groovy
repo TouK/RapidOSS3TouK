@@ -26,7 +26,7 @@ class GmapTagLib {
     static namespace = "rui"
     static def fGmap(attrs, bodyString) {
         def configStr = getConfig(attrs);
-        def onMarkerClick = attrs["onMarkerClick"];
+        def onMarkerClick = attrs["onMarkerClicked"];
         def markerClickJs;
         if (onMarkerClick != null) {
             markerClickJs = """

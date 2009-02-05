@@ -30,20 +30,20 @@
                 }
                 if(layoutunit.class.name == "ui.designer.UiTopUnit"){
         %>
-                { position: 'top', scroll: ${layoutunit.scroll}, ${layoutUnitBody?"body:"+layoutUnitBody+",":""} height: ${layoutunit.height}, resize: ${layoutunit.resize}, gutter: '${layoutunit.gutter}', ${layoutUnitBody?"maxHeight:"+layoutunit.maxHeight+",":""}  ${layoutUnitBody?"minHeight:"+layoutunit.minHeight+",":""} useShim:${layoutunit.useShim}}
+                { position: 'top', scroll: ${layoutunit.scroll}, ${layoutUnitBody?"body:"+layoutUnitBody+",":""} height: ${layoutunit.height}, resize: ${layoutunit.resize}, gutter: '${layoutunit.gutter}', ${layoutunit.maxHeight != 0?"maxHeight:"+layoutunit.maxHeight+",":""}  ${layoutunit.minHeight != 0?"minHeight:"+layoutunit.minHeight+",":""} useShim:${layoutunit.useShim}}
         <%
             }else if(layoutunit.class.name == "ui.designer.UiRightUnit")
         {
         %>
-                { position: 'right', scroll: ${layoutunit.scroll}, width: ${layoutunit.width}, resize: ${layoutunit.resize}, ${layoutUnitBody?"body:"+layoutUnitBody+",":""} gutter: '${layoutunit.gutter}', ${layoutUnitBody?"maxWidth:"+layoutunit.maxWidth+",":""}  ${layoutUnitBody?"minWidth:"+layoutunit.minWidth+",":""} useShim:${layoutunit.useShim} }
+                { position: 'right', scroll: ${layoutunit.scroll}, width: ${layoutunit.width}, resize: ${layoutunit.resize}, ${layoutUnitBody?"body:"+layoutUnitBody+",":""} gutter: '${layoutunit.gutter}', ${layoutunit.maxWidth!=0?"maxWidth:"+layoutunit.maxWidth+",":""}  ${layoutunit.minWidth!=0?"minWidth:"+layoutunit.minWidth+",":""} useShim:${layoutunit.useShim} }
         <%
         }else if(layoutunit.class.name == "ui.designer.UiLeftUnit"){
         %>
-                { position: 'left', scroll: ${layoutunit.scroll}, width: ${layoutunit.width}, resize: ${layoutunit.resize}, ${layoutUnitBody?"body:"+layoutUnitBody+",":""} gutter: '${layoutunit.gutter}', ${layoutUnitBody?"maxWidth:"+layoutunit.maxWidth+",":""}  ${layoutUnitBody?"minWidth:"+layoutunit.minWidth+",":""} useShim:${layoutunit.useShim}}
+                { position: 'left', scroll: ${layoutunit.scroll}, width: ${layoutunit.width}, resize: ${layoutunit.resize}, ${layoutUnitBody?"body:"+layoutUnitBody+",":""} gutter: '${layoutunit.gutter}', ${layoutunit.maxWidth!=0?"maxWidth:"+layoutunit.maxWidth+",":""}  ${layoutunit.minWidth!=0?"minWidth:"+layoutunit.minWidth+",":""} useShim:${layoutunit.useShim}}
         <%
         }else if(layoutunit.class.name == "ui.designer.UiBottomUnit"){
         %>
-                { position: 'bottom', scroll: ${layoutunit.scroll}, ${layoutUnitBody?"body:"+layoutUnitBody+",":""} height: ${layoutunit.height}, resize: ${layoutunit.resize}, gutter: '${layoutunit.gutter}', ${layoutUnitBody?"maxHeight:"+layoutunit.maxHeight+",":""}  ${layoutUnitBody?"minHeight:"+layoutunit.minHeight+",":""} useShim:${layoutunit.useShim}}
+                { position: 'bottom', scroll: ${layoutunit.scroll}, ${layoutUnitBody?"body:"+layoutUnitBody+",":""} height: ${layoutunit.height}, resize: ${layoutunit.resize}, gutter: '${layoutunit.gutter}', ${layoutunit.maxHeight != 0?"maxHeight:"+layoutunit.maxHeight+",":""}  ${layoutunit.minHeight != 0?"minHeight:"+layoutunit.minHeight+",":""} useShim:${layoutunit.useShim}}
         <%
         }else if(layoutunit.class.name == "ui.designer.UiCenterUnit"){
         %>

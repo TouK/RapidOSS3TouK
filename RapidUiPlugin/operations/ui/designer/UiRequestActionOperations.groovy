@@ -2,6 +2,7 @@ package ui.designer
 
 import com.ifountain.rui.util.DesignerUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import com.ifountain.rui.util.exception.UiElementCreationException
 
 /**
 * Created by IntelliJ IDEA.
@@ -37,11 +38,15 @@ class UiRequestActionOperations extends UiActionOperations {
 
     def static addUiElement(xmlNode, parentElement)
     {
+        return _addUiElement(UiRequestAction, xmlNode, parentElement);
+    }
+
+    def static _addUiElement(Class classToBeAdded, xmlNode, parentElement)
+    {
         def attributes = [:];
         attributes.putAll (xmlNode.attributes());
         attributes.tab = parentElement;
         def comps = [];
-        println attributes
         if(attributes.components != null && attributes.components != "")
         {
             attributes.components.split(",").each{
@@ -52,10 +57,16 @@ class UiRequestActionOperations extends UiActionOperations {
                     {
                         comps.add(comp);
                     }
+                    else
+                    {
+                        throw new UiElementCreationException(UiCombinedAction, "Component ${it} could not found for request action ${attributes.name}".toString());
+                    }
                 }
             }
         }
         attributes.components = comps;
-        return DesignerUtils.addUiObject(UiRequestAction, attributes, xmlNode);
+        def addedAction = DesignerUtils.addUiObject(classToBeAdded, attributes, xmlNode);
+        addTriggers(xmlNode, addedAction);
+        return addedAction;
     }
 }

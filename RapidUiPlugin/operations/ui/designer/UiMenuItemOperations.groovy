@@ -42,4 +42,17 @@ class UiMenuItemOperations extends AbstractDomainOperation
         return DesignerUtils.addUiObject(UiMenuItem, attributes, xmlNode);
     }
 
+    def getAction()
+    {
+        def menuAction = null;
+        ui.designer.UiActionTrigger.list().each{trigger->
+            if(trigger.component != null && trigger.component.name == component.name && trigger.isMenuItem && trigger.name == name)
+            {
+                menuAction = trigger.action;
+                return;
+            }
+        }
+        return menuAction;
+    }
+
 }

@@ -1,11 +1,14 @@
 package ui.designer
+
+import com.ifountain.rui.util.DesignerUtils
+
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Feb 2, 2009
- * Time: 2:09:19 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Feb 2, 2009
+* Time: 2:09:19 PM
+* To change this template use File | Settings | File Templates.
+*/
 class UiLinkActionOperations extends UiActionOperations {
     public static Map metaData()
     {
@@ -25,5 +28,14 @@ class UiLinkActionOperations extends UiActionOperations {
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
 
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = xmlNode.attributes();
+        attributes.tab = parentElement;
+        def addedAction = DesignerUtils.addUiObject(UiLinkAction, attributes, xmlNode);
+        addTriggers(xmlNode, addedAction);
+        return addedAction;
     }
 }

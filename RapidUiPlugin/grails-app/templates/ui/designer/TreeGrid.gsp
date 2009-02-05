@@ -1,15 +1,12 @@
 <rui:treeGrid id="${uiElement.name}" url="${uiElement.url}" rootTag="${uiElement.rootTag}" pollingInterval="${uiElement.pollingInterval}"
         keyAttribute="${uiElement.keyAttribute}" contentPath="${uiElement.contentPath}" title="${uiElement.title}"
 <%
-    ui.designer.UiActionTrigger.list().each{actionTrigger->
-        if(actionTrigger.component.name == uiElement.name && !actionTrigger.isMenuItem)
-        {
+    uiElement.getActionTrigers().each{actionTrigger->
     %>
-        on${actionTrigger.name.substring(0,1).toUpperCase()}${actionTrigger.name.substring(1)}="${event.action.name}"
+        on${actionTrigger.name.substring(0,1).toUpperCase()}${actionTrigger.name.substring(1)}="${actionTrigger.action.name}"
     <%
-        }
     }
-%>
+    %>
 >
     <rui:tgColumns>
 <%
@@ -38,14 +35,33 @@
 %>
     </rui:tgColumns>    
     <rui:tgMenuItems>
-<%
-    uiElement.menuItems.each{menuItem->
-%>
-        <rui:tgMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuItem.action != null?"action='"+menuItem.action.name+"'":""}></rui:tgMenuItem>
-<%
-    }
-%>
-    </rui:tgMenuItems>
+        <%
+            uiElement.menuItems.each{menuItem->
+                def menuAction = menuItem.getAction();
+        %>
+        <rui:tgMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuAction?"action='"+menuAction.name+"'":""}></rui:slMenuItem>
+               <%
+                    if(!menuItem.childMenuItems.isEmpty())
+                    {
+                %>
+                    <rui:tgSubmenuItems>
+                        <%
+                            menuItem.childMenuItems.each{subMenuItem->
+                                def subMenuAction = subMenuItem.getAction();
+                        %>
+                            <rui:tgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subMenuAction?"action='"+subMenuAction.name+"'":""} visible="${subMenuItem.visible}"></rui:sgMenuItem>
+                        <%
+                                }
+                        %>
+                    </rui:tgSubmenuItems>
+                <%
+                        }
+                %>
+        </rui:tgMenuItem>
+        <%
+            }
+        %>
+    </rui:slMenuItems>
     <rui:tgRootImages>
         <%
             uiElement.rootImages.each{rootImage->

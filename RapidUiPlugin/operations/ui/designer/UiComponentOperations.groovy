@@ -19,4 +19,16 @@ class UiComponentOperations extends UiLayoutUnitOperations{
         ];
         return metaData;
     }
+
+    def getActionTrigers()
+    {
+        def triggers = [];
+        ui.designer.UiActionTrigger.list().each{actionTrigger->
+            if(actionTrigger.component != null && actionTrigger.component.name == name && !actionTrigger.isMenuItem)
+            {
+                triggers.add(actionTrigger)
+            }
+        }
+        return triggers;
+    }
 }

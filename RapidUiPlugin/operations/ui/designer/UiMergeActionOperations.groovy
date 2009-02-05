@@ -26,4 +26,9 @@ class UiMergeActionOperations extends UiRequestActionOperations {
         return metaData;
 
     }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        return UiRequestActionOperations._addUiElement(UiMergeAction, xmlNode, parentElement);
+    }
 }

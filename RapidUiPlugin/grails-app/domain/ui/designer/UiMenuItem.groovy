@@ -22,7 +22,7 @@ class UiMenuItem {
     String name ="";
     String label ="";
     String type = "component";
-    String visible;
+    String visible = "true";
     Long id ;
     Long version ;
     org.springframework.validation.Errors errors ;
@@ -31,12 +31,10 @@ class UiMenuItem {
     UiComponent component ;
     List childMenuItems = [];
     UiMenuItem parentMenuItem;
-    UiAction action;
 
 
     static relations = [
         component:[type:UiComponent, reverseName:"menuItems", isMany:false],
-        action:[type:UiAction, reverseName:"menuItems", isMany:false],
         childMenuItems:[type:UiMenuItem, reverseName:"parentMenuItem", isMany:true],
         parentMenuItem:[type:UiMenuItem, reverseName:"childMenuItems", isMany:false]
     ]
@@ -45,7 +43,6 @@ class UiMenuItem {
      name(blank:false,nullable:false,key:["component", "isActive"])
      label(blank:false,nullable:false);
      type(blank:false,nullable:false, inList:["component", "property", "toolbar"]);
-     action(nullable:true);
      visible(blank:true,nullable:true);
      __operation_class__(nullable:true)
 

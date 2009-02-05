@@ -1,11 +1,14 @@
 package ui.designer
+
+import com.ifountain.rui.util.DesignerUtils
+
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Feb 2, 2009
- * Time: 2:09:19 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Feb 2, 2009
+* Time: 2:09:19 PM
+* To change this template use File | Settings | File Templates.
+*/
 class UiFunctionActionOperations extends UiActionOperations {
     public static Map metaData()
     {
@@ -28,5 +31,21 @@ class UiFunctionActionOperations extends UiActionOperations {
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
 
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = xmlNode.attributes();
+        attributes.tab = parentElement;
+        def component = UiComponent.get(tab:parentElement, name:attributes.component, isActive:true);
+        attributes.component = component;
+        def addedAction = DesignerUtils.addUiObject(UiFunctionAction, attributes, xmlNode);
+        def functionArgumentNodes = xmlNode.UiElement.findAll {it.@designerType.text() == "FunctionArgument"}
+        def functionArguments = [];
+        functionArgumentNodes.each{
+            UiFunctionArgument.addUiElement(it, addedAction);
+        }
+        addTriggers(xmlNode, addedAction);
+        return addedAction;
     }
 }

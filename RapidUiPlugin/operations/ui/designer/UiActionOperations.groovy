@@ -1,8 +1,7 @@
 package ui.designer
 
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
-import com.ifountain.rui.util.DesignerUtils
-import org.codehaus.groovy.grails.commons.ApplicationHolder;
+
 public class UiActionOperations extends AbstractDomainOperation
 {
 
@@ -32,6 +31,14 @@ public class UiActionOperations extends AbstractDomainOperation
                 ]
         ];
         return metaData;
+    }
+
+    def static void addTriggers(xmlNode, addedAction)
+    {
+        def triggersNode = xmlNode.UiElement.find {it.@designerType.text() == "ActionTriggers"}
+        triggersNode.UiElement.each{
+            UiActionTrigger.addUiElement(it, addedAction);
+        }
     }
 
 }

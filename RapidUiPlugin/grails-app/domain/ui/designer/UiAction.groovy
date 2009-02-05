@@ -30,7 +30,6 @@ class UiAction
     
     UiTab tab ;
     List triggers = [];
-    List menuItems = [];
 
     
     static relations = [

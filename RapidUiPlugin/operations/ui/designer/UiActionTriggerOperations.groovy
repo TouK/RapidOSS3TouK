@@ -1,6 +1,7 @@
 package ui.designer
 
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rui.util.DesignerUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -24,5 +25,20 @@ class UiActionTriggerOperations extends AbstractDomainOperation{
                 childrenConfiguration:[]
         ];
         return metaData;
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = xmlNode.attributes();
+        def component = null;
+        if(attributes.component != "")
+        {
+            component = UiComponent.get(tab:parentElement.tab, name:attributes.component, isActive:true);
+        }
+        def isMenuItem = attributes.isMenuItem == "true";
+        attributes.action = parentElement;
+        attributes.component = component;
+        attributes.isMenuItem = isMenuItem;
+        return DesignerUtils.addUiObject(UiActionTrigger, attributes, xmlNode);
     }
 }

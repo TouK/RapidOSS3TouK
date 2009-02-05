@@ -177,7 +177,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                 if (compMenuConfig) {
                     for (var menuType in compMenuConfig) {
                         var menuNames = compMenuConfig[menuType];
-                        for(var i=0; i<menuNames.length; i++){
+                        for (var i = 0; i < menuNames.length; i++) {
                             dropDownOptions.push(menuNames[i]);
                         }
                     }
@@ -331,7 +331,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                  '<div><table><tbody><tr><td class="field-name">Component:</td><td><select style="width:200px;"></select></td></tr>' +
                  '<tr><td class="field-name">Method:</td><td><select style="width:200px;"></select></td></tr></tbody></table></div>' +
                  '<div class="r-designer-actdlg-methoddef"></div>' +
-                 '<div class="r-designer-actdlg-fncargs"></div>' +
+                 '<div class="r-designer-actdlg-gridwrp"></div></div>' +
                  '</div>'})
 
         selects = this.functionView.getElementsByTagName('select')
@@ -340,10 +340,25 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         YAHOO.util.Event.addListener(this.componentSelect, 'change', this.componentChanged, this, true);
         YAHOO.util.Event.addListener(this.methodSelect, 'change', this.methodChanged, this, true);
         this.methodDescrEl = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-methoddef", 'div', this.functionView)[0];
-        this.argsEl = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-fncargs", 'div', this.functionView)[0];
+        var gridWrp = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-gridwrp", 'div', this.functionView)[0];
+        this.textAreaEditor = new YAHOO.widget.TextareaCellEditor();
+        var argColumnDefs = [
+            {key:"arg", label:"Argument", width:150, editor:this.textAreaEditor},
+            {key:"value", label:"Value", width:150, editor:this.textAreaEditor}
+        ];
+        var argDs = new YAHOO.util.DataSource([]);
+        argDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
+        argDs.responseSchema = {
+            fields: ["arg", "value"]
+        };
+        this.argsGrid = new YAHOO.widget.DataTable(gridWrp, argColumnDefs, argDs, {'MSG_EMPTY':'',scrollable:true, height:"90px"});
+        this.argsGrid.subscribe("cellMouseoverEvent", highlightEditableCell);
+        this.argsGrid.subscribe("cellMouseoutEvent", this.argsGrid.onEventUnhighlightCell);
+        this.argsGrid.subscribe("cellClickEvent", this.argsGrid.onEventShowCellEditor);
 
         var myContextMenu = new YAHOO.widget.ContextMenu("actcontextmenu",
         {zindex:10000,trigger:[
+            this.menuGrid.getTbodyEl(),
             this.eventsGrid.getTbodyEl(),
             this.compGrid.getTbodyEl(),
             this.requestParamsGrid.getTbodyEl(),
@@ -367,6 +382,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                 }
                 else if (tBodyEl == this.actionsGrid.getTbodyEl()) {
                     grid = this.actionsGrid;
+                }
+                else if (tBodyEl == this.menuGrid.getTbodyEl()) {
+                    grid = this.menuGrid;
                 }
                 elRow = grid.getTrEl(elRow);
                 if (elRow) {
@@ -500,7 +518,6 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
     componentChanged:function() {
         if (this.componentSelect.selectedIndex > -1) {
             YAHOO.util.Dom.setStyle(this.methodDescrEl, 'display', '')
-            YAHOO.util.Dom.setStyle(this.argsEl, 'display', '')
             var component = this.componentSelect.options[this.componentSelect.selectedIndex].value
             var compType = this.currentComponents[component];
             SelectUtils.clear(this.methodSelect);
@@ -512,11 +529,12 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }
         else {
             YAHOO.util.Dom.setStyle(this.methodDescrEl, 'display', 'none')
-            YAHOO.util.Dom.setStyle(this.argsEl, 'display', 'none')
         }
     },
 
     methodChanged: function() {
+        var length = this.argsGrid.getRecordSet().getLength()
+        this.argsGrid.deleteRows(0, length)
         if (this.methodSelect.selectedIndex > -1) {
             var method = this.methodSelect.options[this.methodSelect.selectedIndex].value;
             var component = this.componentSelect.options[this.componentSelect.selectedIndex].value
@@ -525,26 +543,21 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             var methodArgs = UIConfig.getMethodArguments(compType, method);
             var nOfArgs = 0;
             var methodHtml = []
-            var argsHtml = []
             for (var methodArg in methodArgs) {
                 if (nOfArgs == 0) {
                     methodHtml[methodHtml.length] = ['<ul style="padding-left:20px;">'];
-                    argsHtml[argsHtml.length] = ["<table><tbody>"]
                 }
                 methodHtml[methodHtml.length] = '<li><span style="font-weight:bold;font-size:13px">' + methodArg + ':</span><span> ' + methodArgs[methodArg] + '</span></li>'
-                argsHtml[argsHtml.length] = '<tr><td class="field-name">' + methodArg + ':</td><td><textarea cols="35"></textarea></td></tr>'
+                this.argsGrid.addRow({arg:methodArg, value:''})
                 nOfArgs++;
             }
             if (nOfArgs > 0) {
                 methodHtml[methodHtml.length] = '</ul>'
-                argsHtml[argsHtml.length] = ["</tbody></table>"]
             }
             this.methodDescrEl.innerHTML = '<p>' + methodDesc + (nOfArgs > 0 ? (' Method arguments:</p><br>' + methodHtml.join('')) : '');
-            this.argsEl.innerHTML = nOfArgs > 0 ? argsHtml.join('') : '';
         }
         else {
             this.methodDescrEl.innerHTML = '';
-            this.argsEl.innerHTML = '';
         }
         this.adjustHeight();
     },
@@ -595,6 +608,10 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }
         if (actionType == "function") {
             YAHOO.util.Dom.setStyle(this.functionView, 'display', '');
+            //grid will arrange its width;
+            this.argsGrid.addRow({action:'dummy'});
+            var length = this.argsGrid.getRecordSet().getLength();
+            this.argsGrid.deleteRows(length - 1, length);
             this.componentChanged();
         }
         else {
@@ -653,17 +670,17 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                 var component = triggerNode.getAttribute('component');
                 var isMenuItem = triggerNode.getAttribute('isMenuItem');
                 var name = triggerNode.getAttribute('name');
-                if(isMenuItem == 'true'){
+                if (isMenuItem == 'true') {
                     areTriggersMenu = true;
-                    this.menuGrid.addRow({component:component, menuitem:name});                    
+                    this.menuGrid.addRow({component:component, menuitem:name});
                 }
-                else{
+                else {
                     component = !component || component == '' ? 'Global' : component;
                     this.eventsGrid.addRow({component:component, event:name});
                 }
             }
         }
-        if(areTriggersMenu){
+        if (areTriggersMenu) {
             SelectUtils.selectTheValue(this.triggerTypeSelect, 'menu', 1);
         }
         if (itemType == "FunctionAction") {
@@ -674,12 +691,12 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             var method = this.currentActionNode.getAttribute('function');
             SelectUtils.selectTheValue(this.methodSelect, method, 0);
             this.methodChanged();
-            var argInputs = this.argsEl.getElementsByTagName('textarea');
             var childNodes = this.currentActionNode.childNodes();
             var argIndex = 0;
             for (var i = 0; i < childNodes.length; i++) {
                 if (DesignerUtils.getItemType(this.designer, childNodes[i]) == 'FunctionArgument') {
-                    argInputs[argIndex].value = childNodes[i].getAttribute('value');
+                    var record = this.argsGrid.getRecordSet().getRecord(argIndex);
+                    this.argsGrid.updateCell(record, 'value', childNodes[i].getAttribute('value'));
                     argIndex ++;
                 }
             }
@@ -730,6 +747,8 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         this.eventsGrid.deleteRows(0, length);
         length = this.menuGrid.getRecordSet().getLength()
         this.menuGrid.deleteRows(0, length);
+        length = this.argsGrid.getRecordSet().getLength()
+        this.argsGrid.deleteRows(0, length);
 
         this.nameInput.value = '';
         this.conditionInput.value = '';
@@ -822,10 +841,11 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             }
         }
         else if (actionType == 'function') {
-            var argInputs = this.argsEl.getElementsByTagName('textarea');
-            for (var i = 0; i < argInputs.length; i++) {
+            var recordSet = this.argsGrid.getRecordSet();
+            var recordLength = recordSet.getLength();
+            for (var i = 0; i < recordLength; i++) {
                 var argNode = this.designer.createTreeNode(actionNode, "FunctionArgument");
-                argNode.setAttribute('value', argInputs[i].value)
+                argNode.setAttribute('value', recordSet.getRecord(i).getData('value'))
             }
         }
         var triggerType = this.triggerTypeSelect.options[this.triggerTypeSelect.selectedIndex].text

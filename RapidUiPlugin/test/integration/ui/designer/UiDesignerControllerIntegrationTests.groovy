@@ -89,7 +89,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         controller.view();
         println sw.toString()
         println controller.response.contentAsString
-        assertEqualsXML(sw.toString(), controller.response.contentAsString);
+        assertEqualsXML(sw.toString(), controller.response.contentAsString, ["id"]);
 
         //test generate gsp files 
         deleteGeneratedFiles();
@@ -185,7 +185,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         controller.view();
         println sw.toString()
         println  controller.response.contentAsString
-        assertEqualsXML (sw.toString(), controller.response.contentAsString);
+        assertEqualsXML (sw.toString(), controller.response.contentAsString, ["id"]);
     }
 
     public void testSaveViewWithRelationProperty()
@@ -253,7 +253,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         controller.view();
         println sw.toString();
         println controller.response.contentAsString;
-        assertEqualsXML (sw.toString(), controller.response.contentAsString);
+        assertEqualsXML (sw.toString(), controller.response.contentAsString, ["id"]);
     }
 
     public void testSaveWithErrors()

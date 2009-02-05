@@ -19,6 +19,8 @@
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
     //the way to save the data of state may change for child domains,
     // its enough for a domain to implement save & load state  to have its own way of saving state
+    //Note that child classes must not have a property state , they should use other name , stateValue or savedState etc
+    //If a child have property state , calling getState over child does not call the getState function here.
     def saveState(currentState){
         RsObjectState.add(objectId:id, state:currentState);
     }

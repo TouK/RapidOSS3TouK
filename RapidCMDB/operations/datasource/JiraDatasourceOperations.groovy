@@ -10,12 +10,12 @@ class JiraDatasourceOperations extends BaseDatasourceOperations {
     }
 
     def getProperty(Map keys, String propName){
-        def props = adapter.getProps(keys.name, [propName]);
+        def props = adapter.getObject(keys, [propName]);
         return convert(props[propName]);
     }
 
     def getProperties(Map keys, List properties){
-       def props = adapter.getProps(keys.name, properties);
+       def props = adapter.getObject(keys, properties);
        return convert(props);
     }
     

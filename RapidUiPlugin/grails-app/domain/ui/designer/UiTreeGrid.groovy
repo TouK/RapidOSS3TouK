@@ -20,7 +20,7 @@ class UiTreeGrid extends UiComponent{
     String keyAttribute = "";
     Long pollingInterval = 0;
     Boolean expanded = false;
-    String tooltip = "";
+    Boolean tooltip = false;
     List columns = [];
     List rootImages = [];
 
@@ -37,7 +37,7 @@ class UiTreeGrid extends UiComponent{
         keyAttribute(nullable: false, blank: false)
         pollingInterval(nullable: true)
         expanded(nullable: true)
-        tooltip(nullable: true, blank: true)
+        tooltip(blank: true)
     }
 
     static propertyConfiguration = [:]

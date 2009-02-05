@@ -18,7 +18,7 @@ class UiSearchListField {
 
     boolean isActive = true;
     String fields = "";
-    String exp = "";
+    String exp = "true";
     Long id;
     Long version;
     org.springframework.validation.Errors errors;

@@ -19,7 +19,7 @@ class UiRootImage {
     boolean isActive = true;
     String expanded = "";
     String collapsed = "";
-    String visible = "";
+    String visible = "true";
     Long id;
     Long version;
     org.springframework.validation.Errors errors;

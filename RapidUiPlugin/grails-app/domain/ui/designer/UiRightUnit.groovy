@@ -11,8 +11,8 @@ class UiRightUnit extends UiLayoutUnit{
         storageType "File"
     };
     Long width = 200;
-    Boolean resize = true;
-    Long minWidth = 200;
+    Boolean resize = false;
+    Long minWidth = 0;
     Long maxWidth = 0;
     static datasources = [:]
     static relations = [:]

@@ -16,7 +16,7 @@ class UiLayoutUnit
 
     boolean isActive = true;
     String contentFile ="";
-    String gutter ="";
+    String gutter ="0px";
     Boolean scroll =false;
     Boolean useShim =false;
 

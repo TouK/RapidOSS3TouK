@@ -1,3 +1,4 @@
+
 YAHOO.namespace('rapidjs', 'rapidjs.designer');
 YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.rootTag = null;

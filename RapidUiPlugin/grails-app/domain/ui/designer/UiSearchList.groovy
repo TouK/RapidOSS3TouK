@@ -14,17 +14,18 @@ class UiSearchList extends UiComponent{
         storageType "File"
     };
     static datasources = [:]
-    String url = "";
+    String url = "../search?searchIn=RsEvent";
     String rootTag = "";
     String contentPath = "";
     String keyAttribute = "";
-    String queryParameter = "";
-    String totalCountAttribute = "";
-    String offsetAttribute = "";
+    String fieldsUrl = "../script/run/getViewFields?format=xml";
+    String queryParameter = "query";
+    String totalCountAttribute = "total";
+    String offsetAttribute = "offset";
+    String sortOrderAttribute = "sortOrder";
     String defaultFields = "";
     Long showMax = 0;
     Long lineSize = 3;
-    String sortOrderAttribute = "";
     Long pollingInterval = 0;
     Long maxRowsDisplayed = 100;
     String defaultQuery = "";

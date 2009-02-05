@@ -17,9 +17,9 @@ class UiDialog
     static datasources = ["RCMDB": ["keys": ["tab": ["nameInDs": "tab"], "isActive":["nameInDs":"isActive"], "component":["nameInDs":"component"]]]]
 
     boolean isActive = true;
-    Long width = 0;
+    Long width = 400;
 
-    Long height = 0;
+    Long height = 300;
 
     Long maxHeight = 0;
 
@@ -28,6 +28,10 @@ class UiDialog
     Long minWidth = 0;
 
     Long maxWidth = 0;
+
+    Long x = 0;
+
+    Long y = 0;
 
     String title = "";
 

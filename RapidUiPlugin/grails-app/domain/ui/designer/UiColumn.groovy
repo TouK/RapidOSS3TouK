@@ -19,8 +19,8 @@ class UiColumn {
     boolean isActive = true;
     String attributeName = "";
     String colLabel = "";
-    Long width = 0;
-    String sortBy = "";
+    Long width = 100;
+    Boolean sortBy = false;
     String sortOrder = "asc";
 
     Long id;
@@ -42,7 +42,7 @@ class UiColumn {
         attributeName(blank: false, nullable: false, key: ["component", "isActive"])
         colLabel(blank: false, nullable: false)
         width(nullable: false)
-        sortBy(blank:false, nullable: false)
+        sortBy(nullable: false)
         sortOrder(blank:false, nullable: false, inList:["asc", "desc"]);
         __operation_class__(nullable: true)
         __is_federated_properties_loaded__(nullable: true)

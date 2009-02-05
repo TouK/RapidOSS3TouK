@@ -14,25 +14,23 @@ class UiSearchGrid extends UiComponent {
         storageType "File"
     };
     static datasources = [:]
-    String url = "";
+    String url = "../search?searchIn=RsEvent";
     String rootTag = "";
     String contentPath = "";
     String keyAttribute = "";
-    String fieldsUrl = "";
-    String queryParameter = "";
-    String totalCountAttribute = "";
-    String offsetAttribute = "";
-    String sortOrderAttribute = "";
+    String fieldsUrl = "../script/run/getViewFields?format=xml";
+    String queryParameter = "query";
+    String totalCountAttribute = "total";
+    String offsetAttribute = "offset";
+    String sortOrderAttribute = "sortOrder";
     Long pollingInterval = 0;
     Boolean queryEnabled = true;
     Long maxRowsDisplayed = 100;
     String defaultQuery = "";
-    List columns = [];
     List images = [];
 
 
     static relations = [
-            columns: [type: UiColumn, reverseName: "component", isMany: true],
             images: [type: UiImage, reverseName: "component", isMany: true],
     ]
 

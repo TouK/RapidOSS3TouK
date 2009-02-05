@@ -1,11 +1,11 @@
 <rui:treeGrid id="${uiElement.name}" url="${uiElement.url}" rootTag="${uiElement.rootTag}" pollingInterval="${uiElement.pollingInterval}"
         keyAttribute="${uiElement.keyAttribute}" contentPath="${uiElement.contentPath}" title="${uiElement.title}"
 <%
-    ui.designer.UiEvent.list().each{event->
-        if(event.component.name == uiElement.name)
+    ui.designer.UiActionTrigger.list().each{actionTrigger->
+        if(actionTrigger.component.name == uiElement.name && !actionTrigger.isMenuItem)
         {
     %>
-        on${event.eventName.substring(0,1).toUpperCase()}${event.eventName.substring(1)}="${event.action.name}"
+        on${actionTrigger.name.substring(0,1).toUpperCase()}${actionTrigger.name.substring(1)}="${event.action.name}"
     <%
         }
     }

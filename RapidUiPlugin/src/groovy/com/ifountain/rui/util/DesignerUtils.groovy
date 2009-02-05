@@ -38,7 +38,7 @@ class DesignerUtils {
 
                 if(constrainedProps[propName] != null)
                 {
-                    def isRequired = config.required != null ? config.required : !(constrainedProps[propName].isBlank() || constrainedProps[propName].isNullable())
+                    def isRequired = config.required != null ? config.required : !constrainedProps[propName].isBlank() || !constrainedProps[propName].isNullable()
                     config.required = isRequired;
                     config.descr = config.descr != null ? config.descr : "";
                     if(!domainPropertiesMap[propName].isRelation)

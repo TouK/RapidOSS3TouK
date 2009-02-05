@@ -20,8 +20,8 @@ class UiTimelineBandOperations extends AbstractDomainOperation{
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
-                        width:[descr:"The percentage of the band in the whole timeline."],
-                        intervalPixels:[descr:"How many pixel each date unit will span."],
+                        width:[descr:"The percentage of the band in the whole timeline.", required:true],
+                        intervalPixels:[descr:"How many pixel each date unit will span.", required:true],
                         intervalUnit:[descr:"Which date unit that the band will display. Possible values are millisecond, second, minute, hour, day, week, month, year, decade, century, millennium, epoch and era."],
                         showText:[descr:"Parameter whether to display event text or not."],
                         trackHeight:[descr:"Track height in em unit. See SIMILE Timeline documentation for details."],

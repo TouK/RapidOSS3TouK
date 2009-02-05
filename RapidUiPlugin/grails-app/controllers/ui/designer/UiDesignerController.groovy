@@ -138,13 +138,13 @@ class UiDesignerController {
                     tabOutputFile.parentFile.mkdirs();
                     StringBuffer tabContent = new StringBuffer();
                     tab.components.each{tabComponent->
-                        tabContent.append(generateTag (tabComponent, templateEngine));
+                        tabContent.append(generateTag (tabComponent, templateEngine)+"\n\n");
                     }
                     tab.actions.each{tabComponent->
-                        tabContent.append(generateTag (tabComponent, templateEngine));
+                        tabContent.append(generateTag (tabComponent, templateEngine)+"\n\n");
                     }
                     tab.dialogs.each{tabComponent->
-                        tabContent.append(generateTag (tabComponent, templateEngine));
+                        tabContent.append(generateTag (tabComponent, templateEngine)+"\n\n");
                     }
                     def layoutContent = "";
                     if(tab.layout)
@@ -155,7 +155,10 @@ class UiDesignerController {
                     def formattedStringWriter = new StringWriter()
                     def parser = new XmlParser(false, false);
                     def rootNode = parser.parseText(tabString);
-                    new XmlNodePrinter(new PrintWriter(formattedStringWriter)).print(rootNode)
+                    def xmlPrinter = new XmlNodePrinter(new PrintWriter(formattedStringWriter));
+                    xmlPrinter.setQuote ("'")
+
+                    xmlPrinter.print(rootNode)
                     tabOutputFile.setText (formattedStringWriter.toString())
                 }
             }

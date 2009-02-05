@@ -144,15 +144,30 @@ YAHOO.rapidjs.data.Node.prototype=
 	 },
 	 toString: function()
 	 {
-	 	var result = [];
+        var escapeAttribute = function(att){
+           var APOS = "'"
+           var LT = "<"
+           var GT = ">"
+           var ESCAPED_APOS = '&apos;'
+           var ESCAPED_LT = '&lt;'
+           var ESCAPED_GT = '&gt;'
+           var aposRE = new RegExp(APOS,'g')
+           var ltRE = new RegExp(LT,'g')
+           var gtRE = new RegExp(GT,'g')
+           att = att.replace(aposRE, ESCAPED_APOS)
+           att = att.replace(LT, ESCAPED_LT)
+           att = att.replace(GT, ESCAPED_GT)
+           return att;
+        }
+        var result = [];
 	 	result[result.length] = "<";
 	 	result[result.length] = this.nodeName;
-	 	for(attribute in this.attributes)
+	 	for(var attribute in this.attributes)
 	 	{
 	 		result[result.length] = " ";
 	 		result[result.length] = attribute;
 	 		result[result.length] = "='";
-	 		result[result.length] = this.attributes[attribute];
+	 		result[result.length] = escapeAttribute(this.attributes[attribute]);
 	 		result[result.length] = "'";
 	 	}
 	 	result[result.length] = ">";

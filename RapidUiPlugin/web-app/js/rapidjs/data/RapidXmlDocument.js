@@ -157,10 +157,10 @@ YAHOO.rapidjs.data.Node.prototype=
            var ltRE = new RegExp(LT,'g')
            var gtRE = new RegExp(GT,'g')
            var ampRE = new RegExp(AMP,'g')
+           att = att.replace(AMP, ESCAPED_AMP)
            att = att.replace(aposRE, ESCAPED_APOS)
            att = att.replace(LT, ESCAPED_LT)
            att = att.replace(GT, ESCAPED_GT)
-           att = att.replace(AMP, ESCAPED_AMP)
            return att;
         }
         var result = [];

@@ -481,7 +481,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             cache:false,
             argument:[this.saveSuccess]
         }
-        var postData = 'configuration=' + this.data.firstChild().toString();
+        var postData = 'configuration=' + encodeURIComponent(this.data.firstChild().toString());
         YAHOO.util.Connect.asyncRequest('POST', this.saveUrl, callback, postData);
     },
     generate : function() {

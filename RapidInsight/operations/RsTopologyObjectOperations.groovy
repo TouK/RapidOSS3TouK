@@ -17,6 +17,8 @@
 * USA.
 */
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+    //the way to save the data of state may change for child domains,
+    // its enough for a domain to implement save & load state  to have its own way of saving state
     def saveState(currentState){
         RsObjectState.add(objectId:id, state:currentState);
     }

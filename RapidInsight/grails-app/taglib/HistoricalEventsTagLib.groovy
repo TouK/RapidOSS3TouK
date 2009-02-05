@@ -118,7 +118,7 @@ class HistoricalEventsTagLib {
         }
 
         out << TreeGridTagLib.fTreeGrid(id: "filterTree", url: "script/run/queryList?format=xml&type=historicalEvent", rootTag: "Filters",
-                keyAttribute: "id", contentPath: "Filter", title: "Saved Queries", expanded: "true", onNodeClick: "setQueryAction", pollingInterval: treeGridPollInterval,
+                keyAttribute: "id", contentPath: "Filter", title: "Saved Queries", expanded: "true", onNodeClicked: "setQueryAction", pollingInterval: treeGridPollInterval,
                 TreeGridTagLib.fTgColumns([:],
                         TreeGridTagLib.fTgColumn(attributeName: "name", colLabel: "Name", width: "248", sortBy: "true", "")
                 ) +
@@ -180,7 +180,7 @@ class HistoricalEventsTagLib {
         }
         out << SearchListTagLib.fSearchList(id: "searchList", url: "search?format=xml&searchIn=${searchIn}", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
                 keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", lineSize: "3", title: "Historical Events",
-                defaultFields: defaultFields, onSaveQueryClick: "saveQueryAction",
+                defaultFields: defaultFields, onSaveQueryClicked: "saveQueryAction",
                 pollingInterval: searchListPollInterval, lineSize: lineSize,
                 SearchListTagLib.fSlMenuItems([:],
                         getMenuXml(rowMenus)

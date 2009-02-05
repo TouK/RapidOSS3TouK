@@ -93,7 +93,7 @@ class MapsTagLib {
             gaugeString += ObjectMapTagLib.fOmGauge(id:it.@id, x:it.@x, y:it.@y, width:it.@width, height:it.@height, dataKey:it.@dataKey, "")
         }
         out << TreeGridTagLib.fTreeGrid(id: "mapTree", url: "script/run/mapList", rootTag: "Maps",
-                keyAttribute: "id", contentPath: "Map", title: "Saved Maps", expanded: "true", onNodeClick: "requestMapAction", pollingInterval: treeGridPollInterval,
+                keyAttribute: "id", contentPath: "Map", title: "Saved Maps", expanded: "true", onNodeClicked: "requestMapAction", pollingInterval: treeGridPollInterval,
                 TreeGridTagLib.fTgColumns([:],
                         TreeGridTagLib.fTgColumn(attributeName: "name", colLabel: "Name", width: "248", sortBy: "true", "")
                 ) +

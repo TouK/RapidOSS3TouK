@@ -14,7 +14,7 @@
 <rui:flexPieChart id="summaryChart" url="script/run/getSummaryData?format=xml" rootTag="chart" swfURL="images/rapidjs/component/chart/PieChart.swf" title="Summary View">
 </rui:flexPieChart>
 <rui:treeGrid id="topologyTree" url="script/run/getHierarchy?format=xml" rootTag="Objects" pollingInterval="60"
-        keyAttribute="id" contentPath="Object" title="Service View" onNodeClick="treeNodeClickedAction">
+        keyAttribute="id" contentPath="Object" title="Service View" onNodeClicked="treeNodeClickedAction">
     <rui:tgColumns>
         <rui:tgColumn attributeName="displayName" colLabel="Name" width="248" sortBy="true"></rui:tgColumn>
     </rui:tgColumns>
@@ -60,7 +60,7 @@
 </rui:timeline>
 <rui:popupWindow componentId="eventHistory" width="730" height="450"></rui:popupWindow>
 
-<rui:gmap id="deviceLocations" url="script/run/getDeviceLocations?format=xml" title="Devices Map" contentPath="Location" onMarkerClick="locationDevicesAction"
+<rui:gmap id="deviceLocations" url="script/run/getDeviceLocations?format=xml" title="Devices Map" contentPath="Location" onMarkerClicked="locationDevicesAction"
         timeout="120" latitudeField="Lat" longitudeField="Lng" addressField="Address" markerField="Marker" tooltipField="Tooltip"></rui:gmap>
 
 <rui:popupWindow componentId="deviceLocations" width="800" height="600"></rui:popupWindow>

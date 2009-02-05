@@ -69,7 +69,7 @@ class EventsTagLib {
 
         
         out << TreeGridTagLib.fTreeGrid(id: "filterTree", url: "script/run/queryList?format=xml&type=event", rootTag: "Filters",
-                keyAttribute: "id", contentPath: "Filter", title: "Saved Queries", expanded: "true", onNodeClick: "setQueryAction", pollingInterval: treeGridPollInterval,
+                keyAttribute: "id", contentPath: "Filter", title: "Saved Queries", expanded: "true", onNodeClicked: "setQueryAction", pollingInterval: treeGridPollInterval,
                 TreeGridTagLib.fTgColumns([:],
                         TreeGridTagLib.fTgColumn(attributeName: "name", colLabel: "Name", width: "248", sortBy: "true", "")
                 ) +
@@ -130,7 +130,7 @@ class EventsTagLib {
             searchGridImagesTagList+=SearchGridTagLib.fSgImage(visible: it.@visible.toString(), src: it.@src.toString(), "");
         }
         out << SearchGridTagLib.fSearchGrid(id: "searchGrid", url: "search?format=xml&searchIn=${searchIn}", queryParameter: "query", rootTag: "Objects", contentPath: "Object",
-                keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", title: "Events", onSaveQueryClick: "saveQueryAction",
+                keyAttribute: "id", totalCountAttribute: "total", offsetAttribute: "offset", sortOrderAttribute: "sortOrder", title: "Events", onSaveQueryClicked: "saveQueryAction",
                 pollingInterval: searchGridPollInterval, fieldsUrl: "script/run/getViewFields?format=xml",
                 SearchGridTagLib.fSgMenuItems([:],
                         getMenuXml(rowMenus)

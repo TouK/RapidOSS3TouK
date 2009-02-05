@@ -73,13 +73,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     loadMetaData: function(response) {
         UIConfig.loadMetaData(response);
         var modifyTreeConfig = function() {
-            var pathName = window.location.pathname;
-            var splits = pathName.split('/');
-            var distanceToWebApp = splits.length - 3;
-            var stringToAddToUrl = '';
-            for (var index = 0; index < distanceToWebApp; index++) {
-                stringToAddToUrl += '../';
-            }
+            var stringToAddToUrl = getUrlPrefix();
             var rootImages = [];
             var menuItems = [];
             window.designerMenuEvaluate = function(dataNode, parentType, itemType, typeAttribute) {

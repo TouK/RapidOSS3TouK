@@ -19,18 +19,18 @@
 YAHOO.namespace('rapidjs');
 function createURL(url, params)
 {
-    if(params == null)
+    if (params == null)
     {
         params = {};
     }
     var postData = "";
-    for(var paramName in params) {
-        postData = postData + paramName + "=" + encodeURIComponent(params[paramName])+"&";
+    for (var paramName in params) {
+        postData = postData + paramName + "=" + encodeURIComponent(params[paramName]) + "&";
     }
-    if(postData != "")
+    if (postData != "")
     {
-        postData = postData.substring(0, postData.length-1);
-        if(url.indexOf("?") >= 0)
+        postData = postData.substring(0, postData.length - 1);
+        if (url.indexOf("?") >= 0)
         {
             url = url + "&" + postData;
         }
@@ -40,6 +40,17 @@ function createURL(url, params)
         }
     }
     return url;
+}
+
+function getUrlPrefix() {
+    var pathName = window.location.pathname;
+    var splits = pathName.split('/');
+    var distanceToWebApp = splits.length - 3;
+    var urlPrefix = '';
+    for (var index = 0; index < distanceToWebApp; index++) {
+        urlPrefix += '../';
+    }
+    return urlPrefix;
 }
 
 String.prototype.trim = function() {
@@ -58,7 +69,7 @@ YAHOO.rapidjs.ArrayUtils = new function()
 }();
 YAHOO.rapidjs.FlashUtils = new function()
 {
-// JavaScript helper required to detect Flash Player PlugIn version information
+    // JavaScript helper required to detect Flash Player PlugIn version information
     this.GetSwfVer = function () {
         // NS/Opera version >= 3 check for Flash plugin in plugin array
         var flashVer = -1;
@@ -129,76 +140,76 @@ YAHOO.rapidjs.FlashUtils = new function()
     };
 
     this.ControlVersion = function()
-	{
-		var version;
-		var axo;
-		var e;
+    {
+        var version;
+        var axo;
+        var e;
 
 		// NOTE : new ActiveXObject(strFoo) throws an exception if strFoo isn't in the registry
 
-		try {
-			// version will be set for 7.X or greater players
-			axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7");
-			version = axo.GetVariable("$version");
-		} catch (e) {
-		}
+        try {
+            // version will be set for 7.X or greater players
+            axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7");
+            version = axo.GetVariable("$version");
+        } catch (e) {
+        }
 
-		if (!version)
-		{
-			try {
-				// version will be set for 6.X players only
-				axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");
+        if (!version)
+        {
+            try {
+                // version will be set for 6.X players only
+                axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");
 
 				// installed player is some revision of 6.0
-				// GetVariable("$version") crashes for versions 6.0.22 through 6.0.29,
-				// so we have to be careful.
+                // GetVariable("$version") crashes for versions 6.0.22 through 6.0.29,
+                // so we have to be careful.
 
-				// default to the first public version
-				version = "WIN 6,0,21,0";
+                // default to the first public version
+                version = "WIN 6,0,21,0";
 
 				// throws if AllowScripAccess does not exist (introduced in 6.0r47)
-				axo.AllowScriptAccess = "always";
+                axo.AllowScriptAccess = "always";
 
 				// safe to call for 6.0r47 or greater
-				version = axo.GetVariable("$version");
+                version = axo.GetVariable("$version");
 
-			}catch (e) {
-			}
-		}
+            } catch (e) {
+            }
+        }
 
-		if (!version)
-		{
-			try {
-				// version will be set for 4.X or 5.X player
-				axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.3");
-				version = axo.GetVariable("$version");
-			} catch (e) {
-			}
-		}
+        if (!version)
+        {
+            try {
+                // version will be set for 4.X or 5.X player
+                axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.3");
+                version = axo.GetVariable("$version");
+            } catch (e) {
+            }
+        }
 
-		if (!version)
-		{
-			try {
-				// version will be set for 3.X player
-				axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.3");
-				version = "WIN 3,0,18,0";
-			} catch (e) {
-			}
-		}
+        if (!version)
+        {
+            try {
+                // version will be set for 3.X player
+                axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.3");
+                version = "WIN 3,0,18,0";
+            } catch (e) {
+            }
+        }
 
-		if (!version)
-		{
-			try {
-				// version will be set for 2.X player
-				axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
-				version = "WIN 2,0,0,11";
-			} catch (e) {
-				version = -1;
-			}
-		}
+        if (!version)
+        {
+            try {
+                // version will be set for 2.X player
+                axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
+                version = "WIN 2,0,0,11";
+            } catch (e) {
+                version = -1;
+            }
+        }
 
-		return version;
-	}
+        return version;
+    }
 }();
 YAHOO.rapidjs.ObjectUtils = new function()
 {

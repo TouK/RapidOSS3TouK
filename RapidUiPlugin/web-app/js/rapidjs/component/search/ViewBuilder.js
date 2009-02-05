@@ -105,14 +105,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         this.bottomButton = new YAHOO.widget.Button(buttonWrappers[7], {onclick:{fn:this.handleBottom, scope:this},label: 'Bottom', disabled:true});
     },
     getViews: function(callback) {
-        this.doRequest('gridView/list', {}, callback);
+        this.doRequest(getUrlPrefix() + 'gridView/list', {}, callback);
     },
     hide: function() {
         this.dialog.hide();
     },
     handleSave: function() {
         var parameters = {};
-        var url = 'gridView/add';
+        var url = getUrlPrefix() + 'gridView/add';
         parameters['name'] = this.nameInput.value;
         parameters['isPublic'] = this.isPublicInput.checked;
         var defaultSortColumn = this.defaultSortInput.options[this.defaultSortInput.selectedIndex].value;
@@ -148,7 +148,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
     },
     removeView : function(view) {
         var viewId = this.viewData.findChildNode('name', view, 'View')[0].getAttribute('id')
-        var url = 'gridView/delete';
+        var url = getUrlPrefix() + 'gridView/delete';
         this.doPostRequest(url, {id:encodeURIComponent(viewId)}, this.removeSuccess.createDelegate(this, [view], true))
     },
     removeSuccess : function(response, view) {

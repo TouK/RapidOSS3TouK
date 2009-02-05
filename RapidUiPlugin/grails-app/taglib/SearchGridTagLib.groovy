@@ -28,10 +28,10 @@ class SearchGridTagLib {
     static def fSearchGrid(attrs, bodyString) {
         def searchGridId = attrs["id"];
         def configXML = "<SearchGrid>${bodyString}</SearchGrid>";
-        def onSaveQueryClick = attrs["onSaveQueryClick"];
-        def onRowDoubleClick = attrs["onRowDoubleClick"];
-        def onRowClick = attrs["onRowClick"];
-        def onSelectionChange = attrs["onSelectionChange"];
+        def onSaveQueryClick = attrs["onSaveQueryClicked"];
+        def onRowDoubleClick = attrs["onRowDoubleClicked"];
+        def onRowClick = attrs["onRowClicked"];
+        def onSelectionChange = attrs["onSelectionChanged"];
         def saveQueryClickJs;
         def rowDoubleClickJs;
         def rowClickJs;

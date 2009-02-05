@@ -822,6 +822,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         var actionNode;
         if (this.mode == YAHOO.rapidjs.designer.ActionDefinitionDialog.EDIT_MODE) {
             actionNode = this.currentActionNode;
+            for(var att in actionAtts){
+                actionNode.setAttribute(att, actionAtts[att])
+            }
         }
         else {
             actionNode = this.designer.createTreeNode(this.currentParentNode, actionAtts[this.designer.treeTypeAttribute], actionAtts);

@@ -342,6 +342,11 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         this.methodDescrEl = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-methoddef", 'div', this.functionView)[0];
         var gridWrp = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-gridwrp", 'div', this.functionView)[0];
         this.textAreaEditor = new YAHOO.widget.TextareaCellEditor();
+        this.textAreaEditor.move = function() {
+            this.textarea.style.width =  "300px";
+            this.textarea.style.height = "200px";
+            YAHOO.widget.TextareaCellEditor.superclass.move.call(this);
+        }
         var argColumnDefs = [
             {key:"arg", label:"Argument", width:150, editor:this.textAreaEditor},
             {key:"value", label:"Value", width:150, editor:this.textAreaEditor}
@@ -822,7 +827,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         var actionNode;
         if (this.mode == YAHOO.rapidjs.designer.ActionDefinitionDialog.EDIT_MODE) {
             actionNode = this.currentActionNode;
-            for(var att in actionAtts){
+            for (var att in actionAtts) {
                 actionNode.setAttribute(att, actionAtts[att])
             }
         }

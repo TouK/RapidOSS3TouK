@@ -14,7 +14,7 @@
             uiElement.menuItems.each{menuItem->
                 def menuAction = menuItem.getAction();
         %>
-        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuAction?"action='"+menuAction.name+"'":""}></rui:slMenuItem>
+        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuAction?"action='"+menuAction.name+"'":""}>
                <%
                     if(!menuItem.childMenuItems.isEmpty())
                     {
@@ -41,7 +41,7 @@
         <%
             uiElement.propertyMenuItems.each{menuItem->
         %>
-        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuItem.action?"action='"+menuItem.action.name+"'":""}></rui:slMenuItem>
+        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuItem.action?"action='"+menuItem.action.name+"'":""}>
                <%
                     if(!menuItem.childMenuItems.isEmpty())
                     {
@@ -66,8 +66,10 @@
      <rui:slFields>
     <%
         uiElement.fields.each{field->
+            def fieldsString = field.fields.split(",").toString();
+            fieldsString = fieldsString.substring(1, fieldsString.length()-1);
     %>
-        <rui:slField exp="${field.exp}" fields="${field.fields}"></rui:slField>
+        <rui:slField exp="${field.exp}" fields='\${[${fieldsString}]}'></rui:slField>
     <%
         }
     %>

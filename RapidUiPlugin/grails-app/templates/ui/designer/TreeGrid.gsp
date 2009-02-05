@@ -39,7 +39,7 @@
             uiElement.menuItems.each{menuItem->
                 def menuAction = menuItem.getAction();
         %>
-        <rui:tgMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuAction?"action='"+menuAction.name+"'":""}></rui:slMenuItem>
+        <rui:tgMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuAction?"action='"+menuAction.name+"'":""}>
                <%
                     if(!menuItem.childMenuItems.isEmpty())
                     {
@@ -49,7 +49,7 @@
                             menuItem.childMenuItems.each{subMenuItem->
                                 def subMenuAction = subMenuItem.getAction();
                         %>
-                            <rui:tgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subMenuAction?"action='"+subMenuAction.name+"'":""} visible="${subMenuItem.visible}"></rui:sgMenuItem>
+                            <rui:tgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subMenuAction?"action='"+subMenuAction.name+"'":""} visible="${subMenuItem.visible}"></rui:tgMenuItem>
                         <%
                                 }
                         %>
@@ -61,7 +61,7 @@
         <%
             }
         %>
-    </rui:slMenuItems>
+    </rui:tgMenuItems>
     <rui:tgRootImages>
         <%
             uiElement.rootImages.each{rootImage->

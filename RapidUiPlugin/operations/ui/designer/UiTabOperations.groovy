@@ -104,8 +104,7 @@ public class UiTabOperations extends AbstractDomainOperation
         }
 
         dialogsNode.UiElement.each{dialogNode->
-            def dialog = UiDialog.addUiElement(dialogNode, uiTab);
-            dialogs.add(dialog);
+            UiDialog.addUiElement(dialogNode, uiTab);
         }
         if(layoutNode.size() != 0)
         {

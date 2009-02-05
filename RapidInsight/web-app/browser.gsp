@@ -12,7 +12,7 @@
 </head>
 <body>
 <rui:treeGrid id="classTree" url="rsBrowser/classes?format=xml" rootTag="Classes" pollingInterval="0"
-        keyAttribute="name" contentPath="Class" title="Classes" onNodeClick="setQueryAction">
+        keyAttribute="name" contentPath="Class" title="Classes" onNodeClicked="setQueryAction">
     <rui:tgColumns>
         <rui:tgColumn attributeName="name" colLabel="Class Name" width="300" sortBy="true"></rui:tgColumn>
     </rui:tgColumns>
@@ -27,7 +27,7 @@
 </rui:treeGrid>
 <rui:searchList id="searchList" url="rsBrowser/searchWithQuery?format=xml" rootTag="Objects" contentPath="Object" keyAttribute="id" showMax="6" 
         lineSize="3" title="Objects" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
-        pollingInterval="0" defaultFields="${['id', 'name']}" onRowDoubleClick="browseAction">
+        pollingInterval="0" defaultFields="${['id', 'name']}" onRowDoubleClicked="browseAction">
     <rui:slMenuItems>
         <rui:slMenuItem id="browse" label="Browse" action="browseAction"></rui:slMenuItem>
     </rui:slMenuItems>

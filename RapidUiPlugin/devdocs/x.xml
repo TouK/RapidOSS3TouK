@@ -1,0 +1,93 @@
+<UiConfig>
+    <UiElement designerType='Urls' designer_name='Urls'>
+        <UiElement id='Url82' designerType='Url' url='Url' designer_name='Url' canBeDeleted='true'>
+            <UiElement id='Tabs83' designerType='Tabs' designer_name='Tabs'>
+                <UiElement id='Tab84' designerType='Tab' name='Tab' designer_name='Tab' canBeDeleted='true'
+                           designer_item_tab='Tab84'>
+                    <UiElement id='Layout85' designerType='Layout' designer_name='Layout' canBeDeleted='true'
+                               designer_item_tab='Tab84'>
+                        <UiElement id='CenterUnit86' designerType='CenterUnit' designer_name='Center'
+                                   designer_item_tab='Tab84'></UiElement>
+                        <UiElement id='LeftUnit93' designerType='LeftUnit' designer_name='Left' canBeDeleted='true'
+                                   designer_item_tab='Tab84'></UiElement>
+                        <UiElement id='BottomUnit100' designerType='BottomUnit' designer_name='Bottom'
+                                   canBeDeleted='true' designer_item_tab='Tab84'></UiElement>
+                    </UiElement>
+                    <UiElement id='Components87' designerType='Components' designer_name='Components'
+                               designer_item_tab='Tab84'>
+                        <UiElement id='TreeGrid110' designerType='TreeGrid' url='../search?searchIn=RsEvent'
+                                   rootTag='Objects' contentPath='Object' keyAttribute='id' name='TreeGrid'
+                                   designer_name='TreeGrid' canBeDeleted='true' designer_item_tab='Tab84'>
+                            <UiElement id='TreeGridColumns111' designerType='TreeGridColumns' designer_name='Columns'
+                                       designer_item_tab='Tab84'>
+                                <UiElement id='TreeGridColumn128' designerType='TreeGridColumn' type='text'
+                                           attributeName='TreeGridColumn' colLabel='Name' designer_name='TreeGridColumn'
+                                           canBeDeleted='true' designer_item_tab='Tab84' width='200'>
+                                    <UiElement id='TreeGridColumnImages129' designerType='TreeGridColumnImages'
+                                               designer_name='Images' designer_item_tab='Tab84'></UiElement>
+                                </UiElement>
+                            </UiElement>
+                            <UiElement id='TreeGridRootImages112' designerType='TreeGridRootImages'
+                                       designer_name='RootImages' designer_item_tab='Tab84'>
+                                <UiElement id='RootImage130' designerType='RootImage'
+                                           expanded='../images/rapidjs/component/tools/folder_open.gif'
+                                           collapsed='../images/rapidjs/component/tools/folder.gif'
+                                           designer_name='RootImage' canBeDeleted='true'
+                                           designer_item_tab='Tab84'></UiElement>
+                            </UiElement>
+                            <UiElement id='TreeGridMenuItems113' designerType='TreeGridMenuItems'
+                                       designer_name='MenuItems' designer_item_tab='Tab84'></UiElement>
+                        </UiElement>
+                        <UiElement id='SearchGrid114' designerType='SearchGrid' url='../search?searchIn=RsEvent'
+                                   rootTag='Objects' contentPath='Object' keyAttribute='id'
+                                   fieldsUrl='../script/run/getViewFields?format=xml' totalCountAttribute='total'
+                                   offsetAttribute='offset' sortOrderAttribute='sortOrder' name='SearchGrid'
+                                   designer_name='SearchGrid' canBeDeleted='true' designer_item_tab='Tab84'>
+                            <UiElement id='SearchGridImages115' designerType='SearchGridImages' designer_name='Images'
+                                       designer_item_tab='Tab84'><UiElement id='Image125' designerType='Image'
+                                                                            src='../images/rapidjs/component/searchlist/blue.png'
+                                                                            designer_name='Image' canBeDeleted='true'
+                                                                            designer_item_tab='Tab84'
+                                                                            visible='params.data.severity == '5'''>
+                            </UiElement>
+                            <UiElement id='Image126' designerType='Image'
+                                       src='../images/rapidjs/component/searchlist/red.png' designer_name='Image'
+                                       canBeDeleted='true' designer_item_tab='Tab84' visible='params.data.severity == '
+                            1'''>
+                        </UiElement>
+                    </UiElement>
+                    <UiElement id='SearchGridColumns116' designerType='SearchGridColumns' designer_name='Columns'
+                               designer_item_tab='Tab84'>
+                        <UiElement id='Column123' designerType='Column' attributeName='name' colLabel='Name'
+                                   designer_name='name' canBeDeleted='true' designer_item_tab='Tab84'></UiElement>
+                        <UiElement id='Column124' designerType='Column' attributeName='severity' colLabel='Severity'
+                                   designer_name='severity' canBeDeleted='true' designer_item_tab='Tab84'></UiElement>
+                    </UiElement>
+                    <UiElement id='SearchGridMenuItems117' designerType='SearchGridMenuItems' designer_name='MenuItems'
+                               designer_item_tab='Tab84'>
+                        <UiElement id='MenuItem127' designerType='MenuItem' name='refreshGrid' label='Refresh Grid'
+                                   designer_name='refreshGrid' canBeDeleted='true'
+                                   designer_item_tab='Tab84'></UiElement>
+                    </UiElement>
+                </UiElement>
+                <UiElement id='SearchList118' designerType='SearchList' url='../search?searchIn=RsEvent'
+                           rootTag='Objects' contentPath='Object' keyAttribute='id' totalCountAttribute='total'
+                           offsetAttribute='offset' sortOrderAttribute='sortOrder' name='SearchList'
+                           designer_name='SearchList' canBeDeleted='true' designer_item_tab='Tab84'>
+                    <UiElement id='SearchListFields119' designerType='SearchListFields' designer_name='Fields'
+                               designer_item_tab='Tab84'></UiElement>
+                    <UiElement id='SearchListImages120' designerType='SearchListImages' designer_name='Images'
+                               designer_item_tab='Tab84'></UiElement>
+                    <UiElement id='SearchListMenuItems121' designerType='SearchListMenuItems' designer_name='MenuItems'
+                               designer_item_tab='Tab84'></UiElement>
+                    <UiElement id='SearchListPropertyMenuItems122' designerType='SearchListPropertyMenuItems'
+                               designer_name='PropertyMenuItems' designer_item_tab='Tab84'></UiElement>
+                </UiElement>
+            </UiElement>
+            <UiElement id='Dialogs88' designerType='Dialogs' designer_name='Dialogs'
+                       designer_item_tab='Tab84'></UiElement>
+            <UiElement id='Actions89' designerType='Actions' designer_name='Actions'
+                       designer_item_tab='Tab84'></UiElement>
+        </UiElement>
+    </UiElement>
+</UiElement></UiElement></UiConfig>

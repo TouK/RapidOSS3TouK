@@ -39,7 +39,7 @@ class UiDialogOperations extends UiLayoutUnitOperations{
         def attributes = [:];
         attributes.putAll (xmlNode.attributes());
         def componentName = xmlNode.@component;
-        UiComponent comp = UiComponent.get(name:componentName, tab:parentElement);
+        UiComponent comp = UiComponent.get(name:componentName, tab:parentElement, isActive:true);
         attributes["component"] = comp
         attributes["tab"] = parentElement;
         return DesignerUtils.addUiObject(UiDialog, attributes, xmlNode);

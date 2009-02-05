@@ -17,20 +17,27 @@
 * USA.
 */
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+    def saveState(currentState){
+        RsObjectState.add(objectId:id, state:currentState);
+    }
+    def loadState(){
+        return  RsObjectState.get(objectId:id);
+    }
+
     int getState()
     {
         def currentState = currentState();
         if(currentState == null)
         {
             currentState = calculateState(currentState, -1, -1);
-            RsObjectState.add(objectId:id, state:currentState);
+            saveState(currentState);
         }
         return currentState;
     }
 
     def currentState()
     {
-        def stateObj = RsObjectState.get(objectId:id);
+        def stateObj = loadState();
         return stateObj?stateObj.state:null;
     }
     
@@ -40,7 +47,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
         def calculatedState = calculateState(currentState, oldPropagatedState, newPropagatedState);
         if(calculatedState != currentState)
         {
-            RsObjectState.add(objectId:id, state:calculatedState);
+            saveState(calculatedState);
             propagateState(currentState, calculatedState);
         }
         return calculatedState;

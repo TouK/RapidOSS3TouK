@@ -41,6 +41,50 @@ YAHOO.rapidjs.designer.DesignerUtils = new function() {
         }
         return [];
     };
+
+    this.getComponentsWithMenuItems = function(designer, xmlData) {
+        var menuConfig = {};
+        var menuTypes = {'MenuItems':'node', 'PropertyMenuItems':'property', 'ToolbarMenuItems':'toolbar'}
+        var componentNodes = this.getComponentNodesOfCurrentTab(designer, xmlData);
+        for (var i = 0; i < componentNodes.length; i++) {
+            var hasMenu = false;
+            var compMenuConfig = {};
+            var compChildNodes = componentNodes[i].childNodes();
+            for (var j = 0; j < compChildNodes.length; j++) {
+                var childDisplay = compChildNodes[j].getAttribute(designer.treeDisplayAttribute);
+                if (childDisplay == "MenuItems" || childDisplay == "PropertyMenuItems" || childDisplay == "ToolbarMenuItems") {
+                    var menuType = menuTypes[childDisplay];
+                    var menuNames = [];
+                    if (childDisplay == 'ToolbarMenuItems') {
+                        var toolbarMenus = compChildNodes[j].childNodes();
+                        for (var k = 0; k < toolbarMenus.length; k++) {
+                            var menuNodes = toolbarMenus[k].childNodes();
+                            if (menuNodes.length > 0) {
+                                hasMenu = true;
+                            }
+                            for (var n = 0; n < menuNodes.length; n++) {
+                                menuNames.push(menuNodes[n].getAttribute('name'));
+                            }
+                        }
+                    }
+                    else {
+                        var menuNodes = compChildNodes[j].childNodes();
+                        if (menuNodes.length > 0) {
+                            hasMenu = true;
+                            for (var k = 0; k < menuNodes.length; k++) {
+                                menuNames.push(menuNodes[k].getAttribute('name'));
+                            }
+                        }
+                    }
+                    compMenuConfig[menuType] = menuNames;
+                }
+            }
+            if (hasMenu) {
+                menuConfig[componentNodes[i].getAttribute('name')] = compMenuConfig;
+            }
+        }
+        return menuConfig
+    };
     this.getActionNodesOfCurrentTab = function(designer, xmlData) {
         var currentTabNode = this.getTabNodeFromNode(designer, xmlData);
         if (currentTabNode) {

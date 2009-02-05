@@ -85,6 +85,9 @@ YAHOO.rapidjs.designer.Config = new function() {
         }
         return this.get(itemType)["properties"][propertyName]["descr"]
     };
+    this.getPropertyDefaultValue = function(itemType, propertyName){
+        return this.get(itemType)["properties"][propertyName]["defaultValue"]
+    };
     this.isPropertyRequired = function(itemType, propertyName) {
         return this.get(itemType)["properties"][propertyName]["required"] == 'true'
     };
@@ -133,6 +136,9 @@ YAHOO.rapidjs.designer.Config = new function() {
     this.getMethodArguments = function(componentType, methodName) {
         return this.methods[componentType][methodName]['args'];
     };
+    this.getMenuParameters = function(componentType, menuType){
+        return this.menuParameters[componentType][menuType];
+    }
     this.methods = {
         "SearchGrid":{
             "poll":{
@@ -559,7 +565,46 @@ YAHOO.rapidjs.designer.Config = new function() {
             "CenterUnit":{"TopUnit":'',"CenterUnit":''},
             "RightUnit":{"TopUnit":'',"CenterUnit":''}
         }
+    }
 
+    this.menuParameters = {
+        'SearchGrid':{
+            'node':{
+                "params.data": "JavaScript object representing the row data",
+                "params.menuId": "Name of the menu item.",
+                "params.parentId": "Parent menu item name, if it is a sub menu."
+            }
+        },
+        'SearchList':{
+            'node':{
+                "params.data": "JavaScript object representing the row data",
+                "params.menuId": "Name of the menu item.",
+                "params.parentId": "Parent menu item name, if it is a sub menu."
+            },
+            'property':{
+                "params.data": "JavaScript object representing the row data",
+                "params.menuId": "Name of the menu item.",
+                "params.key": "Name of the clicked property.",
+                "params.value": "Value of the clicked property."
+            }
+        },
+        'TreeGrid':{
+            'node':{
+                "params.data": "JavaScript object representing the row data",
+                "params.menuId": "Name of the menu item.",
+                "params.parentId": "Parent menu item name, if it is a sub menu."
+            }
+        },
+        'ObjectMap':{
+            'node':{
+                "params.data": "JavaScript object representing the row data",
+                "params.menuId": "Name of the menu item."
+            },
+            'toolbar':{
+                "params.menuId": "Name of the menu item."
+            }
+
+        }
     }
 }
 

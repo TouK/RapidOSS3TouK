@@ -208,7 +208,8 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         for (var prop in properties) {
             var propValue = xmlData.getAttribute(prop);
             if (UIConfig.isPropertyRequired(itemType, prop)) {
-                data[data.length] = {name:prop, value:propValue || prop}
+                var defaultValue = UIConfig.getPropertyDefaultValue(itemType, prop);
+                data[data.length] = {name:prop, value:propValue || defaultValue || prop}
             }
             else if (propValue) {
                 data[data.length] = {name:prop, value:propValue}
@@ -354,11 +355,13 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         for (var prop in itemMetaProperties) {
             if (!atts[prop]) {
                 if (UIConfig.isPropertyRequired(itemType, prop)) {
+                    var defaultValue = UIConfig.getPropertyDefaultValue(itemType, prop);
                     if (UIConfig.isDisplayProperty(itemType, prop)) {
-                        newNode.setAttribute(prop, itemType);
+                        var propValue = !defaultValue || defaultValue == ''? itemType : defaultValue 
+                        newNode.setAttribute(prop, propValue);
                     }
                     else {
-                        newNode.setAttribute(prop, prop);
+                        newNode.setAttribute(prop, defaultValue || prop);
                     }
                 }
             }
@@ -692,7 +695,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         var propertySelectedToBeAdded = function() {
             if (this.propertySelect.selectedIndex > 0) {
                 var prop = this.propertySelect.options[this.propertySelect.selectedIndex].value;
-                this.propertyGrid.addRow({name:prop, value:this.currentDisplayedItemData.getAttribute(prop) || ''});
+                var itemType = DesignerUtils.getItemType(this, this.currentDisplayedItemData);
+                var defaultValue = UIConfig.getPropertyDefaultValue(itemType, prop);
+                this.propertyGrid.addRow({name:prop, value:this.currentDisplayedItemData.getAttribute(prop) || defaultValue || ''});
                 SelectUtils.remove(this.propertySelect, prop)
             }
         }

@@ -9,7 +9,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
 
     render: function() {
         var config = {
-            width:800,
+            width:820,
             height:700,
             minWidth:100,
             minHeight:100,
@@ -26,42 +26,65 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         var dh = YAHOO.ext.DomHelper;
         var wrp = dh.append(this.dialog.body, {tag:'div', cls:'r-designer-actdlg-wrp',
             html:'<table border="2"><tbody><tr>' +
-                 '<td style="vertical-align:top"><div style="width:395px;overflow:hidden"></div></td>' +
-                 '<td style="vertical-align:top"><div style="width:355px;overflow:hidden"></div></td></tr></tbody></table>'});
+                 '<td style="vertical-align:top"><div style="width:405px;overflow:hidden"></div></td>' +
+                 '<td style="vertical-align:top"><div style="width:365px;overflow:hidden"></div></td></tr></tbody></table>'});
         var wrappers = wrp.getElementsByTagName('div');
         var left = wrappers[0];
         var right = wrappers[1];
         this.wrpEl = getEl(wrp);
         var commonView = dh.append(left, {tag:'div', style:'padding:5 0 5 0;',
-            html:'<form action="javascript:void(0)"><div style="padding:5px;"><table><tbody>' +
+            html:'<form action="javascript:void(0)"><div style="padding:5px;">' +
+                 '<div><table><tbody>' +
                  '<tr><td class="field-name">Name:</td><td><input style="width:200px"></input></td></tr>' +
                  '<tr><td class="field-name">Type:</td><td><select style="width:200px"><option name="request">request</option><option name="merge">merge</option>' +
                  '<option name="link">link</option><option name="function">function</option><option name="combined">combined</option></select></td></tr>' +
                  '<tr><td class="field-name">Condition:</td><td><textarea cols="40"></textarea></td></tr>' +
-                 '</tbody></table>' +
-                 '<div><div style="font-family:verdana;padding:3px 5px;color:#0A52AF">Select a component or a global event to trigger your action.</div>' +
+                 '<tr><td class="field-name">Trigger Type:</td><td><select style="width:200px"><option name="event">event</option><option name="menu">menu</option></select></td></tr>' +
+                 '</tbody></table></div>' +
+                 '<div class="trigger-type-wrp"><div style="font-family:verdana;padding:3px 5px;color:#0A52AF">Select a component or a global event to trigger your action.</div>' +
                  '<div><table><tbody><tr><td><table><tbody>' +
                  '<tr><td class="field-name">Component:</td><td><select style="width:150px;"></select></td></tr>' +
                  '<tr><td class="field-name">Event:</td><td><select style="width:150px;"></select></td></tr>' +
                  '</tbody></table></td>' +
                  '<td><div class="r-designer-actdlg-btnwrp"><div></div></div></td>' +
-                 '</tr></tbody></table></div></div>' +
+                 '</tr></tbody></table></div>' +
                  '<div class="r-designer-actdlg-eventdef"></div>' +
                  '<div class="grid-def">Triggering Events:</div>' +
-                 '<div class="r-designer-actdlg-gridwrp"></div>' +
+                 '<div class="r-designer-actdlg-gridwrp"></div></div>' +
+                 '<div class="trigger-type-wrp"><div style="font-family:verdana;padding:3px 5px;color:#0A52AF">Select a menu item to trigger your action.</div>' +
+                 '<div><table><tbody><tr><td><table><tbody>' +
+                 '<tr><td class="field-name">Component:</td><td><select style="width:150px;"></select></td></tr>' +
+                 '<tr><td class="field-name">Menu Item:</td><td><select style="width:150px;"></select></td></tr>' +
+                 '</tbody></table></td>' +
+                 '<td><div class="r-designer-actdlg-btnwrp"><div></div></div></td>' +
+                 '</tr></tbody></table></div>' +
+                 '<div class="r-designer-actdlg-eventdef"></div>' +
+                 '<div class="grid-def">Triggering Menu Items:</div>' +
+                 '<div class="r-designer-actdlg-gridwrp"></div></div>' +
                  '</div></form>'})
 
         var selects = commonView.getElementsByTagName('select');
         this.typeSelect = selects[0];
-        this.eventCompSelect = selects[1];
-        this.eventSelect = selects[2];
+        this.triggerTypeSelect = selects[1];
+        this.eventCompSelect = selects[2];
+        this.eventSelect = selects[3];
+        this.menuCompSelect = selects[4];
+        this.menuSelect = selects[5];
+        var triggerViews = YAHOO.util.Dom.getElementsByClassName("trigger-type-wrp", 'div', commonView);
+        this.eventTriggerView = triggerViews[0]
+        this.menuTriggerView = triggerViews[1]
         this.nameInput = commonView.getElementsByTagName('input')[0];
         this.conditionInput = commonView.getElementsByTagName('textarea')[0];
         var btnwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-btnwrp", 'div', commonView);
         var gridwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-gridwrp", 'div', commonView);
 
-        this.eventDescrEl = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-eventdef", 'div', commonView)[0];
+        var descrEls = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-eventdef", 'div', commonView)
+        this.eventDescrEl = descrEls[0];
+        this.menuDescrEl = descrEls[1];
+        YAHOO.util.Event.addListener(this.triggerTypeSelect, "change", this.triggerTypeChanged, this, true);
         YAHOO.util.Event.addListener(this.eventSelect, "change", this.eventChanged, this, true);
+        YAHOO.util.Event.addListener(this.menuSelect, "change", this.menuItemChanged, this, true);
+        YAHOO.util.Event.addListener(this.menuCompSelect, "change", this.menuComponentChanged, this, true);
         YAHOO.util.Event.addListener(this.typeSelect, "change", this.typeChanged, this, true);
         YAHOO.util.Event.addListener(this.eventCompSelect, "change", this.eventComponentChanged, this, true);
 
@@ -125,6 +148,23 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             var event = this.eventSelect.options[this.eventSelect.selectedIndex].value
             this.eventsGrid.addRow({component:comp, event:event})
         }, scope:this},label: 'Add Event'});
+
+         var menuColumnDefs = [
+            {key:"component", label:"Component", sortable:true, width:150, editor:this.combEditor},
+            {key:"menuitem", label:"Menu Item", sortable:true, width:190, editor:this.combEditor}
+        ];
+        var menuDs = new YAHOO.util.DataSource([]);
+        menuDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
+        menuDs.responseSchema = {
+            fields: ["component","menuitem"]
+        };
+        this.menuGrid = new YAHOO.widget.DataTable(gridwrps[1], menuColumnDefs, menuDs, {'MSG_EMPTY':'',scrollable:true, height:"70px"});
+
+        new YAHOO.widget.Button(btnwrps[1].firstChild, {onclick:{fn:function() {
+            var comp = this.menuCompSelect.options[this.menuCompSelect.selectedIndex].value
+            var menuItem = this.menuSelect.options[this.menuSelect.selectedIndex].text
+            this.menuGrid.addRow({component:comp, menuitem:menuItem})
+        }, scope:this},label: 'Add Menu Item'});
 
         this.requestView = dh.append(right, {tag:'div', style:'padding:5 0 5 0;',
             html:'<div style="padding:5px;">' +
@@ -311,6 +351,72 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
     adjustHeight: function() {
         this.dialog.adjustHeight(this.wrpEl.getHeight());
     },
+    triggerTypeChanged:function(){
+        var triggerType = this.triggerTypeSelect.options[this.triggerTypeSelect.selectedIndex].text;
+        if(triggerType == 'event'){
+            YAHOO.util.Dom.setStyle(this.eventTriggerView, 'display', '')
+            //grid will arrange its width;
+            this.eventsGrid.addRow({action:'dummy'});
+            var length = this.eventsGrid.getRecordSet().getLength();
+            this.eventsGrid.deleteRows(length - 1, length);
+        }
+        else{
+           YAHOO.util.Dom.setStyle(this.eventTriggerView, 'display', 'none') 
+        }
+        if(triggerType == 'menu'){
+            YAHOO.util.Dom.setStyle(this.menuTriggerView, 'display', '')
+            //grid will arrange its width;
+            this.menuGrid.addRow({action:'dummy'});
+            length = this.menuGrid.getRecordSet().getLength();
+            this.menuGrid.deleteRows(length - 1, length);
+        }
+        else{
+           YAHOO.util.Dom.setStyle(this.menuTriggerView, 'display', 'none')
+        }
+        this.adjustHeight();
+    },
+    menuComponentChanged:function(){
+        SelectUtils.clear(this.menuSelect);
+        if(this.menuCompSelect.selectedIndex > -1){
+            var component = this.menuCompSelect.options[this.menuCompSelect.selectedIndex].value
+            var compType = this.currentComponents[component];
+            var compMenuConfig = this.currentMenuConfig[compType]
+            for(var menuType in compMenuConfig) {
+                var menuItems = compMenuConfig[menuType];
+                for(var i=0; i< menuItems.length; i++){
+                    var menuName = menuItems[i];
+                    SelectUtils.addOption(this.menuSelect, menuName, menuType);
+                }
+            }
+        }
+        this.menuItemChanged();
+    },
+    menuItemChanged: function(){
+        if(this.menuSelect.selectedIndex > -1){
+            var component = this.menuCompSelect.options[this.menuCompSelect.selectedIndex].value;
+            var compType = this.currentComponents[component];
+            var menuType = this.menuSelect.options[this.menuSelect.selectedIndex].value;
+            var menuParameters = UIConfig.getMenuParameters(compType, menuType);
+            var nOfParams = 0;
+            var paramsHtml = []
+            for (var menuParam in menuParameters) {
+                if (nOfParams == 0) {
+                    paramsHtml[paramsHtml.length] = ['<ul style="padding-left:20px;">'];
+                }
+                paramsHtml[paramsHtml.length] = '<li><span style="font-weight:bold;font-size:13px">' + menuParam + ':</span><span> ' + menuParameters[menuParam] + '</span></li>'
+                nOfParams++;
+            }
+            if (nOfParams > 0) {
+                paramsHtml[paramsHtml.length] = '</ul>'
+            }
+            this.menuDescrEl.innerHTML = '<p>Available parameters:</p><br>' + paramsHtml.join('');
+        }
+        else{
+            this.menuDescrEl.innerHTML = '';
+        }
+        this.adjustHeight();
+    },
+
     eventComponentChanged: function() {
         SelectUtils.clear(this.eventSelect);
         var component = this.eventCompSelect.options[this.eventCompSelect.selectedIndex].value
@@ -483,6 +589,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.currentParentNode = xmlData.parentNode();
         }
         this.currentComponents = DesignerUtils.getComponentsOfCurrentTab(this.designer, this.currentParentNode);
+        this.currentMenuConfig = DesignerUtils.getComponentsWithMenuItems(this.designer, this.currentParentNode);
         this.populateComponents();
         if (this.mode == YAHOO.rapidjs.designer.ActionDefinitionDialog.EDIT_MODE) {
             this.populateFieldsForUpdate();
@@ -491,7 +598,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.componentChanged();
         }
         this.eventComponentChanged();
+        this.menuComponentChanged();
         this.typeChanged();
+        this.triggerTypeChanged();
         this.dialog.show();
         this.adjustHeight();
     },
@@ -586,14 +695,19 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         this.removeAttInput.value = '';
         this.linkUrlInput.value = '';
         SelectUtils.selectTheValue(this.typeSelect, 'request', 0);
+        SelectUtils.selectTheValue(this.triggerTypeSelect, 'event', 0);
     },
     populateComponents: function() {
         SelectUtils.clear(this.componentSelect);
         SelectUtils.clear(this.eventCompSelect);
+        SelectUtils.clear(this.menuCompSelect);
         SelectUtils.addOption(this.eventCompSelect, 'Global', 'Global');
         for (var compName in this.currentComponents) {
             SelectUtils.addOption(this.componentSelect, compName, compName)
             SelectUtils.addOption(this.eventCompSelect, compName, compName)
+        }
+        for (var compName in this.currentMenuConfig) {
+            SelectUtils.addOption(this.menuCompSelect, compName, compName)
         }
     },
 

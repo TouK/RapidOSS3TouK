@@ -11,7 +11,9 @@ public class JiraAdapter extends BaseAdapter{
     }
     
     public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) {
-        return null; //To change body of implemented methods use File | Settings | File Templates.
+    	RetrievePropsAction action = new RetrievePropsAction(logger,ids.values().toArray()[0],fieldsToBeRetrieved);
+	    executeAction(action);        
+	    return action.getProps();
     }
 
     public openIssue(Map params) throws Exception{

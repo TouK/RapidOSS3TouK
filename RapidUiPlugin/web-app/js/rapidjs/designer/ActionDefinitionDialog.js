@@ -149,7 +149,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.eventsGrid.addRow({component:comp, event:event})
         }, scope:this},label: 'Add Event'});
 
-         var menuColumnDefs = [
+        var menuColumnDefs = [
             {key:"component", label:"Component", sortable:true, width:150, editor:this.combEditor},
             {key:"menuitem", label:"Menu Item", sortable:true, width:190, editor:this.combEditor}
         ];
@@ -159,7 +159,36 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             fields: ["component","menuitem"]
         };
         this.menuGrid = new YAHOO.widget.DataTable(gridwrps[1], menuColumnDefs, menuDs, {'MSG_EMPTY':'',scrollable:true, height:"70px"});
+        this.menuGrid.subscribe("cellMouseoverEvent", highlightEditableCell);
+        this.menuGrid.subscribe("cellMouseoutEvent", this.menuGrid.onEventUnhighlightCell);
+        this.menuGrid.subscribe("cellClickEvent", function (oArgs) {
+            var target = oArgs.target,
+                    column = this.menuGrid.getColumn(target),
+                    record = this.menuGrid.getRecord(target)
+            var dropDownOptions = [];
+            if (column.getKey() == 'component') {
+                for (var compName in this.currentMenuConfig) {
+                    dropDownOptions.push(compName);
+                }
+            }
+            else {
+                var component = record.getData("component");
+                var compMenuConfig = this.currentMenuConfig[component];
+                if (compMenuConfig) {
+                    for (var menuType in compMenuConfig) {
+                        var menuNames = compMenuConfig[menuType];
+                        for(var i=0; i<menuNames.length; i++){
+                            dropDownOptions.push(menuNames[i]);
+                        }
+                    }
+                }
+            }
+            this.combEditor.dropdownOptions = dropDownOptions;
+            this.combEditor.renderForm();
+            column.editor = this.combEditor;
+            this.menuGrid.showCellEditor(target);
 
+        }, this, true);
         new YAHOO.widget.Button(btnwrps[1].firstChild, {onclick:{fn:function() {
             var comp = this.menuCompSelect.options[this.menuCompSelect.selectedIndex].value
             var menuItem = this.menuSelect.options[this.menuSelect.selectedIndex].text
@@ -351,39 +380,39 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
     adjustHeight: function() {
         this.dialog.adjustHeight(this.wrpEl.getHeight());
     },
-    triggerTypeChanged:function(){
+    triggerTypeChanged:function() {
         var triggerType = this.triggerTypeSelect.options[this.triggerTypeSelect.selectedIndex].text;
-        if(triggerType == 'event'){
+        if (triggerType == 'event') {
             YAHOO.util.Dom.setStyle(this.eventTriggerView, 'display', '')
             //grid will arrange its width;
             this.eventsGrid.addRow({action:'dummy'});
             var length = this.eventsGrid.getRecordSet().getLength();
             this.eventsGrid.deleteRows(length - 1, length);
         }
-        else{
-           YAHOO.util.Dom.setStyle(this.eventTriggerView, 'display', 'none') 
+        else {
+            YAHOO.util.Dom.setStyle(this.eventTriggerView, 'display', 'none')
         }
-        if(triggerType == 'menu'){
+        if (triggerType == 'menu') {
             YAHOO.util.Dom.setStyle(this.menuTriggerView, 'display', '')
             //grid will arrange its width;
             this.menuGrid.addRow({action:'dummy'});
             length = this.menuGrid.getRecordSet().getLength();
             this.menuGrid.deleteRows(length - 1, length);
         }
-        else{
-           YAHOO.util.Dom.setStyle(this.menuTriggerView, 'display', 'none')
+        else {
+            YAHOO.util.Dom.setStyle(this.menuTriggerView, 'display', 'none')
         }
         this.adjustHeight();
     },
-    menuComponentChanged:function(){
+    menuComponentChanged:function() {
         SelectUtils.clear(this.menuSelect);
-        if(this.menuCompSelect.selectedIndex > -1){
+        if (this.menuCompSelect.selectedIndex > -1) {
             var component = this.menuCompSelect.options[this.menuCompSelect.selectedIndex].value
             var compType = this.currentComponents[component];
             var compMenuConfig = this.currentMenuConfig[compType]
-            for(var menuType in compMenuConfig) {
+            for (var menuType in compMenuConfig) {
                 var menuItems = compMenuConfig[menuType];
-                for(var i=0; i< menuItems.length; i++){
+                for (var i = 0; i < menuItems.length; i++) {
                     var menuName = menuItems[i];
                     SelectUtils.addOption(this.menuSelect, menuName, menuType);
                 }
@@ -391,8 +420,8 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }
         this.menuItemChanged();
     },
-    menuItemChanged: function(){
-        if(this.menuSelect.selectedIndex > -1){
+    menuItemChanged: function() {
+        if (this.menuSelect.selectedIndex > -1) {
             var component = this.menuCompSelect.options[this.menuCompSelect.selectedIndex].value;
             var compType = this.currentComponents[component];
             var menuType = this.menuSelect.options[this.menuSelect.selectedIndex].value;
@@ -411,7 +440,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             }
             this.menuDescrEl.innerHTML = '<p>Available parameters:</p><br>' + paramsHtml.join('');
         }
-        else{
+        else {
             this.menuDescrEl.innerHTML = '';
         }
         this.adjustHeight();
@@ -608,22 +637,34 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         var itemType = DesignerUtils.getItemType(this.designer, this.currentActionNode);
         this.nameInput.value = this.currentActionNode.getAttribute('name') || ''
         this.conditionInput.value = this.currentActionNode.getAttribute('condition') || ''
-        var eventsNode;
+        var actionTriggersNode;
+        var areTriggersMenu = false;
         var childNodes = this.currentActionNode.childNodes();
-        for(var i=0; i<childNodes.length;i++){
-            if(childNodes[i].getAttribute(this.designer.treeTypeAttribute) == 'Events'){
-                eventsNode = childNodes[i];
+        for (var i = 0; i < childNodes.length; i++) {
+            if (DesignerUtils.getItemType(this.designer, childNodes[i]) == 'ActionTriggers') {
+                actionTriggersNode = childNodes[i];
                 break;
             }
         }
-        if(eventsNode){
-            var eventNodes = eventsNode.childNodes();
-            for(var i=0; i<eventNodes.length; i++){
-                var component = eventNodes[i].getAttribute('component');
-                var event = eventNodes[i].getAttribute('eventName');
-                component = !component  || component == ''? 'Global' : component;
-                this.eventsGrid.addRow({component:component, event:event});
+        if (actionTriggersNode) {
+            var triggerNodes = actionTriggersNode.childNodes();
+            for (var i = 0; i < triggerNodes.length; i++) {
+                var triggerNode = triggerNodes[i]
+                var component = triggerNode.getAttribute('component');
+                var isMenuItem = triggerNode.getAttribute('isMenuItem');
+                var name = triggerNode.getAttribute('name');
+                if(isMenuItem == 'true'){
+                    areTriggersMenu = true;
+                    this.menuGrid.addRow({component:component, menuitem:name});                    
+                }
+                else{
+                    component = !component || component == '' ? 'Global' : component;
+                    this.eventsGrid.addRow({component:component, event:name});
+                }
             }
+        }
+        if(areTriggersMenu){
+            SelectUtils.selectTheValue(this.triggerTypeSelect, 'menu', 1);
         }
         if (itemType == "FunctionAction") {
             SelectUtils.selectTheValue(this.typeSelect, "function", 0);
@@ -637,7 +678,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             var childNodes = this.currentActionNode.childNodes();
             var argIndex = 0;
             for (var i = 0; i < childNodes.length; i++) {
-                if(DesignerUtils.getItemType(this.designer,childNodes[i]) == 'FunctionArgument'){
+                if (DesignerUtils.getItemType(this.designer, childNodes[i]) == 'FunctionArgument') {
                     argInputs[argIndex].value = childNodes[i].getAttribute('value');
                     argIndex ++;
                 }
@@ -665,8 +706,8 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.timeoutInput.value = this.currentActionNode.getAttribute('timeout') || '';
             var childNodes = this.currentActionNode.childNodes();
             for (var i = 0; i < childNodes.length; i++) {
-                if(DesignerUtils.getItemType(this.designer,childNodes[i]) == 'RequestParameter'){
-                    this.requestParamsGrid.addRow({key:childNodes[i].getAttribute('key'), value:childNodes[i].getAttribute('value')})    
+                if (DesignerUtils.getItemType(this.designer, childNodes[i]) == 'RequestParameter') {
+                    this.requestParamsGrid.addRow({key:childNodes[i].getAttribute('key'), value:childNodes[i].getAttribute('value')})
                 }
             }
             if (itemType == "MergeAction") {
@@ -687,6 +728,8 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         this.compGrid.deleteRows(0, length);
         length = this.eventsGrid.getRecordSet().getLength()
         this.eventsGrid.deleteRows(0, length);
+        length = this.menuGrid.getRecordSet().getLength()
+        this.menuGrid.deleteRows(0, length);
 
         this.nameInput.value = '';
         this.conditionInput.value = '';
@@ -785,21 +828,41 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                 argNode.setAttribute('value', argInputs[i].value)
             }
         }
-
-        var eventRecords = this.eventsGrid.getRecordSet().getRecords(0);
-        if(eventRecords.length > 0){
-            var atts = {};
-            atts[this.designer.treeHideAttribute] = 'true';
-            var eventsNode = this.designer.createTreeNode(actionNode, "Events", atts);
-            for(var i = 0; i < eventRecords.length; i++){
-                var eventNode = this.designer.createTreeNode(eventsNode, "Event");
-                var component = eventRecords[i].getData('component')
-                var eventName = eventRecords[i].getData('event')
-                component = component == 'Global'? '': component
-                eventNode.setAttribute('component', component)
-                eventNode.setAttribute('eventName', eventName)
+        var triggerType = this.triggerTypeSelect.options[this.triggerTypeSelect.selectedIndex].text
+        if (triggerType == 'event') {
+            var eventRecords = this.eventsGrid.getRecordSet().getRecords(0);
+            if (eventRecords.length > 0) {
+                var atts = {};
+                atts[this.designer.treeHideAttribute] = 'true';
+                var triggersNode = this.designer.createTreeNode(actionNode, "ActionTriggers", atts);
+                for (var i = 0; i < eventRecords.length; i++) {
+                    var triggerNode = this.designer.createTreeNode(triggersNode, "ActionTrigger");
+                    var component = eventRecords[i].getData('component')
+                    var eventName = eventRecords[i].getData('event')
+                    component = component == 'Global' ? '' : component
+                    triggerNode.setAttribute('component', component)
+                    triggerNode.setAttribute('name', eventName)
+                    triggerNode.setAttribute('isMenuItem', 'false')
+                }
             }
         }
+        else {
+            var menuRecords = this.menuGrid.getRecordSet().getRecords(0);
+            if (menuRecords.length > 0) {
+                var atts = {};
+                atts[this.designer.treeHideAttribute] = 'true';
+                var triggersNode = this.designer.createTreeNode(actionNode, "ActionTriggers", atts);
+                for (var i = 0; i < menuRecords.length; i++) {
+                    var triggerNode = this.designer.createTreeNode(triggersNode, "ActionTrigger");
+                    var component = menuRecords[i].getData('component')
+                    var menuItem = menuRecords[i].getData('menuitem')
+                    triggerNode.setAttribute('component', component)
+                    triggerNode.setAttribute('name', menuItem)
+                    triggerNode.setAttribute('isMenuItem', 'true')
+                }
+            }
+        }
+
         var currentTab = this.currentParentNode.getAttribute(this.designer.itemTabAtt);
         this.designer.addExtraAttributesToChildNodes(this.currentParentNode, currentTab);
         this.designer.refreshTree();

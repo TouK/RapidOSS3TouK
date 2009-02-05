@@ -596,7 +596,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
 
     fireRowHeaderMenuClick: function(data, id, parentId) {
-        this.events['rowHeaderMenuClick'].fireDirect(data, id, parentId);
+        this.events['rowHeaderMenuClicked'].fireDirect(data, id, parentId);
     },
     firePropertyClick: function(key, value, data) {
         this.events['propertyClicked'].fireDirect(key, value, data);

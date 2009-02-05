@@ -21,9 +21,7 @@ class UiTreeGridColumnOperations extends UiColumnOperations
                 displayFromProperty: "attributeName",
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
-                propertyConfiguration: [
-                        type: [descr: "Column type. Available types are text and image"],
-                ],
+                propertyConfiguration: [:],
                 childrenConfiguration: [
                         [
                                 designerType: "TreeGridColumnImages",
@@ -48,10 +46,18 @@ class UiTreeGridColumnOperations extends UiColumnOperations
 
     def static addUiElement(xmlNode, parentElement)
     {
+        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridColumnImages"};
         def attributes = xmlNode.attributes();
         attributes.component = parentElement
+        if(imagesNode.UiElement.size() !=0)
+        {
+            attributes.type = "text";
+        }
+        else
+        {
+            attributes.type = "image";
+        }
         def treeGridColumn = DesignerUtils.addUiObject(UiTreeGridColumn, attributes, xmlNode);
-        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridColumnImages"};
         imagesNode.UiElement.each{
             UiImage.addUiElement(it, treeGridColumn);
         }

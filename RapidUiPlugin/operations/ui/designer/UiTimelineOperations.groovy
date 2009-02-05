@@ -23,7 +23,7 @@ class UiTimelineOperations extends UiComponentOperations {
                         pollingInterval: [descr: "Time delay between two server requests."]
 
                 ],
-                childrenConfiguration:[[designerType: "TimelineBand"]]
+                childrenConfiguration:[[designerType: "TimelineBand", isMultiple:"true"]]
         ];
         def parentMetaData = UiComponentOperations.metaData();
         metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);

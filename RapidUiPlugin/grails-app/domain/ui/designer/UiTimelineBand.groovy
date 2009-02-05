@@ -21,7 +21,7 @@ class UiTimelineBand {
     Long intervalPixels=0;
     String intervalUnit="day";
     Boolean showText="";
-    Long trackHeight=0;
+    Double trackHeight=0;
     Long trackGap=0;
     Long syncWith=0;
     Long layoutWith=0;
@@ -29,12 +29,17 @@ class UiTimelineBand {
     Date date=new Date(0);
     Long textWidth=200;
     UiTimeline timeline;
+    org.springframework.validation.Errors errors ;
+
+    Object __operation_class__ ;
+
+    Object __is_federated_properties_loaded__ ;
     static relations = [
             timeline: [type: UiTimeline, reverseName: "bands", isMany: false]
     ]
 
     static constraints = {
-        width(nullable: false)
+        width(nullable: false, min:new Long(1), max:new Long(100))
         intervalPixels(nullable: false)
         intervalUnit(nullable: false, inList:["millisecond", "second", "minute", "hour", "day", "week", "month", "year", "decade", "century", "millennium", "epoch","era"])
         trackHeight(nullable: true)

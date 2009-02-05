@@ -16,7 +16,7 @@ class UiTimelineBandOperations extends AbstractDomainOperation{
         Map metaData = [
                 designerType: "TimelineBand",
                 canBeDeleted: true,
-                display: "TimelineBand",
+                display: "Band",
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [

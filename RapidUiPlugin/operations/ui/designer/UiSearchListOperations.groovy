@@ -29,11 +29,9 @@ class UiSearchListOperations extends UiComponentOperations{
                         sortOrderAttribute: [descr: "The attribute of the row which displays the sort position of the row according to the search query."],
                         defaultFields: [descr: "Properties list that will be shown when no field configuration is found for the row. Optional if showMax property is provided."],
                         showMax: [descr: "Maximum number of properties that will be displayed from the data. It overrides defaultFields and fields declarations."],
-                        title: [descr: "SearchGrid title."],
-                        pollingInterval: [descr: "Time delay between two server requests."],
+                        pollingInterval: [descr: "Time delay between two server requests.", required:true],
                         maxRowsDisplayed: [descr: "The maximum row count requested from server at every poll."],
                         lineSize: [descr: "How many lines a row consists of."],
-                        defaultQuery: [descr: "The query appended to the all queries sent by SearchGrid."],
                 ],
                 childrenConfiguration:
                 [

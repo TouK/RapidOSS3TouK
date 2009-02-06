@@ -17,8 +17,8 @@ class UiRequestParameterOperations extends AbstractDomainOperation{
                 canBeDeleted: true,
                 display: "RequestParameter",
                 propertyConfiguration: [
-                        key:[descr:"The URL parameter name", isRequired:true],
-                        value:[descr:"The JavaScript expression that will be evaluated to determine the value of the URL parameter", isRequired:true]
+                        key:[descr:"The URL parameter name", required:true],
+                        value:[descr:"The JavaScript expression that will be evaluated to determine the value of the URL parameter", required:true]
                 ],
                 childrenConfiguration:[]
         ];

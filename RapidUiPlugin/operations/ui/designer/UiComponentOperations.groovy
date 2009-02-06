@@ -13,7 +13,7 @@ class UiComponentOperations extends UiLayoutUnitOperations{
                 propertyConfiguration:
                 [
                     name:[descr:"Name of component"],
-                    title:[descr:"Title of component"]
+                    title:[descr:"Title of component", required:true]
                 ],
                 childrenConfiguration:[]
         ];

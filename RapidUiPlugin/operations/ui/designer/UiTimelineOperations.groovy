@@ -20,7 +20,7 @@ class UiTimelineOperations extends UiComponentOperations {
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data."],
-                        pollingInterval: [descr: "Time delay between two server requests."]
+                        pollingInterval: [descr: "Time delay between two server requests.", required:true]
 
                 ],
                 childrenConfiguration:[[designerType: "TimelineBand", isMultiple:"true"]]

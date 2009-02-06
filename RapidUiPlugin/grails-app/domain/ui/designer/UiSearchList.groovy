@@ -18,7 +18,6 @@ class UiSearchList extends UiComponent{
     String rootTag = "";
     String contentPath = "";
     String keyAttribute = "";
-    String fieldsUrl = "../script/run/getViewFields?format=xml";
     String queryParameter = "query";
     String totalCountAttribute = "total";
     String offsetAttribute = "offset";

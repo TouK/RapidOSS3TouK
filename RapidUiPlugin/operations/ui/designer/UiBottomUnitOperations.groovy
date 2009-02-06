@@ -14,7 +14,7 @@ public class UiBottomUnitOperations extends UiLayoutUnitOperations
                         height:[descr:"The height (in pixels) that the unit will take up in the layout."],
                         minHeight:[descr:"The min height of unit."],
                         maxHeight:[descr:"The max height of unit."],
-                        resize:[descr:"Boolean indicating whether this unit is resizeable."],
+                        resize:[descr:"Boolean indicating whether this unit is resizeable.", required:true],
                 ],
                 childrenConfiguration:[]
         ];

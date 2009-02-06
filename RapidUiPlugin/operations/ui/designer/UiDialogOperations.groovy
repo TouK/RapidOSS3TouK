@@ -20,7 +20,7 @@ class UiDialogOperations extends UiLayoutUnitOperations{
                 canBeDeleted:true,
                 propertyConfiguration:
                 [
-                    title:[descr:"Title of component"],
+                    title:[descr:"Title of component", required:true],
                     width:[descr:"The width of the dialog"],
                     height:[descr:"The height of the dialog"],
                     maxHeight:[descr:"Maximum height of the dialog"],

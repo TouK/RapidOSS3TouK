@@ -16,7 +16,7 @@ class UiMergeActionOperations extends UiRequestActionOperations {
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
-                        removeAttribute: [descr: "The attribute in response data which indicates that related components should remove the specified data"]
+                        removeAttribute: [descr: "The attribute in response data which indicates that related components should remove the specified data", required:true]
                 ],
                 childrenConfiguration: []
         ];

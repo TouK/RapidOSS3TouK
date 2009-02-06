@@ -23,6 +23,7 @@ class UiObjectMapOperations extends UiComponentOperations {
                         dataURL: [descr: "The default URL to be used for requests to the server to retrieve the data of each node and edges (state, cpu utilization, and etc.)"],
                         nodeSize: [descr: "Height of the node (width is 1.5 times height)"],
                         dataTag: [descr: "The node name of AJAX response which will be used as node data"],
+                        pollingInterval: [descr: "Time delay between two server requests.", required:true],
                         edgeColorDataKey: [descr: "The attribute name of the edge node which uniquely identifies the edge color."],
                         edgeColors: [descr: "The edge color mapping"]
                 ],

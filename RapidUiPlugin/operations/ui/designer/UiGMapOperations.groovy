@@ -28,7 +28,7 @@ class UiGMapOperations extends UiComponentOperations
                         markerField:[descr:"The marker image url. "],
                         tooltipField:[descr:"The attribute in data which will be displayed in tooltip. "],
                         title:[descr:"GMap title."],
-                        pollingInterval:[descr:"Time delay between two server requests."],
+                        pollingInterval:[descr:"Time delay between two server requests.", required:true],
                         timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]
                 ],
                 childrenConfiguration: []

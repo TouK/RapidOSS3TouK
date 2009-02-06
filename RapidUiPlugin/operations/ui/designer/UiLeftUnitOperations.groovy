@@ -12,7 +12,7 @@ public class UiLeftUnitOperations extends UiLayoutUnitOperations
                 imageCollapsed:"images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
                         width:[descr:"The width (in pixels) that the unit will take up in the layout."],
-                        resize:[descr:"Boolean indicating whether this unit is resizeable."],
+                        resize:[descr:"Boolean indicating whether this unit is resizeable.", required:true],
                         minWidth:[descr:"The min width of unit."],
                         maxWidth:[descr:"The max width of unit."]
                 ],

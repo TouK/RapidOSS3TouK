@@ -24,7 +24,7 @@ class UiRootImageOperations  extends AbstractDomainOperation
                 propertyConfiguration: [
                         expanded: [descr: "The image url which will be shown when the row is expanded"],
                         collapsed: [descr: "The image url which will be shown when the row is collapsed"],
-                        visible: [descr: "The JavaScript expression evaluated on row data to determine whether the image is displayed or not"]
+                        visible: [descr: "The JavaScript expression evaluated on row data to determine whether the image is displayed or not", required:true]
                 ],
                 childrenConfiguration: [:]
         ];

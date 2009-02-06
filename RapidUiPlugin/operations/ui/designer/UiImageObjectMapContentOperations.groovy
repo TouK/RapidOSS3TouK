@@ -19,7 +19,7 @@ class UiImageObjectMapContentOperations extends UiObjectMapContentOperations{
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
-                        mapping: [descr: "Map which defines the image mapping according to the possible values of dataKey attribute"]
+                        mapping: [descr: "Map which defines the image mapping according to the possible values of dataKey attribute", required:true]
                 ],
                 childrenConfiguration: []
         ];

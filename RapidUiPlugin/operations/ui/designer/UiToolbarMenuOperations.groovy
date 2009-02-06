@@ -22,7 +22,7 @@ class UiToolbarMenuOperations extends AbstractDomainOperation
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
-                        label: [descr: "The label of the menu"]
+                        label: [descr: "The label of the menu", required:true]
                 ],
                 childrenConfiguration: [
                     [designerType: "MenuItem", propertyName: "menuItems", isMultiple: true, isVisible:{component-> return component.type == "toolbar"}]

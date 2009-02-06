@@ -20,7 +20,7 @@ class UiHtmlOperations extends UiComponentOperations
                 imageExpanded: "images/rapidjs/designer/component.gif",
                 imageCollapsed: "images/rapidjs/designer/component.gif",
                 propertyConfiguration: [
-                        pollingInterval:[descr:"Time delay between two server requests."],
+                        pollingInterval:[descr:"Time delay between two server requests.", required:true],
                         iframe:[descr:"Parameter to display the content in an iframe or embed it to Html component's body."]
                 ],
                 childrenConfiguration: []

@@ -25,6 +25,7 @@ class UiPieChartOperations extends UiComponentOperations
                         categoryField:[descr:"The attribute in the data to define x series."],
                         dataField:[descr:"The attribute in the data to define y series."],
                         legend:[descr:"The position of the legend. Possible values are top, right, bottom, left and none."],
+                        pollingInterval:[descr: "Time delay between two server requests.", required:true],
                         colors:[descr:"The color definition list of the slices. The order of the data is taken into consideration while matching the color to a category."]
                 ],
                 childrenConfiguration: []

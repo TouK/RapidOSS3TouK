@@ -16,6 +16,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.propertyGrid = null;
     this.currentLayout = null;
     this.currentLayoutNode = null;
+    this.dataChanged = false;
     this.data = null;
     this.editors = {
         String: new YAHOO.widget.TextboxCellEditor({disableBtns:true}),
@@ -31,6 +32,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
     };
     this.actionDlg = new YAHOO.rapidjs.designer.ActionDefinitionDialog(this);
     this.loadingMask = new YAHOO.rapidjs.component.LoadingMask({});
+    this.confirmBox = new YAHOO.rapidjs.component.ConfirmBox({handler:this.confirmBoxHandler, scope:this});
     this.render();
     this.getMetaData();
 };
@@ -189,6 +191,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     },
 
     treeSelectionChanged:function(xmlData) {
+        this.confirmBox.show();
         this.displayItemProperties(xmlData);
         this.changeLayout(xmlData);
     },
@@ -378,6 +381,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 this.createTreeNode(newNode, childType);
             }
         }
+        this.dataChanged = true;
         return newNode;
     },
 
@@ -488,7 +492,19 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         YAHOO.util.Connect.asyncRequest('POST', this.saveUrl, callback, postData);
         this.loadingMask.show("Saving, please wait...");
     },
-    generate : function() {
+    confirmBoxHandler: function(){
+        this.confirmBox.hide();
+        this._generate();
+    },
+    generate: function(){
+       if(this.dataChanged){
+          this.confirmBox.show('Some changes has not been saved. Do you want to continue?');
+       }
+       else{
+           this._generate();
+       }
+    },
+    _generate : function() {
         var callback = {
             success: this.processSuccess,
             failure: this.handleFailure,
@@ -500,14 +516,15 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.loadingMask.show("Generating, please wait...");
     },
     saveSuccess: function(response) {
-        this.loadingMask.show("Ui configuration successfully saved.");
+        this.loadingMask.show("Successfully saved.");
+        this.dataChanged = false;
         var self = this;
         setTimeout(function() {
             self.loadingMask.hide();
         }, 1000)
     },
     generateSuccess: function(response) {
-        this.loadingMask.show("Ui configuration successfully generated.");
+        this.loadingMask.show("Successfully generated.");
         var self = this;
         setTimeout(function() {
             self.loadingMask.hide();
@@ -550,6 +567,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 this.addExtraAttributesToChildNodes(this.currentDisplayedItemData, currentTab)
                 this.refreshLayout(this.currentDisplayedItemData);
             }
+            this.dataChanged = true;
             this.refreshTree();
         }
         for (var editor in this.editors) {

@@ -6,9 +6,18 @@
                     <Item  designer_key="4" designer_type="Layout">
                         <Item designer_key="5" designer_type="CenterUnit"></Item>
                     </Item>
-                    <Item designer_key="6" designer_type="Components"></Item>
+                    <Item designer_key="6" designer_type="Components">
+                        <Item designer_key="14" designer_type="FlexPieChart" name="pieChart" url="bla bla" rootTag="Objects"></Item>
+                    </Item>
                     <Item designer_key="7" designer_type="Dialogs"></Item>
-                    <Item designer_key="9" designer_type="Actions" designer_hide="true"></Item>
+                    <Item designer_key="9" designer_type="Actions">
+                        <Item designer_key="10" designer_type="LinkAction" url="bla bla" name="linkaction">
+                            <Item designer_key="11" designer_type="ActionTriggers" designer_hidden='true'>
+                                <Item designer_key="12" designer_type="ActionTrigger" designer_hidden="true" name="browse" component="pieChart" isMenuItem='true'></Item>
+                                <Item designer_key="13" designer_type="ActionTrigger" designer_hidden="true" name="objectDetails" component="pieChart" isMenuItem='true'></Item>
+                            </Item>
+                        </Item>
+                    </Item>
                 </Item>
             </Item>
         </Item>

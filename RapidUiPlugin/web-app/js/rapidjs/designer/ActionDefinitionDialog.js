@@ -15,6 +15,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             minHeight:100,
             x:250,y:0,
             resizable: false,
+            modal:true,
             title: 'Configure Action',
             buttons:[
                 {text:"Save", handler:this.handleSave, scope:this, isDefault:true },

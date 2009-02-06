@@ -32,6 +32,7 @@ YAHOO.rapidjs.component.Dialog = function(config)
     this.x = 0;
     this.y = 0;
     this.fixedcenter = false;
+    this.modal = false;
     YAHOO.ext.util.Config.apply(this, config);
     if (!this.x && !this.y) {
         this.fixedcenter = true;
@@ -60,6 +61,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             width:this.width,
             height:this.height,
             autofillheight:false,
+            modal:this.modal,
             x:this.x,
             y:this.y
         };

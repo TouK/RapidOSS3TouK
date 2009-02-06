@@ -101,7 +101,10 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
         }
 
         def expectedProperties = metaDataConfiguration.keySet().sort {it}
+
         def uiPropertyMetaDatasForUiModel1 = DesignerUtils.addConfigurationParametersFromModel(metaDataConfiguration, grailsDomainClass).entrySet().sort {it.key}.value;
+
+
         assertEquals (expectedProperties.size(), uiPropertyMetaDatasForUiModel1.size());
         for(int i=0; i < expectedProperties.size(); i++){
             assertEquals (expectedProperties[i], uiPropertyMetaDatasForUiModel1[i].name);
@@ -138,11 +141,11 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
         assertEquals ("", uiPropertyMetaDatasForUiModel1[5].defaultValue);
 //
 
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[0].inList);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[1].inList);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[2].inList);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[3].inList);
+        assertNull ( uiPropertyMetaDatasForUiModel1[0].inList);
+        assertNull (uiPropertyMetaDatasForUiModel1[1].inList);
+        assertNull (uiPropertyMetaDatasForUiModel1[2].inList);
+        assertNull(uiPropertyMetaDatasForUiModel1[3].inList);
         assertEquals ("x,y,z", uiPropertyMetaDatasForUiModel1[4].inList);
-        assertEquals ("", uiPropertyMetaDatasForUiModel1[5].inList);
+        assertNull (uiPropertyMetaDatasForUiModel1[5].inList);
     }
 }

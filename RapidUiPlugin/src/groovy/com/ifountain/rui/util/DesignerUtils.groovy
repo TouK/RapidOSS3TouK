@@ -43,7 +43,7 @@ class DesignerUtils {
                     config.descr = config.descr != null ? config.descr : "";
                     if(!domainPropertiesMap[propName].isRelation)
                     {
-                        config.defaultValue = config.defaultValue != null ? config.defaultValue : String.valueOf(domainInstance[propName]);
+                        config.defaultValue = config.defaultValue != null ? config.defaultValue : domainInstance[propName]==null?"":String.valueOf(domainInstance[propName]);
                     }
                     else
                     {
@@ -51,8 +51,9 @@ class DesignerUtils {
                     }
                     //TODO: could not tested taking inList from constraints will be tested if an appropriate model is constructed
                     def inlistConstraint = constrainedProps[propName].getInList();
-                    if (inlistConstraint == null) inlistConstraint = [];
-                    config.inList = config.inList != null ? config.inList : inlistConstraint.join(",")
+                    if (inlistConstraint && config.inList == null){
+                        config.inList = inlistConstraint.join(",")
+                    }
                 }
                 else
                 {

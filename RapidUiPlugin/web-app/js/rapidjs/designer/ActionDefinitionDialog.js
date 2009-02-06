@@ -617,7 +617,6 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.argsGrid.addRow({action:'dummy'});
             var length = this.argsGrid.getRecordSet().getLength();
             this.argsGrid.deleteRows(length - 1, length);
-            this.componentChanged();
         }
         else {
             YAHOO.util.Dom.setStyle(this.functionView, 'display', 'none');
@@ -648,9 +647,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         else {
             this.componentChanged();
         }
+        this.typeChanged();
         this.eventComponentChanged();
         this.menuComponentChanged();
-        this.typeChanged();
         this.triggerTypeChanged();
         this.dialog.show();
         this.adjustHeight();

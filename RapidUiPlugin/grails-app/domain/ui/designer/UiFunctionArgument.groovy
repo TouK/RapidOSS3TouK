@@ -27,7 +27,7 @@ class UiFunctionArgument {
     static relations = [action:[type:UiFunctionAction, reverseName:"arguments", isMany:false]]
 
     static constraints={
-     value(blank:true,nullable:true)
+     value(nullable:false)
      action(nullable:false)
      __operation_class__(nullable:true)
      __is_federated_properties_loaded__(nullable:true)

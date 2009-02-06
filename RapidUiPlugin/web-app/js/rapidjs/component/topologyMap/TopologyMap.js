@@ -408,7 +408,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         }
         else
         {
-            this.body.dom.innerHTML = "<iframe id=\""+this.id+"frame\" name=\""+this.id+"frame\" src=\"images/rapidjs/component/topologyMap/topologymap.gsp?configFunction="+this.configFunctionName+"\" frameborder=\"0\" width=\"%100\" height=\"%100\" style=\"margin: 0px;width:100%;height:100%\">" +
+            this.body.dom.innerHTML = "<iframe id=\""+this.id+"frame\" name=\""+this.id+"frame\" src=\"" +  getUrlPrefix()+"images/rapidjs/component/topologyMap/topologymap.gsp?configFunction="+this.configFunctionName+"\" frameborder=\"0\" width=\"%100\" height=\"%100\" style=\"margin: 0px;width:100%;height:100%\">" +
                                   "</iframe>"
             this.iframe = this.body.dom.getElementsByTagName("iframe")[0];
             this.flashTimer = new YAHOO.ext.util.DelayedTask(this.isFlashLoaded, this);

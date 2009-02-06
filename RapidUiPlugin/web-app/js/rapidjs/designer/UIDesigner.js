@@ -191,7 +191,6 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     },
 
     treeSelectionChanged:function(xmlData) {
-        this.confirmBox.show();
         this.displayItemProperties(xmlData);
         this.changeLayout(xmlData);
     },

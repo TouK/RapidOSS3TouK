@@ -26,7 +26,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     }
     //should only return the value of state
     def loadState(){
-        return  RsObjectState.get(objectId:id).state;
+        return  RsObjectState.get(objectId:id)?.state;
     }
 
     int getState()
@@ -42,8 +42,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
 
     def currentState()
     {
-        def stateLoaded = loadState();
-        return stateLoaded?stateLoaded:null;
+        return loadState();
     }
     
     int setState(newPropagatedState, oldPropagatedState = -1)

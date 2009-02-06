@@ -32,6 +32,7 @@ public class UiTabOperations extends AbstractDomainOperation
                                         ,[designerType:"SearchGrid", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiSearchGrid"}]
                                         ,[designerType:"TreeGrid", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiTreeGrid"}]
                                         ,[designerType:"Timeline", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiTimeline"}]
+                                        ,[designerType:"PieChart", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiPieChart"}]
                                     ]
                             ],
                             propertyName:"layout"

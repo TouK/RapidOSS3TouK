@@ -172,9 +172,16 @@ class UiDesignerController {
 
     def generateTag(model, templateEngine)
     {
-        def baseDir = System.getProperty("base.dir")
-        def tagTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/${model.metaData().designerType}.gsp"));
-        return tagTemplate.make(uiElement:model).toString();
+        try
+        {
+            def baseDir = System.getProperty("base.dir")
+            def tagTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/${model.metaData().designerType}.gsp"));
+            return tagTemplate.make(uiElement:model).toString();
+        }
+        catch(Exception e)
+        {
+            throw new Exception("An error occurred while generating html while processing template ${model.metaData().designerType+".gsp"}", e);
+        }
     }
     def createViewXml(components, builder)
     {

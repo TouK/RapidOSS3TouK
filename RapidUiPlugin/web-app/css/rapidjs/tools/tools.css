@@ -60,8 +60,8 @@
     background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll 0px -20px;
 }
 
-.r-tool-setting{
-	background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll 0px -100px;   	
+.r-tool-setting {
+    background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll 0px -100px;
 }
 
 .r-tooltip {
@@ -102,4 +102,15 @@
     padding-left: 25px;
     padding-bottom: 15px;
     background: url( ../../../images/rapidjs/component/tools/dark-red-circle.png ) no-repeat 0px 5px;
+}
+
+.r-loading-mask-image {
+    background: url( ../../../images/rapidjs/component/tools/rel_interstitial_loading.gif ) no-repeat center;
+    height: 20px;
+}
+
+.r-loading-mask-text {
+    font-size: 13px;
+    font-family: verdana, tahoma, arial;
+    padding: 0px 8px;
 }

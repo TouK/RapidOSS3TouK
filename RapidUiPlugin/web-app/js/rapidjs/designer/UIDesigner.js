@@ -1,4 +1,3 @@
-
 YAHOO.namespace('rapidjs', 'rapidjs.designer');
 YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.rootTag = null;
@@ -31,6 +30,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
         Boolean: new YAHOO.widget.DropdownCellEditor({dropdownOptions:['true', 'false']})
     };
     this.actionDlg = new YAHOO.rapidjs.designer.ActionDefinitionDialog(this);
+    this.loadingMask = new YAHOO.rapidjs.component.LoadingMask({});
     this.render();
     this.getMetaData();
 };
@@ -169,6 +169,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
             else
             {
+                this.loadingMask.hide();
                 var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
                 this.tree.events["error"].fireDirect(this.tree, errors);
                 YAHOO.rapidjs.ErrorManager.errorOccurred(this.tree, errors);
@@ -179,9 +180,11 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         {
         }
         this.tree.events["loadstatechanged"].fireDirect(this.tree, false);
+
     },
 
     handleFailure: function(response) {
+        this.loadingMask.hide();
         this.tree.processFailure(response)
     },
 
@@ -483,6 +486,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         var postData = 'configuration=' + encodeURIComponent(this.data.firstChild().toString());
         YAHOO.util.Connect.asyncRequest('POST', this.saveUrl, callback, postData);
+        this.loadingMask.show("Saving, please wait...");
     },
     generate : function() {
         var callback = {
@@ -493,12 +497,21 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             argument:[this.generateSuccess]
         }
         YAHOO.util.Connect.asyncRequest('GET', this.generateUrl, callback);
+        this.loadingMask.show("Generating, please wait...");
     },
     saveSuccess: function(response) {
-        alert("Save is successfull")
+        this.loadingMask.show("Ui configuration successfully saved.");
+        var self = this;
+        setTimeout(function() {
+            self.loadingMask.hide();
+        }, 1000)
     },
     generateSuccess: function(response) {
-        alert("Generate is successfull")
+        this.loadingMask.show("Ui configuration successfully generated.");
+        var self = this;
+        setTimeout(function() {
+            self.loadingMask.hide();
+        }, 1000)
     },
     render: function() {
         var dh = YAHOO.ext.DomHelper;

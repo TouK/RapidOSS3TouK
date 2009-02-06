@@ -26,6 +26,7 @@
     <script type="text/javascript" src="js/rapidjs/component/form/Form.js"></script>
 
     <script type="text/javascript" src="js/rapidjs/component/simplewidgets/Button.js"></script>
+    <script type="text/javascript" src="js/rapidjs/component/simplewidgets/LoadingMask.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/BasicTool.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/tools/SettingsTool.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/dialog/Dialog.js"></script>

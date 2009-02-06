@@ -58,24 +58,15 @@ class UiDialog
 
     static constraints = {
         tab(key: ["component", "isActive"])
-        width(nullable: true)
-
-        height(nullable: true)
-
+        x(nullable: true)
+        y(nullable: true)
         maxHeight(nullable: true)
-
         minHeight(nullable: true)
-
         minWidth(nullable: true)
-
         maxWidth(nullable: true)
-
         title(blank: true, nullable: true)
-
         __operation_class__(nullable: true)
-
         __is_federated_properties_loaded__(nullable: true)
-
         errors(nullable: true)
 
     }

@@ -40,10 +40,9 @@ class UiColumn {
 
     static constraints = {
         attributeName(blank: false, nullable: false, key: ["component", "isActive"])
-        colLabel(blank: false, nullable: false)
-        width(nullable: false)
-        sortBy(nullable: false)
-        sortOrder(blank:false, nullable: false, inList:["asc", "desc"]);
+        colLabel(blank: true, nullable: false)
+        sortBy(nullable: true)
+        sortOrder(nullable: true, inList:["asc", "desc"]);
         __operation_class__(nullable: true)
         __is_federated_properties_loaded__(nullable: true)
         errors(nullable: true)

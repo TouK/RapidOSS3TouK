@@ -15,7 +15,6 @@ class UiLinkAction extends UiAction
     static relations = [:]
 
     static constraints={
-        url(nullable:false)
     }
 
     static propertyConfiguration= [:]

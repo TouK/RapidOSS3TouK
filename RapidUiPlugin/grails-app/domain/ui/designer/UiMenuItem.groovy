@@ -41,7 +41,7 @@ class UiMenuItem {
 
     static constraints={
      name(blank:false,nullable:false,key:["component", "isActive"])
-     label(blank:false,nullable:false);
+     label(blank:true,nullable:false);
      type(blank:false,nullable:false, inList:["component", "property", "toolbar"]);
      visible(blank:true,nullable:true);
      __operation_class__(nullable:true)

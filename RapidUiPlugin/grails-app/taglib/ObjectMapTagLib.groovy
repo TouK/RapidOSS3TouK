@@ -113,11 +113,13 @@ class ObjectMapTagLib {
         if (config["pollingInterval"])
             cArray.add("pollingInterval:${config['pollingInterval']}")
         def edgeColors = config["edgeColors"];
+        def edgeColorDataKey = config["edgeColorDataKey"];
         def edgeNodesArray = [];
         edgeColors.each {k, v ->
             edgeNodesArray.add("'${k}':${v}")
         }
         cArray.add("edgeColors:{${edgeNodesArray.join(',')}}")
+        cArray.add("edgeColorDataKey:'${edgeColorDataKey}'")
         def nodeContentArray = [];
         def images = xml.NodeContent.Images.Image;
         def imageArray = [];

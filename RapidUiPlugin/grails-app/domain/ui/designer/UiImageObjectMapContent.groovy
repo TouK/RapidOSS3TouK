@@ -15,7 +15,6 @@ class UiImageObjectMapContent extends UiObjectMapContent{
     static datasources = [:]
     static relations = [:]
     static constraints={
-        mapping(nullable:true)
     }
 
     static propertyConfiguration= [:]

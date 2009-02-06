@@ -18,6 +18,8 @@ class UiTopUnit extends UiLayoutUnit{
     static relations = [:]
     static constraints={
         resize(nullable:true)
+        minHeight(nullable:true);
+        maxHeight(nullable:true);
     }
 
     static propertyConfiguration= [:]

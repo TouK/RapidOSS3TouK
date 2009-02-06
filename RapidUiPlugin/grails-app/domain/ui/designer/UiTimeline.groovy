@@ -18,7 +18,6 @@ class UiTimeline extends UiComponent{
             bands: [type: UiTimelineBand, reverseName: "timeline", isMany: true]
     ]
     static constraints={
-        url(nullable:false, blank:false)
         pollingInterval(nullable:true)
     }
 

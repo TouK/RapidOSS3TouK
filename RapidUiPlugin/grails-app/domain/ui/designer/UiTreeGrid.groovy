@@ -31,10 +31,6 @@ class UiTreeGrid extends UiComponent{
     ]
 
     static constraints = {
-        url(nullable: false, blank: false)
-        rootTag(nullable: false, blank: false)
-        contentPath(nullable: false, blank: false)
-        keyAttribute(nullable: false, blank: false)
         pollingInterval(nullable: true)
         expanded(nullable: true)
         tooltip(blank: true)

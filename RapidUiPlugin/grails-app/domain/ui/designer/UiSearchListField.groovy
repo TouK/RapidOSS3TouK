@@ -30,8 +30,6 @@ class UiSearchListField {
     ]
 
     static constraints = {
-        fields(blank: false, nullable: false)
-        exp(blank: false, nullable: false)
         __operation_class__(nullable: true)
         __is_federated_properties_loaded__(nullable: true)
         errors(nullable: true)

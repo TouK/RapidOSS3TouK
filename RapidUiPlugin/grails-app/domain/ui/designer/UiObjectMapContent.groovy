@@ -39,7 +39,7 @@ class UiObjectMapContent {
         width(nullable: false)
         height(nullable: false)
         dataKey(blank: false, nullable: false)
-        type(blank: false, nullable: true, inList: ["text", "image", "gauge"])
+        type(blank: false, nullable: false, inList: ["text", "image", "gauge"])
         __operation_class__(nullable: true)
         __is_federated_properties_loaded__(nullable: true)
         errors(nullable: true)

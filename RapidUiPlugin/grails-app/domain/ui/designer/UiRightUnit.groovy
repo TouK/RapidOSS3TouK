@@ -18,6 +18,8 @@ class UiRightUnit extends UiLayoutUnit{
     static relations = [:]
     static constraints={
         resize(nullable:true)
+        minWidth(nullable:true)
+        maxWidth(nullable:true)
     }
 
     static propertyConfiguration= [:]

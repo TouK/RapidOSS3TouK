@@ -32,7 +32,6 @@ class UiRequestParameter {
     static constraints={
      key(blank:false,nullable:false,key:["isActive","action"])
      value(blank:true,nullable:true)
-     action(nullable:false)
      __operation_class__(nullable:true)
      __is_federated_properties_loaded__(nullable:true)
      errors(nullable:true)

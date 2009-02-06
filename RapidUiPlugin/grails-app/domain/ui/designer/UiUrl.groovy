@@ -38,7 +38,7 @@ class UiUrl
     ]
     
     static constraints={
-    url(blank:false,nullable:false,key:["isActive"])
+        url(blank:false,nullable:false,key:["isActive"])
         
      __operation_class__(nullable:true)
         

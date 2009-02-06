@@ -27,13 +27,9 @@ class UiFunctionArgument {
     static relations = [action:[type:UiFunctionAction, reverseName:"arguments", isMany:false]]
 
     static constraints={
-     value(nullable:false)
-     action(nullable:false)
      __operation_class__(nullable:true)
      __is_federated_properties_loaded__(nullable:true)
      errors(nullable:true)
-
-
     }
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "action"];

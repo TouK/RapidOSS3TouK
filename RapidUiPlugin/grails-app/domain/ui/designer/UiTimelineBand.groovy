@@ -40,7 +40,6 @@ class UiTimelineBand {
 
     static constraints = {
         width(nullable: false, min:new Long(1), max:new Long(100))
-        intervalPixels(nullable: false)
         intervalUnit(nullable: false, inList:["millisecond", "second", "minute", "hour", "day", "week", "month", "year", "decade", "century", "millennium", "epoch","era"])
         trackHeight(nullable: true)
         trackGap(nullable: true)
@@ -48,8 +47,6 @@ class UiTimelineBand {
         syncWith(nullable: true)
         layoutWith(nullable: true)
         textWidth(nullable: true)
-        showText(nullable: false)
-        highlight(nullable: false)
         date(nullable: true)
         __operation_class__(nullable: true)
         __is_federated_properties_loaded__(nullable: true)

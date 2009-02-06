@@ -35,6 +35,7 @@ public class UiTabOperations extends AbstractDomainOperation
                                         ,[designerType:"PieChart", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiPieChart"}]
                                         ,[designerType:"GMap", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiGMap"}]
                                         ,[designerType:"Html", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiHtml"}]
+                                        ,[designerType:"ObjectMap", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiObjectMap"}]
                                     ]
                             ],
                             propertyName:"layout"

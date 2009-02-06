@@ -27,15 +27,15 @@ public class UiTabOperations extends AbstractDomainOperation
                                     imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
                                     imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
                                     childrenConfiguration: [
-                                        [designerType:"FlexPieChart", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiFlexPieChart"}]
+                                         [designerType:"SearchGrid", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiSearchGrid"}]
                                         ,[designerType:"SearchList", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiSearchList"}]
-                                        ,[designerType:"SearchGrid", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiSearchGrid"}]
                                         ,[designerType:"TreeGrid", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiTreeGrid"}]
-                                        ,[designerType:"Timeline", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiTimeline"}]
-                                        ,[designerType:"PieChart", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiPieChart"}]
-                                        ,[designerType:"GMap", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiGMap"}]
                                         ,[designerType:"Html", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiHtml"}]
+                                        ,[designerType:"FlexPieChart", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiFlexPieChart"}]
+                                        ,[designerType:"PieChart", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiPieChart"}]
                                         ,[designerType:"ObjectMap", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiObjectMap"}]
+                                        ,[designerType:"GMap", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiGMap"}]
+                                        ,[designerType:"Timeline", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiTimeline"}]
                                     ]
                             ],
                             propertyName:"layout"

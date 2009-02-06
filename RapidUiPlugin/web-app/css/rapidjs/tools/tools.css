@@ -111,6 +111,7 @@
 
 .r-loading-mask-text {
     font-size: 13px;
+    white-space:nowrap;
     font-family: verdana, tahoma, arial;
     padding: 0px 8px;
 }

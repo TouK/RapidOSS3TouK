@@ -17,7 +17,10 @@
 * USA.
 */
 public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
-	public void clear() {
+    public RsEventOperations()
+    {
+    }
+    public void clear() {
 		clear(true);
 	}
 

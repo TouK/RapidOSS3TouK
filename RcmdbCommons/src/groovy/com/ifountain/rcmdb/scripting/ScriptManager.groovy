@@ -175,7 +175,7 @@ public class ScriptManager {
                 scriptObject.setProperty(propName, propValue);
             }
             scriptObject.setProperty("logger", scriptLogger);
-            if(operationClass!=null)
+            if(operationClass!=null && operationClass!="")
             {
                 scriptObject.setProperty ("operationInstance",operationClass.newInstance())    
             }

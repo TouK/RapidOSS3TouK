@@ -260,6 +260,23 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         assertEquals ("user1", manager.runScript(scriptName, bindings,testLogger));
         assertEquals ("user1", manager.runScript("script1", bindings,testLogger));
     }
+    public void testOperationClassInjectedToScript(){
+        def scriptName = "script1.groovy";
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write ("""
+           setProperty("input",[:])
+           input.fromScript="scriptHello";
+           injectedFunction();
+           injectedFunction2("injectedParamHello");
+           return input;     
+        """);
+        manager.addScript(scriptName);
+        def result=manager.runScript(scriptName, [:],testLogger,TestScriptOperationClass);
+        
+        assertEquals(result.fromScript,"scriptHello");
+        assertEquals(result.fromInjectedFunction,"injectedHello");
+        assertEquals(result.fromInjectedFunctionParam,"injectedParamHello");
+    }
     public void testRunScriptThrowsRuntimeExceptions()
     {
         def scriptName = "script1.groovy";

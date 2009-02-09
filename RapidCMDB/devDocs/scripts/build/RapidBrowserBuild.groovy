@@ -66,6 +66,7 @@ class RapidBrowserBuild extends Build  {
             ant.fileset(file:"../ThirdParty/lib/compass/lucene-snowball.jar")
             ant.fileset(file:"../ThirdParty/lib/compass/lucene-spellchecker.jar")
             ant.fileset(file:"../ThirdParty/lib/log4j-1.2.13.jar")
+            ant.fileset(file:"../ThirdParty/lib/commons/commons-logging.jar")
             ant.fileset(file:"../ThirdParty/lib/jetty/jetty-6.1.7.jar")
             ant.fileset(file:"../ThirdParty/lib/jetty/jetty-util-6.1.7.jar")
             ant.fileset(file:"../ThirdParty/lib/jetty/servlet-api-2.5-6.1.7.jar")

@@ -19,7 +19,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 class UiDesignerController {
     static Object uiDefinitionLock = new Object();
     def baseDir = System.getProperty("base.dir")
-    def view= {
+    def view = {
         synchronized (uiDefinitionLock)
         {
             def sw = new StringWriter();
@@ -27,28 +27,28 @@ class UiDesignerController {
             def urls = UiUrl.list();
             try
             {
-                markupBuilder.UiConfig{
-                    markupBuilder.UiElement(designerType:"Urls"){
+                markupBuilder.UiConfig {
+                    markupBuilder.UiElement(designerType: "Urls") {
                         com.ifountain.rui.util.DesignerUtils.generateXml(urls, markupBuilder);
                     }
                 }
-                render(text:sw.toString(), contentType:"text/xml");
+                render(text: sw.toString(), contentType: "text/xml");
             }
-            catch(Throwable t)
+            catch (Throwable t)
             {
-                addError("designer.view.exception", t.message, [ex.message]);
-                render(contentType:"text.xml", text:errorsToXml());
+                addError("designer.view.exception", t.message, [t.message]);
+                render(contentType: "text/xml", text: errorsToXml());
             }
         }
     }
 
-    def save= {
+    def save = {
         synchronized (uiDefinitionLock)
         {
             def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer")}
-            uiDomainClasses.each{domainClassInstance->
-                domainClassInstance.clazz.list().each{uiInstance->
-                    uiInstance.isActive=false;
+            uiDomainClasses.each {domainClassInstance ->
+                domainClassInstance.clazz.list().each {uiInstance ->
+                    uiInstance.isActive = false;
                 }
             }
             def xmlConfigurationString = params.configuration
@@ -57,34 +57,34 @@ class UiDesignerController {
             {
                 processUiElement(xmlConfiguration);
                 def urlsAfterDelete = UiUrl.list();
-                UiUrl.search("isActive:false").results.each{urlObject->
+                UiUrl.search("isActive:false").results.each {urlObject ->
                     deleteUrlFiles(urlObject);
                 }
-                UiTab.search("isActive:false").results.each{UiTab tabObject->
+                UiTab.search("isActive:false").results.each {UiTab tabObject ->
                     deleteTabFile(tabObject.url.url, tabObject);
                 }
-                uiDomainClasses.each{domainClassInstance->
+                uiDomainClasses.each {domainClassInstance ->
                     domainClassInstance.clazz.'removeAll'("isActive:false");
                 }
 
 
-                render(contentType:"text/xml")
-                {
-                    Successful("UI configuration saved successfully")
-                }
+                render(contentType: "text/xml")
+                        {
+                            Successful("UI configuration saved successfully")
+                        }
             }
-            catch(Throwable ex)
+            catch (Throwable ex)
             {
-                uiDomainClasses.each{domainClassInstance->
+                uiDomainClasses.each {domainClassInstance ->
                     domainClassInstance.clazz.'removeAll'("isActive:true");
                 }
-                uiDomainClasses.each{domainClass->
-                    domainClass.clazz.'list'().each{instance->
-                        instance.isActive = true;    
+                uiDomainClasses.each {domainClass ->
+                    domainClass.clazz.'list'().each {instance ->
+                        instance.isActive = true;
                     }
                 }
                 addError("designer.save.exception", [ex.message]);
-                render(contentType:"text.xml", text:errorsToXml());
+                render(contentType: "text/xml", text: errorsToXml());
             }
 
         }
@@ -97,9 +97,9 @@ class UiDesignerController {
         def tabsDir = new File("${baseDir}/web-app/${url.url}");
         urlRedirectFile.delete();
         urlLayoutFile.delete();
-        if(tabsDir.exists())
+        if (tabsDir.exists())
         {
-            FileUtils.deleteDirectory (tabsDir)
+            FileUtils.deleteDirectory(tabsDir)
         }
     }
 
@@ -112,63 +112,70 @@ class UiDesignerController {
     def generate = {
         synchronized (uiDefinitionLock)
         {
-            def templateEngine = new SimpleTemplateEngine(ApplicationHolder.application.classLoader);
-            def urlTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/Url.gsp"));
-            def tabTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/Tab.gsp"));
-            UiUrl.list().each{url->
-                def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.url}Layout.gsp");
-                def content = urlTemplate.make (url:url).toString()
-                urlLayoutFile.setText (content)
-                def urlRedirectFile = new File("${baseDir}/web-app/${url.url}.gsp");
-                if(!url.tabs.isEmpty())
-                {
-                    urlRedirectFile.setText ("""
+            try
+            {
+                def templateEngine = new SimpleTemplateEngine(ApplicationHolder.application.classLoader);
+                def urlTemplate = templateEngine.createTemplate(new File("${baseDir}/grails-app/templates/ui/designer/Url.gsp"));
+                def tabTemplate = templateEngine.createTemplate(new File("${baseDir}/grails-app/templates/ui/designer/Tab.gsp"));
+                UiUrl.list().each {url ->
+                    def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.url}Layout.gsp");
+                    def content = urlTemplate.make(url: url).toString()
+                    urlLayoutFile.setText(content)
+                    def urlRedirectFile = new File("${baseDir}/web-app/${url.url}.gsp");
+                    if (!url.tabs.isEmpty())
+                    {
+                        urlRedirectFile.setText("""
                         <%
                             response.sendRedirect("${url.url}/${url.tabs[0].name}.gsp");
                         %>
                     """)
-                }
-                else
-                {
-                    urlRedirectFile.setText ("");
-                }
-                url.tabs.each{UiTab tab->
-                    def tabOutputFile = new File("${baseDir}/web-app/${url.url}/${tab.name}.gsp");
-                    tabOutputFile.parentFile.mkdirs();
-                    StringBuffer tabContent = new StringBuffer();
-                    def components = tab.components.sort{it.id};
-                    components.each{tabComponent->
-                        tabContent.append(generateTag (tabComponent, templateEngine)+"\n\n");
                     }
-                    def actions = tab.actions.sort {it.id};
-                    actions.each{tabComponent->
-                        tabContent.append(generateTag (tabComponent, templateEngine)+"\n\n");
-                    }
-                    def dialogs = tab.dialogs.sort {it.id}
-                    dialogs.each{tabComponent->
-                        tabContent.append(generateTag (tabComponent, templateEngine)+"\n\n");
-                    }
-                    def layoutContent = "";
-                    if(tab.layout)
+                    else
                     {
-                        layoutContent = generateTag (tab.layout, templateEngine);
+                        urlRedirectFile.setText("");
                     }
-                    def tabString = tabTemplate.make (tab:tab, tabContent:tabContent, layoutContent:layoutContent).toString()
-//                    println tabString
-//                    def formattedStringWriter = new StringWriter()
-//                    def parser = new XmlParser(false, false);
-//                    def rootNode = parser.parseText(tabString);
-//                    def xmlPrinter = new XmlNodePrinter(new PrintWriter(formattedStringWriter));
-//                    xmlPrinter.setQuote ("'")
-//
-//                    xmlPrinter.print(rootNode)
-                    tabOutputFile.setText (tabString)
+                    url.tabs.each {UiTab tab ->
+                        def tabOutputFile = new File("${baseDir}/web-app/${url.url}/${tab.name}.gsp");
+                        tabOutputFile.parentFile.mkdirs();
+                        StringBuffer tabContent = new StringBuffer();
+                        def components = tab.components.sort {it.id};
+                        components.each {tabComponent ->
+                            tabContent.append(generateTag(tabComponent, templateEngine) + "\n\n");
+                        }
+                        def actions = tab.actions.sort {it.id};
+                        actions.each {tabComponent ->
+                            tabContent.append(generateTag(tabComponent, templateEngine) + "\n\n");
+                        }
+                        def dialogs = tab.dialogs.sort {it.id}
+                        dialogs.each {tabComponent ->
+                            tabContent.append(generateTag(tabComponent, templateEngine) + "\n\n");
+                        }
+                        def layoutContent = "";
+                        if (tab.layout)
+                        {
+                            layoutContent = generateTag(tab.layout, templateEngine);
+                        }
+                        def tabString = tabTemplate.make(tab: tab, tabContent: tabContent, layoutContent: layoutContent).toString()
+                        //                    println tabString
+                        //                    def formattedStringWriter = new StringWriter()
+                        //                    def parser = new XmlParser(false, false);
+                        //                    def rootNode = parser.parseText(tabString);
+                        //                    def xmlPrinter = new XmlNodePrinter(new PrintWriter(formattedStringWriter));
+                        //                    xmlPrinter.setQuote ("'")
+                        //
+                        //                    xmlPrinter.print(rootNode)
+                        tabOutputFile.setText(tabString)
+                    }
                 }
-            }
-            RsApplication.reloadViewsAndControllers();
-            render(contentType:"text/xml")
+                RsApplication.reloadViewsAndControllers();
+                render(contentType: "text/xml")
+                {
+                    Successful("UI generated successfully")
+                }
+            } catch (Throwable t)
             {
-                Successful("UI generated successfully")
+                addError("designer.generate.exception", t.message, [t.message]);
+                render(contentType:"text/xml", text:errorsToXml());
             }
         }
     }
@@ -178,47 +185,47 @@ class UiDesignerController {
         try
         {
             def baseDir = System.getProperty("base.dir")
-            def tagTemplate = templateEngine.createTemplate (new File("${baseDir}/grails-app/templates/ui/designer/${model.metaData().designerType}.gsp"));
-            return tagTemplate.make(uiElement:model).toString();
+            def tagTemplate = templateEngine.createTemplate(new File("${baseDir}/grails-app/templates/ui/designer/${model.metaData().designerType}.gsp"));
+            return tagTemplate.make(uiElement: model).toString();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            throw new Exception("An error occurred while generating html while processing template ${model.metaData().designerType+".gsp"}", e);
+            throw new Exception("An error occurred while generating html while processing template ${model.metaData().designerType + ".gsp"}", e);
         }
     }
 
     def processUiElement(GPathResult xmlConfiguration)
     {
-        xmlConfiguration.UiElement[0].UiElement.each{
+        xmlConfiguration.UiElement[0].UiElement.each {
             UiUrl.addUiElement(it, null);
         }
     }
 
-    def update= {
+    def update = {
 
     }
 
-    def metaData= {
+    def metaData = {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        builder.UiElements{
-            builder.UiElement(designerType:"Urls", display:"Urls", imageExpanded:"images/rapidjs/component/tools/folder_open.gif", imageCollapsed:"images/rapidjs/component/tools/folder.gif"){
-                builder.Children{
-                    builder.Child(isMultiple:true, designerType:"Url")                    
+        builder.UiElements {
+            builder.UiElement(designerType: "Urls", display: "Urls", imageExpanded: "images/rapidjs/component/tools/folder_open.gif", imageCollapsed: "images/rapidjs/component/tools/folder.gif") {
+                builder.Children {
+                    builder.Child(isMultiple: true, designerType: "Url")
                 }
             }
             def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer")}
-            uiDomainClasses.each{grailsDomainClass->
+            uiDomainClasses.each {grailsDomainClass ->
                 Class domainClass = grailsDomainClass.clazz;
                 def domainClassMetaData = null
                 try
                 {
                     domainClassMetaData = domainClass.'metaData'()
-                }catch(groovy.lang.MissingMethodException prop){};
-                if(domainClassMetaData)
+                } catch (groovy.lang.MissingMethodException prop) {};
+                if (domainClassMetaData)
                 {
-                    def metaProperties = domainClassMetaData.propertyConfiguration?domainClassMetaData.propertyConfiguration:[:]
-                    if(domainClassMetaData.designerType != null)
+                    def metaProperties = domainClassMetaData.propertyConfiguration ? domainClassMetaData.propertyConfiguration : [:]
+                    if (domainClassMetaData.designerType != null)
                     {
                         domainClassMetaData.propertyConfiguration = DesignerUtils.addConfigurationParametersFromModel(metaProperties, grailsDomainClass);
                         createMetaXml(builder, domainClassMetaData);
@@ -227,7 +234,7 @@ class UiDesignerController {
             }
         }
 
-        render(text:sw.toString(), contentType:"text/xml");
+        render(text: sw.toString(), contentType: "text/xml");
     }
 
     def createMetaXml(builder, domainClassMetaData)
@@ -235,32 +242,32 @@ class UiDesignerController {
         def uiElementProperties = [:]
         def metaChildren = domainClassMetaData.remove("childrenConfiguration")
         def metaProperties = domainClassMetaData.remove("propertyConfiguration")
-        domainClassMetaData.each{String propName, Object propValue->
-            if(propName != "properties"){
+        domainClassMetaData.each {String propName, Object propValue ->
+            if (propName != "properties") {
                 uiElementProperties[propName] = propValue;
             }
         }
 
         def configuredChildren = [];
         builder.UiElement(uiElementProperties)
-        {
-                builder.Properties{
-                    metaProperties.each{String propName, metaPropertyConfiguration->
-                        builder.Property(metaPropertyConfiguration);
-                    }
-                }
-                builder.Children{
-                    metaChildren.each{metaChildConfiguration->
-                        if(metaChildConfiguration.metaData != null)
-                        {
-                            configuredChildren.add(metaChildConfiguration.remove("metaData"));
+                {
+                    builder.Properties {
+                        metaProperties.each {String propName, metaPropertyConfiguration ->
+                            builder.Property(metaPropertyConfiguration);
                         }
-                        builder.Child(metaChildConfiguration);
+                    }
+                    builder.Children {
+                        metaChildren.each {metaChildConfiguration ->
+                            if (metaChildConfiguration.metaData != null)
+                            {
+                                configuredChildren.add(metaChildConfiguration.remove("metaData"));
+                            }
+                            builder.Child(metaChildConfiguration);
 
+                        }
                     }
                 }
-        }
-        configuredChildren.each{childConfiguration->
+        configuredChildren.each {childConfiguration ->
             createMetaXml(builder, childConfiguration);
         }
 

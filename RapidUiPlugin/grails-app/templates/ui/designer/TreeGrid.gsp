@@ -1,4 +1,4 @@
-<rui:treeGrid id="${uiElement.name}" url="${uiElement.url}" rootTag="${uiElement.rootTag}" pollingInterval="${uiElement.pollingInterval}"
+<rui:treeGrid id="${uiElement.name}" url="../${uiElement.url}" rootTag="${uiElement.rootTag}" pollingInterval="${uiElement.pollingInterval}"
         keyAttribute="${uiElement.keyAttribute}" contentPath="${uiElement.contentPath}" title="${uiElement.title}"
 <%
     uiElement.getActionTrigers().each{actionTrigger->
@@ -21,7 +21,7 @@
                 <%
                     column.images.each{colImage->
                 %>
-                <rui:tgImage src="${colImage.src}" visible="${colImage.visible}" align="${colImage.align}"></rui:tgImage>
+                <rui:tgImage src="../${colImage.src}" visible="${colImage.visible}" align="${colImage.align}"></rui:tgImage>
                 <%
                     }
                 %>
@@ -66,7 +66,7 @@
         <%
             uiElement.rootImages.each{rootImage->
         %>
-        <rui:tgRootImage visible="${rootImage.visible}" expanded="${rootImage.expanded}" collapsed="${rootImage.collapsed}"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage.visible}" expanded="../${rootImage.expanded}" collapsed="../${rootImage.collapsed}"></rui:tgRootImage>
         <%
             }
         %>

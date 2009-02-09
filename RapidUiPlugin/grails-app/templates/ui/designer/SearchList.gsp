@@ -1,4 +1,4 @@
-<rui:searchList id="${uiElement.name}" url="${uiElement.url}" rootTag="${uiElement.rootTag}" contentPath="${uiElement.contentPath}" keyAttribute="${uiElement.keyAttribute}"
+<rui:searchList id="${uiElement.name}" url="../${uiElement.url}" rootTag="${uiElement.rootTag}" contentPath="${uiElement.contentPath}" keyAttribute="${uiElement.keyAttribute}"
     lineSize="${uiElement.lineSize}" title="${uiElement.title}" queryParameter="${uiElement.queryParameter}" totalCountAttribute="${uiElement.totalCountAttribute}" offsetAttribute="${uiElement.offsetAttribute}" sortOrderAttribute="${uiElement.sortOrderAttribute}"
     pollingInterval="${uiElement.pollingInterval}" defaultFields="${uiElement.defaultFields}" ${uiElement.showMax !=0?"showMax='"+uiElement.showMax+"'":""}
     <%
@@ -78,7 +78,7 @@
     <%
         uiElement.images.each{image->
     %>
-        <rui:slImage visible="${image.visible}" src="${image.src}"></rui:slImage>
+        <rui:slImage visible="${image.visible}" src="../${image.src}"></rui:slImage>
     <%
         }
     %>

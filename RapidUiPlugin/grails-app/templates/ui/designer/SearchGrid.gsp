@@ -1,6 +1,6 @@
-<rui:searchGrid id="${uiElement.name}" url="${uiElement.url}" queryParameter="${uiElement.queryParameter}" rootTag="${uiElement.rootTag}" contentPath="${uiElement.contentPath}"
+<rui:searchGrid id="${uiElement.name}" url="../${uiElement.url}" queryParameter="${uiElement.queryParameter}" rootTag="${uiElement.rootTag}" contentPath="${uiElement.contentPath}"
         keyAttribute="${uiElement.keyAttribute}" totalCountAttribute="${uiElement.totalCountAttribute}" offsetAttribute="${uiElement.offsetAttribute}" sortOrderAttribute="${uiElement.sortOrderAttribute}" title="${uiElement.title}"
-        pollingInterval="${uiElement.pollingInterval}" fieldsUrl="${uiElement.fieldsUrl}"
+        pollingInterval="${uiElement.pollingInterval}" fieldsUrl="../${uiElement.fieldsUrl}"
     <%
     uiElement.getActionTrigers().each{actionTrigger->
     %>
@@ -41,7 +41,7 @@
     <%
         uiElement.images.each{image->
     %>
-        <rui:sgImage visible="${image.visible}" src="${image.src}"></rui:sgImage>
+        <rui:sgImage visible="${image.visible}" src="../${image.src}"></rui:sgImage>
     <%
         }
     %>

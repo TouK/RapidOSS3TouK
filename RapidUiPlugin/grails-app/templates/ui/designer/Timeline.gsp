@@ -1,4 +1,4 @@
-<rui:timeline id="${uiElement.name}" url="${uiElement.url}" title="${uiElement.title}" pollingInterval="${uiElement.pollingInterval}">
+<rui:timeline id="${uiElement.name}" url="../${uiElement.url}" title="${uiElement.title}" pollingInterval="${uiElement.pollingInterval}">
     <rui:tlBands>
         <%
             uiElement.bands.each{band->

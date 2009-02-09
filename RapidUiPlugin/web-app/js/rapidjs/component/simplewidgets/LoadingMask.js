@@ -35,7 +35,9 @@ YAHOO.rapidjs.component.LoadingMask.prototype = {
         this.panel.show();
     },
     hide:function() {
-        this.panel.hide();
+        if(this.panel){
+            this.panel.hide();    
+        }
     }
 
 }

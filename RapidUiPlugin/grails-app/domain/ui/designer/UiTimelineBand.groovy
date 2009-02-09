@@ -17,7 +17,7 @@ class UiTimelineBand {
     static datasources = ["RCMDB": ["keys": ["id": ["nameInDs": "id"]]]]
 
     boolean isActive = true;
-    Long width=200;
+    Long width=50;
     Long intervalPixels=0;
     String intervalUnit="day";
     Boolean showText="";

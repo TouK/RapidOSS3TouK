@@ -66,6 +66,10 @@ class UiRequestActionOperations extends UiActionOperations {
         }
         attributes.components = comps;
         def addedAction = DesignerUtils.addUiObject(classToBeAdded, attributes, xmlNode);
+        def reqParams = xmlNode.UiElement.findAll {it.@designerType.text() == "RequestParameter"}
+        reqParams.each{
+            UiRequestParameter.addUiElement(it, addedAction);
+        }
         addTriggers(xmlNode, addedAction);
         return addedAction;
     }

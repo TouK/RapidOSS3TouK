@@ -1,6 +1,7 @@
 package ui.designer
 
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rui.util.DesignerUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -23,5 +24,12 @@ class UiRequestParameterOperations extends AbstractDomainOperation{
                 childrenConfiguration:[]
         ];
         return metaData;
+    }
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = [:];
+        attributes.putAll (xmlNode.attributes());
+        attributes.action = parentElement;
+        return DesignerUtils.addUiObject(UiRequestParameter, attributes, xmlNode);
     }
 }

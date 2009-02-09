@@ -42,6 +42,8 @@ class UiTimelineBandOperations extends AbstractDomainOperation{
     def static addUiElement(xmlNode, parentElement)
     {
         def attributes = xmlNode.attributes();
+        if(attributes.date != null)
+        attributes.date = dateFormatter.parse (attributes.date);
         attributes.timeline= parentElement;
         return DesignerUtils.addUiObject(UiTimelineBand, attributes, xmlNode);
     }

@@ -24,7 +24,7 @@ class UiGMapOperations extends UiComponentOperations
                         contentPath:[descr:"The node names of AJAX response which will be used as location data. "],
                         latitudeField:[descr:"The attribute in data which specifies the latitude of the location. "],
                         longitudeField:[descr:"The attribute in data which specifies the longitude of the location. "],
-                        addresField:[descr:"The attribute in data which specifies open location address. "],
+                        addressField:[descr:"The attribute in data which specifies open location address. "],
                         markerField:[descr:"The marker image url. "],
                         tooltipField:[descr:"The attribute in data which will be displayed in tooltip. "],
                         title:[descr:"GMap title."],

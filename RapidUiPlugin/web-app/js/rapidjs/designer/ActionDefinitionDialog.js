@@ -15,7 +15,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             minHeight:100,
             x:250,y:0,
             resizable: false,
-            modal:true,
+            modal:false,
             title: 'Configure Action',
             buttons:[
                 {text:"Save", handler:this.handleSave, scope:this, isDefault:true },
@@ -433,7 +433,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         if (this.menuCompSelect.selectedIndex > -1) {
             var component = this.menuCompSelect.options[this.menuCompSelect.selectedIndex].value
             var compType = this.currentComponents[component];
-            var compMenuConfig = this.currentMenuConfig[compType]
+            var compMenuConfig = this.currentMenuConfig[component]
             for (var menuType in compMenuConfig) {
                 var menuItems = compMenuConfig[menuType];
                 for (var i = 0; i < menuItems.length; i++) {

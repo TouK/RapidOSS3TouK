@@ -22,6 +22,8 @@ class UiDialogOperations extends UiLayoutUnitOperations{
                 [
                     title:[descr:"Title of component", required:true],
                     width:[descr:"The width of the dialog"],
+                    x:[descr:"The x position of the dialog"],
+                    y:[descr:"The y position of the dialog"],
                     height:[descr:"The height of the dialog"],
                     maxHeight:[descr:"Maximum height of the dialog"],
                     minHeight:[descr:"Minimum height of the dialog"],

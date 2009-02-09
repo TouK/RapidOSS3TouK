@@ -39,7 +39,7 @@ class UiCombinedActionOperations extends UiActionOperations {
         attributes.actions.split(",").each{
             if(it != "")
             {
-                def subAction = UiAction.get(name:it, tab:parentElement);
+                def subAction = UiAction.get(name:it, tab:parentElement, isActive:true);
                 if(subAction)
                 {
                     actions.add(subAction);

@@ -27,9 +27,48 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
             }
             return 0;
         }}),
+        Float:new YAHOO.widget.TextboxCellEditor({disableBtns:true, validator:function (val) {
+            val = parseFloat(val);
+            if (YAHOO.lang.isNumber(val)) {
+                return val;
+            }
+            return 0;
+        }}),
+        "DateMock":new YAHOO.widget.DateCellEditor(),
         InList: new YAHOO.widget.DropdownCellEditor({}),
         Boolean: new YAHOO.widget.DropdownCellEditor({dropdownOptions:['true', 'false']})
+
     };
+    this.editors['DateMock'].attach = function(oDataTable, elCell) {
+        // Validate
+        if (oDataTable instanceof YAHOO.widget.DataTable) {
+            this._oDataTable = oDataTable;
+
+            // Validate cell
+            elCell = oDataTable.getTdEl(elCell);
+            if (elCell) {
+                this._elTd = elCell;
+
+                // Validate Column
+                var oColumn = oDataTable.getColumn(elCell);
+                if (oColumn) {
+                    this._oColumn = oColumn;
+
+                    // Validate Record
+                    var oRecord = oDataTable.getRecord(elCell);
+                    if (oRecord) {
+                        this._oRecord = oRecord;
+                        var value = oRecord.getData(this.getColumn().getKey());
+                        this.value = (value !== undefined) ? Date.parseDate(value, "%b %d %Y %H:%M:%S %z") : this.defaultValue;
+                        return true;
+                    }
+                }
+            }
+        }
+        YAHOO.log("Could not attach CellEditor", "error", this.toString());
+        return false;
+    };
+
     this.actionDlg = new YAHOO.rapidjs.designer.ActionDefinitionDialog(this);
     this.loadingMask = new YAHOO.rapidjs.component.LoadingMask({});
     this.confirmBox = new YAHOO.rapidjs.component.ConfirmBox({handler:this.confirmBoxHandler, scope:this});
@@ -491,17 +530,17 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         YAHOO.util.Connect.asyncRequest('POST', this.saveUrl, callback, postData);
         this.loadingMask.show("Saving, please wait...");
     },
-    confirmBoxHandler: function(){
+    confirmBoxHandler: function() {
         this.confirmBox.hide();
         this._generate();
     },
-    generate: function(){
-       if(this.dataChanged){
-          this.confirmBox.show('Some changes has not been saved. Do you want to continue?');
-       }
-       else{
-           this._generate();
-       }
+    generate: function() {
+        if (this.dataChanged) {
+            this.confirmBox.show('Some changes has not been saved. Do you want to continue?');
+        }
+        else {
+            this._generate();
+        }
     },
     _generate : function() {
         var callback = {
@@ -636,6 +675,10 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 else {
                     var propertyType = UIConfig.getPropertyType(itemType, propertyName)
                     editor = this.editors[propertyType];
+                    if (editor == null)
+                    {
+                        editor = this.editors["String"];
+                    }
                 }
                 column.editor = editor;
                 this.propertyGrid.showCellEditor(target);

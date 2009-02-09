@@ -39,7 +39,10 @@ YAHOO.rapidjs.component.ConfirmBox.prototype = {
         this.dialog.show();
     },
     hide:function() {
-        this.dialog.hide();
+        if(this.dialog){
+            this.dialog.hide();    
+        }
+
     }
 
 }

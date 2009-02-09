@@ -137,13 +137,16 @@ class UiDesignerController {
                     def tabOutputFile = new File("${baseDir}/web-app/${url.url}/${tab.name}.gsp");
                     tabOutputFile.parentFile.mkdirs();
                     StringBuffer tabContent = new StringBuffer();
-                    tab.components.each{tabComponent->
+                    def components = tab.components.sort{it.id};
+                    components.each{tabComponent->
                         tabContent.append(generateTag (tabComponent, templateEngine)+"\n\n");
                     }
-                    tab.actions.each{tabComponent->
+                    def actions = tab.actions.sort {it.id};
+                    actions.each{tabComponent->
                         tabContent.append(generateTag (tabComponent, templateEngine)+"\n\n");
                     }
-                    tab.dialogs.each{tabComponent->
+                    def dialogs = tab.dialogs.sort {it.id}
+                    dialogs.each{tabComponent->
                         tabContent.append(generateTag (tabComponent, templateEngine)+"\n\n");
                     }
                     def layoutContent = "";
@@ -152,14 +155,15 @@ class UiDesignerController {
                         layoutContent = generateTag (tab.layout, templateEngine);
                     }
                     def tabString = tabTemplate.make (tab:tab, tabContent:tabContent, layoutContent:layoutContent).toString()
-                    def formattedStringWriter = new StringWriter()
-                    def parser = new XmlParser(false, false);
-                    def rootNode = parser.parseText(tabString);
-                    def xmlPrinter = new XmlNodePrinter(new PrintWriter(formattedStringWriter));
-                    xmlPrinter.setQuote ("'")
-
-                    xmlPrinter.print(rootNode)
-                    tabOutputFile.setText (formattedStringWriter.toString())
+//                    println tabString
+//                    def formattedStringWriter = new StringWriter()
+//                    def parser = new XmlParser(false, false);
+//                    def rootNode = parser.parseText(tabString);
+//                    def xmlPrinter = new XmlNodePrinter(new PrintWriter(formattedStringWriter));
+//                    xmlPrinter.setQuote ("'")
+//
+//                    xmlPrinter.print(rootNode)
+                    tabOutputFile.setText (tabString)
                 }
             }
             RsApplication.reloadViewsAndControllers();

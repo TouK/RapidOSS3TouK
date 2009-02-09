@@ -15,8 +15,8 @@ public class UiTabOperations extends AbstractDomainOperation
                 imageCollapsed: 'images/rapidjs/designer/page.png',
                 propertyConfiguration: [
                         name: [descr: 'Name of the tab'],
-                        title: [descr: "Title of component", required:true],
-                        javascriptFile: [descr: 'The file path relative to web-app that will be embedded to tab, where you can write free form JavaScript']
+                        title: [descr: "Title of tab", required:true],
+                        contentFile: [descr: 'The file path relative to web-app that will be embedded to tab, where you can write free form HTML, JavaScript and CSS']
                 ],
                 childrenConfiguration:
                 [

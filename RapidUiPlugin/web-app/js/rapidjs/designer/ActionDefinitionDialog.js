@@ -332,7 +332,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                  '<div><table><tbody><tr><td class="field-name">Component:</td><td><select style="width:200px;"></select></td></tr>' +
                  '<tr><td class="field-name">Method:</td><td><select style="width:200px;"></select></td></tr></tbody></table></div>' +
                  '<div class="r-designer-actdlg-methoddef"></div>' +
-                 '<div class="r-designer-actdlg-gridwrp"></div></div>' +
+                 '<div class="r-designer-actdlg-gridwrp"></div>' +
                  '</div>'})
 
         selects = this.functionView.getElementsByTagName('select')

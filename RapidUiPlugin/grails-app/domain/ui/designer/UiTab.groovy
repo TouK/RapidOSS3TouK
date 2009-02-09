@@ -18,7 +18,7 @@ class UiTab
     boolean isActive = true;
     String name ="";
     String title = "";
-    String javascriptFile ="";
+    String contentFile ="";
 
     Long id ;
     
@@ -57,7 +57,7 @@ class UiTab
     
     static constraints={
     name(blank:false,nullable:false,key:["url", "isActive"])
-    javascriptFile(blank:true,nullable:true)
+    contentFile(blank:true,nullable:true)
     title(blank:true,nullable:true)
 
      __operation_class__(nullable:true)

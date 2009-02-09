@@ -17,11 +17,11 @@
     }
 %>
 <%
-    if(tab.javascriptFile != null && tab.javascriptFile != "")
+    if(tab.contentFile != null && tab.contentFile != "")
     {
-        def jsFile = new File("web-app/"+tab.javascriptFile);
+        def contentFile = new File("web-app/"+tab.contentFile);
 %>
-        ${jsFile.getText()}
+        ${contentFile.getText()}
 <%
     }
 %>

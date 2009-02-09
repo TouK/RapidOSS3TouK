@@ -35,6 +35,14 @@ class UiSearchGrid extends UiComponent {
     ]
 
     static constraints = {
+        url(blank:false)
+        rootTag(blank:false)
+        contentPath(blank:false)
+        keyAttribute(blank:false)
+        fieldsUrl(blank:false)
+        totalCountAttribute(blank:false)
+        sortOrderAttribute(blank:false)
+        offsetAttribute(blank:false)
         queryParameter(nullable: true, blank: true)
         pollingInterval(nullable: true)
         queryEnabled(nullable: true)

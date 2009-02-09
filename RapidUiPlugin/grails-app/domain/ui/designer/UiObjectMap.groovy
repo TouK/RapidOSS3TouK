@@ -27,6 +27,9 @@ class UiObjectMap extends UiComponent{
         toolbarMenus: [type: UiToolbarMenu, reverseName: "objectMap", isMany: true]
     ]
     static constraints={
+        expandURL(blank:false)
+        dataURL(blank:false)
+        dataTag(blank:false)
         nodeSize(nullable:true)
         edgeColors(nullable:true)
         edgeColorDataKey(nullable:true)

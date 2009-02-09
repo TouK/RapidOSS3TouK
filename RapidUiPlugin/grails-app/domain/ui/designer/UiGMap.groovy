@@ -24,6 +24,13 @@ class UiGMap extends UiComponent{
     static datasources = [:]
     static relations = [:]
     static constraints={
+        latitudeField(blank:false)
+        longitudeField(blank:false)
+        addressField(blank:false)
+        markerField(blank:false)
+        tooltipField(blank:false)
+        contentPath(blank:false)
+        url(blank:false)
         pollingInterval(nullable:true)
         timeout(nullable:true)
     }

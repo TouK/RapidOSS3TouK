@@ -40,6 +40,13 @@ class UiSearchList extends UiComponent{
     ]
 
     static constraints = {
+        url(blank:false)
+        rootTag(blank:false)
+        contentPath(blank:false)
+        keyAttribute(blank:false)
+        totalCountAttribute(blank:false)
+        offsetAttribute(blank:false)
+        sortOrderAttribute(blank:false)
         queryParameter(nullable: true, blank: true)
         pollingInterval(nullable: true)
         showMax(nullable: true)

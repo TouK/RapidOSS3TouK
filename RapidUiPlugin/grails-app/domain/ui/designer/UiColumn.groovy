@@ -42,7 +42,7 @@ class UiColumn {
         attributeName(blank: false, nullable: false, key: ["component", "isActive"])
         colLabel(blank: true, nullable: false)
         sortBy(nullable: true)
-        sortOrder(nullable: true, inList:["asc", "desc"]);
+        sortOrder(blank:false, nullable: true, inList:["asc", "desc"]);
         __operation_class__(nullable: true)
         __is_federated_properties_loaded__(nullable: true)
         errors(nullable: true)

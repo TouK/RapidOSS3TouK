@@ -33,6 +33,7 @@ class UiImage {
     ]
 
     static constraints = {
+        src(blank:false)
         visible(blank: true, nullable: true)
         align(blank: true, nullable: true, inList:["left", "right", "center"])
         __operation_class__(nullable: true)

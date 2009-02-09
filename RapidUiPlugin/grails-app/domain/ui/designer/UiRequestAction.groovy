@@ -21,6 +21,7 @@ class UiRequestAction extends UiAction
     ]
 
     static constraints={
+        url(blank:true)
         timeout(nullable:true)
     }
 

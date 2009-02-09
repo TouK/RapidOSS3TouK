@@ -18,6 +18,7 @@ class UiFunctionAction extends UiAction
     arguments:[type:UiFunctionArgument, reverseName:"action", isMany:true]]
 
     static constraints={
+        function(blank:false)
     }
 
     static propertyConfiguration= [:]

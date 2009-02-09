@@ -20,6 +20,9 @@ class UiPieChart extends UiComponent{
     static datasources = [:]
     static relations = [:]
     static constraints={
+        contentPath(blank:false)
+        dataField(blank:false)
+        url(blank:false)
         legend(nullable:false, blank:false, inList:["top", "right", "bottom", "left", "none"])
         pollingInterval(nullable:true)
         colors(blank:true, nullable:true)

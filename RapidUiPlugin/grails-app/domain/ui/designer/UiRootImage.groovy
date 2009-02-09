@@ -31,6 +31,8 @@ class UiRootImage {
     ]
 
     static constraints = {
+        expanded(blank:false)
+        collapsed(blank:false)
         visible(blank: true, nullable: true)
         __operation_class__(nullable: true)
         __is_federated_properties_loaded__(nullable: true)

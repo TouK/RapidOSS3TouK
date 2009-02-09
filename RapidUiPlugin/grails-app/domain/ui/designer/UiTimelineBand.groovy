@@ -23,8 +23,8 @@ class UiTimelineBand {
     Boolean showText="";
     Double trackHeight=0;
     Long trackGap=0;
-    Long syncWith=0;
-    Long layoutWith=0;
+    Long syncWith=-1;
+    Long layoutWith=-1;
     Boolean highlight=false;
     Date date=new Date(0);
     Long textWidth=200;

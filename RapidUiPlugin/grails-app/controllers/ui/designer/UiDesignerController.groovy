@@ -223,7 +223,9 @@ class UiDesignerController {
                 try
                 {
                     domainClassMetaData = domainClass.'metaData'()
-                } catch (groovy.lang.MissingMethodException prop) {};
+                } catch (groovy.lang.MissingMethodException prop) {
+                    log.warn("No meta data information available for ${domainClass.name}");
+                };
                 if (domainClassMetaData)
                 {
                     def metaProperties = domainClassMetaData.propertyConfiguration ? domainClassMetaData.propertyConfiguration : [:]

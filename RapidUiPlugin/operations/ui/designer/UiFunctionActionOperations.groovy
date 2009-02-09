@@ -19,7 +19,7 @@ class UiFunctionActionOperations extends UiActionOperations {
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
-                        component: [descr: "The name of the component", formater:{object-> return object.name}],
+                        component: [descr: "The name of the component", formater:{object-> return object.component.name}],
                         function: [descr: "The method of the component that will called."],
                 ],
                 childrenConfiguration: [

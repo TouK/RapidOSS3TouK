@@ -17,6 +17,17 @@
 * USA.
 */
 YAHOO.namespace('rapidjs');
+
+function getUrlPrefix() {
+    var pathName = window.location.pathname;
+    var splits = pathName.split('/');
+    var distanceToWebApp = splits.length - 3;
+    var urlPrefix = '';
+    for (var index = 0; index < distanceToWebApp; index++) {
+        urlPrefix += '../';
+    }
+    return urlPrefix;
+}
 function createURL(url, params)
 {
     if (params == null)
@@ -39,19 +50,9 @@ function createURL(url, params)
             url = url + "?" + postData;
         }
     }
-    return url;
+    return getUrlPrefix() + url;
 }
 
-function getUrlPrefix() {
-    var pathName = window.location.pathname;
-    var splits = pathName.split('/');
-    var distanceToWebApp = splits.length - 3;
-    var urlPrefix = '';
-    for (var index = 0; index < distanceToWebApp; index++) {
-        urlPrefix += '../';
-    }
-    return urlPrefix;
-}
 
 String.prototype.trim = function() {
     var a = this.replace(/^\s+/, '');

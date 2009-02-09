@@ -58,7 +58,7 @@ class UiAction
     
     public String toString()
     {
-    	return "${getClass().getName()}[name:${getProperty("name")}]";
+    	return getProperty("name");
     }
     
     public boolean equals(Object obj) {

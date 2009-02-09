@@ -133,7 +133,7 @@ class DesignerUtils {
                     {
                         def propName = child.propertyName;
                         try {
-                            def childObjects = component.getProperty(propName).findAll {return child.isVisible == null || child.isVisible(it)}.sort{it.id};
+                            def childObjects = getChildObjects(component, propName, child);
                             generateXml(childObjects, builder);
                         } catch (groovy.lang.MissingPropertyException e) {}
                     }
@@ -142,13 +142,18 @@ class DesignerUtils {
                         def designerType = child.designerType;
                         def childProps = [designerType: designerType]
                         child.metaData.propertyConfiguration.each {String propName, childProp ->
-                            childProps[propName] = childProp.defaultValue;
+                            def propValue = childProp.defaultValue;
+                            if(childProp.formatter)
+                            {
+                                propValue = childProp.formatter();
+                            }
+                            childProps[propName] = propValue;
                         }
                         builder.UiElement(childProps) {
                             child.metaData.childrenConfiguration.each {realChild ->
                                 def propName = realChild.propertyName;
                                 try {
-                                    def childObjects = component.getProperty(propName).findAll {return realChild.isVisible == null || realChild.isVisible(it)};
+                                    def childObjects = getChildObjects(component, propName, realChild);
                                     generateXml(childObjects, builder);
                                 } catch (groovy.lang.MissingPropertyException e) {}
                             }
@@ -158,5 +163,19 @@ class DesignerUtils {
                 }
             }
         }
+    }
+
+    private static List getChildObjects(domainObject, propertyName, cildMetaDataConfiguration)
+    {
+        def childObjects = domainObject.getProperty(propertyName);
+        if(childObjects == null)
+        {
+            childObjects = [];
+        }
+        else if(!(childObjects instanceof Collection))
+        {
+            childObjects = [childObjects];            
+        }
+        return childObjects.findAll {return cildMetaDataConfiguration.isVisible == null || cildMetaDataConfiguration.isVisible(it)}.sort{it.id};
     }
 }

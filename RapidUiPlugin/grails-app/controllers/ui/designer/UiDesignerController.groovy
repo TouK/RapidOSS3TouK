@@ -25,12 +25,20 @@ class UiDesignerController {
             def sw = new StringWriter();
             def markupBuilder = new MarkupBuilder(sw);
             def urls = UiUrl.list();
-            markupBuilder.UiConfig{
-                markupBuilder.UiElement(designerType:"Urls"){
-                    com.ifountain.rui.util.DesignerUtils.generateXml(urls, markupBuilder);
+            try
+            {
+                markupBuilder.UiConfig{
+                    markupBuilder.UiElement(designerType:"Urls"){
+                        com.ifountain.rui.util.DesignerUtils.generateXml(urls, markupBuilder);
+                    }
                 }
+                render(text:sw.toString(), contentType:"text/xml");
             }
-            render(text:sw.toString(), contentType:"text/xml");
+            catch(Throwable t)
+            {
+                addError("designer.view.exception", t.message, [ex.message]);
+                render(contentType:"text.xml", text:errorsToXml());
+            }
         }
     }
 
@@ -65,7 +73,7 @@ class UiDesignerController {
                     Successful("UI configuration saved successfully")
                 }
             }
-            catch(com.ifountain.rui.util.exception.UiElementCreationException ex)
+            catch(Throwable ex)
             {
                 uiDomainClasses.each{domainClassInstance->
                     domainClassInstance.clazz.'removeAll'("isActive:true");
@@ -75,12 +83,8 @@ class UiDesignerController {
                         instance.isActive = true;    
                     }
                 }
-                render(contentType:"text/xml")
-                {
-                    Errors{
-                        Error(error:ex.message);
-                    }
-                }
+                addError("designer.save.exception", [ex.message]);
+                render(contentType:"text.xml", text:errorsToXml());
             }
 
         }

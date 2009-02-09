@@ -44,7 +44,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         def builder = new MarkupBuilder(sw);
         def url1Props = [url:"myUrl1", designerType:"Url", id:""]
         def url2Props = [url:"myUrl2", designerType:"Url", id:""]
-        def tabsProps = [[name:"tab1", designerType:"Tab", javascriptFile:'x.gsp', title:"tab1", id:""], [name:"tab2", designerType:"Tab", javascriptFile:'y.gsp', title:"tab2", id:""]];
+        def tabsProps = [[name:"tab1", designerType:"Tab", contentFile:'x.gsp', title:"tab1", id:""], [name:"tab2", designerType:"Tab", contentFile:'y.gsp', title:"tab2", id:""]];
         builder.UiConfig{
             builder.UiElement(designerType:"Urls"){
                 builder.UiElement(url1Props){

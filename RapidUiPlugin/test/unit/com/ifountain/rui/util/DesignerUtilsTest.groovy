@@ -182,7 +182,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
 
     public void testGenerateXmlWithRelatedClass()
     {
-        def modelClasses = createDomainClassesForRelationTest();
+        def modelClasses = createDomainClassesForRelationTest(ModelGenerator.RELATION_TYPE_MANY, ModelGenerator.RELATION_TYPE_MANY);
         def modelClass = modelClasses.findAll {it.name == "UiModel1"}[0];
         def relatedModelClass = modelClasses.findAll {it.name == "UiModel2"}[0];
         //Create ui domain objects they should be located under package ui.designer and they should start with Ui
@@ -245,9 +245,57 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         assertEquals (String.valueOf(relatedModelInstance2.prop2), relatedInstance2XmlNode.attributes().prop2);
     }
 
+    public void testGenerateXmlWithOneToOneRelation()
+    {
+        def modelClasses = createDomainClassesForRelationTest(ModelGenerator.RELATION_TYPE_ONE, ModelGenerator.RELATION_TYPE_ONE);
+        def modelClass = modelClasses.findAll {it.name == "UiModel1"}[0];
+        def relatedModelClass = modelClasses.findAll {it.name == "UiModel2"}[0];
+        //Create ui domain objects they should be located under package ui.designer and they should start with Ui
+        modelClass.metaClass.'static'.metaData = {
+            return [
+                designerType: "Model1",
+                propertyConfiguration: [
+                        prop1: [descr: ''],
+                        prop2: [descr: '']
+                ],
+                childrenConfiguration:[[designerType:"Model2", isMultiple:true, propertyName:"rel1"]]
+            ];
+        };
+
+        relatedModelClass.metaClass.'static'.metaData = {
+            return [
+                designerType: "Model2",
+                propertyConfiguration: [
+                        prop1: [descr: ''],
+                        prop2: [descr: '']
+                ],
+                childrenConfiguration:[]
+            ];
+        };
+        RapidConvertUtils.getInstance().register(new DateConverter("yyyy MM"), Date.class)
+        initialize ([modelClass, relatedModelClass], [], false);
+        def relatedModelInstance1 = relatedModelClass.'add'(prop1:"prop1", prop2:11);
+        def relatedModelInstance2 = relatedModelClass.'add'(prop1:"prop2", prop2:17);
+        def modelInstance = modelClass.'add'(prop1:"prop1", prop2:15, rel1:[relatedModelInstance1, relatedModelInstance2]);
+
+        def sw = new StringWriter();
+        def markupBuilder = new MarkupBuilder(sw);
+        markupBuilder.UiElement{
+            DesignerUtils.generateXml([modelInstance], markupBuilder);
+        }
+        def parser = new XmlParser().parseText(sw.toString());
+        assertEquals(1, parser.UiElement.size());
+        assertEquals(4, parser.UiElement[0].attributes().size());
+        def relatedModels = parser.UiElement.UiElement
+        assertEquals(1, relatedModels.size());
+        def relatedInstance1XmlNode = relatedModels[0]
+
+        assertEquals (String.valueOf(relatedModelInstance1.id), relatedInstance1XmlNode.attributes().id);
+    }
+
     public void testGenerateXmlWithRelatedClassWithVisibleClosure()
     {
-        def modelClasses = createDomainClassesForRelationTest();
+        def modelClasses = createDomainClassesForRelationTest(ModelGenerator.RELATION_TYPE_MANY, ModelGenerator.RELATION_TYPE_MANY);
         def modelClass = modelClasses.findAll {it.name == "UiModel1"}[0];
         def relatedModelClass = modelClasses.findAll {it.name == "UiModel2"}[0];
         //Create ui domain objects they should be located under package ui.designer and they should start with Ui
@@ -296,7 +344,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
 
     public void testGenerateXmlWithRelatedClassWithGrouping()
     {
-        def modelClasses = createDomainClassesForRelationTest();
+        def modelClasses = createDomainClassesForRelationTest(ModelGenerator.RELATION_TYPE_MANY, ModelGenerator.RELATION_TYPE_MANY);
         def modelClass = modelClasses.findAll {it.name == "UiModel1"}[0];
         def relatedModelClass = modelClasses.findAll {it.name == "UiModel2"}[0];
         //Create ui domain objects they should be located under package ui.designer and they should start with Ui
@@ -313,6 +361,10 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
                                 isMultiple: false,
                                 metaData: [
                                         designerType: "AGroup",
+                                        propertyConfiguration:
+                                        [
+                                            aDefaultProperty:[formatter:{object->return "defaultValue"}]
+                                        ],
                                         childrenConfiguration: [
                                                 [designerType:"Model2", isMultiple:true, propertyName:"rel1", isVisible:{object-> return object.prop1 == "prop1"}]
                                         ]
@@ -349,6 +401,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         def groupNode = parser.UiElement.UiElement
         assertEquals(1, groupNode.size());
         assertEquals("AGroup", groupNode.'@designerType'.text());
+        assertEquals("defaultValue", groupNode.'@aDefaultProperty'.text());
         def relatedModels = parser.UiElement.UiElement.UiElement
         assertEquals(1, relatedModels.size());
         assertEquals(4, relatedModels[0].attributes().size())
@@ -360,7 +413,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
 
 
 
-    private List createDomainClassesForRelationTest()
+    private List createDomainClassesForRelationTest(relType, revRelType)
     {
         def modelName = "UiModel1";
         def relatedModelName = "UiModel2";
@@ -368,8 +421,8 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         //All properties will be configured as metadata
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE];
         def prop2 = [name:"prop2", type:ModelGenerator.NUMBER_TYPE];
-        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
-        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:relType, reverseCardinality:revRelType, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName, cardinality:revRelType, reverseCardinality:relType, isOwner:false];
 
         def modelMetaProps = [name:modelName]
         def relatedModelMetaProps = [name:relatedModelName]

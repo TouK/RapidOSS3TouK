@@ -14,7 +14,7 @@ class UiSearchList extends UiComponent{
         storageType "File"
     };
     static datasources = [:]
-    String url = "../search?searchIn=RsEvent";
+    String url = "search?searchIn=RsEvent";
     String rootTag = "";
     String contentPath = "";
     String keyAttribute = "";

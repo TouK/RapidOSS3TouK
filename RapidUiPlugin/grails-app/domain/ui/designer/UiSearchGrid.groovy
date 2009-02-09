@@ -14,11 +14,11 @@ class UiSearchGrid extends UiComponent {
         storageType "File"
     };
     static datasources = [:]
-    String url = "../search?searchIn=RsEvent";
+    String url = "search?searchIn=RsEvent";
     String rootTag = "";
     String contentPath = "";
     String keyAttribute = "";
-    String fieldsUrl = "../script/run/getViewFields?format=xml";
+    String fieldsUrl = "script/run/getViewFields?format=xml";
     String queryParameter = "query";
     String totalCountAttribute = "total";
     String offsetAttribute = "offset";

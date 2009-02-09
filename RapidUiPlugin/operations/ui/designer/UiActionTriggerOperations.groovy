@@ -19,7 +19,7 @@ class UiActionTriggerOperations extends AbstractDomainOperation{
                 display: "ActionTrigger",
                 propertyConfiguration: [
                         name:[descr:""],
-                        component:[descr:"", formatter:{object-> return object.component.name}],
+                        component:[descr:"", formatter:{object-> return object.component?object.component.name:""}],
                         isMenuItem:[descr:""]
                 ],
                 childrenConfiguration:[]

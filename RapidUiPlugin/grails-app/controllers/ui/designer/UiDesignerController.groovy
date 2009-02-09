@@ -36,7 +36,8 @@ class UiDesignerController {
             }
             catch (Throwable t)
             {
-                addError("designer.view.exception", t.message, [t.message]);
+                log.warn("Exception occurred while viewing ui configuration", t);
+                addError("designer.view.exception", [t.message]);
                 render(contentType: "text/xml", text: errorsToXml());
             }
         }
@@ -69,9 +70,9 @@ class UiDesignerController {
 
 
                 render(contentType: "text/xml")
-                        {
-                            Successful("UI configuration saved successfully")
-                        }
+                {
+                    Successful("UI configuration saved successfully")
+                }
             }
             catch (Throwable ex)
             {
@@ -174,7 +175,8 @@ class UiDesignerController {
                 }
             } catch (Throwable t)
             {
-                addError("designer.generate.exception", t.message, [t.message]);
+                log.warn("Exception occurred while generating ui", t);
+                addError("designer.generate.exception", [t.message]);
                 render(contentType:"text/xml", text:errorsToXml());
             }
         }

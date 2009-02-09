@@ -1,6 +1,6 @@
 <%
-    def compNameString = "'"+uiElement.actions.name.join("','")+"'";
-    if(uiElement.actions.isEmpty())
+    def compNameString = "'"+uiElement.components.name.join("','")+"'";
+    if(uiElement.components.isEmpty())
     {
         compNameString = "";
     }

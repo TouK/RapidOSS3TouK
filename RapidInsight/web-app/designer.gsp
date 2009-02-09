@@ -77,6 +77,7 @@
             contentPath : "UiElement",
             keyAttribute : 'id',
             treeTypeAttribute : 'designerType',
+            treeHideAttribute : 'designerHidden',
             url : "uiDesigner/view",
             saveUrl : "uiDesigner/save",
             generateUrl : "uiDesigner/generate",

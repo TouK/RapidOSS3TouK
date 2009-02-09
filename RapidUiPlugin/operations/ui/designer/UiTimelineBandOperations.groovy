@@ -30,7 +30,7 @@ class UiTimelineBandOperations extends AbstractDomainOperation{
                         syncWith:[descr:"By default all timeline bands scroll independently. The parameter specifies the band index that the current band scroll in synchrony."],
                         layoutWith:[descr:"The index of the band that the current band layout in synchrony (Events are at the same tracks)."],
                         highlight:[descr:"Parameter to display the band whether highlighted or not."],
-                        date:[descr:"Parameter to make sure the timeline starts out showing the events immediately without requiring the user to pan first. Band is positioned at the specified date.", defaultValue:"${formatDate(new Date(0))}", formater:{object->return dateFormatter.format(object.date)}],
+                        date:[descr:"Parameter to make sure the timeline starts out showing the events immediately without requiring the user to pan first. Band is positioned at the specified date.", defaultValue:"${formatDate(new Date(0))}", formatter:{object->return dateFormatter.format(object.date)}],
                         textWidth:[descr:"The width of the event text in pixels."]
 
                 ],

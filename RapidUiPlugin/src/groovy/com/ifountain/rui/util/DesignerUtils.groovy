@@ -116,9 +116,9 @@ class DesignerUtils {
             propsToBeSentToUi.each {String propName, propConfig ->
                 try {
                     def propValue = null;
-                    if (propConfig.formater != null)
+                    if (propConfig.formatter != null)
                     {
-                        propValue = propConfig.formater(component);
+                        propValue = propConfig.formatter(component);
                     }
                     else
                     {
@@ -133,7 +133,7 @@ class DesignerUtils {
                     {
                         def propName = child.propertyName;
                         try {
-                            def childObjects = component.getProperty(propName).findAll {return child.isVisible == null || child.isVisible(it)};
+                            def childObjects = component.getProperty(propName).findAll {return child.isVisible == null || child.isVisible(it)}.sort{it.id};
                             generateXml(childObjects, builder);
                         } catch (groovy.lang.MissingPropertyException e) {}
                     }

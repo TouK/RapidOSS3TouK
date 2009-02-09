@@ -23,7 +23,7 @@ class UiRequestActionOperations extends UiActionOperations {
                 propertyConfiguration: [
                         url: [descr: "The URL to be used for requests to the server"],
                         timeout:[descr: "The time interval in seconds to wait the server request completes successfully before aborting.", required:true],
-                        components:[descr:"The list of component names which are related with this action (For example which components' error dialog should show if an error occurred during request)", required:true, formater:{object-> return object.components?object.components.name.join(","):""}]
+                        components:[descr:"The list of component names which are related with this action (For example which components' error dialog should show if an error occurred during request)", required:true, formatter:{object-> return object.components?object.components.name.join(","):""}]
                 ],
                 childrenConfiguration: [
                         [designerType: "RequestParameter", isMultiple: true, propertyName: "parameters"]

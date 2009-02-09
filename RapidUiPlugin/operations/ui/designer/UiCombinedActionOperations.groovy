@@ -20,7 +20,7 @@ class UiCombinedActionOperations extends UiActionOperations {
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
-                        actions: [descr: "The list of action names that will be executed in order", required:true, formater:{object-> return object.actions?object.actions.name.join(","):""}]
+                        actions: [descr: "The list of action names that will be executed in order", required:true, formatter:{object-> return object.actions?object.actions.name.join(","):""}]
                 ],
                 childrenConfiguration: []
         ];

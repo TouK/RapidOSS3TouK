@@ -20,7 +20,7 @@ public class UiActionOperations extends AbstractDomainOperation
                                         display: "ActionTriggers",
                                         canBeDeleted: false,
                                         propertyConfiguration: [
-                                                designerHidden: [descr: "", type: "String", formater:{object-> return true;}]
+                                                designerHidden: [descr: "", type: "String", formatter:{object-> return true;}]
                                         ],
                                         childrenConfiguration: [
                                                 [designerType: "ActionTrigger", isMultiple: true, propertyName: "triggers"]

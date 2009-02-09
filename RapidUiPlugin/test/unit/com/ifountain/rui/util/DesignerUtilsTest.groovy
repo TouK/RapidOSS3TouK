@@ -154,7 +154,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
             return [
                 designerType: "model1",
                 propertyConfiguration: [
-                        prop1: [descr: '', formater:{object->return df.format(object["prop1"])}],
+                        prop1: [descr: '', formatter:{object->return df.format(object["prop1"])}],
                         prop2: [descr: ''],
                         prop3: [descr: '']
                 ]

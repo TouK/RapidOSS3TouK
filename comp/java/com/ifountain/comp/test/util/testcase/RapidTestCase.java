@@ -123,7 +123,8 @@ public class RapidTestCase extends TestCase
     		XMLTestUtils.compareXml(xml1, xml2, ignoredTags);
 		}
 		catch (Throwable e) {
-			assertEquals(xml1, xml2);
+            e.printStackTrace();
+            assertEquals(xml1, xml2);
 		}
 	}
     

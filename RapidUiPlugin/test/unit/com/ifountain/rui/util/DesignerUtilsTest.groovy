@@ -5,6 +5,11 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.domain.method.GetPropertiesMethod
+import groovy.xml.MarkupBuilder
+import java.text.SimpleDateFormat
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.converter.DateConverter
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,39 +18,18 @@ import com.ifountain.rcmdb.domain.method.GetPropertiesMethod
 * Time: 4:32:18 PM
 * To change this template use File | Settings | File Templates.
 */
-class DesignerUtilsTest extends RapidCmdbTestCase{
+class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
 
-    protected void setUp() {
+    public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         ExpandoMetaClass.enableGlobally();
     }
 
-    protected void tearDown() {
+    public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         ExpandoMetaClass.disableGlobally();
     }
 
-    public void test1()
-    {
-        def xml = """
-            <Urls>
-            <UiElement designerType="Url" url="myurl">
-                <UiElement designerType="Tabs">
-                    <UiElement designerType="Tab" name="mytab">
-                        <UiElement designerType="Layout">
-            
-                        </UiElement>
-                    </UiElement>
-                </UiElement>
-            </UiElement>
-            </Urls>
-        """
-        def xmlNode = new XmlSlurper().parseText (xml)
-        def els = xmlNode.UiElement
-        els.each{
-            println it.UiElement.size()    
-        }
-    }
     public void testAddConfigurationParametersFromModel()
     {
 
@@ -147,5 +131,254 @@ class DesignerUtilsTest extends RapidCmdbTestCase{
         assertNull(uiPropertyMetaDatasForUiModel1[3].inList);
         assertEquals ("x,y,z", uiPropertyMetaDatasForUiModel1[4].inList);
         assertNull (uiPropertyMetaDatasForUiModel1[5].inList);
+    }
+
+    public void testGenerateXmlWithFormatter()
+    {
+        //Create ui domain objects they should be located under package ui.designer and they should start with Ui
+        def modelName = "UiModel1";
+
+        //All properties will be configured as metadata
+        def prop1 = [name:"prop1", type:ModelGenerator.DATE_TYPE];
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE];
+        def prop3 = [name:"prop3", type:ModelGenerator.NUMBER_TYPE];
+
+        def modelMetaProps = [name:modelName]
+
+        def modelProps = [prop1, prop2, prop3];
+        def keyPropList = [prop1];
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
+        def modelClass = gcl.parseClass (modelString);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy MM")
+        modelClass.metaClass.'static'.metaData = {
+            return [
+                designerType: "model1",
+                propertyConfiguration: [
+                        prop1: [descr: '', formater:{object->return df.format(object["prop1"])}],
+                        prop2: [descr: ''],
+                        prop3: [descr: '']
+                ]
+            ];
+        };
+        RapidConvertUtils.getInstance().register(new DateConverter("yyyy MM"), Date.class)
+        initialize ([modelClass], [], false);
+        def model1Instance = modelClass.'add'(prop1:new Date(), prop2:"prop2Value", prop3:0);
+
+        def sw = new StringWriter();
+        def markupBuilder = new MarkupBuilder(sw);
+        markupBuilder.UiElement{
+            DesignerUtils.generateXml([model1Instance], markupBuilder);
+        }
+
+        def parser = new XmlParser().parseText(sw.toString());
+        assertEquals(1, parser.UiElement.size());
+        assertEquals(5, parser.UiElement[0].attributes().size());
+        assertEquals (String.valueOf(model1Instance.id), parser.UiElement.'@id'.text());
+        assertEquals ("model1", parser.UiElement.'@designerType'.text());
+        assertEquals (df.format(model1Instance.prop1), parser.UiElement.'@prop1'.text());
+        assertEquals (model1Instance.prop2, parser.UiElement.'@prop2'.text());
+        assertEquals (String.valueOf(model1Instance.prop3), parser.UiElement.'@prop3'.text());
+    }
+
+    public void testGenerateXmlWithRelatedClass()
+    {
+        def modelClasses = createDomainClassesForRelationTest();
+        def modelClass = modelClasses.findAll {it.name == "UiModel1"}[0];
+        def relatedModelClass = modelClasses.findAll {it.name == "UiModel2"}[0];
+        //Create ui domain objects they should be located under package ui.designer and they should start with Ui
+        modelClass.metaClass.'static'.metaData = {
+            return [
+                designerType: "Model1",
+                propertyConfiguration: [
+                        prop1: [descr: ''],
+                        prop2: [descr: '']
+                ],
+                childrenConfiguration:[[designerType:"Model2", isMultiple:true, propertyName:"rel1"]]
+            ];
+        };
+
+        relatedModelClass.metaClass.'static'.metaData = {
+            return [
+                designerType: "Model2",
+                propertyConfiguration: [
+                        prop1: [descr: ''],
+                        prop2: [descr: '']
+                ],
+                childrenConfiguration:[]
+            ];
+        };
+        RapidConvertUtils.getInstance().register(new DateConverter("yyyy MM"), Date.class)
+        initialize ([modelClass, relatedModelClass], [], false);
+        def relatedModelInstance1 = relatedModelClass.'add'(prop1:"prop1", prop2:11);
+        def relatedModelInstance2 = relatedModelClass.'add'(prop1:"prop2", prop2:17);
+        def modelInstance = modelClass.'add'(prop1:"prop1", prop2:15, rel1:[relatedModelInstance1, relatedModelInstance2]);
+
+        def sw = new StringWriter();
+        def markupBuilder = new MarkupBuilder(sw);
+        markupBuilder.UiElement{
+            DesignerUtils.generateXml([modelInstance], markupBuilder);
+        }
+        def parser = new XmlParser().parseText(sw.toString());
+        assertEquals(1, parser.UiElement.size());
+        assertEquals(4, parser.UiElement[0].attributes().size());
+
+        assertEquals (String.valueOf(modelInstance.id), parser.UiElement.'@id'.text());
+        assertEquals ("Model1", parser.UiElement.'@designerType'.text());
+        assertEquals (modelInstance.prop1, parser.UiElement.'@prop1'.text());
+        assertEquals (String.valueOf(modelInstance.prop2), parser.UiElement.'@prop2'.text());
+        
+        def relatedModels = parser.UiElement.UiElement
+        assertEquals(2, relatedModels.size());
+        assertEquals(4, relatedModels[0].attributes().size())
+        assertEquals(4, relatedModels[1].attributes().size())
+        def relatedInstance1XmlNode = relatedModels.find {it.attributes().id==String.valueOf(relatedModelInstance1.id)}
+        def relatedInstance2XmlNode = relatedModels.find {it.attributes().id==String.valueOf(relatedModelInstance2.id)}
+
+        assertEquals (String.valueOf(relatedModelInstance1.id), relatedInstance1XmlNode.attributes().id);
+        assertEquals ("Model2", relatedInstance1XmlNode.attributes().designerType);
+        assertEquals (relatedModelInstance1.prop1, relatedInstance1XmlNode.attributes().prop1);
+        assertEquals (String.valueOf(relatedModelInstance1.prop2), relatedInstance1XmlNode.attributes().prop2);
+
+        assertEquals (String.valueOf(relatedModelInstance2.id), relatedInstance2XmlNode.attributes().id);
+        assertEquals ("Model2", relatedInstance2XmlNode.attributes().designerType);
+        assertEquals (relatedModelInstance2.prop1, relatedInstance2XmlNode.attributes().prop1);
+        assertEquals (String.valueOf(relatedModelInstance2.prop2), relatedInstance2XmlNode.attributes().prop2);
+    }
+
+    public void testGenerateXmlWithRelatedClassWithVisibleClosure()
+    {
+        def modelClasses = createDomainClassesForRelationTest();
+        def modelClass = modelClasses.findAll {it.name == "UiModel1"}[0];
+        def relatedModelClass = modelClasses.findAll {it.name == "UiModel2"}[0];
+        //Create ui domain objects they should be located under package ui.designer and they should start with Ui
+        modelClass.metaClass.'static'.metaData = {
+            return [
+                designerType: "Model1",
+                propertyConfiguration: [
+                        prop1: [descr: ''],
+                        prop2: [descr: '']
+                ],
+                childrenConfiguration:[[designerType:"Model2", isMultiple:true, propertyName:"rel1", isVisible:{object-> return object.prop1 == "prop1"}]]
+            ];
+        };
+
+        relatedModelClass.metaClass.'static'.metaData = {
+            return [
+                designerType: "Model2",
+                propertyConfiguration: [
+                        prop1: [descr: ''],
+                        prop2: [descr: '']
+                ],
+                childrenConfiguration:[]
+            ];
+        };
+        RapidConvertUtils.getInstance().register(new DateConverter("yyyy MM"), Date.class)
+        initialize ([modelClass, relatedModelClass], [], false);
+        def relatedModelInstance1 = relatedModelClass.'add'(prop1:"prop1", prop2:11);
+        def relatedModelInstance2 = relatedModelClass.'add'(prop1:"prop2", prop2:17);
+        def modelInstance = modelClass.'add'(prop1:"prop1", prop2:15, rel1:[relatedModelInstance1, relatedModelInstance2]);
+
+        def sw = new StringWriter();
+        def markupBuilder = new MarkupBuilder(sw);
+        markupBuilder.UiElement{
+            DesignerUtils.generateXml([modelInstance], markupBuilder);
+        }
+        def parser = new XmlParser().parseText(sw.toString());
+        assertEquals(1, parser.UiElement.size());
+        assertEquals(4, parser.UiElement[0].attributes().size());
+        def relatedModels = parser.UiElement.UiElement
+        assertEquals(1, relatedModels.size());
+        assertEquals(4, relatedModels[0].attributes().size())
+        def relatedInstance1XmlNode = relatedModels[0];
+
+        assertEquals (String.valueOf(relatedModelInstance1.id), relatedInstance1XmlNode.attributes().id);
+    }
+
+    public void testGenerateXmlWithRelatedClassWithGrouping()
+    {
+        def modelClasses = createDomainClassesForRelationTest();
+        def modelClass = modelClasses.findAll {it.name == "UiModel1"}[0];
+        def relatedModelClass = modelClasses.findAll {it.name == "UiModel2"}[0];
+        //Create ui domain objects they should be located under package ui.designer and they should start with Ui
+        modelClass.metaClass.'static'.metaData = {
+            return [
+                designerType: "Model1",
+                propertyConfiguration: [
+                        prop1: [descr: ''],
+                        prop2: [descr: '']
+                ],
+                childrenConfiguration:[
+                    [
+                                designerType: "AGroup",
+                                isMultiple: false,
+                                metaData: [
+                                        designerType: "AGroup",
+                                        childrenConfiguration: [
+                                                [designerType:"Model2", isMultiple:true, propertyName:"rel1", isVisible:{object-> return object.prop1 == "prop1"}]
+                                        ]
+                                ]
+                    ]
+                ]
+            ];
+        };
+
+        relatedModelClass.metaClass.'static'.metaData = {
+            return [
+                designerType: "Model2",
+                propertyConfiguration: [
+                        prop1: [descr: ''],
+                        prop2: [descr: '']
+                ],
+                childrenConfiguration:[]
+            ];
+        };
+        RapidConvertUtils.getInstance().register(new DateConverter("yyyy MM"), Date.class)
+        initialize ([modelClass, relatedModelClass], [], false);
+        def relatedModelInstance1 = relatedModelClass.'add'(prop1:"prop1", prop2:11);
+        def relatedModelInstance2 = relatedModelClass.'add'(prop1:"prop2", prop2:17);
+        def modelInstance = modelClass.'add'(prop1:"prop1", prop2:15, rel1:[relatedModelInstance1, relatedModelInstance2]);
+
+        def sw = new StringWriter();
+        def markupBuilder = new MarkupBuilder(sw);
+        markupBuilder.UiElement{
+            DesignerUtils.generateXml([modelInstance], markupBuilder);
+        }
+        def parser = new XmlParser().parseText(sw.toString());
+        assertEquals(1, parser.UiElement.size());
+        assertEquals(4, parser.UiElement[0].attributes().size());
+        def groupNode = parser.UiElement.UiElement
+        assertEquals(1, groupNode.size());
+        assertEquals("AGroup", groupNode.'@designerType'.text());
+        def relatedModels = parser.UiElement.UiElement.UiElement
+        assertEquals(1, relatedModels.size());
+        assertEquals(4, relatedModels[0].attributes().size())
+        def relatedInstance1XmlNode = relatedModels[0];
+
+        assertEquals (String.valueOf(relatedModelInstance1.id), relatedInstance1XmlNode.attributes().id);
+    }
+
+
+
+
+    private List createDomainClassesForRelationTest()
+    {
+        def modelName = "UiModel1";
+        def relatedModelName = "UiModel2";
+
+        //All properties will be configured as metadata
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE];
+        def prop2 = [name:"prop2", type:ModelGenerator.NUMBER_TYPE];
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+
+        def modelMetaProps = [name:modelName]
+        def relatedModelMetaProps = [name:relatedModelName]
+
+        def modelProps = [prop1, prop2];
+        def keyPropList = [prop1];
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [rel1])
+        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, modelProps, keyPropList, [revrel1])
+        gcl.parseClass (modelString+relatedModelString);
+        return gcl.getLoadedClasses();        
     }
 }

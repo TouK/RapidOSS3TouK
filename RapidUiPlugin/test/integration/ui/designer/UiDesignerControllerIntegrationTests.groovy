@@ -42,16 +42,16 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         new File("${System.getProperty ("base.dir")}/web-app/y.gsp").setText ("");
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        def url1Props = [url:"myUrl1", designerType:"Url"]
-        def url2Props = [url:"myUrl2", designerType:"Url"]
-        def tabsProps = [[name:"tab1", designerType:"Tab", javascriptFile:'x.gsp'], [name:"tab2", designerType:"Tab", javascriptFile:'y.gsp']];
+        def url1Props = [url:"myUrl1", designerType:"Url", id:""]
+        def url2Props = [url:"myUrl2", designerType:"Url", id:""]
+        def tabsProps = [[name:"tab1", designerType:"Tab", javascriptFile:'x.gsp', title:"tab1", id:""], [name:"tab2", designerType:"Tab", javascriptFile:'y.gsp', title:"tab2", id:""]];
         builder.UiConfig{
             builder.UiElement(designerType:"Urls"){
                 builder.UiElement(url1Props){
                     builder.UiElement(designerType:"Tabs"){
                         tabsProps.each{tab->
                             builder.UiElement(tab){
-                                builder.UiElement(designerType:'Layout')
+                                builder.UiElement(designerType:'Layout', id:"")
                                 builder.UiElement(designerType:'Components')
                                 builder.UiElement(designerType:'Dialogs')
                                 builder.UiElement(designerType:'Actions')
@@ -63,7 +63,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
                     builder.UiElement(designerType:"Tabs"){
                         tabsProps.each{tab->
                             builder.UiElement(tab){
-                                builder.UiElement(designerType:'Layout')
+                                builder.UiElement(designerType:'Layout', id:"")
                                 builder.UiElement(designerType:'Components')
                                 builder.UiElement(designerType:'Dialogs')
                                 builder.UiElement(designerType:'Actions')
@@ -150,45 +150,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         
     }
 
-    public void testViewWithMultipleChildUsingSameProperty()
-    {
-        new File("${System.getProperty ("base.dir")}/web-app/x.gsp").setText ("");
-        new File("${System.getProperty ("base.dir")}/web-app/y.gsp").setText ("");
-        def sw = new StringWriter();
-        def builder = new MarkupBuilder(sw);
-        def url1Props = [url:"myUrl1", designerType:"Url"]
-        def tabsProps = [[name:"tab1", designerType:"Tab", javascriptFile:'x.gsp']];
-        builder.UiConfig{
-            builder.UiElement(designerType:"Urls"){
-                builder.UiElement(url1Props){
-                    builder.UiElement(designerType:"Tabs"){
-                        tabsProps.each{tab->
-                            builder.UiElement(tab){
-                                builder.UiElement(designerType:'Layout')
-                                {
-                                    builder.UiElement(designerType:'CenterUnit', component:'', contentFile:'', gutter:'', scroll:'false', useShim:'false');
-                                }
-                                builder.UiElement(designerType:'Components')
-                                builder.UiElement(designerType:'Dialogs')
-                                builder.UiElement(designerType:'Actions')
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        UiDesignerController controller = new UiDesignerController();
-        controller.params.configuration = sw.toString()
-        controller.save();
-        assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
-        IntegrationTestUtils.resetController (controller);
-        controller.view();
-        println sw.toString()
-        println  controller.response.contentAsString
-        assertEqualsXML (sw.toString(), controller.response.contentAsString, ["id"]);
-    }
-
-    public void testSaveViewWithRelationProperty()
+    public void testSaveWithRelationProperty()
     {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
@@ -246,14 +208,6 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals (UiCenterUnit.name, component.layoutUnit.class.name);
         UiRequestAction requestAction = UiAction.get(name:"action1", tab:tab, isActive:true);
         assertEquals (2, requestAction.components.size());
-
-        //here we are expecting saved xml and returned xml to be same
-        //also we are testing designerHidden property is added to Events tag which should not be visible in designer tree
-        IntegrationTestUtils.resetController (controller);
-        controller.view();
-        println sw.toString();
-        println controller.response.contentAsString;
-        assertEqualsXML (sw.toString(), controller.response.contentAsString, ["id"]);
     }
 
     public void testSaveWithErrors()

@@ -27,7 +27,7 @@ class UiDesignerController {
             def urls = UiUrl.list();
             markupBuilder.UiConfig{
                 markupBuilder.UiElement(designerType:"Urls"){
-                    createViewXml (urls, markupBuilder);
+                    com.ifountain.rui.util.DesignerUtils.generateXml(urls, markupBuilder);
                 }
             }
             render(text:sw.toString(), contentType:"text/xml");
@@ -85,11 +85,6 @@ class UiDesignerController {
 
         }
     }
-
-//    def createXml(xmlConfiguration, xmlBuilder)
-//    {
-//
-//    }
 
     def deleteUrlFiles(url)
     {
@@ -185,57 +180,6 @@ class UiDesignerController {
         catch(Exception e)
         {
             throw new Exception("An error occurred while generating html while processing template ${model.metaData().designerType+".gsp"}", e);
-        }
-    }
-    def createViewXml(components, builder)
-    {
-        components.each{component->
-
-            def metaData = component.metaData();
-            def propsToBeSentToUi = metaData.propertyConfiguration
-            propsToBeSentToUi.put("id", [:]);
-            def children = metaData.childrenConfiguration
-            def uiElementProperties = [designerType:metaData.designerType];
-            propsToBeSentToUi.each{String propName, propConfig->
-                try{
-                    def propValue = component.getProperty (propName);
-                    if(propValue instanceof Collection)
-                    {
-                        propValue = propValue.join(",");
-                    }
-                    uiElementProperties[propName] = propValue;
-                }catch(groovy.lang.MissingPropertyException e){}
-            }
-            builder.UiElement(uiElementProperties){
-                children.each{child->
-                    if(child.metaData == null)
-                    {
-                        def propName = child.propertyName;
-                        try{
-                            def childObjects = component.getProperty (propName).findAll {return child.isVisible == null || child.isVisible(it)};
-                            createViewXml(childObjects, builder);
-                        }catch(groovy.lang.MissingPropertyException e){}
-                    }
-                    else
-                    {
-                        def designerType = child.designerType;
-                        def childProps = [designerType:designerType]
-                        child.metaData.propertyConfiguration.each{String propName, childProp->
-                            childProps[propName] = childProp.defaultValue;                            
-                        }
-                        builder.UiElement(childProps){
-                            child.metaData.childrenConfiguration.each{realChild->
-                                def propName = realChild.propertyName;
-                                try{
-                                    def childObjects = component.getProperty (propName).findAll {return realChild.isVisible == null || realChild.isVisible(it)};
-                                    createViewXml(childObjects, builder);
-                                }catch(groovy.lang.MissingPropertyException e){}
-                            }
-                        }
-                    }
-                    
-                }
-            }
         }
     }
 

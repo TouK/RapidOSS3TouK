@@ -75,7 +75,7 @@ class UpdateMethod extends AbstractRapidDomainMethod{
                         }
                         catch(ConversionException exception)
                         {
-                            ValidationUtils.addFieldError (errors, key, value, "rapidcmdb.invalid.property.type", [key, fieldType.name, value.class.name]);
+                            ValidationUtils.addFieldError (errors, key, value, "rapidcmdb.invalid.property.type", [key, fieldType.name, domainObject.class.name]);
                         }
                     }
                     else

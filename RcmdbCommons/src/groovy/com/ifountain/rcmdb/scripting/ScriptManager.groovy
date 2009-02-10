@@ -192,7 +192,7 @@ public class ScriptManager {
 
     }
 
-    public def getScriptObject(scriptPath,bindings,scriptLogger,operationClass){
+    public def getScriptObject(scriptPath,bindings,scriptLogger,String operationClass){
 
         def scriptClass = getScript(scriptPath);
         if (scriptClass)
@@ -204,6 +204,8 @@ public class ScriptManager {
             scriptObject.setProperty("logger", scriptLogger);
             if(operationClass!=null && operationClass!="")
             {
+                operationClass=this.classLoader.loadClass(operationClass);
+                
                 scriptObject.setProperty ("operationInstance",operationClass.newInstance())
             }
             return scriptObject;            

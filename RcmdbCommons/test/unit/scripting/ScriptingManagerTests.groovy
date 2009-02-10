@@ -274,7 +274,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         assertEquals(scriptObject.y,bindings.y);
         assertNull(scriptObject.operationInstance);
 
-        scriptObject=manager.getScriptObject(scriptName,bindings,logger,TestScriptOperationClass);
+        scriptObject=manager.getScriptObject(scriptName,bindings,logger,"scripting.TestScriptOperationClass");
         assertEquals(scriptObject.x,bindings.x);
         assertEquals(scriptObject.y,bindings.y);
         assertNotNull(scriptObject.operationInstance)
@@ -307,11 +307,12 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
            return input;
         """);
         manager.addScript(scriptName);
-        def result=manager.runScript(scriptName, [:],testLogger,TestScriptOperationClass);
+        def result=manager.runScript(scriptName, [:],testLogger,"scripting.TestScriptOperationClass");
 
         assertEquals(result.fromScript,"scriptHello");
         assertEquals(result.fromInjectedFunction,"injectedHello");
         assertEquals(result.fromInjectedFunctionParam,"injectedParamHello");
+  
     }
     
     public void testRunScript()

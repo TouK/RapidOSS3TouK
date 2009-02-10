@@ -99,35 +99,15 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         this.panel.render();
         YAHOO.rapidjs.component.OVERLAY_MANAGER.register(this.panel)
         this.func = function(args) {
-
             var panelHeight = args.height;
             var panelWidth = args.width;
-
-            var headerHeight = this.panel.header.offsetHeight; // Content + Padding + Border
-            var footerHeight = this.panel.footer.offsetHeight; // Content + Padding + Border
-
-            var bodyHeight = (panelHeight - headerHeight - footerHeight - 1);
-            var bodyWidth = (panelWidth - 20);
-            var bodyContentHeight = bodyHeight - 20;
-
-            YAHOO.util.Dom.setStyle(this.panel.body, 'height', bodyContentHeight + 'px');
-            YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'height', bodyContentHeight + 'px');
-            YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'width', bodyWidth + 'px');
-            this.events['resize'].fireDirect(this.bodyEl.getWidth(true), this.bodyEl.getHeight(true));
-            if (IE_SYNC) {
-                this.panel.sizeUnderlay();
-                this.panel.syncIframe();
-            }
+            this.adjustSize(panelWidth, panelHeight);
         }
 
         if (this.resizable) {
             YAHOO.util.Dom.addClass(this.container, 'resizable-panel');
             YAHOO.util.Dom.addClass(this.body, 'resizable-panel-body');
             YAHOO.util.Dom.addClass(this.footer, 'resizable-panel-footer');
-            var IE_QUIRKS = (YAHOO.env.ua.ie && document.compatMode == "BackCompat");
-
-            // UNDERLAY/IFRAME SYNC REQUIRED
-            var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie == 7 && IE_QUIRKS));
             // Create Resize instance, binding it to the 'resizablepanel' DIV
             this.resize = new YAHOO.util.Resize(this.container, {
                 handles: ['br'],
@@ -143,7 +123,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             // Setup resize handler to update the size of the Panel's body element
             // whenever the size of the 'resizablepanel' DIV changes
             this.resize.on('resize', this.func, this, true);
-            this.func.createDelegate(this, {width: this.width, height: this.height }, true).call({width: this.width, height: this.height});
+            this.adjustSize(this.width, this.height);
         }
         this.panel.hideEvent.subscribe(this.handleHide, this, true);
         this.panel.hideEvent.subscribe(function() {
@@ -176,7 +156,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         }
         this.panel.cfg.setProperty("height", newHeight);
         this.panel.cfg.setProperty("width", newWidth);
-        this.func.createDelegate(this, {width: newWidth, height: newHeight }, true).call({width: newWidth, height: newHeight});
+        this.adjustSize(newWidth, newHeight);
         this.panel.show();
 
         YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.panel);
@@ -190,15 +170,44 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
     },
 
+    adjustSize : function(panelWidth, panelHeight, contentHeight) {
+        // UNDERLAY/IFRAME SYNC REQUIRED
+        var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie == 7 && IE_QUIRKS));
+        var IE_QUIRKS = (YAHOO.env.ua.ie && document.compatMode == "BackCompat");
+        var bodyWidth = (panelWidth - 20);
+        YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'width', bodyWidth + 'px');
+
+        if (contentHeight != null) {
+            this.bodyEl.setHeight(contentHeight);
+            var panelBodyEl = getEl(this.panel.body);
+            panelBodyEl.setHeight(contentHeight + panelBodyEl.getPadding('tb'));
+            var totalHeight = getEl(this.panel.header).getHeight() +
+                              getEl(this.panel.footer).getHeight() +
+                              contentHeight +
+                              panelBodyEl.getPadding('tb');
+            this.panel.cfg.setProperty("height", totalHeight);
+        }
+        else {
+            var headerHeight = this.panel.header.offsetHeight; // Content + Padding + Border
+            var footerHeight = this.panel.footer.offsetHeight; // Content + Padding + Border
+
+            var bodyHeight = (panelHeight - headerHeight - footerHeight - 1);
+            var bodyContentHeight = bodyHeight - 20;
+
+            YAHOO.util.Dom.setStyle(this.panel.body, 'height', bodyContentHeight + 'px');
+            YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'height', bodyContentHeight + 'px');
+        }
+
+
+        this.events['resize'].fireDirect(this.bodyEl.getWidth(true), this.bodyEl.getHeight(true));
+        if (IE_SYNC) {
+            this.panel.sizeUnderlay();
+            this.panel.syncIframe();
+        }
+    },
+
     adjustHeight: function(contentHeight) {
-        this.bodyEl.setHeight(contentHeight);
-        var panelBodyEl = getEl(this.panel.body);
-        panelBodyEl.setHeight(contentHeight + panelBodyEl.getPadding('tb'));
-        var totalHeight = getEl(this.panel.header).getHeight() +
-                          getEl(this.panel.footer).getHeight() +
-                          contentHeight +
-                          panelBodyEl.getPadding('tb');
-        this.panel.cfg.setProperty("height", totalHeight);
+        this.adjustSize(this.panel.cfg.getProperty("width"), null, contentHeight);
     },
     setTitle: function(title) {
         this.title = title;

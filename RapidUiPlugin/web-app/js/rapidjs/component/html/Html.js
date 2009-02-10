@@ -25,7 +25,13 @@ YAHOO.rapidjs.component.Html = function(container, config)
     this.params = {componentId:this.id}
     this.render();
     this.url = null
-    this.events['error'].subscribe(function(){this.hideMask()}, this, true)
+    var events = {
+        'bodyCleared': new YAHOO.util.CustomEvent('bodyCleared')
+    }
+    YAHOO.ext.util.Config.apply(this.events, events);
+    this.events['error'].subscribe(function() {
+        this.hideMask()
+    }, this, true)
 
 };
 
@@ -37,8 +43,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.header = dh.append(wrp, {tag:'div'})
         this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title:this.title || ""});
         YAHOO.util.Dom.setStyle(this.toolbar.el, 'border-top', '1px solid #e0e3ef');
-        if(this.iframe != true){
-            this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));    
+        if (this.iframe != true) {
+            this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
         }
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
 
@@ -54,12 +60,23 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
             this.body = dh.append(wrp, {tag:'div', style:'overflow:auto'}, true);
         }
     },
+    inPopupWindow: function(){
+       YAHOO.util.Dom.setStyle(this.toolbar.el, 'display', 'none');
+       YAHOO.util.Dom.setStyle(this.toolbar.toolsEl, 'right', '35px');
+       YAHOO.util.Dom.setStyle(this.toolbar.toolsEl, 'width', '45px');
+       this.popupWindow.dialog.container.appendChild(this.toolbar.toolsEl);
+       var panel = this.popupWindow.dialog.panel;
+//       panel.fillHeight(panel.body);
+    },
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
+        this.fireBodyClear();
         this.body.update("<div>" + response.responseText + "</div>", true);
         this.hideMask();
     },
-
+    fireBodyClear: function() {
+        this.events['bodyCleared'].fireDirect();
+    },
     clearData: function() {
         this.hideMask();
     },
@@ -69,6 +86,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         if (title != null) {
             this.setTitle(title)
         }
+        this.fireBodyClear();
         this.body.update("");
         if (url)
         {
@@ -107,7 +125,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.maskMessage.hide();
     },
 
-    resize: function(width, height){
+    resize: function(width, height) {
         this.body.setHeight(height - this.header.offsetHeight);
         this.body.setWidth(width);
     }

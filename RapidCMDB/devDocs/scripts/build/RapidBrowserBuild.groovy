@@ -43,8 +43,9 @@ class RapidBrowserBuild extends Build  {
 
         ant.copy(todir: "${env.dist_rapid_browser}") {
             ant.fileset(file: "$env.rapid_browser_svn/rapidbrowser.exe")
-            ant.fileset(file: "$env.rapid_browser_svn/rapidbrowser.bat")
+            ant.fileset(file: "$env.rapid_browser_svn/rapidbrowserservice.exe")
             ant.fileset(file: "$env.rapid_browser_svn/rapidbrowser.vmoptions")
+            ant.fileset(file: "$env.rapid_browser_svn/rapidbrowserservice.vmoptions")
             ant.fileset(file: "$env.rapid_browser_svn/rapidbrowser.sh")
             ant.fileset(file: "$env.rapid_browser_svn/readme.txt")
         }

@@ -36,16 +36,18 @@ YAHOO.rapidjs.component.ComponentContainer = function(container, config) {
         'error' :new YAHOO.util.CustomEvent('error')
     };
     YAHOO.rapidjs.Components[this.id] = this;
-    if(!YAHOO.util.History.historyChangedEvent){
-        YAHOO.util.History.historyChangedEvent = new YAHOO.util.CustomEvent("historyChanged");    
+    if (config.subscribeToHistoryChange !== false) {
+        if (!YAHOO.util.History.historyChangedEvent) {
+            YAHOO.util.History.historyChangedEvent = new YAHOO.util.CustomEvent("historyChanged");
+        }
+        YAHOO.util.History.historyChangedEvent.subscribe(this.globalHistoryChanged, this, true);
+        var bookmarkedHistoryState = YAHOO.util.History.getBookmarkedState(this.id);
+        var initialHistoryState = bookmarkedHistoryState || this.getInitialHistoryState();
+        YAHOO.util.History.register(this.id, initialHistoryState, function (state) {
+            this._historyChanged(state);
+        }, this, true);
+        this.historyChangeFromSave = false;
     }
-    YAHOO.util.History.historyChangedEvent.subscribe(this.globalHistoryChanged, this, true);
-    var bookmarkedHistoryState = YAHOO.util.History.getBookmarkedState(this.id);
-    var initialHistoryState = bookmarkedHistoryState || this.getInitialHistoryState();
-    YAHOO.util.History.register(this.id, initialHistoryState, function (state) {
-        this._historyChanged(state);
-    }, this, true);
-    this.historyChangeFromSave = false;
 };
 
 YAHOO.rapidjs.component.ComponentContainer.prototype =
@@ -67,7 +69,7 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
         }
     },
 
-    
+
     saveHistoryChange : function(newHistoryState) {
         this.historyChangeFromSave = true;
         try {
@@ -80,21 +82,21 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
         }
     },
 
-    globalHistoryChanged: function(compId, state){
-       if(this.popupWindow && compId != this.id){
-           this.popupWindow.hide();
-       }
-       else if(this.popupWindow && state != this.getInitialHistoryState() && compId == this.id){
-           this.popupWindow.show();
-       }
+    globalHistoryChanged: function(compId, state) {
+        if (this.popupWindow && compId != this.id) {
+            this.popupWindow.hide();
+        }
+        else if (this.popupWindow && state != this.getInitialHistoryState() && compId == this.id) {
+            this.popupWindow.show();
+        }
     },
 
-    historyChanged: function(state){
-        
+    historyChanged: function(state) {
+
     },
 
-    _historyChanged: function(state){
-        if(this.historyChangeFromSave){
+    _historyChanged: function(state) {
+        if (this.historyChangeFromSave) {
             this.historyChangeFromSave = false;
             return;
         }
@@ -106,17 +108,19 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
         return "noAction";
     },
 
-    resize: function(width, height){
+    resize: function(width, height) {
 
     },
+    inPopupWindow: function(){
 
-    setTitle: function(title){
+    },
+    setTitle: function(title) {
         this.title = title;
-        if(this.popupWindow){
+        if (this.popupWindow) {
             this.popupWindow.setTitle(title);
         }
-        else{
-            if(this.toolbar){
+        else {
+            if (this.toolbar) {
                 this.toolbar.setTitle(title);
             }
         }

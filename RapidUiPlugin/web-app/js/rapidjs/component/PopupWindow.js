@@ -20,6 +20,7 @@ YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.PopupWindow = function(component, config) {
     this.component = component;
     this.component.popupWindow = this;
+    this.resizable = true;
     this.title = '&#160;'
     YAHOO.ext.util.Config.apply(this, config);
     this.dialog = new YAHOO.rapidjs.component.Dialog({
@@ -29,6 +30,7 @@ YAHOO.rapidjs.component.PopupWindow = function(component, config) {
         minWidth: this.minWidth,
         maxWidth: this.maxWidth,
         maxHeight: this.maxHeight,
+        resizable: this.resizable,
         x: this.x,
         y: this.y,
         title: this.title,
@@ -37,6 +39,7 @@ YAHOO.rapidjs.component.PopupWindow = function(component, config) {
     this.setTitle(this.title);
     this.dialog.events['resize'].subscribe(this.windowResized, this, true);
     this.dialog.body.appendChild(this.component.container);
+    this.component.inPopupWindow();
     this.windowResized(this.dialog.bodyEl.getWidth(true), this.dialog.bodyEl.getHeight(true));
 
 };

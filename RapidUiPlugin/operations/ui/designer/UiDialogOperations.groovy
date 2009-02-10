@@ -29,6 +29,7 @@ class UiDialogOperations extends UiLayoutUnitOperations{
                     minHeight:[descr:"Minimum height of the dialog"],
                     minWidth:[descr:"Minimum width of the dialog"],
                     maxWidth:[descr:"Maximum width of the dialog"],
+                    resizable:[descr:"Boolean value to represent whether the dialog is resizable or not."],
                     component:[descr:"RapidInsight component that will be displayed as pop up dialog", formatter:{object-> return object.component?object.component.name:""}]
                 ],
                 childrenConfiguration:[]

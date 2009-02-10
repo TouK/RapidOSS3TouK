@@ -31,8 +31,11 @@ import script.CmdbScript
 class QuartzScriptJob implements StatefulJob {
 
     public void execute(JobExecutionContext jobExecutionContext) {
+        runScript(jobExecutionContext.getJobDetail().getName());
+    }
+    protected void runScript(scriptName)
+    {           
         Logger logger = Logger.getRootLogger();
-        String scriptName = jobExecutionContext.getJobDetail().getName();
         CmdbScript script = CmdbScript.get(name:scriptName);
         if(script == null)
         {
@@ -42,13 +45,13 @@ class QuartzScriptJob implements StatefulJob {
         {
             try
             {
-                logger.debug("Running periodic script " + scriptName);
-                def result = ScriptManager.getInstance().runScript(script.scriptFile, ["staticParam":script.staticParam,"staticParamMap": CmdbScript.getStaticParamMap(script)],CmdbScript.getScriptLogger(script));
+                logger.debug("Running periodic script " + scriptName);                
+                def result = CmdbScript.runScript(script,[:]);
                 logger.info("Periodic script ${scriptName} successfuly executed.")
             }
             catch (t)
             {
-                logger.warn("Exception in periodic script ${scriptName}", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+                logger.warn("Exception in periodic script ${scriptName}", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));                
             }
         }
     }

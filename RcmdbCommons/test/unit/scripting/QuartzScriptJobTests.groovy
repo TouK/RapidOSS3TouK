@@ -1,0 +1,129 @@
+package scripting
+
+import com.ifountain.rcmdb.scripting.QuartzScriptJob
+import com.ifountain.rcmdb.scripting.ScriptManager;
+
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import script.CmdbScript
+import script.CmdbScriptOperations
+import com.ifountain.rcmdb.test.util.CompassForTests;
+import org.apache.commons.io.FileUtils
+/**
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Feb 10, 2009
+* Time: 9:34:50 AM
+* To change this template use File | Settings | File Templates.
+*/
+class QuartzScriptJobTests extends RapidCmdbWithCompassTestCase{
+    def static base_directory = "../testoutput/";
+    public void setUp() {
+        super.setUp();
+        clearMetaClasses();
+        initialize([CmdbScript], []);
+        initializeScriptManager();
+        CompassForTests.addOperationSupport (CmdbScript, CmdbScriptOperations);
+    }
+
+    public void tearDown() {
+        super.tearDown();
+    }
+    
+     private void clearMetaClasses()
+     {
+        ScriptManager.destroyInstance();
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager)
+        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript)        
+        ExpandoMetaClass.enableGlobally();
+     }
+     
+    void initializeScriptManager()
+     {            
+        ScriptManager manager = ScriptManager.getInstance();
+        if(new File(base_directory).exists())
+        {
+            FileUtils.deleteDirectory (new File(base_directory));
+        }
+        manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
+        
+     }
+     
+    public void testRunScript()
+    {
+
+        def callParams=[:]
+        CmdbScript.metaClass.static.runScript={CmdbScript script, Map params ->
+            callParams.script=script
+            callParams.params=params
+        }
+        
+        QuartzScriptJob job=new QuartzScriptJob();        
+      
+        def content="""  println "done";  """;
+        def scriptName="myTestScript";
+        def scriptFile=scriptName+".groovy"
+        createScript(scriptFile,content);
+        CmdbScript.addScript(name:scriptName,scriptFile:scriptFile);
+
+        assertEquals(callParams.size(),0);
+        job.runScript(scriptName);
+        assertEquals(callParams.script.name,scriptName);
+        assertEquals(callParams.params.size(),0);
+    }
+    public void testRunScriptDoesNotGenerateExceptionWhenScriptIsNotFound()
+    {
+         assertEquals(CmdbScript.list().size(),0);
+         QuartzScriptJob job=new QuartzScriptJob();
+         try{
+            job.runScript("noscript");
+         }
+         catch (e){
+            fail("should not throw exception");   
+         }
+
+    }
+    public void testRunScriptDoesNotGenerateExceptionWhenScriptErrorOccured()
+    {
+        def callParams=[:]
+        CmdbScript.metaClass.static.runScript={CmdbScript script, Map params ->
+            callParams.script=script
+            throw new Exception("Test Exception");
+        }
+
+        QuartzScriptJob job=new QuartzScriptJob();
+
+        def content="""  println "done";  """;
+        def scriptName="myTestScript";
+        def scriptFile=scriptName+".groovy"
+        createScript(scriptFile,content);
+        CmdbScript.addScript(name:scriptName,scriptFile:scriptFile);
+
+        assertEquals(callParams.size(),0);
+        try{
+            job.runScript(scriptName);
+        }
+        catch (e){
+            fail("should not throw exception");
+        }
+        assertEquals(callParams.script.name,scriptName);
+        
+    }
+
+    def createScript(scriptName,scriptContent)
+    {
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write (scriptContent);
+    }
+}
+//
+//class MockCmdbScriptOperations extends CmdbScriptOperations{
+//    def callParams=[:]
+//     static def runScript(CmdbScript script, Map params) throws Exception {
+//        callParams=script
+//        params.staticParam=script.staticParam;
+//        params.staticParamMap=CmdbScript.getStaticParamMap(script);
+//
+//        return ScriptManager.getInstance().runScript(script.scriptFile, params,getScriptLogger(script),script.operationClass);
+//    }
+//}

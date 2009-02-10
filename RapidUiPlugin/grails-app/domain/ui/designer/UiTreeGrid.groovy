@@ -37,7 +37,7 @@ class UiTreeGrid extends UiComponent{
         keyAttribute(blank:false)
         pollingInterval(nullable: true)
         expanded(nullable: true)
-        tooltip(blank: true)
+        tooltip(nullable: true)
     }
 
     static propertyConfiguration = [:]

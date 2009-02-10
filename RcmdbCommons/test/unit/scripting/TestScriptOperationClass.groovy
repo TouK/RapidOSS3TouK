@@ -7,7 +7,7 @@ package scripting
  * To change this template use File | Settings | File Templates.
  */
 class TestScriptOperationClass extends com.ifountain.rcmdb.scripting.AbstractScriptOperation {
-    String test;
+    
     def injectedFunction()
     {
         input.fromInjectedFunction="injectedHello";

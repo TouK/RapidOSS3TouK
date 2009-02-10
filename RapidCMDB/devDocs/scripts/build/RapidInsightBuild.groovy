@@ -157,7 +157,7 @@ class RapidInsightBuild extends Build {
         if (ZIP_OPT) {
             def zipFileName = "${env.distribution}/RI_Unix$versionDate" + ".zip"
             ant.zip(destfile: zipFileName) {
-                ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
+                ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer", excludes:"**/*.vmoptions,**/*.exe,**/*.bat");
             }
         }
     }

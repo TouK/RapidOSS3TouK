@@ -81,6 +81,7 @@ class RapidCmdbBuild extends Build {
         	if(RCMDB_WINDOWS_OPT){
         		addJreOnTopOfUnixAndZip("RCMDB");
         	}
+
         }
         if(TEST_OPT)copyForTesting();
         if(SAMPLE1_OPT) buildSample("Sample1");
@@ -120,7 +121,7 @@ class RapidCmdbBuild extends Build {
 	        def versionDate = getVersionWithDate();
 	        def zipFileName = "$env.distribution/RCMDB_Unix$versionDate" + ".zip"
 	        ant.zip(destfile: zipFileName) {
-	            ant.zipfileset(dir: "$env.distribution") {
+	            ant.zipfileset(dir: "$env.distribution", excludes:"**/*.vmoptions,**/*.exe,**/*.bat") {
 	                ant.exclude(name: ".project");
 	            }
 	        }

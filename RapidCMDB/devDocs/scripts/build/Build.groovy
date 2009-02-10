@@ -306,7 +306,7 @@ class Build extends Parent{
         if (ZIP_OPT){
 	        def zipFileName = "${env.distribution}/${jarNamePrepend}_Windows$versionDate" + ".zip"
 	        ant.zip(destfile: zipFileName) {
-	        	ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer")
+	        	ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer", excludes:"**/*.sh")
 //	            ant.zipfileset(dir: "$env.distribution") {
 //	                ant.exclude(name: ".project");
 //	                ant.exclude(name: "*.zip");

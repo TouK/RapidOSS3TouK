@@ -37,20 +37,25 @@ YAHOO.rapidjs.component.PopupWindow = function(component, config) {
         close: true
     });
     this.setTitle(this.title);
-    this.dialog.events['resize'].subscribe(this.windowResized, this, true);
+    this.dialog.events['resize'].subscribe(this.handleWindowResize, this, true);
     this.dialog.body.appendChild(this.component.container);
     this.component.inPopupWindow();
-    this.windowResized(this.dialog.bodyEl.getWidth(true), this.dialog.bodyEl.getHeight(true));
+    this.windowResized();
 
 };
 
 YAHOO.rapidjs.component.PopupWindow.prototype = {
-   windowResized: function(width, height){
-       this.component.resize(width, height);
+   handleWindowResize: function(width, height){
+      this.component.resize(width, height);
+   },
+   windowResized: function(){
+       var panelBodyEl = getEl(this.dialog.panel.body);
+       var height = panelBodyEl.getHeight() - panelBodyEl.getPadding('tb');
+       this.handleWindowResize(this.dialog.bodyEl.getWidth(true), height);
    },
    show: function(){
        this.dialog.show();
-       this.windowResized(this.dialog.bodyEl.getWidth(), this.dialog.bodyEl.getHeight());
+       this.windowResized();
        this.component.handleVisible();
    },
    hide: function(){

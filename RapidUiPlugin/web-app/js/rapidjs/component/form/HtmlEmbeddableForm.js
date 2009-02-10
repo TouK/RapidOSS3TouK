@@ -18,10 +18,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
     render:function() {
         this.registerForm();
         this.renderButtons();
-        if(this.htmlComp.popupWindow){
-           var dialog = this.htmlComp.popupWindow.dialog;
-           var panel = dialog.panel;
-           dialog.adjustSize(panel.cfg.getProperty('width'), panel.cfg.getProperty('height'));
+        if (this.htmlComp.popupWindow) {
+            var dialog = this.htmlComp.popupWindow.dialog;
+            var panel = dialog.panel;
+            dialog.adjustSize(panel.cfg.getProperty('width'), panel.cfg.getProperty('height'));
         }
     },
 
@@ -33,10 +33,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
         this.saveButton.addClass('default');
         this.cancelButton = new YAHOO.widget.Button({label:'Cancel', onclick:{fn:this.cancel, obj:this, scope:this}})
         this.cancelButton.appendTo(oSpan);
-        if(this.htmlComp.popupWindow){
-           this.htmlComp.popupWindow.dialog.panel.setFooter(oSpan); 
+        if (this.htmlComp.popupWindow) {
+            this.htmlComp.popupWindow.dialog.panel.setFooter(oSpan);
         }
-        else{
+        else {
             var footer = dh.append(this.container, {tag:'div'});
             footer.appendChild(oSpan);
         }
@@ -74,9 +74,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
     },
     hideMask:function() {
         this.htmlComp.hideMask();
+        this.saveButton.set('disabled', false)
+        this.cancelButton.set('disabled', false)
     },
     showMask: function() {
         this.htmlComp.showMask();
+        this.saveButton.set('disabled', true)
+        this.cancelButton.set('disabled', true)
     },
     _getFormAttributes : function(oForm) {
         var attrs = {
@@ -130,21 +134,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
         if (form) {
             this.form = form;
             YAHOO.util.Event.on(form, "submit", this._submitHandler, this, true);
-            YAHOO.util.Event.on(form, 'keypress', this.handleKeypress, this, true);
         }
     },
     _submitHandler : function(e) {
-        Event.stopEvent(e);
+        YAHOO.util.Event.stopEvent(e);
         this.submit();
         this.form.blur();
-    },
-
-    handleKeypress: function(e)
-    {
-        if ((e.type == "keypress" && e.keyCode == 13))
-        {
-            this.submit();
-        }
     },
 
     submit: function() {

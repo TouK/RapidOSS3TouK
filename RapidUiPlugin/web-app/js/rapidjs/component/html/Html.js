@@ -61,12 +61,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         }
     },
     inPopupWindow: function(){
-       YAHOO.util.Dom.setStyle(this.toolbar.el, 'display', 'none');
+       YAHOO.util.Dom.setStyle(this.header, 'display', 'none');
        YAHOO.util.Dom.setStyle(this.toolbar.toolsEl, 'right', '35px');
        YAHOO.util.Dom.setStyle(this.toolbar.toolsEl, 'width', '45px');
        this.popupWindow.dialog.container.appendChild(this.toolbar.toolsEl);
-       var panel = this.popupWindow.dialog.panel;
-//       panel.fillHeight(panel.body);
     },
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
@@ -126,7 +124,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
     },
 
     resize: function(width, height) {
-        this.body.setHeight(height - this.header.offsetHeight);
+        var bodyHeight;
+        if(YAHOO.util.Dom.getStyle(this.header, 'display') != 'none'){
+            bodyHeight = height - this.header.offsetHeight
+        }
+        else{
+            bodyHeight = height
+        }
+        this.body.setHeight(bodyHeight);
         this.body.setWidth(width);
     }
 })

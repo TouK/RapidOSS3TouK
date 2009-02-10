@@ -50,9 +50,8 @@ class RFormTagLib {
         """;
     }
     static def fFormRemote(attrs, bodyString) {
-        def onSuccess = attrs["onSuccess"];
-        def action = attrs["action"];
-        def method = attrs["method"] ? attrs["method"] : "GET";
+        def onSuccess = attrs.remove("onSuccess");
+        def componentId = attrs.remove("componentId");
         def successJs;
         if (onSuccess != null) {
             successJs = """
@@ -60,14 +59,18 @@ class RFormTagLib {
             """
         }
         def containerId = "rformRemote_${nextId++}"
+        def attrsArray = [];
+        attrs.each{key, value ->
+            attrsArray.add("${key}=\"${value}\"")
+        }
         return """
            <div id="${containerId}">
-                <form method="${method}" action="${action}">
+                <form ${attrsArray.join(' ')}>
                     ${bodyString}
                 </form>
            </div>
            <script type="text/javascript">
-               var htmlComponent = YAHOO.rapidjs.Components['${attrs["componentId"]}'];
+               var htmlComponent = YAHOO.rapidjs.Components['${componentId}'];
                var formContainer = document.getElementById('${containerId}');
                var formRemote = new YAHOO.rapidjs.component.HtmlEmbeddableForm(formContainer, htmlComponent);
                 ${successJs ? successJs : ""}

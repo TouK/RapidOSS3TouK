@@ -126,12 +126,14 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             this.adjustSize(this.width, this.height);
         }
         this.panel.hideEvent.subscribe(this.handleHide, this, true);
-        this.panel.hideEvent.subscribe(function() {
-            YAHOO.util.Dom.setStyle(this.panel.body, 'overflow', 'hidden');
-        }, this, true)
-        this.panel.beforeShowEvent.subscribe(function() {
-            YAHOO.util.Dom.setStyle(this.panel.body, 'overflow', 'auto');
-        }, this, true)
+        if (YAHOO.env.ua.gecko) {
+            this.panel.hideEvent.subscribe(function() {
+                YAHOO.util.Dom.setStyle(this.panel.body, 'overflow', 'hidden');
+            }, this, true)
+            this.panel.beforeShowEvent.subscribe(function() {
+                YAHOO.util.Dom.setStyle(this.panel.body, 'overflow', 'auto');
+            }, this, true)
+        }
         YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
         this.setTitle(this.title)
     },
@@ -172,8 +174,8 @@ YAHOO.rapidjs.component.Dialog.prototype = {
 
     adjustSize : function(panelWidth, panelHeight, contentHeight) {
         // UNDERLAY/IFRAME SYNC REQUIRED
-        var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie == 7 && IE_QUIRKS));
         var IE_QUIRKS = (YAHOO.env.ua.ie && document.compatMode == "BackCompat");
+        var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie == 7 && IE_QUIRKS));
         var bodyWidth = (panelWidth - 20);
         YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'width', bodyWidth + 'px');
 
@@ -192,14 +194,13 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             var footerHeight = this.panel.footer.offsetHeight; // Content + Padding + Border
 
             var bodyHeight = (panelHeight - headerHeight - footerHeight - 1);
-            var bodyContentHeight = bodyHeight - 20;
-
-            YAHOO.util.Dom.setStyle(this.panel.body, 'height', bodyContentHeight + 'px');
-            YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'height', bodyContentHeight + 'px');
+            var panelBodyEl = getEl(this.panel.body);
+            panelBodyEl.setHeight(bodyHeight);
+            var bodyContentHeight = bodyHeight - panelBodyEl.getPadding('tb');
+            this.bodyEl.setHeight(bodyContentHeight)
         }
 
-
-        this.events['resize'].fireDirect(this.bodyEl.getWidth(true), this.bodyEl.getHeight(true));
+        this.events['resize'].fireDirect(this.bodyEl.getWidth(true), bodyContentHeight);
         if (IE_SYNC) {
             this.panel.sizeUnderlay();
             this.panel.syncIframe();

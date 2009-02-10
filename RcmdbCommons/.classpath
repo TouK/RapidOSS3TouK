@@ -88,15 +88,15 @@
 	<classpathentry kind="lib" path="plugins/jsecurity-0.2.1/lib/jsecurity-jdk14.jar"/>
 	<classpathentry kind="lib" path="plugins/jsecurity-0.2.1/lib/jug.jar"/>
 	<classpathentry kind="lib" path="plugins/jsecurity-0.2.1/lib/retroweaver-rt.jar"/>
-	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/easymock.jar"/>
-	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/jmock-1.1.0.jar"/>
-	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/lucene-analyzers.jar"/>
-	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/lucene-core.jar"/>
-	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/lucene-highlighter.jar"/>
-	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/lucene-queries.jar"/>
-	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/lucene-snowball.jar"/>
-	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/lucene-spellchecker.jar"/>
 	<classpathentry kind="lib" path="plugins/quartz-0.2/lib/quartz-1.5.2.jar"/>
-	<classpathentry kind="lib" path="plugins/searchable-0.5-SNAPSHOT/lib/compass.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/compass/compass.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/compass/easymock.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/compass/jmock-1.1.0.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/compass/lucene-analyzers.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/compass/lucene-core.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/compass/lucene-highlighter.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/compass/lucene-queries.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/compass/lucene-snowball.jar"/>
+	<classpathentry kind="lib" path="/ThirdParty/lib/compass/lucene-spellchecker.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

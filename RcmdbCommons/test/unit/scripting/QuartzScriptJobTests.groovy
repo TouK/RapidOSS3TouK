@@ -116,14 +116,3 @@ class QuartzScriptJobTests extends RapidCmdbWithCompassTestCase{
         scriptFile.write (scriptContent);
     }
 }
-//
-//class MockCmdbScriptOperations extends CmdbScriptOperations{
-//    def callParams=[:]
-//     static def runScript(CmdbScript script, Map params) throws Exception {
-//        callParams=script
-//        params.staticParam=script.staticParam;
-//        params.staticParamMap=CmdbScript.getStaticParamMap(script);
-//
-//        return ScriptManager.getInstance().runScript(script.scriptFile, params,getScriptLogger(script),script.operationClass);
-//    }
-//}

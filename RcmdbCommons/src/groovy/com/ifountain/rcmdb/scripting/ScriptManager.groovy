@@ -90,27 +90,28 @@ public class ScriptManager {
     }
     private def _addScript(String scriptPath) throws ScriptingException
     {
-        scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
+        scriptPath = getScriptPath(scriptPath)
         scripts[scriptPath] = getScriptClass(scriptPath);
     }
 
     def removeScript(String scriptPath)
-    {
-        scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
-        scripts.remove(scriptPath)
+    {           
+        scripts.remove(getScriptPath(scriptPath))
     }
 
 
     def getScript(String scriptPath)
-    {
-        scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
-        return scripts[scriptPath];
+    {           
+        return scripts[getScriptPath(scriptPath)];
     }
 
-    
+    private def getScriptPath(String scriptPath)
+    {
+       return StringUtils.substringBefore(scriptPath, ".groovy");     
+    }
     private Class getScriptClass(String scriptPath) throws ScriptingException
     {
-        scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
+        scriptPath = getScriptPath(scriptPath)
         def scriptClassLoader = new GroovyClassLoader(classLoader);
         scriptClassLoader.addClasspath(baseDirectory + "/${SCRIPT_DIRECTORY}");
         try
@@ -165,54 +166,47 @@ public class ScriptManager {
     }
     def runScript(scriptPath, bindings,scriptLogger,operationClass) throws ScriptingException
     {
-        scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
-        def scriptClass = scripts[scriptPath];
-        if (scriptClass)
+        def scriptObject = getScriptObject(scriptPath,bindings,scriptLogger,operationClass);        
+        def scriptClass = getScript(scriptPath);
+        try
         {
 
-            def scriptObject = scriptClass.newInstance();
+            def result = scriptObject.run();
+            return result;
+        }
+        catch (Throwable exception)
+        {
+            StackTraceElement[] elements = exception.getStackTrace();
+            def lineNumber = -1;
+            for (element in elements)
+            {
+                if (element.getClassName() == scriptClass.getName())
+                {
+                    lineNumber = element.getLineNumber();
+                    break;
+                }
+            }
+            throw ScriptingException.runScriptException(scriptPath, lineNumber, exception);
+        }
+        
+
+    }
+
+    public def getScriptObject(scriptPath,bindings,scriptLogger,operationClass){
+
+        def scriptClass = getScript(scriptPath);
+        if (scriptClass)
+        {
+            def scriptObject=scriptClass.newInstance();
             bindings.each {propName, propValue ->
                 scriptObject.setProperty(propName, propValue);
             }
             scriptObject.setProperty("logger", scriptLogger);
             if(operationClass!=null && operationClass!="")
             {
-                scriptObject.setProperty ("operationInstance",operationClass.newInstance())    
+                scriptObject.setProperty ("operationInstance",operationClass.newInstance())
             }
-            
-            try
-            {
-
-                def result = scriptObject.run();
-                return result;
-            }
-            catch (Throwable exception)
-            {
-                StackTraceElement[] elements = exception.getStackTrace();
-                def lineNumber = -1;
-                for (element in elements)
-                {
-                    if (element.getClassName() == scriptClass.getName())
-                    {
-                        lineNumber = element.getLineNumber();
-                        break;
-                    }
-                }
-                throw ScriptingException.runScriptException(scriptPath, lineNumber, exception);
-            }
-        }
-        else
-        {
-            throw ScriptingException.scriptDoesnotExist(scriptPath);
-        }
-    }
-
-    def getScriptObject(scriptPath){
-         scriptPath = StringUtils.substringBefore(scriptPath, ".groovy")
-        def scriptClass = scripts[scriptPath];
-        if (scriptClass)
-        {
-            return scriptClass.newInstance();
+            return scriptObject;            
         }
         else
         {

@@ -88,12 +88,13 @@ class ListeningAdapterManager {
             def scriptObject;
             def scriptLogger;
             try {
-                scriptLogger=CmdbScript.getScriptLogger(script);
-                scriptObject = ScriptManager.getInstance().getScriptObject(script.scriptFile);
-                scriptObject.setProperty("datasource", listeningDatasource);
-                scriptObject.setProperty("staticParam", script.staticParam);
-                scriptObject.setProperty("logger", scriptLogger);
-                scriptObject.setProperty("staticParamMap", CmdbScript.getStaticParamMap(script));
+
+                def scriptParams=[:]
+                scriptParams.datasource=listeningDatasource;
+                scriptObject = CmdbScript.getScriptObject(script,scriptParams);
+                scriptLogger=scriptObject.logger;
+                
+                
                 scriptObject.run();
                 def params = scriptObject.getParameters();
                 if (params == null) {

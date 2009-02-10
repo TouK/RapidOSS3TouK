@@ -235,7 +235,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         assertEquals (expectedScriptMessage, scriptObject.run())
     }
     
-    public void testRunScriptCreatesLogger()
+    public void testGetScriptObjectCreatesLogger()
     {
         def scriptName = "script1.groovy";
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
@@ -248,15 +248,70 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         def logger=Logger.getLogger("testlogger");
         logger.setLevel(logLevel);
 
-
-        def res=manager.runScript(scriptName, bindings,logger);
-        assertEquals(res.getLevel(),logLevel);
-        assertEquals(res.getName(),"testlogger");
+        def scriptObject=manager.getScriptObject(scriptName,bindings,logger,null);
+        assertEquals(scriptObject.logger,logger);
+        assertEquals(scriptObject.logger.getLevel(),logLevel);
+        assertEquals(scriptObject.logger.getName(),"testlogger");
 
         logger.setLevel(Level.INFO);
-        res=manager.runScript(scriptName, bindings,logger);
-        assertEquals(res.getLevel(),Level.INFO);
+        scriptObject=manager.getScriptObject(scriptName,bindings,logger,null);
+        assertEquals(scriptObject.logger.getLevel(),Level.INFO);
         
+    }
+    public void testGetScriptObjectCreatesBindingsAndOperationInstance()
+    {
+        def scriptName = "script1.groovy";
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write ("return logger");
+        manager.addScript(scriptName)
+
+        def bindings=["x":"5","y":6];
+
+        def logger=Logger.getLogger("testlogger");        
+
+        def scriptObject=manager.getScriptObject(scriptName,bindings,logger,null);
+        assertEquals(scriptObject.x,bindings.x);
+        assertEquals(scriptObject.y,bindings.y);
+        assertNull(scriptObject.operationInstance);
+
+        scriptObject=manager.getScriptObject(scriptName,bindings,logger,TestScriptOperationClass);
+        assertEquals(scriptObject.x,bindings.x);
+        assertEquals(scriptObject.y,bindings.y);
+        assertNotNull(scriptObject.operationInstance)
+        assertEquals(scriptObject.operationInstance.class,TestScriptOperationClass);
+        
+
+    }
+     public void testGetScriptObjectThrowsScriptDoesnotExistsExceptionIfScriptNotAdded()
+    {
+        def scriptName = "script1.groovy";
+        def bindings = [:]
+        try
+        {
+            manager.getScriptObject(scriptName,bindings,testLogger,null);
+            fail("Should throw exception");
+        }
+        catch(ScriptingException e)
+        {
+            assertEquals (ScriptingException.scriptDoesnotExist("script1.groovy").getMessage(), e.getMessage());
+        }
+    }
+    public void testOperationClassInjectedToScript(){
+        def scriptName = "script1.groovy";
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write ("""
+           setProperty("input",[:])
+           input.fromScript="scriptHello";
+           injectedFunction();
+           injectedFunction2("injectedParamHello");
+           return input;
+        """);
+        manager.addScript(scriptName);
+        def result=manager.runScript(scriptName, [:],testLogger,TestScriptOperationClass);
+
+        assertEquals(result.fromScript,"scriptHello");
+        assertEquals(result.fromInjectedFunction,"injectedHello");
+        assertEquals(result.fromInjectedFunctionParam,"injectedParamHello");
     }
     
     public void testRunScript()
@@ -296,23 +351,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
          
          
     }
-    public void testRunScriptInjectsOperationClassToScript(){
-        def scriptName = "script1.groovy";
-        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
-        scriptFile.write ("""
-           setProperty("input",[:])
-           input.fromScript="scriptHello";
-           injectedFunction();
-           injectedFunction2("injectedParamHello");     
-           return input;     
-        """);
-        manager.addScript(scriptName);
-        def result=manager.runScript(scriptName, [:],testLogger,TestScriptOperationClass);
-        
-        assertEquals(result.fromScript,"scriptHello");
-        assertEquals(result.fromInjectedFunction,"injectedHello");
-        assertEquals(result.fromInjectedFunctionParam,"injectedParamHello");
-    }
+
     public void testRunScriptThrowsRuntimeExceptions()
     {
         def scriptName = "script1.groovy";
@@ -333,20 +372,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         }
     }
 
-    public void testRunScriptThrowsScriptDoesnotExistsExceptionIfScriptNotAdded()
-    {
-        def scriptName = "script1.groovy";
-        def bindings = [:]
-        try
-        {
-            manager.runScript(scriptName, bindings,testLogger);
-            fail("Should throw exception");
-        }
-        catch(ScriptingException e)
-        {
-            assertEquals (ScriptingException.scriptDoesnotExist("script1").getMessage(), e.getMessage());
-        }
-    }
+
 
     public void testInitialize()
     {
@@ -436,3 +462,6 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
     }
 
 }
+
+
+

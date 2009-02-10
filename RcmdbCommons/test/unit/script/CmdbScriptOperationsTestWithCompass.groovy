@@ -599,7 +599,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
          initializeForCmdbScript();
 
          def managerParams=[:]
-         ScriptManager.metaClass.getScriptObject={ scriptPath,bindings,scriptLogger,String operationClass ->
+         ScriptManager.metaClass.getScriptObject={ scriptPath,bindings,scriptLogger,operationClass ->
             managerParams.scriptPath=scriptPath
             managerParams.bindings=bindings
             managerParams.scriptLogger=scriptLogger

@@ -312,6 +312,12 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         assertEquals(result.fromScript,"scriptHello");
         assertEquals(result.fromInjectedFunction,"injectedHello");
         assertEquals(result.fromInjectedFunctionParam,"injectedParamHello");
+
+        result=manager.runScript(scriptName, [:],testLogger,scripting.TestScriptOperationClass);
+
+        assertEquals(result.fromScript,"scriptHello");
+        assertEquals(result.fromInjectedFunction,"injectedHello");
+        assertEquals(result.fromInjectedFunctionParam,"injectedParamHello");
   
     }
     

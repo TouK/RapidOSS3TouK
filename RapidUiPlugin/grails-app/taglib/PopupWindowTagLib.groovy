@@ -47,6 +47,7 @@ class PopupWindowTagLib {
             ${attrs["maxHeight"] ? "maxHeight:${attrs["maxHeight"]}," : ""}
             ${attrs["minWidth"] ? "minWidth:${attrs["minWidth"]}," : ""}
             ${attrs["maxWidth"] ? "maxWidth:${attrs["maxWidth"]}," : ""}
+            ${attrs["resizable"] != null ? "resizable:${attrs["resizable"]}," : ""}
             ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
             height:${attrs["height"]}
         }"""

@@ -28,6 +28,7 @@ class UiDialog
     Long minWidth = 0;
 
     Long maxWidth = 0;
+    Boolean resizable = true;
 
     Long x = 0;
 
@@ -64,6 +65,7 @@ class UiDialog
         minHeight(nullable: true)
         minWidth(nullable: true)
         maxWidth(nullable: true)
+        resizable(nullable: true)
         title(blank: true, nullable: true)
         __operation_class__(nullable: true)
         __is_federated_properties_loaded__(nullable: true)

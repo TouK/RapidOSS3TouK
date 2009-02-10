@@ -76,12 +76,6 @@ class RapidBrowserBuild extends Build  {
             ant.fileset(file:"../ThirdParty/lib/jetty/start-6.1.7.jar")
             ant.fileset(dir:"../ThirdParty/lib/jsp")
         }
-        if(System.getProperty("os.name").toLowerCase().indexOf("windows")<0)
-        {
-            Process p = "dos2unix *.sh".execute([], new File(env.dist_rapid_browser))
-            p.consumeProcessOutput(System.out, System.err);
-            p.waitFor();
-        }
         ant.zip(zipfile:"${env.distribution}/RapidBrowser${versionDate}.zip"){
             ant.zipfileset(dir:"${env.dist_rapid_browser}", prefix:"RapidBrowser");
         }

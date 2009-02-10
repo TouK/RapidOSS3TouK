@@ -47,7 +47,7 @@ scriptsToAdd.add([name: "getUIHierarchy"]);
 scriptsToAdd.add([name: "saveUIHierarchy"]);
 
 scriptsToAdd.add([name:"autocomplete", enabledForAllGroups:true])
-scriptsToAdd.add([name:"getHierarchy"])
+scriptsToAdd.add([name:"getHierarchy", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getEventHistory", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getSummaryData", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getGeocodes"])

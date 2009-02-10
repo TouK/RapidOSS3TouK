@@ -490,7 +490,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             var itemType = DesignerUtils.getItemType(this, xmlData);
             if (this.currentDisplayedItemData) {
                 var currentTabNode = DesignerUtils.getTabNodeFromNode(this, this.currentDisplayedItemData);
-                if ((itemType == 'Url' && currentTabNode.parentNode().parentNode == xmlData)
+                if ((itemType == 'Url' && currentTabNode && currentTabNode.parentNode().parentNode() == xmlData)
                         || (itemType == 'Tab' && currentTabNode == xmlData)) {
                     this.destroyCurrentLayout();
                 }

@@ -78,7 +78,7 @@ class RapidBrowserBuild extends Build  {
         }
         if(System.getProperty("os.name").toLowerCase().indexOf("windows")<0)
         {
-            Process p = "dos2unix "+new File(env.dist_rapid_browser).getCanonicalPath()+"/*.sh".execute()
+            Process p = ("dos2unix "+new File(env.dist_rapid_browser).getCanonicalPath()+"/*.sh").execute()
             p.consumeProcessOutputStream (System.out);
             p.consumeProcessErrorStream(System.err);
             p.waitFor();

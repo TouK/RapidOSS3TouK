@@ -40,7 +40,19 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
     Logger testLogger;
     static String dsKey = ScriptingManagerTests.name;
     protected void setUp() {
-        super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        super.setUp();
+        clearMetaClasses();
+        initializeScriptManager();
+    }
+
+    protected void tearDown() {
+        super.tearDown(); 
+        TestDatastore.clear();
+        manager.destroyInstance();
+        FileUtils.deleteDirectory(new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
+    }
+    protected void initializeScriptManager()
+    {
         TestDatastore.put(dsKey, []);
         manager = ScriptManager.getInstance();
         if(new File(base_directory).exists())
@@ -51,15 +63,13 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
         testLogger=Logger.getLogger("scriptingtestlogger");
     }
-
-    protected void tearDown() {
-        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-        TestDatastore.clear();
-        manager.destroyInstance();
-        FileUtils.deleteDirectory(new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
-    }
-
-
+    private void clearMetaClasses()
+     {
+        ScriptManager.destroyInstance();
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager)
+        ExpandoMetaClass.enableGlobally();
+     }
     public void testAddScript()
     {
         ScriptManager.getInstance().destroy();
@@ -260,7 +270,33 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
         assertEquals ("user1", manager.runScript(scriptName, bindings,testLogger));
         assertEquals ("user1", manager.runScript("script1", bindings,testLogger));
     }
-    public void testOperationClassInjectedToScript(){
+    public void testRunScriptCallsBase()
+    {
+         def scriptName = "script1.groovy";
+         
+         clearMetaClasses();
+         def managerParams=[:]
+         ScriptManager.metaClass.runScript={ scriptPath, bindings,scriptLogger,operationClass ->
+            managerParams.scriptPath=scriptPath
+            managerParams.bindings=bindings
+            managerParams.scriptLogger=scriptLogger
+            managerParams.operationClass= operationClass;
+            return "myrunscript";
+         }
+         initializeScriptManager();
+
+         def bindings=["x":5];
+         assertEquals(managerParams.size(),0);
+         def result=manager.runScript(scriptName,bindings,testLogger);
+         assertEquals(result,"myrunscript");
+         assertEquals(managerParams.scriptPath,scriptName) ;
+         assertEquals(managerParams.bindings,bindings) ;
+         assertEquals(managerParams.scriptLogger,testLogger) ;
+         assertEquals(managerParams.operationClass,null) ;
+         
+         
+    }
+    public void testRunScriptInjectsOperationClassToScript(){
         def scriptName = "script1.groovy";
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
         scriptFile.write ("""

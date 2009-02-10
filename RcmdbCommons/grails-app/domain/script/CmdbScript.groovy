@@ -53,6 +53,7 @@ class CmdbScript {
     String logFile="cmdbscript";
     String logLevel = Level.WARN.toString();
     boolean logFileOwn=false;
+    String operationClass ="";
     
     BaseListeningDatasource listeningDatasource;
     List allowedGroups = [];
@@ -99,6 +100,7 @@ class CmdbScript {
         errors(nullable:true)
         logLevel(inList:[Level.ALL.toString(),Level.DEBUG.toString(),Level.INFO.toString(),
               Level.WARN.toString(), Level.ERROR.toString(), Level.FATAL.toString(), Level.OFF.toString()])
+        operationClass(blank:true,nullable:true)
     }
 
     String toString()

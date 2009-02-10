@@ -628,17 +628,18 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
          assertEquals(result.staticParamMap.y,"11")
 
 
-     }
+     }     
      void testRunScriptPassesParametersToScriptManager()
      {
          initialize([CmdbScript, Group], []);
          initializeForCmdbScript();
          
          def managerParams=[:]
-         ScriptManager.metaClass.runScript={ scriptPath, bindings,scriptLogger ->
+         ScriptManager.metaClass.runScript={ scriptPath, bindings,scriptLogger,operationClass ->
             managerParams.scriptPath=scriptPath
             managerParams.bindings=bindings
             managerParams.scriptLogger=scriptLogger
+            managerParams.operationClass= operationClass;
             return "myrunscript";
          }
 
@@ -646,7 +647,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
          ScriptManager.getInstance().addScript (simpleScriptFile);
 
-         def script=CmdbScript.add(name:"testscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile);
+         def script=CmdbScript.add(name:"testscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,operationClass:"testclass");
          assertFalse(script.hasErrors())
          
          def params=["param1":"1","param2":"a"]
@@ -658,9 +659,11 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
          assertEquals(result,"myrunscript")
          assertEquals(managerParams.scriptPath,script.scriptFile)
          assertEquals(managerParams.scriptLogger,CmdbScript.getScriptLogger(script))
+         assertEquals(managerParams.operationClass,script.operationClass)
          assertEquals(managerParams.bindings.staticParam,script.staticParam)
          assertEquals(managerParams.bindings.staticParamMap,CmdbScript.getStaticParamMap(script))
          assertEquals(managerParams.bindings.size(),oldParams.size()+2)
+         
          oldParams.each{  key , val ->
              assertEquals(val,managerParams.bindings[key])
          }

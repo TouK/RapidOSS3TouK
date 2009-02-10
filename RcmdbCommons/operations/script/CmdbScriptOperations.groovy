@@ -172,7 +172,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         params.staticParam=script.staticParam;
         params.staticParamMap=CmdbScript.getStaticParamMap(script);
 
-        return ScriptManager.getInstance().runScript(script.scriptFile, params,getScriptLogger(script));
+        return ScriptManager.getInstance().runScript(script.scriptFile, params,getScriptLogger(script),script.operationClass);
     }
 
     static def startListening(scriptName) throws Exception{

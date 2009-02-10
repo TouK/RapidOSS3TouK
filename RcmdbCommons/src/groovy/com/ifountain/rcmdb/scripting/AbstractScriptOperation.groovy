@@ -9,8 +9,8 @@ import org.codehaus.groovy.runtime.InvokerHelper
  * To change this template use File | Settings | File Templates.
  */
 abstract class AbstractScriptOperation {
-    public static final String OPERATION_PROPERTY_NAME = "__operation_class__";
-    def domainObject;
+   public static final String OPERATION_PROPERTY_NAME = "__operation_class__";
+   def domainObject;
    public Object getProperty(String propName)
    {
        def prop = this.metaClass.getMetaProperty(propName);
@@ -42,20 +42,20 @@ abstract class AbstractScriptOperation {
            }
    }
 
-   public Object methodMissing(String methodName, Object args)
-   {
-       def argsInList = InvokerHelper.asList(args)
-       def types = [];
-       argsInList.each{
-           types += it.class;
-       }
-       if(domainObject.metaClass.getMetaMethod(methodName, types as Object[]) != null)
-       {
-           return domainObject.invokeMethod(methodName, args);
-       }
-
-       throw new MissingMethodException (methodName,  this.class, args);
-
-   }
+//   public Object methodMissing(String methodName, Object args)
+//   {
+//       def argsInList = InvokerHelper.asList(args)
+//       def types = [];
+//       argsInList.each{
+//           types += it.class;
+//       }
+//       if(domainObject.metaClass.getMetaMethod(methodName, types as Object[]) != null)
+//       {
+//           return domainObject.invokeMethod(methodName, args);
+//       }
+//
+//       throw new MissingMethodException (methodName,  this.class, args);
+//
+//   }
 
 }

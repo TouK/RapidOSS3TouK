@@ -267,7 +267,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase{
            setProperty("input",[:])
            input.fromScript="scriptHello";
            injectedFunction();
-           injectedFunction2("injectedParamHello");
+           injectedFunction2("injectedParamHello");     
            return input;     
         """);
         manager.addScript(scriptName);

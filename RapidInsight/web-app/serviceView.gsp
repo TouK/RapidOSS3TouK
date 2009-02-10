@@ -8,7 +8,6 @@
 <html>
 <head>
     <meta name="layout" content="indexLayout" />
-    <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA7ipkp7ZXyXVH2UHyOgqZhxT2yXp_ZAY8_ufC3CFXhHIE1NvwkxRnNbZP5arP3T53Mzg-yLZcEMRBew"></script>
 </head>
 <body>
 <rui:flexPieChart id="summaryChart" url="script/run/getSummaryData?format=xml" rootTag="chart" swfURL="images/rapidjs/component/chart/PieChart.swf" title="Summary View">
@@ -20,7 +19,6 @@
     </rui:tgColumns>
     <rui:tgMenuItems>
         <rui:tgMenuItem id="eventHistory" label="Get Event History" action="eventHistoryAction"></rui:tgMenuItem>
-        <rui:tgMenuItem id="deviceLocations" label="Get Device Locations" action="deviceLocationsAction"></rui:tgMenuItem>
     </rui:tgMenuItems>
 </rui:treeGrid>
 <rui:searchGrid id="eventsGrid" url="search?format=xml&searchIn=RsEvent" queryParameter="query" rootTag="Objects" contentPath="Object"
@@ -60,39 +58,11 @@
 </rui:timeline>
 <rui:popupWindow componentId="eventHistory" width="730" height="450"></rui:popupWindow>
 
-<rui:gmap id="deviceLocations" url="script/run/getDeviceLocations?format=xml" title="Devices Map" contentPath="Location" onMarkerClicked="locationDevicesAction"
-        timeout="120" latitudeField="Lat" longitudeField="Lng" addressField="Address" markerField="Marker" tooltipField="Tooltip"></rui:gmap>
-
-<rui:popupWindow componentId="deviceLocations" width="800" height="600"></rui:popupWindow>
-<rui:searchGrid id="devicesGrid" url="script/run/getDevicesByLocation?format=xml" queryParameter="query" rootTag="Objects" contentPath="Object"
-        keyAttribute="id" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" title="Device List"
-        pollingInterval="0" fieldsUrl="script/run/getViewFields?format=xml" queryEnabled="false">
-    <rui:sgColumns>
-        <rui:sgColumn attributeName="className" colLabel="Class" width="150"></rui:sgColumn>
-        <rui:sgColumn attributeName="displayName" colLabel="Name" width="150"></rui:sgColumn>
-    </rui:sgColumns>
-      <rui:sgImages>
-        <rui:sgImage visible="params.data.state == '5'" src="images/rapidjs/component/searchlist/red.png"></rui:sgImage>
-        <rui:sgImage visible="params.data.state == '4'" src="images/rapidjs/component/searchlist/orange.png"></rui:sgImage>
-        <rui:sgImage visible="params.data.state == '3'" src="images/rapidjs/component/searchlist/yellow.png"></rui:sgImage>
-        <rui:sgImage visible="params.data.state == '2'" src="images/rapidjs/component/searchlist/blue.png"></rui:sgImage>
-        <rui:sgImage visible="params.data.state == '1'" src="images/rapidjs/component/searchlist/purple.png"></rui:sgImage>
-        <rui:sgImage visible="params.data.state == '0'" src="images/rapidjs/component/searchlist/green.png"></rui:sgImage>
-    </rui:sgImages>
-</rui:searchGrid>
-<rui:popupWindow componentId="devicesGrid" width="400" height="450"></rui:popupWindow>
-
 <rui:html id="objectDetailsmenuHtml" iframe="false"></rui:html>
 <rui:popupWindow componentId="objectDetailsmenuHtml" width="850" height="700" x="85" y="50"></rui:popupWindow>
 <rui:html id="eventDetails" iframe="false"></rui:html>
 <rui:popupWindow componentId="eventDetails" width="850" height="500"></rui:popupWindow>
 
-<rui:action id="locationDevicesAction" type="function" function="setQueryWithView" componentId="devicesGrid">
-    <rui:functionArg>''</rui:functionArg>
-    <rui:functionArg>'default'</rui:functionArg>
-    <rui:functionArg>'Devices of ' + params.data.Address</rui:functionArg>
-    <rui:functionArg>{name:params.data.Name, nodeType:params.data.NodeType, location:params.data.Address}</rui:functionArg>
-</rui:action>
 <rui:action id="eventDetailsAction" type="function" function="show" componentId="eventDetails">
     <rui:functionArg>createURL('getEventDetails.gsp', {name:params.data.name})</rui:functionArg>
     <rui:functionArg>'Details of ' + params.data.name</rui:functionArg>
@@ -130,10 +100,6 @@
 <rui:action id="eventHistoryAction" componentId="eventHistory" type="function" function="refresh">
     <rui:functionArg>{nodeType:params.data.nodeType, name:params.data.name}</rui:functionArg>
     <rui:functionArg>'Event History of ' + params.data.displayName</rui:functionArg>
-</rui:action>
-<rui:action id="deviceLocationsAction" componentId="deviceLocations" type="function" function="refresh">
-     <rui:functionArg>{nodeType:params.data.nodeType, name:params.data.name}</rui:functionArg>
-    <rui:functionArg>'Locations of ' + params.data.displayName</rui:functionArg>
 </rui:action>
     <script type="text/javascript">
         function getEventsQuery(data){

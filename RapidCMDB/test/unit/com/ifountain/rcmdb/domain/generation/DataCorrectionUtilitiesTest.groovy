@@ -266,11 +266,12 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
 
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
         def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
+        def prop3 = [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"];
 
         def propList = [prop1, prop2];
         def keyPropList = [prop1];
         def model1 = createModel(modelParent, propList, keyPropList, []);
-        def model2 = createModel(modelChild1, modelParent, [], [], []);
+        def model2 = createModel(modelChild1, modelParent, [prop3], [], []);
         ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model1);
         ModelGenerator.getInstance().generateSingleModelFileWithoutValidation(model2);
         def parentClass1 = loadGrailsDomainClass(modelParent, temp_directory);
@@ -281,9 +282,9 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         oldDomainClasses[modelChild1] = this.ga.getDomainClass(modelChild1);
 
 
-        childClass1.'add'(prop1:"prop1Value1", prop2:"prop2Value1");
-        childClass1.'add'(prop1:"prop1Value2", prop2:"prop2Value2");
-        childClass1.'add'(prop1:"prop1Value3", prop2:"prop2Value3");
+        childClass1.'add'(prop1:"prop1Value1", prop2:"prop2Value1", prop3:"prop3Value1");
+        childClass1.'add'(prop1:"prop1Value2", prop2:"prop2Value2", prop3:"prop3Value2");
+        childClass1.'add'(prop1:"prop1Value3", prop2:"prop2Value3", prop3:"prop3Value3");
         assertEquals (3, childClass1.'list'().size());
 
         prop2.type = ModelGenerator.NUMBER_TYPE;
@@ -307,10 +308,13 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         assertEquals (3, newChildClass1.'list'().size());
         def instance = newChildClass1.'get'(prop1:"prop1Value1");
         assertEquals (new Long(1), instance.prop2);
+        assertEquals ("prop3Value1", instance.prop3);
         instance = newChildClass1.'get'(prop1:"prop1Value2");
         assertEquals (new Long(1), instance.prop2);
+        assertEquals ("prop3Value2", instance.prop3);
         instance = newChildClass1.'get'(prop1:"prop1Value3");
         assertEquals (new Long(1), instance.prop2);
+        assertEquals ("prop3Value3", instance.prop3);
     }
 
 

@@ -140,14 +140,19 @@ class DataCorrectionUtilities
                 modelProps[propAction.propName] = propAction;
             }
         }
+        def simplePropetyNamesList = [:];
+        domainClasses.each {String className, modelClass ->
+
+                def propList = modelClass.clazz.'getPropertiesList'();
+                def propNames = propList.findAll {!it.isRelation && !it.isOperationProperty}.name
+                propNames.add("id");
+                simplePropetyNamesList[className] = propNames;
+        }
         changedModelProperties.each {String modelName, Map modelProps ->
             DefaultGrailsDomainClass currentDomainObject = domainClasses[modelName];
             if (currentDomainObject)
             {
                 Class currentModelClass = currentDomainObject.clazz;
-                def propList = currentModelClass.'getPropertiesList'();
-                def propNames = propList.findAll {!it.isRelation && !it.isOperationProperty}.name
-                propNames.add("id");
                 currentModelClass.'searchEvery'("alias:*", [raw:{hits, session->
                     hits.each{CompassHit hit->
                         Resource res = hit.getResource();
@@ -170,8 +175,9 @@ class DataCorrectionUtilities
                             }
                             if(!newProps.isEmpty())
                             {
-                                propNames.each{propName->
+                                simplePropetyNamesList.get(res.getAlias()).each{propName->
                                     def newPropVal = newProps[propName];
+
                                     if(newPropVal == null)
                                     {
                                         newPropVal = res.getObject(propName)

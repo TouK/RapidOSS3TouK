@@ -106,16 +106,16 @@ class RapidCmdbBuild extends Build {
         unzipGrails();
 
         ant.copy(todir: "${env.dist_rapid_server}/bin", file: "${env.rapid_cmdb_commons_cvs}/rsbatch.sh")
-        if ((System.getProperty("os.name").indexOf("Windows") < 0))
-        {
-            def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
-            process = "dos2unix ${env.distribution}/RapidServer/bin/rsbatch.sh".execute();
-            process = "dos2unix ${env.dist_rapid_suite}/rs.sh".execute();
-            process = "dos2unix ${env.dist_modeler}/rsmodeler.sh".execute();
-        }
+//        if ((System.getProperty("os.name").indexOf("Windows") < 0))
+//        {
+//            def process = "dos2unix ${env.distribution}/RapidServer/bin/startGrails".execute()
+//            process = "dos2unix ${env.distribution}/RapidServer/bin/grails".execute()
+//            process = "dos2unix ${env.distribution}/RapidServer/bin/cygrails".execute()
+//            process = "dos2unix ${env.distribution}/RapidServer/bin/grails-debug".execute()
+//            process = "dos2unix ${env.distribution}/RapidServer/bin/rsbatch.sh".execute();
+//            process = "dos2unix ${env.dist_rapid_suite}/rs.sh".execute();
+//            process = "dos2unix ${env.dist_modeler}/rsmodeler.sh".execute();
+//        }
         if (ZIP_OPT && RCMDB_UNIX_OPT){
 	        def versionDate = getVersionWithDate();
 	        def zipFileName = "$env.distribution/RCMDB_Unix$versionDate" + ".zip"

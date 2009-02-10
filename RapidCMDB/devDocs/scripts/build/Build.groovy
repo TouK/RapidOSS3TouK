@@ -291,9 +291,9 @@ class Build extends Parent{
             def process = "chmod +x ${command}".execute();
             process.consumeProcessOutput(System.out, System.err);
             process.waitFor();
-            process = "dos2unix ${command}".execute();
-            process.consumeProcessOutput(System.out, System.err);
-            process.waitFor();
+            //process = "dos2unix ${command}".execute();
+            //process.consumeProcessOutput(System.out, System.err);
+            //process.waitFor();
             return command;
         }
     }

@@ -23,12 +23,13 @@
  */
 class RFormTagLib {
     static namespace = "rui"
-    static def fForm(attrs, bodyString){
+    static def nextId = 0;
+    static def fForm(attrs, bodyString) {
         def formId = attrs["id"];
-        def configStr = getConfig(attrs);
+        def configStr = getFormConfig(attrs);
         def onSuccess = attrs["onSuccess"];
         def successJs;
-        if(onSuccess != null){
+        if (onSuccess != null) {
             successJs = """
                ${formId}form.events['submitSuccessful'].subscribe(function(response){
                    YAHOO.rapidjs.Actions['${onSuccess}'].execute({});
@@ -36,7 +37,7 @@ class RFormTagLib {
             """
         }
         def containerId = "rform_${attrs["id"]}"
-        return  """
+        return """
            <div id="${containerId}">${bodyString.trim()}</div>
            <script type="text/javascript">
                var ${formId}conf = ${configStr};
@@ -44,16 +45,45 @@ class RFormTagLib {
                var ${formId}container =${formId}parentContainer.firstChild;
                document.body.appendChild(${formId}container);
                var ${formId}form = new YAHOO.rapidjs.component.Form(${formId}container, ${formId}conf);
-                ${successJs ? successJs:""}
+                ${successJs ? successJs : ""}
            </script>
         """;
+    }
+    static def fFormRemote(attrs, bodyString) {
+        def onSuccess = attrs["onSuccess"];
+        def action = attrs["action"];
+        def method = attrs["method"] ? attrs["method"] : "GET";
+        def successJs;
+        if (onSuccess != null) {
+            successJs = """
+               formRemote.events['submitSuccessful'].subscribe(${onSuccess}, this, true);
+            """
+        }
+        def containerId = "rformRemote_${nextId++}"
+        return """
+           <div id="${containerId}">
+                <form method="${method}" action="${action}">
+                    ${bodyString}
+                </form>
+           </div>
+           <script type="text/javascript">
+               var htmlComponent = YAHOO.rapidjs.Components['${attrs["componentId"]}'];
+               var formContainer = document.getElementById('${containerId}');
+               var formRemote = new YAHOO.rapidjs.component.HtmlEmbeddableForm(formContainer, htmlComponent);
+                ${successJs ? successJs : ""}
+           </script>
+        """;
+    }
+
+    def formRemote = {attrs, body ->
+        out << fFormRemote(attrs, body());
     }
     def form = {attrs, body ->
         out << fForm(attrs, body());
     }
 
-    static def getConfig(attrs){
-         return """{
+    static def getFormConfig(attrs) {
+        return """{
             id:'${attrs["id"]}',
             ${attrs["createUrl"] ? "createUrl:'${attrs["createUrl"]}'," : ""}
             ${attrs["editUrl"] ? "editUrl:'${attrs["editUrl"]}'," : ""}

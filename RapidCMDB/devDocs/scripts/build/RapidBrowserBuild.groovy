@@ -78,9 +78,8 @@ class RapidBrowserBuild extends Build  {
         }
         if(System.getProperty("os.name").toLowerCase().indexOf("windows")<0)
         {
-            Process p = ("dos2unix *.sh").execute([], new File(env.dist_rapid_browser).getCanonicalPath())
-            p.consumeProcessOutputStream (System.out);
-            p.consumeProcessErrorStream(System.err);
+            Process p = "dos2unix *.sh".execute([], new File(env.dist_rapid_browser))
+            p.consumeProcessOutput(System.out, System.err);
             p.waitFor();
         }
         ant.zip(zipfile:"${env.distribution}/RapidBrowser${versionDate}.zip"){

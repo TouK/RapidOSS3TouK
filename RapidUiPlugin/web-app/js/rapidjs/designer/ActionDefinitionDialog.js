@@ -15,7 +15,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             minHeight:100,
             x:250,y:0,
             resizable: false,
-            modal:true,
+            modal:false,
             title: 'Configure Action',
             buttons:[
                 {text:"Save", handler:this.handleSave, scope:this, isDefault:true },
@@ -31,16 +31,17 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             this.textarea.style.height = "200px";
             YAHOO.widget.TextareaCellEditor.superclass.move.call(this);
         }
-        for(var editorType in this.editors){
+        for (var editorType in this.editors) {
             var editor = this.editors[editorType];
-            editor.subscribe('showEvent',function(oArgs){
+            editor.subscribe('showEvent', function(oArgs) {
                 var editorContainer = oArgs.editor.getContainerEl();
                 var dialogContainer = this.dialog.panel.element;
                 var zIndex = 0;
-                try{
-                   zIndex = parseInt(YAHOO.util.Dom.getStyle(dialogContainer, 'z-index'), 10); 
+                try {
+                    zIndex = parseInt(YAHOO.util.Dom.getStyle(dialogContainer, 'z-index'), 10);
                 }
-                catch(e){}
+                catch(e) {
+                }
                 YAHOO.util.Dom.setStyle(editorContainer, 'z-index', '' + (zIndex + 1));
             }, this, true)
         }

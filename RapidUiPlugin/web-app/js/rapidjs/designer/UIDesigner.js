@@ -569,6 +569,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }, 1000)
     },
     render: function() {
+        YAHOO.util.Dom.addClass(document.body, 'r-designer');
         var dh = YAHOO.ext.DomHelper;
         var treeConfig = {
             id:'componentTree',
@@ -820,7 +821,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     minWidth: 400,
                     units: [
                         { position: 'center', body:this.tree.container.id},
-                        { position: 'bottom', body: propWrpId, height: 400, resize: true},
+                        { position: 'bottom', body: propWrpId, height: 400, resize: true, header:'Property Editor'},
                     ]
                 });
                 layout2.render();

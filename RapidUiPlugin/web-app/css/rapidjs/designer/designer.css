@@ -115,3 +115,13 @@
     color: #083772;
     background: transparent url( ../../../images/rapidjs/component/tools/toolbar.gif ) repeat-x scroll;
 }
+
+.r-designer .yui-layout .yui-layout-unit div.yui-layout-hd h2 {
+    color: #083772;
+    font-size: 13px;
+}
+
+.r-designer .yui-layout .yui-layout-hd {
+    background: transparent url( ../../../js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -1300px;
+    border:none;
+}

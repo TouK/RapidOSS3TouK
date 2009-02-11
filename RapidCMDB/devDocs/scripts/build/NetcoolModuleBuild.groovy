@@ -60,6 +60,9 @@ class NetcoolModuleBuild extends Build {
             ant.copy(todir: "$rapidSuiteDir/conversion") {
                 ant.fileset(dir: "$env.rapid_netcool/conversion")
             }
+            ant.copy(todir: "$rapidSuiteDir/src/conversion") {
+                ant.fileset(dir: "$env.rapid_netcool/src/conversion")
+            }
         }
         copyDependentJars("$rapidSuiteDir/lib");
         

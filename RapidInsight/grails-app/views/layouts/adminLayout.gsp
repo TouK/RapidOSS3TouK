@@ -1,6 +1,6 @@
 <jsec:lacksRole name="Administrator">
     <%
-        response.redirect(createLinkTo(dir: 'auth/unauthorized'));
+        redirect(uri:createLinkTo(dir: 'auth/unauthorized'));
     %>
 </jsec:lacksRole>
 

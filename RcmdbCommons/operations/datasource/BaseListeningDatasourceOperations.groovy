@@ -34,7 +34,7 @@ class BaseListeningDatasourceOperations extends BaseDatasourceOperations
 {
     def beforeDelete(){
         if(this.listeningScript && this.listeningScript.type == CmdbScript.LISTENING){
-            ListeningAdapterManager.getInstance().stopAdapter(this);
+            ListeningAdapterManager.getInstance().stopAdapter(this.domainObject);
         }
     }
 

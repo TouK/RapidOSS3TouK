@@ -136,7 +136,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     rootImages.push({visible:"params.data." + this.treeTypeAttribute + " == '" + item + "'", expanded:expanded, collapsed:collapsed})
                 }
                 if (item == "Actions") {
-                    menuItems.push({id:'add_Action', label:'Add New Action', visible:"params.data." + this.treeTypeAttribute + " =='" + item + "'"});
+                    menuItems.push({id:'add_Action', label:'Add Action', visible:"params.data." + this.treeTypeAttribute + " =='" + item + "'"});
                     menuItems.push({id:'edit_Action', label:'Edit',
                         visible:"params.data." + this.treeTypeAttribute + " =='FunctionAction' || " +
                                 "params.data." + this.treeTypeAttribute + " =='RequestAction' || " +
@@ -152,7 +152,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                                 var displayName = UIConfig.getDisplayName(childType);
 
                                 var addExpr = "window.designerMenuEvaluate(params.dataNode, '" + item + "', '" + childType + "', '" + this.treeTypeAttribute + "')"
-                                menuItems.push({id:'add_' + childType, label:'Add New ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "' && " + addExpr});
+                                menuItems.push({id:'add_' + childType, label:'Add ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "' && " + addExpr});
                             }
                         }
                     }
@@ -652,7 +652,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                                                          itemType == "TopUnit" || itemType == "RightUnit" ||
                                                          itemType == "BottomUnit" || itemType == "Dialog" || itemType == "FunctionAction")) {
                     editor = this.editors["InList"];
-                    editor.dropdownOptions = DesignerUtils.getComponentNamesOfCurrentTab(this, this.currentDisplayedItemData);
+                    var dropDownOptions = DesignerUtils.getComponentNamesOfCurrentTab(this, this.currentDisplayedItemData);
+                    dropDownOptions.splice(0, 0, '');
+                    editor.dropdownOptions =dropDownOptions;
                     editor.renderForm();
                 }
                 else if (propertyName == "function" && itemType == "FunctionAction") {

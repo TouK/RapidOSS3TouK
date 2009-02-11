@@ -653,7 +653,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         this.menuComponentChanged();
         this.triggerTypeChanged();
         this.dialog.show();
-        this.adjustHeight();
+        setTimeout(this.adjustHeight.createDelegate(this), 100);
     },
     populateFieldsForUpdate: function() {
         var itemType = DesignerUtils.getItemType(this.designer, this.currentActionNode);

@@ -183,8 +183,8 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             this.bodyEl.setHeight(contentHeight);
             var panelBodyEl = getEl(this.panel.body);
             panelBodyEl.setHeight(contentHeight + panelBodyEl.getPadding('tb'));
-            var totalHeight = getEl(this.panel.header).getHeight() +
-                              getEl(this.panel.footer).getHeight() +
+            var totalHeight = this.panel.header.offsetHeight +
+                              this.panel.footer.offsetHeight +
                               contentHeight +
                               panelBodyEl.getPadding('tb');
             this.panel.cfg.setProperty("height", totalHeight);
@@ -200,7 +200,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             this.bodyEl.setHeight(bodyContentHeight)
         }
 
-        this.events['resize'].fireDirect(this.bodyEl.getWidth(true), bodyContentHeight);
+        this.events['resize'].fireDirect(this.bodyEl.getWidth(true), this.bodyEl.getHeight(true));
         if (IE_SYNC) {
             this.panel.sizeUnderlay();
             this.panel.syncIframe();

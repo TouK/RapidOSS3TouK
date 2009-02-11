@@ -49,7 +49,8 @@ class ConnectionOperations extends com.ifountain.rcmdb.domain.operation.Abstract
             IConnection con = ConnectionManager.getConnection(name);
             ConnectionManager.releaseConnection (con);
             return con != null;
-        }catch(ConnectionException t)
+        }
+        catch(ConnectionException t)
         {
             def exception=t.getCause();
             if(exception==null)

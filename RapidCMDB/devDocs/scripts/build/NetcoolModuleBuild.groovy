@@ -57,11 +57,13 @@ class NetcoolModuleBuild extends Build {
         }
         if(TEST)
         {
+            //for token definition files to be found , should be changed
             ant.copy(todir: "$rapidSuiteDir/conversion") {
                 ant.fileset(dir: "$env.rapid_netcool/conversion")
             }
+            //for classes to be compiled
             ant.copy(todir: "$rapidSuiteDir/src/conversion") {
-                ant.fileset(dir: "$env.rapid_netcool/src/conversion")
+                ant.fileset(dir: "$env.rapid_netcool/conversion")
             }
         }
         copyDependentJars("$rapidSuiteDir/lib");

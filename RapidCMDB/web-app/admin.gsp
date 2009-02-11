@@ -6,9 +6,6 @@
 <head>
     <title>RapidCMDB Admin UI</title>
     <meta name="layout" content="main"/>
-    <jsec:isNotLoggedIn>
-	  <g:javascript>window.location='auth/login?targetUri=/admin.gsp'</g:javascript>
-	</jsec:isNotLoggedIn>
 </head>
 <body>
 

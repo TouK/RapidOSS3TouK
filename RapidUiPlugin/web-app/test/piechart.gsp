@@ -68,9 +68,6 @@
 
 
 
-    <jsec:isNotLoggedIn>
-	  <g:javascript>window.location='auth/login?targetUri=/index.gsp'</g:javascript>
-	</jsec:isNotLoggedIn>
     <style>
 		.r-filterTree-groupAdd{
 			background-image: url( ../images/rapidjs/component/tools/filter_group.png);

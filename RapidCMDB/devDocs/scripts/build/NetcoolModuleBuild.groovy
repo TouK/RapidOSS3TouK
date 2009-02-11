@@ -62,8 +62,11 @@ class NetcoolModuleBuild extends Build {
                 ant.fileset(dir: "$env.rapid_netcool/conversion")
             }
             //for classes to be compiled
-            ant.copy(todir: "$rapidSuiteDir/src/conversion") {
-                ant.fileset(dir: "$env.rapid_netcool/conversion")
+            ant.copy(todir: "$rapidSuiteDir/src/groovy") {
+                ant.fileset(dir: "$env.rapid_netcool/conversion/groovy")
+            }
+            ant.copy(todir: "$rapidSuiteDir/src/groovy") {
+                ant.fileset(dir: "$env.rapid_netcool/conversion/java")
             }
         }
         copyDependentJars("$rapidSuiteDir/lib");
@@ -87,10 +90,7 @@ class NetcoolModuleBuild extends Build {
         if (TEST) {
             ant.copy(todir: "${rapidSuiteDir}/test") {
                 ant.fileset(dir: "$env.rapid_netcool/test")
-            }
-            ant.copy(todir: "$rapidSuiteDir/conversion") {
-                ant.fileset(dir: "$env.rapid_netcool/conversion")
-            }
+            }            
         }
         println "Netcool Build Done";
     }

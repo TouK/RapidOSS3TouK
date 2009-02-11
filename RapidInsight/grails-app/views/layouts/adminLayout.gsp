@@ -18,7 +18,7 @@
     <rui:stylesheet dir="js/yui/assets/skins/sam" file="skin.css"></rui:stylesheet>
     <link rel="stylesheet" href="${createLinkTo(dir: 'css/rapidjs', file: 'yuioverride.css')}"/>
     <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
-    <link rel="stylesheet" href="${createLinkTo(file: 'rimain.css')}"/>
+    <link rel="stylesheet" href="${createLinkTo(file: 'rimain.css')}"/> 
     <g:layoutHead/>
 </head>
 <body onload="${pageProperty(name: 'body.onload')}" class="yui-skin-sam rimain">

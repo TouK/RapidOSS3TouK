@@ -7,7 +7,7 @@ class UiTab
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "url", "layout", "components", "dialogs", "actions"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "webPage", "layout", "components", "dialogs", "actions"];
     
     
         storageType "File"
@@ -30,7 +30,7 @@ class UiTab
     
     Object __is_federated_properties_loaded__ ;
     
-    UiUrl url ;
+    UiWebPage webPage ;
     
     UiLayout layout ;
     
@@ -43,7 +43,7 @@ class UiTab
     
     static relations = [
     
-        url:[type:UiUrl, reverseName:"tabs", isMany:false]
+        webPage:[type:UiWebPage, reverseName:"tabs", isMany:false]
     
         ,layout:[type:UiLayout, reverseName:"tab", isMany:false]
     
@@ -56,7 +56,7 @@ class UiTab
     ]
     
     static constraints={
-    name(blank:false,nullable:false,key:["url", "isActive"])
+    name(blank:false,nullable:false,key:["webPage", "isActive"])
     contentFile(blank:true,nullable:true)
     title(blank:true,nullable:true)
 

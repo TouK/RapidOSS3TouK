@@ -2,18 +2,18 @@ package ui.designer;
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import com.ifountain.rui.util.DesignerUtils
 
-public class UiUrlOperations extends AbstractDomainOperation
+public class UiWebPageOperations extends AbstractDomainOperation
 {
     public static Map metaData()
     {
         Map metaData = [
-                designerType: "Url",
+                designerType: "WebPage",
                 canBeDeleted: true,
-                displayFromProperty: "url",
+                displayFromProperty: "name",
                 imageExpanded: 'images/rapidjs/designer/gsp_logo.png',
                 imageCollapsed: 'images/rapidjs/designer/gsp_logo.png',
                 propertyConfiguration: [
-                        url: [descr: 'Url of the page set']
+                        name: [descr: 'Url of the page set']
                 ],
                 childrenConfiguration: [
                         [
@@ -36,8 +36,8 @@ public class UiUrlOperations extends AbstractDomainOperation
 
     def static addUiElement(xmlNode, parentElement)
     {
-        def url = xmlNode.attributes().url
-        def uiUrl = DesignerUtils.addUiObject(UiUrl, [url:url], xmlNode);
+        def name = xmlNode.attributes().name
+        def uiUrl = DesignerUtils.addUiObject(UiWebPage, [name:name], xmlNode);
         def addedTabs = [];
         def tabNodes = xmlNode.UiElement.UiElement;
         tabNodes.each{tabNode->

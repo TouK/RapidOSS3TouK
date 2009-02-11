@@ -19,7 +19,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll{
-                if(it.clazz.name.startsWith(UiUrl.getPackage().name))
+                if(it.clazz.name.startsWith(UiWebPage.getPackage().name))
                 {
                     it.clazz.'removeAll'();   
                 }
@@ -29,7 +29,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll{
-                if(it.clazz.name.startsWith(UiUrl.getPackage().name))
+                if(it.clazz.name.startsWith(UiWebPage.getPackage().name))
                 {
                     it.clazz.'removeAll'();
                 }
@@ -76,8 +76,8 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         UiDesignerController controller = new UiDesignerController();
         controller.params.configuration = sw.toString()
         controller.save();
-        def url1 = UiUrl.get(url:url1Props.url, isActive:true);
-        def url2 = UiUrl.get(url:url2Props.url, isActive:true);
+        def url1 = UiWebPage.get(name:url1Props.name, isActive:true);
+        def url2 = UiWebPage.get(name:url2Props.name, isActive:true);
         assertTrue (!url1.tabs.findAll {it.name == "tab1"}.isEmpty());
         assertTrue (!url1.tabs.findAll {it.name == "tab2"}.isEmpty());
         assertTrue (!url2.tabs.findAll {it.name == "tab1"}.isEmpty());
@@ -119,11 +119,11 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         controller.params.configuration = sw.toString()
         controller.save();
         assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
-        def urlsAfterReSave = UiUrl.list();
+        def urlsAfterReSave = UiWebPage.list();
         def tabsAfterReSave = UiTab.list();
         assertEquals (1, urlsAfterReSave.size())
         assertEquals (1, tabsAfterReSave.size())
-        assertEquals (url1Props.url, urlsAfterReSave[0].url)
+        assertEquals (url1Props.name, urlsAfterReSave[0].name)
         assertEquals (tabsProps[0].name, tabsAfterReSave[0].name)
 
         //Test if tab does not exist generate will create redirect url page  with no content
@@ -134,18 +134,18 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEqualsXML ("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
         checkGeneratedFiles();
         def baseDir = System.getProperty("base.dir");
-        def urlRedirectFile = new File( baseDir + "/web-app/${url1.url}.gsp");
+        def urlRedirectFile = new File( baseDir + "/web-app/${url1.name}.gsp");
         assertEquals("", urlRedirectFile.getText());
-        def url2LayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url2.url+"Layout.gsp");
+        def url2LayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url2.name+"Layout.gsp");
         assertFalse (url2LayoutFile.exists());
-        assertFalse (new File(baseDir + "/web-app/${url2.url}.gsp").exists());
-        assertFalse (new File(baseDir + "/web-app/${url2.url}").exists());
+        assertFalse (new File(baseDir + "/web-app/${url2.name}.gsp").exists());
+        assertFalse (new File(baseDir + "/web-app/${url2.name}").exists());
         tabsOfUrl2BeforeDelete.each{tab->
-            def tabFile = new File(baseDir + "/web-app/${url2.url}/${tab.name}.gsp");
+            def tabFile = new File(baseDir + "/web-app/${url2.name}/${tab.name}.gsp");
             assertFalse (tabFile.exists());
         }
 
-        def url1Tab2File = new File(baseDir + "/web-app/${url1.url}/${tabsOfUrl1BeforeDelete[1].name}.gsp");
+        def url1Tab2File = new File(baseDir + "/web-app/${url1.name}/${tabsOfUrl1BeforeDelete[1].name}.gsp");
         assertFalse (url1Tab2File.exists());
         
     }
@@ -191,7 +191,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         controller.params.configuration = sw.toString()
         controller.save();
         assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
-        def url1 = UiUrl.get(url:url1Props.url, isActive:true);
+        def url1 = UiWebPage.get(name:url1Props.name, isActive:true);
         assertTrue (!url1.tabs.findAll {it.name == "tab1"}.isEmpty());
         def tab = url1.tabs[0];
         def tabComponents = tab.components;
@@ -228,8 +228,8 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         UiDesignerController controller = new UiDesignerController();
         controller.params.configuration = sw.toString()
         controller.save();
-        assertEquals (1, UiUrl.count());
-        def url1BeforeTryingToSaveWithError = UiUrl.list()[0];
+        assertEquals (1, UiWebPage.count());
+        def url1BeforeTryingToSaveWithError = UiWebPage.list()[0];
 
         sw = new StringWriter();
         builder = new MarkupBuilder(sw);
@@ -247,9 +247,9 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         IntegrationTestUtils.resetController (controller);
         controller.params.configuration = sw.toString()
         controller.save();
-        assertEquals (1, UiUrl.count());
-        assertEquals (url1BeforeTryingToSaveWithError.id, UiUrl.list()[0].id);
-        assertEquals (true, UiUrl.list()[0].isActive);
+        assertEquals (1, UiWebPage.count());
+        assertEquals (url1BeforeTryingToSaveWithError.id, UiWebPage.list()[0].id);
+        assertEquals (true, UiWebPage.list()[0].isActive);
         assertEquals (1, UiTab.count());
 
         def responseXml = new XmlSlurper().parseText(controller.response.contentAsString);
@@ -264,7 +264,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         def responseXml = new XmlSlurper().parseText(controller.response.contentAsString);
         def components = responseXml.UiElement
         def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll{
-                if(it.clazz.name.startsWith(UiUrl.getPackage().name))
+                if(it.clazz.name.startsWith(UiWebPage.getPackage().name))
                 {
                     try{
                         it.clazz.'metaData'();
@@ -334,13 +334,13 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     def checkGeneratedFiles()
     {
         def baseDir =  System.getProperty("base.dir");
-        UiUrl.list().each{url->
-            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.url+"Layout.gsp");
+        UiWebPage.list().each{url->
+            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.name+"Layout.gsp");
             assertTrue (urlLayoutFile.exists());
-            def urlRedirectFile = new File(baseDir + "/web-app/${url.url}.gsp");
+            def urlRedirectFile = new File(baseDir + "/web-app/${url.name}.gsp");
             assertTrue (urlRedirectFile.exists());
             url.tabs.each{tab->
-                def url1WebAppDirectoryFile = new File(baseDir + "/web-app/${url.url}/${tab.name}.gsp");
+                def url1WebAppDirectoryFile = new File(baseDir + "/web-app/${url.name}/${tab.name}.gsp");
                 assertTrue (url1WebAppDirectoryFile.exists());
             }
         }        
@@ -348,11 +348,11 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     def deleteGeneratedFiles()
     {
         def baseDir =  System.getProperty("base.dir");
-        UiUrl.list().each{url->
-            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.url+"Layout.gsp");
+        UiWebPage.list().each{url->
+            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.name+"Layout.gsp");
             urlLayoutFile.delete();
-            FileUtils.deleteDirectory (new File(baseDir + "/web-app/${url.url}"));
-            new File(baseDir + "/web-app/${url.url}.gsp").delete();
+            FileUtils.deleteDirectory (new File(baseDir + "/web-app/${url.name}"));
+            new File(baseDir + "/web-app/${url.name}.gsp").delete();
         }
     }
 

@@ -1,7 +1,7 @@
 package ui.designer;
 import com.ifountain.core.domain.annotations.*;
 
-class UiUrl 
+class UiWebPage
 {
     
     //AUTO_GENERATED_CODE
@@ -13,10 +13,10 @@ class UiUrl
         storageType "File"
     
     };
-    static datasources = ["RCMDB":["keys":["url":["nameInDs":"url"], "isActive":["nameInDs":"isActive"]]]]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"]]]]
 
     boolean isActive = true;
-    String url ="";
+    String name ="";
     
     Long id ;
     
@@ -33,12 +33,12 @@ class UiUrl
     
     static relations = [
     
-        tabs:[type:UiTab, reverseName:"url", isMany:true]
+        tabs:[type:UiTab, reverseName:"webPage", isMany:true]
     
     ]
     
     static constraints={
-        url(blank:false,nullable:false,key:["isActive"])
+        name(blank:false,nullable:false,key:["isActive"])
         
      __operation_class__(nullable:true)
         
@@ -54,7 +54,7 @@ class UiUrl
     
     public String toString()
     {
-    	return getProperty("url");
+    	return getProperty("name");
     }
     
     public boolean equals(Object obj) {

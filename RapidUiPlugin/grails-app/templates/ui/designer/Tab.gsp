@@ -1,6 +1,6 @@
 <html>
 <head>
-    <meta name="layout" content="${tab.url.url}Layout" />
+    <meta name="layout" content="${tab.webPage.name}Layout" />
 </head>
 <body>
 <%

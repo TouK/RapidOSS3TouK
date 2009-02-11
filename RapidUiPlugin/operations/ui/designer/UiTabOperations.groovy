@@ -20,7 +20,6 @@ public class UiTabOperations extends AbstractDomainOperation
                 ],
                 childrenConfiguration:
                 [
-                    [designerType:"Layout", propertyName:"layout"],
                     [designerType:"Components",
                             metaData:[
                                     designerType:"Components",
@@ -41,6 +40,7 @@ public class UiTabOperations extends AbstractDomainOperation
                             ],
                             propertyName:"layout"
                     ],
+                    [designerType:"Layout", propertyName:"layout"],
                     [designerType:"Dialogs",
                             metaData:[
                                     designerType:"Dialogs",
@@ -78,7 +78,7 @@ public class UiTabOperations extends AbstractDomainOperation
     {
         def attributes = [:]
         attributes.putAll(xmlNode.attributes());
-        attributes.url = parentElement;
+        attributes.webPage = parentElement;
         def uiLayout = UiLayout.add([:]);
         attributes.layout = uiLayout;
 

@@ -24,11 +24,11 @@ class UiDesignerController {
         {
             def sw = new StringWriter();
             def markupBuilder = new MarkupBuilder(sw);
-            def urls = UiUrl.list();
+            def urls = UiWebPage.list();
             try
             {
                 markupBuilder.UiConfig {
-                    markupBuilder.UiElement(designerType: "Urls") {
+                    markupBuilder.UiElement(designerType: "WebPages") {
                         com.ifountain.rui.util.DesignerUtils.generateXml(urls, markupBuilder);
                     }
                 }
@@ -57,12 +57,12 @@ class UiDesignerController {
             try
             {
                 processUiElement(xmlConfiguration);
-                def urlsAfterDelete = UiUrl.list();
-                UiUrl.search("isActive:false").results.each {urlObject ->
+                def urlsAfterDelete = UiWebPage.list();
+                UiWebPage.search("isActive:false").results.each {urlObject ->
                     deleteUrlFiles(urlObject);
                 }
                 UiTab.search("isActive:false").results.each {UiTab tabObject ->
-                    deleteTabFile(tabObject.url.url, tabObject);
+                    deleteTabFile(tabObject.webPage.name, tabObject);
                 }
                 uiDomainClasses.each {domainClassInstance ->
                     domainClassInstance.clazz.'removeAll'("isActive:false");
@@ -93,9 +93,9 @@ class UiDesignerController {
 
     def deleteUrlFiles(url)
     {
-        def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.url}Layout.gsp");
-        def urlRedirectFile = new File("${baseDir}/web-app/${url.url}.gsp");
-        def tabsDir = new File("${baseDir}/web-app/${url.url}");
+        def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.name}Layout.gsp");
+        def urlRedirectFile = new File("${baseDir}/web-app/${url.name}.gsp");
+        def tabsDir = new File("${baseDir}/web-app/${url.name}");
         urlRedirectFile.delete();
         urlLayoutFile.delete();
         if (tabsDir.exists())
@@ -116,18 +116,18 @@ class UiDesignerController {
             try
             {
                 def templateEngine = new SimpleTemplateEngine(ApplicationHolder.application.classLoader);
-                def urlTemplate = templateEngine.createTemplate(new File("${baseDir}/grails-app/templates/ui/designer/Url.gsp"));
+                def urlTemplate = templateEngine.createTemplate(new File("${baseDir}/grails-app/templates/ui/designer/WebPage.gsp"));
                 def tabTemplate = templateEngine.createTemplate(new File("${baseDir}/grails-app/templates/ui/designer/Tab.gsp"));
-                UiUrl.list().each {url ->
-                    def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.url}Layout.gsp");
+                UiWebPage.list().each {url ->
+                    def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.name}Layout.gsp");
                     def content = urlTemplate.make(url: url).toString()
                     urlLayoutFile.setText(content)
-                    def urlRedirectFile = new File("${baseDir}/web-app/${url.url}.gsp");
+                    def urlRedirectFile = new File("${baseDir}/web-app/${url.name}.gsp");
                     if (!url.tabs.isEmpty())
                     {
                         urlRedirectFile.setText("""
                         <%
-                            response.sendRedirect("${url.url}/${url.tabs[0].name}.gsp");
+                            response.sendRedirect("${url.name}/${url.tabs[0].name}.gsp");
                         %>
                     """)
                     }
@@ -136,7 +136,7 @@ class UiDesignerController {
                         urlRedirectFile.setText("");
                     }
                     url.tabs.each {UiTab tab ->
-                        def tabOutputFile = new File("${baseDir}/web-app/${url.url}/${tab.name}.gsp");
+                        def tabOutputFile = new File("${baseDir}/web-app/${url.name}/${tab.name}.gsp");
                         tabOutputFile.parentFile.mkdirs();
                         StringBuffer tabContent = new StringBuffer();
                         def components = tab.components.sort {it.id};
@@ -199,7 +199,7 @@ class UiDesignerController {
     def processUiElement(GPathResult xmlConfiguration)
     {
         xmlConfiguration.UiElement[0].UiElement.each {
-            UiUrl.addUiElement(it, null);
+            UiWebPage.addUiElement(it, null);
         }
     }
 
@@ -211,9 +211,9 @@ class UiDesignerController {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         builder.UiElements {
-            builder.UiElement(designerType: "Urls", display: "Urls", imageExpanded: "images/rapidjs/component/tools/folder_open.gif", imageCollapsed: "images/rapidjs/component/tools/folder.gif") {
+            builder.UiElement(designerType: "WebPages", display: "Web Pages", imageExpanded: "images/rapidjs/component/tools/folder_open.gif", imageCollapsed: "images/rapidjs/component/tools/folder.gif") {
                 builder.Children {
-                    builder.Child(isMultiple: true, designerType: "Url")
+                    builder.Child(isMultiple: true, designerType: "WebPage")
                 }
             }
             def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer")}

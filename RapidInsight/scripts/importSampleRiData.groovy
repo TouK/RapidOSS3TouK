@@ -41,9 +41,21 @@ def importData(web, fname){
 		}
 		def model = web.grailsApplication.getDomainClass(modelName).clazz;
 		def oldIdFromXml = props.id;
+		if (modelName=="RsRiHistoricalEvent"){
+			props.activeId = oldIdFromXml;
+		}
 		props.remove("modelName");
 		props.remove("id");
+	
 		def instance = model.add(props);
+		if (instance.hasErrors()){
+			println "Model:$modelName => ${instance.errors}"
+		}
+		else{
+			if (modelName=="RsRiHistoricalEvent"){
+				instance.activeId = instance.id;
+			}
+		}
 		idmap.put(oldIdFromXml, instance.id);
 	}	
 	

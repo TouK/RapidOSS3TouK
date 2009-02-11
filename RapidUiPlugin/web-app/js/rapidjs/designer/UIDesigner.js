@@ -843,7 +843,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 }, this, true);
 
                 el = layout.getUnitByPosition('center').get('wrap');
-                var topHtml = YAHOO.ext.DomHelper.append(document.body, {tag:'div', cls:'r-designer-layout-top', html:'Your layout will look like:'})
+                var topHtml = YAHOO.ext.DomHelper.append(document.body, {tag:'div', cls:'r-designer-layout-top', html:'Layout Preview'})
                 YAHOO.util.Dom.generateId(topHtml, 'layouttop')
                 this.helpView = YAHOO.ext.DomHelper.append(document.body, {tag:'div'})
                 YAHOO.util.Dom.generateId(this.helpView, 'designer_help')

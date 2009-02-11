@@ -21,6 +21,7 @@
 <script type="text/javascript" src="../js/rapidjs/data/RapidXmlDocument.js"></script>
 <script type="text/javascript" src="../js/rapidjs/SelectUtils.js"></script>
 <script type="text/javascript" src="../js/rapidjs/component/form/Form.js"></script>
+<script type="text/javascript" src="../js/rapidjs/component/form/HtmlEmbeddableForm.js"></script>
 
 <script type="text/javascript" src="../js/rapidjs/component/simplewidgets/Button.js"></script>
 <script type="text/javascript" src="../js/rapidjs/component/tools/BasicTool.js"></script>

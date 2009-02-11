@@ -108,7 +108,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
         }
 
         attrs.method = (YAHOO.lang.isString(attrs.method) ? attrs.method : "POST").toUpperCase();
-        attrs.action = YAHOO.lang.isString(attrs.action) ? attrs.action : "";
+        attrs.action = YAHOO.lang.isString(attrs.action) ? getUrlPrefix() + attrs.action : "";
 
         return attrs;
     },

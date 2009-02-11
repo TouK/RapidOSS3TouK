@@ -8,6 +8,7 @@ import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.mocks.MockConnectionImpl
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.core.connection.exception.ConnectionException
+import com.ifountain.rcmdb.connection.RcmdbConnectionManagerAdapter
 
 /**
 * Created by IntelliJ IDEA.
@@ -28,9 +29,11 @@ class ConnectionOperationsTest extends RapidCmdbTestCase{
     }
     private void clearMetaClasses()
     {
-        //ConnectionManager.destroy();
+                      
+        RcmdbConnectionManagerAdapter.destroyInstance();
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(ConnectionManager);
+        GroovySystem.metaClassRegistry.removeMetaClass(RcmdbConnectionManagerAdapter);
         ExpandoMetaClass.enableGlobally();
     }
     
@@ -106,5 +109,45 @@ class ConnectionOperationsTest extends RapidCmdbTestCase{
             assertEquals(e.class,ConnectionException);
         }
         
+    }
+
+    public void testAfterDelete(){
+        CompassForTests.addOperationSupport (Connection, ConnectionOperations);
+        Connection conn = new Connection(name:"con1");
+
+        def callParams=[:];
+        RcmdbConnectionManagerAdapter.metaClass.removeConnection= { String connectionName ->
+            callParams.connectionName=connectionName;
+        }
+
+        conn.afterDelete();
+        assertEquals(callParams.connectionName,conn.name)
+        
+    }
+     public void testAfterUpdate(){
+        CompassForTests.addOperationSupport (Connection, ConnectionOperations);
+        Connection conn = new Connection(name:"con1");
+      
+        def callParams=[:];
+        RcmdbConnectionManagerAdapter.metaClass.addConnection= { Connection connection ->
+            callParams.connection=connection;
+        }
+
+        conn.afterUpdate();
+        assertEquals(callParams.connection,conn)
+
+    }
+     public void testAfterInsert(){
+        CompassForTests.addOperationSupport (Connection, ConnectionOperations);
+        Connection conn = new Connection(name:"con1");
+
+        def callParams=[:];
+        RcmdbConnectionManagerAdapter.metaClass.addConnection= { Connection connection ->
+            callParams.connection=connection;
+        }
+
+        conn.afterInsert();
+        assertEquals(callParams.connection,conn)
+
     }
 }

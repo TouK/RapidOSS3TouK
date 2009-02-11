@@ -67,7 +67,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
         }
     }
    
-    void testAdapterRunsTheScript()
+    void testStartAdapter()
     {
         def logLevel=Level.DEBUG;
         

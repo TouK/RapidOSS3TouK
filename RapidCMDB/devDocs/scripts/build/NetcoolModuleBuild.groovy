@@ -65,7 +65,7 @@ class NetcoolModuleBuild extends Build {
             ant.copy(todir: "$rapidSuiteDir/src/groovy") {
                 ant.fileset(dir: "$env.rapid_netcool/conversion/groovy")
             }
-            ant.copy(todir: "$rapidSuiteDir/src/groovy") {
+            ant.copy(todir: "$rapidSuiteDir/src/java") {
                 ant.fileset(dir: "$env.rapid_netcool/conversion/java")
             }
         }

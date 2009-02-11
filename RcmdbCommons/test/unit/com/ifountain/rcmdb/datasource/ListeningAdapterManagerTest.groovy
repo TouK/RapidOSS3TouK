@@ -109,7 +109,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase{
         
         assertNotNull(ds.adapterParams)
         assertEquals(ds.adapterParams.returnparam1,"param1")
-        assertEquals(ds.adapterParams.logger,CmdbScript.getScriptLogger(script))
+        assertEquals(ds.adapterLogger,CmdbScript.getScriptLogger(script))
 
         
     }
@@ -233,9 +233,11 @@ class BaseListeningDatasourceMock extends BaseListeningDatasource
 {
     
     BaseListeningAdapterMock listeningAdapter=null;
-    Map adapterParams=null;        
-     def getListeningAdapter(Map params){
+    Map adapterParams=null;
+    Logger adapterLogger=null;
+    def getListeningAdapter(Map params,Logger adapterLogger){
          adapterParams=params;
+         this.adapterLogger=adapterLogger;
          listeningAdapter=new BaseListeningAdapterMock();
          return listeningAdapter;
     }

@@ -21,6 +21,7 @@ package datasource
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import script.CmdbScript
 import com.ifountain.comp.converter.ConverterRegistry
+import org.apache.log4j.Logger
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +39,7 @@ class BaseListeningDatasourceOperations extends BaseDatasourceOperations
     }
 
 
-    def getListeningAdapter(Map params){
+    def getListeningAdapter(Map params,Logger adapterLogger){
         return null;
     }
 }

@@ -100,8 +100,8 @@ class ListeningAdapterManager {
                 if (params == null) {
                     throw new Exception("Subscription parameters cannot be null");
                 }
-                params.logger=scriptLogger;
-                listeningAdapter = listeningDatasource.getListeningAdapter(params);
+
+                listeningAdapter = listeningDatasource.getListeningAdapter(params,scriptLogger);
             }
             catch (e) {
                 throw new Exception("Error creating listening adapter. Reason: ${e.getMessage()}", e);

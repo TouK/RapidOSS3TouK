@@ -27,7 +27,7 @@ import org.apache.log4j.Logger
  * To change this template use File | Settings | File Templates.
  */
 class SnmpDatasourceOperations extends BaseListeningDatasourceOperations{
-    def getListeningAdapter(Map params){
-         return new SnmpListeningAdapter(getProperty("connection").name, 0,  params.logger);
+    def getListeningAdapter(Map params,Logger adapterLogger){
+         return new SnmpListeningAdapter(getProperty("connection").name, 0,  adapterLogger);
     }
 }

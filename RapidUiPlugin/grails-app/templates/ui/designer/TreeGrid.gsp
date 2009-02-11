@@ -39,7 +39,7 @@
             uiElement.menuItems.each{menuItem->
                 def menuAction = menuItem.getAction();
         %>
-        <rui:tgMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuAction?"action='"+menuAction.name+"'":""}>
+        <rui:tgMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="${menuItem.visible}" ${menuAction?"action='"+menuAction.name+"'":""}>
                <%
                     if(!menuItem.childMenuItems.isEmpty())
                     {

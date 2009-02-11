@@ -15,7 +15,9 @@
     def searchQuery ;
 %>
 <g:if test="${mode == 'edit' && (searchQuery = SearchQuery.get([id: params.queryId])) == null}">
-
+     <div style="height:100%; background-color:#fff3f3;color:#cc0000">
+         SearchQuery with id ${params.queryId} does not exist.
+     </div>
 </g:if>
 <g:else>
     <%

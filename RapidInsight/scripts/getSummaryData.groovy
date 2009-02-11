@@ -27,6 +27,10 @@ def CONTAINER_PROPERTY = "rsDatasource"
 def nodeType = params.nodeType;
 def name = params.name;
 
+// severity values which are not in severityMap will be put to this index 
+// also when all zero this index will be used
+def normalSeverityIndex="0";
+
 def severityMap = ["0":0, "1":0, "2":0, "3":0, "4":0, "5":0]
 def severitySummary = null
 if(nodeType == "Container"){
@@ -36,15 +40,33 @@ else{
    severitySummary = RsEvent.propertySummary("elementName:\"${name}\"", ["severity"]);
 }
 def isAllZero = true;
- severitySummary.severity.each{propValue, numberOfObjects ->
+def invalidSeverityCount=0;
+
+severitySummary.severity.each{propValue, numberOfObjects ->
      if(numberOfObjects > 0){
         isAllZero = false; 
      }
-     severityMap.put("" + propValue, numberOfObjects);
+     def key=String.valueOf(propValue);
+     if(severityMap.containsKey(key))
+     {
+        severityMap.put(key, numberOfObjects);
+     }
+     else
+     {
+        invalidSeverityCount+=numberOfObjects;
+     }
  }
+
+ 
  if(isAllZero){
-     severityMap.put("0", 1);
+     severityMap.put(normalSeverityIndex, 1);
  }
+ 
+ if(invalidSeverityCount>0)
+ {
+    severityMap.put(normalSeverityIndex,severityMap.get(normalSeverityIndex)+invalidSeverityCount); 
+ }
+ 
 web.render(contentType: 'text/xml'){
    chart(){
       set(label:"Critical", value:severityMap.get("5"), color:"0xff0000")

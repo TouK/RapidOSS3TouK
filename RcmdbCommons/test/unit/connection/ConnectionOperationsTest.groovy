@@ -7,6 +7,7 @@ import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl
 import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.mocks.MockConnectionImpl
 import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.core.connection.exception.ConnectionException
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,6 +17,23 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 * To change this template use File | Settings | File Templates.
 */
 class ConnectionOperationsTest extends RapidCmdbTestCase{
+     public void setUp() {
+        super.setUp();
+        clearMetaClasses();
+        
+    }
+
+    public void tearDown() {
+        super.tearDown();
+    }
+    private void clearMetaClasses()
+    {
+        //ConnectionManager.destroy();
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(ConnectionManager);
+        ExpandoMetaClass.enableGlobally();
+    }
+    
     public void testCheckConnection()
     {
         def supplier = new MockConnectionParameterSupplierImpl();
@@ -25,7 +43,7 @@ class ConnectionOperationsTest extends RapidCmdbTestCase{
         CompassForTests.addOperationSupport (Connection, ConnectionOperations);
         Connection conn = new Connection(name:"con1", connectionClass:MockConnectionImpl.class.name);
         MockConnectionImpl.globalConnectionException = new Exception("Connection lost");
-
+        
         try
         {
             conn.checkConnection()
@@ -65,5 +83,28 @@ class ConnectionOperationsTest extends RapidCmdbTestCase{
         assertEquals (2, threadState);
 
 
+    }
+    public void testCheckConnectionDoesNotGenerateNullPointerExceptionWhenErrorOccurs(){
+        CompassForTests.addOperationSupport (Connection, ConnectionOperations);
+        Connection conn = new Connection(name:"con1");
+
+        def exception=new ConnectionException("Exception with no cause");
+        assertNull(exception.getCause());
+        ConnectionManager.metaClass.static.getConnection = { String connectionName ->
+            throw exception;    
+        }
+        try{
+            conn.checkConnection();
+        }
+        catch(e)
+        {
+            if(e.class==NullPointerException)
+            {
+                fail("Shoul not throw NullPointerException")
+            }
+
+            assertEquals(e.class,ConnectionException);
+        }
+        
     }
 }

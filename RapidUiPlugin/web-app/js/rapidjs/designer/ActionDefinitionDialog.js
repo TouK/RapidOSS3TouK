@@ -15,14 +15,36 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
             minHeight:100,
             x:250,y:0,
             resizable: false,
-            modal:false,
+            modal:true,
             title: 'Configure Action',
             buttons:[
                 {text:"Save", handler:this.handleSave, scope:this, isDefault:true },
                 {text:"Cancel", handler:this.hide, scope:this }]
         }
+        this.editors = {
+            'combo':new YAHOO.widget.DropdownCellEditor({}),
+            'textArea':new YAHOO.widget.TextareaCellEditor(),
+            'text':new YAHOO.widget.TextboxCellEditor({disableBtns:true})
+        }
+        this.editors['textArea'].move = function() {
+            this.textarea.style.width = "300px";
+            this.textarea.style.height = "200px";
+            YAHOO.widget.TextareaCellEditor.superclass.move.call(this);
+        }
+        for(var editorType in this.editors){
+            var editor = this.editors[editorType];
+            editor.subscribe('showEvent',function(oArgs){
+                var editorContainer = oArgs.editor.getContainerEl();
+                var dialogContainer = this.dialog.panel.element;
+                var zIndex = 0;
+                try{
+                   zIndex = parseInt(YAHOO.util.Dom.getStyle(dialogContainer, 'z-index'), 10); 
+                }
+                catch(e){}
+                YAHOO.util.Dom.setStyle(editorContainer, 'z-index', '' + (zIndex + 1));
+            }, this, true)
+        }
         this.dialog = new YAHOO.rapidjs.component.Dialog(config);
-        this.combEditor = new YAHOO.widget.DropdownCellEditor({});
 
         var dh = YAHOO.ext.DomHelper;
         var wrp = dh.append(this.dialog.body, {tag:'div', cls:'r-designer-actdlg-wrp',
@@ -91,8 +113,8 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
 
 
         var eventColumnDefs = [
-            {key:"component", label:"Component", sortable:true, width:150, editor:this.combEditor},
-            {key:"event", label:"Event", sortable:true, width:190, editor:this.combEditor}
+            {key:"component", label:"Component", sortable:true, width:150, editor:this.editors['combo']},
+            {key:"event", label:"Event", sortable:true, width:190, editor:this.editors['combo']}
         ];
         var eventDs = new YAHOO.util.DataSource([]);
         eventDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -137,9 +159,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                     }
                 }
             }
-            this.combEditor.dropdownOptions = dropDownOptions;
-            this.combEditor.renderForm();
-            column.editor = this.combEditor;
+            this.editors['combo'].dropdownOptions = dropDownOptions;
+            this.editors['combo'].renderForm();
+            column.editor = this.editors['combo'];
             this.eventsGrid.showCellEditor(target);
 
         }, this, true);
@@ -151,8 +173,8 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }, scope:this},label: 'Add Event'});
 
         var menuColumnDefs = [
-            {key:"component", label:"Component", sortable:true, width:150, editor:this.combEditor},
-            {key:"menuitem", label:"Menu Item", sortable:true, width:190, editor:this.combEditor}
+            {key:"component", label:"Component", sortable:true, width:150, editor:this.editors['combo']},
+            {key:"menuitem", label:"Menu Item", sortable:true, width:190, editor:this.editors['combo']}
         ];
         var menuDs = new YAHOO.util.DataSource([]);
         menuDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -184,9 +206,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                     }
                 }
             }
-            this.combEditor.dropdownOptions = dropDownOptions;
-            this.combEditor.renderForm();
-            column.editor = this.combEditor;
+            this.editors['combo'].dropdownOptions = dropDownOptions;
+            this.editors['combo'].renderForm();
+            column.editor = this.editors['combo'];
             this.menuGrid.showCellEditor(target);
 
         }, this, true);
@@ -218,8 +240,8 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         btnwrps = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-btnwrp", 'div', this.requestView);
 
         var requestColumnDefs = [
-            {key:"key", label:"Key", sortable:true, width:150, editor:new YAHOO.widget.TextboxCellEditor({disableBtns:true})},
-            {key:"value", label:"Value", sortable:true, width:150, editor:new YAHOO.widget.TextboxCellEditor({disableBtns:true})}
+            {key:"key", label:"Key", sortable:true, width:150, editor:this.editors['text']},
+            {key:"value", label:"Value", sortable:true, width:150, editor:this.editors['text']}
         ];
         var requestDs = new YAHOO.util.DataSource([]);
         requestDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -236,7 +258,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         }, scope:this},label: 'Add Request Parameter'});
 
         var compColumnDefs = [
-            {key:"component", label:"Component", sortable:true, width:320, editor:this.combEditor}
+            {key:"component", label:"Component", sortable:true, width:320, editor:this.editors['combo']}
         ];
         var compDs = new YAHOO.util.DataSource([]);
         compDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -262,9 +284,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                     dropDownOptions.push(compName);
                 }
             }
-            this.combEditor.dropdownOptions = dropDownOptions;
-            this.combEditor.renderForm();
-            column.editor = this.combEditor;
+            this.editors['combo'].dropdownOptions = dropDownOptions;
+            this.editors['combo'].renderForm();
+            column.editor = this.editors['combo'];
             this.compGrid.showCellEditor(target);
 
         }, this, true);
@@ -286,7 +308,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                  '</div>'})
 
         var actionColumnDefs = [
-            {key:"action", label:"Action", sortable:true, width:320, editor:this.combEditor}
+            {key:"action", label:"Action", sortable:true, width:320, editor:this.editors['combo']}
         ];
         var actionDs = new YAHOO.util.DataSource([]);
         actionDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -320,9 +342,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                     dropDownOptions.push(actionName);
                 }
             }
-            this.combEditor.dropdownOptions = dropDownOptions;
-            this.combEditor.renderForm();
-            column.editor = this.combEditor;
+            this.editors['combo'].dropdownOptions = dropDownOptions;
+            this.editors['combo'].renderForm();
+            column.editor = this.editors['combo'];
             this.actionsGrid.showCellEditor(target);
 
         }, this, true);
@@ -342,15 +364,10 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
         YAHOO.util.Event.addListener(this.methodSelect, 'change', this.methodChanged, this, true);
         this.methodDescrEl = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-methoddef", 'div', this.functionView)[0];
         var gridWrp = YAHOO.util.Dom.getElementsByClassName("r-designer-actdlg-gridwrp", 'div', this.functionView)[0];
-        this.textAreaEditor = new YAHOO.widget.TextareaCellEditor();
-        this.textAreaEditor.move = function() {
-            this.textarea.style.width =  "300px";
-            this.textarea.style.height = "200px";
-            YAHOO.widget.TextareaCellEditor.superclass.move.call(this);
-        }
+
         var argColumnDefs = [
-            {key:"arg", label:"Argument", width:150, editor:this.textAreaEditor},
-            {key:"value", label:"Value", width:150, editor:this.textAreaEditor}
+            {key:"arg", label:"Argument", width:150, editor:this.editors['textArea']},
+            {key:"value", label:"Value", width:150, editor:this.editors['textArea']}
         ];
         var argDs = new YAHOO.util.DataSource([]);
         argDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;

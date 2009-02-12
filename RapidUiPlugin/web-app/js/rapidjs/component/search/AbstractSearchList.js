@@ -399,7 +399,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.body = dh.append(this.wrapper, {tag: 'div', cls:'rcmdb-search-body'}, true);
         this._render();
         this.createMask();
-        this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic", autofillheight:false});
+        this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic", autofillheight:false, minscrollheight:300});
 
         for (var i in this.menuItems) {
             var subMenu = null;

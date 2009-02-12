@@ -69,6 +69,19 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
         return false;
     };
 
+    if (YAHOO.env.ua.gecko) {
+        var func = function(oArgs) {
+            var editorContainer = oArgs.editor.getContainerEl();
+            YAHOO.util.Dom.setStyle(editorContainer, 'overflow', 'hidden');
+        }
+        for (var editorType in this.editors) {
+            var editor = this.editors[editorType];
+            editor.subscribe('saveEvent', func)
+            editor.subscribe('cancelEvent', func)
+            editor.subscribe('showEvent', function(oArgs){YAHOO.util.Dom.setStyle(oArgs.editor.getContainerEl(), 'overflow', 'auto');})
+        }
+    }
+
     this.actionDlg = new YAHOO.rapidjs.designer.ActionDefinitionDialog(this);
     this.loadingMask = new YAHOO.rapidjs.component.LoadingMask({});
     this.confirmBox = new YAHOO.rapidjs.component.ConfirmBox({handler:this.confirmBoxHandler, scope:this});
@@ -654,7 +667,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     editor = this.editors["InList"];
                     var dropDownOptions = DesignerUtils.getComponentNamesOfCurrentTab(this, this.currentDisplayedItemData);
                     dropDownOptions.splice(0, 0, '');
-                    editor.dropdownOptions =dropDownOptions;
+                    editor.dropdownOptions = dropDownOptions;
                     editor.renderForm();
                 }
                 else if (propertyName == "function" && itemType == "FunctionAction") {

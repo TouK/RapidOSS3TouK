@@ -108,7 +108,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             }
         }
 
-        this.cellMenu = new YAHOO.widget.Menu(this.id + '_cellMenu', {position: "dynamic", autofillheight:false});
+        this.cellMenu = new YAHOO.widget.Menu(this.id + '_cellMenu', {position: "dynamic", autofillheight:false, minscrollheight:300});
 
         for (var i in this.propertyMenuItems) {
             var item = this.cellMenu.addItem({text:this.propertyMenuItems[i].label });

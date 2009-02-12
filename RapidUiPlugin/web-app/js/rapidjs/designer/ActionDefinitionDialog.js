@@ -43,7 +43,19 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
                 catch(e) {
                 }
                 YAHOO.util.Dom.setStyle(editorContainer, 'z-index', '' + (zIndex + 1));
+                if (YAHOO.env.ua.gecko) {
+                    YAHOO.util.Dom.setStyle(editorContainer, 'overflow', 'auto');
+                }
             }, this, true)
+            if (YAHOO.env.ua.gecko) {
+                var func = function(oArgs) {
+                    var editorContainer = oArgs.editor.getContainerEl();
+                    YAHOO.util.Dom.setStyle(editorContainer, 'overflow', 'hidden');
+                }
+                editor.subscribe('saveEvent', func)
+                editor.subscribe('cancelEvent', func)
+            }
+
         }
         this.dialog = new YAHOO.rapidjs.component.Dialog(config);
 

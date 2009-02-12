@@ -417,9 +417,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             if (!(this.menuItems[i].submenuItems))
                 YAHOO.util.Event.addListener(item.element, "click", this.rowHeaderMenuItemClicked, { parentKey:i }, this);
         }
-
-
         this.rowHeaderMenu.render(document.body);
+        YAHOO.rapidjs.component.OVERLAY_MANAGER.register(this.rowHeaderMenu);
     },
 
     getRowHeight : function() {
@@ -549,6 +548,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
                 index++;
             }
             this.rowHeaderMenu.show();
+            YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.rowHeaderMenu);
         }
     },
     cellClicked: function(cell, row, target, e, dataNode) {

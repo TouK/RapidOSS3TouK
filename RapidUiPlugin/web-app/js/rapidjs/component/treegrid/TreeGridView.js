@@ -107,6 +107,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                     YAHOO.util.Event.addListener(item.element, "click", this.rowMenuItemClicked, { parentKey:i }, this);
             }
             this.rowMenu.render(document.body);
+            YAHOO.rapidjs.component.OVERLAY_MANAGER.register(this.rowMenu);
         }
     },
 
@@ -609,6 +610,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         }
         if (numberOfDisplayedItems > 0) {
             this.rowMenu.show();
+            YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.rowMenu);
         }
     },
 

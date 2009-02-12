@@ -116,6 +116,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
         }
         this.cellMenu.render(document.body);
+        YAHOO.rapidjs.component.OVERLAY_MANAGER.register(this.cellMenu);
     },
 
     createMask: function() {
@@ -230,7 +231,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             else {
                 var tempIndex = 0;
                 for (var att in data) {
-                    if(tempIndex == this.showMax){
+                    if (tempIndex == this.showMax) {
                         break;
                     }
                     if (att != this.sortOrderAttribute) {
@@ -288,6 +289,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             this.cellMenu.cell = cell;
             this.cellMenu.cfg.setProperty("context", [target, 'tl', 'bl']);
             this.cellMenu.show();
+            YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.cellMenu);
         }
     },
     rowClicked: function(row, target, e, dataNode) {

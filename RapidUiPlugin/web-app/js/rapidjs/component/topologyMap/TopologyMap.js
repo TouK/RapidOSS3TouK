@@ -94,6 +94,7 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
 	this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + 'menu', {position: "dynamic", autofillheight:false, minscrollheight:1000});
     this.rowHeaderMenu.addItems(config.nodeMenuItems)
     this.rowHeaderMenu.render(this.body.dom);
+    YAHOO.rapidjs.component.OVERLAY_MANAGER.register(this.rowHeaderMenu);
     this.rowHeaderMenu.subscribe("click", this.nodeMenuClicked, this, true);
     this.body = YAHOO.ext.DomHelper.append(this.body.dom, {tag:'div'}, true);
     this.currentMenuData= null;
@@ -169,6 +170,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             this.rowHeaderMenu.cfg.setProperty("x",x+YAHOO.util.Dom.getX(this.container));
             this.rowHeaderMenu.cfg.setProperty("y",y+YAHOO.util.Dom.getY(this.container)+this.header.getHeight()+this.menuBarElement.getHeight());
             this.rowHeaderMenu.show();
+            YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.rowHeaderMenu);
         }
     },
 

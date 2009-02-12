@@ -18,7 +18,7 @@ class UiFunctionArgumentOperations extends AbstractDomainOperation{
                 canBeDeleted: true,
                 display: "FunctionArgument",
                 propertyConfiguration: [
-                        value:[descr:"JavaScript expression evaluated and passed to the function as argument", isRequired:true]
+                        value:[descr:"JavaScript expression evaluated and passed to the function as argument", isRequired:true, type:"Expression"]
                 ],
                 childrenConfiguration:[]
         ];

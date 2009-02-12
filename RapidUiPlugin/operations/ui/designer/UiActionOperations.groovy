@@ -10,7 +10,7 @@ public class UiActionOperations extends AbstractDomainOperation
         Map metaData = [
                 propertyConfiguration: [
                         name: [descr: "Unique name of the action"],
-                        condition: [descr: "The JavaScript expression that will be evaluated to determine whether to execute the action or not.", required:true]
+                        condition: [descr: "The JavaScript expression that will be evaluated to determine whether to execute the action or not.", required:true, type:"Expression"]
                 ],
                 childrenConfiguration: [
                         [

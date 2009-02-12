@@ -19,7 +19,7 @@ class UiRequestParameterOperations extends AbstractDomainOperation{
                 display: "RequestParameter",
                 propertyConfiguration: [
                         key:[descr:"The URL parameter name", required:true],
-                        value:[descr:"The JavaScript expression that will be evaluated to determine the value of the URL parameter", required:true]
+                        value:[descr:"The JavaScript expression that will be evaluated to determine the value of the URL parameter", required:true, type:"Expression"]
                 ],
                 childrenConfiguration:[]
         ];

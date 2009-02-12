@@ -23,7 +23,7 @@ class UiImageOperations extends AbstractDomainOperation
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
                         src: [descr: "Image url."],
-                        visible: [descr: "The JavaScript expression evaluated on row data to determine whether the image is displayed or not.", required:true],
+                        visible: [descr: "The JavaScript expression evaluated on row data to determine whether the image is displayed or not.", required:true, type:"Expression"],
                         align: [descr: "Sets the starting position of a image. Available values are left, right and center"]
                 ],
                 childrenConfiguration: [:]

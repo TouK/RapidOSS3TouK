@@ -254,7 +254,7 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
 
         var requestColumnDefs = [
             {key:"key", label:"Key", sortable:true, width:150, editor:this.editors['text']},
-            {key:"value", label:"Value", sortable:true, width:150, editor:this.editors['text']}
+            {key:"value", label:"Value", sortable:true, width:150, editor:this.editors['textArea']}
         ];
         var requestDs = new YAHOO.util.DataSource([]);
         requestDs.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
@@ -310,9 +310,9 @@ YAHOO.rapidjs.designer.ActionDefinitionDialog.prototype = {
 
         this.linkView = dh.append(right, {tag:'div', style:'padding:5 0 5 0;',
             html:'<div style="padding:5px;">' +
-                 '<div><table><tbody><tr><td class="field-name">Url:</td><td><input style="width:200px;"></input></td></tr></tbody></table></div></div>'})
+                 '<div><table><tbody><tr><td class="field-name">Url:</td><td><textarea cols="40"></td></tr></tbody></table></div></div>'})
 
-        this.linkUrlInput = this.linkView.getElementsByTagName('input')[0];
+        this.linkUrlInput = this.linkView.getElementsByTagName('textarea')[0];
         this.combinedView = dh.append(right, {tag:'div', style:'padding:5 0 5 0;',
             html:'<div style="padding:5px;">' +
                  '<div style="margin-top:10px"><table><tbody><tr><td class="grid-def" width="100%">Actions:</td>' +

@@ -36,9 +36,15 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
         }}),
         "DateMock":new YAHOO.widget.DateCellEditor(),
         InList: new YAHOO.widget.DropdownCellEditor({}),
+        Expression: new YAHOO.widget.TextareaCellEditor(),
         Boolean: new YAHOO.widget.DropdownCellEditor({dropdownOptions:['true', 'false']})
 
     };
+    this.editors['Expression'].move = function() {
+        this.textarea.style.width = "300px";
+        this.textarea.style.height = "200px";
+        YAHOO.widget.TextareaCellEditor.superclass.move.call(this);
+    }
     this.editors['DateMock'].attach = function(oDataTable, elCell) {
         // Validate
         if (oDataTable instanceof YAHOO.widget.DataTable) {

@@ -234,7 +234,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                     if (tempIndex == this.showMax) {
                         break;
                     }
-                    if (att != this.sortOrderAttribute) {
+                    if (att != this.sortOrderAttribute && att != 'rsAlias') {
                         var cell = rowEl.cells[tempIndex];
                         var keyEl = cell.firstChild;
                         var valueEl = keyEl.nextSibling;

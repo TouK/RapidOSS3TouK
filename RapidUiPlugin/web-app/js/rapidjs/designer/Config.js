@@ -85,7 +85,7 @@ YAHOO.rapidjs.designer.Config = new function() {
         }
         return this.get(itemType)["properties"][propertyName]["descr"]
     };
-    this.getPropertyDefaultValue = function(itemType, propertyName){
+    this.getPropertyDefaultValue = function(itemType, propertyName) {
         return this.get(itemType)["properties"][propertyName]["defaultValue"]
     };
     this.isPropertyRequired = function(itemType, propertyName) {
@@ -93,6 +93,13 @@ YAHOO.rapidjs.designer.Config = new function() {
     };
     this.getPropertyType = function(itemType, propertyName) {
         return this.get(itemType)["properties"][propertyName]["type"]
+    };
+    this.getPropertyInList = function(itemType, propertyName) {
+        var inList = this.get(itemType)["properties"][propertyName]['inList']
+        if (inList != null) {
+           return inList.split(',');
+        }
+        return [];
     };
 
     this.getImageConfig = function(itemType) {
@@ -136,7 +143,7 @@ YAHOO.rapidjs.designer.Config = new function() {
     this.getMethodArguments = function(componentType, methodName) {
         return this.methods[componentType][methodName]['args'];
     };
-    this.getMenuParameters = function(componentType, menuType){
+    this.getMenuParameters = function(componentType, menuType) {
         return this.menuParameters[componentType][menuType];
     }
     this.methods = {

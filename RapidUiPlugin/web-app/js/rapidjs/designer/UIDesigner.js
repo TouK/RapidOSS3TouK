@@ -78,7 +78,9 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
             var editor = this.editors[editorType];
             editor.subscribe('saveEvent', func)
             editor.subscribe('cancelEvent', func)
-            editor.subscribe('showEvent', function(oArgs){YAHOO.util.Dom.setStyle(oArgs.editor.getContainerEl(), 'overflow', 'auto');})
+            editor.subscribe('showEvent', function(oArgs) {
+                YAHOO.util.Dom.setStyle(oArgs.editor.getContainerEl(), 'overflow', 'auto');
+            })
         }
     }
 
@@ -688,12 +690,21 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     editor.renderForm();
                 }
                 else {
-                    var propertyType = UIConfig.getPropertyType(itemType, propertyName)
-                    editor = this.editors[propertyType];
-                    if (editor == null)
-                    {
-                        editor = this.editors["String"];
+                    var inList = UIConfig.getPropertyInList(itemType, propertyName)
+                    if (inList.length > 0) {
+                        editor = this.editors["InList"];
+                        editor.dropdownOptions = inList;
+                        editor.renderForm();
                     }
+                    else {
+                        var propertyType = UIConfig.getPropertyType(itemType, propertyName)
+                        editor = this.editors[propertyType];
+                        if (editor == null)
+                        {
+                            editor = this.editors["String"];
+                        }
+                    }
+
                 }
                 column.editor = editor;
                 this.propertyGrid.showCellEditor(target);

@@ -60,11 +60,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
             this.body = dh.append(wrp, {tag:'div', style:'overflow:auto'}, true);
         }
     },
-    inPopupWindow: function(){
-       YAHOO.util.Dom.setStyle(this.header, 'display', 'none');
-       YAHOO.util.Dom.setStyle(this.toolbar.toolsEl, 'right', '35px');
-       YAHOO.util.Dom.setStyle(this.toolbar.toolsEl, 'width', '45px');
-       this.popupWindow.dialog.container.appendChild(this.toolbar.toolsEl);
+    inPopupWindow: function() {
+        YAHOO.util.Dom.setStyle(this.header, 'display', 'none');
+        YAHOO.util.Dom.setStyle(this.toolbar.toolsEl, 'right', '35px');
+        YAHOO.util.Dom.setStyle(this.toolbar.toolsEl, 'width', '45px');
+        this.popupWindow.dialog.container.appendChild(this.toolbar.toolsEl);
     },
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
@@ -112,23 +112,28 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         }
     },
     showMask: function() {
-        this.mask.show();
-        this.maskMessage.show();
-        var region = this.body.getRegion();
-        this.mask.setRegion(region)
-        this.maskMessage.center(this.mask.dom);
+        if (this.mask) {
+            this.mask.show();
+            this.maskMessage.show();
+            var region = this.body.getRegion();
+            this.mask.setRegion(region)
+            this.maskMessage.center(this.mask.dom);
+        }
+
     },
     hideMask: function() {
-        this.mask.hide();
-        this.maskMessage.hide();
+        if (this.mask) {
+            this.mask.hide();
+            this.maskMessage.hide();
+        }
     },
 
     resize: function(width, height) {
         var bodyHeight;
-        if(YAHOO.util.Dom.getStyle(this.header, 'display') != 'none'){
+        if (YAHOO.util.Dom.getStyle(this.header, 'display') != 'none') {
             bodyHeight = height - this.header.offsetHeight
         }
-        else{
+        else {
             bodyHeight = height
         }
         this.body.setHeight(bodyHeight);

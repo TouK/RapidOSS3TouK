@@ -91,6 +91,7 @@ if(testOptions.APG == "true")
 if(testOptions.SMARTS == "true")
 {
     buildProperties.put("SMARTS", "false")
+    watchConfig.add([new File("${workspaceDir}/LicencedJars/lib/smarts"), new File("${rootDir.absolutePath}/RapidSuite/lib"), []]);
     watchConfig.add([new File("${workspaceDir}/Smarts"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Smarts/applications").canonicalPath, new File("${workspaceDir}/Smarts/application.properties").canonicalPath]]);
     watchConfig.add([new File("${workspaceDir}/Smarts/applications/RapidInsightForSmarts"), new File("${rootDir.absolutePath}/RapidSuite")]);
 }

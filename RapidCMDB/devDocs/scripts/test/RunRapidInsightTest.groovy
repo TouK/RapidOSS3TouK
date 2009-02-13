@@ -95,7 +95,7 @@ if(testOptions.SMARTS == "true")
     watchConfig.add([new File("${workspaceDir}/Smarts"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Smarts/applications").canonicalPath, new File("${workspaceDir}/Smarts/application.properties").canonicalPath]]);
     watchConfig.add([new File("${workspaceDir}/Smarts/applications/RapidInsightForSmarts"), new File("${rootDir.absolutePath}/RapidSuite")]);
 }
-if(testOptions.OPEN_NMS == "true")
+if(testOptions.OPENNMS == "true")
 {
     buildProperties.put("OPENNMS", "false")
     watchConfig.add([new File("${workspaceDir}/OpenNms"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/OpenNms/applications").canonicalPath, new File("${workspaceDir}/OpenNms/application.properties").canonicalPath]]);

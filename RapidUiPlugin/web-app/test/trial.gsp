@@ -11,6 +11,7 @@
     <script type="text/javascript" src="../js/yui/datasource/datasource-min.js"></script>
     <script type="text/javascript" src="../js/yui/datatable/datatable.js"></script>
      <script type="text/javascript" src="../js/yui/button/button.js"></script>
+     <script type="text/javascript" src="../js/yui/logger/logger-min.js"></script>
     <script type="text/javascript" src="../js/ext/ext.js"></script>
     <script type="text/javascript" src="../js/rapidjs/yuioverride.js"></script>
 
@@ -21,15 +22,20 @@
     <script type="text/javascript" src="../js/rapidjs/component/PollingComponentContainer.js"></script>
 
 
+
     <script type="text/javascript" src="../js/rapidjs/data/RapidXmlDocument.js"></script>
     <script type="text/javascript" src="../js/rapidjs/SelectUtils.js"></script>
     <script type="text/javascript" src="../js/rapidjs/component/form/Form.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/form/HtmlEmbeddableForm.js"></script>
 
     <script type="text/javascript" src="../js/rapidjs/component/simplewidgets/Button.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/simplewidgets/LoadingMask.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/simplewidgets/ConfirmBox.js"></script>
     <script type="text/javascript" src="../js/rapidjs/component/tools/BasicTool.js"></script>
     <script type="text/javascript" src="../js/rapidjs/component/tools/SettingsTool.js"></script>
     <script type="text/javascript" src="../js/rapidjs/component/dialog/Dialog.js"></script>
     <script type="text/javascript" src="../js/rapidjs/component/PopupWindow.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/component/html/Html.js"></script>
 
 
     <script type="text/javascript" src="../js/rapidjs/component/tools/ButtonToolBar.js"></script>
@@ -66,32 +72,21 @@
     <link rel="stylesheet" type="text/css" href="../css/rapidjs/simplewidgets/button.css"/>
     <link rel="stylesheet" type="text/css" href="../css/rapidjs/tools/tools.css"/>
     <link rel="stylesheet" type="text/css" href="../css/rapidjs/treegrid/treegrid.css"/>
-    <link rel="stylesheet" type="text/css" href="../css/rapidjs/designer/designer.css"/>
 </head>
 <body class="yui-skin-sam">
-    <div id="innerTop">innerTop</div>
-    <div id="innerCenter">innerCenter</div>
-    <div id="outerCenter">center</div>
-    <script>
-           var layout = new YAHOO.widget.Layout({
-                units: [
-                    { position: 'center', body:'outerCenter'},
-                    { position: 'top', height:400}
-                ]
-            });
-           layout.on('render', function(){
-              var topUnit = layout.getUnitByPosition('top');
-              var layout2 = new YAHOO.widget.Layout(topUnit.get('wrap'),{
-                parent: layout,
-                units: [
-                    { position: 'center', body:'innerCenter'},
-                    { position: 'top', body:'innerTop', height:10}
-                ]
-            });
-            layout2.render();
-           }, this,true)
-            layout.render();
+<script type="text/javascript">
 
-    </script>
+    function showHtml(){
+        var htmlComp = YAHOO.rapidjs.Components['formHtml'];
+        htmlComp.popupWindow.show();
+        htmlComp.show(createURL('test/pcorg.gsp', {}))
+    }
+</script>
+    <rui:html id="formHtml" iframe="false"></rui:html>
+    <rui:popupWindow componentId="formHtml" width="400" height="300" resizable="false" x="50" y="10"></rui:popupWindow>
+    <button onclick="showHtml()">Show html</button>
+    <%
+        
+    %>
 </body>
 </html>

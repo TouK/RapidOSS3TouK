@@ -1,6 +1,6 @@
 <Items>
-    <Item designer_key="1000" designer_type="Urls">
-        <Item designer_key="1" designer_type="Url" url="index">
+    <Item designer_key="1000" designer_type="WebPages">
+        <Item designer_key="1" designer_type="WebPage" name="index">
             <Item designer_key="2" designer_type="Tabs">
                 <Item designer_key="3" designer_type="Tab" name="events">
                     <Item  designer_key="4" designer_type="Layout">

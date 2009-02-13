@@ -1,56 +1,51 @@
 <UiElements>
-  <UiElement designerType="Urls" display="Urls" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
+  <UiElement designerType="WebPages" display="Web Pages" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
     <Children>
-      <Child isMultiple="true" designerType="Url"/>
+      <Child isMultiple="true" designerType="WebPage"/>
     </Children>
   </UiElement>
-  <UiElement designerType="FlexPieChart" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/component.gif" imageCollapsed="images/rapidjs/designer/component.gif">
+  <UiElement designerType="Html" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/component.gif" imageCollapsed="images/rapidjs/designer/component.gif">
     <Properties>
-      <Property descr="The default URL to be used for requests to the server to retrieve the data. " name="url" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The root node name of AJAX response which FlexPieChart takes as starting point to get its data." name="rootTag" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="Time delay between two server requests." name="pollingInterval" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Name of component" name="name" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="Title of component" name="title" type="String" required="false" defaultValue="" inList=""/>
+      <Property descr="Time delay between two server requests." required="true" name="pollingInterval" type="Number" defaultValue="0"/>
+      <Property descr="Parameter to display the content in an iframe or embed it to Html component's body." name="iframe" type="Boolean" required="false" defaultValue="false"/>
+      <Property descr="Name of component" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Title of component" required="true" name="title" type="String" defaultValue=""/>
     </Properties>
     <Children/>
   </UiElement>
-  <UiElement designerType="Layout" canBeDeleted="true" display="Layout" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
-    <Properties/>
-    <Children>
-      <Child designerType="CenterUnit" propertyName="units" isVisible="ui.designer.UiLayoutOperations$_metaData_closure1@68742d"/>
-      <Child designerType="TopUnit" propertyName="units" isVisible="ui.designer.UiLayoutOperations$_metaData_closure2@1a3513c"/>
-      <Child designerType="BottomUnit" propertyName="units" isVisible="ui.designer.UiLayoutOperations$_metaData_closure3@12a55a6"/>
-      <Child designerType="LeftUnit" propertyName="units" isVisible="ui.designer.UiLayoutOperations$_metaData_closure4@5d4162"/>
-      <Child designerType="RightUnit" propertyName="units" isVisible="ui.designer.UiLayoutOperations$_metaData_closure5@6fa0b5"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="RightUnit" canBeDeleted="true" display="Right" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+  <UiElement designerType="FlexPieChart" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/component.gif" imageCollapsed="images/rapidjs/designer/component.gif">
     <Properties>
-      <Property descr="The width (in pixels) that the unit will take up in the layout." name="width" type="Number" required="false" defaultValue="200" inList=""/>
-      <Property descr="Boolean indicating whether this unit is resizeable." name="resize" type="Boolean" required="false" defaultValue="true" inList=""/>
-      <Property descr="The min width of unit." name="minWidth" type="Number" required="false" defaultValue="200" inList=""/>
-      <Property descr="The max width of unit." name="maxWidth" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Content file where the layout content will be got" name="contentFile" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="RapidInsight component that will be displayed in the unit" name="component" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area." name="scroll" type="Boolean" required="false" defaultValue="false" inList=""/>
-      <Property descr="This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements" name="useShim" type="Boolean" required="false" defaultValue="false" inList=""/>
+      <Property descr="The default URL to be used for requests to the server to retrieve the data. " name="url" type="String" required="true" defaultValue=""/>
+      <Property descr="The root node name of AJAX response which FlexPieChart takes as starting point to get its data." name="rootTag" type="String" required="true" defaultValue=""/>
+      <Property descr="Time delay between two server requests." required="true" name="pollingInterval" type="Number" defaultValue="0"/>
+      <Property descr="Name of component" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Title of component" required="true" name="title" type="String" defaultValue=""/>
     </Properties>
-    <Children>
-      <Child designerType="Layout" propertyName="childLayout" isMultiple="false"/>
-    </Children>
+    <Children/>
+  </UiElement>
+  <UiElement designerType="ImageObjectMapContent" canBeDeleted="true" display="NodeContent" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="Map which defines the image mapping according to the possible values of dataKey attribute" required="true" name="mapping" type="String" defaultValue=""/>
+      <Property descr="The unique name of the node content configuration" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Sets how far the left edge of the image is to the left edge of the node" name="x" type="Number" required="true" defaultValue="0"/>
+      <Property descr="Sets how far the top edge of the image is to the top edge of the node" name="y" type="Number" required="true" defaultValue="0"/>
+      <Property descr="Width of the image" name="width" type="Number" required="true" defaultValue="0"/>
+      <Property descr="Height of the image" name="height" type="Number" required="true" defaultValue="0"/>
+      <Property descr="The attribute in node data which the mapping will be applied according to" name="dataKey" type="String" required="true" defaultValue=""/>
+    </Properties>
+    <Children/>
   </UiElement>
   <UiElement designerType="TreeGrid" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
     <Properties>
-      <Property descr="The default URL to be used for requests to the server to retrieve the data." name="url" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The root node name of AJAX response which SearchGrid takes as starting point to get its data." name="rootTag" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The node names of AJAX response which will be used as row data." name="contentPath" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The attribute name of the row node which uniquely identifies the node." name="keyAttribute" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="Title of component" name="title" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Time delay between two server requests." name="pollingInterval" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Parameter to display TreeGrid branches either expanded or collapsed" name="expanded" type="Boolean" required="false" defaultValue="false" inList=""/>
-      <Property descr="Parameter to display a tooltip over rows." name="tooltip" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Name of component" name="name" type="String" required="true" defaultValue="" inList=""/>
+      <Property descr="The default URL to be used for requests to the server to retrieve the data." name="url" type="String" required="true" defaultValue=""/>
+      <Property descr="The root node name of AJAX response which SearchGrid takes as starting point to get its data." name="rootTag" type="String" required="true" defaultValue=""/>
+      <Property descr="The node names of AJAX response which will be used as row data." name="contentPath" type="String" required="true" defaultValue=""/>
+      <Property descr="The attribute name of the row node which uniquely identifies the node." name="keyAttribute" type="String" required="true" defaultValue=""/>
+      <Property descr="Time delay between two server requests." required="true" name="pollingInterval" type="Number" defaultValue="0"/>
+      <Property descr="Parameter to display TreeGrid branches either expanded or collapsed" name="expanded" type="Boolean" required="false" defaultValue="false"/>
+      <Property descr="Parameter to display a tooltip over rows." name="tooltip" type="Boolean" required="false" defaultValue="false"/>
+      <Property descr="Name of component" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Title of component" required="true" name="title" type="String" defaultValue=""/>
     </Properties>
     <Children>
       <Child designerType="TreeGridColumns" isMultiple="false"/>
@@ -78,9 +73,9 @@
   </UiElement>
   <UiElement designerType="CombinedAction" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
     <Properties>
-      <Property descr="" name="actions" type="String" required="true" inList=""/>
-      <Property descr="Unique name of the action" name="name" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The JavaScript expression that will be evaluated to determine whether to execute the action or not." name="condition" type="String" required="false" defaultValue="" inList=""/>
+      <Property descr="" required="true" formatter="ui.designer.UiCombinedActionOperations$_metaData_closure1@1c0fd83" name="actions" type="String" inList=""/>
+      <Property descr="Unique name of the action" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="The JavaScript expression that will be evaluated to determine whether to execute the action or not." required="true" name="condition" type="String" defaultValue=""/>
     </Properties>
     <Children>
       <Child designerType="ActionTriggers" isMultiple="false"/>
@@ -88,120 +83,45 @@
   </UiElement>
   <UiElement designerType="ActionTriggers" display="ActionTriggers" canBeDeleted="false">
     <Properties>
-      <Property descr="" type="String" defaultValue="true"/>
+      <Property descr="" type="String" formatter="ui.designer.UiActionOperations$_metaData_closure1@143b4c5"/>
     </Properties>
     <Children>
       <Child designerType="ActionTrigger" isMultiple="true" propertyName="triggers"/>
     </Children>
   </UiElement>
-  <UiElement designerType="SearchList" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
-    <Properties>
-      <Property descr="The default URL to be used for requests to the server to retrieve the data." name="url" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The root node name of AJAX response which SearchGrid takes as starting point to get its data." name="rootTag" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The node names of AJAX response which will be used as row data." name="contentPath" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The attribute name of the row node which uniquely identifies the node." name="keyAttribute" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The url parameter to send the query to the server." name="queryParameter" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="The attribute in the root node of the AJAX response which shows the total number of hits which matches the query." name="totalCountAttribute" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The attribute in the root node of the AJAX response which shows where the results starts from according to the search query." name="offsetAttribute" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The attribute of the row which displays the sort position of the row according to the search query." name="sortOrderAttribute" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="Properties list that will be shown when no field configuration is found for the row. Optional if showMax property is provided." name="defaultFields" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Maximum number of properties that will be displayed from the data. It overrides defaultFields and fields declarations." name="showMax" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Title of component" name="title" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Time delay between two server requests." name="pollingInterval" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="The maximum row count requested from server at every poll." name="maxRowsDisplayed" type="Number" required="false" defaultValue="100" inList=""/>
-      <Property descr="How many lines a row consists of." name="lineSize" type="Number" required="false" defaultValue="3" inList=""/>
-      <Property descr="The query appended to the all queries sent by SearchGrid." name="defaultQuery" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Name of component" name="name" type="String" required="true" defaultValue="" inList=""/>
-    </Properties>
-    <Children>
-      <Child designerType="SearchListFields" isMultiple="false"/>
-      <Child designerType="SearchListImages" isMultiple="false"/>
-      <Child designerType="SearchListMenuItems" isMultiple="false"/>
-      <Child designerType="SearchListPropertyMenuItems" isMultiple="false"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="SearchListFields" display="Fields" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
-    <Properties/>
-    <Children>
-      <Child designerType="SearchListField" propertyName="fields" isMultiple="true"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="SearchListImages" display="Images" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
-    <Properties/>
-    <Children>
-      <Child designerType="Image" propertyName="images" isMultiple="true"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="SearchListMenuItems" display="MenuItems" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
-    <Properties/>
-    <Children>
-      <Child designerType="MenuItem" propertyName="menuItems" isMultiple="true" isVisible="ui.designer.UiSearchListOperations$_metaData_closure1@9bb04a"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="SearchListPropertyMenuItems" display="PropertyMenuItems" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
-    <Properties/>
-    <Children>
-      <Child designerType="MenuItem" propertyName="propertyMenuItems" isMultiple="true" isVisible="ui.designer.UiSearchListOperations$_metaData_closure2@152d5de"/>
-    </Children>
-  </UiElement>
   <UiElement designerType="RootImage" canBeDeleted="true" display="RootImage" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
     <Properties>
-      <Property descr="The image url which will be shown when the row is expanded" name="expanded" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The image url which will be shown when the row is collapsed" name="collapsed" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The JavaScript expression evaluated on row data to determine whether the image is displayed or not" name="visible" type="String" required="false" defaultValue="" inList=""/>
+      <Property descr="The image url which will be shown when the row is expanded" name="expanded" type="String" required="true" defaultValue=""/>
+      <Property descr="The image url which will be shown when the row is collapsed" name="collapsed" type="String" required="true" defaultValue=""/>
+      <Property descr="The JavaScript expression evaluated on row data to determine whether the image is displayed or not" required="true" type="Expression" name="visible" defaultValue="true"/>
     </Properties>
     <Children/>
   </UiElement>
   <UiElement designerType="Image" canBeDeleted="true" display="Image" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
     <Properties>
-      <Property descr="Image url." name="src" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The JavaScript expression evaluated on row data to determine whether the image is displayed or not." name="visible" type="String" required="false" defaultValue="true" inList=""/>
+      <Property descr="Image url." name="src" type="String" required="true" defaultValue=""/>
+      <Property descr="The JavaScript expression evaluated on row data to determine whether the image is displayed or not." required="true" type="Expression" name="visible" defaultValue="true"/>
       <Property descr="Sets the starting position of a image. Available values are left, right and center" name="align" type="String" required="false" defaultValue="left" inList="left,right,center"/>
     </Properties>
     <Children/>
   </UiElement>
-  <UiElement designerType="RequestParameter" canBeDeleted="true" display="RequestParameter">
-    <Properties>
-      <Property descr="The URL parameter name" isRequired="true" name="key" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The JavaScript expression that will be evaluated to determine the value of the URL parameter" isRequired="true" name="value" type="String" required="false" defaultValue="" inList=""/>
-    </Properties>
-    <Children/>
-  </UiElement>
-  <UiElement designerType="TreeGridColumn" canBeDeleted="true" displayFromProperty="attributeName" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
-    <Properties>
-      <Property descr="Column type. Available types are text and image" name="type" type="String" required="true" defaultValue="text" inList="text,image"/>
-      <Property descr="The data node attribute which will be shown in the column" name="attributeName" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="Width of the column" name="width" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Parameter to render component whether sorted according to this column or not" name="sortBy" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="Title of the column" name="colLabel" type="String" required="true" defaultValue="" inList=""/>
-    </Properties>
-    <Children>
-      <Child designerType="TreeGridColumnImages" isMultiple="false"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="TreeGridColumnImages" display="Images" canBeDeleted="false">
-    <Properties/>
-    <Children>
-      <Child designerType="Image" isMultiple="true" propertyName="images"/>
-    </Children>
-  </UiElement>
   <UiElement designerType="SearchGrid" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
     <Properties>
-      <Property descr="The default URL to be used for requests to the server to retrieve the data." name="url" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The root node name of AJAX response which SearchGrid takes as starting point to get its data." name="rootTag" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The node names of AJAX response which will be used as row data." name="contentPath" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The attribute name of the row node which uniquely identifies the node." name="keyAttribute" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The url used for the request to the server to retrieve available properties used in view builder." name="fieldsUrl" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The url parameter to send the query to the server." name="queryParameter" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="The attribute in the root node of the AJAX response which shows the total number of hits which matches the query." name="totalCountAttribute" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The attribute in the root node of the AJAX response which shows where the results starts from according to the search query." name="offsetAttribute" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The attribute of the row which displays the sort position of the row according to the search query." name="sortOrderAttribute" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="Title of component" name="title" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Time delay between two server requests." name="pollingInterval" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Parameter to determine whether the quick filtering is enabled or not." name="queryEnabled" type="Boolean" required="false" defaultValue="true" inList=""/>
-      <Property descr="The maximum row count requested from server at every poll." name="maxRowsDisplayed" type="Number" required="false" defaultValue="100" inList=""/>
-      <Property descr="The query appended to the all queries sent by SearchGrid." name="defaultQuery" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Name of component" name="name" type="String" required="true" defaultValue="" inList=""/>
+      <Property descr="The default URL to be used for requests to the server to retrieve the data." name="url" type="String" required="true" defaultValue="search?searchIn=RsEvent"/>
+      <Property descr="The root node name of AJAX response which SearchGrid takes as starting point to get its data." name="rootTag" type="String" required="true" defaultValue=""/>
+      <Property descr="The node names of AJAX response which will be used as row data." name="contentPath" type="String" required="true" defaultValue=""/>
+      <Property descr="The attribute name of the row node which uniquely identifies the node." name="keyAttribute" type="String" required="true" defaultValue=""/>
+      <Property descr="The url used for the request to the server to retrieve available properties used in view builder." name="fieldsUrl" type="String" required="true" defaultValue="script/run/getViewFields?format=xml"/>
+      <Property descr="The url parameter to send the query to the server." name="queryParameter" type="String" required="false" defaultValue="query"/>
+      <Property descr="The attribute in the root node of the AJAX response which shows the total number of hits which matches the query." name="totalCountAttribute" type="String" required="true" defaultValue="total"/>
+      <Property descr="The attribute in the root node of the AJAX response which shows where the results starts from according to the search query." name="offsetAttribute" type="String" required="true" defaultValue="offset"/>
+      <Property descr="The attribute of the row which displays the sort position of the row according to the search query." name="sortOrderAttribute" type="String" required="true" defaultValue="sortOrder"/>
+      <Property descr="Time delay between two server requests." required="true" name="pollingInterval" type="Number" defaultValue="0"/>
+      <Property descr="Parameter to determine whether the quick filtering is enabled or not." name="queryEnabled" type="Boolean" required="false" defaultValue="true"/>
+      <Property descr="The maximum row count requested from server at every poll." name="maxRowsDisplayed" type="Number" required="false" defaultValue="100"/>
+      <Property descr="The query appended to the all queries sent by SearchGrid." name="defaultQuery" type="String" required="false" defaultValue=""/>
+      <Property descr="Name of component" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Title of component" required="true" name="title" type="String" defaultValue=""/>
     </Properties>
     <Children>
       <Child designerType="SearchGridImages" isMultiple="false"/>
@@ -229,27 +149,30 @@
   </UiElement>
   <UiElement designerType="SearchListField" canBeDeleted="true" display="Field" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
     <Properties>
-      <Property descr="Property list that will be displayed if the expression evaluates to true" name="fields" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The JavaScript expression evaluated on row data to determine whether the property list is valid or not" name="exp" type="String" required="true" defaultValue="" inList=""/>
+      <Property descr="Property list that will be displayed if the expression evaluates to true" name="fields" type="String" required="true" defaultValue=""/>
+      <Property descr="The JavaScript expression evaluated on row data to determine whether the property list is valid or not" type="Expression" name="exp" required="true" defaultValue="true"/>
     </Properties>
     <Children/>
   </UiElement>
-  <UiElement designerType="MenuItem" displayFromProperty="name" canBeDeleted="true" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+  <UiElement designerType="PieChart" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/component.gif" imageCollapsed="images/rapidjs/designer/component.gif">
     <Properties>
-      <Property descr="Unique name of the menu item" name="name" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The label of the menu item" name="label" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The name of the action which will be executed when the item is clicked" name="action" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="The JavaScript expression evaluated on row data to determine whether the item is displayed or not" name="visible" type="String" required="false" defaultValue="null" inList=""/>
+      <Property descr="The default URL to be used for requests to the server to retrieve the data." name="url" type="String" required="true" defaultValue=""/>
+      <Property descr="The node names of AJAX response which will be used as row data." name="contentPath" type="String" required="true" defaultValue=""/>
+      <Property descr="The attribute in the data to define x series." name="categoryField" type="String" required="true" defaultValue=""/>
+      <Property descr="The attribute in the data to define y series." name="dataField" type="String" required="true" defaultValue=""/>
+      <Property descr="The position of the legend. Possible values are top, right, bottom, left and none." name="legend" type="String" required="true" defaultValue="none" inList="top,right,bottom,left,none"/>
+      <Property descr="Time delay between two server requests." required="true" name="pollingInterval" type="Number" defaultValue="0"/>
+      <Property descr="The color definition list of the slices. The order of the data is taken into consideration while matching the color to a category." name="colors" type="String" required="false" defaultValue=""/>
+      <Property descr="Name of component" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Title of component" required="true" name="title" type="String" defaultValue=""/>
     </Properties>
-    <Children>
-      <Child designerType="MenuItem" propertyName="childMenuItems" isMultiple="true"/>
-    </Children>
+    <Children/>
   </UiElement>
   <UiElement designerType="LinkAction" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
     <Properties>
-      <Property descr="JavaScript expression that will be evaluated to determine the URL to redirect to" name="url" type="String" required="false" defaultValue="null" inList=""/>
-      <Property descr="Unique name of the action" name="name" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The JavaScript expression that will be evaluated to determine whether to execute the action or not." name="condition" type="String" required="false" defaultValue="" inList=""/>
+      <Property descr="JavaScript expression that will be evaluated to determine the URL to redirect to" type="Expression" name="url" required="true" defaultValue=""/>
+      <Property descr="Unique name of the action" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="The JavaScript expression that will be evaluated to determine whether to execute the action or not." required="true" name="condition" type="String" defaultValue=""/>
     </Properties>
     <Children>
       <Child designerType="ActionTriggers" isMultiple="false"/>
@@ -257,164 +180,47 @@
   </UiElement>
   <UiElement designerType="ActionTriggers" display="ActionTriggers" canBeDeleted="false">
     <Properties>
-      <Property descr="" type="String" defaultValue="true"/>
+      <Property descr="" type="String" formatter="ui.designer.UiActionOperations$_metaData_closure1@14c3c29"/>
     </Properties>
     <Children>
       <Child designerType="ActionTrigger" isMultiple="true" propertyName="triggers"/>
     </Children>
+  </UiElement>
+  <UiElement designerType="TimelineBand" canBeDeleted="true" display="Band" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The percentage of the band in the whole timeline." required="true" name="width" type="Number" defaultValue="50"/>
+      <Property descr="How many pixel each date unit will span." required="true" name="intervalPixels" type="Number" defaultValue="0"/>
+      <Property descr="Which date unit that the band will display. Possible values are millisecond, second, minute, hour, day, week, month, year, decade, century, millennium, epoch and era." name="intervalUnit" type="String" required="true" defaultValue="day" inList="millisecond,second,minute,hour,day,week,month,year,decade,century,millennium,epoch,era"/>
+      <Property descr="Parameter whether to display event text or not." name="showText" type="Boolean" required="true" defaultValue="false"/>
+      <Property descr="Track height in em unit. See SIMILE Timeline documentation for details." name="trackHeight" type="Float" required="false" defaultValue="0.0"/>
+      <Property descr="Track gap in em unit. See SIMILE Timeline documentation for details." name="trackGap" type="Number" required="false" defaultValue="0"/>
+      <Property descr="By default all timeline bands scroll independently. The parameter specifies the band index that the current band scroll in synchrony." name="syncWith" type="Number" required="false" defaultValue="-1"/>
+      <Property descr="The index of the band that the current band layout in synchrony (Events are at the same tracks)." name="layoutWith" type="Number" required="false" defaultValue="-1"/>
+      <Property descr="Parameter to display the band whether highlighted or not." name="highlight" type="Boolean" required="true" defaultValue="false"/>
+      <Property descr="Parameter to make sure the timeline starts out showing the events immediately without requiring the user to pan first. Band is positioned at the specified date." defaultValue="Jan 01 1970 02:00:00 EET" formatter="ui.designer.UiTimelineBandOperations$_metaData_closure1@18e501c" name="date" type="Date" required="false"/>
+      <Property descr="The width of the event text in pixels." name="textWidth" type="Number" required="false" defaultValue="200"/>
+    </Properties>
+    <Children/>
   </UiElement>
   <UiElement designerType="Dialog" imageExpanded="images/rapidjs/designer/application_double.png" imageCollapsed="images/rapidjs/designer/application_double.png" displayFromProperty="component" canBeDeleted="true">
     <Properties>
-      <Property descr="Title of component" name="title" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="The width of the dialog" name="width" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="The height of the dialog" name="height" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Maximum height of the dialog" name="maxHeight" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Minimum height of the dialog" name="minHeight" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Minimum width of the dialog" name="minWidth" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Maximum width of the dialog" name="maxWidth" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="" name="component" type="String" required="true" inList=""/>
+      <Property descr="Title of component" required="true" name="title" type="String" defaultValue=""/>
+      <Property descr="The width of the dialog" name="width" type="Number" required="true" defaultValue="400"/>
+      <Property descr="The x position of the dialog" name="x" type="Number" required="false" defaultValue="0"/>
+      <Property descr="The y position of the dialog" name="y" type="Number" required="false" defaultValue="0"/>
+      <Property descr="The height of the dialog" name="height" type="Number" required="true" defaultValue="300"/>
+      <Property descr="Maximum height of the dialog" name="maxHeight" type="Number" required="false" defaultValue="0"/>
+      <Property descr="Minimum height of the dialog" name="minHeight" type="Number" required="false" defaultValue="0"/>
+      <Property descr="Minimum width of the dialog" name="minWidth" type="Number" required="false" defaultValue="0"/>
+      <Property descr="Maximum width of the dialog" name="maxWidth" type="Number" required="false" defaultValue="0"/>
+      <Property descr="Boolean value to represent whether the dialog is resizable or not." name="resizable" type="Boolean" required="false" defaultValue="true"/>
+      <Property descr="" formatter="ui.designer.UiDialogOperations$_metaData_closure1@65a4ba" name="component" type="String" required="true" inList=""/>
     </Properties>
     <Children/>
   </UiElement>
-  <UiElement designerType="CenterUnit" display="Center" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+  <UiElement designerType="WebPage" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/gsp_logo.png" imageCollapsed="images/rapidjs/designer/gsp_logo.png">
     <Properties>
-      <Property descr="Content file where the layout content will be got" name="contentFile" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="RapidInsight component that will be displayed in the unit" name="component" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area." name="scroll" type="Boolean" required="false" defaultValue="false" inList=""/>
-      <Property descr="This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements" name="useShim" type="Boolean" required="false" defaultValue="false" inList=""/>
-    </Properties>
-    <Children>
-      <Child designerType="Layout" propertyName="childLayout" isMultiple="false"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="TopUnit" canBeDeleted="true" display="Top" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
-    <Properties>
-      <Property descr="The height (in pixels) that the unit will take up in the layout." name="height" type="Number" required="false" defaultValue="200" inList=""/>
-      <Property descr="Boolean indicating whether this unit is resizeable." name="resize" type="Boolean" required="false" defaultValue="true" inList=""/>
-      <Property descr="The min height of unit." name="minHeight" type="Number" required="false" defaultValue="200" inList=""/>
-      <Property descr="The max height of unit." name="maxHeight" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Content file where the layout content will be got" name="contentFile" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="RapidInsight component that will be displayed in the unit" name="component" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area." name="scroll" type="Boolean" required="false" defaultValue="false" inList=""/>
-      <Property descr="This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements" name="useShim" type="Boolean" required="false" defaultValue="false" inList=""/>
-    </Properties>
-    <Children>
-      <Child designerType="Layout" propertyName="childLayout" isMultiple="false"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="Column" canBeDeleted="true" displayFromProperty="attributeName" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
-    <Properties>
-      <Property descr="The data node attribute which will be shown in the column" name="attributeName" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="Width of the column" name="width" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Parameter to render component whether sorted according to this column or not" name="sortBy" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="Title of the column" name="colLabel" type="String" required="true" defaultValue="" inList=""/>
-    </Properties>
-    <Children/>
-  </UiElement>
-  <UiElement designerType="Tab" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/page.png" imageCollapsed="images/rapidjs/designer/page.png">
-    <Properties>
-      <Property descr="Name of the tab" name="name" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The file path relative to web-app that will be embedded to tab, where you can write free form JavaScript" name="javascriptFile" type="String" required="false" defaultValue="" inList=""/>
-    </Properties>
-    <Children>
-      <Child designerType="Layout" propertyName="layout"/>
-      <Child designerType="Components" propertyName="layout"/>
-      <Child designerType="Dialogs" propertyName="layout"/>
-      <Child designerType="Actions" propertyName="layout"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="Components" display="Components" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
-    <Properties/>
-    <Children>
-      <Child designerType="FlexPieChart" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure1@1ec0a94"/>
-      <Child designerType="SearchList" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure2@1aa9a4e"/>
-      <Child designerType="SearchGrid" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure3@178a1cb"/>
-      <Child designerType="TreeGrid" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure4@c64a78"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="Dialogs" display="Dialogs" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
-    <Properties/>
-    <Children>
-      <Child designerType="Dialog" isMultiple="true" propertyName="dialogs"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="Actions" display="Actions" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
-    <Properties/>
-    <Children>
-      <Child designerType="FunctionAction" isMultiple="true" propertyName="actions" isVisible="ui.designer.UiTabOperations$_metaData_closure5@713ed7"/>
-      <Child designerType="MergeAction" isMultiple="true" propertyName="actions" isVisible="ui.designer.UiTabOperations$_metaData_closure6@d4c5b1"/>
-      <Child designerType="RequestAction" isMultiple="true" propertyName="actions" isVisible="ui.designer.UiTabOperations$_metaData_closure7@ff1714"/>
-      <Child designerType="CombinedAction" isMultiple="true" propertyName="actions" isVisible="ui.designer.UiTabOperations$_metaData_closure8@1442cd0"/>
-      <Child designerType="LinkAction" isMultiple="true" propertyName="actions" isVisible="ui.designer.UiTabOperations$_metaData_closure9@da48dc"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="MergeAction" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
-    <Properties>
-      <Property descr="The attribute in response data which indicates that related components should remove the specified data" name="removeAttribute" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="The URL to be used for requests to the server" name="url" type="String" required="false" defaultValue="null" inList=""/>
-      <Property descr="The time interval in seconds to wait the server request completes successfully before aborting." name="timeout" type="Number" required="false" defaultValue="60" inList=""/>
-      <Property descr="" name="components" type="String" required="true" inList=""/>
-      <Property descr="Unique name of the action" name="name" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The JavaScript expression that will be evaluated to determine whether to execute the action or not." name="condition" type="String" required="false" defaultValue="" inList=""/>
-    </Properties>
-    <Children>
-      <Child designerType="RequestParameter" isMultiple="true" propertyName="parameters"/>
-      <Child designerType="ActionTriggers" isMultiple="false"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="ActionTriggers" display="ActionTriggers" canBeDeleted="false">
-    <Properties>
-      <Property descr="" type="String" defaultValue="true"/>
-    </Properties>
-    <Children>
-      <Child designerType="ActionTrigger" isMultiple="true" propertyName="triggers"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="BottomUnit" canBeDeleted="true" display="Bottom" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
-    <Properties>
-      <Property descr="The height (in pixels) that the unit will take up in the layout." name="height" type="Number" required="false" defaultValue="200" inList=""/>
-      <Property descr="The min height of unit." name="minHeight" type="Number" required="false" defaultValue="200" inList=""/>
-      <Property descr="The max height of unit." name="maxHeight" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Boolean indicating whether this unit is resizeable." name="resize" type="Boolean" required="false" defaultValue="true" inList=""/>
-      <Property descr="Content file where the layout content will be got" name="contentFile" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="RapidInsight component that will be displayed in the unit" name="component" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area." name="scroll" type="Boolean" required="false" defaultValue="false" inList=""/>
-      <Property descr="This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements" name="useShim" type="Boolean" required="false" defaultValue="false" inList=""/>
-    </Properties>
-    <Children>
-      <Child designerType="Layout" propertyName="childLayout" isMultiple="false"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="LeftUnit" canBeDeleted="true" display="Left" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
-    <Properties>
-      <Property descr="The width (in pixels) that the unit will take up in the layout." name="width" type="Number" required="false" defaultValue="200" inList=""/>
-      <Property descr="Boolean indicating whether this unit is resizeable." name="resize" type="Boolean" required="false" defaultValue="true" inList=""/>
-      <Property descr="The min width of unit." name="minWidth" type="Number" required="false" defaultValue="200" inList=""/>
-      <Property descr="The max width of unit." name="maxWidth" type="Number" required="false" defaultValue="0" inList=""/>
-      <Property descr="Content file where the layout content will be got" name="contentFile" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="RapidInsight component that will be displayed in the unit" name="component" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area." name="scroll" type="Boolean" required="false" defaultValue="false" inList=""/>
-      <Property descr="This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements" name="useShim" type="Boolean" required="false" defaultValue="false" inList=""/>
-    </Properties>
-    <Children>
-      <Child designerType="Layout" propertyName="childLayout" isMultiple="false"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="ActionTrigger" canBeDeleted="true" display="ActionTrigger">
-    <Properties>
-      <Property descr="" name="name" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="" name="component" type="String" required="false" defaultValue="" inList=""/>
-      <Property descr="" name="isMenuItem" type="Boolean" required="false" defaultValue="false" inList=""/>
-    </Properties>
-    <Children/>
-  </UiElement>
-  <UiElement designerType="Url" canBeDeleted="true" displayFromProperty="url" imageExpanded="images/rapidjs/designer/gsp_logo.png" imageCollapsed="images/rapidjs/designer/gsp_logo.png">
-    <Properties>
-      <Property descr="Url of the page set" name="url" type="String" required="true" defaultValue="" inList=""/>
+      <Property descr="Url of the page set" name="name" type="String" required="true" defaultValue=""/>
     </Properties>
     <Children>
       <Child designerType="Tabs" isMultiple="false"/>
@@ -426,39 +232,39 @@
       <Child designerType="Tab" propertyName="tabs" isMultiple="true"/>
     </Children>
   </UiElement>
-  <UiElement designerType="FunctionAction" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+  <UiElement designerType="Column" canBeDeleted="true" displayFromProperty="attributeName" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
     <Properties>
-      <Property descr="" name="component" type="String" required="true" inList=""/>
-      <Property descr="The method of the component that will called." name="function" type="String" required="false" defaultValue="null" inList=""/>
-      <Property descr="Unique name of the action" name="name" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The JavaScript expression that will be evaluated to determine whether to execute the action or not." name="condition" type="String" required="false" defaultValue="" inList=""/>
-    </Properties>
-    <Children>
-      <Child designerType="FunctionArgument" isMultiple="true" propertyName="arguments"/>
-      <Child designerType="ActionTriggers" isMultiple="false"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="ActionTriggers" display="ActionTriggers" canBeDeleted="false">
-    <Properties>
-      <Property descr="" type="String" defaultValue="true"/>
-    </Properties>
-    <Children>
-      <Child designerType="ActionTrigger" isMultiple="true" propertyName="triggers"/>
-    </Children>
-  </UiElement>
-  <UiElement designerType="FunctionArgument" canBeDeleted="true" display="FunctionArgument">
-    <Properties>
-      <Property descr="JavaScript expression evaluated and passed to the function as argument" isRequired="true" name="value" type="String" required="false" defaultValue="" inList=""/>
+      <Property descr="The data node attribute which will be shown in the column" name="attributeName" type="String" required="true" defaultValue=""/>
+      <Property descr="Width of the column" name="width" type="Number" required="true" defaultValue="100"/>
+      <Property descr="Parameter to render component whether sorted according to this column or not" name="sortBy" type="Boolean" required="false" defaultValue="false"/>
+      <Property descr="Title of the column" name="colLabel" type="String" required="true" defaultValue=""/>
     </Properties>
     <Children/>
   </UiElement>
-  <UiElement designerType="RequestAction" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+  <UiElement designerType="GMap" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/component.gif" imageCollapsed="images/rapidjs/designer/component.gif">
     <Properties>
-      <Property descr="The URL to be used for requests to the server" name="url" type="String" required="false" defaultValue="null" inList=""/>
-      <Property descr="The time interval in seconds to wait the server request completes successfully before aborting." name="timeout" type="Number" required="false" defaultValue="60" inList=""/>
-      <Property descr="" name="components" type="String" required="true" inList=""/>
-      <Property descr="Unique name of the action" name="name" type="String" required="true" defaultValue="" inList=""/>
-      <Property descr="The JavaScript expression that will be evaluated to determine whether to execute the action or not." name="condition" type="String" required="false" defaultValue="" inList=""/>
+      <Property descr="The default URL to be used for requests to the server to retrieve the data. " name="url" type="String" required="true" defaultValue=""/>
+      <Property descr="The node names of AJAX response which will be used as location data. " name="contentPath" type="String" required="true" defaultValue=""/>
+      <Property descr="The attribute in data which specifies the latitude of the location. " name="latitudeField" type="String" required="true" defaultValue=""/>
+      <Property descr="The attribute in data which specifies the longitude of the location. " name="longitudeField" type="String" required="true" defaultValue=""/>
+      <Property descr="The attribute in data which specifies open location address. " name="addressField" type="String" required="true" defaultValue=""/>
+      <Property descr="The marker image url. " name="markerField" type="String" required="true" defaultValue=""/>
+      <Property descr="The attribute in data which will be displayed in tooltip. " name="tooltipField" type="String" required="true" defaultValue=""/>
+      <Property descr="Title of component" required="true" name="title" type="String" defaultValue=""/>
+      <Property descr="Time delay between two server requests." required="true" name="pollingInterval" type="Number" defaultValue="0"/>
+      <Property descr="The time interval in seconds to wait the server request completes successfully before aborting." name="timeout" type="Number" required="false" defaultValue="60"/>
+      <Property descr="Name of component" name="name" type="String" required="true" defaultValue=""/>
+    </Properties>
+    <Children/>
+  </UiElement>
+  <UiElement designerType="MergeAction" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The attribute in response data which indicates that related components should remove the specified data" required="true" name="removeAttribute" type="String" defaultValue=""/>
+      <Property descr="The URL to be used for requests to the server" name="url" type="String" required="true" defaultValue=""/>
+      <Property descr="The time interval in seconds to wait the server request completes successfully before aborting." required="true" name="timeout" type="Number" defaultValue="60"/>
+      <Property descr="" required="true" formatter="ui.designer.UiRequestActionOperations$_metaData_closure1@b315c1" name="components" type="String" inList=""/>
+      <Property descr="Unique name of the action" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="The JavaScript expression that will be evaluated to determine whether to execute the action or not." required="true" name="condition" type="String" defaultValue=""/>
     </Properties>
     <Children>
       <Child designerType="RequestParameter" isMultiple="true" propertyName="parameters"/>
@@ -467,10 +273,357 @@
   </UiElement>
   <UiElement designerType="ActionTriggers" display="ActionTriggers" canBeDeleted="false">
     <Properties>
-      <Property descr="" type="String" defaultValue="true"/>
+      <Property descr="" type="String" formatter="ui.designer.UiActionOperations$_metaData_closure1@1595f65"/>
     </Properties>
     <Children>
       <Child designerType="ActionTrigger" isMultiple="true" propertyName="triggers"/>
     </Children>
+  </UiElement>
+  <UiElement designerType="BottomUnit" canBeDeleted="true" display="Bottom" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The height (in pixels) that the unit will take up in the layout." name="height" type="Number" required="true" defaultValue="200"/>
+      <Property descr="The min height of unit." name="minHeight" type="Number" required="false" defaultValue="0"/>
+      <Property descr="The max height of unit." name="maxHeight" type="Number" required="false" defaultValue="0"/>
+      <Property descr="Boolean indicating whether this unit is resizeable." required="true" name="resize" type="Boolean" defaultValue="false"/>
+      <Property descr="Content file where the layout content will be got" name="contentFile" type="String" required="false" defaultValue=""/>
+      <Property descr="RapidInsight component that will be displayed in the unit" required="true" formatter="ui.designer.UiLayoutUnitOperations$_metaData_closure1@50f7dc" name="component" type="String" defaultValue=""/>
+      <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter" type="String" required="false" defaultValue="0px"/>
+      <Property descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area." name="scroll" type="Boolean" required="false" defaultValue="false"/>
+      <Property descr="This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements" name="useShim" type="Boolean" required="true" defaultValue="false"/>
+    </Properties>
+    <Children>
+      <Child designerType="Layout" propertyName="childLayout" isMultiple="false"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="ObjectMapContent" canBeDeleted="true" display="NodeContent" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The unique name of the node content configuration" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Sets how far the left edge of the image is to the left edge of the node" name="x" type="Number" required="true" defaultValue="0"/>
+      <Property descr="Sets how far the top edge of the image is to the top edge of the node" name="y" type="Number" required="true" defaultValue="0"/>
+      <Property descr="Width of the image" name="width" type="Number" required="true" defaultValue="0"/>
+      <Property descr="Height of the image" name="height" type="Number" required="true" defaultValue="0"/>
+      <Property descr="The attribute in node data which the mapping will be applied according to" name="dataKey" type="String" required="true" defaultValue=""/>
+    </Properties>
+    <Children/>
+  </UiElement>
+  <UiElement designerType="Timeline" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The default URL to be used for requests to the server to retrieve the data." name="url" type="String" required="true" defaultValue=""/>
+      <Property descr="Time delay between two server requests." required="true" name="pollingInterval" type="Number" defaultValue="0"/>
+      <Property descr="Name of component" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Title of component" required="true" name="title" type="String" defaultValue=""/>
+    </Properties>
+    <Children>
+      <Child designerType="TimelineBand" propertyName="bands" isMultiple="true"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="RequestAction" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The URL to be used for requests to the server" name="url" type="String" required="true" defaultValue=""/>
+      <Property descr="The time interval in seconds to wait the server request completes successfully before aborting." required="true" name="timeout" type="Number" defaultValue="60"/>
+      <Property descr="" required="true" formatter="ui.designer.UiRequestActionOperations$_metaData_closure1@3c2e0b" name="components" type="String" inList=""/>
+      <Property descr="Unique name of the action" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="The JavaScript expression that will be evaluated to determine whether to execute the action or not." required="true" name="condition" type="String" defaultValue=""/>
+    </Properties>
+    <Children>
+      <Child designerType="RequestParameter" isMultiple="true" propertyName="parameters"/>
+      <Child designerType="ActionTriggers" isMultiple="false"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="ActionTriggers" display="ActionTriggers" canBeDeleted="false">
+    <Properties>
+      <Property descr="" type="String" formatter="ui.designer.UiActionOperations$_metaData_closure1@f2f72c"/>
+    </Properties>
+    <Children>
+      <Child designerType="ActionTrigger" isMultiple="true" propertyName="triggers"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="Layout" canBeDeleted="true" display="Layout" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
+    <Properties/>
+    <Children>
+      <Child designerType="CenterUnit" propertyName="units" isVisible="ui.designer.UiLayoutOperations$_metaData_closure1@183f2a"/>
+      <Child designerType="TopUnit" propertyName="units" isVisible="ui.designer.UiLayoutOperations$_metaData_closure2@1db0259"/>
+      <Child designerType="BottomUnit" propertyName="units" isVisible="ui.designer.UiLayoutOperations$_metaData_closure3@177533f"/>
+      <Child designerType="LeftUnit" propertyName="units" isVisible="ui.designer.UiLayoutOperations$_metaData_closure4@fa874b"/>
+      <Child designerType="RightUnit" propertyName="units" isVisible="ui.designer.UiLayoutOperations$_metaData_closure5@1c87675"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="RightUnit" canBeDeleted="true" display="Right" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The width (in pixels) that the unit will take up in the layout." name="width" type="Number" required="true" defaultValue="200"/>
+      <Property descr="Boolean indicating whether this unit is resizeable." required="true" name="resize" type="Boolean" defaultValue="false"/>
+      <Property descr="The min width of unit." name="minWidth" type="Number" required="false" defaultValue="0"/>
+      <Property descr="The max width of unit." name="maxWidth" type="Number" required="false" defaultValue="0"/>
+      <Property descr="Content file where the layout content will be got" name="contentFile" type="String" required="false" defaultValue=""/>
+      <Property descr="RapidInsight component that will be displayed in the unit" required="true" formatter="ui.designer.UiLayoutUnitOperations$_metaData_closure1@6cb458" name="component" type="String" defaultValue=""/>
+      <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter" type="String" required="false" defaultValue="0px"/>
+      <Property descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area." name="scroll" type="Boolean" required="false" defaultValue="false"/>
+      <Property descr="This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements" name="useShim" type="Boolean" required="true" defaultValue="false"/>
+    </Properties>
+    <Children>
+      <Child designerType="Layout" propertyName="childLayout" isMultiple="false"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="SearchList" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The default URL to be used for requests to the server to retrieve the data." name="url" type="String" required="true" defaultValue="search?searchIn=RsEvent"/>
+      <Property descr="The root node name of AJAX response which SearchGrid takes as starting point to get its data." name="rootTag" type="String" required="true" defaultValue=""/>
+      <Property descr="The node names of AJAX response which will be used as row data." name="contentPath" type="String" required="true" defaultValue=""/>
+      <Property descr="The attribute name of the row node which uniquely identifies the node." name="keyAttribute" type="String" required="true" defaultValue=""/>
+      <Property descr="The url parameter to send the query to the server." name="queryParameter" type="String" required="false" defaultValue="query"/>
+      <Property descr="The attribute in the root node of the AJAX response which shows the total number of hits which matches the query." name="totalCountAttribute" type="String" required="true" defaultValue="total"/>
+      <Property descr="The attribute in the root node of the AJAX response which shows where the results starts from according to the search query." name="offsetAttribute" type="String" required="true" defaultValue="offset"/>
+      <Property descr="The attribute of the row which displays the sort position of the row according to the search query." name="sortOrderAttribute" type="String" required="true" defaultValue="sortOrder"/>
+      <Property descr="Properties list that will be shown when no field configuration is found for the row. Optional if showMax property is provided." name="defaultFields" type="String" required="false" defaultValue=""/>
+      <Property descr="Maximum number of properties that will be displayed from the data. It overrides defaultFields and fields declarations." name="showMax" type="Number" required="false" defaultValue="0"/>
+      <Property descr="Time delay between two server requests." required="true" name="pollingInterval" type="Number" defaultValue="0"/>
+      <Property descr="The maximum row count requested from server at every poll." name="maxRowsDisplayed" type="Number" required="false" defaultValue="100"/>
+      <Property descr="How many lines a row consists of." name="lineSize" type="Number" required="false" defaultValue="3"/>
+      <Property descr="Name of component" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Title of component" required="true" name="title" type="String" defaultValue=""/>
+    </Properties>
+    <Children>
+      <Child designerType="SearchListFields" isMultiple="false"/>
+      <Child designerType="SearchListImages" isMultiple="false"/>
+      <Child designerType="SearchListMenuItems" isMultiple="false"/>
+      <Child designerType="SearchListPropertyMenuItems" isMultiple="false"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="SearchListFields" display="Fields" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
+    <Properties/>
+    <Children>
+      <Child designerType="SearchListField" propertyName="fields" isMultiple="true"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="SearchListImages" display="Images" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
+    <Properties/>
+    <Children>
+      <Child designerType="Image" propertyName="images" isMultiple="true"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="SearchListMenuItems" display="MenuItems" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
+    <Properties/>
+    <Children>
+      <Child designerType="MenuItem" propertyName="menuItems" isMultiple="true" isVisible="ui.designer.UiSearchListOperations$_metaData_closure1@1709d5f"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="SearchListPropertyMenuItems" display="PropertyMenuItems" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
+    <Properties/>
+    <Children>
+      <Child designerType="MenuItem" propertyName="propertyMenuItems" isMultiple="true" isVisible="ui.designer.UiSearchListOperations$_metaData_closure2@6bde40"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="TreeGridColumn" canBeDeleted="true" displayFromProperty="attributeName" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The data node attribute which will be shown in the column" name="attributeName" type="String" required="true" defaultValue=""/>
+      <Property descr="Width of the column" name="width" type="Number" required="true" defaultValue="100"/>
+      <Property descr="Parameter to render component whether sorted according to this column or not" name="sortBy" type="Boolean" required="false" defaultValue="false"/>
+      <Property descr="Title of the column" name="colLabel" type="String" required="true" defaultValue=""/>
+    </Properties>
+    <Children>
+      <Child designerType="TreeGridColumnImages" isMultiple="false"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="TreeGridColumnImages" display="Images" canBeDeleted="false">
+    <Properties/>
+    <Children>
+      <Child designerType="Image" isMultiple="true" propertyName="images"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="RequestParameter" canBeDeleted="true" display="RequestParameter">
+    <Properties>
+      <Property descr="The URL parameter name" required="true" name="key" type="String" defaultValue=""/>
+      <Property descr="The JavaScript expression that will be evaluated to determine the value of the URL parameter" required="true" type="Expression" name="value" defaultValue=""/>
+    </Properties>
+    <Children/>
+  </UiElement>
+  <UiElement designerType="MenuItem" displayFromProperty="name" canBeDeleted="true" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="Unique name of the menu item" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="The label of the menu item" name="label" type="String" required="true" defaultValue=""/>
+      <Property descr="The JavaScript expression evaluated on row data to determine whether the item is displayed or not" required="true" type="Expression" name="visible" defaultValue="true"/>
+    </Properties>
+    <Children>
+      <Child designerType="MenuItem" propertyName="childMenuItems" isMultiple="true"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="CenterUnit" display="Center" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="Content file where the layout content will be got" name="contentFile" type="String" required="false" defaultValue=""/>
+      <Property descr="RapidInsight component that will be displayed in the unit" required="true" formatter="ui.designer.UiLayoutUnitOperations$_metaData_closure1@1cb2da0" name="component" type="String" defaultValue=""/>
+      <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter" type="String" required="false" defaultValue="0px"/>
+      <Property descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area." name="scroll" type="Boolean" required="false" defaultValue="false"/>
+      <Property descr="This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements" name="useShim" type="Boolean" required="true" defaultValue="false"/>
+    </Properties>
+    <Children>
+      <Child designerType="Layout" propertyName="childLayout" isMultiple="false"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="TopUnit" canBeDeleted="true" display="Top" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The height (in pixels) that the unit will take up in the layout." name="height" type="Number" required="true" defaultValue="200"/>
+      <Property descr="Boolean indicating whether this unit is resizeable." required="true" name="resize" type="Boolean" defaultValue="false"/>
+      <Property descr="The min height of unit." name="minHeight" type="Number" required="false" defaultValue="0"/>
+      <Property descr="The max height of unit." name="maxHeight" type="Number" required="false" defaultValue="0"/>
+      <Property descr="Content file where the layout content will be got" name="contentFile" type="String" required="false" defaultValue=""/>
+      <Property descr="RapidInsight component that will be displayed in the unit" required="true" formatter="ui.designer.UiLayoutUnitOperations$_metaData_closure1@12c3c25" name="component" type="String" defaultValue=""/>
+      <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter" type="String" required="false" defaultValue="0px"/>
+      <Property descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area." name="scroll" type="Boolean" required="false" defaultValue="false"/>
+      <Property descr="This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements" name="useShim" type="Boolean" required="true" defaultValue="false"/>
+    </Properties>
+    <Children>
+      <Child designerType="Layout" propertyName="childLayout" isMultiple="false"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="ObjectMap" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The default URL to be used for requests to the server to retrieve map topology (nodes, edges, locations, and etc.)" name="expandURL" type="String" required="true" defaultValue="script/run/expandMap"/>
+      <Property descr="The default URL to be used for requests to the server to retrieve the data of each node and edges (state, cpu utilization, and etc.)" name="dataURL" type="String" required="true" defaultValue="script/run/getMapData"/>
+      <Property descr="Height of the node (width is 1.5 times height)" name="nodeSize" type="Number" required="false" defaultValue="60"/>
+      <Property descr="The node name of AJAX response which will be used as node data" name="dataTag" type="String" required="true" defaultValue=""/>
+      <Property descr="Time delay between two server requests." required="true" name="pollingInterval" type="Number" defaultValue="0"/>
+      <Property descr="The attribute name of the edge node which uniquely identifies the edge color." name="edgeColorDataKey" type="String" required="false" defaultValue="state"/>
+      <Property descr="The edge color mapping" name="edgeColors" type="String" required="false" defaultValue="5:0xffde2c26,4:0xfff79229,3:0xfffae500,2:0xff20b4e0,1:0xffac6bac,0:0xff62b446,default:0xff62b446"/>
+      <Property descr="Name of component" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Title of component" required="true" name="title" type="String" defaultValue=""/>
+    </Properties>
+    <Children>
+      <Child designerType="ObjectMapImageNodeContent" isMultiple="false"/>
+      <Child designerType="ObjectMapTextNodeContent" isMultiple="false"/>
+      <Child designerType="ObjectMapGaugeNodeContent" isMultiple="false"/>
+      <Child designerType="ObjectMapToolbarMenus" isMultiple="false"/>
+      <Child designerType="ObjectMapMenuItems" isMultiple="false"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="ObjectMapImageNodeContent" display="Images" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
+    <Properties/>
+    <Children>
+      <Child designerType="ImageObjectMapContent" propertyName="nodeContents" isMultiple="true" isVisible="ui.designer.UiObjectMapOperations$_metaData_closure1@21e65f"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="ObjectMapTextNodeContent" display="Texts" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
+    <Properties/>
+    <Children>
+      <Child designerType="ObjectMapContent" propertyName="nodeContents" isMultiple="true" isVisible="ui.designer.UiObjectMapOperations$_metaData_closure2@19ba7aa"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="ObjectMapGaugeNodeContent" display="Gauges" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
+    <Properties/>
+    <Children>
+      <Child designerType="ObjectMapContent" propertyName="nodeContents" isMultiple="true" isVisible="ui.designer.UiObjectMapOperations$_metaData_closure3@1cbcfd"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="ObjectMapToolbarMenus" display="ToolbarMenus" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
+    <Properties/>
+    <Children>
+      <Child designerType="ToolbarMenu" propertyName="toolbarMenus" isMultiple="true"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="ObjectMapMenuItems" display="MenuItems" imageExpanded="images/rapidjs/designer/tab.png" imageCollapsed="images/rapidjs/designer/tab.png">
+    <Properties/>
+    <Children>
+      <Child designerType="MenuItem" propertyName="menuItems" isMultiple="true" isVisible="ui.designer.UiObjectMapOperations$_metaData_closure4@bb8619"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="Tab" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/page.png" imageCollapsed="images/rapidjs/designer/page.png">
+    <Properties>
+      <Property descr="Name of the tab" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="Title of tab" required="true" name="title" type="String" defaultValue=""/>
+      <Property descr="The file path relative to web-app that will be embedded to tab, where you can write free form HTML, JavaScript and CSS" name="contentFile" type="String" required="false" defaultValue=""/>
+    </Properties>
+    <Children>
+      <Child designerType="Components" propertyName="layout"/>
+      <Child designerType="Layout" propertyName="layout"/>
+      <Child designerType="Dialogs" propertyName="layout"/>
+      <Child designerType="Actions" propertyName="layout"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="Components" display="Components" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
+    <Properties/>
+    <Children>
+      <Child designerType="SearchGrid" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure1@33150a"/>
+      <Child designerType="SearchList" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure2@1aa4de2"/>
+      <Child designerType="TreeGrid" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure3@1df43bf"/>
+      <Child designerType="Html" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure4@d8d990"/>
+      <Child designerType="FlexPieChart" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure5@b3a353"/>
+      <Child designerType="PieChart" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure6@1a7d0c4"/>
+      <Child designerType="ObjectMap" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure7@7b3555"/>
+      <Child designerType="GMap" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure8@ea91f6"/>
+      <Child designerType="Timeline" propertyName="components" isMultiple="true" isVisible="ui.designer.UiTabOperations$_metaData_closure9@14b106"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="Dialogs" display="Dialogs" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
+    <Properties/>
+    <Children>
+      <Child designerType="Dialog" isMultiple="true" propertyName="dialogs"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="Actions" display="Actions" imageExpanded="images/rapidjs/component/tools/folder_open.gif" imageCollapsed="images/rapidjs/component/tools/folder.gif">
+    <Properties/>
+    <Children>
+      <Child designerType="FunctionAction" isMultiple="true" propertyName="actions" isVisible="ui.designer.UiTabOperations$_metaData_closure10@720a30"/>
+      <Child designerType="MergeAction" isMultiple="true" propertyName="actions" isVisible="ui.designer.UiTabOperations$_metaData_closure11@fadbb2"/>
+      <Child designerType="RequestAction" isMultiple="true" propertyName="actions" isVisible="ui.designer.UiTabOperations$_metaData_closure12@16d8cda"/>
+      <Child designerType="CombinedAction" isMultiple="true" propertyName="actions" isVisible="ui.designer.UiTabOperations$_metaData_closure13@13a462c"/>
+      <Child designerType="LinkAction" isMultiple="true" propertyName="actions" isVisible="ui.designer.UiTabOperations$_metaData_closure14@d532ee"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="LeftUnit" canBeDeleted="true" display="Left" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The width (in pixels) that the unit will take up in the layout." name="width" type="Number" required="true" defaultValue="200"/>
+      <Property descr="Boolean indicating whether this unit is resizeable." required="true" name="resize" type="Boolean" defaultValue="false"/>
+      <Property descr="The min width of unit." name="minWidth" type="Number" required="false" defaultValue="0"/>
+      <Property descr="The max width of unit." name="maxWidth" type="Number" required="false" defaultValue="0"/>
+      <Property descr="Content file where the layout content will be got" name="contentFile" type="String" required="false" defaultValue=""/>
+      <Property descr="RapidInsight component that will be displayed in the unit" required="true" formatter="ui.designer.UiLayoutUnitOperations$_metaData_closure1@1bbbe80" name="component" type="String" defaultValue=""/>
+      <Property descr="The gutter applied to the unit's wrapper, before the content." name="gutter" type="String" required="false" defaultValue="0px"/>
+      <Property descr="Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area." name="scroll" type="Boolean" required="false" defaultValue="false"/>
+      <Property descr="This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements" name="useShim" type="Boolean" required="true" defaultValue="false"/>
+    </Properties>
+    <Children>
+      <Child designerType="Layout" propertyName="childLayout" isMultiple="false"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="ActionTrigger" canBeDeleted="true" display="ActionTrigger">
+    <Properties>
+      <Property descr="" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="" formatter="ui.designer.UiActionTriggerOperations$_metaData_closure1@1273445" name="component" type="String" required="false" defaultValue=""/>
+      <Property descr="" name="isMenuItem" type="Boolean" required="true" defaultValue="false"/>
+    </Properties>
+    <Children/>
+  </UiElement>
+  <UiElement designerType="ToolbarMenu" canBeDeleted="true" displayFromProperty="label" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="The label of the menu" required="true" name="label" type="String" defaultValue=""/>
+    </Properties>
+    <Children>
+      <Child designerType="MenuItem" propertyName="menuItems" isMultiple="true" isVisible="ui.designer.UiToolbarMenuOperations$_metaData_closure1@f69f4e"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="FunctionAction" canBeDeleted="true" displayFromProperty="name" imageExpanded="images/rapidjs/designer/layout_content.png" imageCollapsed="images/rapidjs/designer/layout_content.png">
+    <Properties>
+      <Property descr="" formatter="ui.designer.UiFunctionActionOperations$_metaData_closure1@672832" name="component" type="String" required="true" inList=""/>
+      <Property descr="The method of the component that will called." name="function" type="String" required="true" defaultValue=""/>
+      <Property descr="Unique name of the action" name="name" type="String" required="true" defaultValue=""/>
+      <Property descr="The JavaScript expression that will be evaluated to determine whether to execute the action or not." required="true" name="condition" type="String" defaultValue=""/>
+    </Properties>
+    <Children>
+      <Child designerType="FunctionArgument" isMultiple="true" propertyName="arguments"/>
+      <Child designerType="ActionTriggers" isMultiple="false"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="ActionTriggers" display="ActionTriggers" canBeDeleted="false">
+    <Properties>
+      <Property descr="" type="String" formatter="ui.designer.UiActionOperations$_metaData_closure1@7ff40e"/>
+    </Properties>
+    <Children>
+      <Child designerType="ActionTrigger" isMultiple="true" propertyName="triggers"/>
+    </Children>
+  </UiElement>
+  <UiElement designerType="FunctionArgument" canBeDeleted="true" display="FunctionArgument">
+    <Properties>
+      <Property descr="JavaScript expression evaluated and passed to the function as argument" isRequired="true" type="Expression" name="value" required="true" defaultValue=""/>
+    </Properties>
+    <Children/>
   </UiElement>
 </UiElements>

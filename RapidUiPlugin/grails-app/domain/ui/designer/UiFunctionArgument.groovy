@@ -11,7 +11,7 @@ class UiFunctionArgument {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "action"];
         storageType "File"
     };
-    static datasources = ["RCMDB":["keys":["key":["nameInDs":"key"], "action":["nameInDs":"action"], "isActive":["nameInDs":"isActive"]]]]
+    static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
 
     boolean isActive = true;
     String value ="";
@@ -27,7 +27,7 @@ class UiFunctionArgument {
     static relations = [action:[type:UiFunctionAction, reverseName:"arguments", isMany:false]]
 
     static constraints={
-     value(blank:false)
+     value(blank:true, nullable:true)
      __operation_class__(nullable:true)
      __is_federated_properties_loaded__(nullable:true)
      errors(nullable:true)

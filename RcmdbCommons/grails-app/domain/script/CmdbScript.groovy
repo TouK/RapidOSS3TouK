@@ -105,7 +105,7 @@ class CmdbScript {
 
     String toString()
     {
-        return "$name";
+        return getProperty("name");
     }
 
     

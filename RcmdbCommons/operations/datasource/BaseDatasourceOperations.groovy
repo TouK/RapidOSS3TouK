@@ -28,6 +28,7 @@ import com.ifountain.comp.converter.ConverterRegistry
  * To change this template use File | Settings | File Templates.
  */
 class BaseDatasourceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+    def adapter;
     public static Object convert(Object value)
     {
         return ConverterRegistry.getInstance().convert(value)

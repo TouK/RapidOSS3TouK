@@ -51,6 +51,12 @@ if (tempDirectory != null)
 }
 ModelGenerator.getInstance().generateModels(modelXmls);
 web.flash?.message = "Models generated successfully."
+if(params.targetURI){
+    web.redirect(uri:params.targetURI)
+}
+else{
+   return "Models generated successfully." 
+}
 def getModelXmls()
 {
     def relationConfiguration = [:]

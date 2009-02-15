@@ -136,7 +136,7 @@ class SearchGridTagLib {
         cArray.add("sortOrderAttribute: '${config["sortOrderAttribute"]}'")
         if (config["title"])
             cArray.add("title:'${config['title']}'")
-         if (config["queryEnabled"])
+        if (config["queryEnabled"])
             cArray.add("queryEnabled:${config['queryEnabled']}")
         if (config["pollingInterval"])
             cArray.add("pollingInterval:${config['pollingInterval']}")
@@ -153,14 +153,16 @@ class SearchGridTagLib {
         cArray.add("menuItems:[${menuItemArray.join(',\n')}]");
 
         def images = xml.Images?.Image;
-        def imageArray = [];
-        images.each {image ->
-            imageArray.add("""{
+        if (images.size() > 0) {
+            def imageArray = [];
+            images.each {image ->
+                imageArray.add("""{
                     src:'${image.@src}',
                     visible:\"${image.@visible}\"
                 }""")
+            }
+            cArray.add("images:[${imageArray.join(',\n')}]")
         }
-        cArray.add("images:[${imageArray.join(',\n')}]")
 
         def columns = xml.Columns?.Column;
         def columnArray = [];
@@ -176,6 +178,20 @@ class SearchGridTagLib {
                 }""")
         }
         cArray.add("columns:[${columnArray.join(',\n')}]")
+
+        def rowColors = xml.RowColors.RowColor;
+        if (rowColors.size() > 0) {
+            def rowColorsArray = [];
+            rowColors.each {rowColor ->
+                def textColor = rowColor.@textColor;
+                rowColorsArray.add("""{
+                    color:'${rowColor.@color}',
+                    ${textColor != "" ? "textColor:'${textColor}'," : ""}
+                    visible:\"${rowColor.@visible}\" 
+                }""")
+            }
+            cArray.add("rowColors:[${rowColorsArray.join(',\n')}]")
+        }
         return "{${cArray.join(',\n')}}"
     }
 
@@ -264,5 +280,19 @@ class SearchGridTagLib {
     }
     def sgColumn = {attrs, body ->
         out << fSgColumn(attrs, "")
+    }
+
+    static def fSgRowColors(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("RowColors", attrs, [], bodyString)
+    }
+    def sgRowColors = {attrs, body ->
+        out << fSgRowColors(attrs, body())
+    }
+    static def fSgRowColor(attrs, bodyString) {
+        def validAttrs = ["color", "textColor", "visible"];
+        return TagLibUtils.getConfigAsXml("RowColor", attrs, validAttrs)
+    }
+    def sgRowColor = {attrs, body ->
+        out << fSgRowColor(attrs, "")
     }
 }

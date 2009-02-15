@@ -63,6 +63,19 @@ class UiSearchGridOperations extends UiComponentOperations {
                                 ]
                         ],
                         [
+                                designerType: "SearchGridRowColors",
+                                isMultiple: false,
+                                metaData: [
+                                        designerType: "SearchGridRowColors",
+                                        display: "RowColors",
+                                        imageExpanded: 'images/rapidjs/designer/tab.png',
+                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        childrenConfiguration: [
+                                                [designerType: "RowColor", propertyName: "rowColors", isMultiple: true]
+                                        ]
+                                ]
+                        ],
+                        [
                                 designerType: "SearchGridMenuItems",
                                 isMultiple: false,
                                 metaData: [
@@ -91,6 +104,7 @@ class UiSearchGridOperations extends UiComponentOperations {
         def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridColumns"};
         def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridImages"};
         def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridMenuItems"};
+        def rowColorsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridRowColors"};
         columnsNode.UiElement.each{
             UiColumn.addUiElement(it, searchGrid);
         }
@@ -99,6 +113,9 @@ class UiSearchGridOperations extends UiComponentOperations {
         }
         menuItemsNode.UiElement.each{
             UiMenuItem.addUiElement(it, searchGrid);
+        }
+        rowColorsNode.UiElement.each{
+            UiRowColor.addUiElement(it, searchGrid);
         }
         return searchGrid;
     }

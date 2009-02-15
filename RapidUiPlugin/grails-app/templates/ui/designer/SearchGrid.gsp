@@ -55,4 +55,14 @@
         }
     %>
     </rui:sgColumns>
+    <rui:sgRowColors>
+    <%
+        uiElement.rowColors.each{rowColor->
+            def textColor = rowColor.textColor;
+    %>
+        <rui:sgRowColor color="${rowColor.color}" visible="${rowColor.visible}" ${textColor?"textColor='"+textColor+"'":""}></rui:sgRowColor>
+    <%
+        }
+    %>
+    </rui:sgRowColors>
 </rui:searchGrid>

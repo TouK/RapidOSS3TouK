@@ -10,7 +10,7 @@ class UiSearchGrid extends UiComponent {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["columns", "images"];
+        except = ["columns", "images", "rowColors"];
         storageType "File"
     };
     static datasources = [:]
@@ -28,10 +28,12 @@ class UiSearchGrid extends UiComponent {
     Long maxRowsDisplayed = 100;
     String defaultQuery = "";
     List images = [];
+    List rowColors = [];
 
 
     static relations = [
             images: [type: UiImage, reverseName: "component", isMany: true],
+            rowColors: [type: UiRowColor, reverseName: "grid", isMany: true]
     ]
 
     static constraints = {
@@ -51,6 +53,6 @@ class UiSearchGrid extends UiComponent {
     }
 
     static propertyConfiguration = [:]
-    static transients = ["columns", "images"];
+    static transients = ["columns", "images", "rowColors"];
     //AUTO_GENERATED_CODE
 }

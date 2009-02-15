@@ -21,6 +21,7 @@ YAHOO.rapidjs.component.search.SearchGrid = function(container, config) {
     this.columns = null;
     this.minColumnWidth = 30;
     this.fieldsUrl = null;
+    this.rowColors = null;
     this.queryEnabled = true;
     YAHOO.rapidjs.component.search.SearchGrid.superclass.constructor.call(this, container, config);
 };
@@ -76,7 +77,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         new YAHOO.rapidjs.component.Button(wrps[6], {className:'rcmdb-searchgrid-searchButton', scope:this, click:this.handleSearch, tooltip: 'Search'});
         this.searchInput = searchInputWrp.getElementsByTagName('input')[0];
         YAHOO.util.Event.addListener(this.searchInput.form, 'keypress', this.handleInputEnter, this, true);
-        if(!this.queryEnabled){
+        if (!this.queryEnabled) {
             YAHOO.util.Dom.setStyle(wrps[5], 'display', 'none')
             YAHOO.util.Dom.setStyle(wrps[6], 'display', 'none')
             YAHOO.util.Dom.setStyle(wrps[7], 'display', 'none')
@@ -223,6 +224,29 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var menuEl = YAHOO.util.Dom.getElementsByClassName('rcmdb-search-row-headermenu', 'div', rowEl.dom)[0]
             menuEl.style.backgroundImage = evaluationResult ? 'url("' + imageSrc + '")' : '';
         }
+        if (this.rowColors) {
+            var evaluationResult = false;
+            var backColor, textColor;
+            for (var i = 0; i < this.rowColors.length; i++)
+            {
+                var rowColor = this.rowColors[i]
+                backColor = rowColor['color'];
+                textColor = rowColor['textColor'] || '#000000';
+                var currentExpressionStr = rowColor['visible'];
+                try {
+                    evaluationResult = eval(currentExpressionStr);
+                    if (evaluationResult) {
+                        break;
+                    }
+                }
+                catch(e) {
+                }
+            }
+            var backgroundColor = evaluationResult ? backColor : ''
+            var tColor = evaluationResult ? textColor : ''
+            YAHOO.util.Dom.setStyle(rowEl.dom, 'background-color', backgroundColor)
+            YAHOO.util.Dom.setStyle(rowEl.dom, 'color', tColor)
+        }
         var nOfColumns = this.columns.length;
         for (var colIndex = 1; colIndex < nOfColumns; colIndex++) {
             var colConfig = this.columns[colIndex];
@@ -231,7 +255,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var valueEl = cell.firstChild;
             var value = dataNode.getAttribute(att);
             var innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) || "" : value || "");
-            valueEl.innerHTML = colIndex == nOfColumns -1 ? innerHTML + '<br>' : innerHTML + '&nbsp'
+            valueEl.innerHTML = colIndex == nOfColumns - 1 ? innerHTML + '<br>' : innerHTML + '&nbsp'
             cell.propKey = att;
             cell.propValue = value;
         }

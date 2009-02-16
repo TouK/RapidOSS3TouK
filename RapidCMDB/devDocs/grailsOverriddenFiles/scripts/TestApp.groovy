@@ -196,8 +196,8 @@ target(produceReports: "Outputs aggregated xml and html reports") {
 
 def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
     def specialTestClasses = [];
-    def specialTestFileName = System.getenv("rcmdb.special.tests");
-    boolean includeMode = System.getenv("rcmdb.include.tests") == true;
+    def specialTestFileName = System.getenv("rcmdb_special_tests");
+    boolean includeMode = System.getenv("rcmdb_include_tests") == true;
     if (specialTestFileName != null) {
         def file = new File(specialTestFileName);
         file.eachLine {line ->

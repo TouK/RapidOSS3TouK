@@ -42,46 +42,39 @@ class AuthenticationAuthorizationControllerIntegrationTests extends RapidCmdbInt
         assertNotNull(authenticationAdapter.getFilterConfig().before);
         assertNull(authenticationAdapter.getFilterConfig().after);
         assertNull(authenticationAdapter.getFilterConfig().afterView);
-
+        
+        String username = "user1";
         String userPassword = "password";
+        RsUser rsUser = createUser(username, userPassword);
+
+        loginAs(rsUser.username, userPassword);
+        assertFalse(authenticationAdapter.preHandle (req, resp, null));
+        loginAs (RsUser.RSADMIN, RsUser.DEFAULT_PASSWORD);
+    }
+
+    private createUser(String username, String userPassword)
+    {
         def userController = new RsUserController();
         IntegrationTestUtils.resetController (userController);
-        userController.params["username"] = "user1"
+        userController.params["username"] = username
         userController.params["password1"] = userPassword
         userController.params["password2"] = userPassword
         userController.save();
-        def rsUser = RsUser.get(username:"user1").update(groups:[]);
+        def rsUser = RsUser.get(username:username).update(groups:[]);
         assertFalse (rsUser.hasErrors());
+        return rsUser;
+    }
 
-
+    private loginAs(String username, String password)
+    {
         def authCont = new AuthController();
         IntegrationTestUtils.resetController (authCont);
         authCont.jsecSecurityManager = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean ("jsecSecurityManager");
         authCont.logout();
         IntegrationTestUtils.resetController (authCont);
-        authCont.params["login"] = rsUser.username
-        authCont.params["password"] = userPassword
+        authCont.params["login"] = username
+        authCont.params["password"] = password
         authCont.signIn();
-
         IntegrationTestUtils.resetController (authCont);
-        assertFalse(authenticationAdapter.preHandle (req, resp, null));
-        IntegrationTestUtils.resetController (authCont);
-        authCont.logout();
-        IntegrationTestUtils.resetController (authCont);
-        authCont.params["login"] = RsUser.RSADMIN
-        authCont.params["password"] = RsUser.DEFAULT_PASSWORD;
-        authCont.signIn();
     }
-
-//    public void testControllerAuthorization()
-//    {
-//        fail("Implement later");
-//        List controllers = ApplicationHolder.application.getControllerClasses();
-//        Map controllersAuthorization = [];
-//        int numberOfConfiguredControllers = 0;
-//        controllersAuthorization.each{Map controllerAuthorizationConfiguration,
-//
-//        }
-//        assertEquals (controllers.size());
-//    }
 }

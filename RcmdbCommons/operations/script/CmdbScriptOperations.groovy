@@ -86,14 +86,17 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
             configureScriptLogger(script);
         }
         if (!fromController && script.hasErrors()) {
-            throw new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
+            //throw new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
+            throw  createScriptException(script);
         }
         return script;
     }
     static def addScript(Map params) throws Exception {
         return addScript(params, false);
     }
-
+    protected static Exception createScriptException(CmdbScript script){
+        return new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
+    }
     static def deleteScript(CmdbScript script) throws Exception {
         def scriptName = script.name;
         if(script.listeningDatasource){
@@ -139,13 +142,14 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
             configureScriptLogger(script);
         }
         if (!fromController && script.hasErrors()) {
-            throw new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
+            //throw new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
+            throw  createScriptException(script);
         }
         return script;
     }
 
     static def updateScript(Map params) throws Exception {
-        CmdbScript script = CmdbScript.findByName(params.name)
+        CmdbScript script = CmdbScript.get(name:params.name)
         if (script) {
             updateScript(script, params, false);
         }

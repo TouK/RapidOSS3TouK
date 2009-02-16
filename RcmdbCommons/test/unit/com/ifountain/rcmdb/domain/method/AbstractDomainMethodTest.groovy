@@ -468,14 +468,14 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
                     thread2State = 3;
                 }
             }
-            Thread.sleep(300);
+            Thread.sleep(400);
             assertEquals(1, thread1State);
             assertEquals(1, thread2State);
             synchronized (waitLock1)
             {
                 waitLock1.notifyAll();
             }
-            Thread.sleep(300);
+            Thread.sleep(800);
 
             synchronized (waitLock2)
             {

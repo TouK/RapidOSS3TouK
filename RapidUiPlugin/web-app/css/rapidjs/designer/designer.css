@@ -123,5 +123,10 @@
 
 .r-designer .yui-layout .yui-layout-hd {
     background: transparent url( ../../../js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -1300px;
-    border:none;
+    border: none;
+}
+
+.r-designer textarea {
+    font-size: 14px;
+    font-family: verdana;
 }

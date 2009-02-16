@@ -491,7 +491,7 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
                 assertEquals(3, thread1State);    
             }
             int thread2StateCheckCount = 0;
-            while(thread2StateCheckCount < 8)
+            while(thread2StateCheckCount < 20)
             {
                 thread2StateCheckCount++;
                 synchronized (waitLock2)

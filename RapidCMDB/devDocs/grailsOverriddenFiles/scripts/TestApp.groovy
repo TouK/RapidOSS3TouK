@@ -199,7 +199,7 @@ def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
     def excludedFileName = System.getProperty("rcmdb.excluded.tests");
     if (excludedFileName) {
         new File(excludedFileName).eachLine {line ->
-            excludedTestClasses.add(line);
+            excludedTestClasses.add(line.trim());
         }
     }
     println "excluded test classes: ${excludedTestClasses}";

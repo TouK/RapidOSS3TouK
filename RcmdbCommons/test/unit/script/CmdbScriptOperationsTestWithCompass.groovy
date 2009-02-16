@@ -62,15 +62,15 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
         createSimpleScript (simpleScriptFile,expectedScriptMessage);
      }
-     
-    void testBeforeDelete(){              
+
+    void testBeforeDelete(){
         initialize([CmdbScript,BaseListeningDatasource], []);
         initializeForCmdbScript();
 
         def ds=BaseListeningDatasource.add(name:"myds")
         assertFalse(ds.hasErrors())
-        
-        CmdbScript script=CmdbScript.add(name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds,scriptFile:simpleScriptFile)        
+
+        CmdbScript script=CmdbScript.add(name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds,scriptFile:simpleScriptFile)
         assertFalse(script.hasErrors())
         assertEquals(script.listeningDatasource.id,ds.id)
 
@@ -114,9 +114,9 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         initialize([CmdbScript], []);
         initializeForCmdbScript();
 
-        def params=[name:simpleScriptFile.replace(".groovy",""),type:CmdbScript.ONDEMAND]       
-       
-        
+        def params=[name:simpleScriptFile.replace(".groovy",""),type:CmdbScript.ONDEMAND]
+
+
         def script=CmdbScript.addScript(params)
         assertEquals(script.scriptFile,params.name)
      }
@@ -136,7 +136,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
      {
          initialize([CmdbScript, Group], []);
          initializeForCmdbScript();
-         
+
 
          try{
             def script=CmdbScript.addScript([name:null],true);
@@ -151,7 +151,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
      void testAddScript(){
         initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
-                     
+
         Group gr1 = Group.add(name:"group1");
         Group gr2 = Group.add(name:"group2");
         Group gr3 = Group.add(name:"group3");
@@ -223,7 +223,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         def script=CmdbScript.add(params)
         assertFalse(script.hasErrors())
         CmdbScript.scheduleScript(script);
-        
+
         println schedulerMap
         assertEquals(params.name,schedulerMap.scriptName)
         assertEquals(params.startDelay,schedulerMap.startDelay)
@@ -271,7 +271,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
         //testing for periodic script
         def params=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.PERIODIC,scriptFile:simpleScriptFile,enabled:true,startDelay:10,period:20]
-       
+
         assertNull(callParams.id)
         def script=CmdbScriptOperations.addScript(params)
         assertFalse(script.hasErrors())
@@ -285,7 +285,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         script=CmdbScriptOperations.addScript(params)
         assertFalse(script.hasErrors())
         assertEquals(callParams.script.id,script.id)
-                
+
      }
      public void testUpdateScript()
     {
@@ -294,7 +294,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         def logLevel=Level.DEBUG;
         def oldLogLevel=Level.WARN;
         def logParams=[:]
-        logParams["logLevel"]=logLevel.toString();        
+        logParams["logLevel"]=logLevel.toString();
         logParams["logFileOwn"]=true;
         logParams["oldLogLevel"]=oldLogLevel.toString();
         logParams["oldLogFileOwn"]=false;
@@ -308,12 +308,12 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
         assertFalse(scriptToUpdate.hasErrors())
         assertEquals(CmdbScript.list().size(),1)
-        
+
         def unscheduleScriptName=null;
         ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
             unscheduleScriptName=scriptName
         }
-         
+
 
         def oldLogger=CmdbScript.getScriptLogger(scriptToUpdate);
         assertEquals(oldLogger.getLevel(),oldLogLevel);
@@ -339,7 +339,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
 
         def script=CmdbScript.addScript(params);
-        
+
 
         //tests the script file is really loaded and can be runned
         def scriptClass=ScriptManager.getInstance().getScript(script.scriptFile);
@@ -392,7 +392,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
 
          //we test that old script is removed from ScriptManager
-        
+
 
         def updatedScript=CmdbScript.updateScript(script,updateParams,false);
         assertFalse(updatedScript.hasErrors())
@@ -470,7 +470,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
          def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
          def updateParams=[name:null]
-         
+
          def scriptToUpdate=CmdbScript.addScript(params)
          assertFalse(scriptToUpdate.hasErrors())
 
@@ -499,8 +499,8 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
              unscheduleCallParams.scriptName=scriptName
              unscheduleCallParams.time=System.nanoTime()
-        }              
-       
+        }
+
         //testing for periodic script
         def updateParams=[name:"myscript",type:CmdbScript.SCHEDULED,scheduleType:CmdbScript.PERIODIC,scriptFile:simpleScriptFile,enabled:true,startDelay:10,period:20]
         def params=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
@@ -514,7 +514,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         def script=CmdbScriptOperations.updateScript(scriptToUpdate,updateParams,false)
         assertFalse(script.hasErrors())
         assertEquals(callParams.script.id,script.id)
-        assertEquals(unscheduleCallParams.scriptName,script.name)        
+        assertEquals(unscheduleCallParams.scriptName,script.name)
         assertTrue(unscheduleCallParams.time<callParams.time)
 
         //testing for cron script
@@ -528,7 +528,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         assertEquals(callParams.size(),0)
         assertEquals(unscheduleCallParams.size(),0)
         script=CmdbScriptOperations.updateScript(scriptToUpdate,updateParams,false)
-        assertFalse(script.hasErrors())        
+        assertFalse(script.hasErrors())
         assertEquals(callParams.script.id,script.id)
         assertEquals(unscheduleCallParams.scriptName,script.name)
         assertTrue(unscheduleCallParams.time<callParams.time)
@@ -541,7 +541,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
          CmdbScript script=CmdbScript.add(name:"script1",scriptFile:simpleScriptFile,staticParam:"x:5,y:6");
          assertFalse(script.hasErrors())
-         
+
          def mapParams=CmdbScript.getStaticParamMap(script);
          assertEquals(mapParams.x,"5");
          assertEquals(mapParams.y,"6");
@@ -549,7 +549,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
 
          CmdbScript scriptWithNoStaticParam=CmdbScript.add(name:"script2",scriptFile:simpleScriptFile,staticParam:"");
-         assertFalse(scriptWithNoStaticParam.hasErrors()) 
+         assertFalse(scriptWithNoStaticParam.hasErrors())
 
          def mapParams2=CmdbScript.getStaticParamMap(scriptWithNoStaticParam);
          assertEquals(mapParams2.size(),0);
@@ -575,10 +575,10 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         scriptParams["logLevel"]=logLevel.toString();
         scriptParams["logFileOwn"]=false;
 
-        
+
         CmdbScript script=CmdbScript.add(name:scriptParams.name,scriptFile:simpleScriptFile,logFile:scriptParams.logFile,logFileOwn:scriptParams.logFileOwn,logLevel:scriptParams.logLevel);
         assertFalse(script.hasErrors())
-        
+
         def logger=null;
 
         CmdbScript.configureScriptLogger(script);
@@ -644,7 +644,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
          def onDemandScript=CmdbScript.add(name:"testscript",type:CmdbScript.ONDEMAND,scriptFile:scriptFile,staticParam:"x:5,y:6");
          assertFalse(onDemandScript.hasErrors())
-         
+
          def params=[:]
 
          def result=CmdbScript.runScript(onDemandScript,params)
@@ -667,12 +667,12 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
          assertEquals(result.staticParamMap.y,"11")
 
 
-     }     
+     }
      void testRunScriptPassesParametersToScriptManager()
      {
          initialize([CmdbScript, Group], []);
          initializeForCmdbScript();
-         
+
          def managerParams=[:]
          ScriptManager.metaClass.runScript={ scriptPath, bindings,scriptLogger,operationClass ->
             managerParams.scriptPath=scriptPath
@@ -688,7 +688,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
          def script=CmdbScript.add(name:"testscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,operationClass:"testclass");
          assertFalse(script.hasErrors())
-         
+
          def params=["param1":"1","param2":"a"]
          def oldParams=[:]
          oldParams.putAll(params);
@@ -702,7 +702,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
          assertEquals(managerParams.bindings.staticParam,script.staticParam)
          assertEquals(managerParams.bindings.staticParamMap,CmdbScript.getStaticParamMap(script))
          assertEquals(managerParams.bindings.size(),oldParams.size()+2)
-         
+
          oldParams.each{  key , val ->
              assertEquals(val,managerParams.bindings[key])
          }
@@ -726,20 +726,20 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         initialize([CmdbScript, Group],[])
         initializeScriptManager()
 
-        
+
         def callParams=[:]
         CmdbScriptOperations.metaClass.static.updateScript= { CmdbScript script, Map params, boolean fromController ->
             callParams.params=params
             callParams.fromController=fromController
             callParams.script=script
         }
-        
+
         def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
         def script=CmdbScriptOperations.addScript(scriptParams);
         assertFalse(script.hasErrors());
 
         CmdbScriptOperations.updateScript(scriptParams);
-        
+
         assertEquals(callParams.fromController,false);
         assertEquals(callParams.params,scriptParams);
         assertEquals(callParams.script.id,script.id);
@@ -759,7 +759,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
     void testRunScriptWithNameAndParamsCallsBase(){
         initialize([CmdbScript, Group],[])
         initializeScriptManager()
-        
+
         def callParams=[:]
         CmdbScriptOperations.metaClass.static.runScript= { CmdbScript script, Map params ->
             callParams.script=script
@@ -771,11 +771,11 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         assertFalse(script.hasErrors())
 
         CmdbScriptOperations.runScript(script.name,scriptParams);
-        
+
         assertEquals(callParams.script.name,script.name)
         assertEquals(callParams.script.id,script.id)
         assertEquals(callParams.params,scriptParams)
-        
+
     }
     void testRunScriptWithNameAndParamsGeneratesExceptionWhenScriptIsMissing(){
        initialize([CmdbScript, Group],[])
@@ -789,7 +789,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
           println e
           assertTrue(e.getMessage().indexOf("does not exist")>0)
        }
-               
+
     }
     void testUpdateScriptWithOnlyParamsGeneratesExceptionWhenScriptIsMissing(){
           initialize([CmdbScript, Group],[])
@@ -842,7 +842,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
             callParams2.script=script
 
         }
-        
+
         def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
         def script=CmdbScriptOperations.addScript(scriptParams);
         assertFalse(script.hasErrors())
@@ -1038,7 +1038,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
         ScriptScheduler.metaClass.unscheduleScript={ String scriptName ->
             unscheduleScriptName=scriptName
         }
-        
+
         def scriptParams=[name:"myscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
         def scriptParams2=[name:"myscript2",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
         def scriptInstance=CmdbScriptOperations.addScript(scriptParams);
@@ -1062,6 +1062,75 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
 
     }
+
+     void testAddScriptsGeneratesExceptionWhenErrorOccurs()
+     {
+        CmdbScriptOperations.metaClass.static.createScriptException= { CmdbScript script ->
+            return new Exception("injectedTestMessage");
+
+        }
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+
+         def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:"no_script_file"]
+
+         try{
+            CmdbScript.addScript(params);
+            fail("should throw exception")
+         }
+         catch(e)
+         {
+             assertEquals(e.getMessage(),"injectedTestMessage");
+         }
+
+         try{
+            CmdbScript.addScript(params,false);
+            fail("should throw exception")
+         }
+         catch(e)
+         {
+             assertEquals(e.getMessage(),"injectedTestMessage");
+         }
+     }
+
+     void testUpdateScriptsGeneratesExceptionWhenErrorOccurs()
+     {
+        CmdbScriptOperations.metaClass.static.createScriptException= { CmdbScript script ->
+            return new Exception("injectedTestMessage");
+
+        }
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+
+         def params=[name:"CmdbScriptOperationsTestScript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile]
+         def script=CmdbScript.addScript(params);
+         assertFalse(script.hasErrors());
+
+
+         try{
+            def updateParams=[name:script.name,scriptFile:"no_script_file"];
+            CmdbScript.updateScript(updateParams);
+            fail("should throw exception")
+         }
+         catch(e)
+         {
+             assertEquals(e.getMessage(),"injectedTestMessage");
+         }
+
+          try{
+            def updateParams=[scriptFile:"no_script_file"];
+            CmdbScript.updateScript(script,updateParams,false);
+            fail("should throw exception")
+         }
+         catch(e)
+         {
+             assertEquals(e.getMessage(),"injectedTestMessage");
+         }
+
+     }
+     
      def createSimpleScript(scriptName,scriptMessage)
     {
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");

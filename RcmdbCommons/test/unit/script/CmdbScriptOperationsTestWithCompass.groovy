@@ -595,43 +595,42 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
      }
      void testGetScriptObject()
      {
-         fail("Should be reopened");
-//         initialize([CmdbScript, Group], []);
-//         initializeForCmdbScript();
-//
-//         def managerParams=[:]
-//         ScriptManager.metaClass.getScriptObject={ scriptPath,bindings,scriptLogger,operationClass ->
-//            managerParams.scriptPath=scriptPath
-//            managerParams.bindings=bindings
-//            managerParams.scriptLogger=scriptLogger
-//            managerParams.operationClass= operationClass;
-//
-//         }
-//
-//         initializeForCmdbScript();
-//
-//         ScriptManager.getInstance().addScript (simpleScriptFile);
-//
-//         def script=CmdbScript.add(name:"testscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,operationClass:"testclass");
-//         assertFalse(script.hasErrors())
-//
-//         def params=["param1":"1","param2":"a"]
-//         def oldParams=[:]
-//         oldParams.putAll(params);
-//
-//
-//         def scriptObject=CmdbScript.getScriptObject(script,params)
-//
-//         assertEquals(managerParams.scriptPath,script.scriptFile)
-//         assertEquals(managerParams.scriptLogger,CmdbScript.getScriptLogger(script))
-//         assertEquals(managerParams.operationClass,script.operationClass)
-//         assertEquals(managerParams.bindings.staticParam,script.staticParam)
-//         assertEquals(managerParams.bindings.staticParamMap,CmdbScript.getStaticParamMap(script))
-//         assertEquals(managerParams.bindings.size(),oldParams.size()+2)
-//
-//         oldParams.each{  key , val ->
-//             assertEquals(val,managerParams.bindings[key])
-//         }
+         initialize([CmdbScript, Group], []);
+         initializeForCmdbScript();
+
+         def managerParams=[:]
+         ScriptManager.metaClass.getScriptObject={ scriptPath,bindings,scriptLogger,operationClass ->
+            managerParams.scriptPath=scriptPath
+            managerParams.bindings=bindings
+            managerParams.scriptLogger=scriptLogger
+            managerParams.operationClass= operationClass;
+
+         }
+
+         initializeForCmdbScript();
+
+         ScriptManager.getInstance().addScript (simpleScriptFile);
+
+         def script=CmdbScript.add(name:"testscript",type:CmdbScript.ONDEMAND,scriptFile:simpleScriptFile,operationClass:"testclass");
+         assertFalse(script.hasErrors())
+
+         def params=["param1":"1","param2":"a"]
+         def oldParams=[:]
+         oldParams.putAll(params);
+
+
+         def scriptObject=CmdbScript.getScriptObject(script,params)
+
+         assertEquals(managerParams.scriptPath,script.scriptFile)
+         assertEquals(managerParams.scriptLogger,CmdbScript.getScriptLogger(script))
+         assertEquals(managerParams.operationClass,script.operationClass)
+         assertEquals(managerParams.bindings.staticParam,script.staticParam)
+         assertEquals(managerParams.bindings.staticParamMap,CmdbScript.getStaticParamMap(script))
+         assertEquals(managerParams.bindings.size(),oldParams.size()+2)
+
+         oldParams.each{  key , val ->
+             assertEquals(val,managerParams.bindings[key])
+         }
      }
      void testRunScriptPassesStaticParamAndStaticParamMapToScript()
      {

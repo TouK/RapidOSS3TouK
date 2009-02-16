@@ -448,6 +448,7 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
 
         for(int i=0; i < maxRetry; i++)
         {
+            println "NUMBEROF RETRY:"+i;
             int numberOfRetriesToFindNumberOfExecution = 0;
             while(numberOfExecutionOfInvoke != i+1 && numberOfRetriesToFindNumberOfExecution < 1000)
             {

@@ -65,7 +65,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
                     if (oRecord) {
                         this._oRecord = oRecord;
                         var value = oRecord.getData(this.getColumn().getKey());
-                        this.value = (value !== undefined) ? Date.parseDate(value, "%b %d %Y %H:%M:%S %z") : this.defaultValue;
+                        this.value = (value !== undefined) ? Date.parseDate(value, "M d Y H:i:s T") : this.defaultValue;
                         return true;
                     }
                 }
@@ -180,6 +180,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 }
 
             }
+            menuItems.push({id:"clone", label:"Clone", visible:"params.data.canBeDeleted && !(params.data." + this.treeTypeAttribute + " == 'Layout' && params.dataNode.parentNode().getAttribute('" + this.treeTypeAttribute + "') == 'Tab')"});
             menuItems.push({id:"delete", label:"Delete", visible:"params.data.canBeDeleted && !(params.data." + this.treeTypeAttribute + " == 'Layout' && params.dataNode.parentNode().getAttribute('" + this.treeTypeAttribute + "') == 'Tab')"});
             this.tree.treeGridView.setMenuItems(menuItems);
             this.tree.treeGridView.rootImages = rootImages;
@@ -532,6 +533,13 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         else if (id == "edit_Action") {
             this.actionDlg.show(YAHOO.rapidjs.designer.ActionDefinitionDialog.EDIT_MODE, xmlData);
+        }
+        else if (id == 'clone'){
+            var clonedNode = xmlData.cloneNode(true, true);
+            xmlData.parentNode().appendChild(clonedNode);
+            var currentTab = xmlData.getAttribute(this.itemTabAtt);
+            this.addExtraAttributesToChildNodes(clonedNode, currentTab);
+            this.refreshTree();
         }
     },
 

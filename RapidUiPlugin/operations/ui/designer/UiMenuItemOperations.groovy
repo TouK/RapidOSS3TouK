@@ -19,8 +19,8 @@ class UiMenuItemOperations extends AbstractDomainOperation
                 designerType:"MenuItem",
                 displayFromProperty:"name",
                 canBeDeleted:"true",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/view_menu.gif",
+                imageCollapsed: "images/rapidjs/designer/view_menu.gif",
                 propertyConfiguration: [
                         name: [descr: "Unique name of the menu item"],
                         label: [descr: "The label of the menu item"],

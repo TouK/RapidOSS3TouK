@@ -16,8 +16,8 @@ class UiSearchListOperations extends UiComponentOperations{
                 designerType: "SearchList",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/properties.gif",
+                imageCollapsed: "images/rapidjs/designer/properties.gif",
                 propertyConfiguration: [
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data."],
                         rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data."],

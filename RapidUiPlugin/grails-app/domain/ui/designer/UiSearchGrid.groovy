@@ -15,9 +15,9 @@ class UiSearchGrid extends UiComponent {
     };
     static datasources = [:]
     String url = "search?searchIn=RsEvent";
-    String rootTag = "";
-    String contentPath = "";
-    String keyAttribute = "";
+    String rootTag = "Objects";
+    String contentPath = "Object";
+    String keyAttribute = "id";
     String fieldsUrl = "script/run/getViewFields?format=xml";
     String queryParameter = "query";
     String totalCountAttribute = "total";

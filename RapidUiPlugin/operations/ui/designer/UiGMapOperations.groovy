@@ -22,6 +22,7 @@ class UiGMapOperations extends UiComponentOperations
                 propertyConfiguration: [
                         url:[descr:"The default URL to be used for requests to the server to retrieve the data. "],
                         contentPath:[descr:"The node names of AJAX response which will be used as location data. "],
+                        googleKey:[descr:"Google Maps API key for your domain.See Google Maps API documentation for further information."],
                         latitudeField:[descr:"The attribute in data which specifies the latitude of the location. "],
                         longitudeField:[descr:"The attribute in data which specifies the longitude of the location. "],
                         addressField:[descr:"The attribute in data which specifies open location address. "],

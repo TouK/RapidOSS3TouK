@@ -56,6 +56,7 @@ class GmapTagLib {
         return """{
             id:'${attrs["id"]}',
             url:'${attrs["url"]}',
+            googleKey:'${attrs["googleKey"]}',
             contentPath:'${attrs["contentPath"]}',
             ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
             ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}

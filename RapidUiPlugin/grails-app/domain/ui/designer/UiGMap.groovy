@@ -14,6 +14,7 @@ class UiGMap extends UiComponent{
 
     String contentPath
     String url
+    String googleKey = "ABQIAAAA7ipkp7ZXyXVH2UHyOgqZhxT2yXp_ZAY8_ufC3CFXhHIE1NvwkxRnNbZP5arP3T53Mzg-yLZcEMRBew"
     Long pollingInterval= 0;
     String latitudeField
     String longitudeField
@@ -31,6 +32,7 @@ class UiGMap extends UiComponent{
         tooltipField(blank:false)
         contentPath(blank:false)
         url(blank:false)
+        googleKey(blank:false)
         pollingInterval(nullable:true)
         timeout(nullable:true)
     }

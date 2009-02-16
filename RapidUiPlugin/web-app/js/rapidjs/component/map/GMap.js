@@ -18,6 +18,10 @@
 */
 YAHOO.namespace('rapidjs', 'rapidjs.component');
 YAHOO.rapidjs.component.GMap = function(container, config) {
+    if(!YAHOO.rapidjs.component.GMap.isGoogleLibIncluded){
+        document.write('<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=' + config.googleKey + '"></script>')
+        YAHOO.rapidjs.component.GMap.isGoogleLibIncluded = true;        
+    }
     YAHOO.rapidjs.component.GMap.superclass.constructor.call(this, container, config);
     YAHOO.ext.util.Config.apply(this, config);
 
@@ -161,4 +165,6 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
 
     }
 });
+
+YAHOO.rapidjs.component.GMap.isGoogleLibIncluded = false;
 

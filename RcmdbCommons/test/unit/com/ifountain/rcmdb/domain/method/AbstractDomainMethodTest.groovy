@@ -490,12 +490,22 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
             {
                 assertEquals(3, thread1State);    
             }
-            synchronized (waitLock2)
+            int thread2StateCheckCount = 0;
+            while(thread2StateCheckCount < 8)
             {
-                waitLock2.notifyAll();
+                thread2StateCheckCount++;
+                synchronized (waitLock2)
+                {
+                    waitLock2.notifyAll();
+                }
+                Thread.sleep(300);
+                if(thread2State == 2)
+                {
+                    break;
+                }
             }
-            Thread.sleep(300);
-            assertEquals(2, thread2State);
+
+            assertTrue("Thread2 state should be 2 after deadlock detection", thread2StateCheckCount < 8);
         }
         Thread.sleep(500);
         assertEquals(3, thread1State);

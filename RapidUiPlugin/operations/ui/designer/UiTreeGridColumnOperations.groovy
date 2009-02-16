@@ -28,6 +28,8 @@ class UiTreeGridColumnOperations extends UiColumnOperations
                                 metaData: [
                                         designerType: "TreeGridColumnImages",
                                         display: "Images",
+                                        imageExpanded: "images/rapidjs/designer/images.png",
+                                        imageCollapsed: "images/rapidjs/designer/images.png",
                                         canBeDeleted: false,
                                         propertyConfiguration: [:],
                                         childrenConfiguration: [
@@ -49,7 +51,7 @@ class UiTreeGridColumnOperations extends UiColumnOperations
         def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridColumnImages"};
         def attributes = xmlNode.attributes();
         attributes.component = parentElement
-        if(imagesNode.UiElement.size() !=0)
+        if (imagesNode.UiElement.size() != 0)
         {
             attributes.type = "text";
         }
@@ -58,7 +60,7 @@ class UiTreeGridColumnOperations extends UiColumnOperations
             attributes.type = "image";
         }
         def treeGridColumn = DesignerUtils.addUiObject(UiTreeGridColumn, attributes, xmlNode);
-        imagesNode.UiElement.each{
+        imagesNode.UiElement.each {
             UiImage.addUiElement(it, treeGridColumn);
         }
         return treeGridColumn;

@@ -17,8 +17,8 @@ class UiRowColorOperations  extends AbstractDomainOperation{
                 designerType: "RowColor",
                 canBeDeleted: true,
                 display: "RowColor",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/color_wheel.png",
+                imageCollapsed: "images/rapidjs/designer/color_wheel.png",
                 propertyConfiguration: [
                         color: [descr: "Row background color."],
                         visible: [descr: "The JavaScript expression evaluated on row data to determine whether the color is applied or not.", type:"Expression"],

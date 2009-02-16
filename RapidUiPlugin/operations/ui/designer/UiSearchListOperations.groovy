@@ -54,8 +54,8 @@ class UiSearchListOperations extends UiComponentOperations{
                                 metaData: [
                                         designerType: "SearchListImages",
                                         display: "Images",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/images.png',
+                                        imageCollapsed: 'images/rapidjs/designer/images.png',
                                         childrenConfiguration: [
                                                 [designerType: "Image", propertyName: "images", isMultiple: true]
                                         ]

@@ -17,8 +17,8 @@ class UiSearchGridOperations extends UiComponentOperations {
                 designerType: "SearchGrid",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/table.png",
+                imageCollapsed: "images/rapidjs/designer/table.png",
                 propertyConfiguration: [
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data."],
                         rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data."],
@@ -42,8 +42,8 @@ class UiSearchGridOperations extends UiComponentOperations {
                                 metaData: [
                                         designerType: "SearchGridImages",
                                         display: "Images",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/images.png',
+                                        imageCollapsed: 'images/rapidjs/designer/images.png',
                                         childrenConfiguration: [
                                                 [designerType: "Image", propertyName: "images", isMultiple: true]
                                         ]
@@ -55,8 +55,8 @@ class UiSearchGridOperations extends UiComponentOperations {
                                 metaData: [
                                         designerType: "SearchGridColumns",
                                         display: "Columns",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/text_columns.png',
+                                        imageCollapsed: 'images/rapidjs/designer/text_columns.png',
                                         childrenConfiguration: [
                                                 [designerType: "Column", propertyName: "columns", isMultiple: true]
                                         ]
@@ -68,8 +68,8 @@ class UiSearchGridOperations extends UiComponentOperations {
                                 metaData: [
                                         designerType: "SearchGridRowColors",
                                         display: "RowColors",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/color_swatch.png',
+                                        imageCollapsed: 'images/rapidjs/designer/color_swatch.png',
                                         childrenConfiguration: [
                                                 [designerType: "RowColor", propertyName: "rowColors", isMultiple: true]
                                         ]

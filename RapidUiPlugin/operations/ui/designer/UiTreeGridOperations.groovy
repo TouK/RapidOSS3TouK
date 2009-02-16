@@ -16,8 +16,8 @@ class UiTreeGridOperations extends UiComponentOperations{
                 designerType: "TreeGrid",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/chart_organisation.png",
+                imageCollapsed: "images/rapidjs/designer/chart_organisation.png",
                 propertyConfiguration: [
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data."],
                         rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data."],
@@ -35,8 +35,8 @@ class UiTreeGridOperations extends UiComponentOperations{
                                 metaData: [
                                         designerType: "TreeGridColumns",
                                         display: "Columns",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/text_columns.png',
+                                        imageCollapsed: 'images/rapidjs/designer/text_columns.png',
                                         childrenConfiguration: [
                                                 [designerType: "TreeGridColumn", propertyName: "columns", isMultiple: true]
                                         ]
@@ -48,8 +48,8 @@ class UiTreeGridOperations extends UiComponentOperations{
                                 metaData: [
                                         designerType: "TreeGridRootImages",
                                         display: "RootImages",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/images.png',
+                                        imageCollapsed: 'images/rapidjs/designer/images.png',
                                         childrenConfiguration: [
                                                 [designerType: "RootImage", propertyName: "rootImages", isMultiple: true]
                                         ]

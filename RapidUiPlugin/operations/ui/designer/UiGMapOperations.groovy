@@ -17,8 +17,8 @@ class UiGMapOperations extends UiComponentOperations
                 designerType: "GMap",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/component.gif",
-                imageCollapsed: "images/rapidjs/designer/component.gif",
+                imageExpanded: "images/rapidjs/designer/map.png",
+                imageCollapsed: "images/rapidjs/designer/map.png",
                 propertyConfiguration: [
                         url:[descr:"The default URL to be used for requests to the server to retrieve the data. "],
                         contentPath:[descr:"The node names of AJAX response which will be used as location data. "],

@@ -19,8 +19,8 @@ class UiImageOperations extends AbstractDomainOperation
                 designerType: "Image",
                 canBeDeleted: true,
                 display: "Image",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/image.png",
+                imageCollapsed: "images/rapidjs/designer/image.png",
                 propertyConfiguration: [
                         src: [descr: "Image url."],
                         visible: [descr: "The JavaScript expression evaluated on row data to determine whether the image is displayed or not.", required:true, type:"Expression"],

@@ -17,8 +17,8 @@ class UiHtmlOperations extends UiComponentOperations
                 designerType: "Html",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/component.gif",
-                imageCollapsed: "images/rapidjs/designer/component.gif",
+                imageExpanded: "images/rapidjs/designer/html.png",
+                imageCollapsed: "images/rapidjs/designer/html.png",
                 propertyConfiguration: [
                         pollingInterval:[descr:"Time delay between two server requests.", required:true],
                         iframe:[descr:"Parameter to display the content in an iframe or embed it to Html component's body."]

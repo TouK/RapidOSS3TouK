@@ -16,8 +16,8 @@ class UiTimelineOperations extends UiComponentOperations {
                 designerType: "Timeline",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/date.png",
+                imageCollapsed: "images/rapidjs/designer/date.png",
                 propertyConfiguration: [
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data."],
                         pollingInterval: [descr: "Time delay between two server requests.", required:true]

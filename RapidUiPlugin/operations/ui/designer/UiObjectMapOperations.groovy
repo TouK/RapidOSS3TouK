@@ -35,8 +35,8 @@ class UiObjectMapOperations extends UiComponentOperations {
                                 metaData: [
                                         designerType: "ObjectMapImageNodeContent",
                                         display: "Images",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/images.png',
+                                        imageCollapsed: 'images/rapidjs/designer/images.png',
                                         childrenConfiguration: [
                                                 [designerType: "ImageObjectMapContent", propertyName: "nodeContents", isMultiple: true, isVisible:{component->component.type == "image"}]
                                         ]

@@ -17,8 +17,8 @@ class UiPieChartOperations extends UiComponentOperations
                 designerType: "PieChart",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/component.gif",
-                imageCollapsed: "images/rapidjs/designer/component.gif",
+                imageExpanded: "images/rapidjs/designer/chart_pie.png",
+                imageCollapsed: "images/rapidjs/designer/chart_pie.png",
                 propertyConfiguration: [
                         url:[descr:"The default URL to be used for requests to the server to retrieve the data."],
                         contentPath:[descr:"The node names of AJAX response which will be used as row data."],

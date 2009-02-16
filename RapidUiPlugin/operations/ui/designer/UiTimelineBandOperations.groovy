@@ -18,8 +18,8 @@ class UiTimelineBandOperations extends AbstractDomainOperation{
                 designerType: "TimelineBand",
                 canBeDeleted: true,
                 display: "Band",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/film.png",
+                imageCollapsed: "images/rapidjs/designer/film.png",
                 propertyConfiguration: [
                         width:[descr:"The percentage of the band in the whole timeline.", required:true],
                         intervalPixels:[descr:"How many pixel each date unit will span.", required:true],

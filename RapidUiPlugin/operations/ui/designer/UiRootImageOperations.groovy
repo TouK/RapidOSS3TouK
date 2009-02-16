@@ -19,8 +19,8 @@ class UiRootImageOperations  extends AbstractDomainOperation
                 designerType: "RootImage",
                 canBeDeleted: true,
                 display: "RootImage",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/image.png",
+                imageCollapsed: "images/rapidjs/designer/image.png",
                 propertyConfiguration: [
                         expanded: [descr: "The image url which will be shown when the row is expanded"],
                         collapsed: [descr: "The image url which will be shown when the row is collapsed"],

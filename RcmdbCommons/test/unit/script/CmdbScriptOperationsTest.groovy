@@ -17,17 +17,15 @@
 * USA.
 */
 package script
+
 import com.ifountain.core.test.util.RapidCoreTestCase
-import com.ifountain.rcmdb.test.util.CompassForTests
-import org.apache.log4j.Level;
-import com.ifountain.rcmdb.datasource.ListeningAdapterManager;
-import datasource.BaseListeningDatasource
-import com.ifountain.rcmdb.datasource.BaseListeningDatasourceMock;
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import com.ifountain.rcmdb.scripting.ScriptManager
+import com.ifountain.rcmdb.scripting.ScriptScheduler
+import com.ifountain.rcmdb.test.util.CompassForTests
+import org.apache.commons.io.FileUtils
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
-import org.apache.commons.io.FileUtils
-import com.ifountain.rcmdb.scripting.ScriptScheduler
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,6 +53,7 @@ class CmdbScriptOperationsTest extends RapidCoreTestCase{
         ListeningAdapterManager.destroyInstance();
         ScriptScheduler.destroyInstance();
         ScriptManager.destroyInstance();
+        ExpandoMetaClass.enableGlobally();
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)

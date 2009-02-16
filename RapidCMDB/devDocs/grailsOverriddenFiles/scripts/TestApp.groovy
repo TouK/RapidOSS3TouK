@@ -196,11 +196,10 @@ target(produceReports: "Outputs aggregated xml and html reports") {
 
 def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
     def specialTestClasses = [];
-    def excludedFileName = System.getProperty("rcmdb.excluded.tests");
-    def includedFileName = System.getProperty("rcmdb.included.tests");
-    boolean includeMode = includedFileName != null;
-    if (excludedFileName != null || includeMode) {
-        def file = new File(includeMode?includedFileName:excludedFileName);
+    def specialTestFileName = System.getenv("rcmdb.special.tests");
+    boolean includeMode = System.getenv("rcmdb.include.tests") == true;
+    if (specialTestFileName != null) {
+        def file = new File(specialTestFileName);
         file.eachLine {line ->
             specialTestClasses.add(line.trim());
         }

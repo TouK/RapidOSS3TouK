@@ -195,15 +195,18 @@ target(produceReports: "Outputs aggregated xml and html reports") {
 
 
 def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
-    def excludedTestClasses = [];
+    def specialTestClasses = [];
     def excludedFileName = System.getProperty("rcmdb.excluded.tests");
-    if (excludedFileName) {
-        def file = new File(excludedFileName);
+    def includedFileName = System.getProperty("rcmdb.included.tests");
+    boolean includeMode = includedFileName != null;
+    if (excludedFileName != null || includeMode) {
+        def file = new File(includeMode?includedFileName:excludedFileName);
         file.eachLine {line ->
-            excludedTestClasses.add(line.trim());
+            specialTestClasses.add(line.trim());
         }
+        println "special test classes: ${specialTestClasses} which will be included? ${includeMode}";
     }
-    println "excluded test classes: ${excludedTestClasses}";
+
     for (r in testFiles) {
         try {
             def fileName = r.URL.toString()
@@ -212,7 +215,7 @@ def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
                 endIndex = -6
             }
             def className = fileName[fileName.indexOf(base) + base.size()..endIndex].replace('/' as char, '.' as char)
-            if (!excludedTestClasses.contains(className)) {
+            if ((includeMode && specialTestClasses.contains(className) || !includeMode && !specialTestClasses.contains(className))) {
                 Class c = classLoader.loadClass(className)
                 if (TestCase.isAssignableFrom(c) && !Modifier.isAbstract(c.modifiers) && !(c.name.toLowerCase().endsWith("alltests") || c.name.toLowerCase().endsWith("alltest"))) {
                     suite.addTest(new GrailsTestSuite(ctx, c))

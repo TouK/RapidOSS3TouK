@@ -32,7 +32,6 @@ public class DomainMethodExecutor
                 Object res = action();
                 if(numberOfRetries > 1)
                 {
-                    println "Successfully executed action after deadlock detection for " + owner + " with lock " +lockName
                     logger.warn("Successfully executed action after deadlock detection for " + owner + " with lock " +lockName);
                 }
                 return res;
@@ -55,7 +54,6 @@ public class DomainMethodExecutor
             {
                 if(numberOfRetries == 1)
                 {
-                    println "Deadlock detected and will retry to execute action for " + owner + " with lock " +lockName+". Number of retries :"+numberOfRetries
                     logger.warn("Deadlock detected and will retry to execute action for " + owner + " with lock " +lockName+". Number of retries :"+numberOfRetries);
                 }
             }

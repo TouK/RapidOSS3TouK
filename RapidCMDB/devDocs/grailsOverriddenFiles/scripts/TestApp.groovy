@@ -197,8 +197,11 @@ target(produceReports: "Outputs aggregated xml and html reports") {
 def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
     def excludedTestClasses = [];
     def excludedFileName = System.getProperty("rcmdb.excluded.tests");
+    println "excluded file name ${excludedFileName}"
     if (excludedFileName) {
-        new File(excludedFileName).eachLine {line ->
+        def file = new File(excludedFileName);
+        println "File exists ${file.exists()}"
+        file.eachLine {line ->
             excludedTestClasses.add(line.trim());
         }
     }

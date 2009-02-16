@@ -392,7 +392,6 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
 
     public void testThrowsDeadLockDetectionIfItExceededMaxNumberOfRetries()
     {
-        TestLogUtils.enableLogger(Logger.getRootLogger());
         DomainLockManager.initialize(2000, TestLogUtils.log);
         Object waitLock1 = new Object();
         Object waitLock2 = new Object();
@@ -443,6 +442,7 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
                 thread1State = 3;
             }
         }
+        println "STARTED THREAD "+ t1
 
 
 
@@ -468,20 +468,21 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
                     thread2State = 3;
                 }
             }
-            Thread.sleep(400);
+            println "STARTED THREAD "+ t2
+            Thread.sleep(300);
             assertEquals(1, thread1State);
             assertEquals(1, thread2State);
             synchronized (waitLock1)
             {
                 waitLock1.notifyAll();
             }
-            Thread.sleep(800);
+            Thread.sleep(200);
 
             synchronized (waitLock2)
             {
                 waitLock2.notifyAll();
             }
-            Thread.sleep(1000);
+            Thread.sleep(1800);
             if(i != maxRetry-1)
             {
                 assertEquals(1, thread1State);
@@ -506,6 +507,7 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
             }
 
             assertTrue("Thread2 state should be 2 after deadlock detection", thread2StateCheckCount < 8);
+            t2.join ();
         }
         Thread.sleep(500);
         assertEquals(3, thread1State);

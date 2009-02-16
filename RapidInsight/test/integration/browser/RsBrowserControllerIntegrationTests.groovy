@@ -97,6 +97,8 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testListDomainWithAllProperties() {
+
+        def expectedProperties = BaseDatasource.getPropertiesList().findAll {it.name != "id" && !it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
         for (i in 0..9) {
             BaseDatasource.add(name: "ds${i}");
         }
@@ -113,12 +115,13 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals("ds9", datasources[0].name)
 
         def propertyList = model.propertyList;
-        assertEquals(BaseDatasource.getPropertiesList().size() - 1, propertyList.size()) // id is not sent
+        assertEquals(expectedProperties.size(), propertyList.size())
         assertEquals(10, model.count)
 
     }
 
     void testListDomainWithAllPropertiesWithXml() {
+        def expectedProperties = BaseDatasource.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
         for (i in 0..9) {
             BaseDatasource.add(name: "ds${i}");
         }
@@ -135,7 +138,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals("ds9", objects[0].@name.toString());
 
         def attributes = objects[0].attributes();
-        assertEquals(BaseDatasource.getPropertiesList().size(), attributes.size()) // id is included
+        assertEquals(expectedProperties.size(), attributes.size())
     }
 
     void testListDomainWithOnlyKeyProperties() {

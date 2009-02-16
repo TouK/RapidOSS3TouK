@@ -90,7 +90,7 @@ integrationOnly = false
 target(testApp: "The test app implementation target") {
     depends(packageApp)
 
-    if(config.grails.testing.reports.destDir) {
+    if (config.grails.testing.reports.destDir) {
         testDir = config.grails.testing.reports.destDir
     }
 
@@ -98,33 +98,33 @@ target(testApp: "The test app implementation target") {
     Ant.mkdir(dir: "${testDir}/html")
     Ant.mkdir(dir: "${testDir}/plain")
 
-    if(args?.indexOf('-unit') >-1) {
+    if (args?.indexOf('-unit') > -1) {
         args -= '-unit'
         unitOnly = true
     }
-    if(args?.indexOf('-integration') >-1) {
+    if (args?.indexOf('-integration') > -1) {
         args -= '-integration'
         integrationOnly = true
     }
 
 
     compileTests()
-	packageTests()
+    packageTests()
 
     try {
-    	event("AllTestsStart", ["Starting test-app"])
+        event("AllTestsStart", ["Starting test-app"])
         def defaultSystemProps = [:]
-        System.getProperties().each{propName, propValue->
+        System.getProperties().each {propName, propValue ->
             defaultSystemProps[propName] = propValue;
         }
-        if(!integrationOnly) {
+        if (!integrationOnly) {
             runUnitTests()
         }
-        defaultSystemProps.each{propName, propValue->
+        defaultSystemProps.each {propName, propValue ->
             System.setProperty(propName, propValue);
         }
         shutdownApp();
-        if(!unitOnly) {
+        if (!unitOnly) {
             runIntegrationTests()
         }
         event("AllTestsEnd", ["Finishing test-app"])
@@ -137,28 +137,28 @@ target(testApp: "The test app implementation target") {
         processResults()
     }
 }
-target(packageTests:"Puts some useful things on the classpath") {
-    Ant.copy(todir:classesDirPath) {
-		fileset(dir:"${basedir}", includes:"application.properties")
-	}
-	Ant.copy(todir:classesDirPath, failonerror:false) {
-		fileset(dir:"${basedir}/grails-app/conf", includes:"**", excludes:"*.groovy, log4j*, hibernate, spring")
-		fileset(dir:"${basedir}/grails-app/conf/hibernate", includes:"**/**")
-		fileset(dir:"${basedir}/src/java") {
-			include(name:"**/**")
-			exclude(name:"**/*.java")
-		}
-		fileset(dir:"${basedir}/test/unit") {
-            include(name:"**/**")
-            exclude(name:"**/*.java")
-            exclude(name:"**/*.groovy)")
+target(packageTests: "Puts some useful things on the classpath") {
+    Ant.copy(todir: classesDirPath) {
+        fileset(dir: "${basedir}", includes: "application.properties")
+    }
+    Ant.copy(todir: classesDirPath, failonerror: false) {
+        fileset(dir: "${basedir}/grails-app/conf", includes: "**", excludes: "*.groovy, log4j*, hibernate, spring")
+        fileset(dir: "${basedir}/grails-app/conf/hibernate", includes: "**/**")
+        fileset(dir: "${basedir}/src/java") {
+            include(name: "**/**")
+            exclude(name: "**/*.java")
         }
-        fileset(dir:"${basedir}/test/integration") {
-            include(name:"**/**")
-            exclude(name:"**/*.java")
-            exclude(name:"**/*.groovy)")
+        fileset(dir: "${basedir}/test/unit") {
+            include(name: "**/**")
+            exclude(name: "**/*.java")
+            exclude(name: "**/*.groovy)")
         }
-	}
+        fileset(dir: "${basedir}/test/integration") {
+            include(name: "**/**")
+            exclude(name: "**/*.java")
+            exclude(name: "**/*.groovy)")
+        }
+    }
 
 }
 target(compileTests: "Compiles the test cases") {
@@ -168,7 +168,7 @@ target(compileTests: "Compiles the test cases") {
     Ant.mkdir(dir: destDir)
     try {
         Ant.groovyc(destdir: destDir,
-                projectName:grailsAppName,
+                projectName: grailsAppName,
                 classpathref: "grails.classpath",
                 resourcePattern: "file:${basedir}/**/grails-app/**/*.groovy",
                 compilerClasspath.curry(true))
@@ -178,8 +178,8 @@ target(compileTests: "Compiles the test cases") {
         exit(1)
     }
 
-	classLoader = new URLClassLoader([new File(destDir).toURI().toURL()] as URL[],getClass().classLoader.rootLoader)
-	Thread.currentThread().contextClassLoader = classLoader
+    classLoader = new URLClassLoader([new File(destDir).toURI().toURL()] as URL[], getClass().classLoader.rootLoader)
+    Thread.currentThread().contextClassLoader = classLoader
 
     event("CompileEnd", ['tests'])
 }
@@ -195,6 +195,14 @@ target(produceReports: "Outputs aggregated xml and html reports") {
 
 
 def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
+    def excludedTestClasses = [];
+    def excludedFileName = System.getProperty("rcmdb.excluded.tests");
+    if (excludedFileName) {
+        new File(excludedFileName).eachLine {line ->
+            excludedTestClasses.add(line);
+        }
+    }
+    println "excluded test classes: ${excludedTestClasses}";
     for (r in testFiles) {
         try {
             def fileName = r.URL.toString()
@@ -203,13 +211,16 @@ def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
                 endIndex = -6
             }
             def className = fileName[fileName.indexOf(base) + base.size()..endIndex].replace('/' as char, '.' as char)
-            Class c = classLoader.loadClass(className)
-            if (TestCase.isAssignableFrom(c) && !Modifier.isAbstract(c.modifiers) && !(c.name.toLowerCase().endsWith("alltests") || c.name.toLowerCase().endsWith("alltest"))) {
-                suite.addTest(new GrailsTestSuite(ctx, c))
+            if (!excludedTestClasses.contains(className)) {
+                Class c = classLoader.loadClass(className)
+                if (TestCase.isAssignableFrom(c) && !Modifier.isAbstract(c.modifiers) && !(c.name.toLowerCase().endsWith("alltests") || c.name.toLowerCase().endsWith("alltest"))) {
+                    suite.addTest(new GrailsTestSuite(ctx, c))
+                }
+                else {
+                    event("StatusUpdate", ["Test ${r.filename} is not a valid test case. It does not implement junit.framework.TestCase or is abstract!"])
+                }
             }
-            else {
-                event("StatusUpdate", ["Test ${r.filename} is not a valid test case. It does not implement junit.framework.TestCase or is abstract!"])
-            }
+
         } catch (Exception e) {
             compilationFailures << r.file.name
             event("StatusFinal", ["Error loading test: ${e.message}"])
@@ -252,7 +263,7 @@ def runTests = {suite, TestResult result, Closure callback ->
                         callback(test, {
                             savedOut.print "                    ${t.name}..."
                             event("TestStart", [test, t, thisTest])
-                            test.runTest (t, thisTest)
+                            test.runTest(t, thisTest)
                             event("TestEnd", [test, t, thisTest])
                             thisTest
                         })
@@ -301,7 +312,7 @@ target(runUnitTests: "Run Grails' unit tests under the test/unit directory") {
         }
 
         def suite = new TestSuite()
-//		appCtx.grailsApplication.classLoader.addURL(new File("test/unit").toURI().toURL())
+        //		appCtx.grailsApplication.classLoader.addURL(new File("test/unit").toURI().toURL())
         populateTestSuite(suite, testFiles, classLoader, appCtx, "test/unit/")
         if (suite.testCount() > 0) {
 
@@ -312,18 +323,18 @@ target(runUnitTests: "Run Grails' unit tests under the test/unit directory") {
 
             def start = new Date()
             runTests(suite, result) {test, invocation ->
-                for(cls in grailsApp.allArtefacts) {
+                for (cls in grailsApp.allArtefacts) {
                     def emc = new ExpandoMetaClass(cls, true, true)
                     emc.initialize()
                     def log = LogFactory.getLog(cls)
-                    emc.getLog = {-> log }
+                    emc.getLog = {-> log}
                     GroovySystem.metaClassRegistry.setMetaClass(cls, emc)
                 }
                 invocation()
             }
             def end = new Date()
 
-            event("TestSuiteEnd", ["unit",suite])
+            event("TestSuiteEnd", ["unit", suite])
             event("StatusUpdate", ["Unit Tests Completed in ${end.time - start.time}ms"])
             println "-------------------------------------------------------"
         }
@@ -348,14 +359,14 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
             return
         }
         //if(integrationOnly) {
-            loadApp()
+        loadApp()
         //}
         configureApp()
         def app = appCtx.getBean(GrailsApplication.APPLICATION_ID)
         if (app.parentContext == null) {
             app.applicationContext = appCtx
         }
-        ServletContextHolder.setServletContext (appCtx.servletContext);
+        ServletContextHolder.setServletContext(appCtx.servletContext);
         def classLoader = app.classLoader
         def suite = new TestSuite()
         populateTestSuite(suite, testFiles, classLoader, appCtx, "test/integration/")
@@ -382,14 +393,14 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
 
                 runTests(suite, result) {test, invocation ->
                     String name = String.valueOf(test);
-                    if(name.indexOf("(") >= 0)
+                    if (name.indexOf("(") >= 0)
                     {
-                        name = name.substring(name.indexOf("(")+1)
+                        name = name.substring(name.indexOf("(") + 1)
                         name = name.substring(0, name.indexOf(")"))
                     }
                     def stripWord = ["IntegrationTest", "IntegrationTests", "Test", "Tests"];
-                    stripWord.each{
-                        if(name.endsWith(it))
+                    stripWord.each {
+                        if (name.endsWith(it))
                         {
                             name = name.substring(0, name.length() - it.length());
                             return;
@@ -407,40 +418,40 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
                         webRequest.controllerName = "test"
                     }
 
-					def callable = { status ->
+                    def callable = {status ->
                         invocation()
                         status?.setRollbackOnly()
                     }
-					if(test.isTransactional()) {
+                    if (test.isTransactional()) {
                         if (appCtx.transactionManager) {
                             def template = new TransactionTemplate(appCtx.transactionManager)
-                    	    template.execute( callable as TransactionCallback )
+                            template.execute(callable as TransactionCallback)
                         } else {
                             System.out = savedOut
                             println "Error: There is no test datasource defined and integration test ${test.name} does not set transactional = false"
                             println "Tests aborted"
                             exit(1)
                         }
-					}
-					else {
-						callable.call()
-					}
+                    }
+                    else {
+                        callable.call()
+                    }
                     RequestContextHolder.setRequestAttributes(null);
                 }
                 def end = new Date()
 
-                event("TestSuiteEnd", ["integration",suite])
+                event("TestSuiteEnd", ["integration", suite])
                 println "Integration Tests Completed in ${end.time - start.time}ms"
                 println "-------------------------------------------------------"
 
             }
             finally {
-                try{
+                try {
                     interceptor?.destroy()
-                }catch(Exception e){}
-                try{
+                } catch (Exception e) {}
+                try {
                     bootStrapInstance.destroy();
-                }catch(Exception e){}
+                } catch (Exception e) {}
             }
         }
     }
@@ -449,9 +460,9 @@ target(runIntegrationTests: "Runs Grails' tests under the test/integration direc
         event("StatusUpdate", ["Error executing tests ${e.message}"])
 
         e.printStackTrace(System.out)
-        println "STACK TRACE:"+e.stackTrace
-        e.stackTrace.each {StackTraceElement el->
-            System.out.println(""+el.getClassName()+":"+el.getMethodName()+" line :"+el.getLineNumber()+" col "+el.getFileName());
+        println "STACK TRACE:" + e.stackTrace
+        e.stackTrace.each {StackTraceElement el ->
+            System.out.println("" + el.getClassName() + ":" + el.getMethodName() + " line :" + el.getLineNumber() + " col " + el.getFileName());
         }
         event("StatusFinal", ["Error running tests: ${e.toString()}"])
         exit(1)

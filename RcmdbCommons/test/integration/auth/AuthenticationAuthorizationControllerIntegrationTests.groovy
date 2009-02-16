@@ -23,6 +23,7 @@ class AuthenticationAuthorizationControllerIntegrationTests extends RapidCmdbInt
 
     public void testAuth()
     {
+        fail("Should be implemented");
         CompositeInterceptor interceptor = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean('filterInterceptor')
         MockHttpServletRequest req = new MockHttpServletRequest(ServletContextHolder.getServletContext(), "post", "/script/run/HelloWorld")
         MockHttpServletResponse resp = new MockHttpServletResponse();

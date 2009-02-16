@@ -10,6 +10,9 @@ import org.codehaus.groovy.grails.plugins.web.filters.FilterToHandlerAdapter
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.jsecurity.SecurityUtils
+import com.ifountain.rcmdb.test.util.IntegrationTestUtils
+import org.jsecurity.mgt.SecurityManager
 
 /**
 * Created by IntelliJ IDEA.
@@ -23,7 +26,6 @@ class AuthenticationAuthorizationControllerIntegrationTests extends RapidCmdbInt
 
     public void testAuth()
     {
-        fail("Should be implemented");
         CompositeInterceptor interceptor = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean('filterInterceptor')
         MockHttpServletRequest req = new MockHttpServletRequest(ServletContextHolder.getServletContext(), "post", "/script/run/HelloWorld")
         MockHttpServletResponse resp = new MockHttpServletResponse();
@@ -40,6 +42,35 @@ class AuthenticationAuthorizationControllerIntegrationTests extends RapidCmdbInt
         assertNotNull(authenticationAdapter.getFilterConfig().before);
         assertNull(authenticationAdapter.getFilterConfig().after);
         assertNull(authenticationAdapter.getFilterConfig().afterView);
+
+        String userPassword = "password";
+        def userController = new RsUserController();
+        IntegrationTestUtils.resetController (userController);
+        userController.params["username"] = "user1"
+        userController.params["password1"] = userPassword
+        userController.params["password2"] = userPassword
+        userController.save();
+        def rsUser = RsUser.get(username:"user1").update(groups:[]);
+        assertFalse (rsUser.hasErrors());
+
+
+        def authCont = new AuthController();
+        IntegrationTestUtils.resetController (authCont);
+        authCont.jsecSecurityManager = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean ("jsecSecurityManager");
+        authCont.logout();
+        IntegrationTestUtils.resetController (authCont);
+        authCont.params["login"] = rsUser.username
+        authCont.params["password"] = userPassword
+        authCont.signIn();
+
+        IntegrationTestUtils.resetController (authCont);
+        assertFalse(authenticationAdapter.preHandle (req, resp, null));
+        IntegrationTestUtils.resetController (authCont);
+        authCont.logout();
+        IntegrationTestUtils.resetController (authCont);
+        authCont.params["login"] = RsUser.RSADMIN
+        authCont.params["password"] = RsUser.DEFAULT_PASSWORD;
+        authCont.signIn();
     }
 
 //    public void testControllerAuthorization()

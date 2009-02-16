@@ -328,7 +328,9 @@ class Build extends Parent{
 //          ant.unzip(src: "$env.distribution/RapidCMDB_Windows$versionDate" + ".zip", dest: env.distribution);
 //      }
       ant.copy(todir: "$env.dist_rapid_suite", file: "${env.dev_docs}/test/ExcludedTests.txt", overwrite: "true")
+      ant.copy(todir: "$env.dist_rapid_suite", file: "${env.dev_docs}/test/IncludedTests.txt", overwrite: "true")
       ant.copy(todir: "$env.dist_modeler", file: "${env.dev_docs}/test/ExcludedTests.txt", overwrite: "true")
+      ant.copy(todir: "$env.dist_modeler", file: "${env.dev_docs}/test/IncludedTests.txt", overwrite: "true")
       ant.copy(tofile: "$env.dist_rapid_suite/../conf/groovy-starter.conf", file: "${env.dev_docs}/groovy-starter-for-tests.conf", overwrite: "true")
       ant.copy(todir: "$env.dist_rapid_suite/grails-app/domain") {
           ant.fileset(dir: "$env.rapid_cmdb_cvs/grails-app/domain") {

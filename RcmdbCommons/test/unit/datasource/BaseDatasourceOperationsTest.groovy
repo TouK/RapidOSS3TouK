@@ -2,6 +2,8 @@ package datasource
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.core.datasource.BaseAdapter
+import org.apache.log4j.Logger;
 
 /**
 * Created by IntelliJ IDEA.
@@ -14,18 +16,20 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
 
      public void setUp() {
         super.setUp();
-        //clearMetaClasses();
+        clearMetaClasses();
         initialize();
+
     }
 
     public void tearDown() {
         super.tearDown();
+        clearMetaClasses();
     }
     private void clearMetaClasses()
-    {
-        ListeningAdapterManager.destroyInstance();
+    {           
         ExpandoMetaClass.disableGlobally();
-        GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)
+        GroovySystem.metaClassRegistry.removeMetaClass(BaseDatasource);
+        GroovySystem.metaClassRegistry.removeMetaClass(BaseDatasourceOperations);
         ExpandoMetaClass.enableGlobally();
     }
     void initialize(){
@@ -38,8 +42,7 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
          def onDemandDs=BaseDatasource.getOndemand(name:"testds");
          assertNull(onDemandDs);
      }
-     public void testGetOnDemand()
-     {
+     public void testGetOnDemandDoesNotGenerateExceptionWhenAdapterIsNull(){
          def ds=BaseDatasource.add(name:"testds");
          assertFalse(ds.hasErrors())
          assertNull(ds.adapter);
@@ -48,7 +51,22 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
          assertEquals(onDemandDs.name,ds.name);
          assertNull(onDemandDs.adapter);
      }
+     public void testGetOnDemandSetsReconnectIntervalToZero()
+     {
+         BaseDatasource.metaClass.onLoad={ ->
+            adapter = new BaseDatasourceTestAdapter("",5,null);
+         }
+         def ds=BaseDatasource.add(name:"testds");
+         assertFalse(ds.hasErrors())
+         assertNotNull (ds.adapter);
+         assertEquals(ds.adapter.getReconnectInterval(),5);
 
+         def onDemandDs=BaseDatasource.getOndemand(name:"testds");
+         assertEquals(onDemandDs.name,ds.name);
+         assertEquals(onDemandDs.adapter.getReconnectInterval(),0);
+
+         
+     }      
      public void testGetPropertyReturnsNull()
      {
         def ds=BaseDatasource.add(name:"testds");
@@ -70,3 +88,13 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
      }
 
 }
+
+class BaseDatasourceTestAdapter extends BaseAdapter{
+     public BaseDatasourceTestAdapter(String connectionName, long reconnectInterval, Logger logger) {
+        super(connectionName, reconnectInterval, logger);
+    }
+    public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) {
+        return null; 
+    }
+}
+

@@ -9,7 +9,7 @@
         }
         else {
     %>
-    <rui:functionArg>${functionArgument.value}</rui:functionArg>
+    <rui:functionArg><![CDATA[${functionArgument.value}]]></rui:functionArg>
     <%
             }
         }

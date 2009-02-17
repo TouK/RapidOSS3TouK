@@ -20,7 +20,6 @@ package datasource
 
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import script.CmdbScript
-import com.ifountain.comp.converter.ConverterRegistry
 import org.apache.log4j.Logger
 
 /**

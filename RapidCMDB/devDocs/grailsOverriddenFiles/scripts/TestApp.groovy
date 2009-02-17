@@ -195,18 +195,9 @@ target(produceReports: "Outputs aggregated xml and html reports") {
 
 
 def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
-    def specialTestClasses = [];
-    def specialTestFileName = System.getenv("rcmdb_special_tests");
-    println "SPECIAL TESTS FILE NAME IS:"+specialTestFileName;
+    def specialTestClasses = getSpecialTestsList();
     boolean includeMode = System.getenv("rcmdb_include_tests") == "true";
-    if (specialTestFileName != null) {
-        def file = new File(specialTestFileName);
-        file.eachLine {line ->
-            specialTestClasses.add(line.trim());
-        }
-        println "special test classes: ${specialTestClasses} which will be included? ${includeMode}";
-    }
-
+    println "special test classes: ${specialTestClasses} which will be included? ${includeMode}";
     for (r in testFiles) {
         try {
             def fileName = r.URL.toString()
@@ -232,7 +223,22 @@ def populateTestSuite = {suite, testFiles, classLoader, ctx, String base ->
         }
     }
 }
+
+def getSpecialTestsList()
+{
+    def specialTestClasses = [];
+    def specialTestFileName = System.getenv("rcmdb_special_tests");
+    if (specialTestFileName != null) {
+        def file = new File(specialTestFileName);
+        file.eachLine {line ->
+            specialTestClasses.add(line.trim());
+        }
+    }
+    return specialTestClasses;
+}
 def runTests = {suite, TestResult result, Closure callback ->
+    def specialTestClasses = getSpecialTestsList();
+
     for (TestSuite test in suite.tests()) {
         new File("${testDir}/TEST-${test.name}.xml").withOutputStream {xmlOut ->
             new File("${testDir}/plain/TEST-${test.name}.txt").withOutputStream {plainOut ->
@@ -261,26 +267,34 @@ def runTests = {suite, TestResult result, Closure callback ->
                         thisTest.addListener(xmlOutput)
                         thisTest.addListener(plainOutput)
                         def t = test.testAt(i)
-                        System.out.println "--Output from ${t.name}--"
-                        System.err.println "--Output from ${t.name}--"
+                        String fullName = test.name+"."+t.name;
+                        if(!specialTestClasses.contains(fullName))
+                        {
+                            System.out.println "--Output from ${t.name}--"
+                            System.err.println "--Output from ${t.name}--"
 
-                        callback(test, {
-                            savedOut.print "                    ${t.name}..."
-                            event("TestStart", [test, t, thisTest])
-                            test.runTest(t, thisTest)
-                            event("TestEnd", [test, t, thisTest])
-                            thisTest
-                        })
-                        runCount += thisTest.runCount()
-                        failureCount += thisTest.failureCount()
-                        errorCount += thisTest.errorCount()
+                            callback(test, {
+                                savedOut.print "                    ${t.name}..."
+                                event("TestStart", [test, t, thisTest])
+                                test.runTest(t, thisTest)
+                                event("TestEnd", [test, t, thisTest])
+                                thisTest
+                            })
+                            runCount += thisTest.runCount()
+                            failureCount += thisTest.failureCount()
+                            errorCount += thisTest.errorCount()
 
-                        if (thisTest.errorCount() > 0 || thisTest.failureCount() > 0) {
-                            savedOut.println "FAILURE"
-                            thisTest.errors().each {result.addError(t, it.thrownException())}
-                            thisTest.failures().each {result.addFailure(t, it.thrownException())}
+                            if (thisTest.errorCount() > 0 || thisTest.failureCount() > 0) {
+                                savedOut.println "FAILURE"
+                                thisTest.errors().each {result.addError(t, it.thrownException())}
+                                thisTest.failures().each {result.addFailure(t, it.thrownException())}
+                            }
+                            else {savedOut.println "SUCCESS"}
                         }
-                        else {savedOut.println "SUCCESS"}
+                        else
+                        {
+                            System.out.println "--Ignored ${t.name} since it is in excluded list--"
+                        }
                     }
                     junitTest.setCounts(runCount, failureCount, errorCount);
                     junitTest.setRunTime(System.currentTimeMillis() - start)

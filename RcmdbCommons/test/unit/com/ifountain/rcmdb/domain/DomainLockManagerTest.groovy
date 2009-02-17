@@ -23,13 +23,15 @@ class DomainLockManagerTest extends RapidCmdbTestCase{
         Thread.sleep (1000);
         long usedMemoryBeforeLockOperations = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         String lockName = "lock1";
+        Thread t1 = null;
         for(int i=0; i < 10000; i++)
         {
-            Thread t1 = Thread.start{
-                DomainLockManager.getLock (this, lockName+i);
-                DomainLockManager.releaseLock(this, lockName+i);
+            t1 = Thread.start{
+                DomainLockManager.getLock (t1, lockName+i);
+                DomainLockManager.releaseLock(t1, lockName+i);
             }
             t1.join ();
+            t1 = null;
         }
 
         Runtime.getRuntime().gc();

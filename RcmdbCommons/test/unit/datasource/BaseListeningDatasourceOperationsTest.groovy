@@ -33,6 +33,7 @@ class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase
 
     public void tearDown() {
         super.tearDown();
+        clearMetaClasses();
     }
     private void clearMetaClasses()
     {

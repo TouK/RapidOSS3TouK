@@ -50,4 +50,9 @@ class BaseDatasourceOperations extends com.ifountain.rcmdb.domain.operation.Abst
     {
         return null;
     }
+    //for testing
+    protected void setAdapter(adapter)
+    {
+        this.adapter=adapter;
+    }
 }

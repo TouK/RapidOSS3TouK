@@ -405,10 +405,10 @@ public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
         def instance1Clone = modelClass.newInstance();
         def instance2 = modelClass.newInstance();
         def instance2Clone = modelClass.newInstance();
-        instance1["keyProp"] = "keyvalue1"
-        instance1Clone["keyProp"] = "keyvalue1"
-        instance2["keyProp"] = "keyvalue2"
-        instance2Clone["keyProp"] = "keyvalue2"
+        instance1["keyProp"] = "testThrowsDeadLockDetectionIfItExceededMaxNumberOfRetrieskeyvalue1"
+        instance1Clone["keyProp"] = "testThrowsDeadLockDetectionIfItExceededMaxNumberOfRetrieskeyvalue1"
+        instance2["keyProp"] = "testThrowsDeadLockDetectionIfItExceededMaxNumberOfRetrieskeyvalue2"
+        instance2Clone["keyProp"] = "testThrowsDeadLockDetectionIfItExceededMaxNumberOfRetrieskeyvalue2"
         int numberOfExecutionOfInvoke = 0;
         instance1Request1.closureToBeInvoked ={domainObject, arguments->
             numberOfExecutionOfInvoke++;

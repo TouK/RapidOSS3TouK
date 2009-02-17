@@ -1,1 +1,2 @@
 com.ifountain.rcmdb.domain.util.ControllerUtilsTest
+netcool.conversion.NetcoolRuleFunctionsTest

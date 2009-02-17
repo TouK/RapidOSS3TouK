@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <g:render template="/layouts/layoutheader"></g:render>
+    <g:render template="/layouts/layoutHeader"></g:render>
     <g:layoutHead/>
 </head>
 <body class=" yui-skin-sam rimain">

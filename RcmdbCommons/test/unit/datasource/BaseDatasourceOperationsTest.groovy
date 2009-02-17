@@ -5,6 +5,9 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.core.datasource.BaseAdapter
 import org.apache.log4j.Logger;
 
+import com.ifountain.rcmdb.converter.datasource.StringConverter
+import com.ifountain.comp.converter.ConverterRegistry
+
 /**
 * Created by IntelliJ IDEA.
 * User: admin
@@ -18,7 +21,7 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
         super.setUp();
         clearMetaClasses();
         initialize();
-
+        ConverterRegistry.getInstance().setDefaultConverter(new StringConverter());
     }
 
     public void tearDown() {
@@ -85,6 +88,29 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
         assertNull(ds.getProperties(null,null));
         assertNull(ds.getProperties([:],[]));
         assertNull(ds.getProperties(["name":"name"],["name"]));
+     }
+     public void testConvert()
+     {
+         def ds=BaseDatasource.add(name:"testds");
+         assertFalse(ds.hasErrors())
+
+         assertEquals(ds.convert(null),"") ;
+         assertEquals(ds.convert("abc"),"abc") ;
+         assertEquals(ds.convert(5),"5") ;
+     }
+     public void testConvertWithDefault()
+     {
+         def ds=BaseDatasource.add(name:"testds");
+         assertFalse(ds.hasErrors())
+
+         assertEquals(ds.convertWithDefault(null,""),"") ;
+         assertEquals(ds.convertWithDefault(null,"x"),"x") ;
+         assertEquals(ds.convertWithDefault(null,[:]),[:]) ;
+         assertEquals(ds.convertWithDefault(null,[]),[]) ;
+         assertEquals(ds.convertWithDefault(null,["x":5]),["x":5]) ;
+         
+         assertEquals(ds.convertWithDefault("abc",""),"abc") ;
+         assertEquals(ds.convertWithDefault(5,""),"5") ;
      }
 
 }

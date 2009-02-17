@@ -33,6 +33,15 @@ class BaseDatasourceOperations extends com.ifountain.rcmdb.domain.operation.Abst
     {
         return ConverterRegistry.getInstance().convert(value)
     }
+    public static Object convertWithDefault(Object value,Object nullValue)
+    {
+        def result= ConverterRegistry.getInstance().convert(value);
+        if(result == "")
+        {
+            result = nullValue;
+        }
+        return result;
+    }
     static def getOndemand(params) {
         def ds = BaseDatasource.get(params);
         if (ds && ds.adapter) {

@@ -45,7 +45,7 @@ class UiSearchGrid extends UiComponent {
         totalCountAttribute(blank:false)
         sortOrderAttribute(blank:false)
         offsetAttribute(blank:false)
-        queryParameter(nullable: true, blank: true)
+        queryParameter(blank:false)
         pollingInterval(nullable: true)
         queryEnabled(nullable: true)
         maxRowsDisplayed(nullable: true)

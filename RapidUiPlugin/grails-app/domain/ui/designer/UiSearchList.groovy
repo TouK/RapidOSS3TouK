@@ -47,7 +47,7 @@ class UiSearchList extends UiComponent{
         totalCountAttribute(blank:false)
         offsetAttribute(blank:false)
         sortOrderAttribute(blank:false)
-        queryParameter(nullable: true, blank: true)
+        queryParameter(blank:false)
         pollingInterval(nullable: true)
         showMax(nullable: true)
         lineSize(nullable: true)

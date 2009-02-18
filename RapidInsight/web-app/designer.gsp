@@ -50,6 +50,7 @@
     <script type="text/javascript" src="js/rapidjs/component/treegrid/TreeGrid.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/UIDesigner.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/DesignerUtils.js"></script>
+    <script type="text/javascript" src="js/rapidjs/designer/DesignerRenderUtils.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/ActionDefinitionDialog.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/Config.js"></script>
 

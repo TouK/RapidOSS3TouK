@@ -27,7 +27,6 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
 
     public void testGetClassProperties()
     {
-        fail("Should be reimplemented with mock version since it causes failure of other test ");
         def modelName = "ChildModel";
         def relatedModelName = "RelatedModel";
         def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
@@ -131,7 +130,6 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
 
     public void testConvertToSuccessfulXML()
     {
-        fail("Should be reimplemented with mock version since it causes failure of other test ");
         String message = "message1";
         def xml = ControllerUtils.convertSuccessToXml(message);
         def xmlNode = new XmlParser().parseText(xml);
